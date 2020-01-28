@@ -63,20 +63,41 @@ func LaunchBrowser(bin string, headless bool) (string, error) {
 	}
 
 	args := []string{
+		// Copied from https://github.com/puppeteer/puppeteer/blob/8b49dc62a62282543ead43541316e23d3450ff3c/lib/Launcher.js#L260
+		"--disable-background-networking",
+		"--enable-features=NetworkService,NetworkServiceInProcess",
+		"--disable-background-timer-throttling",
+		"--disable-backgrounding-occluded-windows",
+		"--disable-breakpad",
+		"--disable-client-side-phishing-detection",
+		"--disable-component-extensions-with-background-pages",
+		"--disable-default-apps",
+		"--disable-dev-shm-usage",
+		"--disable-extensions",
+		// disable site-per-process to make sure iframes are not detached automatically
+		"--disable-features=site-per-process,TranslateUI",
+		"--disable-hang-monitor",
+		"--disable-ipc-flooding-protection",
+		"--disable-popup-blocking",
+		"--disable-prompt-on-repost",
+		"--disable-renderer-backgrounding",
+		"--disable-sync",
+		"--force-color-profile=srgb",
+		"--metrics-recording-only",
+		"--no-first-run",
+		"--enable-automation",
+		"--password-store=basic",
+		"--use-mock-keychain",
+
 		"--remote-debugging-port=0",
 		"--user-data-dir=" + tmp,
-		"--no-first-run",
-		"--disable-default-apps",
-		"--use-mock-keychain",
-		"--password-store=basic",
-		"--enable-automation",
-		"--disable-features=site-per-process", // make sure iframes are not detached automatically
-		"about:blank",
 	}
 
 	if headless {
-		args = append([]string{"--headless"}, args...)
+		args = append(args, "--headless")
 	}
+
+	args = append(args, "about:blank")
 
 	cmd := exec.Command(
 		bin,
