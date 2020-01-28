@@ -26,7 +26,10 @@ func (s *S) htmlFile(path string) string {
 
 func Test(t *testing.T) {
 	s := new(S)
-	s.browser = rod.Open(&rod.Browser{Foreground: os.Getenv("headless") == "false"})
+	s.browser = rod.Open(&rod.Browser{
+		ControlURL: os.Getenv("chrome"),
+		Foreground: os.Getenv("headless") == "false",
+	})
 	defer s.browser.Close()
 
 	s.page = s.browser.Page("about:blank")

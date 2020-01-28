@@ -148,7 +148,7 @@ func (el *Element) RectE() (kit.JSONResult, error) {
 	rect := res.Get("result.value")
 
 	var j map[string]interface{}
-	json.Unmarshal([]byte(rect.String()), &j)
+	kit.E(json.Unmarshal([]byte(rect.String()), &j))
 
 	if el.page.isIframe() {
 		frameRect, err := el.page.element.RectE() // recursively get the rect

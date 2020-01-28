@@ -1,0 +1,30 @@
+name: Go
+on: [push]
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      chrome:
+        image: chromedp/headless-shell
+
+    steps:
+
+    - uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+
+    - uses: actions/checkout@v1
+
+    - name: setup
+      run: curl -L https://git.io/fjaxx | repo=ysmood/kit bin=godev sh
+ 
+    - name: test
+      run: chrome=http://chrome:9222 godev -l
+
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+

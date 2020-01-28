@@ -3,6 +3,7 @@ package cdp_test
 import (
 	"context"
 	"errors"
+	"os"
 	"testing"
 	"time"
 
@@ -14,8 +15,12 @@ import (
 func TestBasic(t *testing.T) {
 	ctx := context.Background()
 
-	url, err := cdp.LaunchBrowser(cdp.FindChrome(), true)
-	kit.E(err)
+	url := os.Getenv("chrome")
+	_, err := cdp.GetWebSocketDebuggerURL(url)
+	if err != nil {
+		url, err = cdp.LaunchBrowser(cdp.FindChrome(), true)
+		kit.E(err)
+	}
 
 	client, err := cdp.New(ctx, url)
 	kit.E(err)

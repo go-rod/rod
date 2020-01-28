@@ -1,8 +1,8 @@
 package cdp_test
 
 import (
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 func ExampleClient() {
