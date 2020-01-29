@@ -13,50 +13,20 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/fetcher"
 )
-
-// FindChrome tries to find chrome binary depends the OS
-// The code is copied from https://github.com/chromedp
-func FindChrome() string {
-	for _, path := range [...]string{
-		// Mac
-		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-		"/Applications/Chromium.app/Contents/MacOS/Chromium",
-
-		// Unix-like
-		"headless_shell",
-		"headless-shell",
-		"chromium",
-		"chromium-browser",
-		"google-chrome",
-		"google-chrome-stable",
-		"google-chrome-beta",
-		"google-chrome-unstable",
-		"/usr/bin/google-chrome",
-
-		// Windows
-		"chrome",
-		"chrome.exe", // in case PATHEXT is misconfigured
-		`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
-		`C:\Program Files\Google\Chrome\Application\chrome.exe`,
-	} {
-		found, err := exec.LookPath(path)
-		if err == nil {
-			return found
-		}
-	}
-	// Fall back to something simple and sensible, to give a useful error
-	// message.
-	return "google-chrome"
-}
 
 // LaunchBrowser a standalone temp browser instance and returns the debug url
 func LaunchBrowser(bin string, headless bool) (string, error) {
 	if bin == "" {
-		bin = FindChrome()
+		var err error
+		bin, err = new(fetcher.Chrome).Get()
+		if err != nil {
+			return "", err
+		}
 	}
 
-	tmp := filepath.Join(os.TempDir(), "rod", kit.RandString(8))
+	tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
 
 	err := os.MkdirAll(tmp, 0700)
 	if err != nil {
@@ -137,7 +107,6 @@ func LaunchBrowser(bin string, headless bool) (string, error) {
 	}
 
 	return "http://" + u.Host, nil
-
 }
 
 // GetWebSocketDebuggerURL ...

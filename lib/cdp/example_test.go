@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleClient() {
-	url, err := cdp.LaunchBrowser(cdp.FindChrome(), false)
+	url, err := cdp.LaunchBrowser("", false)
 	kit.E(err)
 
 	client, err := cdp.New(nil, url)
