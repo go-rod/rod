@@ -96,11 +96,11 @@ func (b *Browser) Close() {
 
 // Ctx creates a clone with specified context
 func (b *Browser) Ctx(ctx context.Context) *Browser {
-	newB := *b
+	newObj := *b
 
-	newB.ctx = ctx
+	newObj.ctx = ctx
 
-	return &newB
+	return &newObj
 }
 
 // PageE ...
@@ -118,7 +118,12 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	page := &Page{
 		ctx:      b.ctx,
 		browser:  b,
-		targetID: target.Get("targetId").String(),
+		TargetID: target.Get("targetId").String(),
+	}
+
+	page.mouse = &Mouse{
+		ctx:  b.ctx,
+		page: page,
 	}
 
 	return page, page.initSession()

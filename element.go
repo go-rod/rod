@@ -13,30 +13,37 @@ import (
 type Element struct {
 	ctx      context.Context
 	page     *Page
-	objectID string
+	ObjectID string
 
-	cancel func()
+	timeoutCancel func()
 }
 
 // Ctx sets the context for later operation
 func (el *Element) Ctx(ctx context.Context) *Element {
-	newP := *el
-	newP.ctx = ctx
-	return &newP
+	newObj := *el
+	newObj.ctx = ctx
+	return &newObj
 }
 
 // Timeout sets the timeout for later operation
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
-	el.cancel = cancel
+	el.timeoutCancel = cancel
 	return el.Ctx(ctx)
+}
+
+// CancelTimeout ...
+func (el *Element) CancelTimeout() {
+	if el.timeoutCancel != nil {
+		el.timeoutCancel()
+	}
 }
 
 func (el *Element) describe() (kit.JSONResult, error) {
 	node, err := el.page.Call(el.ctx,
 		"DOM.describeNode",
 		cdp.Object{
-			"objectId": el.objectID,
+			"objectId": el.ObjectID,
 		},
 	)
 	if err != nil {
@@ -53,7 +60,7 @@ func (el *Element) FrameE() (*Page, error) {
 	}
 
 	newPage := *el.page
-	newPage.frameID = node.Get("node.frameId").String()
+	newPage.FrameID = node.Get("node.frameId").String()
 	newPage.element = el
 
 	return &newPage, newPage.initIsolatedWorld()
@@ -71,7 +78,7 @@ func (el *Element) HTMLE() (string, error) {
 	html, err := el.page.Call(el.ctx,
 		"DOM.getOuterHTML",
 		cdp.Object{
-			"objectId": el.objectID,
+			"objectId": el.ObjectID,
 		},
 	)
 	return html.Get("outerHTML").String(), err
@@ -84,8 +91,25 @@ func (el *Element) HTML() string {
 	return s
 }
 
+// ScrollIntoViewIfNeededE ...
+func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
+	_, err := el.FuncE(false, Fn(`function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts))
+	return err
+}
+
+// ScrollIntoViewIfNeeded scrolls the current element into the visible area of the browser
+// window if it's not already within the visible area.
+func (el *Element) ScrollIntoViewIfNeeded(opts cdp.Object) {
+	kit.E(el.ScrollIntoViewIfNeededE(opts))
+}
+
 // ClickE ...
 func (el *Element) ClickE() error {
+	err := el.ScrollIntoViewIfNeededE(nil)
+	if err != nil {
+		return err
+	}
+
 	rect, err := el.RectE()
 	if err != nil {
 		return err
@@ -94,44 +118,12 @@ func (el *Element) ClickE() error {
 	x := rect.Get("left").Int() + rect.Get("width").Int()/2
 	y := rect.Get("top").Int() + rect.Get("height").Int()/2
 
-	// use 2 mouseMoved to simulate mouse hover event
-	_, err = el.page.Call(el.ctx, "Input.dispatchMouseEvent", cdp.Object{
-		"type": "mouseMoved",
-		"x":    0,
-		"y":    0,
-	})
+	err = el.page.mouse.MoveToE(x, y)
 	if err != nil {
 		return err
 	}
 
-	_, err = el.page.Call(el.ctx, "Input.dispatchMouseEvent", cdp.Object{
-		"type": "mouseMoved",
-		"x":    x,
-		"y":    y,
-	})
-	if err != nil {
-		return err
-	}
-
-	_, err = el.page.Call(el.ctx, "Input.dispatchMouseEvent", cdp.Object{
-		"type":       "mousePressed",
-		"button":     "left",
-		"clickCount": 1,
-		"x":          x,
-		"y":          y,
-	})
-	if err != nil {
-		return err
-	}
-
-	_, err = el.page.Call(el.ctx, "Input.dispatchMouseEvent", cdp.Object{
-		"type":       "mouseReleased",
-		"button":     "left",
-		"clickCount": 1,
-		"x":          x,
-		"y":          y,
-	})
-	return err
+	return el.page.mouse.ClickE("")
 }
 
 // Click the element
@@ -173,7 +165,7 @@ func (el *Element) Rect() kit.JSONResult {
 // FuncE ...
 func (el *Element) FuncE(byValue bool, fn string) (kit.JSONResult, error) {
 	return el.page.Call(el.ctx, "Runtime.callFunctionOn", cdp.Object{
-		"objectId":            el.objectID,
+		"objectId":            el.ObjectID,
 		"awaitPromise":        true,
 		"returnByValue":       byValue,
 		"functionDeclaration": fn,

@@ -11,35 +11,46 @@ import (
 
 // Page represents the webpage
 type Page struct {
-	ctx       context.Context
-	browser   *Browser
-	targetID  string
-	sessionID string
-	contextID int64
+	ctx     context.Context
+	browser *Browser
+
+	TargetID  string
+	SessionID string
+	ContextID int64
+
+	// devices
+	mouse *Mouse
 
 	// iframe
-	frameID string
+	FrameID string
 	element *Element
 
-	cancel func()
+	timeoutCancel func()
 }
 
 func (p *Page) isIframe() bool {
-	return p.frameID != ""
+	return p.FrameID != ""
 }
 
 // Ctx sets the context for later operation
 func (p *Page) Ctx(ctx context.Context) *Page {
-	newP := *p
-	newP.ctx = ctx
-	return &newP
+	newObj := *p
+	newObj.ctx = ctx
+	return &newObj
 }
 
 // Timeout sets the timeout for later operation
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
-	p.cancel = cancel
+	p.timeoutCancel = cancel
 	return p.Ctx(ctx)
+}
+
+// CancelTimeout ...
+func (p *Page) CancelTimeout() {
+	if p.timeoutCancel != nil {
+		p.timeoutCancel()
+	}
 }
 
 // NavigateE ...
@@ -106,7 +117,7 @@ func (p *Page) ElementE(selector string) (*Element, error) {
 	return &Element{
 		page:     p,
 		ctx:      p.ctx,
-		objectID: objectID,
+		ObjectID: objectID,
 	}, nil
 }
 
@@ -127,7 +138,7 @@ func (p *Page) EvalE(byValue bool, code string) (res kit.JSONResult, err error) 
 
 	err = cdp.Retry(p.ctx, func() error {
 		if p.isIframe() {
-			params["contextId"] = p.contextID
+			params["contextId"] = p.ContextID
 		}
 
 		res, err = p.Call(p.ctx, "Runtime.evaluate", params)
@@ -145,10 +156,10 @@ func (p *Page) EvalE(byValue bool, code string) (res kit.JSONResult, err error) 
 	return
 }
 
-// Call client with page session
+// Call client with page session, the call is always on the root frame.
 func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.JSONResult, error) {
 	return p.browser.client.Call(ctx, &cdp.Message{
-		SessionID: p.sessionID,
+		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
 	})
@@ -164,24 +175,24 @@ func (p *Page) Eval(code string) kit.JSONResult {
 
 func (p *Page) initIsolatedWorld() error {
 	frame, err := p.Call(p.ctx, "Page.createIsolatedWorld", cdp.Object{
-		"frameId": p.frameID,
+		"frameId": p.FrameID,
 	})
 	if err != nil {
 		return err
 	}
 
-	p.contextID = frame.Get("executionContextId").Int()
+	p.ContextID = frame.Get("executionContextId").Int()
 	return nil
 }
 
 func (p *Page) initSession() error {
 	obj, err := p.Call(p.ctx, "Target.attachToTarget", cdp.Object{
-		"targetId": p.targetID,
+		"targetId": p.TargetID,
 		"flatten":  true, // if it's not set no response will return
 	})
 	if err != nil {
 		return err
 	}
-	p.sessionID = obj.Get("sessionId").String()
+	p.SessionID = obj.Get("sessionId").String()
 	return nil
 }
