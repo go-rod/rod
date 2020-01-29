@@ -126,6 +126,11 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		page: page,
 	}
 
+	page.keyboard = &Keyboard{
+		ctx:  b.ctx,
+		page: page,
+	}
+
 	return page, page.initSession()
 }
 

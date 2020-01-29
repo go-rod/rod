@@ -7,7 +7,7 @@ func (s *S) TestClosePage() {
 }
 
 func (s *S) TestPage() {
-	s.page.Navigate(s.htmlFile("click.html"))
+	s.page.Navigate(s.htmlFile("fixtures/click.html"))
 
 	s.Equal("<h4>Title</h4>", s.page.Element("h4").HTML())
 }

@@ -1,22 +1,27 @@
 package rod
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/ysmood/kit"
 )
 
-// Fn is a helper to render template into js code
-// fn looks like "function(a, b) {}", the a and b are the params passed into the function
-func Fn(fn string, params ...interface{}) string {
-	const tpl = `function() {
-		return ({{.fn}}).apply(this, {{.params}})
-	}`
+// SprintFn is a helper to render template into js code
+// js looks like "(a, b) => {}", the a and b are the params passed into the function
+func SprintFn(js string, params ...interface{}) string {
+	const tpl = `(
+		%s
+	).apply(this, %s)`
 
-	return kit.S(tpl, "fn", fn, "params", kit.MustToJSON(params))
+	return fmt.Sprintf(tpl, js, kit.MustToJSON(params))
 }
 
-func docQuerySelector(selector string) string {
-	selector = strings.ReplaceAll(selector, `"`, `\"`)
-	return `document.querySelector("` + selector + `")`
+// FnResult parses the errors of the fn result and returns the value of the result
+func FnResult(res kit.JSONResult) (kit.JSONResult, error) {
+	if res.Get("exceptionDetails").Exists() {
+		return nil, &Error{nil, res.Get("exceptionDetails.exception.description").String(), res}
+	}
+
+	val := res.Get("result.value")
+	return &val, nil
 }

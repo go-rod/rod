@@ -19,7 +19,7 @@ type S struct {
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
 func (s *S) htmlFile(path string) string {
-	f, err := filepath.Abs(filepath.Join("fixtures", path))
+	f, err := filepath.Abs(filepath.FromSlash(path))
 	kit.E(err)
 	return "file://" + f
 }

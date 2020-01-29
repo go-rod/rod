@@ -93,7 +93,7 @@ func (el *Element) HTML() string {
 
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
-	_, err := el.FuncE(false, Fn(`function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts))
+	_, err := el.FuncE(false, `function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts)
 	return err
 }
 
@@ -110,7 +110,7 @@ func (el *Element) ClickE() error {
 		return err
 	}
 
-	rect, err := el.RectE()
+	rect, err := el.BoxE()
 	if err != nil {
 		return err
 	}
@@ -131,19 +131,65 @@ func (el *Element) Click() {
 	kit.E(el.ClickE())
 }
 
-// RectE ...
-func (el *Element) RectE() (kit.JSONResult, error) {
-	res, err := el.FuncE(true, "function() { return this.getBoundingClientRect().toJSON() }")
+// PressE ...
+func (el *Element) PressE(key string) error {
+	err := el.ClickE()
+	if err != nil {
+		return err
+	}
+
+	return el.page.keyboard.PressE(key)
+}
+
+// Press a key
+func (el *Element) Press(key string) {
+	kit.E(el.PressE(key))
+}
+
+// TextE ...
+func (el *Element) TextE(text string) error {
+	err := el.ClickE()
+	if err != nil {
+		return err
+	}
+
+	return el.page.keyboard.TextE(text)
+}
+
+// Text click the element and inputs the text
+func (el *Element) Text(text string) {
+	kit.E(el.TextE(text))
+}
+
+// SelectE ...
+func (el *Element) SelectE(selectors ...string) error {
+	_, err := el.FuncE(true, `function(selectors) {
+		selectors.forEach((s) => {
+			this.querySelector(s).selected = true
+		})
+		this.dispatchEvent(new Event('input', { bubbles: true }));
+		this.dispatchEvent(new Event('change', { bubbles: true }));
+	}`, selectors)
+	return err
+}
+
+// Select the specific
+func (el *Element) Select(selectors ...string) {
+	kit.E(el.SelectE(selectors...))
+}
+
+// BoxE ...
+func (el *Element) BoxE() (kit.JSONResult, error) {
+	rect, err := el.FuncE(true, "function() { return this.getBoundingClientRect().toJSON() }")
 	if err != nil {
 		return nil, err
 	}
-	rect := res.Get("result.value")
 
 	var j map[string]interface{}
 	kit.E(json.Unmarshal([]byte(rect.String()), &j))
 
 	if el.page.isIframe() {
-		frameRect, err := el.page.element.RectE() // recursively get the rect
+		frameRect, err := el.page.element.BoxE() // recursively get the rect
 		if err != nil {
 			return nil, err
 		}
@@ -153,28 +199,44 @@ func (el *Element) RectE() (kit.JSONResult, error) {
 	return kit.JSON(kit.MustToJSON(j)), nil
 }
 
-// Rect returns the size of an element and its position relative to the main frame.
+// Box returns the size of an element and its position relative to the main frame.
 // It will recursively calculate the rect with all ancestors. The spec is here:
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-func (el *Element) Rect() kit.JSONResult {
-	rect, err := el.RectE()
+func (el *Element) Box() kit.JSONResult {
+	rect, err := el.BoxE()
 	kit.E(err)
 	return rect
 }
 
 // FuncE ...
-func (el *Element) FuncE(byValue bool, fn string) (kit.JSONResult, error) {
-	return el.page.Call(el.ctx, "Runtime.callFunctionOn", cdp.Object{
+func (el *Element) FuncE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
+	args := []interface{}{}
+
+	for _, p := range params {
+		args = append(args, cdp.Object{"value": p})
+	}
+
+	res, err := el.page.Call(el.ctx, "Runtime.callFunctionOn", cdp.Object{
 		"objectId":            el.ObjectID,
 		"awaitPromise":        true,
 		"returnByValue":       byValue,
-		"functionDeclaration": fn,
+		"functionDeclaration": js,
+		"arguments":           args,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	if byValue {
+		return FnResult(res)
+	}
+
+	return res, nil
 }
 
 // Func calls function on the element
-func (el *Element) Func(fn string) kit.JSONResult {
-	res, err := el.FuncE(true, fn)
+func (el *Element) Func(js string, params ...interface{}) kit.JSONResult {
+	res, err := el.FuncE(true, js, params...)
 	kit.E(err)
 	return res
 }

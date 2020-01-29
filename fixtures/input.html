@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <form action="javascript:void(0)" onsubmit="this.setAttribute('event', 'submit')">
+            <input type="text" onchange="this.setAttribute('event', 'input-change')">
+
+            <hr>
+
+            <select>
+                <option value="a">A</option>
+                <option value="b">B</option>
+                <option value="c">C</option>
+            </select>
+
+            <hr>
+        
+            <textarea onchange="this.setAttribute('event', 'textarea-change')" cols="30" rows="10"></textarea>
+
+            <hr>
+            
+            <input type="submit" value="submit">
+        </form>
+    </body>
+</html>

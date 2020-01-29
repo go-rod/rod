@@ -19,7 +19,8 @@ type Page struct {
 	ContextID int64
 
 	// devices
-	mouse *Mouse
+	mouse    *Mouse
+	keyboard *Keyboard
 
 	// iframe
 	FrameID string
@@ -80,7 +81,7 @@ func (p *Page) Close() {
 
 // HasE ...
 func (p *Page) HasE(selector string) (bool, error) {
-	res, err := p.EvalE(true, docQuerySelector(selector))
+	res, err := p.EvalE(true, `s => document.querySelector(s)`, selector)
 	if err != nil {
 		return false, err
 	}
@@ -98,7 +99,7 @@ func (p *Page) Has(selector string) bool {
 func (p *Page) ElementE(selector string) (*Element, error) {
 	var objectID string
 	err := cdp.Retry(p.ctx, func() error {
-		element, err := p.EvalE(false, docQuerySelector(selector))
+		element, err := p.EvalE(false, `s => document.querySelector(s)`, selector)
 		if err != nil {
 			return err
 		}
@@ -129,9 +130,9 @@ func (p *Page) Element(selector string) *Element {
 }
 
 // EvalE ...
-func (p *Page) EvalE(byValue bool, code string) (res kit.JSONResult, err error) {
+func (p *Page) EvalE(byValue bool, js string, jsParams ...interface{}) (res kit.JSONResult, err error) {
 	params := cdp.Object{
-		"expression":    code,
+		"expression":    SprintFn(js, jsParams...),
 		"awaitPromise":  true,
 		"returnByValue": byValue,
 	}
@@ -156,6 +157,14 @@ func (p *Page) EvalE(byValue bool, code string) (res kit.JSONResult, err error) 
 	return
 }
 
+// Eval runs script under sessionID or contextId, if contextId doesn't
+// exist create a new isolatedWorld
+func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
+	res, err := p.EvalE(true, js, params)
+	kit.E(err)
+	return res
+}
+
 // Call client with page session, the call is always on the root frame.
 func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.JSONResult, error) {
 	return p.browser.client.Call(ctx, &cdp.Message{
@@ -163,14 +172,6 @@ func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.
 		Method:    method,
 		Params:    params,
 	})
-}
-
-// Eval runs script under sessionID or contextId, if contextId doesn't
-// exist create a new isolatedWorld
-func (p *Page) Eval(code string) kit.JSONResult {
-	res, err := p.EvalE(true, code)
-	kit.E(err)
-	return res
 }
 
 func (p *Page) initIsolatedWorld() error {
