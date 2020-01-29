@@ -91,8 +91,8 @@ func (el *Element) ClickE() error {
 		return err
 	}
 
-	x := rect.Get("x").Int() + rect.Get("width").Int()/2
-	y := rect.Get("y").Int() + rect.Get("height").Int()/2
+	x := rect.Get("left").Int() + rect.Get("width").Int()/2
+	y := rect.Get("top").Int() + rect.Get("height").Int()/2
 
 	// use 2 mouseMoved to simulate mouse hover event
 	_, err = el.page.Call(el.ctx, "Input.dispatchMouseEvent", cdp.Object{
@@ -155,8 +155,8 @@ func (el *Element) RectE() (kit.JSONResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		j["x"] = rect.Get("x").Int() + frameRect.Get("x").Int()
-		j["y"] = rect.Get("y").Int() + frameRect.Get("y").Int()
+		j["left"] = rect.Get("left").Int() + frameRect.Get("left").Int()
+		j["top"] = rect.Get("top").Int() + frameRect.Get("top").Int()
 	}
 	return kit.JSON(kit.MustToJSON(j)), nil
 }
