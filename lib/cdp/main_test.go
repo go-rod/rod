@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -39,10 +40,13 @@ func TestBasic(t *testing.T) {
 		kit.E(client.Call(ctx, &cdp.Message{Method: "Browser.close"}))
 	}()
 
+	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
+	kit.E(err)
+
 	res, err := client.Call(ctx, &cdp.Message{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
-			"url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe",
+			"url": "file://" + file,
 		},
 	})
 	kit.E(err)
@@ -68,7 +72,7 @@ func TestBasic(t *testing.T) {
 			SessionID: sessionID,
 			Method:    "Runtime.evaluate",
 			Params: cdp.Object{
-				"expression": `document.querySelector('.interactive')`,
+				"expression": `document.querySelector('iframe')`,
 			},
 		})
 
@@ -113,7 +117,7 @@ func TestBasic(t *testing.T) {
 			Method:    "Runtime.evaluate",
 			Params: cdp.Object{
 				"contextId":  res.Get("executionContextId").Int(),
-				"expression": `document.querySelector('.output-header h4')`,
+				"expression": `document.querySelector('h4')`,
 			},
 		})
 		if err != nil {
@@ -136,5 +140,5 @@ func TestBasic(t *testing.T) {
 	})
 	kit.E(err)
 
-	assert.Equal(t, "<h4>HTML Demo: &lt;iframe&gt;</h4>", res.Get("outerHTML").String())
+	assert.Equal(t, "<h4>it works</h4>", res.Get("outerHTML").String())
 }
