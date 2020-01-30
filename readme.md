@@ -9,3 +9,9 @@ they don't have high-level abstraction for iframes, it's a pain to use them to d
 Besides, it's pretty verbose to use them, with puppeteer you have to type async/await a lot, with chromedp it's even more verbose.
 Rod also tries not to hide low-level interface from user, so that whenever there's a missing functionality from the high-level interface
 you can easily send control request to browser directly.
+
+## Examples
+
+[Basic examples](./examples_test.go)
+
+For detailed examples, please read the unit tests.
