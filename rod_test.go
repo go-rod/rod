@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
@@ -25,10 +26,13 @@ func (s *S) htmlFile(path string) string {
 }
 
 func Test(t *testing.T) {
+	slowmotion, _ := time.ParseDuration(os.Getenv("slowmotion"))
+
 	s := new(S)
 	s.browser = rod.Open(&rod.Browser{
 		ControlURL: os.Getenv("chrome"),
 		Foreground: os.Getenv("headless") == "false",
+		Slowmotion: slowmotion,
 	})
 	defer s.browser.Close()
 

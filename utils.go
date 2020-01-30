@@ -25,3 +25,8 @@ func FnResult(res kit.JSONResult) (kit.JSONResult, error) {
 	val := res.Get("result.value")
 	return &val, nil
 }
+
+// Pause execution
+func Pause() {
+	<-make(chan kit.Nil)
+}

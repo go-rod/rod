@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -21,6 +22,9 @@ type Browser struct {
 
 	// OnFatal calls when a fatal error happens
 	OnFatal func(error)
+
+	// Slowmotion delay each chrome control action
+	Slowmotion time.Duration
 
 	ctx    context.Context
 	close  func()
@@ -67,7 +71,7 @@ func (b *Browser) OpenE() (*Browser, error) {
 
 	go func() {
 		<-b.ctx.Done()
-		_, err := client.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
+		_, err := b.client.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
 		if err != nil {
 			kit.Err(err)
 		}
@@ -105,7 +109,7 @@ func (b *Browser) Ctx(ctx context.Context) *Browser {
 
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
-	target, err := b.client.Call(b.ctx, &cdp.Message{
+	target, err := b.Call(b.ctx, &cdp.Message{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": url,
@@ -139,4 +143,12 @@ func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
 	kit.E(err)
 	return p
+}
+
+// Call client
+func (b *Browser) Call(ctx context.Context, msg *cdp.Message) (kit.JSONResult, error) {
+	if b.Slowmotion != 0 {
+		time.Sleep(b.Slowmotion)
+	}
+	return b.client.Call(ctx, msg)
 }

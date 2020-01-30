@@ -11,8 +11,9 @@ import (
 
 // Element represents the DOM element
 type Element struct {
-	ctx      context.Context
-	page     *Page
+	ctx  context.Context
+	page *Page
+
 	ObjectID string
 
 	timeoutCancel func()
