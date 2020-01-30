@@ -1,5 +1,10 @@
 package rod_test
 
+import (
+	"errors"
+	"time"
+)
+
 func (s *S) TestClick() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	p.Element("button").Click()
@@ -9,9 +14,9 @@ func (s *S) TestClick() {
 
 func (s *S) TestClickInIframes() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click-iframes.html"))
-	p.Element("iframe").Frame().Element("iframe").Frame().Element("button").Click()
-
-	s.True(p.Has("[a=ok]"))
+	frame := p.Element("iframe").Frame().Element("iframe").Frame()
+	frame.Element("button").Click()
+	s.True(frame.Has("[a=ok]"))
 }
 
 func (s *S) TestPress() {
@@ -20,7 +25,6 @@ func (s *S) TestPress() {
 	el.Press("a")
 
 	s.Equal("a", el.Func(`function() { return this.value }`).String())
-	s.True(p.Has("[event=input-change]"))
 }
 
 func (s *S) TestText() {
@@ -48,4 +52,34 @@ func (s *S) TestEnter() {
 	el.Press("Enter")
 
 	s.True(p.Has("[event=submit]"))
+}
+
+func (s *S) TestWaitInvisible() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	h4 := p.Element("h4")
+	btn := p.Element("button")
+	timeout := 3 * time.Second
+
+	h4.Timeout(timeout).WaitVisible()
+
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		h4.Func(`function() { this.remove() }`)
+		btn.Func(`function() { this.style.visibility = 'hidden' }`)
+	}()
+
+	h4.Timeout(timeout).WaitInvisible()
+	btn.Timeout(timeout).WaitInvisible()
+
+	s.False(p.Has("h4"))
+}
+
+func (s *S) TestFnErr() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	el := p.Element("button")
+
+	_, err := el.FuncE(true, "foo()")
+	s.Error(err)
+	s.Equal("[rod] ReferenceError: foo is not defined\n    at <anonymous>:1:1", err.Error())
+	s.Nil(errors.Unwrap(err))
 }

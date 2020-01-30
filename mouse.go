@@ -2,7 +2,6 @@ package rod
 
 import (
 	"context"
-	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -12,9 +11,8 @@ const defaultMouseButton = "left"
 
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
-	ctx           context.Context
-	page          *Page
-	timeoutCancel func()
+	ctx  context.Context
+	page *Page
 
 	x int64
 	y int64
@@ -25,20 +23,6 @@ func (m *Mouse) Ctx(ctx context.Context) *Mouse {
 	newObj := *m
 	newObj.ctx = ctx
 	return &newObj
-}
-
-// Timeout sets the timeout for later operation
-func (m *Mouse) Timeout(d time.Duration) *Mouse {
-	ctx, cancel := context.WithTimeout(m.ctx, d)
-	m.timeoutCancel = cancel
-	return m.Ctx(ctx)
-}
-
-// CancelTimeout ...
-func (m *Mouse) CancelTimeout() {
-	if m.timeoutCancel != nil {
-		m.timeoutCancel()
-	}
 }
 
 // MoveToE ...

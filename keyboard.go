@@ -2,7 +2,6 @@ package rod
 
 import (
 	"context"
-	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -10,9 +9,8 @@ import (
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
-	ctx           context.Context
-	page          *Page
-	timeoutCancel func()
+	ctx  context.Context
+	page *Page
 }
 
 // Ctx sets the context for later operation
@@ -20,20 +18,6 @@ func (k *Keyboard) Ctx(ctx context.Context) *Keyboard {
 	newObj := *k
 	newObj.ctx = ctx
 	return &newObj
-}
-
-// Timeout sets the timeout for later operation
-func (k *Keyboard) Timeout(d time.Duration) *Keyboard {
-	ctx, cancel := context.WithTimeout(k.ctx, d)
-	k.timeoutCancel = cancel
-	return k.Ctx(ctx)
-}
-
-// CancelTimeout ...
-func (k *Keyboard) CancelTimeout() {
-	if k.timeoutCancel != nil {
-		k.timeoutCancel()
-	}
 }
 
 // DownE ...
@@ -106,5 +90,5 @@ func (k *Keyboard) TextE(text string) error {
 
 // Text inset text
 func (k *Keyboard) Text(text string) {
-
+	kit.E(k.TextE(text))
 }

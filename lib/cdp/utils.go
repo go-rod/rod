@@ -2,6 +2,7 @@ package cdp
 
 import (
 	"context"
+	"errors"
 	"net/url"
 	nurl "net/url"
 	"os"
@@ -161,6 +162,9 @@ func GetWebSocketDebuggerURL(url string) (string, error) {
 	}
 	return obj.Get("webSocketDebuggerUrl").String(), nil
 }
+
+// ErrNotYet ...
+var ErrNotYet = errors.New("[cdp] task not complete")
 
 // Retry fn in exponential backoff manner, use this inefficient time dependent way is
 // safer than tracking the DOM events because chrome or the code may have bugs

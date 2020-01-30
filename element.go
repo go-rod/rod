@@ -153,7 +153,16 @@ func (el *Element) TextE(text string) error {
 		return err
 	}
 
-	return el.page.keyboard.TextE(text)
+	err = el.page.keyboard.TextE(text)
+	if err != nil {
+		return err
+	}
+
+	_, err = el.FuncE(false, `function() {
+		this.dispatchEvent(new Event('input', { bubbles: true }));
+		this.dispatchEvent(new Event('change', { bubbles: true }));
+	}`)
+	return err
 }
 
 // Text click the element and inputs the text
@@ -163,7 +172,7 @@ func (el *Element) Text(text string) {
 
 // SelectE ...
 func (el *Element) SelectE(selectors ...string) error {
-	_, err := el.FuncE(true, `function(selectors) {
+	_, err := el.FuncE(false, `function(selectors) {
 		selectors.forEach((s) => {
 			this.querySelector(s).selected = true
 		})
@@ -176,6 +185,57 @@ func (el *Element) SelectE(selectors ...string) error {
 // Select the specific
 func (el *Element) Select(selectors ...string) {
 	kit.E(el.SelectE(selectors...))
+}
+
+// WaitE ...
+func (el *Element) WaitE(js string, params ...interface{}) error {
+	return cdp.Retry(el.ctx, func() error {
+		res, err := el.FuncE(true, js, params...)
+		if err != nil {
+			return err
+		}
+
+		if res.Bool() {
+			return nil
+		}
+
+		return cdp.ErrNotYet
+	})
+}
+
+// Wait until the js returns true
+func (el *Element) Wait(js string, params ...interface{}) {
+	kit.E(el.WaitE(js, params))
+}
+
+// WaitVisibleE ...
+func (el *Element) WaitVisibleE() error {
+	return el.WaitE(`function() {
+		var rect = this.getBoundingClientRect()
+		var style = window.getComputedStyle(this)
+		return style.display != 'none' &&
+			style.visibility != 'hidden' &&
+			!!(rect.top || rect.bottom || rect.width || rect.height)
+	}`)
+}
+
+// WaitVisible until the element is visible
+func (el *Element) WaitVisible() {
+	kit.E(el.WaitVisibleE())
+}
+
+// WaitInvisibleE ...
+func (el *Element) WaitInvisibleE() error {
+	return el.WaitE(`function() {
+		var rect = this.getBoundingClientRect()
+		return window.getComputedStyle(this).visibility == 'hidden' ||
+			!(rect.top || rect.bottom || rect.width || rect.height)
+	}`)
+}
+
+// WaitInvisible until the element is not visible or removed
+func (el *Element) WaitInvisible() {
+	kit.E(el.WaitInvisibleE())
 }
 
 // BoxE ...

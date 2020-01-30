@@ -2,7 +2,6 @@ package rod
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -81,11 +80,11 @@ func (p *Page) Close() {
 
 // HasE ...
 func (p *Page) HasE(selector string) (bool, error) {
-	res, err := p.EvalE(true, `s => document.querySelector(s)`, selector)
+	res, err := p.EvalE(false, `s => document.querySelector(s)`, selector)
 	if err != nil {
 		return false, err
 	}
-	return res.Get("result.objectId").String() == "", nil
+	return res.Get("result.objectId").String() != "", nil
 }
 
 // Has an element that matches the css selector
@@ -106,7 +105,7 @@ func (p *Page) ElementE(selector string) (*Element, error) {
 
 		objectID = element.Get("result.objectId").String()
 		if objectID == "" {
-			return errors.New("not yet")
+			return cdp.ErrNotYet
 		}
 
 		return nil

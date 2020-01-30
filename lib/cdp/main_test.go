@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"context"
-	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -80,7 +79,7 @@ func TestBasic(t *testing.T) {
 			return err
 		}
 		if res.Get("result.objectId").String() == "" {
-			return errors.New("not yet")
+			return cdp.ErrNotYet
 		}
 
 		return nil
@@ -125,7 +124,7 @@ func TestBasic(t *testing.T) {
 		}
 
 		if res.Get("result.subtype").String() == "null" {
-			return errors.New("not yet")
+			return cdp.ErrNotYet
 		}
 
 		return nil
