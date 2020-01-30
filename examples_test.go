@@ -12,9 +12,9 @@ func ExampleOpen() {
 
 	page := browser.Page("https://www.wikipedia.org/")
 
-	page.Element("#searchInput").Text("idempotent")
+	page.Element("#searchInput").Input("idempotent")
 
 	page.Element("[type=submit]").Click()
 
-	fmt.Println(page.Element("#firstHeading").Func(`function () { return this.textContent }`))
+	fmt.Println(page.Element("#firstHeading").Text())
 }

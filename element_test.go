@@ -32,7 +32,7 @@ func (s *S) TestText() {
 
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("textarea")
-	el.Text(text)
+	el.Input(text)
 
 	s.Equal(text, el.Func(`function() { return this.value }`).String())
 	s.True(p.Has("[event=textarea-change]"))

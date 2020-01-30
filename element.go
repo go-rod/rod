@@ -73,24 +73,6 @@ func (el *Element) Frame() *Page {
 	return f
 }
 
-// HTMLE ...
-func (el *Element) HTMLE() (string, error) {
-	html, err := el.page.Call(el.ctx,
-		"DOM.getOuterHTML",
-		cdp.Object{
-			"objectId": el.ObjectID,
-		},
-	)
-	return html.Get("outerHTML").String(), err
-}
-
-// HTML gets the html of the element
-func (el *Element) HTML() string {
-	s, err := el.HTMLE()
-	kit.E(err)
-	return s
-}
-
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
 	_, err := el.FuncE(false, `function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts)
@@ -146,8 +128,8 @@ func (el *Element) Press(key string) {
 	kit.E(el.PressE(key))
 }
 
-// TextE ...
-func (el *Element) TextE(text string) error {
+// InputE ...
+func (el *Element) InputE(text string) error {
 	err := el.ClickE()
 	if err != nil {
 		return err
@@ -165,9 +147,35 @@ func (el *Element) TextE(text string) error {
 	return err
 }
 
-// Text click the element and inputs the text
-func (el *Element) Text(text string) {
-	kit.E(el.TextE(text))
+// Input wll click the element and input the text
+func (el *Element) Input(text string) {
+	kit.E(el.InputE(text))
+}
+
+// TextE ...
+func (el *Element) TextE() (string, error) {
+	str, err := el.FuncE(true, `function() { return this.innerText }`)
+	return str.String(), err
+}
+
+// Text gets the innerText of the element
+func (el *Element) Text() string {
+	s, err := el.TextE()
+	kit.E(err)
+	return s
+}
+
+// HTMLE ...
+func (el *Element) HTMLE() (string, error) {
+	str, err := el.FuncE(true, `function() { return this.outerHTML }`)
+	return str.String(), err
+}
+
+// HTML gets the outerHTML of the element
+func (el *Element) HTML() string {
+	s, err := el.HTMLE()
+	kit.E(err)
+	return s
 }
 
 // SelectE ...
