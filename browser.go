@@ -67,7 +67,7 @@ func (b *Browser) OpenE() (*Browser, error) {
 
 	go func() {
 		<-b.ctx.Done()
-		_, err := client.Call(nil, &cdp.Message{Method: "Browser.close"})
+		_, err := client.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
 		if err != nil {
 			kit.Err(err)
 		}

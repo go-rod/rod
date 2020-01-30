@@ -54,10 +54,6 @@ func (e *Error) Error() string {
 
 // New creates a cdp connection, the url should be something like http://localhost:9222
 func New(ctx context.Context, url string) (*Client, error) {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
 	cdp := &Client{
 		messages: map[uint64]*Message{},
 		chReq:    make(chan *Message),
@@ -90,12 +86,12 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			msg.ID = cdp.id()
 			data, err := json.Marshal(msg)
 			if err != nil {
-				cdp.resErr(msg, err)
+				cdp.chFatal <- err
 				continue
 			}
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
-				cdp.resErr(msg, err)
+				cdp.chFatal <- err
 				continue
 			}
 			cdp.messages[msg.ID] = msg
@@ -117,13 +113,6 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 
 			req.callback <- msg
 		}
-	}
-}
-
-func (cdp *Client) resErr(msg *Message, err error) {
-	cdp.chRes <- &Message{
-		ID:    msg.ID,
-		Error: &Error{Message: err.Error()},
 	}
 }
 
@@ -160,10 +149,6 @@ func (cdp *Client) Fatal() chan error {
 
 // Call call a method and get its response
 func (cdp *Client) Call(ctx context.Context, msg *Message) (kit.JSONResult, error) {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
 	msg.callback = make(chan *Message)
 
 	cdp.chReq <- msg

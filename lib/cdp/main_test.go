@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bmizerany/assert"
+	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
@@ -60,6 +60,14 @@ func TestBasic(t *testing.T) {
 		},
 	})
 	kit.E(err)
+
+	_, err = client.Call(ctx, &cdp.Message{
+		Method: "Target.attachToTarget",
+		Params: cdp.Object{
+			"targetId": "abc",
+		},
+	})
+	assert.Error(t, err)
 
 	sessionID := res.Get("sessionId").String()
 
