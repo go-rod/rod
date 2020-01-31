@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
@@ -101,7 +102,7 @@ func LaunchBrowser(bin string, headless bool) (string, error) {
 		}
 	}
 
-	u, err := url.Parse(str)
+	u, err := url.Parse(strings.TrimSpace(str))
 	if err != nil {
 		return "", err
 	}
