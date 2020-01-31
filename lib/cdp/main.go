@@ -147,7 +147,7 @@ func (cdp *Client) Fatal() chan error {
 	return cdp.chFatal
 }
 
-// Call call a method and get its response
+// Call a method and get its response
 func (cdp *Client) Call(ctx context.Context, msg *Message) (kit.JSONResult, error) {
 	msg.callback = make(chan *Message)
 

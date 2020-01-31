@@ -24,7 +24,7 @@ func (s *S) TestPress() {
 	el := p.Element("[type=text]")
 	el.Press("a")
 
-	s.Equal("a", el.Func(`function() { return this.value }`).String())
+	s.Equal("a", el.Eval(`function() { return this.value }`).String())
 }
 
 func (s *S) TestText() {
@@ -34,7 +34,7 @@ func (s *S) TestText() {
 	el := p.Element("textarea")
 	el.Input(text)
 
-	s.Equal(text, el.Func(`function() { return this.value }`).String())
+	s.Equal(text, el.Eval(`function() { return this.value }`).String())
 	s.True(p.Has("[event=textarea-change]"))
 }
 
@@ -43,7 +43,7 @@ func (s *S) TestSelect() {
 	el := p.Element("select")
 	el.Select("[value=c]")
 
-	s.EqualValues(2, el.Func("function() { return this.selectedIndex }").Int())
+	s.EqualValues(2, el.Eval("function() { return this.selectedIndex }").Int())
 }
 
 func (s *S) TestEnter() {
@@ -64,8 +64,8 @@ func (s *S) TestWaitInvisible() {
 
 	go func() {
 		time.Sleep(100 * time.Millisecond)
-		h4.Func(`function() { this.remove() }`)
-		btn.Func(`function() { this.style.visibility = 'hidden' }`)
+		h4.Eval(`function() { this.remove() }`)
+		btn.Eval(`function() { this.style.visibility = 'hidden' }`)
 	}()
 
 	h4.Timeout(timeout).WaitInvisible()
@@ -78,7 +78,7 @@ func (s *S) TestFnErr() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	el := p.Element("button")
 
-	_, err := el.FuncE(true, "foo()")
+	_, err := el.EvalE(true, "foo()")
 	s.Error(err)
 	s.Equal("[rod] ReferenceError: foo is not defined\n    at <anonymous>:1:1", err.Error())
 	s.Nil(errors.Unwrap(err))

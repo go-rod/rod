@@ -18,18 +18,14 @@ type Page struct {
 	ContextID int64
 
 	// devices
-	mouse    *Mouse
-	keyboard *Keyboard
+	Mouse    *Mouse
+	Keyboard *Keyboard
 
 	// iframe
 	FrameID string
 	element *Element
 
 	timeoutCancel func()
-}
-
-func (p *Page) isIframe() bool {
-	return p.FrameID != ""
 }
 
 // Ctx sets the context for later operation
@@ -121,7 +117,7 @@ func (p *Page) ElementE(selector string) (*Element, error) {
 	}, nil
 }
 
-// Element returns the first element in the page that matches the selector
+// Element waits and returns the first element in the page that matches the selector
 func (p *Page) Element(selector string) *Element {
 	el, err := p.ElementE(selector)
 	kit.E(err)
@@ -156,15 +152,16 @@ func (p *Page) EvalE(byValue bool, js string, jsParams ...interface{}) (res kit.
 	return
 }
 
-// Eval runs script under sessionID or contextId, if contextId doesn't
-// exist create a new isolatedWorld
+// Eval js under sessionID or contextId, if contextId doesn't exist create a new isolatedWorld.
+// The first param must be a js function definition.
+// For example: page.Eval(`s => document.querySelectorAll(s)`, "input")
 func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 	res, err := p.EvalE(true, js, params)
 	kit.E(err)
 	return res
 }
 
-// Call client with page session, the call is always on the root frame.
+// Call sends a control message to the browser with the page session, the call is always on the root frame.
 func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.JSONResult, error) {
 	return p.browser.Call(ctx, &cdp.Message{
 		SessionID: p.SessionID,
@@ -195,4 +192,18 @@ func (p *Page) initSession() error {
 	}
 	p.SessionID = obj.Get("sessionId").String()
 	return nil
+}
+
+func (p *Page) isIframe() bool {
+	return p.FrameID != ""
+}
+
+func (p *Page) rootFrame() *Page {
+	f := p
+
+	for f.isIframe() {
+		f = f.element.page
+	}
+
+	return f
 }

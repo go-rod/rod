@@ -26,13 +26,14 @@ func (s *S) htmlFile(path string) string {
 }
 
 func Test(t *testing.T) {
-	slowmotion, _ := time.ParseDuration(os.Getenv("slowmotion"))
+	slowmotion, _ := time.ParseDuration(os.Getenv("slow"))
 
 	s := new(S)
 	s.browser = rod.Open(&rod.Browser{
 		ControlURL: os.Getenv("chrome"),
-		Foreground: os.Getenv("headless") == "false",
+		Foreground: os.Getenv("show") == "true",
 		Slowmotion: slowmotion,
+		Trace:      true,
 	})
 	defer s.browser.Close()
 

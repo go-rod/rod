@@ -26,6 +26,9 @@ type Browser struct {
 	// Slowmotion delay each chrome control action
 	Slowmotion time.Duration
 
+	// Trace enables the visual tracing of the device input on the page
+	Trace bool
+
 	ctx    context.Context
 	close  func()
 	client *cdp.Client
@@ -53,17 +56,14 @@ func (b *Browser) OpenE() (*Browser, error) {
 	}
 
 	go func() {
-		if b.OnFatal == nil {
-			kit.Err(<-client.Fatal())
+		for err := range client.Fatal() {
+			b.fatal(err)
 		}
-		b.OnFatal(<-client.Fatal())
 	}()
 
 	go func() {
 		for msg := range client.Event() {
-			if b.OnEvent != nil {
-				b.OnEvent(msg)
-			}
+			b.event(msg)
 		}
 	}()
 
@@ -71,7 +71,7 @@ func (b *Browser) OpenE() (*Browser, error) {
 
 	go func() {
 		<-b.ctx.Done()
-		_, err := b.client.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
+		_, err := b.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
 		if err != nil {
 			kit.Err(err)
 		}
@@ -125,12 +125,12 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		TargetID: target.Get("targetId").String(),
 	}
 
-	page.mouse = &Mouse{
+	page.Mouse = &Mouse{
 		ctx:  b.ctx,
 		page: page,
 	}
 
-	page.keyboard = &Keyboard{
+	page.Keyboard = &Keyboard{
 		ctx:  b.ctx,
 		page: page,
 	}
@@ -145,10 +145,22 @@ func (b *Browser) Page(url string) *Page {
 	return p
 }
 
-// Call client
+// Call sends a control message to browser
 func (b *Browser) Call(ctx context.Context, msg *cdp.Message) (kit.JSONResult, error) {
-	if b.Slowmotion != 0 {
-		time.Sleep(b.Slowmotion)
-	}
+	b.slowmotion(msg.Method)
+
 	return b.client.Call(ctx, msg)
+}
+
+func (b *Browser) event(msg *cdp.Message) {
+	if b.OnEvent != nil {
+		b.OnEvent(msg)
+	}
+}
+
+func (b *Browser) fatal(err error) {
+	if b.OnFatal == nil {
+		kit.Err(err)
+	}
+	b.OnFatal(err)
 }

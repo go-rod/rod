@@ -1,8 +1,8 @@
 package rod_test
 
 func (s *S) TestClosePage() {
-	page := s.browser.Page("https://google.com")
-	page.Element("input")
+	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
+	page.Element("button")
 	page.Close()
 }
 

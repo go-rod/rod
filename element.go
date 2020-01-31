@@ -3,6 +3,8 @@ package rod
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -76,7 +78,7 @@ func (el *Element) Frame() *Page {
 
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
-	_, err := el.FuncE(false, `function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts)
+	_, err := el.EvalE(false, `function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts)
 	return err
 }
 
@@ -87,41 +89,45 @@ func (el *Element) ScrollIntoViewIfNeeded(opts cdp.Object) {
 }
 
 // ClickE ...
-func (el *Element) ClickE() error {
+func (el *Element) ClickE(button string) error {
 	err := el.ScrollIntoViewIfNeededE(nil)
 	if err != nil {
 		return err
 	}
 
-	rect, err := el.BoxE()
+	box, err := el.BoxE()
 	if err != nil {
 		return err
 	}
 
-	x := rect.Get("left").Int() + rect.Get("width").Int()/2
-	y := rect.Get("top").Int() + rect.Get("height").Int()/2
+	x := box.Get("left").Int() + box.Get("width").Int()/2
+	y := box.Get("top").Int() + box.Get("height").Int()/2
 
-	err = el.page.mouse.MoveToE(x, y)
+	err = el.page.Mouse.MoveToE(x, y)
 	if err != nil {
 		return err
 	}
 
-	return el.page.mouse.ClickE("")
+	defer el.trace(button + " click")()
+
+	return el.page.Mouse.ClickE(button)
 }
 
 // Click the element
 func (el *Element) Click() {
-	kit.E(el.ClickE())
+	kit.E(el.ClickE("left"))
 }
 
 // PressE ...
 func (el *Element) PressE(key string) error {
-	err := el.ClickE()
+	err := el.ClickE("left")
 	if err != nil {
 		return err
 	}
 
-	return el.page.keyboard.PressE(key)
+	defer el.trace("press " + key)()
+
+	return el.page.Keyboard.PressE(key)
 }
 
 // Press a key
@@ -131,17 +137,19 @@ func (el *Element) Press(key string) {
 
 // InputE ...
 func (el *Element) InputE(text string) error {
-	err := el.ClickE()
+	err := el.ClickE("left")
 	if err != nil {
 		return err
 	}
 
-	err = el.page.keyboard.TextE(text)
+	defer el.trace("input " + text)()
+
+	err = el.page.Keyboard.TextE(text)
 	if err != nil {
 		return err
 	}
 
-	_, err = el.FuncE(false, `function() {
+	_, err = el.EvalE(false, `function() {
 		this.dispatchEvent(new Event('input', { bubbles: true }));
 		this.dispatchEvent(new Event('change', { bubbles: true }));
 	}`)
@@ -153,35 +161,14 @@ func (el *Element) Input(text string) {
 	kit.E(el.InputE(text))
 }
 
-// TextE ...
-func (el *Element) TextE() (string, error) {
-	str, err := el.FuncE(true, `function() { return this.innerText }`)
-	return str.String(), err
-}
-
-// Text gets the innerText of the element
-func (el *Element) Text() string {
-	s, err := el.TextE()
-	kit.E(err)
-	return s
-}
-
-// HTMLE ...
-func (el *Element) HTMLE() (string, error) {
-	str, err := el.FuncE(true, `function() { return this.outerHTML }`)
-	return str.String(), err
-}
-
-// HTML gets the outerHTML of the element
-func (el *Element) HTML() string {
-	s, err := el.HTMLE()
-	kit.E(err)
-	return s
-}
-
 // SelectE ...
 func (el *Element) SelectE(selectors ...string) error {
-	_, err := el.FuncE(false, `function(selectors) {
+	defer el.trace(fmt.Sprintf(
+		`<span style="color: #777;">select</span> <code>%s</code>`,
+		strings.Join(selectors, "; ")))()
+	el.page.browser.slowmotion("Input.select")
+
+	_, err := el.EvalE(false, `function(selectors) {
 		selectors.forEach((s) => {
 			this.querySelector(s).selected = true
 		})
@@ -196,10 +183,36 @@ func (el *Element) Select(selectors ...string) {
 	kit.E(el.SelectE(selectors...))
 }
 
+// TextE ...
+func (el *Element) TextE() (string, error) {
+	str, err := el.EvalE(true, `function() { return this.innerText }`)
+	return str.String(), err
+}
+
+// Text gets the innerText of the element
+func (el *Element) Text() string {
+	s, err := el.TextE()
+	kit.E(err)
+	return s
+}
+
+// HTMLE ...
+func (el *Element) HTMLE() (string, error) {
+	str, err := el.EvalE(true, `function() { return this.outerHTML }`)
+	return str.String(), err
+}
+
+// HTML gets the outerHTML of the element
+func (el *Element) HTML() string {
+	s, err := el.HTMLE()
+	kit.E(err)
+	return s
+}
+
 // WaitE ...
 func (el *Element) WaitE(js string, params ...interface{}) error {
 	return cdp.Retry(el.ctx, func() error {
-		res, err := el.FuncE(true, js, params...)
+		res, err := el.EvalE(true, js, params...)
 		if err != nil {
 			return err
 		}
@@ -220,11 +233,11 @@ func (el *Element) Wait(js string, params ...interface{}) {
 // WaitVisibleE ...
 func (el *Element) WaitVisibleE() error {
 	return el.WaitE(`function() {
-		var rect = this.getBoundingClientRect()
+		var box = this.getBoundingClientRect()
 		var style = window.getComputedStyle(this)
 		return style.display != 'none' &&
 			style.visibility != 'hidden' &&
-			!!(rect.top || rect.bottom || rect.width || rect.height)
+			!!(box.top || box.bottom || box.width || box.height)
 	}`)
 }
 
@@ -236,9 +249,9 @@ func (el *Element) WaitVisible() {
 // WaitInvisibleE ...
 func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(`function() {
-		var rect = this.getBoundingClientRect()
+		var box = this.getBoundingClientRect()
 		return window.getComputedStyle(this).visibility == 'hidden' ||
-			!(rect.top || rect.bottom || rect.width || rect.height)
+			!(box.top || box.bottom || box.width || box.height)
 	}`)
 }
 
@@ -249,36 +262,44 @@ func (el *Element) WaitInvisible() {
 
 // BoxE ...
 func (el *Element) BoxE() (kit.JSONResult, error) {
-	rect, err := el.FuncE(true, "function() { return this.getBoundingClientRect().toJSON() }")
+	box, err := el.EvalE(true, `function() {
+		var box = this.getBoundingClientRect().toJSON()
+		if (this.tagName === 'IFRAME') {
+			var style = window.getComputedStyle(this)
+			box.left += parseInt(style.paddingLeft) + parseInt(style.borderLeftWidth)
+			box.top += parseInt(style.paddingTop) + parseInt(style.borderTopWidth)
+		}
+		return box
+	}`)
 	if err != nil {
 		return nil, err
 	}
 
 	var j map[string]interface{}
-	kit.E(json.Unmarshal([]byte(rect.String()), &j))
+	kit.E(json.Unmarshal([]byte(box.String()), &j))
 
 	if el.page.isIframe() {
-		frameRect, err := el.page.element.BoxE() // recursively get the rect
+		frameRect, err := el.page.element.BoxE() // recursively get the box
 		if err != nil {
 			return nil, err
 		}
-		j["left"] = rect.Get("left").Int() + frameRect.Get("left").Int()
-		j["top"] = rect.Get("top").Int() + frameRect.Get("top").Int()
+		j["left"] = box.Get("left").Int() + frameRect.Get("left").Int()
+		j["top"] = box.Get("top").Int() + frameRect.Get("top").Int()
 	}
 	return kit.JSON(kit.MustToJSON(j)), nil
 }
 
 // Box returns the size of an element and its position relative to the main frame.
-// It will recursively calculate the rect with all ancestors. The spec is here:
+// It will recursively calculate the box with all ancestors. The spec is here:
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
 func (el *Element) Box() kit.JSONResult {
-	rect, err := el.BoxE()
+	box, err := el.BoxE()
 	kit.E(err)
-	return rect
+	return box
 }
 
-// FuncE ...
-func (el *Element) FuncE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
+// EvalE ...
+func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
 	args := []interface{}{}
 
 	for _, p := range params {
@@ -303,9 +324,10 @@ func (el *Element) FuncE(byValue bool, js string, params ...interface{}) (kit.JS
 	return res, nil
 }
 
-// Func calls function on the element
-func (el *Element) Func(js string, params ...interface{}) kit.JSONResult {
-	res, err := el.FuncE(true, js, params...)
+// Eval evaluates js function on the element, the first param must be a js function definition
+// For example: el.Eval(`function(name) { return this.getAttribute(name) }`, "value")
+func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
+	res, err := el.EvalE(true, js, params...)
 	kit.E(err)
 	return res
 }
