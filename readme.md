@@ -1,5 +1,9 @@
 # Overview
 
+[![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](http://godoc.org/github.com/ysmood/rod)
+[![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
+[![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
+
 Rod is a High-level chrome devtools controller.
 
 This lib is not designed for performance, if you want performance use the [cdp](lib/cdp) lib directly.
