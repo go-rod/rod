@@ -11,6 +11,7 @@ import (
 	"github.com/ysmood/kit"
 )
 
+// check method and sleep if needed
 func (b *Browser) slowmotion(method string) {
 	if b.Slowmotion == 0 {
 		return
@@ -21,6 +22,7 @@ func (b *Browser) slowmotion(method string) {
 	}
 }
 
+// show an overlay on the element
 func (el *Element) trace(msg string) func() {
 	if !el.page.browser.Trace {
 		return func() {}
@@ -51,7 +53,7 @@ func (el *Element) trace(msg string) func() {
 	id := kit.RandString(8)
 	box, _ := el.BoxE()
 
-	_, err := root.EvalE(false, js,
+	_, err := root.EvalE(true, js,
 		id,
 		box.Get("left").Int(),
 		box.Get("top").Int(),
@@ -60,13 +62,13 @@ func (el *Element) trace(msg string) func() {
 		msg,
 	)
 	if err != nil {
-		el.page.browser.fatal(err)
+		el.page.browser.fatal.Publish(err)
 	}
 
 	clean := func() {
-		_, err := root.EvalE(false, `id => document.getElementById(id).remove()`, id)
+		_, err := root.EvalE(true, `id => document.getElementById(id).remove()`, id)
 		if err != nil {
-			el.page.browser.fatal(err)
+			el.page.browser.fatal.Publish(err)
 		}
 	}
 

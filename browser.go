@@ -17,21 +17,20 @@ type Browser struct {
 	// Foreground enables the browser to run on foreground mode
 	Foreground bool
 
-	// OnEvent calls when a browser event happens
-	OnEvent func(*cdp.Message)
-
-	// OnFatal calls when a fatal error happens
-	OnFatal func(error)
-
 	// Slowmotion delay each chrome control action
 	Slowmotion time.Duration
 
 	// Trace enables the visual tracing of the device input on the page
 	Trace bool
 
+	// OnFatal calls when a fatal error happens
+	OnFatal func(error)
+
 	ctx    context.Context
 	close  func()
 	client *cdp.Client
+	event  *kit.Observable
+	fatal  *kit.Observable
 }
 
 // OpenE ...
@@ -55,29 +54,9 @@ func (b *Browser) OpenE() (*Browser, error) {
 		return nil, err
 	}
 
-	go func() {
-		for err := range client.Fatal() {
-			b.fatal(err)
-		}
-	}()
-
-	go func() {
-		for msg := range client.Event() {
-			b.event(msg)
-		}
-	}()
-
 	b.client = client
 
-	go func() {
-		<-b.ctx.Done()
-		_, err := b.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
-		if err != nil {
-			kit.Err(err)
-		}
-	}()
-
-	return b, nil
+	return b, b.initEvents()
 }
 
 // Open a new browser controller
@@ -119,10 +98,93 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		return nil, err
 	}
 
+	return b.page(target.Get("targetId").String())
+}
+
+// Page creates a new page
+func (b *Browser) Page(url string) *Page {
+	p, err := b.PageE(url)
+	kit.E(err)
+	return p
+}
+
+// UntilPageE ...
+func (b *Browser) UntilPageE(p *Page) (*Page, error) {
+	var targetInfo cdp.Object
+
+	_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
+		msg := e.(*cdp.Message)
+		if msg.Method == "Target.targetCreated" {
+			targetInfo = msg.Params.(map[string]interface{})["targetInfo"].(map[string]interface{})
+
+			if targetInfo["openerId"] == p.TargetID {
+				return true
+			}
+		}
+		return false
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return b.page(targetInfo["targetId"].(string))
+}
+
+// UntilPage to be opened from the specified page
+func (b *Browser) UntilPage(p *Page) *Page {
+	newPage, err := b.UntilPageE(p)
+	kit.E(err)
+	return newPage
+}
+
+// PagesE ...
+func (b *Browser) PagesE() ([]*Page, error) {
+	list, err := b.Call(b.ctx, &cdp.Message{Method: "Target.getTargets"})
+	if err != nil {
+		return nil, err
+	}
+
+	pageList := []*Page{}
+	for _, target := range list.Get("targetInfos").Array() {
+		if target.Get("type").String() != "page" {
+			continue
+		}
+
+		page, err := b.page(target.Get("targetId").String())
+		if err != nil {
+			return nil, err
+		}
+		pageList = append(pageList, page)
+	}
+
+	return pageList, nil
+}
+
+// Pages returns all visible pages
+func (b *Browser) Pages() []*Page {
+	list, err := b.PagesE()
+	kit.E(err)
+	return list
+}
+
+// Call sends a control message to browser
+func (b *Browser) Call(ctx context.Context, msg *cdp.Message) (kit.JSONResult, error) {
+	b.slowmotion(msg.Method)
+
+	return b.client.Call(ctx, msg)
+}
+
+// Event returns the observable for browser events
+func (b *Browser) Event() *kit.Observable {
+	return b.event
+}
+
+func (b *Browser) page(targetID string) (*Page, error) {
 	page := &Page{
 		ctx:      b.ctx,
 		browser:  b,
-		TargetID: target.Get("targetId").String(),
+		TargetID: targetID,
 	}
 
 	page.Mouse = &Mouse{
@@ -138,29 +200,44 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return page, page.initSession()
 }
 
-// Page creates a new page
-func (b *Browser) Page(url string) *Page {
-	p, err := b.PageE(url)
-	kit.E(err)
-	return p
-}
+func (b *Browser) initEvents() error {
+	b.event = kit.NewObservable()
+	b.fatal = kit.NewObservable()
 
-// Call sends a control message to browser
-func (b *Browser) Call(ctx context.Context, msg *cdp.Message) (kit.JSONResult, error) {
-	b.slowmotion(msg.Method)
+	go func() {
+		for msg := range b.client.Event() {
+			go b.event.Publish(msg)
+		}
+	}()
 
-	return b.client.Call(ctx, msg)
-}
+	go func() {
+		for err := range b.client.Fatal() {
+			go b.fatal.Publish(err)
+		}
+	}()
 
-func (b *Browser) event(msg *cdp.Message) {
-	if b.OnEvent != nil {
-		b.OnEvent(msg)
-	}
-}
+	go func() {
+		for err := range b.fatal.Subscribe() {
+			if b.OnFatal == nil {
+				kit.Err(err)
+			} else {
+				b.OnFatal(err.(error))
+			}
+		}
+	}()
 
-func (b *Browser) fatal(err error) {
-	if b.OnFatal == nil {
-		kit.Err(err)
-	}
-	b.OnFatal(err)
+	go func() {
+		<-b.ctx.Done()
+		_, err := b.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
+		if err != nil {
+			kit.Err(err)
+		}
+	}()
+
+	_, err := b.Call(b.ctx, &cdp.Message{
+		Method: "Target.setDiscoverTargets",
+		Params: cdp.Object{"discover": true},
+	})
+
+	return err
 }

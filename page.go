@@ -76,11 +76,11 @@ func (p *Page) Close() {
 
 // HasE ...
 func (p *Page) HasE(selector string) (bool, error) {
-	res, err := p.EvalE(false, `s => document.querySelector(s)`, selector)
+	res, err := p.EvalE(true, `s => !!document.querySelector(s)`, selector)
 	if err != nil {
 		return false, err
 	}
-	return res.Get("result.objectId").String() != "", nil
+	return res.Get("result.value").Bool(), nil
 }
 
 // Has an element that matches the css selector
@@ -122,6 +122,52 @@ func (p *Page) Element(selector string) *Element {
 	el, err := p.ElementE(selector)
 	kit.E(err)
 	return el
+}
+
+// ElementsE ...
+func (p *Page) ElementsE(selector string) ([]*Element, error) {
+	elemList := []*Element{}
+	err := cdp.Retry(p.ctx, func() error {
+		res, err := p.EvalE(false, `s => document.querySelectorAll(s)`, selector)
+		if err != nil {
+			return err
+		}
+		defer p.ReleaseObject(res)
+
+		list, err := p.Call(p.ctx, "Runtime.getProperties", cdp.Object{
+			"objectId":      res.Get("result.objectId").String(),
+			"ownProperties": true,
+		})
+		if err != nil {
+			return err
+		}
+
+		for _, obj := range list.Get("result").Array() {
+			if obj.Get("name").String() == "__proto__" {
+				continue
+			}
+
+			elemList = append(elemList, &Element{
+				page:     p,
+				ctx:      p.ctx,
+				ObjectID: obj.Get("value.objectId").String(),
+			})
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return elemList, nil
+}
+
+// Elements returns all elements that match the selector
+func (p *Page) Elements(selector string) []*Element {
+	list, err := p.ElementsE(selector)
+	kit.E(err)
+	return list
 }
 
 // EvalE ...
@@ -168,6 +214,16 @@ func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.
 		Method:    method,
 		Params:    params,
 	})
+}
+
+// ReleaseObject remote object
+func (p *Page) ReleaseObject(obj kit.JSONResult) {
+	_, err := p.Call(p.ctx, "Runtime.releaseObject", cdp.Object{
+		"objectId": obj.Get("result.objectId").String(),
+	})
+	if err != nil {
+		p.browser.fatal.Publish(err)
+	}
 }
 
 func (p *Page) initIsolatedWorld() error {

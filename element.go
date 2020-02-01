@@ -78,7 +78,7 @@ func (el *Element) Frame() *Page {
 
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
-	_, err := el.EvalE(false, `opts => this.scrollIntoViewIfNeeded(opts)`, opts)
+	_, err := el.EvalE(true, `opts => this.scrollIntoViewIfNeeded(opts)`, opts)
 	return err
 }
 
@@ -149,7 +149,7 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	_, err = el.EvalE(false, `() => {
+	_, err = el.EvalE(true, `() => {
 		this.dispatchEvent(new Event('input', { bubbles: true }));
 		this.dispatchEvent(new Event('change', { bubbles: true }));
 	}`)
@@ -168,7 +168,7 @@ func (el *Element) SelectE(selectors ...string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.slowmotion("Input.select")
 
-	_, err := el.EvalE(false, `(selectors) => {
+	_, err := el.EvalE(true, `(selectors) => {
 		selectors.forEach((s) => {
 			this.querySelector(s).selected = true
 		})
