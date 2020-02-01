@@ -64,7 +64,7 @@ func (el *Element) trace(msg string) func() {
 	}
 
 	clean := func() {
-		_, err := root.EvalE(false, `function(id) { document.getElementById(id).remove() }`, id)
+		_, err := root.EvalE(false, `id => document.getElementById(id).remove()`, id)
 		if err != nil {
 			el.page.browser.fatal(err)
 		}

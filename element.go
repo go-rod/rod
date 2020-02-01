@@ -78,7 +78,7 @@ func (el *Element) Frame() *Page {
 
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
-	_, err := el.EvalE(false, `function(opts) { this.scrollIntoViewIfNeeded(opts) }`, opts)
+	_, err := el.EvalE(false, `opts => this.scrollIntoViewIfNeeded(opts)`, opts)
 	return err
 }
 
@@ -149,7 +149,7 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	_, err = el.EvalE(false, `function() {
+	_, err = el.EvalE(false, `() => {
 		this.dispatchEvent(new Event('input', { bubbles: true }));
 		this.dispatchEvent(new Event('change', { bubbles: true }));
 	}`)
@@ -168,7 +168,7 @@ func (el *Element) SelectE(selectors ...string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.slowmotion("Input.select")
 
-	_, err := el.EvalE(false, `function(selectors) {
+	_, err := el.EvalE(false, `(selectors) => {
 		selectors.forEach((s) => {
 			this.querySelector(s).selected = true
 		})
@@ -185,7 +185,7 @@ func (el *Element) Select(selectors ...string) {
 
 // TextE ...
 func (el *Element) TextE() (string, error) {
-	str, err := el.EvalE(true, `function() { return this.innerText }`)
+	str, err := el.EvalE(true, `() => this.innerText`)
 	return str.String(), err
 }
 
@@ -198,7 +198,7 @@ func (el *Element) Text() string {
 
 // HTMLE ...
 func (el *Element) HTMLE() (string, error) {
-	str, err := el.EvalE(true, `function() { return this.outerHTML }`)
+	str, err := el.EvalE(true, `() => this.outerHTML`)
 	return str.String(), err
 }
 
@@ -232,7 +232,7 @@ func (el *Element) Wait(js string, params ...interface{}) {
 
 // WaitVisibleE ...
 func (el *Element) WaitVisibleE() error {
-	return el.WaitE(`function() {
+	return el.WaitE(`() => {
 		var box = this.getBoundingClientRect()
 		var style = window.getComputedStyle(this)
 		return style.display != 'none' &&
@@ -248,7 +248,7 @@ func (el *Element) WaitVisible() {
 
 // WaitInvisibleE ...
 func (el *Element) WaitInvisibleE() error {
-	return el.WaitE(`function() {
+	return el.WaitE(`() => {
 		var box = this.getBoundingClientRect()
 		return window.getComputedStyle(this).visibility == 'hidden' ||
 			!(box.top || box.bottom || box.width || box.height)
@@ -262,7 +262,7 @@ func (el *Element) WaitInvisible() {
 
 // BoxE ...
 func (el *Element) BoxE() (kit.JSONResult, error) {
-	box, err := el.EvalE(true, `function() {
+	box, err := el.EvalE(true, `() => {
 		var box = this.getBoundingClientRect().toJSON()
 		if (this.tagName === 'IFRAME') {
 			var style = window.getComputedStyle(this)
@@ -306,6 +306,10 @@ func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JS
 		args = append(args, cdp.Object{"value": p})
 	}
 
+	js = fmt.Sprintf(`function() {
+		return (%s).apply(this, arguments)
+	}`, js)
+
 	res, err := el.page.Call(el.ctx, "Runtime.callFunctionOn", cdp.Object{
 		"objectId":            el.ObjectID,
 		"awaitPromise":        true,
@@ -325,7 +329,7 @@ func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JS
 }
 
 // Eval evaluates js function on the element, the first param must be a js function definition
-// For example: el.Eval(`function(name) { return this.getAttribute(name) }`, "value")
+// For example: el.Eval(`name => this.getAttribute(name)`, "value")
 func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
 	res, err := el.EvalE(true, js, params...)
 	kit.E(err)
