@@ -92,9 +92,21 @@ func (p *Page) Has(selector string) bool {
 
 // ElementE ...
 func (p *Page) ElementE(selector string) (*Element, error) {
+	return p.ElementByJSE(`s => document.querySelector(s)`, selector)
+}
+
+// Element waits and returns the first element in the page that matches the selector
+func (p *Page) Element(selector string) *Element {
+	el, err := p.ElementE(selector)
+	kit.E(err)
+	return el
+}
+
+// ElementByJSE ...
+func (p *Page) ElementByJSE(js string, params ...interface{}) (*Element, error) {
 	var objectID string
 	err := cdp.Retry(p.ctx, func() error {
-		element, err := p.EvalE(false, `s => document.querySelector(s)`, selector)
+		element, err := p.EvalE(false, js, params...)
 		if err != nil {
 			return err
 		}
@@ -117,18 +129,30 @@ func (p *Page) ElementE(selector string) (*Element, error) {
 	}, nil
 }
 
-// Element waits and returns the first element in the page that matches the selector
-func (p *Page) Element(selector string) *Element {
-	el, err := p.ElementE(selector)
+// ElementByJS waits and returns the element from the return value of the js
+func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
+	el, err := p.ElementByJSE(js, params...)
 	kit.E(err)
 	return el
 }
 
 // ElementsE ...
 func (p *Page) ElementsE(selector string) ([]*Element, error) {
+	return p.ElementsByJSE(`s => document.querySelectorAll(s)`, selector)
+}
+
+// Elements returns all elements that match the selector
+func (p *Page) Elements(selector string) []*Element {
+	list, err := p.ElementsE(selector)
+	kit.E(err)
+	return list
+}
+
+// ElementsByJSE ...
+func (p *Page) ElementsByJSE(js string, params ...interface{}) ([]*Element, error) {
 	elemList := []*Element{}
 	err := cdp.Retry(p.ctx, func() error {
-		res, err := p.EvalE(false, `s => document.querySelectorAll(s)`, selector)
+		res, err := p.EvalE(false, js, params...)
 		if err != nil {
 			return err
 		}
@@ -163,9 +187,9 @@ func (p *Page) ElementsE(selector string) ([]*Element, error) {
 	return elemList, nil
 }
 
-// Elements returns all elements that match the selector
-func (p *Page) Elements(selector string) []*Element {
-	list, err := p.ElementsE(selector)
+// ElementsByJS returns the elements from the return value of the js
+func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
+	list, err := p.ElementsByJSE(js, params...)
 	kit.E(err)
 	return list
 }
