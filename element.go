@@ -168,9 +168,13 @@ func (el *Element) SelectE(selectors ...string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.slowmotion("Input.select")
 
-	_, err := el.EvalE(true, `(selectors) => {
-		selectors.forEach((s) => {
-			this.querySelector(s).selected = true
+	_, err := el.EvalE(true, `selectors => {
+		selectors.forEach(s => {
+			Array.from(this.options).forEach(el => {
+				if (el.innerText === s || el.matches(s)) {
+					el.selected = true
+				}
+			})
 		})
 		this.dispatchEvent(new Event('input', { bubbles: true }));
 		this.dispatchEvent(new Event('change', { bubbles: true }));
@@ -178,7 +182,7 @@ func (el *Element) SelectE(selectors ...string) error {
 	return err
 }
 
-// Select the specific
+// Select the option elements that match the selectors, the selector can be text content or css selector
 func (el *Element) Select(selectors ...string) {
 	kit.E(el.SelectE(selectors...))
 }

@@ -41,11 +41,18 @@ func (s *S) TestText() {
 func (s *S) TestSelect() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("select")
-	el.Select("[value=c]")
+	el.Select("C")
 
 	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
 }
 
+func (s *S) TestSelectQuery() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("select")
+	el.Select("[value=c]")
+
+	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
+}
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
