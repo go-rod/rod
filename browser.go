@@ -70,11 +70,23 @@ func Open(b *Browser) *Browser {
 	return b
 }
 
-// Close the browser and release related resources
-func (b *Browser) Close() {
+// CloseE ...
+func (b *Browser) CloseE() error {
+	_, err := b.Call(b.ctx, &cdp.Message{Method: "Browser.close"})
+	if err != nil {
+		return err
+	}
+
 	if b.close != nil {
 		b.close()
 	}
+
+	return nil
+}
+
+// Close the browser and release related resources
+func (b *Browser) Close() {
+	kit.E(b.CloseE())
 }
 
 // Ctx creates a clone with specified context
@@ -223,14 +235,6 @@ func (b *Browser) initEvents() error {
 			} else {
 				b.OnFatal(err.(error))
 			}
-		}
-	}()
-
-	go func() {
-		<-b.ctx.Done()
-		_, err := b.Call(context.Background(), &cdp.Message{Method: "Browser.close"})
-		if err != nil {
-			kit.Err(err)
 		}
 	}()
 
