@@ -171,9 +171,11 @@ func (el *Element) SelectE(selectors ...string) error {
 	_, err := el.EvalE(true, `selectors => {
 		selectors.forEach(s => {
 			Array.from(this.options).forEach(el => {
-				if (el.innerText === s || el.matches(s)) {
-					el.selected = true
-				}
+				try {
+					if (el.innerText === s || el.matches(s)) {
+						el.selected = true
+					}
+				} catch {}
 			})
 		})
 		this.dispatchEvent(new Event('input', { bubbles: true }));

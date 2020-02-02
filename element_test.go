@@ -53,6 +53,15 @@ func (s *S) TestSelectQuery() {
 
 	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
 }
+
+func (s *S) TestSelectQueryNum() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("select")
+	el.Select("123")
+
+	s.EqualValues(0, el.Eval("() => this.selectedIndex").Int())
+}
+
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
