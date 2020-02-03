@@ -76,6 +76,22 @@ func (el *Element) Frame() *Page {
 	return f
 }
 
+// FocusE ...
+func (el *Element) FocusE() error {
+	err := el.ScrollIntoViewIfNeededE()
+	if err != nil {
+		return err
+	}
+
+	_, err = el.EvalE(true, `() => this.focus()`)
+	return err
+}
+
+// Focus sets focus on the specified element
+func (el *Element) Focus() {
+	kit.E(el.FocusE())
+}
+
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE() error {
 	_, err := el.EvalE(true, `async () => {
@@ -136,7 +152,7 @@ func (el *Element) Click() {
 
 // PressE ...
 func (el *Element) PressE(key string) error {
-	err := el.ClickE("left")
+	err := el.FocusE()
 	if err != nil {
 		return err
 	}
@@ -153,7 +169,7 @@ func (el *Element) Press(key string) {
 
 // InputE ...
 func (el *Element) InputE(text string) error {
-	err := el.ClickE("left")
+	err := el.FocusE()
 	if err != nil {
 		return err
 	}
