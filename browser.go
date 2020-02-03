@@ -120,8 +120,8 @@ func (b *Browser) Page(url string) *Page {
 	return p
 }
 
-// UntilPageE ...
-func (b *Browser) UntilPageE(p *Page) (*Page, error) {
+// WaitPageE ...
+func (b *Browser) WaitPageE(p *Page) (*Page, error) {
 	var targetInfo cdp.Object
 
 	_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
@@ -143,9 +143,9 @@ func (b *Browser) UntilPageE(p *Page) (*Page, error) {
 	return b.page(targetInfo["targetId"].(string))
 }
 
-// UntilPage to be opened from the specified page
-func (b *Browser) UntilPage(p *Page) *Page {
-	newPage, err := b.UntilPageE(p)
+// WaitPage to be opened from the specified page
+func (b *Browser) WaitPage(p *Page) *Page {
+	newPage, err := b.WaitPageE(p)
 	kit.E(err)
 	return newPage
 }

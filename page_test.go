@@ -1,12 +1,5 @@
 package rod_test
 
-import (
-	"context"
-
-	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
-)
-
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
@@ -38,7 +31,7 @@ func (s *S) TestUntilPage() {
 
 	go page.Element("a").Click()
 
-	newPage := s.browser.UntilPage(page)
+	newPage := s.browser.WaitPage(page)
 
 	s.Equal("click me", newPage.Element("button").Text())
 }
@@ -46,14 +39,8 @@ func (s *S) TestUntilPage() {
 func (s *S) TestAlert() {
 	page := s.page.Navigate(s.htmlFile("fixtures/alert.html"))
 
-	go func() {
-		_, err := s.browser.Event().Until(context.Background(), func(e kit.Event) bool {
-			msg := e.(*cdp.Message)
-			return msg.Method == "Page.javascriptDialogOpening"
-		})
-		kit.E(err)
-		page.HandleDialog(true, "")
-	}()
+	go page.Element("button").Click()
 
-	page.Element("button").Click()
+	page.WaitDialog()
+	page.HandleDialog(true, "")
 }

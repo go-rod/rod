@@ -194,8 +194,21 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
 	return list
 }
 
+// WaitDialogE ...
+func (p *Page) WaitDialogE() error {
+	_, err := p.browser.Event().Until(p.ctx, func(e kit.Event) bool {
+		return e.(*cdp.Message).Method == "Page.javascriptDialogOpening"
+	})
+	return err
+}
+
+// WaitDialog waits for the next dialog (alert, confirm, prompt, or onbeforeunload)
+func (p *Page) WaitDialog() {
+	kit.E(p.WaitDialogE())
+}
+
 // HandleDialogE ...
-func (p Page) HandleDialogE(accept bool, promptText string) error {
+func (p *Page) HandleDialogE(accept bool, promptText string) error {
 	_, err := p.Call(p.ctx, "Page.handleJavaScriptDialog", cdp.Object{
 		"accept":     accept,
 		"promptText": promptText,
@@ -204,7 +217,7 @@ func (p Page) HandleDialogE(accept bool, promptText string) error {
 }
 
 // HandleDialog accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
-func (p Page) HandleDialog(accept bool, promptText string) {
+func (p *Page) HandleDialog(accept bool, promptText string) {
 	kit.E(p.HandleDialogE(accept, promptText))
 }
 
