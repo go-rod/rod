@@ -21,7 +21,7 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	// iframe
+	// iframe only
 	FrameID string
 	element *Element
 

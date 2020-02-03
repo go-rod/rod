@@ -97,6 +97,23 @@ func (s *S) TestElementsFromElement() {
 	s.Equal("B", list[1].Text())
 }
 
+func (s *S) TestElementParent() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("input").Parent()
+
+	s.Equal("FORM", el.Eval(`() => this.tagName`).String())
+}
+
+func (s *S) TestElementSiblings() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("hr")
+	a := el.Previous()
+	b := el.Next()
+
+	s.Equal("INPUT", a.Eval(`() => this.tagName`).String())
+	s.Equal("SELECT", b.Eval(`() => this.tagName`).String())
+}
+
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")

@@ -384,6 +384,42 @@ func (el *Element) ElementsByJS(js string, params ...interface{}) []*Element {
 	return list
 }
 
+// ParentE ...
+func (el *Element) ParentE() (*Element, error) {
+	return el.ElementByJSE(`() => this.parentElement`)
+}
+
+// Parent returns the parent element
+func (el *Element) Parent() *Element {
+	parent, err := el.ParentE()
+	kit.E(err)
+	return parent
+}
+
+// NextE ...
+func (el *Element) NextE() (*Element, error) {
+	return el.ElementByJSE(`() => this.nextElementSibling`)
+}
+
+// Next returns the next sibling element
+func (el *Element) Next() *Element {
+	parent, err := el.NextE()
+	kit.E(err)
+	return parent
+}
+
+// PreviousE ...
+func (el *Element) PreviousE() (*Element, error) {
+	return el.ElementByJSE(`() => this.previousElementSibling`)
+}
+
+// Previous returns the previous sibling element
+func (el *Element) Previous() *Element {
+	parent, err := el.PreviousE()
+	kit.E(err)
+	return parent
+}
+
 // EvalE ...
 func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
 	return el.page.EvalE(byValue, el.ObjectID, js, params)
