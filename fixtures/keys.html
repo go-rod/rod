@@ -1,0 +1,12 @@
+<html>
+    <body>
+    </body>
+    <script>
+        window.onkeydown = (e) => {
+            document.body.setAttribute('event', 'key-down-' + e.key)
+        }
+        window.onkeyup = (e) => {
+            document.body.setAttribute('event', 'key-up-' + e.key)
+        }
+    </script>
+</html>

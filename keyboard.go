@@ -5,6 +5,7 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/keys"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
@@ -21,74 +22,56 @@ func (k *Keyboard) Ctx(ctx context.Context) *Keyboard {
 }
 
 // DownE ...
-func (k *Keyboard) DownE(key string) error {
-	text := ""
-	if len(key) < 2 {
-		text = key
-	}
-
-	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", cdp.Object{
-		"type": "keyDown",
-		"key":  key,
-		"text": text,
-	})
+func (k *Keyboard) DownE(key rune) error {
+	actions := keys.Encode(key)
+	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", actions[0])
 	return err
 }
 
-// Down button
-func (k *Keyboard) Down(key string) {
+// Down holds key down
+func (k *Keyboard) Down(key rune) {
 	kit.E(k.DownE(key))
 }
 
 // UpE ...
-func (k *Keyboard) UpE(key string) error {
-	text := ""
-	if len(key) < 2 {
-		text = key
-	}
-
-	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", cdp.Object{
-		"type": "keyUp",
-		"key":  key,
-		"text": text,
-	})
+func (k *Keyboard) UpE(key rune) error {
+	actions := keys.Encode(key)
+	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", actions[len(actions)-1])
 	return err
 }
 
-// Up button
-func (k *Keyboard) Up(key string) {
+// Up releases the key
+func (k *Keyboard) Up(key rune) {
 	kit.E(k.UpE(key))
 }
 
 // PressE ...
-func (k *Keyboard) PressE(key string) error {
+func (k *Keyboard) PressE(key rune) error {
+	actions := keys.Encode(key)
 
-	if key == "" {
-		key = defaultMouseButton
+	for _, action := range actions {
+		_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", action)
+		if err != nil {
+			return err
+		}
 	}
-
-	err := k.DownE(key)
-	if err != nil {
-		return err
-	}
-
-	return k.UpE(key)
+	return nil
 }
 
-// Press button
-func (k *Keyboard) Press(key string) {
+// Press a key
+func (k *Keyboard) Press(key rune) {
 	kit.E(k.PressE(key))
 }
 
-// TextE ...
-func (k *Keyboard) TextE(text string) error {
+// InsertTextE ...
+func (k *Keyboard) InsertTextE(text string) error {
 	_, err := k.page.Call(k.ctx, "Input.insertText", cdp.Object{
 		"text": text,
 	})
 	return err
 }
 
-// Text inset text
-func (k *Keyboard) Text(text string) {
-	kit.E(k.TextE(text))
+// InsertText like paste text into the page
+func (k *Keyboard) InsertText(text string) {
+	kit.E(k.InsertTextE(text))
 }

@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/cenkalti/backoff/v4 v4.0.0
 	github.com/cheggaaa/pb/v3 v3.0.4
+	github.com/chromedp/cdproto v0.0.0-20200127141643-96201809f07b
 	github.com/gorilla/websocket v1.4.1
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/stretchr/testify v1.4.0

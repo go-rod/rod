@@ -151,19 +151,19 @@ func (el *Element) Click() {
 }
 
 // PressE ...
-func (el *Element) PressE(key string) error {
+func (el *Element) PressE(key rune) error {
 	err := el.FocusE()
 	if err != nil {
 		return err
 	}
 
-	defer el.trace("press " + key)()
+	defer el.trace("press " + string(key))()
 
 	return el.page.Keyboard.PressE(key)
 }
 
 // Press a key
-func (el *Element) Press(key string) {
+func (el *Element) Press(key rune) {
 	kit.E(el.PressE(key))
 }
 
@@ -176,7 +176,7 @@ func (el *Element) InputE(text string) error {
 
 	defer el.trace("input " + text)()
 
-	err = el.page.Keyboard.TextE(text)
+	err = el.page.Keyboard.InsertTextE(text)
 	if err != nil {
 		return err
 	}

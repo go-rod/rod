@@ -3,6 +3,8 @@ package rod_test
 import (
 	"errors"
 	"time"
+
+	"github.com/ysmood/rod/lib/keys"
 )
 
 func (s *S) TestClick() {
@@ -22,9 +24,27 @@ func (s *S) TestClickInIframes() {
 func (s *S) TestPress() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=text]")
-	el.Press("a")
+	el.Press('A')
+	el.Press(' ')
+	el.Press('b')
 
-	s.Equal("a", el.Eval(`() => this.value`).String())
+	s.Equal("A b", el.Eval(`() => this.value`).String())
+}
+
+func (s *S) TestKeyDown() {
+	p := s.page.Navigate(s.htmlFile("fixtures/keys.html"))
+	p.Element("body")
+	p.Keyboard.Down('j')
+
+	s.True(p.Has("body[event=key-down-j]"))
+}
+
+func (s *S) TestKeyUp() {
+	p := s.page.Navigate(s.htmlFile("fixtures/keys.html"))
+	p.Element("body")
+	p.Keyboard.Up('x')
+
+	s.True(p.Has("body[event=key-up-x]"))
 }
 
 func (s *S) TestText() {
@@ -65,7 +85,7 @@ func (s *S) TestSelectQueryNum() {
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
-	el.Press("Enter")
+	el.Press(keys.Enter)
 
 	s.True(p.Has("[event=submit]"))
 }

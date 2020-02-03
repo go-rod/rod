@@ -259,7 +259,7 @@ func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 }
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) Call(ctx context.Context, method string, params cdp.Object) (kit.JSONResult, error) {
+func (p *Page) Call(ctx context.Context, method string, params interface{}) (kit.JSONResult, error) {
 	return p.browser.Call(ctx, &cdp.Message{
 		SessionID: p.SessionID,
 		Method:    method,
