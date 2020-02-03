@@ -194,6 +194,20 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
 	return list
 }
 
+// HandleDialogE ...
+func (p Page) HandleDialogE(accept bool, promptText string) error {
+	_, err := p.Call(p.ctx, "Page.handleJavaScriptDialog", cdp.Object{
+		"accept":     accept,
+		"promptText": promptText,
+	})
+	return err
+}
+
+// HandleDialog accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
+func (p Page) HandleDialog(accept bool, promptText string) {
+	kit.E(p.HandleDialogE(accept, promptText))
+}
+
 // EvalE ...
 func (p *Page) EvalE(byValue bool, js string, jsParams ...interface{}) (res kit.JSONResult, err error) {
 	params := cdp.Object{
@@ -271,7 +285,8 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
-	return nil
+	_, err = p.Call(p.ctx, "Page.enable", nil)
+	return err
 }
 
 func (p *Page) isIframe() bool {
