@@ -41,6 +41,6 @@ func (s *S) TestAlert() {
 
 	go page.Element("button").Click()
 
-	page.WaitDialog()
+	page.WaitEvent("Page.javascriptDialogOpening")
 	page.HandleDialog(true, "")
 }

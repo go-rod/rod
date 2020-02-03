@@ -54,10 +54,14 @@ func (p *Page) NavigateE(url string) error {
 	_, err := p.Call(p.ctx, "Page.navigate", cdp.Object{
 		"url": url,
 	})
+	if err != nil {
+		return err
+	}
+	_, err = p.WaitEventE("Page.frameStoppedLoading")
 	return err
 }
 
-// Navigate to url
+// Navigate to url and wait until Page.frameStoppedLoading fired
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))
 	return p
@@ -194,17 +198,23 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
 	return list
 }
 
-// WaitDialogE ...
-func (p *Page) WaitDialogE() error {
-	_, err := p.browser.Event().Until(p.ctx, func(e kit.Event) bool {
-		return e.(*cdp.Message).Method == "Page.javascriptDialogOpening"
+// WaitEventE ...
+func (p *Page) WaitEventE(name string) (kit.JSONResult, error) {
+	msg, err := p.browser.Event().Until(p.ctx, func(e kit.Event) bool {
+		return e.(*cdp.Message).Method == name
 	})
-	return err
+	if err != nil {
+		return nil, err
+	}
+	return kit.JSON(kit.MustToJSON(msg.(*cdp.Message).Params)), nil
 }
 
-// WaitDialog waits for the next dialog (alert, confirm, prompt, or onbeforeunload)
-func (p *Page) WaitDialog() {
-	kit.E(p.WaitDialogE())
+// WaitEvent waits for the next event to happen.
+// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
+func (p *Page) WaitEvent(name string) kit.JSONResult {
+	res, err := p.WaitEventE(name)
+	kit.E(err)
+	return res
 }
 
 // HandleDialogE ...
