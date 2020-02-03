@@ -76,11 +76,11 @@ func (p *Page) Close() {
 
 // HasE ...
 func (p *Page) HasE(selector string) (bool, error) {
-	res, err := p.EvalE(true, `s => !!document.querySelector(s)`, selector)
+	res, err := p.EvalE(true, "", `s => !!document.querySelector(s)`, []interface{}{selector})
 	if err != nil {
 		return false, err
 	}
-	return res.Get("result.value").Bool(), nil
+	return res.Bool(), nil
 }
 
 // Has an element that matches the css selector
@@ -92,7 +92,7 @@ func (p *Page) Has(selector string) bool {
 
 // ElementE ...
 func (p *Page) ElementE(selector string) (*Element, error) {
-	return p.ElementByJSE(`s => document.querySelector(s)`, selector)
+	return p.ElementByJSE("", `s => document.querySelector(s)`, []interface{}{selector})
 }
 
 // Element waits and returns the first element in the page that matches the selector
@@ -103,10 +103,10 @@ func (p *Page) Element(selector string) *Element {
 }
 
 // ElementByJSE ...
-func (p *Page) ElementByJSE(js string, params ...interface{}) (*Element, error) {
+func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, error) {
 	var objectID string
 	err := cdp.Retry(p.ctx, func() error {
-		element, err := p.EvalE(false, js, params...)
+		element, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return err
 		}
@@ -131,14 +131,14 @@ func (p *Page) ElementByJSE(js string, params ...interface{}) (*Element, error) 
 
 // ElementByJS waits and returns the element from the return value of the js
 func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJSE(js, params...)
+	el, err := p.ElementByJSE("", js, params)
 	kit.E(err)
 	return el
 }
 
 // ElementsE ...
 func (p *Page) ElementsE(selector string) ([]*Element, error) {
-	return p.ElementsByJSE(`s => document.querySelectorAll(s)`, selector)
+	return p.ElementsByJSE("", `s => document.querySelectorAll(s)`, []interface{}{selector})
 }
 
 // Elements returns all elements that match the selector
@@ -149,10 +149,10 @@ func (p *Page) Elements(selector string) []*Element {
 }
 
 // ElementsByJSE ...
-func (p *Page) ElementsByJSE(js string, params ...interface{}) ([]*Element, error) {
+func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Element, error) {
 	elemList := []*Element{}
 	err := cdp.Retry(p.ctx, func() error {
-		res, err := p.EvalE(false, js, params...)
+		res, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return err
 		}
@@ -189,7 +189,7 @@ func (p *Page) ElementsByJSE(js string, params ...interface{}) ([]*Element, erro
 
 // ElementsByJS returns the elements from the return value of the js
 func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
-	list, err := p.ElementsByJSE(js, params...)
+	list, err := p.ElementsByJSE("", js, params)
 	kit.E(err)
 	return list
 }
@@ -251,39 +251,61 @@ func (p *Page) WaitPage() *Page {
 	return newPage
 }
 
-// EvalE ...
-func (p *Page) EvalE(byValue bool, js string, jsParams ...interface{}) (res kit.JSONResult, err error) {
+// EvalE thisID is the remote objectID that will be the this of the js function
+func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
+	if thisID == "" {
+		res, err = p.eval(byValue, js, jsArgs)
+	} else {
+		res, err = p.evalThis(byValue, thisID, js, jsArgs)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if byValue {
+		return FnResult(res)
+	}
+
+	return
+}
+
+func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
 	params := cdp.Object{
-		"expression":    SprintFn(js, jsParams...),
+		"expression":    SprintFnApply(js, jsArgs),
 		"awaitPromise":  true,
 		"returnByValue": byValue,
 	}
 
-	err = cdp.Retry(p.ctx, func() error {
-		if p.isIframe() {
-			params["contextId"] = p.ContextID
-		}
+	if p.isIframe() {
+		params["contextId"] = p.ContextID
+	}
 
-		res, err = p.Call(p.ctx, "Runtime.evaluate", params)
-		if err == nil {
-			return nil
-		}
+	return p.Call(p.ctx, "Runtime.evaluate", params)
+}
 
-		if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
-			_ = p.initIsolatedWorld()
-		}
+func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (kit.JSONResult, error) {
+	args := []interface{}{}
+	for _, p := range jsArgs {
+		args = append(args, cdp.Object{"value": p})
+	}
 
-		return err
-	})
+	params := cdp.Object{
+		"objectId":            thisID,
+		"awaitPromise":        true,
+		"returnByValue":       byValue,
+		"functionDeclaration": SprintFnThis(js),
+		"arguments":           args,
+	}
 
-	return
+	return p.Call(p.ctx, "Runtime.callFunctionOn", params)
 }
 
 // Eval js under sessionID or contextId, if contextId doesn't exist create a new isolatedWorld.
 // The first param must be a js function definition.
 // For example: page.Eval(`s => document.querySelectorAll(s)`, "input")
 func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
-	res, err := p.EvalE(true, js, params)
+	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
 	return res
 }

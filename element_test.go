@@ -82,6 +82,21 @@ func (s *S) TestSelectQueryNum() {
 	s.EqualValues(0, el.Eval("() => this.selectedIndex").Int())
 }
 
+func (s *S) TestElementFromElement() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("form").Element("select").Element("option:nth-child(2)")
+
+	s.Equal("B", el.Text())
+}
+
+func (s *S) TestElementsFromElement() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	list := p.Element("form").Elements("option")
+
+	s.Len(list, 3)
+	s.Equal("B", list[1].Text())
+}
+
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")

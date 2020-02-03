@@ -53,20 +53,20 @@ func (el *Element) trace(msg string) func() {
 	id := kit.RandString(8)
 	box, _ := el.BoxE()
 
-	_, err := root.EvalE(true, js,
+	_, err := root.EvalE(true, "", js, []interface{}{
 		id,
 		box.Get("left").Int(),
 		box.Get("top").Int(),
 		box.Get("width").Int(),
 		box.Get("height").Int(),
 		msg,
-	)
+	})
 	if err != nil {
 		el.page.browser.fatal.Publish(err)
 	}
 
 	clean := func() {
-		_, err := root.EvalE(true, `id => document.getElementById(id).remove()`, id)
+		_, err := root.EvalE(true, "", `id => document.getElementById(id).remove()`, []interface{}{id})
 		if err != nil {
 			el.page.browser.fatal.Publish(err)
 		}

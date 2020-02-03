@@ -336,34 +336,57 @@ func (el *Element) Box() kit.JSONResult {
 	return box
 }
 
+// ElementE ...
+func (el *Element) ElementE(selector string) (*Element, error) {
+	return el.ElementByJSE(`s => this.querySelector(s)`, selector)
+}
+
+// Element waits and returns the first element in the page that matches the selector
+func (el *Element) Element(selector string) *Element {
+	el, err := el.ElementE(selector)
+	kit.E(err)
+	return el
+}
+
+// ElementByJSE ...
+func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, error) {
+	return el.page.ElementByJSE(el.ObjectID, js, params)
+}
+
+// ElementByJS waits and returns the element from the return value of the js
+func (el *Element) ElementByJS(js string, params ...interface{}) *Element {
+	el, err := el.ElementByJSE(js, params...)
+	kit.E(err)
+	return el
+}
+
+// ElementsE ...
+func (el *Element) ElementsE(selector string) ([]*Element, error) {
+	return el.ElementsByJSE(`s => this.querySelectorAll(s)`, selector)
+}
+
+// Elements returns all elements that match the selector
+func (el *Element) Elements(selector string) []*Element {
+	list, err := el.ElementsE(selector)
+	kit.E(err)
+	return list
+}
+
+// ElementsByJSE ...
+func (el *Element) ElementsByJSE(js string, params ...interface{}) ([]*Element, error) {
+	return el.page.ElementsByJSE(el.ObjectID, js, params)
+}
+
+// ElementsByJS returns the elements from the return value of the js
+func (el *Element) ElementsByJS(js string, params ...interface{}) []*Element {
+	list, err := el.ElementsByJSE(js, params...)
+	kit.E(err)
+	return list
+}
+
 // EvalE ...
 func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
-	args := []interface{}{}
-
-	for _, p := range params {
-		args = append(args, cdp.Object{"value": p})
-	}
-
-	js = fmt.Sprintf(`function() {
-		return (%s).apply(this, arguments)
-	}`, js)
-
-	res, err := el.page.Call(el.ctx, "Runtime.callFunctionOn", cdp.Object{
-		"objectId":            el.ObjectID,
-		"awaitPromise":        true,
-		"returnByValue":       byValue,
-		"functionDeclaration": js,
-		"arguments":           args,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if byValue {
-		return FnResult(res)
-	}
-
-	return res, nil
+	return el.page.EvalE(byValue, el.ObjectID, js, params)
 }
 
 // Eval evaluates js function on the element, the first param must be a js function definition

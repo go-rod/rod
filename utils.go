@@ -6,14 +6,21 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// SprintFn is a helper to render template into js code
+// SprintFnApply is a helper to render template into js code
 // js looks like "(a, b) => {}", the a and b are the params passed into the function
-func SprintFn(js string, params ...interface{}) string {
+func SprintFnApply(js string, params []interface{}) string {
 	const tpl = `(
 		%s
 	).apply(this, %s)`
 
 	return fmt.Sprintf(tpl, js, kit.MustToJSON(params))
+}
+
+// SprintFnThis wrap js with this
+func SprintFnThis(js string) string {
+	return fmt.Sprintf(`function() {
+		return (%s).apply(this, arguments)
+	}`, js)
 }
 
 // FnResult parses the errors of the fn result and returns the value of the result
