@@ -77,20 +77,36 @@ func (el *Element) Frame() *Page {
 }
 
 // ScrollIntoViewIfNeededE ...
-func (el *Element) ScrollIntoViewIfNeededE(opts cdp.Object) error {
-	_, err := el.EvalE(true, `opts => this.scrollIntoViewIfNeeded(opts)`, opts)
+func (el *Element) ScrollIntoViewIfNeededE() error {
+	_, err := el.EvalE(true, `async () => {
+		if (!this.isConnected)
+			return 'Node is detached from document';
+		if (this.nodeType !== Node.ELEMENT_NODE)
+			return 'Node is not of type HTMLElement';
+	
+		const visibleRatio = await new Promise(resolve => {
+			const observer = new IntersectionObserver(entries => {
+				resolve(entries[0].intersectionRatio);
+				observer.disconnect();
+			});
+			observer.observe(this);
+		});
+		if (visibleRatio !== 1.0)
+			this.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
+		return false;
+	}`)
 	return err
 }
 
 // ScrollIntoViewIfNeeded scrolls the current element into the visible area of the browser
 // window if it's not already within the visible area.
-func (el *Element) ScrollIntoViewIfNeeded(opts cdp.Object) {
-	kit.E(el.ScrollIntoViewIfNeededE(opts))
+func (el *Element) ScrollIntoViewIfNeeded() {
+	kit.E(el.ScrollIntoViewIfNeededE())
 }
 
 // ClickE ...
 func (el *Element) ClickE(button string) error {
-	err := el.ScrollIntoViewIfNeededE(nil)
+	err := el.ScrollIntoViewIfNeededE()
 	if err != nil {
 		return err
 	}
