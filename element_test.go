@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"errors"
+	"path/filepath"
 	"time"
 
 	"github.com/ysmood/rod/lib/keys"
@@ -64,6 +65,19 @@ func (s *S) TestSelect() {
 	el.Select("C")
 
 	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
+}
+
+func (s *S) TestSetFiles() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element(`[type=file]`)
+	el.SetFiles(
+		filepath.FromSlash("fixtures/click.html"),
+		filepath.FromSlash("fixtures/alert.html"),
+	)
+
+	list := el.Eval("() => Array.from(this.files).map(f => f.name)").Array()
+	s.Len(list, 2)
+	s.Equal("alert.html", list[1].String())
 }
 
 func (s *S) TestSelectQuery() {

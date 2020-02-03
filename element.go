@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -219,6 +220,29 @@ func (el *Element) SelectE(selectors ...string) error {
 // Select the option elements that match the selectors, the selector can be text content or css selector
 func (el *Element) Select(selectors ...string) {
 	kit.E(el.SelectE(selectors...))
+}
+
+// SetFilesE ...
+func (el *Element) SetFilesE(paths []string) error {
+	absPaths := []string{}
+	for _, p := range paths {
+		absPath, err := filepath.Abs(p)
+		if err != nil {
+			return err
+		}
+		absPaths = append(absPaths, absPath)
+	}
+
+	_, err := el.page.Call(el.ctx, "DOM.setFileInputFiles", cdp.Object{
+		"files":    absPaths,
+		"objectId": el.ObjectID,
+	})
+	return err
+}
+
+// SetFiles sets files for the given file input element
+func (el *Element) SetFiles(paths ...string) {
+	kit.E(el.SetFilesE(paths))
 }
 
 // TextE ...

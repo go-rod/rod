@@ -8,11 +8,8 @@ func (s *S) TestClosePage() {
 
 func (s *S) TestPageElements() {
 	s.page.Navigate(s.htmlFile("fixtures/input.html"))
-
-	s.page.Element("input")
-
 	list := s.page.Elements("input")
-	s.Equal("submit", list[1].Eval("() => this.value").String())
+	s.Equal("submit", list[2].Eval("() => this.value").String())
 }
 
 func (s *S) TestPages() {
