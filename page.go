@@ -221,6 +221,36 @@ func (p *Page) HandleDialog(accept bool, promptText string) {
 	kit.E(p.HandleDialogE(accept, promptText))
 }
 
+// WaitPageE ...
+func (p *Page) WaitPageE() (*Page, error) {
+	var targetInfo cdp.Object
+
+	_, err := p.browser.event.Until(p.ctx, func(e kit.Event) bool {
+		msg := e.(*cdp.Message)
+		if msg.Method == "Target.targetCreated" {
+			targetInfo = msg.Params.(map[string]interface{})["targetInfo"].(map[string]interface{})
+
+			if targetInfo["openerId"] == p.TargetID {
+				return true
+			}
+		}
+		return false
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return p.browser.page(targetInfo["targetId"].(string))
+}
+
+// WaitPage to be opened from the specified page
+func (p *Page) WaitPage() *Page {
+	newPage, err := p.WaitPageE()
+	kit.E(err)
+	return newPage
+}
+
 // EvalE ...
 func (p *Page) EvalE(byValue bool, js string, jsParams ...interface{}) (res kit.JSONResult, err error) {
 	params := cdp.Object{

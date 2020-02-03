@@ -120,36 +120,6 @@ func (b *Browser) Page(url string) *Page {
 	return p
 }
 
-// WaitPageE ...
-func (b *Browser) WaitPageE(p *Page) (*Page, error) {
-	var targetInfo cdp.Object
-
-	_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
-		msg := e.(*cdp.Message)
-		if msg.Method == "Target.targetCreated" {
-			targetInfo = msg.Params.(map[string]interface{})["targetInfo"].(map[string]interface{})
-
-			if targetInfo["openerId"] == p.TargetID {
-				return true
-			}
-		}
-		return false
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return b.page(targetInfo["targetId"].(string))
-}
-
-// WaitPage to be opened from the specified page
-func (b *Browser) WaitPage(p *Page) *Page {
-	newPage, err := b.WaitPageE(p)
-	kit.E(err)
-	return newPage
-}
-
 // PagesE ...
 func (b *Browser) PagesE() ([]*Page, error) {
 	list, err := b.Call(b.ctx, &cdp.Message{Method: "Target.getTargets"})

@@ -31,7 +31,7 @@ func (s *S) TestUntilPage() {
 
 	go page.Element("a").Click()
 
-	newPage := s.browser.WaitPage(page)
+	newPage := page.WaitPage()
 
 	s.Equal("click me", newPage.Element("button").Text())
 }
