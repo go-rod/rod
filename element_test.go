@@ -5,18 +5,18 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ysmood/rod/lib/keys"
+	"github.com/ysmood/rod/lib/input"
 )
 
 func (s *S) TestClick() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	p.Element("button").Click()
+	p.Timeout(3 * time.Second).Element("button").Click()
 
 	s.True(p.Has("[a=ok]"))
 }
 
 func (s *S) TestClickInIframes() {
-	p := s.page.Navigate(s.htmlFile("fixtures/click-iframes.html"))
+	p := s.page.Timeout(3 * time.Second).Navigate(s.htmlFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
 	frame.Element("button").Click()
 	s.True(frame.Has("[a=ok]"))
@@ -131,7 +131,7 @@ func (s *S) TestElementSiblings() {
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
-	el.Press(keys.Enter)
+	el.Press(input.Enter)
 
 	s.True(p.Has("[event=submit]"))
 }

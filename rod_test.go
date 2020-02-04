@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 // S test suite
@@ -32,15 +33,25 @@ func (s *S) file(path string) string {
 
 func Test(t *testing.T) {
 	slowmotion, _ := time.ParseDuration(os.Getenv("slow"))
+	show := os.Getenv("show") == "true"
 
 	s := new(S)
 	s.browser = rod.Open(&rod.Browser{
 		ControlURL: os.Getenv("chrome"),
-		Foreground: os.Getenv("show") == "true",
+		Foreground: show,
 		Slowmotion: slowmotion,
 		Trace:      true,
 	})
 	defer s.browser.Close()
+
+	if show {
+		go func() {
+			for e := range s.browser.Event().Subscribe() {
+				msg := e.(*cdp.Message)
+				kit.Log(msg.Method, kit.MustToJSON(msg.Params))
+			}
+		}()
+	}
 
 	s.page = s.browser.Page("about:blank")
 

@@ -1,4 +1,4 @@
-package keys
+package input
 
 import (
 	"runtime"

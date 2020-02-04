@@ -51,7 +51,7 @@ func (p *Page) CancelTimeout() {
 
 // NavigateE ...
 func (p *Page) NavigateE(url string) error {
-	_, err := p.Call(p.ctx, "Page.navigate", cdp.Object{
+	_, err := p.Call("Page.navigate", cdp.Object{
 		"url": url,
 	})
 	if err != nil {
@@ -69,7 +69,7 @@ func (p *Page) Navigate(url string) *Page {
 
 // CloseE page
 func (p *Page) CloseE() error {
-	_, err := p.Call(p.ctx, "Page.close", nil)
+	_, err := p.Call("Page.close", nil)
 	return err
 }
 
@@ -162,7 +162,7 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Elemen
 		}
 		defer p.ReleaseObject(res)
 
-		list, err := p.Call(p.ctx, "Runtime.getProperties", cdp.Object{
+		list, err := p.Call("Runtime.getProperties", cdp.Object{
 			"objectId":      res.Get("result.objectId").String(),
 			"ownProperties": true,
 		})
@@ -219,7 +219,7 @@ func (p *Page) WaitEvent(name string) kit.JSONResult {
 
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) error {
-	_, err := p.Call(p.ctx, "Page.handleJavaScriptDialog", cdp.Object{
+	_, err := p.Call("Page.handleJavaScriptDialog", cdp.Object{
 		"accept":     accept,
 		"promptText": promptText,
 	})
@@ -291,7 +291,7 @@ func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (res kit.JSON
 		params["contextId"] = p.ContextID
 	}
 
-	return p.Call(p.ctx, "Runtime.evaluate", params)
+	return p.Call("Runtime.evaluate", params)
 }
 
 func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (kit.JSONResult, error) {
@@ -308,7 +308,7 @@ func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (
 		"arguments":           args,
 	}
 
-	return p.Call(p.ctx, "Runtime.callFunctionOn", params)
+	return p.Call("Runtime.callFunctionOn", params)
 }
 
 // Eval js under sessionID or contextId, if contextId doesn't exist create a new isolatedWorld.
@@ -321,8 +321,8 @@ func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 }
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) Call(ctx context.Context, method string, params interface{}) (kit.JSONResult, error) {
-	return p.browser.Call(ctx, &cdp.Message{
+func (p *Page) Call(method string, params interface{}) (kit.JSONResult, error) {
+	return p.browser.Ctx(p.ctx).Call(&cdp.Message{
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
@@ -331,7 +331,7 @@ func (p *Page) Call(ctx context.Context, method string, params interface{}) (kit
 
 // ReleaseObject remote object
 func (p *Page) ReleaseObject(obj kit.JSONResult) {
-	_, err := p.Call(p.ctx, "Runtime.releaseObject", cdp.Object{
+	_, err := p.Call("Runtime.releaseObject", cdp.Object{
 		"objectId": obj.Get("result.objectId").String(),
 	})
 	if err != nil {
@@ -340,7 +340,7 @@ func (p *Page) ReleaseObject(obj kit.JSONResult) {
 }
 
 func (p *Page) initIsolatedWorld() error {
-	frame, err := p.Call(p.ctx, "Page.createIsolatedWorld", cdp.Object{
+	frame, err := p.Call("Page.createIsolatedWorld", cdp.Object{
 		"frameId": p.FrameID,
 	})
 	if err != nil {
@@ -352,7 +352,7 @@ func (p *Page) initIsolatedWorld() error {
 }
 
 func (p *Page) initSession() error {
-	obj, err := p.Call(p.ctx, "Target.attachToTarget", cdp.Object{
+	obj, err := p.Call("Target.attachToTarget", cdp.Object{
 		"targetId": p.TargetID,
 		"flatten":  true, // if it's not set no response will return
 	})
@@ -360,7 +360,7 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
-	_, err = p.Call(p.ctx, "Page.enable", nil)
+	_, err = p.Call("Page.enable", nil)
 	return err
 }
 

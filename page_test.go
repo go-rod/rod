@@ -1,5 +1,9 @@
 package rod_test
 
+import (
+	"github.com/ysmood/kit"
+)
+
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
@@ -40,4 +44,18 @@ func (s *S) TestAlert() {
 
 	page.WaitEvent("Page.javascriptDialogOpening")
 	page.HandleDialog(true, "")
+}
+
+func (s *S) TestDrag() {
+	s.T().Skip("not able to use mouse event to simulate it for now")
+
+	page := s.page.Navigate(s.htmlFile("fixtures/drag.html"))
+	mouse := page.Mouse
+
+	mouse.Move(60, 30)
+	mouse.Down("left")
+	kit.E(mouse.MoveE(60, 80, 5))
+	mouse.Up("left")
+
+	page.Element(".dropzone:nth-child(2) #draggable")
 }

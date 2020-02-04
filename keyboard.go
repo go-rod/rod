@@ -1,31 +1,35 @@
 package rod
 
 import (
-	"context"
+	"sync"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/keys"
+	"github.com/ysmood/rod/lib/input"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
-	ctx  context.Context
 	page *Page
-}
+	sync.Mutex
 
-// Ctx sets the context for later operation
-func (k *Keyboard) Ctx(ctx context.Context) *Keyboard {
-	newObj := *k
-	newObj.ctx = ctx
-	return &newObj
+	// modifiers are currently beening pressed
+	modifiers int64
 }
 
 // DownE ...
 func (k *Keyboard) DownE(key rune) error {
-	actions := keys.Encode(key)
-	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", actions[0])
-	return err
+	actions := input.Encode(key)
+
+	k.Lock()
+	defer k.Unlock()
+
+	_, err := k.page.Call("Input.dispatchKeyEvent", actions[0])
+	if err != nil {
+		return err
+	}
+	k.modifiers = actions[0].Modifiers
+	return nil
 }
 
 // Down holds key down
@@ -35,9 +39,17 @@ func (k *Keyboard) Down(key rune) {
 
 // UpE ...
 func (k *Keyboard) UpE(key rune) error {
-	actions := keys.Encode(key)
-	_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", actions[len(actions)-1])
-	return err
+	actions := input.Encode(key)
+
+	k.Lock()
+	defer k.Unlock()
+
+	_, err := k.page.Call("Input.dispatchKeyEvent", actions[len(actions)-1])
+	if err != nil {
+		return err
+	}
+	k.modifiers = 0
+	return nil
 }
 
 // Up releases the key
@@ -47,10 +59,16 @@ func (k *Keyboard) Up(key rune) {
 
 // PressE ...
 func (k *Keyboard) PressE(key rune) error {
-	actions := keys.Encode(key)
+	actions := input.Encode(key)
+
+	k.Lock()
+	defer k.Unlock()
+
+	k.modifiers = actions[0].Modifiers
+	defer func() { k.modifiers = 0 }()
 
 	for _, action := range actions {
-		_, err := k.page.Call(k.ctx, "Input.dispatchKeyEvent", action)
+		_, err := k.page.Call("Input.dispatchKeyEvent", action)
 		if err != nil {
 			return err
 		}
@@ -65,7 +83,7 @@ func (k *Keyboard) Press(key rune) {
 
 // InsertTextE ...
 func (k *Keyboard) InsertTextE(text string) error {
-	_, err := k.page.Call(k.ctx, "Input.insertText", cdp.Object{
+	_, err := k.page.Call("Input.insertText", cdp.Object{
 		"text": text,
 	})
 	return err

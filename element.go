@@ -44,7 +44,7 @@ func (el *Element) CancelTimeout() {
 }
 
 func (el *Element) describe() (kit.JSONResult, error) {
-	node, err := el.page.Call(el.ctx,
+	node, err := el.page.Ctx(el.ctx).Call(
 		"DOM.describeNode",
 		cdp.Object{
 			"objectId": el.ObjectID,
@@ -136,7 +136,7 @@ func (el *Element) ClickE(button string) error {
 	x := box.Get("left").Int() + box.Get("width").Int()/2
 	y := box.Get("top").Int() + box.Get("height").Int()/2
 
-	err = el.page.Mouse.MoveToE(x, y)
+	err = el.page.Mouse.MoveE(x, y, 1)
 	if err != nil {
 		return err
 	}
@@ -233,7 +233,7 @@ func (el *Element) SetFilesE(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	_, err := el.page.Call(el.ctx, "DOM.setFileInputFiles", cdp.Object{
+	_, err := el.page.Ctx(el.ctx).Call("DOM.setFileInputFiles", cdp.Object{
 		"files":    absPaths,
 		"objectId": el.ObjectID,
 	})

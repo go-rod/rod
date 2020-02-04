@@ -72,7 +72,7 @@ func Open(b *Browser) *Browser {
 
 // CloseE ...
 func (b *Browser) CloseE() error {
-	_, err := b.Call(b.ctx, &cdp.Message{Method: "Browser.close"})
+	_, err := b.Call(&cdp.Message{Method: "Browser.close"})
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func (b *Browser) Ctx(ctx context.Context) *Browser {
 
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
-	target, err := b.Call(b.ctx, &cdp.Message{
+	target, err := b.Call(&cdp.Message{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": url,
@@ -122,7 +122,7 @@ func (b *Browser) Page(url string) *Page {
 
 // PagesE ...
 func (b *Browser) PagesE() ([]*Page, error) {
-	list, err := b.Call(b.ctx, &cdp.Message{Method: "Target.getTargets"})
+	list, err := b.Call(&cdp.Message{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
@@ -151,10 +151,10 @@ func (b *Browser) Pages() []*Page {
 }
 
 // Call sends a control message to browser
-func (b *Browser) Call(ctx context.Context, msg *cdp.Message) (kit.JSONResult, error) {
+func (b *Browser) Call(msg *cdp.Message) (kit.JSONResult, error) {
 	b.slowmotion(msg.Method)
 
-	return b.client.Call(ctx, msg)
+	return b.client.Call(b.ctx, msg)
 }
 
 // Event returns the observable for browser events
@@ -169,15 +169,9 @@ func (b *Browser) page(targetID string) (*Page, error) {
 		TargetID: targetID,
 	}
 
-	page.Mouse = &Mouse{
-		ctx:  b.ctx,
-		page: page,
-	}
+	page.Mouse = &Mouse{page: page}
 
-	page.Keyboard = &Keyboard{
-		ctx:  b.ctx,
-		page: page,
-	}
+	page.Keyboard = &Keyboard{page: page}
 
 	return page, page.initSession()
 }
@@ -208,7 +202,7 @@ func (b *Browser) initEvents() error {
 		}
 	}()
 
-	_, err := b.Call(b.ctx, &cdp.Message{
+	_, err := b.Call(&cdp.Message{
 		Method: "Target.setDiscoverTargets",
 		Params: cdp.Object{"discover": true},
 	})

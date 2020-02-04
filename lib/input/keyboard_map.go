@@ -1,4 +1,4 @@
-package keys
+package input
 
 // DOM keys.
 const (
