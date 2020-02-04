@@ -114,10 +114,11 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return b.page(target.Get("targetId").String())
 }
 
-// Page creates a new page
+// Page creates a new page and wait until Page.domContentEventFired fired
 func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
 	kit.E(err)
+	p.WaitEvent("Page.domContentEventFired")
 	return p
 }
 

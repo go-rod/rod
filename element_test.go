@@ -10,13 +10,13 @@ import (
 
 func (s *S) TestClick() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	p.Timeout(3 * time.Second).Element("button").Click()
+	p.Element("button").Click()
 
 	s.True(p.Has("[a=ok]"))
 }
 
 func (s *S) TestClickInIframes() {
-	p := s.page.Timeout(3 * time.Second).Navigate(s.htmlFile("fixtures/click-iframes.html"))
+	p := s.page.Navigate(s.htmlFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
 	frame.Element("button").Click()
 	s.True(frame.Has("[a=ok]"))
@@ -142,7 +142,9 @@ func (s *S) TestWaitInvisible() {
 	btn := p.Element("button")
 	timeout := 3 * time.Second
 
-	h4.Timeout(timeout).WaitVisible()
+	h4t := h4.Timeout(timeout)
+	h4t.WaitVisible()
+	h4t.CancelTimeout()
 
 	go func() {
 		time.Sleep(100 * time.Millisecond)
@@ -164,4 +166,16 @@ func (s *S) TestFnErr() {
 	s.Error(err)
 	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
+}
+
+func (s *S) TestElementOthers() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	el := p.Element("form")
+	el.Focus()
+	el.ScrollIntoViewIfNeeded()
+	s.Equal("{\"bottom\":289,\"height\":281,\"left\":8,\"right\":792,\"top\":8,\"width\":784,\"x\":8,\"y\":8}", el.Box().String())
+	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
+	el.Wait(`() => true`)
+	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("node.localName").String())
+	s.Len(el.ElementsByJS(`() => null`), 0)
 }

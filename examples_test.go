@@ -22,4 +22,6 @@ func ExampleOpen() {
 	page.Element("[type=submit]").Click()
 
 	fmt.Println(page.Element("#firstHeading").Text())
+
+	//// Output: Idempotence
 }

@@ -58,16 +58,13 @@ func (p *Page) NavigateE(url string) error {
 	_, err := p.Call("Page.navigate", cdp.Object{
 		"url": url,
 	})
-	if err != nil {
-		return err
-	}
-	_, err = p.WaitEventE("Page.frameStoppedLoading")
 	return err
 }
 
-// Navigate to url and wait until Page.frameStoppedLoading fired
+// Navigate to url and wait until Page.domContentEventFired fired
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))
+	kit.E(p.WaitEventE("Page.domContentEventFired"))
 	return p
 }
 
@@ -162,12 +159,12 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Elemen
 	if err != nil {
 		return nil, err
 	}
-	defer p.ReleaseObject(res)
 
 	objectID := res.Get("result.objectId").String()
 	if objectID == "" {
 		return []*Element{}, nil
 	}
+	defer p.ReleaseObject(res)
 
 	list, err := p.Call("Runtime.getProperties", cdp.Object{
 		"objectId":      objectID,

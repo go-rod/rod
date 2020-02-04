@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ysmood/kit"
 )
@@ -29,7 +30,8 @@ func (s *S) TestPages() {
 }
 
 func (s *S) TestUntilPage() {
-	page := s.page.Navigate(s.htmlFile("fixtures/open-page.html"))
+	page := s.page.Timeout(3 * time.Second).Navigate(s.htmlFile("fixtures/open-page.html"))
+	defer page.CancelTimeout()
 
 	wait := kit.All(func() {
 		page.Element("a").Click()
@@ -77,10 +79,30 @@ func (s *S) TestDownloadFile() {
 		page.Element("a").Click()
 	})
 
-	_, data := page.GetDownloadFile("")
+	_, data := page.GetDownloadFile("*")
 
 	s.Equal(content, string(data))
 	wait()
+}
+
+func (s *S) TestMouse() {
+	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	mouse := page.Mouse
+
+	mouse.Move(140, 160)
+	mouse.Down("left")
+	mouse.Up("left")
+
+	s.True(page.Has("[a=ok]"))
+}
+func (s *S) TestMouseClick() {
+	s.browser.Slowmotion = 1
+	defer func() { s.browser.Slowmotion = 0 }()
+
+	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	mouse := page.Mouse
+	mouse.Click("left")
+	s.True(page.Has("[a=ok]"))
 }
 
 func (s *S) TestDrag() {
@@ -95,4 +117,12 @@ func (s *S) TestDrag() {
 	mouse.Up("left")
 
 	page.Element(".dropzone:nth-child(2) #draggable")
+}
+
+func (s *S) TestPageOthers() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+
+	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
+	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
+	s.EqualValues(1, p.Eval(`() => 1`).Int())
 }

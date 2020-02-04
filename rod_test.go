@@ -53,7 +53,7 @@ func Test(t *testing.T) {
 		}()
 	}
 
-	s.page = s.browser.Page("about:blank")
+	s.page = s.browser.Page(s.htmlFile("fixtures/click.html"))
 
 	suite.Run(t, s)
 }

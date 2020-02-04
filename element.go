@@ -43,7 +43,8 @@ func (el *Element) CancelTimeout() {
 	}
 }
 
-func (el *Element) describe() (kit.JSONResult, error) {
+// DescribeE ...
+func (el *Element) DescribeE() (kit.JSONResult, error) {
 	node, err := el.page.Ctx(el.ctx).Call(
 		"DOM.describeNode",
 		cdp.Object{
@@ -56,9 +57,16 @@ func (el *Element) describe() (kit.JSONResult, error) {
 	return node, nil
 }
 
+// Describe returns the element info
+func (el *Element) Describe() kit.JSONResult {
+	info, err := el.DescribeE()
+	kit.E(err)
+	return info
+}
+
 // FrameE ...
 func (el *Element) FrameE() (*Page, error) {
-	node, err := el.describe()
+	node, err := el.DescribeE()
 	if err != nil {
 		return nil, err
 	}
