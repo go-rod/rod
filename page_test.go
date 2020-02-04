@@ -57,7 +57,7 @@ func (s *S) TestAlert() {
 }
 
 func (s *S) TestDownloadFile() {
-	srv := kit.MustServer(":0")
+	srv := kit.MustServer("127.0.0.1:0")
 	host := srv.Listener.Addr().String()
 	content := "test content"
 
@@ -101,6 +101,7 @@ func (s *S) TestMouseClick() {
 
 	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	mouse := page.Mouse
+	mouse.Move(140, 160)
 	mouse.Click("left")
 	s.True(page.Has("[a=ok]"))
 }

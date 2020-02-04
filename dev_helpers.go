@@ -5,11 +5,11 @@
 package rod
 
 import (
+	"context"
 	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
-	"golang.org/x/net/context"
 )
 
 // check method and sleep if needed

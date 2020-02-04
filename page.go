@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -312,7 +313,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 // GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
 // Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
 func (p *Page) GetDownloadFile(pattern string) (http.Header, []byte) {
-	h, f, err := p.GetDownloadFileE("tmp/rod-downloads", pattern)
+	h, f, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
 	kit.E(err)
 	return h, f
 }

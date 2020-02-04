@@ -15,7 +15,7 @@ import (
 )
 
 // DefaultRevision of chromium to use
-const DefaultRevision = 706915
+const DefaultRevision = 722234
 
 // Chrome is a smart helper to get the executable chrome binary.
 // It will first try to find the chrome from local disk, if not exists
@@ -117,14 +117,9 @@ func (c *Chrome) Download() error {
 		return err
 	}
 
-	unzipPath := fmt.Sprintf("chromium-%d", c.revision())
-
-	err = os.RemoveAll(unzipPath)
-	if err != nil {
-		return err
-	}
-
-	return archiver.Unarchive(zipPath, filepath.Join(dir, unzipPath))
+	unzipPath := filepath.Join(dir, fmt.Sprintf("chromium-%d", revision))
+	_ = os.RemoveAll(unzipPath)
+	return archiver.Unarchive(zipPath, unzipPath)
 }
 
 // Get tries to find chrome binary depends the OS
