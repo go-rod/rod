@@ -14,25 +14,42 @@ import (
 	"github.com/ysmood/kit"
 )
 
-const defaultRevision = 706915
+// DefaultRevision of chromium to use
+const DefaultRevision = 706915
 
 // Chrome is a smart helper to get the executable chrome binary.
 // It will first try to find the chrome from local disk, if not exists
-// it will try to download the chromium under "./chrome/".
+// it will try to download the chromium to Dir.
 type Chrome struct {
-	Host     string
+	// Host default is https://storage.googleapis.com
+	Host string
+
+	// Revision default is DefaultRevision
 	Revision int
+
+	// Dir default is the filepath.Join(os.TempDir(), "cdp")
+	Dir string
 }
 
 func (c *Chrome) dir() string {
-	return filepath.Join(os.TempDir(), "cdp")
+	if c.Dir == "" {
+		return filepath.Join(os.TempDir(), "cdp")
+	}
+	return c.Dir
 }
 
 func (c *Chrome) revision() int {
 	if c.Revision == 0 {
-		return defaultRevision
+		return DefaultRevision
 	}
 	return c.Revision
+}
+
+func (c *Chrome) host() string {
+	if c.Host == "" {
+		return "https://storage.googleapis.com"
+	}
+	return c.Host
 }
 
 // ExecPath of the chromium executable
@@ -48,9 +65,9 @@ func (c *Chrome) ExecPath() string {
 
 // Download chromium
 func (c *Chrome) Download() error {
-	if c.Host == "" {
-		c.Host = "https://storage.googleapis.com"
-	}
+	host := c.host()
+	revision := c.revision()
+	dir := c.dir()
 
 	conf := map[string]struct {
 		zipName   string
@@ -61,17 +78,17 @@ func (c *Chrome) Download() error {
 		"windows": {"chrome-win.zip", "Win"},
 	}[runtime.GOOS]
 
-	u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", c.Host, conf.urlPrefix, c.revision(), conf.zipName)
+	u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, revision, conf.zipName)
 	kit.Log("Download chromium from:", u)
 
-	zipPath := filepath.Join(c.dir(), fmt.Sprintf("chromium-%d.zip", c.revision()))
+	zipPath := filepath.Join(dir, fmt.Sprintf("chromium-%d.zip", revision))
 
-	err := kit.OutputFile(zipPath, "", nil)
+	err := kit.Mkdir(dir, nil)
 	if err != nil {
 		return err
 	}
 
-	zipFile, err := os.OpenFile(zipPath, os.O_WRONLY, os.ModePerm)
+	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -107,32 +124,14 @@ func (c *Chrome) Download() error {
 		return err
 	}
 
-	return archiver.Unarchive(zipPath, filepath.Join(c.dir(), unzipPath))
+	return archiver.Unarchive(zipPath, filepath.Join(dir, unzipPath))
 }
 
 // Get tries to find chrome binary depends the OS
 func (c *Chrome) Get() (string, error) {
 	execPath := c.ExecPath()
 
-	dict := map[string][]string{
-		"darwin": {
-			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-			"/Applications/Chromium.app/Contents/MacOS/Chromium",
-		},
-		"linux": {
-			"chromium",
-			"chromium-browser",
-			"google-chrome",
-			"/usr/bin/google-chrome",
-		},
-		"windows": {
-			"chrome",
-			`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
-			`C:\Program Files\Google\Chrome\Application\chrome.exe`,
-		},
-	}
-
-	list := append([]string{os.Getenv("CHROME_BIN")}, dict[runtime.GOOS]...)
+	list := append([]string{os.Getenv("CHROME_BIN")}, downloadMap[runtime.GOOS]...)
 	list = append(list, execPath)
 
 	for _, path := range list {
@@ -142,4 +141,22 @@ func (c *Chrome) Get() (string, error) {
 		}
 	}
 	return execPath, c.Download()
+}
+
+var downloadMap = map[string][]string{
+	"darwin": {
+		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+		"/Applications/Chromium.app/Contents/MacOS/Chromium",
+	},
+	"linux": {
+		"chromium",
+		"chromium-browser",
+		"google-chrome",
+		"/usr/bin/google-chrome",
+	},
+	"windows": {
+		"chrome",
+		`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
+		`C:\Program Files\Google\Chrome\Application\chrome.exe`,
+	},
 }
