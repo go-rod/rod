@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
+	"golang.org/x/net/context"
 )
 
 // check method and sleep if needed
@@ -61,13 +62,16 @@ func (el *Element) trace(msg string) func() {
 		box.Get("height").Int(),
 		msg,
 	})
-	if err != nil {
+	if err != nil && err != context.Canceled {
 		el.page.browser.fatal.Publish(err)
 	}
 
 	clean := func() {
-		_, err := root.EvalE(true, "", `id => document.getElementById(id).remove()`, []interface{}{id})
-		if err != nil {
+		_, err := root.EvalE(true, "", `id => {
+			let el = document.getElementById(id)
+			el && el.remove()
+		}`, []interface{}{id})
+		if err != nil && err != context.Canceled {
 			el.page.browser.fatal.Publish(err)
 		}
 	}

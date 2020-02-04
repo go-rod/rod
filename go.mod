@@ -5,9 +5,9 @@ go 1.13
 require (
 	github.com/cenkalti/backoff/v4 v4.0.0
 	github.com/cheggaaa/pb/v3 v3.0.4
-	github.com/chromedp/cdproto v0.0.0-20200127141643-96201809f07b
 	github.com/gorilla/websocket v1.4.1
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/stretchr/testify v1.4.0
-	github.com/ysmood/kit v0.19.7
+	github.com/ysmood/kit v0.20.1
+	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
 )

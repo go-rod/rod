@@ -2,6 +2,8 @@ package rod
 
 import (
 	"context"
+	"encoding/base64"
+	"net/http"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -219,16 +221,97 @@ func (p *Page) WaitEvent(name string) kit.JSONResult {
 
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) error {
-	_, err := p.Call("Page.handleJavaScriptDialog", cdp.Object{
+	_, err := p.WaitEventE("Page.javascriptDialogOpening")
+	if err != nil {
+		return err
+	}
+	_, err = p.Call("Page.handleJavaScriptDialog", cdp.Object{
 		"accept":     accept,
 		"promptText": promptText,
 	})
 	return err
 }
 
-// HandleDialog accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
+// HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
 func (p *Page) HandleDialog(accept bool, promptText string) {
 	kit.E(p.HandleDialogE(accept, promptText))
+}
+
+// GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
+func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error) {
+	var params cdp.Object
+	if pattern != "" {
+		params = cdp.Object{
+			"patterns": []cdp.Object{
+				{"urlPattern": pattern},
+			},
+		}
+	}
+
+	_, err := p.Call("Page.setDownloadBehavior", cdp.Object{
+		"behavior":     "allow",
+		"downloadPath": dir,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	_, err = p.Call("Fetch.enable", params)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer func() {
+		_, err = p.Call("Fetch.disable", nil)
+	}()
+
+	msg, err := p.WaitEventE("Fetch.requestPaused")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	msgReq := msg.Get("request")
+	req := kit.Req(msgReq.Get("url").String())
+
+	for k, v := range msgReq.Get("headers").Map() {
+		req.Header(k, v.String())
+	}
+
+	res, err := req.Response()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	body, err := req.Bytes()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	headers := []cdp.Object{}
+	for k, vs := range res.Header {
+		for _, v := range vs {
+			headers = append(headers, cdp.Object{
+				"name":  k,
+				"value": v,
+			})
+		}
+	}
+
+	_, err = p.Call("Fetch.fulfillRequest", cdp.Object{
+		"requestId":       msg.Get("requestId").String(),
+		"responseCode":    res.StatusCode,
+		"responseHeaders": headers,
+		"body":            base64.StdEncoding.EncodeToString(body),
+	})
+
+	return res.Header, body, err
+}
+
+// GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
+// Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
+func (p *Page) GetDownloadFile(pattern string) (http.Header, []byte) {
+	h, f, err := p.GetDownloadFileE("tmp/rod-downloads", pattern)
+	kit.E(err)
+	return h, f
 }
 
 // WaitPageE ...
