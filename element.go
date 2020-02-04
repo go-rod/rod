@@ -365,7 +365,7 @@ func (el *Element) ElementE(selector string) (*Element, error) {
 	return el.ElementByJSE(`s => this.querySelector(s)`, selector)
 }
 
-// Element waits and returns the first element in the page that matches the selector
+// Element retries until returns the first child that matches the selector
 func (el *Element) Element(selector string) *Element {
 	el, err := el.ElementE(selector)
 	kit.E(err)
@@ -377,7 +377,7 @@ func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, err
 	return el.page.ElementByJSE(el.ObjectID, js, params)
 }
 
-// ElementByJS waits and returns the element from the return value of the js
+// ElementByJS retries until returns the element from the return value of the js
 func (el *Element) ElementByJS(js string, params ...interface{}) *Element {
 	el, err := el.ElementByJSE(js, params...)
 	kit.E(err)

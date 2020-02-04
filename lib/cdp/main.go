@@ -9,12 +9,13 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// Client is a chrome devtools protocol connection instance
+// Client is a chrome devtools protocol connection instance.
+// To enable debug log, set env "debug_cdp=true".
 type Client struct {
 	messages map[uint64]*Message
 	chReq    chan *Message
 	chRes    chan *Message
-	event    chan *Message
+	chEvent  chan *Message
 	chFatal  chan error
 	count    uint64
 }
@@ -58,7 +59,7 @@ func New(ctx context.Context, url string) (*Client, error) {
 		messages: map[uint64]*Message{},
 		chReq:    make(chan *Message),
 		chRes:    make(chan *Message),
-		event:    make(chan *Message),
+		chEvent:  make(chan *Message),
 		chFatal:  make(chan error),
 	}
 
@@ -89,6 +90,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 				cdp.chFatal <- err
 				continue
 			}
+			debug(data)
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
 				cdp.chFatal <- err
@@ -98,7 +100,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 
 		case msg := <-cdp.chRes:
 			if msg.ID == 0 {
-				cdp.event <- msg
+				cdp.chEvent <- msg
 				continue
 			}
 
@@ -123,6 +125,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 			cdp.chFatal <- err
 			continue
 		}
+		debug(data)
 
 		if msgType == websocket.TextMessage {
 			var msg Message
@@ -139,7 +142,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 
 // Event will emit chrome devtools protocol events
 func (cdp *Client) Event() chan *Message {
-	return cdp.event
+	return cdp.chEvent
 }
 
 // Fatal will emit fatal errors

@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -164,9 +165,10 @@ func (b *Browser) Event() *kit.Observable {
 
 func (b *Browser) page(targetID string) (*Page, error) {
 	page := &Page{
-		ctx:      b.ctx,
-		browser:  b,
-		TargetID: targetID,
+		ctx:                 b.ctx,
+		browser:             b,
+		TargetID:            targetID,
+		getDownloadFileLock: &sync.Mutex{},
 	}
 
 	page.Mouse = &Mouse{page: page}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -27,7 +28,8 @@ type Page struct {
 	FrameID string
 	element *Element
 
-	timeoutCancel func()
+	timeoutCancel       func()
+	getDownloadFileLock *sync.Mutex
 }
 
 // Ctx sets the context for later operation
@@ -101,7 +103,7 @@ func (p *Page) ElementE(selector string) (*Element, error) {
 	return p.ElementByJSE("", `s => document.querySelector(s)`, []interface{}{selector})
 }
 
-// Element waits and returns the first element in the page that matches the selector
+// Element retries until returns the first element in the page that matches the selector
 func (p *Page) Element(selector string) *Element {
 	el, err := p.ElementE(selector)
 	kit.E(err)
@@ -135,7 +137,7 @@ func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, 
 	}, nil
 }
 
-// ElementByJS waits and returns the element from the return value of the js
+// ElementByJS retries until returns the element from the return value of the js
 func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
 	el, err := p.ElementByJSE("", js, params)
 	kit.E(err)
@@ -154,40 +156,38 @@ func (p *Page) Elements(selector string) []*Element {
 	return list
 }
 
-// ElementsByJSE ...
+// ElementsByJSE is different from ElementByJSE, it doesn't do retry
 func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Element, error) {
-	elemList := []*Element{}
-	err := cdp.Retry(p.ctx, func() error {
-		res, err := p.EvalE(false, thisID, js, params)
-		if err != nil {
-			return err
-		}
-		defer p.ReleaseObject(res)
+	res, err := p.EvalE(false, thisID, js, params)
+	if err != nil {
+		return nil, err
+	}
+	defer p.ReleaseObject(res)
 
-		list, err := p.Call("Runtime.getProperties", cdp.Object{
-			"objectId":      res.Get("result.objectId").String(),
-			"ownProperties": true,
-		})
-		if err != nil {
-			return err
-		}
+	objectID := res.Get("result.objectId").String()
+	if objectID == "" {
+		return []*Element{}, nil
+	}
 
-		for _, obj := range list.Get("result").Array() {
-			if obj.Get("name").String() == "__proto__" {
-				continue
-			}
-
-			elemList = append(elemList, &Element{
-				page:     p,
-				ctx:      p.ctx,
-				ObjectID: obj.Get("value.objectId").String(),
-			})
-		}
-
-		return nil
+	list, err := p.Call("Runtime.getProperties", cdp.Object{
+		"objectId":      objectID,
+		"ownProperties": true,
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	elemList := []*Element{}
+	for _, obj := range list.Get("result").Array() {
+		if obj.Get("name").String() == "__proto__" {
+			continue
+		}
+
+		elemList = append(elemList, &Element{
+			page:     p,
+			ctx:      p.ctx,
+			ObjectID: obj.Get("value.objectId").String(),
+		})
 	}
 
 	return elemList, nil
@@ -247,6 +247,11 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 			},
 		}
 	}
+
+	// both Page.setDownloadBehavior and Fetch.enable will pollute the global status,
+	// we have to prevent race condition here
+	p.getDownloadFileLock.Lock()
+	defer p.getDownloadFileLock.Unlock()
 
 	_, err := p.Call("Page.setDownloadBehavior", cdp.Object{
 		"behavior":     "allow",

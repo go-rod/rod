@@ -9,5 +9,5 @@ require (
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/stretchr/testify v1.4.0
 	github.com/ysmood/kit v0.20.1
-	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 )

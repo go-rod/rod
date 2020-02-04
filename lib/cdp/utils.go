@@ -2,6 +2,7 @@ package cdp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/url"
 	nurl "net/url"
@@ -145,4 +146,17 @@ func Retry(ctx context.Context, fn func() error) error {
 	bo.MaxInterval = 3 * time.Second
 
 	return backoff.Retry(fn, backoff.WithContext(bo, ctx))
+}
+
+var isDebug = os.Getenv("debug_cdp") == "true"
+
+func debug(data []byte) {
+	if !isDebug {
+		return
+	}
+
+	var obj interface{}
+	kit.E(json.Unmarshal(data, &obj))
+
+	kit.Dump(obj)
 }

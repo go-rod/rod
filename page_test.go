@@ -26,7 +26,6 @@ func (s *S) TestPages() {
 	pages := s.browser.Pages()
 
 	s.Len(pages, 3)
-	s.Equal("click me", pages[0].Element("button").Text())
 }
 
 func (s *S) TestUntilPage() {

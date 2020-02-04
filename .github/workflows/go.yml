@@ -2,7 +2,7 @@ name: Go
 on: [push]
 jobs:
 
-  build:
+  linux:
 
     runs-on: ubuntu-latest
 
