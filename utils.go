@@ -23,16 +23,6 @@ func SprintFnThis(js string) string {
 	}`, js)
 }
 
-// FnResult parses the errors of the fn result and returns the value of the result
-func FnResult(res kit.JSONResult) (kit.JSONResult, error) {
-	if res.Get("exceptionDetails").Exists() {
-		return nil, &Error{nil, res.Get("exceptionDetails.exception.description").String(), res}
-	}
-
-	val := res.Get("result.value")
-	return &val, nil
-}
-
 // Pause execution
 func Pause() {
 	<-make(chan kit.Nil)

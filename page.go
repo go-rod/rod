@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
@@ -113,7 +114,7 @@ func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, 
 	err := cdp.Retry(p.ctx, func() error {
 		element, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
-			return err
+			return backoff.Permanent(err)
 		}
 
 		objectID = element.Get("result.objectId").String()
@@ -358,8 +359,13 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 		return nil, err
 	}
 
+	if res.Get("exceptionDetails").Exists() {
+		return nil, &Error{nil, res.Get("exceptionDetails.exception.description").String(), res}
+	}
+
 	if byValue {
-		return FnResult(res)
+		val := res.Get("result.value")
+		res = &val
 	}
 
 	return

@@ -166,6 +166,11 @@ func (s *S) TestFnErr() {
 	s.Error(err)
 	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
+
+	_, err = el.ElementByJSE("foo()")
+	s.Error(err)
+	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
+	s.Nil(errors.Unwrap(err))
 }
 
 func (s *S) TestElementOthers() {
@@ -173,7 +178,7 @@ func (s *S) TestElementOthers() {
 	el := p.Element("form")
 	el.Focus()
 	el.ScrollIntoViewIfNeeded()
-	s.Equal("{\"bottom\":289,\"height\":281,\"left\":8,\"right\":792,\"top\":8,\"width\":784,\"x\":8,\"y\":8}", el.Box().String())
+	s.EqualValues(784, el.Box().Get("width").Int())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
 	el.Wait(`() => true`)
 	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("node.localName").String())
