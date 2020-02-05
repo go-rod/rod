@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
@@ -73,6 +74,8 @@ func New(ctx context.Context, url string) (*Client, error) {
 		return nil, err
 	}
 
+	go cdp.close(ctx, conn)
+
 	go cdp.handleReq(ctx, conn)
 
 	go cdp.handleRes(ctx, conn)
@@ -94,7 +97,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
 				cdp.chFatal <- err
-				continue
+				return
 			}
 			cdp.messages[msg.ID] = msg
 
@@ -122,8 +125,10 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 	for ctx.Err() == nil {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			cdp.chFatal <- err
-			continue
+			if err != io.EOF {
+				cdp.chFatal <- err
+			}
+			return
 		}
 		debug(data)
 
@@ -170,4 +175,12 @@ func (cdp *Client) Call(ctx context.Context, msg *Message) (kit.JSONResult, erro
 func (cdp *Client) id() uint64 {
 	cdp.count++
 	return cdp.count
+}
+
+func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
+	<-ctx.Done()
+	err := conn.Close()
+	if err != nil {
+		cdp.chFatal <- err
+	}
 }

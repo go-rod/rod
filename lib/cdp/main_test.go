@@ -13,7 +13,8 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	ctx := context.Background()
+	ctx, done := context.WithCancel(context.Background())
+	defer done()
 
 	url := os.Getenv("chrome")
 	_, err := cdp.GetWebSocketDebuggerURL(url)
@@ -30,8 +31,7 @@ func TestBasic(t *testing.T) {
 	}()
 
 	go func() {
-		for msg := range client.Event() {
-			kit.Log(msg.Method)
+		for range client.Event() {
 		}
 	}()
 
