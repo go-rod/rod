@@ -34,14 +34,14 @@ type Page struct {
 	getDownloadFileLock *sync.Mutex
 }
 
-// Ctx sets the context for later operation
+// Ctx sets the context for chained sub-operations
 func (p *Page) Ctx(ctx context.Context) *Page {
 	newObj := *p
 	newObj.ctx = ctx
 	return &newObj
 }
 
-// Timeout sets the timeout for later operation
+// Timeout sets the timeout for chained sub-operations
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
 	p.timeoutCancel = cancel
@@ -113,16 +113,21 @@ func (p *Page) Element(selector string) *Element {
 func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, error) {
 	var objectID string
 	err := cdp.Retry(p.ctx, func() error {
-		element, err := p.EvalE(false, thisID, js, params)
+		res, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return backoff.Permanent(err)
 		}
+		val := res.Get("result")
 
-		objectID = element.Get("result.objectId").String()
-		if objectID == "" {
+		if IsEmpty(&val) {
 			return cdp.ErrNotYet
 		}
 
+		if val.Get("subtype").String() != "node" {
+			return backoff.Permanent(&Error{nil, ErrExpectElement, val.Raw})
+		}
+
+		objectID = val.Get("objectId").String()
 		return nil
 	})
 	if err != nil {
@@ -161,8 +166,13 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Elemen
 	if err != nil {
 		return nil, err
 	}
+	val := res.Get("result")
 
-	objectID := res.Get("result.objectId").String()
+	if val.Get("subtype").String() != "array" {
+		return nil, &Error{nil, ErrExpectElements, val}
+	}
+
+	objectID := val.Get("objectId").String()
 	if objectID == "" {
 		return []*Element{}, nil
 	}
@@ -178,14 +188,20 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Elemen
 
 	elemList := []*Element{}
 	for _, obj := range list.Get("result").Array() {
-		if obj.Get("name").String() == "__proto__" {
+		name := obj.Get("name").String()
+		if name == "__proto__" || name == "length" {
 			continue
+		}
+		val := obj.Get("value")
+
+		if val.Get("subtype").String() != "node" {
+			return nil, &Error{nil, ErrExpectElements, val}
 		}
 
 		elemList = append(elemList, &Element{
 			page:     p,
 			ctx:      p.ctx,
-			ObjectID: obj.Get("value.objectId").String(),
+			ObjectID: val.Get("objectId").String(),
 		})
 	}
 
@@ -372,18 +388,36 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 	return
 }
 
-func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
+func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResult, error) {
 	params := cdp.Object{
 		"expression":    SprintFnApply(js, jsArgs),
 		"awaitPromise":  true,
 		"returnByValue": byValue,
 	}
-
 	if p.isIframe() {
-		params["contextId"] = p.ContextID
+		return p.evalIframe(params)
 	}
-
 	return p.Call("Runtime.evaluate", params)
+}
+
+func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
+	// ContextID will be invalid if a frame is reloaded
+	err = cdp.Retry(p.ctx, func() error {
+		params["contextId"] = p.ContextID
+
+		res, err = p.Call("Runtime.evaluate", params)
+		if err == nil {
+			return nil
+		}
+
+		if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
+			_ = p.initIsolatedWorld()
+			return cdp.ErrNotYet
+		}
+
+		return backoff.Permanent(err)
+	})
+	return
 }
 
 func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (kit.JSONResult, error) {

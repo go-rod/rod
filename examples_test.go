@@ -10,11 +10,11 @@ import (
 	"github.com/ysmood/rod/lib/input"
 )
 
-func ExampleOpen() {
+func Example_basic() {
 	browser := rod.Open(nil)
 	defer browser.Close()
 
-	page := browser.Page("https://www.wikipedia.org/")
+	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
 	page.Element("#searchInput").Input("idempotent")
 
@@ -22,10 +22,10 @@ func ExampleOpen() {
 
 	fmt.Println(page.Element("#firstHeading").Text())
 
-	//// Output: Idempotence
+	// Output: Idempotence
 }
 
-func ExampleElement() {
+func Example_debug_mode() {
 	browser := rod.Open(&rod.Browser{
 		Foreground: true,
 		Trace:      true,
@@ -33,7 +33,7 @@ func ExampleElement() {
 	})
 	defer browser.Close()
 
-	page := browser.Page("https://www.wikipedia.org/")
+	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
 	page.Element("#searchLanguage").Select("[lang=zh]")
 	page.Element("#searchInput").Input("热干面")
@@ -41,13 +41,12 @@ func ExampleElement() {
 
 	fmt.Println(page.Element("#firstHeading").Text())
 
+	// Skip
 	//// Output: 热干面
 }
 
-// ExampleBrowser is an example to do 3DS stripe payment
-func ExampleBrowser() {
-	type kv map[string]interface{}
-
+// An example to handle 3DS stripe callback
+func Example_stripe_callback() {
 	req := func(url string) *kit.ReqContext {
 		return kit.Req(url).Header("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc")
 	}
@@ -55,7 +54,7 @@ func ExampleBrowser() {
 	dig := digto.New(kit.RandString(16))
 
 	token := req("https://api.stripe.com/v1/tokens").Post().Form(
-		"card", kv{
+		"card", map[string]interface{}{
 			"number":    "4000000000003220",
 			"exp_month": "7",
 			"exp_year":  "2025",
@@ -66,9 +65,9 @@ func ExampleBrowser() {
 	url := req("https://api.stripe.com/v1/payment_intents").Post().Form(
 		"amount", "2000",
 		"currency", "usd",
-		"payment_method_data", kv{
+		"payment_method_data", map[string]interface{}{
 			"type": "card",
-			"card": kv{
+			"card": map[string]interface{}{
 				"token": token,
 			},
 		},
@@ -78,7 +77,7 @@ func ExampleBrowser() {
 
 	browser := rod.Open(nil)
 	defer browser.Close()
-	browser.Page(url).
+	browser.Page(url).Timeout(time.Minute).
 		Element("[name=__privateStripeFrame4]").Frame().
 		Element("#challengeFrame").Frame().
 		Element("#test-source-authorize-3ds").Click()
@@ -87,7 +86,7 @@ func ExampleBrowser() {
 	kit.E(err)
 	kit.E(res(200, nil, nil))
 
-	fmt.Sprintln("done")
+	fmt.Println("done")
 
 	// Output: done
 }

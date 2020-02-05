@@ -22,14 +22,14 @@ type Element struct {
 	timeoutCancel func()
 }
 
-// Ctx sets the context for later operation
+// Ctx sets the context for chained sub-operations
 func (el *Element) Ctx(ctx context.Context) *Element {
 	newObj := *el
 	newObj.ctx = ctx
 	return &newObj
 }
 
-// Timeout sets the timeout for later operation
+// Timeout sets the timeout for chained sub-operations
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
 	el.timeoutCancel = cancel

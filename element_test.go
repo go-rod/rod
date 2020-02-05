@@ -182,5 +182,5 @@ func (s *S) TestElementOthers() {
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
 	el.Wait(`() => true`)
 	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("node.localName").String())
-	s.Len(el.ElementsByJS(`() => null`), 0)
+	s.Len(el.ElementsByJS(`() => []`), 0)
 }

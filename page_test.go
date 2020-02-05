@@ -120,6 +120,18 @@ func (s *S) TestDrag() {
 	page.Element(".dropzone:nth-child(2) #draggable")
 }
 
+func (s *S) TestPageElementByJS_Err() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	_, err := p.ElementByJSE("", `() => 1`, nil)
+	s.EqualError(err, "[rod] expect js to return an element\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+}
+
+func (s *S) TestPageElementsByJS_Err() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	_, err := p.ElementsByJSE("", `() => [1]`, nil)
+	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+}
+
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 

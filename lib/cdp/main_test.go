@@ -27,7 +27,9 @@ func TestBasic(t *testing.T) {
 	kit.E(err)
 
 	go func() {
-		panic(<-client.Fatal())
+		for err := range client.Fatal() {
+			kit.Err(err)
+		}
 	}()
 
 	go func() {

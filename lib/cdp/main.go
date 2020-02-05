@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"net"
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
@@ -93,7 +94,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 				cdp.fatal(err)
 				continue
 			}
-			debug(data)
+			debug(">", data)
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
 				cdp.fatal(err)
@@ -125,12 +126,14 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 	for ctx.Err() == nil {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			if err != io.EOF {
+			var netErr *net.OpError
+			ok := errors.As(err, &netErr)
+			if err != io.EOF || (ok && netErr.Err != errNetClosed) {
 				cdp.fatal(err)
 			}
 			return
 		}
-		debug(data)
+		debug("<", data)
 
 		if msgType == websocket.TextMessage {
 			var msg Message

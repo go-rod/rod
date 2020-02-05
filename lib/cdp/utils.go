@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/url"
 	nurl "net/url"
 	"os"
@@ -17,6 +18,8 @@ import (
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/fetcher"
 )
+
+var errNetClosed = errors.New("use of closed network connection")
 
 // LaunchBrowser a standalone temp browser instance and returns the debug url
 func LaunchBrowser(bin string, headless bool) (string, error) {
@@ -150,7 +153,7 @@ func Retry(ctx context.Context, fn func() error) error {
 
 var isDebug = os.Getenv("debug_cdp") == "true"
 
-func debug(data []byte) {
+func debug(prefix string, data []byte) {
 	if !isDebug {
 		return
 	}
@@ -158,5 +161,5 @@ func debug(data []byte) {
 	var obj interface{}
 	kit.E(json.Unmarshal(data, &obj))
 
-	kit.Dump(obj)
+	fmt.Printf("%s %s\n", prefix, kit.Sdump(obj))
 }

@@ -16,8 +16,6 @@ func TestGet(t *testing.T) {
 }
 
 func TestDownload(t *testing.T) {
-	t.Skip("only useful when debugging")
-
 	c := new(fetcher.Chrome)
 	kit.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
