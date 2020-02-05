@@ -90,13 +90,13 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			msg.ID = cdp.id()
 			data, err := json.Marshal(msg)
 			if err != nil {
-				cdp.chFatal <- err
+				cdp.fatal(err)
 				continue
 			}
 			debug(data)
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
-				cdp.chFatal <- err
+				cdp.fatal(err)
 				return
 			}
 			cdp.messages[msg.ID] = msg
@@ -110,7 +110,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			req, has := cdp.messages[msg.ID]
 
 			if !has {
-				cdp.chFatal <- errors.New("[cdp] request not found: " + kit.MustToJSON(msg))
+				cdp.fatal(errors.New("[cdp] request not found: " + kit.MustToJSON(msg)))
 				continue
 			}
 
@@ -126,7 +126,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
 			if err != io.EOF {
-				cdp.chFatal <- err
+				cdp.fatal(err)
 			}
 			return
 		}
@@ -136,7 +136,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 			var msg Message
 			err = json.Unmarshal(data, &msg)
 			if err != nil {
-				cdp.chFatal <- err
+				cdp.fatal(err)
 				continue
 			}
 
@@ -177,10 +177,17 @@ func (cdp *Client) id() uint64 {
 	return cdp.count
 }
 
+func (cdp *Client) fatal(err error) {
+	if isDebug {
+		kit.Err(err)
+	}
+	cdp.chFatal <- err
+}
+
 func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
 	<-ctx.Done()
 	err := conn.Close()
 	if err != nil {
-		cdp.chFatal <- err
+		cdp.fatal(err)
 	}
 }
