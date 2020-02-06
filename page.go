@@ -63,10 +63,9 @@ func (p *Page) NavigateE(url string) error {
 	return err
 }
 
-// Navigate to url and wait until Page.domContentEventFired fired
+// Navigate to url
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))
-	kit.E(p.WaitEventE("Page.domContentEventFired"))
 	return p
 }
 
@@ -235,28 +234,9 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
 	return list
 }
 
-// WaitEventE ...
-func (p *Page) WaitEventE(name string) (kit.JSONResult, error) {
-	msg, err := p.browser.Event().Until(p.ctx, func(e kit.Event) bool {
-		return e.(*cdp.Message).Method == name
-	})
-	if err != nil {
-		return nil, err
-	}
-	return kit.JSON(kit.MustToJSON(msg.(*cdp.Message).Params)), nil
-}
-
-// WaitEvent waits for the next event to happen.
-// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
-func (p *Page) WaitEvent(name string) kit.JSONResult {
-	res, err := p.WaitEventE(name)
-	kit.E(err)
-	return res
-}
-
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) error {
-	_, err := p.WaitEventE("Page.javascriptDialogOpening")
+	_, err := p.browser.Ctx(p.ctx).WaitEventE("Page.javascriptDialogOpening")
 	if err != nil {
 		return err
 	}
@@ -304,7 +284,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 		_, err = p.Call("Fetch.disable", nil)
 	}()
 
-	msg, err := p.WaitEventE("Fetch.requestPaused")
+	msg, err := p.browser.Ctx(p.ctx).WaitEventE("Fetch.requestPaused")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -394,7 +374,7 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	_, err = p.WaitEventE("Debugger.resumed")
+	_, err = p.browser.Ctx(p.ctx).WaitEventE("Debugger.resumed")
 	return err
 }
 

@@ -11,7 +11,7 @@ import (
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
-	s.True(page.Has("button"))
+	page.Element("button")
 }
 
 func (s *S) TestSetViewport() {
@@ -63,7 +63,8 @@ func (s *S) TestAlert() {
 
 func (s *S) TestDownloadFile() {
 	srv := kit.MustServer("127.0.0.1:0")
-	defer srv.Listener.Close()
+	defer func() { kit.E(srv.Listener.Close()) }()
+
 	host := srv.Listener.Addr().String()
 	content := "test content"
 
@@ -77,7 +78,7 @@ func (s *S) TestDownloadFile() {
 		kit.E(ctx.Writer.Write(data))
 	})
 
-	go srv.MustDo()
+	go func() { kit.Noop(srv.Do()) }()
 
 	page := s.page.Navigate("http://" + host)
 

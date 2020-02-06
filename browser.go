@@ -31,11 +31,12 @@ type Browser struct {
 	// OnFatal calls when a fatal error happens
 	OnFatal func(error)
 
-	ctx    context.Context
-	close  func()
-	client *cdp.Client
-	event  *kit.Observable
-	fatal  *kit.Observable
+	ctx           context.Context
+	timeoutCancel func()
+	close         func()
+	client        *cdp.Client
+	event         *kit.Observable
+	fatal         *kit.Observable
 }
 
 // OpenE ...
@@ -75,6 +76,20 @@ func Open(b *Browser) *Browser {
 	return b
 }
 
+// Ctx creates a clone with specified context
+func (b *Browser) Ctx(ctx context.Context) *Browser {
+	newObj := *b
+	newObj.ctx = ctx
+	return &newObj
+}
+
+// Timeout sets the timeout for chained sub-operations
+func (b *Browser) Timeout(d time.Duration) *Browser {
+	ctx, cancel := context.WithTimeout(b.ctx, d)
+	b.timeoutCancel = cancel
+	return b.Ctx(ctx)
+}
+
 // CloseE ...
 func (b *Browser) CloseE() error {
 	_, err := b.Call(&cdp.Message{Method: "Browser.close"})
@@ -94,15 +109,6 @@ func (b *Browser) Close() {
 	kit.E(b.CloseE())
 }
 
-// Ctx creates a clone with specified context
-func (b *Browser) Ctx(ctx context.Context) *Browser {
-	newObj := *b
-
-	newObj.ctx = ctx
-
-	return &newObj
-}
-
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
 	target, err := b.Call(&cdp.Message{
@@ -118,11 +124,10 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return b.page(target.Get("targetId").String())
 }
 
-// Page creates a new page and wait until Page.domContentEventFired fired
+// Page creates a new page
 func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
 	kit.E(err)
-	p.WaitEvent("Page.domContentEventFired")
 	return p
 }
 
@@ -154,6 +159,25 @@ func (b *Browser) Pages() []*Page {
 	list, err := b.PagesE()
 	kit.E(err)
 	return list
+}
+
+// WaitEventE ...
+func (b *Browser) WaitEventE(name string) (kit.JSONResult, error) {
+	msg, err := b.Event().Until(b.ctx, func(e kit.Event) bool {
+		return e.(*cdp.Message).Method == name
+	})
+	if err != nil {
+		return nil, err
+	}
+	return kit.JSON(kit.MustToJSON(msg.(*cdp.Message).Params)), nil
+}
+
+// WaitEvent waits for the next event to happen.
+// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
+func (b *Browser) WaitEvent(name string) kit.JSONResult {
+	res, err := b.WaitEventE(name)
+	kit.E(err)
+	return res
 }
 
 // Call sends a control message to browser

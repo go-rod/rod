@@ -111,7 +111,7 @@ func TestBasic(t *testing.T) {
 
 	kit.E(cdp.Retry(timeout, func() error {
 		// we might need to recreate the world because world can be
-		// destroyed after some frame events happens
+		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, &cdp.Message{
 			SessionID: sessionID,
 			Method:    "Page.createIsolatedWorld",
