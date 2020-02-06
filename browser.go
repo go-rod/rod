@@ -15,6 +15,10 @@ type Browser struct {
 	// If fails to connect to it, rod will try to open a local browser.
 	ControlURL string
 
+	// Viewport is the default value to set after page creation
+	// options: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
+	Viewport *cdp.Object
+
 	// Foreground enables the browser to run on foreground mode
 	Foreground bool
 
@@ -198,7 +202,7 @@ func (b *Browser) initEvents() error {
 	go func() {
 		for err := range b.fatal.Subscribe() {
 			if b.OnFatal == nil {
-				kit.Err(err)
+				kit.Err(kit.Sdump(err))
 			} else {
 				b.OnFatal(err.(error))
 			}

@@ -70,6 +70,26 @@ func (p *Page) Navigate(url string) *Page {
 	return p
 }
 
+// SetViewportE ...
+// Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
+func (p *Page) SetViewportE(params *cdp.Object) error {
+	if params == nil {
+		return nil
+	}
+	_, err := p.Call("Emulation.setDeviceMetricsOverride", params)
+	return err
+}
+
+// SetViewport overrides the values of device screen dimensions.
+func (p *Page) SetViewport(width, height int, deviceScaleFactor float32, mobile bool) {
+	kit.E(p.SetViewportE(&cdp.Object{
+		"width":             width,
+		"height":            height,
+		"deviceScaleFactor": deviceScaleFactor,
+		"mobile":            mobile,
+	}))
+}
+
 // CloseE page
 func (p *Page) CloseE() error {
 	_, err := p.Call("Page.close", nil)
@@ -506,7 +526,10 @@ func (p *Page) initSession() error {
 	}
 	p.SessionID = obj.Get("sessionId").String()
 	_, err = p.Call("Page.enable", nil)
-	return err
+	if err != nil {
+		return err
+	}
+	return p.SetViewportE(p.browser.Viewport)
 }
 
 func (p *Page) isIframe() bool {

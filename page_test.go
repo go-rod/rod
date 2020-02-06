@@ -11,7 +11,21 @@ import (
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
-	page.Element("button")
+	s.True(page.Has("button"))
+}
+
+func (s *S) TestSetViewport() {
+	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
+	defer page.Close()
+	page.SetViewport(317, 419, 0, false)
+	res := page.Eval(`() => [window.innerWidth, window.innerHeight]`)
+	s.EqualValues(317, res.Get("0").Int())
+	s.EqualValues(419, res.Get("1").Int())
+
+	page2 := s.browser.Page(s.htmlFile("fixtures/click.html"))
+	defer page2.Close()
+	res = page2.Eval(`() => [window.innerWidth, window.innerHeight]`)
+	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
 func (s *S) TestPageElements() {
@@ -49,6 +63,7 @@ func (s *S) TestAlert() {
 
 func (s *S) TestDownloadFile() {
 	srv := kit.MustServer("127.0.0.1:0")
+	defer srv.Listener.Close()
 	host := srv.Listener.Addr().String()
 	content := "test content"
 

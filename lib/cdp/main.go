@@ -182,7 +182,7 @@ func (cdp *Client) id() uint64 {
 
 func (cdp *Client) fatal(err error) {
 	if isDebug {
-		kit.Err(err)
+		kit.Err(kit.Sdump(err))
 	}
 	cdp.chFatal <- err
 }

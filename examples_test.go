@@ -46,7 +46,7 @@ func Example_debug_mode() {
 	page.Pause()
 
 	// Skip
-	//// Output: 热干面
+	// Output: 热干面
 }
 
 // An example to handle 3DS stripe callback
