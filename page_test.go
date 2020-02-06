@@ -1,7 +1,9 @@
 package rod_test
 
 import (
+	"bytes"
 	"fmt"
+	"image/png"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -148,6 +150,17 @@ func (s *S) TestPagePause() {
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
+}
+
+func (s *S) TestPageScreenshop() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	p.SetViewport(400, 300, 1, false)
+	p.Element("button")
+	data := p.Screenshop()
+	img, err := png.Decode(bytes.NewBuffer(data))
+	kit.E(err)
+	s.Equal(400, img.Bounds().Dx())
+	s.Equal(300, img.Bounds().Dy())
 }
 
 func (s *S) TestPageOthers() {

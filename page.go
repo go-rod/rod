@@ -334,6 +334,22 @@ func (p *Page) GetDownloadFile(pattern string) (http.Header, []byte) {
 	return h, f
 }
 
+// ScreenshopE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
+func (p *Page) ScreenshopE(options cdp.Object) ([]byte, error) {
+	res, err := p.Call("Page.captureScreenshot", options)
+	if err != nil {
+		return nil, err
+	}
+	return base64.StdEncoding.DecodeString(res.Get("data").String())
+}
+
+// Screenshop the page
+func (p *Page) Screenshop() []byte {
+	png, err := p.ScreenshopE(nil)
+	kit.E(err)
+	return png
+}
+
 // WaitPageE ...
 func (p *Page) WaitPageE() (*Page, error) {
 	var targetInfo cdp.Object
