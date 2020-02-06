@@ -364,6 +364,25 @@ func (p *Page) WaitPage() *Page {
 	return newPage
 }
 
+// PauseE ...
+func (p *Page) PauseE() error {
+	_, err := p.Call("Debugger.enable", nil)
+	if err != nil {
+		return err
+	}
+	_, err = p.Call("Debugger.pause", nil)
+	if err != nil {
+		return err
+	}
+	_, err = p.WaitEventE("Debugger.resumed")
+	return err
+}
+
+// Pause stops on the next JavaScript statement
+func (p *Page) Pause() {
+	kit.E(p.PauseE())
+}
+
 // EvalE thisID is the remote objectID that will be the this of the js function
 func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
 	if thisID == "" {

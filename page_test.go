@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod"
 )
 
 func (s *S) TestClosePage() {
@@ -17,16 +18,6 @@ func (s *S) TestPageElements() {
 	s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	list := s.page.Elements("input")
 	s.Equal("submit", list[2].Eval("() => this.value").String())
-}
-
-func (s *S) TestPages() {
-	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
-	defer page.Close()
-
-	page.Element("button")
-	pages := s.browser.Pages()
-
-	s.Len(pages, 3)
 }
 
 func (s *S) TestUntilPage() {
@@ -132,10 +123,19 @@ func (s *S) TestPageElementsByJS_Err() {
 	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
+func (s *S) TestPagePause() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+
+	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
+	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
+	s.EqualValues(1, p.Eval(`() => 1`).Int())
+}
+
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
+	go rod.Pause()
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
 )
 
 // S test suite
@@ -43,15 +42,6 @@ func Test(t *testing.T) {
 		Trace:      true,
 	})
 	defer s.browser.Close()
-
-	if show {
-		go func() {
-			for e := range s.browser.Event().Subscribe() {
-				msg := e.(*cdp.Message)
-				kit.Log(msg.Method, kit.MustToJSON(msg.Params))
-			}
-		}()
-	}
 
 	s.page = s.browser.Page(s.htmlFile("fixtures/click.html"))
 

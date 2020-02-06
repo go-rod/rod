@@ -41,6 +41,10 @@ func Example_debug_mode() {
 
 	fmt.Println(page.Element("#firstHeading").Text())
 
+	// pause the js execution
+	// you can resume by open the devtools and click the resume button on source tab
+	page.Pause()
+
 	// Skip
 	//// Output: 热干面
 }
@@ -51,7 +55,7 @@ func Example_stripe_callback() {
 		return kit.Req(url).Header("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc")
 	}
 
-	dig := digto.New(kit.RandString(16))
+	dig := digto.New(kit.RandString(8))
 
 	token := req("https://api.stripe.com/v1/tokens").Post().Form(
 		"card", map[string]interface{}{
@@ -77,10 +81,12 @@ func Example_stripe_callback() {
 
 	browser := rod.Open(nil)
 	defer browser.Close()
-	browser.Page(url).Timeout(time.Minute).
-		Element("[name=__privateStripeFrame4]").Frame().
-		Element("#challengeFrame").Frame().
-		Element("#test-source-authorize-3ds").Click()
+	page := browser.Page(url)
+	frame01 := page.Timeout(time.Minute).Element("[name=__privateStripeFrame4]").Frame()
+	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
+
+	frame01.Element(".Spinner").WaitInvisible() // wait page loading to be done
+	frame02.Element("#test-source-authorize-3ds").Click()
 
 	_, res, err := dig.Next()
 	kit.E(err)

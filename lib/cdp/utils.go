@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/url"
 	nurl "net/url"
 	"os"
@@ -161,5 +160,5 @@ func debug(prefix string, data []byte) {
 	var obj interface{}
 	kit.E(json.Unmarshal(data, &obj))
 
-	fmt.Printf("%s %s\n", prefix, kit.Sdump(obj))
+	kit.Log(kit.C("[cdp]", "cyan"), prefix, kit.Sdump(obj))
 }
