@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
 )
 
 func (s *S) TestClosePage() {
@@ -30,6 +29,7 @@ func (s *S) TestSetViewport() {
 
 func (s *S) TestPageElements() {
 	s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	s.page.Element("input")
 	list := s.page.Elements("input")
 	s.Equal("submit", list[2].Eval("() => this.value").String())
 }
@@ -94,6 +94,7 @@ func (s *S) TestDownloadFile() {
 
 func (s *S) TestMouse() {
 	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	page.Element("button")
 	mouse := page.Mouse
 
 	mouse.Move(140, 160)
@@ -102,11 +103,13 @@ func (s *S) TestMouse() {
 
 	s.True(page.Has("[a=ok]"))
 }
+
 func (s *S) TestMouseClick() {
 	s.browser.Slowmotion = 1
 	defer func() { s.browser.Slowmotion = 0 }()
 
 	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	page.Element("button")
 	mouse := page.Mouse
 	mouse.Move(140, 160)
 	mouse.Click("left")
@@ -153,5 +156,4 @@ func (s *S) TestPageOthers() {
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
-	go rod.Pause()
 }

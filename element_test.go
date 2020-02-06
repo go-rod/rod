@@ -105,6 +105,7 @@ func (s *S) TestElementFromElement() {
 
 func (s *S) TestElementsFromElement() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+	p.Element("form")
 	list := p.Element("form").Elements("option")
 
 	s.Len(list, 3)

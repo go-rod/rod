@@ -37,8 +37,3 @@ func IsEmpty(val kit.JSONResult) bool {
 		return false
 	}
 }
-
-// Pause execution
-func Pause() {
-	<-make(chan kit.Nil)
-}
