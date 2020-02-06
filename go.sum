@@ -372,8 +372,8 @@ github.com/ysmood/digto v1.5.6/go.mod h1:jYrCqk0mSxEFc5m55J+yrTvV3qaQlDSvF3mB2ID
 github.com/ysmood/kit v0.15.0/go.mod h1:CTrwSW71fHHXFKSCEs8iYWqR1R4xsD+4JbPbGi4PCuQ=
 github.com/ysmood/kit v0.17.1/go.mod h1:vlMfce6eL0jSqDkYtUXid4VPvA5Cw+CwfiYHwv1iMVA=
 github.com/ysmood/kit v0.19.1/go.mod h1:q+qlHOnimF2fjHkJpjySiIWePM8pplsZLVxGnPIMkc8=
-github.com/ysmood/kit v0.20.5 h1:e+DdD4ddCZ929Hzg+SUBZHsilyjWZTrTYEixZKt7wlk=
-github.com/ysmood/kit v0.20.5/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
+github.com/ysmood/kit v0.20.6 h1:nAjm18gB0ch1dJjLtC9fKngQE5lnzImR4xM91sU9wkE=
+github.com/ysmood/kit v0.20.6/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
 github.com/ysmood/myip v0.0.0-20190514144300-6576fde8f6c5/go.mod h1:bFlhE3USBVqP9q8XUaZZhU/Z1yUZ7cjXlXeitobanxk=

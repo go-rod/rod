@@ -131,7 +131,7 @@ func (p *Page) Element(selector string) *Element {
 // ElementByJSE ...
 func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, error) {
 	var objectID string
-	err := cdp.Retry(p.ctx, func() error {
+	err := cdp.Retry(p.ctx, p.browser.event, func() error {
 		res, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return backoff.Permanent(err)
@@ -437,7 +437,7 @@ func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResu
 
 func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
 	// ContextID will be invalid if a frame is reloaded
-	err = cdp.Retry(p.ctx, func() error {
+	err = cdp.Retry(p.ctx, p.browser.event, func() error {
 		params["contextId"] = p.ContextID
 
 		res, err = p.Call("Runtime.evaluate", params)

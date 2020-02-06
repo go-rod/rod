@@ -281,7 +281,7 @@ func (el *Element) HTML() string {
 
 // WaitE ...
 func (el *Element) WaitE(js string, params ...interface{}) error {
-	return cdp.Retry(el.ctx, func() error {
+	return cdp.Retry(el.ctx, el.page.browser.event, func() error {
 		res, err := el.EvalE(true, js, params...)
 		if err != nil {
 			return err

@@ -16,6 +16,8 @@ func TestBasic(t *testing.T) {
 	ctx, done := context.WithCancel(context.Background())
 	defer done()
 
+	ob := kit.NewObservable()
+
 	url := os.Getenv("chrome")
 	_, err := cdp.GetWebSocketDebuggerURL(url)
 	if err != nil {
@@ -33,7 +35,8 @@ func TestBasic(t *testing.T) {
 	}()
 
 	go func() {
-		for range client.Event() {
+		for msg := range client.Event() {
+			ob.Publish(msg)
 		}
 	}()
 
@@ -76,7 +79,7 @@ func TestBasic(t *testing.T) {
 	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kit.E(cdp.Retry(timeout, func() error {
+	kit.E(cdp.Retry(timeout, ob, func() error {
 		res, err = client.Call(ctx, &cdp.Message{
 			SessionID: sessionID,
 			Method:    "Runtime.evaluate",
@@ -109,7 +112,7 @@ func TestBasic(t *testing.T) {
 	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kit.E(cdp.Retry(timeout, func() error {
+	kit.E(cdp.Retry(timeout, ob, func() error {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, &cdp.Message{
