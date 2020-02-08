@@ -79,7 +79,19 @@ func TestBasic(t *testing.T) {
 	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kit.E(cdp.Retry(timeout, ob, func() error {
+	sleeper := func() kit.Sleeper {
+		return kit.MergeSleepers(
+			kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil),
+			func(ctx context.Context) error {
+				_, err := ob.Until(ctx, func(_ kit.Event) bool {
+					return true
+				})
+				return err
+			},
+		)
+	}
+
+	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		res, err = client.Call(ctx, &cdp.Message{
 			SessionID: sessionID,
 			Method:    "Runtime.evaluate",
@@ -88,14 +100,7 @@ func TestBasic(t *testing.T) {
 			},
 		})
 
-		if err != nil {
-			return err
-		}
-		if res.Get("result.objectId").String() == "" {
-			return cdp.ErrNotYet
-		}
-
-		return nil
+		return err == nil && res.Get("result.subtype").String() != "null", nil
 	}))
 
 	res, err = client.Call(ctx, &cdp.Message{
@@ -112,7 +117,7 @@ func TestBasic(t *testing.T) {
 	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kit.E(cdp.Retry(timeout, ob, func() error {
+	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, &cdp.Message{
@@ -132,15 +137,8 @@ func TestBasic(t *testing.T) {
 				"expression": `document.querySelector('h4')`,
 			},
 		})
-		if err != nil {
-			return err
-		}
 
-		if res.Get("result.subtype").String() == "null" {
-			return cdp.ErrNotYet
-		}
-
-		return nil
+		return err == nil && res.Get("result.subtype").String() != "null", nil
 	}))
 
 	res, err = client.Call(ctx, &cdp.Message{

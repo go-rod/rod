@@ -1,7 +1,6 @@
 package cdp
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/url"
@@ -11,9 +10,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 
-	"github.com/cenkalti/backoff/v4"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/fetcher"
 )
@@ -134,42 +131,6 @@ func GetWebSocketDebuggerURL(url string) (string, error) {
 		return "", err
 	}
 	return obj.Get("webSocketDebuggerUrl").String(), nil
-}
-
-// ErrNotYet ...
-var ErrNotYet = errors.New("[cdp] task not complete")
-
-// Retry fn on observable events and backoff ticker.
-func Retry(ctx context.Context, o *kit.Observable, fn func() error) error {
-	bo := backoff.NewExponentialBackOff()
-	bo.InitialInterval = 100
-	bo.MaxElapsedTime = 0
-	s := o.Subscribe()
-	d := ctx.Done()
-	defer o.Unsubscribe(s)
-
-	for {
-		err := fn()
-		if err == nil {
-			return nil
-		}
-
-		var pErr *backoff.PermanentError
-		if errors.As(err, &pErr) {
-			return pErr.Err
-		}
-
-		t := time.NewTicker(bo.NextBackOff())
-
-		select {
-		case <-d:
-			t.Stop()
-			return ctx.Err()
-		case <-t.C:
-		case <-s.C:
-		}
-		t.Stop()
-	}
 }
 
 var isDebug = os.Getenv("debug_cdp") == "true"

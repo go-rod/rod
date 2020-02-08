@@ -281,17 +281,17 @@ func (el *Element) HTML() string {
 
 // WaitE ...
 func (el *Element) WaitE(js string, params ...interface{}) error {
-	return cdp.Retry(el.ctx, el.page.browser.event, func() error {
+	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params...)
 		if err != nil {
-			return err
+			return true, err
 		}
 
 		if res.Bool() {
-			return nil
+			return true, nil
 		}
 
-		return cdp.ErrNotYet
+		return false, nil
 	})
 }
 
@@ -382,7 +382,7 @@ func (el *Element) Element(selector string) *Element {
 
 // ElementByJSE ...
 func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, error) {
-	return el.page.ElementByJSE(el.ObjectID, js, params)
+	return el.page.ElementByJSE(el.page.Sleeper(), el.ObjectID, js, params)
 }
 
 // ElementByJS retries until returns the element from the return value of the js

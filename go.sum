@@ -55,8 +55,6 @@ github.com/bmatcuk/doublestar v1.2.1 h1:eetYiv8DDYOZcBADY+pRvRytf3Dlz1FhnpvL2FsC
 github.com/bmatcuk/doublestar v1.2.1/go.mod h1:wiQtGV+rzVYxB7WIlirSN++5HPtPlXEo9MEoZQC/PmE=
 github.com/cenkalti/backoff/v3 v3.0.0 h1:ske+9nBpD9qZsTBoF41nW5L+AIuFBKMeze18XQ3eG1c=
 github.com/cenkalti/backoff/v3 v3.0.0/go.mod h1:cIeZDE3IrqwwJl6VUwCN6trj1oXrTS4rc0ij+ULvLYs=
-github.com/cenkalti/backoff/v4 v4.0.0 h1:6VeaLF9aI+MAUQ95106HwWzYZgJJpZ4stumjj6RFYAU=
-github.com/cenkalti/backoff/v4 v4.0.0/go.mod h1:eEew/i+1Q6OrCDZh3WiXYv3+nJwBASZ8Bog/87DQnVg=
 github.com/census-instrumentation/opencensus-proto v0.2.0/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
@@ -185,7 +183,6 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 h1:uC1QfSlInpQF+M0ao65imhwqKnz3Q2z/d8PWZRMQvDM=
 github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88/go.mod h1:3w7q1U84EfirKl04SVQ/s7nPm1ZPhiXd34z40TNz36k=
-github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213 h1:qGQQKEcAR99REcMpsXCp3lJ03zYT1PkRd3kQGPn9GVg=
 github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213/go.mod h1:vNUNkEQ1e29fT/6vq2aBdFsgNPmy8qMdSay1npru+Sw=
 github.com/k0kubun/pp v3.0.1+incompatible h1:3tqvf7QgUnZ5tXO6pNAZlrvHgl6DvifjDrd9g2S9Z40=
 github.com/k0kubun/pp v3.0.1+incompatible/go.mod h1:GWse8YhT0p8pT4ir3ZgBbfZild3tgzSScAn6HmfYukg=
@@ -372,8 +369,8 @@ github.com/ysmood/digto v1.5.6/go.mod h1:jYrCqk0mSxEFc5m55J+yrTvV3qaQlDSvF3mB2ID
 github.com/ysmood/kit v0.15.0/go.mod h1:CTrwSW71fHHXFKSCEs8iYWqR1R4xsD+4JbPbGi4PCuQ=
 github.com/ysmood/kit v0.17.1/go.mod h1:vlMfce6eL0jSqDkYtUXid4VPvA5Cw+CwfiYHwv1iMVA=
 github.com/ysmood/kit v0.19.1/go.mod h1:q+qlHOnimF2fjHkJpjySiIWePM8pplsZLVxGnPIMkc8=
-github.com/ysmood/kit v0.20.6 h1:nAjm18gB0ch1dJjLtC9fKngQE5lnzImR4xM91sU9wkE=
-github.com/ysmood/kit v0.20.6/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
+github.com/ysmood/kit v0.21.0 h1:Q7BFrHN72aQvWtr4YUy5I150zZwD/5TVkw6/bThoqU4=
+github.com/ysmood/kit v0.21.0/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
 github.com/ysmood/myip v0.0.0-20190514144300-6576fde8f6c5/go.mod h1:bFlhE3USBVqP9q8XUaZZhU/Z1yUZ7cjXlXeitobanxk=

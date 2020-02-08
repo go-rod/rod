@@ -134,7 +134,7 @@ func (s *S) TestDrag() {
 
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	_, err := p.ElementByJSE("", `() => 1`, nil)
+	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)
 	s.EqualError(err, "[rod] expect js to return an element\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 

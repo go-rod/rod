@@ -22,18 +22,3 @@ func SprintFnThis(js string) string {
 		return (%s).apply(this, arguments)
 	}`, js)
 }
-
-// IsEmpty checks if the js value is null or undefined
-func IsEmpty(val kit.JSONResult) bool {
-	theType := val.Get("type").String()
-	subType := val.Get("subtype").String()
-
-	switch theType {
-	case "object":
-		return subType == "null"
-	case "undefined":
-		return true
-	default:
-		return false
-	}
-}

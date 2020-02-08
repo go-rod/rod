@@ -5,10 +5,10 @@ import (
 	"encoding/base64"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
-	"github.com/cenkalti/backoff/v4"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
@@ -118,7 +118,7 @@ func (p *Page) Has(selector string) bool {
 
 // ElementE ...
 func (p *Page) ElementE(selector string) (*Element, error) {
-	return p.ElementByJSE("", `s => document.querySelector(s)`, []interface{}{selector})
+	return p.ElementByJSE(p.Sleeper(), "", `s => document.querySelector(s)`, []interface{}{selector})
 }
 
 // Element retries until returns the first element in the page that matches the selector
@@ -128,41 +128,73 @@ func (p *Page) Element(selector string) *Element {
 	return el
 }
 
-// ElementByJSE ...
-func (p *Page) ElementByJSE(thisID, js string, params []interface{}) (*Element, error) {
-	var objectID string
-	err := cdp.Retry(p.ctx, p.browser.event, func() error {
+// Sleeper returns the default sleeper for retry, it will wake whenever Page for DOM event happens,
+// and use backoff as the backup to wake.
+func (p *Page) Sleeper() kit.Sleeper {
+	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+
+	return kit.MergeSleepers(backoff, func(ctx context.Context) error {
+		s := p.browser.event.Subscribe()
+		defer p.browser.event.Unsubscribe(s)
+		prefix := strings.HasPrefix
+
+		c := s.Filter(func(e kit.Event) bool {
+			m := e.(*cdp.Message).Method
+			if prefix(m, "Page") || prefix(m, "DOM") {
+				return true
+			}
+			return false
+		})
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-c:
+		}
+		return nil
+	})
+}
+
+// ElementByJSE returns the element from the return value of the js function.
+// sleeper is used to sleep before retry the operation.
+// thisID is the this value of the js function, when thisID is "", the this context will be the "window".
+// If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
+// retries once.
+func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []interface{}) (*Element, error) {
+	var val kit.JSONResult
+
+	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
 		res, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
-			return backoff.Permanent(err)
+			return true, err
 		}
-		val := res.Get("result")
+		v := res.Get("result")
+		val = &v
 
-		if IsEmpty(&val) {
-			return cdp.ErrNotYet
-		}
-
-		if val.Get("subtype").String() != "node" {
-			return backoff.Permanent(&Error{nil, ErrExpectElement, val.Raw})
+		if val.Get("type").String() == "object" && val.Get("subtype").String() == "null" {
+			return false, nil
 		}
 
-		objectID = val.Get("objectId").String()
-		return nil
+		return true, nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
+	if val.Get("subtype").String() != "node" {
+		return nil, &Error{nil, ErrExpectElement, val.Raw}
+	}
+
 	return &Element{
 		page:     p,
 		ctx:      p.ctx,
-		ObjectID: objectID,
+		ObjectID: val.Get("objectId").String(),
 	}, nil
 }
 
-// ElementByJS retries until returns the element from the return value of the js
+// ElementByJS retries until returns the element from the return value of the js function
 func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJSE("", js, params)
+	el, err := p.ElementByJSE(p.Sleeper(), "", js, params)
 	kit.E(err)
 	return el
 }
@@ -436,21 +468,19 @@ func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResu
 }
 
 func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
-	// ContextID will be invalid if a frame is reloaded
-	err = cdp.Retry(p.ctx, p.browser.event, func() error {
+	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+	// TODO: ContextID will be invalid if a frame is reloaded
+	// For now I don't know a better way to do it other than retry
+	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
 		params["contextId"] = p.ContextID
-
 		res, err = p.Call("Runtime.evaluate", params)
-		if err == nil {
-			return nil
-		}
 
 		if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
 			_ = p.initIsolatedWorld()
-			return cdp.ErrNotYet
+			return false, nil
 		}
 
-		return backoff.Permanent(err)
+		return true, err
 	})
 	return
 }
