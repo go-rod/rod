@@ -145,11 +145,11 @@ func (s *S) TestPageElementsByJS_Err() {
 }
 
 func (s *S) TestPagePause() {
-	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
-
-	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
-	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
-	s.EqualValues(1, p.Eval(`() => 1`).Int())
+	go s.page.Pause()
+	time.Sleep(30 * time.Millisecond)
+	go s.page.Eval(`() => 10`)
+	time.Sleep(30 * time.Millisecond)
+	kit.E(s.page.Call("Debugger.resume", nil))
 }
 
 func (s *S) TestPageScreenshop() {

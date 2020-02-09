@@ -148,8 +148,9 @@ func (s *S) TestWaitInvisible() {
 	h4t.CancelTimeout()
 
 	go func() {
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(30 * time.Millisecond)
 		h4.Eval(`() => this.remove()`)
+		time.Sleep(30 * time.Millisecond)
 		btn.Eval(`() => this.style.visibility = 'hidden'`)
 	}()
 

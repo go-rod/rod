@@ -55,7 +55,8 @@ func (e *Error) Error() string {
 	return kit.MustToJSON(e)
 }
 
-// New creates a cdp connection, the url should be something like http://localhost:9222
+// New creates a cdp connection, the url should be something like http://localhost:9222.
+// All messages from Client.Fatal and Client.Event must be received or they will block the client.
 func New(ctx context.Context, url string) (*Client, error) {
 	cdp := &Client{
 		messages: map[uint64]*Message{},
