@@ -29,12 +29,6 @@ func TestBasic(t *testing.T) {
 	kit.E(err)
 
 	go func() {
-		for err := range client.Fatal() {
-			kit.Err(err)
-		}
-	}()
-
-	go func() {
 		for msg := range client.Event() {
 			ob.Publish(msg)
 		}

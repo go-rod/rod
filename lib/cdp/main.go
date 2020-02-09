@@ -18,7 +18,6 @@ type Client struct {
 	chReq    chan *Message
 	chRes    chan *Message
 	chEvent  chan *Message
-	chFatal  chan error
 	count    uint64
 }
 
@@ -56,14 +55,13 @@ func (e *Error) Error() string {
 }
 
 // New creates a cdp connection, the url should be something like http://localhost:9222.
-// All messages from Client.Fatal and Client.Event must be received or they will block the client.
+// All messages from Client.Event must be received or they will block the client.
 func New(ctx context.Context, url string) (*Client, error) {
 	cdp := &Client{
 		messages: map[uint64]*Message{},
 		chReq:    make(chan *Message),
 		chRes:    make(chan *Message),
 		chEvent:  make(chan *Message),
-		chFatal:  make(chan error),
 	}
 
 	wsURL, err := GetWebSocketDebuggerURL(url)
@@ -91,16 +89,10 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 		case msg := <-cdp.chReq:
 			msg.ID = cdp.id()
 			data, err := json.Marshal(msg)
-			if err != nil {
-				cdp.fatal(err)
-				continue
-			}
+			checkPanic(err)
 			debug(">", data)
 			err = conn.WriteMessage(websocket.TextMessage, data)
-			if err != nil {
-				cdp.fatal(err)
-				return
-			}
+			checkPanic(err)
 			cdp.messages[msg.ID] = msg
 
 		case msg := <-cdp.chRes:
@@ -109,13 +101,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 				continue
 			}
 
-			req, has := cdp.messages[msg.ID]
-
-			if !has {
-				cdp.fatal(errors.New("[cdp] request not found: " + kit.MustToJSON(msg)))
-				continue
-			}
-
+			req := cdp.messages[msg.ID]
 			delete(cdp.messages, msg.ID)
 
 			req.callback <- msg
@@ -128,9 +114,10 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
 			var netErr *net.OpError
-			ok := errors.As(err, &netErr)
-			if err != io.EOF || (ok && netErr.Err != errNetClosed) {
-				cdp.fatal(err)
+			notClosed := errors.As(err, &netErr) &&
+				netErr.Err.Error() != "use of closed network connection"
+			if err != io.EOF && notClosed {
+				checkPanic(err)
 			}
 			return
 		}
@@ -139,10 +126,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 		if msgType == websocket.TextMessage {
 			var msg Message
 			err = json.Unmarshal(data, &msg)
-			if err != nil {
-				cdp.fatal(err)
-				continue
-			}
+			checkPanic(err)
 
 			cdp.chRes <- &msg
 		}
@@ -152,11 +136,6 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 // Event will emit chrome devtools protocol events
 func (cdp *Client) Event() chan *Message {
 	return cdp.chEvent
-}
-
-// Fatal will emit fatal errors
-func (cdp *Client) Fatal() chan error {
-	return cdp.chFatal
 }
 
 // Call a method and get its response
@@ -181,17 +160,10 @@ func (cdp *Client) id() uint64 {
 	return cdp.count
 }
 
-func (cdp *Client) fatal(err error) {
-	if isDebug {
-		kit.Err(kit.Sdump(err))
-	}
-	cdp.chFatal <- err
-}
-
 func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
 	<-ctx.Done()
 	err := conn.Close()
 	if err != nil {
-		cdp.fatal(err)
+		checkPanic(err)
 	}
 }

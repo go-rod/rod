@@ -2,7 +2,6 @@ package cdp
 
 import (
 	"encoding/json"
-	"errors"
 	"net/url"
 	nurl "net/url"
 	"os"
@@ -14,8 +13,6 @@ import (
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/fetcher"
 )
-
-var errNetClosed = errors.New("use of closed network connection")
 
 // LaunchBrowser a standalone temp browser instance and returns the debug url
 func LaunchBrowser(bin string, headless bool) (string, error) {
@@ -131,6 +128,13 @@ func GetWebSocketDebuggerURL(url string) (string, error) {
 		return "", err
 	}
 	return obj.Get("webSocketDebuggerUrl").String(), nil
+}
+
+func checkPanic(err error) {
+	if err == nil {
+		return
+	}
+	panic(kit.Sdump(err))
 }
 
 var isDebug = os.Getenv("debug_cdp") == "true"

@@ -218,12 +218,6 @@ func (b *Browser) initEvents() error {
 	}()
 
 	go func() {
-		for err := range b.client.Fatal() {
-			go b.fatal.Publish(err)
-		}
-	}()
-
-	go func() {
 		for err := range b.fatal.Subscribe().C {
 			if b.OnFatal == nil {
 				kit.Err(kit.Sdump(err))
