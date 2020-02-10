@@ -14,8 +14,42 @@ import (
 	"github.com/ysmood/rod/lib/fetcher"
 )
 
+// ChromeArgs returns the default arguments to start chrome.
+func ChromeArgs() map[string][]string {
+	return map[string][]string{
+		"--disable-background-networking":                      nil,
+		"--enable-features":                                    {"NetworkService", "NetworkServiceInProcess"},
+		"--disable-background-timer-throttling":                nil,
+		"--disable-backgrounding-occluded-windows":             nil,
+		"--disable-breakpad":                                   nil,
+		"--disable-client-side-phishing-detection":             nil,
+		"--disable-component-extensions-with-background-pages": nil,
+		"--disable-default-apps":                               nil,
+		"--disable-dev-shm-usage":                              nil,
+		"--disable-extensions":                                 nil,
+		"--disable-hang-monitor":                               nil,
+		"--disable-ipc-flooding-protection":                    nil,
+		"--disable-popup-blocking":                             nil,
+		"--disable-prompt-on-repost":                           nil,
+		"--disable-renderer-backgrounding":                     nil,
+		"--disable-sync":                                       nil,
+		"--force-color-profile":                                {"srgb"},
+		"--metrics-recording-only":                             nil,
+		"--no-first-run":                                       nil,
+		"--enable-automation":                                  nil,
+		"--password-store":                                     {"basic"},
+		"--use-mock-keychain":                                  nil,
+		"--remote-debugging-port":                              {"0"},
+		"--headless":                                           nil,
+		"about:blank":                                          nil,
+
+		// disable site-per-process to make sure iframes are not detached automatically
+		"--disable-features": {"site-per-process", "TranslateUI"},
+	}
+}
+
 // LaunchBrowser a standalone temp browser instance and returns the debug url
-func LaunchBrowser(bin string, headless bool) (string, error) {
+func LaunchBrowser(bin string, args map[string][]string) (string, error) {
 	if bin == "" {
 		var err error
 		bin, err = new(fetcher.Chrome).Get()
@@ -24,53 +58,31 @@ func LaunchBrowser(bin string, headless bool) (string, error) {
 		}
 	}
 
-	tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
-
-	err := os.MkdirAll(tmp, 0700)
-	if err != nil {
-		return "", err
+	if args == nil {
+		args = ChromeArgs()
 	}
 
-	args := []string{
-		// Copied from https://github.com/puppeteer/puppeteer/blob/8b49dc62a62282543ead43541316e23d3450ff3c/lib/Launcher.js#L260
-		"--disable-background-networking",
-		"--enable-features=NetworkService,NetworkServiceInProcess",
-		"--disable-background-timer-throttling",
-		"--disable-backgrounding-occluded-windows",
-		"--disable-breakpad",
-		"--disable-client-side-phishing-detection",
-		"--disable-component-extensions-with-background-pages",
-		"--disable-default-apps",
-		"--disable-dev-shm-usage",
-		"--disable-extensions",
-		// disable site-per-process to make sure iframes are not detached automatically
-		"--disable-features=site-per-process,TranslateUI",
-		"--disable-hang-monitor",
-		"--disable-ipc-flooding-protection",
-		"--disable-popup-blocking",
-		"--disable-prompt-on-repost",
-		"--disable-renderer-backgrounding",
-		"--disable-sync",
-		"--force-color-profile=srgb",
-		"--metrics-recording-only",
-		"--no-first-run",
-		"--enable-automation",
-		"--password-store=basic",
-		"--use-mock-keychain",
-
-		"--remote-debugging-port=0",
-		"--user-data-dir=" + tmp,
+	if _, has := args["--user-data-dir"]; !has {
+		tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
+		err := os.MkdirAll(tmp, 0700)
+		if err != nil {
+			return "", err
+		}
+		args["--user-data-dir"] = []string{tmp}
 	}
 
-	if headless {
-		args = append(args, "--headless")
+	execArgs := []string{}
+	for k, v := range args {
+		str := k
+		if v != nil {
+			str += "=" + strings.Join(v, ",")
+		}
+		execArgs = append(execArgs, str)
 	}
-
-	args = append(args, "about:blank")
 
 	cmd := exec.Command(
 		bin,
-		args...,
+		execArgs...,
 	)
 
 	stderr, err := cmd.StderrPipe()

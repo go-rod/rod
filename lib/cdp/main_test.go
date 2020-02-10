@@ -21,7 +21,7 @@ func TestBasic(t *testing.T) {
 	url := os.Getenv("chrome")
 	_, err := cdp.GetWebSocketDebuggerURL(url)
 	if err != nil {
-		url, err = cdp.LaunchBrowser("", true)
+		url, err = cdp.LaunchBrowser("", nil)
 		kit.E(err)
 	}
 

@@ -48,7 +48,11 @@ func (b *Browser) OpenE() (*Browser, error) {
 	}
 
 	if _, err := cdp.GetWebSocketDebuggerURL(b.ControlURL); err != nil {
-		u, err := cdp.LaunchBrowser("", !b.Foreground)
+		args := cdp.ChromeArgs()
+		if b.Foreground {
+			delete(args, "--headless")
+		}
+		u, err := cdp.LaunchBrowser("", args)
 		if err != nil {
 			return nil, err
 		}

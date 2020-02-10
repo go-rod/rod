@@ -7,6 +7,8 @@ import (
 	digto "github.com/ysmood/digto/client"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/fetcher"
 	"github.com/ysmood/rod/lib/input"
 )
 
@@ -49,43 +51,69 @@ func Example_debug_mode() {
 	// Output: 热干面
 }
 
-// An example to handle 3DS stripe callback
-func Example_stripe_callback() {
-	req := func(url string) *kit.ReqContext {
-		return kit.Req(url).Header("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc")
-	}
+func Example_customize_chrome_launch() {
+	// get chrome bin automatically
+	chromeBin, err := new(fetcher.Chrome).Get()
+	kit.E(err)
 
+	args := cdp.ChromeArgs() // get default args
+
+	// modify args
+	args["--user-data-dir"] = []string{"tmp/chrome"}
+	delete(args, "--use-mock-keychain")
+
+	controlURL, err := cdp.LaunchBrowser(chromeBin, args)
+	kit.E(err)
+
+	browser := rod.Open(&rod.Browser{
+		ControlURL: controlURL,
+	})
+	defer browser.Close()
+
+	el := browser.Page("https://www.wikipedia.org/").Element("title")
+
+	fmt.Println(el.Text())
+
+	// Output: Wikipedia
+}
+
+// An example to handle 3DS stripe callback.
+// It shows how to use Frame method to handle iframes.
+func Example_stripe_callback() {
+	// use digto to reverse proxy public request to local
+	// how it works: https://github.com/ysmood/digto
 	dig := digto.New(kit.RandString(8))
 
-	token := req("https://api.stripe.com/v1/tokens").Post().Form(
+	authHeader := []string{"Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc"}
+
+	cardToken := kit.Req("https://api.stripe.com/v1/tokens").Post().Form(
 		"card", map[string]interface{}{
 			"number":    "4000000000003220",
 			"exp_month": "7",
 			"exp_year":  "2025",
 			"cvc":       "314",
 		},
-	).MustJSON().Get("id").String()
+	).Header(authHeader...).MustJSON().Get("id").String()
 
-	url := req("https://api.stripe.com/v1/payment_intents").Post().Form(
+	redirectURL := kit.Req("https://api.stripe.com/v1/payment_intents").Post().Form(
 		"amount", "2000",
 		"currency", "usd",
 		"payment_method_data", map[string]interface{}{
 			"type": "card",
 			"card": map[string]interface{}{
-				"token": token,
+				"token": cardToken,
 			},
 		},
 		"confirm", "true",
 		"return_url", dig.PublicURL(),
-	).MustJSON().Get("next_action.redirect_to_url.url").String()
+	).Header(authHeader...).MustJSON().Get("next_action.redirect_to_url.url").String()
 
 	browser := rod.Open(nil)
 	defer browser.Close()
-	page := browser.Page(url)
+	page := browser.Page(redirectURL)
 	frame01 := page.Timeout(time.Minute).Element("[name=__privateStripeFrame4]").Frame()
 	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
-
-	frame01.Element(".Spinner").WaitInvisible() // wait page loading to be done
+	frame01.Element(".Spinner").WaitInvisible()           // wait page loading
 	frame02.ElementMatches("button", "Complete").Click()
 
 	_, res, err := dig.Next()

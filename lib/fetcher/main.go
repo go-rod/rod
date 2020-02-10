@@ -14,8 +14,8 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// DefaultRevision of chromium to use
-const DefaultRevision = 722234
+// Revision is the default revision of chromium to use
+const Revision = 722234
 
 // Chrome is a smart helper to get the executable chrome binary.
 // It will first try to find the chrome from local disk, if not exists
@@ -40,7 +40,7 @@ func (c *Chrome) dir() string {
 
 func (c *Chrome) revision() int {
 	if c.Revision == 0 {
-		return DefaultRevision
+		return Revision
 	}
 	return c.Revision
 }
