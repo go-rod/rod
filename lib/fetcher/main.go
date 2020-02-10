@@ -126,8 +126,7 @@ func (c *Chrome) Download() error {
 func (c *Chrome) Get() (string, error) {
 	execPath := c.ExecPath()
 
-	list := append([]string{os.Getenv("CHROME_BIN")}, downloadMap[runtime.GOOS]...)
-	list = append(list, execPath)
+	list := append(downloadMap[runtime.GOOS], execPath)
 
 	for _, path := range list {
 		found, err := exec.LookPath(path)

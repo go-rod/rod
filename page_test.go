@@ -29,13 +29,6 @@ func (s *S) TestSetViewport() {
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
-func (s *S) TestPageElements() {
-	s.page.Navigate(s.htmlFile("fixtures/input.html"))
-	s.page.Element("input")
-	list := s.page.Elements("input")
-	s.Equal("submit", list[2].Eval("() => this.value").String())
-}
-
 func (s *S) TestUntilPage() {
 	page := s.page.Timeout(3 * time.Second).Navigate(s.htmlFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
@@ -166,7 +159,7 @@ func (s *S) TestPageScreenshop() {
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 
-	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("node.localName").String())
+	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
 }

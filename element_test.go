@@ -96,39 +96,6 @@ func (s *S) TestSelectQueryNum() {
 	s.EqualValues(0, el.Eval("() => this.selectedIndex").Int())
 }
 
-func (s *S) TestElementFromElement() {
-	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
-	el := p.Element("form").Element("select").Element("option:nth-child(2)")
-
-	s.Equal("B", el.Text())
-}
-
-func (s *S) TestElementsFromElement() {
-	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
-	p.Element("form")
-	list := p.Element("form").Elements("option")
-
-	s.Len(list, 3)
-	s.Equal("B", list[1].Text())
-}
-
-func (s *S) TestElementParent() {
-	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
-	el := p.Element("input").Parent()
-
-	s.Equal("FORM", el.Eval(`() => this.tagName`).String())
-}
-
-func (s *S) TestElementSiblings() {
-	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
-	el := p.Element("hr")
-	a := el.Previous()
-	b := el.Next()
-
-	s.Equal("INPUT", a.Eval(`() => this.tagName`).String())
-	s.Equal("SELECT", b.Eval(`() => this.tagName`).String())
-}
-
 func (s *S) TestEnter() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
@@ -183,6 +150,6 @@ func (s *S) TestElementOthers() {
 	s.EqualValues(784, el.Box().Get("width").Int())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
 	el.Wait(`() => true`)
-	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("node.localName").String())
+	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("localName").String())
 	s.Len(el.ElementsByJS(`() => []`), 0)
 }

@@ -23,12 +23,8 @@ func (b *Browser) slowmotion(method string) {
 	}
 }
 
-// show an overlay on the element
-func (el *Element) trace(msg string) func() {
-	if !el.page.browser.Trace {
-		return func() {}
-	}
-
+// Overlay a rectangle on the main frame with specified message
+func (p *Page) Overlay(left, top, width, height int64, msg string) func() {
 	const js = `function foo (id, left, top, width, height, msg) {
 		var div = document.createElement('div')
 		var msgDiv = document.createElement('div')
@@ -39,6 +35,10 @@ func (el *Element) trace(msg string) func() {
 			+ 'top:' + (top - 2) + 'px;'
 			+ 'height:' + height + 'px;'
 			+ 'width:' + width + 'px;'
+
+		if (height === 0) {
+			div.style.border = 'none'
+		}
 	
 		msgDiv.style = 'position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;'
 			+ 'box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;'
@@ -50,20 +50,19 @@ func (el *Element) trace(msg string) func() {
 		document.body.appendChild(div)
 	}`
 
-	root := el.page.rootFrame()
+	root := p.rootFrame()
 	id := kit.RandString(8)
-	box, _ := el.BoxE()
 
 	_, err := root.EvalE(true, "", js, []interface{}{
 		id,
-		box.Get("left").Int(),
-		box.Get("top").Int(),
-		box.Get("width").Int(),
-		box.Get("height").Int(),
+		left,
+		top,
+		width,
+		height,
 		msg,
 	})
 	if err != nil && err != context.Canceled {
-		el.page.browser.fatal.Publish(err)
+		p.browser.fatal.Publish(err)
 	}
 
 	clean := func() {
@@ -72,9 +71,28 @@ func (el *Element) trace(msg string) func() {
 			el && el.remove()
 		}`, []interface{}{id})
 		if err != nil && err != context.Canceled {
-			el.page.browser.fatal.Publish(err)
+			p.browser.fatal.Publish(err)
 		}
 	}
 
 	return clean
+}
+
+// Trace with an overlay on the element
+func (el *Element) Trace(msg string) func() {
+	if !el.page.browser.Trace {
+		return func() {}
+	}
+
+	el.WaitVisible()
+
+	box, _ := el.BoxE()
+
+	return el.page.Overlay(
+		box.Get("left").Int(),
+		box.Get("top").Int(),
+		box.Get("width").Int(),
+		box.Get("height").Int(),
+		msg,
+	)
 }

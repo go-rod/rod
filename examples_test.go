@@ -29,7 +29,7 @@ func Example_debug_mode() {
 	browser := rod.Open(&rod.Browser{
 		Foreground: true,
 		Trace:      true,
-		Slowmotion: time.Second,
+		Slowmotion: 2 * time.Second,
 	})
 	defer browser.Close()
 
@@ -86,7 +86,7 @@ func Example_stripe_callback() {
 	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
 
 	frame01.Element(".Spinner").WaitInvisible() // wait page loading to be done
-	frame02.Element("#test-source-authorize-3ds").Click()
+	frame02.ElementMatches("button", "Complete").Click()
 
 	_, res, err := dig.Next()
 	kit.E(err)

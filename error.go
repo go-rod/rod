@@ -7,6 +7,8 @@ const (
 	ErrExpectElement = "expect js to return an element"
 	// ErrExpectElements error code
 	ErrExpectElements = "expect js to return an array of elements"
+	// ErrElementNotFound error code
+	ErrElementNotFound = "cannot find element"
 )
 
 // Error ...

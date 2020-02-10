@@ -58,10 +58,12 @@ func (el *Element) DescribeE() (kit.JSONResult, error) {
 }
 
 // Describe returns the element info
+// Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) Describe() kit.JSONResult {
 	info, err := el.DescribeE()
 	kit.E(err)
-	return info
+	val := info.Get("node")
+	return &val
 }
 
 // FrameE ...
@@ -149,7 +151,7 @@ func (el *Element) ClickE(button string) error {
 		return err
 	}
 
-	defer el.trace(button + " click")()
+	defer el.Trace(button + " click")()
 
 	return el.page.Mouse.ClickE(button)
 }
@@ -166,7 +168,7 @@ func (el *Element) PressE(key rune) error {
 		return err
 	}
 
-	defer el.trace("press " + string(key))()
+	defer el.Trace("press " + string(key))()
 
 	return el.page.Keyboard.PressE(key)
 }
@@ -183,7 +185,7 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	defer el.trace("input " + text)()
+	defer el.Trace("input " + text)()
 
 	err = el.page.Keyboard.InsertTextE(text)
 	if err != nil {
@@ -204,7 +206,7 @@ func (el *Element) Input(text string) {
 
 // SelectE ...
 func (el *Element) SelectE(selectors ...string) error {
-	defer el.trace(fmt.Sprintf(
+	defer el.Trace(fmt.Sprintf(
 		`<span style="color: #777;">select</span> <code>%s</code>`,
 		strings.Join(selectors, "; ")))()
 	el.page.browser.slowmotion("Input.select")
@@ -366,90 +368,6 @@ func (el *Element) Box() kit.JSONResult {
 	box, err := el.BoxE()
 	kit.E(err)
 	return box
-}
-
-// ElementE ...
-func (el *Element) ElementE(selector string) (*Element, error) {
-	return el.ElementByJSE(`s => this.querySelector(s)`, selector)
-}
-
-// Element retries until returns the first child that matches the selector
-func (el *Element) Element(selector string) *Element {
-	el, err := el.ElementE(selector)
-	kit.E(err)
-	return el
-}
-
-// ElementByJSE ...
-func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, error) {
-	return el.page.ElementByJSE(el.page.Sleeper(), el.ObjectID, js, params)
-}
-
-// ElementByJS retries until returns the element from the return value of the js
-func (el *Element) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := el.ElementByJSE(js, params...)
-	kit.E(err)
-	return el
-}
-
-// ElementsE ...
-func (el *Element) ElementsE(selector string) ([]*Element, error) {
-	return el.ElementsByJSE(`s => this.querySelectorAll(s)`, selector)
-}
-
-// Elements returns all elements that match the selector
-func (el *Element) Elements(selector string) []*Element {
-	list, err := el.ElementsE(selector)
-	kit.E(err)
-	return list
-}
-
-// ElementsByJSE ...
-func (el *Element) ElementsByJSE(js string, params ...interface{}) ([]*Element, error) {
-	return el.page.ElementsByJSE(el.ObjectID, js, params)
-}
-
-// ElementsByJS returns the elements from the return value of the js
-func (el *Element) ElementsByJS(js string, params ...interface{}) []*Element {
-	list, err := el.ElementsByJSE(js, params...)
-	kit.E(err)
-	return list
-}
-
-// ParentE ...
-func (el *Element) ParentE() (*Element, error) {
-	return el.ElementByJSE(`() => this.parentElement`)
-}
-
-// Parent returns the parent element
-func (el *Element) Parent() *Element {
-	parent, err := el.ParentE()
-	kit.E(err)
-	return parent
-}
-
-// NextE ...
-func (el *Element) NextE() (*Element, error) {
-	return el.ElementByJSE(`() => this.nextElementSibling`)
-}
-
-// Next returns the next sibling element
-func (el *Element) Next() *Element {
-	parent, err := el.NextE()
-	kit.E(err)
-	return parent
-}
-
-// PreviousE ...
-func (el *Element) PreviousE() (*Element, error) {
-	return el.ElementByJSE(`() => this.previousElementSibling`)
-}
-
-// Previous returns the previous sibling element
-func (el *Element) Previous() *Element {
-	parent, err := el.PreviousE()
-	kit.E(err)
-	return parent
 }
 
 // EvalE ...

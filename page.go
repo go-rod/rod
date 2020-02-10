@@ -116,156 +116,6 @@ func (p *Page) Has(selector string) bool {
 	return has
 }
 
-// ElementE ...
-func (p *Page) ElementE(selector string) (*Element, error) {
-	return p.ElementByJSE(p.Sleeper(), "", `s => document.querySelector(s)`, []interface{}{selector})
-}
-
-// Element retries until returns the first element in the page that matches the selector
-func (p *Page) Element(selector string) *Element {
-	el, err := p.ElementE(selector)
-	kit.E(err)
-	return el
-}
-
-// Sleeper returns the default sleeper for retry, it will wake whenever Page for DOM event happens,
-// and use backoff as the backup to wake.
-func (p *Page) Sleeper() kit.Sleeper {
-	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-
-	return kit.MergeSleepers(backoff, func(ctx context.Context) error {
-		s := p.browser.event.Subscribe()
-		defer p.browser.event.Unsubscribe(s)
-		prefix := strings.HasPrefix
-
-		c := s.Filter(func(e kit.Event) bool {
-			m := e.(*cdp.Message).Method
-			if prefix(m, "Page") || prefix(m, "DOM") {
-				return true
-			}
-			return false
-		})
-
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-c:
-		}
-		return nil
-	})
-}
-
-// ElementByJSE returns the element from the return value of the js function.
-// sleeper is used to sleep before retry the operation.
-// thisID is the this value of the js function, when thisID is "", the this context will be the "window".
-// If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
-// retries once.
-func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []interface{}) (*Element, error) {
-	var val kit.JSONResult
-
-	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		res, err := p.EvalE(false, thisID, js, params)
-		if err != nil {
-			return true, err
-		}
-		v := res.Get("result")
-		val = &v
-
-		if val.Get("type").String() == "object" && val.Get("subtype").String() == "null" {
-			return false, nil
-		}
-
-		return true, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if val.Get("subtype").String() != "node" {
-		return nil, &Error{nil, ErrExpectElement, val.Raw}
-	}
-
-	return &Element{
-		page:     p,
-		ctx:      p.ctx,
-		ObjectID: val.Get("objectId").String(),
-	}, nil
-}
-
-// ElementByJS retries until returns the element from the return value of the js function
-func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJSE(p.Sleeper(), "", js, params)
-	kit.E(err)
-	return el
-}
-
-// ElementsE ...
-func (p *Page) ElementsE(selector string) ([]*Element, error) {
-	return p.ElementsByJSE("", `s => document.querySelectorAll(s)`, []interface{}{selector})
-}
-
-// Elements returns all elements that match the selector
-func (p *Page) Elements(selector string) []*Element {
-	list, err := p.ElementsE(selector)
-	kit.E(err)
-	return list
-}
-
-// ElementsByJSE is different from ElementByJSE, it doesn't do retry
-func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) ([]*Element, error) {
-	res, err := p.EvalE(false, thisID, js, params)
-	if err != nil {
-		return nil, err
-	}
-	val := res.Get("result")
-
-	if val.Get("subtype").String() != "array" {
-		return nil, &Error{nil, ErrExpectElements, val}
-	}
-
-	objectID := val.Get("objectId").String()
-	if objectID == "" {
-		return []*Element{}, nil
-	}
-	defer p.ReleaseObject(res)
-
-	list, err := p.Call("Runtime.getProperties", cdp.Object{
-		"objectId":      objectID,
-		"ownProperties": true,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	elemList := []*Element{}
-	for _, obj := range list.Get("result").Array() {
-		name := obj.Get("name").String()
-		if name == "__proto__" || name == "length" {
-			continue
-		}
-		val := obj.Get("value")
-
-		if val.Get("subtype").String() != "node" {
-			return nil, &Error{nil, ErrExpectElements, val}
-		}
-
-		elemList = append(elemList, &Element{
-			page:     p,
-			ctx:      p.ctx,
-			ObjectID: val.Get("objectId").String(),
-		})
-	}
-
-	return elemList, nil
-}
-
-// ElementsByJS returns the elements from the return value of the js
-func (p *Page) ElementsByJS(js string, params ...interface{}) []*Element {
-	list, err := p.ElementsByJSE("", js, params)
-	kit.E(err)
-	return list
-}
-
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) error {
 	_, err := p.browser.Ctx(p.ctx).WaitEventE("Page.javascriptDialogOpening")
@@ -517,6 +367,33 @@ func (p *Page) Call(method string, params interface{}) (kit.JSONResult, error) {
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
+	})
+}
+
+// Sleeper returns the default sleeper for retry, it will wake whenever Page for DOM event happens,
+// and use backoff as the backup to wake.
+func (p *Page) Sleeper() kit.Sleeper {
+	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+
+	return kit.MergeSleepers(backoff, func(ctx context.Context) error {
+		s := p.browser.event.Subscribe()
+		defer p.browser.event.Unsubscribe(s)
+		prefix := strings.HasPrefix
+
+		c := s.Filter(func(e kit.Event) bool {
+			m := e.(*cdp.Message).Method
+			if prefix(m, "Page") || prefix(m, "DOM") {
+				return true
+			}
+			return false
+		})
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-c:
+		}
+		return nil
 	})
 }
 

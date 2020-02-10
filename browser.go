@@ -12,7 +12,7 @@ import (
 // Browser represents the browser
 type Browser struct {
 	// ControlURL is the url to remote control browser.
-	// If fails to connect to it, rod will try to open a local browser.
+	// If fails to connect to it, rod will try to open a local browser, if local browser is not found rod will try to download one.
 	ControlURL string
 
 	// Viewport is the default value to set after page creation
