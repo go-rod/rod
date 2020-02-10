@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	digto "github.com/ysmood/digto/client"
@@ -59,7 +60,8 @@ func Example_customize_chrome_launch() {
 	args := cdp.ChromeArgs() // get default args
 
 	// modify args
-	args["--user-data-dir"] = []string{"tmp/chrome"}
+	dir, _ := ioutil.TempDir("", "")
+	args["--user-data-dir"] = []string{dir}
 	delete(args, "--use-mock-keychain")
 
 	controlURL, err := cdp.LaunchBrowser(chromeBin, args)

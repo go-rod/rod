@@ -1,7 +1,10 @@
 package cdp
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"io"
 	"net/url"
 	nurl "net/url"
 	"os"
@@ -9,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/fetcher"
@@ -95,25 +99,51 @@ func LaunchBrowser(bin string, args map[string][]string) (string, error) {
 		return "", err
 	}
 
+	u, err := getURL(stderr)
+	if err != nil {
+		_ = cmd.Process.Kill()
+		return "", err
+	}
+
+	return u, nil
+}
+
+func getURL(stderr io.ReadCloser) (string, error) {
 	buf := make([]byte, 100)
 	str := ""
 	out := ""
-	for {
-		n, err := stderr.Read(buf)
-		if err != nil {
-			return "", err
-		}
-		out += string(buf[:n])
+	wait := make(chan kit.Nil)
 
-		str = regexp.MustCompile(`ws://.+`).FindString(out)
-		if str != "" {
-			break
+	read := func() {
+		defer close(wait)
+		for {
+			n, err := stderr.Read(buf)
+			if err != nil {
+				break
+			}
+			out += string(buf[:n])
+
+			str = regexp.MustCompile(`ws://.+/`).FindString(out)
+			if str != "" {
+				break
+			}
 		}
+	}
+
+	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	go read()
+
+	select {
+	case <-timeout.Done():
+		return "", errors.New("[cdp] launch chrome timeout: " + out)
+	case <-wait:
 	}
 
 	u, err := url.Parse(strings.TrimSpace(str))
 	if err != nil {
-		return "", err
+		return "", errors.New("[cdp] failed to get control url: " + out + " " + err.Error())
 	}
 
 	return "http://" + u.Host, nil
