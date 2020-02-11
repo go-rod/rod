@@ -14,54 +14,113 @@ type Elements []*Element
 
 // First returns the first element, if the list is empty returns nil
 func (els Elements) First() *Element {
-	if len(els) > 0 {
-		return els[0]
+	if els.Empty() {
+		return nil
 	}
-	return nil
+	return els[0]
 }
 
 // Last returns the last element, if the list is empty returns nil
 func (els Elements) Last() *Element {
-	l := len(els)
-	if l > 0 {
-		return els[l-1]
+	if els.Empty() {
+		return nil
 	}
-	return nil
+	return els[len(els)-1]
+}
+
+// Empty returns true if the list is empty
+func (els Elements) Empty() bool {
+	return len(els) == 0
+}
+
+// HasE ...
+func (p *Page) HasE(selector string) (bool, error) {
+	_, err := p.ElementE(nil, "", selector)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// Has an element that matches the css selector
+func (p *Page) Has(selector string) bool {
+	has, err := p.HasE(selector)
+	kit.E(err)
+	return has
+}
+
+// HasXE ...
+func (p *Page) HasXE(selector string) (bool, error) {
+	_, err := p.ElementXE(nil, "", selector)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// HasX an element that matches the XPath selector
+func (p *Page) HasX(selector string) bool {
+	has, err := p.HasXE(selector)
+	kit.E(err)
+	return has
+}
+
+// HasMatchesE ...
+func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
+	_, err := p.ElementMatchesE(nil, "", selector, regex)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// HasMatches an element that matches the css selector and its text matches the regex.
+func (p *Page) HasMatches(selector, regex string) bool {
+	has, err := p.HasMatchesE(selector, regex)
+	kit.E(err)
+	return has
 }
 
 // ElementE finds element by css selector
-func (p *Page) ElementE(selector string, sleeper kit.Sleeper) (*Element, error) {
-	return p.ElementByJSE(sleeper, "", `s => document.querySelector(s)`, []interface{}{selector})
+func (p *Page) ElementE(sleeper kit.Sleeper, objectID, selector string) (*Element, error) {
+	return p.ElementByJSE(sleeper, objectID, `s => (this.document || this).querySelector(s)`, []interface{}{selector})
 }
 
 // Element retries until returns the first element in the page that matches the CSS selector
 func (p *Page) Element(selector string) *Element {
-	el, err := p.ElementE(selector, p.Sleeper())
+	el, err := p.ElementE(p.Sleeper(), "", selector)
 	kit.E(err)
 	return el
+}
+
+// ElementMatchesE ...
+func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID, selector, regex string) (*Element, error) {
+	return p.ElementByJSE(sleeper, objectID, `(sel, reg) => {
+		let r = new RegExp(reg)
+		let el = Array.from((this.document || this).querySelectorAll(sel)).find(el => el.textContent.match(r))
+		return el || null
+	}`, []interface{}{selector, regex})
 }
 
 // ElementMatches retries until returns the first element in the page that matches the CSS selector and its text matches the regex.
 // The regex is the js regex, not golang's.
 func (p *Page) ElementMatches(selector, regex string) *Element {
-	return p.ElementByJS(`(sel, reg) => {
-		let r = new RegExp(reg)
-		let el = Array.from(document.querySelectorAll(sel)).find(el => el.textContent.match(r))
-		return el || null
-	}`, selector, regex)
+	el, err := p.ElementMatchesE(p.Sleeper(), "", selector, regex)
+	kit.E(err)
+	return el
 }
 
 // ElementXE finds elements by XPath
-func (p *Page) ElementXE(xpath string, sleeper kit.Sleeper) (*Element, error) {
+func (p *Page) ElementXE(sleeper kit.Sleeper, objectID, xpath string) (*Element, error) {
 	js := `xpath => document.evaluate(
-		xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE
+		xpath, (this.document || this), null, XPathResult.FIRST_ORDERED_NODE_TYPE
 	).singleNodeValue`
-	return p.ElementByJSE(sleeper, "", js, []interface{}{xpath})
+	return p.ElementByJSE(sleeper, objectID, js, []interface{}{xpath})
 }
 
 // ElementX retries until returns the first element in the page that matches the XPath selector
 func (p *Page) ElementX(xpath string) *Element {
-	el, err := p.ElementXE(xpath, p.Sleeper())
+	el, err := p.ElementXE(p.Sleeper(), "", xpath)
 	kit.E(err)
 	return el
 }
@@ -118,32 +177,32 @@ func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
 }
 
 // ElementsE ...
-func (p *Page) ElementsE(selector string) (Elements, error) {
-	return p.ElementsByJSE("", `s => document.querySelectorAll(s)`, []interface{}{selector})
+func (p *Page) ElementsE(objectID, selector string) (Elements, error) {
+	return p.ElementsByJSE(objectID, `s => (this.document || this).querySelectorAll(s)`, []interface{}{selector})
 }
 
 // Elements returns all elements that match the css selector
 func (p *Page) Elements(selector string) Elements {
-	list, err := p.ElementsE(selector)
+	list, err := p.ElementsE("", selector)
 	kit.E(err)
 	return list
 }
 
 // ElementsXE ...
-func (p *Page) ElementsXE(xpath string) (Elements, error) {
+func (p *Page) ElementsXE(objectID, xpath string) (Elements, error) {
 	js := `xpath => {
-		let iter = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
+		let iter = document.evaluate(xpath, (this.document || this), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
 		let list = []
 		let el
 		while ((el = iter.iterateNext())) list.push(el)
 		return list
 	}`
-	return p.ElementsByJSE("", js, []interface{}{xpath})
+	return p.ElementsByJSE(objectID, js, []interface{}{xpath})
 }
 
 // ElementsX returns all elements that match the XPath selector
 func (p *Page) ElementsX(xpath string) Elements {
-	list, err := p.ElementsXE(xpath)
+	list, err := p.ElementsXE("", xpath)
 	kit.E(err)
 	return list
 }
@@ -161,18 +220,13 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements,
 	}
 
 	objectID := val.Get("objectId").String()
-	if objectID == "" {
-		return Elements{}, nil
-	}
 	defer p.ReleaseObject(res)
 
 	list, err := p.Call("Runtime.getProperties", cdp.Object{
 		"objectId":      objectID,
 		"ownProperties": true,
 	})
-	if err != nil {
-		return nil, err
-	}
+	kit.E(err)
 
 	elemList := Elements{}
 	for _, obj := range list.Get("result").Array() {
@@ -205,7 +259,7 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
 
 // ElementE ...
 func (el *Element) ElementE(selector string) (*Element, error) {
-	return el.ElementByJSE(`s => this.querySelector(s)`, selector)
+	return el.page.ElementE(nil, el.ObjectID, selector)
 }
 
 // Element returns the first child that matches the css selector
@@ -217,10 +271,7 @@ func (el *Element) Element(selector string) *Element {
 
 // ElementXE ...
 func (el *Element) ElementXE(xpath string) (*Element, error) {
-	js := `xpath => document.evaluate(
-		xpath, this, null, XPathResult.FIRST_ORDERED_NODE_TYPE
-	).singleNodeValue`
-	return el.ElementByJSE(js, xpath)
+	return el.page.ElementXE(nil, el.ObjectID, xpath)
 }
 
 // ElementX returns the first child that matches the XPath selector
@@ -278,19 +329,22 @@ func (el *Element) Previous() *Element {
 	return parent
 }
 
+// ElementMatchesE ...
+func (el *Element) ElementMatchesE(selector, regex string) (*Element, error) {
+	return el.page.ElementMatchesE(nil, el.ObjectID, selector, regex)
+}
+
 // ElementMatches returns the first element in the page that matches the CSS selector and its text matches the regex.
 // The regex is the js regex, not golang's.
 func (el *Element) ElementMatches(selector, regex string) *Element {
-	return el.ElementByJS(`(sel, reg) => {
-		let r = new RegExp(reg)
-		let el = Array.from(this.querySelectorAll(sel)).find(el => el.textContent.match(r))
-		return el || null
-	}`, selector, regex)
+	el, err := el.ElementMatchesE(selector, regex)
+	kit.E(err)
+	return el
 }
 
 // ElementsE ...
 func (el *Element) ElementsE(selector string) (Elements, error) {
-	return el.ElementsByJSE(`s => this.querySelectorAll(s)`, selector)
+	return el.page.ElementsE(el.ObjectID, selector)
 }
 
 // Elements returns all elements that match the css selector
@@ -301,20 +355,13 @@ func (el *Element) Elements(selector string) Elements {
 }
 
 // ElementsXE ...
-func (el *Element) ElementsXE(selector string) (Elements, error) {
-	js := `xpath => {
-		let iter = document.evaluate(xpath, this, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
-		let list = []
-		let el
-		while ((el = iter.iterateNext())) list.push(el)
-		return list
-	}`
-	return el.ElementsByJSE(js, selector)
+func (el *Element) ElementsXE(xpath string) (Elements, error) {
+	return el.page.ElementsXE(el.ObjectID, xpath)
 }
 
 // ElementsX returns all elements that match the XPath selector
-func (el *Element) ElementsX(selector string) Elements {
-	list, err := el.ElementsXE(selector)
+func (el *Element) ElementsX(xpath string) Elements {
+	list, err := el.ElementsXE(xpath)
 	kit.E(err)
 	return list
 }

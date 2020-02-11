@@ -1,10 +1,26 @@
 package rod_test
 
+import (
+	"github.com/ysmood/rod"
+)
+
 func (s *S) TestPageElements() {
 	s.page.Navigate(s.htmlFile("fixtures/input.html"))
 	s.page.Element("input")
 	list := s.page.Elements("input")
-	s.Equal("submit", list[2].Eval("() => this.value").String())
+	s.Equal("input", list.First().Describe().Get("localName").String())
+	s.Equal("submit", list.Last().Eval("() => this.value").String())
+}
+
+func (s *S) TestPageHas() {
+	s.page.Navigate(s.htmlFile("fixtures/selector.html"))
+	s.page.Element("body")
+	s.True(s.page.Has("span"))
+	s.False(s.page.Has("a"))
+	s.True(s.page.HasX("//span"))
+	s.False(s.page.HasX("//a"))
+	s.True(s.page.HasMatches("button", "03"))
+	s.False(s.page.HasMatches("button", "11"))
 }
 
 func (s *S) TestPageElementX() {
@@ -71,4 +87,26 @@ func (s *S) TestElementsFromElementsX() {
 	p := s.page.Navigate(s.htmlFile("fixtures/selector.html"))
 	list := p.Element("div").ElementsX("./button")
 	s.Len(list, 2)
+}
+
+func (s *S) TestPageElementByJS_Err() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)
+	s.EqualError(err, "[rod] expect js to return an element\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+}
+
+func (s *S) TestPageElementsByJS_Err() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	_, err := p.ElementsByJSE("", `() => [1]`, nil)
+	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+	_, err = p.ElementsByJSE("", `() => 1`, nil)
+	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+	_, err = p.ElementsByJSE("", `() => foo()`, nil)
+	s.Error(err)
+}
+
+func (s *S) TestElementsOthers() {
+	list := &rod.Elements{}
+	s.Nil(list.First())
+	s.Nil(list.Last())
 }

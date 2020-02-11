@@ -5,7 +5,6 @@
 package rod
 
 import (
-	"context"
 	"strings"
 	"time"
 
@@ -61,18 +60,14 @@ func (p *Page) Overlay(left, top, width, height int64, msg string) func() {
 		height,
 		msg,
 	})
-	if err != nil && err != context.Canceled {
-		p.browser.fatal.Publish(err)
-	}
+	CancelPanic(err)
 
 	clean := func() {
 		_, err := root.EvalE(true, "", `id => {
 			let el = document.getElementById(id)
 			el && el.remove()
 		}`, []interface{}{id})
-		if err != nil && err != context.Canceled {
-			p.browser.fatal.Publish(err)
-		}
+		CancelPanic(err)
 	}
 
 	return clean

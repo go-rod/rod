@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/ysmood/kit"
@@ -21,4 +22,11 @@ func SprintFnThis(js string) string {
 	return fmt.Sprintf(`function() {
 		return (%s).apply(this, arguments)
 	}`, js)
+}
+
+// CancelPanic graceful panic
+func CancelPanic(err error) {
+	if err != nil && err != context.Canceled {
+		panic(err)
+	}
 }

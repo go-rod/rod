@@ -28,15 +28,11 @@ type Browser struct {
 	// Trace enables the visual tracing of the device input on the page
 	Trace bool
 
-	// OnFatal calls when a fatal error happens
-	OnFatal func(error)
-
 	ctx           context.Context
 	timeoutCancel func()
 	close         func()
 	client        *cdp.Client
 	event         *kit.Observable
-	fatal         *kit.Observable
 }
 
 // OpenE ...
@@ -166,9 +162,14 @@ func (b *Browser) Pages() []*Page {
 }
 
 // WaitEventE ...
-func (b *Browser) WaitEventE(name string) (kit.JSONResult, error) {
+func (b *Browser) WaitEventE(sessionID, name string) (kit.JSONResult, error) {
 	msg, err := b.Event().Until(b.ctx, func(e kit.Event) bool {
-		return e.(*cdp.Message).Method == name
+		msg := e.(*cdp.Message)
+		methodMatch := msg.Method == name
+		if sessionID == "" {
+			return methodMatch
+		}
+		return methodMatch && msg.SessionID == sessionID
 	})
 	if err != nil {
 		return nil, err
@@ -179,7 +180,7 @@ func (b *Browser) WaitEventE(name string) (kit.JSONResult, error) {
 // WaitEvent waits for the next event to happen.
 // Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
 func (b *Browser) WaitEvent(name string) kit.JSONResult {
-	res, err := b.WaitEventE(name)
+	res, err := b.WaitEventE("", name)
 	kit.E(err)
 	return res
 }
@@ -213,21 +214,10 @@ func (b *Browser) page(targetID string) (*Page, error) {
 
 func (b *Browser) initEvents() error {
 	b.event = kit.NewObservable()
-	b.fatal = kit.NewObservable()
 
 	go func() {
 		for msg := range b.client.Event() {
 			go b.event.Publish(msg)
-		}
-	}()
-
-	go func() {
-		for err := range b.fatal.Subscribe().C {
-			if b.OnFatal == nil {
-				kit.Err(kit.Sdump(err))
-			} else {
-				b.OnFatal(err.(error))
-			}
 		}
 	}()
 

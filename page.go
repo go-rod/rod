@@ -100,25 +100,9 @@ func (p *Page) Close() {
 	kit.E(p.CloseE())
 }
 
-// HasE ...
-func (p *Page) HasE(selector string) (bool, error) {
-	res, err := p.EvalE(true, "", `s => !!document.querySelector(s)`, []interface{}{selector})
-	if err != nil {
-		return false, err
-	}
-	return res.Bool(), nil
-}
-
-// Has an element that matches the css selector
-func (p *Page) Has(selector string) bool {
-	has, err := p.HasE(selector)
-	kit.E(err)
-	return has
-}
-
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) error {
-	_, err := p.browser.Ctx(p.ctx).WaitEventE("Page.javascriptDialogOpening")
+	_, err := p.WaitEventE("Page.javascriptDialogOpening")
 	if err != nil {
 		return err
 	}
@@ -166,7 +150,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 		_, err = p.Call("Fetch.disable", nil)
 	}()
 
-	msg, err := p.browser.Ctx(p.ctx).WaitEventE("Fetch.requestPaused")
+	msg, err := p.WaitEventE("Fetch.requestPaused")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -272,13 +256,26 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	_, err = p.browser.Ctx(p.ctx).WaitEventE("Debugger.resumed")
+	_, err = p.WaitEventE("Debugger.resumed")
 	return err
 }
 
 // Pause stops on the next JavaScript statement
 func (p *Page) Pause() {
 	kit.E(p.PauseE())
+}
+
+// WaitEventE ...
+func (p *Page) WaitEventE(name string) (kit.JSONResult, error) {
+	return p.browser.WaitEventE(p.SessionID, name)
+}
+
+// WaitEvent waits for the next event to happen.
+// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
+func (p *Page) WaitEvent(name string) kit.JSONResult {
+	res, err := p.WaitEventE(name)
+	kit.E(err)
+	return res
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function
@@ -402,9 +399,7 @@ func (p *Page) ReleaseObject(obj kit.JSONResult) {
 	_, err := p.Call("Runtime.releaseObject", cdp.Object{
 		"objectId": obj.Get("result.objectId").String(),
 	})
-	if err != nil {
-		p.browser.fatal.Publish(err)
-	}
+	CancelPanic(err)
 }
 
 func (p *Page) initIsolatedWorld() error {

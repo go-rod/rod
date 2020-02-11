@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/input"
 )
 
@@ -115,9 +116,9 @@ func (s *S) TestWaitInvisible() {
 	h4t.CancelTimeout()
 
 	go func() {
-		time.Sleep(30 * time.Millisecond)
+		kit.Sleep(0.03)
 		h4.Eval(`() => this.remove()`)
-		time.Sleep(30 * time.Millisecond)
+		kit.Sleep(0.03)
 		btn.Eval(`() => this.style.visibility = 'hidden'`)
 	}()
 

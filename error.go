@@ -27,3 +27,17 @@ func (e *Error) Error() string {
 func (e *Error) Unwrap() error {
 	return e.Err
 }
+
+// IsError type matches
+func IsError(err error, code string) bool {
+	if err == nil {
+		return false
+	}
+
+	e, ok := err.(*Error)
+	if !ok {
+		return false
+	}
+
+	return e.Code == code
+}

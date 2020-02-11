@@ -2,11 +2,14 @@ package rod_test
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"image/png"
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/input"
 )
 
 func (s *S) TestClosePage() {
@@ -41,6 +44,13 @@ func (s *S) TestUntilPage() {
 
 	s.Equal("click me", newPage.Element("button").Text())
 
+	wait()
+}
+
+func (s *S) TestPageWaitEvent() {
+	wait := kit.All(func() { s.page.WaitEvent("Page.frameNavigated") })
+	kit.Sleep(0.01)
+	s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	wait()
 }
 
@@ -125,23 +135,11 @@ func (s *S) TestDrag() {
 	page.Element(".dropzone:nth-child(2) #draggable")
 }
 
-func (s *S) TestPageElementByJS_Err() {
-	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)
-	s.EqualError(err, "[rod] expect js to return an element\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-}
-
-func (s *S) TestPageElementsByJS_Err() {
-	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	_, err := p.ElementsByJSE("", `() => [1]`, nil)
-	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-}
-
 func (s *S) TestPagePause() {
 	go s.page.Pause()
-	time.Sleep(30 * time.Millisecond)
+	kit.Sleep(0.03)
 	go s.page.Eval(`() => 10`)
-	time.Sleep(30 * time.Millisecond)
+	kit.Sleep(0.03)
 	kit.E(s.page.Call("Debugger.resume", nil))
 }
 
@@ -156,10 +154,32 @@ func (s *S) TestPageScreenshop() {
 	s.Equal(300, img.Bounds().Dy())
 }
 
+func (s *S) TestPageInput() {
+	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
+
+	el := p.Element("input")
+	el.Focus()
+	p.Keyboard.Press('A')
+	p.Keyboard.InsertText(" Test")
+	p.Keyboard.Press(input.Tab)
+
+	s.Equal("A Test", el.Eval(`() => this.value`).String())
+}
+
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
+
+	s.Panics(func() {
+		rod.CancelPanic(errors.New("err"))
+	})
+
+	p.Mouse.Click("")
+	p.Mouse.Down("left")
+	defer p.Mouse.Up("left")
+	p.Mouse.Down("right")
+	defer p.Mouse.Up("right")
 }
