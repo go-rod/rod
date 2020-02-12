@@ -146,7 +146,7 @@ func (el *Element) ClickE(button string) error {
 	x := box.Get("left").Int() + box.Get("width").Int()/2
 	y := box.Get("top").Int() + box.Get("height").Int()/2
 
-	err = el.page.Mouse.MoveE(x, y, 1)
+	err = el.page.Mouse.MoveE(int(x), int(y), 1)
 	if err != nil {
 		return err
 	}

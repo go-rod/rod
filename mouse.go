@@ -15,15 +15,15 @@ type Mouse struct {
 	page *Page
 	sync.Mutex
 
-	x int64
-	y int64
+	x int
+	y int
 
 	// the buttons is currently beening pressed, reflects the press order
 	buttons []string
 }
 
 // MoveE ...
-func (m *Mouse) MoveE(x, y int64, steps int) error {
+func (m *Mouse) MoveE(x, y, steps int) error {
 	if steps < 1 {
 		steps = 1
 	}
@@ -31,8 +31,8 @@ func (m *Mouse) MoveE(x, y int64, steps int) error {
 	m.Lock()
 	defer m.Unlock()
 
-	stepX := (x - m.x) / int64(steps)
-	stepY := (y - m.y) / int64(steps)
+	stepX := (x - m.x) / steps
+	stepY := (y - m.y) / steps
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
@@ -61,8 +61,43 @@ func (m *Mouse) MoveE(x, y int64, steps int) error {
 }
 
 // Move to the location
-func (m *Mouse) Move(x, y int64) {
+func (m *Mouse) Move(x, y int) {
 	kit.E(m.MoveE(x, y, 0))
+}
+
+// ScrollE ...
+func (m *Mouse) ScrollE(x, y, steps int) error {
+	if steps < 1 {
+		steps = 1
+	}
+
+	button, buttons := input.EncodeMouseButton(m.buttons)
+
+	stepX := (x - m.x) / steps
+	stepY := (y - m.y) / steps
+
+	for i := 0; i < steps; i++ {
+		_, err := m.page.Call("Input.dispatchMouseEvent", cdp.Object{
+			"type":      "mouseMoved",
+			"x":         m.x,
+			"y":         m.y,
+			"button":    button,
+			"buttons":   buttons,
+			"modifiers": m.page.Keyboard.modifiers,
+			"deltaX":    stepX,
+			"deltaY":    stepY,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Scroll the wheel
+func (m *Mouse) Scroll(x, y int) {
+	kit.E(m.ScrollE(x, y, 0))
 }
 
 // DownE ...

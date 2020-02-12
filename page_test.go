@@ -166,6 +166,16 @@ func (s *S) TestPageInput() {
 	s.Equal("A Test", el.Eval(`() => this.value`).String())
 }
 
+func (s *S) TestPageScroll() {
+	p := s.page.Navigate(s.htmlFile("fixtures/scroll.html"))
+	p.Mouse.Scroll(3000, 3000)
+	kit.E(p.Mouse.ScrollE(5000, 5000, 6))
+	el := p.Element("button")
+	box := el.Box()
+	s.EqualValues(8008, box.Get("left").Int())
+	s.EqualValues(8008, box.Get("top").Int())
+}
+
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(s.htmlFile("fixtures/input.html"))
 
