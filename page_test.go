@@ -15,7 +15,6 @@ import (
 
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
-	page.WaitLoad()
 	defer page.Close()
 	page.Element("button")
 }
@@ -38,11 +37,12 @@ func (s *S) TestUntilPage() {
 	page := s.page.Timeout(3 * time.Second).Navigate(s.htmlFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait := kit.All(func() {
-		page.Element("a").Click()
-	})
+	wait, cancel := page.WaitPage()
+	defer cancel()
 
-	newPage := page.WaitPage()
+	page.Element("a").Click()
+
+	newPage := wait()
 
 	s.Equal("click me", newPage.Element("button").Text())
 
@@ -50,8 +50,8 @@ func (s *S) TestUntilPage() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait := kit.All(func() { s.page.WaitEvent("Page.frameNavigated") })
-	kit.Sleep(0.01)
+	wait, cancel := s.page.WaitEvent("Page.frameNavigated")
+	defer cancel()
 	s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	wait()
 }
@@ -59,11 +59,10 @@ func (s *S) TestPageWaitEvent() {
 func (s *S) TestAlert() {
 	page := s.page.Navigate(s.htmlFile("fixtures/alert.html"))
 
-	wait := kit.All(func() {
-		page.Element("button").Click()
-	})
+	wait, cancel := page.HandleDialog(true, "")
+	defer cancel()
 
-	page.HandleDialog(true, "")
+	go page.Element("button").Click()
 
 	wait()
 }
@@ -89,14 +88,14 @@ func (s *S) TestDownloadFile() {
 
 	page := s.page.Navigate("http://" + host)
 
-	wait := kit.All(func() {
-		page.Element("a").Click()
-	})
+	wait, cancel := page.GetDownloadFile("*")
+	defer cancel()
 
-	_, data := page.GetDownloadFile("*")
+	page.Element("a").Click()
+
+	_, data := wait()
 
 	s.Equal(content, string(data))
-	wait()
 }
 
 func (s *S) TestMouse() {

@@ -2,7 +2,6 @@ package cdp
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"io"
 	"net/url"
@@ -181,13 +180,10 @@ func checkPanic(err error) {
 
 var isDebug = os.Getenv("debug_cdp") == "true"
 
-func debug(prefix string, data []byte) {
+func debug(obj interface{}) {
 	if !isDebug {
 		return
 	}
 
-	var obj interface{}
-	kit.E(json.Unmarshal(data, &obj))
-
-	kit.Log(kit.C("[cdp]", "cyan"), prefix, kit.Sdump(obj))
+	kit.Log(kit.Sdump(obj))
 }

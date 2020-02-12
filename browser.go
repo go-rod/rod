@@ -92,7 +92,7 @@ func (b *Browser) Timeout(d time.Duration) *Browser {
 
 // CloseE ...
 func (b *Browser) CloseE() error {
-	_, err := b.Call(&cdp.Message{Method: "Browser.close"})
+	_, err := b.Call(&cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (b *Browser) Close() {
 
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
-	target, err := b.Call(&cdp.Message{
+	target, err := b.Call(&cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "about:blank",
@@ -126,7 +126,10 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		return nil, err
 	}
 
-	page.Navigate(url)
+	err = page.NavigateE(url)
+	if err != nil {
+		return nil, err
+	}
 
 	return page, nil
 }
@@ -140,7 +143,7 @@ func (b *Browser) Page(url string) *Page {
 
 // PagesE ...
 func (b *Browser) PagesE() ([]*Page, error) {
-	list, err := b.Call(&cdp.Message{Method: "Target.getTargets"})
+	list, err := b.Call(&cdp.Request{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
@@ -168,35 +171,42 @@ func (b *Browser) Pages() []*Page {
 	return list
 }
 
+// EventFilter to filter events
+type EventFilter func(*cdp.Event) bool
+
 // WaitEventE ...
-func (b *Browser) WaitEventE(sessionID, name string) (kit.JSONResult, error) {
-	msg, err := b.Event().Until(b.ctx, func(e kit.Event) bool {
-		msg := e.(*cdp.Message)
-		methodMatch := msg.Method == name
-		if sessionID == "" {
-			return methodMatch
-		}
-		return methodMatch && msg.SessionID == sessionID
+func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
+	ctx, cancel := context.WithCancel(b.ctx)
+	var event *cdp.Event
+	var err error
+	w := kit.All(func() {
+		_, err = b.Event().Until(ctx, func(e kit.Event) bool {
+			event = e.(*cdp.Event)
+			return filter(event)
+		})
 	})
-	if err != nil {
-		return nil, err
-	}
-	return kit.JSON(kit.MustToJSON(msg.(*cdp.Message).Params)), nil
+
+	return func() (*cdp.Event, error) {
+		w()
+		return event, err
+	}, cancel
 }
 
-// WaitEvent waits for the next event to happen.
-// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
-func (b *Browser) WaitEvent(name string) kit.JSONResult {
-	res, err := b.WaitEventE("", name)
-	kit.E(err)
-	return res
+// WaitEvent resolves the wait function when the filter returns true, call cancel to release the resource
+func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func()) {
+	w, c := b.WaitEventE(Method(name))
+	return func() *cdp.Event {
+		e, err := w()
+		kit.E(err)
+		return e
+	}, c
 }
 
 // Call sends a control message to browser
-func (b *Browser) Call(msg *cdp.Message) (kit.JSONResult, error) {
-	b.slowmotion(msg.Method)
+func (b *Browser) Call(req *cdp.Request) (kit.JSONResult, error) {
+	b.slowmotion(req.Method)
 
-	return b.client.Call(b.ctx, msg)
+	return b.client.Call(b.ctx, req)
 }
 
 // Event returns the observable for browser events
@@ -228,7 +238,7 @@ func (b *Browser) initEvents() error {
 		}
 	}()
 
-	_, err := b.Call(&cdp.Message{
+	_, err := b.Call(&cdp.Request{
 		Method: "Target.setDiscoverTargets",
 		Params: cdp.Object{"discover": true},
 	})

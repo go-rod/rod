@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 // SprintFnApply is a helper to render template into js code
@@ -24,5 +25,12 @@ func SprintFnThis(js string) string {
 func CancelPanic(err error) {
 	if err != nil && err != context.Canceled {
 		panic(err)
+	}
+}
+
+// Method creates a method filter
+func Method(name string) EventFilter {
+	return func(e *cdp.Event) bool {
+		return name == e.Method
 	}
 }

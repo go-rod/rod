@@ -2,8 +2,6 @@ package rod_test
 
 import (
 	"time"
-
-	"github.com/ysmood/kit"
 )
 
 func (s *S) TestBrowserPages() {
@@ -17,8 +15,8 @@ func (s *S) TestBrowserPages() {
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := kit.All(func() { s.browser.WaitEvent("Page.frameNavigated") })
-	kit.Sleep(0.01)
+	wait, cancel := s.browser.WaitEvent("Page.frameNavigated")
+	defer cancel()
 	s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	wait()
 }

@@ -35,13 +35,13 @@ func TestBasic(t *testing.T) {
 	}()
 
 	defer func() {
-		kit.E(client.Call(ctx, &cdp.Message{Method: "Browser.close"}))
+		kit.E(client.Call(ctx, &cdp.Request{Method: "Browser.close"}))
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
 	kit.E(err)
 
-	res, err := client.Call(ctx, &cdp.Message{
+	res, err := client.Call(ctx, &cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "file://" + file,
@@ -51,7 +51,7 @@ func TestBasic(t *testing.T) {
 
 	targetID := res.Get("targetId").String()
 
-	res, err = client.Call(ctx, &cdp.Message{
+	res, err = client.Call(ctx, &cdp.Request{
 		Method: "Target.attachToTarget",
 		Params: cdp.Object{
 			"targetId": targetID,
@@ -60,15 +60,21 @@ func TestBasic(t *testing.T) {
 	})
 	kit.E(err)
 
-	_, err = client.Call(ctx, &cdp.Message{
+	sessionID := res.Get("sessionId").String()
+
+	_, err = client.Call(ctx, &cdp.Request{
+		SessionID: sessionID,
+		Method:    "Page.enable",
+	})
+	kit.E(err)
+
+	_, err = client.Call(ctx, &cdp.Request{
 		Method: "Target.attachToTarget",
 		Params: cdp.Object{
 			"targetId": "abc",
 		},
 	})
 	assert.Error(t, err)
-
-	sessionID := res.Get("sessionId").String()
 
 	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -86,7 +92,7 @@ func TestBasic(t *testing.T) {
 	}
 
 	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
-		res, err = client.Call(ctx, &cdp.Message{
+		res, err = client.Call(ctx, &cdp.Request{
 			SessionID: sessionID,
 			Method:    "Runtime.evaluate",
 			Params: cdp.Object{
@@ -97,7 +103,7 @@ func TestBasic(t *testing.T) {
 		return err == nil && res.Get("result.subtype").String() != "null", nil
 	}))
 
-	res, err = client.Call(ctx, &cdp.Message{
+	res, err = client.Call(ctx, &cdp.Request{
 		SessionID: sessionID,
 		Method:    "DOM.describeNode",
 		Params: cdp.Object{
@@ -114,7 +120,7 @@ func TestBasic(t *testing.T) {
 	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
-		res, err = client.Call(ctx, &cdp.Message{
+		res, err = client.Call(ctx, &cdp.Request{
 			SessionID: sessionID,
 			Method:    "Page.createIsolatedWorld",
 			Params: cdp.Object{
@@ -123,7 +129,7 @@ func TestBasic(t *testing.T) {
 		})
 		kit.E(err)
 
-		res, err = client.Call(ctx, &cdp.Message{
+		res, err = client.Call(ctx, &cdp.Request{
 			SessionID: sessionID,
 			Method:    "Runtime.evaluate",
 			Params: cdp.Object{
@@ -135,7 +141,7 @@ func TestBasic(t *testing.T) {
 		return err == nil && res.Get("result.subtype").String() != "null", nil
 	}))
 
-	res, err = client.Call(ctx, &cdp.Message{
+	res, err = client.Call(ctx, &cdp.Request{
 		SessionID: sessionID,
 		Method:    "DOM.getOuterHTML",
 		Params: cdp.Object{

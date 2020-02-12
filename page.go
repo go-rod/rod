@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
@@ -60,8 +61,13 @@ func (p *Page) NavigateE(url string) error {
 	res, err := p.Call("Page.navigate", cdp.Object{
 		"url": url,
 	})
+	if err != nil {
+		return err
+	}
+
 	p.FrameID = res.Get("frameId").String()
-	return err
+
+	return nil
 }
 
 // Navigate to url
@@ -102,25 +108,32 @@ func (p *Page) Close() {
 }
 
 // HandleDialogE ...
-func (p *Page) HandleDialogE(accept bool, promptText string) error {
-	_, err := p.WaitEventE("Page.javascriptDialogOpening")
-	if err != nil {
+func (p *Page) HandleDialogE(accept bool, promptText string) (func() error, func()) {
+	wait, cancel := p.WaitEventE(Method("Page.javascriptDialogOpening"))
+
+	return func() error {
+		_, err := wait()
+		if err != nil {
+			return err
+		}
+		_, err = p.Call("Page.handleJavaScriptDialog", cdp.Object{
+			"accept":     accept,
+			"promptText": promptText,
+		})
 		return err
-	}
-	_, err = p.Call("Page.handleJavaScriptDialog", cdp.Object{
-		"accept":     accept,
-		"promptText": promptText,
-	})
-	return err
+	}, cancel
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
-func (p *Page) HandleDialog(accept bool, promptText string) {
-	kit.E(p.HandleDialogE(accept, promptText))
+func (p *Page) HandleDialog(accept bool, promptText string) (wait func(), cancel func()) {
+	w, c := p.HandleDialogE(accept, promptText)
+	return func() {
+		kit.E(w())
+	}, c
 }
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
-func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error) {
+func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), func(), error) {
 	var params cdp.Object
 	if pattern != "" {
 		params = cdp.Object{
@@ -133,7 +146,6 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 	// both Page.setDownloadBehavior and Fetch.enable will pollute the global status,
 	// we have to prevent race condition here
 	p.getDownloadFileLock.Lock()
-	defer p.getDownloadFileLock.Unlock()
 
 	_, err := p.Call("Page.setDownloadBehavior", cdp.Object{
 		"behavior":     "allow",
@@ -147,58 +159,77 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (http.Header, []byte, error
 	if err != nil {
 		return nil, nil, err
 	}
-	defer func() {
-		_, err = p.Call("Fetch.disable", nil)
-	}()
 
-	msg, err := p.WaitEventE("Fetch.requestPaused")
-	if err != nil {
-		return nil, nil, err
-	}
+	wait, cancel := p.WaitEventE(Method("Fetch.requestPaused"))
 
-	msgReq := msg.Get("request")
-	req := kit.Req(msgReq.Get("url").String())
-
-	for k, v := range msgReq.Get("headers").Map() {
-		req.Header(k, v.String())
-	}
-
-	res, err := req.Response()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	body, err := req.Bytes()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	headers := []cdp.Object{}
-	for k, vs := range res.Header {
-		for _, v := range vs {
-			headers = append(headers, cdp.Object{
-				"name":  k,
-				"value": v,
-			})
+	released := false
+	release := func() {
+		defer cancel()
+		if released {
+			return
 		}
+		released = true
+		defer p.getDownloadFileLock.Unlock()
+		_, err := p.Call("Fetch.disable", nil)
+		kit.E(err)
 	}
 
-	_, err = p.Call("Fetch.fulfillRequest", cdp.Object{
-		"requestId":       msg.Get("requestId").String(),
-		"responseCode":    res.StatusCode,
-		"responseHeaders": headers,
-		"body":            base64.StdEncoding.EncodeToString(body),
-	})
+	return func() (http.Header, []byte, error) {
+		defer release()
 
-	return res.Header, body, err
+		msg, err := wait()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		msgReq := msg.Params.Get("request")
+		req := kit.Req(msgReq.Get("url").String())
+
+		for k, v := range msgReq.Get("headers").Map() {
+			req.Header(k, v.String())
+		}
+
+		res, err := req.Response()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		body, err := req.Bytes()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		headers := []cdp.Object{}
+		for k, vs := range res.Header {
+			for _, v := range vs {
+				headers = append(headers, cdp.Object{
+					"name":  k,
+					"value": v,
+				})
+			}
+		}
+
+		_, err = p.Call("Fetch.fulfillRequest", cdp.Object{
+			"requestId":       msg.Params.Get("requestId").String(),
+			"responseCode":    res.StatusCode,
+			"responseHeaders": headers,
+			"body":            base64.StdEncoding.EncodeToString(body),
+		})
+
+		return res.Header, body, err
+	}, release, err
 }
 
 // GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
 // Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
-func (p *Page) GetDownloadFile(pattern string) (http.Header, []byte) {
-	h, f, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
+func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte), cancel func()) {
+	w, c, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
 	kit.E(err)
-	return h, f
+	return func() (http.Header, []byte) {
+		header, data, err := w()
+		kit.E(err)
+		return header, data
+	}, c
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
@@ -217,50 +248,38 @@ func (p *Page) Screenshot() []byte {
 	return png
 }
 
-// WaitLoadE ...
-func (p *Page) WaitLoadE() error {
-	_, err := p.EvalE(true, "", `() => new Promise((resolve) => {
-		if (document.readyState === 'complete') {
-			return resolve()
-		}
-		document.addEventListener('onload', resolve)
-	})`, nil)
-	return err
-}
-
-// WaitLoad waits until document and all sub-resources have finished loading
-func (p *Page) WaitLoad() {
-	kit.E(p.WaitLoadE())
-}
-
 // WaitPageE ...
-func (p *Page) WaitPageE() (*Page, error) {
-	var targetInfo cdp.Object
+func (p *Page) WaitPageE() (func() (*Page, error), func()) {
+	var targetInfo gjson.Result
 
-	_, err := p.browser.event.Until(p.ctx, func(e kit.Event) bool {
-		msg := e.(*cdp.Message)
-		if msg.Method == "Target.targetCreated" {
-			targetInfo = msg.Params.(map[string]interface{})["targetInfo"].(map[string]interface{})
+	wait, cancel := p.browser.WaitEventE(func(e *cdp.Event) bool {
+		if e.Method == "Target.targetCreated" {
+			targetInfo = e.Params.Get("targetInfo")
 
-			if targetInfo["openerId"] == p.TargetID {
+			if targetInfo.Get("openerId").String() == p.TargetID {
 				return true
 			}
 		}
 		return false
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return p.browser.page(targetInfo["targetId"].(string))
+	return func() (*Page, error) {
+		_, err := wait()
+		if err != nil {
+			return nil, err
+		}
+		return p.browser.page(targetInfo.Get("targetId").String())
+	}, cancel
 }
 
 // WaitPage to be opened from the specified page
-func (p *Page) WaitPage() *Page {
-	newPage, err := p.WaitPageE()
-	kit.E(err)
-	return newPage
+func (p *Page) WaitPage() (wait func() *Page, cancel func()) {
+	w, c := p.WaitPageE()
+	return func() *Page {
+		page, err := w()
+		kit.E(err)
+		return page
+	}, c
 }
 
 // PauseE ...
@@ -273,7 +292,8 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	_, err = p.WaitEventE("Debugger.resumed")
+	wait, _ := p.WaitEventE(Method("Debugger.resumed"))
+	_, err = wait()
 	return err
 }
 
@@ -283,16 +303,16 @@ func (p *Page) Pause() {
 }
 
 // WaitEventE ...
-func (p *Page) WaitEventE(name string) (kit.JSONResult, error) {
-	return p.browser.WaitEventE(p.SessionID, name)
+func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
+	return p.browser.WaitEventE(func(e *cdp.Event) bool {
+		return e.SessionID == p.SessionID && filter(e)
+	})
 }
 
 // WaitEvent waits for the next event to happen.
-// Example event names: Page.javascriptDialogOpening, Page.frameNavigated, DOM.attributeModified
-func (p *Page) WaitEvent(name string) kit.JSONResult {
-	res, err := p.WaitEventE(name)
-	kit.E(err)
-	return res
+func (p *Page) WaitEvent(name string) (wait func(), cancel func()) {
+	w, c := p.WaitEventE(Method(name))
+	return func() { kit.E(w()) }, c
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function
@@ -377,7 +397,7 @@ func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
 func (p *Page) Call(method string, params interface{}) (kit.JSONResult, error) {
-	return p.browser.Ctx(p.ctx).Call(&cdp.Message{
+	return p.browser.Ctx(p.ctx).Call(&cdp.Request{
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
@@ -395,7 +415,7 @@ func (p *Page) Sleeper() kit.Sleeper {
 		prefix := strings.HasPrefix
 
 		c := s.Filter(func(e kit.Event) bool {
-			m := e.(*cdp.Message).Method
+			m := e.(*cdp.Event).Method
 			if prefix(m, "Page") || prefix(m, "DOM") {
 				return true
 			}

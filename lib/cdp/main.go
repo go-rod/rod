@@ -14,26 +14,58 @@ import (
 // Client is a chrome devtools protocol connection instance.
 // To enable debug log, set env "debug_cdp=true".
 type Client struct {
-	messages map[uint64]*Message
-	chReq    chan *Message
-	chRes    chan *Message
-	chEvent  chan *Message
+	requests map[uint64]*Request
+	chReq    chan *Request
+	chRes    chan *Response
+	chEvent  chan *Event
 	count    uint64
 }
 
-// Message ...
-type Message struct {
-	// Request
+// Request to send to chrome
+type Request struct {
 	ID        uint64      `json:"id"`
 	SessionID string      `json:"sessionId,omitempty"`
 	Method    string      `json:"method"`
 	Params    interface{} `json:"params,omitempty"`
 
-	// Response
-	Result json.RawMessage `json:"result,omitempty"`
-	Error  *Error          `json:"error,omitempty"`
+	callback chan *Response
+}
 
-	callback chan *Message
+// Response from chrome
+type Response struct {
+	ID     uint64 `json:"id"`
+	Result *JSON  `json:"result,omitempty"`
+	Error  *Error `json:"error,omitempty"`
+}
+
+// Error of the Response
+type Error struct {
+	Code    int64  `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data"`
+}
+
+// Error interface
+func (e *Error) Error() string {
+	return kit.MustToJSON(e)
+}
+
+// Event from chrome
+type Event struct {
+	SessionID string `json:"sessionId,omitempty"`
+	Method    string `json:"method"`
+	Params    *JSON  `json:"params,omitempty"`
+}
+
+// JSON helper
+type JSON struct {
+	kit.JSONResult
+}
+
+// UnmarshalJSON interface
+func (j *JSON) UnmarshalJSON(data []byte) error {
+	j.JSONResult = kit.JSON(data)
+	return nil
 }
 
 // Object is the json object
@@ -42,26 +74,14 @@ type Object map[string]interface{}
 // Array is the json array
 type Array []interface{}
 
-// Error ...
-type Error struct {
-	Code    int64  `json:"code"`
-	Message string `json:"message"`
-	Data    string `json:"data"`
-}
-
-// Error ...
-func (e *Error) Error() string {
-	return kit.MustToJSON(e)
-}
-
 // New creates a cdp connection, the url should be something like http://localhost:9222.
 // All messages from Client.Event must be received or they will block the client.
 func New(ctx context.Context, url string) (*Client, error) {
 	cdp := &Client{
-		messages: map[uint64]*Message{},
-		chReq:    make(chan *Message),
-		chRes:    make(chan *Message),
-		chEvent:  make(chan *Message),
+		requests: map[uint64]*Request{},
+		chReq:    make(chan *Request),
+		chRes:    make(chan *Response),
+		chEvent:  make(chan *Event),
 	}
 
 	wsURL, err := GetWebSocketDebuggerURL(url)
@@ -86,25 +106,19 @@ func New(ctx context.Context, url string) (*Client, error) {
 func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 	for ctx.Err() == nil {
 		select {
-		case msg := <-cdp.chReq:
-			msg.ID = cdp.id()
-			data, err := json.Marshal(msg)
+		case req := <-cdp.chReq:
+			req.ID = cdp.id()
+			data, err := json.Marshal(req)
 			checkPanic(err)
-			debug(">", data)
+			debug(req)
 			err = conn.WriteMessage(websocket.TextMessage, data)
 			checkPanic(err)
-			cdp.messages[msg.ID] = msg
+			cdp.requests[req.ID] = req
 
-		case msg := <-cdp.chRes:
-			if msg.ID == 0 {
-				cdp.chEvent <- msg
-				continue
-			}
-
-			req := cdp.messages[msg.ID]
-			delete(cdp.messages, msg.ID)
-
-			req.callback <- msg
+		case res := <-cdp.chRes:
+			req := cdp.requests[res.ID]
+			delete(cdp.requests, res.ID)
+			req.callback <- res
 		}
 	}
 }
@@ -121,35 +135,41 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 			}
 			return
 		}
-		debug("<", data)
 
 		if msgType == websocket.TextMessage {
-			var msg Message
-			err = json.Unmarshal(data, &msg)
-			checkPanic(err)
-
-			cdp.chRes <- &msg
+			if kit.JSON(data).Get("id").Exists() {
+				var res Response
+				err = json.Unmarshal(data, &res)
+				checkPanic(err)
+				debug(&res)
+				cdp.chRes <- &res
+			} else {
+				var e Event
+				err = json.Unmarshal(data, &e)
+				debug(&e)
+				cdp.chEvent <- &e
+			}
 		}
 	}
 }
 
 // Event will emit chrome devtools protocol events
-func (cdp *Client) Event() chan *Message {
+func (cdp *Client) Event() chan *Event {
 	return cdp.chEvent
 }
 
 // Call a method and get its response
-func (cdp *Client) Call(ctx context.Context, msg *Message) (kit.JSONResult, error) {
-	msg.callback = make(chan *Message)
+func (cdp *Client) Call(ctx context.Context, req *Request) (kit.JSONResult, error) {
+	req.callback = make(chan *Response)
 
-	cdp.chReq <- msg
+	cdp.chReq <- req
 
 	select {
-	case res := <-msg.callback:
+	case res := <-req.callback:
 		if res.Error != nil {
 			return nil, res.Error
 		}
-		return kit.JSON([]byte(res.Result)), nil
+		return res.Result.JSONResult, nil
 	case <-ctx.Done():
 		return nil, ctx.Err()
 	}
