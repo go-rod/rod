@@ -52,6 +52,26 @@ func Example_debug_mode() {
 	// Output: 热干面
 }
 
+func Example_wait_for_animation() {
+	browser := rod.Open(nil)
+	defer browser.Close()
+
+	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/").Timeout(time.Minute)
+
+	btn := page.Element("[data-target='#exampleModalLive']")
+	btn.Click()
+	saveBtn := page.ElementMatches("#exampleModalLive button", "Close")
+	// wait until the save button's position is stable
+	// and we don't wait more than 1 sec
+	saveBtn.Timeout(time.Second).WaitStable()
+	saveBtn.Click()
+	saveBtn.WaitInvisible()
+
+	fmt.Println("done")
+
+	// Output: done
+}
+
 func Example_customize_chrome_launch() {
 	// get chrome bin automatically
 	chromeBin, err := new(fetcher.Chrome).Get()

@@ -128,6 +128,14 @@ func (s *S) TestWaitInvisible() {
 	s.False(p.Has("h4"))
 }
 
+func (s *S) TestWaitStable() {
+	p := s.page.Navigate(s.htmlFile("fixtures/wait-stable.html"))
+	el := p.Element("button")
+	el.WaitStable()
+	el.Click()
+	p.Has("[event=click]")
+}
+
 func (s *S) TestFnErr() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	el := p.Element("button")

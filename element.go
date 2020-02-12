@@ -281,6 +281,35 @@ func (el *Element) HTML() string {
 	return s
 }
 
+// WaitStableE not using requestAnimation here because it can trigger to many checks,
+// or miss checks for jQuery css animation.
+func (el *Element) WaitStableE(interval time.Duration) error {
+	box := el.Box().Raw
+
+	t := time.NewTicker(interval)
+	defer t.Stop()
+
+	for range t.C {
+		select {
+		case <-t.C:
+		case <-el.ctx.Done():
+			return el.ctx.Err()
+		}
+		current := el.Box().Raw
+		if box == current {
+			break
+		}
+		box = current
+	}
+	return nil
+}
+
+// WaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
+// or button to complete so that we can simulate the mouse to move to it and click on it.
+func (el *Element) WaitStable() {
+	kit.E(el.WaitStableE(100 * time.Millisecond))
+}
+
 // WaitE ...
 func (el *Element) WaitE(js string, params ...interface{}) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {

@@ -23,15 +23,16 @@ func (b *Browser) slowmotion(method string) {
 }
 
 // Overlay a rectangle on the main frame with specified message
-func (p *Page) Overlay(left, top, width, height int64, msg string) func() {
+func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 	const js = `function foo (id, left, top, width, height, msg) {
 		var div = document.createElement('div')
 		var msgDiv = document.createElement('div')
 		div.id = id
 		div.style = 'position: fixed; z-index:2147483647; border: 2px dashed red;'
 			+ 'border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;'
-			+ 'left:' + (left - 2) + 'px;'
-			+ 'top:' + (top - 2) + 'px;'
+			+ 'box-sizing: border-box;'
+			+ 'left:' + left + 'px;'
+			+ 'top:' + top + 'px;'
 			+ 'height:' + height + 'px;'
 			+ 'width:' + width + 'px;'
 
@@ -41,7 +42,7 @@ func (p *Page) Overlay(left, top, width, height int64, msg string) func() {
 	
 		msgDiv.style = 'position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;'
 			+ 'box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;'
-			+ 'top:' + (height + 2) + 'px; '
+			+ 'top:' + height + 'px; '
 	
 		msgDiv.innerHTML = msg
 	
@@ -50,7 +51,7 @@ func (p *Page) Overlay(left, top, width, height int64, msg string) func() {
 	}`
 
 	root := p.rootFrame()
-	id := kit.RandString(8)
+	id := "rod-" + kit.RandString(8)
 
 	_, err := root.EvalE(true, "", js, []interface{}{
 		id,
@@ -84,10 +85,10 @@ func (el *Element) Trace(msg string) func() {
 	box, _ := el.BoxE()
 
 	return el.page.Overlay(
-		box.Get("left").Int(),
-		box.Get("top").Int(),
-		box.Get("width").Int(),
-		box.Get("height").Int(),
+		box.Get("left").Float(),
+		box.Get("top").Float(),
+		box.Get("width").Float(),
+		box.Get("height").Float(),
 		msg,
 	)
 }
