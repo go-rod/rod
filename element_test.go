@@ -136,6 +136,11 @@ func (s *S) TestWaitStable() {
 	p.Has("[event=click]")
 }
 
+func (s *S) TestResource() {
+	p := s.page.Navigate(s.htmlFile("fixtures/resource.html"))
+	s.Equal(15148, len(p.Element("img").Resource()))
+}
+
 func (s *S) TestFnErr() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	el := p.Element("button")

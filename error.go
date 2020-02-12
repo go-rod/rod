@@ -9,6 +9,8 @@ const (
 	ErrExpectElements = "expect js to return an array of elements"
 	// ErrElementNotFound error code
 	ErrElementNotFound = "cannot find element"
+	// ErrSrcNotFound error code
+	ErrSrcNotFound = "element doesn't have src attribute"
 )
 
 // Error ...

@@ -114,14 +114,21 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	target, err := b.Call(&cdp.Message{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
-			"url": url,
+			"url": "about:blank",
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return b.page(target.Get("targetId").String())
+	page, err := b.page(target.Get("targetId").String())
+	if err != nil {
+		return nil, err
+	}
+
+	page.Navigate(url)
+
+	return page, nil
 }
 
 // Page creates a new page

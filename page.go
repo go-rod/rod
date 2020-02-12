@@ -21,13 +21,13 @@ type Page struct {
 	TargetID  string
 	SessionID string
 	ContextID int64
+	FrameID   string
 
 	// devices
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
 	// iframe only
-	FrameID string
 	element *Element
 
 	timeoutCancel       func()
@@ -57,9 +57,10 @@ func (p *Page) CancelTimeout() {
 
 // NavigateE ...
 func (p *Page) NavigateE(url string) error {
-	_, err := p.Call("Page.navigate", cdp.Object{
+	res, err := p.Call("Page.navigate", cdp.Object{
 		"url": url,
 	})
+	p.FrameID = res.Get("frameId").String()
 	return err
 }
 
@@ -447,7 +448,7 @@ func (p *Page) initSession() error {
 }
 
 func (p *Page) isIframe() bool {
-	return p.FrameID != ""
+	return p.element != nil
 }
 
 func (p *Page) rootFrame() *Page {

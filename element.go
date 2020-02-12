@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"path/filepath"
@@ -45,7 +46,7 @@ func (el *Element) CancelTimeout() {
 
 // DescribeE ...
 func (el *Element) DescribeE() (kit.JSONResult, error) {
-	node, err := el.page.Ctx(el.ctx).Call(
+	val, err := el.page.Ctx(el.ctx).Call(
 		"DOM.describeNode",
 		cdp.Object{
 			"objectId": el.ObjectID,
@@ -54,16 +55,16 @@ func (el *Element) DescribeE() (kit.JSONResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	return node, nil
+	node := val.Get("node")
+	return &node, nil
 }
 
 // Describe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) Describe() kit.JSONResult {
-	info, err := el.DescribeE()
+	node, err := el.DescribeE()
 	kit.E(err)
-	val := info.Get("node")
-	return &val
+	return node
 }
 
 // FrameE ...
@@ -74,7 +75,7 @@ func (el *Element) FrameE() (*Page, error) {
 	}
 
 	newPage := *el.page
-	newPage.FrameID = node.Get("node.frameId").String()
+	newPage.FrameID = node.Get("frameId").String()
 	newPage.element = el
 
 	return &newPage, newPage.initIsolatedWorld()
@@ -397,6 +398,49 @@ func (el *Element) Box() kit.JSONResult {
 	box, err := el.BoxE()
 	kit.E(err)
 	return box
+}
+
+// ResourceE ...
+func (el *Element) ResourceE() ([]byte, error) {
+	src, err := el.EvalE(true, `() => new Promise((resolve, reject) => {
+		if (this.complete) {
+			return resolve(this.src)
+		}
+		this.addEventListener('onload', () => resolve(this.src))
+		this.addEventListener('onerror', (e) => reject(e))
+	})`)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := el.page.Call("Page.getResourceContent", cdp.Object{
+		"frameId": el.page.FrameID,
+		"url":     src.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	data := res.Get("content").String()
+
+	var bin []byte
+	if res.Get("base64Encoded").Bool() {
+		bin, err = base64.StdEncoding.DecodeString(data)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		bin = []byte(data)
+	}
+
+	return bin, nil
+}
+
+// Resource returns the binary of the "src" properly, such as the image or audio file.
+func (el *Element) Resource() []byte {
+	bin, err := el.ResourceE()
+	kit.E(err)
+	return bin
 }
 
 // EvalE ...
