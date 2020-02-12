@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"image/png"
+	"io"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -14,6 +15,7 @@ import (
 
 func (s *S) TestClosePage() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
+	page.WaitLoad()
 	defer page.Close()
 	page.Element("button")
 }
@@ -143,11 +145,11 @@ func (s *S) TestPagePause() {
 	kit.E(s.page.Call("Debugger.resume", nil))
 }
 
-func (s *S) TestPageScreenshop() {
+func (s *S) TestPageScreenshot() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	p.SetViewport(400, 300, 1, false)
 	p.Element("button")
-	data := p.Screenshop()
+	data := p.Screenshot()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
 	s.Equal(400, img.Bounds().Dx())
@@ -186,6 +188,8 @@ func (s *S) TestPageOthers() {
 	s.Panics(func() {
 		rod.CancelPanic(errors.New("err"))
 	})
+
+	s.False(rod.IsError(io.EOF, rod.ErrElementNotFound))
 
 	p.Mouse.Click("")
 	p.Mouse.Down("left")

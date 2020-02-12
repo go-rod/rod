@@ -7,9 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 
-	"github.com/cheggaaa/pb/v3"
 	"github.com/mholt/archiver"
 	"github.com/ysmood/kit"
 )
@@ -29,6 +27,8 @@ type Chrome struct {
 
 	// Dir default is the filepath.Join(os.TempDir(), "cdp")
 	Dir string
+
+	Log func(string)
 }
 
 func (c *Chrome) dir() string {
@@ -65,6 +65,12 @@ func (c *Chrome) ExecPath() string {
 
 // Download chromium
 func (c *Chrome) Download() error {
+	if c.Log == nil {
+		c.Log = func(str string) {
+			fmt.Print(str)
+		}
+	}
+
 	host := c.host()
 	revision := c.revision()
 	dir := c.dir()
@@ -79,7 +85,7 @@ func (c *Chrome) Download() error {
 	}[runtime.GOOS]
 
 	u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, revision, conf.zipName)
-	kit.Log("Download chromium from:", u)
+	c.Log("[cdp] Download chromium from: " + u + "\n")
 
 	zipPath := filepath.Join(dir, fmt.Sprintf("chromium-%d.zip", revision))
 
@@ -98,19 +104,14 @@ func (c *Chrome) Download() error {
 		return err
 	}
 
-	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
+	progress := &progresser{r: res.Body, log: c.Log}
+
+	_, err = io.Copy(zipFile, progress)
 	if err != nil {
 		return err
 	}
 
-	bar := pb.StartNew(int(size))
-
-	_, err = io.Copy(zipFile, bar.NewProxyReader(res.Body))
-	if err != nil {
-		return err
-	}
-
-	bar.Finish()
+	c.Log("[cdp] Download chromium complete: " + zipPath + "\n")
 
 	err = zipFile.Close()
 	if err != nil {
@@ -135,6 +136,21 @@ func (c *Chrome) Get() (string, error) {
 		}
 	}
 	return execPath, c.Download()
+}
+
+type progresser struct {
+	r   io.Reader
+	log func(string)
+}
+
+func (pg *progresser) Read(p []byte) (n int, err error) {
+	n, err = pg.r.Read(p)
+	if err == io.EOF {
+		pg.log("\r\n")
+	} else {
+		pg.log(".")
+	}
+	return
 }
 
 var downloadMap = map[string][]string{

@@ -200,8 +200,8 @@ func (p *Page) GetDownloadFile(pattern string) (http.Header, []byte) {
 	return h, f
 }
 
-// ScreenshopE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
-func (p *Page) ScreenshopE(options cdp.Object) ([]byte, error) {
+// ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
+func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 	res, err := p.Call("Page.captureScreenshot", options)
 	if err != nil {
 		return nil, err
@@ -209,11 +209,27 @@ func (p *Page) ScreenshopE(options cdp.Object) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(res.Get("data").String())
 }
 
-// Screenshop the page
-func (p *Page) Screenshop() []byte {
-	png, err := p.ScreenshopE(nil)
+// Screenshot the page
+func (p *Page) Screenshot() []byte {
+	png, err := p.ScreenshotE(nil)
 	kit.E(err)
 	return png
+}
+
+// WaitLoadE ...
+func (p *Page) WaitLoadE() error {
+	_, err := p.EvalE(true, "", `() => new Promise((resolve) => {
+		if (document.readyState === 'complete') {
+			return resolve()
+		}
+		document.addEventListener('onload', resolve)
+	})`, nil)
+	return err
+}
+
+// WaitLoad waits until document and all sub-resources have finished loading
+func (p *Page) WaitLoad() {
+	kit.E(p.WaitLoadE())
 }
 
 // WaitPageE ...
