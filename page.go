@@ -28,6 +28,10 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
+	// TraceDir is the dir to save the trace screenshots.
+	// If it's not empty, screenshots will be taken before and after each trace.
+	TraceDir string
+
 	// iframe only
 	element *Element
 
@@ -54,6 +58,22 @@ func (p *Page) CancelTimeout() {
 	if p.timeoutCancel != nil {
 		p.timeoutCancel()
 	}
+}
+
+// IsIframe tells if it's iframe
+func (p *Page) IsIframe() bool {
+	return p.element != nil
+}
+
+// Root page of the iframe, if it's not a iframe returns itself
+func (p *Page) Root() *Page {
+	f := p
+
+	for f.IsIframe() {
+		f = f.element.page
+	}
+
+	return f
 }
 
 // NavigateE ...
@@ -345,7 +365,7 @@ func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResu
 		"awaitPromise":  true,
 		"returnByValue": byValue,
 	}
-	if p.isIframe() {
+	if p.IsIframe() {
 		return p.evalIframe(params)
 	}
 	return p.Call("Runtime.evaluate", params)
@@ -465,18 +485,4 @@ func (p *Page) initSession() error {
 		return err
 	}
 	return p.SetViewportE(p.browser.Viewport)
-}
-
-func (p *Page) isIframe() bool {
-	return p.element != nil
-}
-
-func (p *Page) rootFrame() *Page {
-	f := p
-
-	for f.isIframe() {
-		f = f.element.page
-	}
-
-	return f
 }

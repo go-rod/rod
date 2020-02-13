@@ -28,19 +28,26 @@ func Example_basic() {
 
 func Example_debug_mode() {
 	browser := rod.Open(&rod.Browser{
-		Foreground: true,
-		Trace:      true,
-		Slowmotion: 2 * time.Second,
+		Foreground: true,            // run chrome on foreground
+		Trace:      true,            // show trace of each input action
+		Slowmotion: 2 * time.Second, // each input action will take 2s
 	})
 	defer browser.Close()
 
 	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
+
+	// enable auto screenshot before and after each input action
+	page.TraceDir = "tmp/screenshots"
 
 	page.Element("#searchLanguage").Select("[lang=zh]")
 	page.Element("#searchInput").Input("热干面")
 	page.Keyboard.Press(input.Enter)
 
 	fmt.Println(page.Element("#firstHeading").Text())
+
+	// get the image binary
+	img := page.Element(`[alt="Hot Dry Noodles.jpg"]`)
+	_ = kit.OutputFile("tmp/img.jpg", img.Resource(), nil)
 
 	// pause the js execution
 	// you can resume by open the devtools and click the resume button on source tab

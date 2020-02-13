@@ -134,7 +134,12 @@ func (el *Element) ScrollIntoViewIfNeeded() {
 
 // ClickE ...
 func (el *Element) ClickE(button string) error {
-	err := el.ScrollIntoViewIfNeededE()
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.ScrollIntoViewIfNeededE()
 	if err != nil {
 		return err
 	}
@@ -164,7 +169,12 @@ func (el *Element) Click() {
 
 // PressE ...
 func (el *Element) PressE(key rune) error {
-	err := el.FocusE()
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.FocusE()
 	if err != nil {
 		return err
 	}
@@ -181,7 +191,12 @@ func (el *Element) Press(key rune) {
 
 // InputE ...
 func (el *Element) InputE(text string) error {
-	err := el.FocusE()
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.FocusE()
 	if err != nil {
 		return err
 	}
@@ -207,12 +222,17 @@ func (el *Element) Input(text string) {
 
 // SelectE ...
 func (el *Element) SelectE(selectors ...string) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
 	defer el.Trace(fmt.Sprintf(
 		`<span style="color: #777;">select</span> <code>%s</code>`,
 		strings.Join(selectors, "; ")))()
 	el.page.browser.slowmotion("Input.select")
 
-	_, err := el.EvalE(true, `selectors => {
+	_, err = el.EvalE(true, `selectors => {
 		selectors.forEach(s => {
 			Array.from(this.options).forEach(el => {
 				try {
@@ -380,7 +400,7 @@ func (el *Element) BoxE() (kit.JSONResult, error) {
 	var j map[string]interface{}
 	kit.E(json.Unmarshal([]byte(box.String()), &j))
 
-	if el.page.isIframe() {
+	if el.page.IsIframe() {
 		frameRect, err := el.page.element.BoxE() // recursively get the box
 		if err != nil {
 			return nil, err
@@ -404,10 +424,10 @@ func (el *Element) Box() kit.JSONResult {
 func (el *Element) ResourceE() ([]byte, error) {
 	src, err := el.EvalE(true, `() => new Promise((resolve, reject) => {
 		if (this.complete) {
-			return resolve(this.src)
+			return resolve(this.currentSrc)
 		}
-		this.addEventListener('onload', () => resolve(this.src))
-		this.addEventListener('onerror', (e) => reject(e))
+		this.addEventListener('load', () => resolve(this.currentSrc))
+		this.addEventListener('error', (e) => reject(e))
 	})`)
 	if err != nil {
 		return nil, err

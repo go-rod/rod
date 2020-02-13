@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image/png"
 	"io"
+	"path/filepath"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -153,6 +154,14 @@ func (s *S) TestPageScreenshot() {
 	kit.E(err)
 	s.Equal(400, img.Bounds().Dx())
 	s.Equal(300, img.Bounds().Dy())
+}
+
+func (s *S) TestPageTraceDir() {
+	p := *s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	p.TraceDir = filepath.FromSlash("tmp/trace-screenshots/" + kit.RandString(8))
+	p.Element("button").Click()
+	pattern := filepath.Join(p.TraceDir, "*")
+	s.Len(kit.Walk(pattern).MustList(), 2)
 }
 
 func (s *S) TestPageInput() {

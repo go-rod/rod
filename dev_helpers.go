@@ -5,10 +5,12 @@
 package rod
 
 import (
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 // check method and sleep if needed
@@ -50,7 +52,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 		document.body.appendChild(div)
 	}`
 
-	root := p.rootFrame()
+	root := p.Root()
 	id := "rod-" + kit.RandString(8)
 
 	_, err := root.EvalE(true, "", js, []interface{}{
@@ -76,19 +78,44 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 
 // Trace with an overlay on the element
 func (el *Element) Trace(msg string) func() {
-	if !el.page.browser.Trace {
-		return func() {}
+	var removeOverlay func()
+	if el.page.browser.Trace {
+		box, err := el.BoxE()
+		CancelPanic(err)
+		removeOverlay = el.page.Overlay(
+			box.Get("left").Float(),
+			box.Get("top").Float(),
+			box.Get("width").Float(),
+			box.Get("height").Float(),
+			msg,
+		)
 	}
 
-	el.WaitVisible()
+	el.page.Trace()
 
-	box, _ := el.BoxE()
+	return func() {
+		if removeOverlay != nil {
+			removeOverlay()
+		}
+		el.page.Trace()
+	}
+}
 
-	return el.page.Overlay(
-		box.Get("left").Float(),
-		box.Get("top").Float(),
-		box.Get("width").Float(),
-		box.Get("height").Float(),
-		msg,
-	)
+// Trace screenshot to TraceDir
+func (p *Page) Trace() {
+	dir := p.TraceDir
+	if dir == "" {
+		return
+	}
+
+	img, err := p.Root().ScreenshotE(cdp.Object{
+		"format":  "jpeg",
+		"quality": 80,
+	})
+	CancelPanic(err)
+
+	name := strings.ReplaceAll(time.Now().Format(time.RFC3339Nano), ":", "_")
+	path := filepath.Join(dir, name+".jpg")
+
+	kit.E(kit.OutputFile(path, img, nil))
 }
