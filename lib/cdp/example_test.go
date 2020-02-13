@@ -5,13 +5,13 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 func ExampleClient() {
 	ctx := context.Background()
 
-	url, err := cdp.LaunchBrowser("", nil)
-	kit.E(err)
+	url := launcher.Launch("", "", nil)
 
 	client, err := cdp.New(ctx, url)
 	kit.E(err)

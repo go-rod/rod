@@ -7,6 +7,7 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 // Browser represents the browser
@@ -43,12 +44,12 @@ func (b *Browser) OpenE() (*Browser, error) {
 		b.close = cancel
 	}
 
-	if _, err := cdp.GetWebSocketDebuggerURL(b.ControlURL); err != nil {
-		args := cdp.ChromeArgs()
+	if _, err := launcher.GetWebSocketDebuggerURL(b.ControlURL); err != nil {
+		args := launcher.Args()
 		if b.Foreground {
 			delete(args, "--headless")
 		}
-		u, err := cdp.LaunchBrowser("", args)
+		u, err := launcher.LaunchE("", "", args)
 		if err != nil {
 			return nil, err
 		}
@@ -134,7 +135,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return page, nil
 }
 
-// Page creates a new page
+// Page creates a new tab
 func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
 	kit.E(err)

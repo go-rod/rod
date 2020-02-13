@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 // Client is a chrome devtools protocol connection instance.
@@ -84,7 +85,7 @@ func New(ctx context.Context, url string) (*Client, error) {
 		chEvent:  make(chan *Event),
 	}
 
-	wsURL, err := GetWebSocketDebuggerURL(url)
+	wsURL, err := launcher.GetWebSocketDebuggerURL(url)
 	if err != nil {
 		return nil, err
 	}

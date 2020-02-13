@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 func TestBasic(t *testing.T) {
@@ -19,10 +20,9 @@ func TestBasic(t *testing.T) {
 	ob := kit.NewObservable()
 
 	url := os.Getenv("chrome")
-	_, err := cdp.GetWebSocketDebuggerURL(url)
+	_, err := launcher.GetWebSocketDebuggerURL(url)
 	if err != nil {
-		url, err = cdp.LaunchBrowser("", nil)
-		kit.E(err)
+		url = launcher.Launch("", "", nil)
 	}
 
 	client, err := cdp.New(ctx, url)

@@ -2,15 +2,13 @@ package rod_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"time"
 
 	digto "github.com/ysmood/digto/client"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/fetcher"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 func Example_basic() {
@@ -60,7 +58,9 @@ func Example_wait_for_animation() {
 
 	btn := page.Element("[data-target='#exampleModalLive']")
 	btn.Click()
+
 	saveBtn := page.ElementMatches("#exampleModalLive button", "Close")
+
 	// wait until the save button's position is stable
 	// and we don't wait more than 1 sec
 	saveBtn.Timeout(time.Second).WaitStable()
@@ -73,22 +73,13 @@ func Example_wait_for_animation() {
 }
 
 func Example_customize_chrome_launch() {
-	// get chrome bin automatically
-	chromeBin, err := new(fetcher.Chrome).Get()
-	kit.E(err)
-
-	args := cdp.ChromeArgs() // get default args
-
-	// modify args
-	dir, _ := ioutil.TempDir("", "")
-	args["--user-data-dir"] = []string{dir}
-	delete(args, "--use-mock-keychain")
-
-	controlURL, err := cdp.LaunchBrowser(chromeBin, args)
-	kit.E(err)
+	// set custom chrome flags
+	args := launcher.Args()
+	args["--disable-sync"] = nil        // add flag
+	delete(args, "--use-mock-keychain") // delete flag
 
 	browser := rod.Open(&rod.Browser{
-		ControlURL: controlURL,
+		ControlURL: launcher.Launch("", "", args),
 	})
 	defer browser.Close()
 
@@ -132,7 +123,9 @@ func Example_stripe_callback() {
 
 	browser := rod.Open(nil)
 	defer browser.Close()
+
 	page := browser.Page(redirectURL)
+
 	frame01 := page.Timeout(time.Minute).Element("[name=__privateStripeFrame4]").Frame()
 	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
 	frame01.Element(".Spinner").WaitInvisible()           // wait page loading
