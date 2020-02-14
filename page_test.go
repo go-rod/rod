@@ -112,8 +112,8 @@ func (s *S) TestMouse() {
 }
 
 func (s *S) TestMouseClick() {
-	s.browser.Slowmotion = 1
-	defer func() { s.browser.Slowmotion = 0 }()
+	s.browser.Slowmotion(1)
+	defer func() { s.browser.Slowmotion(0) }()
 
 	page := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	page.Element("button")
@@ -158,9 +158,10 @@ func (s *S) TestPageScreenshot() {
 
 func (s *S) TestPageTraceDir() {
 	p := *s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	p.TraceDir = filepath.FromSlash("tmp/trace-screenshots/" + kit.RandString(8))
+	dir := filepath.FromSlash("tmp/trace-screenshots/" + kit.RandString(8))
+	p.TraceDir(dir)
 	p.Element("button").Click()
-	pattern := filepath.Join(p.TraceDir, "*")
+	pattern := filepath.Join(dir, "*")
 	s.Len(kit.Walk(pattern).MustList(), 2)
 }
 

@@ -28,15 +28,13 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	// TraceDir is the dir to save the trace screenshots.
-	// If it's not empty, screenshots will be taken before and after each trace.
-	TraceDir string
-
 	// iframe only
 	element *Element
 
 	timeoutCancel       func()
 	getDownloadFileLock *sync.Mutex
+
+	traceDir string
 }
 
 // Context sets the context for chained sub-operations
@@ -58,6 +56,13 @@ func (p *Page) CancelTimeout() *Page {
 	if p.timeoutCancel != nil {
 		p.timeoutCancel()
 	}
+	return p
+}
+
+// TraceDir set the dir to save the trace screenshots.
+// If it's set, screenshots will be taken before and after each trace.
+func (p *Page) TraceDir(dir string) *Page {
+	p.traceDir = dir
 	return p
 }
 
@@ -493,5 +498,5 @@ func (p *Page) initSession() error {
 	if err != nil {
 		return err
 	}
-	return p.SetViewportE(p.browser.Viewport)
+	return p.SetViewportE(p.browser.viewport)
 }

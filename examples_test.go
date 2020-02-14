@@ -12,7 +12,7 @@ import (
 )
 
 func Example_basic() {
-	browser := rod.Open(nil)
+	browser := rod.New().Connect()
 	defer browser.Close()
 
 	// timeout will be passed to chained function calls
@@ -28,17 +28,21 @@ func Example_basic() {
 }
 
 func Example_debug_mode() {
-	browser := rod.Open(&rod.Browser{
-		Foreground: true,            // run chrome on foreground
-		Trace:      true,            // show trace of each input action
-		Slowmotion: 2 * time.Second, // each input action will take 2s
-	})
+	// run chrome on foreground
+	url := launcher.New().Headless(false).Launch()
+
+	browser := rod.New().
+		ControlURL(url).
+		Trace(true).                 // show trace of each input action
+		Slowmotion(2 * time.Second). // each input action will take 2s
+		Connect()
+
 	defer browser.Close()
 
 	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
 	// enable auto screenshot before and after each input action
-	page.TraceDir = "tmp/screenshots"
+	page.TraceDir("tmp/screenshots")
 
 	page.Element("#searchLanguage").Select("[lang=zh]")
 	page.Element("#searchInput").Input("热干面")
@@ -59,7 +63,7 @@ func Example_debug_mode() {
 }
 
 func Example_wait_for_animation() {
-	browser := rod.Open(nil)
+	browser := rod.New().Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/").Timeout(time.Minute)
@@ -78,14 +82,13 @@ func Example_wait_for_animation() {
 }
 
 func Example_customize_chrome_launch() {
-	// set custom chrome flags
-	args := launcher.Args()
-	args["--disable-sync"] = nil        // add flag
-	delete(args, "--use-mock-keychain") // delete flag
+	// set custom chrome options
+	url := launcher.New().
+		Set("disable-sync").         // add flag
+		Delete("use-mock-keychain"). // delete flag
+		Launch()
 
-	browser := rod.Open(&rod.Browser{
-		ControlURL: launcher.Launch("", "", args),
-	})
+	browser := rod.New().ControlURL(url).Connect()
 	defer browser.Close()
 
 	el := browser.Page("https://www.wikipedia.org/").Element("title")
@@ -126,7 +129,7 @@ func Example_stripe_callback() {
 		"return_url", dig.PublicURL(),
 	).Header(authHeader...).MustJSON().Get("next_action.redirect_to_url.url").String()
 
-	browser := rod.Open(nil)
+	browser := rod.New().Connect()
 	defer browser.Close()
 
 	page := browser.Page(redirectURL)

@@ -11,23 +11,12 @@ import (
 )
 
 // Browser represents the browser
+// It doesn't depends on file system, it should work with remote browser seamlessly.
 type Browser struct {
-	// ControlURL is the url to remote control browser.
-	// If fails to connect to it, rod will try to open a local browser, if local browser is not found rod will try to download one.
-	ControlURL string
-
-	// Viewport is the default value to set after page creation
-	// options: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-	Viewport *cdp.Object
-
-	// Foreground enables the browser to run on foreground mode
-	Foreground bool
-
-	// Slowmotion delay each chrome control action
-	Slowmotion time.Duration
-
-	// Trace enables the visual tracing of the device input on the page
-	Trace bool
+	controlURL string
+	viewport   *cdp.Object
+	slowmotion time.Duration
+	trace      bool
 
 	ctx           context.Context
 	timeoutCancel func()
@@ -36,44 +25,66 @@ type Browser struct {
 	event         *kit.Observable
 }
 
-// OpenE ...
-func (b *Browser) OpenE() (*Browser, error) {
+// New creates a controller
+func New() *Browser {
+	return &Browser{}
+}
+
+// ControlURL set the url to remote control browser.
+func (b *Browser) ControlURL(url string) *Browser {
+	b.controlURL = url
+	return b
+}
+
+// Viewport set the default viewport for newly created page
+// options: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
+func (b *Browser) Viewport(opts *cdp.Object) *Browser {
+	b.viewport = opts
+	return b
+}
+
+// Slowmotion set the delay for each chrome control action
+func (b *Browser) Slowmotion(delay time.Duration) *Browser {
+	b.slowmotion = delay
+	return b
+}
+
+// Trace enables/disables the visual tracing of the input actions on the page
+func (b *Browser) Trace(enable bool) *Browser {
+	b.trace = enable
+	return b
+}
+
+// ConnectE ...
+func (b *Browser) ConnectE() error {
 	if b.ctx == nil {
 		ctx, cancel := context.WithCancel(context.Background())
 		b.ctx = ctx
 		b.close = cancel
 	}
 
-	if _, err := launcher.GetWebSocketDebuggerURL(b.ControlURL); err != nil {
-		args := launcher.Args()
-		if b.Foreground {
-			delete(args, "--headless")
-		}
-		u, err := launcher.LaunchE("", "", args)
+	if _, err := launcher.GetWebSocketDebuggerURL(b.controlURL); err != nil {
+		u, err := launcher.New().LaunchE()
 		if err != nil {
-			return nil, err
+			return err
 		}
-		b.ControlURL = u
+		b.controlURL = u
 	}
 
-	client, err := cdp.New(b.ctx, b.ControlURL)
+	client, err := cdp.New(b.ctx, b.controlURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	b.client = client
 
-	return b, b.initEvents()
+	return b.initEvents()
 }
 
-// Open a new browser controller
-func Open(b *Browser) *Browser {
-	if b == nil {
-		b = &Browser{}
-	}
-
-	kit.E(b.OpenE())
-
+// Connect to the browser and start to control it.
+// If fails to connect, try to run a local browser, if local browser not found try to download one.
+func (b *Browser) Connect() *Browser {
+	kit.E(b.ConnectE())
 	return b
 }
 
@@ -205,7 +216,7 @@ func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func())
 
 // Call sends a control message to browser
 func (b *Browser) Call(req *cdp.Request) (kit.JSONResult, error) {
-	b.slowmotion(req.Method)
+	b.trySlowmotion(req.Method)
 
 	return b.client.Call(b.ctx, req)
 }

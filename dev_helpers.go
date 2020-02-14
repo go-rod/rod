@@ -14,13 +14,13 @@ import (
 )
 
 // check method and sleep if needed
-func (b *Browser) slowmotion(method string) {
-	if b.Slowmotion == 0 {
+func (b *Browser) trySlowmotion(method string) {
+	if b.slowmotion == 0 {
 		return
 	}
 
 	if strings.HasPrefix(method, "Input.") {
-		time.Sleep(b.Slowmotion)
+		time.Sleep(b.slowmotion)
 	}
 }
 
@@ -79,7 +79,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 // Trace with an overlay on the element
 func (el *Element) Trace(msg string) func() {
 	var removeOverlay func()
-	if el.page.browser.Trace {
+	if el.page.browser.trace {
 		box, err := el.BoxE()
 		CancelPanic(err)
 		removeOverlay = el.page.Overlay(
@@ -103,7 +103,7 @@ func (el *Element) Trace(msg string) func() {
 
 // Trace screenshot to TraceDir
 func (p *Page) Trace() {
-	dir := p.TraceDir
+	dir := p.traceDir
 	if dir == "" {
 		return
 	}

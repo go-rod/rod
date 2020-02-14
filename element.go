@@ -236,7 +236,7 @@ func (el *Element) SelectE(selectors ...string) error {
 	defer el.Trace(fmt.Sprintf(
 		`<span style="color: #777;">select</span> <code>%s</code>`,
 		strings.Join(selectors, "; ")))()
-	el.page.browser.slowmotion("Input.select")
+	el.page.browser.trySlowmotion("Input.select")
 
 	_, err = el.EvalE(true, `selectors => {
 		selectors.forEach(s => {

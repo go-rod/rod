@@ -11,7 +11,7 @@ import (
 func ExampleClient() {
 	ctx := context.Background()
 
-	url := launcher.Launch("", "", nil)
+	url := launcher.New().Launch()
 
 	client, err := cdp.New(ctx, url)
 	kit.E(err)

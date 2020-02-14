@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 // S test suite
@@ -31,16 +32,18 @@ func (s *S) file(path string) string {
 }
 
 func Test(t *testing.T) {
-	slowmotion, _ := time.ParseDuration(os.Getenv("slow"))
+	slow, _ := time.ParseDuration(os.Getenv("slow"))
 	show := os.Getenv("show") == "true"
 
+	url := launcher.New().Headless(!show).Launch()
+
 	s := new(S)
-	s.browser = rod.Open(&rod.Browser{
-		ControlURL: os.Getenv("chrome"),
-		Foreground: show,
-		Slowmotion: slowmotion,
-		Trace:      true,
-	})
+	s.browser = rod.New().
+		ControlURL(url).
+		Slowmotion(slow).
+		Trace(true).
+		Connect()
+
 	defer s.browser.Close()
 
 	s.page = s.browser.Page(s.htmlFile("fixtures/click.html"))

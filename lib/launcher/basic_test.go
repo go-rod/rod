@@ -15,7 +15,7 @@ func TestDownload(t *testing.T) {
 }
 
 func TestLaunch(t *testing.T) {
-	url := launcher.Launch("", "", nil)
+	url := launcher.New().Launch()
 	url, err := launcher.GetWebSocketDebuggerURL(url)
 	kit.E(err)
 	assert.NotEmpty(t, url)

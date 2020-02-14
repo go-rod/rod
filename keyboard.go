@@ -78,7 +78,7 @@ func (k *Keyboard) PressE(key rune) error {
 
 // Press a key
 func (k *Keyboard) Press(key rune) {
-	if k.page.browser.Trace {
+	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
 	}
 
