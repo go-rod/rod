@@ -23,8 +23,8 @@ type Element struct {
 	timeoutCancel func()
 }
 
-// Ctx sets the context for chained sub-operations
-func (el *Element) Ctx(ctx context.Context) *Element {
+// Context sets the context for chained sub-operations
+func (el *Element) Context(ctx context.Context) *Element {
 	newObj := *el
 	newObj.ctx = ctx
 	return &newObj
@@ -34,7 +34,7 @@ func (el *Element) Ctx(ctx context.Context) *Element {
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
 	el.timeoutCancel = cancel
-	return el.Ctx(ctx)
+	return el.Context(ctx)
 }
 
 // CancelTimeout ...
@@ -46,7 +46,7 @@ func (el *Element) CancelTimeout() {
 
 // DescribeE ...
 func (el *Element) DescribeE() (kit.JSONResult, error) {
-	val, err := el.page.Ctx(el.ctx).Call(
+	val, err := el.page.Context(el.ctx).Call(
 		"DOM.describeNode",
 		cdp.Object{
 			"objectId": el.ObjectID,
@@ -264,7 +264,7 @@ func (el *Element) SetFilesE(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	_, err := el.page.Ctx(el.ctx).Call("DOM.setFileInputFiles", cdp.Object{
+	_, err := el.page.Context(el.ctx).Call("DOM.setFileInputFiles", cdp.Object{
 		"files":    absPaths,
 		"objectId": el.ObjectID,
 	})

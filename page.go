@@ -39,8 +39,8 @@ type Page struct {
 	getDownloadFileLock *sync.Mutex
 }
 
-// Ctx sets the context for chained sub-operations
-func (p *Page) Ctx(ctx context.Context) *Page {
+// Context sets the context for chained sub-operations
+func (p *Page) Context(ctx context.Context) *Page {
 	newObj := *p
 	newObj.ctx = ctx
 	return &newObj
@@ -50,7 +50,7 @@ func (p *Page) Ctx(ctx context.Context) *Page {
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
 	p.timeoutCancel = cancel
-	return p.Ctx(ctx)
+	return p.Context(ctx)
 }
 
 // CancelTimeout ...
@@ -417,7 +417,7 @@ func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
 func (p *Page) Call(method string, params interface{}) (kit.JSONResult, error) {
-	return p.browser.Ctx(p.ctx).Call(&cdp.Request{
+	return p.browser.Context(p.ctx).Call(&cdp.Request{
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,

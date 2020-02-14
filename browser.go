@@ -77,8 +77,8 @@ func Open(b *Browser) *Browser {
 	return b
 }
 
-// Ctx creates a clone with specified context
-func (b *Browser) Ctx(ctx context.Context) *Browser {
+// Context creates a clone with specified context
+func (b *Browser) Context(ctx context.Context) *Browser {
 	newObj := *b
 	newObj.ctx = ctx
 	return &newObj
@@ -88,7 +88,7 @@ func (b *Browser) Ctx(ctx context.Context) *Browser {
 func (b *Browser) Timeout(d time.Duration) *Browser {
 	ctx, cancel := context.WithTimeout(b.ctx, d)
 	b.timeoutCancel = cancel
-	return b.Ctx(ctx)
+	return b.Context(ctx)
 }
 
 // CloseE ...
