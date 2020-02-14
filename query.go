@@ -220,7 +220,7 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements,
 	}
 
 	objectID := val.Get("objectId").String()
-	defer p.ReleaseObject(res)
+	defer func() { err = p.ReleaseE(objectID) }()
 
 	list, err := p.Call("Runtime.getProperties", cdp.Object{
 		"objectId":      objectID,
@@ -247,7 +247,7 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements,
 		})
 	}
 
-	return elemList, nil
+	return elemList, err
 }
 
 // ElementsByJS returns the elements from the return value of the js

@@ -13,13 +13,13 @@ Rod also tries to expose low-level interfaces to users, so that whenever a funct
 
 ## Features
 
-- Thread-safe design
-- Context first, cancel anytime without leaking
+- Fluent interface design to reduce verbose code
+- Context first, such as timeout inheritance, cancel long-running task
 - Debug friendly, auto input trace, and screenshots
 - Runs on Linux, Mac, and Windows without pain, automatically find or download chrome
 - High-level helpers like WaitStable, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
-- Correctly handles deep iframes
+- Correctly handles nested iframes
 
 ## Examples
 

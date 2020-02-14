@@ -54,10 +54,11 @@ func (p *Page) Timeout(d time.Duration) *Page {
 }
 
 // CancelTimeout ...
-func (p *Page) CancelTimeout() {
+func (p *Page) CancelTimeout() *Page {
 	if p.timeoutCancel != nil {
 		p.timeoutCancel()
 	}
+	return p
 }
 
 // IsIframe tells if it's iframe
@@ -107,13 +108,14 @@ func (p *Page) SetViewportE(params *cdp.Object) error {
 }
 
 // SetViewport overrides the values of device screen dimensions.
-func (p *Page) SetViewport(width, height int, deviceScaleFactor float32, mobile bool) {
+func (p *Page) SetViewport(width, height int, deviceScaleFactor float32, mobile bool) *Page {
 	kit.E(p.SetViewportE(&cdp.Object{
 		"width":             width,
 		"height":            height,
 		"deviceScaleFactor": deviceScaleFactor,
 		"mobile":            mobile,
 	}))
+	return p
 }
 
 // CloseE page
@@ -318,8 +320,9 @@ func (p *Page) PauseE() error {
 }
 
 // Pause stops on the next JavaScript statement
-func (p *Page) Pause() {
+func (p *Page) Pause() *Page {
 	kit.E(p.PauseE())
+	return p
 }
 
 // WaitEventE ...
@@ -451,12 +454,18 @@ func (p *Page) Sleeper() kit.Sleeper {
 	})
 }
 
-// ReleaseObject remote object
-func (p *Page) ReleaseObject(obj kit.JSONResult) {
+// ReleaseE ...
+func (p *Page) ReleaseE(objectID string) error {
 	_, err := p.Call("Runtime.releaseObject", cdp.Object{
-		"objectId": obj.Get("result.objectId").String(),
+		"objectId": objectID,
 	})
-	CancelPanic(err)
+	return err
+}
+
+// Release remote object
+func (p *Page) Release(objectID string) *Page {
+	kit.E(p.Release(objectID))
+	return p
 }
 
 func (p *Page) initIsolatedWorld() error {

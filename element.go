@@ -38,10 +38,11 @@ func (el *Element) Timeout(d time.Duration) *Element {
 }
 
 // CancelTimeout ...
-func (el *Element) CancelTimeout() {
+func (el *Element) CancelTimeout() *Element {
 	if el.timeoutCancel != nil {
 		el.timeoutCancel()
 	}
+	return el
 }
 
 // DescribeE ...
@@ -100,8 +101,9 @@ func (el *Element) FocusE() error {
 }
 
 // Focus sets focus on the specified element
-func (el *Element) Focus() {
+func (el *Element) Focus() *Element {
 	kit.E(el.FocusE())
+	return el
 }
 
 // ScrollIntoViewIfNeededE ...
@@ -128,8 +130,9 @@ func (el *Element) ScrollIntoViewIfNeededE() error {
 
 // ScrollIntoViewIfNeeded scrolls the current element into the visible area of the browser
 // window if it's not already within the visible area.
-func (el *Element) ScrollIntoViewIfNeeded() {
+func (el *Element) ScrollIntoViewIfNeeded() *Element {
 	kit.E(el.ScrollIntoViewIfNeededE())
+	return el
 }
 
 // ClickE ...
@@ -163,8 +166,9 @@ func (el *Element) ClickE(button string) error {
 }
 
 // Click the element
-func (el *Element) Click() {
+func (el *Element) Click() *Element {
 	kit.E(el.ClickE("left"))
+	return el
 }
 
 // PressE ...
@@ -185,8 +189,9 @@ func (el *Element) PressE(key rune) error {
 }
 
 // Press a key
-func (el *Element) Press(key rune) {
+func (el *Element) Press(key rune) *Element {
 	kit.E(el.PressE(key))
+	return el
 }
 
 // InputE ...
@@ -216,8 +221,9 @@ func (el *Element) InputE(text string) error {
 }
 
 // Input wll click the element and input the text
-func (el *Element) Input(text string) {
+func (el *Element) Input(text string) *Element {
 	kit.E(el.InputE(text))
+	return el
 }
 
 // SelectE ...
@@ -249,8 +255,9 @@ func (el *Element) SelectE(selectors ...string) error {
 }
 
 // Select the option elements that match the selectors, the selector can be text content or css selector
-func (el *Element) Select(selectors ...string) {
+func (el *Element) Select(selectors ...string) *Element {
 	kit.E(el.SelectE(selectors...))
+	return el
 }
 
 // SetFilesE ...
@@ -272,8 +279,9 @@ func (el *Element) SetFilesE(paths []string) error {
 }
 
 // SetFiles sets files for the given file input element
-func (el *Element) SetFiles(paths ...string) {
+func (el *Element) SetFiles(paths ...string) *Element {
 	kit.E(el.SetFilesE(paths))
+	return el
 }
 
 // TextE ...
@@ -332,8 +340,9 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 
 // WaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
 // or button to complete so that we can simulate the mouse to move to it and click on it.
-func (el *Element) WaitStable() {
+func (el *Element) WaitStable() *Element {
 	kit.E(el.WaitStableE(100 * time.Millisecond))
+	return el
 }
 
 // WaitE ...
@@ -353,8 +362,9 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 }
 
 // Wait until the js returns true
-func (el *Element) Wait(js string, params ...interface{}) {
+func (el *Element) Wait(js string, params ...interface{}) *Element {
 	kit.E(el.WaitE(js, params))
+	return el
 }
 
 // WaitVisibleE ...
@@ -369,8 +379,9 @@ func (el *Element) WaitVisibleE() error {
 }
 
 // WaitVisible until the element is visible
-func (el *Element) WaitVisible() {
+func (el *Element) WaitVisible() *Element {
 	kit.E(el.WaitVisibleE())
+	return el
 }
 
 // WaitInvisibleE ...
@@ -383,8 +394,9 @@ func (el *Element) WaitInvisibleE() error {
 }
 
 // WaitInvisible until the element is not visible or removed
-func (el *Element) WaitInvisible() {
+func (el *Element) WaitInvisible() *Element {
 	kit.E(el.WaitInvisibleE())
+	return el
 }
 
 // BoxE ...
@@ -466,6 +478,16 @@ func (el *Element) Resource() []byte {
 	bin, err := el.ResourceE()
 	kit.E(err)
 	return bin
+}
+
+// ReleaseE ...
+func (el *Element) ReleaseE() error {
+	return el.page.ReleaseE(el.ObjectID)
+}
+
+// Release remote object on browser
+func (el *Element) Release() {
+	kit.E(el.ReleaseE())
 }
 
 // EvalE ...

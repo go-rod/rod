@@ -15,6 +15,7 @@ func Example_basic() {
 	browser := rod.Open(nil)
 	defer browser.Close()
 
+	// timeout will be passed to chained function calls
 	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
 	page.Element("#searchInput").Input("idempotent")
@@ -63,16 +64,13 @@ func Example_wait_for_animation() {
 
 	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/").Timeout(time.Minute)
 
-	btn := page.Element("[data-target='#exampleModalLive']")
-	btn.Click()
+	page.Element("[data-target='#exampleModalLive']").Click()
 
 	saveBtn := page.ElementMatches("#exampleModalLive button", "Close")
 
 	// wait until the save button's position is stable
-	// and we don't wait more than 1 sec
-	saveBtn.Timeout(time.Second).WaitStable()
-	saveBtn.Click()
-	saveBtn.WaitInvisible()
+	// and we don't wait more than 5s, saveBtn will also inherit the 1min timeout from the page
+	saveBtn.Timeout(5 * time.Second).WaitStable().Click().WaitInvisible()
 
 	fmt.Println("done")
 

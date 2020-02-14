@@ -141,6 +141,13 @@ func (s *S) TestResource() {
 	s.Equal(15148, len(p.Element("img").Resource()))
 }
 
+func (s *S) TestUseReleasedElement() {
+	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
+	btn := p.Element("button")
+	btn.Release()
+	s.EqualError(btn.ClickE("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
+}
+
 func (s *S) TestFnErr() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	el := p.Element("button")
