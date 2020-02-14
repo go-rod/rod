@@ -61,6 +61,7 @@ func New() *Launcher {
 		// to prevent welcome page
 		"about:blank": nil,
 	}
+
 	return &Launcher{
 		flags: defaultFlags,
 	}
@@ -100,9 +101,15 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l
 }
 
-// UserDataDir switch
+// UserDataDir arg
 func (l *Launcher) UserDataDir(dir string) *Launcher {
 	l.Set("user-data-dir", dir)
+	return l
+}
+
+// RemoteDebuggingPort arg
+func (l *Launcher) RemoteDebuggingPort(port string) *Launcher {
+	l.Set("remote-debugging-port", port)
 	return l
 }
 
