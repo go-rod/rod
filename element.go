@@ -305,6 +305,11 @@ func (el *Element) HTML() string {
 // WaitStableE not using requestAnimation here because it can trigger to many checks,
 // or miss checks for jQuery css animation.
 func (el *Element) WaitStableE(interval time.Duration) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
 	box := el.Box().Raw
 
 	t := time.NewTicker(interval)
