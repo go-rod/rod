@@ -1,6 +1,6 @@
 # Overview
 
-[![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](http://godoc.org/github.com/ysmood/rod)
+[![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
 [![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
 [![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
 
