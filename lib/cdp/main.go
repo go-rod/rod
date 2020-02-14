@@ -105,8 +105,11 @@ func New(ctx context.Context, url string) (*Client, error) {
 }
 
 func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
-	for ctx.Err() == nil {
+	for {
 		select {
+		case <-ctx.Done():
+			return
+
 		case req := <-cdp.chReq:
 			req.ID = cdp.id()
 			data, err := json.Marshal(req)
@@ -166,13 +169,14 @@ func (cdp *Client) Call(ctx context.Context, req *Request) (kit.JSONResult, erro
 	cdp.chReq <- req
 
 	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+
 	case res := <-req.callback:
 		if res.Error != nil {
 			return nil, res.Error
 		}
 		return res.Result.JSONResult, nil
-	case <-ctx.Done():
-		return nil, ctx.Err()
 	}
 }
 
