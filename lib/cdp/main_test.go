@@ -25,7 +25,7 @@ func TestBasic(t *testing.T) {
 		url = launcher.New().Launch()
 	}
 
-	client, err := cdp.New(ctx, url)
+	client, err := cdp.New(ctx, done, url)
 	kit.E(err)
 
 	go func() {

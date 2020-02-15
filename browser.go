@@ -30,6 +30,29 @@ func New() *Browser {
 	return &Browser{}
 }
 
+// Connect to the browser and start to control it.
+// If fails to connect, try to run a local browser, if local browser not found try to download one.
+func (b *Browser) Connect() *Browser {
+	kit.E(b.ConnectE())
+	return b
+}
+
+// Context creates a clone with specified context
+func (b *Browser) Context(ctx context.Context) *Browser {
+	ctx, cancel := context.WithCancel(ctx)
+	newObj := *b
+	newObj.ctx = ctx
+	newObj.close = cancel
+	return &newObj
+}
+
+// Timeout sets the timeout for chained sub-operations
+func (b *Browser) Timeout(d time.Duration) *Browser {
+	ctx, cancel := context.WithTimeout(b.ctx, d)
+	b.timeoutCancel = cancel
+	return b.Context(ctx)
+}
+
 // ControlURL set the url to remote control browser.
 func (b *Browser) ControlURL(url string) *Browser {
 	b.controlURL = url
@@ -71,7 +94,7 @@ func (b *Browser) ConnectE() error {
 		b.controlURL = u
 	}
 
-	client, err := cdp.New(b.ctx, b.controlURL)
+	client, err := cdp.New(b.ctx, b.close, b.controlURL)
 	if err != nil {
 		return err
 	}
@@ -79,27 +102,6 @@ func (b *Browser) ConnectE() error {
 	b.client = client
 
 	return b.initEvents()
-}
-
-// Connect to the browser and start to control it.
-// If fails to connect, try to run a local browser, if local browser not found try to download one.
-func (b *Browser) Connect() *Browser {
-	kit.E(b.ConnectE())
-	return b
-}
-
-// Context creates a clone with specified context
-func (b *Browser) Context(ctx context.Context) *Browser {
-	newObj := *b
-	newObj.ctx = ctx
-	return &newObj
-}
-
-// Timeout sets the timeout for chained sub-operations
-func (b *Browser) Timeout(d time.Duration) *Browser {
-	ctx, cancel := context.WithTimeout(b.ctx, d)
-	b.timeoutCancel = cancel
-	return b.Context(ctx)
 }
 
 // CloseE ...

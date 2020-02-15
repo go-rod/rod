@@ -1,10 +1,18 @@
 package cdp
 
 import (
+	"errors"
+	"net"
 	"os"
 
 	"github.com/ysmood/kit"
 )
+
+func isClosedErr(err error) bool {
+	var netErr *net.OpError
+	return errors.As(err, &netErr) &&
+		netErr.Err.Error() == "use of closed network connection"
+}
 
 func checkPanic(err error) {
 	if err == nil {

@@ -3,9 +3,7 @@ package cdp
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
-	"net"
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
@@ -20,6 +18,7 @@ type Client struct {
 	chRes    chan *Response
 	chEvent  chan *Event
 	count    uint64
+	cancel   func()
 }
 
 // Request to send to chrome
@@ -77,12 +76,13 @@ type Array []interface{}
 
 // New creates a cdp connection, the url should be something like http://localhost:9222.
 // All messages from Client.Event must be received or they will block the client.
-func New(ctx context.Context, url string) (*Client, error) {
+func New(ctx context.Context, cancel func(), url string) (*Client, error) {
 	cdp := &Client{
 		requests: map[uint64]*Request{},
 		chReq:    make(chan *Request),
 		chRes:    make(chan *Response),
 		chEvent:  make(chan *Event),
+		cancel:   cancel,
 	}
 
 	wsURL, err := launcher.GetWebSocketDebuggerURL(url)
@@ -131,12 +131,10 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 	for ctx.Err() == nil {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			var netErr *net.OpError
-			notClosed := errors.As(err, &netErr) &&
-				netErr.Err.Error() != "use of closed network connection"
-			if err != io.EOF && notClosed {
+			if err != io.EOF && !isClosedErr(err) {
 				checkPanic(err)
 			}
+			cdp.cancel()
 			return
 		}
 
@@ -188,7 +186,7 @@ func (cdp *Client) id() uint64 {
 func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
 	<-ctx.Done()
 	err := conn.Close()
-	if err != nil {
+	if err != nil && !isClosedErr(err) {
 		checkPanic(err)
 	}
 }

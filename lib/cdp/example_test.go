@@ -9,11 +9,11 @@ import (
 )
 
 func ExampleClient() {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 
 	url := launcher.New().Launch()
 
-	client, err := cdp.New(ctx, url)
+	client, err := cdp.New(ctx, cancel, url)
 	kit.E(err)
 
 	// Such as call this endpoint on the api doc:
