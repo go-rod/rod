@@ -13,6 +13,8 @@ import (
 
 func Example_basic() {
 	browser := rod.New().Connect()
+
+	// Even you forget to close, rod will close it after main process ends
 	defer browser.Close()
 
 	// timeout will be passed to chained function calls
@@ -68,7 +70,7 @@ func Example_wait_for_animation() {
 
 	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/").Timeout(time.Minute)
 
-	page.Element("[data-target='#exampleModalLive']").Click()
+	page.WaitLoad().Element("[data-target='#exampleModalLive']").Click()
 
 	saveBtn := page.ElementMatches("#exampleModalLive button", "Close")
 

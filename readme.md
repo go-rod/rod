@@ -8,6 +8,7 @@ Rod is a High-level chrome devtools controller directly based on [Chrome DevTool
 
 For example, compared with [puppeteer](https://github.com/puppeteer/puppeteer) or [chromedp](https://github.com/chromedp/chromedp),
 it's pretty verbose to use them, with puppeteer you have to handle promise/async/await a lot, with chromedp it's painful to deal with iframes.
+When crash happens, chromedp will leave zombie chrome process on Windows and Mac ([how it works](https://github.com/ysmood/leakless)).
 
 Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly. Here's the example of how to call chrome API directly [lib/cdp](lib/cdp).
 
@@ -20,6 +21,7 @@ Rod also tries to expose low-level interfaces to users, so that whenever a funct
 - High-level helpers like WaitStable, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
+- No zombie chrome process after crash
 
 ## Examples
 

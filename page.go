@@ -330,6 +330,21 @@ func (p *Page) Pause() *Page {
 	return p
 }
 
+// WaitLoadE ...
+func (p *Page) WaitLoadE() error {
+	_, err := p.EvalE(true, "", `() => new Promise((r) => {
+		if (document.readyState === 'complete') return r()
+		window.addEventListener('load', r)
+	})`, nil)
+	return err
+}
+
+// WaitLoad wait until the `window.onload` is complete, resolve immediately if already fired.
+func (p *Page) WaitLoad() *Page {
+	kit.E(p.WaitLoadE())
+	return p
+}
+
 // WaitEventE ...
 func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
 	return p.browser.WaitEventE(func(e *cdp.Event) bool {
