@@ -6,13 +6,13 @@ import (
 	"io"
 	nurl "net/url"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/leakless"
 )
 
 // Launcher chrome cli flags helper
@@ -156,7 +156,7 @@ func (l *Launcher) LaunchE() (string, error) {
 		l.UserDataDir(tmp)
 	}
 
-	cmd := exec.Command(
+	cmd := leakless.New().Command(
 		bin,
 		l.ExecFormat()...,
 	)

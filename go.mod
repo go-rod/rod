@@ -9,4 +9,5 @@ require (
 	github.com/tidwall/gjson v1.3.5
 	github.com/ysmood/digto v1.5.6
 	github.com/ysmood/kit v0.21.0
+	github.com/ysmood/leakless v0.0.5
 )

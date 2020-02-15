@@ -353,6 +353,8 @@ github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8/go.mod h1:HUYIGzjTL3rfEspMx
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/ysmood/byframe v1.1.1 h1:lxF6RvUaLH+EgT1GAngb/4y6wmISStycGzdQLUgHnhc=
 github.com/ysmood/byframe v1.1.1/go.mod h1:6EorTJPCTaSuwYzEOyW/Tfz8jr6eV8csxa7WafEKiUg=
+github.com/ysmood/byframe v1.1.2 h1:PUuOp4ts5RzYu+Y5Iq0hVbfAsLhbX98GhsNexOXkBx8=
+github.com/ysmood/byframe v1.1.2/go.mod h1:6EorTJPCTaSuwYzEOyW/Tfz8jr6eV8csxa7WafEKiUg=
 github.com/ysmood/ddns v0.1.1 h1:TWq8B9VX9A6cO1RTgHYN9n/q2DiQOUgmJkr/nCGjw4M=
 github.com/ysmood/ddns v0.1.1/go.mod h1:vvgR64LsRX85vFdcBbjGzffj+bhLuUha/Nm5kqOMT14=
 github.com/ysmood/digto v1.5.6 h1:AaPMKJ/n6+1JgEJabtRVgG2I20XNru4negkgddYQtPo=
@@ -362,6 +364,8 @@ github.com/ysmood/kit v0.17.1/go.mod h1:vlMfce6eL0jSqDkYtUXid4VPvA5Cw+CwfiYHwv1i
 github.com/ysmood/kit v0.19.1/go.mod h1:q+qlHOnimF2fjHkJpjySiIWePM8pplsZLVxGnPIMkc8=
 github.com/ysmood/kit v0.21.0 h1:Q7BFrHN72aQvWtr4YUy5I150zZwD/5TVkw6/bThoqU4=
 github.com/ysmood/kit v0.21.0/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
+github.com/ysmood/leakless v0.0.5 h1:tMSrgByiHR3bp+7t2I6vnrq/D6FZSIxRrzhe+ZsOb/Y=
+github.com/ysmood/leakless v0.0.5/go.mod h1:OFNuIGbZujcxcJHbCUNmoJqY0SvVk4RcpVxdI7NdKYI=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
 github.com/ysmood/myip v0.0.0-20190514144300-6576fde8f6c5/go.mod h1:bFlhE3USBVqP9q8XUaZZhU/Z1yUZ7cjXlXeitobanxk=
