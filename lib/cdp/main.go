@@ -3,7 +3,6 @@ package cdp
 import (
 	"context"
 	"encoding/json"
-	"io"
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
@@ -131,9 +130,7 @@ func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
 	for ctx.Err() == nil {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			if err != io.EOF && !isClosedErr(err) && err.Error() != io.ErrUnexpectedEOF.Error() {
-				checkPanic(err)
-			}
+			debug(err)
 			cdp.cancel()
 			return
 		}

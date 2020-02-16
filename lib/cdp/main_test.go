@@ -152,3 +152,11 @@ func TestBasic(t *testing.T) {
 
 	assert.Equal(t, "<h4>it works</h4>", res.Get("outerHTML").String())
 }
+
+func TestError(t *testing.T) {
+	cdpErr := cdp.Error{10, "err", "data"}
+	assert.Equal(t, "{\"code\":10,\"message\":\"err\",\"data\":\"data\"}", cdpErr.Error())
+
+	_, err := cdp.New(context.Background(), func() {}, "")
+	assert.EqualError(t, err, "Get /json/version: unsupported protocol scheme \"\"")
+}
