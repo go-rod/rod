@@ -42,6 +42,7 @@ func Test(t *testing.T) {
 		ControlURL(url).
 		Slowmotion(slow).
 		Trace(true).
+		Viewport(nil).
 		Connect()
 
 	defer s.browser.Close()

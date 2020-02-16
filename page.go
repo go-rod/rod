@@ -484,7 +484,7 @@ func (p *Page) ReleaseE(objectID string) error {
 
 // Release remote object
 func (p *Page) Release(objectID string) *Page {
-	kit.E(p.Release(objectID))
+	kit.E(p.ReleaseE(objectID))
 	return p
 }
 

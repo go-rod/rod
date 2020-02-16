@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -14,16 +13,14 @@ import (
 )
 
 func TestBasic(t *testing.T) {
+	cdp.Debug = true
+
 	ctx, done := context.WithCancel(context.Background())
 	defer done()
 
 	ob := kit.NewObservable()
 
-	url := os.Getenv("chrome")
-	_, err := launcher.GetWebSocketDebuggerURL(url)
-	if err != nil {
-		url = launcher.New().Launch()
-	}
+	url := launcher.New().Launch()
 
 	client, err := cdp.New(ctx, done, url)
 	kit.E(err)
@@ -90,6 +87,18 @@ func TestBasic(t *testing.T) {
 			},
 		)
 	}
+
+	// cancel call
+	tmpCtx, tmpCancel := context.WithCancel(ctx)
+	tmpCancel()
+	_, err = client.Call(tmpCtx, &cdp.Request{
+		SessionID: sessionID,
+		Method:    "Runtime.evaluate",
+		Params: cdp.Object{
+			"expression": `10`,
+		},
+	})
+	assert.EqualError(t, err, context.Canceled.Error())
 
 	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		res, err = client.Call(ctx, &cdp.Request{

@@ -1,7 +1,9 @@
 package cdp
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net"
 	"os"
 
@@ -21,12 +23,55 @@ func checkPanic(err error) {
 	panic(kit.Sdump(err))
 }
 
-var isDebug = os.Getenv("debug_cdp") == "true"
+// Debug is the flag to enable debug log to stdout. The default value is os.Getenv("debug_cdp") == "true"
+var Debug = os.Getenv("debug_cdp") == "true"
+
+func prettyJSON(s *JSON) string {
+	if s == nil {
+		return ""
+	}
+	var val interface{}
+	kit.E(json.Unmarshal([]byte(s.Raw), &val))
+	return kit.Sdump(val)
+}
 
 func debug(obj interface{}) {
-	if !isDebug {
+	if !Debug {
 		return
 	}
 
-	kit.Log(kit.Sdump(obj))
+	if obj == nil {
+		return
+	}
+
+	switch val := obj.(type) {
+	case *Request:
+		kit.E(fmt.Fprintf(
+			kit.Stdout,
+			"[cdp] %s %d %s %s %s\n",
+			kit.C("req", "green"),
+			val.ID,
+			val.Method,
+			val.SessionID,
+			kit.Sdump(val.Params),
+		))
+	case *Response:
+		kit.E(fmt.Fprintf(kit.Stdout,
+			"[cdp] %s %d %s %s\n",
+			kit.C("res", "yellow"),
+			val.ID,
+			prettyJSON(val.Result),
+			kit.Sdump(val.Error),
+		))
+	case *Event:
+		kit.E(fmt.Fprintf(kit.Stdout,
+			"[cdp] %s %s %s %s\n",
+			kit.C("evt", "blue"),
+			val.Method,
+			val.SessionID,
+			prettyJSON(val.Params),
+		))
+	default:
+		kit.Log(kit.Sdump(obj))
+	}
 }

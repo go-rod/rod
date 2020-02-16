@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -108,8 +109,8 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 }
 
 // RemoteDebuggingPort arg
-func (l *Launcher) RemoteDebuggingPort(port string) *Launcher {
-	l.Set("remote-debugging-port", port)
+func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
+	l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
 	return l
 }
 

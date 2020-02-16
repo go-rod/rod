@@ -90,9 +90,7 @@ func New(ctx context.Context, cancel func(), url string) (*Client, error) {
 	}
 
 	conn, _, err := websocket.DefaultDialer.DialContext(ctx, wsURL, nil)
-	if err != nil {
-		return nil, err
-	}
+	kit.E(err)
 
 	go cdp.close(ctx, conn)
 
@@ -119,9 +117,11 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			cdp.requests[req.ID] = req
 
 		case res := <-cdp.chRes:
-			req := cdp.requests[res.ID]
-			delete(cdp.requests, res.ID)
-			req.callback <- res
+			req, has := cdp.requests[res.ID]
+			if has {
+				delete(cdp.requests, res.ID)
+				req.callback <- res
+			}
 		}
 	}
 }
@@ -165,6 +165,10 @@ func (cdp *Client) Call(ctx context.Context, req *Request) (kit.JSONResult, erro
 
 	select {
 	case <-ctx.Done():
+		// to prevent req from leaking
+		cdp.chRes <- &Response{ID: req.ID}
+		<-req.callback
+
 		return nil, ctx.Err()
 
 	case res := <-req.callback:
@@ -183,7 +187,7 @@ func (cdp *Client) id() uint64 {
 func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
 	<-ctx.Done()
 	err := conn.Close()
-	if err != nil && !isClosedErr(err) {
+	if !isClosedErr(err) {
 		checkPanic(err)
 	}
 }

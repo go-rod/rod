@@ -20,6 +20,12 @@ func (s *S) TestClosePage() {
 	page.Element("button")
 }
 
+func (s *S) TestRelease() {
+	res, err := s.page.EvalE(false, "", `() => document`, nil)
+	kit.E(err)
+	s.page.Release(res.Get("result.objectId").String())
+}
+
 func (s *S) TestSetViewport() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
