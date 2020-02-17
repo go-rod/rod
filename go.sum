@@ -364,8 +364,8 @@ github.com/ysmood/kit v0.17.1/go.mod h1:vlMfce6eL0jSqDkYtUXid4VPvA5Cw+CwfiYHwv1i
 github.com/ysmood/kit v0.19.1/go.mod h1:q+qlHOnimF2fjHkJpjySiIWePM8pplsZLVxGnPIMkc8=
 github.com/ysmood/kit v0.21.0 h1:Q7BFrHN72aQvWtr4YUy5I150zZwD/5TVkw6/bThoqU4=
 github.com/ysmood/kit v0.21.0/go.mod h1:Zx/NOVFNTmc4cQ41dn4fgF/IMCuPQV+FccONuRCtGj4=
-github.com/ysmood/leakless v0.0.5 h1:tMSrgByiHR3bp+7t2I6vnrq/D6FZSIxRrzhe+ZsOb/Y=
-github.com/ysmood/leakless v0.0.5/go.mod h1:OFNuIGbZujcxcJHbCUNmoJqY0SvVk4RcpVxdI7NdKYI=
+github.com/ysmood/leakless v0.0.6 h1:xk0Ia0P0mDxpmLVcKKuHNt8hUqXTDeQVPiSseAYlvEI=
+github.com/ysmood/leakless v0.0.6/go.mod h1:OFNuIGbZujcxcJHbCUNmoJqY0SvVk4RcpVxdI7NdKYI=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
 github.com/ysmood/myip v0.0.0-20190514144300-6576fde8f6c5/go.mod h1:bFlhE3USBVqP9q8XUaZZhU/Z1yUZ7cjXlXeitobanxk=
