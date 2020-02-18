@@ -1,3 +1,5 @@
+//go:generate go run ./lib/js/generate
+
 package rod
 
 import (
@@ -11,6 +13,7 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/js"
 )
 
 // Page represents the webpage
@@ -20,7 +23,6 @@ type Page struct {
 
 	TargetID  string
 	SessionID string
-	ContextID int64
 	FrameID   string
 
 	// devices
@@ -29,6 +31,8 @@ type Page struct {
 
 	// iframe only
 	element *Element
+
+	windowObjectID string
 
 	timeoutCancel       func()
 	getDownloadFileLock *sync.Mutex
@@ -317,10 +321,7 @@ func (p *Page) PauseE() error {
 
 // WaitLoadE ...
 func (p *Page) WaitLoadE() error {
-	_, err := p.EvalE(true, "", `() => new Promise((r) => {
-		if (document.readyState === 'complete') return r()
-		window.addEventListener('load', r)
-	})`, nil)
+	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
 	return err
 }
 
@@ -331,13 +332,48 @@ func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func(
 	})
 }
 
-// EvalE thisID is the remote objectID that will be the this of the js function
+// EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
-	if thisID == "" {
-		res, err = p.eval(byValue, js, jsArgs)
-	} else {
-		res, err = p.evalThis(byValue, thisID, js, jsArgs)
-	}
+	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+	objectID := thisID
+
+	// js context will be invalid if a frame is reloaded
+	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
+		if thisID == "" {
+			if p.windowObjectID == "" {
+				err := p.initJS()
+				if err != nil {
+					return true, err
+				}
+			}
+			objectID = p.windowObjectID
+		}
+
+		args := []interface{}{}
+		for _, p := range jsArgs {
+			args = append(args, cdp.Object{"value": p})
+		}
+
+		params := cdp.Object{
+			"objectId":            objectID,
+			"awaitPromise":        true,
+			"returnByValue":       byValue,
+			"functionDeclaration": SprintFnThis(js),
+			"arguments":           args,
+		}
+
+		res, err = p.CallE("Runtime.callFunctionOn", params)
+
+		if thisID == "" {
+			cdpErr, ok := err.(*cdp.Error)
+			if ok && cdpErr.Code == -32000 {
+				_ = p.initJS()
+				return false, nil
+			}
+		}
+
+		return true, err
+	})
 
 	if err != nil {
 		return nil, err
@@ -353,53 +389,6 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 	}
 
 	return
-}
-
-func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResult, error) {
-	params := cdp.Object{
-		"expression":    SprintFnApply(js, jsArgs),
-		"awaitPromise":  true,
-		"returnByValue": byValue,
-	}
-	if p.IsIframe() {
-		return p.evalIframe(params)
-	}
-	return p.CallE("Runtime.evaluate", params)
-}
-
-func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
-	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-	// TODO: ContextID will be invalid if a frame is reloaded
-	// For now I don't know a better way to do it other than retry
-	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
-		params["contextId"] = p.ContextID
-		res, err = p.CallE("Runtime.evaluate", params)
-
-		if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
-			_ = p.initIsolatedWorld()
-			return false, nil
-		}
-
-		return true, err
-	})
-	return
-}
-
-func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (kit.JSONResult, error) {
-	args := []interface{}{}
-	for _, p := range jsArgs {
-		args = append(args, cdp.Object{"value": p})
-	}
-
-	params := cdp.Object{
-		"objectId":            thisID,
-		"awaitPromise":        true,
-		"returnByValue":       byValue,
-		"functionDeclaration": SprintFnThis(js),
-		"arguments":           args,
-	}
-
-	return p.CallE("Runtime.callFunctionOn", params)
 }
 
 // CallE sends a control message to the browser with the page session, the call is always on the root frame.
@@ -446,18 +435,6 @@ func (p *Page) ReleaseE(objectID string) error {
 	return err
 }
 
-func (p *Page) initIsolatedWorld() error {
-	frame, err := p.CallE("Page.createIsolatedWorld", cdp.Object{
-		"frameId": p.FrameID,
-	})
-	if err != nil {
-		return err
-	}
-
-	p.ContextID = frame.Get("executionContextId").Int()
-	return nil
-}
-
 func (p *Page) initSession() error {
 	obj, err := p.CallE("Target.attachToTarget", cdp.Object{
 		"targetId": p.TargetID,
@@ -471,5 +448,38 @@ func (p *Page) initSession() error {
 	if err != nil {
 		return err
 	}
+
 	return p.ViewportE(p.browser.viewport)
+}
+
+func (p *Page) initJS() error {
+	scriptURL := "\n//# sourceURL=__rod_helper__"
+
+	params := cdp.Object{
+		"expression": sprintFnApply(js.Rod, []interface{}{p.FrameID}) + scriptURL,
+	}
+
+	if p.IsIframe() {
+		res, err := p.CallE("Page.createIsolatedWorld", cdp.Object{
+			"frameId": p.FrameID,
+		})
+		if err != nil {
+			return err
+		}
+
+		params["contextId"] = res.Get("executionContextId").Int()
+	}
+
+	res, err := p.CallE("Runtime.evaluate", params)
+	if err != nil {
+		return err
+	}
+
+	p.windowObjectID = res.Get("result.objectId").String()
+
+	return nil
+}
+
+func (p *Page) jsFn(fnName string) string {
+	return "rod" + p.FrameID + "." + fnName
 }

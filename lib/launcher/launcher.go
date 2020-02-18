@@ -60,7 +60,7 @@ func New() *Launcher {
 		"use-mock-keychain":                                  nil,
 
 		// to prevent welcome page
-		"about:blank": nil,
+		"": {"about:blank"},
 	}
 
 	return &Launcher{
@@ -118,13 +118,17 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 func (l *Launcher) ExecFormat() []string {
 	execArgs := []string{}
 	for k, v := range l.flags {
+		if k == "" {
+			continue
+		}
+
 		str := "--" + k
 		if v != nil {
 			str += "=" + strings.Join(v, ",")
 		}
 		execArgs = append(execArgs, str)
 	}
-	return execArgs
+	return append(execArgs, l.flags[""]...)
 }
 
 // Launch a standalone temp browser instance and returns the debug url.

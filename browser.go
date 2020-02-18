@@ -87,12 +87,7 @@ func (b *Browser) ConnectE() error {
 		b.controlURL = u
 	}
 
-	client, err := cdp.New(b.ctx, b.close, b.controlURL)
-	if err != nil {
-		return err
-	}
-
-	b.client = client
+	b.client = cdp.New(b.controlURL).Context(b.ctx).Cancel(b.close).Connect()
 
 	return b.initEvents()
 }

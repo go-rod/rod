@@ -22,8 +22,7 @@ func TestBasic(t *testing.T) {
 
 	url := launcher.New().Launch()
 
-	client, err := cdp.New(ctx, done, url)
-	kit.E(err)
+	client := cdp.New(url).Context(ctx).Cancel(done).Connect()
 
 	go func() {
 		for msg := range client.Event() {
@@ -166,6 +165,7 @@ func TestError(t *testing.T) {
 	cdpErr := cdp.Error{10, "err", "data"}
 	assert.Equal(t, "{\"code\":10,\"message\":\"err\",\"data\":\"data\"}", cdpErr.Error())
 
-	_, err := cdp.New(context.Background(), func() {}, "")
-	assert.EqualError(t, err, "Get /json/version: unsupported protocol scheme \"\"")
+	assert.Panics(t, func() {
+		cdp.New("").Connect()
+	})
 }

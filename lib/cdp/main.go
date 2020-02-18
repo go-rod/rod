@@ -12,12 +12,20 @@ import (
 // Client is a chrome devtools protocol connection instance.
 // To enable debug log, set env "debug_cdp=true".
 type Client struct {
+	ctx  context.Context
+	url  string
+	conn *websocket.Conn
+
 	requests map[uint64]*Request
 	chReq    chan *Request
 	chRes    chan *Response
 	chEvent  chan *Event
-	count    uint64
-	cancel   func()
+
+	count  uint64
+	cancel func()
+
+	readBufferSize  int
+	writeBufferSize int
 }
 
 // Request to send to chrome
@@ -75,36 +83,73 @@ type Array []interface{}
 
 // New creates a cdp connection, the url should be something like http://localhost:9222.
 // All messages from Client.Event must be received or they will block the client.
-func New(ctx context.Context, cancel func(), url string) (*Client, error) {
+func New(url string) *Client {
 	cdp := &Client{
+		ctx:      context.Background(),
+		url:      url,
 		requests: map[uint64]*Request{},
 		chReq:    make(chan *Request),
 		chRes:    make(chan *Response),
 		chEvent:  make(chan *Event),
-		cancel:   cancel,
+		cancel:   func() {},
 	}
 
-	wsURL, err := launcher.GetWebSocketDebuggerURL(url)
-	if err != nil {
-		return nil, err
-	}
-
-	conn, _, err := websocket.DefaultDialer.DialContext(ctx, wsURL, nil)
-	kit.E(err)
-
-	go cdp.close(ctx, conn)
-
-	go cdp.handleReq(ctx, conn)
-
-	go cdp.handleRes(ctx, conn)
-
-	return cdp, nil
+	return cdp
 }
 
-func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
+// Context set the context
+func (cdp *Client) Context(ctx context.Context) *Client {
+	cdp.ctx = ctx
+	return cdp
+}
+
+// Cancel set the cancel callback
+func (cdp *Client) Cancel(fn func()) *Client {
+	cdp.cancel = fn
+	return cdp
+}
+
+// Buffer set the read and write buffer for websocket
+func (cdp *Client) Buffer(read, write int) *Client {
+	cdp.readBufferSize = read
+	cdp.writeBufferSize = write
+	return cdp
+}
+
+// Connect to chrome
+func (cdp *Client) Connect() *Client {
+	wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.url)
+	kit.E(err)
+
+	dialer := *websocket.DefaultDialer
+	dialer.ReadBufferSize = cdp.readBufferSize
+	dialer.WriteBufferSize = cdp.writeBufferSize
+
+	if dialer.ReadBufferSize == 0 {
+		dialer.ReadBufferSize = 25 * 1024 * 1024
+	}
+	if dialer.WriteBufferSize == 0 {
+		dialer.WriteBufferSize = 10 * 1024 * 1024
+	}
+
+	conn, _, err := dialer.DialContext(cdp.ctx, wsURL, nil)
+	kit.E(err)
+
+	cdp.conn = conn
+
+	go cdp.close()
+
+	go cdp.handleReq()
+
+	go cdp.handleRes()
+
+	return cdp
+}
+
+func (cdp *Client) handleReq() {
 	for {
 		select {
-		case <-ctx.Done():
+		case <-cdp.ctx.Done():
 			return
 
 		case req := <-cdp.chReq:
@@ -112,7 +157,7 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 			data, err := json.Marshal(req)
 			checkPanic(err)
 			debug(req)
-			err = conn.WriteMessage(websocket.TextMessage, data)
+			err = cdp.conn.WriteMessage(websocket.TextMessage, data)
 			checkPanic(err)
 			cdp.requests[req.ID] = req
 
@@ -126,9 +171,9 @@ func (cdp *Client) handleReq(ctx context.Context, conn *websocket.Conn) {
 	}
 }
 
-func (cdp *Client) handleRes(ctx context.Context, conn *websocket.Conn) {
-	for ctx.Err() == nil {
-		msgType, data, err := conn.ReadMessage()
+func (cdp *Client) handleRes() {
+	for cdp.ctx.Err() == nil {
+		msgType, data, err := cdp.conn.ReadMessage()
 		if err != nil {
 			debug(err)
 			cdp.cancel()
@@ -184,9 +229,9 @@ func (cdp *Client) id() uint64 {
 	return cdp.count
 }
 
-func (cdp *Client) close(ctx context.Context, conn *websocket.Conn) {
-	<-ctx.Done()
-	err := conn.Close()
+func (cdp *Client) close() {
+	<-cdp.ctx.Done()
+	err := cdp.conn.Close()
 	if !isClosedErr(err) {
 		checkPanic(err)
 	}

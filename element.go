@@ -70,8 +70,9 @@ func (el *Element) FrameE() (*Page, error) {
 	newPage := *el.page
 	newPage.FrameID = node.Get("frameId").String()
 	newPage.element = el
+	newPage.windowObjectID = ""
 
-	return &newPage, newPage.initIsolatedWorld()
+	return &newPage, nil
 }
 
 // FocusE ...
@@ -87,23 +88,7 @@ func (el *Element) FocusE() error {
 
 // ScrollIntoViewIfNeededE ...
 func (el *Element) ScrollIntoViewIfNeededE() error {
-	_, err := el.EvalE(true, `async () => {
-		if (!this.isConnected)
-			return 'Node is detached from document';
-		if (this.nodeType !== Node.ELEMENT_NODE)
-			return 'Node is not of type HTMLElement';
-	
-		const visibleRatio = await new Promise(resolve => {
-			const observer = new IntersectionObserver(entries => {
-				resolve(entries[0].intersectionRatio);
-				observer.disconnect();
-			});
-			observer.observe(this);
-		});
-		if (visibleRatio !== 1.0)
-			this.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
-		return false;
-	}`)
+	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"))
 	return err
 }
 
@@ -173,10 +158,7 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	_, err = el.EvalE(true, `() => {
-		this.dispatchEvent(new Event('input', { bubbles: true }));
-		this.dispatchEvent(new Event('change', { bubbles: true }));
-	}`)
+	_, err = el.EvalE(true, el.page.jsFn("inputEvent"))
 	return err
 }
 
@@ -192,19 +174,7 @@ func (el *Element) SelectE(selectors ...string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion("Input.select")
 
-	_, err = el.EvalE(true, `selectors => {
-		selectors.forEach(s => {
-			Array.from(this.options).forEach(el => {
-				try {
-					if (el.innerText === s || el.matches(s)) {
-						el.selected = true
-					}
-				} catch {}
-			})
-		})
-		this.dispatchEvent(new Event('input', { bubbles: true }));
-		this.dispatchEvent(new Event('change', { bubbles: true }));
-	}`, selectors)
+	_, err = el.EvalE(true, el.page.jsFn("select"), selectors)
 	return err
 }
 
@@ -284,35 +254,17 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 
 // WaitVisibleE ...
 func (el *Element) WaitVisibleE() error {
-	return el.WaitE(`() => {
-		var box = this.getBoundingClientRect()
-		var style = window.getComputedStyle(this)
-		return style.display != 'none' &&
-			style.visibility != 'hidden' &&
-			!!(box.top || box.bottom || box.width || box.height)
-	}`)
+	return el.WaitE(el.page.jsFn("waitVisible"))
 }
 
 // WaitInvisibleE ...
 func (el *Element) WaitInvisibleE() error {
-	return el.WaitE(`() => {
-		var box = this.getBoundingClientRect()
-		return window.getComputedStyle(this).visibility == 'hidden' ||
-			!(box.top || box.bottom || box.width || box.height)
-	}`)
+	return el.WaitE(el.page.jsFn("waitInvisible"))
 }
 
 // BoxE ...
 func (el *Element) BoxE() (kit.JSONResult, error) {
-	box, err := el.EvalE(true, `() => {
-		var box = this.getBoundingClientRect().toJSON()
-		if (this.tagName === 'IFRAME') {
-			var style = window.getComputedStyle(this)
-			box.left += parseInt(style.paddingLeft) + parseInt(style.borderLeftWidth)
-			box.top += parseInt(style.paddingTop) + parseInt(style.borderTopWidth)
-		}
-		return box
-	}`)
+	box, err := el.EvalE(true, el.page.jsFn("box"))
 	if err != nil {
 		return nil, err
 	}
@@ -333,13 +285,7 @@ func (el *Element) BoxE() (kit.JSONResult, error) {
 
 // ResourceE ...
 func (el *Element) ResourceE() ([]byte, error) {
-	src, err := el.EvalE(true, `() => new Promise((resolve, reject) => {
-		if (this.complete) {
-			return resolve(this.currentSrc)
-		}
-		this.addEventListener('load', () => resolve(this.currentSrc))
-		this.addEventListener('error', (e) => reject(e))
-	})`)
+	src, err := el.EvalE(true, el.page.jsFn("resource"))
 	if err != nil {
 		return nil, err
 	}

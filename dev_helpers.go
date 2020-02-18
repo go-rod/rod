@@ -26,36 +26,10 @@ func (b *Browser) trySlowmotion(method string) {
 
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
-	const js = `function foo (id, left, top, width, height, msg) {
-		var div = document.createElement('div')
-		var msgDiv = document.createElement('div')
-		div.id = id
-		div.style = 'position: fixed; z-index:2147483647; border: 2px dashed red;'
-			+ 'border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;'
-			+ 'box-sizing: border-box;'
-			+ 'left:' + left + 'px;'
-			+ 'top:' + top + 'px;'
-			+ 'height:' + height + 'px;'
-			+ 'width:' + width + 'px;'
-
-		if (height === 0) {
-			div.style.border = 'none'
-		}
-	
-		msgDiv.style = 'position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;'
-			+ 'box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;'
-			+ 'top:' + height + 'px; '
-	
-		msgDiv.innerHTML = msg
-	
-		div.appendChild(msgDiv)
-		document.body.appendChild(div)
-	}`
-
 	root := p.Root()
 	id := "rod-" + kit.RandString(8)
 
-	_, err := root.EvalE(true, "", js, []interface{}{
+	_, err := root.EvalE(true, "", root.jsFn("overlay"), []interface{}{
 		id,
 		left,
 		top,
@@ -66,10 +40,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 	CancelPanic(err)
 
 	clean := func() {
-		_, err := root.EvalE(true, "", `id => {
-			let el = document.getElementById(id)
-			el && el.remove()
-		}`, []interface{}{id})
+		_, err := root.EvalE(true, "", root.jsFn("removeOverlay"), []interface{}{id})
 		CancelPanic(err)
 	}
 

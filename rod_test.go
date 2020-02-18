@@ -20,12 +20,12 @@ type S struct {
 }
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
-func (s *S) htmlFile(path string) string {
-	return "file://" + s.file(path)
+func htmlFile(path string) string {
+	return "file://" + file(path)
 }
 
 // get abs file path from fixtures folder, return sample "/a/b/click.html"
-func (s *S) file(path string) string {
+func file(path string) string {
 	f, err := filepath.Abs(filepath.FromSlash(path))
 	kit.E(err)
 	return f
@@ -47,7 +47,7 @@ func Test(t *testing.T) {
 
 	defer s.browser.Close()
 
-	s.page = s.browser.Page(s.htmlFile("fixtures/click.html"))
+	s.page = s.browser.Page(htmlFile("fixtures/click.html"))
 
 	suite.Run(t, s)
 }

@@ -1,3 +1,5 @@
+// This file contains the methods that panics when error return value is not nil.
+
 package rod
 
 import (
@@ -170,6 +172,63 @@ func (p *Page) Call(method string, params interface{}) kit.JSONResult {
 	return res
 }
 
+// Has an element that matches the css selector
+func (p *Page) Has(selector string) bool {
+	has, err := p.HasE(selector)
+	kit.E(err)
+	return has
+}
+
+// HasMatches an element that matches the css selector and its text matches the regex.
+func (p *Page) HasMatches(selector, regex string) bool {
+	has, err := p.HasMatchesE(selector, regex)
+	kit.E(err)
+	return has
+}
+
+// Element retries until returns the first element in the page that matches the CSS selector
+func (p *Page) Element(selector string) *Element {
+	el, err := p.ElementE(p.Sleeper(), "", selector)
+	kit.E(err)
+	return el
+}
+
+// ElementMatches retries until returns the first element in the page that matches the CSS selector and its text matches the regex.
+// The regex is the js regex, not golang's.
+func (p *Page) ElementMatches(selector, regex string) *Element {
+	el, err := p.ElementMatchesE(p.Sleeper(), "", selector, regex)
+	kit.E(err)
+	return el
+}
+
+// ElementByJS retries until returns the element from the return value of the js function
+func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
+	el, err := p.ElementByJSE(p.Sleeper(), "", js, params)
+	kit.E(err)
+	return el
+}
+
+// Elements returns all elements that match the css selector
+func (p *Page) Elements(selector string) Elements {
+	list, err := p.ElementsE("", selector)
+	kit.E(err)
+	return list
+}
+
+// ElementsX returns all elements that match the XPath selector
+func (p *Page) ElementsX(xpath string) Elements {
+	list, err := p.ElementsXE("", xpath)
+	kit.E(err)
+	return list
+}
+
+// ElementsByJS returns the elements from the return value of the js
+func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
+	list, err := p.ElementsByJSE("", js, params)
+	kit.E(err)
+	return list
+}
+
 // Describe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) Describe() kit.JSONResult {
@@ -294,4 +353,75 @@ func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
 	res, err := el.EvalE(true, js, params...)
 	kit.E(err)
 	return res
+}
+
+// Element returns the first child that matches the css selector
+func (el *Element) Element(selector string) *Element {
+	el, err := el.ElementE(selector)
+	kit.E(err)
+	return el
+}
+
+// ElementX returns the first child that matches the XPath selector
+func (el *Element) ElementX(xpath string) *Element {
+	el, err := el.ElementXE(xpath)
+	kit.E(err)
+	return el
+}
+
+// ElementByJS returns the element from the return value of the js
+func (el *Element) ElementByJS(js string, params ...interface{}) *Element {
+	el, err := el.ElementByJSE(js, params...)
+	kit.E(err)
+	return el
+}
+
+// Parent returns the parent element
+func (el *Element) Parent() *Element {
+	parent, err := el.ParentE()
+	kit.E(err)
+	return parent
+}
+
+// Next returns the next sibling element
+func (el *Element) Next() *Element {
+	parent, err := el.NextE()
+	kit.E(err)
+	return parent
+}
+
+// Previous returns the previous sibling element
+func (el *Element) Previous() *Element {
+	parent, err := el.PreviousE()
+	kit.E(err)
+	return parent
+}
+
+// ElementMatches returns the first element in the page that matches the CSS selector and its text matches the regex.
+// The regex is the js regex, not golang's.
+func (el *Element) ElementMatches(selector, regex string) *Element {
+	el, err := el.ElementMatchesE(selector, regex)
+	kit.E(err)
+	return el
+}
+
+// Elements returns all elements that match the css selector
+func (el *Element) Elements(selector string) Elements {
+	list, err := el.ElementsE(selector)
+	kit.E(err)
+	return list
+}
+
+// ElementsX returns all elements that match the XPath selector
+func (el *Element) ElementsX(xpath string) Elements {
+	list, err := el.ElementsXE(xpath)
+	kit.E(err)
+	return list
+}
+
+// ElementsByJS returns the elements from the return value of the js
+func (el *Element) ElementsByJS(js string, params ...interface{}) Elements {
+	list, err := el.ElementsByJSE(js, params...)
+	kit.E(err)
+	return list
 }

@@ -71,7 +71,8 @@ func debug(obj interface{}) {
 			val.SessionID,
 			prettyJSON(val.Params),
 		))
+
 	default:
-		kit.Log(kit.Sdump(obj))
+		kit.Err(kit.Sdump(obj))
 	}
 }
