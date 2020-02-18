@@ -30,13 +30,6 @@ func New() *Browser {
 	return &Browser{}
 }
 
-// Connect to the browser and start to control it.
-// If fails to connect, try to run a local browser, if local browser not found try to download one.
-func (b *Browser) Connect() *Browser {
-	kit.E(b.ConnectE())
-	return b
-}
-
 // Context creates a clone with specified context
 func (b *Browser) Context(ctx context.Context) *Browser {
 	ctx, cancel := context.WithCancel(ctx)
@@ -106,7 +99,7 @@ func (b *Browser) ConnectE() error {
 
 // CloseE ...
 func (b *Browser) CloseE() error {
-	_, err := b.Call(&cdp.Request{Method: "Browser.close"})
+	_, err := b.CallE(&cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
 	}
@@ -118,14 +111,9 @@ func (b *Browser) CloseE() error {
 	return nil
 }
 
-// Close the browser and release related resources
-func (b *Browser) Close() {
-	kit.E(b.CloseE())
-}
-
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
-	target, err := b.Call(&cdp.Request{
+	target, err := b.CallE(&cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "about:blank",
@@ -148,16 +136,9 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return page, nil
 }
 
-// Page creates a new tab
-func (b *Browser) Page(url string) *Page {
-	p, err := b.PageE(url)
-	kit.E(err)
-	return p
-}
-
 // PagesE ...
 func (b *Browser) PagesE() ([]*Page, error) {
-	list, err := b.Call(&cdp.Request{Method: "Target.getTargets"})
+	list, err := b.CallE(&cdp.Request{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
@@ -176,13 +157,6 @@ func (b *Browser) PagesE() ([]*Page, error) {
 	}
 
 	return pageList, nil
-}
-
-// Pages returns all visible pages
-func (b *Browser) Pages() []*Page {
-	list, err := b.PagesE()
-	kit.E(err)
-	return list
 }
 
 // EventFilter to filter events
@@ -206,18 +180,8 @@ func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), fu
 	}, cancel
 }
 
-// WaitEvent resolves the wait function when the filter returns true, call cancel to release the resource
-func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func()) {
-	w, c := b.WaitEventE(Method(name))
-	return func() *cdp.Event {
-		e, err := w()
-		kit.E(err)
-		return e
-	}, c
-}
-
-// Call sends a control message to browser
-func (b *Browser) Call(req *cdp.Request) (kit.JSONResult, error) {
+// CallE sends a control message to browser
+func (b *Browser) CallE(req *cdp.Request) (kit.JSONResult, error) {
 	b.trySlowmotion(req.Method)
 
 	return b.client.Call(b.ctx, req)
@@ -252,7 +216,7 @@ func (b *Browser) initEvents() error {
 		}
 	}()
 
-	_, err := b.Call(&cdp.Request{
+	_, err := b.CallE(&cdp.Request{
 		Method: "Target.setDiscoverTargets",
 		Params: cdp.Object{"discover": true},
 	})

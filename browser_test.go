@@ -2,6 +2,8 @@ package rod_test
 
 import (
 	"time"
+
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 func (s *S) TestBrowserPages() {
@@ -19,4 +21,12 @@ func (s *S) TestBrowserWaitEvent() {
 	defer cancel()
 	s.page.Navigate(s.htmlFile("fixtures/click.html"))
 	wait()
+}
+
+func (s *S) TestBrowserCall() {
+	v := s.browser.Call(&cdp.Request{
+		Method: "Browser.getVersion",
+	})
+
+	s.Regexp("HeadlessChrome", v.Get("product").String())
 }

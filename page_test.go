@@ -26,10 +26,32 @@ func (s *S) TestRelease() {
 	s.page.Release(res.Get("result.objectId").String())
 }
 
+func (s *S) TestPageCall() {
+	s.Greater(s.page.Call("DOM.getDocument", nil).Get("root.nodeId").Int(), int64(0))
+}
+
+func (s *S) TestWindow() {
+	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
+	defer page.Close()
+
+	bounds := page.GetWindow()
+	defer page.Window(
+		bounds.Get("left").Int(),
+		bounds.Get("top").Int(),
+		bounds.Get("width").Int(),
+		bounds.Get("height").Int(),
+		"normal",
+	)
+
+	page.Window(0, 0, 1211, 611, "normal")
+	s.EqualValues(1211, page.Eval(`() => window.innerWidth`).Int())
+	s.EqualValues(611, page.Eval(`() => window.innerHeight`).Int())
+}
+
 func (s *S) TestSetViewport() {
 	page := s.browser.Page(s.htmlFile("fixtures/click.html"))
 	defer page.Close()
-	page.SetViewport(317, 419, 0, false)
+	page.Viewport(317, 419, 0, false)
 	res := page.Eval(`() => [window.innerWidth, window.innerHeight]`)
 	s.EqualValues(317, res.Get("0").Int())
 	s.EqualValues(419, res.Get("1").Int())
@@ -148,12 +170,12 @@ func (s *S) TestPagePause() {
 	kit.Sleep(0.03)
 	go s.page.Eval(`() => 10`)
 	kit.Sleep(0.03)
-	kit.E(s.page.Call("Debugger.resume", nil))
+	kit.E(s.page.CallE("Debugger.resume", nil))
 }
 
 func (s *S) TestPageScreenshot() {
 	p := s.page.Navigate(s.htmlFile("fixtures/click.html"))
-	p.SetViewport(400, 300, 1, false)
+	p.Viewport(400, 300, 1, false)
 	p.Element("button")
 	data := p.Screenshot()
 	img, err := png.Decode(bytes.NewBuffer(data))

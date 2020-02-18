@@ -47,7 +47,7 @@ func (el *Element) CancelTimeout() *Element {
 
 // DescribeE ...
 func (el *Element) DescribeE() (kit.JSONResult, error) {
-	val, err := el.page.Context(el.ctx).Call(
+	val, err := el.page.Context(el.ctx).CallE(
 		"DOM.describeNode",
 		cdp.Object{
 			"objectId": el.ObjectID,
@@ -58,14 +58,6 @@ func (el *Element) DescribeE() (kit.JSONResult, error) {
 	}
 	node := val.Get("node")
 	return &node, nil
-}
-
-// Describe returns the element info
-// Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
-func (el *Element) Describe() kit.JSONResult {
-	node, err := el.DescribeE()
-	kit.E(err)
-	return node
 }
 
 // FrameE ...
@@ -82,13 +74,6 @@ func (el *Element) FrameE() (*Page, error) {
 	return &newPage, newPage.initIsolatedWorld()
 }
 
-// Frame creates a page instance that represents the iframe
-func (el *Element) Frame() *Page {
-	f, err := el.FrameE()
-	kit.E(err)
-	return f
-}
-
 // FocusE ...
 func (el *Element) FocusE() error {
 	err := el.ScrollIntoViewIfNeededE()
@@ -98,12 +83,6 @@ func (el *Element) FocusE() error {
 
 	_, err = el.EvalE(true, `() => this.focus()`)
 	return err
-}
-
-// Focus sets focus on the specified element
-func (el *Element) Focus() *Element {
-	kit.E(el.FocusE())
-	return el
 }
 
 // ScrollIntoViewIfNeededE ...
@@ -128,13 +107,6 @@ func (el *Element) ScrollIntoViewIfNeededE() error {
 	return err
 }
 
-// ScrollIntoViewIfNeeded scrolls the current element into the visible area of the browser
-// window if it's not already within the visible area.
-func (el *Element) ScrollIntoViewIfNeeded() *Element {
-	kit.E(el.ScrollIntoViewIfNeededE())
-	return el
-}
-
 // ClickE ...
 func (el *Element) ClickE(button string) error {
 	err := el.WaitVisibleE()
@@ -155,7 +127,7 @@ func (el *Element) ClickE(button string) error {
 	x := box.Get("left").Int() + box.Get("width").Int()/2
 	y := box.Get("top").Int() + box.Get("height").Int()/2
 
-	err = el.page.Mouse.MoveE(int(x), int(y), 1)
+	err = el.page.Mouse.MoveE(x, y, 1)
 	if err != nil {
 		return err
 	}
@@ -163,12 +135,6 @@ func (el *Element) ClickE(button string) error {
 	defer el.Trace(button + " click")()
 
 	return el.page.Mouse.ClickE(button)
-}
-
-// Click the element
-func (el *Element) Click() *Element {
-	kit.E(el.ClickE("left"))
-	return el
 }
 
 // PressE ...
@@ -186,12 +152,6 @@ func (el *Element) PressE(key rune) error {
 	defer el.Trace("press " + string(key))()
 
 	return el.page.Keyboard.PressE(key)
-}
-
-// Press a key
-func (el *Element) Press(key rune) *Element {
-	kit.E(el.PressE(key))
-	return el
 }
 
 // InputE ...
@@ -218,12 +178,6 @@ func (el *Element) InputE(text string) error {
 		this.dispatchEvent(new Event('change', { bubbles: true }));
 	}`)
 	return err
-}
-
-// Input wll click the element and input the text
-func (el *Element) Input(text string) *Element {
-	kit.E(el.InputE(text))
-	return el
 }
 
 // SelectE ...
@@ -254,12 +208,6 @@ func (el *Element) SelectE(selectors ...string) error {
 	return err
 }
 
-// Select the option elements that match the selectors, the selector can be text content or css selector
-func (el *Element) Select(selectors ...string) *Element {
-	kit.E(el.SelectE(selectors...))
-	return el
-}
-
 // SetFilesE ...
 func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}
@@ -271,17 +219,11 @@ func (el *Element) SetFilesE(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	_, err := el.page.Context(el.ctx).Call("DOM.setFileInputFiles", cdp.Object{
+	_, err := el.page.Context(el.ctx).CallE("DOM.setFileInputFiles", cdp.Object{
 		"files":    absPaths,
 		"objectId": el.ObjectID,
 	})
 	return err
-}
-
-// SetFiles sets files for the given file input element
-func (el *Element) SetFiles(paths ...string) *Element {
-	kit.E(el.SetFilesE(paths))
-	return el
 }
 
 // TextE ...
@@ -290,24 +232,10 @@ func (el *Element) TextE() (string, error) {
 	return str.String(), err
 }
 
-// Text gets the innerText of the element
-func (el *Element) Text() string {
-	s, err := el.TextE()
-	kit.E(err)
-	return s
-}
-
 // HTMLE ...
 func (el *Element) HTMLE() (string, error) {
 	str, err := el.EvalE(true, `() => this.outerHTML`)
 	return str.String(), err
-}
-
-// HTML gets the outerHTML of the element
-func (el *Element) HTML() string {
-	s, err := el.HTMLE()
-	kit.E(err)
-	return s
 }
 
 // WaitStableE not using requestAnimation here because it can trigger to many checks,
@@ -338,13 +266,6 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 	return nil
 }
 
-// WaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
-// or button to complete so that we can simulate the mouse to move to it and click on it.
-func (el *Element) WaitStable() *Element {
-	kit.E(el.WaitStableE(100 * time.Millisecond))
-	return el
-}
-
 // WaitE ...
 func (el *Element) WaitE(js string, params ...interface{}) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
@@ -361,12 +282,6 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 	})
 }
 
-// Wait until the js returns true
-func (el *Element) Wait(js string, params ...interface{}) *Element {
-	kit.E(el.WaitE(js, params))
-	return el
-}
-
 // WaitVisibleE ...
 func (el *Element) WaitVisibleE() error {
 	return el.WaitE(`() => {
@@ -378,12 +293,6 @@ func (el *Element) WaitVisibleE() error {
 	}`)
 }
 
-// WaitVisible until the element is visible
-func (el *Element) WaitVisible() *Element {
-	kit.E(el.WaitVisibleE())
-	return el
-}
-
 // WaitInvisibleE ...
 func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(`() => {
@@ -391,12 +300,6 @@ func (el *Element) WaitInvisibleE() error {
 		return window.getComputedStyle(this).visibility == 'hidden' ||
 			!(box.top || box.bottom || box.width || box.height)
 	}`)
-}
-
-// WaitInvisible until the element is not visible or removed
-func (el *Element) WaitInvisible() *Element {
-	kit.E(el.WaitInvisibleE())
-	return el
 }
 
 // BoxE ...
@@ -428,15 +331,6 @@ func (el *Element) BoxE() (kit.JSONResult, error) {
 	return kit.JSON(kit.MustToJSON(j)), nil
 }
 
-// Box returns the size of an element and its position relative to the main frame.
-// It will recursively calculate the box with all ancestors. The spec is here:
-// https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-func (el *Element) Box() kit.JSONResult {
-	box, err := el.BoxE()
-	kit.E(err)
-	return box
-}
-
 // ResourceE ...
 func (el *Element) ResourceE() ([]byte, error) {
 	src, err := el.EvalE(true, `() => new Promise((resolve, reject) => {
@@ -450,7 +344,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := el.page.Call("Page.getResourceContent", cdp.Object{
+	res, err := el.page.CallE("Page.getResourceContent", cdp.Object{
 		"frameId": el.page.FrameID,
 		"url":     src.String(),
 	})
@@ -473,32 +367,12 @@ func (el *Element) ResourceE() ([]byte, error) {
 	return bin, nil
 }
 
-// Resource returns the binary of the "src" properly, such as the image or audio file.
-func (el *Element) Resource() []byte {
-	bin, err := el.ResourceE()
-	kit.E(err)
-	return bin
-}
-
 // ReleaseE ...
 func (el *Element) ReleaseE() error {
 	return el.page.ReleaseE(el.ObjectID)
 }
 
-// Release remote object on browser
-func (el *Element) Release() {
-	kit.E(el.ReleaseE())
-}
-
 // EvalE ...
 func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
 	return el.page.EvalE(byValue, el.ObjectID, js, params)
-}
-
-// Eval evaluates js function on the element, the first param must be a js function definition
-// For example: el.Eval(`name => this.getAttribute(name)`, "value")
-func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
-	res, err := el.EvalE(true, js, params...)
-	kit.E(err)
-	return res
 }

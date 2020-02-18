@@ -15,15 +15,15 @@ type Mouse struct {
 	page *Page
 	sync.Mutex
 
-	x int
-	y int
+	x int64
+	y int64
 
 	// the buttons is currently beening pressed, reflects the press order
 	buttons []string
 }
 
 // MoveE ...
-func (m *Mouse) MoveE(x, y, steps int) error {
+func (m *Mouse) MoveE(x, y, steps int64) error {
 	if steps < 1 {
 		steps = 1
 	}
@@ -36,11 +36,11 @@ func (m *Mouse) MoveE(x, y, steps int) error {
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	for i := 0; i < steps; i++ {
+	for i := int64(0); i < steps; i++ {
 		toX := m.x + stepX
 		toY := m.y + stepY
 
-		_, err := m.page.Call("Input.dispatchMouseEvent", cdp.Object{
+		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
 			"type":      "mouseMoved",
 			"x":         toX,
 			"y":         toY,
@@ -61,12 +61,12 @@ func (m *Mouse) MoveE(x, y, steps int) error {
 }
 
 // Move to the location
-func (m *Mouse) Move(x, y int) {
+func (m *Mouse) Move(x, y int64) {
 	kit.E(m.MoveE(x, y, 0))
 }
 
 // ScrollE ...
-func (m *Mouse) ScrollE(x, y, steps int) error {
+func (m *Mouse) ScrollE(x, y, steps int64) error {
 	if steps < 1 {
 		steps = 1
 	}
@@ -76,8 +76,8 @@ func (m *Mouse) ScrollE(x, y, steps int) error {
 	stepX := (x - m.x) / steps
 	stepY := (y - m.y) / steps
 
-	for i := 0; i < steps; i++ {
-		_, err := m.page.Call("Input.dispatchMouseEvent", cdp.Object{
+	for i := int64(0); i < steps; i++ {
+		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
 			"type":      "mouseMoved",
 			"x":         m.x,
 			"y":         m.y,
@@ -96,12 +96,12 @@ func (m *Mouse) ScrollE(x, y, steps int) error {
 }
 
 // Scroll the wheel
-func (m *Mouse) Scroll(x, y int) {
+func (m *Mouse) Scroll(x, y int64) {
 	kit.E(m.ScrollE(x, y, 0))
 }
 
 // DownE ...
-func (m *Mouse) DownE(button string, clicks int) error {
+func (m *Mouse) DownE(button string, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -109,7 +109,7 @@ func (m *Mouse) DownE(button string, clicks int) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.Call("Input.dispatchMouseEvent", cdp.Object{
+	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
 		"type":       "mousePressed",
 		"button":     button,
 		"buttons":    buttons,
@@ -131,7 +131,7 @@ func (m *Mouse) Down(button string) {
 }
 
 // UpE ...
-func (m *Mouse) UpE(button string, clicks int) error {
+func (m *Mouse) UpE(button string, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -145,7 +145,7 @@ func (m *Mouse) UpE(button string, clicks int) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.Call("Input.dispatchMouseEvent", cdp.Object{
+	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
 		"type":       "mouseReleased",
 		"button":     button,
 		"buttons":    buttons,

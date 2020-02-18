@@ -222,7 +222,7 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements,
 	objectID := val.Get("objectId").String()
 	defer func() { err = p.ReleaseE(objectID) }()
 
-	list, err := p.Call("Runtime.getProperties", cdp.Object{
+	list, err := p.CallE("Runtime.getProperties", cdp.Object{
 		"objectId":      objectID,
 		"ownProperties": true,
 	})

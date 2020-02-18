@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -84,7 +83,7 @@ func (p *Page) Root() *Page {
 
 // NavigateE ...
 func (p *Page) NavigateE(url string) error {
-	res, err := p.Call("Page.navigate", cdp.Object{
+	res, err := p.CallE("Page.navigate", cdp.Object{
 		"url": url,
 	})
 	if err != nil {
@@ -96,42 +95,71 @@ func (p *Page) NavigateE(url string) error {
 	return nil
 }
 
-// Navigate to url
-func (p *Page) Navigate(url string) *Page {
-	kit.E(p.NavigateE(url))
-	return p
+func (p *Page) getWindowID() (int64, error) {
+	res, err := p.browser.CallE(&cdp.Request{
+		Method: "Browser.getWindowForTarget",
+		Params: cdp.Object{
+			"targetId": p.TargetID,
+		},
+	})
+	if err != nil {
+		return 0, err
+	}
+	return res.Get("windowId").Int(), err
 }
 
-// SetViewportE ...
-// Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-func (p *Page) SetViewportE(params *cdp.Object) error {
-	if params == nil {
-		return nil
+// GetWindowE ...
+func (p *Page) GetWindowE() (kit.JSONResult, error) {
+	id, err := p.getWindowID()
+	if err != nil {
+		return nil, err
 	}
-	_, err := p.Call("Emulation.setDeviceMetricsOverride", params)
+
+	res, err := p.browser.CallE(&cdp.Request{
+		Method: "Browser.getWindowBounds",
+		Params: cdp.Object{
+			"windowId": id,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	bounds := res.Get("bounds")
+	return &bounds, nil
+}
+
+// WindowE https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
+func (p *Page) WindowE(bounds *cdp.Object) error {
+	id, err := p.getWindowID()
+	if err != nil {
+		return err
+	}
+
+	_, err = p.browser.CallE(&cdp.Request{
+		Method: "Browser.setWindowBounds",
+		Params: cdp.Object{
+			"windowId": id,
+			"bounds":   bounds,
+		},
+	})
 	return err
 }
 
-// SetViewport overrides the values of device screen dimensions.
-func (p *Page) SetViewport(width, height int, deviceScaleFactor float32, mobile bool) *Page {
-	kit.E(p.SetViewportE(&cdp.Object{
-		"width":             width,
-		"height":            height,
-		"deviceScaleFactor": deviceScaleFactor,
-		"mobile":            mobile,
-	}))
-	return p
+// ViewportE ...
+// Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
+func (p *Page) ViewportE(params *cdp.Object) error {
+	if params == nil {
+		return nil
+	}
+	_, err := p.CallE("Emulation.setDeviceMetricsOverride", params)
+	return err
 }
 
 // CloseE page
 func (p *Page) CloseE() error {
-	_, err := p.Call("Page.close", nil)
+	_, err := p.CallE("Page.close", nil)
 	return err
-}
-
-// Close page
-func (p *Page) Close() {
-	kit.E(p.CloseE())
 }
 
 // HandleDialogE ...
@@ -143,20 +171,12 @@ func (p *Page) HandleDialogE(accept bool, promptText string) (func() error, func
 		if err != nil {
 			return err
 		}
-		_, err = p.Call("Page.handleJavaScriptDialog", cdp.Object{
+		_, err = p.CallE("Page.handleJavaScriptDialog", cdp.Object{
 			"accept":     accept,
 			"promptText": promptText,
 		})
 		return err
 	}, cancel
-}
-
-// HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
-func (p *Page) HandleDialog(accept bool, promptText string) (wait func(), cancel func()) {
-	w, c := p.HandleDialogE(accept, promptText)
-	return func() {
-		kit.E(w())
-	}, c
 }
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
@@ -174,7 +194,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 	// we have to prevent race condition here
 	p.getDownloadFileLock.Lock()
 
-	_, err := p.Call("Page.setDownloadBehavior", cdp.Object{
+	_, err := p.CallE("Page.setDownloadBehavior", cdp.Object{
 		"behavior":     "allow",
 		"downloadPath": dir,
 	})
@@ -182,7 +202,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		return nil, nil, err
 	}
 
-	_, err = p.Call("Fetch.enable", params)
+	_, err = p.CallE("Fetch.enable", params)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -197,7 +217,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		}
 		released = true
 		defer p.getDownloadFileLock.Unlock()
-		_, err := p.Call("Fetch.disable", nil)
+		_, err := p.CallE("Fetch.disable", nil)
 		kit.E(err)
 	}
 
@@ -236,7 +256,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			}
 		}
 
-		_, err = p.Call("Fetch.fulfillRequest", cdp.Object{
+		_, err = p.CallE("Fetch.fulfillRequest", cdp.Object{
 			"requestId":       msg.Params.Get("requestId").String(),
 			"responseCode":    res.StatusCode,
 			"responseHeaders": headers,
@@ -247,32 +267,13 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 	}, release, err
 }
 
-// GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
-// Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
-func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte), cancel func()) {
-	w, c, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
-	kit.E(err)
-	return func() (http.Header, []byte) {
-		header, data, err := w()
-		kit.E(err)
-		return header, data
-	}, c
-}
-
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
 func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
-	res, err := p.Call("Page.captureScreenshot", options)
+	res, err := p.CallE("Page.captureScreenshot", options)
 	if err != nil {
 		return nil, err
 	}
 	return base64.StdEncoding.DecodeString(res.Get("data").String())
-}
-
-// Screenshot the page
-func (p *Page) Screenshot() []byte {
-	png, err := p.ScreenshotE(nil)
-	kit.E(err)
-	return png
 }
 
 // WaitPageE ...
@@ -299,35 +300,19 @@ func (p *Page) WaitPageE() (func() (*Page, error), func()) {
 	}, cancel
 }
 
-// WaitPage to be opened from the specified page
-func (p *Page) WaitPage() (wait func() *Page, cancel func()) {
-	w, c := p.WaitPageE()
-	return func() *Page {
-		page, err := w()
-		kit.E(err)
-		return page
-	}, c
-}
-
 // PauseE ...
 func (p *Page) PauseE() error {
-	_, err := p.Call("Debugger.enable", nil)
+	_, err := p.CallE("Debugger.enable", nil)
 	if err != nil {
 		return err
 	}
-	_, err = p.Call("Debugger.pause", nil)
+	_, err = p.CallE("Debugger.pause", nil)
 	if err != nil {
 		return err
 	}
 	wait, _ := p.WaitEventE(Method("Debugger.resumed"))
 	_, err = wait()
 	return err
-}
-
-// Pause stops on the next JavaScript statement
-func (p *Page) Pause() *Page {
-	kit.E(p.PauseE())
-	return p
 }
 
 // WaitLoadE ...
@@ -339,23 +324,11 @@ func (p *Page) WaitLoadE() error {
 	return err
 }
 
-// WaitLoad wait until the `window.onload` is complete, resolve immediately if already fired.
-func (p *Page) WaitLoad() *Page {
-	kit.E(p.WaitLoadE())
-	return p
-}
-
 // WaitEventE ...
 func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
 	return p.browser.WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == p.SessionID && filter(e)
 	})
-}
-
-// WaitEvent waits for the next event to happen.
-func (p *Page) WaitEvent(name string) (wait func(), cancel func()) {
-	w, c := p.WaitEventE(Method(name))
-	return func() { kit.E(w()) }, c
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function
@@ -391,7 +364,7 @@ func (p *Page) eval(byValue bool, js string, jsArgs []interface{}) (kit.JSONResu
 	if p.IsIframe() {
 		return p.evalIframe(params)
 	}
-	return p.Call("Runtime.evaluate", params)
+	return p.CallE("Runtime.evaluate", params)
 }
 
 func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
@@ -400,7 +373,7 @@ func (p *Page) evalIframe(params cdp.Object) (res kit.JSONResult, err error) {
 	// For now I don't know a better way to do it other than retry
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
 		params["contextId"] = p.ContextID
-		res, err = p.Call("Runtime.evaluate", params)
+		res, err = p.CallE("Runtime.evaluate", params)
 
 		if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
 			_ = p.initIsolatedWorld()
@@ -426,21 +399,12 @@ func (p *Page) evalThis(byValue bool, thisID, js string, jsArgs []interface{}) (
 		"arguments":           args,
 	}
 
-	return p.Call("Runtime.callFunctionOn", params)
+	return p.CallE("Runtime.callFunctionOn", params)
 }
 
-// Eval js under sessionID or contextId, if contextId doesn't exist create a new isolatedWorld.
-// The first param must be a js function definition.
-// For example: page.Eval(`s => document.querySelectorAll(s)`, "input")
-func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
-	res, err := p.EvalE(true, "", js, params)
-	kit.E(err)
-	return res
-}
-
-// Call sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) Call(method string, params interface{}) (kit.JSONResult, error) {
-	return p.browser.Context(p.ctx).Call(&cdp.Request{
+// CallE sends a control message to the browser with the page session, the call is always on the root frame.
+func (p *Page) CallE(method string, params interface{}) (kit.JSONResult, error) {
+	return p.browser.Context(p.ctx).CallE(&cdp.Request{
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
@@ -476,20 +440,14 @@ func (p *Page) Sleeper() kit.Sleeper {
 
 // ReleaseE ...
 func (p *Page) ReleaseE(objectID string) error {
-	_, err := p.Call("Runtime.releaseObject", cdp.Object{
+	_, err := p.CallE("Runtime.releaseObject", cdp.Object{
 		"objectId": objectID,
 	})
 	return err
 }
 
-// Release remote object
-func (p *Page) Release(objectID string) *Page {
-	kit.E(p.ReleaseE(objectID))
-	return p
-}
-
 func (p *Page) initIsolatedWorld() error {
-	frame, err := p.Call("Page.createIsolatedWorld", cdp.Object{
+	frame, err := p.CallE("Page.createIsolatedWorld", cdp.Object{
 		"frameId": p.FrameID,
 	})
 	if err != nil {
@@ -501,7 +459,7 @@ func (p *Page) initIsolatedWorld() error {
 }
 
 func (p *Page) initSession() error {
-	obj, err := p.Call("Target.attachToTarget", cdp.Object{
+	obj, err := p.CallE("Target.attachToTarget", cdp.Object{
 		"targetId": p.TargetID,
 		"flatten":  true, // if it's not set no response will return
 	})
@@ -509,9 +467,9 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
-	_, err = p.Call("Page.enable", nil)
+	_, err = p.CallE("Page.enable", nil)
 	if err != nil {
 		return err
 	}
-	return p.SetViewportE(p.browser.viewport)
+	return p.ViewportE(p.browser.viewport)
 }
