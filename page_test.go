@@ -190,7 +190,7 @@ func (s *S) TestPageTraceDir() {
 	p.TraceDir(dir)
 	p.Element("button").Click()
 	pattern := filepath.Join(dir, "*")
-	s.Len(kit.Walk(pattern).MustList(), 2)
+	s.Len(kit.Walk(pattern).MustList(), 1)
 }
 
 func (s *S) TestPageInput() {

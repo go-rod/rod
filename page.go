@@ -63,7 +63,7 @@ func (p *Page) CancelTimeout() *Page {
 }
 
 // TraceDir set the dir to save the trace screenshots.
-// If it's set, screenshots will be taken before and after each trace.
+// If it's set, screenshots will be taken before each trace.
 func (p *Page) TraceDir(dir string) *Page {
 	p.traceDir = dir
 	return p

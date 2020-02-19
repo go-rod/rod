@@ -43,7 +43,7 @@ func Example_debug_mode() {
 
 	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
-	// enable auto screenshot before and after each input action
+	// enable auto screenshot before each input action
 	page.TraceDir("tmp/screenshots")
 
 	page.Element("#searchLanguage").Select("[lang=zh]")
