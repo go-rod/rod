@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
 	"path/filepath"
 	"time"
@@ -173,4 +174,45 @@ func (s *S) TestElementOthers() {
 	el.Wait(`() => true`)
 	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("localName").String())
 	s.Len(el.ElementsByJS(`() => []`), 0)
+}
+
+func (s *S) TestElementErrors() {
+	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	el := p.Element("form")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	_, err := el.Context(ctx).DescribeE()
+	s.Error(err)
+
+	_, err = el.Context(ctx).FrameE()
+	s.Error(err)
+
+	err = el.Context(ctx).FocusE()
+	s.Error(err)
+
+	err = el.Context(ctx).PressE('a')
+	s.Error(err)
+
+	err = el.Context(ctx).InputE("a")
+	s.Error(err)
+
+	err = el.Context(ctx).SelectE("a")
+	s.Error(err)
+
+	err = el.Context(ctx).WaitStableE(0)
+	s.Error(err)
+
+	_, err = el.Context(ctx).BoxE()
+	s.Error(err)
+
+	_, err = el.Context(ctx).ResourceE()
+	s.Error(err)
+
+	err = el.Context(ctx).InputE("a")
+	s.Error(err)
+
+	err = el.Context(ctx).InputE("a")
+	s.Error(err)
 }

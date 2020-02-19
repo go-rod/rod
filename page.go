@@ -100,7 +100,7 @@ func (p *Page) NavigateE(url string) error {
 }
 
 func (p *Page) getWindowID() (int64, error) {
-	res, err := p.browser.CallE(&cdp.Request{
+	res, err := p.browser.Context(p.ctx).CallE(&cdp.Request{
 		Method: "Browser.getWindowForTarget",
 		Params: cdp.Object{
 			"targetId": p.TargetID,
@@ -119,7 +119,7 @@ func (p *Page) GetWindowE() (kit.JSONResult, error) {
 		return nil, err
 	}
 
-	res, err := p.browser.CallE(&cdp.Request{
+	res, err := p.browser.Context(p.ctx).CallE(&cdp.Request{
 		Method: "Browser.getWindowBounds",
 		Params: cdp.Object{
 			"windowId": id,
@@ -140,7 +140,7 @@ func (p *Page) WindowE(bounds *cdp.Object) error {
 		return err
 	}
 
-	_, err = p.browser.CallE(&cdp.Request{
+	_, err = p.browser.Context(p.ctx).CallE(&cdp.Request{
 		Method: "Browser.setWindowBounds",
 		Params: cdp.Object{
 			"windowId": id,
@@ -284,7 +284,7 @@ func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 func (p *Page) WaitPageE() (func() (*Page, error), func()) {
 	var targetInfo gjson.Result
 
-	wait, cancel := p.browser.WaitEventE(func(e *cdp.Event) bool {
+	wait, cancel := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		if e.Method == "Target.targetCreated" {
 			targetInfo = e.Params.Get("targetInfo")
 
@@ -300,7 +300,7 @@ func (p *Page) WaitPageE() (func() (*Page, error), func()) {
 		if err != nil {
 			return nil, err
 		}
-		return p.browser.page(targetInfo.Get("targetId").String())
+		return p.browser.Context(p.ctx).page(targetInfo.Get("targetId").String())
 	}, cancel
 }
 
@@ -327,7 +327,7 @@ func (p *Page) WaitLoadE() error {
 
 // WaitEventE ...
 func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
-	return p.browser.WaitEventE(func(e *cdp.Event) bool {
+	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == p.SessionID && filter(e)
 	})
 }

@@ -161,10 +161,8 @@ func (l *Launcher) LaunchE() (string, error) {
 		l.UserDataDir(tmp)
 	}
 
-	cmd := leakless.New().Command(
-		bin,
-		l.ExecFormat()...,
-	)
+	ll := leakless.New()
+	cmd := ll.Command(bin, l.ExecFormat()...)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -178,7 +176,11 @@ func (l *Launcher) LaunchE() (string, error) {
 
 	u, err := readURL(stderr)
 	if err != nil {
-		_ = cmd.Process.Kill()
+		go func() {
+			p, err := os.FindProcess(<-ll.Pid())
+			kit.E(err)
+			kit.E(p.Kill())
+		}()
 		return "", err
 	}
 

@@ -8,6 +8,6 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/tidwall/gjson v1.3.5
 	github.com/ysmood/digto v1.5.6
-	github.com/ysmood/kit v0.21.0
-	github.com/ysmood/leakless v0.0.6
+	github.com/ysmood/kit v0.21.2
+	github.com/ysmood/leakless v0.1.1
 )

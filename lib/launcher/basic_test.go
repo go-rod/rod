@@ -1,6 +1,7 @@
 package launcher_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,4 +22,13 @@ func TestLaunch(t *testing.T) {
 	url, err := launcher.GetWebSocketDebuggerURL(url)
 	kit.E(err)
 	assert.NotEmpty(t, url)
+}
+
+func TestDownloadErr(t *testing.T) {
+	c := launcher.NewChrome()
+	c.ErrInjector.CountInject(1, errors.New("err"))
+	assert.Error(t, c.Download())
+
+	c.ErrInjector.CountInject(2, errors.New("err"))
+	assert.Error(t, c.Download())
 }

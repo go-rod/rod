@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"image/png"
@@ -233,4 +234,26 @@ func (s *S) TestPageOthers() {
 	defer p.Mouse.Up("left")
 	p.Mouse.Down("right")
 	defer p.Mouse.Up("right")
+}
+
+func (s *S) TestPageErrors() {
+	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	err := p.Context(ctx).NavigateE("")
+	s.Error(err)
+
+	err = p.Context(ctx).WindowE(nil)
+	s.Error(err)
+
+	_, _, err = p.Context(ctx).GetDownloadFileE("", "")
+	s.Error(err)
+
+	_, err = p.Context(ctx).ScreenshotE(nil)
+	s.Error(err)
+
+	err = p.Context(ctx).PauseE()
+	s.Error(err)
 }

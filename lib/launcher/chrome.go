@@ -26,6 +26,9 @@ type Chrome struct {
 
 	// Log to print output
 	Log func(string)
+
+	// ErrInjector for testing
+	ErrInjector *kit.ErrInjector
 }
 
 // NewChrome with default values
@@ -37,6 +40,7 @@ func NewChrome() *Chrome {
 		Log: func(str string) {
 			fmt.Print(str)
 		},
+		ErrInjector: &kit.ErrInjector{},
 	}
 }
 
@@ -68,11 +72,13 @@ func (lc *Chrome) Download() error {
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
 	err := kit.Mkdir(lc.Dir, nil)
+	err = lc.ErrInjector.E(err)
 	if err != nil {
 		return err
 	}
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	err = lc.ErrInjector.E(err)
 	if err != nil {
 		return err
 	}

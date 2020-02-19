@@ -290,7 +290,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := el.page.CallE("Page.getResourceContent", cdp.Object{
+	res, err := el.page.Context(el.ctx).CallE("Page.getResourceContent", cdp.Object{
 		"frameId": el.page.FrameID,
 		"url":     src.String(),
 	})
@@ -315,10 +315,10 @@ func (el *Element) ResourceE() ([]byte, error) {
 
 // ReleaseE ...
 func (el *Element) ReleaseE() error {
-	return el.page.ReleaseE(el.ObjectID)
+	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)
 }
 
 // EvalE ...
 func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
-	return el.page.EvalE(byValue, el.ObjectID, js, params)
+	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }

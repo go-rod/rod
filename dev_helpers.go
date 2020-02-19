@@ -6,8 +6,6 @@ package rod
 
 import (
 	"path/filepath"
-	"regexp"
-	"runtime"
 	"strings"
 	"time"
 
@@ -87,17 +85,8 @@ func (p *Page) Trace(msg string) {
 	CancelPanic(err)
 
 	time := time.Now().Format(time.RFC3339Nano)
-	name := escapePath(time + " " + msg)
+	name := kit.Escape(time + " " + msg)
 	path := filepath.Join(dir, name+".jpg")
 
 	kit.E(kit.OutputFile(path, img, nil))
-}
-
-var regEscapePath = regexp.MustCompile(`[<>:"/\|?*]`)
-
-func escapePath(p string) string {
-	if runtime.GOOS == "windows" {
-		return regEscapePath.ReplaceAllString(p, "_")
-	}
-	return p
 }
