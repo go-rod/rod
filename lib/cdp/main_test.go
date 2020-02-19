@@ -13,8 +13,6 @@ import (
 )
 
 func TestBasic(t *testing.T) {
-	cdp.Debug = true
-
 	ctx, done := context.WithCancel(context.Background())
 	defer done()
 
@@ -22,16 +20,12 @@ func TestBasic(t *testing.T) {
 
 	url := launcher.New().Launch()
 
-	client := cdp.New(url).Context(ctx).Cancel(done).Connect()
+	client := cdp.New(url).Context(ctx).Websocket(nil).Connect()
 
 	go func() {
 		for msg := range client.Event() {
 			ob.Publish(msg)
 		}
-	}()
-
-	defer func() {
-		kit.E(client.Call(ctx, &cdp.Request{Method: "Browser.close"}))
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
@@ -168,4 +162,76 @@ func TestError(t *testing.T) {
 	assert.Panics(t, func() {
 		cdp.New("").Connect()
 	})
+
+	assert.Panics(t, func() {
+		_, err := cdp.New("").Call(nil, nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestCrash(t *testing.T) {
+	l := launcher.New()
+
+	client := cdp.New(l.Launch()).Debug(true).Connect()
+
+	go func() {
+		for range client.Event() {
+		}
+	}()
+
+	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
+	kit.E(err)
+
+	res, err := client.Call(nil, &cdp.Request{
+		Method: "Target.createTarget",
+		Params: cdp.Object{
+			"url": "file://" + file,
+		},
+	})
+	kit.E(err)
+
+	targetID := res.Get("targetId").String()
+
+	res, err = client.Call(nil, &cdp.Request{
+		Method: "Target.attachToTarget",
+		Params: cdp.Object{
+			"targetId": targetID,
+			"flatten":  true,
+		},
+	})
+	kit.E(err)
+
+	sessionID := res.Get("sessionId").String()
+
+	_, err = client.Call(nil, &cdp.Request{
+		SessionID: sessionID,
+		Method:    "Page.enable",
+	})
+	kit.E(err)
+
+	_, err = client.Call(nil, &cdp.Request{
+		Method: "Target.attachToTarget",
+		Params: cdp.Object{
+			"targetId": "abc",
+		},
+	})
+	assert.Error(t, err)
+
+	go func() {
+		kit.Sleep(2)
+		_, _ = client.Call(nil, &cdp.Request{
+			SessionID: sessionID,
+			Method:    "Browser.crash",
+		})
+	}()
+
+	_, err = client.Call(nil, &cdp.Request{
+		SessionID: sessionID,
+		Method:    "Runtime.evaluate",
+		Params: cdp.Object{
+			"expression":   `new Promise(() => {})`,
+			"awaitPromise": true,
+		},
+	})
+	assert.Regexp(t, `websocket: close 1006 \(abnormal closure\)|forcibly closed by the remote host`, err.Error())
 }

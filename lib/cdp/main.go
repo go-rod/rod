@@ -3,29 +3,29 @@ package cdp
 import (
 	"context"
 	"encoding/json"
+	"os"
 
-	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
 // Client is a chrome devtools protocol connection instance.
-// To enable debug log, set env "debug_cdp=true".
 type Client struct {
-	ctx  context.Context
-	url  string
-	conn *websocket.Conn
+	ctx          context.Context
+	ctxCancel    func()
+	ctxCancelErr error
 
-	requests map[uint64]*Request
-	chReq    chan *Request
-	chRes    chan *Response
-	chEvent  chan *Event
+	url string
+	ws  Websocketable
 
-	count  uint64
-	cancel func()
+	callbacks map[uint64]chan *response
+	chReqMsg  chan *requestMsg
+	chRes     chan *response
+	chEvent   chan *Event
 
-	readBufferSize  int
-	writeBufferSize int
+	count uint64
+
+	debug bool
 }
 
 // Request to send to chrome
@@ -34,27 +34,6 @@ type Request struct {
 	SessionID string      `json:"sessionId,omitempty"`
 	Method    string      `json:"method"`
 	Params    interface{} `json:"params,omitempty"`
-
-	callback chan *Response
-}
-
-// Response from chrome
-type Response struct {
-	ID     uint64 `json:"id"`
-	Result *JSON  `json:"result,omitempty"`
-	Error  *Error `json:"error,omitempty"`
-}
-
-// Error of the Response
-type Error struct {
-	Code    int64  `json:"code"`
-	Message string `json:"message"`
-	Data    string `json:"data"`
-}
-
-// Error interface
-func (e *Error) Error() string {
-	return kit.MustToJSON(e)
 }
 
 // Event from chrome
@@ -64,34 +43,41 @@ type Event struct {
 	Params    *JSON  `json:"params,omitempty"`
 }
 
-// JSON helper
-type JSON struct {
-	kit.JSONResult
+// Error of the Response
+type Error struct {
+	Code    int64  `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data"`
 }
 
-// UnmarshalJSON interface
-func (j *JSON) UnmarshalJSON(data []byte) error {
-	j.JSONResult = kit.JSON(data)
-	return nil
+// Websocketable enables you to choose the websocket lib you want to use.
+// By default cdp use github.com/gorilla/websocket
+type Websocketable interface {
+	// Send text message only
+	Send([]byte) error
+	// Read returns text message only
+	Read() ([]byte, error)
 }
 
-// Object is the json object
-type Object map[string]interface{}
-
-// Array is the json array
-type Array []interface{}
+// Error interface
+func (e *Error) Error() string {
+	return kit.MustToJSON(e)
+}
 
 // New creates a cdp connection, the url should be something like http://localhost:9222.
 // All messages from Client.Event must be received or they will block the client.
 func New(url string) *Client {
+	ctx, cancel := context.WithCancel(context.Background())
+
 	cdp := &Client{
-		ctx:      context.Background(),
-		url:      url,
-		requests: map[uint64]*Request{},
-		chReq:    make(chan *Request),
-		chRes:    make(chan *Response),
-		chEvent:  make(chan *Event),
-		cancel:   func() {},
+		ctx:       ctx,
+		ctxCancel: cancel,
+		url:       url,
+		callbacks: map[uint64]chan *response{},
+		chReqMsg:  make(chan *requestMsg),
+		chRes:     make(chan *response),
+		chEvent:   make(chan *Event),
+		debug:     os.Getenv("debug_cdp") == "true",
 	}
 
 	return cdp
@@ -99,20 +85,21 @@ func New(url string) *Client {
 
 // Context set the context
 func (cdp *Client) Context(ctx context.Context) *Client {
+	ctx, cancel := context.WithCancel(ctx)
 	cdp.ctx = ctx
+	cdp.ctxCancel = cancel
 	return cdp
 }
 
-// Cancel set the cancel callback
-func (cdp *Client) Cancel(fn func()) *Client {
-	cdp.cancel = fn
+// Websocket set the websocket lib to use
+func (cdp *Client) Websocket(ws Websocketable) *Client {
+	cdp.ws = ws
 	return cdp
 }
 
-// Buffer set the read and write buffer for websocket
-func (cdp *Client) Buffer(read, write int) *Client {
-	cdp.readBufferSize = read
-	cdp.writeBufferSize = write
+// Debug is the flag to enable debug log to stdout. Default value is env var "debug_cdp=true"
+func (cdp *Client) Debug(enable bool) *Client {
+	cdp.debug = enable
 	return cdp
 }
 
@@ -121,118 +108,135 @@ func (cdp *Client) Connect() *Client {
 	wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.url)
 	kit.E(err)
 
-	dialer := *websocket.DefaultDialer
-	dialer.ReadBufferSize = cdp.readBufferSize
-	dialer.WriteBufferSize = cdp.writeBufferSize
-
-	if dialer.ReadBufferSize == 0 {
-		dialer.ReadBufferSize = 25 * 1024 * 1024
-	}
-	if dialer.WriteBufferSize == 0 {
-		dialer.WriteBufferSize = 10 * 1024 * 1024
+	if cdp.ws == nil {
+		cdp.ws = newDefaultWsClient(cdp.ctx, wsURL)
 	}
 
-	conn, _, err := dialer.DialContext(cdp.ctx, wsURL, nil)
-	kit.E(err)
+	go cdp.consumeMsg()
 
-	cdp.conn = conn
-
-	go cdp.close()
-
-	go cdp.handleReq()
-
-	go cdp.handleRes()
+	go cdp.readMsgFromChrome()
 
 	return cdp
 }
 
-func (cdp *Client) handleReq() {
-	for {
-		select {
-		case <-cdp.ctx.Done():
-			return
-
-		case req := <-cdp.chReq:
-			req.ID = cdp.id()
-			data, err := json.Marshal(req)
-			checkPanic(err)
-			debug(req)
-			err = cdp.conn.WriteMessage(websocket.TextMessage, data)
-			checkPanic(err)
-			cdp.requests[req.ID] = req
-
-		case res := <-cdp.chRes:
-			req, has := cdp.requests[res.ID]
-			if has {
-				delete(cdp.requests, res.ID)
-				req.callback <- res
-			}
-		}
+// Call a method and get its response, if ctx is nil context.Background() will be used
+func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, err error) {
+	if ctx == nil {
+		ctx = context.Background()
 	}
+
+	req.ID = cdp.id()
+
+	data, err := json.Marshal(req)
+	kit.E(err)
+
+	cdp.debugLog(req)
+
+	callback := make(chan *response)
+
+	cdp.chReqMsg <- &requestMsg{
+		request:  req,
+		callback: callback,
+		data:     data,
+	}
+
+	select {
+	case data := <-callback:
+		if data.Error != nil {
+			return nil, data.Error
+		}
+		return data.Result.JSONResult, nil
+
+	case <-cdp.ctx.Done():
+		if cdp.ctxCancelErr != nil {
+			err = cdp.ctxCancelErr
+		} else {
+			err = cdp.ctx.Err()
+		}
+
+	case <-ctx.Done():
+		err = ctx.Err()
+
+		// to prevent req from leaking
+		cdp.chRes <- &response{ID: req.ID}
+		<-callback
+	}
+
+	return
 }
 
-func (cdp *Client) handleRes() {
-	for cdp.ctx.Err() == nil {
-		msgType, data, err := cdp.conn.ReadMessage()
-		if err != nil {
-			debug(err)
-			cdp.cancel()
-			return
-		}
-
-		if msgType == websocket.TextMessage {
-			if kit.JSON(data).Get("id").Exists() {
-				var res Response
-				err = json.Unmarshal(data, &res)
-				checkPanic(err)
-				debug(&res)
-				cdp.chRes <- &res
-			} else {
-				var e Event
-				err = json.Unmarshal(data, &e)
-				debug(&e)
-				cdp.chEvent <- &e
-			}
-		}
-	}
-}
-
-// Event will emit chrome devtools protocol events
+// Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
 func (cdp *Client) Event() chan *Event {
 	return cdp.chEvent
 }
 
-// Call a method and get its response
-func (cdp *Client) Call(ctx context.Context, req *Request) (kit.JSONResult, error) {
-	req.callback = make(chan *Response)
-
-	cdp.chReq <- req
-
-	select {
-	case <-ctx.Done():
-		// to prevent req from leaking
-		cdp.chRes <- &Response{ID: req.ID}
-		<-req.callback
-
-		return nil, ctx.Err()
-
-	case res := <-req.callback:
-		if res.Error != nil {
-			return nil, res.Error
-		}
-		return res.Result.JSONResult, nil
-	}
-}
-
+// for a client each request id is unique
 func (cdp *Client) id() uint64 {
 	cdp.count++
 	return cdp.count
 }
 
-func (cdp *Client) close() {
-	<-cdp.ctx.Done()
-	err := cdp.conn.Close()
-	if !isClosedErr(err) {
-		checkPanic(err)
+type requestMsg struct {
+	request  *Request
+	data     []byte
+	callback chan *response
+}
+
+// consume messages from client and chrome
+func (cdp *Client) consumeMsg() {
+	for {
+		select {
+		case msg := <-cdp.chReqMsg:
+			err := cdp.ws.Send(msg.data)
+			if err != nil {
+				cdp.close(err)
+				return
+			}
+			cdp.callbacks[msg.request.ID] = msg.callback
+
+		case res := <-cdp.chRes:
+			callback, has := cdp.callbacks[res.ID]
+			if has {
+				delete(cdp.callbacks, res.ID)
+				callback <- res
+			}
+		}
 	}
+}
+
+// response from chrome
+type response struct {
+	ID     uint64 `json:"id"`
+	Result *JSON  `json:"result,omitempty"`
+	Error  *Error `json:"error,omitempty"`
+}
+
+func (cdp *Client) readMsgFromChrome() {
+	for {
+		data, err := cdp.ws.Read()
+		if err != nil {
+			cdp.close(err)
+			return
+		}
+
+		if kit.JSON(data).Get("id").Exists() {
+			var res response
+			err := json.Unmarshal(data, &res)
+			kit.E(err)
+			cdp.debugLog(&res)
+			cdp.chRes <- &res
+		} else {
+			var evt Event
+			err := json.Unmarshal(data, &evt)
+			kit.E(err)
+			cdp.debugLog(&evt)
+			cdp.chEvent <- &evt
+		}
+	}
+}
+
+func (cdp *Client) close(err error) {
+	cdp.debugLog(err)
+	cdp.ctxCancelErr = err
+	cdp.ctxCancel()
 }

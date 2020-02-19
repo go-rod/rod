@@ -19,8 +19,8 @@ type Browser struct {
 	trace      bool
 
 	ctx           context.Context
+	ctxCancel     func()
 	timeoutCancel func()
-	close         func()
 	client        *cdp.Client
 	event         *kit.Observable
 }
@@ -35,7 +35,7 @@ func (b *Browser) Context(ctx context.Context) *Browser {
 	ctx, cancel := context.WithCancel(ctx)
 	newObj := *b
 	newObj.ctx = ctx
-	newObj.close = cancel
+	newObj.ctxCancel = cancel
 	return &newObj
 }
 
@@ -76,7 +76,7 @@ func (b *Browser) ConnectE() error {
 	if b.ctx == nil {
 		ctx, cancel := context.WithCancel(context.Background())
 		b.ctx = ctx
-		b.close = cancel
+		b.ctxCancel = cancel
 	}
 
 	if _, err := launcher.GetWebSocketDebuggerURL(b.controlURL); err != nil {
@@ -87,7 +87,7 @@ func (b *Browser) ConnectE() error {
 		b.controlURL = u
 	}
 
-	b.client = cdp.New(b.controlURL).Context(b.ctx).Cancel(b.close).Connect()
+	b.client = cdp.New(b.controlURL).Context(b.ctx).Connect()
 
 	return b.initEvents()
 }
@@ -99,8 +99,8 @@ func (b *Browser) CloseE() error {
 		return err
 	}
 
-	if b.close != nil {
-		b.close()
+	if b.ctxCancel != nil {
+		b.ctxCancel()
 	}
 
 	return nil
