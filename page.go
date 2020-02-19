@@ -343,6 +343,9 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 			if p.windowObjectID == "" {
 				err := p.initJS()
 				if err != nil {
+					if isNilContextErr(err) {
+						return false, nil
+					}
 					return true, err
 				}
 			}
@@ -365,8 +368,7 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 		res, err = p.CallE("Runtime.callFunctionOn", params)
 
 		if thisID == "" {
-			cdpErr, ok := err.(*cdp.Error)
-			if ok && cdpErr.Code == -32000 {
+			if isNilContextErr(err) {
 				_ = p.initJS()
 				return false, nil
 			}

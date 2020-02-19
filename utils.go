@@ -34,3 +34,11 @@ func Method(name string) EventFilter {
 		return name == e.Method
 	}
 }
+
+func isNilContextErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	cdpErr, ok := err.(*cdp.Error)
+	return ok && cdpErr.Code == -32000
+}
