@@ -79,8 +79,8 @@ func (b *Browser) ConnectE() error {
 		b.ctxCancel = cancel
 	}
 
-	if _, err := launcher.GetWebSocketDebuggerURL(b.controlURL); err != nil {
-		u, err := launcher.New().LaunchE()
+	if _, err := launcher.GetWebSocketDebuggerURL(b.ctx, b.controlURL); err != nil {
+		u, err := launcher.New().Context(b.ctx).LaunchE()
 		if err != nil {
 			return err
 		}

@@ -18,6 +18,7 @@ import (
 
 // Launcher chrome cli flags helper
 type Launcher struct {
+	ctx   context.Context
 	bin   string
 	flags map[string][]string
 }
@@ -64,8 +65,15 @@ func New() *Launcher {
 	}
 
 	return &Launcher{
+		ctx:   context.Background(),
 		flags: defaultFlags,
 	}
+}
+
+// Context set the context
+func (l *Launcher) Context(ctx context.Context) *Launcher {
+	l.ctx = ctx
+	return l
 }
 
 // Has flag
@@ -174,7 +182,7 @@ func (l *Launcher) LaunchE() (string, error) {
 		return "", err
 	}
 
-	u, err := readURL(stderr)
+	u, err := ReadURL(l.ctx, stderr)
 	if err != nil {
 		go func() {
 			p, err := os.FindProcess(<-ll.Pid())
@@ -187,7 +195,8 @@ func (l *Launcher) LaunchE() (string, error) {
 	return u, nil
 }
 
-func readURL(stderr io.ReadCloser) (string, error) {
+// ReadURL from chrome stderr
+func ReadURL(ctx context.Context, stderr io.ReadCloser) (string, error) {
 	buf := make([]byte, 100)
 	str := ""
 	out := ""
@@ -209,7 +218,7 @@ func readURL(stderr io.ReadCloser) (string, error) {
 		}
 	}
 
-	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
+	timeout, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
 
 	go read()
@@ -228,8 +237,8 @@ func readURL(stderr io.ReadCloser) (string, error) {
 	return "http://" + u.Host, nil
 }
 
-// GetWebSocketDebuggerURL ...
-func GetWebSocketDebuggerURL(url string) (string, error) {
+// GetWebSocketDebuggerURL from chrome remote url
+func GetWebSocketDebuggerURL(ctx context.Context, url string) (string, error) {
 	u, err := nurl.Parse(url)
 	if err != nil {
 		return "", err
@@ -244,7 +253,7 @@ func GetWebSocketDebuggerURL(url string) (string, error) {
 
 	u.Path = "/json/version"
 
-	obj, err := kit.Req(u.String()).JSON()
+	obj, err := kit.Req(u.String()).Context(ctx).JSON()
 	if err != nil {
 		return "", err
 	}

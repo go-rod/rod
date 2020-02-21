@@ -1,6 +1,8 @@
 package launcher
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -15,8 +17,10 @@ import (
 
 // Chrome to smartly launch chrome
 type Chrome struct {
+	Context context.Context
+
 	// Host default is https://storage.googleapis.com
-	Host string
+	Hosts []string
 
 	// Revision of the chrome to use
 	Revision int
@@ -26,21 +30,18 @@ type Chrome struct {
 
 	// Log to print output
 	Log func(string)
-
-	// ErrInjector for testing
-	ErrInjector *kit.ErrInjector
 }
 
 // NewChrome with default values
 func NewChrome() *Chrome {
 	return &Chrome{
+		Context:  context.Background(),
 		Revision: 722234,
-		Host:     "https://storage.googleapis.com",
+		Hosts:    []string{"https://storage.googleapis.com", "https://npm.taobao.org/mirrors"},
 		Dir:      filepath.Join(os.TempDir(), "cdp"),
 		Log: func(str string) {
 			fmt.Print(str)
 		},
-		ErrInjector: &kit.ErrInjector{},
 	}
 }
 
@@ -66,24 +67,34 @@ func (lc *Chrome) Download() error {
 		"windows": {"chrome-win.zip", "Win"},
 	}[runtime.GOOS]
 
-	u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", lc.Host, conf.urlPrefix, lc.Revision, conf.zipName)
+	for _, host := range lc.Hosts {
+		u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, lc.Revision, conf.zipName)
+		err := lc.download(u)
+		if err != nil {
+			kit.Log("[rod/lib/launcher]", err)
+			continue
+		}
+		return nil
+	}
+	return errors.New("[rod/lib/launcher] failed to download chrome")
+}
+
+func (lc *Chrome) download(u string) error {
 	lc.Log("[rod/lib/launcher] Download chromium from: " + u + "\n[rod/lib/launcher] ")
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
 	err := kit.Mkdir(lc.Dir, nil)
-	err = lc.ErrInjector.E(err)
 	if err != nil {
 		return err
 	}
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
-	err = lc.ErrInjector.E(err)
 	if err != nil {
 		return err
 	}
 
-	res, err := kit.Req(u).Response()
+	res, err := kit.Req(u).Context(lc.Context).Response()
 	if err != nil {
 		return err
 	}

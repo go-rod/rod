@@ -105,7 +105,7 @@ func (cdp *Client) Debug(enable bool) *Client {
 
 // Connect to chrome
 func (cdp *Client) Connect() *Client {
-	wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.url)
+	wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.ctx, cdp.url)
 	kit.E(err)
 
 	if cdp.ws == nil {
