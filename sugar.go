@@ -49,7 +49,7 @@ func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func())
 
 // Call sends a control message to browser
 func (b *Browser) Call(req *cdp.Request) kit.JSONResult {
-	res, err := b.CallE(req)
+	res, err := b.CallE(nil, req)
 	kit.E(err)
 	return res
 }
@@ -167,7 +167,7 @@ func (p *Page) Release(objectID string) *Page {
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
 func (p *Page) Call(method string, params interface{}) kit.JSONResult {
-	res, err := p.CallE(method, params)
+	res, err := p.CallE(nil, method, params)
 	kit.E(err)
 	return res
 }

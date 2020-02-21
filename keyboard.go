@@ -24,7 +24,7 @@ func (k *Keyboard) DownE(key rune) error {
 	k.Lock()
 	defer k.Unlock()
 
-	_, err := k.page.CallE("Input.dispatchKeyEvent", actions[0])
+	_, err := k.page.CallE(nil, "Input.dispatchKeyEvent", actions[0])
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func (k *Keyboard) UpE(key rune) error {
 	k.Lock()
 	defer k.Unlock()
 
-	_, err := k.page.CallE("Input.dispatchKeyEvent", actions[len(actions)-1])
+	_, err := k.page.CallE(nil, "Input.dispatchKeyEvent", actions[len(actions)-1])
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (k *Keyboard) PressE(key rune) error {
 	defer func() { k.modifiers = 0 }()
 
 	for _, action := range actions {
-		_, err := k.page.CallE("Input.dispatchKeyEvent", action)
+		_, err := k.page.CallE(nil, "Input.dispatchKeyEvent", action)
 		if err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ func (k *Keyboard) Press(key rune) {
 
 // InsertTextE ...
 func (k *Keyboard) InsertTextE(text string) error {
-	_, err := k.page.CallE("Input.insertText", cdp.Object{
+	_, err := k.page.CallE(nil, "Input.insertText", cdp.Object{
 		"text": text,
 	})
 	return err

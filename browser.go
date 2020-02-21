@@ -94,7 +94,7 @@ func (b *Browser) ConnectE() error {
 
 // CloseE ...
 func (b *Browser) CloseE() error {
-	_, err := b.CallE(&cdp.Request{Method: "Browser.close"})
+	_, err := b.CallE(nil, &cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func (b *Browser) CloseE() error {
 
 // PageE ...
 func (b *Browser) PageE(url string) (*Page, error) {
-	target, err := b.CallE(&cdp.Request{
+	target, err := b.CallE(nil, &cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "about:blank",
@@ -133,7 +133,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 
 // PagesE ...
 func (b *Browser) PagesE() ([]*Page, error) {
-	list, err := b.CallE(&cdp.Request{Method: "Target.getTargets"})
+	list, err := b.CallE(nil, &cdp.Request{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
@@ -176,10 +176,14 @@ func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), fu
 }
 
 // CallE sends a control message to browser
-func (b *Browser) CallE(req *cdp.Request) (kit.JSONResult, error) {
+func (b *Browser) CallE(ctx context.Context, req *cdp.Request) (kit.JSONResult, error) {
 	b.trySlowmotion(req.Method)
 
-	return b.client.Call(b.ctx, req)
+	if ctx == nil {
+		ctx = b.ctx
+	}
+
+	return b.client.Call(ctx, req)
 }
 
 // Event returns the observable for browser events
@@ -211,7 +215,7 @@ func (b *Browser) initEvents() error {
 		}
 	}()
 
-	_, err := b.CallE(&cdp.Request{
+	_, err := b.CallE(nil, &cdp.Request{
 		Method: "Target.setDiscoverTargets",
 		Params: cdp.Object{"discover": true},
 	})

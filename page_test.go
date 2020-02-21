@@ -171,7 +171,7 @@ func (s *S) TestPagePause() {
 	kit.Sleep(0.03)
 	go s.page.Eval(`() => 10`)
 	kit.Sleep(0.03)
-	kit.E(s.page.CallE("Debugger.resume", nil))
+	kit.E(s.page.CallE(nil, "Debugger.resume", nil))
 }
 
 func (s *S) TestPageScreenshot() {

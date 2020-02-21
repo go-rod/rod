@@ -40,7 +40,7 @@ func (m *Mouse) MoveE(x, y, steps int64) error {
 		toX := m.x + stepX
 		toY := m.y + stepY
 
-		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
+		_, err := m.page.CallE(nil, "Input.dispatchMouseEvent", cdp.Object{
 			"type":      "mouseMoved",
 			"x":         toX,
 			"y":         toY,
@@ -77,7 +77,7 @@ func (m *Mouse) ScrollE(x, y, steps int64) error {
 	stepY := (y - m.y) / steps
 
 	for i := int64(0); i < steps; i++ {
-		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
+		_, err := m.page.CallE(nil, "Input.dispatchMouseEvent", cdp.Object{
 			"type":      "mouseMoved",
 			"x":         m.x,
 			"y":         m.y,
@@ -109,7 +109,7 @@ func (m *Mouse) DownE(button string, clicks int64) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
+	_, err := m.page.CallE(nil, "Input.dispatchMouseEvent", cdp.Object{
 		"type":       "mousePressed",
 		"button":     button,
 		"buttons":    buttons,
@@ -145,7 +145,7 @@ func (m *Mouse) UpE(button string, clicks int64) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
+	_, err := m.page.CallE(nil, "Input.dispatchMouseEvent", cdp.Object{
 		"type":       "mouseReleased",
 		"button":     button,
 		"buttons":    buttons,
