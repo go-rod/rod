@@ -319,6 +319,14 @@ func (p *Page) PauseE() error {
 	return err
 }
 
+// WaitIdleE ...
+func (p *Page) WaitIdleE() error {
+	d, _ := p.ctx.Deadline()
+	timeout := d.Sub(time.Now()).Milliseconds()
+	_, err := p.EvalE(true, "", p.jsFn("waitIdle"), []interface{}{timeout})
+	return err
+}
+
 // WaitLoadE ...
 func (p *Page) WaitLoadE() error {
 	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
@@ -333,6 +341,7 @@ func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func(
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
+// Set the byValue to true to reduce memory occupation.
 func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := thisID

@@ -138,6 +138,12 @@ func (p *Page) Pause() *Page {
 	return p
 }
 
+// WaitIdle wait until the next window.requestIdleCallback is called.
+func (p *Page) WaitIdle() *Page {
+	kit.E(p.WaitIdleE())
+	return p
+}
+
 // WaitLoad wait until the `window.onload` is complete, resolve immediately if already fired.
 func (p *Page) WaitLoad() *Page {
 	kit.E(p.WaitLoadE())

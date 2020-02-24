@@ -79,6 +79,14 @@ func (s *S) TestUntilPage() {
 	wait()
 }
 
+func (s *S) TestPageWaitIdle() {
+	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p.Element("button").Click()
+	p.WaitIdle()
+
+	s.True(p.Has("[a=ok]"))
+}
+
 func (s *S) TestPageWaitEvent() {
 	wait, cancel := s.page.WaitEvent("Page.frameNavigated")
 	defer cancel()
@@ -105,14 +113,9 @@ func (s *S) TestDownloadFile() {
 	content := "test content"
 
 	srv.Engine.GET("/d", func(ctx kit.GinContext) {
-		ctx.Writer.WriteHeader(200)
 		kit.E(ctx.Writer.Write([]byte(content)))
 	})
-	srv.Engine.GET("/", func(ctx kit.GinContext) {
-		ctx.Header("Content-Type", "text/html;")
-		data := []byte(fmt.Sprintf(`<html><a href="//%s/d" download>click</a></html>`, host))
-		kit.E(ctx.Writer.Write(data))
-	})
+	srv.Engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="//%s/d" download>click</a></html>`, host)))
 
 	go func() { kit.Noop(srv.Do()) }()
 

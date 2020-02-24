@@ -65,6 +65,12 @@ var Rod = `
       el && el.remove()
     },
 
+    waitIdle (timeout) {
+      return new Promise((resolve) => {
+        window.requestIdleCallback(resolve, { timeout })
+      })
+    },
+
     waitLoad () {
       return new Promise((resolve) => {
         if (document.readyState === 'complete') return resolve()

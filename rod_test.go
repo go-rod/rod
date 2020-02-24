@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
@@ -29,6 +30,13 @@ func file(path string) string {
 	f, err := filepath.Abs(filepath.FromSlash(path))
 	kit.E(err)
 	return f
+}
+
+func ginHTML(body string) gin.HandlerFunc {
+	return func(ctx kit.GinContext) {
+		ctx.Header("Content-Type", "text/html;")
+		kit.E(ctx.Writer.Write([]byte(body)))
+	}
 }
 
 func Test(t *testing.T) {
