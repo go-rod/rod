@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"time"
 
 	"github.com/mholt/archiver"
 	"github.com/ysmood/kit"
@@ -94,7 +96,9 @@ func (lc *Chrome) download(u string) error {
 		return err
 	}
 
-	res, err := kit.Req(u).Context(lc.Context).Response()
+	res, err := kit.Req(u).Context(lc.Context).Client(&http.Client{
+		Transport: &http.Transport{IdleConnTimeout: 30 * time.Second},
+	}).Response()
 	if err != nil {
 		return err
 	}
