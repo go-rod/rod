@@ -141,6 +141,12 @@ func (p *Page) Pause() *Page {
 	return p
 }
 
+// WaitRequestIdle wait until the page doesn't send request for 300ms
+func (p *Page) WaitRequestIdle() (wait func(), cancel func()) {
+	w, c := p.WaitRequestIdleE(300 * time.Millisecond)
+	return func() { kit.E(w()) }, c
+}
+
 // WaitIdle wait until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle() *Page {
 	kit.E(p.WaitIdleE())

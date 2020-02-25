@@ -36,6 +36,7 @@ type Page struct {
 
 	timeoutCancel       func()
 	getDownloadFileLock *sync.Mutex
+	networkEnableLock   *sync.Mutex
 
 	traceDir string
 }
@@ -319,11 +320,50 @@ func (p *Page) PauseE() error {
 	return err
 }
 
+// WaitRequestIdleE wait until the page doesn't send request for the specified duration
+func (p *Page) WaitRequestIdleE(d time.Duration) (func() error, func()) {
+	p.networkEnableLock.Lock()
+	p.Call("Network.enable", nil)
+
+	ctx, cancel := context.WithCancel(p.ctx)
+	s := p.browser.Event().Subscribe()
+
+	wait := func() (err error) {
+		defer p.networkEnableLock.Unlock()
+		defer func() { _, err = p.CallE(p.ctx, "Network.disable", nil) }()
+		defer p.browser.Event().Unsubscribe(s)
+
+		reqList := map[string]kit.Nil{}
+		timeout := time.NewTimer(d)
+
+		for {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-timeout.C:
+				return
+			case msg := <-s.C:
+				e := msg.(*cdp.Event)
+				switch e.Method {
+				case "Network.requestWillBeSent":
+					timeout.Stop()
+					reqList[e.Params.Get("requestId").String()] = kit.Nil{}
+				case "Network.loadingFinished", "Network.loadingFailed":
+					delete(reqList, e.Params.Get("requestId").String())
+					if len(reqList) == 0 {
+						timeout.Reset(d)
+					}
+				}
+			}
+		}
+	}
+
+	return wait, cancel
+}
+
 // WaitIdleE ...
-func (p *Page) WaitIdleE() error {
-	d, _ := p.ctx.Deadline()
-	timeout := d.Sub(time.Now()).Milliseconds()
-	_, err := p.EvalE(true, "", p.jsFn("waitIdle"), []interface{}{timeout})
+func (p *Page) WaitIdleE() (err error) {
+	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), nil)
 	return err
 }
 

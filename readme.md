@@ -19,7 +19,7 @@ Rod also tries to expose low-level interfaces to users, so that whenever a funct
 - Debug friendly, auto input trace, and screenshots
 - Automatically find or download chrome
 - No external dependencies, CI tested on Linux, Mac, and Windows
-- High-level helpers like WaitStable, GetDownloadFile, Resource
+- High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
 - No zombie chrome process after crash ([how it works](https://github.com/ysmood/leakless))

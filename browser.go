@@ -157,7 +157,7 @@ func (b *Browser) PagesE() ([]*Page, error) {
 // EventFilter to filter events
 type EventFilter func(*cdp.Event) bool
 
-// WaitEventE ...
+// WaitEventE returns wait and cancel methods
 func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
 	ctx, cancel := context.WithCancel(b.ctx)
 	var event *cdp.Event
@@ -197,6 +197,7 @@ func (b *Browser) page(targetID string) (*Page, error) {
 		browser:             b,
 		TargetID:            targetID,
 		getDownloadFileLock: &sync.Mutex{},
+		networkEnableLock:   &sync.Mutex{},
 	}
 
 	page.Mouse = &Mouse{page: page}

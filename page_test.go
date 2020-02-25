@@ -79,6 +79,29 @@ func (s *S) TestUntilPage() {
 	wait()
 }
 
+func (s *S) TestPageWaitRequestIdle() {
+	srv := kit.MustServer("127.0.0.1:0")
+	defer func() { kit.E(srv.Listener.Close()) }()
+
+	host := srv.Listener.Addr().String()
+
+	srv.Engine.GET("/r", func(ctx kit.GinContext) { kit.Sleep(1) })
+	srv.Engine.GET("/", ginHTML(`<html><button onclick="fetch('/r').then(r => r.text().then(t => t))">click</button></html>`))
+
+	go func() { kit.Noop(srv.Do()) }()
+
+	page := s.page.Navigate("http://" + host)
+
+	page.Call("Network.enable", nil)
+
+	wait, cancel := page.WaitRequestIdle()
+	defer cancel()
+	page.Element("button").Click()
+	start := time.Now()
+	wait()
+	s.True(time.Now().Sub(start) > time.Second)
+}
+
 func (s *S) TestPageWaitIdle() {
 	p := s.page.Navigate(htmlFile("fixtures/click.html"))
 	p.Element("button").Click()
