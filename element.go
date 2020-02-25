@@ -140,6 +140,16 @@ func (el *Element) PressE(key rune) error {
 	return el.page.Keyboard.PressE(key)
 }
 
+// SelectTextE ...
+func (el *Element) SelectTextE(regex string) error {
+	err := el.FocusE()
+	if err != nil {
+		return err
+	}
+	_, err = el.EvalE(true, el.page.jsFn("selectText"), regex)
+	return err
+}
+
 // InputE ...
 func (el *Element) InputE(text string) error {
 	err := el.WaitVisibleE()

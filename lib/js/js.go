@@ -97,6 +97,13 @@ var Rod = `
       this.dispatchEvent(new Event('change', { bubbles: true }))
     },
 
+    selectText (pattern) {
+      const m = this.value.match(new RegExp(pattern))
+      if (m) {
+        this.setSelectionRange(m.index, m.index + m[0].length)
+      }
+    },
+
     select (selectors) {
       selectors.forEach(s => {
         Array.from(this.options).forEach(el => {

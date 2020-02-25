@@ -283,6 +283,18 @@ func (el *Element) Press(key rune) *Element {
 	return el
 }
 
+// SelectText selects the text that matches the regular expression
+func (el *Element) SelectText(regex string) *Element {
+	kit.E(el.SelectTextE(regex))
+	return el
+}
+
+// SelectAllText selects all text
+func (el *Element) SelectAllText() *Element {
+	kit.E(el.SelectTextE(`[\s\S]*`))
+	return el
+}
+
 // Input wll click the element and input the text
 func (el *Element) Input(text string) *Element {
 	kit.E(el.InputE(text))
