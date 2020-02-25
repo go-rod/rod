@@ -7,6 +7,7 @@ import (
 	digto "github.com/ysmood/digto/client"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/launcher"
 )
@@ -98,6 +99,28 @@ func Example_customize_chrome_launch() {
 	fmt.Println(el.Text())
 
 	// Output: Wikipedia
+}
+
+// Useful when rod doesn't have the function you want, you can call the cdp interface directly easily.
+func Example_direct_cdp() {
+	browser := rod.New().Connect()
+	defer browser.Close()
+
+	page := browser.Page("about:blank").Timeout(time.Minute)
+
+	// set the cookie before we visit the website
+	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+	page.Call("Network.setCookie", &cdp.Object{
+		"name":  "rod",
+		"value": "test",
+		"url":   "https://www.wikipedia.org",
+	})
+
+	page.Navigate("https://www.wikipedia.org/").WaitLoad()
+
+	fmt.Println(page.Eval(`() => document.cookie`).String()[:9])
+
+	// Output: rod=test;
 }
 
 // An example to handle 3DS stripe callback.

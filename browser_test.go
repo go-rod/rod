@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
 )
 
 func (s *S) TestBrowserPages() {
@@ -26,9 +25,7 @@ func (s *S) TestBrowserWaitEvent() {
 }
 
 func (s *S) TestBrowserCall() {
-	v := s.browser.Call(&cdp.Request{
-		Method: "Browser.getVersion",
-	})
+	v := s.browser.Call("Browser.getVersion", nil)
 
 	s.Regexp("HeadlessChrome", v.Get("product").String())
 }

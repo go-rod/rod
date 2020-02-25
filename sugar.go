@@ -48,8 +48,11 @@ func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func())
 }
 
 // Call sends a control message to browser
-func (b *Browser) Call(req *cdp.Request) kit.JSONResult {
-	res, err := b.CallE(nil, req)
+func (b *Browser) Call(method string, params interface{}) kit.JSONResult {
+	res, err := b.CallE(nil, &cdp.Request{
+		Method: method,
+		Params: params,
+	})
 	kit.E(err)
 	return res
 }
@@ -156,9 +159,8 @@ func (p *Page) WaitEvent(name string) (wait func(), cancel func()) {
 	return func() { kit.E(w()) }, c
 }
 
-// Eval js under sessionID or contextId, if contextId doesn't exist create a new isolatedWorld.
-// The first param must be a js function definition.
-// For example: page.Eval(`s => document.querySelectorAll(s)`, "input")
+// Eval js on the page. The first param must be a js function definition.
+// For example page.Eval(`n => n + 1`, 1) will return 2
 func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
 	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
