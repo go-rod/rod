@@ -12,7 +12,7 @@ func main() {
 	dir := filepath.FromSlash("lib/js")
 	path := filepath.FromSlash(dir + "/rod.js")
 
-	kit.Exec("eslint", "--fix", ".").Dir(dir).MustDo()
+	kit.Exec("node_modules/.bin/eslint", "--fix", ".").Dir(dir).MustDo()
 
 	js, err := kit.ReadString(path)
 	kit.E(err)

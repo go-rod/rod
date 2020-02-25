@@ -111,7 +111,7 @@ var Rod = `
       this.dispatchEvent(new Event('change', { bubbles: true }))
     },
 
-    waitVisible () {
+    visible () {
       const box = this.getBoundingClientRect()
       const style = window.getComputedStyle(this)
       return style.display !== 'none' &&
@@ -119,10 +119,8 @@ var Rod = `
         !!(box.top || box.bottom || box.width || box.height)
     },
 
-    waitInvisible () {
-      const box = this.getBoundingClientRect()
-      return window.getComputedStyle(this).visibility === 'hidden' ||
-        !(box.top || box.bottom || box.width || box.height)
+    invisible () {
+      return !rod.visible.apply(this)
     },
 
     box () {

@@ -112,6 +112,8 @@ func (s *S) TestWaitInvisible() {
 	btn := p.Element("button")
 	timeout := 3 * time.Second
 
+	s.True(h4.Visible())
+
 	h4t := h4.Timeout(timeout)
 	h4t.WaitVisible()
 	h4t.CancelTimeout()

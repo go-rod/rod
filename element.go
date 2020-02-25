@@ -209,6 +209,15 @@ func (el *Element) HTMLE() (string, error) {
 	return str.String(), err
 }
 
+// VisibleE ...
+func (el *Element) VisibleE() (bool, error) {
+	res, err := el.EvalE(true, el.page.jsFn("visible"))
+	if err != nil {
+		return false, err
+	}
+	return res.Bool(), nil
+}
+
 // WaitStableE not using requestAnimation here because it can trigger to many checks,
 // or miss checks for jQuery css animation.
 func (el *Element) WaitStableE(interval time.Duration) error {
@@ -255,12 +264,12 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 
 // WaitVisibleE ...
 func (el *Element) WaitVisibleE() error {
-	return el.WaitE(el.page.jsFn("waitVisible"))
+	return el.WaitE(el.page.jsFn("visible"))
 }
 
 // WaitInvisibleE ...
 func (el *Element) WaitInvisibleE() error {
-	return el.WaitE(el.page.jsFn("waitInvisible"))
+	return el.WaitE(el.page.jsFn("invisible"))
 }
 
 // BoxE ...

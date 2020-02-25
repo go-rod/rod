@@ -309,6 +309,13 @@ func (el *Element) HTML() string {
 	return s
 }
 
+// Visible returns true if the element is visible on the page
+func (el *Element) Visible() bool {
+	v, err := el.VisibleE()
+	kit.E(err)
+	return v
+}
+
 // WaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
 // or button to complete so that we can simulate the mouse to move to it and click on it.
 func (el *Element) WaitStable() *Element {
