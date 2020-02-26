@@ -207,13 +207,14 @@ func ReadURL(ctx context.Context, stderr io.ReadCloser) (string, error) {
 		for {
 			n, err := stderr.Read(buf)
 			if err != nil {
-				break
+				str = err.Error()
+				return
 			}
 			out += string(buf[:n])
 
 			str = regexp.MustCompile(`ws://.+/`).FindString(out)
 			if str != "" {
-				break
+				return
 			}
 		}
 	}
