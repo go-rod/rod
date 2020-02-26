@@ -25,7 +25,7 @@ func (b *Browser) trySlowmotion(method string) {
 }
 
 // Overlay a rectangle on the main frame with specified message
-func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
+func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	root := p.Root()
 	id := "rod-" + kit.RandString(8)
 
@@ -39,16 +39,16 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) func() {
 	})
 	CancelPanic(err)
 
-	clean := func() {
+	remove = func() {
 		_, err := root.EvalE(true, "", root.jsFn("removeOverlay"), []interface{}{id})
 		CancelPanic(err)
 	}
 
-	return clean
+	return
 }
 
 // Trace with an overlay on the element
-func (el *Element) Trace(msg string) func() {
+func (el *Element) Trace(htmlMessage string) func() {
 	var removeOverlay func()
 	if el.page.browser.trace {
 		box, err := el.BoxE()
@@ -58,11 +58,13 @@ func (el *Element) Trace(msg string) func() {
 			box.Get("top").Float(),
 			box.Get("width").Float(),
 			box.Get("height").Float(),
-			msg,
+			htmlMessage,
 		)
 	}
 
-	el.page.Trace(msg)
+	res := el.page.Eval(el.page.jsFn("stripHTML"), htmlMessage)
+
+	el.page.Trace(res.String())
 
 	return func() {
 		if removeOverlay != nil {

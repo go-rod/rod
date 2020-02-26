@@ -152,6 +152,12 @@ var Rod = `
         this.addEventListener('load', () => resolve(this.currentSrc))
         this.addEventListener('error', (e) => reject(e))
       })
+    },
+
+    stripHTML (html) {
+      const div = document.createElement('div')
+      div.innerHTML = html
+      return div.innerText
     }
   }
 
