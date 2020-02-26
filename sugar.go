@@ -141,9 +141,10 @@ func (p *Page) Pause() *Page {
 	return p
 }
 
-// WaitRequestIdle wait until the page doesn't send request for 300ms
-func (p *Page) WaitRequestIdle() (wait func(), cancel func()) {
-	w, c := p.WaitRequestIdleE(300 * time.Millisecond)
+// WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
+// You can pass regular expressions to filter the requests by their url.
+func (p *Page) WaitRequestIdle(regexps ...string) (wait func(), cancel func()) {
+	w, c := p.WaitRequestIdleE(300*time.Millisecond, regexps...)
 	return func() { kit.E(w()) }, c
 }
 
@@ -159,7 +160,7 @@ func (p *Page) WaitLoad() *Page {
 	return p
 }
 
-// WaitEvent waits for the next event to happen.
+// WaitEvent returns a wait function that waits for the next event to happen.
 func (p *Page) WaitEvent(name string) (wait func(), cancel func()) {
 	w, c := p.WaitEventE(Method(name))
 	return func() { kit.E(w()) }, c

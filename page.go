@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -320,8 +321,12 @@ func (p *Page) PauseE() error {
 	return err
 }
 
-// WaitRequestIdleE wait until the page doesn't send request for the specified duration
-func (p *Page) WaitRequestIdleE(d time.Duration) (func() error, func()) {
+// WaitRequestIdleE ...
+func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) (func() error, func()) {
+	if len(regexps) == 0 {
+		regexps = []string{""}
+	}
+
 	p.networkEnableLock.Lock()
 	p.Call("Network.enable", nil)
 
@@ -347,7 +352,13 @@ func (p *Page) WaitRequestIdleE(d time.Duration) (func() error, func()) {
 				switch e.Method {
 				case "Network.requestWillBeSent":
 					timeout.Stop()
-					reqList[e.Params.Get("requestId").String()] = kit.Nil{}
+					url := e.Params.Get("request.url").String()
+					id := e.Params.Get("requestId").String()
+					for _, p := range regexps {
+						if regexp.MustCompile(p).MatchString(url) {
+							reqList[id] = kit.Nil{}
+						}
+					}
 				case "Network.loadingFinished", "Network.loadingFailed":
 					delete(reqList, e.Params.Get("requestId").String())
 					if len(reqList) == 0 {
