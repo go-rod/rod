@@ -58,6 +58,10 @@ var Rod = `
 
       div.appendChild(msgDiv)
       document.body.appendChild(div)
+
+      if (window.innerHeight < msgDiv.offsetHeight + top + height) {
+        msgDiv.style.top = -msgDiv.offsetHeight - 2 + 'px'
+      }
     },
 
     removeOverlay (id) {
