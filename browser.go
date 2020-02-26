@@ -197,7 +197,6 @@ func (b *Browser) page(targetID string) (*Page, error) {
 		browser:             b,
 		TargetID:            targetID,
 		getDownloadFileLock: &sync.Mutex{},
-		networkEnableLock:   &sync.Mutex{},
 	}
 
 	page.Mouse = &Mouse{page: page}

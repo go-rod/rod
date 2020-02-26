@@ -37,7 +37,6 @@ type Page struct {
 
 	timeoutCancel       func()
 	getDownloadFileLock *sync.Mutex
-	networkEnableLock   *sync.Mutex
 
 	traceDir string
 }
@@ -170,6 +169,8 @@ func (p *Page) CloseE() error {
 
 // HandleDialogE ...
 func (p *Page) HandleDialogE(accept bool, promptText string) (func() error, func()) {
+	p.Call("Page.enable", nil)
+
 	wait, cancel := p.WaitEventE(Method("Page.javascriptDialogOpening"))
 
 	return func() error {
@@ -327,15 +328,12 @@ func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) (func() erro
 		regexps = []string{""}
 	}
 
-	p.networkEnableLock.Lock()
 	p.Call("Network.enable", nil)
 
 	ctx, cancel := context.WithCancel(p.ctx)
 	s := p.browser.Event().Subscribe()
 
 	wait := func() (err error) {
-		defer p.networkEnableLock.Unlock()
-		defer func() { _, err = p.CallE(p.ctx, "Network.disable", nil) }()
 		defer p.browser.Event().Unsubscribe(s)
 
 		reqList := map[string]kit.Nil{}
@@ -509,10 +507,6 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
-	_, err = p.CallE(nil, "Page.enable", nil)
-	if err != nil {
-		return err
-	}
 
 	return p.ViewportE(p.browser.viewport)
 }
