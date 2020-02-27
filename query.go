@@ -69,17 +69,17 @@ func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 
 // ElementE finds element by css selector
 func (p *Page) ElementE(sleeper kit.Sleeper, objectID, selector string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("$"), []interface{}{selector})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), []interface{}{selector})
 }
 
 // ElementMatchesE ...
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID, selector, regex string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("$matches"), []interface{}{selector, regex})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), []interface{}{selector, regex})
 }
 
 // ElementXE finds elements by XPath
 func (p *Page) ElementXE(sleeper kit.Sleeper, objectID, xpath string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("$x"), []interface{}{xpath})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), []interface{}{xpath})
 }
 
 // ElementX retries until returns the first element in the page that matches the XPath selector
@@ -135,12 +135,12 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []int
 
 // ElementsE ...
 func (p *Page) ElementsE(objectID, selector string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("$$"), []interface{}{selector})
+	return p.ElementsByJSE(objectID, p.jsFn("elements"), []interface{}{selector})
 }
 
 // ElementsXE ...
 func (p *Page) ElementsXE(objectID, xpath string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("$$x"), []interface{}{xpath})
+	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), []interface{}{xpath})
 }
 
 // ElementsByJSE is different from ElementByJSE, it doesn't do retry

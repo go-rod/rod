@@ -6,21 +6,21 @@ package js
 var Rod = `
 (frameId) => { // eslint-disable-line no-unused-expressions
   const rod = {
-    $ (s) {
+    element (s) {
       return (this.document || this).querySelector(s)
     },
 
-    $$ (s) {
+    elements (s) {
       return (this.document || this).querySelectorAll(s)
     },
 
-    $x (xpath) {
+    elementX (xpath) {
       return document.evaluate(
         xpath, (this.document || this), null, XPathResult.FIRST_ORDERED_NODE_TYPE
       ).singleNodeValue
     },
 
-    $$x (xpath) {
+    elementsX (xpath) {
       const iter = document.evaluate(xpath, (this.document || this), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
       const list = []
       let el
@@ -28,7 +28,7 @@ var Rod = `
       return list
     },
 
-    $matches (sel, reg) {
+    elementMatches (sel, reg) {
       const r = new RegExp(reg)
       const el = Array.from((this.document || this).querySelectorAll(sel)).find(el => el.textContent.match(r))
       return el || null
