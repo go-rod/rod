@@ -18,6 +18,7 @@ func TestDownload(t *testing.T) {
 func TestLaunch(t *testing.T) {
 	ctx := context.Background()
 	url := launcher.New().Context(ctx).Delete("test").Bin("").
+		KillAfterExit(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(0).
 		Launch()
 	url, err := launcher.GetWebSocketDebuggerURL(ctx, url)

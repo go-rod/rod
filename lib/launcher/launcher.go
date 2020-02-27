@@ -6,6 +6,7 @@ import (
 	"io"
 	nurl "net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -18,9 +19,10 @@ import (
 
 // Launcher chrome cli flags helper
 type Launcher struct {
-	ctx   context.Context
-	bin   string
-	flags map[string][]string
+	ctx      context.Context
+	bin      string
+	leakless bool
+	flags    map[string][]string
 }
 
 // New returns the default arguments to start chrome.
@@ -65,8 +67,9 @@ func New() *Launcher {
 	}
 
 	return &Launcher{
-		ctx:   context.Background(),
-		flags: defaultFlags,
+		ctx:      context.Background(),
+		leakless: true,
+		flags:    defaultFlags,
 	}
 }
 
@@ -97,6 +100,12 @@ func (l *Launcher) Delete(name string) *Launcher {
 // Bin set chrome executable file path
 func (l *Launcher) Bin(path string) *Launcher {
 	l.bin = path
+	return l
+}
+
+// KillAfterExit switch. Whether to kill chrome or not after main process exits. Default value is true.
+func (l *Launcher) KillAfterExit(enable bool) *Launcher {
+	l.leakless = enable
 	return l
 }
 
@@ -170,7 +179,13 @@ func (l *Launcher) LaunchE() (string, error) {
 	}
 
 	ll := leakless.New()
-	cmd := ll.Command(bin, l.ExecFormat()...)
+
+	var cmd *exec.Cmd
+	if l.leakless {
+		cmd = ll.Command(bin, l.ExecFormat()...)
+	} else {
+		cmd = exec.Command(bin, l.ExecFormat()...)
+	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
