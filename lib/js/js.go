@@ -108,6 +108,10 @@ var Rod = `
       }
     },
 
+    selectAllText () {
+      this.select()
+    },
+
     select (selectors) {
       selectors.forEach(s => {
         Array.from(this.options).forEach(el => {

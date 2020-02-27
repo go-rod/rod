@@ -292,7 +292,7 @@ func (el *Element) SelectText(regex string) *Element {
 
 // SelectAllText selects all text
 func (el *Element) SelectAllText() *Element {
-	kit.E(el.SelectTextE(`[\s\S]*`))
+	kit.E(el.SelectAllTextE())
 	return el
 }
 

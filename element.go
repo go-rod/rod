@@ -150,6 +150,16 @@ func (el *Element) SelectTextE(regex string) error {
 	return err
 }
 
+// SelectAllTextE ...
+func (el *Element) SelectAllTextE() error {
+	err := el.FocusE()
+	if err != nil {
+		return err
+	}
+	_, err = el.EvalE(true, el.page.jsFn("selectAllText"))
+	return err
+}
+
 // InputE ...
 func (el *Element) InputE(text string) error {
 	err := el.WaitVisibleE()

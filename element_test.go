@@ -67,8 +67,12 @@ func (s *S) TestSelectText() {
 	el.Input("test")
 	el.SelectAllText()
 	el.Input("test")
-
 	s.Equal("test", el.Eval(`() => this.value`).String())
+
+	el.SelectText(`es`)
+	el.Input("__")
+
+	s.Equal("t__t", el.Eval(`() => this.value`).String())
 }
 
 func (s *S) TestSelect() {
