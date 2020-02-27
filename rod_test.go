@@ -43,7 +43,10 @@ func Test(t *testing.T) {
 	slow, _ := time.ParseDuration(os.Getenv("slow"))
 	show := os.Getenv("show") == "true"
 
-	url := launcher.New().Headless(!show).Launch()
+	url := launcher.New().
+		Headless(!show).
+		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
+		Launch()
 
 	s := new(S)
 	s.browser = rod.New().

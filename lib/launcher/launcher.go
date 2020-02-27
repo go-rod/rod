@@ -2,7 +2,6 @@ package launcher
 
 import (
 	"context"
-	"errors"
 	"io"
 	nurl "net/url"
 	"os"
@@ -22,7 +21,9 @@ type Launcher struct {
 	ctx      context.Context
 	bin      string
 	leakless bool
+	log      func(string)
 	flags    map[string][]string
+	output   chan string
 }
 
 // New returns the default arguments to start chrome.
@@ -70,6 +71,7 @@ func New() *Launcher {
 		ctx:      context.Background(),
 		leakless: true,
 		flags:    defaultFlags,
+		output:   make(chan string),
 	}
 }
 
@@ -148,6 +150,12 @@ func (l *Launcher) ExecFormat() []string {
 	return append(execArgs, l.flags[""]...)
 }
 
+// Log function to handle stdout and stderr from chrome
+func (l *Launcher) Log(log func(string)) *Launcher {
+	l.log = log
+	return l
+}
+
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
@@ -187,6 +195,11 @@ func (l *Launcher) LaunchE() (string, error) {
 		cmd = exec.Command(bin, l.ExecFormat()...)
 	}
 
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return "", err
@@ -197,7 +210,10 @@ func (l *Launcher) LaunchE() (string, error) {
 		return "", err
 	}
 
-	u, err := ReadURL(l.ctx, stderr)
+	go l.read(stdout)
+	go l.read(stderr)
+
+	u, err := l.getURL()
 	if err != nil {
 		go func() {
 			p, err := os.FindProcess(<-ll.Pid())
@@ -210,47 +226,44 @@ func (l *Launcher) LaunchE() (string, error) {
 	return u, nil
 }
 
-// ReadURL from chrome stderr
-func ReadURL(ctx context.Context, stderr io.ReadCloser) (string, error) {
-	buf := make([]byte, 100)
-	str := ""
-	out := ""
-	wait := make(chan kit.Nil)
-
-	read := func() {
-		defer close(wait)
-		for {
-			n, err := stderr.Read(buf)
-			if err != nil {
-				str = err.Error()
-				return
-			}
-			out += string(buf[:n])
-
-			str = regexp.MustCompile(`ws://.+/`).FindString(out)
-			if str != "" {
-				return
-			}
+func (l *Launcher) read(reader io.Reader) {
+	buf := make([]byte, 256*1024) // 256KB
+	for {
+		n, err := reader.Read(buf)
+		if err != nil {
+			return
 		}
+		str := string(buf[:n])
+		if l.log != nil {
+			l.log(str)
+		}
+		l.output <- str
 	}
+}
 
-	timeout, cancel := context.WithTimeout(ctx, time.Minute)
+// ReadURL from chrome stderr
+func (l *Launcher) getURL() (string, error) {
+	out := ""
+
+	timeout, cancel := context.WithTimeout(l.ctx, time.Minute)
 	defer cancel()
 
-	go read()
-
-	select {
-	case <-timeout.Done():
-		return "", errors.New("[rod/lib/launcher] launch chrome timeout: " + out)
-	case <-wait:
+	for {
+		select {
+		case e := <-l.output:
+			out += e
+			str := regexp.MustCompile(`ws://.+/`).FindString(out)
+			if str != "" {
+				u, err := nurl.Parse(strings.TrimSpace(str))
+				if err != nil {
+					return "", err
+				}
+				return "http://" + u.Host, nil
+			}
+		case <-timeout.Done():
+			return "", timeout.Err()
+		}
 	}
-
-	u, err := nurl.Parse(strings.TrimSpace(str))
-	if err != nil {
-		return "", errors.New("[rod/lib/launcher] failed to get control url: " + out + " " + err.Error())
-	}
-
-	return "http://" + u.Host, nil
 }
 
 // GetWebSocketDebuggerURL from chrome remote url

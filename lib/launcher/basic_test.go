@@ -2,6 +2,7 @@ package launcher_test
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,6 +19,7 @@ func TestDownload(t *testing.T) {
 func TestLaunch(t *testing.T) {
 	ctx := context.Background()
 	url := launcher.New().Context(ctx).Delete("test").Bin("").
+		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
 		KillAfterExit(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(0).
 		Launch()
