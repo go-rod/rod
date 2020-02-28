@@ -85,6 +85,24 @@ func Example_wait_for_animation() {
 	// Output: done
 }
 
+func Example_wait_for_request() {
+	browser := rod.New().Connect()
+	defer browser.Close()
+
+	page := browser.Page("https://www.google.com/").Timeout(time.Minute)
+
+	wait := page.WaitRequestIdle()
+
+	page.WaitLoad().Element(`[name="q"]`).Input("idempotent")
+
+	wait()
+
+	// should be able to find the search suggestion after the ajax request
+	fmt.Println(page.HasMatches("div > span", "idempotent"))
+
+	// Output: true
+}
+
 func Example_customize_chrome_launch() {
 	// set custom chrome options
 	url := launcher.New().
@@ -160,7 +178,7 @@ func Example_stripe_callback() {
 
 	page := browser.Page(redirectURL)
 
-	frame01 := page.Timeout(time.Minute).Element("[name=__privateStripeFrame4]").Frame()
+	frame01 := page.Timeout(3 * time.Minute).Element("[name=__privateStripeFrame4]").Frame()
 	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
 	frame01.Element(".Spinner").WaitInvisible()           // wait page loading
 	frame02.ElementMatches("button", "Complete").Click()

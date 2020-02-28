@@ -19,7 +19,10 @@ import (
 
 // Page represents the webpage
 type Page struct {
-	ctx     context.Context
+	ctx           context.Context
+	ctxCancel     func()
+	timeoutCancel func()
+
 	browser *Browser
 
 	TargetID  string
@@ -35,32 +38,9 @@ type Page struct {
 
 	windowObjectID string
 
-	timeoutCancel       func()
 	getDownloadFileLock *sync.Mutex
 
 	traceDir string
-}
-
-// Context sets the context for chained sub-operations
-func (p *Page) Context(ctx context.Context) *Page {
-	newObj := *p
-	newObj.ctx = ctx
-	return &newObj
-}
-
-// Timeout sets the timeout for chained sub-operations
-func (p *Page) Timeout(d time.Duration) *Page {
-	ctx, cancel := context.WithTimeout(p.ctx, d)
-	p.timeoutCancel = cancel
-	return p.Context(ctx)
-}
-
-// CancelTimeout ...
-func (p *Page) CancelTimeout() *Page {
-	if p.timeoutCancel != nil {
-		p.timeoutCancel()
-	}
-	return p
 }
 
 // TraceDir set the dir to save the trace screenshots.
@@ -168,10 +148,10 @@ func (p *Page) CloseE() error {
 }
 
 // HandleDialogE ...
-func (p *Page) HandleDialogE(accept bool, promptText string) (func() error, func()) {
+func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	p.Call("Page.enable", nil)
 
-	wait, cancel := p.WaitEventE(Method("Page.javascriptDialogOpening"))
+	wait := p.WaitEventE(nil, Method("Page.javascriptDialogOpening"))
 
 	return func() error {
 		_, err := wait()
@@ -183,11 +163,11 @@ func (p *Page) HandleDialogE(accept bool, promptText string) (func() error, func
 			"promptText": promptText,
 		})
 		return err
-	}, cancel
+	}
 }
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
-func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), func(), error) {
+func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), error) {
 	var params cdp.Object
 	if pattern != "" {
 		params = cdp.Object{
@@ -206,30 +186,22 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		"downloadPath": dir,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	_, err = p.CallE(nil, "Fetch.enable", params)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	wait, cancel := p.WaitEventE(Method("Fetch.requestPaused"))
-
-	released := false
-	release := func() {
-		defer cancel()
-		if released {
-			return
-		}
-		released = true
-		defer p.getDownloadFileLock.Unlock()
-		_, err := p.CallE(nil, "Fetch.disable", nil)
-		kit.E(err)
-	}
+	wait := p.WaitEventE(nil, Method("Fetch.requestPaused"))
 
 	return func() (http.Header, []byte, error) {
-		defer release()
+		defer func() {
+			defer p.getDownloadFileLock.Unlock()
+			_, err := p.CallE(nil, "Fetch.disable", nil)
+			kit.E(err)
+		}()
 
 		msg, err := wait()
 		if err != nil {
@@ -237,7 +209,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		}
 
 		msgReq := msg.Params.Get("request")
-		req := kit.Req(msgReq.Get("url").String())
+		req := kit.Req(msgReq.Get("url").String()).Context(p.ctx)
 
 		for k, v := range msgReq.Get("headers").Map() {
 			req.Header(k, v.String())
@@ -271,7 +243,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		})
 
 		return res.Header, body, err
-	}, release, err
+	}, err
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
@@ -284,10 +256,10 @@ func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 }
 
 // WaitPageE ...
-func (p *Page) WaitPageE() (func() (*Page, error), func()) {
+func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo gjson.Result
 
-	wait, cancel := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
+	wait := p.browser.WaitEventE(p.ctx, func(e *cdp.Event) bool {
 		if e.Method == "Target.targetCreated" {
 			targetInfo = e.Params.Get("targetInfo")
 
@@ -304,7 +276,7 @@ func (p *Page) WaitPageE() (func() (*Page, error), func()) {
 			return nil, err
 		}
 		return p.browser.Context(p.ctx).page(targetInfo.Get("targetId").String())
-	}, cancel
+	}
 }
 
 // PauseE ...
@@ -317,23 +289,22 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	wait, _ := p.WaitEventE(Method("Debugger.resumed"))
+	wait := p.WaitEventE(nil, Method("Debugger.resumed"))
 	_, err = wait()
 	return err
 }
 
 // WaitRequestIdleE ...
-func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) (func() error, func()) {
+func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) func() error {
 	if len(regexps) == 0 {
 		regexps = []string{""}
 	}
 
 	p.Call("Network.enable", nil)
 
-	ctx, cancel := context.WithCancel(p.ctx)
 	s := p.browser.Event().Subscribe()
 
-	wait := func() (err error) {
+	return func() (err error) {
 		defer p.browser.Event().Unsubscribe(s)
 
 		reqList := map[string]kit.Nil{}
@@ -341,11 +312,15 @@ func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) (func() erro
 
 		for {
 			select {
-			case <-ctx.Done():
-				return ctx.Err()
+			case <-p.ctx.Done():
+				return p.ctx.Err()
 			case <-timeout.C:
 				return
-			case msg := <-s.C:
+			case msg, ok := <-s.C:
+				if !ok {
+					return
+				}
+
 				e := msg.(*cdp.Event)
 				switch e.Method {
 				case "Network.requestWillBeSent":
@@ -366,8 +341,6 @@ func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) (func() erro
 			}
 		}
 	}
-
-	return wait, cancel
 }
 
 // WaitIdleE ...
@@ -383,8 +356,12 @@ func (p *Page) WaitLoadE() error {
 }
 
 // WaitEventE ...
-func (p *Page) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
-	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
+func (p *Page) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.Event, error) {
+	if ctx == nil {
+		ctx = p.ctx
+	}
+
+	return p.browser.WaitEventE(ctx, func(e *cdp.Event) bool {
 		return e.SessionID == p.SessionID && filter(e)
 	})
 }
@@ -463,7 +440,7 @@ func (p *Page) CallE(ctx context.Context, method string, params interface{}) (ki
 	})
 }
 
-// Sleeper returns the default sleeper for retry, it will wake whenever Page for DOM event happens,
+// Sleeper returns the default sleeper for retry, it will wake whenever Page or DOM event happens,
 // and use backoff as the backup to wake.
 func (p *Page) Sleeper() kit.Sleeper {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)

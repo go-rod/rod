@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 func (s *S) TestBrowserPages() {
-	page := s.browser.Timeout(time.Minute).Page(htmlFile("fixtures/click.html"))
+	page := s.browser.Page(htmlFile("fixtures/click.html"))
 	defer page.Close()
 
 	page.Element("button")
@@ -17,9 +18,14 @@ func (s *S) TestBrowserPages() {
 	s.Len(pages, 3)
 }
 
+func (s *S) TestBrowserContext() {
+	b := s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
+	_, err := b.CallE(nil, &cdp.Request{})
+	s.Error(err)
+}
+
 func (s *S) TestBrowserWaitEvent() {
-	wait, cancel := s.browser.WaitEvent("Page.frameNavigated")
-	defer cancel()
+	wait := s.browser.WaitEvent("Page.frameNavigated")
 	s.page.Navigate(htmlFile("fixtures/click.html"))
 	wait()
 }

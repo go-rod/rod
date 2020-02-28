@@ -13,16 +13,17 @@ import (
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
 type Browser struct {
+	ctx           context.Context
+	ctxCancel     func()
+	timeoutCancel func()
+
 	controlURL string
 	viewport   *cdp.Object
 	slowmotion time.Duration
 	trace      bool
 
-	ctx           context.Context
-	ctxCancel     func()
-	timeoutCancel func()
-	client        *cdp.Client
-	event         *kit.Observable
+	client *cdp.Client
+	event  *kit.Observable
 }
 
 // New creates a controller
@@ -30,22 +31,6 @@ func New() *Browser {
 	return &Browser{
 		client: cdp.New(),
 	}
-}
-
-// Context creates a clone with specified context
-func (b *Browser) Context(ctx context.Context) *Browser {
-	ctx, cancel := context.WithCancel(ctx)
-	newObj := *b
-	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
-	return &newObj
-}
-
-// Timeout sets the timeout for chained sub-operations
-func (b *Browser) Timeout(d time.Duration) *Browser {
-	ctx, cancel := context.WithTimeout(b.ctx, d)
-	b.timeoutCancel = cancel
-	return b.Context(ctx)
 }
 
 // ControlURL set the url to remote control browser.
@@ -81,11 +66,7 @@ func (b *Browser) DebugCDP(enable bool) *Browser {
 
 // ConnectE ...
 func (b *Browser) ConnectE() error {
-	if b.ctx == nil {
-		ctx, cancel := context.WithCancel(context.Background())
-		b.ctx = ctx
-		b.ctxCancel = cancel
-	}
+	*b = *b.Context(b.ctx)
 
 	if b.controlURL == "" {
 		u, err := launcher.New().Context(b.ctx).LaunchE()
@@ -105,10 +86,6 @@ func (b *Browser) CloseE() error {
 	_, err := b.CallE(nil, &cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
-	}
-
-	if b.ctxCancel != nil {
-		b.ctxCancel()
 	}
 
 	return nil
@@ -166,8 +143,11 @@ func (b *Browser) PagesE() ([]*Page, error) {
 type EventFilter func(*cdp.Event) bool
 
 // WaitEventE returns wait and cancel methods
-func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), func()) {
-	ctx, cancel := context.WithCancel(b.ctx)
+func (b *Browser) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.Event, error) {
+	if ctx == nil {
+		ctx = b.ctx
+	}
+
 	var event *cdp.Event
 	var err error
 	w := kit.All(func() {
@@ -180,7 +160,7 @@ func (b *Browser) WaitEventE(filter EventFilter) (func() (*cdp.Event, error), fu
 	return func() (*cdp.Event, error) {
 		w()
 		return event, err
-	}, cancel
+	}
 }
 
 // CallE sends a control message to browser
@@ -221,6 +201,7 @@ func (b *Browser) initEvents() error {
 		for msg := range b.client.Event() {
 			go b.event.Publish(msg)
 		}
+		b.event.UnsubscribeAll()
 	}()
 
 	_, err := b.CallE(nil, &cdp.Request{

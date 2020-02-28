@@ -37,14 +37,14 @@ func (b *Browser) Pages() []*Page {
 	return list
 }
 
-// WaitEvent resolves the wait function when the filter returns true, call cancel to release the resource
-func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event, cancel func()) {
-	w, c := b.WaitEventE(Method(name))
+// WaitEvent resolves the wait function when the filter returns true
+func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event) {
+	w := b.WaitEventE(nil, Method(name))
 	return func() *cdp.Event {
 		e, err := w()
 		kit.E(err)
 		return e
-	}, c
+	}
 }
 
 // Call sends a control message to browser
@@ -99,23 +99,23 @@ func (p *Page) Close() {
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
-func (p *Page) HandleDialog(accept bool, promptText string) (wait func(), cancel func()) {
-	w, c := p.HandleDialogE(accept, promptText)
+func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
+	w := p.HandleDialogE(accept, promptText)
 	return func() {
 		kit.E(w())
-	}, c
+	}
 }
 
 // GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
 // Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
-func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte), cancel func()) {
-	w, c, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
+func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte)) {
+	w, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
 	kit.E(err)
 	return func() (http.Header, []byte) {
 		header, data, err := w()
 		kit.E(err)
 		return header, data
-	}, c
+	}
 }
 
 // Screenshot the page
@@ -126,13 +126,13 @@ func (p *Page) Screenshot() []byte {
 }
 
 // WaitPage to be opened from the specified page
-func (p *Page) WaitPage() (wait func() *Page, cancel func()) {
-	w, c := p.WaitPageE()
+func (p *Page) WaitPage() (wait func() *Page) {
+	w := p.WaitPageE()
 	return func() *Page {
 		page, err := w()
 		kit.E(err)
 		return page
-	}, c
+	}
 }
 
 // Pause stops on the next JavaScript statement
@@ -143,9 +143,9 @@ func (p *Page) Pause() *Page {
 
 // WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to filter the requests by their url.
-func (p *Page) WaitRequestIdle(regexps ...string) (wait func(), cancel func()) {
-	w, c := p.WaitRequestIdleE(300*time.Millisecond, regexps...)
-	return func() { kit.E(w()) }, c
+func (p *Page) WaitRequestIdle(regexps ...string) (wait func()) {
+	w := p.WaitRequestIdleE(300*time.Millisecond, regexps...)
+	return func() { kit.E(w()) }
 }
 
 // WaitIdle wait until the next window.requestIdleCallback is called.
@@ -161,9 +161,9 @@ func (p *Page) WaitLoad() *Page {
 }
 
 // WaitEvent returns a wait function that waits for the next event to happen.
-func (p *Page) WaitEvent(name string) (wait func(), cancel func()) {
-	w, c := p.WaitEventE(Method(name))
-	return func() { kit.E(w()) }, c
+func (p *Page) WaitEvent(name string) (wait func()) {
+	w := p.WaitEventE(nil, Method(name))
+	return func() { kit.E(w()) }
 }
 
 // Eval js on the page. The first param must be a js function definition.

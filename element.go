@@ -15,34 +15,13 @@ import (
 
 // Element represents the DOM element
 type Element struct {
-	ctx  context.Context
+	ctx           context.Context
+	ctxCancel     func()
+	timeoutCancel func()
+
 	page *Page
 
 	ObjectID string
-
-	timeoutCancel func()
-}
-
-// Context sets the context for chained sub-operations
-func (el *Element) Context(ctx context.Context) *Element {
-	newObj := *el
-	newObj.ctx = ctx
-	return &newObj
-}
-
-// Timeout sets the timeout for chained sub-operations
-func (el *Element) Timeout(d time.Duration) *Element {
-	ctx, cancel := context.WithTimeout(el.ctx, d)
-	el.timeoutCancel = cancel
-	return el.Context(ctx)
-}
-
-// CancelTimeout ...
-func (el *Element) CancelTimeout() *Element {
-	if el.timeoutCancel != nil {
-		el.timeoutCancel()
-	}
-	return el
 }
 
 // DescribeE ...

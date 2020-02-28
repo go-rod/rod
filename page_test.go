@@ -21,6 +21,12 @@ func (s *S) TestClosePage() {
 	page.Element("button")
 }
 
+func (s *S) TestPageContext() {
+	p := s.page.Timeout(time.Minute).CancelTimeout().Cancel()
+	_, err := p.CallE(nil, `() => {}`, nil)
+	s.Error(err)
+}
+
 func (s *S) TestRelease() {
 	res, err := s.page.EvalE(false, "", `() => document`, nil)
 	kit.E(err)
@@ -67,8 +73,7 @@ func (s *S) TestUntilPage() {
 	page := s.page.Timeout(3 * time.Second).Navigate(htmlFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait, cancel := page.WaitPage()
-	defer cancel()
+	wait := page.WaitPage()
 
 	page.Element("a").Click()
 
@@ -94,8 +99,7 @@ func (s *S) TestPageWaitRequestIdle() {
 
 	page.Call("Network.enable", nil)
 
-	wait, cancel := page.WaitRequestIdle()
-	defer cancel()
+	wait := page.WaitRequestIdle()
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
@@ -111,8 +115,7 @@ func (s *S) TestPageWaitIdle() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait, cancel := s.page.WaitEvent("Page.frameNavigated")
-	defer cancel()
+	wait := s.page.WaitEvent("Page.frameNavigated")
 	s.page.Navigate(htmlFile("fixtures/click.html"))
 	wait()
 }
@@ -120,8 +123,7 @@ func (s *S) TestPageWaitEvent() {
 func (s *S) TestAlert() {
 	page := s.page.Navigate(htmlFile("fixtures/alert.html"))
 
-	wait, cancel := page.HandleDialog(true, "")
-	defer cancel()
+	wait := page.HandleDialog(true, "")
 
 	go page.Element("button").Click()
 
@@ -144,8 +146,7 @@ func (s *S) TestDownloadFile() {
 
 	page := s.page.Navigate("http://" + host)
 
-	wait, cancel := page.GetDownloadFile("*")
-	defer cancel()
+	wait := page.GetDownloadFile("*")
 
 	page.Element("a").Click()
 
@@ -274,7 +275,7 @@ func (s *S) TestPageErrors() {
 	err = p.Context(ctx).WindowE(nil)
 	s.Error(err)
 
-	_, _, err = p.Context(ctx).GetDownloadFileE("", "")
+	_, err = p.Context(ctx).GetDownloadFileE("", "")
 	s.Error(err)
 
 	_, err = p.Context(ctx).ScreenshotE(nil)

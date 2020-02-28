@@ -17,6 +17,12 @@ func (s *S) TestClick() {
 	s.True(p.Has("[a=ok]"))
 }
 
+func (s *S) TestElementContext() {
+	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	el := p.Element("button").Timeout(time.Minute).CancelTimeout().Cancel()
+	s.Error(el.ClickE("left"))
+}
+
 func (s *S) TestClickInIframes() {
 	p := s.page.Navigate(htmlFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
