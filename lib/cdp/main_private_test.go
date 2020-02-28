@@ -11,7 +11,7 @@ import (
 func TestCancelCall(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	cdp := New("").Context(ctx)
+	cdp := New().Context(ctx)
 	go func() {
 		<-cdp.chReqMsg
 	}()
@@ -31,7 +31,7 @@ func (c *wsWriteErr) Read() ([]byte, error) {
 }
 
 func TestWriteError(t *testing.T) {
-	cdp := New("")
+	cdp := New()
 	cdp.ws = &wsWriteErr{}
 	go cdp.consumeMsg()
 	_, err := cdp.Call(nil, &Request{})

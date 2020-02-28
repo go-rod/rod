@@ -42,6 +42,7 @@ func ginHTML(body string) gin.HandlerFunc {
 func Test(t *testing.T) {
 	slow, _ := time.ParseDuration(os.Getenv("slow"))
 	show := os.Getenv("show") == "true"
+	debugCDP := os.Getenv("debug_cdp") == "true"
 
 	url := launcher.New().
 		Headless(!show).
@@ -51,6 +52,7 @@ func Test(t *testing.T) {
 	s := new(S)
 	s.browser = rod.New().
 		ControlURL(url).
+		DebugCDP(debugCDP).
 		Slowmotion(slow).
 		Trace(true).
 		Viewport(nil).

@@ -64,15 +64,13 @@ func (e *Error) Error() string {
 	return kit.MustToJSON(e)
 }
 
-// New creates a cdp connection, the url should be something like http://localhost:9222.
-// All messages from Client.Event must be received or they will block the client.
-func New(url string) *Client {
+// New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
+func New() *Client {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	cdp := &Client{
 		ctx:       ctx,
 		ctxCancel: cancel,
-		url:       url,
 		callbacks: map[uint64]chan *response{},
 		chReqMsg:  make(chan *requestMsg),
 		chRes:     make(chan *response),
@@ -88,6 +86,13 @@ func (cdp *Client) Context(ctx context.Context) *Client {
 	ctx, cancel := context.WithCancel(ctx)
 	cdp.ctx = ctx
 	cdp.ctxCancel = cancel
+	return cdp
+}
+
+// URL set the remote control url. The url can be something like http://localhost:9222/* or ws://localhost:9222/*.
+// Only the scheme, host, port of the url will be used.
+func (cdp *Client) URL(url string) *Client {
+	cdp.url = url
 	return cdp
 }
 

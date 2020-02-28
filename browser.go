@@ -27,7 +27,9 @@ type Browser struct {
 
 // New creates a controller
 func New() *Browser {
-	return &Browser{}
+	return &Browser{
+		client: cdp.New(),
+	}
 }
 
 // Context creates a clone with specified context
@@ -71,6 +73,12 @@ func (b *Browser) Trace(enable bool) *Browser {
 	return b
 }
 
+// DebugCDP enables/disables the log of all cdp interface traffic
+func (b *Browser) DebugCDP(enable bool) *Browser {
+	b.client.Debug(enable)
+	return b
+}
+
 // ConnectE ...
 func (b *Browser) ConnectE() error {
 	if b.ctx == nil {
@@ -87,7 +95,7 @@ func (b *Browser) ConnectE() error {
 		b.controlURL = u
 	}
 
-	b.client = cdp.New(b.controlURL).Context(b.ctx).Connect()
+	b.client.URL(b.controlURL).Context(b.ctx).Connect()
 
 	return b.initEvents()
 }
