@@ -66,7 +66,7 @@ func (p *Page) Root() *Page {
 	return f
 }
 
-// NavigateE ...
+// NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
 	res, err := p.CallE(nil, "Page.navigate", cdp.Object{
 		"url": url,
@@ -93,7 +93,7 @@ func (p *Page) getWindowID() (int64, error) {
 	return res.Get("windowId").Int(), err
 }
 
-// GetWindowE ...
+// GetWindowE doc is the same as the method GetWindow
 func (p *Page) GetWindowE() (kit.JSONResult, error) {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -131,7 +131,7 @@ func (p *Page) WindowE(bounds *cdp.Object) error {
 	return err
 }
 
-// ViewportE ...
+// ViewportE doc is the same as the method Viewport
 // Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
 func (p *Page) ViewportE(params *cdp.Object) error {
 	if params == nil {
@@ -147,7 +147,7 @@ func (p *Page) CloseE() error {
 	return err
 }
 
-// HandleDialogE ...
+// HandleDialogE doc is the same as the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	p.Call("Page.enable", nil)
 
@@ -255,7 +255,7 @@ func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(res.Get("data").String())
 }
 
-// WaitPageE ...
+// WaitPageE doc is the same as the method WaitPage
 func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo gjson.Result
 
@@ -279,7 +279,7 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 	}
 }
 
-// PauseE ...
+// PauseE doc is the same as the method Pause
 func (p *Page) PauseE() error {
 	_, err := p.CallE(nil, "Debugger.enable", nil)
 	if err != nil {
@@ -294,7 +294,7 @@ func (p *Page) PauseE() error {
 	return err
 }
 
-// WaitRequestIdleE ...
+// WaitRequestIdleE doc is the same as the method WaitRequestIdle
 func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) func() error {
 	if len(regexps) == 0 {
 		regexps = []string{""}
@@ -343,19 +343,19 @@ func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) func() error
 	}
 }
 
-// WaitIdleE ...
+// WaitIdleE doc is the same as the method WaitIdle
 func (p *Page) WaitIdleE() (err error) {
 	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), nil)
 	return err
 }
 
-// WaitLoadE ...
+// WaitLoadE doc is the same as the method WaitLoad
 func (p *Page) WaitLoadE() error {
 	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
 	return err
 }
 
-// WaitEventE ...
+// WaitEventE doc is the same as the method WaitEvent
 func (p *Page) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.Event, error) {
 	if ctx == nil {
 		ctx = p.ctx
@@ -467,7 +467,7 @@ func (p *Page) Sleeper() kit.Sleeper {
 	})
 }
 
-// ReleaseE ...
+// ReleaseE doc is the same as the method Release
 func (p *Page) ReleaseE(objectID string) error {
 	_, err := p.CallE(nil, "Runtime.releaseObject", cdp.Object{
 		"objectId": objectID,

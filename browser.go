@@ -64,7 +64,7 @@ func (b *Browser) DebugCDP(enable bool) *Browser {
 	return b
 }
 
-// ConnectE ...
+// ConnectE doc is the same as the method Connect
 func (b *Browser) ConnectE() error {
 	*b = *b.Context(b.ctx)
 
@@ -81,7 +81,7 @@ func (b *Browser) ConnectE() error {
 	return b.initEvents()
 }
 
-// CloseE ...
+// CloseE doc is the same as the method Close
 func (b *Browser) CloseE() error {
 	_, err := b.CallE(nil, &cdp.Request{Method: "Browser.close"})
 	if err != nil {
@@ -91,7 +91,7 @@ func (b *Browser) CloseE() error {
 	return nil
 }
 
-// PageE ...
+// PageE doc is the same as the method Page
 func (b *Browser) PageE(url string) (*Page, error) {
 	target, err := b.CallE(nil, &cdp.Request{
 		Method: "Target.createTarget",
@@ -116,7 +116,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return page, nil
 }
 
-// PagesE ...
+// PagesE doc is the same as the method Pages
 func (b *Browser) PagesE() ([]*Page, error) {
 	list, err := b.CallE(nil, &cdp.Request{Method: "Target.getTargets"})
 	if err != nil {

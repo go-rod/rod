@@ -22,7 +22,7 @@ type Mouse struct {
 	buttons []string
 }
 
-// MoveE ...
+// MoveE doc is the same as the method Move
 func (m *Mouse) MoveE(x, y, steps int64) error {
 	if steps < 1 {
 		steps = 1
@@ -65,7 +65,7 @@ func (m *Mouse) Move(x, y int64) {
 	kit.E(m.MoveE(x, y, 0))
 }
 
-// ScrollE ...
+// ScrollE doc is the same as the method Scroll
 func (m *Mouse) ScrollE(x, y, steps int64) error {
 	if steps < 1 {
 		steps = 1
@@ -100,7 +100,7 @@ func (m *Mouse) Scroll(x, y int64) {
 	kit.E(m.ScrollE(x, y, 0))
 }
 
-// DownE ...
+// DownE doc is the same as the method Down
 func (m *Mouse) DownE(button string, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
@@ -130,7 +130,7 @@ func (m *Mouse) Down(button string) {
 	kit.E(m.DownE(button, 1))
 }
 
-// UpE ...
+// UpE doc is the same as the method Up
 func (m *Mouse) UpE(button string, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
@@ -165,7 +165,7 @@ func (m *Mouse) Up(button string) {
 	kit.E(m.UpE(button, 1))
 }
 
-// ClickE ...
+// ClickE doc is the same as the method Click
 func (m *Mouse) ClickE(button string) error {
 	if button == "" {
 		button = defaultMouseButton

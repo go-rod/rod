@@ -165,7 +165,7 @@ func (l *Launcher) Launch() string {
 	return u
 }
 
-// LaunchE ...
+// LaunchE doc is the same as the method Launch
 func (l *Launcher) LaunchE() (string, error) {
 	bin := l.bin
 	if bin == "" {

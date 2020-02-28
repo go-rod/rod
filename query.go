@@ -33,7 +33,7 @@ func (els Elements) Empty() bool {
 	return len(els) == 0
 }
 
-// HasE ...
+// HasE doc is the same as the method Has
 func (p *Page) HasE(selector string) (bool, error) {
 	_, err := p.ElementE(nil, "", selector)
 	if IsError(err, ErrElementNotFound) {
@@ -42,7 +42,7 @@ func (p *Page) HasE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasXE ...
+// HasXE doc is the same as the method HasX
 func (p *Page) HasXE(selector string) (bool, error) {
 	_, err := p.ElementXE(nil, "", selector)
 	if IsError(err, ErrElementNotFound) {
@@ -58,7 +58,7 @@ func (p *Page) HasX(selector string) bool {
 	return has
 }
 
-// HasMatchesE ...
+// HasMatchesE doc is the same as the method HasMatches
 func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 	_, err := p.ElementMatchesE(nil, "", selector, regex)
 	if IsError(err, ErrElementNotFound) {
@@ -72,7 +72,7 @@ func (p *Page) ElementE(sleeper kit.Sleeper, objectID, selector string) (*Elemen
 	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), []interface{}{selector})
 }
 
-// ElementMatchesE ...
+// ElementMatchesE doc is the same as the method ElementMatches
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID, selector, regex string) (*Element, error) {
 	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), []interface{}{selector, regex})
 }
@@ -133,12 +133,12 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []int
 	}, nil
 }
 
-// ElementsE ...
+// ElementsE doc is the same as the method Elements
 func (p *Page) ElementsE(objectID, selector string) (Elements, error) {
 	return p.ElementsByJSE(objectID, p.jsFn("elements"), []interface{}{selector})
 }
 
-// ElementsXE ...
+// ElementsXE doc is the same as the method ElementsX
 func (p *Page) ElementsXE(objectID, xpath string) (Elements, error) {
 	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), []interface{}{xpath})
 }
@@ -186,52 +186,52 @@ func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements,
 	return elemList, err
 }
 
-// ElementE ...
+// ElementE doc is the same as the method Element
 func (el *Element) ElementE(selector string) (*Element, error) {
 	return el.page.ElementE(nil, el.ObjectID, selector)
 }
 
-// ElementXE ...
+// ElementXE doc is the same as the method ElementX
 func (el *Element) ElementXE(xpath string) (*Element, error) {
 	return el.page.ElementXE(nil, el.ObjectID, xpath)
 }
 
-// ElementByJSE ...
+// ElementByJSE doc is the same as the method ElementByJS
 func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, error) {
 	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
 }
 
-// ParentE ...
+// ParentE doc is the same as the method Parent
 func (el *Element) ParentE() (*Element, error) {
 	return el.ElementByJSE(`() => this.parentElement`)
 }
 
-// NextE ...
+// NextE doc is the same as the method Next
 func (el *Element) NextE() (*Element, error) {
 	return el.ElementByJSE(`() => this.nextElementSibling`)
 }
 
-// PreviousE ...
+// PreviousE doc is the same as the method Previous
 func (el *Element) PreviousE() (*Element, error) {
 	return el.ElementByJSE(`() => this.previousElementSibling`)
 }
 
-// ElementMatchesE ...
+// ElementMatchesE doc is the same as the method ElementMatches
 func (el *Element) ElementMatchesE(selector, regex string) (*Element, error) {
 	return el.page.ElementMatchesE(nil, el.ObjectID, selector, regex)
 }
 
-// ElementsE ...
+// ElementsE doc is the same as the method Elements
 func (el *Element) ElementsE(selector string) (Elements, error) {
 	return el.page.ElementsE(el.ObjectID, selector)
 }
 
-// ElementsXE ...
+// ElementsXE doc is the same as the method ElementsX
 func (el *Element) ElementsXE(xpath string) (Elements, error) {
 	return el.page.ElementsXE(el.ObjectID, xpath)
 }
 
-// ElementsByJSE ...
+// ElementsByJSE doc is the same as the method ElementsByJS
 func (el *Element) ElementsByJSE(js string, params ...interface{}) (Elements, error) {
 	return el.page.ElementsByJSE(el.ObjectID, js, params)
 }

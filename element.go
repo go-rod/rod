@@ -24,7 +24,7 @@ type Element struct {
 	ObjectID string
 }
 
-// DescribeE ...
+// DescribeE doc is the same as the method Describe
 func (el *Element) DescribeE() (kit.JSONResult, error) {
 	val, err := el.page.CallE(
 		el.ctx,
@@ -40,7 +40,7 @@ func (el *Element) DescribeE() (kit.JSONResult, error) {
 	return &node, nil
 }
 
-// FrameE ...
+// FrameE doc is the same as the method Frame
 func (el *Element) FrameE() (*Page, error) {
 	node, err := el.DescribeE()
 	if err != nil {
@@ -55,7 +55,7 @@ func (el *Element) FrameE() (*Page, error) {
 	return &newPage, nil
 }
 
-// FocusE ...
+// FocusE doc is the same as the method Focus
 func (el *Element) FocusE() error {
 	err := el.ScrollIntoViewIfNeededE()
 	if err != nil {
@@ -66,13 +66,13 @@ func (el *Element) FocusE() error {
 	return err
 }
 
-// ScrollIntoViewIfNeededE ...
+// ScrollIntoViewIfNeededE doc is the same as the method ScrollIntoViewIfNeeded
 func (el *Element) ScrollIntoViewIfNeededE() error {
 	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"))
 	return err
 }
 
-// ClickE ...
+// ClickE doc is the same as the method Click
 func (el *Element) ClickE(button string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -102,7 +102,7 @@ func (el *Element) ClickE(button string) error {
 	return el.page.Mouse.ClickE(button)
 }
 
-// PressE ...
+// PressE doc is the same as the method Press
 func (el *Element) PressE(key rune) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -119,7 +119,7 @@ func (el *Element) PressE(key rune) error {
 	return el.page.Keyboard.PressE(key)
 }
 
-// SelectTextE ...
+// SelectTextE doc is the same as the method SelectText
 func (el *Element) SelectTextE(regex string) error {
 	err := el.FocusE()
 	if err != nil {
@@ -129,7 +129,7 @@ func (el *Element) SelectTextE(regex string) error {
 	return err
 }
 
-// SelectAllTextE ...
+// SelectAllTextE doc is the same as the method SelectAllText
 func (el *Element) SelectAllTextE() error {
 	err := el.FocusE()
 	if err != nil {
@@ -139,7 +139,7 @@ func (el *Element) SelectAllTextE() error {
 	return err
 }
 
-// InputE ...
+// InputE doc is the same as the method Input
 func (el *Element) InputE(text string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -162,7 +162,7 @@ func (el *Element) InputE(text string) error {
 	return err
 }
 
-// SelectE ...
+// SelectE doc is the same as the method Select
 func (el *Element) SelectE(selectors ...string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -178,7 +178,7 @@ func (el *Element) SelectE(selectors ...string) error {
 	return err
 }
 
-// SetFilesE ...
+// SetFilesE doc is the same as the method SetFiles
 func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}
 	for _, p := range paths {
@@ -196,19 +196,19 @@ func (el *Element) SetFilesE(paths []string) error {
 	return err
 }
 
-// TextE ...
+// TextE doc is the same as the method Text
 func (el *Element) TextE() (string, error) {
 	str, err := el.EvalE(true, `() => this.innerText`)
 	return str.String(), err
 }
 
-// HTMLE ...
+// HTMLE doc is the same as the method HTML
 func (el *Element) HTMLE() (string, error) {
 	str, err := el.EvalE(true, `() => this.outerHTML`)
 	return str.String(), err
 }
 
-// VisibleE ...
+// VisibleE doc is the same as the method Visible
 func (el *Element) VisibleE() (bool, error) {
 	res, err := el.EvalE(true, el.page.jsFn("visible"))
 	if err != nil {
@@ -245,7 +245,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 	return nil
 }
 
-// WaitE ...
+// WaitE doc is the same as the method Wait
 func (el *Element) WaitE(js string, params ...interface{}) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params...)
@@ -261,17 +261,17 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 	})
 }
 
-// WaitVisibleE ...
+// WaitVisibleE doc is the same as the method WaitVisible
 func (el *Element) WaitVisibleE() error {
 	return el.WaitE(el.page.jsFn("visible"))
 }
 
-// WaitInvisibleE ...
+// WaitInvisibleE doc is the same as the method WaitInvisible
 func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(el.page.jsFn("invisible"))
 }
 
-// BoxE ...
+// BoxE doc is the same as the method Box
 func (el *Element) BoxE() (kit.JSONResult, error) {
 	box, err := el.EvalE(true, el.page.jsFn("box"))
 	if err != nil {
@@ -292,7 +292,7 @@ func (el *Element) BoxE() (kit.JSONResult, error) {
 	return kit.JSON(kit.MustToJSON(j)), nil
 }
 
-// ResourceE ...
+// ResourceE doc is the same as the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
 	src, err := el.EvalE(true, el.page.jsFn("resource"))
 	if err != nil {
@@ -322,12 +322,12 @@ func (el *Element) ResourceE() ([]byte, error) {
 	return bin, nil
 }
 
-// ReleaseE ...
+// ReleaseE doc is the same as the method Release
 func (el *Element) ReleaseE() error {
 	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)
 }
 
-// EvalE ...
+// EvalE doc is the same as the method Eval
 func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
 	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }

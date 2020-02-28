@@ -17,7 +17,7 @@ type Keyboard struct {
 	modifiers int64
 }
 
-// DownE ...
+// DownE doc is the same as the method Down
 func (k *Keyboard) DownE(key rune) error {
 	actions := input.Encode(key)
 
@@ -37,7 +37,7 @@ func (k *Keyboard) Down(key rune) {
 	kit.E(k.DownE(key))
 }
 
-// UpE ...
+// UpE doc is the same as the method Up
 func (k *Keyboard) UpE(key rune) error {
 	actions := input.Encode(key)
 
@@ -57,7 +57,7 @@ func (k *Keyboard) Up(key rune) {
 	kit.E(k.UpE(key))
 }
 
-// PressE ...
+// PressE doc is the same as the method Press
 func (k *Keyboard) PressE(key rune) error {
 	actions := input.Encode(key)
 
@@ -85,7 +85,7 @@ func (k *Keyboard) Press(key rune) {
 	kit.E(k.PressE(key))
 }
 
-// InsertTextE ...
+// InsertTextE doc is the same as the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
 	_, err := k.page.CallE(nil, "Input.insertText", cdp.Object{
 		"text": text,
