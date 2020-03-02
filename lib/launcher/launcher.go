@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"errors"
 	"io"
 	nurl "net/url"
 	"os"
@@ -10,7 +11,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/leakless"
@@ -24,12 +24,16 @@ type Launcher struct {
 	log      func(string)
 	flags    map[string][]string
 	output   chan string
+	exit     chan kit.Nil
 }
 
 // New returns the default arguments to start chrome.
 // "--" is optional, with or without it won't affect the result.
 // All available switches: https://chromium.googlesource.com/chromium/src/+/32352ad08ee673a4d43e8593ce988b224f6482d3/chrome/common/chrome_switches.cc
 func New() *Launcher {
+	tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
+	kit.E(os.MkdirAll(tmp, 0700))
+
 	defaultFlags := map[string][]string{
 		// use random port by default
 		"remote-debugging-port": {"0"},
@@ -59,9 +63,7 @@ func New() *Launcher {
 		"force-color-profile":                                {"srgb"},
 		"metrics-recording-only":                             nil,
 		"no-first-run":                                       nil,
-		"enable-automation":                                  nil,
-		"password-store":                                     {"basic"},
-		"use-mock-keychain":                                  nil,
+		"user-data-dir":                                      {tmp},
 
 		// to prevent welcome page
 		"": {"about:blank"},
@@ -72,6 +74,7 @@ func New() *Launcher {
 		leakless: true,
 		flags:    defaultFlags,
 		output:   make(chan string),
+		exit:     make(chan kit.Nil),
 	}
 }
 
@@ -121,9 +124,14 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l
 }
 
-// UserDataDir arg
+// UserDataDir is where the browser will look for all of its state, such as cookie and cache.
+// When set to empty, system user's default dir will be used.
 func (l *Launcher) UserDataDir(dir string) *Launcher {
-	l.Set("user-data-dir", dir)
+	if dir == "" {
+		l.Delete("user-data-dir")
+	} else {
+		l.Set("user-data-dir", dir)
+	}
 	return l
 }
 
@@ -156,6 +164,20 @@ func (l *Launcher) Log(log func(string)) *Launcher {
 	return l
 }
 
+// UserModeLaunch is a preset to enable reusing current user data. Useful for automation of personal browser.
+func (l *Launcher) UserModeLaunch() string {
+	port := l.flags["remote-debugging-port"][0]
+	if port == "0" {
+		port = "37712"
+		l.Set("remote-debugging-port", port)
+	}
+	url, err := GetWebSocketDebuggerURL(context.Background(), "http://127.0.0.1:"+port)
+	if err != nil {
+		url = l.Headless(false).KillAfterExit(false).UserDataDir("").Launch()
+	}
+	return url
+}
+
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
@@ -175,15 +197,6 @@ func (l *Launcher) LaunchE() (string, error) {
 		if err != nil {
 			return "", err
 		}
-	}
-
-	if !l.Has("user-data-dir") {
-		tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
-		err := os.MkdirAll(tmp, 0700)
-		if err != nil {
-			return "", err
-		}
-		l.UserDataDir(tmp)
 	}
 
 	ll := leakless.New()
@@ -212,6 +225,11 @@ func (l *Launcher) LaunchE() (string, error) {
 
 	go l.read(stdout)
 	go l.read(stderr)
+
+	go func() {
+		_ = cmd.Wait()
+		close(l.exit)
+	}()
 
 	u, err := l.getURL()
 	if err != nil {
@@ -245,13 +263,15 @@ func (l *Launcher) read(reader io.Reader) {
 func (l *Launcher) getURL() (string, error) {
 	out := ""
 
-	timeout, cancel := context.WithTimeout(l.ctx, time.Minute)
-	defer cancel()
-
 	for {
 		select {
 		case e := <-l.output:
 			out += e
+
+			if strings.Contains(out, "Opening in existing browser session") {
+				return "", errors.New("[launcher] Quit the current running Chrome first")
+			}
+
 			str := regexp.MustCompile(`ws://.+/`).FindString(out)
 			if str != "" {
 				u, err := nurl.Parse(strings.TrimSpace(str))
@@ -260,8 +280,8 @@ func (l *Launcher) getURL() (string, error) {
 				}
 				return "http://" + u.Host, nil
 			}
-		case <-timeout.Done():
-			return "", timeout.Err()
+		case <-l.exit:
+			return "", errors.New("[launcher] Failed to get the debug url: " + out)
 		}
 	}
 }

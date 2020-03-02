@@ -32,6 +32,21 @@ func Example_basic() {
 	// Output: Idempotence
 }
 
+// Such as you logged in your github account and you want to reuse the login session,
+// you may want to launch Chrome like this example.
+func Example_reuse_sessions() {
+	url := launcher.New().UserModeLaunch()
+
+	browser := rod.New().ControlURL(url).Connect()
+
+	browser.Page("https://github.com")
+
+	fmt.Println("done")
+
+	// Skip
+	// Output: done
+}
+
 func Example_debug_mode() {
 	// run chrome on foreground
 	url := launcher.New().Headless(false).Launch()
