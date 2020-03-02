@@ -25,7 +25,9 @@ func Example_basic() {
 
 	page.Element("[type=submit]").Click()
 
-	fmt.Println(page.Element("#firstHeading").Text())
+	text := page.Element("#firstHeading").Text()
+
+	fmt.Println(text)
 
 	// Output: Idempotence
 }
@@ -127,6 +129,7 @@ func Example_direct_cdp() {
 
 	page := browser.Page("about:blank").Timeout(time.Minute)
 
+	// call cdp interface directly here
 	// set the cookie before we visit the website
 	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
 	page.Call("Network.setCookie", &cdp.Object{
@@ -137,7 +140,10 @@ func Example_direct_cdp() {
 
 	page.Navigate("https://www.wikipedia.org/").WaitLoad()
 
-	fmt.Println(page.Eval(`() => document.cookie`).String()[:9])
+	// eval js on the page to get the cookie
+	cookie := page.Eval(`() => document.cookie`).String()
+
+	fmt.Println(cookie[:9])
 
 	// Output: rod=test;
 }
