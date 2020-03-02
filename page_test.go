@@ -47,10 +47,15 @@ func (s *S) TestWindow() {
 		bounds.Get("top").Int(),
 		bounds.Get("width").Int(),
 		bounds.Get("height").Int(),
-		"normal",
 	)
 
-	page.Window(0, 0, 1211, 611, "normal")
+	page.WindowMaximize()
+	page.WindowNormal()
+	page.WindowFullscreen()
+	page.WindowNormal()
+	page.WindowMinimize()
+	page.WindowNormal()
+	page.Window(0, 0, 1211, 611)
 	s.EqualValues(1211, page.Eval(`() => window.innerWidth`).Int())
 	s.EqualValues(611, page.Eval(`() => window.innerHeight`).Int())
 }

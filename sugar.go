@@ -70,14 +70,46 @@ func (p *Page) GetWindow() kit.JSONResult {
 	return bounds
 }
 
-// Window set window bounds. The state must be one of normal, minimized, maximized, fullscreen.
-func (p *Page) Window(left, top, width, height int64, state string) *Page {
+// Window set the window location and size
+func (p *Page) Window(left, top, width, height int64) *Page {
 	kit.E(p.WindowE(&cdp.Object{
 		"left":        left,
 		"top":         top,
 		"width":       width,
 		"height":      height,
-		"windowState": state,
+		"windowState": "normal",
+	}))
+	return p
+}
+
+// WindowMinimize the window
+func (p *Page) WindowMinimize() *Page {
+	kit.E(p.WindowE(&cdp.Object{
+		"windowState": "minimized",
+	}))
+	return p
+}
+
+// WindowMaximize the window
+func (p *Page) WindowMaximize() *Page {
+	kit.E(p.WindowE(&cdp.Object{
+		"windowState": "maximized",
+	}))
+	return p
+}
+
+// WindowFullscreen the window
+func (p *Page) WindowFullscreen() *Page {
+	kit.E(p.WindowE(&cdp.Object{
+		"windowState": "fullscreen",
+	}))
+	return p
+}
+
+// WindowNormal the window size
+func (p *Page) WindowNormal() *Page {
+	kit.E(p.WindowE(&cdp.Object{
+		"windowState": "normal",
 	}))
 	return p
 }
