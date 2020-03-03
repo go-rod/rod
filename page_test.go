@@ -239,13 +239,12 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	p := s.page.Navigate(htmlFile("fixtures/scroll.html"))
-	p.Mouse.Scroll(3000, 3000)
-	kit.E(p.Mouse.ScrollE(5000, 5000, 6))
-	el := p.Element("button")
-	box := el.Box()
-	s.EqualValues(8008, box.Get("left").Int())
-	s.EqualValues(8008, box.Get("top").Int())
+	p := s.page.Navigate(htmlFile("fixtures/scroll.html")).WaitLoad()
+	p.Mouse.Scroll(100, 200)
+	kit.E(p.Mouse.ScrollE(200, 300, 5))
+	p.Element("button").WaitStable()
+	s.EqualValues(300, p.Eval("() => window.pageXOffset").Int())
+	s.EqualValues(500, p.Eval("() => window.pageYOffset").Int())
 }
 
 func (s *S) TestPageOthers() {

@@ -73,12 +73,14 @@ func (m *Mouse) ScrollE(x, y, steps int64) error {
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	stepX := (x - m.x) / steps
-	stepY := (y - m.y) / steps
+	stepX := x / steps
+	stepY := y / steps
 
 	for i := int64(0); i < steps; i++ {
+		kit.Sleep(1)
+
 		_, err := m.page.CallE(nil, "Input.dispatchMouseEvent", cdp.Object{
-			"type":      "mouseMoved",
+			"type":      "mouseWheel",
 			"x":         m.x,
 			"y":         m.y,
 			"button":    button,
