@@ -17,7 +17,7 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// Chrome to smartly launch chrome
+// Chrome is a helper to download chrome smartly
 type Chrome struct {
 	Context context.Context
 

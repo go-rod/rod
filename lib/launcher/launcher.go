@@ -16,7 +16,7 @@ import (
 	"github.com/ysmood/leakless"
 )
 
-// Launcher chrome cli flags helper
+// Launcher is a helper to launch chrome binary smartly
 type Launcher struct {
 	ctx      context.Context
 	bin      string
