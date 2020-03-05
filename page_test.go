@@ -16,7 +16,7 @@ import (
 )
 
 func (s *S) TestClosePage() {
-	page := s.browser.Page(htmlFile("fixtures/click.html"))
+	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Element("button")
 }
@@ -38,7 +38,7 @@ func (s *S) TestPageCall() {
 }
 
 func (s *S) TestWindow() {
-	page := s.browser.Page(htmlFile("fixtures/click.html"))
+	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 
 	bounds := page.GetWindow()
@@ -61,21 +61,29 @@ func (s *S) TestWindow() {
 }
 
 func (s *S) TestSetViewport() {
-	page := s.browser.Page(htmlFile("fixtures/click.html"))
+	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Viewport(317, 419, 0, false)
 	res := page.Eval(`() => [window.innerWidth, window.innerHeight]`)
 	s.EqualValues(317, res.Get("0").Int())
 	s.EqualValues(419, res.Get("1").Int())
 
-	page2 := s.browser.Page(htmlFile("fixtures/click.html"))
+	page2 := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page2.Close()
 	res = page2.Eval(`() => [window.innerWidth, window.innerHeight]`)
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
+func (s *S) TestPageLoadScript() {
+	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
+
+	res := p.LoadScript(srcFile("fixtures/load-script.js")).Eval(`() => ok()`)
+
+	s.Equal("ok", res.String())
+}
+
 func (s *S) TestUntilPage() {
-	page := s.page.Timeout(3 * time.Second).Navigate(htmlFile("fixtures/open-page.html"))
+	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
 	wait := page.WaitPage()
@@ -112,7 +120,7 @@ func (s *S) TestPageWaitRequestIdle() {
 }
 
 func (s *S) TestPageWaitIdle() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
 	p.WaitIdle()
 
@@ -121,12 +129,12 @@ func (s *S) TestPageWaitIdle() {
 
 func (s *S) TestPageWaitEvent() {
 	wait := s.page.WaitEvent("Page.frameNavigated")
-	s.page.Navigate(htmlFile("fixtures/click.html"))
+	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
 func (s *S) TestAlert() {
-	page := s.page.Navigate(htmlFile("fixtures/alert.html"))
+	page := s.page.Navigate(srcFile("fixtures/alert.html"))
 
 	wait := page.HandleDialog(true, "")
 
@@ -161,7 +169,7 @@ func (s *S) TestDownloadFile() {
 }
 
 func (s *S) TestMouse() {
-	page := s.page.Navigate(htmlFile("fixtures/click.html"))
+	page := s.page.Navigate(srcFile("fixtures/click.html"))
 	page.Element("button")
 	mouse := page.Mouse
 
@@ -176,7 +184,7 @@ func (s *S) TestMouseClick() {
 	s.browser.Slowmotion(1)
 	defer func() { s.browser.Slowmotion(0) }()
 
-	page := s.page.Navigate(htmlFile("fixtures/click.html"))
+	page := s.page.Navigate(srcFile("fixtures/click.html"))
 	page.Element("button")
 	mouse := page.Mouse
 	mouse.Move(140, 160)
@@ -187,7 +195,7 @@ func (s *S) TestMouseClick() {
 func (s *S) TestDrag() {
 	s.T().Skip("not able to use mouse event to simulate it for now")
 
-	page := s.page.Navigate(htmlFile("fixtures/drag.html"))
+	page := s.page.Navigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
 	mouse.Move(60, 30)
@@ -207,7 +215,7 @@ func (s *S) TestPagePause() {
 }
 
 func (s *S) TestPageScreenshot() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	p.Viewport(400, 300, 1, false)
 	p.Element("button")
 	data := p.Screenshot()
@@ -218,7 +226,7 @@ func (s *S) TestPageScreenshot() {
 }
 
 func (s *S) TestPageTraceDir() {
-	p := *s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := *s.page.Navigate(srcFile("fixtures/click.html"))
 	dir := filepath.FromSlash("tmp/trace-screenshots/" + kit.RandString(8))
 	p.TraceDir(dir)
 	p.Element("button").Click()
@@ -227,7 +235,7 @@ func (s *S) TestPageTraceDir() {
 }
 
 func (s *S) TestPageInput() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
 	el := p.Element("input")
 	el.Focus()
@@ -239,7 +247,7 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	p := s.page.Navigate(htmlFile("fixtures/scroll.html")).WaitLoad()
+	p := s.page.Navigate(srcFile("fixtures/scroll.html")).WaitLoad()
 	p.Mouse.Scroll(100, 200)
 	kit.E(p.Mouse.ScrollE(200, 300, 5))
 	p.Element("button").WaitStable()
@@ -248,7 +256,7 @@ func (s *S) TestPageScroll() {
 }
 
 func (s *S) TestPageOthers() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("localName").String())
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
@@ -268,7 +276,7 @@ func (s *S) TestPageOthers() {
 }
 
 func (s *S) TestPageErrors() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()

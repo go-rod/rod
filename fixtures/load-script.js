@@ -1,0 +1,4 @@
+
+function ok() {
+    return "ok"
+}

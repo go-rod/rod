@@ -11,27 +11,27 @@ import (
 )
 
 func (s *S) TestClick() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
 
 	s.True(p.Has("[a=ok]"))
 }
 
 func (s *S) TestElementContext() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	el := p.Element("button").Timeout(time.Minute).CancelTimeout().Cancel()
 	s.Error(el.ClickE("left"))
 }
 
 func (s *S) TestClickInIframes() {
-	p := s.page.Navigate(htmlFile("fixtures/click-iframes.html"))
+	p := s.page.Navigate(srcFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
 	frame.Element("button").Click()
 	s.True(frame.Has("[a=ok]"))
 }
 
 func (s *S) TestPress() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("[type=text]")
 	el.Press('A')
 	el.Press(' ')
@@ -41,7 +41,7 @@ func (s *S) TestPress() {
 }
 
 func (s *S) TestKeyDown() {
-	p := s.page.Navigate(htmlFile("fixtures/keys.html"))
+	p := s.page.Navigate(srcFile("fixtures/keys.html"))
 	p.Element("body")
 	p.Keyboard.Down('j')
 
@@ -49,7 +49,7 @@ func (s *S) TestKeyDown() {
 }
 
 func (s *S) TestKeyUp() {
-	p := s.page.Navigate(htmlFile("fixtures/keys.html"))
+	p := s.page.Navigate(srcFile("fixtures/keys.html"))
 	p.Element("body")
 	p.Keyboard.Up('x')
 
@@ -59,7 +59,7 @@ func (s *S) TestKeyUp() {
 func (s *S) TestText() {
 	text := "雲の上は\nいつも晴れ"
 
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("textarea")
 	el.Input(text)
 
@@ -68,7 +68,7 @@ func (s *S) TestText() {
 }
 
 func (s *S) TestSelectText() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("textarea")
 	el.Input("test")
 	el.SelectAllText()
@@ -82,7 +82,7 @@ func (s *S) TestSelectText() {
 }
 
 func (s *S) TestSelect() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("select")
 	el.Select("C")
 
@@ -90,7 +90,7 @@ func (s *S) TestSelect() {
 }
 
 func (s *S) TestSetFiles() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element(`[type=file]`)
 	el.SetFiles(
 		filepath.FromSlash("fixtures/click.html"),
@@ -103,7 +103,7 @@ func (s *S) TestSetFiles() {
 }
 
 func (s *S) TestSelectQuery() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("select")
 	el.Select("[value=c]")
 
@@ -111,7 +111,7 @@ func (s *S) TestSelectQuery() {
 }
 
 func (s *S) TestSelectQueryNum() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("select")
 	el.Select("123")
 
@@ -119,7 +119,7 @@ func (s *S) TestSelectQueryNum() {
 }
 
 func (s *S) TestEnter() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("[type=submit]")
 	el.Press(input.Enter)
 
@@ -127,7 +127,7 @@ func (s *S) TestEnter() {
 }
 
 func (s *S) TestWaitInvisible() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	h4 := p.Element("h4")
 	btn := p.Element("button")
 	timeout := 3 * time.Second
@@ -152,7 +152,7 @@ func (s *S) TestWaitInvisible() {
 }
 
 func (s *S) TestWaitStable() {
-	p := s.page.Navigate(htmlFile("fixtures/wait-stable.html"))
+	p := s.page.Navigate(srcFile("fixtures/wait-stable.html"))
 	el := p.Element("button")
 	el.WaitStable()
 	el.Click()
@@ -160,19 +160,19 @@ func (s *S) TestWaitStable() {
 }
 
 func (s *S) TestResource() {
-	p := s.page.Navigate(htmlFile("fixtures/resource.html"))
+	p := s.page.Navigate(srcFile("fixtures/resource.html"))
 	s.Equal(15148, len(p.Element("img").Resource()))
 }
 
 func (s *S) TestUseReleasedElement() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	btn := p.Element("button")
 	btn.Release()
 	s.EqualError(btn.ClickE("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
 }
 
 func (s *S) TestFnErr() {
-	p := s.page.Navigate(htmlFile("fixtures/click.html"))
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	el := p.Element("button")
 
 	_, err := el.EvalE(true, "foo()", nil)
@@ -187,7 +187,7 @@ func (s *S) TestFnErr() {
 }
 
 func (s *S) TestElementOthers() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("form")
 	el.Focus()
 	el.ScrollIntoViewIfNeeded()
@@ -199,7 +199,7 @@ func (s *S) TestElementOthers() {
 }
 
 func (s *S) TestElementErrors() {
-	p := s.page.Navigate(htmlFile("fixtures/input.html"))
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("form")
 
 	ctx, cancel := context.WithCancel(context.Background())

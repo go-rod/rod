@@ -9,7 +9,7 @@ import (
 )
 
 func (s *S) TestBrowserPages() {
-	page := s.browser.Page(htmlFile("fixtures/click.html"))
+	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 
 	page.Element("button")
@@ -26,7 +26,7 @@ func (s *S) TestBrowserContext() {
 
 func (s *S) TestBrowserWaitEvent() {
 	wait := s.browser.WaitEvent("Page.frameNavigated")
-	s.page.Navigate(htmlFile("fixtures/click.html"))
+	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
@@ -39,7 +39,7 @@ func (s *S) TestBrowserCall() {
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {
-	p := rod.New().Connect().Page(htmlFile("fixtures/click.html"))
+	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
@@ -77,7 +77,7 @@ func BenchmarkCacheOff(b *testing.B) {
 }
 
 func BenchmarkCache(b *testing.B) {
-	p := rod.New().Connect().Page(htmlFile("fixtures/click.html"))
+	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 

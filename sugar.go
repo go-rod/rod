@@ -198,6 +198,12 @@ func (p *Page) WaitEvent(name string) (wait func()) {
 	return func() { kit.E(w()) }
 }
 
+// LoadScript to page with the specified src path
+func (p *Page) LoadScript(src string) *Page {
+	kit.E(p.LoadScriptE(src))
+	return p
+}
+
 // Eval js on the page. The first param must be a js function definition.
 // For example page.Eval(`n => n + 1`, 1) will return 2
 func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {

@@ -188,6 +188,18 @@ var Rod = `
       const div = document.createElement('div')
       div.innerHTML = html
       return div.innerText
+    },
+
+    loadScript (src) {
+      if (Array.from(document.querySelectorAll('script')).find(s => s.src === src)) return
+
+      return new Promise((resolve, reject) => {
+        var s = document.createElement('script')
+        s.src = src
+        s.onload = resolve
+        s.onerror = reject
+        document.head.appendChild(s)
+      })
     }
   }
 

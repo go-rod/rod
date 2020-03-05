@@ -366,6 +366,12 @@ func (p *Page) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.
 	})
 }
 
+// LoadScriptE to page with the specified src path
+func (p *Page) LoadScriptE(src string) error {
+	_, err := p.EvalE(true, "", p.jsFn("loadScript"), []interface{}{src})
+	return err
+}
+
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
 func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
