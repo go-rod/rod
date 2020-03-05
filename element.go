@@ -62,13 +62,13 @@ func (el *Element) FocusE() error {
 		return err
 	}
 
-	_, err = el.EvalE(true, `() => this.focus()`)
+	_, err = el.EvalE(true, `() => this.focus()`, nil)
 	return err
 }
 
 // ScrollIntoViewIfNeededE doc is the same as the method ScrollIntoViewIfNeeded
 func (el *Element) ScrollIntoViewIfNeededE() error {
-	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"))
+	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"), nil)
 	return err
 }
 
@@ -129,7 +129,7 @@ func (el *Element) SelectTextE(regex string) error {
 	if err != nil {
 		return err
 	}
-	_, err = el.EvalE(true, el.page.jsFn("selectText"), regex)
+	_, err = el.EvalE(true, el.page.jsFn("selectText"), []interface{}{regex})
 	return err
 }
 
@@ -139,7 +139,7 @@ func (el *Element) SelectAllTextE() error {
 	if err != nil {
 		return err
 	}
-	_, err = el.EvalE(true, el.page.jsFn("selectAllText"))
+	_, err = el.EvalE(true, el.page.jsFn("selectAllText"), nil)
 	return err
 }
 
@@ -164,12 +164,12 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	_, err = el.EvalE(true, el.page.jsFn("inputEvent"))
+	_, err = el.EvalE(true, el.page.jsFn("inputEvent"), nil)
 	return err
 }
 
 // SelectE doc is the same as the method Select
-func (el *Element) SelectE(selectors ...string) error {
+func (el *Element) SelectE(selectors []string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
 		return err
@@ -183,7 +183,7 @@ func (el *Element) SelectE(selectors ...string) error {
 
 	el.page.browser.trySlowmotion("Input.select")
 
-	_, err = el.EvalE(true, el.page.jsFn("select"), selectors)
+	_, err = el.EvalE(true, el.page.jsFn("select"), []interface{}{selectors})
 	return err
 }
 
@@ -207,19 +207,19 @@ func (el *Element) SetFilesE(paths []string) error {
 
 // TextE doc is the same as the method Text
 func (el *Element) TextE() (string, error) {
-	str, err := el.EvalE(true, `() => this.innerText`)
+	str, err := el.EvalE(true, `() => this.innerText`, nil)
 	return str.String(), err
 }
 
 // HTMLE doc is the same as the method HTML
 func (el *Element) HTMLE() (string, error) {
-	str, err := el.EvalE(true, `() => this.outerHTML`)
+	str, err := el.EvalE(true, `() => this.outerHTML`, nil)
 	return str.String(), err
 }
 
 // VisibleE doc is the same as the method Visible
 func (el *Element) VisibleE() (bool, error) {
-	res, err := el.EvalE(true, el.page.jsFn("visible"))
+	res, err := el.EvalE(true, el.page.jsFn("visible"), nil)
 	if err != nil {
 		return false, err
 	}
@@ -255,9 +255,9 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 }
 
 // WaitE doc is the same as the method Wait
-func (el *Element) WaitE(js string, params ...interface{}) error {
+func (el *Element) WaitE(js string, params []interface{}) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
-		res, err := el.EvalE(true, js, params...)
+		res, err := el.EvalE(true, js, params)
 		if err != nil {
 			return true, err
 		}
@@ -272,17 +272,17 @@ func (el *Element) WaitE(js string, params ...interface{}) error {
 
 // WaitVisibleE doc is the same as the method WaitVisible
 func (el *Element) WaitVisibleE() error {
-	return el.WaitE(el.page.jsFn("visible"))
+	return el.WaitE(el.page.jsFn("visible"), nil)
 }
 
 // WaitInvisibleE doc is the same as the method WaitInvisible
 func (el *Element) WaitInvisibleE() error {
-	return el.WaitE(el.page.jsFn("invisible"))
+	return el.WaitE(el.page.jsFn("invisible"), nil)
 }
 
 // BoxE doc is the same as the method Box
 func (el *Element) BoxE() (kit.JSONResult, error) {
-	box, err := el.EvalE(true, el.page.jsFn("box"))
+	box, err := el.EvalE(true, el.page.jsFn("box"), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -303,7 +303,7 @@ func (el *Element) BoxE() (kit.JSONResult, error) {
 
 // ResourceE doc is the same as the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
-	src, err := el.EvalE(true, el.page.jsFn("resource"))
+	src, err := el.EvalE(true, el.page.jsFn("resource"), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -337,6 +337,6 @@ func (el *Element) ReleaseE() error {
 }
 
 // EvalE doc is the same as the method Eval
-func (el *Element) EvalE(byValue bool, js string, params ...interface{}) (kit.JSONResult, error) {
+func (el *Element) EvalE(byValue bool, js string, params []interface{}) (kit.JSONResult, error) {
 	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }

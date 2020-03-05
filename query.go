@@ -197,23 +197,23 @@ func (el *Element) ElementXE(xpath string) (*Element, error) {
 }
 
 // ElementByJSE doc is the same as the method ElementByJS
-func (el *Element) ElementByJSE(js string, params ...interface{}) (*Element, error) {
+func (el *Element) ElementByJSE(js string, params []interface{}) (*Element, error) {
 	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
 }
 
 // ParentE doc is the same as the method Parent
 func (el *Element) ParentE() (*Element, error) {
-	return el.ElementByJSE(`() => this.parentElement`)
+	return el.ElementByJSE(`() => this.parentElement`, nil)
 }
 
 // NextE doc is the same as the method Next
 func (el *Element) NextE() (*Element, error) {
-	return el.ElementByJSE(`() => this.nextElementSibling`)
+	return el.ElementByJSE(`() => this.nextElementSibling`, nil)
 }
 
 // PreviousE doc is the same as the method Previous
 func (el *Element) PreviousE() (*Element, error) {
-	return el.ElementByJSE(`() => this.previousElementSibling`)
+	return el.ElementByJSE(`() => this.previousElementSibling`, nil)
 }
 
 // ElementMatchesE doc is the same as the method ElementMatches
@@ -232,6 +232,6 @@ func (el *Element) ElementsXE(xpath string) (Elements, error) {
 }
 
 // ElementsByJSE doc is the same as the method ElementsByJS
-func (el *Element) ElementsByJSE(js string, params ...interface{}) (Elements, error) {
+func (el *Element) ElementsByJSE(js string, params []interface{}) (Elements, error) {
 	return el.page.ElementsByJSE(el.ObjectID, js, params)
 }

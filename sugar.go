@@ -176,7 +176,7 @@ func (p *Page) Pause() *Page {
 // WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to filter the requests by their url.
 func (p *Page) WaitRequestIdle(regexps ...string) (wait func()) {
-	w := p.WaitRequestIdleE(300*time.Millisecond, regexps...)
+	w := p.WaitRequestIdleE(300*time.Millisecond, regexps)
 	return func() { kit.E(w()) }
 }
 
@@ -336,7 +336,7 @@ func (el *Element) Input(text string) *Element {
 
 // Select the option elements that match the selectors, the selector can be text content or css selector
 func (el *Element) Select(selectors ...string) *Element {
-	kit.E(el.SelectE(selectors...))
+	kit.E(el.SelectE(selectors))
 	return el
 }
 
@@ -416,7 +416,7 @@ func (el *Element) Release() {
 // Eval evaluates js function on the element, the first param must be a js function definition
 // For example: el.Eval(`name => this.getAttribute(name)`, "value")
 func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
-	res, err := el.EvalE(true, js, params...)
+	res, err := el.EvalE(true, js, params)
 	kit.E(err)
 	return res
 }
@@ -437,7 +437,7 @@ func (el *Element) ElementX(xpath string) *Element {
 
 // ElementByJS returns the element from the return value of the js
 func (el *Element) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := el.ElementByJSE(js, params...)
+	el, err := el.ElementByJSE(js, params)
 	kit.E(err)
 	return el
 }
@@ -487,7 +487,7 @@ func (el *Element) ElementsX(xpath string) Elements {
 
 // ElementsByJS returns the elements from the return value of the js
 func (el *Element) ElementsByJS(js string, params ...interface{}) Elements {
-	list, err := el.ElementsByJSE(js, params...)
+	list, err := el.ElementsByJSE(js, params)
 	kit.E(err)
 	return list
 }

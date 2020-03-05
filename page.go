@@ -295,7 +295,7 @@ func (p *Page) PauseE() error {
 }
 
 // WaitRequestIdleE doc is the same as the method WaitRequestIdle
-func (p *Page) WaitRequestIdleE(d time.Duration, regexps ...string) func() error {
+func (p *Page) WaitRequestIdleE(d time.Duration, regexps []string) func() error {
 	if len(regexps) == 0 {
 		regexps = []string{""}
 	}

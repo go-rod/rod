@@ -175,12 +175,12 @@ func (s *S) TestFnErr() {
 	p := s.page.Navigate(htmlFile("fixtures/click.html"))
 	el := p.Element("button")
 
-	_, err := el.EvalE(true, "foo()")
+	_, err := el.EvalE(true, "foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
 
-	_, err = el.ElementByJSE("foo()")
+	_, err = el.ElementByJSE("foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
@@ -220,7 +220,7 @@ func (s *S) TestElementErrors() {
 	err = el.Context(ctx).InputE("a")
 	s.Error(err)
 
-	err = el.Context(ctx).SelectE("a")
+	err = el.Context(ctx).SelectE([]string{"a"})
 	s.Error(err)
 
 	err = el.Context(ctx).WaitStableE(0)
