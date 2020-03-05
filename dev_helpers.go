@@ -48,29 +48,24 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 }
 
 // Trace with an overlay on the element
-func (el *Element) Trace(htmlMessage string) func() {
-	var removeOverlay func()
-	if el.page.browser.trace {
-		box, err := el.BoxE()
+func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
+	id := "rod-" + kit.RandString(8)
+
+	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), []interface{}{
+		id,
+		htmlMessage,
+	})
+	CancelPanic(err)
+
+	removeOverlay = func() {
+		_, err := el.EvalE(true, el.page.jsFn("removeOverlay"), []interface{}{id})
 		CancelPanic(err)
-		removeOverlay = el.page.Overlay(
-			box.Get("left").Float(),
-			box.Get("top").Float(),
-			box.Get("width").Float(),
-			box.Get("height").Float(),
-			htmlMessage,
-		)
 	}
 
 	res := el.page.Eval(el.page.jsFn("stripHTML"), htmlMessage)
-
 	el.page.Trace(res.String())
 
-	return func() {
-		if removeOverlay != nil {
-			removeOverlay()
-		}
-	}
+	return
 }
 
 // Trace screenshot to TraceDir

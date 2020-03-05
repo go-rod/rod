@@ -97,7 +97,9 @@ func (el *Element) ClickE(button string) error {
 		return err
 	}
 
-	defer el.Trace(button + " click")()
+	if el.page.browser.trace {
+		defer el.Trace(button + " click")()
+	}
 
 	return el.page.Mouse.ClickE(button)
 }
@@ -114,7 +116,9 @@ func (el *Element) PressE(key rune) error {
 		return err
 	}
 
-	defer el.Trace("press " + string(key))()
+	if el.page.browser.trace {
+		defer el.Trace("press " + string(key))()
+	}
 
 	return el.page.Keyboard.PressE(key)
 }
@@ -151,7 +155,9 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	defer el.Trace("input " + text)()
+	if el.page.browser.trace {
+		defer el.Trace("input " + text)()
+	}
 
 	err = el.page.Keyboard.InsertTextE(text)
 	if err != nil {
@@ -169,9 +175,12 @@ func (el *Element) SelectE(selectors ...string) error {
 		return err
 	}
 
-	defer el.Trace(fmt.Sprintf(
-		`<span style="color: #777;">select</span> <code>%s</code>`,
-		strings.Join(selectors, "; ")))()
+	if el.page.browser.trace {
+		defer el.Trace(fmt.Sprintf(
+			`<span style="color: #777;">select</span> <code>%s</code>`,
+			strings.Join(selectors, "; ")))()
+	}
+
 	el.page.browser.trySlowmotion("Input.select")
 
 	_, err = el.EvalE(true, el.page.jsFn("select"), selectors)
