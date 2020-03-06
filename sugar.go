@@ -150,7 +150,7 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 	}
 }
 
-// Screenshot the page
+// Screenshot the page and returns the binary of png image
 func (p *Page) Screenshot() []byte {
 	png, err := p.ScreenshotE(nil)
 	kit.E(err)

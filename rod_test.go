@@ -60,7 +60,7 @@ func Test(t *testing.T) {
 
 	defer s.browser.Close()
 
-	s.page = s.browser.Page(srcFile("fixtures/click.html"))
+	s.page = s.browser.Page("")
 
 	suite.Run(t, s)
 }

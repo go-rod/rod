@@ -93,6 +93,10 @@ func (b *Browser) CloseE() error {
 
 // PageE doc is the same as the method Page
 func (b *Browser) PageE(url string) (*Page, error) {
+	if url == "" {
+		url = "about:blank"
+	}
+
 	target, err := b.CallE(nil, &cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
