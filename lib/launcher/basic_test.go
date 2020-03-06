@@ -17,6 +17,9 @@ func TestDownload(t *testing.T) {
 }
 
 func TestLaunch(t *testing.T) {
+	portFlag, _ := launcher.New().Get("remote-debugging-port")
+	assert.Equal(t, "0", portFlag[0])
+
 	ctx := context.Background()
 	url := launcher.New().Context(ctx).Delete("test").Bin("").
 		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).

@@ -63,6 +63,7 @@ func New() *Launcher {
 		"force-color-profile":                                {"srgb"},
 		"metrics-recording-only":                             nil,
 		"no-first-run":                                       nil,
+		"enable-automation":                                  nil,
 		"user-data-dir":                                      {tmp},
 
 		// to prevent welcome page
@@ -84,10 +85,10 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 	return l
 }
 
-// Has flag
-func (l *Launcher) Has(name string) bool {
-	_, has := l.flags[name]
-	return has
+// Get flag
+func (l *Launcher) Get(name string) ([]string, bool) {
+	flag, has := l.flags[name]
+	return flag, has
 }
 
 // Set flag
@@ -166,11 +167,15 @@ func (l *Launcher) Log(log func(string)) *Launcher {
 
 // UserModeLaunch is a preset to enable reusing current user data. Useful for automation of personal browser.
 func (l *Launcher) UserModeLaunch() string {
-	port := l.flags["remote-debugging-port"][0]
-	if port == "0" {
-		port = "37712"
-		l.Set("remote-debugging-port", port)
+	port := "37712"
+	portFlag, has := l.Get("remote-debugging-port")
+	if has && portFlag[0] != "0" {
+		port = portFlag[0]
 	}
+	l.Set("remote-debugging-port", port)
+
+	l.Delete("enable-automation")
+
 	url, err := GetWebSocketDebuggerURL(context.Background(), "http://127.0.0.1:"+port)
 	if err != nil {
 		url = l.Headless(false).KillAfterExit(false).UserDataDir("").Launch()
