@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
@@ -40,12 +41,15 @@ func (cdp *Client) debugLog(obj interface{}) {
 		return
 	}
 
+	prefix := time.Now().Format("[cdp] [2006-01-02 15:04:05]")
+
 	switch val := obj.(type) {
 	case *Request:
 		kit.E(fmt.Fprintf(
 			kit.Stdout,
-			"[cdp] %s %d %s %s %s\n",
-			kit.C("req", "green"),
+			"%s %s %d %s %s %s\n",
+			prefix,
+			kit.C("-> req", "green"),
 			val.ID,
 			val.Method,
 			val.SessionID,
@@ -53,15 +57,17 @@ func (cdp *Client) debugLog(obj interface{}) {
 		))
 	case *response:
 		kit.E(fmt.Fprintf(kit.Stdout,
-			"[cdp] %s %d %s %s\n",
-			kit.C("res", "yellow"),
+			"%s %s %d %s %s\n",
+			prefix,
+			kit.C("<- res", "yellow"),
 			val.ID,
 			prettyJSON(val.Result),
 			kit.Sdump(val.Error),
 		))
 	case *Event:
 		kit.E(fmt.Fprintf(kit.Stdout,
-			"[cdp] %s %s %s %s\n",
+			"%s %s %s %s %s\n",
+			prefix,
 			kit.C("evt", "blue"),
 			val.Method,
 			val.SessionID,
