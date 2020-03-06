@@ -40,8 +40,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	CancelPanic(err)
 
 	remove = func() {
-		_, err := root.EvalE(true, "", root.jsFn("removeOverlay"), []interface{}{id})
-		CancelPanic(err)
+		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), []interface{}{id})
 	}
 
 	return
@@ -58,8 +57,7 @@ func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 	CancelPanic(err)
 
 	removeOverlay = func() {
-		_, err := el.EvalE(true, el.page.jsFn("removeOverlay"), []interface{}{id})
-		CancelPanic(err)
+		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), []interface{}{id})
 	}
 
 	res := el.page.Eval(el.page.jsFn("stripHTML"), htmlMessage)
