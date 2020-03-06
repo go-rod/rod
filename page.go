@@ -449,7 +449,7 @@ func (p *Page) CallE(ctx context.Context, method string, params interface{}) (ki
 // Sleeper returns the default sleeper for retry, it will wake whenever Page or DOM event happens,
 // and use backoff as the backup to wake.
 func (p *Page) Sleeper() kit.Sleeper {
-	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+	backoff := kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 
 	return kit.MergeSleepers(backoff, func(ctx context.Context) error {
 		s := p.browser.event.Subscribe()
