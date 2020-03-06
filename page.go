@@ -294,8 +294,9 @@ func (p *Page) PauseE() error {
 	return err
 }
 
-// WaitRequestIdleE doc is the same as the method WaitRequestIdle
-func (p *Page) WaitRequestIdleE(d time.Duration, regexps []string) func() error {
+// WaitRequestIdleE doc is the same as the method WaitRequestIdle, n is the number of how many on going requests
+// can be considered as idle. Such as set n to 1 if there's a polling request.
+func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func() error {
 	if len(regexps) == 0 {
 		regexps = []string{""}
 	}
@@ -334,7 +335,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, regexps []string) func() error 
 					}
 				case "Network.loadingFinished", "Network.loadingFailed":
 					delete(reqList, e.Params.Get("requestId").String())
-					if len(reqList) == 0 {
+					if len(reqList) <= n {
 						timeout.Reset(d)
 					}
 				}

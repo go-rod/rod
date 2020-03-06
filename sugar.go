@@ -176,7 +176,7 @@ func (p *Page) Pause() *Page {
 // WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to filter the requests by their url.
 func (p *Page) WaitRequestIdle(regexps ...string) (wait func()) {
-	w := p.WaitRequestIdleE(300*time.Millisecond, regexps)
+	w := p.WaitRequestIdleE(300*time.Millisecond, 0, regexps)
 	return func() { kit.E(w()) }
 }
 
