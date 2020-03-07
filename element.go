@@ -26,8 +26,7 @@ type Element struct {
 
 // DescribeE doc is the same as the method Describe
 func (el *Element) DescribeE() (kit.JSONResult, error) {
-	val, err := el.page.CallE(
-		el.ctx,
+	val, err := el.page.Context(el.ctx).CallE(
 		"DOM.describeNode",
 		cdp.Object{
 			"objectId": el.ObjectID,
@@ -198,7 +197,7 @@ func (el *Element) SetFilesE(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	_, err := el.page.CallE(el.ctx, "DOM.setFileInputFiles", cdp.Object{
+	_, err := el.page.Context(el.ctx).CallE("DOM.setFileInputFiles", cdp.Object{
 		"files":    absPaths,
 		"objectId": el.ObjectID,
 	})
@@ -308,7 +307,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := el.page.CallE(el.ctx, "Page.getResourceContent", cdp.Object{
+	res, err := el.page.Context(el.ctx).CallE("Page.getResourceContent", cdp.Object{
 		"frameId": el.page.FrameID,
 		"url":     src.String(),
 	})

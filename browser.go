@@ -29,6 +29,7 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
+		ctx:    context.Background(),
 		client: cdp.New(),
 	}
 }
@@ -83,7 +84,7 @@ func (b *Browser) ConnectE() error {
 
 // CloseE doc is the same as the method Close
 func (b *Browser) CloseE() error {
-	_, err := b.CallE(nil, &cdp.Request{Method: "Browser.close"})
+	_, err := b.CallE(&cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
 	}
@@ -97,7 +98,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		url = "about:blank"
 	}
 
-	target, err := b.CallE(nil, &cdp.Request{
+	target, err := b.CallE(&cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "about:blank",
@@ -122,7 +123,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 
 // PagesE doc is the same as the method Pages
 func (b *Browser) PagesE() ([]*Page, error) {
-	list, err := b.CallE(nil, &cdp.Request{Method: "Target.getTargets"})
+	list, err := b.CallE(&cdp.Request{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
@@ -147,15 +148,11 @@ func (b *Browser) PagesE() ([]*Page, error) {
 type EventFilter func(*cdp.Event) bool
 
 // WaitEventE returns wait and cancel methods
-func (b *Browser) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.Event, error) {
-	if ctx == nil {
-		ctx = b.ctx
-	}
-
+func (b *Browser) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 	var event *cdp.Event
 	var err error
 	w := kit.All(func() {
-		_, err = b.Event().Until(ctx, func(e kit.Event) bool {
+		_, err = b.Event().Until(b.ctx, func(e kit.Event) bool {
 			event = e.(*cdp.Event)
 			return filter(event)
 		})
@@ -168,14 +165,9 @@ func (b *Browser) WaitEventE(ctx context.Context, filter EventFilter) func() (*c
 }
 
 // CallE sends a control message to browser
-func (b *Browser) CallE(ctx context.Context, req *cdp.Request) (kit.JSONResult, error) {
+func (b *Browser) CallE(req *cdp.Request) (kit.JSONResult, error) {
 	b.trySlowmotion(req.Method)
-
-	if ctx == nil {
-		ctx = b.ctx
-	}
-
-	return b.client.Call(ctx, req)
+	return b.client.Call(b.ctx, req)
 }
 
 // Event returns the observable for browser events
@@ -208,7 +200,7 @@ func (b *Browser) initEvents() error {
 		b.event.UnsubscribeAll()
 	}()
 
-	_, err := b.CallE(nil, &cdp.Request{
+	_, err := b.CallE(&cdp.Request{
 		Method: "Target.setDiscoverTargets",
 		Params: cdp.Object{"discover": true},
 	})

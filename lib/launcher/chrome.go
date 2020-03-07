@@ -21,7 +21,10 @@ import (
 type Chrome struct {
 	Context context.Context
 
-	// Host default is https://storage.googleapis.com
+	// Hosts to download chrome, examples:
+	// https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/748030/chrome-linux.zip
+	// https://storage.googleapis.com/chromium-browser-snapshots/Mac/748030/chrome-mac.zip
+	// https://storage.googleapis.com/chromium-browser-snapshots/Win/748030/chrome-win.zip
 	Hosts []string
 
 	// Revision of the chrome to use
@@ -38,7 +41,7 @@ type Chrome struct {
 func NewChrome() *Chrome {
 	return &Chrome{
 		Context:  context.Background(),
-		Revision: 722234,
+		Revision: 748030,
 		Hosts:    []string{"https://storage.googleapis.com", "https://npm.taobao.org/mirrors"},
 		Dir:      filepath.Join(os.TempDir(), "cdp"),
 		Log: func(str string) {
@@ -73,7 +76,7 @@ func (lc *Chrome) Download() error {
 		u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, lc.Revision, conf.zipName)
 		err := lc.download(u)
 		if err != nil {
-			kit.Log("[rod/lib/launcher]", err)
+			lc.Log("[rod/lib/launcher] " + err.Error())
 			continue
 		}
 		return nil

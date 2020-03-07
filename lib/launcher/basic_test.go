@@ -17,16 +17,39 @@ func TestDownload(t *testing.T) {
 }
 
 func TestLaunch(t *testing.T) {
-	portFlag, _ := launcher.New().Get("remote-debugging-port")
-	assert.Equal(t, "0", portFlag[0])
+	l := launcher.New()
+	defer func() {
+		_ = kit.KillTree(l.PID())
+	}()
 
-	ctx := context.Background()
-	url := launcher.NewUserMode().Context(ctx).Delete("test").Bin("").
-		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
-		Leakless(true).
-		Headless(false).Headless(true).RemoteDebuggingPort(0).
-		Launch()
-	url, err := launcher.GetWebSocketDebuggerURL(ctx, url)
-	kit.E(err)
+	url := l.Launch()
+
 	assert.NotEmpty(t, url)
+}
+
+func TestLaunchOptions(t *testing.T) {
+	l := launcher.NewUserMode()
+	defer func() {
+		_ = kit.KillTree(l.PID())
+	}()
+
+	_, has := l.Get("not-exists")
+	assert.False(t, has)
+
+	dir, _ := l.Get("user-data-dir")
+
+	url := l.Context(context.Background()).Delete("test").Bin("").
+		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
+		Leakless(false).
+		Headless(false).Headless(true).RemoteDebuggingPort(0).
+		UserDataDir("test").UserDataDir(dir).
+		Launch()
+
+	assert.NotEmpty(t, url)
+}
+
+func TestLaunchErr(t *testing.T) {
+	assert.Panics(t, func() {
+		launcher.New().Bin("not-exists").Launch()
+	})
 }

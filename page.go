@@ -68,7 +68,7 @@ func (p *Page) Root() *Page {
 
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
-	res, err := p.CallE(nil, "Page.navigate", cdp.Object{
+	res, err := p.CallE("Page.navigate", cdp.Object{
 		"url": url,
 	})
 	if err != nil {
@@ -81,12 +81,7 @@ func (p *Page) NavigateE(url string) error {
 }
 
 func (p *Page) getWindowID() (int64, error) {
-	res, err := p.browser.CallE(p.ctx, &cdp.Request{
-		Method: "Browser.getWindowForTarget",
-		Params: cdp.Object{
-			"targetId": p.TargetID,
-		},
-	})
+	res, err := p.CallE("Browser.getWindowForTarget", cdp.Object{"targetId": p.TargetID})
 	if err != nil {
 		return 0, err
 	}
@@ -100,12 +95,7 @@ func (p *Page) GetWindowE() (kit.JSONResult, error) {
 		return nil, err
 	}
 
-	res, err := p.browser.CallE(p.ctx, &cdp.Request{
-		Method: "Browser.getWindowBounds",
-		Params: cdp.Object{
-			"windowId": id,
-		},
-	})
+	res, err := p.CallE("Browser.getWindowBounds", cdp.Object{"windowId": id})
 	if err != nil {
 		return nil, err
 	}
@@ -121,13 +111,7 @@ func (p *Page) WindowE(bounds *cdp.Object) error {
 		return err
 	}
 
-	_, err = p.browser.CallE(p.ctx, &cdp.Request{
-		Method: "Browser.setWindowBounds",
-		Params: cdp.Object{
-			"windowId": id,
-			"bounds":   bounds,
-		},
-	})
+	_, err = p.CallE("Browser.setWindowBounds", cdp.Object{"windowId": id, "bounds": bounds})
 	return err
 }
 
@@ -137,13 +121,13 @@ func (p *Page) ViewportE(params *cdp.Object) error {
 	if params == nil {
 		return nil
 	}
-	_, err := p.CallE(nil, "Emulation.setDeviceMetricsOverride", params)
+	_, err := p.CallE("Emulation.setDeviceMetricsOverride", params)
 	return err
 }
 
 // CloseE page
 func (p *Page) CloseE() error {
-	_, err := p.CallE(nil, "Page.close", nil)
+	_, err := p.CallE("Page.close", nil)
 	return err
 }
 
@@ -151,14 +135,14 @@ func (p *Page) CloseE() error {
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	p.Call("Page.enable", nil)
 
-	wait := p.WaitEventE(nil, Method("Page.javascriptDialogOpening"))
+	wait := p.WaitEventE(Method("Page.javascriptDialogOpening"))
 
 	return func() error {
 		_, err := wait()
 		if err != nil {
 			return err
 		}
-		_, err = p.CallE(nil, "Page.handleJavaScriptDialog", cdp.Object{
+		_, err = p.CallE("Page.handleJavaScriptDialog", cdp.Object{
 			"accept":     accept,
 			"promptText": promptText,
 		})
@@ -181,7 +165,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 	// we have to prevent race condition here
 	p.getDownloadFileLock.Lock()
 
-	_, err := p.CallE(nil, "Page.setDownloadBehavior", cdp.Object{
+	_, err := p.CallE("Page.setDownloadBehavior", cdp.Object{
 		"behavior":     "allow",
 		"downloadPath": dir,
 	})
@@ -189,17 +173,17 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		return nil, err
 	}
 
-	_, err = p.CallE(nil, "Fetch.enable", params)
+	_, err = p.CallE("Fetch.enable", params)
 	if err != nil {
 		return nil, err
 	}
 
-	wait := p.WaitEventE(nil, Method("Fetch.requestPaused"))
+	wait := p.WaitEventE(Method("Fetch.requestPaused"))
 
 	return func() (http.Header, []byte, error) {
 		defer func() {
 			defer p.getDownloadFileLock.Unlock()
-			_, err := p.CallE(nil, "Fetch.disable", nil)
+			_, err := p.CallE("Fetch.disable", nil)
 			kit.E(err)
 		}()
 
@@ -235,7 +219,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			}
 		}
 
-		_, err = p.CallE(nil, "Fetch.fulfillRequest", cdp.Object{
+		_, err = p.CallE("Fetch.fulfillRequest", cdp.Object{
 			"requestId":       msg.Params.Get("requestId").String(),
 			"responseCode":    res.StatusCode,
 			"responseHeaders": headers,
@@ -248,7 +232,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
 func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
-	res, err := p.CallE(nil, "Page.captureScreenshot", options)
+	res, err := p.CallE("Page.captureScreenshot", options)
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +243,7 @@ func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo gjson.Result
 
-	wait := p.browser.WaitEventE(p.ctx, func(e *cdp.Event) bool {
+	wait := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		if e.Method == "Target.targetCreated" {
 			targetInfo = e.Params.Get("targetInfo")
 
@@ -281,15 +265,15 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 
 // PauseE doc is the same as the method Pause
 func (p *Page) PauseE() error {
-	_, err := p.CallE(nil, "Debugger.enable", nil)
+	_, err := p.CallE("Debugger.enable", nil)
 	if err != nil {
 		return err
 	}
-	_, err = p.CallE(nil, "Debugger.pause", nil)
+	_, err = p.CallE("Debugger.pause", nil)
 	if err != nil {
 		return err
 	}
-	wait := p.WaitEventE(nil, Method("Debugger.resumed"))
+	wait := p.WaitEventE(Method("Debugger.resumed"))
 	_, err = wait()
 	return err
 }
@@ -357,12 +341,8 @@ func (p *Page) WaitLoadE() error {
 }
 
 // WaitEventE doc is the same as the method WaitEvent
-func (p *Page) WaitEventE(ctx context.Context, filter EventFilter) func() (*cdp.Event, error) {
-	if ctx == nil {
-		ctx = p.ctx
-	}
-
-	return p.browser.WaitEventE(ctx, func(e *cdp.Event) bool {
+func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
+	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == p.SessionID && filter(e)
 	})
 }
@@ -407,7 +387,7 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 			"arguments":           args,
 		}
 
-		res, err = p.CallE(nil, "Runtime.callFunctionOn", params)
+		res, err = p.CallE("Runtime.callFunctionOn", params)
 
 		if thisID == "" {
 			if isNilContextErr(err) {
@@ -436,11 +416,8 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 }
 
 // CallE sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) CallE(ctx context.Context, method string, params interface{}) (kit.JSONResult, error) {
-	if ctx == nil {
-		ctx = p.ctx
-	}
-	return p.browser.CallE(ctx, &cdp.Request{
+func (p *Page) CallE(method string, params interface{}) (kit.JSONResult, error) {
+	return p.browser.Context(p.ctx).CallE(&cdp.Request{
 		SessionID: p.SessionID,
 		Method:    method,
 		Params:    params,
@@ -476,14 +453,14 @@ func (p *Page) Sleeper() kit.Sleeper {
 
 // ReleaseE doc is the same as the method Release
 func (p *Page) ReleaseE(objectID string) error {
-	_, err := p.CallE(nil, "Runtime.releaseObject", cdp.Object{
+	_, err := p.CallE("Runtime.releaseObject", cdp.Object{
 		"objectId": objectID,
 	})
 	return err
 }
 
 func (p *Page) initSession() error {
-	obj, err := p.CallE(nil, "Target.attachToTarget", cdp.Object{
+	obj, err := p.CallE("Target.attachToTarget", cdp.Object{
 		"targetId": p.TargetID,
 		"flatten":  true, // if it's not set no response will return
 	})
@@ -503,7 +480,7 @@ func (p *Page) initJS() error {
 	}
 
 	if p.IsIframe() {
-		res, err := p.CallE(nil, "Page.createIsolatedWorld", cdp.Object{
+		res, err := p.CallE("Page.createIsolatedWorld", cdp.Object{
 			"frameId": p.FrameID,
 		})
 		if err != nil {
@@ -513,7 +490,7 @@ func (p *Page) initJS() error {
 		params["contextId"] = res.Get("executionContextId").Int()
 	}
 
-	res, err := p.CallE(nil, "Runtime.evaluate", params)
+	res, err := p.CallE("Runtime.evaluate", params)
 	if err != nil {
 		return err
 	}

@@ -10,5 +10,5 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/ysmood/digto v1.5.6
 	github.com/ysmood/kit v0.22.0
-	github.com/ysmood/leakless v0.1.1
+	github.com/ysmood/leakless v0.2.1
 )

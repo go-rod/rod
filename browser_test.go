@@ -20,7 +20,7 @@ func (s *S) TestBrowserPages() {
 
 func (s *S) TestBrowserContext() {
 	b := s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
-	_, err := b.CallE(nil, &cdp.Request{})
+	_, err := b.CallE(&cdp.Request{})
 	s.Error(err)
 }
 

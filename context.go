@@ -5,11 +5,12 @@ import (
 	"time"
 )
 
-// Context creates a clone with specified context, if ctx is nil, context.Background() will be used
+// Context creates a clone with a context that inherits the previous one
 func (b *Browser) Context(ctx context.Context) *Browser {
-	if ctx == nil {
-		ctx = context.Background()
+	if ctx == b.ctx {
+		return b
 	}
+
 	ctx, cancel := context.WithCancel(ctx)
 	newObj := *b
 	newObj.ctx = ctx
@@ -36,11 +37,12 @@ func (b *Browser) CancelTimeout() *Browser {
 	return b
 }
 
-// Context creates a clone with specified context, if ctx is nil, context.Background() will be used
+// Context creates a clone with a context that inherits the previous one
 func (p *Page) Context(ctx context.Context) *Page {
-	if ctx == nil {
-		ctx = context.Background()
+	if ctx == p.ctx {
+		return p
 	}
+
 	ctx, cancel := context.WithCancel(ctx)
 	newObj := *p
 	newObj.ctx = ctx
@@ -67,11 +69,12 @@ func (p *Page) CancelTimeout() *Page {
 	return p
 }
 
-// Context creates a clone with specified context, if ctx is nil, context.Background() will be used
+// Context creates a clone with a context that inherits the previous one
 func (el *Element) Context(ctx context.Context) *Element {
-	if ctx == nil {
-		ctx = context.Background()
+	if ctx == el.ctx {
+		return el
 	}
+
 	ctx, cancel := context.WithCancel(ctx)
 	newObj := *el
 	newObj.ctx = ctx

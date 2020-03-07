@@ -22,6 +22,10 @@ func TestBasic(t *testing.T) {
 
 	client := cdp.New().URL(url).Context(ctx).Websocket(nil).Connect()
 
+	defer func() {
+		kit.E(client.Call(ctx, &cdp.Request{Method: "Browser.close"}))
+	}()
+
 	go func() {
 		for msg := range client.Event() {
 			ob.Publish(msg)
@@ -164,12 +168,13 @@ func TestError(t *testing.T) {
 	})
 
 	assert.Panics(t, func() {
-		_, err := cdp.New().Call(nil, nil)
+		_, err := cdp.New().Call(context.Background(), nil)
 		assert.Error(t, err)
 	})
 }
 
 func TestCrash(t *testing.T) {
+	ctx := context.Background()
 	l := launcher.New()
 
 	client := cdp.New().URL(l.Launch()).Debug(true).Connect()
@@ -182,7 +187,7 @@ func TestCrash(t *testing.T) {
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
 	kit.E(err)
 
-	res, err := client.Call(nil, &cdp.Request{
+	res, err := client.Call(ctx, &cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
 			"url": "file://" + file,
@@ -192,7 +197,7 @@ func TestCrash(t *testing.T) {
 
 	targetID := res.Get("targetId").String()
 
-	res, err = client.Call(nil, &cdp.Request{
+	res, err = client.Call(ctx, &cdp.Request{
 		Method: "Target.attachToTarget",
 		Params: cdp.Object{
 			"targetId": targetID,
@@ -203,13 +208,13 @@ func TestCrash(t *testing.T) {
 
 	sessionID := res.Get("sessionId").String()
 
-	_, err = client.Call(nil, &cdp.Request{
+	_, err = client.Call(ctx, &cdp.Request{
 		SessionID: sessionID,
 		Method:    "Page.enable",
 	})
 	kit.E(err)
 
-	_, err = client.Call(nil, &cdp.Request{
+	_, err = client.Call(ctx, &cdp.Request{
 		Method: "Target.attachToTarget",
 		Params: cdp.Object{
 			"targetId": "abc",
@@ -219,13 +224,13 @@ func TestCrash(t *testing.T) {
 
 	go func() {
 		kit.Sleep(2)
-		_, _ = client.Call(nil, &cdp.Request{
+		_, _ = client.Call(ctx, &cdp.Request{
 			SessionID: sessionID,
 			Method:    "Browser.crash",
 		})
 	}()
 
-	_, err = client.Call(nil, &cdp.Request{
+	_, err = client.Call(ctx, &cdp.Request{
 		SessionID: sessionID,
 		Method:    "Runtime.evaluate",
 		Params: cdp.Object{

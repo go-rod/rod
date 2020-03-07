@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
-	nurl "net/url"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,6 +24,7 @@ type Launcher struct {
 	log      func(string)
 	flags    map[string][]string
 	output   chan string
+	pid      int
 	exit     chan kit.Nil
 }
 
@@ -203,6 +204,7 @@ func (l *Launcher) LaunchE() (string, error) {
 	if bin == "" {
 		var err error
 		chrome := NewChrome()
+		chrome.Context = l.ctx
 		bin, err = chrome.Get()
 		if err != nil {
 			return "", err
@@ -210,15 +212,15 @@ func (l *Launcher) LaunchE() (string, error) {
 	}
 
 	ll := leakless.New()
-
 	var cmd *exec.Cmd
+
 	if l.leakless {
 		cmd = ll.Command(bin, l.ExecFormat()...)
 	} else {
 		port, _ := l.Get("remote-debugging-port")
-		url, err := GetWebSocketDebuggerURL(context.Background(), "http://127.0.0.1:"+port)
+		u, err := GetWebSocketDebuggerURL(l.ctx, "http://127.0.0.1:"+port)
 		if err == nil {
-			return url, nil
+			return u, nil
 		}
 		cmd = exec.Command(bin, l.ExecFormat()...)
 	}
@@ -248,15 +250,33 @@ func (l *Launcher) LaunchE() (string, error) {
 
 	u, err := l.getURL()
 	if err != nil {
-		go func() {
-			p, err := os.FindProcess(<-ll.Pid())
-			kit.E(err)
-			kit.E(p.Kill())
-		}()
+		go l.kill()
 		return "", err
 	}
 
+	if l.leakless {
+		select {
+		case <-l.exit:
+		case pid := <-ll.Pid():
+			l.pid = pid
+		}
+	} else {
+		l.pid = cmd.Process.Pid
+	}
+
 	return u, nil
+}
+
+// PID returns the chrome process pid
+func (l *Launcher) PID() int {
+	return l.pid
+}
+
+func (l *Launcher) kill() {
+	p, err := os.FindProcess(l.pid)
+	if err == nil {
+		_ = p.Kill()
+	}
 }
 
 func (l *Launcher) read(reader io.Reader) {
@@ -280,6 +300,8 @@ func (l *Launcher) getURL() (string, error) {
 
 	for {
 		select {
+		case <-l.ctx.Done():
+			return "", l.ctx.Err()
 		case e := <-l.output:
 			out += e
 
@@ -289,7 +311,7 @@ func (l *Launcher) getURL() (string, error) {
 
 			str := regexp.MustCompile(`ws://.+/`).FindString(out)
 			if str != "" {
-				u, err := nurl.Parse(strings.TrimSpace(str))
+				u, err := url.Parse(strings.TrimSpace(str))
 				if err != nil {
 					return "", err
 				}
@@ -302,22 +324,22 @@ func (l *Launcher) getURL() (string, error) {
 }
 
 // GetWebSocketDebuggerURL from chrome remote url
-func GetWebSocketDebuggerURL(ctx context.Context, url string) (string, error) {
-	u, err := nurl.Parse(url)
+func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
+	parsed, err := url.Parse(u)
 	if err != nil {
 		return "", err
 	}
 
-	if u.Scheme == "ws" {
-		u.Scheme = "http"
+	if parsed.Scheme == "ws" {
+		parsed.Scheme = "http"
 	}
-	if u.Scheme == "wss" {
-		u.Scheme = "https"
+	if parsed.Scheme == "wss" {
+		parsed.Scheme = "https"
 	}
 
-	u.Path = "/json/version"
+	parsed.Path = "/json/version"
 
-	obj, err := kit.Req(u.String()).Context(ctx).JSON()
+	obj, err := kit.Req(parsed.String()).Context(ctx).JSON()
 	if err != nil {
 		return "", err
 	}

@@ -126,10 +126,6 @@ func (cdp *Client) Connect() *Client {
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
 func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, err error) {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
 	req.ID = cdp.id()
 
 	data, err := json.Marshal(req)

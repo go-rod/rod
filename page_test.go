@@ -23,7 +23,7 @@ func (s *S) TestClosePage() {
 
 func (s *S) TestPageContext() {
 	p := s.page.Timeout(time.Minute).CancelTimeout().Cancel()
-	_, err := p.CallE(nil, `() => {}`, nil)
+	_, err := p.CallE(`() => {}`, nil)
 	s.Error(err)
 }
 
@@ -211,7 +211,7 @@ func (s *S) TestPagePause() {
 	kit.Sleep(0.03)
 	go s.page.Eval(`() => 10`)
 	kit.Sleep(0.03)
-	kit.E(s.page.CallE(nil, "Debugger.resume", nil))
+	kit.E(s.page.CallE("Debugger.resume", nil))
 }
 
 func (s *S) TestPageScreenshot() {

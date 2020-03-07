@@ -39,7 +39,7 @@ func (b *Browser) Pages() []*Page {
 
 // WaitEvent resolves the wait function when the filter returns true
 func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event) {
-	w := b.WaitEventE(nil, Method(name))
+	w := b.WaitEventE(Method(name))
 	return func() *cdp.Event {
 		e, err := w()
 		kit.E(err)
@@ -49,7 +49,7 @@ func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event) {
 
 // Call sends a control message to browser
 func (b *Browser) Call(method string, params interface{}) kit.JSONResult {
-	res, err := b.CallE(nil, &cdp.Request{
+	res, err := b.CallE(&cdp.Request{
 		Method: method,
 		Params: params,
 	})
@@ -194,7 +194,7 @@ func (p *Page) WaitLoad() *Page {
 
 // WaitEvent returns a wait function that waits for the next event to happen.
 func (p *Page) WaitEvent(name string) (wait func()) {
-	w := p.WaitEventE(nil, Method(name))
+	w := p.WaitEventE(Method(name))
 	return func() { kit.E(w()) }
 }
 
@@ -220,7 +220,7 @@ func (p *Page) Release(objectID string) *Page {
 
 // Call sends a control message to the browser with the page session, the call is always on the root frame.
 func (p *Page) Call(method string, params interface{}) kit.JSONResult {
-	res, err := p.CallE(nil, method, params)
+	res, err := p.CallE(method, params)
 	kit.E(err)
 	return res
 }
