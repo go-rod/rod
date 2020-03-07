@@ -116,7 +116,7 @@ func (s *S) TestPageWaitRequestIdle() {
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
-	s.True(time.Now().Sub(start) > time.Second)
+	s.True(time.Since(start) > time.Second)
 }
 
 func (s *S) TestPageWaitIdle() {
