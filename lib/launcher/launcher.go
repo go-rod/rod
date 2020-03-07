@@ -79,14 +79,36 @@ func New() *Launcher {
 	}
 }
 
+// NewUserMode is a preset to enable reusing current user data. Useful for automation of personal browser.
+func NewUserMode() *Launcher {
+	return &Launcher{
+		ctx:      context.Background(),
+		leakless: false,
+		flags: map[string][]string{
+			"remote-debugging-port": {"37712"},
+		},
+		output: make(chan string),
+		exit:   make(chan kit.Nil),
+	}
+}
+
 // Context set the context
 func (l *Launcher) Context(ctx context.Context) *Launcher {
 	l.ctx = ctx
 	return l
 }
 
-// Get flag
-func (l *Launcher) Get(name string) ([]string, bool) {
+// Get flag's first value
+func (l *Launcher) Get(name string) (string, bool) {
+	list, has := l.GetFlags(name)
+	if !has || len(list) == 0 {
+		return "", false
+	}
+	return list[0], true
+}
+
+// GetFlags from settings
+func (l *Launcher) GetFlags(name string) ([]string, bool) {
 	flag, has := l.flags[name]
 	return flag, has
 }
@@ -109,8 +131,9 @@ func (l *Launcher) Bin(path string) *Launcher {
 	return l
 }
 
-// KillAfterExit switch. Whether to kill chrome or not after main process exits. Default value is true.
-func (l *Launcher) KillAfterExit(enable bool) *Launcher {
+// Leakless switch. Whether to kill chrome or not after main process exits. Default value is true.
+// When it's disabled, launcher will try to connect the debug port before start a new instance.
+func (l *Launcher) Leakless(enable bool) *Launcher {
 	l.leakless = enable
 	return l
 }
@@ -165,24 +188,6 @@ func (l *Launcher) Log(log func(string)) *Launcher {
 	return l
 }
 
-// UserModeLaunch is a preset to enable reusing current user data. Useful for automation of personal browser.
-func (l *Launcher) UserModeLaunch() string {
-	port := "37712"
-	portFlag, has := l.Get("remote-debugging-port")
-	if has && portFlag[0] != "0" {
-		port = portFlag[0]
-	}
-	l.Set("remote-debugging-port", port)
-
-	l.Delete("enable-automation")
-
-	url, err := GetWebSocketDebuggerURL(context.Background(), "http://127.0.0.1:"+port)
-	if err != nil {
-		url = l.Headless(false).KillAfterExit(false).UserDataDir("").Launch()
-	}
-	return url
-}
-
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
@@ -210,6 +215,11 @@ func (l *Launcher) LaunchE() (string, error) {
 	if l.leakless {
 		cmd = ll.Command(bin, l.ExecFormat()...)
 	} else {
+		port, _ := l.Get("remote-debugging-port")
+		url, err := GetWebSocketDebuggerURL(context.Background(), "http://127.0.0.1:"+port)
+		if err == nil {
+			return url, nil
+		}
 		cmd = exec.Command(bin, l.ExecFormat()...)
 	}
 
