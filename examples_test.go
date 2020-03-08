@@ -120,6 +120,24 @@ func Example_wait_for_request() {
 	// Output: true
 }
 
+func Example_customize_retry_strategy() {
+	browser := rod.New().Connect()
+	defer browser.Close()
+
+	page := browser.Page("https://duckduckgo.com/")
+
+	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+
+	// here low-level api ElementE other than Element to have more options,
+	// use backoff algorithm to do the retry
+	el, err := page.Timeout(time.Minute).ElementE(backoff, "", "#search_form_input_homepage")
+	kit.E(err)
+
+	fmt.Println(el.Eval(`() => this.name`))
+
+	// Output: q
+}
+
 func Example_customize_chrome_launch() {
 	// set custom chrome options
 	url := launcher.New().
