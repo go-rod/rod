@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"sync/atomic"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/launcher"
@@ -126,12 +127,12 @@ func (cdp *Client) Connect() *Client {
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
 func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, err error) {
-	req.ID = cdp.id()
+	req.ID = atomic.AddUint64(&cdp.count, 1)
+
+	cdp.debugLog(req)
 
 	data, err := json.Marshal(req)
 	kit.E(err)
-
-	cdp.debugLog(req)
 
 	callback := make(chan *response)
 
@@ -169,12 +170,6 @@ func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, 
 // Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
 func (cdp *Client) Event() chan *Event {
 	return cdp.chEvent
-}
-
-// for a client each request id is unique
-func (cdp *Client) id() uint64 {
-	cdp.count++
-	return cdp.count
 }
 
 type requestMsg struct {

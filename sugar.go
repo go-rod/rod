@@ -182,7 +182,7 @@ func (p *Page) WaitRequestIdle(regexps ...string) (wait func()) {
 
 // WaitIdle wait until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle() *Page {
-	kit.E(p.WaitIdleE())
+	kit.E(p.WaitIdleE(time.Minute))
 	return p
 }
 

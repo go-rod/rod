@@ -128,7 +128,7 @@ func (el *Element) SelectTextE(regex string) error {
 	if err != nil {
 		return err
 	}
-	_, err = el.EvalE(true, el.page.jsFn("selectText"), []interface{}{regex})
+	_, err = el.EvalE(true, el.page.jsFn("selectText"), cdp.Array{regex})
 	return err
 }
 
@@ -182,7 +182,7 @@ func (el *Element) SelectE(selectors []string) error {
 
 	el.page.browser.trySlowmotion("Input.select")
 
-	_, err = el.EvalE(true, el.page.jsFn("select"), []interface{}{selectors})
+	_, err = el.EvalE(true, el.page.jsFn("select"), cdp.Array{selectors})
 	return err
 }
 
@@ -254,7 +254,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 }
 
 // WaitE doc is the same as the method Wait
-func (el *Element) WaitE(js string, params []interface{}) error {
+func (el *Element) WaitE(js string, params cdp.Array) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params)
 		if err != nil {
@@ -336,6 +336,6 @@ func (el *Element) ReleaseE() error {
 }
 
 // EvalE doc is the same as the method Eval
-func (el *Element) EvalE(byValue bool, js string, params []interface{}) (kit.JSONResult, error) {
+func (el *Element) EvalE(byValue bool, js string, params cdp.Array) (kit.JSONResult, error) {
 	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }

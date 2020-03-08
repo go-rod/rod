@@ -69,17 +69,17 @@ func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 
 // ElementE finds element by css selector
 func (p *Page) ElementE(sleeper kit.Sleeper, objectID, selector string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), []interface{}{selector})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), cdp.Array{selector})
 }
 
 // ElementMatchesE doc is the same as the method ElementMatches
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID, selector, regex string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), []interface{}{selector, regex})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), cdp.Array{selector, regex})
 }
 
 // ElementXE finds elements by XPath
 func (p *Page) ElementXE(sleeper kit.Sleeper, objectID, xpath string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), []interface{}{xpath})
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), cdp.Array{xpath})
 }
 
 // ElementX retries until returns the first element in the page that matches the XPath selector
@@ -95,7 +95,7 @@ func (p *Page) ElementX(xpath string) *Element {
 // thisID is the this value of the js function, when thisID is "", the this context will be the "window".
 // If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
 // retries once.
-func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []interface{}) (*Element, error) {
+func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params cdp.Array) (*Element, error) {
 	var val kit.JSONResult
 
 	if sleeper == nil {
@@ -135,16 +135,16 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params []int
 
 // ElementsE doc is the same as the method Elements
 func (p *Page) ElementsE(objectID, selector string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elements"), []interface{}{selector})
+	return p.ElementsByJSE(objectID, p.jsFn("elements"), cdp.Array{selector})
 }
 
 // ElementsXE doc is the same as the method ElementsX
 func (p *Page) ElementsXE(objectID, xpath string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), []interface{}{xpath})
+	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), cdp.Array{xpath})
 }
 
 // ElementsByJSE is different from ElementByJSE, it doesn't do retry
-func (p *Page) ElementsByJSE(thisID, js string, params []interface{}) (Elements, error) {
+func (p *Page) ElementsByJSE(thisID, js string, params cdp.Array) (Elements, error) {
 	res, err := p.EvalE(false, thisID, js, params)
 	if err != nil {
 		return nil, err
@@ -197,7 +197,7 @@ func (el *Element) ElementXE(xpath string) (*Element, error) {
 }
 
 // ElementByJSE doc is the same as the method ElementByJS
-func (el *Element) ElementByJSE(js string, params []interface{}) (*Element, error) {
+func (el *Element) ElementByJSE(js string, params cdp.Array) (*Element, error) {
 	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
 }
 
@@ -232,6 +232,6 @@ func (el *Element) ElementsXE(xpath string) (Elements, error) {
 }
 
 // ElementsByJSE doc is the same as the method ElementsByJS
-func (el *Element) ElementsByJSE(js string, params []interface{}) (Elements, error) {
+func (el *Element) ElementsByJSE(js string, params cdp.Array) (Elements, error) {
 	return el.page.ElementsByJSE(el.ObjectID, js, params)
 }

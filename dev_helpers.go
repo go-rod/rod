@@ -29,7 +29,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	root := p.Root()
 	id := "rod-" + kit.RandString(8)
 
-	_, err := root.EvalE(true, "", root.jsFn("overlay"), []interface{}{
+	_, err := root.EvalE(true, "", root.jsFn("overlay"), cdp.Array{
 		id,
 		left,
 		top,
@@ -40,7 +40,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	CancelPanic(err)
 
 	remove = func() {
-		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), []interface{}{id})
+		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), cdp.Array{id})
 	}
 
 	return
@@ -50,14 +50,14 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 	id := "rod-" + kit.RandString(8)
 
-	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), []interface{}{
+	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), cdp.Array{
 		id,
 		htmlMessage,
 	})
 	CancelPanic(err)
 
 	removeOverlay = func() {
-		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), []interface{}{id})
+		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), cdp.Array{id})
 	}
 
 	res := el.page.Eval(el.page.jsFn("stripHTML"), htmlMessage)

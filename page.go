@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"net/http"
 	"regexp"
-	"strings"
 	"sync"
 	"time"
 
@@ -329,8 +328,8 @@ func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func()
 }
 
 // WaitIdleE doc is the same as the method WaitIdle
-func (p *Page) WaitIdleE() (err error) {
-	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), nil)
+func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
+	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), cdp.Array{timeout.Seconds()})
 	return err
 }
 
@@ -349,13 +348,13 @@ func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 
 // LoadScriptE to page with the specified src path
 func (p *Page) LoadScriptE(src string) error {
-	_, err := p.EvalE(true, "", p.jsFn("loadScript"), []interface{}{src})
+	_, err := p.EvalE(true, "", p.jsFn("loadScript"), cdp.Array{src})
 	return err
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
-func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res kit.JSONResult, err error) {
+func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs cdp.Array) (res kit.JSONResult, err error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := thisID
 
@@ -374,7 +373,7 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs []interface{}) (res
 			objectID = p.windowObjectID
 		}
 
-		args := []interface{}{}
+		args := cdp.Array{}
 		for _, p := range jsArgs {
 			args = append(args, cdp.Object{"value": p})
 		}
@@ -424,31 +423,17 @@ func (p *Page) CallE(method string, params interface{}) (kit.JSONResult, error) 
 	})
 }
 
-// Sleeper returns the default sleeper for retry, it will wake whenever Page or DOM event happens,
-// and use backoff as the backup to wake.
+// Sleeper returns the default sleeper for retry, it uses backoff and requestIdleCallback to wait
 func (p *Page) Sleeper() kit.Sleeper {
 	backoff := kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 
-	return kit.MergeSleepers(backoff, func(ctx context.Context) error {
-		s := p.browser.event.Subscribe()
-		defer p.browser.event.Unsubscribe(s)
-		prefix := strings.HasPrefix
-
-		c := s.Filter(func(e kit.Event) bool {
-			m := e.(*cdp.Event).Method
-			if prefix(m, "Page") || prefix(m, "DOM") {
-				return true
-			}
-			return false
-		})
-
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-c:
+	return func(ctx context.Context) error {
+		err := backoff(ctx)
+		if err != nil {
+			return err
 		}
-		return nil
-	})
+		return p.WaitIdleE(time.Minute)
+	}
 }
 
 // ReleaseE doc is the same as the method Release
@@ -476,7 +461,7 @@ func (p *Page) initJS() error {
 	scriptURL := "\n//# sourceURL=__rod_helper__"
 
 	params := cdp.Object{
-		"expression": sprintFnApply(js.Rod, []interface{}{p.FrameID}) + scriptURL,
+		"expression": sprintFnApply(js.Rod, cdp.Array{p.FrameID}) + scriptURL,
 	}
 
 	if p.IsIframe() {

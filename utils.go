@@ -10,7 +10,7 @@ import (
 
 // SprintFnApply is a helper to render template into js code
 // js looks like "(a, b) => {}", the a and b are the params passed into the function
-func sprintFnApply(js string, params []interface{}) string {
+func sprintFnApply(js string, params cdp.Array) string {
 	const tpl = `(%s).apply(this, %s)`
 
 	return fmt.Sprintf(tpl, js, kit.MustToJSON(params))
