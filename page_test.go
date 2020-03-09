@@ -216,13 +216,12 @@ func (s *S) TestPagePause() {
 
 func (s *S) TestPageScreenshot() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	p.Viewport(400, 300, 1, false)
 	p.Element("button")
 	data := p.Screenshot()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
-	s.Equal(400, img.Bounds().Dx())
-	s.Equal(300, img.Bounds().Dy())
+	s.Equal(800, img.Bounds().Dx())
+	s.Equal(600, img.Bounds().Dy())
 }
 
 func (s *S) TestPageTraceDir() {

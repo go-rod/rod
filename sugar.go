@@ -464,6 +464,13 @@ func (el *Element) Resource() []byte {
 	return bin
 }
 
+// Screenshot of the area of the element
+func (el *Element) Screenshot() []byte {
+	bin, err := el.ScreenshotE("png", -1)
+	kit.E(err)
+	return bin
+}
+
 // Release remote object on browser
 func (el *Element) Release() {
 	kit.E(el.ReleaseE())

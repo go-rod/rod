@@ -338,6 +338,41 @@ func (el *Element) ResourceE() ([]byte, error) {
 	return bin, nil
 }
 
+// ScreenshotE of the area of the element
+func (el *Element) ScreenshotE(format string, quality int) ([]byte, error) {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return nil, err
+	}
+
+	err = el.ScrollIntoViewIfNeededE()
+	if err != nil {
+		return nil, err
+	}
+
+	box, err := el.BoxE()
+	if err != nil {
+		return nil, err
+	}
+
+	opts := cdp.Object{
+		"format": format,
+		"clip": cdp.Object{
+			"x":      box.Left,
+			"y":      box.Top,
+			"width":  box.Width,
+			"height": box.Height,
+			"scale":  1,
+		},
+	}
+
+	if quality > -1 {
+		opts["quality"] = quality
+	}
+
+	return el.page.Root().ScreenshotE(opts)
+}
+
 // ReleaseE doc is the same as the method Release
 func (el *Element) ReleaseE() error {
 	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)

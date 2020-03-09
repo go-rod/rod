@@ -1,8 +1,10 @@
 package rod_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"image/png"
 	"path/filepath"
 	"time"
 
@@ -162,6 +164,16 @@ func (s *S) TestWaitStable() {
 func (s *S) TestResource() {
 	p := s.page.Navigate(srcFile("fixtures/resource.html"))
 	s.Equal(15148, len(p.Element("img").Resource()))
+}
+
+func (s *S) TestElementScreenshot() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	data := p.Element("h4").Screenshot()
+	img, err := png.Decode(bytes.NewBuffer(data))
+	kit.E(err)
+	s.EqualValues(200, img.Bounds().Dx())
+	s.EqualValues(30, img.Bounds().Dy())
 }
 
 func (s *S) TestUseReleasedElement() {
