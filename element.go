@@ -88,8 +88,8 @@ func (el *Element) ClickE(button string) error {
 		return err
 	}
 
-	x := box.Get("left").Int() + box.Get("width").Int()/2
-	y := box.Get("top").Int() + box.Get("height").Int()/2
+	x := box.Left + box.Width/2
+	y := box.Top + box.Height/2
 
 	err = el.page.Mouse.MoveE(x, y, 1)
 	if err != nil {
@@ -233,7 +233,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 		return err
 	}
 
-	box := el.Box().Raw
+	box := el.Box()
 
 	t := time.NewTicker(interval)
 	defer t.Stop()
@@ -244,8 +244,8 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 		case <-el.ctx.Done():
 			return el.ctx.Err()
 		}
-		current := el.Box().Raw
-		if box == current {
+		current := el.Box()
+		if *box == *current {
 			break
 		}
 		box = current
@@ -279,25 +279,33 @@ func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(el.page.jsFn("invisible"), nil)
 }
 
+// Box represents the element bounding rect
+type Box struct {
+	Top    float64 `json:"top"`
+	Left   float64 `json:"left"`
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
+}
+
 // BoxE doc is the same as the method Box
-func (el *Element) BoxE() (kit.JSONResult, error) {
-	box, err := el.EvalE(true, el.page.jsFn("box"), nil)
+func (el *Element) BoxE() (*Box, error) {
+	res, err := el.EvalE(true, el.page.jsFn("box"), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var j map[string]interface{}
-	kit.E(json.Unmarshal([]byte(box.String()), &j))
+	var rect Box
+	kit.E(json.Unmarshal([]byte(res.String()), &rect))
 
 	if el.page.IsIframe() {
 		frameRect, err := el.page.element.BoxE() // recursively get the box
 		if err != nil {
 			return nil, err
 		}
-		j["left"] = box.Get("left").Int() + frameRect.Get("left").Int()
-		j["top"] = box.Get("top").Int() + frameRect.Get("top").Int()
+		rect.Left += frameRect.Left
+		rect.Top += frameRect.Top
 	}
-	return kit.JSON(kit.MustToJSON(j)), nil
+	return &rect, nil
 }
 
 // ResourceE doc is the same as the method Resource

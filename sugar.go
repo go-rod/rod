@@ -9,6 +9,7 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/input"
 )
 
 // Connect to the browser and start to control it.
@@ -282,6 +283,55 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
+// Move to the location
+func (m *Mouse) Move(x, y float64) {
+	kit.E(m.MoveE(x, y, 0))
+}
+
+// Scroll the wheel
+func (m *Mouse) Scroll(x, y int64) {
+	kit.E(m.ScrollE(x, y, 0))
+}
+
+// Down button: none, left, middle, right, back, forward
+func (m *Mouse) Down(button string) {
+	kit.E(m.DownE(button, 1))
+}
+
+// Up button: none, left, middle, right, back, forward
+func (m *Mouse) Up(button string) {
+	kit.E(m.UpE(button, 1))
+}
+
+// Click button: none, left, middle, right, back, forward
+func (m *Mouse) Click(button string) {
+	kit.E(m.ClickE(button))
+}
+
+// Down holds key down
+func (k *Keyboard) Down(key rune) {
+	kit.E(k.DownE(key))
+}
+
+// Up releases the key
+func (k *Keyboard) Up(key rune) {
+	kit.E(k.UpE(key))
+}
+
+// Press a key
+func (k *Keyboard) Press(key rune) {
+	if k.page.browser.trace {
+		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
+	}
+
+	kit.E(k.PressE(key))
+}
+
+// InsertText like paste text into the page
+func (k *Keyboard) InsertText(text string) {
+	kit.E(k.InsertTextE(text))
+}
+
 // Describe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) Describe() kit.JSONResult {
@@ -401,7 +451,7 @@ func (el *Element) WaitInvisible() *Element {
 // Box returns the size of an element and its position relative to the main frame.
 // It will recursively calculate the box with all ancestors. The spec is here:
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-func (el *Element) Box() kit.JSONResult {
+func (el *Element) Box() *Box {
 	box, err := el.BoxE()
 	kit.E(err)
 	return box

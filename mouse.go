@@ -15,15 +15,15 @@ type Mouse struct {
 	page *Page
 	sync.Mutex
 
-	x int64
-	y int64
+	x float64
+	y float64
 
 	// the buttons is currently beening pressed, reflects the press order
 	buttons []string
 }
 
 // MoveE doc is the same as the method Move
-func (m *Mouse) MoveE(x, y, steps int64) error {
+func (m *Mouse) MoveE(x, y float64, steps int) error {
 	if steps < 1 {
 		steps = 1
 	}
@@ -31,12 +31,12 @@ func (m *Mouse) MoveE(x, y, steps int64) error {
 	m.Lock()
 	defer m.Unlock()
 
-	stepX := (x - m.x) / steps
-	stepY := (y - m.y) / steps
+	stepX := (x - m.x) / float64(steps)
+	stepY := (y - m.y) / float64(steps)
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	for i := int64(0); i < steps; i++ {
+	for i := 0; i < steps; i++ {
 		toX := m.x + stepX
 		toY := m.y + stepY
 
@@ -58,11 +58,6 @@ func (m *Mouse) MoveE(x, y, steps int64) error {
 	}
 
 	return nil
-}
-
-// Move to the location
-func (m *Mouse) Move(x, y int64) {
-	kit.E(m.MoveE(x, y, 0))
 }
 
 // ScrollE doc is the same as the method Scroll
@@ -97,11 +92,6 @@ func (m *Mouse) ScrollE(x, y, steps int64) error {
 	return nil
 }
 
-// Scroll the wheel
-func (m *Mouse) Scroll(x, y int64) {
-	kit.E(m.ScrollE(x, y, 0))
-}
-
 // DownE doc is the same as the method Down
 func (m *Mouse) DownE(button string, clicks int64) error {
 	m.Lock()
@@ -125,11 +115,6 @@ func (m *Mouse) DownE(button string, clicks int64) error {
 	}
 	m.buttons = toButtons
 	return nil
-}
-
-// Down button: none, left, middle, right, back, forward
-func (m *Mouse) Down(button string) {
-	kit.E(m.DownE(button, 1))
 }
 
 // UpE doc is the same as the method Up
@@ -162,11 +147,6 @@ func (m *Mouse) UpE(button string, clicks int64) error {
 	return nil
 }
 
-// Up button: none, left, middle, right, back, forward
-func (m *Mouse) Up(button string) {
-	kit.E(m.UpE(button, 1))
-}
-
 // ClickE doc is the same as the method Click
 func (m *Mouse) ClickE(button string) error {
 	if button == "" {
@@ -179,9 +159,4 @@ func (m *Mouse) ClickE(button string) error {
 	}
 
 	return m.UpE(button, 1)
-}
-
-// Click button: none, left, middle, right, back, forward
-func (m *Mouse) Click(button string) {
-	kit.E(m.ClickE(button))
 }
