@@ -101,24 +101,14 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	target, err := b.CallE(&cdp.Request{
 		Method: "Target.createTarget",
 		Params: cdp.Object{
-			"url": "about:blank",
+			"url": url,
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	page, err := b.page(target.Get("targetId").String())
-	if err != nil {
-		return nil, err
-	}
-
-	err = page.NavigateE(url)
-	if err != nil {
-		return nil, err
-	}
-
-	return page, nil
+	return b.page(target.Get("targetId").String())
 }
 
 // PagesE doc is the same as the method Pages

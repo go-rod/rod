@@ -67,16 +67,10 @@ func (p *Page) Root() *Page {
 
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
-	res, err := p.CallE("Page.navigate", cdp.Object{
+	_, err := p.CallE("Page.navigate", cdp.Object{
 		"url": url,
 	})
-	if err != nil {
-		return err
-	}
-
-	p.FrameID = res.Get("frameId").String()
-
-	return nil
+	return err
 }
 
 func (p *Page) getWindowID() (int64, error) {
@@ -453,6 +447,18 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
+
+	res, err := p.CallE("DOM.getDocument", nil)
+	if err != nil {
+		return err
+	}
+
+	for _, child := range res.Get("root.children").Array() {
+		frameID := child.Get("frameId")
+		if frameID.Exists() {
+			p.FrameID = frameID.String()
+		}
+	}
 
 	return p.ViewportE(p.browser.viewport)
 }
