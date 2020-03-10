@@ -126,8 +126,6 @@ func (p *Page) CloseE() error {
 
 // HandleDialogE doc is the same as the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
-	p.Call("Page.enable", nil)
-
 	wait := p.WaitEventE(Method("Page.javascriptDialogOpening"))
 
 	return func() error {
@@ -447,6 +445,11 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.Get("sessionId").String()
+
+	_, err = p.CallE("Page.enable", nil)
+	if err != nil {
+		return err
+	}
 
 	res, err := p.CallE("DOM.getDocument", nil)
 	if err != nil {
