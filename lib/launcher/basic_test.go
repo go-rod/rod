@@ -40,7 +40,6 @@ func TestLaunchOptions(t *testing.T) {
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
 		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
-		Leakless(false).
 		Headless(false).Headless(true).RemoteDebuggingPort(0).
 		UserDataDir("test").UserDataDir(dir).
 		Launch()

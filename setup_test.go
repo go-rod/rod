@@ -35,7 +35,7 @@ func file(path string) string {
 func ginHTML(body string) gin.HandlerFunc {
 	return func(ctx kit.GinContext) {
 		ctx.Header("Content-Type", "text/html;")
-		kit.E(ctx.Writer.Write([]byte(body)))
+		kit.E(ctx.Writer.WriteString(body))
 	}
 }
 

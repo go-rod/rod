@@ -18,14 +18,13 @@ import (
 
 // Launcher is a helper to launch chrome binary smartly
 type Launcher struct {
-	ctx      context.Context
-	bin      string
-	leakless bool
-	log      func(string)
-	flags    map[string][]string
-	output   chan string
-	pid      int
-	exit     chan kit.Nil
+	ctx    context.Context
+	bin    string
+	log    func(string)
+	flags  map[string][]string
+	output chan string
+	pid    int
+	exit   chan kit.Nil
 }
 
 // New returns the default arguments to start chrome.
@@ -36,17 +35,18 @@ func New() *Launcher {
 	kit.E(os.MkdirAll(tmp, 0700))
 
 	defaultFlags := map[string][]string{
+		"user-data-dir": {tmp},
+
 		// use random port by default
 		"remote-debugging-port": {"0"},
 
 		// enable headless by default
 		"headless": nil,
 
-		// disable site-per-process to make sure iframes are not detached automatically
-		"disable-features": {"site-per-process", "TranslateUI"},
+		// to prevent welcome page
+		"": {"about:blank"},
 
 		"disable-background-networking":                      nil,
-		"enable-features":                                    {"NetworkService", "NetworkServiceInProcess"},
 		"disable-background-timer-throttling":                nil,
 		"disable-backgrounding-occluded-windows":             nil,
 		"disable-breakpad":                                   nil,
@@ -55,36 +55,34 @@ func New() *Launcher {
 		"disable-default-apps":                               nil,
 		"disable-dev-shm-usage":                              nil,
 		"disable-extensions":                                 nil,
+		"disable-features":                                   {"TranslateUI"},
 		"disable-hang-monitor":                               nil,
 		"disable-ipc-flooding-protection":                    nil,
 		"disable-popup-blocking":                             nil,
 		"disable-prompt-on-repost":                           nil,
 		"disable-renderer-backgrounding":                     nil,
 		"disable-sync":                                       nil,
+		"enable-automation":                                  nil,
+		"enable-features":                                    {"NetworkService", "NetworkServiceInProcess"},
 		"force-color-profile":                                {"srgb"},
 		"metrics-recording-only":                             nil,
 		"no-first-run":                                       nil,
-		"enable-automation":                                  nil,
-		"user-data-dir":                                      {tmp},
-
-		// to prevent welcome page
-		"": {"about:blank"},
+		"password-store=basic":                               nil,
+		"use-mock-keychain":                                  nil,
 	}
 
 	return &Launcher{
-		ctx:      context.Background(),
-		leakless: true,
-		flags:    defaultFlags,
-		output:   make(chan string),
-		exit:     make(chan kit.Nil),
+		ctx:    context.Background(),
+		flags:  defaultFlags,
+		output: make(chan string),
+		exit:   make(chan kit.Nil),
 	}
 }
 
 // NewUserMode is a preset to enable reusing current user data. Useful for automation of personal browser.
 func NewUserMode() *Launcher {
 	return &Launcher{
-		ctx:      context.Background(),
-		leakless: false,
+		ctx: context.Background(),
 		flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
 		},
@@ -129,13 +127,6 @@ func (l *Launcher) Delete(name string) *Launcher {
 // Bin set chrome executable file path
 func (l *Launcher) Bin(path string) *Launcher {
 	l.bin = path
-	return l
-}
-
-// Leakless switch. Whether to kill chrome or not after main process exits. Default value is true.
-// When it's disabled, launcher will try to connect the debug port before start a new instance.
-func (l *Launcher) Leakless(enable bool) *Launcher {
-	l.leakless = enable
 	return l
 }
 
@@ -211,10 +202,13 @@ func (l *Launcher) LaunchE() (string, error) {
 		}
 	}
 
-	ll := leakless.New()
+	var ll *leakless.Launcher
 	var cmd *exec.Cmd
 
-	if l.leakless {
+	_, headless := l.Get("headless")
+
+	if headless {
+		ll = leakless.New()
 		cmd = ll.Command(bin, l.ExecFormat()...)
 	} else {
 		port, _ := l.Get("remote-debugging-port")
@@ -240,6 +234,16 @@ func (l *Launcher) LaunchE() (string, error) {
 		return "", err
 	}
 
+	if headless {
+		select {
+		case <-l.exit:
+		case pid := <-ll.Pid():
+			l.pid = pid
+		}
+	} else {
+		l.pid = cmd.Process.Pid
+	}
+
 	go l.read(stdout)
 	go l.read(stderr)
 
@@ -252,16 +256,6 @@ func (l *Launcher) LaunchE() (string, error) {
 	if err != nil {
 		go l.kill()
 		return "", err
-	}
-
-	if l.leakless {
-		select {
-		case <-l.exit:
-		case pid := <-ll.Pid():
-			l.pid = pid
-		}
-	} else {
-		l.pid = cmd.Process.Pid
 	}
 
 	return u, nil

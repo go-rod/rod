@@ -17,6 +17,9 @@ import (
 	"github.com/ysmood/kit"
 )
 
+// DefaultRevision for chrome
+const DefaultRevision = 748030
+
 // Chrome is a helper to download chrome smartly
 type Chrome struct {
 	Context context.Context
@@ -41,7 +44,7 @@ type Chrome struct {
 func NewChrome() *Chrome {
 	return &Chrome{
 		Context:  context.Background(),
-		Revision: 748030,
+		Revision: DefaultRevision,
 		Hosts:    []string{"https://storage.googleapis.com", "https://npm.taobao.org/mirrors"},
 		Dir:      filepath.Join(os.TempDir(), "cdp"),
 		Log: func(str string) {
