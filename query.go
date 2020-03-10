@@ -4,6 +4,7 @@ package rod
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -31,6 +32,30 @@ func (els Elements) Last() *Element {
 // Empty returns true if the list is empty
 func (els Elements) Empty() bool {
 	return len(els) == 0
+}
+
+// Pages provides some helpers to deal with page list
+type Pages []*Page
+
+// Find the page that has the specified element with the css selector
+func (ps Pages) Find(selector string) *Page {
+	for _, page := range ps {
+		if page.WaitLoad().Has(selector) {
+			return page
+		}
+	}
+	return nil
+}
+
+// FindByURL returns the page that has the url that matches the regex
+func (ps Pages) FindByURL(regex string) *Page {
+	for _, page := range ps {
+		url := page.Eval(`() => location.href`).String()
+		if regexp.MustCompile(regex).MatchString(url) {
+			return page
+		}
+	}
+	return nil
 }
 
 // HasE doc is the same as the method Has

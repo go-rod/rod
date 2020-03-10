@@ -32,7 +32,7 @@ func (b *Browser) Page(url string) *Page {
 }
 
 // Pages returns all visible pages
-func (b *Browser) Pages() []*Page {
+func (b *Browser) Pages() Pages {
 	list, err := b.PagesE()
 	kit.E(err)
 	return list

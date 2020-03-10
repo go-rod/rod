@@ -12,6 +12,16 @@ func (s *S) TestPageElements() {
 	s.Equal("submit", list.Last().Eval("() => this.value").String())
 }
 
+func (s *S) TestPages() {
+	s.page.Navigate(srcFile("fixtures/click.html"))
+
+	s.True(s.browser.Pages().Find("button").Has("button"))
+	s.True(s.browser.Pages().FindByURL("click.html").Has("button"))
+
+	s.Nil(s.browser.Pages().Find("____"))
+	s.Nil(s.browser.Pages().FindByURL("____"))
+}
+
 func (s *S) TestPageHas() {
 	s.page.Navigate(srcFile("fixtures/selector.html"))
 	s.page.Element("body")

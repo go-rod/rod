@@ -112,13 +112,13 @@ func (b *Browser) PageE(url string) (*Page, error) {
 }
 
 // PagesE doc is the same as the method Pages
-func (b *Browser) PagesE() ([]*Page, error) {
+func (b *Browser) PagesE() (Pages, error) {
 	list, err := b.CallE(&cdp.Request{Method: "Target.getTargets"})
 	if err != nil {
 		return nil, err
 	}
 
-	pageList := []*Page{}
+	pageList := Pages{}
 	for _, target := range list.Get("targetInfos").Array() {
 		if target.Get("type").String() != "page" {
 			continue
