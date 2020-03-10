@@ -276,8 +276,6 @@ func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func()
 		regexps = []string{""}
 	}
 
-	p.Call("Network.enable", nil)
-
 	s := p.browser.Event().Subscribe()
 
 	return func() (err error) {
@@ -447,6 +445,11 @@ func (p *Page) initSession() error {
 	p.SessionID = obj.Get("sessionId").String()
 
 	_, err = p.CallE("Page.enable", nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = p.CallE("Network.enable", nil)
 	if err != nil {
 		return err
 	}
