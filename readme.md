@@ -11,14 +11,14 @@ Rod also tries to expose low-level interfaces to users, so that whenever a funct
 ## Features
 
 - Fluent interface design to reduce verbose code
-- Chained context design, intuitive to timeout or cancel long-running task
+- Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, and [screenshots](https://youtu.be/JJlPNU9n_gU)
 - Automatically find or download [chrome](lib/launcher)
 - No external dependencies, [CI](https://github.com/ysmood/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
-- No zombie chrome process after crash ([how it works](https://github.com/ysmood/leakless))
+- No zombie chrome process after the crash ([how it works](https://github.com/ysmood/leakless))
 
 ## Examples
 
@@ -36,6 +36,6 @@ See the Github Actions CI config.
 
 Compared with [puppeteer](https://github.com/puppeteer/puppeteer) or [chromedp](https://github.com/chromedp/chromedp),
 it's pretty verbose to use them, with puppeteer you have to handle promise/async/await a lot.
-With chromedp you have to use their verbose DSL like tasks to handle the main logic and it's painful to deal with iframes.
+With chromedp, you have to use their verbose DSL like tasks to handle the main logic and it's painful to deal with iframes.
 Because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen.
-When a crash happens, chromedp will leave zombie chrome process on Windows and Mac.
+When a crash happens, chromedp will leave the zombie chrome process on Windows and Mac.
