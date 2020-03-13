@@ -306,7 +306,9 @@ func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func()
 							reqList[id] = kit.Nil{}
 						}
 					}
-				case "Network.loadingFinished", "Network.loadingFailed":
+				case "Network.loadingFinished",
+					"Network.loadingFailed",
+					"Network.responseReceived":
 					delete(reqList, e.Params.Get("requestId").String())
 					if len(reqList) <= n {
 						timeout.Reset(d)
