@@ -21,6 +21,10 @@ func (s *S) TestClick() {
 
 func (s *S) TestElementContext() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	s.Equal(s.browser.GetContext(), p.GetContext())
+	s.Equal(s.browser.GetContext(), p.Element("button").GetContext())
+
 	el := p.Element("button").Timeout(time.Minute).CancelTimeout().Cancel()
 	s.Error(el.ClickE("left"))
 }
