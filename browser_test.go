@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
 	"github.com/ysmood/rod/lib/cdp"
 )
@@ -22,6 +23,18 @@ func (s *S) TestBrowserContext() {
 	b := s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
 	_, err := b.CallE(&cdp.Request{})
 	s.Error(err)
+}
+
+func (s *S) TestIncognito() {
+	file := srcFile("fixtures/click.html")
+	k := kit.RandString(8)
+
+	b := s.browser.Incognito()
+	page := b.Page(file)
+	page.Eval(`k => localStorage[k] = 1`, k)
+
+	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k).Value())
+	s.EqualValues(1, page.Eval(`k => localStorage[k]`, k).Int())
 }
 
 func (s *S) TestBrowserWaitEvent() {

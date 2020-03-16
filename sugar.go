@@ -24,6 +24,13 @@ func (b *Browser) Close() {
 	kit.E(b.CloseE())
 }
 
+// Incognito creates a new incognito browser
+func (b *Browser) Incognito() *Browser {
+	b, err := b.IncognitoE()
+	kit.E(err)
+	return b
+}
+
 // Page creates a new tab
 func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
