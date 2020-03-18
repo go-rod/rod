@@ -20,6 +20,7 @@ import (
 
 // Page represents the webpage
 type Page struct {
+	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
@@ -34,14 +35,10 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	// iframe only
-	element *Element
-
-	windowObjectID string
-
+	element             *Element // iframe only
+	windowObjectID      string   // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
-
-	traceDir string
+	traceDir            string // the dir to output the screenshots
 }
 
 // TraceDir set the dir to save the trace screenshots.

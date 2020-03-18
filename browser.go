@@ -13,19 +13,21 @@ import (
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
 type Browser struct {
+	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
 
+	// BrowserContextID is the id for incognito window
 	BrowserContextID string
 
 	controlURL string
-	viewport   *cdp.Object
-	slowmotion time.Duration
-	trace      bool
+	viewport   *cdp.Object   // default viewport, such as window demension and dpi
+	slowmotion time.Duration // slowdown user inputs
+	trace      bool          // enable show auto tracing of user inputs
 
 	client *cdp.Client
-	event  *kit.Observable
+	event  *kit.Observable // all the browser events from cdp client
 }
 
 // New creates a controller

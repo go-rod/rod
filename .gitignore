@@ -1,3 +1,4 @@
+/rod.test
+/lib/js/node_modules
 tmp/
 coverage.txt
-node_modules
