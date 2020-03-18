@@ -1,4 +1,4 @@
-name: Go
+name: Test
 on: [push]
 jobs:
 
@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - uses: actions/setup-node@v1        
 
     - uses: actions/setup-go@v1
       with:
@@ -18,7 +20,9 @@ jobs:
       run: curl -L https://git.io/fjaxx | repo=ysmood/kit bin=godev sh
  
     - name: test
-      run: godev -l -m 90
+      run: |
+        go generate
+        godev -l -m 90
 
     - uses: codecov/codecov-action@v1
 
