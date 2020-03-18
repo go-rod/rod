@@ -4,7 +4,9 @@ package rod
 
 import (
 	"context"
+	"crypto/md5"
 	"encoding/base64"
+	"encoding/hex"
 	"net/http"
 	"regexp"
 	"sync"
@@ -338,9 +340,19 @@ func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 	})
 }
 
-// LoadScriptE to page with the specified src path
-func (p *Page) LoadScriptE(src string) error {
-	_, err := p.EvalE(true, "", p.jsFn("loadScript"), cdp.Array{src})
+// AddScriptTagE to page. If url is empty, content will be used.
+func (p *Page) AddScriptTagE(url, content string) error {
+	hash := md5.Sum([]byte(url + content))
+	id := hex.EncodeToString(hash[:])
+	_, err := p.EvalE(true, "", p.jsFn("addScriptTag"), cdp.Array{id, url, content})
+	return err
+}
+
+// AddStyleTagE to page. If url is empty, content will be used.
+func (p *Page) AddStyleTagE(url, content string) error {
+	hash := md5.Sum([]byte(url + content))
+	id := hex.EncodeToString(hash[:])
+	_, err := p.EvalE(true, "", p.jsFn("addStyleTag"), cdp.Array{id, url, content})
 	return err
 }
 

@@ -17,11 +17,12 @@ type Browser struct {
 	ctxCancel     func()
 	timeoutCancel func()
 
-	controlURL       string
-	browserContextID string
-	viewport         *cdp.Object
-	slowmotion       time.Duration
-	trace            bool
+	BrowserContextID string
+
+	controlURL string
+	viewport   *cdp.Object
+	slowmotion time.Duration
+	trace      bool
 
 	client *cdp.Client
 	event  *kit.Observable
@@ -105,7 +106,7 @@ func (b *Browser) IncognitoE() (*Browser, error) {
 	id := res.Get("browserContextId").String()
 
 	incognito := *b
-	incognito.browserContextID = id
+	incognito.BrowserContextID = id
 
 	return &incognito, nil
 }
@@ -120,8 +121,8 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		"url": url,
 	}
 
-	if b.browserContextID != "" {
-		params["browserContextId"] = b.browserContextID
+	if b.BrowserContextID != "" {
+		params["browserContextId"] = b.BrowserContextID
 	}
 
 	target, err := b.CallE(&cdp.Request{

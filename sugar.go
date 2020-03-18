@@ -206,9 +206,15 @@ func (p *Page) WaitEvent(name string) (wait func()) {
 	return func() { kit.E(w()) }
 }
 
-// LoadScript to page with the specified src path
-func (p *Page) LoadScript(src string) *Page {
-	kit.E(p.LoadScriptE(src))
+// AddScriptTag to page. If url is empty, content will be used.
+func (p *Page) AddScriptTag(url string) *Page {
+	kit.E(p.AddScriptTagE(url, ""))
+	return p
+}
+
+// AddStyleTag to page. If url is empty, content will be used.
+func (p *Page) AddStyleTag(url string) *Page {
+	kit.E(p.AddStyleTagE(url, ""))
 	return p
 }
 

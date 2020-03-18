@@ -74,12 +74,33 @@ func (s *S) TestSetViewport() {
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
-func (s *S) TestPageLoadScript() {
+func (s *S) TestPageAddScriptTag() {
 	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
 
-	res := p.LoadScript(srcFile("fixtures/load-script.js")).Eval(`() => ok()`)
+	res := p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`() => count()`)
+	s.EqualValues(0, res.Int())
 
-	s.Equal("ok", res.String())
+	res = p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`() => count()`)
+	s.EqualValues(1, res.Int())
+
+	kit.E(p.AddScriptTagE("", `let ok = 'yes'`))
+	res = p.Eval(`() => ok`)
+	s.Equal("yes", res.String())
+}
+
+func (s *S) TestPageAddStyleTag() {
+	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
+
+	res := p.AddStyleTag(srcFile("fixtures/add-style-tag.css")).
+		Element("h4").Eval(`() => getComputedStyle(this).color`)
+	s.Equal("rgb(255, 0, 0)", res.String())
+
+	p.AddStyleTag(srcFile("fixtures/add-style-tag.css"))
+	s.Len(p.Elements("link"), 1)
+
+	kit.E(p.AddStyleTagE("", "h4 { color: green; }"))
+	res = p.Element("h4").Eval(`() => getComputedStyle(this).color`)
+	s.Equal("rgb(0, 128, 0)", res.String())
 }
 
 func (s *S) TestUntilPage() {
