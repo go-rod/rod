@@ -508,6 +508,10 @@ func (p *Page) initJS() error {
 	return nil
 }
 
+func (p *Page) jsFnPrefix() string {
+	return "rod" + p.FrameID + "."
+}
+
 func (p *Page) jsFn(fnName string) string {
-	return "rod" + p.FrameID + "." + fnName
+	return p.jsFnPrefix() + fnName
 }

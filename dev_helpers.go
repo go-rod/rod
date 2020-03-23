@@ -5,6 +5,7 @@
 package rod
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 	"time"
@@ -60,8 +61,7 @@ func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), cdp.Array{id})
 	}
 
-	res := el.page.Eval(el.page.jsFn("stripHTML"), htmlMessage)
-	el.page.Trace(res.String())
+	el.page.Trace(el.page.stripHTML(htmlMessage))
 
 	return
 }
@@ -84,4 +84,15 @@ func (p *Page) Trace(msg string) {
 	path := filepath.Join(dir, name+".jpg")
 
 	kit.E(kit.OutputFile(path, img, nil))
+}
+
+func (p *Page) stripHTML(str string) string {
+	return p.Eval(p.jsFn("stripHTML"), str).String()
+}
+
+func (p *Page) traceFn(js string, params cdp.Array) func() {
+	fnName := strings.Replace(js, p.jsFnPrefix(), "rod.", 1)
+	paramsStr := p.stripHTML(kit.MustToJSON(params))
+	msg := fmt.Sprintf("retry <code>%s(%s)</code>", fnName, paramsStr[1:len(paramsStr)-1])
+	return p.Overlay(0, 0, 500, 0, msg)
 }

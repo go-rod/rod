@@ -99,6 +99,11 @@ func (s *S) TestElementsFromElementsX() {
 	s.Len(list, 2)
 }
 
+func (s *S) TestElementTracing() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	s.Equal(`rod.element("code")`, p.Element("code").Text())
+}
+
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)

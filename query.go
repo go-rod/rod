@@ -129,6 +129,10 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params cdp.A
 		}
 	}
 
+	if p.browser.trace {
+		defer p.traceFn(js, params)()
+	}
+
 	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
 		res, err := p.EvalE(false, thisID, js, params)
 		if err != nil {
