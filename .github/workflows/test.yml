@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: setup
-      run: curl -L https://git.io/fjaxx | repo=ysmood/kit bin=godev sh
+      run: curl -L https://git.io/fjaxx | repo=ysmood/kit bin=godev ver=v0.22.2 sh
  
     - name: test
       run: |
