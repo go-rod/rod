@@ -24,6 +24,7 @@ func (s *S) TestElementContext() {
 
 	s.Equal(s.browser.GetContext(), p.GetContext())
 	s.Equal(s.browser.GetContext(), p.Element("button").GetContext())
+	s.Equal(s.browser.GetContext(), p.Element("button").Context(p.GetContext()).GetContext())
 
 	el := p.Element("button").Timeout(time.Minute).CancelTimeout().Cancel()
 	s.Error(el.ClickE("left"))
