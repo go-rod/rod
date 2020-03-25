@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -278,6 +279,9 @@ func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func()
 	s := p.browser.Event().Subscribe()
 
 	return func() (err error) {
+		if p.browser.trace {
+			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(regexps, " "))()
+		}
 		defer p.browser.Event().Unsubscribe(s)
 
 		reqList := map[string]kit.Nil{}
