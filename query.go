@@ -76,13 +76,6 @@ func (p *Page) HasXE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasX an element that matches the XPath selector
-func (p *Page) HasX(selector string) bool {
-	has, err := p.HasXE(selector)
-	kit.E(err)
-	return has
-}
-
 // HasMatchesE doc is the same as the method HasMatches
 func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 	_, err := p.ElementMatchesE(nil, "", selector, regex)
@@ -213,6 +206,33 @@ func (p *Page) ElementsByJSE(thisID, js string, params cdp.Array) (Elements, err
 	}
 
 	return elemList, err
+}
+
+// HasE doc is the same as the method Has
+func (el *Element) HasE(selector string) (bool, error) {
+	_, err := el.ElementE(selector)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// HasXE doc is the same as the method HasX
+func (el *Element) HasXE(selector string) (bool, error) {
+	_, err := el.ElementXE(selector)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+// HasMatchesE doc is the same as the method HasMatches
+func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
+	_, err := el.ElementMatchesE(selector, regex)
+	if IsError(err, ErrElementNotFound) {
+		return false, nil
+	}
+	return err == nil, err
 }
 
 // ElementE doc is the same as the method Element

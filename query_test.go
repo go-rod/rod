@@ -33,6 +33,17 @@ func (s *S) TestPageHas() {
 	s.False(s.page.HasMatches("button", "11"))
 }
 
+func (s *S) TestElementHas() {
+	s.page.Navigate(srcFile("fixtures/selector.html"))
+	b := s.page.Element("body")
+	s.True(b.Has("span"))
+	s.False(b.Has("a"))
+	s.True(b.HasX("//span"))
+	s.False(b.HasX("//a"))
+	s.True(b.HasMatches("button", "03"))
+	s.False(b.HasMatches("button", "11"))
+}
+
 func (s *S) TestPageElementX() {
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	s.page.Element("body")

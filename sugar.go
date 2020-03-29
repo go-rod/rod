@@ -246,6 +246,13 @@ func (p *Page) Has(selector string) bool {
 	return has
 }
 
+// HasX an element that matches the XPath selector
+func (p *Page) HasX(selector string) bool {
+	has, err := p.HasXE(selector)
+	kit.E(err)
+	return has
+}
+
 // HasMatches an element that matches the css selector and its text matches the regex.
 func (p *Page) HasMatches(selector, regex string) bool {
 	has, err := p.HasMatchesE(selector, regex)
@@ -495,6 +502,27 @@ func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
 	res, err := el.EvalE(true, js, params)
 	kit.E(err)
 	return res
+}
+
+// Has an element that matches the css selector
+func (el *Element) Has(selector string) bool {
+	has, err := el.HasE(selector)
+	kit.E(err)
+	return has
+}
+
+// HasX an element that matches the XPath selector
+func (el *Element) HasX(selector string) bool {
+	has, err := el.HasXE(selector)
+	kit.E(err)
+	return has
+}
+
+// HasMatches an element that matches the css selector and its text matches the regex.
+func (el *Element) HasMatches(selector, regex string) bool {
+	has, err := el.HasMatchesE(selector, regex)
+	kit.E(err)
+	return has
 }
 
 // Element returns the first child that matches the css selector
