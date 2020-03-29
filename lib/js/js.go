@@ -150,7 +150,7 @@ var Rod = `
       selectors.forEach(s => {
         Array.from(this.options).forEach(el => {
           try {
-            if (el.innerText === s || el.matches(s)) {
+            if (el.innerText.includes(s) || el.matches(s)) {
               el.selected = true
             }
           } catch (e) { }
