@@ -12,7 +12,9 @@ import (
 	"github.com/ysmood/rod/lib/launcher"
 )
 
+// Open wikipedia, search for "idempotent", and print the title of result page
 func Example_basic() {
+	// launch and connect to a browser
 	browser := rod.New().Connect()
 
 	// Even you forget to close, rod will close it after main process ends
@@ -21,10 +23,13 @@ func Example_basic() {
 	// timeout will be passed to chained function calls
 	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
 
+	// use css selector to get the input element and input "idempotent"
 	page.Element("#searchInput").Input("idempotent")
 
+	// use css selector to get the search button and click it
 	page.Element("[type=submit]").Click()
 
+	// wait until css selector get the title and get the text content of it
 	text := page.Element("#firstHeading").Text()
 
 	fmt.Println(text)
