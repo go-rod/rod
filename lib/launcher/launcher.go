@@ -29,7 +29,7 @@ type Launcher struct {
 
 // New returns the default arguments to start chrome.
 // "--" is optional, with or without it won't affect the result.
-// All available switches: https://chromium.googlesource.com/chromium/src/+/32352ad08ee673a4d43e8593ce988b224f6482d3/chrome/common/chrome_switches.cc
+// List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
 	tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
 	kit.E(os.MkdirAll(tmp, 0700))

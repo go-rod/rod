@@ -165,7 +165,7 @@ func (p *Page) Screenshot() []byte {
 	return png
 }
 
-// WaitPage to be opened from the specified page
+// WaitPage to be created from a new window
 func (p *Page) WaitPage() (wait func() *Page) {
 	w := p.WaitPageE()
 	return func() *Page {
