@@ -148,10 +148,11 @@ var Rod = `
 
     select (selectors) {
       selectors.forEach(s => {
-        Array.from(this.options).forEach(el => {
+        Array.from(this.options).find(el => {
           try {
             if (el.innerText.includes(s) || el.matches(s)) {
               el.selected = true
+              return true
             }
           } catch (e) { }
         })

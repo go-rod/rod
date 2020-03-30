@@ -78,7 +78,7 @@ func (s *S) TestElementsFromElement() {
 	p.Element("form")
 	list := p.Element("form").Elements("option")
 
-	s.Len(list, 3)
+	s.Len(list, 4)
 	s.Equal("B", list[1].Text())
 }
 
