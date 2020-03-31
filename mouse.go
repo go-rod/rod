@@ -3,7 +3,6 @@ package rod
 import (
 	"sync"
 
-	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 )
@@ -72,8 +71,6 @@ func (m *Mouse) ScrollE(x, y, steps int64) error {
 	stepY := y / steps
 
 	for i := int64(0); i < steps; i++ {
-		kit.Sleep(1)
-
 		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
 			"type":      "mouseWheel",
 			"x":         m.x,
