@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"net/http"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -269,18 +268,15 @@ func (p *Page) PauseE() error {
 	return err
 }
 
-// WaitRequestIdleE doc is the same as the method WaitRequestIdle, n is the number of how many on going requests
-// can be considered as idle. Such as set n to 1 if there's a polling request.
-func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func() error {
-	if len(regexps) == 0 {
-		regexps = []string{""}
-	}
-
+// WaitRequestIdleE returns a wait function that waits until no request for d duration.
+// Use the includes and excludes regexp list to filter the requests by their url.
+// Such as set n to 1 if there's a polling request.
+func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
 	s := p.browser.Event().Subscribe()
 
 	return func() (err error) {
 		if p.browser.trace {
-			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(regexps, " "))()
+			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
 		}
 		defer p.browser.Event().Unsubscribe(s)
 
@@ -304,16 +300,14 @@ func (p *Page) WaitRequestIdleE(d time.Duration, n int, regexps []string) func()
 					timeout.Stop()
 					url := e.Params.Get("request.url").String()
 					id := e.Params.Get("requestId").String()
-					for _, p := range regexps {
-						if regexp.MustCompile(p).MatchString(url) {
-							reqList[id] = kit.Nil{}
-						}
+					if matchWithFilter(url, includes, excludes) {
+						reqList[id] = kit.Nil{}
 					}
 				case "Network.loadingFinished",
 					"Network.loadingFailed",
 					"Network.responseReceived":
 					delete(reqList, e.Params.Get("requestId").String())
-					if len(reqList) <= n {
+					if len(reqList) == 0 {
 						timeout.Reset(d)
 					}
 				}

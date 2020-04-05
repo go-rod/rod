@@ -3,6 +3,7 @@ package rod
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -41,4 +42,18 @@ func isNilContextErr(err error) bool {
 	}
 	cdpErr, ok := err.(*cdp.Error)
 	return ok && cdpErr.Code == -32000
+}
+
+func matchWithFilter(s string, includes, excludes []string) bool {
+	for _, include := range includes {
+		if regexp.MustCompile(include).MatchString(s) {
+			for _, exclude := range excludes {
+				if regexp.MustCompile(exclude).MatchString(s) {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	return false
 }

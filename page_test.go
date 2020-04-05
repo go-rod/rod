@@ -124,20 +124,33 @@ func (s *S) TestPageWaitRequestIdle() {
 
 	host := srv.Listener.Addr().String()
 
-	srv.Engine.GET("/r", func(ctx kit.GinContext) { kit.Sleep(1) })
-	srv.Engine.GET("/", ginHTML(`<html><button onclick="fetch('/r').then(r => r.text().then(t => t))">click</button></html>`))
+	srv.Engine.GET("/r1", func(ctx kit.GinContext) {})
+	srv.Engine.GET("/r2", func(ctx kit.GinContext) { kit.Sleep(1) })
+	srv.Engine.GET("/", ginHTML(`<html>
+		<button>click</button>
+		<script>
+			document.querySelector("button").onclick = () => {
+				fetch('/r1')
+				fetch('/r2').then(r => r.text())
+			}
+		</script>
+	</html>`))
 
 	go func() { kit.Noop(srv.Do()) }()
 
 	page := s.page.Navigate("http://" + host)
 
-	page.Call("Network.enable", nil)
-
-	wait := page.WaitRequestIdle()
+	wait := page.WaitRequestIdle("/r1")
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
 	s.True(time.Since(start) > time.Second)
+
+	wait = page.WaitRequestIdle("/r2")
+	page.Element("button").Click()
+	start = time.Now()
+	wait()
+	s.True(time.Since(start) < time.Second)
 }
 
 func (s *S) TestPageWaitIdle() {
