@@ -25,6 +25,16 @@ For more details, please read the unit tests.
 
 A cli google translator [example](https://github.com/ysmood/google-translate-example).
 
+## How it works
+
+Here's the common start process of Rod:
+
+1. Try to connect to a Chrome Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
+
+1. Use the JSON-RPC protocol to talk to the browser endpoint to control it. The lib to handle it is  [here](lib/cdp).
+
+1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/js).
+
 ## FAQ
 
 ### How to use Rod inside a docker container
@@ -47,7 +57,11 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [chromedp](https://github.com/chromedp/chromedp)
 
-  With Chromedp, you have to use their verbose DSL like tasks to handle the main logic and it's painful to deal with iframes. Because Chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. When a crash happens, Chromedp will leave the zombie chrome process on Windows and Mac.
+  With Chromedp, you have to use their verbose DSL like tasks to handle the main logic, because Chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The DSL like wrapper also make the Go type useless when tracking issues.
+
+  It's painful to use Chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
+
+  When a crash happens, Chromedp will leave the zombie chrome process on Windows and Mac.
 
 - [cypress](https://www.cypress.io/)
 

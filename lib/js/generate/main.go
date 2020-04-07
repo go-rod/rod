@@ -27,7 +27,7 @@ var Rod = %s
 		"`"+encode(js)+"`",
 	)
 
-	kit.E(kit.OutputFile(slash("lib/js/js.go"), tpl, nil))
+	kit.E(kit.OutputFile(slash("lib/js/rod.go"), tpl, nil))
 }
 
 func lint() {
