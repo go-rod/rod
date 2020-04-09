@@ -49,3 +49,17 @@ jobs:
 
     - name: test
       run: go test
+
+  docker:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: test
+      run: |
+        docker build -t ysmood/rod lib
+        docker build -t test .
+        docker run --rm --cap-add=SYS_ADMIN test
