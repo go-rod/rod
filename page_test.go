@@ -308,6 +308,22 @@ func (s *S) TestPageOthers() {
 	defer p.Mouse.Up("right")
 }
 
+func (s *S) TestFonts() {
+	/*
+		I don't want to include a large OCR lib just for this test
+		So this one should be checked manually:
+
+		docker build -t ysmood/rod lib
+		GOOS=linux go test -c -o tmp/rod.test
+		docker run --rm -v $(pwd):/app -w /app --cap-add=SYS_ADMIN -it ysmood/rod sh
+		./tmp/rod.test -test.v -test.run Test/TestFonts
+	*/
+
+	p := s.page.Navigate(srcFile("fixtures/fonts.html"))
+
+	kit.E(kit.OutputFile("tmp/fonts.png", p.Screenshot(), nil))
+}
+
 func (s *S) TestPageErrors() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 

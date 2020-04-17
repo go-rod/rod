@@ -1,3 +1,5 @@
+# docker build -t ysmood/rod .
+
 FROM alpine:latest
 
 LABEL src="https://github.com/ysmood/rod/blob/master/lib/Dockerfile"
@@ -8,14 +10,9 @@ RUN apk update
 
 RUN apk add chromium
 
-# libs for font
-RUN apk add harfbuzz
-RUN apk add freetype
-RUN apk add ttf-freefont
-
-# libs for secure networking
-RUN apk add nss
-RUN apk add ca-certificates
+# install fonts for English, Chinese, Japanese, Korean
+# https://wiki.alpinelinux.org/wiki/Fonts
+RUN apk add font-noto font-noto-cjk
 
 # timezone
 RUN apk add tzdata
