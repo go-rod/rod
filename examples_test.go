@@ -53,8 +53,10 @@ func Example_reuse_sessions() {
 }
 
 func Example_debug_mode() {
-	// run chrome on foreground
-	url := launcher.New().Headless(false).Launch()
+	url := launcher.New().
+		Headless(false). // run chrome on foreground
+		Devtools(true).  // open devtools for each new tab
+		Launch()
 
 	browser := rod.New().
 		ControlURL(url).

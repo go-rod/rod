@@ -140,6 +140,16 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l
 }
 
+// Devtools switch to auto open devtools for each tab
+func (l *Launcher) Devtools(autoOpenForTabs bool) *Launcher {
+	if autoOpenForTabs {
+		l.Set("auto-open-devtools-for-tabs")
+	} else {
+		l.Delete("auto-open-devtools-for-tabs")
+	}
+	return l
+}
+
 // UserDataDir is where the browser will look for all of its state, such as cookie and cache.
 // When set to empty, system user's default dir will be used.
 func (l *Launcher) UserDataDir(dir string) *Launcher {
