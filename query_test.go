@@ -88,6 +88,12 @@ func (s *S) TestElementParent() {
 	s.Equal("FORM", el.Eval(`() => this.tagName`).String())
 }
 
+func (s *S) TestElementParents() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	s.Len(p.Element("option").Parents("*"), 4)
+	s.Len(p.Element("option").Parents("form"), 1)
+}
+
 func (s *S) TestElementSiblings() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("hr")

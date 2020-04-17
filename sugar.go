@@ -553,6 +553,13 @@ func (el *Element) Parent() *Element {
 	return parent
 }
 
+// Parents that match the selector
+func (el *Element) Parents(selector string) Elements {
+	list, err := el.ParentsE(selector)
+	kit.E(err)
+	return list
+}
+
 // Next returns the next sibling element
 func (el *Element) Next() *Element {
 	parent, err := el.NextE()

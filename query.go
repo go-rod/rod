@@ -255,6 +255,11 @@ func (el *Element) ParentE() (*Element, error) {
 	return el.ElementByJSE(`() => this.parentElement`, nil)
 }
 
+// ParentsE that match the selector
+func (el *Element) ParentsE(selector string) (Elements, error) {
+	return el.ElementsByJSE(el.page.jsFn("parents"), cdp.Array{selector})
+}
+
 // NextE doc is the same as the method Next
 func (el *Element) NextE() (*Element, error) {
 	return el.ElementByJSE(`() => this.nextElementSibling`, nil)

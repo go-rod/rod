@@ -6,12 +6,12 @@ package js
 var Rod = `
 (frameId) => { // eslint-disable-line no-unused-expressions
   const rod = {
-    element (s) {
-      return (this.document || this).querySelector(s)
+    element (selector) {
+      return (this.document || this).querySelector(selector)
     },
 
-    elements (s) {
-      return (this.document || this).querySelectorAll(s)
+    elements (selector) {
+      return (this.document || this).querySelectorAll(selector)
     },
 
     elementX (xpath) {
@@ -28,10 +28,22 @@ var Rod = `
       return list
     },
 
-    elementMatches (sel, reg) {
+    elementMatches (selector, reg) {
       const r = new RegExp(reg)
-      const el = Array.from((this.document || this).querySelectorAll(sel)).find(el => el.textContent.match(r))
+      const el = Array.from((this.document || this).querySelectorAll(selector)).find(el => el.textContent.match(r))
       return el || null
+    },
+
+    parents (selector) {
+      let p = this.parentElement
+      const list = []
+      while (p) {
+        if (p.matches(selector)) {
+          list.push(p)
+        }
+        p = p.parentElement
+      }
+      return list
     },
 
     async overlay (id, left, top, width, height, msg) {
