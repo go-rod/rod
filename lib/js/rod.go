@@ -82,11 +82,11 @@ var Rod = `
       }
     },
 
-    elementOverlay (id, msg) {
+    async elementOverlay (id, msg) {
       const interval = 100
 
       let pre = rod.box.call(this)
-      rod.overlay(id, pre.left, pre.top, pre.width, pre.height, msg)
+      await rod.overlay(id, pre.left, pre.top, pre.width, pre.height, msg)
 
       const update = () => {
         const overlay = document.getElementById(id)
