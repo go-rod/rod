@@ -229,6 +229,15 @@ func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(res.Get("data").String())
 }
 
+// PDFE prints page as PDF
+func (p *Page) PDFE(options cdp.Object) ([]byte, error) {
+	res, err := p.CallE("Page.printToPDF", options)
+	if err != nil {
+		return nil, err
+	}
+	return base64.StdEncoding.DecodeString(res.Get("data").String())
+}
+
 // WaitPageE doc is the same as the method WaitPage
 func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo gjson.Result

@@ -165,6 +165,13 @@ func (p *Page) Screenshot() []byte {
 	return png
 }
 
+// PDF prints page as PDF
+func (p *Page) PDF() []byte {
+	pdf, err := p.PDFE(nil)
+	kit.E(err)
+	return pdf
+}
+
 // WaitPage to be created from a new window
 func (p *Page) WaitPage() (wait func() *Page) {
 	w := p.WaitPageE()

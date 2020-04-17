@@ -317,11 +317,12 @@ func (s *S) TestFonts() {
 		GOOS=linux go test -c -o tmp/rod.test
 		docker run --rm -v $(pwd):/app -w /app --cap-add=SYS_ADMIN -it ysmood/rod sh
 		./tmp/rod.test -test.v -test.run Test/TestFonts
+		open tmp/fonts.pdf
 	*/
 
-	p := s.page.Navigate(srcFile("fixtures/fonts.html"))
+	p := s.page.Navigate(srcFile("fixtures/fonts.html")).WaitLoad()
 
-	kit.E(kit.OutputFile("tmp/fonts.png", p.Screenshot(), nil))
+	kit.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
 }
 
 func (s *S) TestPageErrors() {
