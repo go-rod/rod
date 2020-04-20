@@ -71,6 +71,11 @@ func New() *Launcher {
 		"use-mock-keychain":                                  nil,
 	}
 
+	// if inside a docker container
+	if kit.FileExists("/.dockerenv") {
+		defaultFlags["no-sandbox"] = nil
+	}
+
 	return &Launcher{
 		ctx:    context.Background(),
 		flags:  defaultFlags,
