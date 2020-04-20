@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	digto "github.com/ysmood/digto/client"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
 	"github.com/ysmood/rod/lib/cdp"
@@ -191,10 +190,6 @@ func Example_direct_cdp() {
 // An example to handle 3DS stripe callback.
 // It shows how to use Frame method to handle iframes.
 func Example_stripe_callback() {
-	// use digto to reverse proxy public request to local
-	// how it works: https://github.com/ysmood/digto
-	dig := digto.New(kit.RandString(8))
-
 	authHeader := []string{"Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc"}
 
 	cardToken := kit.Req("https://api.stripe.com/v1/tokens").Post().Form(
@@ -216,7 +211,7 @@ func Example_stripe_callback() {
 			},
 		},
 		"confirm", "true",
-		"return_url", dig.PublicURL(),
+		"return_url", "https://test.com",
 	).Header(authHeader...).MustJSON().Get("next_action.redirect_to_url.url").String()
 
 	browser := rod.New().Connect()
@@ -228,10 +223,6 @@ func Example_stripe_callback() {
 	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
 	frame01.Element(".Spinner").WaitInvisible()           // wait page loading
 	frame02.ElementMatches("button", "Complete").Click()
-
-	_, res, err := dig.Next()
-	kit.E(err)
-	kit.E(res(200, nil, nil))
 
 	fmt.Println("done")
 
