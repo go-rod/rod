@@ -1,6 +1,6 @@
-// generates the fixtures/fonts.html
+// generates the fixtures/fonts.html for testing the fonts in docker.
 // Use the google translate to translate "test" into all the languages, print the result into a html page.
-// By reviewing the generated page we can find out what font is missing for a specific language.
+// By reviewing the generated pdf we can find out what font is missing for a specific language.
 
 package main
 

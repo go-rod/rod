@@ -315,7 +315,7 @@ func (s *S) TestFonts() {
 
 		docker build -t ysmood/rod lib
 		GOOS=linux go test -c -o tmp/rod.test
-		docker run --rm -v $(pwd):/app -w /app --cap-add=SYS_ADMIN -it ysmood/rod sh
+		docker run --rm -itv $(pwd):/t -w /t ysmood/rod sh
 		./tmp/rod.test -test.v -test.run Test/TestFonts
 		open tmp/fonts.pdf
 	*/
