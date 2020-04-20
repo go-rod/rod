@@ -39,12 +39,11 @@ Here's the common start process of Rod:
 
 ### How to use Rod inside a docker container
 
-To let rod work with docker is very easy.
-Here's the [example](./Dockerfile) to demonstrate how to build an image and run the unit tests of Rod:
+To let rod work with docker is very easy. Here's the example to run the unit tests of Rod:
 
 ```bash
-docker build -t test https://github.com/ysmood/rod.git
-docker run --rm --cap-add=SYS_ADMIN -it test
+# cd to the root dir of rod repo
+docker run -v $(pwd):/t -w /t ysmood/rod:go
 ```
 
 ### Why another puppeteer like lib

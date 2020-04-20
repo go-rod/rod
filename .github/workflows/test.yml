@@ -61,5 +61,5 @@ jobs:
     - name: test
       run: |
         docker build -t ysmood/rod lib
-        docker build -t test .
-        docker run --rm --cap-add=SYS_ADMIN test
+        docker build -t ysmood/rod:go -f lib/go.Dockerfile .
+        docker run -v $(pwd):/t -w /t ysmood/rod:go 

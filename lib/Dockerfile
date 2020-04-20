@@ -1,5 +1,3 @@
-# docker build -t ysmood/rod .
-
 FROM alpine:latest
 
 LABEL src="https://github.com/ysmood/rod/blob/master/lib/Dockerfile"
@@ -16,9 +14,3 @@ RUN apk add font-noto-arabic font-noto-thai font-noto-devanagari
 
 # timezone support
 RUN apk add tzdata
-
-# run chrome with non-root mode so that we don't have to use --no-sandbox flag
-RUN addgroup -S rod && adduser -S rod -G rod
-USER rod
-
-WORKDIR /home/rod
