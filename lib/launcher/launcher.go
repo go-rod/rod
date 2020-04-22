@@ -55,7 +55,7 @@ func New() *Launcher {
 		"disable-default-apps":                               nil,
 		"disable-dev-shm-usage":                              nil,
 		"disable-extensions":                                 nil,
-		"disable-features":                                   {"TranslateUI"},
+		"disable-features":                                   {"site-per-process", "TranslateUI"},
 		"disable-hang-monitor":                               nil,
 		"disable-ipc-flooding-protection":                    nil,
 		"disable-popup-blocking":                             nil,
