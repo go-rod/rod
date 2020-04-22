@@ -374,6 +374,13 @@ func (el *Element) Frame() *Page {
 	return f
 }
 
+// ShadowRoot returns the shadow root of this element
+func (el *Element) ShadowRoot() *Element {
+	node, err := el.ShadowRootE()
+	kit.E(err)
+	return node
+}
+
 // Focus sets focus on the specified element
 func (el *Element) Focus() *Element {
 	kit.E(el.FocusE())

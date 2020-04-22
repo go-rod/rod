@@ -39,6 +39,30 @@ func (el *Element) DescribeE() (kit.JSONResult, error) {
 	return &node, nil
 }
 
+// ShadowRootE returns the shadow root of this element
+func (el *Element) ShadowRootE() (*Element, error) {
+	node, err := el.DescribeE()
+	if err != nil {
+		return nil, err
+	}
+
+	// though now it's an array, w3c changed the spec of it to be a single.
+	id := node.Get("shadowRoots").Array()[0].Get("backendNodeId").Int()
+
+	shadowNode, err := el.page.CallE("DOM.resolveNode", cdp.Object{
+		"backendNodeId": id,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &Element{
+		page:     el.page,
+		ctx:      el.page.ctx,
+		ObjectID: shadowNode.Get("object.objectId").String(),
+	}, nil
+}
+
 // FrameE doc is the same as the method Frame
 func (el *Element) FrameE() (*Page, error) {
 	node, err := el.DescribeE()

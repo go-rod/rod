@@ -33,11 +33,17 @@ func (s *S) TestElementContext() {
 	s.Error(el.ClickE("left"))
 }
 
-func (s *S) TestClickInIframes() {
+func (s *S) TestIframes() {
 	p := s.page.Navigate(srcFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
 	frame.Element("button").Click()
 	s.True(frame.Has("[a=ok]"))
+}
+
+func (s *S) TestShadowDOM() {
+	p := s.page.Navigate(srcFile("fixtures/shadow-dom.html")).WaitLoad()
+	el := p.Element("#container").ShadowRoot()
+	s.Equal("inside", el.Element("p").Text())
 }
 
 func (s *S) TestPress() {
