@@ -212,6 +212,7 @@ func (s *S) TestElementOthers() {
 	el.Focus()
 	el.ScrollIntoViewIfNeeded()
 	s.EqualValues(784, el.Box().Width)
+	s.Equal("submit", el.Element("[type=submit]").Text())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
 	el.Wait(`() => true`)
 	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("localName").String())

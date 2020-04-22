@@ -206,7 +206,7 @@ func (el *Element) SetFilesE(paths []string) error {
 
 // TextE doc is the same as the method Text
 func (el *Element) TextE() (string, error) {
-	str, err := el.EvalE(true, `() => this.innerText`, nil)
+	str, err := el.EvalE(true, el.page.jsFn("text"), nil)
 	return str.String(), err
 }
 

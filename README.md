@@ -23,7 +23,7 @@ Rod is a High-level Chrome Devtools controller directly based on [Chrome DevTool
 Here are the [basic examples](./examples_test.go).
 For more details, please read the unit tests.
 
-A cli google translator [example](https://github.com/ysmood/google-translate-example).
+A cli translator [example](https://github.com/ysmood/translator-example).
 
 ## How it works
 
