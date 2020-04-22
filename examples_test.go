@@ -113,15 +113,15 @@ func Example_wait_for_request() {
 	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	page := browser.Page("https://github.com/ysmood/google-translate-example")
+	page := browser.Page("https://www.bing.com/")
 
 	wait := page.WaitRequestIdle()
-	page.ElementMatches("i", "Branch:").Click() // this button will send ajax a call
+	page.Element("#sb_form_q").Click().Input("test")
 	wait()
 
-	fmt.Println(page.Element("#ref-list-branches span").Text())
+	fmt.Println(page.Has("#sw_as li"))
 
-	// Output: master
+	// Output: true
 }
 
 func Example_customize_retry_strategy() {
