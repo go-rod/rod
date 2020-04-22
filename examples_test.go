@@ -20,20 +20,20 @@ func Example_basic() {
 	defer browser.Close()
 
 	// timeout will be passed to chained function calls
-	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
+	page := browser.Timeout(time.Minute).Page("https://github.com")
 
-	// use css selector to get the input element and input "idempotent"
-	page.Element("#searchInput").Input("idempotent")
+	// make sure windows size is consistent
+	page.Window(0, 0, 1200, 600)
 
-	// use css selector to get the search button and click it
-	page.Element("[type=submit]").Click()
+	// use css selector to get the search input element and input "git"
+	page.Element("input").Input("git").Press(input.Enter)
 
-	// wait until css selector get the title and get the text content of it
-	text := page.Element("#firstHeading").Text()
+	// wait until css selector get the element then get the text content of it
+	text := page.Element(".codesearch-results p").Text()
 
 	fmt.Println(text)
 
-	// Output: Idempotence
+	// Output: Git is the most widely used version control system.
 }
 
 // Such as you logged in your github account and you want to reuse the login session,
@@ -62,11 +62,12 @@ func Example_debug_mode() {
 		DebugCDP(true).          // log all cdp traffic
 		Trace(true).             // show trace of each input action
 		Slowmotion(time.Second). // each input action will take 1 second
-		Connect()
+		Connect().
+		Timeout(time.Minute)
 
 	defer browser.Close()
 
-	page := browser.Page("https://www.wikipedia.org/").Timeout(time.Minute)
+	page := browser.Page("https://www.wikipedia.org/")
 
 	// enable auto screenshot before each input action
 	page.TraceDir("tmp/screenshots")
@@ -90,10 +91,10 @@ func Example_debug_mode() {
 }
 
 func Example_wait_for_animation() {
-	browser := rod.New().Connect()
+	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/").Timeout(time.Minute)
+	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/")
 
 	page.WaitLoad().Element("[data-target='#exampleModalLive']").Click()
 
@@ -109,34 +110,31 @@ func Example_wait_for_animation() {
 }
 
 func Example_wait_for_request() {
-	browser := rod.New().Connect()
+	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	page := browser.Page("https://www.google.com/").Timeout(time.Minute)
+	page := browser.Page("https://github.com/ysmood/google-translate-example")
 
 	wait := page.WaitRequestIdle()
-
-	page.WaitLoad().Element(`[name="q"]`).Input("idempotent")
-
+	page.ElementMatches("i", "Branch:").Click() // this button will send ajax a call
 	wait()
 
-	// should be able to find the search suggestion after the ajax request
-	fmt.Println(page.HasMatches("div > span", "idempotent"))
+	fmt.Println(page.Element("#ref-list-branches span").Text())
 
-	// Output: true
+	// Output: master
 }
 
 func Example_customize_retry_strategy() {
-	browser := rod.New().Connect()
+	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	page := browser.Page("https://duckduckgo.com/")
+	page := browser.Page("https://github.com")
 
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 
-	// here low-level api ElementE other than Element to have more options,
+	// here we use low-level api ElementE other than Element to have more options,
 	// use backoff algorithm to do the retry
-	el, err := page.Timeout(time.Minute).ElementE(backoff, "", "#search_form_input_homepage")
+	el, err := page.ElementE(backoff, "", "input")
 	kit.E(err)
 
 	fmt.Println(el.Eval(`() => this.name`))
@@ -151,14 +149,14 @@ func Example_customize_chrome_launch() {
 		Delete("use-mock-keychain"). // delete flag
 		Launch()
 
-	browser := rod.New().ControlURL(url).Connect()
+	browser := rod.New().ControlURL(url).Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	el := browser.Page("https://www.wikipedia.org/").Element("title")
+	el := browser.Page("https://github.com").Element("title")
 
 	fmt.Println(el.Text())
 
-	// Output: Wikipedia
+	// Output: The world’s leading software development platform · GitHub
 }
 
 // Useful when rod doesn't have the function you want, you can call the cdp interface directly easily.
@@ -174,10 +172,10 @@ func Example_direct_cdp() {
 	page.Call("Network.setCookie", &cdp.Object{
 		"name":  "rod",
 		"value": "test",
-		"url":   "https://www.wikipedia.org",
+		"url":   "https://github.com",
 	})
 
-	page.Navigate("https://www.wikipedia.org/").WaitLoad()
+	page.Navigate("https://github.com")
 
 	// eval js on the page to get the cookie
 	cookie := page.Eval(`() => document.cookie`).String()
@@ -185,46 +183,4 @@ func Example_direct_cdp() {
 	fmt.Println(cookie[:9])
 
 	// Output: rod=test;
-}
-
-// An example to handle 3DS stripe callback.
-// It shows how to use Frame method to handle iframes.
-func Example_stripe_callback() {
-	authHeader := []string{"Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc"}
-
-	cardToken := kit.Req("https://api.stripe.com/v1/tokens").Post().Form(
-		"card", map[string]interface{}{
-			"number":    "4000000000003220",
-			"exp_month": "7",
-			"exp_year":  "2025",
-			"cvc":       "314",
-		},
-	).Header(authHeader...).MustJSON().Get("id").String()
-
-	redirectURL := kit.Req("https://api.stripe.com/v1/payment_intents").Post().Form(
-		"amount", "2000",
-		"currency", "usd",
-		"payment_method_data", map[string]interface{}{
-			"type": "card",
-			"card": map[string]interface{}{
-				"token": cardToken,
-			},
-		},
-		"confirm", "true",
-		"return_url", "https://test.com",
-	).Header(authHeader...).MustJSON().Get("next_action.redirect_to_url.url").String()
-
-	browser := rod.New().Connect()
-	defer browser.Close()
-
-	page := browser.Page(redirectURL)
-
-	frame01 := page.Timeout(3 * time.Minute).Element("[name=__privateStripeFrame4]").Frame()
-	frame02 := frame01.Element("#challengeFrame").Frame() // an iframe inside frame01
-	frame01.Element(".Spinner").WaitInvisible()           // wait page loading
-	frame02.ElementMatches("button", "Complete").Click()
-
-	fmt.Println("done")
-
-	// Output: done
 }
