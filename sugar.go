@@ -418,7 +418,8 @@ func (el *Element) SelectAllText() *Element {
 	return el
 }
 
-// Input wll click the element and input the text
+// Input wll click the element and input the text.
+// To empty the input you can use something like el.SelectAllText().Input("")
 func (el *Element) Input(text string) *Element {
 	kit.E(el.InputE(text))
 	return el
