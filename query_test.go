@@ -9,7 +9,7 @@ func (s *S) TestPageElements() {
 	s.page.Element("input")
 	list := s.page.Elements("input")
 	s.Equal("input", list.First().Describe().Get("localName").String())
-	s.Equal("submit", list.Last().Eval("() => this.value").String())
+	s.Equal("submit", list.Last().Text())
 }
 
 func (s *S) TestPages() {

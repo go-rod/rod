@@ -276,7 +276,7 @@ func (s *S) TestPageInput() {
 	p.Keyboard.InsertText(" Test")
 	p.Keyboard.Press(input.Tab)
 
-	s.Equal("A Test", el.Eval(`() => this.value`).String())
+	s.Equal("A Test", el.Text())
 }
 
 func (s *S) TestPageScroll() {

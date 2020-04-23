@@ -53,7 +53,7 @@ func (s *S) TestPress() {
 	el.Press(' ')
 	el.Press('b')
 
-	s.Equal("A b", el.Eval(`() => this.value`).String())
+	s.Equal("A b", el.Text())
 }
 
 func (s *S) TestKeyDown() {
@@ -79,7 +79,7 @@ func (s *S) TestText() {
 	el := p.Element("textarea")
 	el.Input(text)
 
-	s.Equal(text, el.Eval(`() => this.value`).String())
+	s.Equal(text, el.Text())
 	s.True(p.Has("[event=textarea-change]"))
 }
 
@@ -89,12 +89,12 @@ func (s *S) TestSelectText() {
 	el.Input("test")
 	el.SelectAllText()
 	el.Input("test")
-	s.Equal("test", el.Eval(`() => this.value`).String())
+	s.Equal("test", el.Text())
 
 	el.SelectText(`es`)
 	el.Input("__")
 
-	s.Equal("t__t", el.Eval(`() => this.value`).String())
+	s.Equal("t__t", el.Text())
 }
 
 func (s *S) TestSelect() {
