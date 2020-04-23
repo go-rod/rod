@@ -50,6 +50,12 @@ docker run -v $(pwd):/t -w /t ysmood/rod:go
 
 There are a lot of great projects, but no one is perfect, choose the best one that fits your needs is important.
 
+- [selenium](https://www.selenium.dev/)
+
+  It's slower by design because it encourages the use of hard-coded sleep. When work with Rod, you generally don't use sleep at all.
+  Therefore it's more buggy to use selenium if the network is unstable.
+  It's harder to setup and maintain because of extra dependencies like a browser driver.
+
 - [puppeteer](https://github.com/puppeteer/puppeteer)
 
   With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to chrome will be async calls, so it's unfriendly for QA from the beginning.
@@ -64,4 +70,4 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [cypress](https://www.cypress.io/)
 
-  Cypress is very limited, to test cross-domain iframes such as payments, it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html).
+  Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
