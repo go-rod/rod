@@ -30,7 +30,8 @@ var Rod = `
 
     elementMatches (selector, reg) {
       const r = new RegExp(reg)
-      const el = Array.from((this.document || this).querySelectorAll(selector)).find(el => el.textContent.match(r))
+      const filter = el => rod.text.call(el).match(r)
+      const el = Array.from((this.document || this).querySelectorAll(selector)).find(filter)
       return el || null
     },
 

@@ -65,6 +65,10 @@ func (s *S) TestElementMatches() {
 
 	el = p.Element("div").ElementMatches("button", `03`)
 	s.Equal("03", el.Text())
+
+	p = s.page.Navigate(srcFile("fixtures/input.html"))
+	el = p.ElementMatches("input", `submit`)
+	s.Equal("submit", el.Text())
 }
 
 func (s *S) TestElementFromElement() {
