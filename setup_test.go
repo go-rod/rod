@@ -39,6 +39,15 @@ func ginHTML(body string) gin.HandlerFunc {
 	}
 }
 
+func serve() (string, *gin.Engine, func()) {
+	srv := kit.MustServer("127.0.0.1:0")
+	go func() { kit.Noop(srv.Do()) }()
+
+	url := "http://" + srv.Listener.Addr().String()
+
+	return url, srv.Engine, func() { kit.E(srv.Listener.Close()) }
+}
+
 func Test(t *testing.T) {
 	slow, _ := time.ParseDuration(os.Getenv("slow"))
 	show := os.Getenv("show") == "true"

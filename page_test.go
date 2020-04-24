@@ -17,19 +17,20 @@ import (
 )
 
 func (s *S) TestSetCookies() {
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { kit.E(srv.Listener.Close()) }()
-	go func() { kit.Noop(srv.Do()) }()
-
-	host := "http://" + srv.Listener.Addr().String()
+	url, _, close := serve()
+	defer close()
 
 	page := s.page.SetCookies(cdp.Object{
-		"name":  "rod",
-		"value": "test",
-		"url":   host,
-	}).Navigate(host)
+		"name":  "a",
+		"value": "1",
+		"url":   url,
+	}, cdp.Object{
+		"name":  "b",
+		"value": "2",
+		"url":   url,
+	}).Navigate(url)
 
-	s.Equal("rod=test", page.Eval(`() => document.cookie`).String())
+	s.Equal("a=1; b=2", page.Eval(`() => document.cookie`).String())
 }
 
 func (s *S) TestClosePage() {
@@ -136,14 +137,12 @@ func (s *S) TestUntilPage() {
 }
 
 func (s *S) TestPageWaitRequestIdle() {
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { kit.E(srv.Listener.Close()) }()
+	url, engine, close := serve()
+	defer close()
 
-	host := srv.Listener.Addr().String()
-
-	srv.Engine.GET("/r1", func(ctx kit.GinContext) {})
-	srv.Engine.GET("/r2", func(ctx kit.GinContext) { kit.Sleep(1) })
-	srv.Engine.GET("/", ginHTML(`<html>
+	engine.GET("/r1", func(ctx kit.GinContext) {})
+	engine.GET("/r2", func(ctx kit.GinContext) { kit.Sleep(1) })
+	engine.GET("/", ginHTML(`<html>
 		<button>click</button>
 		<script>
 			document.querySelector("button").onclick = () => {
@@ -153,9 +152,7 @@ func (s *S) TestPageWaitRequestIdle() {
 		</script>
 	</html>`))
 
-	go func() { kit.Noop(srv.Do()) }()
-
-	page := s.page.Navigate("http://" + host)
+	page := s.page.Navigate(url)
 
 	wait := page.WaitRequestIdle("/r1")
 	page.Element("button").Click()
@@ -195,20 +192,17 @@ func (s *S) TestAlert() {
 }
 
 func (s *S) TestDownloadFile() {
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { kit.E(srv.Listener.Close()) }()
+	url, engine, close := serve()
+	defer close()
 
-	host := srv.Listener.Addr().String()
 	content := "test content"
 
-	srv.Engine.GET("/d", func(ctx kit.GinContext) {
+	engine.GET("/d", func(ctx kit.GinContext) {
 		kit.E(ctx.Writer.Write([]byte(content)))
 	})
-	srv.Engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="//%s/d" download>click</a></html>`, host)))
+	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
-	go func() { kit.Noop(srv.Do()) }()
-
-	page := s.page.Navigate("http://" + host)
+	page := s.page.Navigate(url)
 
 	wait := page.GetDownloadFile("*")
 
