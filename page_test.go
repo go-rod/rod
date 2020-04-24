@@ -12,8 +12,25 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
+	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 )
+
+func (s *S) TestSetCookies() {
+	srv := kit.MustServer("127.0.0.1:0")
+	defer func() { kit.E(srv.Listener.Close()) }()
+	go func() { kit.Noop(srv.Do()) }()
+
+	host := "http://" + srv.Listener.Addr().String()
+
+	page := s.page.SetCookies(cdp.Object{
+		"name":  "rod",
+		"value": "test",
+		"url":   host,
+	}).Navigate(host)
+
+	s.Equal("rod=test", page.Eval(`() => document.cookie`).String())
+}
 
 func (s *S) TestClosePage() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))

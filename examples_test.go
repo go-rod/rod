@@ -164,6 +164,9 @@ func Example_direct_cdp() {
 	browser := rod.New().Connect()
 	defer browser.Close()
 
+	// The code here is how Page.SetCookies works
+	// Normally, you use something like browser.Page("").SetCookies(...).Navigate(url)
+
 	page := browser.Page("").Timeout(time.Minute)
 
 	// call cdp interface directly here

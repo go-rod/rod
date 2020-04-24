@@ -64,6 +64,15 @@ func (p *Page) Root() *Page {
 	return f
 }
 
+// SetCookiesE of the page.
+// Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+func (p *Page) SetCookiesE(cookies []cdp.Object) error {
+	_, err := p.CallE("Network.setCookies", cdp.Object{
+		"cookies": cookies,
+	})
+	return err
+}
+
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
 	_, err := p.CallE("Page.navigate", cdp.Object{

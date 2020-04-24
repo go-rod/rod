@@ -65,6 +65,13 @@ func (b *Browser) Call(method string, params interface{}) kit.JSONResult {
 	return res
 }
 
+// SetCookies of the page.
+// Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+func (p *Page) SetCookies(cookies ...cdp.Object) *Page {
+	kit.E(p.SetCookiesE(cookies))
+	return p
+}
+
 // Navigate to url
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))
