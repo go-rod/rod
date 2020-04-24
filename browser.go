@@ -22,7 +22,7 @@ type Browser struct {
 	BrowserContextID string
 
 	controlURL string
-	viewport   *cdp.Object   // default viewport, such as window demension and dpi
+	viewport   cdp.Object    // default viewport, such as window demension and dpi
 	slowmotion time.Duration // slowdown user inputs
 	trace      bool          // enable show auto tracing of user inputs
 
@@ -46,7 +46,7 @@ func (b *Browser) ControlURL(url string) *Browser {
 
 // Viewport set the default viewport for newly created page
 // options: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-func (b *Browser) Viewport(opts *cdp.Object) *Browser {
+func (b *Browser) Viewport(opts cdp.Object) *Browser {
 	b.viewport = opts
 	return b
 }

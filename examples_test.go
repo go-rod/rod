@@ -169,7 +169,7 @@ func Example_direct_cdp() {
 	// call cdp interface directly here
 	// set the cookie before we visit the website
 	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
-	page.Call("Network.setCookie", &cdp.Object{
+	page.Call("Network.setCookie", cdp.Object{
 		"name":  "rod",
 		"value": "test",
 		"url":   "https://github.com",

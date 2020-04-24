@@ -80,7 +80,7 @@ func (p *Page) GetWindow() kit.JSONResult {
 
 // Window set the window location and size
 func (p *Page) Window(left, top, width, height int64) *Page {
-	kit.E(p.WindowE(&cdp.Object{
+	kit.E(p.WindowE(cdp.Object{
 		"left":        left,
 		"top":         top,
 		"width":       width,
@@ -92,7 +92,7 @@ func (p *Page) Window(left, top, width, height int64) *Page {
 
 // WindowMinimize the window
 func (p *Page) WindowMinimize() *Page {
-	kit.E(p.WindowE(&cdp.Object{
+	kit.E(p.WindowE(cdp.Object{
 		"windowState": "minimized",
 	}))
 	return p
@@ -100,7 +100,7 @@ func (p *Page) WindowMinimize() *Page {
 
 // WindowMaximize the window
 func (p *Page) WindowMaximize() *Page {
-	kit.E(p.WindowE(&cdp.Object{
+	kit.E(p.WindowE(cdp.Object{
 		"windowState": "maximized",
 	}))
 	return p
@@ -108,7 +108,7 @@ func (p *Page) WindowMaximize() *Page {
 
 // WindowFullscreen the window
 func (p *Page) WindowFullscreen() *Page {
-	kit.E(p.WindowE(&cdp.Object{
+	kit.E(p.WindowE(cdp.Object{
 		"windowState": "fullscreen",
 	}))
 	return p
@@ -116,7 +116,7 @@ func (p *Page) WindowFullscreen() *Page {
 
 // WindowNormal the window size
 func (p *Page) WindowNormal() *Page {
-	kit.E(p.WindowE(&cdp.Object{
+	kit.E(p.WindowE(cdp.Object{
 		"windowState": "normal",
 	}))
 	return p
@@ -124,7 +124,7 @@ func (p *Page) WindowNormal() *Page {
 
 // Viewport overrides the values of device screen dimensions.
 func (p *Page) Viewport(width, height int64, deviceScaleFactor float32, mobile bool) *Page {
-	kit.E(p.ViewportE(&cdp.Object{
+	kit.E(p.ViewportE(cdp.Object{
 		"width":             width,
 		"height":            height,
 		"deviceScaleFactor": deviceScaleFactor,

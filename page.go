@@ -97,7 +97,7 @@ func (p *Page) GetWindowE() (kit.JSONResult, error) {
 }
 
 // WindowE https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
-func (p *Page) WindowE(bounds *cdp.Object) error {
+func (p *Page) WindowE(bounds cdp.Object) error {
 	id, err := p.getWindowID()
 	if err != nil {
 		return err
@@ -109,7 +109,7 @@ func (p *Page) WindowE(bounds *cdp.Object) error {
 
 // ViewportE doc is the same as the method Viewport
 // Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-func (p *Page) ViewportE(params *cdp.Object) error {
+func (p *Page) ViewportE(params cdp.Object) error {
 	if params == nil {
 		return nil
 	}
