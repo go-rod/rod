@@ -19,7 +19,13 @@ import (
 
 // DefaultRevision for chrome
 // curl -s -S https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Mac%2FLAST_CHANGE\?alt\=media
-const DefaultRevision = 757680
+const DefaultRevision = 737027
+
+// HostGoogle to download chrome
+const HostGoogle = "https://storage.googleapis.com"
+
+// HostChina to download chrome
+const HostChina = "https://npm.taobao.org/mirrors"
 
 // Chrome is a helper to download chrome smartly
 type Chrome struct {
@@ -46,7 +52,7 @@ func NewChrome() *Chrome {
 	return &Chrome{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
-		Hosts:    []string{"https://storage.googleapis.com", "https://npm.taobao.org/mirrors"},
+		Hosts:    []string{HostGoogle, HostChina},
 		Dir:      filepath.Join(os.TempDir(), "cdp"),
 		Log: func(str string) {
 			fmt.Print(str)
