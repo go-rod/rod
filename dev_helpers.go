@@ -5,6 +5,8 @@
 package rod
 
 import (
+	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -79,8 +81,10 @@ func (p *Page) Trace(msg string) {
 	})
 	CancelPanic(err)
 
-	time := time.Now().Format(time.RFC3339Nano)
-	name := kit.Escape(time + " " + msg)
+	index := make([]byte, 8)
+	binary.BigEndian.PutUint64(index, uint64(time.Now().UnixNano()))
+
+	name := kit.Escape(hex.EncodeToString(index) + " " + msg)
 	path := filepath.Join(dir, name+".jpg")
 
 	kit.E(kit.OutputFile(path, img, nil))
