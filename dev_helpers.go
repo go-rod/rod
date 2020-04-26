@@ -5,16 +5,17 @@
 package rod
 
 import (
-	"encoding/binary"
-	"encoding/hex"
 	"fmt"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
+
+var traceCount int64 = 0
 
 // check method and sleep if needed
 func (b *Browser) trySlowmotion(method string) {
@@ -81,10 +82,8 @@ func (p *Page) Trace(msg string) {
 	})
 	CancelPanic(err)
 
-	index := make([]byte, 8)
-	binary.BigEndian.PutUint64(index, uint64(time.Now().UnixNano()))
-
-	name := kit.Escape(hex.EncodeToString(index) + " " + msg)
+	index := fmt.Sprintf("%08d", atomic.AddInt64(&traceCount, 1))
+	name := kit.Escape(index + " " + msg)
 	path := filepath.Join(dir, name+".jpg")
 
 	kit.E(kit.OutputFile(path, img, nil))
