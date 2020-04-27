@@ -53,7 +53,7 @@ func Example_reuse_sessions() {
 
 func Example_debug_mode() {
 	url := launcher.New().
-		Headless(false). // run chrome on foreground
+		Headless(false). // run chrome on foreground, you can also use env "rod=show"
 		Devtools(true).  // open devtools for each new tab
 		Launch()
 
@@ -65,12 +65,12 @@ func Example_debug_mode() {
 		Connect().
 		Timeout(time.Minute)
 
+	// the monitor server that plays the screenshots of each tab
+	browser.ServeMonitor(":9777")
+
 	defer browser.Close()
 
 	page := browser.Page("https://www.wikipedia.org/")
-
-	// enable auto screenshot before each input action
-	page.TraceDir("tmp/screenshots")
 
 	page.Element("#searchLanguage").Select("[lang=zh]")
 	page.Element("#searchInput").Input("热干面")

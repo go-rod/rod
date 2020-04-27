@@ -7,11 +7,14 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
+// To check the env var you can use to quickly enable options from CLI, check here:
+// https://pkg.go.dev/github.com/ysmood/rod/lib/defaults
 type Browser struct {
 	// these are the handler for ctx
 	ctx           context.Context
@@ -26,6 +29,8 @@ type Browser struct {
 	slowmotion time.Duration // slowdown user inputs
 	trace      bool          // enable show auto tracing of user inputs
 
+	monitorServer *kit.ServerContext
+
 	client *cdp.Client
 	event  *kit.Observable // all the browser events from cdp client
 }
@@ -33,8 +38,10 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:    context.Background(),
-		client: cdp.New(),
+		ctx:        context.Background(),
+		client:     cdp.New().Debug(defaults.CDP),
+		trace:      defaults.Trace,
+		slowmotion: defaults.Slow,
 	}
 }
 
@@ -83,6 +90,8 @@ func (b *Browser) ConnectE() error {
 
 	b.client.URL(b.controlURL).Context(b.ctx).Connect()
 
+	b.monitorServer = b.ServeMonitor(defaults.Monitor)
+
 	return b.initEvents()
 }
 
@@ -91,6 +100,10 @@ func (b *Browser) CloseE() error {
 	_, err := b.CallE(&cdp.Request{Method: "Browser.close"})
 	if err != nil {
 		return err
+	}
+
+	if b.monitorServer != nil {
+		return b.monitorServer.Listener.Close()
 	}
 
 	return nil

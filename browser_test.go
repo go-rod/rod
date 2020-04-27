@@ -48,6 +48,17 @@ func (s *S) TestBrowserCall() {
 	s.Regexp("HeadlessChrome", v.Get("product").String())
 }
 
+func (s *S) TestMonitor() {
+	b := rod.New().Connect()
+	defer b.Close()
+	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
+	host := b.ServeMonitor("127.0.0.1:0").Listener.Addr().String()
+
+	s.Contains(kit.Req("http://"+host).MustString(), p.TargetID)
+	s.Contains(kit.Req("http://"+host+"/page/"+p.TargetID).MustString(), p.TargetID)
+	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+p.TargetID).MustBytes()), 1000)
+}
+
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {

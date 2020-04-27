@@ -260,22 +260,15 @@ func (s *S) TestPagePause() {
 }
 
 func (s *S) TestPageScreenshot() {
+	f := filepath.Join("tmp", kit.RandString(8)+".png")
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	p.Element("button")
-	data := p.Screenshot()
+	data := p.Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
 	s.Equal(800, img.Bounds().Dx())
 	s.Equal(600, img.Bounds().Dy())
-}
-
-func (s *S) TestPageTraceDir() {
-	p := *s.page.Navigate(srcFile("fixtures/click.html"))
-	dir := filepath.FromSlash("tmp/trace-screenshots/" + kit.RandString(8))
-	p.TraceDir(dir)
-	p.Element("button").Click()
-	pattern := filepath.Join(dir, "*")
-	s.Len(kit.Walk(pattern).MustList(), 1)
+	s.FileExists(f)
 }
 
 func (s *S) TestPageInput() {

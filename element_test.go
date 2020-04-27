@@ -181,13 +181,15 @@ func (s *S) TestResource() {
 }
 
 func (s *S) TestElementScreenshot() {
+	f := filepath.Join("tmp", kit.RandString(8)+".png")
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 
-	data := p.Element("h4").Screenshot()
+	data := p.Element("h4").Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
 	s.EqualValues(200, img.Bounds().Dx())
 	s.EqualValues(30, img.Bounds().Dy())
+	s.FileExists(f)
 }
 
 func (s *S) TestUseReleasedElement() {

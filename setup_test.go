@@ -51,7 +51,7 @@ func serve() (string, *gin.Engine, func()) {
 func Test(t *testing.T) {
 	slow, _ := time.ParseDuration(os.Getenv("slow"))
 	show := os.Getenv("show") == "true"
-	debugCDP := os.Getenv("debug_cdp") == "true"
+	pause := os.Getenv("pause") == "true"
 
 	url := launcher.New().
 		Headless(!show).
@@ -61,7 +61,6 @@ func Test(t *testing.T) {
 	s := new(S)
 	s.browser = rod.New().
 		ControlURL(url).
-		DebugCDP(debugCDP).
 		Slowmotion(slow).
 		Trace(true).
 		Viewport(nil).
@@ -73,4 +72,8 @@ func Test(t *testing.T) {
 	s.page.Viewport(800, 600, 1, false)
 
 	suite.Run(t, s)
+
+	if pause {
+		kit.Pause()
+	}
 }

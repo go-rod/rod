@@ -166,10 +166,13 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 }
 
 // Screenshot the page and returns the binary of png image
-func (p *Page) Screenshot() []byte {
-	png, err := p.ScreenshotE(nil)
+func (p *Page) Screenshot(toFile ...string) []byte {
+	bin, err := p.ScreenshotE(nil)
 	kit.E(err)
-	return png
+	if len(toFile) > 0 {
+		kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
+	}
+	return bin
 }
 
 // PDF prints page as PDF
@@ -507,9 +510,12 @@ func (el *Element) Resource() []byte {
 }
 
 // Screenshot of the area of the element
-func (el *Element) Screenshot() []byte {
+func (el *Element) Screenshot(toFile ...string) []byte {
 	bin, err := el.ScreenshotE("png", -1)
 	kit.E(err)
+	if len(toFile) > 0 {
+		kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
+	}
 	return bin
 }
 

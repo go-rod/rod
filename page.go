@@ -1,4 +1,4 @@
-//go:generate go run ./lib/js/generate
+//go:generate go run ./lib/assets/generate
 
 package rod
 
@@ -14,8 +14,8 @@ import (
 
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/assets"
 	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/js"
 )
 
 // Page represents the webpage
@@ -38,14 +38,6 @@ type Page struct {
 	element             *Element // iframe only
 	windowObjectID      string   // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
-	traceDir            string // the dir to output the screenshots
-}
-
-// TraceDir set the dir to save the trace screenshots.
-// If it's set, screenshots will be taken before each trace.
-func (p *Page) TraceDir(dir string) *Page {
-	p.traceDir = dir
-	return p
 }
 
 // IsIframe tells if it's iframe
@@ -500,7 +492,7 @@ func (p *Page) initJS() error {
 	scriptURL := "\n//# sourceURL=__rod_helper__"
 
 	params := cdp.Object{
-		"expression": sprintFnApply(js.Rod, cdp.Array{p.FrameID}) + scriptURL,
+		"expression": sprintFnApply(assets.Helper, cdp.Array{p.FrameID}) + scriptURL,
 	}
 
 	if p.IsIframe() {

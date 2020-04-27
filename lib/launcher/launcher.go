@@ -14,6 +14,7 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/leakless"
+	"github.com/ysmood/rod/lib/defaults"
 )
 
 // Launcher is a helper to launch chrome binary smartly
@@ -38,7 +39,7 @@ func New() *Launcher {
 		"user-data-dir": {tmp},
 
 		// use random port by default
-		"remote-debugging-port": {"0"},
+		"remote-debugging-port": {defaults.Port},
 
 		// enable headless by default
 		"headless": nil,
@@ -69,6 +70,10 @@ func New() *Launcher {
 		"no-first-run":                                       nil,
 		"password-store=basic":                               nil,
 		"use-mock-keychain":                                  nil,
+	}
+
+	if defaults.Show {
+		delete(defaultFlags, "headless")
 	}
 
 	// if inside a docker container

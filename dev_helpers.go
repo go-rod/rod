@@ -6,16 +6,12 @@ package rod
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
-	"sync/atomic"
 	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 )
-
-var traceCount int64 = 0
 
 // check method and sleep if needed
 func (b *Browser) trySlowmotion(method string) {
@@ -26,6 +22,58 @@ func (b *Browser) trySlowmotion(method string) {
 	if strings.HasPrefix(method, "Input.") {
 		time.Sleep(b.slowmotion)
 	}
+}
+
+// ServeMonitor starts the monitor server
+func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
+	if host == "" {
+		return nil
+	}
+
+	srv := kit.MustServer(host)
+	srv.Engine.GET("/", func(ctx kit.GinContext) {
+		list := ""
+		for _, t := range b.Call("Target.getTargets", nil).Get("targetInfos").Array() {
+			list += fmt.Sprintf(
+				"<h3><a href='/page/%s?rate=1000'>%s - %s</a></h3>\n",
+				t.Get("targetId"),
+				t.Get("title"),
+				t.Get("url"),
+			)
+		}
+		ctx.Header("Content-Type", "text/html;")
+		kit.E(ctx.Writer.WriteString(fmt.Sprintf(`<html>%s</html>`, list)))
+	})
+	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
+		ctx.Header("Content-Type", "text/html;")
+		kit.E(ctx.Writer.WriteString(kit.S(`
+			<html>
+			<head><title>Rod Monitor - {{.id}}</title></head>
+			<body></body>
+			<script>
+				let img = document.createElement('img')
+				img.onload = () => setTimeout(update, {{.rate}})
+				img.onerror = () => alert('error loading screenshots')
+				function update() {
+					img.src = '/screenshot/{{.id}}?' + new Date().getTime()
+				}
+				document.body.appendChild(img)
+				update()
+			</script>
+			</html>
+		`, "id", ctx.Param("id"), "rate", ctx.Query("rate"))))
+	})
+	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
+		p, err := b.page(ctx.Param("id"))
+		kit.E(err)
+
+		ctx.Header("Content-Type", "image/png;")
+		kit.E(ctx.Writer.Write(p.Screenshot()))
+	})
+
+	go func() { _ = srv.Do() }()
+
+	return srv
 }
 
 // Overlay a rectangle on the main frame with specified message
@@ -64,29 +112,7 @@ func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), cdp.Array{id})
 	}
 
-	el.page.Trace(el.page.stripHTML(htmlMessage))
-
 	return
-}
-
-// Trace screenshot to TraceDir
-func (p *Page) Trace(msg string) {
-	dir := p.traceDir
-	if dir == "" {
-		return
-	}
-
-	img, err := p.Root().ScreenshotE(cdp.Object{
-		"format":  "jpeg",
-		"quality": 80,
-	})
-	CancelPanic(err)
-
-	index := fmt.Sprintf("%08d", atomic.AddInt64(&traceCount, 1))
-	name := kit.Escape(index + " " + msg)
-	path := filepath.Join(dir, name+".jpg")
-
-	kit.E(kit.OutputFile(path, img, nil))
 }
 
 func (p *Page) stripHTML(str string) string {

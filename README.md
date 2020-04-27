@@ -10,7 +10,7 @@ Rod is a High-level Chrome Devtools controller directly based on [Chrome DevTool
 
 - Fluent interface design to reduce verbose code
 - Chained context design, intuitive to timeout or cancel the long-running task
-- Debugging friendly, auto input tracing, and [screenshots](https://youtu.be/JJlPNU9n_gU)
+- Debugging friendly, auto input tracing, remote monitoring headless browser
 - Automatically find or download [chrome](lib/launcher)
 - No external dependencies, [CI](https://github.com/ysmood/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
