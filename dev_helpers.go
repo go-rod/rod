@@ -73,6 +73,8 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 
 	go func() { _ = srv.Do() }()
 
+	kit.Log("[rod] monitor server on", "http://"+srv.Listener.Addr().String())
+
 	return srv
 }
 
