@@ -33,13 +33,13 @@ Here's the common start process of Rod:
 
 1. Use the JSON-RPC protocol to talk to the browser endpoint to control it. The lib to handle it is  [here](lib/cdp).
 
-1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/js).
+1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/assets).
 
 ## FAQ
 
 ### How to use Rod inside a docker container
 
-To let rod work with docker is very easy. Here's the example to run the unit tests of Rod:
+To let rod work with docker is very easy. Here's the example to run the unit tests of Rod with docker:
 
 ```bash
 # cd to the root dir of rod repo
