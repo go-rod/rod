@@ -5,11 +5,13 @@
 package rod
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/assets"
 	"github.com/ysmood/rod/lib/cdp"
 )
 
@@ -33,36 +35,20 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 
 	srv := kit.MustServer(host)
 	srv.Engine.GET("/", func(ctx kit.GinContext) {
-		list := ""
-		for _, t := range b.Call("Target.getTargets", nil).Get("targetInfos").Array() {
-			list += fmt.Sprintf(
-				"<h3><a href='/page/%s?rate=1000'>%s - %s</a></h3>\n",
-				t.Get("targetId"),
-				t.Get("title"),
-				t.Get("url"),
-			)
-		}
-		ctx.Header("Content-Type", "text/html;")
-		kit.E(ctx.Writer.WriteString(fmt.Sprintf(`<html>%s</html>`, list)))
+		infos := b.Call("Target.getTargets", nil).Get("targetInfos")
+		var list interface{}
+		kit.E(json.Unmarshal([]byte(infos.Raw), &list))
+
+		ctx.Header("Content-Type", "text/html; charset=utf-8")
+		kit.E(ctx.Writer.WriteString(kit.S(assets.Monitor, "list", list)))
 	})
 	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
-		ctx.Header("Content-Type", "text/html;")
-		kit.E(ctx.Writer.WriteString(kit.S(`
-			<html>
-			<head><title>Rod Monitor - {{.id}}</title></head>
-			<body></body>
-			<script>
-				let img = document.createElement('img')
-				img.onload = () => setTimeout(update, {{.rate}})
-				img.onerror = () => alert('error loading screenshots')
-				function update() {
-					img.src = '/screenshot/{{.id}}?' + new Date().getTime()
-				}
-				document.body.appendChild(img)
-				update()
-			</script>
-			</html>
-		`, "id", ctx.Param("id"), "rate", ctx.Query("rate"))))
+		ctx.Header("Content-Type", "text/html; charset=utf-8")
+		kit.E(ctx.Writer.WriteString(kit.S(
+			assets.MonitorPage,
+			"id", ctx.Param("id"),
+			"rate", ctx.Query("rate"),
+		)))
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
 		p, err := b.page(ctx.Param("id"))
@@ -74,7 +60,8 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 
 	go func() { _ = srv.Do() }()
 
-	kit.Log("[rod] monitor server on", "http://"+srv.Listener.Addr().String())
+	url := "http://" + srv.Listener.Addr().String()
+	kit.Log("[rod] monitor server on", url, "(open it with your browser)")
 
 	return srv
 }

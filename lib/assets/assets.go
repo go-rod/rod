@@ -275,3 +275,33 @@ var Helper = `
   return window
 }
 `
+
+// Monitor for rod
+var Monitor = `<html>
+    <head>
+        <title>Rod Monitor - Pages</title>
+    </head>
+    <body>
+        {{range .list}}
+        <h3>
+            <a href='/page/{{.targetId}}?rate=1000'>{{.title}} - {{.url}}</a>
+        </h3>
+        {{end}}
+    </body>
+</html>`
+
+// MonitorPage for rod
+var MonitorPage = `<html>
+    <head><title>Rod Monitor - {{.id}}</title></head>
+    <body></body>
+    <script>
+        let img = document.createElement('img')
+        img.onload = () => setTimeout(update, {{.rate}})
+        img.onerror = () => alert('error loading screenshots')
+        function update() {
+            img.src = '/screenshot/{{.id}}?' + new Date().getTime()
+        }
+        document.body.appendChild(img)
+        update()
+    </script>
+</html>`

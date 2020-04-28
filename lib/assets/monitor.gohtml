@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <title>Rod Monitor - Pages</title>
+    </head>
+    <body>
+        {{range .list}}
+        <h3>
+            <a href='/page/{{.targetId}}?rate=1000'>{{.title}} - {{.url}}</a>
+        </h3>
+        {{end}}
+    </body>
+</html>
