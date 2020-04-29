@@ -13,6 +13,8 @@ import (
 	"github.com/ysmood/rod/lib/launcher"
 )
 
+var slash = filepath.FromSlash
+
 // S test suite
 type S struct {
 	suite.Suite
@@ -27,7 +29,7 @@ func srcFile(path string) string {
 
 // get abs file path from fixtures folder, return sample "/a/b/click.html"
 func file(path string) string {
-	f, err := filepath.Abs(filepath.FromSlash(path))
+	f, err := filepath.Abs(slash(path))
 	kit.E(err)
 	return f
 }

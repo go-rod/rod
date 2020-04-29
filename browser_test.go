@@ -59,6 +59,54 @@ func (s *S) TestMonitor() {
 	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+p.TargetID).MustBytes()), 1000)
 }
 
+func (s *S) TestConcurrentOperations() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	list := []int64{}
+
+	kit.All(func() {
+		list = append(list, p.Eval(`() => new Promise(r => setTimeout(r, 100, 2))`).Int())
+	}, func() {
+		list = append(list, p.Eval(`() => 1`).Int())
+	})()
+
+	s.Equal([]int64{1, 2}, list)
+}
+
+func (s *S) TestPromiseLeak() {
+	/*
+		Perform a slow action then navigate the page to another url,
+		we can see the slow operation will still be executed.
+
+		The unexpected part is that the promise will resolve to the next page's url.
+	*/
+
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	var out string
+
+	kit.All(func() {
+		out = p.Eval(`() => new Promise(r => setTimeout(() => r(location.href), 200))`).String()
+	}, func() {
+		kit.Sleep(0.1)
+		p.Navigate(srcFile("fixtures/input.html"))
+	})()
+
+	s.Contains(out, "input.html")
+}
+
+func (s *S) TestObjectLeak() {
+	/*
+		Seems like it won't leak
+	*/
+
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	el := p.Element("button")
+	p.Navigate(srcFile("fixtures/input.html")).WaitLoad()
+	s.Panics(func() {
+		el.Describe()
+	})
+}
+
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {

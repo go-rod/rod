@@ -271,9 +271,9 @@ func (s *S) TestPageScreenshot() {
 	s.Equal(600, img.Bounds().Dy())
 	s.FileExists(f)
 
-	kit.E(kit.Remove(filepath.FromSlash("tmp/screenshots")))
+	kit.E(kit.Remove(slash("tmp/screenshots")))
 	p.Screenshot("")
-	s.Len(kit.Walk(filepath.FromSlash("tmp/screenshots/*")).MustList(), 1)
+	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
 func (s *S) TestPageInput() {

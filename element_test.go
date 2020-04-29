@@ -109,8 +109,8 @@ func (s *S) TestSetFiles() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element(`[type=file]`)
 	el.SetFiles(
-		filepath.FromSlash("fixtures/click.html"),
-		filepath.FromSlash("fixtures/alert.html"),
+		slash("fixtures/click.html"),
+		slash("fixtures/alert.html"),
 	)
 
 	list := el.Eval("() => Array.from(this.files).map(f => f.name)").Array()
