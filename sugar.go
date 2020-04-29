@@ -165,13 +165,12 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 	}
 }
 
-// Screenshot the page and returns the binary of png image
+// Screenshot the page and returns the binary of the image
+// If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) Screenshot(toFile ...string) []byte {
 	bin, err := p.ScreenshotE(nil)
 	kit.E(err)
-	if len(toFile) > 0 {
-		kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
-	}
+	saveScreenshot(bin, toFile)
 	return bin
 }
 
@@ -513,9 +512,7 @@ func (el *Element) Resource() []byte {
 func (el *Element) Screenshot(toFile ...string) []byte {
 	bin, err := el.ScreenshotE("png", -1)
 	kit.E(err)
-	if len(toFile) > 0 {
-		kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
-	}
+	saveScreenshot(bin, toFile)
 	return bin
 }
 

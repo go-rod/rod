@@ -3,7 +3,9 @@ package rod
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"regexp"
+	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -56,4 +58,14 @@ func matchWithFilter(s string, includes, excludes []string) bool {
 		}
 	}
 	return false
+}
+
+func saveScreenshot(bin []byte, toFile []string) {
+	if len(toFile) == 0 {
+		return
+	}
+	if toFile[0] == "" {
+		toFile = []string{"tmp", "screenshots", fmt.Sprintf("%d", time.Now().UnixNano()) + ".png"}
+	}
+	kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
 }

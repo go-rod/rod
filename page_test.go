@@ -263,12 +263,17 @@ func (s *S) TestPageScreenshot() {
 	f := filepath.Join("tmp", kit.RandString(8)+".png")
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	p.Element("button")
+	p.Screenshot()
 	data := p.Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
 	s.Equal(800, img.Bounds().Dx())
 	s.Equal(600, img.Bounds().Dy())
 	s.FileExists(f)
+
+	kit.E(kit.Remove(filepath.FromSlash("tmp/screenshots")))
+	p.Screenshot("")
+	s.Len(kit.Walk(filepath.FromSlash("tmp/screenshots/*")).MustList(), 1)
 }
 
 func (s *S) TestPageInput() {
