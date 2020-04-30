@@ -1,3 +1,10 @@
+# build rod-launcher tool
+FROM golang:alpine AS go
+COPY . /rod
+WORKDIR /rod
+RUN go build ./lib/launcher/cmd/rod-launcher
+
+
 FROM alpine:latest
 
 LABEL src="https://github.com/ysmood/rod/blob/master/lib/Dockerfile"
@@ -15,3 +22,7 @@ RUN apk add font-noto-arabic font-noto-thai font-noto-devanagari
 
 # timezone support
 RUN apk add tzdata
+
+COPY --from=go /rod/rod-launcher /usr/bin/
+
+CMD rod-launcher

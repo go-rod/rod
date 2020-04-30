@@ -25,9 +25,10 @@ type Browser struct {
 	BrowserContextID string
 
 	controlURL string
-	viewport   cdp.Object    // default viewport, such as window demension and dpi
-	slowmotion time.Duration // slowdown user inputs
-	trace      bool          // enable show auto tracing of user inputs
+	viewport   cdp.Object         // default viewport, such as window demension and dpi
+	slowmotion time.Duration      // slowdown user inputs
+	trace      bool               // enable show auto tracing of user inputs
+	remote     *launcher.Launcher // enable launch chrome remotely
 
 	monitorServer *kit.ServerContext
 
@@ -37,12 +38,19 @@ type Browser struct {
 
 // New creates a controller
 func New() *Browser {
-	return &Browser{
+	b := &Browser{
 		ctx:        context.Background(),
-		client:     cdp.New().Debug(defaults.CDP),
+		client:     cdp.New(),
+		controlURL: defaults.URL,
 		trace:      defaults.Trace,
 		slowmotion: defaults.Slow,
 	}
+
+	if defaults.Remote && b.controlURL == "" {
+		b.controlURL = "ws://127.0.0.1:9222"
+	}
+
+	return b
 }
 
 // ControlURL set the url to remote control browser.
@@ -70,6 +78,18 @@ func (b *Browser) Trace(enable bool) *Browser {
 	return b
 }
 
+// Client set the cdp client
+func (b *Browser) Client(c *cdp.Client) *Browser {
+	b.client = c
+	return b
+}
+
+// Remote is the option to launch chrome remotely
+func (b *Browser) Remote(l *launcher.Launcher) *Browser {
+	b.remote = l
+	return b
+}
+
 // DebugCDP enables/disables the log of all cdp interface traffic
 func (b *Browser) DebugCDP(enable bool) *Browser {
 	b.client.Debug(enable)
@@ -86,6 +106,14 @@ func (b *Browser) ConnectE() error {
 			return err
 		}
 		b.controlURL = u
+	}
+
+	if defaults.Remote {
+		if b.remote == nil {
+			b.remote = launcher.NewRemote(b.controlURL)
+		}
+		ws := cdp.NewDefaultWsClient(b.ctx, b.controlURL, b.remote.Header())
+		b.client = cdp.New().Websocket(ws)
 	}
 
 	b.client.URL(b.controlURL).Context(b.ctx).Connect()

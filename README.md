@@ -20,10 +20,8 @@ Rod is a High-level Chrome Devtools controller directly based on [Chrome DevTool
 
 ## Examples
 
-Here are the [basic examples](./examples_test.go).
+You can find examples from [here](examples_test.go) or [here](lib/examples).
 For more details, please read the unit tests.
-
-A cli translator [example](https://github.com/ysmood/translator-example).
 
 ## How it works
 
@@ -39,12 +37,15 @@ Here's the common start process of Rod:
 
 ### How to use Rod inside a docker container
 
-To let rod work with docker is very easy. Here's the example to run the unit tests of Rod with docker:
+To let rod work with docker is very easy:
 
-```bash
-# cd to the root dir of rod repo
-docker run -v $(pwd):/t -w /t ysmood/rod:go
-```
+1. Run the Rod image `docker run -p 9222:9222 ysmood/rod`
+
+2. Open another terminal and run a go program like this [example](lib/examples/remote-launch/main.go)
+
+The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
+can dynamically launch a chrome for each remote controller with customizable chrome flags.
+It's well-tuned for screenshots and fonts for popular languages.
 
 ### How to contribute for Rod
 

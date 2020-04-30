@@ -1,16 +1,13 @@
 package rod_test
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 var slash = filepath.FromSlash
@@ -51,22 +48,8 @@ func serve() (string, *gin.Engine, func()) {
 }
 
 func Test(t *testing.T) {
-	slow, _ := time.ParseDuration(os.Getenv("slow"))
-	show := os.Getenv("show") == "true"
-	pause := os.Getenv("pause") == "true"
-
-	url := launcher.New().
-		Headless(!show).
-		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
-		Launch()
-
 	s := new(S)
-	s.browser = rod.New().
-		ControlURL(url).
-		Slowmotion(slow).
-		Trace(true).
-		Viewport(nil).
-		Connect()
+	s.browser = rod.New().Trace(true).Viewport(nil).Connect()
 
 	defer s.browser.Close()
 
@@ -74,8 +57,4 @@ func Test(t *testing.T) {
 	s.page.Viewport(800, 600, 1, false)
 
 	suite.Run(t, s)
-
-	if pause {
-		kit.Pause()
-	}
 }

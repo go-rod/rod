@@ -6,8 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
@@ -55,6 +57,20 @@ func TestLaunchOptions(t *testing.T) {
 		Launch()
 
 	assert.NotEmpty(t, url)
+}
+
+func TestRemoteLaunch(t *testing.T) {
+	ctx := context.Background()
+	srv := kit.MustServer("127.0.0.1:0")
+	defer func() { _ = srv.Listener.Close() }()
+	proxy := &launcher.Proxy{Log: func(s string) {}}
+	srv.Engine.NoRoute(gin.WrapH(proxy))
+	go func() { _ = srv.Do() }()
+
+	host := "ws://" + srv.Listener.Addr().String()
+	header := launcher.NewRemote(host).Header()
+	ws := cdp.NewDefaultWsClient(ctx, host, header)
+	kit.E(cdp.New().Websocket(ws).Connect().Call(ctx, &cdp.Request{Method: "Browser.close"}))
 }
 
 func TestLaunchErr(t *testing.T) {

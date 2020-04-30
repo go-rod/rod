@@ -457,15 +457,7 @@ func (p *Page) CallE(method string, params interface{}) (kit.JSONResult, error) 
 
 // Sleeper returns the default sleeper for retry, it uses backoff and requestIdleCallback to wait
 func (p *Page) Sleeper() kit.Sleeper {
-	backoff := kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
-
-	return func(ctx context.Context) error {
-		err := backoff(ctx)
-		if err != nil {
-			return err
-		}
-		return p.WaitIdleE(time.Minute)
-	}
+	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }
 
 // ReleaseE doc is the same as the method Release

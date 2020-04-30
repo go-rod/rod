@@ -29,6 +29,12 @@ var Slow time.Duration
 // Port of the remote debugging port
 var Port = "0"
 
+// URL of the remote debugging address
+var URL = ""
+
+// Remote enables to launch chrome remotely
+var Remote bool
+
 // CDP enables cdp log
 var CDP bool
 
@@ -40,6 +46,7 @@ func init() {
 	parse(os.Getenv("rod"))
 }
 
+// parse options and set them globally
 func parse(options string) {
 	if options == "" {
 		return
@@ -58,6 +65,10 @@ func parse(options string) {
 			kit.E(err)
 		case "port":
 			Port = kv[1]
+		case "url":
+			URL = kv[1]
+		case "remote":
+			Remote = true
 		case "cdp":
 			CDP = true
 		case "monitor":

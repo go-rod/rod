@@ -4,9 +4,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/defaults"
+	"github.com/ysmood/rod/lib/launcher"
 )
 
 func (s *S) TestBrowserPages() {
@@ -57,6 +60,25 @@ func (s *S) TestMonitor() {
 	s.Contains(kit.Req("http://"+host).MustString(), p.TargetID)
 	s.Contains(kit.Req("http://"+host+"/page/"+p.TargetID).MustString(), p.TargetID)
 	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+p.TargetID).MustBytes()), 1000)
+}
+
+func (s *S) TestRemoteLaunch() {
+	defaults.Remote = true
+	defer func() { defaults.Remote = false }()
+
+	srv := kit.MustServer("127.0.0.1:0")
+	defer func() { _ = srv.Listener.Close() }()
+	proxy := &launcher.Proxy{Log: func(s string) {}}
+	srv.Engine.NoRoute(gin.WrapH(proxy))
+	go func() { _ = srv.Do() }()
+
+	host := "ws://" + srv.Listener.Addr().String()
+	b := rod.New().ControlURL(host).Connect()
+	defer b.Close()
+
+	p := b.Page(srcFile("fixtures/click.html"))
+	p.Element("button").Click()
+	s.True(p.Has("[a=ok]"))
 }
 
 func (s *S) TestConcurrentOperations() {

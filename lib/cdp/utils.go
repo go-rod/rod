@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -79,26 +80,30 @@ func (cdp *Client) debugLog(obj interface{}) {
 	}
 }
 
-type defaultWsClient struct {
+// DefaultWsClient for CDP
+type DefaultWsClient struct {
 	conn *websocket.Conn
 }
 
-func newDefaultWsClient(ctx context.Context, url string) Websocketable {
+// NewDefaultWsClient instance
+func NewDefaultWsClient(ctx context.Context, url string, header http.Header) Websocketable {
 	dialer := *websocket.DefaultDialer
 	dialer.ReadBufferSize = 25 * 1024 * 1024
 	dialer.WriteBufferSize = 10 * 1024 * 1024
 
-	conn, _, err := dialer.DialContext(ctx, url, nil)
+	conn, _, err := dialer.DialContext(ctx, url, header)
 	kit.E(err)
 
-	return &defaultWsClient{conn: conn}
+	return &DefaultWsClient{conn: conn}
 }
 
-func (c *defaultWsClient) Send(data []byte) error {
+// Send a message
+func (c *DefaultWsClient) Send(data []byte) error {
 	return c.conn.WriteMessage(websocket.TextMessage, data)
 }
 
-func (c *defaultWsClient) Read() (data []byte, err error) {
+// Read a message
+func (c *DefaultWsClient) Read() (data []byte, err error) {
 	var msgType = -1
 	for msgType != websocket.TextMessage && err == nil {
 		msgType, data, err = c.conn.ReadMessage()

@@ -22,7 +22,7 @@ type Launcher struct {
 	ctx    context.Context
 	bin    string
 	log    func(string)
-	flags  map[string][]string
+	Flags  map[string][]string `json:"flags"`
 	output chan string
 	pid    int
 	exit   chan kit.Nil
@@ -83,7 +83,7 @@ func New() *Launcher {
 
 	return &Launcher{
 		ctx:    context.Background(),
-		flags:  defaultFlags,
+		Flags:  defaultFlags,
 		output: make(chan string),
 		exit:   make(chan kit.Nil),
 	}
@@ -93,7 +93,7 @@ func New() *Launcher {
 func NewUserMode() *Launcher {
 	return &Launcher{
 		ctx: context.Background(),
-		flags: map[string][]string{
+		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
 		},
 		output: make(chan string),
@@ -118,19 +118,19 @@ func (l *Launcher) Get(name string) (string, bool) {
 
 // GetFlags from settings
 func (l *Launcher) GetFlags(name string) ([]string, bool) {
-	flag, has := l.flags[name]
+	flag, has := l.Flags[name]
 	return flag, has
 }
 
 // Set flag
 func (l *Launcher) Set(name string, values ...string) *Launcher {
-	l.flags[strings.TrimLeft(name, "-")] = values
+	l.Flags[strings.TrimLeft(name, "-")] = values
 	return l
 }
 
 // Delete flag
 func (l *Launcher) Delete(name string) *Launcher {
-	delete(l.flags, strings.TrimLeft(name, "-"))
+	delete(l.Flags, strings.TrimLeft(name, "-"))
 	return l
 }
 
@@ -177,10 +177,10 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l
 }
 
-// ExecFormat returns the formated arg list for cli
-func (l *Launcher) ExecFormat() []string {
+// FormatArgs returns the formated arg list for cli
+func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
-	for k, v := range l.flags {
+	for k, v := range l.Flags {
 		if k == "" {
 			continue
 		}
@@ -191,7 +191,7 @@ func (l *Launcher) ExecFormat() []string {
 		}
 		execArgs = append(execArgs, str)
 	}
-	return append(execArgs, l.flags[""]...)
+	return append(execArgs, l.Flags[""]...)
 }
 
 // Log function to handle stdout and stderr from chrome
@@ -229,14 +229,14 @@ func (l *Launcher) LaunchE() (string, error) {
 
 	if headless {
 		ll = leakless.New()
-		cmd = ll.Command(bin, l.ExecFormat()...)
+		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
 		port, _ := l.Get("remote-debugging-port")
 		u, err := GetWebSocketDebuggerURL(l.ctx, "http://127.0.0.1:"+port)
 		if err == nil {
 			return u, nil
 		}
-		cmd = exec.Command(bin, l.ExecFormat()...)
+		cmd = exec.Command(bin, l.FormatArgs()...)
 	}
 
 	stdout, err := cmd.StdoutPipe()

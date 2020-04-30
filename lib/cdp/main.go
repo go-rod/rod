@@ -3,10 +3,10 @@ package cdp
 import (
 	"context"
 	"encoding/json"
-	"os"
 	"sync/atomic"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
@@ -76,7 +76,7 @@ func New() *Client {
 		chReqMsg:  make(chan *requestMsg),
 		chRes:     make(chan *response),
 		chEvent:   make(chan *Event),
-		debug:     os.Getenv("debug_cdp") == "true",
+		debug:     defaults.CDP,
 	}
 
 	return cdp
@@ -103,7 +103,7 @@ func (cdp *Client) Websocket(ws Websocketable) *Client {
 	return cdp
 }
 
-// Debug is the flag to enable debug log to stdout. Default value is env var "debug_cdp=true"
+// Debug is the flag to enable debug log to stdout.
 func (cdp *Client) Debug(enable bool) *Client {
 	cdp.debug = enable
 	return cdp
@@ -111,11 +111,10 @@ func (cdp *Client) Debug(enable bool) *Client {
 
 // Connect to chrome
 func (cdp *Client) Connect() *Client {
-	wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.ctx, cdp.url)
-	kit.E(err)
-
 	if cdp.ws == nil {
-		cdp.ws = newDefaultWsClient(cdp.ctx, wsURL)
+		wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.ctx, cdp.url)
+		kit.E(err)
+		cdp.ws = NewDefaultWsClient(cdp.ctx, wsURL, nil)
 	}
 
 	go cdp.consumeMsg()
