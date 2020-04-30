@@ -218,7 +218,7 @@ func (s *S) TestElementOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("form")
 	el.Focus()
-	el.ScrollIntoViewIfNeeded()
+	el.ScrollIntoView()
 	s.EqualValues(784, el.Box().Width)
 	s.Equal("submit", el.Element("[type=submit]").Text())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())

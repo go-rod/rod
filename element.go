@@ -80,7 +80,7 @@ func (el *Element) FrameE() (*Page, error) {
 
 // FocusE doc is the same as the method Focus
 func (el *Element) FocusE() error {
-	err := el.ScrollIntoViewIfNeededE()
+	err := el.ScrollIntoViewE()
 	if err != nil {
 		return err
 	}
@@ -89,8 +89,8 @@ func (el *Element) FocusE() error {
 	return err
 }
 
-// ScrollIntoViewIfNeededE doc is the same as the method ScrollIntoViewIfNeeded
-func (el *Element) ScrollIntoViewIfNeededE() error {
+// ScrollIntoViewE doc is the same as the method ScrollIntoViewIfNeeded
+func (el *Element) ScrollIntoViewE() error {
 	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"), nil)
 	return err
 }
@@ -102,7 +102,7 @@ func (el *Element) ClickE(button string) error {
 		return err
 	}
 
-	err = el.ScrollIntoViewIfNeededE()
+	err = el.ScrollIntoViewE()
 	if err != nil {
 		return err
 	}
@@ -369,7 +369,7 @@ func (el *Element) ScreenshotE(format string, quality int) ([]byte, error) {
 		return nil, err
 	}
 
-	err = el.ScrollIntoViewIfNeededE()
+	err = el.ScrollIntoViewE()
 	if err != nil {
 		return nil, err
 	}

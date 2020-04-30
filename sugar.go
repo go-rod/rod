@@ -396,10 +396,10 @@ func (el *Element) Focus() *Element {
 	return el
 }
 
-// ScrollIntoViewIfNeeded scrolls the current element into the visible area of the browser
+// ScrollIntoView scrolls the current element into the visible area of the browser
 // window if it's not already within the visible area.
-func (el *Element) ScrollIntoViewIfNeeded() *Element {
-	kit.E(el.ScrollIntoViewIfNeededE())
+func (el *Element) ScrollIntoView() *Element {
+	kit.E(el.ScrollIntoViewE())
 	return el
 }
 
