@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
@@ -63,6 +64,14 @@ func (b *Browser) Call(method string, params interface{}) kit.JSONResult {
 	})
 	kit.E(err)
 	return res
+}
+
+// Cookies returns the page cookies. By default it will return the cookies for current page.
+// The urls is the list of URLs for which applicable cookies will be fetched.
+func (p *Page) Cookies(urls ...string) []gjson.Result {
+	cookies, err := p.CookiesE(urls)
+	kit.E(err)
+	return cookies
 }
 
 // SetCookies of the page.

@@ -30,7 +30,10 @@ func (s *S) TestSetCookies() {
 		"url":   url,
 	}).Navigate(url)
 
-	s.Equal("a=1; b=2", page.Eval(`() => document.cookie`).String())
+	cookies := page.Cookies()
+
+	s.Equal("2", cookies[0].Get("value").String())
+	s.Equal("1", cookies[1].Get("value").String())
 }
 
 func (s *S) TestClosePage() {

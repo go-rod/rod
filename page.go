@@ -30,6 +30,7 @@ type Page struct {
 	TargetID  string
 	SessionID string
 	FrameID   string
+	URL       string
 
 	// devices
 	Mouse    *Mouse
@@ -54,6 +55,28 @@ func (p *Page) Root() *Page {
 	}
 
 	return f
+}
+
+// CookiesE returns the page cookies. By default it will return the cookies for current page.
+// The urls is the list of URLs for which applicable cookies will be fetched.
+func (p *Page) CookiesE(urls []string) ([]gjson.Result, error) {
+	if len(urls) == 0 {
+		info, err := p.CallE("Target.getTargetInfo", cdp.Object{
+			"targetId": p.TargetID,
+		})
+		if err != nil {
+			return nil, err
+		}
+		urls = []string{info.Get("targetInfo.url").String()}
+	}
+
+	res, err := p.CallE("Network.getCookies", cdp.Object{
+		"urls": urls,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res.Get("cookies").Array(), nil
 }
 
 // SetCookiesE of the page.
