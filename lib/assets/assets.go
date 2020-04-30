@@ -278,30 +278,42 @@ var Helper = `
 
 // Monitor for rod
 var Monitor = `<html>
-    <head>
-        <title>Rod Monitor - Pages</title>
-    </head>
-    <body>
-        {{range .list}}
-        <h3>
-            <a href='/page/{{.targetId}}?rate=1000'>{{.title}} - {{.url}}</a>
-        </h3>
-        {{end}}
-    </body>
+<head>
+    <title>Rod Monitor - Pages</title>
+</head>
+<body>
+    <h3>Page List</h3>
+
+    {{range .list}}
+    <h4>
+        <a href='/page/{{.targetId}}?rate=1000' title="{{.url}}">{{.title}}</a>
+    </h4>
+    {{end}}
+</body>
 </html>`
 
 // MonitorPage for rod
 var MonitorPage = `<html>
-    <head><title>Rod Monitor - {{.id}}</title></head>
-    <body></body>
-    <script>
-        let img = document.createElement('img')
-        img.onload = () => setTimeout(update, {{.rate}})
-        img.onerror = () => alert('error loading screenshots')
-        function update() {
-            img.src = '/screenshot/{{.id}}?' + new Date().getTime()
-        }
-        document.body.appendChild(img)
-        update()
-    </script>
+<head><title>Rod Monitor - {{.id}}</title></head>
+<body style="margin: 0">
+    <p></p>
+</body>
+<script>
+    let display = document.querySelector('p')
+    let img = document.createElement('img')
+
+    function update() {
+        let now = new Date()
+        display.innerText = now
+        img.src = '/screenshot/{{.id}}?t=' + now.getTime()
+    }
+
+    img.style.maxWidth = innerWidth + "px"
+    img.onload = () => setTimeout(update, {{.rate}})
+    img.onerror = () => alert('error loading screenshots')
+
+    document.body.appendChild(img)
+
+    update()
+</script>
 </html>`

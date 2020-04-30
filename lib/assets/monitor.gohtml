@@ -1,12 +1,14 @@
 <html>
-    <head>
-        <title>Rod Monitor - Pages</title>
-    </head>
-    <body>
-        {{range .list}}
-        <h3>
-            <a href='/page/{{.targetId}}?rate=1000'>{{.title}} - {{.url}}</a>
-        </h3>
-        {{end}}
-    </body>
+<head>
+    <title>Rod Monitor - Pages</title>
+</head>
+<body>
+    <h3>Page List</h3>
+
+    {{range .list}}
+    <h4>
+        <a href='/page/{{.targetId}}?rate=1000' title="{{.url}}">{{.title}}</a>
+    </h4>
+    {{end}}
+</body>
 </html>
