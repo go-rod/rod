@@ -19,6 +19,7 @@ RUN apk add chromium
 RUN apk add ttf-freefont
 RUN apk add font-noto-cjk
 RUN apk add font-noto-arabic font-noto-thai font-noto-devanagari
+RUN apk add font-noto-emoji --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 # timezone support
 RUN apk add tzdata
