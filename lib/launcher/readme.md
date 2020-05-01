@@ -1,7 +1,3 @@
 # Overview
 
-A lib to help launch or download chrome.
-
-## Remote launch
-
-Use the `Server` and `Client` to launch chrome remotely, such as launch a chrome outside of a docker container.
+A lib to help launch or download chrome. You can also use it as a standalone lib without Rod.

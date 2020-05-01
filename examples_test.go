@@ -65,7 +65,7 @@ func Example_debug_mode() {
 		Connect().
 		Timeout(time.Minute)
 
-	// the monitor server that plays the screenshots of each tab
+	// the monitor server that plays the screenshots of each tab, useful when debugging headlee mode
 	browser.ServeMonitor(":9777")
 
 	defer browser.Close()
