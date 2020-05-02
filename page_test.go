@@ -325,7 +325,6 @@ func (s *S) TestFonts() {
 		I don't want to include a large OCR lib just for this test
 		So this one should be checked manually:
 
-		docker build -t ysmood/rod lib
 		GOOS=linux go test -c -o tmp/rod.test
 		docker run --rm -itv $(pwd):/t -w /t ysmood/rod sh
 		./tmp/rod.test -test.v -test.run Test/TestFonts

@@ -46,7 +46,7 @@ To let rod work with docker is very easy:
 
 The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
 can dynamically launch a chrome for each remote driver with customizable chrome flags.
-It's well-tuned for screenshots and fonts for popular languages.
+It's [tuned](lib/docker/Dockerfile) for screenshots and fonts for popular languages.
 
 ### Does it support other browsers like Firefox or Edge
 
