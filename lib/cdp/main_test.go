@@ -23,7 +23,7 @@ func TestBasic(t *testing.T) {
 	client := cdp.New().URL(url).Context(ctx).Websocket(nil).Connect()
 
 	defer func() {
-		kit.E(client.Call(ctx, &cdp.Request{Method: "Browser.close"}))
+		kit.E(client.Call(ctx, "", "Browser.close", nil))
 	}()
 
 	go func() {
@@ -35,38 +35,26 @@ func TestBasic(t *testing.T) {
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
 	kit.E(err)
 
-	res, err := client.Call(ctx, &cdp.Request{
-		Method: "Target.createTarget",
-		Params: cdp.Object{
-			"url": "file://" + file,
-		},
+	res, err := client.Call(ctx, "", "Target.createTarget", map[string]string{
+		"url": "file://" + file,
 	})
 	kit.E(err)
 
-	targetID := res.Get("targetId").String()
+	targetID := kit.JSON(res).Get("targetId").String()
 
-	res, err = client.Call(ctx, &cdp.Request{
-		Method: "Target.attachToTarget",
-		Params: cdp.Object{
-			"targetId": targetID,
-			"flatten":  true, // if it's not set no response will return
-		},
+	res, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
+		"targetId": targetID,
+		"flatten":  true, // if it's not set no response will return
 	})
 	kit.E(err)
 
-	sessionID := res.Get("sessionId").String()
+	sessionID := kit.JSON(res).Get("sessionId").String()
 
-	_, err = client.Call(ctx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "Page.enable",
-	})
+	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
 	kit.E(err)
 
-	_, err = client.Call(ctx, &cdp.Request{
-		Method: "Target.attachToTarget",
-		Params: cdp.Object{
-			"targetId": "abc",
-		},
+	_, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
+		"targetId": "abc",
 	})
 	assert.Error(t, err)
 
@@ -88,37 +76,25 @@ func TestBasic(t *testing.T) {
 	// cancel call
 	tmpCtx, tmpCancel := context.WithCancel(ctx)
 	tmpCancel()
-	_, err = client.Call(tmpCtx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "Runtime.evaluate",
-		Params: cdp.Object{
-			"expression": `10`,
-		},
+	_, err = client.Call(tmpCtx, sessionID, "Runtime.evaluate", map[string]interface{}{
+		"expression": `10`,
 	})
 	assert.EqualError(t, err, context.Canceled.Error())
 
 	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
-		res, err = client.Call(ctx, &cdp.Request{
-			SessionID: sessionID,
-			Method:    "Runtime.evaluate",
-			Params: cdp.Object{
-				"expression": `document.querySelector('iframe')`,
-			},
+		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
+			"expression": `document.querySelector('iframe')`,
 		})
 
-		return err == nil && res.Get("result.subtype").String() != "null", nil
+		return err == nil && kit.JSON(res).Get("result.subtype").String() != "null", nil
 	}))
 
-	res, err = client.Call(ctx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "DOM.describeNode",
-		Params: cdp.Object{
-			"objectId": res.Get("result.objectId").String(),
-		},
+	res, err = client.Call(ctx, sessionID, "DOM.describeNode", map[string]interface{}{
+		"objectId": kit.JSON(res).Get("result.objectId").String(),
 	})
 	kit.E(err)
 
-	frameId := res.Get("node.frameId").String()
+	frameId := kit.JSON(res).Get("node.frameId").String()
 
 	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -126,37 +102,25 @@ func TestBasic(t *testing.T) {
 	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
-		res, err = client.Call(ctx, &cdp.Request{
-			SessionID: sessionID,
-			Method:    "Page.createIsolatedWorld",
-			Params: cdp.Object{
-				"frameId": frameId,
-			},
+		res, err = client.Call(ctx, sessionID, "Page.createIsolatedWorld", map[string]interface{}{
+			"frameId": frameId,
 		})
 		kit.E(err)
 
-		res, err = client.Call(ctx, &cdp.Request{
-			SessionID: sessionID,
-			Method:    "Runtime.evaluate",
-			Params: cdp.Object{
-				"contextId":  res.Get("executionContextId").Int(),
-				"expression": `document.querySelector('h4')`,
-			},
+		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
+			"contextId":  kit.JSON(res).Get("executionContextId").Int(),
+			"expression": `document.querySelector('h4')`,
 		})
 
-		return err == nil && res.Get("result.subtype").String() != "null", nil
+		return err == nil && kit.JSON(res).Get("result.subtype").String() != "null", nil
 	}))
 
-	res, err = client.Call(ctx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "DOM.getOuterHTML",
-		Params: cdp.Object{
-			"objectId": res.Get("result.objectId").String(),
-		},
+	res, err = client.Call(ctx, sessionID, "DOM.getOuterHTML", map[string]interface{}{
+		"objectId": kit.JSON(res).Get("result.objectId").String(),
 	})
 	kit.E(err)
 
-	assert.Equal(t, "<h4>it works</h4>", res.Get("outerHTML").String())
+	assert.Equal(t, "<h4>it works</h4>", kit.JSON(res).Get("outerHTML").String())
 }
 
 func TestError(t *testing.T) {
@@ -165,11 +129,6 @@ func TestError(t *testing.T) {
 
 	assert.Panics(t, func() {
 		cdp.New().Connect()
-	})
-
-	assert.Panics(t, func() {
-		_, err := cdp.New().Call(context.Background(), nil)
-		assert.Error(t, err)
 	})
 }
 
@@ -187,56 +146,32 @@ func TestCrash(t *testing.T) {
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
 	kit.E(err)
 
-	res, err := client.Call(ctx, &cdp.Request{
-		Method: "Target.createTarget",
-		Params: cdp.Object{
-			"url": "file://" + file,
-		},
+	res, err := client.Call(ctx, "", "Target.createTarget", map[string]interface{}{
+		"url": "file://" + file,
 	})
 	kit.E(err)
 
-	targetID := res.Get("targetId").String()
+	targetID := kit.JSON(res).Get("targetId").String()
 
-	res, err = client.Call(ctx, &cdp.Request{
-		Method: "Target.attachToTarget",
-		Params: cdp.Object{
-			"targetId": targetID,
-			"flatten":  true,
-		},
+	res, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
+		"targetId": targetID,
+		"flatten":  true,
 	})
 	kit.E(err)
 
-	sessionID := res.Get("sessionId").String()
+	sessionID := kit.JSON(res).Get("sessionId").String()
 
-	_, err = client.Call(ctx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "Page.enable",
-	})
+	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
 	kit.E(err)
-
-	_, err = client.Call(ctx, &cdp.Request{
-		Method: "Target.attachToTarget",
-		Params: cdp.Object{
-			"targetId": "abc",
-		},
-	})
-	assert.Error(t, err)
 
 	go func() {
 		kit.Sleep(2)
-		_, _ = client.Call(ctx, &cdp.Request{
-			SessionID: sessionID,
-			Method:    "Browser.crash",
-		})
+		_, _ = client.Call(ctx, sessionID, "Browser.crash", nil)
 	}()
 
-	_, err = client.Call(ctx, &cdp.Request{
-		SessionID: sessionID,
-		Method:    "Runtime.evaluate",
-		Params: cdp.Object{
-			"expression":   `new Promise(() => {})`,
-			"awaitPromise": true,
-		},
+	_, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
+		"expression":   `new Promise(() => {})`,
+		"awaitPromise": true,
 	})
 	assert.Regexp(t, `websocket: close 1006 \(abnormal closure\)|forcibly closed by the remote host`, err.Error())
 }

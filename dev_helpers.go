@@ -5,14 +5,13 @@
 package rod
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/assets"
-	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // check method and sleep if needed
@@ -35,12 +34,11 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 
 	srv := kit.MustServer(host)
 	srv.Engine.GET("/", func(ctx kit.GinContext) {
-		infos := b.Call("Target.getTargets", nil).Get("targetInfos")
-		var list interface{}
-		kit.E(json.Unmarshal([]byte(infos.Raw), &list))
+		res, err := proto.TargetGetTargets{}.Call(b)
+		kit.E(err)
 
 		ctx.Header("Content-Type", "text/html; charset=utf-8")
-		kit.E(ctx.Writer.WriteString(kit.S(assets.Monitor, "list", list)))
+		kit.E(ctx.Writer.WriteString(kit.S(assets.Monitor, "list", res.TargetInfos)))
 	})
 	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
 		ctx.Header("Content-Type", "text/html; charset=utf-8")
@@ -51,7 +49,8 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 		)))
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
-		p, err := b.page(ctx.Param("id"))
+		id := proto.TargetTargetID(ctx.Param("id"))
+		p, err := b.page(id)
 		kit.E(err)
 
 		ctx.Header("Content-Type", "image/png;")
@@ -71,7 +70,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	root := p.Root()
 	id := "rod-" + kit.RandString(8)
 
-	_, err := root.EvalE(true, "", root.jsFn("overlay"), cdp.Array{
+	_, err := root.EvalE(true, "", root.jsFn("overlay"), Array{
 		id,
 		left,
 		top,
@@ -82,7 +81,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	CancelPanic(err)
 
 	remove = func() {
-		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), cdp.Array{id})
+		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), Array{id})
 	}
 
 	return
@@ -92,14 +91,14 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 	id := "rod-" + kit.RandString(8)
 
-	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), cdp.Array{
+	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), Array{
 		id,
 		htmlMessage,
 	})
 	CancelPanic(err)
 
 	removeOverlay = func() {
-		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), cdp.Array{id})
+		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), Array{id})
 	}
 
 	return
@@ -109,7 +108,7 @@ func (p *Page) stripHTML(str string) string {
 	return p.Eval(p.jsFn("stripHTML"), str).String()
 }
 
-func (p *Page) traceFn(js string, params cdp.Array) func() {
+func (p *Page) traceFn(js string, params Array) func() {
 	fnName := strings.Replace(js, p.jsFnPrefix(), "rod.", 1)
 	paramsStr := p.stripHTML(kit.MustToJSON(params))
 	msg := fmt.Sprintf("retry <code>%s(%s)</code>", fnName, paramsStr[1:len(paramsStr)-1])

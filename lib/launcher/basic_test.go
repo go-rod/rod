@@ -70,7 +70,7 @@ func TestRemoteLaunch(t *testing.T) {
 	host := "ws://" + srv.Listener.Addr().String()
 	header := launcher.NewRemote(host).Header()
 	ws := cdp.NewDefaultWsClient(ctx, host, header)
-	kit.E(cdp.New().Websocket(ws).Connect().Call(ctx, &cdp.Request{Method: "Browser.close"}))
+	kit.E(cdp.New().Websocket(ws).Connect().Call(ctx, "", "Browser.close", nil))
 }
 
 func TestLaunchErr(t *testing.T) {

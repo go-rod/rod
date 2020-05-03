@@ -6,9 +6,9 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/launcher"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Open wikipedia, search for "idempotent", and print the title of result page
@@ -137,7 +137,7 @@ func Example_customize_retry_strategy() {
 	el, err := page.ElementE(backoff, "", "input")
 	kit.E(err)
 
-	fmt.Println(el.Eval(`() => this.name`))
+	fmt.Println(el.Eval(`() => this.name`).String())
 
 	// Output: q
 }
@@ -172,11 +172,14 @@ func Example_direct_cdp() {
 	// call cdp interface directly here
 	// set the cookie before we visit the website
 	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
-	page.Call("Network.setCookie", cdp.Object{
-		"name":  "rod",
-		"value": "test",
-		"url":   "https://github.com",
-	})
+	res, err := proto.NetworkSetCookie{
+		Name:  "rod",
+		Value: "test",
+		URL:   "https://github.com",
+	}.Call(page)
+	kit.E(err)
+
+	fmt.Println(res.Success)
 
 	page.Navigate("https://github.com")
 
@@ -185,5 +188,7 @@ func Example_direct_cdp() {
 
 	fmt.Println(cookie[:9])
 
-	// Output: rod=test;
+	// Output:
+	// true
+	// rod=test;
 }

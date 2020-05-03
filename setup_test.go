@@ -49,7 +49,7 @@ func serve() (string, *gin.Engine, func()) {
 
 func Test(t *testing.T) {
 	s := new(S)
-	s.browser = rod.New().Trace(true).Viewport(nil).Connect()
+	s.browser = rod.New().Trace(true).Connect()
 
 	defer s.browser.Close()
 

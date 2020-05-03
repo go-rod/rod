@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Elements provides some helpers to deal with element list
@@ -86,18 +86,18 @@ func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 }
 
 // ElementE finds element by css selector
-func (p *Page) ElementE(sleeper kit.Sleeper, objectID, selector string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), cdp.Array{selector})
+func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector string) (*Element, error) {
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), Array{selector})
 }
 
 // ElementMatchesE doc is the same as the method ElementMatches
-func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID, selector, regex string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), cdp.Array{selector, regex})
+func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector, regex string) (*Element, error) {
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), Array{selector, regex})
 }
 
 // ElementXE finds elements by XPath
-func (p *Page) ElementXE(sleeper kit.Sleeper, objectID, xpath string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), cdp.Array{xpath})
+func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xpath string) (*Element, error) {
+	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), Array{xpath})
 }
 
 // ElementX retries until returns the first element in the page that matches the XPath selector
@@ -113,8 +113,9 @@ func (p *Page) ElementX(xpath string) *Element {
 // thisID is the this value of the js function, when thisID is "", the this context will be the "window".
 // If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
 // retries once.
-func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params cdp.Array) (*Element, error) {
-	var val kit.JSONResult
+func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) (*Element, error) {
+	var res *proto.RuntimeRemoteObject
+	var err error
 
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
@@ -126,15 +127,13 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params cdp.A
 		defer p.traceFn(js, params)()
 	}
 
-	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		res, err := p.EvalE(false, thisID, js, params)
+	err = kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		res, err = p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return true, err
 		}
-		v := res.Get("result")
-		val = &v
 
-		if val.Get("type").String() == "object" && val.Get("subtype").String() == "null" {
+		if res.Type == proto.RuntimeRemoteObjectTypeObject && res.Subtype == proto.RuntimeRemoteObjectSubtypeNull {
 			return false, nil
 		}
 
@@ -144,64 +143,62 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID, js string, params cdp.A
 		return nil, err
 	}
 
-	if val.Get("subtype").String() != "node" {
-		return nil, &Error{nil, ErrExpectElement, val.Raw}
+	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
+		return nil, &Error{nil, ErrExpectElement, res}
 	}
 
 	return &Element{
 		page:     p,
 		ctx:      p.ctx,
-		ObjectID: val.Get("objectId").String(),
+		ObjectID: res.ObjectID,
 	}, nil
 }
 
 // ElementsE doc is the same as the method Elements
-func (p *Page) ElementsE(objectID, selector string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elements"), cdp.Array{selector})
+func (p *Page) ElementsE(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
+	return p.ElementsByJSE(objectID, p.jsFn("elements"), Array{selector})
 }
 
 // ElementsXE doc is the same as the method ElementsX
-func (p *Page) ElementsXE(objectID, xpath string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), cdp.Array{xpath})
+func (p *Page) ElementsXE(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
+	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), Array{xpath})
 }
 
 // ElementsByJSE is different from ElementByJSE, it doesn't do retry
-func (p *Page) ElementsByJSE(thisID, js string, params cdp.Array) (Elements, error) {
+func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, params Array) (Elements, error) {
 	res, err := p.EvalE(false, thisID, js, params)
 	if err != nil {
 		return nil, err
 	}
-	val := res.Get("result")
 
-	if val.Get("subtype").String() != "array" {
-		return nil, &Error{nil, ErrExpectElements, val}
+	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
+		return nil, &Error{nil, ErrExpectElements, res}
 	}
 
-	objectID := val.Get("objectId").String()
+	objectID := res.ObjectID
 	defer func() { err = p.ReleaseE(objectID) }()
 
-	list, err := p.CallE("Runtime.getProperties", cdp.Object{
-		"objectId":      objectID,
-		"ownProperties": true,
-	})
+	list, err := proto.RuntimeGetProperties{
+		ObjectID:      objectID,
+		OwnProperties: true,
+	}.Call(p)
 	kit.E(err)
 
 	elemList := Elements{}
-	for _, obj := range list.Get("result").Array() {
-		name := obj.Get("name").String()
-		if name == "__proto__" || name == "length" {
+	for _, obj := range list.Result {
+		if obj.Name == "__proto__" || obj.Name == "length" {
 			continue
 		}
-		val := obj.Get("value")
+		val := obj.Value
 
-		if val.Get("subtype").String() != "node" {
+		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
 			return nil, &Error{nil, ErrExpectElements, val}
 		}
 
 		elemList = append(elemList, &Element{
 			page:     p,
 			ctx:      p.ctx,
-			ObjectID: val.Get("objectId").String(),
+			ObjectID: val.ObjectID,
 		})
 	}
 
@@ -246,7 +243,7 @@ func (el *Element) ElementXE(xpath string) (*Element, error) {
 }
 
 // ElementByJSE doc is the same as the method ElementByJS
-func (el *Element) ElementByJSE(js string, params cdp.Array) (*Element, error) {
+func (el *Element) ElementByJSE(js string, params Array) (*Element, error) {
 	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
 }
 
@@ -257,7 +254,7 @@ func (el *Element) ParentE() (*Element, error) {
 
 // ParentsE that match the selector
 func (el *Element) ParentsE(selector string) (Elements, error) {
-	return el.ElementsByJSE(el.page.jsFn("parents"), cdp.Array{selector})
+	return el.ElementsByJSE(el.page.jsFn("parents"), Array{selector})
 }
 
 // NextE doc is the same as the method Next
@@ -286,6 +283,6 @@ func (el *Element) ElementsXE(xpath string) (Elements, error) {
 }
 
 // ElementsByJSE doc is the same as the method ElementsByJS
-func (el *Element) ElementsByJSE(js string, params cdp.Array) (Elements, error) {
+func (el *Element) ElementsByJSE(js string, params Array) (Elements, error) {
 	return el.page.ElementsByJSE(el.ObjectID, js, params)
 }

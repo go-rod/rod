@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 func (s *S) TestBrowserPages() {
@@ -22,9 +22,7 @@ func (s *S) TestBrowserPages() {
 }
 
 func (s *S) TestBrowserContext() {
-	b := s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
-	_, err := b.CallE(&cdp.Request{})
-	s.Error(err)
+	s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
 }
 
 func (s *S) TestIncognito() {
@@ -35,20 +33,21 @@ func (s *S) TestIncognito() {
 	page := b.Page(file)
 	page.Eval(`k => localStorage[k] = 1`, k)
 
-	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k).Value())
+	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k))
 	s.EqualValues(1, page.Eval(`k => localStorage[k]`, k).Int())
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := s.browser.WaitEvent("Page.frameNavigated")
+	wait := s.browser.WaitEvent(proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
 func (s *S) TestBrowserCall() {
-	v := s.browser.Call("Browser.getVersion", nil)
+	v, err := proto.BrowserGetVersion{}.Call(s.browser)
+	kit.E(err)
 
-	s.Regexp("HeadlessChrome", v.Get("product").String())
+	s.Regexp("HeadlessChrome", v.Product)
 }
 
 func (s *S) TestMonitor() {
@@ -57,9 +56,9 @@ func (s *S) TestMonitor() {
 	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
 	host := b.ServeMonitor("127.0.0.1:0").Listener.Addr().String()
 
-	s.Contains(kit.Req("http://"+host).MustString(), p.TargetID)
-	s.Contains(kit.Req("http://"+host+"/page/"+p.TargetID).MustString(), p.TargetID)
-	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+p.TargetID).MustBytes()), 1000)
+	s.Contains(kit.Req("http://"+host).MustString(), string(p.TargetID))
+	s.Contains(kit.Req("http://"+host+"/page/"+string(p.TargetID)).MustString(), p.TargetID)
+	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+string(p.TargetID)).MustBytes()), 1000)
 }
 
 func (s *S) TestRemoteLaunch() {

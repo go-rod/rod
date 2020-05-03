@@ -9,11 +9,15 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/proto"
 )
+
+// Array of any type
+type Array []interface{}
 
 // SprintFnApply is a helper to render template into js code
 // js looks like "(a, b) => {}", the a and b are the params passed into the function
-func sprintFnApply(js string, params cdp.Array) string {
+func sprintFnApply(js string, params Array) string {
 	const tpl = `(%s).apply(this, %s)`
 
 	return fmt.Sprintf(tpl, js, kit.MustToJSON(params))
@@ -32,9 +36,9 @@ func CancelPanic(err error) {
 }
 
 // Method creates a method filter
-func Method(name string) EventFilter {
+func Method(event proto.Event) EventFilter {
 	return func(e *cdp.Event) bool {
-		return name == e.Method
+		return event.MethodName() == e.Method
 	}
 }
 

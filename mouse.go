@@ -3,11 +3,9 @@ package rod
 import (
 	"sync"
 
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/proto"
 )
-
-const defaultMouseButton = "left"
 
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
@@ -18,7 +16,7 @@ type Mouse struct {
 	y float64
 
 	// the buttons is currently beening pressed, reflects the press order
-	buttons []string
+	buttons []proto.InputMouseButton
 }
 
 // MoveE doc is the same as the method Move
@@ -39,14 +37,14 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 		toX := m.x + stepX
 		toY := m.y + stepY
 
-		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
-			"type":      "mouseMoved",
-			"x":         toX,
-			"y":         toY,
-			"button":    button,
-			"buttons":   buttons,
-			"modifiers": m.page.Keyboard.modifiers,
-		})
+		err := proto.InputDispatchMouseEvent{
+			Type:      proto.InputDispatchMouseEventTypeMouseMoved,
+			X:         toX,
+			Y:         toY,
+			Button:    button,
+			Buttons:   buttons,
+			Modifiers: m.page.Keyboard.modifiers,
+		}.Call(m.page)
 		if err != nil {
 			return err
 		}
@@ -60,27 +58,27 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 }
 
 // ScrollE doc is the same as the method Scroll
-func (m *Mouse) ScrollE(x, y, steps int64) error {
+func (m *Mouse) ScrollE(x, y float64, steps int) error {
 	if steps < 1 {
 		steps = 1
 	}
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	stepX := x / steps
-	stepY := y / steps
+	stepX := x / float64(steps)
+	stepY := y / float64(steps)
 
-	for i := int64(0); i < steps; i++ {
-		_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
-			"type":      "mouseWheel",
-			"x":         m.x,
-			"y":         m.y,
-			"button":    button,
-			"buttons":   buttons,
-			"modifiers": m.page.Keyboard.modifiers,
-			"deltaX":    stepX,
-			"deltaY":    stepY,
-		})
+	for i := 0; i < steps; i++ {
+		err := proto.InputDispatchMouseEvent{
+			Type:      proto.InputDispatchMouseEventTypeMouseWheel,
+			X:         m.x,
+			Y:         m.y,
+			Button:    button,
+			Buttons:   buttons,
+			Modifiers: m.page.Keyboard.modifiers,
+			DeltaX:    stepX,
+			DeltaY:    stepY,
+		}.Call(m.page)
 		if err != nil {
 			return err
 		}
@@ -90,7 +88,7 @@ func (m *Mouse) ScrollE(x, y, steps int64) error {
 }
 
 // DownE doc is the same as the method Down
-func (m *Mouse) DownE(button string, clicks int64) error {
+func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -98,15 +96,15 @@ func (m *Mouse) DownE(button string, clicks int64) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
-		"type":       "mousePressed",
-		"button":     button,
-		"buttons":    buttons,
-		"clickCount": clicks,
-		"modifiers":  m.page.Keyboard.modifiers,
-		"x":          m.x,
-		"y":          m.y,
-	})
+	err := proto.InputDispatchMouseEvent{
+		Type:       proto.InputDispatchMouseEventTypeMousePressed,
+		Button:     button,
+		Buttons:    buttons,
+		ClickCount: clicks,
+		Modifiers:  m.page.Keyboard.modifiers,
+		X:          m.x,
+		Y:          m.y,
+	}.Call(m.page)
 	if err != nil {
 		return err
 	}
@@ -115,11 +113,11 @@ func (m *Mouse) DownE(button string, clicks int64) error {
 }
 
 // UpE doc is the same as the method Up
-func (m *Mouse) UpE(button string, clicks int64) error {
+func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
 
-	toButtons := []string{}
+	toButtons := []proto.InputMouseButton{}
 	for _, btn := range m.buttons {
 		if btn == button {
 			continue
@@ -129,14 +127,14 @@ func (m *Mouse) UpE(button string, clicks int64) error {
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
-	_, err := m.page.CallE("Input.dispatchMouseEvent", cdp.Object{
-		"type":       "mouseReleased",
-		"button":     button,
-		"buttons":    buttons,
-		"clickCount": clicks,
-		"x":          m.x,
-		"y":          m.y,
-	})
+	err := proto.InputDispatchMouseEvent{
+		Type:       proto.InputDispatchMouseEventTypeMouseReleased,
+		Button:     button,
+		Buttons:    buttons,
+		ClickCount: clicks,
+		X:          m.x,
+		Y:          m.y,
+	}.Call(m.page)
 	if err != nil {
 		return err
 	}
@@ -145,11 +143,7 @@ func (m *Mouse) UpE(button string, clicks int64) error {
 }
 
 // ClickE doc is the same as the method Click
-func (m *Mouse) ClickE(button string) error {
-	if button == "" {
-		button = defaultMouseButton
-	}
-
+func (m *Mouse) ClickE(button proto.InputMouseButton) error {
 	err := m.DownE(button, 1)
 	if err != nil {
 		return err

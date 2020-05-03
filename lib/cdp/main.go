@@ -39,9 +39,9 @@ type Request struct {
 
 // Event from chrome
 type Event struct {
-	SessionID string `json:"sessionId,omitempty"`
-	Method    string `json:"method"`
-	Params    *JSON  `json:"params,omitempty"`
+	SessionID string          `json:"sessionId,omitempty"`
+	Method    string          `json:"method"`
+	Params    json.RawMessage `json:"params,omitempty"`
 }
 
 // Error of the Response
@@ -125,8 +125,13 @@ func (cdp *Client) Connect() *Client {
 }
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
-func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, err error) {
-	req.ID = atomic.AddUint64(&cdp.count, 1)
+func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) (res []byte, err error) {
+	req := &Request{
+		ID:        atomic.AddUint64(&cdp.count, 1),
+		SessionID: sessionID,
+		Method:    method,
+		Params:    params,
+	}
 
 	cdp.debugLog(req)
 
@@ -146,7 +151,7 @@ func (cdp *Client) Call(ctx context.Context, req *Request) (res kit.JSONResult, 
 		if data.Error != nil {
 			return nil, data.Error
 		}
-		return data.Result.JSONResult, nil
+		return data.Result, nil
 
 	case <-cdp.ctx.Done():
 		if cdp.ctxCancelErr != nil {
@@ -201,9 +206,9 @@ func (cdp *Client) consumeMsg() {
 
 // response from chrome
 type response struct {
-	ID     uint64 `json:"id"`
-	Result *JSON  `json:"result,omitempty"`
-	Error  *Error `json:"error,omitempty"`
+	ID     uint64          `json:"id"`
+	Result json.RawMessage `json:"result,omitempty"`
+	Error  *Error          `json:"error,omitempty"`
 }
 
 func (cdp *Client) readMsgFromChrome() {

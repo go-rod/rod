@@ -18,15 +18,12 @@ func ExampleClient() {
 	// Such as call this endpoint on the api doc:
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page#method-navigate
 	// This will create a new tab and navigate to the test.com
-	res, err := client.Call(context.Background(), &cdp.Request{
-		Method: "Target.createTarget",
-		Params: cdp.Object{
-			"url": "https://google.com",
-		},
+	res, err := client.Call(context.Background(), "", "Target.createTarget", map[string]string{
+		"url": "https://google.com",
 	})
 	kit.E(err)
 
-	kit.Log(res.Get("targetId").String())
+	kit.Log(kit.JSON(res).Get("targetId").String())
 
 	kit.Pause()
 

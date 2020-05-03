@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Element represents the DOM element
@@ -21,22 +21,16 @@ type Element struct {
 
 	page *Page
 
-	ObjectID string
+	ObjectID proto.RuntimeRemoteObjectID
 }
 
 // DescribeE doc is the same as the method Describe
-func (el *Element) DescribeE() (kit.JSONResult, error) {
-	val, err := el.page.Context(el.ctx).CallE(
-		"DOM.describeNode",
-		cdp.Object{
-			"objectId": el.ObjectID,
-		},
-	)
+func (el *Element) DescribeE() (*proto.DOMNode, error) {
+	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID}.Call(el)
 	if err != nil {
 		return nil, err
 	}
-	node := val.Get("node")
-	return &node, nil
+	return val.Node, nil
 }
 
 // ShadowRootE returns the shadow root of this element
@@ -47,11 +41,9 @@ func (el *Element) ShadowRootE() (*Element, error) {
 	}
 
 	// though now it's an array, w3c changed the spec of it to be a single.
-	id := node.Get("shadowRoots").Array()[0].Get("backendNodeId").Int()
+	id := node.ShadowRoots[0].BackendNodeID
 
-	shadowNode, err := el.page.CallE("DOM.resolveNode", cdp.Object{
-		"backendNodeId": id,
-	})
+	shadowNode, err := proto.DOMResolveNode{BackendNodeID: id}.Call(el)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +51,7 @@ func (el *Element) ShadowRootE() (*Element, error) {
 	return &Element{
 		page:     el.page,
 		ctx:      el.page.ctx,
-		ObjectID: shadowNode.Get("object.objectId").String(),
+		ObjectID: shadowNode.Object.ObjectID,
 	}, nil
 }
 
@@ -71,7 +63,7 @@ func (el *Element) FrameE() (*Page, error) {
 	}
 
 	newPage := *el.page
-	newPage.FrameID = node.Get("frameId").String()
+	newPage.FrameID = node.FrameID
 	newPage.element = el
 	newPage.windowObjectID = ""
 
@@ -96,7 +88,7 @@ func (el *Element) ScrollIntoViewE() error {
 }
 
 // ClickE doc is the same as the method Click
-func (el *Element) ClickE(button string) error {
+func (el *Element) ClickE(button proto.InputMouseButton) error {
 	err := el.WaitVisibleE()
 	if err != nil {
 		return err
@@ -121,7 +113,7 @@ func (el *Element) ClickE(button string) error {
 	}
 
 	if el.page.browser.trace {
-		defer el.Trace(button + " click")()
+		defer el.Trace(string(button) + " click")()
 	}
 
 	return el.page.Mouse.ClickE(button)
@@ -152,7 +144,7 @@ func (el *Element) SelectTextE(regex string) error {
 	if err != nil {
 		return err
 	}
-	_, err = el.EvalE(true, el.page.jsFn("selectText"), cdp.Array{regex})
+	_, err = el.EvalE(true, el.page.jsFn("selectText"), Array{regex})
 	return err
 }
 
@@ -206,7 +198,7 @@ func (el *Element) SelectE(selectors []string) error {
 
 	el.page.browser.trySlowmotion("Input.select")
 
-	_, err = el.EvalE(true, el.page.jsFn("select"), cdp.Array{selectors})
+	_, err = el.EvalE(true, el.page.jsFn("select"), Array{selectors})
 	return err
 }
 
@@ -221,23 +213,24 @@ func (el *Element) SetFilesE(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	_, err := el.page.Context(el.ctx).CallE("DOM.setFileInputFiles", cdp.Object{
-		"files":    absPaths,
-		"objectId": el.ObjectID,
-	})
+	err := proto.DOMSetFileInputFiles{
+		Files:    absPaths,
+		ObjectID: el.ObjectID,
+	}.Call(el)
+
 	return err
 }
 
 // TextE doc is the same as the method Text
 func (el *Element) TextE() (string, error) {
 	str, err := el.EvalE(true, el.page.jsFn("text"), nil)
-	return str.String(), err
+	return str.Value.String(), err
 }
 
 // HTMLE doc is the same as the method HTML
 func (el *Element) HTMLE() (string, error) {
 	str, err := el.EvalE(true, `() => this.outerHTML`, nil)
-	return str.String(), err
+	return str.Value.String(), err
 }
 
 // VisibleE doc is the same as the method Visible
@@ -246,7 +239,7 @@ func (el *Element) VisibleE() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return res.Bool(), nil
+	return res.Value.Bool(), nil
 }
 
 // WaitStableE not using requestAnimation here because it can trigger to many checks,
@@ -278,14 +271,14 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 }
 
 // WaitE doc is the same as the method Wait
-func (el *Element) WaitE(js string, params cdp.Array) error {
+func (el *Element) WaitE(js string, params Array) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params)
 		if err != nil {
 			return true, err
 		}
 
-		if res.Bool() {
+		if res.Value.Bool() {
 			return true, nil
 		}
 
@@ -319,7 +312,7 @@ func (el *Element) BoxE() (*Box, error) {
 	}
 
 	var rect Box
-	kit.E(json.Unmarshal([]byte(res.String()), &rect))
+	kit.E(json.Unmarshal([]byte(res.Value.Raw), &rect))
 
 	if el.page.IsIframe() {
 		frameRect, err := el.page.element.BoxE() // recursively get the box
@@ -339,18 +332,18 @@ func (el *Element) ResourceE() ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := el.page.Context(el.ctx).CallE("Page.getResourceContent", cdp.Object{
-		"frameId": el.page.FrameID,
-		"url":     src.String(),
-	})
+	res, err := proto.PageGetResourceContent{
+		FrameID: el.page.FrameID,
+		URL:     src.Value.String(),
+	}.Call(el)
 	if err != nil {
 		return nil, err
 	}
 
-	data := res.Get("content").String()
+	data := res.Content
 
 	var bin []byte
-	if res.Get("base64Encoded").Bool() {
+	if res.Base64Encoded {
 		bin, err = base64.StdEncoding.DecodeString(data)
 		if err != nil {
 			return nil, err
@@ -363,7 +356,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 }
 
 // ScreenshotE of the area of the element
-func (el *Element) ScreenshotE(format string, quality int) ([]byte, error) {
+func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality int) ([]byte, error) {
 	err := el.WaitVisibleE()
 	if err != nil {
 		return nil, err
@@ -379,19 +372,19 @@ func (el *Element) ScreenshotE(format string, quality int) ([]byte, error) {
 		return nil, err
 	}
 
-	opts := cdp.Object{
-		"format": format,
-		"clip": cdp.Object{
-			"x":      box.Left,
-			"y":      box.Top,
-			"width":  box.Width,
-			"height": box.Height,
-			"scale":  1,
+	opts := &proto.PageCaptureScreenshot{
+		Format: format,
+		Clip: &proto.PageViewport{
+			X:      box.Left,
+			Y:      box.Top,
+			Width:  box.Width,
+			Height: box.Height,
+			Scale:  1,
 		},
 	}
 
 	if quality > -1 {
-		opts["quality"] = quality
+		opts.Quality = int64(quality)
 	}
 
 	return el.page.Root().ScreenshotE(opts)
@@ -402,7 +395,12 @@ func (el *Element) ReleaseE() error {
 	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)
 }
 
+// CallContext parameters for proto
+func (el *Element) CallContext() (context.Context, proto.Client, string) {
+	return el.ctx, el.page.browser.client, string(el.page.SessionID)
+}
+
 // EvalE doc is the same as the method Eval
-func (el *Element) EvalE(byValue bool, js string, params cdp.Array) (kit.JSONResult, error) {
+func (el *Element) EvalE(byValue bool, js string, params Array) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }

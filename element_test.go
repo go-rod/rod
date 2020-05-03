@@ -10,6 +10,7 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 func (s *S) TestClick() {
@@ -30,7 +31,7 @@ func (s *S) TestElementContext() {
 	s.Equal(s.browser.GetContext(), el.Context(p.GetContext()).GetContext())
 
 	el = el.Timeout(time.Minute).CancelTimeout().Cancel()
-	s.Error(el.ClickE("left"))
+	s.Error(el.ClickE(proto.InputMouseButtonLeft))
 }
 
 func (s *S) TestIframes() {
@@ -223,7 +224,7 @@ func (s *S) TestElementOthers() {
 	s.Equal("submit", el.Element("[type=submit]").Text())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
 	el.Wait(`() => true`)
-	s.Equal("form", el.ElementByJS(`() => this`).Describe().Get("localName").String())
+	s.Equal("form", el.ElementByJS(`() => this`).Describe().LocalName)
 	s.Len(el.ElementsByJS(`() => []`), 0)
 }
 

@@ -5,17 +5,16 @@ package rod
 import (
 	"context"
 	"crypto/md5"
-	"encoding/base64"
 	"encoding/hex"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/assets"
 	"github.com/ysmood/rod/lib/cdp"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Page represents the webpage
@@ -27,17 +26,17 @@ type Page struct {
 
 	browser *Browser
 
-	TargetID  string
-	SessionID string
-	FrameID   string
+	TargetID  proto.TargetTargetID
+	SessionID proto.TargetSessionID
+	FrameID   proto.PageFrameID
 	URL       string
 
 	// devices
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	element             *Element // iframe only
-	windowObjectID      string   // used as the thisObject when eval js
+	element             *Element                    // iframe only
+	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
 }
 
@@ -59,118 +58,105 @@ func (p *Page) Root() *Page {
 
 // CookiesE returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
-func (p *Page) CookiesE(urls []string) ([]gjson.Result, error) {
+func (p *Page) CookiesE(urls []string) ([]*proto.NetworkCookie, error) {
 	if len(urls) == 0 {
-		info, err := p.CallE("Target.getTargetInfo", cdp.Object{
-			"targetId": p.TargetID,
-		})
+		info, err := proto.TargetGetTargetInfo{TargetID: p.TargetID}.Call(p)
 		if err != nil {
 			return nil, err
 		}
-		urls = []string{info.Get("targetInfo.url").String()}
+		urls = []string{info.TargetInfo.URL}
 	}
 
-	res, err := p.CallE("Network.getCookies", cdp.Object{
-		"urls": urls,
-	})
+	res, err := proto.NetworkGetCookies{Urls: urls}.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	return res.Get("cookies").Array(), nil
+	return res.Cookies, nil
 }
 
 // SetCookiesE of the page.
 // Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
-func (p *Page) SetCookiesE(cookies []cdp.Object) error {
-	_, err := p.CallE("Network.setCookies", cdp.Object{
-		"cookies": cookies,
-	})
+func (p *Page) SetCookiesE(cookies []*proto.NetworkCookieParam) error {
+	err := proto.NetworkSetCookies{Cookies: cookies}.Call(p)
 	return err
 }
 
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
-	_, err := p.CallE("Page.navigate", cdp.Object{
-		"url": url,
-	})
+	_, err := proto.PageNavigate{URL: url}.Call(p)
 	return err
 }
 
-func (p *Page) getWindowID() (int64, error) {
-	res, err := p.CallE("Browser.getWindowForTarget", cdp.Object{"targetId": p.TargetID})
+func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
+	res, err := proto.BrowserGetWindowForTarget{TargetID: p.TargetID}.Call(p)
 	if err != nil {
 		return 0, err
 	}
-	return res.Get("windowId").Int(), err
+	return res.WindowID, err
 }
 
 // GetWindowE doc is the same as the method GetWindow
-func (p *Page) GetWindowE() (kit.JSONResult, error) {
+func (p *Page) GetWindowE() (*proto.BrowserBounds, error) {
 	id, err := p.getWindowID()
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := p.CallE("Browser.getWindowBounds", cdp.Object{"windowId": id})
+	res, err := proto.BrowserGetWindowBounds{WindowID: id}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	bounds := res.Get("bounds")
-	return &bounds, nil
+	return res.Bounds, nil
 }
 
 // WindowE https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
-func (p *Page) WindowE(bounds cdp.Object) error {
+func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 	id, err := p.getWindowID()
 	if err != nil {
 		return err
 	}
 
-	_, err = p.CallE("Browser.setWindowBounds", cdp.Object{"windowId": id, "bounds": bounds})
+	err = proto.BrowserSetWindowBounds{WindowID: id, Bounds: bounds}.Call(p)
 	return err
 }
 
 // ViewportE doc is the same as the method Viewport
-// Prams: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-func (p *Page) ViewportE(params cdp.Object) error {
-	if params == nil {
-		return nil
-	}
-	_, err := p.CallE("Emulation.setDeviceMetricsOverride", params)
+func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
+	err := params.Call(p)
 	return err
 }
 
 // CloseE page
 func (p *Page) CloseE() error {
-	_, err := p.CallE("Page.close", nil)
+	err := proto.PageClose{}.Call(p)
 	return err
 }
 
 // HandleDialogE doc is the same as the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
-	wait := p.WaitEventE(Method("Page.javascriptDialogOpening"))
+	wait := p.WaitEventE(Method(proto.PageJavascriptDialogOpening{}))
 
 	return func() error {
 		_, err := wait()
 		if err != nil {
 			return err
 		}
-		_, err = p.CallE("Page.handleJavaScriptDialog", cdp.Object{
-			"accept":     accept,
-			"promptText": promptText,
-		})
+		err = proto.PageHandleJavaScriptDialog{
+			Accept:     accept,
+			PromptText: promptText,
+		}.Call(p)
 		return err
 	}
 }
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
 func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), error) {
-	var params cdp.Object
+	var fetchEnable *proto.FetchEnable
 	if pattern != "" {
-		params = cdp.Object{
-			"patterns": []cdp.Object{
-				{"urlPattern": pattern},
+		fetchEnable = &proto.FetchEnable{
+			Patterns: []*proto.FetchRequestPattern{
+				{URLPattern: pattern},
 			},
 		}
 	}
@@ -179,25 +165,25 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 	// we have to prevent race condition here
 	p.getDownloadFileLock.Lock()
 
-	_, err := p.CallE("Page.setDownloadBehavior", cdp.Object{
-		"behavior":     "allow",
-		"downloadPath": dir,
-	})
+	err := proto.PageSetDownloadBehavior{
+		Behavior:     proto.PageSetDownloadBehaviorBehaviorAllow,
+		DownloadPath: dir,
+	}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = p.CallE("Fetch.enable", params)
+	err = fetchEnable.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	wait := p.WaitEventE(Method("Fetch.requestPaused"))
+	wait := p.WaitEventE(Method(proto.FetchRequestPaused{}))
 
 	return func() (http.Header, []byte, error) {
 		defer func() {
 			defer p.getDownloadFileLock.Unlock()
-			_, err := p.CallE("Fetch.disable", nil)
+			err := proto.FetchDisable{}.Call(p)
 			kit.E(err)
 		}()
 
@@ -206,10 +192,10 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			return nil, nil, err
 		}
 
-		msgReq := msg.Params.Get("request")
-		req := kit.Req(msgReq.Get("url").String()).Context(p.ctx)
+		msgReq := proto.FetchRequestPaused{}.Load(msg.Params)
+		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
 
-		for k, v := range msgReq.Get("headers").Map() {
+		for k, v := range msgReq.Request.Headers {
 			req.Header(k, v.String())
 		}
 
@@ -223,54 +209,51 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			return nil, nil, err
 		}
 
-		headers := []cdp.Object{}
+		headers := []*proto.FetchHeaderEntry{}
 		for k, vs := range res.Header {
 			for _, v := range vs {
-				headers = append(headers, cdp.Object{
-					"name":  k,
-					"value": v,
-				})
+				headers = append(headers, &proto.FetchHeaderEntry{Name: k, Value: v})
 			}
 		}
 
-		_, err = p.CallE("Fetch.fulfillRequest", cdp.Object{
-			"requestId":       msg.Params.Get("requestId").String(),
-			"responseCode":    res.StatusCode,
-			"responseHeaders": headers,
-			"body":            base64.StdEncoding.EncodeToString(body),
-		})
+		err = proto.FetchFulfillRequest{
+			RequestID:       msgReq.RequestID,
+			ResponseCode:    int64(res.StatusCode),
+			ResponseHeaders: headers,
+			Body:            body,
+		}.Call(p)
 
 		return res.Header, body, err
 	}, err
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
-func (p *Page) ScreenshotE(options cdp.Object) ([]byte, error) {
-	res, err := p.CallE("Page.captureScreenshot", options)
+func (p *Page) ScreenshotE(req *proto.PageCaptureScreenshot) ([]byte, error) {
+	res, err := req.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	return base64.StdEncoding.DecodeString(res.Get("data").String())
+	return res.Data, nil
 }
 
 // PDFE prints page as PDF
-func (p *Page) PDFE(options cdp.Object) ([]byte, error) {
-	res, err := p.CallE("Page.printToPDF", options)
+func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
+	res, err := req.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	return base64.StdEncoding.DecodeString(res.Get("data").String())
+	return res.Data, nil
 }
 
 // WaitPageE doc is the same as the method WaitPage
 func (p *Page) WaitPageE() func() (*Page, error) {
-	var targetInfo gjson.Result
+	var targetInfo *proto.TargetTargetInfo
 
 	wait := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
-		if e.Method == "Target.targetCreated" {
-			targetInfo = e.Params.Get("targetInfo")
+		if e.Method == (proto.TargetTargetCreated{}).MethodName() {
+			targetInfo = proto.TargetTargetCreated{}.Load(e.Params).TargetInfo
 
-			if targetInfo.Get("openerId").String() == p.TargetID {
+			if targetInfo.OpenerID == p.TargetID {
 				return true
 			}
 		}
@@ -282,21 +265,21 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 		if err != nil {
 			return nil, err
 		}
-		return p.browser.Context(p.ctx).page(targetInfo.Get("targetId").String())
+		return p.browser.Context(p.ctx).page(targetInfo.TargetID)
 	}
 }
 
 // PauseE doc is the same as the method Pause
 func (p *Page) PauseE() error {
-	_, err := p.CallE("Debugger.enable", nil)
+	_, err := proto.DebuggerEnable{}.Call(p)
 	if err != nil {
 		return err
 	}
-	_, err = p.CallE("Debugger.pause", nil)
+	err = proto.DebuggerPause{}.Call(p)
 	if err != nil {
 		return err
 	}
-	wait := p.WaitEventE(Method("Debugger.resumed"))
+	wait := p.WaitEventE(Method(proto.DebuggerResumed{}))
 	_, err = wait()
 	return err
 }
@@ -319,7 +302,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 		}
 		defer p.browser.Event().Unsubscribe(s)
 
-		reqList := map[string]kit.Nil{}
+		reqList := map[proto.NetworkRequestID]kit.Nil{}
 		timeout := time.NewTimer(d)
 
 		for {
@@ -335,17 +318,19 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 				e := msg.(*cdp.Event)
 				switch e.Method {
-				case "Network.requestWillBeSent":
+				case proto.NetworkRequestWillBeSent{}.MethodName():
 					timeout.Stop()
-					url := e.Params.Get("request.url").String()
-					id := e.Params.Get("requestId").String()
+					evt := proto.NetworkRequestWillBeSent{}.Load(e.Params)
+					url := evt.Request.URL
+					id := evt.RequestID
 					if matchWithFilter(url, includes, excludes) {
 						reqList[id] = kit.Nil{}
 					}
-				case "Network.loadingFinished",
-					"Network.loadingFailed",
-					"Network.responseReceived":
-					delete(reqList, e.Params.Get("requestId").String())
+				case proto.NetworkLoadingFinished{}.MethodName(),
+					proto.NetworkLoadingFailed{}.MethodName(),
+					proto.NetworkDataReceived{}.MethodName():
+					evt := proto.NetworkLoadingFinished{}.Load(e.Params)
+					delete(reqList, evt.RequestID)
 					if len(reqList) == 0 {
 						timeout.Reset(d)
 					}
@@ -357,7 +342,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 // WaitIdleE doc is the same as the method WaitIdle
 func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
-	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), cdp.Array{timeout.Seconds()})
+	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), Array{timeout.Seconds()})
 	return err
 }
 
@@ -370,7 +355,7 @@ func (p *Page) WaitLoadE() error {
 // WaitEventE doc is the same as the method WaitEvent
 func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
-		return e.SessionID == p.SessionID && filter(e)
+		return e.SessionID == string(p.SessionID) && filter(e)
 	})
 }
 
@@ -378,7 +363,7 @@ func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 func (p *Page) AddScriptTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalE(true, "", p.jsFn("addScriptTag"), cdp.Array{id, url, content})
+	_, err := p.EvalE(true, "", p.jsFn("addScriptTag"), Array{id, url, content})
 	return err
 }
 
@@ -386,15 +371,17 @@ func (p *Page) AddScriptTagE(url, content string) error {
 func (p *Page) AddStyleTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalE(true, "", p.jsFn("addStyleTag"), cdp.Array{id, url, content})
+	_, err := p.EvalE(true, "", p.jsFn("addStyleTag"), Array{id, url, content})
 	return err
 }
 
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
-func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs cdp.Array) (res kit.JSONResult, err error) {
+func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := thisID
+	var err error
+	var res *proto.RuntimeCallFunctionOnResult
 
 	// js context will be invalid if a frame is reloaded
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
@@ -411,20 +398,18 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs cdp.Array) (res kit
 			objectID = p.windowObjectID
 		}
 
-		args := cdp.Array{}
+		args := []*proto.RuntimeCallArgument{}
 		for _, p := range jsArgs {
-			args = append(args, cdp.Object{"value": p})
+			args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(p)})
 		}
 
-		params := cdp.Object{
-			"objectId":            objectID,
-			"awaitPromise":        true,
-			"returnByValue":       byValue,
-			"functionDeclaration": SprintFnThis(js),
-			"arguments":           args,
-		}
-
-		res, err = p.CallE("Runtime.callFunctionOn", params)
+		res, err = proto.RuntimeCallFunctionOn{
+			ObjectID:            objectID,
+			AwaitPromise:        true,
+			ReturnByValue:       byValue,
+			FunctionDeclaration: SprintFnThis(js),
+			Arguments:           args,
+		}.Call(p)
 
 		if thisID == "" {
 			if isNilContextErr(err) {
@@ -440,25 +425,11 @@ func (p *Page) EvalE(byValue bool, thisID, js string, jsArgs cdp.Array) (res kit
 		return nil, err
 	}
 
-	if res.Get("exceptionDetails").Exists() {
-		return nil, &Error{nil, res.Get("exceptionDetails.exception.description").String(), res}
+	if res.ExceptionDetails != nil {
+		return nil, &Error{nil, res.ExceptionDetails.Exception.Description, res}
 	}
 
-	if byValue {
-		val := res.Get("result.value")
-		res = &val
-	}
-
-	return
-}
-
-// CallE sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) CallE(method string, params interface{}) (kit.JSONResult, error) {
-	return p.browser.Context(p.ctx).CallE(&cdp.Request{
-		SessionID: p.SessionID,
-		Method:    method,
-		Params:    params,
-	})
+	return res.Result, nil
 }
 
 // Sleeper returns the default sleeper for retry, it uses backoff and requestIdleCallback to wait
@@ -467,78 +438,81 @@ func (p *Page) Sleeper() kit.Sleeper {
 }
 
 // ReleaseE doc is the same as the method Release
-func (p *Page) ReleaseE(objectID string) error {
-	_, err := p.CallE("Runtime.releaseObject", cdp.Object{
-		"objectId": objectID,
-	})
+func (p *Page) ReleaseE(objectID proto.RuntimeRemoteObjectID) error {
+	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)
 	return err
 }
 
+// CallContext parameters for proto
+func (p *Page) CallContext() (context.Context, proto.Client, string) {
+	return p.ctx, p.browser.client, string(p.SessionID)
+}
+
 func (p *Page) initSession() error {
-	obj, err := p.CallE("Target.attachToTarget", cdp.Object{
-		"targetId": p.TargetID,
-		"flatten":  true, // if it's not set no response will return
-	})
+	obj, err := proto.TargetAttachToTarget{
+		TargetID: p.TargetID,
+		Flatten:  true, // if it's not set no response will return
+	}.Call(p)
 	if err != nil {
 		return err
 	}
-	p.SessionID = obj.Get("sessionId").String()
+	p.SessionID = obj.SessionID
 
-	_, err = p.CallE("Page.enable", nil)
-	if err != nil {
-		return err
-	}
-
-	_, err = p.CallE("Network.enable", nil)
+	err = proto.PageEnable{}.Call(p)
 	if err != nil {
 		return err
 	}
 
-	res, err := p.CallE("DOM.getDocument", nil)
+	err = proto.NetworkEnable{}.Call(p)
 	if err != nil {
 		return err
 	}
 
-	for _, child := range res.Get("root.children").Array() {
-		frameID := child.Get("frameId")
-		if frameID.Exists() {
-			p.FrameID = frameID.String()
+	res, err := proto.DOMGetDocument{}.Call(p)
+	if err != nil {
+		return err
+	}
+
+	for _, child := range res.Root.Children {
+		frameID := child.FrameID
+		if frameID != "" {
+			p.FrameID = frameID
 		}
 	}
 
-	return p.ViewportE(p.browser.viewport)
+	return nil
 }
 
 func (p *Page) initJS() error {
 	scriptURL := "\n//# sourceURL=__rod_helper__"
 
-	params := cdp.Object{
-		"expression": sprintFnApply(assets.Helper, cdp.Array{p.FrameID}) + scriptURL,
+	params := *&proto.RuntimeEvaluate{
+		Expression: sprintFnApply(assets.Helper, Array{p.FrameID}) + scriptURL,
 	}
 
 	if p.IsIframe() {
-		res, err := p.CallE("Page.createIsolatedWorld", cdp.Object{
-			"frameId": p.FrameID,
-		})
+		res, err := proto.PageCreateIsolatedWorld{
+			FrameID: p.FrameID,
+		}.Call(p)
 		if err != nil {
 			return err
 		}
 
-		params["contextId"] = res.Get("executionContextId").Int()
+		params.ContextID = res.ExecutionContextID
 	}
 
-	res, err := p.CallE("Runtime.evaluate", params)
+	res, err := params.Call(p)
 	if err != nil {
 		return err
 	}
 
-	p.windowObjectID = res.Get("result.objectId").String()
+	p.windowObjectID = res.Result.ObjectID
 
 	return nil
 }
 
 func (p *Page) jsFnPrefix() string {
-	return "rod" + p.FrameID + "."
+	return "rod" + string(p.FrameID) + "."
 }
 
 func (p *Page) jsFn(fnName string) string {

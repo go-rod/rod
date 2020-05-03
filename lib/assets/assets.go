@@ -286,7 +286,7 @@ var Monitor = `<html>
 
     {{range .list}}
     <h4>
-        <a href='/page/{{.targetId}}?rate=1000' title="{{.url}}">{{.title}}</a>
+        <a href='/page/{{.TargetID}}?rate=1000' title="{{.URL}}">{{.Title}}</a>
     </h4>
     {{end}}
 </body>

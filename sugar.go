@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Connect to the browser and start to control it.
@@ -47,7 +47,7 @@ func (b *Browser) Pages() Pages {
 }
 
 // WaitEvent resolves the wait function when the filter returns true
-func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event) {
+func (b *Browser) WaitEvent(name proto.Event) (wait func() *cdp.Event) {
 	w := b.WaitEventE(Method(name))
 	return func() *cdp.Event {
 		e, err := w()
@@ -56,19 +56,9 @@ func (b *Browser) WaitEvent(name string) (wait func() *cdp.Event) {
 	}
 }
 
-// Call sends a control message to browser
-func (b *Browser) Call(method string, params interface{}) kit.JSONResult {
-	res, err := b.CallE(&cdp.Request{
-		Method: method,
-		Params: params,
-	})
-	kit.E(err)
-	return res
-}
-
 // Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
-func (p *Page) Cookies(urls ...string) []gjson.Result {
+func (p *Page) Cookies(urls ...string) []*proto.NetworkCookie {
 	cookies, err := p.CookiesE(urls)
 	kit.E(err)
 	return cookies
@@ -76,7 +66,7 @@ func (p *Page) Cookies(urls ...string) []gjson.Result {
 
 // SetCookies of the page.
 // Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
-func (p *Page) SetCookies(cookies ...cdp.Object) *Page {
+func (p *Page) SetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 	kit.E(p.SetCookiesE(cookies))
 	return p
 }
@@ -88,7 +78,7 @@ func (p *Page) Navigate(url string) *Page {
 }
 
 // GetWindow get window bounds
-func (p *Page) GetWindow() kit.JSONResult {
+func (p *Page) GetWindow() *proto.BrowserBounds {
 	bounds, err := p.GetWindowE()
 	kit.E(err)
 	return bounds
@@ -96,55 +86,55 @@ func (p *Page) GetWindow() kit.JSONResult {
 
 // Window set the window location and size
 func (p *Page) Window(left, top, width, height int64) *Page {
-	kit.E(p.WindowE(cdp.Object{
-		"left":        left,
-		"top":         top,
-		"width":       width,
-		"height":      height,
-		"windowState": "normal",
+	kit.E(p.WindowE(&proto.BrowserBounds{
+		Left:        left,
+		Top:         top,
+		Width:       width,
+		Height:      height,
+		WindowState: proto.BrowserWindowStateNormal,
 	}))
 	return p
 }
 
 // WindowMinimize the window
 func (p *Page) WindowMinimize() *Page {
-	kit.E(p.WindowE(cdp.Object{
-		"windowState": "minimized",
+	kit.E(p.WindowE(&proto.BrowserBounds{
+		WindowState: proto.BrowserWindowStateMinimized,
 	}))
 	return p
 }
 
 // WindowMaximize the window
 func (p *Page) WindowMaximize() *Page {
-	kit.E(p.WindowE(cdp.Object{
-		"windowState": "maximized",
+	kit.E(p.WindowE(&proto.BrowserBounds{
+		WindowState: proto.BrowserWindowStateMaximized,
 	}))
 	return p
 }
 
 // WindowFullscreen the window
 func (p *Page) WindowFullscreen() *Page {
-	kit.E(p.WindowE(cdp.Object{
-		"windowState": "fullscreen",
+	kit.E(p.WindowE(&proto.BrowserBounds{
+		WindowState: proto.BrowserWindowStateFullscreen,
 	}))
 	return p
 }
 
 // WindowNormal the window size
 func (p *Page) WindowNormal() *Page {
-	kit.E(p.WindowE(cdp.Object{
-		"windowState": "normal",
+	kit.E(p.WindowE(&proto.BrowserBounds{
+		WindowState: proto.BrowserWindowStateNormal,
 	}))
 	return p
 }
 
 // Viewport overrides the values of device screen dimensions.
-func (p *Page) Viewport(width, height int64, deviceScaleFactor float32, mobile bool) *Page {
-	kit.E(p.ViewportE(cdp.Object{
-		"width":             width,
-		"height":            height,
-		"deviceScaleFactor": deviceScaleFactor,
-		"mobile":            mobile,
+func (p *Page) Viewport(width, height int64, deviceScaleFactor float64, mobile bool) *Page {
+	kit.E(p.ViewportE(&proto.EmulationSetDeviceMetricsOverride{
+		Width:             width,
+		Height:            height,
+		DeviceScaleFactor: deviceScaleFactor,
+		Mobile:            mobile,
 	}))
 	return p
 }
@@ -177,7 +167,7 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 // Screenshot the page and returns the binary of the image
 // If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) Screenshot(toFile ...string) []byte {
-	bin, err := p.ScreenshotE(nil)
+	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
 	kit.E(err)
 	saveScreenshot(bin, toFile)
 	return bin
@@ -185,7 +175,7 @@ func (p *Page) Screenshot(toFile ...string) []byte {
 
 // PDF prints page as PDF
 func (p *Page) PDF() []byte {
-	pdf, err := p.PDFE(nil)
+	pdf, err := p.PDFE(&proto.PagePrintToPDF{})
 	kit.E(err)
 	return pdf
 }
@@ -226,7 +216,7 @@ func (p *Page) WaitLoad() *Page {
 }
 
 // WaitEvent returns a wait function that waits for the next event to happen.
-func (p *Page) WaitEvent(name string) (wait func()) {
+func (p *Page) WaitEvent(name proto.Event) (wait func()) {
 	w := p.WaitEventE(Method(name))
 	return func() { kit.E(w()) }
 }
@@ -245,23 +235,16 @@ func (p *Page) AddStyleTag(url string) *Page {
 
 // Eval js on the page. The first param must be a js function definition.
 // For example page.Eval(`n => n + 1`, 1) will return 2
-func (p *Page) Eval(js string, params ...interface{}) kit.JSONResult {
+func (p *Page) Eval(js string, params ...interface{}) *proto.JSON {
 	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
-	return res
+	return res.Value
 }
 
 // Release remote object
-func (p *Page) Release(objectID string) *Page {
+func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) *Page {
 	kit.E(p.ReleaseE(objectID))
 	return p
-}
-
-// Call sends a control message to the browser with the page session, the call is always on the root frame.
-func (p *Page) Call(method string, params interface{}) kit.JSONResult {
-	res, err := p.CallE(method, params)
-	kit.E(err)
-	return res
 }
 
 // Has an element that matches the css selector
@@ -334,22 +317,22 @@ func (m *Mouse) Move(x, y float64) {
 }
 
 // Scroll the wheel
-func (m *Mouse) Scroll(x, y int64) {
+func (m *Mouse) Scroll(x, y float64) {
 	kit.E(m.ScrollE(x, y, 0))
 }
 
-// Down button: none, left, middle, right, back, forward
-func (m *Mouse) Down(button string) {
+// Down button
+func (m *Mouse) Down(button proto.InputMouseButton) {
 	kit.E(m.DownE(button, 1))
 }
 
-// Up button: none, left, middle, right, back, forward
-func (m *Mouse) Up(button string) {
+// Up button
+func (m *Mouse) Up(button proto.InputMouseButton) {
 	kit.E(m.UpE(button, 1))
 }
 
-// Click button: none, left, middle, right, back, forward
-func (m *Mouse) Click(button string) {
+// Click button
+func (m *Mouse) Click(button proto.InputMouseButton) {
 	kit.E(m.ClickE(button))
 }
 
@@ -379,7 +362,7 @@ func (k *Keyboard) InsertText(text string) {
 
 // Describe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
-func (el *Element) Describe() kit.JSONResult {
+func (el *Element) Describe() *proto.DOMNode {
 	node, err := el.DescribeE()
 	kit.E(err)
 	return node
@@ -532,10 +515,10 @@ func (el *Element) Release() {
 
 // Eval evaluates js function on the element, the first param must be a js function definition
 // For example: el.Eval(`name => this.getAttribute(name)`, "value")
-func (el *Element) Eval(js string, params ...interface{}) kit.JSONResult {
+func (el *Element) Eval(js string, params ...interface{}) *proto.JSON {
 	res, err := el.EvalE(true, js, params)
 	kit.E(err)
-	return res
+	return res.Value
 }
 
 // Has an element that matches the css selector

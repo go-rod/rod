@@ -8,7 +8,7 @@ func (s *S) TestPageElements() {
 	s.page.Navigate(srcFile("fixtures/input.html"))
 	s.page.Element("input")
 	list := s.page.Elements("input")
-	s.Equal("input", list.First().Describe().Get("localName").String())
+	s.Equal("input", list.First().Describe().LocalName)
 	s.Equal("submit", list.Last().Text())
 }
 
@@ -47,7 +47,7 @@ func (s *S) TestElementHas() {
 func (s *S) TestPageElementX() {
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	s.page.Element("body")
-	name := s.page.ElementX("//*[contains(text(), 'click')]").Describe().Get("localName").String()
+	name := s.page.ElementX("//*[contains(text(), 'click')]").Describe().LocalName
 	s.Equal("button", name)
 }
 
@@ -128,15 +128,15 @@ func (s *S) TestElementTracing() {
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)
-	s.EqualError(err, "[rod] expect js to return an element\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+	s.EqualError(err, "[rod] expect js to return an element\n&{number   1  1  <nil> <nil>}")
 }
 
 func (s *S) TestPageElementsByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	_, err := p.ElementsByJSE("", `() => [1]`, nil)
-	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+	s.EqualError(err, "[rod] expect js to return an array of elements\n&{number   1  1  <nil> <nil>}")
 	_, err = p.ElementsByJSE("", `() => 1`, nil)
-	s.EqualError(err, "[rod] expect js to return an array of elements\n{\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
+	s.EqualError(err, "[rod] expect js to return an array of elements\n&{number   1  1  <nil> <nil>}")
 	_, err = p.ElementsByJSE("", `() => foo()`, nil)
 	s.Error(err)
 }

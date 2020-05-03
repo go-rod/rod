@@ -3,8 +3,8 @@ package rod
 import (
 	"sync"
 
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
@@ -23,7 +23,7 @@ func (k *Keyboard) DownE(key rune) error {
 	k.Lock()
 	defer k.Unlock()
 
-	_, err := k.page.CallE("Input.dispatchKeyEvent", actions[0])
+	err := actions[0].Call(k.page)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func (k *Keyboard) UpE(key rune) error {
 	k.Lock()
 	defer k.Unlock()
 
-	_, err := k.page.CallE("Input.dispatchKeyEvent", actions[len(actions)-1])
+	err := actions[len(actions)-1].Call(k.page)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (k *Keyboard) PressE(key rune) error {
 	defer func() { k.modifiers = 0 }()
 
 	for _, action := range actions {
-		_, err := k.page.CallE("Input.dispatchKeyEvent", action)
+		err := action.Call(k.page)
 		if err != nil {
 			return err
 		}
@@ -67,8 +67,6 @@ func (k *Keyboard) PressE(key rune) error {
 
 // InsertTextE doc is the same as the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
-	_, err := k.page.CallE("Input.insertText", cdp.Object{
-		"text": text,
-	})
+	err := proto.InputInsertText{Text: text}.Call(k.page)
 	return err
 }

@@ -1,7 +1,9 @@
 package input
 
+import "github.com/ysmood/rod/lib/proto"
+
 // MouseKeys is the map for mouse keys
-var MouseKeys = map[string]int{
+var MouseKeys = map[proto.InputMouseButton]int64{
 	"left":    1,
 	"right":   2,
 	"middle":  4,
@@ -10,12 +12,12 @@ var MouseKeys = map[string]int{
 }
 
 // EncodeMouseButton into button flag
-func EncodeMouseButton(buttons []string) (string, int) {
-	flag := 0
+func EncodeMouseButton(buttons []proto.InputMouseButton) (proto.InputMouseButton, int64) {
+	flag := int64(0)
 	for _, btn := range buttons {
 		flag |= MouseKeys[btn]
 	}
-	btn := "none"
+	btn := proto.InputMouseButton("none")
 	if len(buttons) > 0 {
 		btn = buttons[0]
 	}

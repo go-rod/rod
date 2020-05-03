@@ -12,28 +12,28 @@ import (
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 func (s *S) TestSetCookies() {
 	url, _, close := serve()
 	defer close()
 
-	page := s.page.SetCookies(cdp.Object{
-		"name":  "a",
-		"value": "1",
-		"url":   url,
-	}, cdp.Object{
-		"name":  "b",
-		"value": "2",
-		"url":   url,
+	page := s.page.SetCookies(&proto.NetworkCookieParam{
+		Name:  "a",
+		Value: "1",
+		URL:   url,
+	}, &proto.NetworkCookieParam{
+		Name:  "b",
+		Value: "2",
+		URL:   url,
 	}).Navigate(url)
 
 	cookies := page.Cookies()
 
-	s.Equal("2", cookies[0].Get("value").String())
-	s.Equal("1", cookies[1].Get("value").String())
+	s.Equal("2", cookies[0].Value)
+	s.Equal("1", cookies[1].Value)
 }
 
 func (s *S) TestClosePage() {
@@ -44,18 +44,13 @@ func (s *S) TestClosePage() {
 
 func (s *S) TestPageContext() {
 	p := s.page.Timeout(time.Minute).CancelTimeout().Cancel()
-	_, err := p.CallE(`() => {}`, nil)
-	s.Error(err)
+	s.Panics(func() { p.Eval(`() => {}`) })
 }
 
 func (s *S) TestRelease() {
 	res, err := s.page.EvalE(false, "", `() => document`, nil)
 	kit.E(err)
-	s.page.Release(res.Get("result.objectId").String())
-}
-
-func (s *S) TestPageCall() {
-	s.Greater(s.page.Call("DOM.getDocument", nil).Get("root.nodeId").Int(), int64(0))
+	s.page.Release(res.ObjectID)
 }
 
 func (s *S) TestWindow() {
@@ -64,10 +59,10 @@ func (s *S) TestWindow() {
 
 	bounds := page.GetWindow()
 	defer page.Window(
-		bounds.Get("left").Int(),
-		bounds.Get("top").Int(),
-		bounds.Get("width").Int(),
-		bounds.Get("height").Int(),
+		bounds.Left,
+		bounds.Top,
+		bounds.Width,
+		bounds.Height,
 	)
 
 	page.WindowMaximize()
@@ -183,7 +178,7 @@ func (s *S) TestPageWaitIdle() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait := s.page.WaitEvent("Page.frameNavigated")
+	wait := s.page.WaitEvent(proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
@@ -263,7 +258,7 @@ func (s *S) TestPagePause() {
 	kit.Sleep(0.03)
 	go s.page.Eval(`() => 10`)
 	kit.Sleep(0.03)
-	kit.E(s.page.CallE("Debugger.resume", nil))
+	kit.E(proto.DebuggerResume{}.Call(s.page))
 }
 
 func (s *S) TestPageScreenshot() {
@@ -307,7 +302,7 @@ func (s *S) TestPageScroll() {
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
-	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().Get("localName").String())
+	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().LocalName)
 	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
 
@@ -317,7 +312,6 @@ func (s *S) TestPageOthers() {
 
 	s.False(rod.IsError(io.EOF, rod.ErrElementNotFound))
 
-	p.Mouse.Click("")
 	p.Mouse.Down("left")
 	defer p.Mouse.Up("left")
 	p.Mouse.Down("right")
@@ -355,7 +349,7 @@ func (s *S) TestPageErrors() {
 	_, err = p.Context(ctx).GetDownloadFileE("", "")
 	s.Error(err)
 
-	_, err = p.Context(ctx).ScreenshotE(nil)
+	_, err = p.Context(ctx).ScreenshotE(&proto.PageCaptureScreenshot{})
 	s.Error(err)
 
 	err = p.Context(ctx).PauseE()

@@ -9,6 +9,7 @@ import (
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
+	"github.com/ysmood/rod/lib/proto"
 )
 
 // Browser represents the browser
@@ -22,10 +23,9 @@ type Browser struct {
 	timeoutCancel func()
 
 	// BrowserContextID is the id for incognito window
-	BrowserContextID string
+	BrowserContextID proto.BrowserBrowserContextID
 
 	controlURL string
-	viewport   cdp.Object         // default viewport, such as window demension and dpi
 	slowmotion time.Duration      // slowdown user inputs
 	trace      bool               // enable show auto tracing of user inputs
 	remote     *launcher.Launcher // enable launch chrome remotely
@@ -56,13 +56,6 @@ func New() *Browser {
 // ControlURL set the url to remote control browser.
 func (b *Browser) ControlURL(url string) *Browser {
 	b.controlURL = url
-	return b
-}
-
-// Viewport set the default viewport for newly created page
-// options: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
-func (b *Browser) Viewport(opts cdp.Object) *Browser {
-	b.viewport = opts
 	return b
 }
 
@@ -125,7 +118,7 @@ func (b *Browser) ConnectE() error {
 
 // CloseE doc is the same as the method Close
 func (b *Browser) CloseE() error {
-	_, err := b.CallE(&cdp.Request{Method: "Browser.close"})
+	err := proto.BrowserClose{}.Call(b)
 	if err != nil {
 		return err
 	}
@@ -139,17 +132,13 @@ func (b *Browser) CloseE() error {
 
 // IncognitoE creates a new incognito browser
 func (b *Browser) IncognitoE() (*Browser, error) {
-	res, err := b.CallE(&cdp.Request{
-		Method: "Target.createBrowserContext",
-	})
+	res, err := proto.TargetCreateBrowserContext{}.Call(b)
 	if err != nil {
 		return nil, err
 	}
 
-	id := res.Get("browserContextId").String()
-
 	incognito := *b
-	incognito.BrowserContextID = id
+	incognito.BrowserContextID = res.BrowserContextID
 
 	return &incognito, nil
 }
@@ -160,39 +149,36 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		url = "about:blank"
 	}
 
-	params := cdp.Object{
-		"url": url,
+	req := proto.TargetCreateTarget{
+		URL: url,
 	}
 
 	if b.BrowserContextID != "" {
-		params["browserContextId"] = b.BrowserContextID
+		req.BrowserContextID = b.BrowserContextID
 	}
 
-	target, err := b.CallE(&cdp.Request{
-		Method: "Target.createTarget",
-		Params: params,
-	})
+	target, err := req.Call(b)
 	if err != nil {
 		return nil, err
 	}
 
-	return b.page(target.Get("targetId").String())
+	return b.page(target.TargetID)
 }
 
 // PagesE doc is the same as the method Pages
 func (b *Browser) PagesE() (Pages, error) {
-	list, err := b.CallE(&cdp.Request{Method: "Target.getTargets"})
+	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {
 		return nil, err
 	}
 
 	pageList := Pages{}
-	for _, target := range list.Get("targetInfos").Array() {
-		if target.Get("type").String() != "page" {
+	for _, target := range list.TargetInfos {
+		if target.Type != "page" {
 			continue
 		}
 
-		page, err := b.page(target.Get("targetId").String())
+		page, err := b.page(target.TargetID)
 		if err != nil {
 			return nil, err
 		}
@@ -222,18 +208,17 @@ func (b *Browser) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
 	}
 }
 
-// CallE sends a control message to browser
-func (b *Browser) CallE(req *cdp.Request) (kit.JSONResult, error) {
-	b.trySlowmotion(req.Method)
-	return b.client.Call(b.ctx, req)
-}
-
 // Event returns the observable for browser events
 func (b *Browser) Event() *kit.Observable {
 	return b.event
 }
 
-func (b *Browser) page(targetID string) (*Page, error) {
+// CallContext parameters for proto
+func (b *Browser) CallContext() (context.Context, proto.Client, string) {
+	return b.ctx, b.client, ""
+}
+
+func (b *Browser) page(targetID proto.TargetTargetID) (*Page, error) {
 	page := &Page{
 		ctx:                 b.ctx,
 		browser:             b,
@@ -258,10 +243,9 @@ func (b *Browser) initEvents() error {
 		b.event.UnsubscribeAll()
 	}()
 
-	_, err := b.CallE(&cdp.Request{
-		Method: "Target.setDiscoverTargets",
-		Params: cdp.Object{"discover": true},
-	})
+	err := proto.TargetSetDiscoverTargets{
+		Discover: true,
+	}.Call(b)
 
 	return err
 }

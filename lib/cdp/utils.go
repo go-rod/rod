@@ -11,29 +11,9 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// JSON helper
-type JSON struct {
-	kit.JSONResult
-}
-
-// UnmarshalJSON interface
-func (j *JSON) UnmarshalJSON(data []byte) error {
-	j.JSONResult = kit.JSON(data)
-	return nil
-}
-
-// Object is the json object
-type Object map[string]interface{}
-
-// Array is the json array
-type Array []interface{}
-
-func prettyJSON(s *JSON) string {
-	if s == nil {
-		return ""
-	}
+func prettyJSON(s []byte) string {
 	var val interface{}
-	kit.E(json.Unmarshal([]byte(s.Raw), &val))
+	kit.E(json.Unmarshal(s, &val))
 	return kit.Sdump(val)
 }
 

@@ -15,7 +15,7 @@ func TestCancelCall(t *testing.T) {
 	go func() {
 		<-cdp.chReqMsg
 	}()
-	_, err := cdp.Call(context.Background(), &Request{})
+	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.Error(t, err)
 }
 
@@ -34,6 +34,6 @@ func TestWriteError(t *testing.T) {
 	cdp := New()
 	cdp.ws = &wsWriteErr{}
 	go cdp.consumeMsg()
-	_, err := cdp.Call(context.Background(), &Request{})
+	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.EqualError(t, err, "err")
 }
