@@ -3,6 +3,9 @@
 [![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
 [![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
 [![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
+[![Gitter](https://badges.gitter.im/ysmood-rod/community.svg)](https://gitter.im/ysmood-rod/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+![logo](fixtures/rod.png)
 
 Rod is a High-level Chrome Devtools driver directly based on [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
@@ -24,6 +27,8 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 You can find examples from [here](examples_test.go) or [here](lib/examples).
 For more details, please read the unit tests.
 
+If you have questions, please raise an issue or join the [gitter room](https://gitter.im/ysmood-rod/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).
+
 ## How it works
 
 Here's the common start process of Rod:
@@ -36,7 +41,7 @@ Here's the common start process of Rod:
 
 ## FAQ
 
-### How to use Rod inside a docker container
+### Q: How to use Rod inside a docker container
 
 To let rod work with docker is very easy:
 
@@ -48,18 +53,18 @@ The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
 can dynamically launch a chrome for each remote driver with customizable chrome flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts for popular languages.
 
-### Does it support other browsers like Firefox or Edge
+### Q: Does it support other browsers like Firefox or Edge
 
 Rod should work with any browser that supports [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 For now, Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol, and Edge will adopt chromium as their backend, so it seems like most major browsers will support it in the future except for Safari.
 
-### Why is it called Rod
+### Q: Why is it called Rod
 
 Rod is related to puppetry, see [Rod Puppet](https://en.wikipedia.org/wiki/Puppet#Rod_puppet).
 So we are the puppeteer, Chrome is the puppet, we use the rod to control the puppet.
 So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
-### How to contribute
+### Q: How to contribute
 
 Your help is more than welcome! Even just open an issue to ask a question may greatly help others.
 
@@ -76,7 +81,7 @@ You may see redundant code everywhere to reduce the use of interfaces or dynamic
 So that everything should map to your brain like a tree, not a graph.
 So that you can always jump from one definition to another in a uni-directional manner, the reverse search should be rare.
 
-### Why another puppeteer like lib
+### Q: Why another puppeteer like lib
 
 There are a lot of great projects, but no one is perfect, choose the best one that fits your needs is important.
 

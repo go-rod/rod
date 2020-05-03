@@ -177,7 +177,7 @@ func (s *S) TestWaitStable() {
 
 func (s *S) TestResource() {
 	p := s.page.Navigate(srcFile("fixtures/resource.html"))
-	s.Equal(15148, len(p.Element("img").Resource()))
+	s.Equal(15456, len(p.Element("img").Resource()))
 }
 
 func (s *S) TestElementScreenshot() {
