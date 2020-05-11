@@ -26,6 +26,9 @@ var Trace bool
 // Slow enables slowmotion mode if not zero
 var Slow time.Duration
 
+// Dir to store browser profile, such as cookies
+var Dir string
+
 // Port of the remote debugging port
 var Port = "0"
 
@@ -63,6 +66,8 @@ func parse(options string) {
 			var err error
 			Slow, err = time.ParseDuration(kv[1])
 			kit.E(err)
+		case "dir":
+			Dir = kv[1]
 		case "port":
 			Port = kv[1]
 		case "url":

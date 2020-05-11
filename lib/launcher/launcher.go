@@ -32,11 +32,14 @@ type Launcher struct {
 // "--" is optional, with or without it won't affect the result.
 // List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
-	tmp := filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
-	kit.E(os.MkdirAll(tmp, 0700))
+	dir := ""
+	if defaults.Dir == "" {
+		dir = filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
+		kit.E(os.MkdirAll(dir, 0700))
+	}
 
 	defaultFlags := map[string][]string{
-		"user-data-dir": {tmp},
+		"user-data-dir": {dir},
 
 		// use random port by default
 		"remote-debugging-port": {defaults.Port},
