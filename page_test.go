@@ -61,6 +61,30 @@ func (s *S) TestSetExtraHeaders() {
 	s.Equal("2", out2)
 }
 
+func (s *S) TestSetUserAgent() {
+	url, engine, close := serve()
+	defer close()
+
+	ua := ""
+	lang := ""
+
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	engine.NoRoute(func(ctx kit.GinContext) {
+		ua = ctx.GetHeader("User-Agent")
+		lang = ctx.GetHeader("Accept-Language")
+		wg.Done()
+	})
+
+	p := s.browser.Page("").SetUserAgent(nil).Navigate(url)
+	defer p.Close()
+	wg.Wait()
+
+	s.Equal("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36", ua)
+	s.Equal("en", lang)
+}
+
 func (s *S) TestClosePage() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()

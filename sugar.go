@@ -78,6 +78,12 @@ func (p *Page) SetExtraHeaders(dict ...string) *Page {
 	return p
 }
 
+// SetUserAgent Allows overriding user agent with the given string.
+func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) *Page {
+	kit.E(p.SetUserAgentE(req))
+	return p
+}
+
 // Navigate to url
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))

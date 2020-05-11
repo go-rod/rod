@@ -92,6 +92,18 @@ func (p *Page) SetExtraHeadersE(dict []string) error {
 	return proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
 }
 
+// SetUserAgentE Allows overriding user agent with the given string.
+func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
+	if req == nil {
+		req = &proto.NetworkSetUserAgentOverride{
+			UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
+			AcceptLanguage: "en",
+			Platform:       "MacIntel",
+		}
+	}
+	return req.Call(p)
+}
+
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
 	_, err := proto.PageNavigate{URL: url}.Call(p)
