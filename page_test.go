@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -34,6 +35,30 @@ func (s *S) TestSetCookies() {
 
 	s.Equal("2", cookies[0].Value)
 	s.Equal("1", cookies[1].Value)
+}
+
+func (s *S) TestSetExtraHeaders() {
+	url, engine, close := serve()
+	defer close()
+
+	key1 := kit.RandString(8)
+	key2 := kit.RandString(8)
+
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	var out1, out2 string
+	engine.NoRoute(func(ctx kit.GinContext) {
+		out1 = ctx.GetHeader(key1)
+		out2 = ctx.GetHeader(key2)
+		wg.Done()
+	})
+
+	s.page.SetExtraHeaders(key1, "1", key2, "2").Navigate(url)
+	wg.Wait()
+
+	s.Equal("1", out1)
+	s.Equal("2", out2)
 }
 
 func (s *S) TestClosePage() {

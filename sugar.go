@@ -71,6 +71,13 @@ func (p *Page) SetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 	return p
 }
 
+// SetExtraHeaders whether to always send extra HTTP headers with the requests from this page.
+// The arguments are key-value pairs, you can set multiple key-value pairs at the same time.
+func (p *Page) SetExtraHeaders(dict ...string) *Page {
+	kit.E(p.SetExtraHeadersE(dict))
+	return p
+}
+
 // Navigate to url
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))

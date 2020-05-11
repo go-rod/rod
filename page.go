@@ -81,6 +81,17 @@ func (p *Page) SetCookiesE(cookies []*proto.NetworkCookieParam) error {
 	return err
 }
 
+// SetExtraHeadersE whether to always send extra HTTP headers with the requests from this page.
+func (p *Page) SetExtraHeadersE(dict []string) error {
+	headers := proto.NetworkHeaders{}
+
+	for i := 0; i < len(dict); i += 2 {
+		headers[dict[i]] = proto.NewJSON(dict[i+1])
+	}
+
+	return proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
+}
+
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
 	_, err := proto.PageNavigate{URL: url}.Call(p)
