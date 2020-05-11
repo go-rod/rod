@@ -397,7 +397,7 @@ func (el *Element) ScrollIntoView() *Element {
 
 // Click the element
 func (el *Element) Click() *Element {
-	kit.E(el.ClickE("left"))
+	kit.E(el.ClickE(proto.InputMouseButtonLeft))
 	return el
 }
 
@@ -502,7 +502,7 @@ func (el *Element) Resource() []byte {
 
 // Screenshot of the area of the element
 func (el *Element) Screenshot(toFile ...string) []byte {
-	bin, err := el.ScreenshotE("png", -1)
+	bin, err := el.ScreenshotE(proto.PageCaptureScreenshotFormatPng, -1)
 	kit.E(err)
 	saveScreenshot(bin, toFile)
 	return bin
