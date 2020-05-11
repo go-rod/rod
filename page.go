@@ -306,8 +306,14 @@ func (p *Page) PauseE() error {
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
 	s := p.browser.Event().Subscribe()
+	done := false
 
 	return func() (err error) {
+		defer func() { done = true }()
+		if done {
+			panic("can't use wait function twice")
+		}
+
 		if p.browser.trace {
 			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
 		}

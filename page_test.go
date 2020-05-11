@@ -168,6 +168,10 @@ func (s *S) TestPageWaitRequestIdle() {
 	start = time.Now()
 	wait()
 	s.True(time.Since(start) < time.Second)
+
+	s.Panics(func() {
+		wait()
+	})
 }
 
 func (s *S) TestPageWaitIdle() {
