@@ -13,7 +13,7 @@ import (
 
 func prettyJSON(s []byte) string {
 	var val interface{}
-	kit.E(json.Unmarshal(s, &val))
+	_ = json.Unmarshal(s, &val)
 	return kit.Sdump(val)
 }
 
