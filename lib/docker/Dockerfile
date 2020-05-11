@@ -26,3 +26,5 @@ RUN apk add tzdata
 COPY --from=go /rod/rod-launcher /usr/bin/
 
 CMD rod-launcher
+
+EXPOSE 9222
