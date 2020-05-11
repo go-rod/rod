@@ -2,7 +2,7 @@
 FROM golang:alpine AS go
 COPY . /rod
 WORKDIR /rod
-RUN go build ./lib/launcher/cmd/rod-launcher
+RUN go build ./lib/launcher/rod-launcher
 
 
 FROM alpine:latest
