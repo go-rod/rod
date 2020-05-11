@@ -497,7 +497,7 @@ func (p *Page) initSession() error {
 func (p *Page) initJS() error {
 	scriptURL := "\n//# sourceURL=__rod_helper__"
 
-	params := *&proto.RuntimeEvaluate{
+	params := &proto.RuntimeEvaluate{
 		Expression: sprintFnApply(assets.Helper, Array{p.FrameID}) + scriptURL,
 	}
 

@@ -24,7 +24,6 @@ const (
 type domain struct {
 	name         string
 	experimental bool
-	deprecated   bool
 	definitions  []*definition
 	global       gjson.Result
 }
