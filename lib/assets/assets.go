@@ -296,15 +296,12 @@ var Monitor = `<html>
 var MonitorPage = `<html>
 <head><title>Rod Monitor - {{.id}}</title></head>
 <body style="margin: 0">
-    <p></p>
 </body>
 <script>
-    let display = document.querySelector('p')
     let img = document.createElement('img')
 
     function update() {
         let now = new Date()
-        display.innerText = now
         img.src = '/screenshot/{{.id}}?t=' + now.getTime()
     }
 
