@@ -192,20 +192,18 @@ func (b *Browser) PagesE() (Pages, error) {
 type EventFilter func(*cdp.Event) bool
 
 // WaitEventE returns wait and cancel methods
-func (b *Browser) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
-	var event *cdp.Event
-	var err error
-	w := kit.All(func() {
-		_, err = b.Event().Until(b.ctx, func(e kit.Event) bool {
-			event = e.(*cdp.Event)
+func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
+	wait := make(chan error)
+	go func() {
+		_, err := b.Event().Until(b.ctx, func(e kit.Event) bool {
+			event := e.(*cdp.Event)
 			return filter(event)
 		})
-	})
+		wait <- err
+		close(wait)
+	}()
 
-	return func() (*cdp.Event, error) {
-		w()
-		return event, err
-	}
+	return wait
 }
 
 // Event returns the observable for browser events

@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"net/http"
 	"strings"
 	"sync"
@@ -110,8 +111,14 @@ func (p *Page) NavigateE(url string) error {
 	if err != nil {
 		return err
 	}
-	_, err = proto.PageNavigate{URL: url}.Call(p)
-	return err
+	res, err := proto.PageNavigate{URL: url}.Call(p)
+	if err != nil {
+		return err
+	}
+	if res.ErrorText != "" {
+		return &Error{Code: ErrNavigation, Details: res.ErrorText}
+	}
+	return nil
 }
 
 func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
@@ -170,10 +177,10 @@ func (p *Page) CloseE() error {
 
 // HandleDialogE doc is the same as the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
-	wait := p.WaitEventE(Method(proto.PageJavascriptDialogOpening{}))
+	wait := p.WaitEventE(NewEventFilter(&proto.PageJavascriptDialogOpening{}))
 
 	return func() error {
-		_, err := wait()
+		err := <-wait
 		if err != nil {
 			return err
 		}
@@ -213,7 +220,8 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		return nil, err
 	}
 
-	wait := p.WaitEventE(Method(proto.FetchRequestPaused{}))
+	msgReq := &proto.FetchRequestPaused{}
+	wait := p.WaitEventE(NewEventFilter(msgReq))
 
 	return func() (http.Header, []byte, error) {
 		defer func() {
@@ -222,12 +230,11 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			kit.E(err)
 		}()
 
-		msg, err := wait()
+		err := <-wait
 		if err != nil {
 			return nil, nil, err
 		}
 
-		msgReq := proto.FetchRequestPaused{}.Load(msg.Params)
 		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
 
 		for k, v := range msgReq.Request.Headers {
@@ -285,8 +292,10 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo *proto.TargetTargetInfo
 
 	wait := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
-		if e.Method == (proto.TargetTargetCreated{}).MethodName() {
-			targetInfo = proto.TargetTargetCreated{}.Load(e.Params).TargetInfo
+		event := &proto.TargetTargetCreated{}
+		if e.Method == event.MethodName() {
+			kit.E(json.Unmarshal(e.Params, event))
+			targetInfo = event.TargetInfo
 
 			if targetInfo.OpenerID == p.TargetID {
 				return true
@@ -296,7 +305,7 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 	})
 
 	return func() (*Page, error) {
-		_, err := wait()
+		err := <-wait
 		if err != nil {
 			return nil, err
 		}
@@ -314,9 +323,8 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	wait := p.WaitEventE(Method(proto.DebuggerResumed{}))
-	_, err = wait()
-	return err
+	wait := p.WaitEventE(NewEventFilter(&proto.DebuggerResumed{}))
+	return <-wait
 }
 
 // WaitRequestIdleE returns a wait function that waits until no request for d duration.
@@ -340,6 +348,13 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 		reqList := map[proto.NetworkRequestID]kit.Nil{}
 		timeout := time.NewTimer(d)
 
+		reset := func(id proto.NetworkRequestID) {
+			delete(reqList, id)
+			if len(reqList) == 0 {
+				timeout.Reset(d)
+			}
+		}
+
 		for {
 			select {
 			case <-p.ctx.Done():
@@ -351,24 +366,30 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 					return
 				}
 
+				sent := &proto.NetworkRequestWillBeSent{}
+				finished := &proto.NetworkLoadingFinished{}
+				failed := &proto.NetworkLoadingFailed{}
+				received := &proto.NetworkDataReceived{}
+
 				e := msg.(*cdp.Event)
 				switch e.Method {
-				case proto.NetworkRequestWillBeSent{}.MethodName():
+				case sent.MethodName():
 					timeout.Stop()
-					evt := proto.NetworkRequestWillBeSent{}.Load(e.Params)
-					url := evt.Request.URL
-					id := evt.RequestID
+					kit.E(json.Unmarshal(e.Params, sent))
+					url := sent.Request.URL
+					id := sent.RequestID
 					if matchWithFilter(url, includes, excludes) {
 						reqList[id] = kit.Nil{}
 					}
-				case proto.NetworkLoadingFinished{}.MethodName(),
-					proto.NetworkLoadingFailed{}.MethodName(),
-					proto.NetworkDataReceived{}.MethodName():
-					evt := proto.NetworkLoadingFinished{}.Load(e.Params)
-					delete(reqList, evt.RequestID)
-					if len(reqList) == 0 {
-						timeout.Reset(d)
-					}
+				case finished.MethodName():
+					kit.E(json.Unmarshal(e.Params, finished))
+					reset(finished.RequestID)
+				case failed.MethodName():
+					kit.E(json.Unmarshal(e.Params, failed))
+					reset(failed.RequestID)
+				case received.MethodName():
+					kit.E(json.Unmarshal(e.Params, received))
+					reset(received.RequestID)
 				}
 			}
 		}
@@ -388,7 +409,7 @@ func (p *Page) WaitLoadE() error {
 }
 
 // WaitEventE doc is the same as the method WaitEvent
-func (p *Page) WaitEventE(filter EventFilter) func() (*cdp.Event, error) {
+func (p *Page) WaitEventE(filter EventFilter) <-chan error {
 	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == string(p.SessionID) && filter(e)
 	})
@@ -461,7 +482,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	}
 
 	if res.ExceptionDetails != nil {
-		return nil, &Error{nil, res.ExceptionDetails.Exception.Description, res}
+		return nil, &Error{nil, ErrEval, res.ExceptionDetails.Exception.Description}
 	}
 
 	return res.Result, nil

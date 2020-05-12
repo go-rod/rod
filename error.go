@@ -2,21 +2,28 @@ package rod
 
 import "fmt"
 
+// ErrCode for errors
+type ErrCode string
+
 const (
 	// ErrExpectElement error code
-	ErrExpectElement = "expect js to return an element"
+	ErrExpectElement ErrCode = "expect js to return an element"
 	// ErrExpectElements error code
-	ErrExpectElements = "expect js to return an array of elements"
+	ErrExpectElements ErrCode = "expect js to return an array of elements"
 	// ErrElementNotFound error code
-	ErrElementNotFound = "cannot find element"
+	ErrElementNotFound ErrCode = "cannot find element"
 	// ErrSrcNotFound error code
-	ErrSrcNotFound = "element doesn't have src attribute"
+	ErrSrcNotFound ErrCode = "element doesn't have src attribute"
+	// ErrEval error code
+	ErrEval ErrCode = "eval error"
+	// ErrNavigation error code
+	ErrNavigation ErrCode = "navigation failed"
 )
 
 // Error ...
 type Error struct {
 	Err     error
-	Code    string
+	Code    ErrCode
 	Details interface{}
 }
 
@@ -31,7 +38,7 @@ func (e *Error) Unwrap() error {
 }
 
 // IsError type matches
-func IsError(err error, code string) bool {
+func IsError(err error, code ErrCode) bool {
 	if err == nil {
 		return false
 	}

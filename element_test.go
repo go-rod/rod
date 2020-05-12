@@ -206,12 +206,12 @@ func (s *S) TestFnErr() {
 
 	_, err := el.EvalE(true, "foo()", nil)
 	s.Error(err)
-	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
+	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
 
 	_, err = el.ElementByJSE("foo()", nil)
 	s.Error(err)
-	s.Contains(err.Error(), "[rod] ReferenceError: foo is not defined")
+	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.Nil(errors.Unwrap(err))
 }
 

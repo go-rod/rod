@@ -81,6 +81,12 @@ You may see redundant code everywhere to reduce the use of interfaces or dynamic
 So that everything should map to your brain like a tree, not a graph.
 So that you can always jump from one definition to another in a uni-directional manner, the reverse search should be rare.
 
+### Q: How versioning is handled
+
+[Semver](https://semver.org/) is used.
+
+Before `v1.0.0` whenever the second section changed, such as `v0.1.0` to `v0.2.0`, there must be some public API changes, such as changes of function names or parameter types. If only the last section changed, no public API will be changed.
+
 ### Q: Why another puppeteer like lib
 
 There are a lot of great projects, but no one is perfect, choose the best one that fits your needs is important.

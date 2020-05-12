@@ -750,12 +750,6 @@ func (evt AnimationAnimationCanceled) MethodName() string {
 	return "Animation.animationCanceled"
 }
 
-// Load json
-func (evt AnimationAnimationCanceled) Load(b []byte) *AnimationAnimationCanceled {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // AnimationAnimationCreated Event for each animation that has been created.
 type AnimationAnimationCreated struct {
 
@@ -768,12 +762,6 @@ func (evt AnimationAnimationCreated) MethodName() string {
 	return "Animation.animationCreated"
 }
 
-// Load json
-func (evt AnimationAnimationCreated) Load(b []byte) *AnimationAnimationCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // AnimationAnimationStarted Event for animation that has been started.
 type AnimationAnimationStarted struct {
 
@@ -784,12 +772,6 @@ type AnimationAnimationStarted struct {
 // MethodName interface
 func (evt AnimationAnimationStarted) MethodName() string {
 	return "Animation.animationStarted"
-}
-
-// Load json
-func (evt AnimationAnimationStarted) Load(b []byte) *AnimationAnimationStarted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // ApplicationCacheApplicationCacheResource Detailed application cache resource information.
@@ -959,12 +941,6 @@ func (evt ApplicationCacheApplicationCacheStatusUpdated) MethodName() string {
 	return "ApplicationCache.applicationCacheStatusUpdated"
 }
 
-// Load json
-func (evt ApplicationCacheApplicationCacheStatusUpdated) Load(b []byte) *ApplicationCacheApplicationCacheStatusUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // ApplicationCacheNetworkStateUpdated ...
 type ApplicationCacheNetworkStateUpdated struct {
 
@@ -975,12 +951,6 @@ type ApplicationCacheNetworkStateUpdated struct {
 // MethodName interface
 func (evt ApplicationCacheNetworkStateUpdated) MethodName() string {
 	return "ApplicationCache.networkStateUpdated"
-}
-
-// Load json
-func (evt ApplicationCacheNetworkStateUpdated) Load(b []byte) *ApplicationCacheNetworkStateUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // AuditsGetEncodedResponseEncoding enum
@@ -1179,12 +1149,6 @@ func (evt BackgroundServiceRecordingStateChanged) MethodName() string {
 	return "BackgroundService.recordingStateChanged"
 }
 
-// Load json
-func (evt BackgroundServiceRecordingStateChanged) Load(b []byte) *BackgroundServiceRecordingStateChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // BackgroundServiceBackgroundServiceEventReceived Called with all existing backgroundServiceEvents when enabled, and all new
 // events afterwards if enabled and recording.
 type BackgroundServiceBackgroundServiceEventReceived struct {
@@ -1196,12 +1160,6 @@ type BackgroundServiceBackgroundServiceEventReceived struct {
 // MethodName interface
 func (evt BackgroundServiceBackgroundServiceEventReceived) MethodName() string {
 	return "BackgroundService.backgroundServiceEventReceived"
-}
-
-// Load json
-func (evt BackgroundServiceBackgroundServiceEventReceived) Load(b []byte) *BackgroundServiceBackgroundServiceEventReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // BrowserBrowserContextID (experimental) ...
@@ -2784,12 +2742,6 @@ func (evt CSSFontsUpdated) MethodName() string {
 	return "CSS.fontsUpdated"
 }
 
-// Load json
-func (evt CSSFontsUpdated) Load(b []byte) *CSSFontsUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // CSSMediaQueryResultChanged Fires whenever a MediaQuery result changes (for example, after a browser window has been
 // resized.) The current implementation considers only viewport-dependent media features.
 type CSSMediaQueryResultChanged struct {
@@ -2798,12 +2750,6 @@ type CSSMediaQueryResultChanged struct {
 // MethodName interface
 func (evt CSSMediaQueryResultChanged) MethodName() string {
 	return "CSS.mediaQueryResultChanged"
-}
-
-// Load json
-func (evt CSSMediaQueryResultChanged) Load(b []byte) *CSSMediaQueryResultChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // CSSStyleSheetAdded Fired whenever an active document stylesheet is added.
@@ -2818,12 +2764,6 @@ func (evt CSSStyleSheetAdded) MethodName() string {
 	return "CSS.styleSheetAdded"
 }
 
-// Load json
-func (evt CSSStyleSheetAdded) Load(b []byte) *CSSStyleSheetAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // CSSStyleSheetChanged Fired whenever a stylesheet is changed as a result of the client operation.
 type CSSStyleSheetChanged struct {
 
@@ -2836,12 +2776,6 @@ func (evt CSSStyleSheetChanged) MethodName() string {
 	return "CSS.styleSheetChanged"
 }
 
-// Load json
-func (evt CSSStyleSheetChanged) Load(b []byte) *CSSStyleSheetChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // CSSStyleSheetRemoved Fired whenever an active document stylesheet is removed.
 type CSSStyleSheetRemoved struct {
 
@@ -2852,12 +2786,6 @@ type CSSStyleSheetRemoved struct {
 // MethodName interface
 func (evt CSSStyleSheetRemoved) MethodName() string {
 	return "CSS.styleSheetRemoved"
-}
-
-// Load json
-func (evt CSSStyleSheetRemoved) Load(b []byte) *CSSStyleSheetRemoved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // CacheStorageCacheID Unique identifier of the Cache object.
@@ -3186,12 +3114,6 @@ func (evt CastSinksUpdated) MethodName() string {
 	return "Cast.sinksUpdated"
 }
 
-// Load json
-func (evt CastSinksUpdated) Load(b []byte) *CastSinksUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // CastIssueUpdated This is fired whenever the outstanding issue/error message changes.
 // |issueMessage| is empty if there is no issue.
 type CastIssueUpdated struct {
@@ -3203,12 +3125,6 @@ type CastIssueUpdated struct {
 // MethodName interface
 func (evt CastIssueUpdated) MethodName() string {
 	return "Cast.issueUpdated"
-}
-
-// Load json
-func (evt CastIssueUpdated) Load(b []byte) *CastIssueUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMNodeID Unique DOM node identifier.
@@ -4653,12 +4569,6 @@ func (evt DOMAttributeModified) MethodName() string {
 	return "DOM.attributeModified"
 }
 
-// Load json
-func (evt DOMAttributeModified) Load(b []byte) *DOMAttributeModified {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMAttributeRemoved Fired when `Element`'s attribute is removed.
 type DOMAttributeRemoved struct {
 
@@ -4672,12 +4582,6 @@ type DOMAttributeRemoved struct {
 // MethodName interface
 func (evt DOMAttributeRemoved) MethodName() string {
 	return "DOM.attributeRemoved"
-}
-
-// Load json
-func (evt DOMAttributeRemoved) Load(b []byte) *DOMAttributeRemoved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMCharacterDataModified Mirrors `DOMCharacterDataModified` event.
@@ -4695,12 +4599,6 @@ func (evt DOMCharacterDataModified) MethodName() string {
 	return "DOM.characterDataModified"
 }
 
-// Load json
-func (evt DOMCharacterDataModified) Load(b []byte) *DOMCharacterDataModified {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMChildNodeCountUpdated Fired when `Container`'s child node count has changed.
 type DOMChildNodeCountUpdated struct {
 
@@ -4714,12 +4612,6 @@ type DOMChildNodeCountUpdated struct {
 // MethodName interface
 func (evt DOMChildNodeCountUpdated) MethodName() string {
 	return "DOM.childNodeCountUpdated"
-}
-
-// Load json
-func (evt DOMChildNodeCountUpdated) Load(b []byte) *DOMChildNodeCountUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMChildNodeInserted Mirrors `DOMNodeInserted` event.
@@ -4740,12 +4632,6 @@ func (evt DOMChildNodeInserted) MethodName() string {
 	return "DOM.childNodeInserted"
 }
 
-// Load json
-func (evt DOMChildNodeInserted) Load(b []byte) *DOMChildNodeInserted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMChildNodeRemoved Mirrors `DOMNodeRemoved` event.
 type DOMChildNodeRemoved struct {
 
@@ -4759,12 +4645,6 @@ type DOMChildNodeRemoved struct {
 // MethodName interface
 func (evt DOMChildNodeRemoved) MethodName() string {
 	return "DOM.childNodeRemoved"
-}
-
-// Load json
-func (evt DOMChildNodeRemoved) Load(b []byte) *DOMChildNodeRemoved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMDistributedNodesUpdated (experimental) Called when distrubution is changed.
@@ -4782,12 +4662,6 @@ func (evt DOMDistributedNodesUpdated) MethodName() string {
 	return "DOM.distributedNodesUpdated"
 }
 
-// Load json
-func (evt DOMDistributedNodesUpdated) Load(b []byte) *DOMDistributedNodesUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMDocumentUpdated Fired when `Document` has been totally updated. Node ids are no longer valid.
 type DOMDocumentUpdated struct {
 }
@@ -4795,12 +4669,6 @@ type DOMDocumentUpdated struct {
 // MethodName interface
 func (evt DOMDocumentUpdated) MethodName() string {
 	return "DOM.documentUpdated"
-}
-
-// Load json
-func (evt DOMDocumentUpdated) Load(b []byte) *DOMDocumentUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMInlineStyleInvalidated (experimental) Fired when `Element`'s inline style is modified via a CSS property modification.
@@ -4813,12 +4681,6 @@ type DOMInlineStyleInvalidated struct {
 // MethodName interface
 func (evt DOMInlineStyleInvalidated) MethodName() string {
 	return "DOM.inlineStyleInvalidated"
-}
-
-// Load json
-func (evt DOMInlineStyleInvalidated) Load(b []byte) *DOMInlineStyleInvalidated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMPseudoElementAdded (experimental) Called when a pseudo element is added to an element.
@@ -4836,12 +4698,6 @@ func (evt DOMPseudoElementAdded) MethodName() string {
 	return "DOM.pseudoElementAdded"
 }
 
-// Load json
-func (evt DOMPseudoElementAdded) Load(b []byte) *DOMPseudoElementAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMPseudoElementRemoved (experimental) Called when a pseudo element is removed from an element.
 type DOMPseudoElementRemoved struct {
 
@@ -4855,12 +4711,6 @@ type DOMPseudoElementRemoved struct {
 // MethodName interface
 func (evt DOMPseudoElementRemoved) MethodName() string {
 	return "DOM.pseudoElementRemoved"
-}
-
-// Load json
-func (evt DOMPseudoElementRemoved) Load(b []byte) *DOMPseudoElementRemoved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMSetChildNodes Fired when backend wants to provide client with the missing DOM structure. This happens upon
@@ -4879,12 +4729,6 @@ func (evt DOMSetChildNodes) MethodName() string {
 	return "DOM.setChildNodes"
 }
 
-// Load json
-func (evt DOMSetChildNodes) Load(b []byte) *DOMSetChildNodes {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMShadowRootPopped (experimental) Called when shadow root is popped from the element.
 type DOMShadowRootPopped struct {
 
@@ -4900,12 +4744,6 @@ func (evt DOMShadowRootPopped) MethodName() string {
 	return "DOM.shadowRootPopped"
 }
 
-// Load json
-func (evt DOMShadowRootPopped) Load(b []byte) *DOMShadowRootPopped {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMShadowRootPushed (experimental) Called when shadow root is pushed into the element.
 type DOMShadowRootPushed struct {
 
@@ -4919,12 +4757,6 @@ type DOMShadowRootPushed struct {
 // MethodName interface
 func (evt DOMShadowRootPushed) MethodName() string {
 	return "DOM.shadowRootPushed"
-}
-
-// Load json
-func (evt DOMShadowRootPushed) Load(b []byte) *DOMShadowRootPushed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMDebuggerDOMBreakpointType DOM breakpoint type.
@@ -5736,12 +5568,6 @@ func (evt DOMStorageDomStorageItemAdded) MethodName() string {
 	return "DOMStorage.domStorageItemAdded"
 }
 
-// Load json
-func (evt DOMStorageDomStorageItemAdded) Load(b []byte) *DOMStorageDomStorageItemAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMStorageDomStorageItemRemoved ...
 type DOMStorageDomStorageItemRemoved struct {
 
@@ -5755,12 +5581,6 @@ type DOMStorageDomStorageItemRemoved struct {
 // MethodName interface
 func (evt DOMStorageDomStorageItemRemoved) MethodName() string {
 	return "DOMStorage.domStorageItemRemoved"
-}
-
-// Load json
-func (evt DOMStorageDomStorageItemRemoved) Load(b []byte) *DOMStorageDomStorageItemRemoved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DOMStorageDomStorageItemUpdated ...
@@ -5784,12 +5604,6 @@ func (evt DOMStorageDomStorageItemUpdated) MethodName() string {
 	return "DOMStorage.domStorageItemUpdated"
 }
 
-// Load json
-func (evt DOMStorageDomStorageItemUpdated) Load(b []byte) *DOMStorageDomStorageItemUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DOMStorageDomStorageItemsCleared ...
 type DOMStorageDomStorageItemsCleared struct {
 
@@ -5800,12 +5614,6 @@ type DOMStorageDomStorageItemsCleared struct {
 // MethodName interface
 func (evt DOMStorageDomStorageItemsCleared) MethodName() string {
 	return "DOMStorage.domStorageItemsCleared"
-}
-
-// Load json
-func (evt DOMStorageDomStorageItemsCleared) Load(b []byte) *DOMStorageDomStorageItemsCleared {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DatabaseDatabaseID Unique identifier of Database object.
@@ -5940,12 +5748,6 @@ type DatabaseAddDatabase struct {
 // MethodName interface
 func (evt DatabaseAddDatabase) MethodName() string {
 	return "Database.addDatabase"
-}
-
-// Load json
-func (evt DatabaseAddDatabase) Load(b []byte) *DatabaseAddDatabase {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DeviceOrientationClearDeviceOrientationOverride Clears the overridden Device Orientation.
@@ -6453,12 +6255,6 @@ func (evt EmulationVirtualTimeBudgetExpired) MethodName() string {
 	return "Emulation.virtualTimeBudgetExpired"
 }
 
-// Load json
-func (evt EmulationVirtualTimeBudgetExpired) Load(b []byte) *EmulationVirtualTimeBudgetExpired {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // HeadlessExperimentalScreenshotParamsFormat enum
 type HeadlessExperimentalScreenshotParamsFormat string
 
@@ -6570,12 +6366,6 @@ type HeadlessExperimentalNeedsBeginFramesChanged struct {
 // MethodName interface
 func (evt HeadlessExperimentalNeedsBeginFramesChanged) MethodName() string {
 	return "HeadlessExperimental.needsBeginFramesChanged"
-}
-
-// Load json
-func (evt HeadlessExperimentalNeedsBeginFramesChanged) Load(b []byte) *HeadlessExperimentalNeedsBeginFramesChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // IOStreamHandle This is either obtained from another method or specifed as `blob:&lt;uuid&gt;` where
@@ -7533,12 +7323,6 @@ func (evt InspectorDetached) MethodName() string {
 	return "Inspector.detached"
 }
 
-// Load json
-func (evt InspectorDetached) Load(b []byte) *InspectorDetached {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // InspectorTargetCrashed Fired when debugging target has crashed
 type InspectorTargetCrashed struct {
 }
@@ -7548,12 +7332,6 @@ func (evt InspectorTargetCrashed) MethodName() string {
 	return "Inspector.targetCrashed"
 }
 
-// Load json
-func (evt InspectorTargetCrashed) Load(b []byte) *InspectorTargetCrashed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // InspectorTargetReloadedAfterCrash Fired when debugging target has reloaded after crash
 type InspectorTargetReloadedAfterCrash struct {
 }
@@ -7561,12 +7339,6 @@ type InspectorTargetReloadedAfterCrash struct {
 // MethodName interface
 func (evt InspectorTargetReloadedAfterCrash) MethodName() string {
 	return "Inspector.targetReloadedAfterCrash"
-}
-
-// Load json
-func (evt InspectorTargetReloadedAfterCrash) Load(b []byte) *InspectorTargetReloadedAfterCrash {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // LayerTreeLayerID Unique Layer identifier.
@@ -7942,12 +7714,6 @@ func (evt LayerTreeLayerPainted) MethodName() string {
 	return "LayerTree.layerPainted"
 }
 
-// Load json
-func (evt LayerTreeLayerPainted) Load(b []byte) *LayerTreeLayerPainted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // LayerTreeLayerTreeDidChange ...
 type LayerTreeLayerTreeDidChange struct {
 
@@ -7958,12 +7724,6 @@ type LayerTreeLayerTreeDidChange struct {
 // MethodName interface
 func (evt LayerTreeLayerTreeDidChange) MethodName() string {
 	return "LayerTree.layerTreeDidChange"
-}
-
-// Load json
-func (evt LayerTreeLayerTreeDidChange) Load(b []byte) *LayerTreeLayerTreeDidChange {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // LogLogEntrySource enum
@@ -8166,12 +7926,6 @@ type LogEntryAdded struct {
 // MethodName interface
 func (evt LogEntryAdded) MethodName() string {
 	return "Log.entryAdded"
-}
-
-// Load json
-func (evt LogEntryAdded) Load(b []byte) *LogEntryAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // MemoryPressureLevel Memory pressure level.
@@ -10098,12 +9852,6 @@ func (evt NetworkDataReceived) MethodName() string {
 	return "Network.dataReceived"
 }
 
-// Load json
-func (evt NetworkDataReceived) Load(b []byte) *NetworkDataReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkEventSourceMessageReceived Fired when EventSource message is received.
 type NetworkEventSourceMessageReceived struct {
 
@@ -10126,12 +9874,6 @@ type NetworkEventSourceMessageReceived struct {
 // MethodName interface
 func (evt NetworkEventSourceMessageReceived) MethodName() string {
 	return "Network.eventSourceMessageReceived"
-}
-
-// Load json
-func (evt NetworkEventSourceMessageReceived) Load(b []byte) *NetworkEventSourceMessageReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkLoadingFailed Fired when HTTP request has failed to load.
@@ -10161,12 +9903,6 @@ func (evt NetworkLoadingFailed) MethodName() string {
 	return "Network.loadingFailed"
 }
 
-// Load json
-func (evt NetworkLoadingFailed) Load(b []byte) *NetworkLoadingFailed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkLoadingFinished Fired when HTTP request has finished loading.
 type NetworkLoadingFinished struct {
 
@@ -10187,12 +9923,6 @@ type NetworkLoadingFinished struct {
 // MethodName interface
 func (evt NetworkLoadingFinished) MethodName() string {
 	return "Network.loadingFinished"
-}
-
-// Load json
-func (evt NetworkLoadingFinished) Load(b []byte) *NetworkLoadingFinished {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkRequestIntercepted (deprecated) (experimental) Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
@@ -10250,12 +9980,6 @@ func (evt NetworkRequestIntercepted) MethodName() string {
 	return "Network.requestIntercepted"
 }
 
-// Load json
-func (evt NetworkRequestIntercepted) Load(b []byte) *NetworkRequestIntercepted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkRequestServedFromCache Fired if request ended up loading from cache.
 type NetworkRequestServedFromCache struct {
 
@@ -10266,12 +9990,6 @@ type NetworkRequestServedFromCache struct {
 // MethodName interface
 func (evt NetworkRequestServedFromCache) MethodName() string {
 	return "Network.requestServedFromCache"
-}
-
-// Load json
-func (evt NetworkRequestServedFromCache) Load(b []byte) *NetworkRequestServedFromCache {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkRequestWillBeSent Fired when page is about to send HTTP request.
@@ -10316,12 +10034,6 @@ func (evt NetworkRequestWillBeSent) MethodName() string {
 	return "Network.requestWillBeSent"
 }
 
-// Load json
-func (evt NetworkRequestWillBeSent) Load(b []byte) *NetworkRequestWillBeSent {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkResourceChangedPriority (experimental) Fired when resource loading priority is changed
 type NetworkResourceChangedPriority struct {
 
@@ -10340,12 +10052,6 @@ func (evt NetworkResourceChangedPriority) MethodName() string {
 	return "Network.resourceChangedPriority"
 }
 
-// Load json
-func (evt NetworkResourceChangedPriority) Load(b []byte) *NetworkResourceChangedPriority {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkSignedExchangeReceived (experimental) Fired when a signed exchange was received over the network
 type NetworkSignedExchangeReceived struct {
 
@@ -10359,12 +10065,6 @@ type NetworkSignedExchangeReceived struct {
 // MethodName interface
 func (evt NetworkSignedExchangeReceived) MethodName() string {
 	return "Network.signedExchangeReceived"
-}
-
-// Load json
-func (evt NetworkSignedExchangeReceived) Load(b []byte) *NetworkSignedExchangeReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkResponseReceived Fired when HTTP response is available.
@@ -10394,12 +10094,6 @@ func (evt NetworkResponseReceived) MethodName() string {
 	return "Network.responseReceived"
 }
 
-// Load json
-func (evt NetworkResponseReceived) Load(b []byte) *NetworkResponseReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkWebSocketClosed Fired when WebSocket is closed.
 type NetworkWebSocketClosed struct {
 
@@ -10413,12 +10107,6 @@ type NetworkWebSocketClosed struct {
 // MethodName interface
 func (evt NetworkWebSocketClosed) MethodName() string {
 	return "Network.webSocketClosed"
-}
-
-// Load json
-func (evt NetworkWebSocketClosed) Load(b []byte) *NetworkWebSocketClosed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkWebSocketCreated Fired upon WebSocket creation.
@@ -10439,12 +10127,6 @@ func (evt NetworkWebSocketCreated) MethodName() string {
 	return "Network.webSocketCreated"
 }
 
-// Load json
-func (evt NetworkWebSocketCreated) Load(b []byte) *NetworkWebSocketCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkWebSocketFrameError Fired when WebSocket message error occurs.
 type NetworkWebSocketFrameError struct {
 
@@ -10461,12 +10143,6 @@ type NetworkWebSocketFrameError struct {
 // MethodName interface
 func (evt NetworkWebSocketFrameError) MethodName() string {
 	return "Network.webSocketFrameError"
-}
-
-// Load json
-func (evt NetworkWebSocketFrameError) Load(b []byte) *NetworkWebSocketFrameError {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkWebSocketFrameReceived Fired when WebSocket message is received.
@@ -10487,12 +10163,6 @@ func (evt NetworkWebSocketFrameReceived) MethodName() string {
 	return "Network.webSocketFrameReceived"
 }
 
-// Load json
-func (evt NetworkWebSocketFrameReceived) Load(b []byte) *NetworkWebSocketFrameReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkWebSocketFrameSent Fired when WebSocket message is sent.
 type NetworkWebSocketFrameSent struct {
 
@@ -10511,12 +10181,6 @@ func (evt NetworkWebSocketFrameSent) MethodName() string {
 	return "Network.webSocketFrameSent"
 }
 
-// Load json
-func (evt NetworkWebSocketFrameSent) Load(b []byte) *NetworkWebSocketFrameSent {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkWebSocketHandshakeResponseReceived Fired when WebSocket handshake response becomes available.
 type NetworkWebSocketHandshakeResponseReceived struct {
 
@@ -10533,12 +10197,6 @@ type NetworkWebSocketHandshakeResponseReceived struct {
 // MethodName interface
 func (evt NetworkWebSocketHandshakeResponseReceived) MethodName() string {
 	return "Network.webSocketHandshakeResponseReceived"
-}
-
-// Load json
-func (evt NetworkWebSocketHandshakeResponseReceived) Load(b []byte) *NetworkWebSocketHandshakeResponseReceived {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkWebSocketWillSendHandshakeRequest Fired when WebSocket is about to initiate handshake.
@@ -10562,12 +10220,6 @@ func (evt NetworkWebSocketWillSendHandshakeRequest) MethodName() string {
 	return "Network.webSocketWillSendHandshakeRequest"
 }
 
-// Load json
-func (evt NetworkWebSocketWillSendHandshakeRequest) Load(b []byte) *NetworkWebSocketWillSendHandshakeRequest {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // NetworkRequestWillBeSentExtraInfo (experimental) Fired when additional information about a requestWillBeSent event is available from the
 // network stack. Not every requestWillBeSent event will have an additional
 // requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -10588,12 +10240,6 @@ type NetworkRequestWillBeSentExtraInfo struct {
 // MethodName interface
 func (evt NetworkRequestWillBeSentExtraInfo) MethodName() string {
 	return "Network.requestWillBeSentExtraInfo"
-}
-
-// Load json
-func (evt NetworkRequestWillBeSentExtraInfo) Load(b []byte) *NetworkRequestWillBeSentExtraInfo {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // NetworkResponseReceivedExtraInfo (experimental) Fired when additional information about a responseReceived event is available from the network
@@ -10620,12 +10266,6 @@ type NetworkResponseReceivedExtraInfo struct {
 // MethodName interface
 func (evt NetworkResponseReceivedExtraInfo) MethodName() string {
 	return "Network.responseReceivedExtraInfo"
-}
-
-// Load json
-func (evt NetworkResponseReceivedExtraInfo) Load(b []byte) *NetworkResponseReceivedExtraInfo {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // OverlayHighlightConfig Configuration data for the highlighting of page elements.
@@ -11012,12 +10652,6 @@ func (evt OverlayInspectNodeRequested) MethodName() string {
 	return "Overlay.inspectNodeRequested"
 }
 
-// Load json
-func (evt OverlayInspectNodeRequested) Load(b []byte) *OverlayInspectNodeRequested {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // OverlayNodeHighlightRequested Fired when the node should be highlighted. This happens after call to `setInspectMode`.
 type OverlayNodeHighlightRequested struct {
 
@@ -11028,12 +10662,6 @@ type OverlayNodeHighlightRequested struct {
 // MethodName interface
 func (evt OverlayNodeHighlightRequested) MethodName() string {
 	return "Overlay.nodeHighlightRequested"
-}
-
-// Load json
-func (evt OverlayNodeHighlightRequested) Load(b []byte) *OverlayNodeHighlightRequested {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // OverlayScreenshotRequested Fired when user asks to capture screenshot of some area on the page.
@@ -11048,12 +10676,6 @@ func (evt OverlayScreenshotRequested) MethodName() string {
 	return "Overlay.screenshotRequested"
 }
 
-// Load json
-func (evt OverlayScreenshotRequested) Load(b []byte) *OverlayScreenshotRequested {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // OverlayInspectModeCanceled Fired when user cancels the inspect mode.
 type OverlayInspectModeCanceled struct {
 }
@@ -11061,12 +10683,6 @@ type OverlayInspectModeCanceled struct {
 // MethodName interface
 func (evt OverlayInspectModeCanceled) MethodName() string {
 	return "Overlay.inspectModeCanceled"
-}
-
-// Load json
-func (evt OverlayInspectModeCanceled) Load(b []byte) *OverlayInspectModeCanceled {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageFrameID Unique frame identifier.
@@ -12731,12 +12347,6 @@ func (evt PageDomContentEventFired) MethodName() string {
 	return "Page.domContentEventFired"
 }
 
-// Load json
-func (evt PageDomContentEventFired) Load(b []byte) *PageDomContentEventFired {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFileChooserOpenedMode enum
 type PageFileChooserOpenedMode string
 
@@ -12766,12 +12376,6 @@ func (evt PageFileChooserOpened) MethodName() string {
 	return "Page.fileChooserOpened"
 }
 
-// Load json
-func (evt PageFileChooserOpened) Load(b []byte) *PageFileChooserOpened {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameAttached Fired when frame has been attached to its parent.
 type PageFrameAttached struct {
 
@@ -12790,12 +12394,6 @@ func (evt PageFrameAttached) MethodName() string {
 	return "Page.frameAttached"
 }
 
-// Load json
-func (evt PageFrameAttached) Load(b []byte) *PageFrameAttached {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameClearedScheduledNavigation (deprecated) Fired when frame no longer has a scheduled navigation.
 type PageFrameClearedScheduledNavigation struct {
 
@@ -12806,12 +12404,6 @@ type PageFrameClearedScheduledNavigation struct {
 // MethodName interface
 func (evt PageFrameClearedScheduledNavigation) MethodName() string {
 	return "Page.frameClearedScheduledNavigation"
-}
-
-// Load json
-func (evt PageFrameClearedScheduledNavigation) Load(b []byte) *PageFrameClearedScheduledNavigation {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageFrameDetached Fired when frame has been detached from its parent.
@@ -12826,12 +12418,6 @@ func (evt PageFrameDetached) MethodName() string {
 	return "Page.frameDetached"
 }
 
-// Load json
-func (evt PageFrameDetached) Load(b []byte) *PageFrameDetached {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameNavigated Fired once navigation of the frame has completed. Frame is now associated with the new loader.
 type PageFrameNavigated struct {
 
@@ -12844,12 +12430,6 @@ func (evt PageFrameNavigated) MethodName() string {
 	return "Page.frameNavigated"
 }
 
-// Load json
-func (evt PageFrameNavigated) Load(b []byte) *PageFrameNavigated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameResized (experimental) ...
 type PageFrameResized struct {
 }
@@ -12857,12 +12437,6 @@ type PageFrameResized struct {
 // MethodName interface
 func (evt PageFrameResized) MethodName() string {
 	return "Page.frameResized"
-}
-
-// Load json
-func (evt PageFrameResized) Load(b []byte) *PageFrameResized {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageFrameRequestedNavigation (experimental) Fired when a renderer-initiated navigation is requested.
@@ -12882,12 +12456,6 @@ type PageFrameRequestedNavigation struct {
 // MethodName interface
 func (evt PageFrameRequestedNavigation) MethodName() string {
 	return "Page.frameRequestedNavigation"
-}
-
-// Load json
-func (evt PageFrameRequestedNavigation) Load(b []byte) *PageFrameRequestedNavigation {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageFrameScheduledNavigation (deprecated) Fired when frame schedules a potential navigation.
@@ -12912,12 +12480,6 @@ func (evt PageFrameScheduledNavigation) MethodName() string {
 	return "Page.frameScheduledNavigation"
 }
 
-// Load json
-func (evt PageFrameScheduledNavigation) Load(b []byte) *PageFrameScheduledNavigation {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameStartedLoading (experimental) Fired when frame has started loading.
 type PageFrameStartedLoading struct {
 
@@ -12930,12 +12492,6 @@ func (evt PageFrameStartedLoading) MethodName() string {
 	return "Page.frameStartedLoading"
 }
 
-// Load json
-func (evt PageFrameStartedLoading) Load(b []byte) *PageFrameStartedLoading {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageFrameStoppedLoading (experimental) Fired when frame has stopped loading.
 type PageFrameStoppedLoading struct {
 
@@ -12946,12 +12502,6 @@ type PageFrameStoppedLoading struct {
 // MethodName interface
 func (evt PageFrameStoppedLoading) MethodName() string {
 	return "Page.frameStoppedLoading"
-}
-
-// Load json
-func (evt PageFrameStoppedLoading) Load(b []byte) *PageFrameStoppedLoading {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageDownloadWillBegin (experimental) Fired when page is about to start a download.
@@ -12969,12 +12519,6 @@ func (evt PageDownloadWillBegin) MethodName() string {
 	return "Page.downloadWillBegin"
 }
 
-// Load json
-func (evt PageDownloadWillBegin) Load(b []byte) *PageDownloadWillBegin {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageInterstitialHidden Fired when interstitial page was hidden
 type PageInterstitialHidden struct {
 }
@@ -12984,12 +12528,6 @@ func (evt PageInterstitialHidden) MethodName() string {
 	return "Page.interstitialHidden"
 }
 
-// Load json
-func (evt PageInterstitialHidden) Load(b []byte) *PageInterstitialHidden {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageInterstitialShown Fired when interstitial page was shown
 type PageInterstitialShown struct {
 }
@@ -12997,12 +12535,6 @@ type PageInterstitialShown struct {
 // MethodName interface
 func (evt PageInterstitialShown) MethodName() string {
 	return "Page.interstitialShown"
-}
-
-// Load json
-func (evt PageInterstitialShown) Load(b []byte) *PageInterstitialShown {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageJavascriptDialogClosed Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been
@@ -13019,12 +12551,6 @@ type PageJavascriptDialogClosed struct {
 // MethodName interface
 func (evt PageJavascriptDialogClosed) MethodName() string {
 	return "Page.javascriptDialogClosed"
-}
-
-// Load json
-func (evt PageJavascriptDialogClosed) Load(b []byte) *PageJavascriptDialogClosed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageJavascriptDialogOpening Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
@@ -13054,12 +12580,6 @@ func (evt PageJavascriptDialogOpening) MethodName() string {
 	return "Page.javascriptDialogOpening"
 }
 
-// Load json
-func (evt PageJavascriptDialogOpening) Load(b []byte) *PageJavascriptDialogOpening {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageLifecycleEvent Fired for top level page lifecycle events such as navigation, load, paint, etc.
 type PageLifecycleEvent struct {
 
@@ -13081,12 +12601,6 @@ func (evt PageLifecycleEvent) MethodName() string {
 	return "Page.lifecycleEvent"
 }
 
-// Load json
-func (evt PageLifecycleEvent) Load(b []byte) *PageLifecycleEvent {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageLoadEventFired ...
 type PageLoadEventFired struct {
 
@@ -13097,12 +12611,6 @@ type PageLoadEventFired struct {
 // MethodName interface
 func (evt PageLoadEventFired) MethodName() string {
 	return "Page.loadEventFired"
-}
-
-// Load json
-func (evt PageLoadEventFired) Load(b []byte) *PageLoadEventFired {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageNavigatedWithinDocument (experimental) Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
@@ -13118,12 +12626,6 @@ type PageNavigatedWithinDocument struct {
 // MethodName interface
 func (evt PageNavigatedWithinDocument) MethodName() string {
 	return "Page.navigatedWithinDocument"
-}
-
-// Load json
-func (evt PageNavigatedWithinDocument) Load(b []byte) *PageNavigatedWithinDocument {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageScreencastFrame (experimental) Compressed image data requested by the `startScreencast`.
@@ -13144,12 +12646,6 @@ func (evt PageScreencastFrame) MethodName() string {
 	return "Page.screencastFrame"
 }
 
-// Load json
-func (evt PageScreencastFrame) Load(b []byte) *PageScreencastFrame {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageScreencastVisibilityChanged (experimental) Fired when the page with currently enabled screencast was shown or hidden `.
 type PageScreencastVisibilityChanged struct {
 
@@ -13160,12 +12656,6 @@ type PageScreencastVisibilityChanged struct {
 // MethodName interface
 func (evt PageScreencastVisibilityChanged) MethodName() string {
 	return "Page.screencastVisibilityChanged"
-}
-
-// Load json
-func (evt PageScreencastVisibilityChanged) Load(b []byte) *PageScreencastVisibilityChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PageWindowOpen Fired when a new window is going to be opened, via window.open(), link click, form submission,
@@ -13190,12 +12680,6 @@ func (evt PageWindowOpen) MethodName() string {
 	return "Page.windowOpen"
 }
 
-// Load json
-func (evt PageWindowOpen) Load(b []byte) *PageWindowOpen {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // PageCompilationCacheProduced (experimental) Issued for every compilation cache generated. Is only available
 // if Page.setGenerateCompilationCache is enabled.
 type PageCompilationCacheProduced struct {
@@ -13210,12 +12694,6 @@ type PageCompilationCacheProduced struct {
 // MethodName interface
 func (evt PageCompilationCacheProduced) MethodName() string {
 	return "Page.compilationCacheProduced"
-}
-
-// Load json
-func (evt PageCompilationCacheProduced) Load(b []byte) *PageCompilationCacheProduced {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // PerformanceMetric Run-time execution metric.
@@ -13318,12 +12796,6 @@ type PerformanceMetrics struct {
 // MethodName interface
 func (evt PerformanceMetrics) MethodName() string {
 	return "Performance.metrics"
-}
-
-// Load json
-func (evt PerformanceMetrics) Load(b []byte) *PerformanceMetrics {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // SecurityCertificateID An internal certificate ID value.
@@ -13613,12 +13085,6 @@ func (evt SecurityCertificateError) MethodName() string {
 	return "Security.certificateError"
 }
 
-// Load json
-func (evt SecurityCertificateError) Load(b []byte) *SecurityCertificateError {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // SecurityVisibleSecurityStateChanged (experimental) The security state of the page changed.
 type SecurityVisibleSecurityStateChanged struct {
 
@@ -13629,12 +13095,6 @@ type SecurityVisibleSecurityStateChanged struct {
 // MethodName interface
 func (evt SecurityVisibleSecurityStateChanged) MethodName() string {
 	return "Security.visibleSecurityStateChanged"
-}
-
-// Load json
-func (evt SecurityVisibleSecurityStateChanged) Load(b []byte) *SecurityVisibleSecurityStateChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // SecuritySecurityStateChanged The security state of the page changed.
@@ -13660,12 +13120,6 @@ type SecuritySecurityStateChanged struct {
 // MethodName interface
 func (evt SecuritySecurityStateChanged) MethodName() string {
 	return "Security.securityStateChanged"
-}
-
-// Load json
-func (evt SecuritySecurityStateChanged) Load(b []byte) *SecuritySecurityStateChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // ServiceWorkerRegistrationID ...
@@ -13984,12 +13438,6 @@ func (evt ServiceWorkerWorkerErrorReported) MethodName() string {
 	return "ServiceWorker.workerErrorReported"
 }
 
-// Load json
-func (evt ServiceWorkerWorkerErrorReported) Load(b []byte) *ServiceWorkerWorkerErrorReported {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // ServiceWorkerWorkerRegistrationUpdated ...
 type ServiceWorkerWorkerRegistrationUpdated struct {
 
@@ -14002,12 +13450,6 @@ func (evt ServiceWorkerWorkerRegistrationUpdated) MethodName() string {
 	return "ServiceWorker.workerRegistrationUpdated"
 }
 
-// Load json
-func (evt ServiceWorkerWorkerRegistrationUpdated) Load(b []byte) *ServiceWorkerWorkerRegistrationUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // ServiceWorkerWorkerVersionUpdated ...
 type ServiceWorkerWorkerVersionUpdated struct {
 
@@ -14018,12 +13460,6 @@ type ServiceWorkerWorkerVersionUpdated struct {
 // MethodName interface
 func (evt ServiceWorkerWorkerVersionUpdated) MethodName() string {
 	return "ServiceWorker.workerVersionUpdated"
-}
-
-// Load json
-func (evt ServiceWorkerWorkerVersionUpdated) Load(b []byte) *ServiceWorkerWorkerVersionUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // StorageStorageType Enum of possible storage types.
@@ -14261,12 +13697,6 @@ func (evt StorageCacheStorageContentUpdated) MethodName() string {
 	return "Storage.cacheStorageContentUpdated"
 }
 
-// Load json
-func (evt StorageCacheStorageContentUpdated) Load(b []byte) *StorageCacheStorageContentUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // StorageCacheStorageListUpdated A cache has been added/deleted.
 type StorageCacheStorageListUpdated struct {
 
@@ -14277,12 +13707,6 @@ type StorageCacheStorageListUpdated struct {
 // MethodName interface
 func (evt StorageCacheStorageListUpdated) MethodName() string {
 	return "Storage.cacheStorageListUpdated"
-}
-
-// Load json
-func (evt StorageCacheStorageListUpdated) Load(b []byte) *StorageCacheStorageListUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // StorageIndexedDBContentUpdated The origin's IndexedDB object store has been modified.
@@ -14303,12 +13727,6 @@ func (evt StorageIndexedDBContentUpdated) MethodName() string {
 	return "Storage.indexedDBContentUpdated"
 }
 
-// Load json
-func (evt StorageIndexedDBContentUpdated) Load(b []byte) *StorageIndexedDBContentUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // StorageIndexedDBListUpdated The origin's IndexedDB database list has been modified.
 type StorageIndexedDBListUpdated struct {
 
@@ -14319,12 +13737,6 @@ type StorageIndexedDBListUpdated struct {
 // MethodName interface
 func (evt StorageIndexedDBListUpdated) MethodName() string {
 	return "Storage.indexedDBListUpdated"
-}
-
-// Load json
-func (evt StorageIndexedDBListUpdated) Load(b []byte) *StorageIndexedDBListUpdated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // SystemInfoGPUDevice Describes a single graphics processor (GPU).
@@ -15022,12 +14434,6 @@ func (evt TargetAttachedToTarget) MethodName() string {
 	return "Target.attachedToTarget"
 }
 
-// Load json
-func (evt TargetAttachedToTarget) Load(b []byte) *TargetAttachedToTarget {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // TargetDetachedFromTarget (experimental) Issued when detached from target for any reason (including `detachFromTarget` command). Can be
 // issued multiple times per target if multiple sessions have been attached to it.
 type TargetDetachedFromTarget struct {
@@ -15042,12 +14448,6 @@ type TargetDetachedFromTarget struct {
 // MethodName interface
 func (evt TargetDetachedFromTarget) MethodName() string {
 	return "Target.detachedFromTarget"
-}
-
-// Load json
-func (evt TargetDetachedFromTarget) Load(b []byte) *TargetDetachedFromTarget {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // TargetReceivedMessageFromTarget Notifies about a new protocol message received from the session (as reported in
@@ -15069,12 +14469,6 @@ func (evt TargetReceivedMessageFromTarget) MethodName() string {
 	return "Target.receivedMessageFromTarget"
 }
 
-// Load json
-func (evt TargetReceivedMessageFromTarget) Load(b []byte) *TargetReceivedMessageFromTarget {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // TargetTargetCreated Issued when a possible inspection target is created.
 type TargetTargetCreated struct {
 
@@ -15087,12 +14481,6 @@ func (evt TargetTargetCreated) MethodName() string {
 	return "Target.targetCreated"
 }
 
-// Load json
-func (evt TargetTargetCreated) Load(b []byte) *TargetTargetCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // TargetTargetDestroyed Issued when a target is destroyed.
 type TargetTargetDestroyed struct {
 
@@ -15103,12 +14491,6 @@ type TargetTargetDestroyed struct {
 // MethodName interface
 func (evt TargetTargetDestroyed) MethodName() string {
 	return "Target.targetDestroyed"
-}
-
-// Load json
-func (evt TargetTargetDestroyed) Load(b []byte) *TargetTargetDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // TargetTargetCrashed Issued when a target has crashed.
@@ -15129,12 +14511,6 @@ func (evt TargetTargetCrashed) MethodName() string {
 	return "Target.targetCrashed"
 }
 
-// Load json
-func (evt TargetTargetCrashed) Load(b []byte) *TargetTargetCrashed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // TargetTargetInfoChanged Issued when some information about a target has changed. This only happens between
 // `targetCreated` and `targetDestroyed`.
 type TargetTargetInfoChanged struct {
@@ -15146,12 +14522,6 @@ type TargetTargetInfoChanged struct {
 // MethodName interface
 func (evt TargetTargetInfoChanged) MethodName() string {
 	return "Target.targetInfoChanged"
-}
-
-// Load json
-func (evt TargetTargetInfoChanged) Load(b []byte) *TargetTargetInfoChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // TetheringBind Request browser port binding.
@@ -15195,12 +14565,6 @@ type TetheringAccepted struct {
 // MethodName interface
 func (evt TetheringAccepted) MethodName() string {
 	return "Tethering.accepted"
-}
-
-// Load json
-func (evt TetheringAccepted) Load(b []byte) *TetheringAccepted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // TracingMemoryDumpConfig Configuration for memory dump. Used only when "memory-infra" category is enabled.
@@ -15427,12 +14791,6 @@ func (evt TracingBufferUsage) MethodName() string {
 	return "Tracing.bufferUsage"
 }
 
-// Load json
-func (evt TracingBufferUsage) Load(b []byte) *TracingBufferUsage {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // TracingDataCollected Contains an bucket of collected trace events. When tracing is stopped collected events will be
 // send as a sequence of dataCollected events followed by tracingComplete event.
 type TracingDataCollected struct {
@@ -15444,12 +14802,6 @@ type TracingDataCollected struct {
 // MethodName interface
 func (evt TracingDataCollected) MethodName() string {
 	return "Tracing.dataCollected"
-}
-
-// Load json
-func (evt TracingDataCollected) Load(b []byte) *TracingDataCollected {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // TracingTracingComplete Signals that tracing is stopped and there is no trace buffers pending flush, all data were
@@ -15473,12 +14825,6 @@ type TracingTracingComplete struct {
 // MethodName interface
 func (evt TracingTracingComplete) MethodName() string {
 	return "Tracing.tracingComplete"
-}
-
-// Load json
-func (evt TracingTracingComplete) Load(b []byte) *TracingTracingComplete {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // FetchRequestID Unique request identifier.
@@ -15836,12 +15182,6 @@ func (evt FetchRequestPaused) MethodName() string {
 	return "Fetch.requestPaused"
 }
 
-// Load json
-func (evt FetchRequestPaused) Load(b []byte) *FetchRequestPaused {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // FetchAuthRequired Issued when the domain is enabled with handleAuthRequests set to true.
 // The request is paused until client responds with continueWithAuth.
 type FetchAuthRequired struct {
@@ -15867,12 +15207,6 @@ type FetchAuthRequired struct {
 // MethodName interface
 func (evt FetchAuthRequired) MethodName() string {
 	return "Fetch.authRequired"
-}
-
-// Load json
-func (evt FetchAuthRequired) Load(b []byte) *FetchAuthRequired {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioGraphObjectID An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio API
@@ -16119,12 +15453,6 @@ func (evt WebAudioContextCreated) MethodName() string {
 	return "WebAudio.contextCreated"
 }
 
-// Load json
-func (evt WebAudioContextCreated) Load(b []byte) *WebAudioContextCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioContextWillBeDestroyed Notifies that an existing BaseAudioContext will be destroyed.
 type WebAudioContextWillBeDestroyed struct {
 
@@ -16135,12 +15463,6 @@ type WebAudioContextWillBeDestroyed struct {
 // MethodName interface
 func (evt WebAudioContextWillBeDestroyed) MethodName() string {
 	return "WebAudio.contextWillBeDestroyed"
-}
-
-// Load json
-func (evt WebAudioContextWillBeDestroyed) Load(b []byte) *WebAudioContextWillBeDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioContextChanged Notifies that existing BaseAudioContext has changed some properties (id stays the same)..
@@ -16155,12 +15477,6 @@ func (evt WebAudioContextChanged) MethodName() string {
 	return "WebAudio.contextChanged"
 }
 
-// Load json
-func (evt WebAudioContextChanged) Load(b []byte) *WebAudioContextChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioAudioListenerCreated Notifies that the construction of an AudioListener has finished.
 type WebAudioAudioListenerCreated struct {
 
@@ -16171,12 +15487,6 @@ type WebAudioAudioListenerCreated struct {
 // MethodName interface
 func (evt WebAudioAudioListenerCreated) MethodName() string {
 	return "WebAudio.audioListenerCreated"
-}
-
-// Load json
-func (evt WebAudioAudioListenerCreated) Load(b []byte) *WebAudioAudioListenerCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioAudioListenerWillBeDestroyed Notifies that a new AudioListener has been created.
@@ -16194,12 +15504,6 @@ func (evt WebAudioAudioListenerWillBeDestroyed) MethodName() string {
 	return "WebAudio.audioListenerWillBeDestroyed"
 }
 
-// Load json
-func (evt WebAudioAudioListenerWillBeDestroyed) Load(b []byte) *WebAudioAudioListenerWillBeDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioAudioNodeCreated Notifies that a new AudioNode has been created.
 type WebAudioAudioNodeCreated struct {
 
@@ -16210,12 +15514,6 @@ type WebAudioAudioNodeCreated struct {
 // MethodName interface
 func (evt WebAudioAudioNodeCreated) MethodName() string {
 	return "WebAudio.audioNodeCreated"
-}
-
-// Load json
-func (evt WebAudioAudioNodeCreated) Load(b []byte) *WebAudioAudioNodeCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioAudioNodeWillBeDestroyed Notifies that an existing AudioNode has been destroyed.
@@ -16233,12 +15531,6 @@ func (evt WebAudioAudioNodeWillBeDestroyed) MethodName() string {
 	return "WebAudio.audioNodeWillBeDestroyed"
 }
 
-// Load json
-func (evt WebAudioAudioNodeWillBeDestroyed) Load(b []byte) *WebAudioAudioNodeWillBeDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioAudioParamCreated Notifies that a new AudioParam has been created.
 type WebAudioAudioParamCreated struct {
 
@@ -16249,12 +15541,6 @@ type WebAudioAudioParamCreated struct {
 // MethodName interface
 func (evt WebAudioAudioParamCreated) MethodName() string {
 	return "WebAudio.audioParamCreated"
-}
-
-// Load json
-func (evt WebAudioAudioParamCreated) Load(b []byte) *WebAudioAudioParamCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioAudioParamWillBeDestroyed Notifies that an existing AudioParam has been destroyed.
@@ -16273,12 +15559,6 @@ type WebAudioAudioParamWillBeDestroyed struct {
 // MethodName interface
 func (evt WebAudioAudioParamWillBeDestroyed) MethodName() string {
 	return "WebAudio.audioParamWillBeDestroyed"
-}
-
-// Load json
-func (evt WebAudioAudioParamWillBeDestroyed) Load(b []byte) *WebAudioAudioParamWillBeDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAudioNodesConnected Notifies that two AudioNodes are connected.
@@ -16305,12 +15585,6 @@ func (evt WebAudioNodesConnected) MethodName() string {
 	return "WebAudio.nodesConnected"
 }
 
-// Load json
-func (evt WebAudioNodesConnected) Load(b []byte) *WebAudioNodesConnected {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioNodesDisconnected Notifies that AudioNodes are disconnected. The destination can be null, and it means all the outgoing connections from the source are disconnected.
 type WebAudioNodesDisconnected struct {
 
@@ -16335,12 +15609,6 @@ func (evt WebAudioNodesDisconnected) MethodName() string {
 	return "WebAudio.nodesDisconnected"
 }
 
-// Load json
-func (evt WebAudioNodesDisconnected) Load(b []byte) *WebAudioNodesDisconnected {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioNodeParamConnected Notifies that an AudioNode is connected to an AudioParam.
 type WebAudioNodeParamConnected struct {
 
@@ -16362,12 +15630,6 @@ func (evt WebAudioNodeParamConnected) MethodName() string {
 	return "WebAudio.nodeParamConnected"
 }
 
-// Load json
-func (evt WebAudioNodeParamConnected) Load(b []byte) *WebAudioNodeParamConnected {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // WebAudioNodeParamDisconnected Notifies that an AudioNode is disconnected to an AudioParam.
 type WebAudioNodeParamDisconnected struct {
 
@@ -16387,12 +15649,6 @@ type WebAudioNodeParamDisconnected struct {
 // MethodName interface
 func (evt WebAudioNodeParamDisconnected) MethodName() string {
 	return "WebAudio.nodeParamDisconnected"
-}
-
-// Load json
-func (evt WebAudioNodeParamDisconnected) Load(b []byte) *WebAudioNodeParamDisconnected {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // WebAuthnAuthenticatorID ...
@@ -16765,12 +16021,6 @@ func (evt MediaPlayerPropertiesChanged) MethodName() string {
 	return "Media.playerPropertiesChanged"
 }
 
-// Load json
-func (evt MediaPlayerPropertiesChanged) Load(b []byte) *MediaPlayerPropertiesChanged {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // MediaPlayerEventsAdded Send events as a list, allowing them to be batched on the browser for less
 // congestion. If batched, events must ALWAYS be in chronological order.
 type MediaPlayerEventsAdded struct {
@@ -16787,12 +16037,6 @@ func (evt MediaPlayerEventsAdded) MethodName() string {
 	return "Media.playerEventsAdded"
 }
 
-// Load json
-func (evt MediaPlayerEventsAdded) Load(b []byte) *MediaPlayerEventsAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // MediaPlayersCreated Called whenever a player is created, or when a new agent joins and recieves
 // a list of active players. If an agent is restored, it will recieve the full
 // list of player ids and all events again.
@@ -16805,12 +16049,6 @@ type MediaPlayersCreated struct {
 // MethodName interface
 func (evt MediaPlayersCreated) MethodName() string {
 	return "Media.playersCreated"
-}
-
-// Load json
-func (evt MediaPlayersCreated) Load(b []byte) *MediaPlayersCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // ConsoleConsoleMessageSource enum
@@ -16937,12 +16175,6 @@ type ConsoleMessageAdded struct {
 // MethodName interface
 func (evt ConsoleMessageAdded) MethodName() string {
 	return "Console.messageAdded"
-}
-
-// Load json
-func (evt ConsoleMessageAdded) Load(b []byte) *ConsoleMessageAdded {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DebuggerBreakpointID Breakpoint identifier.
@@ -17917,12 +17149,6 @@ func (evt DebuggerBreakpointResolved) MethodName() string {
 	return "Debugger.breakpointResolved"
 }
 
-// Load json
-func (evt DebuggerBreakpointResolved) Load(b []byte) *DebuggerBreakpointResolved {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DebuggerPausedReason enum
 type DebuggerPausedReason string
 
@@ -17991,12 +17217,6 @@ func (evt DebuggerPaused) MethodName() string {
 	return "Debugger.paused"
 }
 
-// Load json
-func (evt DebuggerPaused) Load(b []byte) *DebuggerPaused {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // DebuggerResumed Fired when the virtual machine resumed execution.
 type DebuggerResumed struct {
 }
@@ -18004,12 +17224,6 @@ type DebuggerResumed struct {
 // MethodName interface
 func (evt DebuggerResumed) MethodName() string {
 	return "Debugger.resumed"
-}
-
-// Load json
-func (evt DebuggerResumed) Load(b []byte) *DebuggerResumed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DebuggerScriptFailedToParse Fired when virtual machine fails to parse the script.
@@ -18061,12 +17275,6 @@ type DebuggerScriptFailedToParse struct {
 // MethodName interface
 func (evt DebuggerScriptFailedToParse) MethodName() string {
 	return "Debugger.scriptFailedToParse"
-}
-
-// Load json
-func (evt DebuggerScriptFailedToParse) Load(b []byte) *DebuggerScriptFailedToParse {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // DebuggerScriptParsed Fired when virtual machine parses script. This event is also fired for all known and uncollected
@@ -18122,12 +17330,6 @@ type DebuggerScriptParsed struct {
 // MethodName interface
 func (evt DebuggerScriptParsed) MethodName() string {
 	return "Debugger.scriptParsed"
-}
-
-// Load json
-func (evt DebuggerScriptParsed) Load(b []byte) *DebuggerScriptParsed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // HeapProfilerHeapSnapshotObjectID Heap snapshot object id.
@@ -18418,12 +17620,6 @@ func (evt HeapProfilerAddHeapSnapshotChunk) MethodName() string {
 	return "HeapProfiler.addHeapSnapshotChunk"
 }
 
-// Load json
-func (evt HeapProfilerAddHeapSnapshotChunk) Load(b []byte) *HeapProfilerAddHeapSnapshotChunk {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // HeapProfilerHeapStatsUpdate If heap objects tracking has been started then backend may send update for one or more fragments
 type HeapProfilerHeapStatsUpdate struct {
 
@@ -18436,12 +17632,6 @@ type HeapProfilerHeapStatsUpdate struct {
 // MethodName interface
 func (evt HeapProfilerHeapStatsUpdate) MethodName() string {
 	return "HeapProfiler.heapStatsUpdate"
-}
-
-// Load json
-func (evt HeapProfilerHeapStatsUpdate) Load(b []byte) *HeapProfilerHeapStatsUpdate {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // HeapProfilerLastSeenObjectID If heap objects tracking has been started then backend regularly sends a current value for last
@@ -18459,12 +17649,6 @@ type HeapProfilerLastSeenObjectID struct {
 // MethodName interface
 func (evt HeapProfilerLastSeenObjectID) MethodName() string {
 	return "HeapProfiler.lastSeenObjectId"
-}
-
-// Load json
-func (evt HeapProfilerLastSeenObjectID) Load(b []byte) *HeapProfilerLastSeenObjectID {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // HeapProfilerReportHeapSnapshotProgress ...
@@ -18485,12 +17669,6 @@ func (evt HeapProfilerReportHeapSnapshotProgress) MethodName() string {
 	return "HeapProfiler.reportHeapSnapshotProgress"
 }
 
-// Load json
-func (evt HeapProfilerReportHeapSnapshotProgress) Load(b []byte) *HeapProfilerReportHeapSnapshotProgress {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // HeapProfilerResetProfiles ...
 type HeapProfilerResetProfiles struct {
 }
@@ -18498,12 +17676,6 @@ type HeapProfilerResetProfiles struct {
 // MethodName interface
 func (evt HeapProfilerResetProfiles) MethodName() string {
 	return "HeapProfiler.resetProfiles"
-}
-
-// Load json
-func (evt HeapProfilerResetProfiles) Load(b []byte) *HeapProfilerResetProfiles {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // ProfilerProfileNode Profile node. Holds callsite information, execution statistics and child nodes.
@@ -18947,12 +18119,6 @@ func (evt ProfilerConsoleProfileFinished) MethodName() string {
 	return "Profiler.consoleProfileFinished"
 }
 
-// Load json
-func (evt ProfilerConsoleProfileFinished) Load(b []byte) *ProfilerConsoleProfileFinished {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // ProfilerConsoleProfileStarted Sent when new profile recording is started using console.profile() call.
 type ProfilerConsoleProfileStarted struct {
 
@@ -18969,12 +18135,6 @@ type ProfilerConsoleProfileStarted struct {
 // MethodName interface
 func (evt ProfilerConsoleProfileStarted) MethodName() string {
 	return "Profiler.consoleProfileStarted"
-}
-
-// Load json
-func (evt ProfilerConsoleProfileStarted) Load(b []byte) *ProfilerConsoleProfileStarted {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // ProfilerPreciseCoverageDeltaUpdate (experimental) Reports coverage delta since the last poll (either from an event like this, or from
@@ -18996,12 +18156,6 @@ type ProfilerPreciseCoverageDeltaUpdate struct {
 // MethodName interface
 func (evt ProfilerPreciseCoverageDeltaUpdate) MethodName() string {
 	return "Profiler.preciseCoverageDeltaUpdate"
-}
-
-// Load json
-func (evt ProfilerPreciseCoverageDeltaUpdate) Load(b []byte) *ProfilerPreciseCoverageDeltaUpdate {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // RuntimeScriptID Unique script identifier.
@@ -20176,12 +19330,6 @@ func (evt RuntimeBindingCalled) MethodName() string {
 	return "Runtime.bindingCalled"
 }
 
-// Load json
-func (evt RuntimeBindingCalled) Load(b []byte) *RuntimeBindingCalled {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // RuntimeConsoleAPICalledType enum
 type RuntimeConsoleAPICalledType string
 
@@ -20272,12 +19420,6 @@ func (evt RuntimeConsoleAPICalled) MethodName() string {
 	return "Runtime.consoleAPICalled"
 }
 
-// Load json
-func (evt RuntimeConsoleAPICalled) Load(b []byte) *RuntimeConsoleAPICalled {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // RuntimeExceptionRevoked Issued when unhandled exception was revoked.
 type RuntimeExceptionRevoked struct {
 
@@ -20291,12 +19433,6 @@ type RuntimeExceptionRevoked struct {
 // MethodName interface
 func (evt RuntimeExceptionRevoked) MethodName() string {
 	return "Runtime.exceptionRevoked"
-}
-
-// Load json
-func (evt RuntimeExceptionRevoked) Load(b []byte) *RuntimeExceptionRevoked {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // RuntimeExceptionThrown Issued when exception was thrown and unhandled.
@@ -20314,12 +19450,6 @@ func (evt RuntimeExceptionThrown) MethodName() string {
 	return "Runtime.exceptionThrown"
 }
 
-// Load json
-func (evt RuntimeExceptionThrown) Load(b []byte) *RuntimeExceptionThrown {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // RuntimeExecutionContextCreated Issued when new execution context is created.
 type RuntimeExecutionContextCreated struct {
 
@@ -20330,12 +19460,6 @@ type RuntimeExecutionContextCreated struct {
 // MethodName interface
 func (evt RuntimeExecutionContextCreated) MethodName() string {
 	return "Runtime.executionContextCreated"
-}
-
-// Load json
-func (evt RuntimeExecutionContextCreated) Load(b []byte) *RuntimeExecutionContextCreated {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // RuntimeExecutionContextDestroyed Issued when execution context is destroyed.
@@ -20350,12 +19474,6 @@ func (evt RuntimeExecutionContextDestroyed) MethodName() string {
 	return "Runtime.executionContextDestroyed"
 }
 
-// Load json
-func (evt RuntimeExecutionContextDestroyed) Load(b []byte) *RuntimeExecutionContextDestroyed {
-	E(json.Unmarshal(b, &evt))
-	return &evt
-}
-
 // RuntimeExecutionContextsCleared Issued when all executionContexts were cleared in browser
 type RuntimeExecutionContextsCleared struct {
 }
@@ -20363,12 +19481,6 @@ type RuntimeExecutionContextsCleared struct {
 // MethodName interface
 func (evt RuntimeExecutionContextsCleared) MethodName() string {
 	return "Runtime.executionContextsCleared"
-}
-
-// Load json
-func (evt RuntimeExecutionContextsCleared) Load(b []byte) *RuntimeExecutionContextsCleared {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // RuntimeInspectRequested Issued when object should be inspected (for example, as a result of inspect() command line API
@@ -20385,12 +19497,6 @@ type RuntimeInspectRequested struct {
 // MethodName interface
 func (evt RuntimeInspectRequested) MethodName() string {
 	return "Runtime.inspectRequested"
-}
-
-// Load json
-func (evt RuntimeInspectRequested) Load(b []byte) *RuntimeInspectRequested {
-	E(json.Unmarshal(b, &evt))
-	return &evt
 }
 
 // SchemaDomain Description of the protocol domain.

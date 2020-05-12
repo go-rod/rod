@@ -148,12 +148,6 @@ func (d *definition) format() (code string) {
 				func (evt {{.name}}) MethodName() string {
 					return "{{.event}}"
 				}
-
-				// Load json
-				func (evt {{.name}}) Load(b []byte) *{{.name}} {
-					E(json.Unmarshal(b, &evt))
-					return &evt
-				}
 			`, "name", d.name, "event", d.domain.name+"."+d.originName)
 		}
 	}
@@ -203,7 +197,6 @@ func (d *definition) formatTests() (code string) {
 		func Test{{.name}}(t *testing.T) {
 			e := proto.{{.name}}{}
 			e.MethodName()
-			e.Load([]byte("null"))
 		}
 		`, "name", d.name)
 	}

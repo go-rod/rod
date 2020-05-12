@@ -38,7 +38,7 @@ func (s *S) TestIncognito() {
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := s.browser.WaitEvent(proto.PageFrameNavigated{})
+	wait := s.browser.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
@@ -144,21 +144,16 @@ func (s *S) TestBlockingNavigation() {
 	blocked := s.browser.Page("")
 	defer blocked.Close()
 
-	list := []int{}
-
 	go func() {
-		blocked.Navigate(url + "/a")
-		list = append(list, 2)
+		s.Panics(func() {
+			blocked.Navigate(url + "/a")
+		})
 	}()
 
 	kit.Sleep(0.3)
 
 	p := s.browser.Page(url + "/b")
 	defer p.Close()
-
-	list = append(list, 1)
-
-	s.Equal([]int{1}, list)
 }
 
 func (s *S) TestResolveBlocking() {
@@ -176,7 +171,9 @@ func (s *S) TestResolveBlocking() {
 		p.StopLoading()
 	}()
 
-	p.Navigate(url)
+	s.Panics(func() {
+		p.Navigate(url)
+	})
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

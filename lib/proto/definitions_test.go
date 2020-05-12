@@ -173,19 +173,16 @@ func TestAnimationSetTiming(t *testing.T) {
 func TestAnimationAnimationCanceled(t *testing.T) {
 	e := proto.AnimationAnimationCanceled{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestAnimationAnimationCreated(t *testing.T) {
 	e := proto.AnimationAnimationCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestAnimationAnimationStarted(t *testing.T) {
 	e := proto.AnimationAnimationStarted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestApplicationCacheEnable(t *testing.T) {
@@ -243,13 +240,11 @@ func TestApplicationCacheGetManifestForFrame(t *testing.T) {
 func TestApplicationCacheApplicationCacheStatusUpdated(t *testing.T) {
 	e := proto.ApplicationCacheApplicationCacheStatusUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestApplicationCacheNetworkStateUpdated(t *testing.T) {
 	e := proto.ApplicationCacheNetworkStateUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestAuditsGetEncodedResponse(t *testing.T) {
@@ -309,13 +304,11 @@ func TestBackgroundServiceClearEvents(t *testing.T) {
 func TestBackgroundServiceRecordingStateChanged(t *testing.T) {
 	e := proto.BackgroundServiceRecordingStateChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestBackgroundServiceBackgroundServiceEventReceived(t *testing.T) {
 	e := proto.BackgroundServiceBackgroundServiceEventReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestBrowserSetPermission(t *testing.T) {
@@ -773,31 +766,26 @@ func TestCSSTakeCoverageDelta(t *testing.T) {
 func TestCSSFontsUpdated(t *testing.T) {
 	e := proto.CSSFontsUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCSSMediaQueryResultChanged(t *testing.T) {
 	e := proto.CSSMediaQueryResultChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCSSStyleSheetAdded(t *testing.T) {
 	e := proto.CSSStyleSheetAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCSSStyleSheetChanged(t *testing.T) {
 	e := proto.CSSStyleSheetChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCSSStyleSheetRemoved(t *testing.T) {
 	e := proto.CSSStyleSheetRemoved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCacheStorageDeleteCache(t *testing.T) {
@@ -915,13 +903,11 @@ func TestCastStopCasting(t *testing.T) {
 func TestCastSinksUpdated(t *testing.T) {
 	e := proto.CastSinksUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestCastIssueUpdated(t *testing.T) {
 	e := proto.CastIssueUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMCollectClassNamesFromSubtree(t *testing.T) {
@@ -1463,85 +1449,71 @@ func TestDOMGetFrameOwner(t *testing.T) {
 func TestDOMAttributeModified(t *testing.T) {
 	e := proto.DOMAttributeModified{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMAttributeRemoved(t *testing.T) {
 	e := proto.DOMAttributeRemoved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMCharacterDataModified(t *testing.T) {
 	e := proto.DOMCharacterDataModified{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMChildNodeCountUpdated(t *testing.T) {
 	e := proto.DOMChildNodeCountUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMChildNodeInserted(t *testing.T) {
 	e := proto.DOMChildNodeInserted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMChildNodeRemoved(t *testing.T) {
 	e := proto.DOMChildNodeRemoved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMDistributedNodesUpdated(t *testing.T) {
 	e := proto.DOMDistributedNodesUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMDocumentUpdated(t *testing.T) {
 	e := proto.DOMDocumentUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMInlineStyleInvalidated(t *testing.T) {
 	e := proto.DOMInlineStyleInvalidated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMPseudoElementAdded(t *testing.T) {
 	e := proto.DOMPseudoElementAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMPseudoElementRemoved(t *testing.T) {
 	e := proto.DOMPseudoElementRemoved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMSetChildNodes(t *testing.T) {
 	e := proto.DOMSetChildNodes{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMShadowRootPopped(t *testing.T) {
 	e := proto.DOMShadowRootPopped{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMShadowRootPushed(t *testing.T) {
 	e := proto.DOMShadowRootPushed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMDebuggerGetEventListeners(t *testing.T) {
@@ -1753,25 +1725,21 @@ func TestDOMStorageSetDOMStorageItem(t *testing.T) {
 func TestDOMStorageDomStorageItemAdded(t *testing.T) {
 	e := proto.DOMStorageDomStorageItemAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMStorageDomStorageItemRemoved(t *testing.T) {
 	e := proto.DOMStorageDomStorageItemRemoved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMStorageDomStorageItemUpdated(t *testing.T) {
 	e := proto.DOMStorageDomStorageItemUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDOMStorageDomStorageItemsCleared(t *testing.T) {
 	e := proto.DOMStorageDomStorageItemsCleared{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDatabaseDisable(t *testing.T) {
@@ -1825,7 +1793,6 @@ func TestDatabaseGetDatabaseTableNames(t *testing.T) {
 func TestDatabaseAddDatabase(t *testing.T) {
 	e := proto.DatabaseAddDatabase{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDeviceOrientationClearDeviceOrientationOverride(t *testing.T) {
@@ -2069,7 +2036,6 @@ func TestEmulationSetUserAgentOverride(t *testing.T) {
 func TestEmulationVirtualTimeBudgetExpired(t *testing.T) {
 	e := proto.EmulationVirtualTimeBudgetExpired{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeadlessExperimentalBeginFrame(t *testing.T) {
@@ -2109,7 +2075,6 @@ func TestHeadlessExperimentalEnable(t *testing.T) {
 func TestHeadlessExperimentalNeedsBeginFramesChanged(t *testing.T) {
 	e := proto.HeadlessExperimentalNeedsBeginFramesChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestIOClose(t *testing.T) {
@@ -2369,19 +2334,16 @@ func TestInspectorEnable(t *testing.T) {
 func TestInspectorDetached(t *testing.T) {
 	e := proto.InspectorDetached{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestInspectorTargetCrashed(t *testing.T) {
 	e := proto.InspectorTargetCrashed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestInspectorTargetReloadedAfterCrash(t *testing.T) {
 	e := proto.InspectorTargetReloadedAfterCrash{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestLayerTreeCompositingReasons(t *testing.T) {
@@ -2501,13 +2463,11 @@ func TestLayerTreeSnapshotCommandLog(t *testing.T) {
 func TestLayerTreeLayerPainted(t *testing.T) {
 	e := proto.LayerTreeLayerPainted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestLayerTreeLayerTreeDidChange(t *testing.T) {
 	e := proto.LayerTreeLayerTreeDidChange{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestLogClear(t *testing.T) {
@@ -2563,7 +2523,6 @@ func TestLogStopViolationsReport(t *testing.T) {
 func TestLogEntryAdded(t *testing.T) {
 	e := proto.LogEntryAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestMemoryGetDOMCounters(t *testing.T) {
@@ -3013,115 +2972,96 @@ func TestNetworkSetUserAgentOverride(t *testing.T) {
 func TestNetworkDataReceived(t *testing.T) {
 	e := proto.NetworkDataReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkEventSourceMessageReceived(t *testing.T) {
 	e := proto.NetworkEventSourceMessageReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkLoadingFailed(t *testing.T) {
 	e := proto.NetworkLoadingFailed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkLoadingFinished(t *testing.T) {
 	e := proto.NetworkLoadingFinished{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkRequestIntercepted(t *testing.T) {
 	e := proto.NetworkRequestIntercepted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkRequestServedFromCache(t *testing.T) {
 	e := proto.NetworkRequestServedFromCache{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkRequestWillBeSent(t *testing.T) {
 	e := proto.NetworkRequestWillBeSent{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkResourceChangedPriority(t *testing.T) {
 	e := proto.NetworkResourceChangedPriority{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkSignedExchangeReceived(t *testing.T) {
 	e := proto.NetworkSignedExchangeReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkResponseReceived(t *testing.T) {
 	e := proto.NetworkResponseReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketClosed(t *testing.T) {
 	e := proto.NetworkWebSocketClosed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketCreated(t *testing.T) {
 	e := proto.NetworkWebSocketCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketFrameError(t *testing.T) {
 	e := proto.NetworkWebSocketFrameError{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketFrameReceived(t *testing.T) {
 	e := proto.NetworkWebSocketFrameReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketFrameSent(t *testing.T) {
 	e := proto.NetworkWebSocketFrameSent{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketHandshakeResponseReceived(t *testing.T) {
 	e := proto.NetworkWebSocketHandshakeResponseReceived{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkWebSocketWillSendHandshakeRequest(t *testing.T) {
 	e := proto.NetworkWebSocketWillSendHandshakeRequest{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkRequestWillBeSentExtraInfo(t *testing.T) {
 	e := proto.NetworkRequestWillBeSentExtraInfo{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestNetworkResponseReceivedExtraInfo(t *testing.T) {
 	e := proto.NetworkResponseReceivedExtraInfo{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestOverlayDisable(t *testing.T) {
@@ -3311,25 +3251,21 @@ func TestOverlaySetShowViewportSizeOnResize(t *testing.T) {
 func TestOverlayInspectNodeRequested(t *testing.T) {
 	e := proto.OverlayInspectNodeRequested{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestOverlayNodeHighlightRequested(t *testing.T) {
 	e := proto.OverlayNodeHighlightRequested{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestOverlayScreenshotRequested(t *testing.T) {
 	e := proto.OverlayScreenshotRequested{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestOverlayInspectModeCanceled(t *testing.T) {
 	e := proto.OverlayInspectModeCanceled{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageAddScriptToEvaluateOnLoad(t *testing.T) {
@@ -3943,139 +3879,116 @@ func TestPageSetInterceptFileChooserDialog(t *testing.T) {
 func TestPageDomContentEventFired(t *testing.T) {
 	e := proto.PageDomContentEventFired{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFileChooserOpened(t *testing.T) {
 	e := proto.PageFileChooserOpened{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameAttached(t *testing.T) {
 	e := proto.PageFrameAttached{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameClearedScheduledNavigation(t *testing.T) {
 	e := proto.PageFrameClearedScheduledNavigation{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameDetached(t *testing.T) {
 	e := proto.PageFrameDetached{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameNavigated(t *testing.T) {
 	e := proto.PageFrameNavigated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameResized(t *testing.T) {
 	e := proto.PageFrameResized{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameRequestedNavigation(t *testing.T) {
 	e := proto.PageFrameRequestedNavigation{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameScheduledNavigation(t *testing.T) {
 	e := proto.PageFrameScheduledNavigation{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameStartedLoading(t *testing.T) {
 	e := proto.PageFrameStartedLoading{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageFrameStoppedLoading(t *testing.T) {
 	e := proto.PageFrameStoppedLoading{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageDownloadWillBegin(t *testing.T) {
 	e := proto.PageDownloadWillBegin{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageInterstitialHidden(t *testing.T) {
 	e := proto.PageInterstitialHidden{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageInterstitialShown(t *testing.T) {
 	e := proto.PageInterstitialShown{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageJavascriptDialogClosed(t *testing.T) {
 	e := proto.PageJavascriptDialogClosed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageJavascriptDialogOpening(t *testing.T) {
 	e := proto.PageJavascriptDialogOpening{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageLifecycleEvent(t *testing.T) {
 	e := proto.PageLifecycleEvent{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageLoadEventFired(t *testing.T) {
 	e := proto.PageLoadEventFired{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageNavigatedWithinDocument(t *testing.T) {
 	e := proto.PageNavigatedWithinDocument{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageScreencastFrame(t *testing.T) {
 	e := proto.PageScreencastFrame{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageScreencastVisibilityChanged(t *testing.T) {
 	e := proto.PageScreencastVisibilityChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageWindowOpen(t *testing.T) {
 	e := proto.PageWindowOpen{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPageCompilationCacheProduced(t *testing.T) {
 	e := proto.PageCompilationCacheProduced{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestPerformanceDisable(t *testing.T) {
@@ -4125,7 +4038,6 @@ func TestPerformanceGetMetrics(t *testing.T) {
 func TestPerformanceMetrics(t *testing.T) {
 	e := proto.PerformanceMetrics{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestSecurityDisable(t *testing.T) {
@@ -4181,19 +4093,16 @@ func TestSecuritySetOverrideCertificateErrors(t *testing.T) {
 func TestSecurityCertificateError(t *testing.T) {
 	e := proto.SecurityCertificateError{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestSecurityVisibleSecurityStateChanged(t *testing.T) {
 	e := proto.SecurityVisibleSecurityStateChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestSecuritySecurityStateChanged(t *testing.T) {
 	e := proto.SecuritySecurityStateChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestServiceWorkerDeliverPushMessage(t *testing.T) {
@@ -4329,19 +4238,16 @@ func TestServiceWorkerUpdateRegistration(t *testing.T) {
 func TestServiceWorkerWorkerErrorReported(t *testing.T) {
 	e := proto.ServiceWorkerWorkerErrorReported{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestServiceWorkerWorkerRegistrationUpdated(t *testing.T) {
 	e := proto.ServiceWorkerWorkerRegistrationUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestServiceWorkerWorkerVersionUpdated(t *testing.T) {
 	e := proto.ServiceWorkerWorkerVersionUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestStorageClearDataForOrigin(t *testing.T) {
@@ -4445,25 +4351,21 @@ func TestStorageUntrackIndexedDBForOrigin(t *testing.T) {
 func TestStorageCacheStorageContentUpdated(t *testing.T) {
 	e := proto.StorageCacheStorageContentUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestStorageCacheStorageListUpdated(t *testing.T) {
 	e := proto.StorageCacheStorageListUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestStorageIndexedDBContentUpdated(t *testing.T) {
 	e := proto.StorageIndexedDBContentUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestStorageIndexedDBListUpdated(t *testing.T) {
 	e := proto.StorageIndexedDBListUpdated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestSystemInfoGetInfo(t *testing.T) {
@@ -4689,43 +4591,36 @@ func TestTargetSetRemoteLocations(t *testing.T) {
 func TestTargetAttachedToTarget(t *testing.T) {
 	e := proto.TargetAttachedToTarget{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetDetachedFromTarget(t *testing.T) {
 	e := proto.TargetDetachedFromTarget{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetReceivedMessageFromTarget(t *testing.T) {
 	e := proto.TargetReceivedMessageFromTarget{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetTargetCreated(t *testing.T) {
 	e := proto.TargetTargetCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetTargetDestroyed(t *testing.T) {
 	e := proto.TargetTargetDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetTargetCrashed(t *testing.T) {
 	e := proto.TargetTargetCrashed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTargetTargetInfoChanged(t *testing.T) {
 	e := proto.TargetTargetInfoChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTetheringBind(t *testing.T) {
@@ -4751,7 +4646,6 @@ func TestTetheringUnbind(t *testing.T) {
 func TestTetheringAccepted(t *testing.T) {
 	e := proto.TetheringAccepted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTracingEnd(t *testing.T) {
@@ -4815,19 +4709,16 @@ func TestTracingStart(t *testing.T) {
 func TestTracingBufferUsage(t *testing.T) {
 	e := proto.TracingBufferUsage{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTracingDataCollected(t *testing.T) {
 	e := proto.TracingDataCollected{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestTracingTracingComplete(t *testing.T) {
 	e := proto.TracingTracingComplete{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestFetchDisable(t *testing.T) {
@@ -4921,13 +4812,11 @@ func TestFetchTakeResponseBodyAsStream(t *testing.T) {
 func TestFetchRequestPaused(t *testing.T) {
 	e := proto.FetchRequestPaused{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestFetchAuthRequired(t *testing.T) {
 	e := proto.FetchAuthRequired{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioEnable(t *testing.T) {
@@ -4967,79 +4856,66 @@ func TestWebAudioGetRealtimeData(t *testing.T) {
 func TestWebAudioContextCreated(t *testing.T) {
 	e := proto.WebAudioContextCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioContextWillBeDestroyed(t *testing.T) {
 	e := proto.WebAudioContextWillBeDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioContextChanged(t *testing.T) {
 	e := proto.WebAudioContextChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioListenerCreated(t *testing.T) {
 	e := proto.WebAudioAudioListenerCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioListenerWillBeDestroyed(t *testing.T) {
 	e := proto.WebAudioAudioListenerWillBeDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioNodeCreated(t *testing.T) {
 	e := proto.WebAudioAudioNodeCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioNodeWillBeDestroyed(t *testing.T) {
 	e := proto.WebAudioAudioNodeWillBeDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioParamCreated(t *testing.T) {
 	e := proto.WebAudioAudioParamCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioAudioParamWillBeDestroyed(t *testing.T) {
 	e := proto.WebAudioAudioParamWillBeDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioNodesConnected(t *testing.T) {
 	e := proto.WebAudioNodesConnected{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioNodesDisconnected(t *testing.T) {
 	e := proto.WebAudioNodesDisconnected{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioNodeParamConnected(t *testing.T) {
 	e := proto.WebAudioNodeParamConnected{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAudioNodeParamDisconnected(t *testing.T) {
 	e := proto.WebAudioNodeParamDisconnected{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestWebAuthnEnable(t *testing.T) {
@@ -5177,19 +5053,16 @@ func TestMediaDisable(t *testing.T) {
 func TestMediaPlayerPropertiesChanged(t *testing.T) {
 	e := proto.MediaPlayerPropertiesChanged{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestMediaPlayerEventsAdded(t *testing.T) {
 	e := proto.MediaPlayerEventsAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestMediaPlayersCreated(t *testing.T) {
 	e := proto.MediaPlayersCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestConsoleClearMessages(t *testing.T) {
@@ -5225,7 +5098,6 @@ func TestConsoleEnable(t *testing.T) {
 func TestConsoleMessageAdded(t *testing.T) {
 	e := proto.ConsoleMessageAdded{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDebuggerContinueToLocation(t *testing.T) {
@@ -5583,31 +5455,26 @@ func TestDebuggerStepOver(t *testing.T) {
 func TestDebuggerBreakpointResolved(t *testing.T) {
 	e := proto.DebuggerBreakpointResolved{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDebuggerPaused(t *testing.T) {
 	e := proto.DebuggerPaused{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDebuggerResumed(t *testing.T) {
 	e := proto.DebuggerResumed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDebuggerScriptFailedToParse(t *testing.T) {
 	e := proto.DebuggerScriptFailedToParse{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestDebuggerScriptParsed(t *testing.T) {
 	e := proto.DebuggerScriptParsed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeapProfilerAddInspectedHeapObject(t *testing.T) {
@@ -5749,31 +5616,26 @@ func TestHeapProfilerTakeHeapSnapshot(t *testing.T) {
 func TestHeapProfilerAddHeapSnapshotChunk(t *testing.T) {
 	e := proto.HeapProfilerAddHeapSnapshotChunk{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeapProfilerHeapStatsUpdate(t *testing.T) {
 	e := proto.HeapProfilerHeapStatsUpdate{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeapProfilerLastSeenObjectID(t *testing.T) {
 	e := proto.HeapProfilerLastSeenObjectID{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeapProfilerReportHeapSnapshotProgress(t *testing.T) {
 	e := proto.HeapProfilerReportHeapSnapshotProgress{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestHeapProfilerResetProfiles(t *testing.T) {
 	e := proto.HeapProfilerResetProfiles{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestProfilerDisable(t *testing.T) {
@@ -5953,19 +5815,16 @@ func TestProfilerGetRuntimeCallStats(t *testing.T) {
 func TestProfilerConsoleProfileFinished(t *testing.T) {
 	e := proto.ProfilerConsoleProfileFinished{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestProfilerConsoleProfileStarted(t *testing.T) {
 	e := proto.ProfilerConsoleProfileStarted{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestProfilerPreciseCoverageDeltaUpdate(t *testing.T) {
 	e := proto.ProfilerPreciseCoverageDeltaUpdate{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeAwaitPromise(t *testing.T) {
@@ -6231,49 +6090,41 @@ func TestRuntimeRemoveBinding(t *testing.T) {
 func TestRuntimeBindingCalled(t *testing.T) {
 	e := proto.RuntimeBindingCalled{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeConsoleAPICalled(t *testing.T) {
 	e := proto.RuntimeConsoleAPICalled{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeExceptionRevoked(t *testing.T) {
 	e := proto.RuntimeExceptionRevoked{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeExceptionThrown(t *testing.T) {
 	e := proto.RuntimeExceptionThrown{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeExecutionContextCreated(t *testing.T) {
 	e := proto.RuntimeExecutionContextCreated{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeExecutionContextDestroyed(t *testing.T) {
 	e := proto.RuntimeExecutionContextDestroyed{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeExecutionContextsCleared(t *testing.T) {
 	e := proto.RuntimeExecutionContextsCleared{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestRuntimeInspectRequested(t *testing.T) {
 	e := proto.RuntimeInspectRequested{}
 	e.MethodName()
-	e.Load([]byte("null"))
 }
 
 func TestSchemaGetDomains(t *testing.T) {

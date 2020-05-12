@@ -227,7 +227,7 @@ func (s *S) TestPageWaitIdle() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait := s.page.WaitEvent(proto.PageFrameNavigated{})
+	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
 }
@@ -381,6 +381,32 @@ func (s *S) TestFonts() {
 	p := s.page.Navigate(srcFile("fixtures/fonts.html")).WaitLoad()
 
 	kit.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
+}
+
+func (s *S) TestNavigateErr() {
+	// dns error
+	s.Panics(func() {
+		s.page.Navigate("http://" + kit.RandString(8))
+	})
+
+	url, engine, close := serve()
+	defer close()
+
+	engine.GET("/404", func(ctx kit.GinContext) {
+		ctx.Writer.WriteHeader(404)
+	})
+	engine.GET("/500", func(ctx kit.GinContext) {
+		ctx.Writer.WriteHeader(500)
+	})
+
+	// proto.FetchEnable{}.Call(s.page)
+
+	// e := proto.FetchRequestPaused{}
+	// s.page.WaitEvent(e)
+
+	// will not panic
+	s.page.Navigate(url + "/404")
+	s.page.Navigate(url + "/500")
 }
 
 func (s *S) TestPageErrors() {

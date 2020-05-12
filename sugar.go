@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -47,13 +46,9 @@ func (b *Browser) Pages() Pages {
 }
 
 // WaitEvent resolves the wait function when the filter returns true
-func (b *Browser) WaitEvent(name proto.Event) (wait func() *cdp.Event) {
-	w := b.WaitEventE(Method(name))
-	return func() *cdp.Event {
-		e, err := w()
-		kit.E(err)
-		return e
-	}
+func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
+	w := b.WaitEventE(NewEventFilter(e))
+	return func() { kit.E(<-w) }
 }
 
 // Cookies returns the page cookies. By default it will return the cookies for current page.
@@ -235,9 +230,9 @@ func (p *Page) WaitLoad() *Page {
 }
 
 // WaitEvent returns a wait function that waits for the next event to happen.
-func (p *Page) WaitEvent(name proto.Event) (wait func()) {
-	w := p.WaitEventE(Method(name))
-	return func() { kit.E(w()) }
+func (p *Page) WaitEvent(e proto.Event) (wait func()) {
+	w := p.WaitEventE(NewEventFilter(e))
+	return func() { kit.E(<-w) }
 }
 
 // AddScriptTag to page. If url is empty, content will be used.

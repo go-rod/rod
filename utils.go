@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"regexp"
@@ -35,10 +36,14 @@ func CancelPanic(err error) {
 	}
 }
 
-// Method creates a method filter
-func Method(event proto.Event) EventFilter {
+// NewEventFilter creates a event filter, when matches it will load data into the event object
+func NewEventFilter(event proto.Event) EventFilter {
 	return func(e *cdp.Event) bool {
-		return event.MethodName() == e.Method
+		if event.MethodName() == e.Method {
+			kit.E(json.Unmarshal(e.Params, event))
+			return true
+		}
+		return false
 	}
 }
 
