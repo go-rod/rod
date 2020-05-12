@@ -188,6 +188,14 @@ func Example_direct_cdp() {
 
 	fmt.Println(cookie[:9])
 
+	// Or even more low-level way to use raw json to send request to chrome.
+	ctx, client, sessionID := page.CallContext()
+	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", map[string]string{
+		"name":  "rod",
+		"value": "test",
+		"url":   "https://github.com",
+	})
+
 	// Output:
 	// true
 	// rod=test;
