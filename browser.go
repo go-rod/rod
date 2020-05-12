@@ -211,6 +211,53 @@ func (b *Browser) Event() *kit.Observable {
 	return b.event
 }
 
+// HandleAuthE for the next basic HTTP authentication.
+// It will prevent the popup that requires user to input user name and password.
+// Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
+func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
+	err := proto.FetchEnable{
+		HandleAuthRequests: true,
+	}.Call(b)
+	if err != nil {
+		return nil, err
+	}
+
+	auth := &proto.FetchAuthRequired{}
+	paused := &proto.FetchRequestPaused{}
+	waitPaused := b.WaitEventE(NewEventFilter(paused))
+	waitAuth := b.WaitEventE(NewEventFilter(auth))
+
+	return func() error {
+		defer func() { kit.E(proto.FetchDisable{}.Call(b)) }()
+
+		err = <-waitPaused
+		if err != nil {
+			return err
+		}
+
+		err = proto.FetchContinueRequest{
+			RequestID: paused.RequestID,
+		}.Call(b)
+		if err != nil {
+			return err
+		}
+
+		err := <-waitAuth
+		if err != nil {
+			return err
+		}
+
+		return proto.FetchContinueWithAuth{
+			RequestID: auth.RequestID,
+			AuthChallengeResponse: &proto.FetchAuthChallengeResponse{
+				Response: proto.FetchAuthChallengeResponseResponseProvideCredentials,
+				Username: username,
+				Password: password,
+			},
+		}.Call(b)
+	}, nil
+}
+
 // CallContext parameters for proto
 func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 	return b.ctx, b.client, ""

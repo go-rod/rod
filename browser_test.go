@@ -50,6 +50,28 @@ func (s *S) TestBrowserCall() {
 	s.Regexp("HeadlessChrome", v.Product)
 }
 
+func (s *S) TestBrowserHandleAuth() {
+	url, engine, close := serve()
+	defer close()
+
+	// mock the server
+	engine.NoRoute(func(ctx kit.GinContext) {
+		u, p, ok := ctx.Request.BasicAuth()
+		if !ok {
+			ctx.Header("WWW-Authenticate", `Basic realm="web"`)
+			ctx.Writer.WriteHeader(401)
+			return
+		}
+
+		s.Equal("a", u)
+		s.Equal("b", p)
+	})
+
+	s.browser.HandleAuth("a", "b")
+
+	s.browser.Page(url).Close()
+}
+
 func (s *S) TestMonitor() {
 	b := rod.New().Connect()
 	defer b.Close()

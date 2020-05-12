@@ -51,6 +51,15 @@ func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
 	return func() { kit.E(<-w) }
 }
 
+// HandleAuth for the next basic HTTP authentication.
+// It will prevent the popup that requires user to input user name and password.
+// Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
+func (b *Browser) HandleAuth(username, password string) {
+	wait, err := b.HandleAuthE(username, password)
+	kit.E(err)
+	go func() { kit.E(wait()) }()
+}
+
 // Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
 func (p *Page) Cookies(urls ...string) []*proto.NetworkCookie {
