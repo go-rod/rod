@@ -33,7 +33,7 @@ func (s *S) TestIncognito() {
 	page := b.Page(file)
 	page.Eval(`k => localStorage[k] = 1`, k)
 
-	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k))
+	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k).Value())
 	s.EqualValues(1, page.Eval(`k => localStorage[k]`, k).Int())
 }
 

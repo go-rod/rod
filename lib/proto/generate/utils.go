@@ -23,8 +23,8 @@ func mapType(n string) string {
 		"integer": "int64",
 		"string":  "string",
 		"binary":  "[]byte",
-		"object":  "map[string]*JSON",
-		"any":     "*JSON",
+		"object":  "map[string]JSON",
+		"any":     "JSON",
 	}[n]
 }
 

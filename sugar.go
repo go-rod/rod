@@ -254,7 +254,7 @@ func (p *Page) AddStyleTag(url string) *Page {
 
 // Eval js on the page. The first param must be a js function definition.
 // For example page.Eval(`n => n + 1`, 1) will return 2
-func (p *Page) Eval(js string, params ...interface{}) *proto.JSON {
+func (p *Page) Eval(js string, params ...interface{}) proto.JSON {
 	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
 	return res.Value
@@ -534,7 +534,7 @@ func (el *Element) Release() {
 
 // Eval evaluates js function on the element, the first param must be a js function definition
 // For example: el.Eval(`name => this.getAttribute(name)`, "value")
-func (el *Element) Eval(js string, params ...interface{}) *proto.JSON {
+func (el *Element) Eval(js string, params ...interface{}) proto.JSON {
 	res, err := el.EvalE(true, js, params)
 	kit.E(err)
 	return res.Value

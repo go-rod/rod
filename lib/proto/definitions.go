@@ -179,7 +179,7 @@ type AccessibilityAXValue struct {
 	Type AccessibilityAXValueType `json:"type"`
 
 	// Value (optional) The computed value of this property.
-	Value *JSON `json:"value,omitempty"`
+	Value JSON `json:"value,omitempty"`
 
 	// RelatedNodes (optional) One or more related nodes, if applicable.
 	RelatedNodes []*AccessibilityAXRelatedNode `json:"relatedNodes,omitempty"`
@@ -3440,10 +3440,10 @@ type DOMShapeOutsideInfo struct {
 	Bounds DOMQuad `json:"bounds"`
 
 	// Shape Shape coordinate details
-	Shape []*JSON `json:"shape"`
+	Shape []JSON `json:"shape"`
 
 	// MarginShape Margin shape bounds
-	MarginShape []*JSON `json:"marginShape"`
+	MarginShape []JSON `json:"marginShape"`
 }
 
 // DOMRect Rectangle.
@@ -5893,7 +5893,7 @@ type DatabaseExecuteSQLResult struct {
 	ColumnNames []string `json:"columnNames,omitempty"`
 
 	// Values (optional) ...
-	Values []*JSON `json:"values,omitempty"`
+	Values []JSON `json:"values,omitempty"`
 
 	// SQLError (optional) ...
 	SQLError *DatabaseError `json:"sqlError,omitempty"`
@@ -7924,7 +7924,7 @@ func (m LayerTreeSnapshotCommandLog) Call(caller Caller) (*LayerTreeSnapshotComm
 type LayerTreeSnapshotCommandLogResult struct {
 
 	// CommandLog The array of canvas function calls.
-	CommandLog []map[string]*JSON `json:"commandLog"`
+	CommandLog []map[string]JSON `json:"commandLog"`
 }
 
 // LayerTreeLayerPainted ...
@@ -8543,7 +8543,7 @@ type NetworkTimeSinceEpoch float64
 type NetworkMonotonicTime float64
 
 // NetworkHeaders Request / response headers as keys / values of JSON object.
-type NetworkHeaders map[string]*JSON
+type NetworkHeaders map[string]JSON
 
 // NetworkConnectionType The underlying connection technology that the browser is supposedly using.
 type NetworkConnectionType string
@@ -10744,7 +10744,7 @@ func (m OverlayGetHighlightObjectForTest) Call(caller Caller) (*OverlayGetHighli
 type OverlayGetHighlightObjectForTestResult struct {
 
 	// Highlight Highlight data for the node.
-	Highlight map[string]*JSON `json:"highlight"`
+	Highlight map[string]JSON `json:"highlight"`
 }
 
 // OverlayHideHighlight Hides any highlight.
@@ -14450,10 +14450,10 @@ type SystemInfoGPUInfo struct {
 	Devices []*SystemInfoGPUDevice `json:"devices"`
 
 	// AuxAttributes (optional) An optional dictionary of additional GPU related attributes.
-	AuxAttributes map[string]*JSON `json:"auxAttributes,omitempty"`
+	AuxAttributes map[string]JSON `json:"auxAttributes,omitempty"`
 
 	// FeatureStatus (optional) An optional dictionary of graphics features and their status.
-	FeatureStatus map[string]*JSON `json:"featureStatus,omitempty"`
+	FeatureStatus map[string]JSON `json:"featureStatus,omitempty"`
 
 	// DriverBugWorkarounds An optional array of GPU driver bug workarounds.
 	DriverBugWorkarounds []string `json:"driverBugWorkarounds"`
@@ -15204,7 +15204,7 @@ func (evt TetheringAccepted) Load(b []byte) *TetheringAccepted {
 }
 
 // TracingMemoryDumpConfig Configuration for memory dump. Used only when "memory-infra" category is enabled.
-type TracingMemoryDumpConfig map[string]*JSON
+type TracingMemoryDumpConfig map[string]JSON
 
 // TracingTraceConfigRecordMode enum
 type TracingTraceConfigRecordMode string
@@ -15438,7 +15438,7 @@ func (evt TracingBufferUsage) Load(b []byte) *TracingBufferUsage {
 type TracingDataCollected struct {
 
 	// Value ...
-	Value []map[string]*JSON `json:"value"`
+	Value []map[string]JSON `json:"value"`
 }
 
 // MethodName interface
@@ -17971,7 +17971,7 @@ type DebuggerPaused struct {
 	Reason DebuggerPausedReason `json:"reason"`
 
 	// Data (optional) Object containing break-specific auxiliary properties.
-	Data map[string]*JSON `json:"data,omitempty"`
+	Data map[string]JSON `json:"data,omitempty"`
 
 	// HitBreakpoints (optional) Hit breakpoints IDs
 	HitBreakpoints []string `json:"hitBreakpoints,omitempty"`
@@ -18040,7 +18040,7 @@ type DebuggerScriptFailedToParse struct {
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
-	ExecutionContextAuxData map[string]*JSON `json:"executionContextAuxData,omitempty"`
+	ExecutionContextAuxData map[string]JSON `json:"executionContextAuxData,omitempty"`
 
 	// SourceMapURL (optional) URL of source map associated with script (if any).
 	SourceMapURL string `json:"sourceMapURL,omitempty"`
@@ -18098,7 +18098,7 @@ type DebuggerScriptParsed struct {
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
-	ExecutionContextAuxData map[string]*JSON `json:"executionContextAuxData,omitempty"`
+	ExecutionContextAuxData map[string]JSON `json:"executionContextAuxData,omitempty"`
 
 	// IsLiveEdit (experimental) (optional) True, if this script is generated as a result of the live edit operation.
 	IsLiveEdit bool `json:"isLiveEdit,omitempty"`
@@ -19112,7 +19112,7 @@ type RuntimeRemoteObject struct {
 	ClassName string `json:"className,omitempty"`
 
 	// Value (optional) Remote object value in case of primitive values or JSON values (if it was requested).
-	Value *JSON `json:"value,omitempty"`
+	Value JSON `json:"value,omitempty"`
 
 	// UnserializableValue (optional) Primitive value which can not be JSON-stringified does not have `value`, but gets this
 	// property.
@@ -19409,7 +19409,7 @@ type RuntimePrivatePropertyDescriptor struct {
 type RuntimeCallArgument struct {
 
 	// Value (optional) Primitive value or serializable javascript object.
-	Value *JSON `json:"value,omitempty"`
+	Value JSON `json:"value,omitempty"`
 
 	// UnserializableValue (optional) Primitive value which can not be JSON-stringified.
 	UnserializableValue RuntimeUnserializableValue `json:"unserializableValue,omitempty"`
@@ -19435,7 +19435,7 @@ type RuntimeExecutionContextDescription struct {
 	Name string `json:"name"`
 
 	// AuxData (optional) Embedder-specific auxiliary data.
-	AuxData map[string]*JSON `json:"auxData,omitempty"`
+	AuxData map[string]JSON `json:"auxData,omitempty"`
 }
 
 // RuntimeExceptionDetails Detailed information about exception (or error) that was thrown during script compilation or
@@ -20379,7 +20379,7 @@ type RuntimeInspectRequested struct {
 	Object *RuntimeRemoteObject `json:"object"`
 
 	// Hints ...
-	Hints map[string]*JSON `json:"hints"`
+	Hints map[string]JSON `json:"hints"`
 }
 
 // MethodName interface

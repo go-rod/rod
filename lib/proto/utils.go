@@ -37,8 +37,8 @@ type JSON struct {
 }
 
 // NewJSON json object
-func NewJSON(val interface{}) *JSON {
-	j := &JSON{}
+func NewJSON(val interface{}) JSON {
+	j := JSON{}
 	j.Raw = kit.MustToJSON(val)
 	return j
 }
@@ -50,6 +50,6 @@ func (j *JSON) UnmarshalJSON(b []byte) error {
 }
 
 // MarshalJSON interface
-func (j *JSON) MarshalJSON() ([]byte, error) {
+func (j JSON) MarshalJSON() ([]byte, error) {
 	return []byte(j.Raw), nil
 }
