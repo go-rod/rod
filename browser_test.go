@@ -128,6 +128,57 @@ func (s *S) TestObjectLeak() {
 	})
 }
 
+func (s *S) TestBlockingNavigation() {
+	/*
+		Navigate can take forever if a page doesn't response.
+		If one page is blocked, other pages should still work.
+	*/
+
+	url, engine, close := serve()
+	defer close()
+	engine.GET("/a", func(ctx kit.GinContext) {
+		kit.Pause()
+	})
+	engine.GET("/b", ginHTML(`<html>ok</html>`))
+
+	blocked := s.browser.Page("")
+	defer blocked.Close()
+
+	list := []int{}
+
+	go func() {
+		blocked.Navigate(url + "/a")
+		list = append(list, 2)
+	}()
+
+	kit.Sleep(0.3)
+
+	p := s.browser.Page(url + "/b")
+	defer p.Close()
+
+	list = append(list, 1)
+
+	s.Equal([]int{1}, list)
+}
+
+func (s *S) TestResolveBlocking() {
+	url, engine, close := serve()
+	defer close()
+	engine.NoRoute(func(ctx kit.GinContext) {
+		kit.Pause()
+	})
+
+	p := s.browser.Page("")
+	defer p.Close()
+
+	go func() {
+		kit.Sleep(0.1)
+		p.StopLoading()
+	}()
+
+	p.Navigate(url)
+}
+
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {

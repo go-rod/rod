@@ -106,7 +106,11 @@ func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 
 // NavigateE doc is the same as the method Navigate
 func (p *Page) NavigateE(url string) error {
-	_, err := proto.PageNavigate{URL: url}.Call(p)
+	err := p.StopLoadingE()
+	if err != nil {
+		return err
+	}
+	_, err = proto.PageNavigate{URL: url}.Call(p)
 	return err
 }
 
@@ -150,10 +154,18 @@ func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error 
 	return err
 }
 
+// StopLoadingE forces the page stop all navigations and pending resource fetches.
+func (p *Page) StopLoadingE() error {
+	return proto.PageStopLoading{}.Call(p)
+}
+
 // CloseE page
 func (p *Page) CloseE() error {
-	err := proto.PageClose{}.Call(p)
-	return err
+	err := p.StopLoadingE()
+	if err != nil {
+		return err
+	}
+	return proto.PageClose{}.Call(p)
 }
 
 // HandleDialogE doc is the same as the method HandleDialog

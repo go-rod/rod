@@ -152,6 +152,12 @@ func (p *Page) Viewport(width, height int64, deviceScaleFactor float64, mobile b
 	return p
 }
 
+// StopLoading forces the page stop all navigations and pending resource fetches.
+func (p *Page) StopLoading() *Page {
+	kit.E(p.StopLoadingE())
+	return p
+}
+
 // Close page
 func (p *Page) Close() {
 	kit.E(p.CloseE())
