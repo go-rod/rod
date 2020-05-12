@@ -6,6 +6,7 @@ package rod
 
 import (
 	"fmt"
+	"html"
 	"strings"
 	"time"
 
@@ -104,13 +105,9 @@ func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 	return
 }
 
-func (p *Page) stripHTML(str string) string {
-	return p.Eval(p.jsFn("stripHTML"), str).String()
-}
-
 func (p *Page) traceFn(js string, params Array) func() {
 	fnName := strings.Replace(js, p.jsFnPrefix(), "rod.", 1)
-	paramsStr := p.stripHTML(kit.MustToJSON(params))
-	msg := fmt.Sprintf("retry <code>%s(%s)</code>", fnName, paramsStr[1:len(paramsStr)-1])
+	paramsStr := html.EscapeString(strings.Trim(kit.MustToJSON(params), "[]"))
+	msg := fmt.Sprintf("retry <code>%s(%s)</code>", fnName, paramsStr)
 	return p.Overlay(0, 0, 500, 0, msg)
 }
