@@ -25,7 +25,10 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 ## Examples
 
 You can find examples from [here](examples_test.go) or [here](lib/examples).
-For more details, please read the unit tests.
+
+For more detailed examples, please search the unit tests.
+Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
+You can also search the github issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [gitter room](https://gitter.im/ysmood-rod/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).
 
