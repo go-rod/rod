@@ -33,7 +33,7 @@ type Browser struct {
 	monitorServer *kit.ServerContext
 
 	client *cdp.Client
-	event  *kit.Observable // all the browser events from cdp client
+	event  *Observable // all the browser events from cdp client
 }
 
 // New creates a controller
@@ -162,7 +162,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		return nil, err
 	}
 
-	return b.page(target.TargetID)
+	return b.PageFromTargetIDE(target.TargetID)
 }
 
 // PagesE doc is the same as the method Pages
@@ -178,7 +178,7 @@ func (b *Browser) PagesE() (Pages, error) {
 			continue
 		}
 
-		page, err := b.page(target.TargetID)
+		page, err := b.PageFromTargetIDE(target.TargetID)
 		if err != nil {
 			return nil, err
 		}
@@ -191,13 +191,12 @@ func (b *Browser) PagesE() (Pages, error) {
 // EventFilter to filter events
 type EventFilter func(*cdp.Event) bool
 
-// WaitEventE returns wait and cancel methods
+// WaitEventE returns a channel that resolves the next event and close
 func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
 	wait := make(chan error)
 	go func() {
-		_, err := b.Event().Until(b.ctx, func(e kit.Event) bool {
-			event := e.(*cdp.Event)
-			return filter(event)
+		_, err := b.event.Until(b.ctx, func(e *cdp.Event) bool {
+			return filter(e)
 		})
 		wait <- err
 		close(wait)
@@ -207,7 +206,7 @@ func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
 }
 
 // Event returns the observable for browser events
-func (b *Browser) Event() *kit.Observable {
+func (b *Browser) Event() *Observable {
 	return b.event
 }
 
@@ -263,7 +262,8 @@ func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 	return b.ctx, b.client, ""
 }
 
-func (b *Browser) page(targetID proto.TargetTargetID) (*Page, error) {
+// PageFromTargetIDE creates a Page instance from a targetID
+func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error) {
 	page := &Page{
 		ctx:                 b.ctx,
 		browser:             b,
@@ -279,7 +279,7 @@ func (b *Browser) page(targetID proto.TargetTargetID) (*Page, error) {
 }
 
 func (b *Browser) initEvents() error {
-	b.event = kit.NewObservable()
+	b.event = NewObservable()
 
 	go func() {
 		for msg := range b.client.Event() {

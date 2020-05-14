@@ -45,6 +45,13 @@ func (b *Browser) Pages() Pages {
 	return list
 }
 
+// PageFromTargetID creates a Page instance from a targetID
+func (b *Browser) PageFromTargetID(targetID proto.TargetTargetID) *Page {
+	p, err := b.PageFromTargetIDE(targetID)
+	kit.E(err)
+	return p
+}
+
 // WaitEvent resolves the wait function when the filter returns true
 func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
 	w := b.WaitEventE(NewEventFilter(e))

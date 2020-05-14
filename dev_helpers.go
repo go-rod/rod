@@ -51,8 +51,7 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
 		id := proto.TargetTargetID(ctx.Param("id"))
-		p, err := b.page(id)
-		kit.E(err)
+		p := b.PageFromTargetID(id)
 
 		ctx.Header("Content-Type", "image/png;")
 		kit.E(ctx.Writer.Write(p.Screenshot()))

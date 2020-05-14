@@ -36,6 +36,15 @@ func CancelPanic(err error) {
 	}
 }
 
+// Event helps to convert a cdp.Event to proto.Event. Returns false if the convertion fails
+func Event(msg *cdp.Event, evt proto.Event) bool {
+	if msg.Method == evt.MethodName() {
+		err := json.Unmarshal(msg.Params, evt)
+		return err == nil
+	}
+	return false
+}
+
 // NewEventFilter creates a event filter, when matches it will load data into the event object
 func NewEventFilter(event proto.Event) EventFilter {
 	return func(e *cdp.Event) bool {

@@ -200,3 +200,27 @@ func Example_direct_cdp() {
 	// true
 	// rod=test;
 }
+
+// Shows how to subscribe events on the browser.
+func Example_handle_events() {
+	browser := rod.New().Connect()
+	defer browser.Close()
+
+	go func() {
+		for e := range browser.Event().Subscribe().C {
+			created := &proto.TargetTargetCreated{}
+			if rod.Event(e, created) {
+				// create a page from the page id
+				page := browser.PageFromTargetID(created.TargetInfo.TargetID)
+
+				// set a global value on each page
+				page.Eval(`() => window.hey = "ok"`)
+			}
+		}
+	}()
+
+	// create a new page and get the value of "hey"
+	fmt.Println(browser.Page("https://github.com").WaitLoad().Eval(`() => hey`).String())
+
+	// Output: ok
+}

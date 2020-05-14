@@ -309,7 +309,7 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 		if err != nil {
 			return nil, err
 		}
-		return p.browser.Context(p.ctx).page(targetInfo.TargetID)
+		return p.browser.Context(p.ctx).PageFromTargetIDE(targetInfo.TargetID)
 	}
 }
 
@@ -331,7 +331,7 @@ func (p *Page) PauseE() error {
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
-	s := p.browser.Event().Subscribe()
+	s := p.browser.event.Subscribe()
 	done := false
 
 	return func() (err error) {
@@ -343,7 +343,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 		if p.browser.trace {
 			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
 		}
-		defer p.browser.Event().Unsubscribe(s)
+		defer p.browser.event.Unsubscribe(s)
 
 		reqList := map[proto.NetworkRequestID]kit.Nil{}
 		timeout := time.NewTimer(d)
@@ -361,7 +361,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 				return p.ctx.Err()
 			case <-timeout.C:
 				return
-			case msg, ok := <-s.C:
+			case e, ok := <-s.C:
 				if !ok {
 					return
 				}
@@ -369,11 +369,9 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 				sent := &proto.NetworkRequestWillBeSent{}
 				finished := &proto.NetworkLoadingFinished{}
 				failed := &proto.NetworkLoadingFailed{}
-				received := &proto.NetworkDataReceived{}
+				received := &proto.NetworkResponseReceived{}
 
-				e := msg.(*cdp.Event)
-				switch e.Method {
-				case sent.MethodName():
+				if Event(e, sent) {
 					timeout.Stop()
 					kit.E(json.Unmarshal(e.Params, sent))
 					url := sent.Request.URL
@@ -381,13 +379,13 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 					if matchWithFilter(url, includes, excludes) {
 						reqList[id] = kit.Nil{}
 					}
-				case finished.MethodName():
+				} else if Event(e, finished) {
 					kit.E(json.Unmarshal(e.Params, finished))
 					reset(finished.RequestID)
-				case failed.MethodName():
+				} else if Event(e, failed) {
 					kit.E(json.Unmarshal(e.Params, failed))
 					reset(failed.RequestID)
-				case received.MethodName():
+				} else if Event(e, received) {
 					kit.E(json.Unmarshal(e.Params, received))
 					reset(received.RequestID)
 				}
