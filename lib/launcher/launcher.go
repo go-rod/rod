@@ -113,10 +113,14 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 // Get flag's first value
 func (l *Launcher) Get(name string) (string, bool) {
 	list, has := l.GetFlags(name)
-	if !has || len(list) == 0 {
-		return "", false
+
+	if has {
+		if len(list) == 0 {
+			return "", true
+		}
+		return list[0], true
 	}
-	return list[0], true
+	return "", true
 }
 
 // GetFlags from settings
