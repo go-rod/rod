@@ -51,6 +51,8 @@ func Example_reuse_sessions() {
 	// Output: done
 }
 
+// Rod provides a lot of debug options, you can use set methods to enable them or use environment variables
+// list at "lib/defaults".
 func Example_debug_mode() {
 	url := launcher.New().
 		Headless(false). // run chrome on foreground, you can also use env "rod=show"
@@ -90,6 +92,9 @@ func Example_debug_mode() {
 	// Output: 热干面
 }
 
+// If a button is moving too fast, you cannot click it as a human, to perfectly simulate human inputs
+// the click trigger by Rod are based on mouse point location, so usually you need wait a button is stable before
+// you can click it.
 func Example_wait_for_animation() {
 	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
@@ -109,21 +114,25 @@ func Example_wait_for_animation() {
 	// Output: done
 }
 
+// Some page interaction finishes after some network requests, WaitRequestIdle is designed for it.
 func Example_wait_for_request() {
 	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
 
-	page := browser.Page("https://www.bing.com/")
+	page := browser.Page("https://duckduckgo.com/")
 
+	// the page will send a request to fetch the suggestions
 	wait := page.WaitRequestIdle()
-	page.Element("#sb_form_q").Click().Input("test")
+	page.Element("#search_form_input_homepage").Click().Input("test")
 	wait()
 
-	fmt.Println(page.Has("#sw_as li"))
+	// we must get several suggestion items
+	fmt.Println(len(page.Elements(".search__autocomplete .acp")) > 0)
 
 	// Output: true
 }
 
+// Useful when you want to customize the element query retry logic
 func Example_customize_retry_strategy() {
 	browser := rod.New().Connect().Timeout(time.Minute)
 	defer browser.Close()
@@ -142,6 +151,7 @@ func Example_customize_retry_strategy() {
 	// Output: q
 }
 
+// To enable or disable some special chrome launch flags
 func Example_customize_chrome_launch() {
 	// set custom chrome options
 	url := launcher.New().
@@ -224,7 +234,7 @@ func Example_handle_events() {
 	// create a new page and get the value of "hey"
 	fmt.Println(page.WaitLoad().Eval(`() => hey`).String())
 
-	// Output:
+	// Unordered output:
 	// loaded
 	// ok
 }
