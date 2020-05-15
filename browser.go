@@ -272,7 +272,6 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	}
 
 	page.Mouse = &Mouse{page: page}
-
 	page.Keyboard = &Keyboard{page: page}
 
 	return page, page.initSession()
@@ -283,6 +282,8 @@ func (b *Browser) initEvents() error {
 
 	go func() {
 		for msg := range b.client.Event() {
+			// we must use goroutine here because subscriber can trigger another event
+			// to cause deadlock
 			go b.event.Publish(msg)
 		}
 		b.event.UnsubscribeAll()

@@ -39,11 +39,18 @@ type Page struct {
 	element             *Element                    // iframe only
 	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
+
+	event *Observable
 }
 
 // IsIframe tells if it's iframe
 func (p *Page) IsIframe() bool {
 	return p.element != nil
+}
+
+// Event returns the observable for page events
+func (p *Page) Event() *Observable {
+	return p.event
 }
 
 // Root page of the iframe, if it's not a iframe returns itself
@@ -331,7 +338,7 @@ func (p *Page) PauseE() error {
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
-	s := p.browser.event.Subscribe()
+	s := p.event.Subscribe()
 	done := false
 
 	return func() (err error) {
@@ -512,12 +519,7 @@ func (p *Page) initSession() error {
 	}
 	p.SessionID = obj.SessionID
 
-	err = proto.PageEnable{}.Call(p)
-	if err != nil {
-		return err
-	}
-
-	err = proto.NetworkEnable{}.Call(p)
+	err = p.initEvents()
 	if err != nil {
 		return err
 	}
@@ -532,6 +534,32 @@ func (p *Page) initSession() error {
 		if frameID != "" {
 			p.FrameID = frameID
 		}
+	}
+
+	return nil
+}
+
+func (p *Page) initEvents() error {
+	p.event = NewObservable()
+
+	go func() {
+		for msg := range p.browser.event.Subscribe().C {
+			if msg.SessionID == string(p.SessionID) {
+				// we must use goroutine here because subscriber can trigger another event
+				// to cause deadlock
+				go p.event.Publish(msg)
+			}
+		}
+	}()
+
+	err := proto.PageEnable{}.Call(p)
+	if err != nil {
+		return err
+	}
+
+	err = proto.NetworkEnable{}.Call(p)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -5,6 +5,7 @@ package rod
 import (
 	"net/http"
 	"path/filepath"
+	"reflect"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -22,6 +23,19 @@ func (b *Browser) Connect() *Browser {
 // Close the browser and release related resources
 func (b *Browser) Close() {
 	kit.E(b.CloseE())
+}
+
+// EachEvent of the specified event type
+func (b *Browser) EachEvent(fn interface{}) {
+	fnType := reflect.TypeOf(fn)
+	fnVal := reflect.ValueOf(fn)
+	eventType := fnType.In(0).Elem()
+	for e := range b.Event().Subscribe().C {
+		event := reflect.New(eventType)
+		if Event(e, event.Interface().(proto.Event)) {
+			fnVal.Call([]reflect.Value{event})
+		}
+	}
 }
 
 // Incognito creates a new incognito browser
@@ -172,6 +186,19 @@ func (p *Page) StopLoading() *Page {
 // Close page
 func (p *Page) Close() {
 	kit.E(p.CloseE())
+}
+
+// EachEvent of the specified event type
+func (p *Page) EachEvent(fn interface{}) {
+	fnType := reflect.TypeOf(fn)
+	fnVal := reflect.ValueOf(fn)
+	eventType := fnType.In(0).Elem()
+	for e := range p.Event().Subscribe().C {
+		event := reflect.New(eventType)
+		if Event(e, event.Interface().(proto.Event)) {
+			fnVal.Call([]reflect.Value{event})
+		}
+	}
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
