@@ -217,6 +217,11 @@ func Example_handle_events() {
 	defer browser.Close()
 
 	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
+		// if it's not a page return
+		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {
+			return
+		}
+
 		// create a page from the page id
 		page := browser.PageFromTargetID(e.TargetInfo.TargetID)
 

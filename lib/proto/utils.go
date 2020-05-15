@@ -2,6 +2,8 @@ package proto
 
 import (
 	"context"
+	"encoding/json"
+	"time"
 
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
@@ -52,4 +54,38 @@ func (j *JSON) UnmarshalJSON(b []byte) error {
 // MarshalJSON interface
 func (j JSON) MarshalJSON() ([]byte, error) {
 	return []byte(j.Raw), nil
+}
+
+// TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
+type TimeSinceEpoch struct {
+	time.Time
+}
+
+// UnmarshalJSON interface
+func (t *TimeSinceEpoch) UnmarshalJSON(b []byte) error {
+	t.Time = (time.Unix(0, 0)).Add(time.Duration(gjson.ParseBytes(b).Float()) * time.Second)
+	return nil
+}
+
+// MarshalJSON interface
+func (t TimeSinceEpoch) MarshalJSON() ([]byte, error) {
+	d := float64(t.Time.UnixNano()) / float64(time.Second)
+	return json.Marshal(d)
+}
+
+// MonotonicTime Monotonically increasing time in seconds since an arbitrary point in the past.
+type MonotonicTime struct {
+	time.Duration
+}
+
+// UnmarshalJSON interface
+func (t *MonotonicTime) UnmarshalJSON(b []byte) error {
+	t.Duration = time.Duration(gjson.ParseBytes(b).Float()) * time.Second
+	return nil
+}
+
+// MarshalJSON interface
+func (t MonotonicTime) MarshalJSON() ([]byte, error) {
+	d := float64(t.Duration) / float64(time.Second)
+	return json.Marshal(d)
 }

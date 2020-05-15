@@ -4,6 +4,8 @@ import (
 	"strings"
 
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/ysmood/kit"
 )
 
 type objType int
@@ -66,9 +68,12 @@ type definition struct {
 	command      bool
 	returnValue  bool
 	props        []*definition
+	skip         bool
 }
 
 func parse(schema gjson.Result) []*domain {
+	optimize(&schema.Raw)
+
 	list := []*domain{}
 
 	for _, domainSchema := range schema.Get("domains").Array() {
@@ -112,6 +117,7 @@ func parseDef(domain *domain, cdpType cdpType, schema gjson.Result) []*definitio
 				experimental: schema.Get("experimental").Bool(),
 				objType:      objTypePrimitive,
 				enum:         enumList(schema),
+				skip:         schema.Get("skip").Bool(),
 			})
 		}
 	case cdpTypeCommands:
@@ -180,7 +186,25 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 		props:        props,
 		command:      isCommand,
 		returnValue:  schema.Get("returns").Exists(),
+		skip:         schema.Get("skip").Bool(),
 	})
 
 	return list
+}
+
+func optimize(json *string) {
+	var err error
+
+	set := func(path string, value interface{}) {
+		*json, err = sjson.Set(*json, path, value)
+		kit.E(err)
+	}
+
+	set("domains.32.types.2.properties.1.enum", []string{
+		"page", "background_page", "service_worker", "shared_worker", "browser", "other",
+	})
+
+	set("domains.19.types.3.skip", true)
+	set("domains.24.types.6.skip", true)
+	set("domains.24.types.5.skip", true)
 }

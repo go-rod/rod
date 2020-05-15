@@ -54,6 +54,13 @@ func typeName(domain *domain, schema gjson.Result) string {
 		typeName = mapType(typeName)
 	}
 
+	switch typeName {
+	case "NetworkTimeSinceEpoch", "InputTimeSinceEpoch":
+		typeName = "TimeSinceEpoch"
+	case "NetworkMonotonicTime":
+		typeName = "MonotonicTime"
+	}
+
 	return typeName
 }
 

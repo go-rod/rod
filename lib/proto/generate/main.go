@@ -38,6 +38,10 @@ func main() {
 
 	for _, domain := range parse(schema) {
 		for _, definition := range domain.definitions {
+			if definition.skip {
+				continue
+			}
+
 			code += definition.format()
 			testsCode += definition.formatTests()
 		}
