@@ -120,7 +120,7 @@ func (l *Launcher) Get(name string) (string, bool) {
 		}
 		return list[0], true
 	}
-	return "", true
+	return "", false
 }
 
 // GetFlags from settings
