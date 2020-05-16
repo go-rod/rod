@@ -15,7 +15,7 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - Fluent interface design to reduce verbose code
 - Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, remote monitoring headless browser
-- Automatically find or download [chrome](lib/launcher)
+- Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/ysmood/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
@@ -55,6 +55,7 @@ To let rod work with docker is very easy:
 The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
 can dynamically launch a chrome for each remote driver with customizable chrome flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
+You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
 
 ### Q: Does it support other browsers like Firefox or Edge
 
