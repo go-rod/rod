@@ -266,6 +266,9 @@ func (l *Launcher) LaunchE() (string, error) {
 		case <-l.exit:
 		case pid := <-ll.Pid():
 			l.pid = pid
+			if ll.Err() != "" {
+				return "", errors.New(ll.Err())
+			}
 		}
 	} else {
 		l.pid = cmd.Process.Pid

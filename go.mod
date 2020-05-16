@@ -9,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
-	github.com/ysmood/kit v0.22.2
-	github.com/ysmood/leakless v0.5.0
+	github.com/ysmood/kit v0.22.3
+	github.com/ysmood/leakless v0.5.1
 	github.com/ysmood/lookpath v1.1.0
 )
