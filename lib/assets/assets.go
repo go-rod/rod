@@ -280,37 +280,130 @@ var Helper = `
 var Monitor = `<html>
 <head>
     <title>Rod Monitor - Pages</title>
+    <style>
+        body {
+            margin: 0;
+            background: #2d2c2f;
+            color: white;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        a {
+            color: white;
+            padding: 1em;
+            margin: 0.5em 0;
+            font-size: 1em;
+            text-decoration: none;
+            display: block;
+            border-radius: 0.3em;
+            border: 1px solid transparent;
+            background: #212225;
+        }
+        a:visited {
+            color: #c3c3c3;
+        }
+        a:hover {
+            background: #25272d;
+            border-color: white; 
+        }
+    </style>
 </head>
 <body>
-    <h3>Page List</h3>
+    <h3>Choose a Page to Monitor</h3>
 
     {{range .list}}
-    <h4>
-        <a href='/page/{{.TargetID}}?rate=1000' title="{{.URL}}">{{.Title}}</a>
-    </h4>
+        <a href='/page/{{.TargetID}}' title="{{.URL}}">{{.Title}}</a>
     {{end}}
 </body>
 </html>`
 
 // MonitorPage for rod
 var MonitorPage = `<html>
-<head><title>Rod Monitor - {{.id}}</title></head>
-<body style="margin: 0">
+<head>
+    <title>Rod Monitor - {{.id}}</title>
+    <style>
+        body {
+            margin: 0;
+            background: #2d2c2f;
+            color: #ffffff;
+        }
+        .navbar {
+            font-family: sans-serif;
+            border-bottom: 1px solid #1413158c;
+            display: flex;
+            flex-direction: row;
+        }
+        .error {
+            color: #ff3f3f;
+            background: #3e1f1f;
+            border-bottom: 1px solid #1413158c;
+            display: none;
+            padding: 10px;
+            margin: 0;
+        }
+        input {
+            background: transparent;
+            color: white;
+            border: none;
+            border: 1px solid #4f475a;
+            border-radius: 3px;
+            padding: 5px;
+            margin: 5px;
+        }
+        .title {
+            flex: 2;
+        }
+        .url {
+            flex: 5;
+        }
+        .rate {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <input type="text" class="title" title="title of the remote page" readonly>
+        <input type="text" class="url" title="url of the remote page" readonly>
+        <input type="number" class="rate" value="0.5" min="0" step="0.1" title="refresh rate (second)">
+    </div>
+    <pre class="error"></pre>
+    <img class="screen">
 </body>
 <script>
-    let img = document.createElement('img')
+    let elImg = document.querySelector('.screen')
+    let elTitle = document.querySelector('.title')
+    let elUrl = document.querySelector('.url')
+    let elRate = document.querySelector('.rate')
+    let elErr = document.querySelector('.error')
 
-    function update() {
-        let now = new Date()
-        img.src = '/screenshot/{{.id}}?t=' + now.getTime()
+    async function update() {
+        let res = await fetch('/api/page/{{.id}}')
+        let info = await res.json()
+        elTitle.value = info.title
+        elUrl.value = info.url 
+
+        await new Promise((resolve, reject) => {
+            let now = new Date()
+            elImg.src = '/screenshot/{{.id}}?t=' + now.getTime()
+            elImg.style.maxWidth = innerWidth + 'px'
+            elImg.onload = resolve
+            elImg.onerror = () => reject('error loading screenshots')
+        })
     }
 
-    img.style.maxWidth = innerWidth + "px"
-    img.onload = () => setTimeout(update, {{.rate}})
-    img.onerror = () => alert('error loading screenshots')
+    async function mainLoop() {
+        try {
+            await update()
+            elErr.attributeStyleMap.delete("display")
+        } catch (err) {
+            elErr.style.display = "block"
+            elErr.textContent = err + ""
+        }
 
-    document.body.appendChild(img)
+        setTimeout(mainLoop, parseFloat(elRate.value) * 1000)
+    }
 
-    update()
+    mainLoop()
 </script>
 </html>`

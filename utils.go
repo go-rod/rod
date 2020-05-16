@@ -87,3 +87,8 @@ func saveScreenshot(bin []byte, toFile []string) {
 	}
 	kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
 }
+
+func ginHTML(ctx kit.GinContext, body string) {
+	ctx.Header("Content-Type", "text/html; charset=utf-8")
+	kit.E(ctx.Writer.WriteString(body))
+}

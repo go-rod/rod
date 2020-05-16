@@ -21,7 +21,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, "tmp", Dir)
 	assert.Equal(t, "http://test.com", URL)
 	assert.True(t, CDP)
-	assert.Equal(t, ":9273", Monitor)
+	assert.Equal(t, "127.0.0.1:9273", Monitor)
 
 	parse("monitor=:1234")
 	assert.Equal(t, ":1234", Monitor)

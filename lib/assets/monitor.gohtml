@@ -1,14 +1,39 @@
 <html>
 <head>
     <title>Rod Monitor - Pages</title>
+    <style>
+        body {
+            margin: 0;
+            background: #2d2c2f;
+            color: white;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        a {
+            color: white;
+            padding: 1em;
+            margin: 0.5em 0;
+            font-size: 1em;
+            text-decoration: none;
+            display: block;
+            border-radius: 0.3em;
+            border: 1px solid transparent;
+            background: #212225;
+        }
+        a:visited {
+            color: #c3c3c3;
+        }
+        a:hover {
+            background: #25272d;
+            border-color: #8d8d96; 
+        }
+    </style>
 </head>
 <body>
-    <h3>Page List</h3>
+    <h3>Choose a Page to Monitor</h3>
 
     {{range .list}}
-    <h4>
-        <a href='/page/{{.TargetID}}?rate=1000' title="{{.URL}}">{{.Title}}</a>
-    </h4>
+        <a href='/page/{{.TargetID}}' title="{{.URL}}">{{.Title}}</a>
     {{end}}
 </body>
 </html>

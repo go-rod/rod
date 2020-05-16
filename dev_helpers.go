@@ -7,6 +7,7 @@ package rod
 import (
 	"fmt"
 	"html"
+	"net/http"
 	"strings"
 	"time"
 
@@ -38,16 +39,20 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 		res, err := proto.TargetGetTargets{}.Call(b)
 		kit.E(err)
 
-		ctx.Header("Content-Type", "text/html; charset=utf-8")
-		kit.E(ctx.Writer.WriteString(kit.S(assets.Monitor, "list", res.TargetInfos)))
+		ginHTML(ctx, kit.S(assets.Monitor, "list", res.TargetInfos))
 	})
 	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
-		ctx.Header("Content-Type", "text/html; charset=utf-8")
-		kit.E(ctx.Writer.WriteString(kit.S(
+		ginHTML(ctx, kit.S(
 			assets.MonitorPage,
 			"id", ctx.Param("id"),
-			"rate", ctx.Query("rate"),
-		)))
+		))
+	})
+	srv.Engine.GET("/api/page/:id", func(ctx kit.GinContext) {
+		info, err := proto.TargetGetTargetInfo{
+			TargetID: proto.TargetTargetID(ctx.Param("id")),
+		}.Call(b)
+		kit.E(err)
+		ctx.PureJSON(http.StatusOK, info.TargetInfo)
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
 		id := proto.TargetTargetID(ctx.Param("id"))
