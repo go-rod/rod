@@ -30,7 +30,6 @@ type Page struct {
 	TargetID  proto.TargetTargetID
 	SessionID proto.TargetSessionID
 	FrameID   proto.PageFrameID
-	URL       string
 
 	// devices
 	Mouse    *Mouse

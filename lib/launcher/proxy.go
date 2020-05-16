@@ -62,7 +62,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.launch(w, r)
 }
 
-func (p *Proxy) defaults(w http.ResponseWriter, r *http.Request) {
+func (p *Proxy) defaults(w http.ResponseWriter, _ *http.Request) {
 	l := New()
 	kit.E(w.Write(l.JSON()))
 }
