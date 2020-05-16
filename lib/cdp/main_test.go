@@ -20,7 +20,7 @@ func TestBasic(t *testing.T) {
 
 	url := launcher.New().Launch()
 
-	client := cdp.New().URL(url).Context(ctx).Websocket(nil).Connect()
+	client := cdp.New(url).Context(ctx).Websocket(nil).Connect()
 
 	defer func() {
 		kit.E(client.Call(ctx, "", "Browser.close", nil))
@@ -128,7 +128,7 @@ func TestError(t *testing.T) {
 	assert.Equal(t, "{\"code\":10,\"message\":\"err\",\"data\":\"data\"}", cdpErr.Error())
 
 	assert.Panics(t, func() {
-		cdp.New().Connect()
+		cdp.New("").Connect()
 	})
 }
 
@@ -136,7 +136,7 @@ func TestCrash(t *testing.T) {
 	ctx := context.Background()
 	l := launcher.New()
 
-	client := cdp.New().URL(l.Launch()).Debug(true).Connect()
+	client := cdp.New(l.Launch()).Debug(true).Connect()
 
 	go func() {
 		for range client.Event() {

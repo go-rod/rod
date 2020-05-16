@@ -3,11 +3,11 @@ package cdp
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"sync/atomic"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/defaults"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 // Client is a chrome devtools protocol connection instance.
@@ -16,8 +16,10 @@ type Client struct {
 	ctxCancel    func()
 	ctxCancelErr error
 
-	url string
-	ws  Websocketable
+	wsURL  string
+	header http.Header
+	ws     Websocketable
+	wsConn WebsocketableConn
 
 	callbacks map[uint64]chan *response
 	chReqMsg  chan *requestMsg
@@ -54,6 +56,12 @@ type Error struct {
 // Websocketable enables you to choose the websocket lib you want to use.
 // By default cdp use github.com/gorilla/websocket
 type Websocketable interface {
+	// Connect to server
+	Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error)
+}
+
+// WebsocketableConn represents a connection session
+type WebsocketableConn interface {
 	// Send text message only
 	Send([]byte) error
 	// Read returns text message only
@@ -66,7 +74,7 @@ func (e *Error) Error() string {
 }
 
 // New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
-func New() *Client {
+func New(websocketURL string) *Client {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	cdp := &Client{
@@ -76,6 +84,7 @@ func New() *Client {
 		chReqMsg:  make(chan *requestMsg),
 		chRes:     make(chan *response),
 		chEvent:   make(chan *Event),
+		wsURL:     websocketURL,
 		debug:     defaults.CDP,
 	}
 
@@ -90,10 +99,9 @@ func (cdp *Client) Context(ctx context.Context) *Client {
 	return cdp
 }
 
-// URL set the remote control url. The url can be something like http://localhost:9222/* or ws://localhost:9222/*.
-// Only the scheme, host, port of the url will be used.
-func (cdp *Client) URL(url string) *Client {
-	cdp.url = url
+// Header set the header of the remote control websocket request
+func (cdp *Client) Header(header http.Header) *Client {
+	cdp.header = header
 	return cdp
 }
 
@@ -109,18 +117,29 @@ func (cdp *Client) Debug(enable bool) *Client {
 	return cdp
 }
 
-// Connect to chrome
-func (cdp *Client) Connect() *Client {
+// ConnectE to chrome
+func (cdp *Client) ConnectE() error {
 	if cdp.ws == nil {
-		wsURL, err := launcher.GetWebSocketDebuggerURL(cdp.ctx, cdp.url)
-		kit.E(err)
-		cdp.ws = NewDefaultWsClient(cdp.ctx, wsURL, nil)
+		cdp.ws = DefaultWsClient{}
 	}
+
+	conn, err := cdp.ws.Connect(cdp.ctx, cdp.wsURL, cdp.header)
+	if err != nil {
+		return err
+	}
+
+	cdp.wsConn = conn
 
 	go cdp.consumeMsg()
 
 	go cdp.readMsgFromChrome()
 
+	return nil
+}
+
+// Connect to chrome
+func (cdp *Client) Connect() *Client {
+	kit.E(cdp.ConnectE())
 	return cdp
 }
 
@@ -187,7 +206,7 @@ func (cdp *Client) consumeMsg() {
 	for {
 		select {
 		case msg := <-cdp.chReqMsg:
-			err := cdp.ws.Send(msg.data)
+			err := cdp.wsConn.Send(msg.data)
 			if err != nil {
 				cdp.close(err)
 				return
@@ -213,7 +232,7 @@ type response struct {
 
 func (cdp *Client) readMsgFromChrome() {
 	for {
-		data, err := cdp.ws.Read()
+		data, err := cdp.wsConn.Read()
 		if err != nil {
 			cdp.close(err)
 			return

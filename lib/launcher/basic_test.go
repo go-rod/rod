@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
@@ -67,10 +66,9 @@ func TestRemoteLaunch(t *testing.T) {
 	srv.Engine.NoRoute(gin.WrapH(proxy))
 	go func() { _ = srv.Do() }()
 
-	host := "ws://" + srv.Listener.Addr().String()
-	header := launcher.NewRemote(host).Header()
-	ws := cdp.NewDefaultWsClient(ctx, host, header)
-	kit.E(cdp.New().Websocket(ws).Connect().Call(ctx, "", "Browser.close", nil))
+	u := "ws://" + srv.Listener.Addr().String()
+	client := launcher.NewRemote(u).Client()
+	kit.E(client.Connect().Call(ctx, "", "Browser.close", nil))
 }
 
 func TestLaunchErr(t *testing.T) {

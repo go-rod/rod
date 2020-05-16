@@ -11,7 +11,7 @@ import (
 func TestCancelCall(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	cdp := New().Context(ctx)
+	cdp := New("").Context(ctx)
 	go func() {
 		<-cdp.chReqMsg
 	}()
@@ -19,20 +19,20 @@ func TestCancelCall(t *testing.T) {
 	assert.Error(t, err)
 }
 
-type wsWriteErr struct {
+type wsWriteErrConn struct {
 }
 
-func (c *wsWriteErr) Send(_ []byte) error {
+func (c *wsWriteErrConn) Send(_ []byte) error {
 	return errors.New("err")
 }
 
-func (c *wsWriteErr) Read() ([]byte, error) {
+func (c *wsWriteErrConn) Read() ([]byte, error) {
 	return nil, nil
 }
 
 func TestWriteError(t *testing.T) {
-	cdp := New()
-	cdp.ws = &wsWriteErr{}
+	cdp := New("")
+	cdp.wsConn = &wsWriteErrConn{}
 	go cdp.consumeMsg()
 	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.EqualError(t, err, "err")

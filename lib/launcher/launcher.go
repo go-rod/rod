@@ -21,6 +21,7 @@ import (
 type Launcher struct {
 	ctx    context.Context
 	bin    string
+	url    string
 	log    func(string)
 	Flags  map[string][]string `json:"flags"`
 	output chan string
@@ -300,7 +301,7 @@ func (l *Launcher) LaunchE() (string, error) {
 		return "", err
 	}
 
-	return u, nil
+	return GetWebSocketDebuggerURL(l.ctx, u)
 }
 
 // PID returns the chrome process pid
@@ -366,12 +367,7 @@ func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
 		return "", err
 	}
 
-	if parsed.Scheme == "ws" {
-		parsed.Scheme = "http"
-	}
-	if parsed.Scheme == "wss" {
-		parsed.Scheme = "https"
-	}
+	toHTTP(parsed)
 
 	parsed.Path = "/json/version"
 

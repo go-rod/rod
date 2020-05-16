@@ -84,8 +84,6 @@ func (s *S) TestMonitor() {
 }
 
 func (s *S) TestRemoteLaunch() {
-	defaults.Remote = true
-	defer func() { defaults.Remote = false }()
 
 	srv := kit.MustServer("127.0.0.1:0")
 	defer func() { _ = srv.Listener.Close() }()
@@ -93,8 +91,16 @@ func (s *S) TestRemoteLaunch() {
 	srv.Engine.NoRoute(gin.WrapH(proxy))
 	go func() { _ = srv.Do() }()
 
-	host := "ws://" + srv.Listener.Addr().String()
-	b := rod.New().ControlURL(host).Connect()
+	oldRemote := defaults.Remote
+	oldURL := defaults.URL
+	defaults.Remote = true
+	defaults.URL = "ws://" + srv.Listener.Addr().String()
+	defer func() {
+		defaults.Remote = oldRemote
+		defaults.URL = oldURL
+	}()
+
+	b := rod.New().Connect()
 	defer b.Close()
 
 	p := b.Page(srcFile("fixtures/click.html"))

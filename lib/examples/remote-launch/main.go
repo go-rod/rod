@@ -1,18 +1,19 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/ysmood/rod"
 	"github.com/ysmood/rod/lib/launcher"
 )
 
 func main() {
-	// Also, use the env var "rod=remote,url=wss://a.com" can achieve the same config.
+	// Also, use the env var "rod=remote" can achieve the same config.
+	client := launcher.NewRemote("ws://localhost:9222").Client()
 
-	lc := launcher.
-		NewRemote("ws://localhost:9222").
-		Set("disable-sync") // config chrome flags
+	browser := rod.New().Client(client).Connect()
 
-	browser := rod.New().Remote(lc).Connect()
-
-	browser.Page("https://github.com")
+	fmt.Println(
+		browser.Page("https://github.com").Eval("() => document.title"),
+	)
 }

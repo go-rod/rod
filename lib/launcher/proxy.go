@@ -1,7 +1,6 @@
 package launcher
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"net/url"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 )
 
 // HeaderName for remote launch
@@ -19,16 +19,14 @@ func NewRemote(remoteURL string) *Launcher {
 	u, err := url.Parse(remoteURL)
 	kit.E(err)
 
-	if u.Scheme == "ws" {
-		u.Scheme = "http"
-	}
-	if u.Scheme == "wss" {
-		u.Scheme = "https"
-	}
+	toHTTP(u)
 
 	l := New()
+	l.url = remoteURL
 	l.Flags = nil
+
 	kit.E(json.Unmarshal(kit.Req(u.String()).MustBytes(), l))
+
 	return l
 }
 
@@ -37,11 +35,11 @@ func (l *Launcher) JSON() []byte {
 	return kit.MustToJSONBytes(l)
 }
 
-// Header for launching chrome remotely
-func (l *Launcher) Header() http.Header {
+// Client for launching chrome remotely
+func (l *Launcher) Client() *cdp.Client {
 	header := http.Header{}
 	header.Add(HeaderName, kit.MustToJSON(l))
-	return header
+	return cdp.New(l.url).Header(header)
 }
 
 // Proxy to help launch chrome remotely.
@@ -71,8 +69,12 @@ func (p *Proxy) defaults(w http.ResponseWriter, r *http.Request) {
 
 func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	l := New().Log(p.Log)
-	l.Flags = nil
-	kit.E(json.Unmarshal([]byte(r.Header.Get(HeaderName)), l))
+
+	options := r.Header.Get(HeaderName)
+	if options != "" {
+		l.Flags = nil
+		kit.E(json.Unmarshal([]byte(options), l))
+	}
 
 	u := l.Launch()
 	defer l.kill()
@@ -80,17 +82,15 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	parsedURL, err := url.Parse(u)
 	kit.E(err)
 
-	wsURL, err := GetWebSocketDebuggerURL(context.Background(), u)
-	kit.E(err)
-
 	if p.Log != nil {
-		p.Log(fmt.Sprintln("launch:", wsURL, l.FormatArgs()))
-		defer func() { p.Log(fmt.Sprintln("close:", wsURL)) }()
+		p.Log(fmt.Sprintln(kit.C("Launch", "cyan"), u, l.FormatArgs()))
+		defer func() { p.Log(fmt.Sprintln(kit.C("Close", "cyan"), u)) }()
 	}
 
-	parsedWS, err := url.Parse(wsURL)
+	parsedWS, err := url.Parse(u)
 	kit.E(err)
 	parsedURL.Path = parsedWS.Path
+	toHTTP(parsedURL)
 
 	httputil.NewSingleHostReverseProxy(parsedURL).ServeHTTP(w, r)
 }

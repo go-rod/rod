@@ -3,9 +3,8 @@ package launcher
 import (
 	"fmt"
 	"io"
+	"net/url"
 	"time"
-
-	"github.com/ramr/go-reaper"
 )
 
 type progresser struct {
@@ -34,14 +33,10 @@ func (p *progresser) Read(buf []byte) (n int, err error) {
 	return
 }
 
-var reaperRunning = false
-
-func runReaper() {
-	if reaperRunning {
-		return
+func toHTTP(u *url.URL) {
+	if u.Scheme == "ws" {
+		u.Scheme = "http"
+	} else if u.Scheme == "wss" {
+		u.Scheme = "https"
 	}
-
-	reaperRunning = true
-
-	go reaper.Reap()
 }

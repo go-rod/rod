@@ -25,10 +25,8 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
-	controlURL string
-	slowmotion time.Duration      // slowdown user inputs
-	trace      bool               // enable show auto tracing of user inputs
-	remote     *launcher.Launcher // enable launch chrome remotely
+	slowmotion time.Duration // slowdown user inputs
+	trace      bool          // enable show auto tracing of user inputs
 
 	monitorServer *kit.ServerContext
 
@@ -40,14 +38,8 @@ type Browser struct {
 func New() *Browser {
 	b := &Browser{
 		ctx:        context.Background(),
-		client:     cdp.New(),
-		controlURL: defaults.URL,
 		trace:      defaults.Trace,
 		slowmotion: defaults.Slow,
-	}
-
-	if defaults.Remote && b.controlURL == "" {
-		b.controlURL = "ws://127.0.0.1:9222"
 	}
 
 	return b
@@ -55,7 +47,7 @@ func New() *Browser {
 
 // ControlURL set the url to remote control browser.
 func (b *Browser) ControlURL(url string) *Browser {
-	b.controlURL = url
+	b.client = cdp.New(url)
 	return b
 }
 
@@ -77,12 +69,6 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 	return b
 }
 
-// Remote is the option to launch chrome remotely
-func (b *Browser) Remote(l *launcher.Launcher) *Browser {
-	b.remote = l
-	return b
-}
-
 // DebugCDP enables/disables the log of all cdp interface traffic
 func (b *Browser) DebugCDP(enable bool) *Browser {
 	b.client.Debug(enable)
@@ -93,23 +79,29 @@ func (b *Browser) DebugCDP(enable bool) *Browser {
 func (b *Browser) ConnectE() error {
 	*b = *b.Context(b.ctx)
 
-	if b.controlURL == "" {
-		u, err := launcher.New().Context(b.ctx).LaunchE()
-		if err != nil {
-			return err
+	if b.client == nil {
+		u := defaults.URL
+		if defaults.Remote {
+			if u == "" {
+				u = "ws://127.0.0.1:9222"
+			}
+			b.client = launcher.NewRemote(u).Client()
+		} else {
+			if u == "" {
+				var err error
+				u, err = launcher.New().Context(b.ctx).LaunchE()
+				if err != nil {
+					return err
+				}
+			}
+			b.client = cdp.New(u)
 		}
-		b.controlURL = u
 	}
 
-	if defaults.Remote {
-		if b.remote == nil {
-			b.remote = launcher.NewRemote(b.controlURL)
-		}
-		ws := cdp.NewDefaultWsClient(b.ctx, b.controlURL, b.remote.Header())
-		b.client = cdp.New().Websocket(ws)
+	err := b.client.Context(b.ctx).ConnectE()
+	if err != nil {
+		return err
 	}
-
-	b.client.URL(b.controlURL).Context(b.ctx).Connect()
 
 	b.monitorServer = b.ServeMonitor(defaults.Monitor)
 
