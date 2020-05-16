@@ -26,6 +26,7 @@ type Launcher struct {
 	output chan string
 	pid    int
 	exit   chan kit.Nil
+	reap   bool
 }
 
 // New returns the default arguments to start chrome.
@@ -89,6 +90,7 @@ func New() *Launcher {
 		Flags:  defaultFlags,
 		output: make(chan string),
 		exit:   make(chan kit.Nil),
+		reap:   true,
 	}
 }
 
@@ -207,6 +209,12 @@ func (l *Launcher) Log(log func(string)) *Launcher {
 	return l
 }
 
+// Reap enable/disable a guard to cleanup zombie processes
+func (l *Launcher) Reap(enable bool) *Launcher {
+	l.reap = enable
+	return l
+}
+
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
@@ -218,6 +226,10 @@ func (l *Launcher) Launch() string {
 
 // LaunchE doc is the same as the method Launch
 func (l *Launcher) LaunchE() (string, error) {
+	if l.reap {
+		runReaper()
+	}
+
 	bin := l.bin
 	if bin == "" {
 		var err error

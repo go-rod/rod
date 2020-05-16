@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"time"
+
+	"github.com/ramr/go-reaper"
 )
 
 type progresser struct {
@@ -30,4 +32,16 @@ func (p *progresser) Read(buf []byte) (n int, err error) {
 	p.last = time.Now()
 	p.log(fmt.Sprintf("%02d%% ", p.count*100/p.size))
 	return
+}
+
+var reaperRunning = false
+
+func runReaper() {
+	if reaperRunning {
+		return
+	}
+
+	reaperRunning = true
+
+	go reaper.Reap()
 }
