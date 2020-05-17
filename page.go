@@ -496,6 +496,15 @@ func (p *Page) Sleeper() kit.Sleeper {
 	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }
 
+// ElementFromObjectID creates an Element from the remote object id.
+func (p *Page) ElementFromObjectID(id proto.RuntimeRemoteObjectID) *Element {
+	return &Element{
+		page:     p,
+		ctx:      p.ctx,
+		ObjectID: id,
+	}
+}
+
 // ReleaseE doc is the same as the method Release
 func (p *Page) ReleaseE(objectID proto.RuntimeRemoteObjectID) error {
 	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)

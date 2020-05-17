@@ -48,11 +48,7 @@ func (el *Element) ShadowRootE() (*Element, error) {
 		return nil, err
 	}
 
-	return &Element{
-		page:     el.page,
-		ctx:      el.page.ctx,
-		ObjectID: shadowNode.Object.ObjectID,
-	}, nil
+	return el.page.ElementFromObjectID(shadowNode.Object.ObjectID), nil
 }
 
 // FrameE doc is the same as the method Frame

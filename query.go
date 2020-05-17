@@ -147,11 +147,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 		return nil, &Error{nil, ErrExpectElement, res}
 	}
 
-	return &Element{
-		page:     p,
-		ctx:      p.ctx,
-		ObjectID: res.ObjectID,
-	}, nil
+	return p.ElementFromObjectID(res.ObjectID), nil
 }
 
 // ElementsE doc is the same as the method Elements
@@ -195,11 +191,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 			return nil, &Error{nil, ErrExpectElements, val}
 		}
 
-		elemList = append(elemList, &Element{
-			page:     p,
-			ctx:      p.ctx,
-			ObjectID: val.ObjectID,
-		})
+		elemList = append(elemList, p.ElementFromObjectID(val.ObjectID))
 	}
 
 	return elemList, err
