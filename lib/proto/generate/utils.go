@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/url"
+	"os"
 	"regexp"
 	"strings"
 
@@ -12,8 +14,20 @@ import (
 
 func getSchema() gjson.Result {
 	l := launcher.New()
-	url := l.Launch()
-	return gjson.Parse(kit.Req(url + "/json/protocol").MustString())
+
+	defer func() {
+		p, err := os.FindProcess(l.PID())
+		if err == nil {
+			p.Kill()
+		}
+	}()
+
+	u := l.Launch()
+	parsed, err := url.Parse(u)
+	kit.E(err)
+	parsed.Scheme = "http"
+	parsed.Path = "/json/protocol"
+	return gjson.Parse(kit.Req(parsed.String()).MustString())
 }
 
 func mapType(n string) string {

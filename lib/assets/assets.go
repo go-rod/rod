@@ -304,7 +304,7 @@ var Monitor = `<html>
         }
         a:hover {
             background: #25272d;
-            border-color: white; 
+            border-color: #8d8d96; 
         }
     </style>
 </head>

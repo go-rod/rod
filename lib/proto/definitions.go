@@ -4647,10 +4647,10 @@ func (evt DOMChildNodeRemoved) MethodName() string {
 	return "DOM.childNodeRemoved"
 }
 
-// DOMDistributedNodesUpdated (experimental) Called when distrubution is changed.
+// DOMDistributedNodesUpdated (experimental) Called when distribution is changed.
 type DOMDistributedNodesUpdated struct {
 
-	// InsertionPointID Insertion point where distrubuted nodes were updated.
+	// InsertionPointID Insertion point where distributed nodes were updated.
 	InsertionPointID DOMNodeID `json:"insertionPointId"`
 
 	// DistributedNodes Distributed nodes for given insertion point.
@@ -5863,7 +5863,7 @@ type EmulationCanEmulateResult struct {
 	Result bool `json:"result"`
 }
 
-// EmulationClearDeviceMetricsOverride Clears the overriden device metrics.
+// EmulationClearDeviceMetricsOverride Clears the overridden device metrics.
 type EmulationClearDeviceMetricsOverride struct {
 }
 
@@ -5874,7 +5874,7 @@ func (m EmulationClearDeviceMetricsOverride) Call(caller Caller) error {
 	return err
 }
 
-// EmulationClearGeolocationOverride Clears the overriden Geolocation Position and Error.
+// EmulationClearGeolocationOverride Clears the overridden Geolocation Position and Error.
 type EmulationClearGeolocationOverride struct {
 }
 
@@ -6163,7 +6163,7 @@ type EmulationSetVirtualTimePolicy struct {
 	// Note any previous deferred policy change is superseded.
 	WaitForNavigation bool `json:"waitForNavigation,omitempty"`
 
-	// InitialVirtualTime (optional) If set, base::Time::Now will be overriden to initially return this value.
+	// InitialVirtualTime (optional) If set, base::Time::Now will be overridden to initially return this value.
 	InitialVirtualTime TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
 }
 
@@ -6368,7 +6368,7 @@ func (evt HeadlessExperimentalNeedsBeginFramesChanged) MethodName() string {
 	return "HeadlessExperimental.needsBeginFramesChanged"
 }
 
-// IOStreamHandle This is either obtained from another method or specifed as `blob:&lt;uuid&gt;` where
+// IOStreamHandle This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
 // `&lt;uuid&gt` is an UUID of a Blob.
 type IOStreamHandle string
 
@@ -6426,7 +6426,7 @@ type IOReadResult struct {
 	// Data Data that were read.
 	Data string `json:"data"`
 
-	// EOF Set if the end-of-file condition occured while reading.
+	// EOF Set if the end-of-file condition occurred while reading.
 	EOF bool `json:"eof"`
 }
 
@@ -9014,7 +9014,7 @@ type NetworkRequestPattern struct {
 	// ResourceType (optional) If set, only requests for matching resource types will be intercepted.
 	ResourceType NetworkResourceType `json:"resourceType,omitempty"`
 
-	// InterceptionStage (optional) Stage at wich to begin intercepting requests. Default is Request.
+	// InterceptionStage (optional) Stage at which to begin intercepting requests. Default is Request.
 	InterceptionStage NetworkInterceptionStage `json:"interceptionStage,omitempty"`
 }
 
@@ -11206,7 +11206,7 @@ type PageCaptureSnapshotResult struct {
 	Data string `json:"data"`
 }
 
-// PageClearDeviceMetricsOverride (deprecated) (experimental) Clears the overriden device metrics.
+// PageClearDeviceMetricsOverride (deprecated) (experimental) Clears the overridden device metrics.
 type PageClearDeviceMetricsOverride struct {
 }
 
@@ -11228,7 +11228,7 @@ func (m PageClearDeviceOrientationOverride) Call(caller Caller) error {
 	return err
 }
 
-// PageClearGeolocationOverride (deprecated) Clears the overriden Geolocation Position and Error.
+// PageClearGeolocationOverride (deprecated) Clears the overridden Geolocation Position and Error.
 type PageClearGeolocationOverride struct {
 }
 
@@ -12057,7 +12057,7 @@ type PageSetDownloadBehavior struct {
 	// available (otherwise deny).
 	Behavior PageSetDownloadBehaviorBehavior `json:"behavior"`
 
-	// DownloadPath (optional) The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+	// DownloadPath (optional) The default path to save downloaded files to. This is required if behavior is set to 'allow'
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
@@ -14867,7 +14867,7 @@ type FetchRequestPattern struct {
 	// ResourceType (optional) If set, only requests for matching resource types will be intercepted.
 	ResourceType NetworkResourceType `json:"resourceType,omitempty"`
 
-	// RequestStage (optional) Stage at wich to begin intercepting requests. Default is Request.
+	// RequestStage (optional) Stage at which to begin intercepting requests. Default is Request.
 	RequestStage FetchRequestStage `json:"requestStage,omitempty"`
 }
 
@@ -15299,7 +15299,7 @@ type WebAudioContextRealtimeData struct {
 	// CurrentTime The current context time in second in BaseAudioContext.
 	CurrentTime float64 `json:"currentTime"`
 
-	// RenderCapacity The time spent on rendering graph divided by render qunatum duration,
+	// RenderCapacity The time spent on rendering graph divided by render quantum duration,
 	// and multiplied by 100. 100 means the audio renderer reached the full
 	// capacity and glitch may occur.
 	RenderCapacity float64 `json:"renderCapacity"`
@@ -16051,8 +16051,8 @@ func (evt MediaPlayerEventsAdded) MethodName() string {
 	return "Media.playerEventsAdded"
 }
 
-// MediaPlayersCreated Called whenever a player is created, or when a new agent joins and recieves
-// a list of active players. If an agent is restored, it will recieve the full
+// MediaPlayersCreated Called whenever a player is created, or when a new agent joins and receives
+// a list of active players. If an agent is restored, it will receive the full
 // list of player ids and all events again.
 type MediaPlayersCreated struct {
 
@@ -16385,7 +16385,7 @@ func (m DebuggerDisable) Call(caller Caller) error {
 type DebuggerEnable struct {
 
 	// MaxScriptsCacheSize (experimental) (optional) The maximum size in bytes of collected scripts (not referenced by other heap objects)
-	// the debugger can hold. Puts no limit if paramter is omitted.
+	// the debugger can hold. Puts no limit if parameter is omitted.
 	MaxScriptsCacheSize float64 `json:"maxScriptsCacheSize,omitempty"`
 }
 
@@ -17611,7 +17611,7 @@ type HeapProfilerTakeHeapSnapshot struct {
 	// ReportProgress (optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken.
 	ReportProgress bool `json:"reportProgress,omitempty"`
 
-	// TreatGlobalObjectsAsRoots (optional) If true, a raw snapshot without artifical roots will be generated
+	// TreatGlobalObjectsAsRoots (optional) If true, a raw snapshot without artificial roots will be generated
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 }
 
@@ -18154,14 +18154,14 @@ func (evt ProfilerConsoleProfileStarted) MethodName() string {
 // ProfilerPreciseCoverageDeltaUpdate (experimental) Reports coverage delta since the last poll (either from an event like this, or from
 // `takePreciseCoverage` for the current isolate. May only be sent if precise code
 // coverage has been started. This event can be trigged by the embedder to, for example,
-// trigger collection of coverage data immediatelly at a certain point in time.
+// trigger collection of coverage data immediately at a certain point in time.
 type ProfilerPreciseCoverageDeltaUpdate struct {
 
 	// Timestamp Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
 	Timestamp float64 `json:"timestamp"`
 
-	// Occassion Identifier for distinguishing coverage events.
-	Occassion string `json:"occassion"`
+	// Occasion Identifier for distinguishing coverage events.
+	Occasion string `json:"occasion"`
 
 	// Result Coverage data for the current isolate.
 	Result []*ProfilerScriptCoverage `json:"result"`

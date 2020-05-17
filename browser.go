@@ -1,3 +1,6 @@
+//go:generate go run ./lib/proto/generate
+//go:generate go run ./lib/assets/generate
+
 package rod
 
 import (

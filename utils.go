@@ -36,7 +36,7 @@ func CancelPanic(err error) {
 	}
 }
 
-// Event helps to convert a cdp.Event to proto.Event. Returns false if the convertion fails
+// Event helps to convert a cdp.Event to proto.Event. Returns false if the conversion fails
 func Event(msg *cdp.Event, evt proto.Event) bool {
 	if msg.Method == evt.MethodName() {
 		err := json.Unmarshal(msg.Params, evt)

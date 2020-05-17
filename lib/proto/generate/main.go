@@ -50,8 +50,11 @@ func main() {
 	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code, nil))
 	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
 
+	kit.MustGoTool("golang.org/x/tools/cmd/goimports")
+	kit.MustGoTool("github.com/client9/misspell/cmd/misspell")
 	kit.Exec("gofmt", "-s", "-w", "./lib/proto").MustDo()
 	kit.Exec("goimports", "-w", "./lib/proto").MustDo()
+	kit.Exec("misspell", "-w", "-q", "./lib/proto").MustDo()
 }
 
 func (d *definition) comment() string {

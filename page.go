@@ -1,5 +1,3 @@
-//go:generate go run ./lib/assets/generate
-
 package rod
 
 import (
