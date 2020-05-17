@@ -187,8 +187,10 @@ func (s *S) TestPageWaitRequestIdle() {
 	url, engine, close := serve()
 	defer close()
 
+	sleep := 400 * time.Millisecond
+
 	engine.GET("/r1", func(ctx kit.GinContext) {})
-	engine.GET("/r2", func(ctx kit.GinContext) { kit.Sleep(1) })
+	engine.GET("/r2", func(ctx kit.GinContext) { time.Sleep(sleep) })
 	engine.GET("/", ginHTML(`<html>
 		<button>click</button>
 		<script>
@@ -205,13 +207,13 @@ func (s *S) TestPageWaitRequestIdle() {
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
-	s.True(time.Since(start) > time.Second)
+	s.True(time.Since(start) > sleep)
 
 	wait = page.WaitRequestIdle("/r2")
 	page.Element("button").Click()
 	start = time.Now()
 	wait()
-	s.True(time.Since(start) < time.Second)
+	s.True(time.Since(start) < sleep)
 
 	s.Panics(func() {
 		wait()
