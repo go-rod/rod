@@ -22,7 +22,6 @@ import (
 type Browser struct {
 	// these are the handler for ctx
 	ctx           context.Context
-	ctxCancel     func()
 	timeoutCancel func()
 
 	// BrowserContextID is the id for incognito window

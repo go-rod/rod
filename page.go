@@ -20,7 +20,6 @@ import (
 type Page struct {
 	// these are the handler for ctx
 	ctx           context.Context
-	ctxCancel     func()
 	timeoutCancel func()
 
 	browser *Browser

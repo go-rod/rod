@@ -11,22 +11,14 @@ func (b *Browser) Context(ctx context.Context) *Browser {
 		return b
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
 	newObj := *b
 	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
 	return &newObj
 }
 
 // GetContext returns the current context
 func (b *Browser) GetContext() context.Context {
 	return b.ctx
-}
-
-// Cancel current context
-func (b *Browser) Cancel() *Browser {
-	b.ctxCancel()
-	return b
 }
 
 // Timeout for chained sub-operations
@@ -48,22 +40,14 @@ func (p *Page) Context(ctx context.Context) *Page {
 		return p
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
 	newObj := *p
 	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
 	return &newObj
 }
 
 // GetContext returns the current context
 func (p *Page) GetContext() context.Context {
 	return p.ctx
-}
-
-// Cancel current context
-func (p *Page) Cancel() *Page {
-	p.ctxCancel()
-	return p
 }
 
 // Timeout for chained sub-operations
@@ -85,22 +69,14 @@ func (el *Element) Context(ctx context.Context) *Element {
 		return el
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
 	newObj := *el
 	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
 	return &newObj
 }
 
 // GetContext returns the current context
 func (el *Element) GetContext() context.Context {
 	return el.ctx
-}
-
-// Cancel current context
-func (el *Element) Cancel() *Element {
-	el.ctxCancel()
-	return el
 }
 
 // Timeout for chained sub-operations

@@ -22,7 +22,7 @@ func (s *S) TestBrowserPages() {
 }
 
 func (s *S) TestBrowserContext() {
-	s.browser.Timeout(time.Minute).CancelTimeout().Cancel()
+	s.browser.Timeout(time.Minute).CancelTimeout()
 }
 
 func (s *S) TestIncognito() {

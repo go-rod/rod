@@ -30,7 +30,7 @@ func (s *S) TestElementContext() {
 	s.Equal(s.browser.GetContext(), el.GetContext())
 	s.Equal(s.browser.GetContext(), el.Context(p.GetContext()).GetContext())
 
-	el = el.Timeout(time.Minute).CancelTimeout().Cancel()
+	el = el.Timeout(time.Minute).CancelTimeout()
 	s.Error(el.ClickE(proto.InputMouseButtonLeft))
 }
 

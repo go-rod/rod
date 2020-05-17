@@ -16,7 +16,6 @@ import (
 // Element represents the DOM element
 type Element struct {
 	ctx           context.Context
-	ctxCancel     func()
 	timeoutCancel func()
 
 	page *Page

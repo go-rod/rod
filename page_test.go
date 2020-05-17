@@ -92,7 +92,7 @@ func (s *S) TestClosePage() {
 }
 
 func (s *S) TestPageContext() {
-	p := s.page.Timeout(time.Minute).CancelTimeout().Cancel()
+	p := s.page.Timeout(time.Minute).CancelTimeout()
 	s.Panics(func() { p.Eval(`() => {}`) })
 }
 
