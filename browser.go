@@ -31,7 +31,7 @@ type Browser struct {
 	monitorServer *kit.ServerContext
 
 	client *cdp.Client
-	event  *Observable // all the browser events from cdp client
+	event  *kit.Observable // all the browser events from cdp client
 }
 
 // New creates a controller
@@ -66,12 +66,6 @@ func (b *Browser) Trace(enable bool) *Browser {
 // Client set the cdp client
 func (b *Browser) Client(c *cdp.Client) *Browser {
 	b.client = c
-	return b
-}
-
-// DebugCDP enables/disables the log of all cdp interface traffic
-func (b *Browser) DebugCDP(enable bool) *Browser {
-	b.client.Debug(enable)
 	return b
 }
 
@@ -187,8 +181,8 @@ type EventFilter func(*cdp.Event) bool
 func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
 	wait := make(chan error)
 	go func() {
-		_, err := b.event.Until(b.ctx, func(e *cdp.Event) bool {
-			return filter(e)
+		_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
+			return filter(e.(*cdp.Event))
 		})
 		wait <- err
 		close(wait)
@@ -198,7 +192,7 @@ func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
 }
 
 // Event returns the observable for browser events
-func (b *Browser) Event() *Observable {
+func (b *Browser) Event() *kit.Observable {
 	return b.event
 }
 
@@ -270,7 +264,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 }
 
 func (b *Browser) initEvents() error {
-	b.event = NewObservable()
+	b.event = kit.NewObservable()
 
 	go func() {
 		for msg := range b.client.Event() {

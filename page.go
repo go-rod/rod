@@ -39,7 +39,7 @@ type Page struct {
 	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
 
-	event *Observable
+	event *kit.Observable
 }
 
 // IsIframe tells if it's iframe
@@ -48,7 +48,7 @@ func (p *Page) IsIframe() bool {
 }
 
 // Event returns the observable for page events
-func (p *Page) Event() *Observable {
+func (p *Page) Event() *kit.Observable {
 	return p.event
 }
 
@@ -367,11 +367,12 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 				return p.ctx.Err()
 			case <-timeout.C:
 				return
-			case e, ok := <-s.C:
+			case msg, ok := <-s.C:
 				if !ok {
 					return
 				}
 
+				e := msg.(*cdp.Event)
 				sent := &proto.NetworkRequestWillBeSent{}
 				finished := &proto.NetworkLoadingFinished{}
 				failed := &proto.NetworkLoadingFailed{}
@@ -539,11 +540,11 @@ func (p *Page) initSession() error {
 }
 
 func (p *Page) initEvents() error {
-	p.event = NewObservable()
+	p.event = kit.NewObservable()
 
 	go func() {
 		for msg := range p.browser.event.Subscribe().C {
-			if msg.SessionID == string(p.SessionID) {
+			if msg.(*cdp.Event).SessionID == string(p.SessionID) {
 				// we must use goroutine here because subscriber can trigger another event
 				// to cause deadlock
 				go p.event.Publish(msg)

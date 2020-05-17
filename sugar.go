@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
+	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -32,7 +33,7 @@ func (b *Browser) EachEvent(fn interface{}) {
 	eventType := fnType.In(0).Elem()
 	for e := range b.Event().Subscribe().C {
 		event := reflect.New(eventType)
-		if Event(e, event.Interface().(proto.Event)) {
+		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
 			fnVal.Call([]reflect.Value{event})
 		}
 	}
@@ -195,7 +196,7 @@ func (p *Page) EachEvent(fn interface{}) {
 	eventType := fnType.In(0).Elem()
 	for e := range p.Event().Subscribe().C {
 		event := reflect.New(eventType)
-		if Event(e, event.Interface().(proto.Event)) {
+		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
 			fnVal.Call([]reflect.Value{event})
 		}
 	}

@@ -61,7 +61,6 @@ func Example_debug_mode() {
 
 	browser := rod.New().
 		ControlURL(url).
-		DebugCDP(true).          // log all cdp traffic
 		Trace(true).             // show trace of each input action
 		Slowmotion(time.Second). // each input action will take 1 second
 		Connect().
