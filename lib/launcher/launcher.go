@@ -36,7 +36,7 @@ type Launcher struct {
 func New() *Launcher {
 	dir := ""
 	if defaults.Dir == "" {
-		dir = filepath.Join(os.TempDir(), "cdp", kit.RandString(8))
+		dir = filepath.Join(os.TempDir(), "rod", "user-data", kit.RandString(8))
 		kit.E(os.MkdirAll(dir, 0700))
 	}
 

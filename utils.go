@@ -79,19 +79,19 @@ func matchWithFilter(s string, includes, excludes []string) bool {
 	return false
 }
 
-func saveScreenshot(bin []byte, toFile []string) {
+func saveScreenshot(bin []byte, toFile []string) error {
 	if len(toFile) == 0 {
-		return
+		return nil
 	}
 	if toFile[0] == "" {
 		toFile = []string{"tmp", "screenshots", fmt.Sprintf("%d", time.Now().UnixNano()) + ".png"}
 	}
-	kit.E(kit.OutputFile(filepath.Join(toFile...), bin, nil))
+	return kit.OutputFile(filepath.Join(toFile...), bin, nil)
 }
 
 func ginHTML(ctx kit.GinContext, body string) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
-	kit.E(ctx.Writer.WriteString(body))
+	_, _ = ctx.Writer.WriteString(body)
 }
 
 func eachEvent(ob *kit.Observable, fn interface{}) {

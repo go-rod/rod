@@ -40,7 +40,7 @@ type Chrome struct {
 	// Revision of the chrome to use
 	Revision int
 
-	// Dir default is the filepath.Join(os.TempDir(), "cdp")
+	// Dir default is the filepath.Join(os.TempDir(), "rod")
 	Dir string
 
 	// Log to print output
@@ -53,7 +53,7 @@ func NewChrome() *Chrome {
 		Context:  context.Background(),
 		Revision: DefaultRevision,
 		Hosts:    []string{HostGoogle, HostChina},
-		Dir:      filepath.Join(os.TempDir(), "cdp"),
+		Dir:      filepath.Join(os.TempDir(), "rod"),
 		Log: func(str string) {
 			fmt.Print(str)
 		},

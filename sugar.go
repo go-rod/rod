@@ -209,7 +209,7 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 func (p *Page) Screenshot(toFile ...string) []byte {
 	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
 	kit.E(err)
-	saveScreenshot(bin, toFile)
+	kit.E(saveScreenshot(bin, toFile))
 	return bin
 }
 
@@ -342,6 +342,13 @@ func (p *Page) ElementsX(xpath string) Elements {
 	list, err := p.ElementsXE("", xpath)
 	kit.E(err)
 	return list
+}
+
+// ElementX retries until returns the first element in the page that matches the XPath selector
+func (p *Page) ElementX(xpath string) *Element {
+	el, err := p.ElementXE(p.Sleeper(), "", xpath)
+	kit.E(err)
+	return el
 }
 
 // ElementsByJS returns the elements from the return value of the js
@@ -544,7 +551,7 @@ func (el *Element) Resource() []byte {
 func (el *Element) Screenshot(toFile ...string) []byte {
 	bin, err := el.ScreenshotE(proto.PageCaptureScreenshotFormatPng, -1)
 	kit.E(err)
-	saveScreenshot(bin, toFile)
+	kit.E(saveScreenshot(bin, toFile))
 	return bin
 }
 

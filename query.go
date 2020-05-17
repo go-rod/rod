@@ -100,13 +100,6 @@ func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObject
 	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), Array{xpath})
 }
 
-// ElementX retries until returns the first element in the page that matches the XPath selector
-func (p *Page) ElementX(xpath string) *Element {
-	el, err := p.ElementXE(p.Sleeper(), "", xpath)
-	kit.E(err)
-	return el
-}
-
 // ElementByJSE returns the element from the return value of the js function.
 // sleeper is used to sleep before retry the operation.
 // If sleeper is nil, no retry will be performed.
@@ -178,7 +171,9 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 		ObjectID:      objectID,
 		OwnProperties: true,
 	}.Call(p)
-	kit.E(err)
+	if err != nil {
+		return nil, err
+	}
 
 	elemList := Elements{}
 	for _, obj := range list.Result {

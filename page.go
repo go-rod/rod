@@ -227,13 +227,17 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 	wait := p.WaitEventE(NewEventFilter(msgReq))
 
 	return func() (http.Header, []byte, error) {
+		defer p.getDownloadFileLock.Unlock()
+
+		var err error
 		defer func() {
-			defer p.getDownloadFileLock.Unlock()
-			err := proto.FetchDisable{}.Call(p)
-			kit.E(err)
+			e := proto.FetchDisable{}.Call(p)
+			if err == nil {
+				err = e
+			}
 		}()
 
-		err := <-wait
+		err = <-wait
 		if err != nil {
 			return nil, nil, err
 		}
@@ -267,8 +271,11 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			ResponseHeaders: headers,
 			Body:            body,
 		}.Call(p)
+		if err != nil {
+			return nil, nil, err
+		}
 
-		return res.Header, body, err
+		return res.Header, body, nil
 	}, err
 }
 

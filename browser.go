@@ -214,27 +214,32 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 	waitPaused := b.WaitEventE(NewEventFilter(paused))
 	waitAuth := b.WaitEventE(NewEventFilter(auth))
 
-	return func() error {
-		defer func() { kit.E(proto.FetchDisable{}.Call(b)) }()
+	return func() (err error) {
+		defer func() {
+			e := proto.FetchDisable{}.Call(b)
+			if err == nil {
+				err = e
+			}
+		}()
 
 		err = <-waitPaused
 		if err != nil {
-			return err
+			return
 		}
 
 		err = proto.FetchContinueRequest{
 			RequestID: paused.RequestID,
 		}.Call(b)
 		if err != nil {
-			return err
+			return
 		}
 
-		err := <-waitAuth
+		err = <-waitAuth
 		if err != nil {
-			return err
+			return
 		}
 
-		return proto.FetchContinueWithAuth{
+		err = proto.FetchContinueWithAuth{
 			RequestID: auth.RequestID,
 			AuthChallengeResponse: &proto.FetchAuthChallengeResponse{
 				Response: proto.FetchAuthChallengeResponseResponseProvideCredentials,
@@ -242,6 +247,8 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 				Password: password,
 			},
 		}.Call(b)
+
+		return
 	}, nil
 }
 

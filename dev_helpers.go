@@ -59,7 +59,7 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 		p := b.PageFromTargetID(id)
 
 		ctx.Header("Content-Type", "image/png;")
-		kit.E(ctx.Writer.Write(p.Screenshot()))
+		_, _ = ctx.Writer.Write(p.Screenshot())
 	})
 
 	go func() { _ = srv.Do() }()
