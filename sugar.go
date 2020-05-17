@@ -5,11 +5,9 @@ package rod
 import (
 	"net/http"
 	"path/filepath"
-	"reflect"
 	"time"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -26,17 +24,9 @@ func (b *Browser) Close() {
 	kit.E(b.CloseE())
 }
 
-// EachEvent of the specified event type
+// EachEvent of the specified event type, if the fn returns true the event loop will stop.
 func (b *Browser) EachEvent(fn interface{}) {
-	fnType := reflect.TypeOf(fn)
-	fnVal := reflect.ValueOf(fn)
-	eventType := fnType.In(0).Elem()
-	for e := range b.Event().Subscribe().C {
-		event := reflect.New(eventType)
-		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
-			fnVal.Call([]reflect.Value{event})
-		}
-	}
+	eachEvent(b.Event(), fn)
 }
 
 // Incognito creates a new incognito browser
@@ -189,17 +179,9 @@ func (p *Page) Close() {
 	kit.E(p.CloseE())
 }
 
-// EachEvent of the specified event type
+// EachEvent of the specified event type, if the fn returns true the event loop will stop.
 func (p *Page) EachEvent(fn interface{}) {
-	fnType := reflect.TypeOf(fn)
-	fnVal := reflect.ValueOf(fn)
-	eventType := fnType.In(0).Elem()
-	for e := range p.Event().Subscribe().C {
-		event := reflect.New(eventType)
-		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
-			fnVal.Call([]reflect.Value{event})
-		}
-	}
+	eachEvent(p.Event(), fn)
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)

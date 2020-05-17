@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"time"
 
@@ -91,4 +92,23 @@ func saveScreenshot(bin []byte, toFile []string) {
 func ginHTML(ctx kit.GinContext, body string) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	kit.E(ctx.Writer.WriteString(body))
+}
+
+func eachEvent(ob *kit.Observable, fn interface{}) {
+	fnType := reflect.TypeOf(fn)
+	fnVal := reflect.ValueOf(fn)
+	eventType := fnType.In(0).Elem()
+	sub := ob.Subscribe()
+	defer ob.Unsubscribe(sub)
+	for e := range sub.C {
+		event := reflect.New(eventType)
+		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
+			ret := fnVal.Call([]reflect.Value{event})
+			if len(ret) > 0 {
+				if ret[0].Bool() {
+					break
+				}
+			}
+		}
+	}
 }

@@ -230,15 +230,22 @@ func Example_handle_events() {
 
 	page := browser.Page("https://github.com")
 
-	// You can also subscribe events only for a page
-	go page.EachEvent(func(e *proto.PageLoadEventFired) {
+	// you can also subscribe events only for a page
+	// here we return an optional stop signal at the first event to stop the loop
+	page.EachEvent(func(e *proto.PageLoadEventFired) bool {
 		fmt.Println("loaded")
+		return true
 	})
 
-	// create a new page and get the value of "hey"
-	fmt.Println(page.WaitLoad().Eval(`() => hey`).String())
+	// the above is the same as below
+	//
+	// e := &proto.PageLoadEventFired{}
+	// page.WaitEvent(e)()
 
-	// Unordered output:
+	// create a new page and get the value of "hey"
+	fmt.Println(page.Eval(`() => hey`).String())
+
+	// Output:
 	// loaded
 	// ok
 }
