@@ -84,7 +84,6 @@ func (s *S) TestMonitor() {
 }
 
 func (s *S) TestRemoteLaunch() {
-
 	srv := kit.MustServer("127.0.0.1:0")
 	defer func() { _ = srv.Listener.Close() }()
 	proxy := &launcher.Proxy{Log: func(s string) {}}

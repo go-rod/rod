@@ -59,7 +59,8 @@ func TestLaunchOptions(t *testing.T) {
 }
 
 func TestRemoteLaunch(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	srv := kit.MustServer("127.0.0.1:0")
 	defer func() { _ = srv.Listener.Close() }()
 	proxy := &launcher.Proxy{Log: func(s string) {}}
@@ -68,7 +69,9 @@ func TestRemoteLaunch(t *testing.T) {
 
 	u := "ws://" + srv.Listener.Addr().String()
 	client := launcher.NewRemote(u).Client()
-	kit.E(client.Connect().Call(ctx, "", "Browser.close", nil))
+	b := client.Context(ctx).Connect()
+	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
+	_, _ = b.Call(ctx, "", "Browser.close", nil)
 }
 
 func TestLaunchErr(t *testing.T) {

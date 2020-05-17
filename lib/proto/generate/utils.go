@@ -18,7 +18,7 @@ func getSchema() gjson.Result {
 	defer func() {
 		p, err := os.FindProcess(l.PID())
 		if err == nil {
-			p.Kill()
+			_ = p.Kill()
 		}
 	}()
 
