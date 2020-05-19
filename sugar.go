@@ -5,6 +5,7 @@ package rod
 import (
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -207,6 +208,19 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 // Screenshot the page and returns the binary of the image
 // If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) Screenshot(toFile ...string) []byte {
+	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
+	kit.E(err)
+	kit.E(saveScreenshot(bin, toFile))
+	return bin
+}
+
+// FullScreenshot gets the full height of the page and returns the binary of the image.
+// Uses an internal JavaScript function to get the client height.
+func (p *Page) FullScreenshot(toFile ...string) []byte {
+	height := p.Eval(`() => document.body.clientHeight`).String()
+	heightToInt, err := strconv.ParseInt(height, 10, 64)
+	kit.E(err)
+	p.Viewport(1920, heightToInt, 1, false)
 	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
 	kit.E(err)
 	kit.E(saveScreenshot(bin, toFile))
