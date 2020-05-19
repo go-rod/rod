@@ -217,6 +217,7 @@ func (p *Page) Screenshot(toFile ...string) []byte {
 // FullScreenshot gets the full height of the page and returns the binary of the image.
 // Uses an internal JavaScript function to get the client height.
 func (p *Page) FullScreenshot(toFile ...string) []byte {
+	p.WaitLoad()
 	height := p.Eval(`() => document.body.clientHeight`).String()
 	heightToInt, err := strconv.ParseInt(height, 10, 64)
 	kit.E(err)
