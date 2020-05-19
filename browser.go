@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/defaults"
@@ -107,7 +108,7 @@ func (b *Browser) ConnectE() error {
 // CloseE doc is the same as the method Close
 func (b *Browser) CloseE() error {
 	err := proto.BrowserClose{}.Call(b)
-	if err != nil {
+	if err != nil && !websocket.IsCloseError(err, 1006) {
 		return err
 	}
 
@@ -277,9 +278,7 @@ func (b *Browser) initEvents() error {
 
 	go func() {
 		for msg := range b.client.Event() {
-			// we must use goroutine here because subscriber can trigger another event
-			// to cause deadlock
-			go b.event.Publish(msg)
+			b.event.Publish(msg)
 		}
 		b.event.UnsubscribeAll()
 	}()

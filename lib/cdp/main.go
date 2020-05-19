@@ -21,10 +21,11 @@ type Client struct {
 	ws     Websocketable
 	wsConn WebsocketableConn
 
-	callbacks map[uint64]chan *response
-	chReqMsg  chan *requestMsg
-	chRes     chan *response
-	chEvent   chan *Event
+	callbacks map[uint64]chan *response // buffer for response from chrome
+
+	chReqMsg chan *requestMsg // request from user
+	chRes    chan *response   // response from chrome
+	chEvent  chan *Event      // events from chrome
 
 	count uint64
 
@@ -205,10 +206,13 @@ type requestMsg struct {
 func (cdp *Client) consumeMsg() {
 	for {
 		select {
+		case <-cdp.ctx.Done():
+			return
+
 		case msg := <-cdp.chReqMsg:
 			err := cdp.wsConn.Send(msg.data)
 			if err != nil {
-				cdp.close(err)
+				cdp.socketClose(err)
 				return
 			}
 			cdp.callbacks[msg.request.ID] = msg.callback
@@ -231,30 +235,36 @@ type response struct {
 }
 
 func (cdp *Client) readMsgFromChrome() {
-	for {
+	for cdp.ctx.Err() == nil {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
-			cdp.close(err)
+			cdp.socketClose(err)
 			return
 		}
 
-		if kit.JSON(data).Get("id").Exists() {
-			var res response
-			err := json.Unmarshal(data, &res)
-			kit.E(err)
-			cdp.debugLog(&res)
-			cdp.chRes <- &res
-		} else {
-			var evt Event
-			err := json.Unmarshal(data, &evt)
-			kit.E(err)
-			cdp.debugLog(&evt)
-			cdp.chEvent <- &evt
-		}
+		// trade off bandwidth for speed
+		// so that slow handler doesn't block the client to read the data from chrome
+		go cdp.produceMsg(data)
 	}
 }
 
-func (cdp *Client) close(err error) {
+func (cdp *Client) produceMsg(data []byte) {
+	if kit.JSON(data).Get("id").Exists() {
+		var res response
+		err := json.Unmarshal(data, &res)
+		kit.E(err)
+		cdp.debugLog(&res)
+		cdp.chRes <- &res
+	} else {
+		var evt Event
+		err := json.Unmarshal(data, &evt)
+		kit.E(err)
+		cdp.debugLog(&evt)
+		cdp.chEvent <- &evt
+	}
+}
+
+func (cdp *Client) socketClose(err error) {
 	cdp.debugLog(err)
 	cdp.ctxCancelErr = err
 	cdp.ctxCancel()

@@ -367,17 +367,9 @@ func (p *Page) PauseE() error {
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
 	s := p.event.Subscribe()
-	done := false
+	done := make(chan error)
 
-	return func() (err error) {
-		defer func() { done = true }()
-		if done {
-			panic("can't use wait function twice")
-		}
-
-		if p.browser.trace {
-			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
-		}
+	go func() {
 		defer p.browser.event.Unsubscribe(s)
 
 		reqList := map[proto.NetworkRequestID]kit.Nil{}
@@ -393,11 +385,14 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 		for {
 			select {
 			case <-p.ctx.Done():
-				return p.ctx.Err()
+				done <- p.ctx.Err()
+				return
 			case <-timeout.C:
+				done <- nil
 				return
 			case msg, ok := <-s.C:
 				if !ok {
+					done <- nil
 					return
 				}
 
@@ -427,6 +422,19 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 				}
 			}
 		}
+	}()
+
+	return func() (err error) {
+		defer func() { done = nil }()
+		if done == nil {
+			panic("can't use wait function twice")
+		}
+
+		if p.browser.trace {
+			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
+		}
+
+		return <-done
 	}
 }
 
@@ -583,9 +591,7 @@ func (p *Page) initEvents() error {
 	go func() {
 		for msg := range p.browser.event.Subscribe().C {
 			if msg.(*cdp.Event).SessionID == string(p.SessionID) {
-				// we must use goroutine here because subscriber can trigger another event
-				// to cause deadlock
-				go p.event.Publish(msg)
+				p.event.Publish(msg)
 			}
 		}
 	}()
