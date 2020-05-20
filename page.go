@@ -36,6 +36,8 @@ type Page struct {
 	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
 
+	viewport *proto.PageVisualViewport
+
 	event *kit.Observable
 }
 
@@ -162,6 +164,16 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
 	err := params.Call(p)
 	return err
+}
+
+// GetViewport sets and the current viewport
+func (p *Page) GetViewport() (*proto.PageVisualViewport, error) {
+	view, err := proto.PageGetLayoutMetrics{}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+	p.viewport = view.VisualViewport
+	return view.VisualViewport, nil
 }
 
 // StopLoadingE forces the page stop all navigations and pending resource fetches.
