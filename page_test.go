@@ -346,8 +346,9 @@ func (s *S) TestFullPageScreenshot() {
 	data := p.FullScreenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
-	s.Equal(8058, img.Bounds().Dx())
-	s.Equal(8034, img.Bounds().Dy())
+	res := p.Eval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	s.Equal(int(res.Get("w").Int()), img.Bounds().Dx())
+	s.Equal(int(res.Get("h").Int()), img.Bounds().Dy())
 	s.FileExists(f)
 
 	kit.E(kit.Remove(slash("tmp/screenshots")))
