@@ -215,14 +215,11 @@ func (p *Page) Screenshot(toFile ...string) []byte {
 
 // FullScreenshot gets the full height of the page and returns the binary of the image.
 // Uses an internal JavaScript function to get the client height.
-func (p *Page) FullScreenshot(fullHD bool, toFile ...string) []byte {
+func (p *Page) FullScreenshot(toFile ...string) []byte {
 	p.WaitLoad()
-	size := p.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
-	if fullHD {
-		p.Viewport(1920, size.Get("h").Int(), 1, false)
-	} else {
-		p.Viewport(size.Get("w").Int(), size.Get("h").Int(), 1, false)
-	}
+	res, err := proto.PageGetLayoutMetrics{}.Call(p)
+	kit.E(err)
+	p.Viewport(int64(res.ContentSize.Width), int64(res.ContentSize.Height), 1, false)
 	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
 	kit.E(err)
 	kit.E(saveScreenshot(bin, toFile))

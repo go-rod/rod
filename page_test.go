@@ -329,31 +329,15 @@ func (s *S) TestPageScreenshot() {
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
-func (s *S) TestFullPageScreenshotHD() {
+func (s *S) TestFullPageScreenshot() {
 	f := filepath.Join("tmp", kit.RandString(8)+".png")
 	p := s.page.Navigate(srcFile("fixtures/scroll.html"))
-	p.FullScreenshot(true)
-	data := p.FullScreenshot(true, f)
+	p.FullScreenshot()
+	data := p.FullScreenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
-	s.Equal(1920, img.Bounds().Dx())
-	s.Equal(8018, img.Bounds().Dy())
-	s.FileExists(f)
-
-	kit.E(kit.Remove(slash("tmp/screenshots")))
-	p.Screenshot("")
-	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
-}
-
-func (s *S) TestFullPageScreenshotNotHD() {
-	f := filepath.Join("tmp", kit.RandString(8)+".png")
-	p := s.page.Navigate(srcFile("fixtures/scroll.html"))
-	p.FullScreenshot(false)
-	data := p.FullScreenshot(false, f)
-	img, err := png.Decode(bytes.NewBuffer(data))
-	kit.E(err)
-	s.Equal(768, img.Bounds().Dx())
-	s.Equal(8018, img.Bounds().Dy())
+	s.Equal(8058, img.Bounds().Dx())
+	s.Equal(8034, img.Bounds().Dy())
 	s.FileExists(f)
 
 	kit.E(kit.Remove(slash("tmp/screenshots")))
