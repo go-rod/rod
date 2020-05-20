@@ -144,7 +144,7 @@ func (s *S) TestGetViewport() {
 	defer page.Close()
 	page.Viewport(1200, 400, 0, false)
 	view, _ := page.GetViewportE()
-	res := page.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
+	res := page.Eval(`() => ({w: window.innerWidth, h: window.innerHeight})`)
 	s.EqualValues(res.Get("w").Int(), view.Width)
 	s.EqualValues(res.Get("h").Int(), view.Height)
 }
