@@ -205,7 +205,7 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 }
 
 // GetViewport returns the current viewport
-func (p *Page) GetViewport() *proto.PageLayoutViewport {
+func (p *Page) GetViewport() *proto.PageVisualViewport {
 	view, err := p.GetViewportE()
 	kit.E(err)
 	return view

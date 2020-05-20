@@ -147,6 +147,10 @@ func (s *S) TestGetViewport() {
 	res := page.Eval(`() => ({w: window.innerWidth, h: window.innerHeight})`)
 	s.EqualValues(res.Get("w").Int(), view.ClientWidth)
 	s.EqualValues(res.Get("h").Int(), view.ClientHeight)
+
+	body := page.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
+	s.EqualValues(body.Get("w").Int(), view.ClientWidth)
+	s.EqualValues(body.Get("h").Int(), view.ClientHeight)
 }
 
 func (s *S) TestPageAddScriptTag() {
