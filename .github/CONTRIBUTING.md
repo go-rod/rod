@@ -43,6 +43,6 @@ Disable headless mode: `rod=show go test -v -run Test/Click`.
 
 Disable headless and use chrome that is inside docker:
 
-1. `docker run -p 9222:9222 ysmood/rod`
+1. `docker run --rm -p 9222:9222 -v $(pwd):$(pwd) -w $(pwd) ysmood/rod`
 
-2. `rod=show,remote,monitor go test -v Test/Click`
+2. `rod=remote,monitor go test -v Test/Click`
