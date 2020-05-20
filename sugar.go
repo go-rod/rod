@@ -205,7 +205,7 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 }
 
 // GetViewport returns the current viewport
-func (p *Page) GetViewport() *proto.PageVisualViewport {
+func (p *Page) GetViewport() proto.EmulationSetDeviceMetricsOverride {
 	view, err := p.GetViewportE()
 	kit.E(err)
 	return view

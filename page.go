@@ -165,12 +165,16 @@ func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error 
 }
 
 // GetViewportE sets and returns the current viewport
-func (p *Page) GetViewportE() (*proto.PageVisualViewport, error) {
+func (p *Page) GetViewportE() (proto.EmulationSetDeviceMetricsOverride, error) {
+	viewport := proto.EmulationSetDeviceMetricsOverride{}
 	view, err := proto.PageGetLayoutMetrics{}.Call(p)
 	if err != nil {
-		return nil, err
+		return viewport, err
 	}
-	return view.VisualViewport, nil
+	viewport.Width = int64(view.VisualViewport.ClientWidth)
+	viewport.Height = int64(view.VisualViewport.ClientHeight)
+	viewport.Scale = view.VisualViewport.Scale
+	return viewport, nil
 }
 
 // StopLoadingE forces the page stop all navigations and pending resource fetches.
