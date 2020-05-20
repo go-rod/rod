@@ -36,8 +36,6 @@ type Page struct {
 	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
 
-	viewport *proto.PageVisualViewport
-
 	event *kit.Observable
 }
 
@@ -166,13 +164,12 @@ func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error 
 	return err
 }
 
-// GetViewport sets and returns the current viewport
-func (p *Page) GetViewport() (*proto.PageVisualViewport, error) {
+// GetViewportE sets and returns the current viewport
+func (p *Page) GetViewportE() (*proto.PageVisualViewport, error) {
 	view, err := proto.PageGetLayoutMetrics{}.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	p.viewport = view.VisualViewport
 	return view.VisualViewport, nil
 }
 
