@@ -19,6 +19,18 @@ type S struct {
 	page    *rod.Page
 }
 
+func Test(t *testing.T) {
+	s := new(S)
+	s.browser = rod.New().Trace(true).Client(nil).Connect()
+
+	defer s.browser.Close()
+
+	s.page = s.browser.Page("")
+	s.page.Viewport(800, 600, 1, false)
+
+	suite.Run(t, s)
+}
+
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
 func srcFile(path string) string {
 	return "file://" + file(path)
@@ -45,16 +57,4 @@ func serve() (string, *gin.Engine, func()) {
 	url := "http://" + srv.Listener.Addr().String()
 
 	return url, srv.Engine, func() { kit.E(srv.Listener.Close()) }
-}
-
-func Test(t *testing.T) {
-	s := new(S)
-	s.browser = rod.New().Trace(true).Client(nil).Connect()
-
-	defer s.browser.Close()
-
-	s.page = s.browser.Page("")
-	s.page.Viewport(800, 600, 1, false)
-
-	suite.Run(t, s)
 }
