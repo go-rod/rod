@@ -144,13 +144,9 @@ func (s *S) TestGetViewport() {
 	defer page.Close()
 	page.Viewport(1200, 400, 0, false)
 	view, _ := page.GetViewportE()
-	res := page.Eval(`() => ({w: window.innerWidth, h: window.innerHeight})`)
-	s.EqualValues(res.Get("w").Int(), view.ClientWidth)
-	s.EqualValues(res.Get("h").Int(), view.ClientHeight)
-
-	body := page.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
-	s.EqualValues(body.Get("w").Int(), view.ClientWidth)
-	s.EqualValues(body.Get("h").Int(), view.ClientHeight)
+	res := page.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
+	s.EqualValues(res.Get("w").Int(), int64(view.ClientWidth))
+	s.EqualValues(res.Get("h").Int(), int64(view.ClientHeight))
 }
 
 func (s *S) TestPageAddScriptTag() {
