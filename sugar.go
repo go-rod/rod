@@ -219,7 +219,7 @@ func (p *Page) FullScreenshot(toFile ...string) []byte {
 	p.WaitLoad()
 	res, err := proto.PageGetLayoutMetrics{}.Call(p)
 	kit.E(err)
-	p.Viewport(int64(res.ContentSize.Width), int64(res.ContentSize.Height), 1, false)
+	defer p.Viewport(int64(res.ContentSize.Width), int64(res.ContentSize.Height), 1, false)
 	bin := p.Screenshot(toFile...)
 	return bin
 }
