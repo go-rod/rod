@@ -166,7 +166,7 @@ func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error 
 	return err
 }
 
-// GetViewport sets and the current viewport
+// GetViewport sets and returns the current viewport
 func (p *Page) GetViewport() (*proto.PageVisualViewport, error) {
 	view, err := proto.PageGetLayoutMetrics{}.Call(p)
 	if err != nil {
