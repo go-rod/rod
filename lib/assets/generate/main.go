@@ -53,7 +53,7 @@ func lint() {
 
 	// install eslint if we don't have it
 	if err != nil {
-		kit.Exec("npm", "i").MustDo()
+		kit.Exec("npm", "i", "--no-audit", "--no-fund").MustDo()
 		eslint, err = lookpath.LookPath(slash("node_modules/.bin"), "eslint")
 		kit.E(err)
 	}
