@@ -139,6 +139,16 @@ func (s *S) TestSetViewport() {
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
+func (s *S) TestGetViewport() {
+	page := s.browser.Page(srcFile("fixtures/scroll.html"))
+	defer page.Close()
+	page.Viewport(1200, 400, 0, false)
+	view, _ := page.GetViewportE()
+	res := page.Eval(`() => ({w: window.innerWidth, h: window.innerHeight})`)
+	s.EqualValues(res.Get("w").Int(), view.Width)
+	s.EqualValues(res.Get("h").Int(), view.Height)
+}
+
 func (s *S) TestPageAddScriptTag() {
 	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
 

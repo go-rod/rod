@@ -204,6 +204,13 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 	}
 }
 
+// GetViewport returns the current viewport
+func (p *Page) GetViewport() proto.EmulationSetDeviceMetricsOverride {
+	view, err := p.GetViewportE()
+	kit.E(err)
+	return view
+}
+
 // Screenshot the page and returns the binary of the image
 // If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) Screenshot(toFile ...string) []byte {
