@@ -5,7 +5,6 @@ package rod
 import (
 	"net/http"
 	"path/filepath"
-	"strconv"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -216,12 +215,14 @@ func (p *Page) Screenshot(toFile ...string) []byte {
 
 // FullScreenshot gets the full height of the page and returns the binary of the image.
 // Uses an internal JavaScript function to get the client height.
-func (p *Page) FullScreenshot(toFile ...string) []byte {
+func (p *Page) FullScreenshot(fullHD bool, toFile ...string) []byte {
 	p.WaitLoad()
-	height := p.Eval(`() => document.body.clientHeight`).String()
-	heightToInt, err := strconv.ParseInt(height, 10, 64)
-	kit.E(err)
-	p.Viewport(1920, heightToInt, 1, false)
+	size := p.Eval(`() => ({w: document.body.clientWidth, h: document.body.clientHeight})`)
+	if fullHD {
+		p.Viewport(1920, size.Get("h").Int(), 1, false)
+	} else {
+		p.Viewport(size.Get("w").Int(), size.Get("h").Int(), 1, false)
+	}
 	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
 	kit.E(err)
 	kit.E(saveScreenshot(bin, toFile))
