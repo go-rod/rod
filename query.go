@@ -40,22 +40,26 @@ type Pages []*Page
 // Find the page that has the specified element with the css selector
 func (ps Pages) Find(selector string) *Page {
 	for _, page := range ps {
-		if page.WaitLoad().Has(selector) {
+		if page.Has(selector) {
 			return page
 		}
 	}
 	return nil
 }
 
-// FindByURL returns the page that has the url that matches the regex
-func (ps Pages) FindByURL(regex string) *Page {
+// FindByURLE returns the page that has the url that matches the regex
+func (ps Pages) FindByURLE(regex string) (*Page, error) {
 	for _, page := range ps {
-		url := page.Eval(`() => location.href`).String()
+		res, err := page.EvalE(true, "", `() => location.href`, nil)
+		if err != nil {
+			return nil, err
+		}
+		url := res.Value.String()
 		if regexp.MustCompile(regex).MatchString(url) {
-			return page
+			return page, nil
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 // HasE doc is the same as the method Has

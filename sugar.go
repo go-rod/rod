@@ -72,6 +72,13 @@ func (b *Browser) HandleAuth(username, password string) {
 	go func() { kit.E(wait()) }()
 }
 
+// FindByURL returns the page that has the url that matches the regex
+func (ps Pages) FindByURL(regex string) *Page {
+	p, err := ps.FindByURLE(regex)
+	kit.E(err)
+	return p
+}
+
 // Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
 func (p *Page) Cookies(urls ...string) []*proto.NetworkCookie {
