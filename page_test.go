@@ -352,12 +352,18 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	p := s.page.Navigate(srcFile("fixtures/scroll.html")).WaitLoad()
-	p.Mouse.Scroll(100, 200)
-	kit.E(p.Mouse.ScrollE(200, 300, 5))
-	p.Element("button").WaitStable()
-	s.EqualValues(300, p.Eval("() => window.pageXOffset").Int())
-	s.EqualValues(500, p.Eval("() => window.pageYOffset").Int())
+	for range make([]kit.Nil, 10) {
+		p := s.page.Navigate(srcFile("fixtures/scroll.html")).WaitLoad()
+		p.Mouse.Scroll(100, 200)
+		kit.E(p.Mouse.ScrollE(200, 300, 5))
+		p.Element("button").WaitStable()
+		offset := p.Eval("() => ({x: window.pageXOffset, y: window.pageYOffset})")
+		if offset.Get("x").Int() == 300 {
+			s.EqualValues(500, offset.Get("y").Int())
+			return
+		}
+	}
+	s.FailNow("scroll doesn't work as expected")
 }
 
 func (s *S) TestPageOthers() {
