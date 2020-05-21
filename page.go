@@ -35,6 +35,7 @@ type Page struct {
 	element             *Element                    // iframe only
 	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	getDownloadFileLock *sync.Mutex
+	viewport            *proto.EmulationSetDeviceMetricsOverride
 
 	event *kit.Observable
 }
@@ -160,26 +161,9 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 
 // ViewportE doc is the same as the method Viewport
 func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
+	p.viewport = params
 	err := params.Call(p)
 	return err
-}
-
-// GetViewportE returns the current viewport. It tries best to simulate the result of
-func (p *Page) GetViewportE() (*proto.EmulationSetDeviceMetricsOverride, error) {
-	size, err := p.EvalE(true, "", `() => ({w: window.innerWidth, h: window.innerHeight})`, nil)
-	if err != nil {
-		return nil, err
-	}
-	view, err := proto.PageGetLayoutMetrics{}.Call(p)
-	if err != nil {
-		return nil, err
-	}
-
-	return &proto.EmulationSetDeviceMetricsOverride{
-		Width:  size.Value.Get("w").Int(),
-		Height: size.Value.Get("h").Int(),
-		Scale:  view.VisualViewport.Scale,
-	}, nil
 }
 
 // StopLoadingE forces the page stop all navigations and pending resource fetches.
@@ -298,12 +282,35 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
-func (p *Page) ScreenshotE(req *proto.PageCaptureScreenshot) ([]byte, error) {
-	res, err := req.Call(p)
+func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
+	if fullpage {
+		metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
+		if err != nil {
+			return nil, err
+		}
+
+		oldView := p.viewport
+		view := *oldView
+		view.Width = int64(metrics.ContentSize.Width)
+		view.Height = int64(metrics.ContentSize.Height)
+
+		err = p.ViewportE(&view)
+		if err != nil {
+			return nil, err
+		}
+		defer func() {
+			e := p.ViewportE(oldView)
+			if err == nil {
+				err = e
+			}
+		}()
+	}
+
+	shot, err := req.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	return res.Data, nil
+	return shot.Data, nil
 }
 
 // PDFE prints page as PDF

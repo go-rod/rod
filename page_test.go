@@ -139,16 +139,6 @@ func (s *S) TestSetViewport() {
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
-func (s *S) TestGetViewport() {
-	page := s.browser.Page(srcFile("fixtures/scroll.html"))
-	defer page.Close()
-	page.Viewport(1213, 411, 0, false)
-	view := page.GetViewport()
-	s.EqualValues(1213, view.Width)
-	s.EqualValues(411, view.Height)
-	s.EqualValues(1, view.Scale)
-}
-
 func (s *S) TestPageAddScriptTag() {
 	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
 
@@ -339,6 +329,22 @@ func (s *S) TestPageScreenshot() {
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
+func (s *S) TestScreenshotFullPage() {
+	p := s.page.Navigate(srcFile("fixtures/scroll.html"))
+	p.Element("button")
+	data := p.ScreenshotFullPage()
+	img, err := png.Decode(bytes.NewBuffer(data))
+	kit.E(err)
+	res := p.Eval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	s.EqualValues(res.Get("w").Int(), img.Bounds().Dx())
+	s.EqualValues(res.Get("h").Int(), img.Bounds().Dy())
+
+	// after the full page screenshot the window size should be the same as before
+	res = p.Eval(`() => ({w: innerWidth, h: innerHeight})`)
+	s.EqualValues(800, res.Get("w").Int())
+	s.EqualValues(600, res.Get("h").Int())
+}
+
 func (s *S) TestPageInput() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
@@ -442,7 +448,7 @@ func (s *S) TestPageErrors() {
 	_, err = p.Context(ctx).GetDownloadFileE("", "")
 	s.Error(err)
 
-	_, err = p.Context(ctx).ScreenshotE(&proto.PageCaptureScreenshot{})
+	_, err = p.Context(ctx).ScreenshotE(false, &proto.PageCaptureScreenshot{})
 	s.Error(err)
 
 	err = p.Context(ctx).PauseE()

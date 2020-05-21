@@ -382,7 +382,7 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 		opts.Quality = int64(quality)
 	}
 
-	return el.page.Root().ScreenshotE(opts)
+	return el.page.Root().ScreenshotE(false, opts)
 }
 
 // ReleaseE doc is the same as the method Release

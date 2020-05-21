@@ -211,19 +211,19 @@ func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte
 	}
 }
 
-// GetViewport returns the current viewport
-func (p *Page) GetViewport() *proto.EmulationSetDeviceMetricsOverride {
-	view, err := p.GetViewportE()
-	kit.E(err)
-	return view
-}
-
 // Screenshot the page and returns the binary of the image
 // If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) Screenshot(toFile ...string) []byte {
-	bin, err := p.ScreenshotE(&proto.PageCaptureScreenshot{})
+	bin, err := p.ScreenshotE(false, &proto.PageCaptureScreenshot{})
 	kit.E(err)
 	kit.E(saveScreenshot(bin, toFile))
+	return bin
+}
+
+// ScreenshotFullPage including all scrollable content and returns the binary of the image.
+func (p *Page) ScreenshotFullPage(toFile ...string) []byte {
+	bin, err := p.ScreenshotE(true, &proto.PageCaptureScreenshot{})
+	kit.E(err)
 	return bin
 }
 
