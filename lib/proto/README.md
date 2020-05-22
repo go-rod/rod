@@ -1,3 +1,3 @@
 # Overview
 
-This lib is standalone, you can use it independently.
+This lib is standalone, you can use it independently. Such as use it to encode/decode JSON with other libs that can drive chrome.

@@ -28,7 +28,7 @@ You can find examples from [here](examples_test.go) or [here](lib/examples).
 
 For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
-You can also search the github issues, they contain a lot of usage examples too.
+You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [gitter room](https://gitter.im/ysmood-rod/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).
 
@@ -38,7 +38,9 @@ Here's the common start process of Rod:
 
 1. Try to connect to a Chrome Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
 
-1. Use the JSON-RPC protocol to talk to the browser endpoint to control it. The lib to handle it is  [here](lib/cdp).
+1. Use the JSON-RPC to talk to the browser endpoint to control it. The client to handle it is [here](lib/cdp).
+
+1. The type definitions of the data transmitted via JSON-RPC are handled by this [lib](lib/proto).
 
 1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/assets).
 
