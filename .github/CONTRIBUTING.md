@@ -39,10 +39,10 @@ The entry point of all tests is the `setup_test.go` file.
 
 Example to run a single test: `go test -v -run Test/Click`, `Click` is the pattern to match the test function name.
 
-Disable headless mode: `rod=show go test -v -run Test/Click`.
+To disable headless mode: `rod=show go test -v -run Test/Click`.
 
-Disable headless and use chrome that is inside docker:
+To disable headless and use chrome that is inside docker:
 
 1. `docker run --rm -p 9222:9222 -v $(pwd):$(pwd) -w $(pwd) ysmood/rod`
 
-2. `rod=remote,monitor go test -v Test/Click`
+2. `rod=remote,monitor go test -v -run Test/Click`

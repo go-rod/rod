@@ -125,7 +125,7 @@ func Example_wait_for_request() {
 	page.Element("#search_form_input_homepage").Click().Input("test")
 	wait()
 
-	// we must get several suggestion items
+	// we must be able to get several suggestion items
 	fmt.Println(len(page.Elements(".search__autocomplete .acp")) > 0)
 
 	// Output: true

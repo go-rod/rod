@@ -70,7 +70,7 @@ So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
 ### Q: How to contribute
 
-Please check this [file](.github/CONTRIBUTING.md).
+Please check this [doc](.github/CONTRIBUTING.md).
 
 ### Q: How versioning is handled
 
