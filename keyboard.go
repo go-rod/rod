@@ -48,6 +48,11 @@ func (k *Keyboard) UpE(key rune) error {
 
 // PressE doc is the same as the method Press
 func (k *Keyboard) PressE(key rune) error {
+	if k.page.browser.trace {
+		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
+	}
+	k.page.browser.trySlowmotion()
+
 	actions := input.Encode(key)
 
 	k.Lock()
@@ -67,6 +72,11 @@ func (k *Keyboard) PressE(key rune) error {
 
 // InsertTextE doc is the same as the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
+	if k.page.browser.trace {
+		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()
+	}
+	k.page.browser.trySlowmotion()
+
 	err := proto.InputInsertText{Text: text}.Call(k.page)
 	return err
 }

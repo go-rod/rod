@@ -23,6 +23,162 @@ type Element struct {
 	ObjectID proto.RuntimeRemoteObjectID
 }
 
+// FocusE doc is the same as the method Focus
+func (el *Element) FocusE() error {
+	err := el.ScrollIntoViewE()
+	if err != nil {
+		return err
+	}
+
+	_, err = el.EvalE(true, `() => this.focus()`, nil)
+	return err
+}
+
+// ScrollIntoViewE doc is the same as the method ScrollIntoViewIfNeeded
+func (el *Element) ScrollIntoViewE() error {
+	defer el.tryTrace("scroll into view")()
+	el.page.browser.trySlowmotion()
+
+	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"), nil)
+	return err
+}
+
+// ClickE doc is the same as the method Click
+func (el *Element) ClickE(button proto.InputMouseButton) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.ScrollIntoViewE()
+	if err != nil {
+		return err
+	}
+
+	box, err := el.BoxE()
+	if err != nil {
+		return err
+	}
+
+	x := box.Left + box.Width/2
+	y := box.Top + box.Height/2
+
+	err = el.page.Mouse.MoveE(x, y, 1)
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace(string(button) + " click")()
+
+	return el.page.Mouse.ClickE(button)
+}
+
+// PressE doc is the same as the method Press
+func (el *Element) PressE(key rune) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.FocusE()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace("press " + string(key))()
+
+	return el.page.Keyboard.PressE(key)
+}
+
+// SelectTextE doc is the same as the method SelectText
+func (el *Element) SelectTextE(regex string) error {
+	err := el.FocusE()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace("select text: " + regex)()
+	el.page.browser.trySlowmotion()
+
+	_, err = el.EvalE(true, el.page.jsFn("selectText"), Array{regex})
+	return err
+}
+
+// SelectAllTextE doc is the same as the method SelectAllText
+func (el *Element) SelectAllTextE() error {
+	err := el.FocusE()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace("select all text")()
+	el.page.browser.trySlowmotion()
+
+	_, err = el.EvalE(true, el.page.jsFn("selectAllText"), nil)
+	return err
+}
+
+// InputE doc is the same as the method Input
+func (el *Element) InputE(text string) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	err = el.FocusE()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace("input " + text)()
+
+	err = el.page.Keyboard.InsertTextE(text)
+	if err != nil {
+		return err
+	}
+
+	_, err = el.EvalE(true, el.page.jsFn("inputEvent"), nil)
+	return err
+}
+
+// SelectE doc is the same as the method Select
+func (el *Element) SelectE(selectors []string) error {
+	err := el.WaitVisibleE()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace(fmt.Sprintf(
+		`<span style="color: #777;">select</span> <code>%s</code>`,
+		strings.Join(selectors, "; ")))()
+	el.page.browser.trySlowmotion()
+
+	_, err = el.EvalE(true, el.page.jsFn("select"), Array{selectors})
+	return err
+}
+
+// SetFilesE doc is the same as the method SetFiles
+func (el *Element) SetFilesE(paths []string) error {
+	absPaths := []string{}
+	for _, p := range paths {
+		absPath, err := filepath.Abs(p)
+		if err != nil {
+			return err
+		}
+		absPaths = append(absPaths, absPath)
+	}
+
+	defer el.tryTrace(fmt.Sprintf("set files: %v", absPaths))
+	el.page.browser.trySlowmotion()
+
+	err := proto.DOMSetFileInputFiles{
+		Files:    absPaths,
+		ObjectID: el.ObjectID,
+	}.Call(el)
+
+	return err
+}
+
 // DescribeE doc is the same as the method Describe
 func (el *Element) DescribeE() (*proto.DOMNode, error) {
 	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID}.Call(el)
@@ -63,157 +219,6 @@ func (el *Element) FrameE() (*Page, error) {
 	newPage.windowObjectID = ""
 
 	return &newPage, nil
-}
-
-// FocusE doc is the same as the method Focus
-func (el *Element) FocusE() error {
-	err := el.ScrollIntoViewE()
-	if err != nil {
-		return err
-	}
-
-	_, err = el.EvalE(true, `() => this.focus()`, nil)
-	return err
-}
-
-// ScrollIntoViewE doc is the same as the method ScrollIntoViewIfNeeded
-func (el *Element) ScrollIntoViewE() error {
-	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"), nil)
-	return err
-}
-
-// ClickE doc is the same as the method Click
-func (el *Element) ClickE(button proto.InputMouseButton) error {
-	err := el.WaitVisibleE()
-	if err != nil {
-		return err
-	}
-
-	err = el.ScrollIntoViewE()
-	if err != nil {
-		return err
-	}
-
-	box, err := el.BoxE()
-	if err != nil {
-		return err
-	}
-
-	x := box.Left + box.Width/2
-	y := box.Top + box.Height/2
-
-	err = el.page.Mouse.MoveE(x, y, 1)
-	if err != nil {
-		return err
-	}
-
-	if el.page.browser.trace {
-		defer el.Trace(string(button) + " click")()
-	}
-
-	return el.page.Mouse.ClickE(button)
-}
-
-// PressE doc is the same as the method Press
-func (el *Element) PressE(key rune) error {
-	err := el.WaitVisibleE()
-	if err != nil {
-		return err
-	}
-
-	err = el.FocusE()
-	if err != nil {
-		return err
-	}
-
-	if el.page.browser.trace {
-		defer el.Trace("press " + string(key))()
-	}
-
-	return el.page.Keyboard.PressE(key)
-}
-
-// SelectTextE doc is the same as the method SelectText
-func (el *Element) SelectTextE(regex string) error {
-	err := el.FocusE()
-	if err != nil {
-		return err
-	}
-	_, err = el.EvalE(true, el.page.jsFn("selectText"), Array{regex})
-	return err
-}
-
-// SelectAllTextE doc is the same as the method SelectAllText
-func (el *Element) SelectAllTextE() error {
-	err := el.FocusE()
-	if err != nil {
-		return err
-	}
-	_, err = el.EvalE(true, el.page.jsFn("selectAllText"), nil)
-	return err
-}
-
-// InputE doc is the same as the method Input
-func (el *Element) InputE(text string) error {
-	err := el.WaitVisibleE()
-	if err != nil {
-		return err
-	}
-
-	err = el.FocusE()
-	if err != nil {
-		return err
-	}
-
-	if el.page.browser.trace {
-		defer el.Trace("input " + text)()
-	}
-
-	err = el.page.Keyboard.InsertTextE(text)
-	if err != nil {
-		return err
-	}
-
-	_, err = el.EvalE(true, el.page.jsFn("inputEvent"), nil)
-	return err
-}
-
-// SelectE doc is the same as the method Select
-func (el *Element) SelectE(selectors []string) error {
-	err := el.WaitVisibleE()
-	if err != nil {
-		return err
-	}
-
-	if el.page.browser.trace {
-		defer el.Trace(fmt.Sprintf(
-			`<span style="color: #777;">select</span> <code>%s</code>`,
-			strings.Join(selectors, "; ")))()
-	}
-
-	el.page.browser.trySlowmotion("Input.select")
-
-	_, err = el.EvalE(true, el.page.jsFn("select"), Array{selectors})
-	return err
-}
-
-// SetFilesE doc is the same as the method SetFiles
-func (el *Element) SetFilesE(paths []string) error {
-	absPaths := []string{}
-	for _, p := range paths {
-		absPath, err := filepath.Abs(p)
-		if err != nil {
-			return err
-		}
-		absPaths = append(absPaths, absPath)
-	}
-
-	err := proto.DOMSetFileInputFiles{
-		Files:    absPaths,
-		ObjectID: el.ObjectID,
-	}.Call(el)
-
-	return err
 }
 
 // TextE doc is the same as the method Text

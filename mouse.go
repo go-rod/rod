@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/ysmood/rod/lib/input"
@@ -21,6 +22,11 @@ type Mouse struct {
 
 // MoveE doc is the same as the method Move
 func (m *Mouse) MoveE(x, y float64, steps int) error {
+	if m.page.browser.trace {
+		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("move (%.2f, %.2f)", x, y))()
+	}
+	m.page.browser.trySlowmotion()
+
 	if steps < 1 {
 		steps = 1
 	}
@@ -59,6 +65,11 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 
 // ScrollE doc is the same as the method Scroll
 func (m *Mouse) ScrollE(x, y float64, steps int) error {
+	if m.page.browser.trace {
+		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("scroll (%.2f, %.2f)", x, y))()
+	}
+	m.page.browser.trySlowmotion()
+
 	if steps < 1 {
 		steps = 1
 	}
@@ -144,6 +155,11 @@ func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
 
 // ClickE doc is the same as the method Click
 func (m *Mouse) ClickE(button proto.InputMouseButton) error {
+	if m.page.browser.trace {
+		defer m.page.Overlay(0, 0, 200, 0, "click "+string(button))()
+	}
+	m.page.browser.trySlowmotion()
+
 	err := m.DownE(button, 1)
 	if err != nil {
 		return err

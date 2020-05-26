@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
 
@@ -409,10 +408,6 @@ func (k *Keyboard) Up(key rune) {
 
 // Press a key
 func (k *Keyboard) Press(key rune) {
-	if k.page.browser.trace {
-		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
-	}
-
 	kit.E(k.PressE(key))
 }
 
