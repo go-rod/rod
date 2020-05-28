@@ -16,6 +16,9 @@ import (
 	"github.com/ysmood/rod/lib/proto"
 )
 
+// Page implements the proto.Caller interface
+var _ proto.Caller = &Page{}
+
 // Page represents the webpage
 type Page struct {
 	// these are the handler for ctx

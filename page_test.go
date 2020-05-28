@@ -207,13 +207,13 @@ func (s *S) TestPageWaitRequestIdle() {
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
-	s.True(time.Since(start) > sleep)
+	s.Greater(int64(time.Since(start)), int64(sleep))
 
 	wait = page.WaitRequestIdle("/r2")
 	page.Element("button").Click()
 	start = time.Now()
 	wait()
-	s.True(time.Since(start) < sleep)
+	s.Less(int64(time.Since(start)), int64(sleep))
 
 	s.Panics(func() {
 		wait()

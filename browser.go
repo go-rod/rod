@@ -16,6 +16,9 @@ import (
 	"github.com/ysmood/rod/lib/proto"
 )
 
+// Browser implements the proto.Caller interface
+var _ proto.Caller = &Browser{}
+
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
 // To check the env var you can use to quickly enable options from CLI, check here:

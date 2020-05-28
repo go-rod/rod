@@ -10,7 +10,7 @@ import (
 )
 
 // Client interface to send the request.
-// So that this lib doesn't handle any thing has side effect.
+// So that this lib doesn't handle anything has side effect.
 type Client interface {
 	Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error)
 }

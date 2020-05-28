@@ -150,22 +150,28 @@ func Example_customize_retry_strategy() {
 	// Output: q
 }
 
-// To enable or disable some special chrome launch flags
+// The launcher lib comes with a lot of default switches (flags) to launch chrome,
+// this example shows how to add or delete switches.
 func Example_customize_chrome_launch() {
 	// set custom chrome options
+	// use IDE to check the doc of launcher.New you will find out more info
 	url := launcher.New().
-		Set("disable-sync").         // add flag
-		Delete("use-mock-keychain"). // delete flag
+		Set("proxy-server", "127.0.0.1:8080"). // add a flag, here we set a http proxy
+		Delete("use-mock-keychain").           // delete a flag
 		Launch()
 
-	browser := rod.New().ControlURL(url).Connect().Timeout(time.Minute)
+	browser := rod.New().ControlURL(url).Connect()
 	defer browser.Close()
 
-	el := browser.Page("https://github.com").Element("title")
+	// auth the proxy
+	// here we use cli tool "mitmproxy --proxyauth user:pass" as an example
+	browser.HandleAuth("user", "pass")
 
-	fmt.Println(el.Text())
+	// mitmproxy needs cert config to support https, use http here as an example
+	fmt.Println(browser.Page("http://example.com/").Element("title").Text())
 
-	// Output: The world’s leading software development platform · GitHub
+	// Skip
+	// Output: Example Domain
 }
 
 // Useful when rod doesn't have the function you want, you can call the cdp interface directly easily.
@@ -180,7 +186,7 @@ func Example_direct_cdp() {
 
 	// call cdp interface directly here
 	// set the cookie before we visit the website
-	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+	// the "proto" lib contains every JSON schema you need to communicate with chrome
 	res, err := proto.NetworkSetCookie{
 		Name:  "rod",
 		Value: "test",
