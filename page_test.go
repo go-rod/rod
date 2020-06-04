@@ -290,7 +290,33 @@ func (s *S) TestMouseClick() {
 	s.True(page.Has("[a=ok]"))
 }
 
-func (s *S) TestDrag() {
+func (s *S) TestMouseDrag() {
+	page := s.page.Navigate(srcFile("fixtures/drag.html")).WaitLoad()
+	mouse := page.Mouse
+
+	wait := make(chan kit.Nil)
+	logs := []string{}
+	kit.E(proto.ConsoleEnable{}.Call(page))
+	go page.EachEvent(func(e *proto.ConsoleMessageAdded) bool {
+		logs = append(logs, e.Message.Text)
+		if e.Message.Text == "up" {
+			close(wait)
+			return true
+		}
+		return false
+	})
+
+	mouse.Move(3, 3)
+	mouse.Down("left")
+	kit.E(mouse.MoveE(60, 80, 3))
+	mouse.Up("left")
+
+	<-wait
+
+	s.Equal([]string{"move", "down", "move", "move", "move", "up"}, logs)
+}
+
+func (s *S) TestNativeDrag() {
 	s.T().Skip("not able to use mouse event to simulate it for now")
 
 	page := s.page.Navigate(srcFile("fixtures/drag.html"))
@@ -362,7 +388,8 @@ func (s *S) TestPageScroll() {
 		p := s.browser.Page(srcFile("fixtures/scroll.html")).WaitLoad()
 		defer p.Close()
 
-		p.Mouse.Scroll(100, 200)
+		p.Mouse.Scroll(0, 10)
+		p.Mouse.Scroll(100, 190)
 		kit.E(p.Mouse.ScrollE(200, 300, 5))
 		p.Element("button").WaitStable()
 		offset := p.Eval("() => ({x: window.pageXOffset, y: window.pageYOffset})")
