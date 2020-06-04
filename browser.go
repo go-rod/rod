@@ -268,6 +268,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 		browser:             b,
 		TargetID:            targetID,
 		getDownloadFileLock: &sync.Mutex{},
+		viewport:            &proto.EmulationSetDeviceMetricsOverride{},
 	}
 
 	page.Mouse = &Mouse{page: page}

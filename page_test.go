@@ -371,6 +371,14 @@ func (s *S) TestScreenshotFullPage() {
 	s.EqualValues(600, res.Get("h").Int())
 }
 
+func (s *S) TestScreenshotFullPageInit() {
+	p := s.browser.Page(srcFile("fixtures/scroll.html"))
+	defer p.Close()
+
+	// should not panic
+	p.ScreenshotFullPage()
+}
+
 func (s *S) TestPageInput() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
