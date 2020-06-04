@@ -27,7 +27,12 @@ func getSchema() gjson.Result {
 	kit.E(err)
 	parsed.Scheme = "http"
 	parsed.Path = "/json/protocol"
-	return gjson.Parse(kit.Req(parsed.String()).MustString())
+
+	data := kit.Req(parsed.String()).MustString()
+
+	kit.E(kit.OutputFile("tmp/proto.json", data, nil))
+
+	return gjson.Parse(data)
 }
 
 func mapType(n string) string {
@@ -70,9 +75,9 @@ func typeName(domain *domain, schema gjson.Result) string {
 
 	switch typeName {
 	case "NetworkTimeSinceEpoch", "InputTimeSinceEpoch":
-		typeName = "TimeSinceEpoch"
+		typeName = "*TimeSinceEpoch"
 	case "NetworkMonotonicTime":
-		typeName = "MonotonicTime"
+		typeName = "*MonotonicTime"
 	}
 
 	return typeName

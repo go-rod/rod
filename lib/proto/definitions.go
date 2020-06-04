@@ -2,8 +2,6 @@
 
 package proto
 
-import "encoding/json"
-
 // Version of cdp protocol
 const Version = "v1.3"
 
@@ -355,9 +353,7 @@ type AccessibilityDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m AccessibilityDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Accessibility.disable", m)
-	return err
+	return call("Accessibility.disable", m, nil, caller)
 }
 
 // AccessibilityEnable Enables the accessibility domain which causes `AXNodeId`s to remain consistent between method calls.
@@ -367,9 +363,7 @@ type AccessibilityEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m AccessibilityEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Accessibility.enable", m)
-	return err
+	return call("Accessibility.enable", m, nil, caller)
 }
 
 // AccessibilityGetPartialAXTree (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -390,19 +384,8 @@ type AccessibilityGetPartialAXTree struct {
 
 // Call of the command, sessionID is optional.
 func (m AccessibilityGetPartialAXTree) Call(caller Caller) (*AccessibilityGetPartialAXTreeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Accessibility.getPartialAXTree", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AccessibilityGetPartialAXTreeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Accessibility.getPartialAXTree", m, &res, caller)
 }
 
 // AccessibilityGetPartialAXTreeResult (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -419,19 +402,8 @@ type AccessibilityGetFullAXTree struct {
 
 // Call of the command, sessionID is optional.
 func (m AccessibilityGetFullAXTree) Call(caller Caller) (*AccessibilityGetFullAXTreeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Accessibility.getFullAXTree", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AccessibilityGetFullAXTreeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Accessibility.getFullAXTree", m, &res, caller)
 }
 
 // AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree
@@ -550,9 +522,7 @@ type AnimationDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.disable", m)
-	return err
+	return call("Animation.disable", m, nil, caller)
 }
 
 // AnimationEnable Enables animation domain notifications.
@@ -561,9 +531,7 @@ type AnimationEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.enable", m)
-	return err
+	return call("Animation.enable", m, nil, caller)
 }
 
 // AnimationGetCurrentTime Returns the current time of the an animation.
@@ -575,19 +543,8 @@ type AnimationGetCurrentTime struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationGetCurrentTime) Call(caller Caller) (*AnimationGetCurrentTimeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Animation.getCurrentTime", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AnimationGetCurrentTimeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Animation.getCurrentTime", m, &res, caller)
 }
 
 // AnimationGetCurrentTimeResult Returns the current time of the an animation.
@@ -603,19 +560,8 @@ type AnimationGetPlaybackRate struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationGetPlaybackRate) Call(caller Caller) (*AnimationGetPlaybackRateResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Animation.getPlaybackRate", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AnimationGetPlaybackRateResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Animation.getPlaybackRate", m, &res, caller)
 }
 
 // AnimationGetPlaybackRateResult Gets the playback rate of the document timeline.
@@ -634,9 +580,7 @@ type AnimationReleaseAnimations struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationReleaseAnimations) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.releaseAnimations", m)
-	return err
+	return call("Animation.releaseAnimations", m, nil, caller)
 }
 
 // AnimationResolveAnimation Gets the remote object of the Animation.
@@ -648,19 +592,8 @@ type AnimationResolveAnimation struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationResolveAnimation) Call(caller Caller) (*AnimationResolveAnimationResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Animation.resolveAnimation", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AnimationResolveAnimationResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Animation.resolveAnimation", m, &res, caller)
 }
 
 // AnimationResolveAnimationResult Gets the remote object of the Animation.
@@ -682,9 +615,7 @@ type AnimationSeekAnimations struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationSeekAnimations) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.seekAnimations", m)
-	return err
+	return call("Animation.seekAnimations", m, nil, caller)
 }
 
 // AnimationSetPaused Sets the paused state of a set of animations.
@@ -699,9 +630,7 @@ type AnimationSetPaused struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationSetPaused) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.setPaused", m)
-	return err
+	return call("Animation.setPaused", m, nil, caller)
 }
 
 // AnimationSetPlaybackRate Sets the playback rate of the document timeline.
@@ -713,9 +642,7 @@ type AnimationSetPlaybackRate struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationSetPlaybackRate) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.setPlaybackRate", m)
-	return err
+	return call("Animation.setPlaybackRate", m, nil, caller)
 }
 
 // AnimationSetTiming Sets the timing of an animation node.
@@ -733,9 +660,7 @@ type AnimationSetTiming struct {
 
 // Call of the command, sessionID is optional.
 func (m AnimationSetTiming) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Animation.setTiming", m)
-	return err
+	return call("Animation.setTiming", m, nil, caller)
 }
 
 // AnimationAnimationCanceled Event for when an animation has been cancelled.
@@ -825,9 +750,7 @@ type ApplicationCacheEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ApplicationCache.enable", m)
-	return err
+	return call("ApplicationCache.enable", m, nil, caller)
 }
 
 // ApplicationCacheGetApplicationCacheForFrame Returns relevant application cache data for the document in given frame.
@@ -839,19 +762,8 @@ type ApplicationCacheGetApplicationCacheForFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetApplicationCacheForFrame) Call(caller Caller) (*ApplicationCacheGetApplicationCacheForFrameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "ApplicationCache.getApplicationCacheForFrame", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ApplicationCacheGetApplicationCacheForFrameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("ApplicationCache.getApplicationCacheForFrame", m, &res, caller)
 }
 
 // ApplicationCacheGetApplicationCacheForFrameResult Returns relevant application cache data for the document in given frame.
@@ -868,19 +780,8 @@ type ApplicationCacheGetFramesWithManifests struct {
 
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetFramesWithManifests) Call(caller Caller) (*ApplicationCacheGetFramesWithManifestsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "ApplicationCache.getFramesWithManifests", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ApplicationCacheGetFramesWithManifestsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("ApplicationCache.getFramesWithManifests", m, &res, caller)
 }
 
 // ApplicationCacheGetFramesWithManifestsResult Returns array of frame identifiers with manifest urls for each frame containing a document
@@ -901,19 +802,8 @@ type ApplicationCacheGetManifestForFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetManifestForFrame) Call(caller Caller) (*ApplicationCacheGetManifestForFrameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "ApplicationCache.getManifestForFrame", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ApplicationCacheGetManifestForFrameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("ApplicationCache.getManifestForFrame", m, &res, caller)
 }
 
 // ApplicationCacheGetManifestForFrameResult Returns manifest URL for document in the given frame.
@@ -953,6 +843,118 @@ func (evt ApplicationCacheNetworkStateUpdated) MethodName() string {
 	return "ApplicationCache.networkStateUpdated"
 }
 
+// AuditsAffectedCookie Information about a cookie that is affected by an inspector issue.
+type AuditsAffectedCookie struct {
+
+	// Name The following three properties uniquely identify a cookie
+	Name string `json:"name"`
+
+	// Path ...
+	Path string `json:"path"`
+
+	// Domain ...
+	Domain string `json:"domain"`
+
+	// SiteForCookies (optional) Optionally identifies the site-for-cookies, which may be used by the
+	// front-end as additional context.
+	SiteForCookies string `json:"siteForCookies,omitempty"`
+}
+
+// AuditsSameSiteCookieExclusionReason ...
+type AuditsSameSiteCookieExclusionReason string
+
+const (
+	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax enum const
+	AuditsSameSiteCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteUnspecifiedTreatedAsLax"
+
+	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure enum const
+	AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteNoneInsecure"
+)
+
+// AuditsSameSiteCookieWarningReason ...
+type AuditsSameSiteCookieWarningReason string
+
+const (
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext AuditsSameSiteCookieWarningReason = "WarnSameSiteUnspecifiedCrossSiteContext"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteNoneInsecure enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteNoneInsecure AuditsSameSiteCookieWarningReason = "WarnSameSiteNoneInsecure"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteUnspecifiedLaxAllowUnsafe"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLMethodUnsafe enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLMethodUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlMethodUnsafe"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLLax enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLLax AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlLax"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLStrict enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlStrict"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLMethodUnsafe enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLMethodUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLLax enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLLax AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlLax"
+
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLStrict enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlStrict"
+)
+
+// AuditsSameSiteCookieIssueDetails This information is currently necessary, as the front-end has a difficult
+// time finding a specific cookie. With this, we can convey specific error
+// information without the cookie.
+type AuditsSameSiteCookieIssueDetails struct {
+
+	// CookieWarningReasons ...
+	CookieWarningReasons []AuditsSameSiteCookieWarningReason `json:"cookieWarningReasons"`
+
+	// CookieExclusionReasons ...
+	CookieExclusionReasons []AuditsSameSiteCookieExclusionReason `json:"cookieExclusionReasons"`
+}
+
+// AuditsAffectedResources ...
+type AuditsAffectedResources struct {
+
+	// Cookies (optional) ...
+	Cookies []*AuditsAffectedCookie `json:"cookies,omitempty"`
+}
+
+// AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
+// optional fields in InspectorIssueDetails to convey more specific
+// information about the kind of issue, and AffectedResources to identify
+// resources that are affected by this issue.
+type AuditsInspectorIssueCode string
+
+const (
+	// AuditsInspectorIssueCodeSameSiteCookieIssue enum const
+	AuditsInspectorIssueCodeSameSiteCookieIssue AuditsInspectorIssueCode = "SameSiteCookieIssue"
+)
+
+// AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
+// pertaining to the kind of issue. This is useful if there is a number of
+// very similar issues that only differ in details.
+type AuditsInspectorIssueDetails struct {
+
+	// SameSiteCookieIssueDetails (optional) ...
+	SameSiteCookieIssueDetails *AuditsSameSiteCookieIssueDetails `json:"sameSiteCookieIssueDetails,omitempty"`
+}
+
+// AuditsInspectorIssue An inspector issue reported from the back-end.
+type AuditsInspectorIssue struct {
+
+	// Code ...
+	Code AuditsInspectorIssueCode `json:"code"`
+
+	// Details ...
+	Details *AuditsInspectorIssueDetails `json:"details"`
+
+	// Resources ...
+	Resources *AuditsAffectedResources `json:"resources"`
+}
+
 // AuditsGetEncodedResponseEncoding enum
 type AuditsGetEncodedResponseEncoding string
 
@@ -986,19 +988,8 @@ type AuditsGetEncodedResponse struct {
 
 // Call of the command, sessionID is optional.
 func (m AuditsGetEncodedResponse) Call(caller Caller) (*AuditsGetEncodedResponseResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Audits.getEncodedResponse", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res AuditsGetEncodedResponseResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Audits.getEncodedResponse", m, &res, caller)
 }
 
 // AuditsGetEncodedResponseResult Returns the response body and size if it were re-encoded with the specified settings. Only
@@ -1013,6 +1004,37 @@ type AuditsGetEncodedResponseResult struct {
 
 	// EncodedSize Size after re-encoding.
 	EncodedSize int64 `json:"encodedSize"`
+}
+
+// AuditsDisable Disables issues domain, prevents further issues from being reported to the client.
+type AuditsDisable struct {
+}
+
+// Call of the command, sessionID is optional.
+func (m AuditsDisable) Call(caller Caller) error {
+	return call("Audits.disable", m, nil, caller)
+}
+
+// AuditsEnable Enables issues domain, sends the issues collected so far to the client by means of the
+// `issueAdded` event.
+type AuditsEnable struct {
+}
+
+// Call of the command, sessionID is optional.
+func (m AuditsEnable) Call(caller Caller) error {
+	return call("Audits.enable", m, nil, caller)
+}
+
+// AuditsIssueAdded ...
+type AuditsIssueAdded struct {
+
+	// Issue ...
+	Issue *AuditsInspectorIssue `json:"issue"`
+}
+
+// MethodName interface
+func (evt AuditsIssueAdded) MethodName() string {
+	return "Audits.issueAdded"
 }
 
 // BackgroundServiceServiceName The Background Service that will be associated with the commands/events.
@@ -1054,7 +1076,7 @@ type BackgroundServiceEventMetadata struct {
 type BackgroundServiceBackgroundServiceEvent struct {
 
 	// Timestamp Timestamp of the event (in seconds).
-	Timestamp TimeSinceEpoch `json:"timestamp"`
+	Timestamp *TimeSinceEpoch `json:"timestamp"`
 
 	// Origin The origin this event belongs to.
 	Origin string `json:"origin"`
@@ -1084,9 +1106,7 @@ type BackgroundServiceStartObserving struct {
 
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceStartObserving) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "BackgroundService.startObserving", m)
-	return err
+	return call("BackgroundService.startObserving", m, nil, caller)
 }
 
 // BackgroundServiceStopObserving Disables event updates for the service.
@@ -1098,9 +1118,7 @@ type BackgroundServiceStopObserving struct {
 
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceStopObserving) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "BackgroundService.stopObserving", m)
-	return err
+	return call("BackgroundService.stopObserving", m, nil, caller)
 }
 
 // BackgroundServiceSetRecording Set the recording state for the service.
@@ -1115,9 +1133,7 @@ type BackgroundServiceSetRecording struct {
 
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceSetRecording) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "BackgroundService.setRecording", m)
-	return err
+	return call("BackgroundService.setRecording", m, nil, caller)
 }
 
 // BackgroundServiceClearEvents Clears all stored data for the service.
@@ -1129,9 +1145,7 @@ type BackgroundServiceClearEvents struct {
 
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceClearEvents) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "BackgroundService.clearEvents", m)
-	return err
+	return call("BackgroundService.clearEvents", m, nil, caller)
 }
 
 // BackgroundServiceRecordingStateChanged Called when the recording state for the service has been updated.
@@ -1340,8 +1354,8 @@ type BrowserHistogram struct {
 // BrowserSetPermission (experimental) Set permission settings for given origin.
 type BrowserSetPermission struct {
 
-	// Origin Origin the permission applies to.
-	Origin string `json:"origin"`
+	// Origin (optional) Origin the permission applies to, all origins if not specified.
+	Origin string `json:"origin,omitempty"`
 
 	// Permission Descriptor of permission to override.
 	Permission *BrowserPermissionDescriptor `json:"permission"`
@@ -1355,16 +1369,14 @@ type BrowserSetPermission struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserSetPermission) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.setPermission", m)
-	return err
+	return call("Browser.setPermission", m, nil, caller)
 }
 
 // BrowserGrantPermissions (experimental) Grant specific permissions to the given origin and reject all others.
 type BrowserGrantPermissions struct {
 
-	// Origin ...
-	Origin string `json:"origin"`
+	// Origin (optional) Origin the permission applies to, all origins if not specified.
+	Origin string `json:"origin,omitempty"`
 
 	// Permissions ...
 	Permissions []BrowserPermissionType `json:"permissions"`
@@ -1375,9 +1387,7 @@ type BrowserGrantPermissions struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGrantPermissions) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.grantPermissions", m)
-	return err
+	return call("Browser.grantPermissions", m, nil, caller)
 }
 
 // BrowserResetPermissions (experimental) Reset all permission management for all origins.
@@ -1389,9 +1399,45 @@ type BrowserResetPermissions struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserResetPermissions) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.resetPermissions", m)
-	return err
+	return call("Browser.resetPermissions", m, nil, caller)
+}
+
+// BrowserSetDownloadBehaviorBehavior enum
+type BrowserSetDownloadBehaviorBehavior string
+
+const (
+	// BrowserSetDownloadBehaviorBehaviorDeny enum const
+	BrowserSetDownloadBehaviorBehaviorDeny BrowserSetDownloadBehaviorBehavior = "deny"
+
+	// BrowserSetDownloadBehaviorBehaviorAllow enum const
+	BrowserSetDownloadBehaviorBehaviorAllow BrowserSetDownloadBehaviorBehavior = "allow"
+
+	// BrowserSetDownloadBehaviorBehaviorAllowAndName enum const
+	BrowserSetDownloadBehaviorBehaviorAllowAndName BrowserSetDownloadBehaviorBehavior = "allowAndName"
+
+	// BrowserSetDownloadBehaviorBehaviorDefault enum const
+	BrowserSetDownloadBehaviorBehaviorDefault BrowserSetDownloadBehaviorBehavior = "default"
+)
+
+// BrowserSetDownloadBehavior (experimental) Set the behavior when downloading a file.
+type BrowserSetDownloadBehavior struct {
+
+	// Behavior Whether to allow all or deny all download requests, or use default Chrome behavior if
+	// available (otherwise deny). |allowAndName| allows download and names files according to
+	// their dowmload guids.
+	Behavior BrowserSetDownloadBehaviorBehavior `json:"behavior"`
+
+	// BrowserContextID (optional) BrowserContext to set download behavior. When omitted, default browser context is used.
+	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
+
+	// DownloadPath (optional) The default path to save downloaded files to. This is required if behavior is set to 'allow'
+	// or 'allowAndName'.
+	DownloadPath string `json:"downloadPath,omitempty"`
+}
+
+// Call of the command, sessionID is optional.
+func (m BrowserSetDownloadBehavior) Call(caller Caller) error {
+	return call("Browser.setDownloadBehavior", m, nil, caller)
 }
 
 // BrowserClose Close browser gracefully.
@@ -1400,9 +1446,7 @@ type BrowserClose struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserClose) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.close", m)
-	return err
+	return call("Browser.close", m, nil, caller)
 }
 
 // BrowserCrash (experimental) Crashes browser on the main thread.
@@ -1411,9 +1455,7 @@ type BrowserCrash struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserCrash) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.crash", m)
-	return err
+	return call("Browser.crash", m, nil, caller)
 }
 
 // BrowserCrashGpuProcess (experimental) Crashes GPU process.
@@ -1422,9 +1464,7 @@ type BrowserCrashGpuProcess struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserCrashGpuProcess) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.crashGpuProcess", m)
-	return err
+	return call("Browser.crashGpuProcess", m, nil, caller)
 }
 
 // BrowserGetVersion Returns version information.
@@ -1433,19 +1473,8 @@ type BrowserGetVersion struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetVersion) Call(caller Caller) (*BrowserGetVersionResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getVersion", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetVersionResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getVersion", m, &res, caller)
 }
 
 // BrowserGetVersionResult Returns version information.
@@ -1474,19 +1503,8 @@ type BrowserGetBrowserCommandLine struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetBrowserCommandLine) Call(caller Caller) (*BrowserGetBrowserCommandLineResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getBrowserCommandLine", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetBrowserCommandLineResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getBrowserCommandLine", m, &res, caller)
 }
 
 // BrowserGetBrowserCommandLineResult (experimental) Returns the command line switches for the browser process if, and only if
@@ -1511,19 +1529,8 @@ type BrowserGetHistograms struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetHistograms) Call(caller Caller) (*BrowserGetHistogramsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getHistograms", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetHistogramsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getHistograms", m, &res, caller)
 }
 
 // BrowserGetHistogramsResult (experimental) Get Chrome histograms.
@@ -1545,19 +1552,8 @@ type BrowserGetHistogram struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetHistogram) Call(caller Caller) (*BrowserGetHistogramResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getHistogram", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetHistogramResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getHistogram", m, &res, caller)
 }
 
 // BrowserGetHistogramResult (experimental) Get a Chrome histogram by name.
@@ -1576,19 +1572,8 @@ type BrowserGetWindowBounds struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetWindowBounds) Call(caller Caller) (*BrowserGetWindowBoundsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getWindowBounds", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetWindowBoundsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getWindowBounds", m, &res, caller)
 }
 
 // BrowserGetWindowBoundsResult (experimental) Get position and size of the browser window.
@@ -1608,19 +1593,8 @@ type BrowserGetWindowForTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserGetWindowForTarget) Call(caller Caller) (*BrowserGetWindowForTargetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Browser.getWindowForTarget", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res BrowserGetWindowForTargetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Browser.getWindowForTarget", m, &res, caller)
 }
 
 // BrowserGetWindowForTargetResult (experimental) Get the browser window that contains the devtools target.
@@ -1647,9 +1621,7 @@ type BrowserSetWindowBounds struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserSetWindowBounds) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.setWindowBounds", m)
-	return err
+	return call("Browser.setWindowBounds", m, nil, caller)
 }
 
 // BrowserSetDockTile (experimental) Set dock tile details, platform-specific.
@@ -1664,9 +1636,7 @@ type BrowserSetDockTile struct {
 
 // Call of the command, sessionID is optional.
 func (m BrowserSetDockTile) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Browser.setDockTile", m)
-	return err
+	return call("Browser.setDockTile", m, nil, caller)
 }
 
 // CSSStyleSheetID ...
@@ -2085,19 +2055,8 @@ type CSSAddRule struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSAddRule) Call(caller Caller) (*CSSAddRuleResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.addRule", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSAddRuleResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.addRule", m, &res, caller)
 }
 
 // CSSAddRuleResult Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
@@ -2117,19 +2076,8 @@ type CSSCollectClassNames struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSCollectClassNames) Call(caller Caller) (*CSSCollectClassNamesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.collectClassNames", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSCollectClassNamesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.collectClassNames", m, &res, caller)
 }
 
 // CSSCollectClassNamesResult Returns all class names from specified stylesheet.
@@ -2148,19 +2096,8 @@ type CSSCreateStyleSheet struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSCreateStyleSheet) Call(caller Caller) (*CSSCreateStyleSheetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.createStyleSheet", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSCreateStyleSheetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.createStyleSheet", m, &res, caller)
 }
 
 // CSSCreateStyleSheetResult Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
@@ -2176,9 +2113,7 @@ type CSSDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CSS.disable", m)
-	return err
+	return call("CSS.disable", m, nil, caller)
 }
 
 // CSSEnable Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been
@@ -2188,9 +2123,7 @@ type CSSEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CSS.enable", m)
-	return err
+	return call("CSS.enable", m, nil, caller)
 }
 
 // CSSForcePseudoState Ensures that the given node will have specified pseudo-classes whenever its style is computed by
@@ -2206,9 +2139,7 @@ type CSSForcePseudoState struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSForcePseudoState) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CSS.forcePseudoState", m)
-	return err
+	return call("CSS.forcePseudoState", m, nil, caller)
 }
 
 // CSSGetBackgroundColors ...
@@ -2220,19 +2151,8 @@ type CSSGetBackgroundColors struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetBackgroundColors) Call(caller Caller) (*CSSGetBackgroundColorsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getBackgroundColors", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetBackgroundColorsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getBackgroundColors", m, &res, caller)
 }
 
 // CSSGetBackgroundColorsResult ...
@@ -2262,19 +2182,8 @@ type CSSGetComputedStyleForNode struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetComputedStyleForNode) Call(caller Caller) (*CSSGetComputedStyleForNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getComputedStyleForNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetComputedStyleForNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getComputedStyleForNode", m, &res, caller)
 }
 
 // CSSGetComputedStyleForNodeResult Returns the computed style for a DOM node identified by `nodeId`.
@@ -2294,19 +2203,8 @@ type CSSGetInlineStylesForNode struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetInlineStylesForNode) Call(caller Caller) (*CSSGetInlineStylesForNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getInlineStylesForNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetInlineStylesForNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getInlineStylesForNode", m, &res, caller)
 }
 
 // CSSGetInlineStylesForNodeResult Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
@@ -2329,19 +2227,8 @@ type CSSGetMatchedStylesForNode struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetMatchedStylesForNode) Call(caller Caller) (*CSSGetMatchedStylesForNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getMatchedStylesForNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetMatchedStylesForNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getMatchedStylesForNode", m, &res, caller)
 }
 
 // CSSGetMatchedStylesForNodeResult Returns requested styles for a DOM node identified by `nodeId`.
@@ -2372,19 +2259,8 @@ type CSSGetMediaQueries struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetMediaQueries) Call(caller Caller) (*CSSGetMediaQueriesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getMediaQueries", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetMediaQueriesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getMediaQueries", m, &res, caller)
 }
 
 // CSSGetMediaQueriesResult Returns all media queries parsed by the rendering engine.
@@ -2404,19 +2280,8 @@ type CSSGetPlatformFontsForNode struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetPlatformFontsForNode) Call(caller Caller) (*CSSGetPlatformFontsForNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getPlatformFontsForNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetPlatformFontsForNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getPlatformFontsForNode", m, &res, caller)
 }
 
 // CSSGetPlatformFontsForNodeResult Requests information about platform fonts which we used to render child TextNodes in the given
@@ -2436,19 +2301,8 @@ type CSSGetStyleSheetText struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSGetStyleSheetText) Call(caller Caller) (*CSSGetStyleSheetTextResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.getStyleSheetText", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSGetStyleSheetTextResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.getStyleSheetText", m, &res, caller)
 }
 
 // CSSGetStyleSheetTextResult Returns the current textual content for a stylesheet.
@@ -2474,9 +2328,7 @@ type CSSSetEffectivePropertyValueForNode struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetEffectivePropertyValueForNode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CSS.setEffectivePropertyValueForNode", m)
-	return err
+	return call("CSS.setEffectivePropertyValueForNode", m, nil, caller)
 }
 
 // CSSSetKeyframeKey Modifies the keyframe rule key text.
@@ -2494,19 +2346,8 @@ type CSSSetKeyframeKey struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetKeyframeKey) Call(caller Caller) (*CSSSetKeyframeKeyResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.setKeyframeKey", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSSetKeyframeKeyResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.setKeyframeKey", m, &res, caller)
 }
 
 // CSSSetKeyframeKeyResult Modifies the keyframe rule key text.
@@ -2531,19 +2372,8 @@ type CSSSetMediaText struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetMediaText) Call(caller Caller) (*CSSSetMediaTextResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.setMediaText", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSSetMediaTextResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.setMediaText", m, &res, caller)
 }
 
 // CSSSetMediaTextResult Modifies the rule selector.
@@ -2568,19 +2398,8 @@ type CSSSetRuleSelector struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetRuleSelector) Call(caller Caller) (*CSSSetRuleSelectorResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.setRuleSelector", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSSetRuleSelectorResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.setRuleSelector", m, &res, caller)
 }
 
 // CSSSetRuleSelectorResult Modifies the rule selector.
@@ -2602,19 +2421,8 @@ type CSSSetStyleSheetText struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetStyleSheetText) Call(caller Caller) (*CSSSetStyleSheetTextResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.setStyleSheetText", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSSetStyleSheetTextResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.setStyleSheetText", m, &res, caller)
 }
 
 // CSSSetStyleSheetTextResult Sets the new stylesheet text.
@@ -2633,19 +2441,8 @@ type CSSSetStyleTexts struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSSetStyleTexts) Call(caller Caller) (*CSSSetStyleTextsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.setStyleTexts", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSSetStyleTextsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.setStyleTexts", m, &res, caller)
 }
 
 // CSSSetStyleTextsResult Applies specified style edits one after another in the given order.
@@ -2661,9 +2458,7 @@ type CSSStartRuleUsageTracking struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSStartRuleUsageTracking) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CSS.startRuleUsageTracking", m)
-	return err
+	return call("CSS.startRuleUsageTracking", m, nil, caller)
 }
 
 // CSSStopRuleUsageTracking Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2673,19 +2468,8 @@ type CSSStopRuleUsageTracking struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSStopRuleUsageTracking) Call(caller Caller) (*CSSStopRuleUsageTrackingResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.stopRuleUsageTracking", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSStopRuleUsageTrackingResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.stopRuleUsageTracking", m, &res, caller)
 }
 
 // CSSStopRuleUsageTrackingResult Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2703,19 +2487,8 @@ type CSSTakeCoverageDelta struct {
 
 // Call of the command, sessionID is optional.
 func (m CSSTakeCoverageDelta) Call(caller Caller) (*CSSTakeCoverageDeltaResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CSS.takeCoverageDelta", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CSSTakeCoverageDeltaResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CSS.takeCoverageDelta", m, &res, caller)
 }
 
 // CSSTakeCoverageDeltaResult Obtain list of rules that became used since last call to this method (or since start of coverage
@@ -2881,9 +2654,7 @@ type CacheStorageDeleteCache struct {
 
 // Call of the command, sessionID is optional.
 func (m CacheStorageDeleteCache) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CacheStorage.deleteCache", m)
-	return err
+	return call("CacheStorage.deleteCache", m, nil, caller)
 }
 
 // CacheStorageDeleteEntry Deletes a cache entry.
@@ -2898,9 +2669,7 @@ type CacheStorageDeleteEntry struct {
 
 // Call of the command, sessionID is optional.
 func (m CacheStorageDeleteEntry) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "CacheStorage.deleteEntry", m)
-	return err
+	return call("CacheStorage.deleteEntry", m, nil, caller)
 }
 
 // CacheStorageRequestCacheNames Requests cache names.
@@ -2912,19 +2681,8 @@ type CacheStorageRequestCacheNames struct {
 
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestCacheNames) Call(caller Caller) (*CacheStorageRequestCacheNamesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CacheStorage.requestCacheNames", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CacheStorageRequestCacheNamesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CacheStorage.requestCacheNames", m, &res, caller)
 }
 
 // CacheStorageRequestCacheNamesResult Requests cache names.
@@ -2949,19 +2707,8 @@ type CacheStorageRequestCachedResponse struct {
 
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestCachedResponse) Call(caller Caller) (*CacheStorageRequestCachedResponseResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CacheStorage.requestCachedResponse", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CacheStorageRequestCachedResponseResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CacheStorage.requestCachedResponse", m, &res, caller)
 }
 
 // CacheStorageRequestCachedResponseResult Fetches cache entry.
@@ -2989,19 +2736,8 @@ type CacheStorageRequestEntries struct {
 
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestEntries) Call(caller Caller) (*CacheStorageRequestEntriesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "CacheStorage.requestEntries", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res CacheStorageRequestEntriesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("CacheStorage.requestEntries", m, &res, caller)
 }
 
 // CacheStorageRequestEntriesResult Requests data from cache.
@@ -3042,9 +2778,7 @@ type CastEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m CastEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Cast.enable", m)
-	return err
+	return call("Cast.enable", m, nil, caller)
 }
 
 // CastDisable Stops observing for sinks and issues.
@@ -3053,9 +2787,7 @@ type CastDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m CastDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Cast.disable", m)
-	return err
+	return call("Cast.disable", m, nil, caller)
 }
 
 // CastSetSinkToUse Sets a sink to be used when the web page requests the browser to choose a
@@ -3068,9 +2800,7 @@ type CastSetSinkToUse struct {
 
 // Call of the command, sessionID is optional.
 func (m CastSetSinkToUse) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Cast.setSinkToUse", m)
-	return err
+	return call("Cast.setSinkToUse", m, nil, caller)
 }
 
 // CastStartTabMirroring Starts mirroring the tab to the sink.
@@ -3082,9 +2812,7 @@ type CastStartTabMirroring struct {
 
 // Call of the command, sessionID is optional.
 func (m CastStartTabMirroring) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Cast.startTabMirroring", m)
-	return err
+	return call("Cast.startTabMirroring", m, nil, caller)
 }
 
 // CastStopCasting Stops the active Cast session on the sink.
@@ -3096,9 +2824,7 @@ type CastStopCasting struct {
 
 // Call of the command, sessionID is optional.
 func (m CastStopCasting) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Cast.stopCasting", m)
-	return err
+	return call("Cast.stopCasting", m, nil, caller)
 }
 
 // CastSinksUpdated This is fired whenever the list of available sinks changes. A sink is a
@@ -3387,19 +3113,8 @@ type DOMCollectClassNamesFromSubtree struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMCollectClassNamesFromSubtree) Call(caller Caller) (*DOMCollectClassNamesFromSubtreeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.collectClassNamesFromSubtree", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMCollectClassNamesFromSubtreeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.collectClassNamesFromSubtree", m, &res, caller)
 }
 
 // DOMCollectClassNamesFromSubtreeResult (experimental) Collects class names for the node with given id and all of it's child nodes.
@@ -3426,19 +3141,8 @@ type DOMCopyTo struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMCopyTo) Call(caller Caller) (*DOMCopyToResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.copyTo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMCopyToResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.copyTo", m, &res, caller)
 }
 
 // DOMCopyToResult (experimental) Creates a deep copy of the specified node and places it into the target container before the
@@ -3473,19 +3177,8 @@ type DOMDescribeNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDescribeNode) Call(caller Caller) (*DOMDescribeNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.describeNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMDescribeNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.describeNode", m, &res, caller)
 }
 
 // DOMDescribeNodeResult Describes node given its id, does not require domain to be enabled. Does not start tracking any
@@ -3496,15 +3189,37 @@ type DOMDescribeNodeResult struct {
 	Node *DOMNode `json:"node"`
 }
 
+// DOMScrollIntoViewIfNeeded (experimental) Scrolls the specified rect of the given node into view if not already visible.
+// Note: exactly one between nodeId, backendNodeId and objectId should be passed
+// to identify the node.
+type DOMScrollIntoViewIfNeeded struct {
+
+	// NodeID (optional) Identifier of the node.
+	NodeID DOMNodeID `json:"nodeId,omitempty"`
+
+	// BackendNodeID (optional) Identifier of the backend node.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
+
+	// ObjectID (optional) JavaScript object id of the node wrapper.
+	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
+
+	// Rect (optional) The rect to be scrolled into view, relative to the node's border box, in CSS pixels.
+	// When omitted, center of the node will be used, similar to Element.scrollIntoView.
+	Rect *DOMRect `json:"rect,omitempty"`
+}
+
+// Call of the command, sessionID is optional.
+func (m DOMScrollIntoViewIfNeeded) Call(caller Caller) error {
+	return call("DOM.scrollIntoViewIfNeeded", m, nil, caller)
+}
+
 // DOMDisable Disables DOM agent for the given page.
 type DOMDisable struct {
 }
 
 // Call of the command, sessionID is optional.
 func (m DOMDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.disable", m)
-	return err
+	return call("DOM.disable", m, nil, caller)
 }
 
 // DOMDiscardSearchResults (experimental) Discards search results from the session with the given id. `getSearchResults` should no longer
@@ -3517,9 +3232,7 @@ type DOMDiscardSearchResults struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDiscardSearchResults) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.discardSearchResults", m)
-	return err
+	return call("DOM.discardSearchResults", m, nil, caller)
 }
 
 // DOMEnable Enables DOM agent for the given page.
@@ -3528,9 +3241,7 @@ type DOMEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.enable", m)
-	return err
+	return call("DOM.enable", m, nil, caller)
 }
 
 // DOMFocus Focuses the given element.
@@ -3548,9 +3259,7 @@ type DOMFocus struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMFocus) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.focus", m)
-	return err
+	return call("DOM.focus", m, nil, caller)
 }
 
 // DOMGetAttributes Returns attributes for the specified node.
@@ -3562,19 +3271,8 @@ type DOMGetAttributes struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetAttributes) Call(caller Caller) (*DOMGetAttributesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getAttributes", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetAttributesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getAttributes", m, &res, caller)
 }
 
 // DOMGetAttributesResult Returns attributes for the specified node.
@@ -3599,19 +3297,8 @@ type DOMGetBoxModel struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetBoxModel) Call(caller Caller) (*DOMGetBoxModelResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getBoxModel", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetBoxModelResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getBoxModel", m, &res, caller)
 }
 
 // DOMGetBoxModelResult Returns boxes for the given node.
@@ -3637,19 +3324,8 @@ type DOMGetContentQuads struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetContentQuads) Call(caller Caller) (*DOMGetContentQuadsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getContentQuads", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetContentQuadsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getContentQuads", m, &res, caller)
 }
 
 // DOMGetContentQuadsResult (experimental) Returns quads that describe node position on the page. This method
@@ -3674,19 +3350,8 @@ type DOMGetDocument struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetDocument) Call(caller Caller) (*DOMGetDocumentResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getDocument", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetDocumentResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getDocument", m, &res, caller)
 }
 
 // DOMGetDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3710,19 +3375,8 @@ type DOMGetFlattenedDocument struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetFlattenedDocument) Call(caller Caller) (*DOMGetFlattenedDocumentResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getFlattenedDocument", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetFlattenedDocumentResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getFlattenedDocument", m, &res, caller)
 }
 
 // DOMGetFlattenedDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3751,19 +3405,8 @@ type DOMGetNodeForLocation struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetNodeForLocation) Call(caller Caller) (*DOMGetNodeForLocationResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getNodeForLocation", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetNodeForLocationResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getNodeForLocation", m, &res, caller)
 }
 
 // DOMGetNodeForLocationResult Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
@@ -3795,19 +3438,8 @@ type DOMGetOuterHTML struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetOuterHTML) Call(caller Caller) (*DOMGetOuterHTMLResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getOuterHTML", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetOuterHTMLResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getOuterHTML", m, &res, caller)
 }
 
 // DOMGetOuterHTMLResult Returns node's HTML markup.
@@ -3826,19 +3458,8 @@ type DOMGetRelayoutBoundary struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetRelayoutBoundary) Call(caller Caller) (*DOMGetRelayoutBoundaryResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getRelayoutBoundary", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetRelayoutBoundaryResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getRelayoutBoundary", m, &res, caller)
 }
 
 // DOMGetRelayoutBoundaryResult (experimental) Returns the id of the nearest ancestor that is a relayout boundary.
@@ -3864,19 +3485,8 @@ type DOMGetSearchResults struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetSearchResults) Call(caller Caller) (*DOMGetSearchResultsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getSearchResults", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetSearchResultsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getSearchResults", m, &res, caller)
 }
 
 // DOMGetSearchResultsResult (experimental) Returns search results from given `fromIndex` to given `toIndex` from the search with the given
@@ -3893,9 +3503,7 @@ type DOMHideHighlight struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMHideHighlight) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.hideHighlight", m)
-	return err
+	return call("DOM.hideHighlight", m, nil, caller)
 }
 
 // DOMHighlightNode Highlights DOM node.
@@ -3904,9 +3512,7 @@ type DOMHighlightNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMHighlightNode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.highlightNode", m)
-	return err
+	return call("DOM.highlightNode", m, nil, caller)
 }
 
 // DOMHighlightRect Highlights given rectangle.
@@ -3915,9 +3521,7 @@ type DOMHighlightRect struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMHighlightRect) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.highlightRect", m)
-	return err
+	return call("DOM.highlightRect", m, nil, caller)
 }
 
 // DOMMarkUndoableState (experimental) Marks last undoable state.
@@ -3926,9 +3530,7 @@ type DOMMarkUndoableState struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMMarkUndoableState) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.markUndoableState", m)
-	return err
+	return call("DOM.markUndoableState", m, nil, caller)
 }
 
 // DOMMoveTo Moves node into the new container, places it before the given anchor.
@@ -3947,19 +3549,8 @@ type DOMMoveTo struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMMoveTo) Call(caller Caller) (*DOMMoveToResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.moveTo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMMoveToResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.moveTo", m, &res, caller)
 }
 
 // DOMMoveToResult Moves node into the new container, places it before the given anchor.
@@ -3982,19 +3573,8 @@ type DOMPerformSearch struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMPerformSearch) Call(caller Caller) (*DOMPerformSearchResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.performSearch", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMPerformSearchResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.performSearch", m, &res, caller)
 }
 
 // DOMPerformSearchResult (experimental) Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
@@ -4017,19 +3597,8 @@ type DOMPushNodeByPathToFrontend struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMPushNodeByPathToFrontend) Call(caller Caller) (*DOMPushNodeByPathToFrontendResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.pushNodeByPathToFrontend", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMPushNodeByPathToFrontendResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.pushNodeByPathToFrontend", m, &res, caller)
 }
 
 // DOMPushNodeByPathToFrontendResult (experimental) Requests that the node is sent to the caller given its path. // FIXME, use XPath
@@ -4048,19 +3617,8 @@ type DOMPushNodesByBackendIdsToFrontend struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMPushNodesByBackendIdsToFrontend) Call(caller Caller) (*DOMPushNodesByBackendIdsToFrontendResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.pushNodesByBackendIdsToFrontend", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMPushNodesByBackendIdsToFrontendResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.pushNodesByBackendIdsToFrontend", m, &res, caller)
 }
 
 // DOMPushNodesByBackendIdsToFrontendResult (experimental) Requests that a batch of nodes is sent to the caller given their backend node ids.
@@ -4083,19 +3641,8 @@ type DOMQuerySelector struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMQuerySelector) Call(caller Caller) (*DOMQuerySelectorResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.querySelector", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMQuerySelectorResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.querySelector", m, &res, caller)
 }
 
 // DOMQuerySelectorResult Executes `querySelector` on a given node.
@@ -4117,19 +3664,8 @@ type DOMQuerySelectorAll struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMQuerySelectorAll) Call(caller Caller) (*DOMQuerySelectorAllResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.querySelectorAll", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMQuerySelectorAllResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.querySelectorAll", m, &res, caller)
 }
 
 // DOMQuerySelectorAllResult Executes `querySelectorAll` on a given node.
@@ -4145,9 +3681,7 @@ type DOMRedo struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMRedo) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.redo", m)
-	return err
+	return call("DOM.redo", m, nil, caller)
 }
 
 // DOMRemoveAttribute Removes attribute with given name from an element with given id.
@@ -4162,9 +3696,7 @@ type DOMRemoveAttribute struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMRemoveAttribute) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.removeAttribute", m)
-	return err
+	return call("DOM.removeAttribute", m, nil, caller)
 }
 
 // DOMRemoveNode Removes node with given id.
@@ -4176,9 +3708,7 @@ type DOMRemoveNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMRemoveNode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.removeNode", m)
-	return err
+	return call("DOM.removeNode", m, nil, caller)
 }
 
 // DOMRequestChildNodes Requests that children of the node with given id are returned to the caller in form of
@@ -4200,9 +3730,7 @@ type DOMRequestChildNodes struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMRequestChildNodes) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.requestChildNodes", m)
-	return err
+	return call("DOM.requestChildNodes", m, nil, caller)
 }
 
 // DOMRequestNode Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -4216,19 +3744,8 @@ type DOMRequestNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMRequestNode) Call(caller Caller) (*DOMRequestNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.requestNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMRequestNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.requestNode", m, &res, caller)
 }
 
 // DOMRequestNodeResult Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -4258,19 +3775,8 @@ type DOMResolveNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMResolveNode) Call(caller Caller) (*DOMResolveNodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.resolveNode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMResolveNodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.resolveNode", m, &res, caller)
 }
 
 // DOMResolveNodeResult Resolves the JavaScript node object for a given NodeId or BackendNodeId.
@@ -4295,9 +3801,7 @@ type DOMSetAttributeValue struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetAttributeValue) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setAttributeValue", m)
-	return err
+	return call("DOM.setAttributeValue", m, nil, caller)
 }
 
 // DOMSetAttributesAsText Sets attributes on element with given id. This method is useful when user edits some existing
@@ -4317,9 +3821,7 @@ type DOMSetAttributesAsText struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetAttributesAsText) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setAttributesAsText", m)
-	return err
+	return call("DOM.setAttributesAsText", m, nil, caller)
 }
 
 // DOMSetFileInputFiles Sets files for the given file input element.
@@ -4340,9 +3842,7 @@ type DOMSetFileInputFiles struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetFileInputFiles) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setFileInputFiles", m)
-	return err
+	return call("DOM.setFileInputFiles", m, nil, caller)
 }
 
 // DOMSetNodeStackTracesEnabled (experimental) Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled.
@@ -4354,9 +3854,7 @@ type DOMSetNodeStackTracesEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeStackTracesEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setNodeStackTracesEnabled", m)
-	return err
+	return call("DOM.setNodeStackTracesEnabled", m, nil, caller)
 }
 
 // DOMGetNodeStackTraces (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -4368,19 +3866,8 @@ type DOMGetNodeStackTraces struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetNodeStackTraces) Call(caller Caller) (*DOMGetNodeStackTracesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getNodeStackTraces", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetNodeStackTracesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getNodeStackTraces", m, &res, caller)
 }
 
 // DOMGetNodeStackTracesResult (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -4400,19 +3887,8 @@ type DOMGetFileInfo struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetFileInfo) Call(caller Caller) (*DOMGetFileInfoResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getFileInfo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetFileInfoResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getFileInfo", m, &res, caller)
 }
 
 // DOMGetFileInfoResult (experimental) Returns file information for the given
@@ -4433,9 +3909,7 @@ type DOMSetInspectedNode struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetInspectedNode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setInspectedNode", m)
-	return err
+	return call("DOM.setInspectedNode", m, nil, caller)
 }
 
 // DOMSetNodeName Sets node name for a node with given id.
@@ -4450,19 +3924,8 @@ type DOMSetNodeName struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeName) Call(caller Caller) (*DOMSetNodeNameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.setNodeName", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMSetNodeNameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.setNodeName", m, &res, caller)
 }
 
 // DOMSetNodeNameResult Sets node name for a node with given id.
@@ -4484,9 +3947,7 @@ type DOMSetNodeValue struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeValue) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setNodeValue", m)
-	return err
+	return call("DOM.setNodeValue", m, nil, caller)
 }
 
 // DOMSetOuterHTML Sets node HTML markup, returns new node id.
@@ -4501,9 +3962,7 @@ type DOMSetOuterHTML struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSetOuterHTML) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.setOuterHTML", m)
-	return err
+	return call("DOM.setOuterHTML", m, nil, caller)
 }
 
 // DOMUndo (experimental) Undoes the last performed action.
@@ -4512,9 +3971,7 @@ type DOMUndo struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMUndo) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOM.undo", m)
-	return err
+	return call("DOM.undo", m, nil, caller)
 }
 
 // DOMGetFrameOwner (experimental) Returns iframe node that owns iframe with the given domain.
@@ -4526,19 +3983,8 @@ type DOMGetFrameOwner struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMGetFrameOwner) Call(caller Caller) (*DOMGetFrameOwnerResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOM.getFrameOwner", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMGetFrameOwnerResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOM.getFrameOwner", m, &res, caller)
 }
 
 // DOMGetFrameOwnerResult (experimental) Returns iframe node that owns iframe with the given domain.
@@ -4824,19 +4270,8 @@ type DOMDebuggerGetEventListeners struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerGetEventListeners) Call(caller Caller) (*DOMDebuggerGetEventListenersResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOMDebugger.getEventListeners", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMDebuggerGetEventListenersResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOMDebugger.getEventListeners", m, &res, caller)
 }
 
 // DOMDebuggerGetEventListenersResult Returns event listeners of the given object.
@@ -4858,9 +4293,7 @@ type DOMDebuggerRemoveDOMBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveDOMBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.removeDOMBreakpoint", m)
-	return err
+	return call("DOMDebugger.removeDOMBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerRemoveEventListenerBreakpoint Removes breakpoint on particular DOM event.
@@ -4875,9 +4308,7 @@ type DOMDebuggerRemoveEventListenerBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.removeEventListenerBreakpoint", m)
-	return err
+	return call("DOMDebugger.removeEventListenerBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerRemoveInstrumentationBreakpoint (experimental) Removes breakpoint on particular native event.
@@ -4889,9 +4320,7 @@ type DOMDebuggerRemoveInstrumentationBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveInstrumentationBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.removeInstrumentationBreakpoint", m)
-	return err
+	return call("DOMDebugger.removeInstrumentationBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerRemoveXHRBreakpoint Removes breakpoint from XMLHttpRequest.
@@ -4903,9 +4332,7 @@ type DOMDebuggerRemoveXHRBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveXHRBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.removeXHRBreakpoint", m)
-	return err
+	return call("DOMDebugger.removeXHRBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerSetDOMBreakpoint Sets breakpoint on particular operation with DOM.
@@ -4920,9 +4347,7 @@ type DOMDebuggerSetDOMBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetDOMBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.setDOMBreakpoint", m)
-	return err
+	return call("DOMDebugger.setDOMBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerSetEventListenerBreakpoint Sets breakpoint on particular DOM event.
@@ -4938,9 +4363,7 @@ type DOMDebuggerSetEventListenerBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetEventListenerBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.setEventListenerBreakpoint", m)
-	return err
+	return call("DOMDebugger.setEventListenerBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerSetInstrumentationBreakpoint (experimental) Sets breakpoint on particular native event.
@@ -4952,9 +4375,7 @@ type DOMDebuggerSetInstrumentationBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetInstrumentationBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.setInstrumentationBreakpoint", m)
-	return err
+	return call("DOMDebugger.setInstrumentationBreakpoint", m, nil, caller)
 }
 
 // DOMDebuggerSetXHRBreakpoint Sets breakpoint on XMLHttpRequest.
@@ -4966,9 +4387,7 @@ type DOMDebuggerSetXHRBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetXHRBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMDebugger.setXHRBreakpoint", m)
-	return err
+	return call("DOMDebugger.setXHRBreakpoint", m, nil, caller)
 }
 
 // DOMSnapshotDOMNode A Node in the DOM tree.
@@ -5319,9 +4738,7 @@ type DOMSnapshotDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMSnapshot.disable", m)
-	return err
+	return call("DOMSnapshot.disable", m, nil, caller)
 }
 
 // DOMSnapshotEnable Enables DOM snapshot agent for the given page.
@@ -5330,9 +4747,7 @@ type DOMSnapshotEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMSnapshot.enable", m)
-	return err
+	return call("DOMSnapshot.enable", m, nil, caller)
 }
 
 // DOMSnapshotGetSnapshot (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5356,19 +4771,8 @@ type DOMSnapshotGetSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotGetSnapshot) Call(caller Caller) (*DOMSnapshotGetSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOMSnapshot.getSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMSnapshotGetSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOMSnapshot.getSnapshot", m, &res, caller)
 }
 
 // DOMSnapshotGetSnapshotResult (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5405,19 +4809,8 @@ type DOMSnapshotCaptureSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotCaptureSnapshot) Call(caller Caller) (*DOMSnapshotCaptureSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOMSnapshot.captureSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMSnapshotCaptureSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOMSnapshot.captureSnapshot", m, &res, caller)
 }
 
 // DOMSnapshotCaptureSnapshotResult Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5455,9 +4848,7 @@ type DOMStorageClear struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageClear) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMStorage.clear", m)
-	return err
+	return call("DOMStorage.clear", m, nil, caller)
 }
 
 // DOMStorageDisable Disables storage tracking, prevents storage events from being sent to the client.
@@ -5466,9 +4857,7 @@ type DOMStorageDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMStorage.disable", m)
-	return err
+	return call("DOMStorage.disable", m, nil, caller)
 }
 
 // DOMStorageEnable Enables storage tracking, storage events will now be delivered to the client.
@@ -5477,9 +4866,7 @@ type DOMStorageEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMStorage.enable", m)
-	return err
+	return call("DOMStorage.enable", m, nil, caller)
 }
 
 // DOMStorageGetDOMStorageItems ...
@@ -5491,19 +4878,8 @@ type DOMStorageGetDOMStorageItems struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageGetDOMStorageItems) Call(caller Caller) (*DOMStorageGetDOMStorageItemsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "DOMStorage.getDOMStorageItems", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DOMStorageGetDOMStorageItemsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("DOMStorage.getDOMStorageItems", m, &res, caller)
 }
 
 // DOMStorageGetDOMStorageItemsResult ...
@@ -5525,9 +4901,7 @@ type DOMStorageRemoveDOMStorageItem struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageRemoveDOMStorageItem) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMStorage.removeDOMStorageItem", m)
-	return err
+	return call("DOMStorage.removeDOMStorageItem", m, nil, caller)
 }
 
 // DOMStorageSetDOMStorageItem ...
@@ -5545,9 +4919,7 @@ type DOMStorageSetDOMStorageItem struct {
 
 // Call of the command, sessionID is optional.
 func (m DOMStorageSetDOMStorageItem) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DOMStorage.setDOMStorageItem", m)
-	return err
+	return call("DOMStorage.setDOMStorageItem", m, nil, caller)
 }
 
 // DOMStorageDomStorageItemAdded ...
@@ -5651,9 +5023,7 @@ type DatabaseDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m DatabaseDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Database.disable", m)
-	return err
+	return call("Database.disable", m, nil, caller)
 }
 
 // DatabaseEnable Enables database tracking, database events will now be delivered to the client.
@@ -5662,9 +5032,7 @@ type DatabaseEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m DatabaseEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Database.enable", m)
-	return err
+	return call("Database.enable", m, nil, caller)
 }
 
 // DatabaseExecuteSQL ...
@@ -5679,19 +5047,8 @@ type DatabaseExecuteSQL struct {
 
 // Call of the command, sessionID is optional.
 func (m DatabaseExecuteSQL) Call(caller Caller) (*DatabaseExecuteSQLResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Database.executeSQL", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DatabaseExecuteSQLResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Database.executeSQL", m, &res, caller)
 }
 
 // DatabaseExecuteSQLResult ...
@@ -5716,19 +5073,8 @@ type DatabaseGetDatabaseTableNames struct {
 
 // Call of the command, sessionID is optional.
 func (m DatabaseGetDatabaseTableNames) Call(caller Caller) (*DatabaseGetDatabaseTableNamesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Database.getDatabaseTableNames", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DatabaseGetDatabaseTableNamesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Database.getDatabaseTableNames", m, &res, caller)
 }
 
 // DatabaseGetDatabaseTableNamesResult ...
@@ -5756,9 +5102,7 @@ type DeviceOrientationClearDeviceOrientationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m DeviceOrientationClearDeviceOrientationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DeviceOrientation.clearDeviceOrientationOverride", m)
-	return err
+	return call("DeviceOrientation.clearDeviceOrientationOverride", m, nil, caller)
 }
 
 // DeviceOrientationSetDeviceOrientationOverride Overrides the Device Orientation.
@@ -5776,9 +5120,7 @@ type DeviceOrientationSetDeviceOrientationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m DeviceOrientationSetDeviceOrientationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "DeviceOrientation.setDeviceOrientationOverride", m)
-	return err
+	return call("DeviceOrientation.setDeviceOrientationOverride", m, nil, caller)
 }
 
 // EmulationScreenOrientationType enum
@@ -5841,19 +5183,8 @@ type EmulationCanEmulate struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationCanEmulate) Call(caller Caller) (*EmulationCanEmulateResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Emulation.canEmulate", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res EmulationCanEmulateResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Emulation.canEmulate", m, &res, caller)
 }
 
 // EmulationCanEmulateResult Tells whether emulation is supported.
@@ -5869,9 +5200,7 @@ type EmulationClearDeviceMetricsOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationClearDeviceMetricsOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.clearDeviceMetricsOverride", m)
-	return err
+	return call("Emulation.clearDeviceMetricsOverride", m, nil, caller)
 }
 
 // EmulationClearGeolocationOverride Clears the overridden Geolocation Position and Error.
@@ -5880,9 +5209,7 @@ type EmulationClearGeolocationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationClearGeolocationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.clearGeolocationOverride", m)
-	return err
+	return call("Emulation.clearGeolocationOverride", m, nil, caller)
 }
 
 // EmulationResetPageScaleFactor (experimental) Requests that page scale factor is reset to initial values.
@@ -5891,9 +5218,7 @@ type EmulationResetPageScaleFactor struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationResetPageScaleFactor) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.resetPageScaleFactor", m)
-	return err
+	return call("Emulation.resetPageScaleFactor", m, nil, caller)
 }
 
 // EmulationSetFocusEmulationEnabled (experimental) Enables or disables simulating a focused and active page.
@@ -5905,9 +5230,7 @@ type EmulationSetFocusEmulationEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetFocusEmulationEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setFocusEmulationEnabled", m)
-	return err
+	return call("Emulation.setFocusEmulationEnabled", m, nil, caller)
 }
 
 // EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
@@ -5919,9 +5242,7 @@ type EmulationSetCPUThrottlingRate struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetCPUThrottlingRate) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setCPUThrottlingRate", m)
-	return err
+	return call("Emulation.setCPUThrottlingRate", m, nil, caller)
 }
 
 // EmulationSetDefaultBackgroundColorOverride Sets or clears an override of the default background color of the frame. This override is used
@@ -5935,9 +5256,7 @@ type EmulationSetDefaultBackgroundColorOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetDefaultBackgroundColorOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setDefaultBackgroundColorOverride", m)
-	return err
+	return call("Emulation.setDefaultBackgroundColorOverride", m, nil, caller)
 }
 
 // EmulationSetDeviceMetricsOverride Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -5986,9 +5305,7 @@ type EmulationSetDeviceMetricsOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetDeviceMetricsOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setDeviceMetricsOverride", m)
-	return err
+	return call("Emulation.setDeviceMetricsOverride", m, nil, caller)
 }
 
 // EmulationSetScrollbarsHidden (experimental) ...
@@ -6000,9 +5317,7 @@ type EmulationSetScrollbarsHidden struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetScrollbarsHidden) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setScrollbarsHidden", m)
-	return err
+	return call("Emulation.setScrollbarsHidden", m, nil, caller)
 }
 
 // EmulationSetDocumentCookieDisabled (experimental) ...
@@ -6014,9 +5329,7 @@ type EmulationSetDocumentCookieDisabled struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetDocumentCookieDisabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setDocumentCookieDisabled", m)
-	return err
+	return call("Emulation.setDocumentCookieDisabled", m, nil, caller)
 }
 
 // EmulationSetEmitTouchEventsForMouseConfiguration enum
@@ -6042,9 +5355,7 @@ type EmulationSetEmitTouchEventsForMouse struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetEmitTouchEventsForMouse) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setEmitTouchEventsForMouse", m)
-	return err
+	return call("Emulation.setEmitTouchEventsForMouse", m, nil, caller)
 }
 
 // EmulationSetEmulatedMedia Emulates the given media type or media feature for CSS media queries.
@@ -6059,9 +5370,42 @@ type EmulationSetEmulatedMedia struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetEmulatedMedia) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setEmulatedMedia", m)
-	return err
+	return call("Emulation.setEmulatedMedia", m, nil, caller)
+}
+
+// EmulationSetEmulatedVisionDeficiencyType enum
+type EmulationSetEmulatedVisionDeficiencyType string
+
+const (
+	// EmulationSetEmulatedVisionDeficiencyTypeNone enum const
+	EmulationSetEmulatedVisionDeficiencyTypeNone EmulationSetEmulatedVisionDeficiencyType = "none"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia enum const
+	EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia EmulationSetEmulatedVisionDeficiencyType = "achromatopsia"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeBlurredVision enum const
+	EmulationSetEmulatedVisionDeficiencyTypeBlurredVision EmulationSetEmulatedVisionDeficiencyType = "blurredVision"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeDeuteranopia enum const
+	EmulationSetEmulatedVisionDeficiencyTypeDeuteranopia EmulationSetEmulatedVisionDeficiencyType = "deuteranopia"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeProtanopia enum const
+	EmulationSetEmulatedVisionDeficiencyTypeProtanopia EmulationSetEmulatedVisionDeficiencyType = "protanopia"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeTritanopia enum const
+	EmulationSetEmulatedVisionDeficiencyTypeTritanopia EmulationSetEmulatedVisionDeficiencyType = "tritanopia"
+)
+
+// EmulationSetEmulatedVisionDeficiency (experimental) Emulates the given vision deficiency.
+type EmulationSetEmulatedVisionDeficiency struct {
+
+	// Type Vision deficiency to emulate.
+	Type EmulationSetEmulatedVisionDeficiencyType `json:"type"`
+}
+
+// Call of the command, sessionID is optional.
+func (m EmulationSetEmulatedVisionDeficiency) Call(caller Caller) error {
+	return call("Emulation.setEmulatedVisionDeficiency", m, nil, caller)
 }
 
 // EmulationSetGeolocationOverride Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -6080,9 +5424,7 @@ type EmulationSetGeolocationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetGeolocationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setGeolocationOverride", m)
-	return err
+	return call("Emulation.setGeolocationOverride", m, nil, caller)
 }
 
 // EmulationSetNavigatorOverrides (deprecated) (experimental) Overrides value returned by the javascript navigator object.
@@ -6094,9 +5436,7 @@ type EmulationSetNavigatorOverrides struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetNavigatorOverrides) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setNavigatorOverrides", m)
-	return err
+	return call("Emulation.setNavigatorOverrides", m, nil, caller)
 }
 
 // EmulationSetPageScaleFactor (experimental) Sets a specified page scale factor.
@@ -6108,9 +5448,7 @@ type EmulationSetPageScaleFactor struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetPageScaleFactor) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setPageScaleFactor", m)
-	return err
+	return call("Emulation.setPageScaleFactor", m, nil, caller)
 }
 
 // EmulationSetScriptExecutionDisabled Switches script execution in the page.
@@ -6122,9 +5460,7 @@ type EmulationSetScriptExecutionDisabled struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetScriptExecutionDisabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setScriptExecutionDisabled", m)
-	return err
+	return call("Emulation.setScriptExecutionDisabled", m, nil, caller)
 }
 
 // EmulationSetTouchEmulationEnabled Enables touch on platforms which do not support them.
@@ -6139,9 +5475,7 @@ type EmulationSetTouchEmulationEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetTouchEmulationEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setTouchEmulationEnabled", m)
-	return err
+	return call("Emulation.setTouchEmulationEnabled", m, nil, caller)
 }
 
 // EmulationSetVirtualTimePolicy (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -6164,24 +5498,13 @@ type EmulationSetVirtualTimePolicy struct {
 	WaitForNavigation bool `json:"waitForNavigation,omitempty"`
 
 	// InitialVirtualTime (optional) If set, base::Time::Now will be overridden to initially return this value.
-	InitialVirtualTime TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
+	InitialVirtualTime *TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetVirtualTimePolicy) Call(caller Caller) (*EmulationSetVirtualTimePolicyResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Emulation.setVirtualTimePolicy", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res EmulationSetVirtualTimePolicyResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Emulation.setVirtualTimePolicy", m, &res, caller)
 }
 
 // EmulationSetVirtualTimePolicyResult (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -6190,6 +5513,19 @@ type EmulationSetVirtualTimePolicyResult struct {
 
 	// VirtualTimeTicksBase Absolute timestamp at which virtual time was first enabled (up time in milliseconds).
 	VirtualTimeTicksBase float64 `json:"virtualTimeTicksBase"`
+}
+
+// EmulationSetLocaleOverride (experimental) Overrides default host system locale with the specified one.
+type EmulationSetLocaleOverride struct {
+
+	// Locale (optional) ICU style C locale (e.g. "en_US"). If not specified or empty, disables the override and
+	// restores default host system locale.
+	Locale string `json:"locale,omitempty"`
+}
+
+// Call of the command, sessionID is optional.
+func (m EmulationSetLocaleOverride) Call(caller Caller) error {
+	return call("Emulation.setLocaleOverride", m, nil, caller)
 }
 
 // EmulationSetTimezoneOverride (experimental) Overrides default host system timezone with the specified one.
@@ -6202,9 +5538,7 @@ type EmulationSetTimezoneOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetTimezoneOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setTimezoneOverride", m)
-	return err
+	return call("Emulation.setTimezoneOverride", m, nil, caller)
 }
 
 // EmulationSetVisibleSize (deprecated) (experimental) Resizes the frame/viewport of the page. Note that this does not affect the frame's container
@@ -6221,9 +5555,7 @@ type EmulationSetVisibleSize struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetVisibleSize) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setVisibleSize", m)
-	return err
+	return call("Emulation.setVisibleSize", m, nil, caller)
 }
 
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
@@ -6241,9 +5573,7 @@ type EmulationSetUserAgentOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetUserAgentOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Emulation.setUserAgentOverride", m)
-	return err
+	return call("Emulation.setUserAgentOverride", m, nil, caller)
 }
 
 // EmulationVirtualTimeBudgetExpired (experimental) Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
@@ -6303,19 +5633,8 @@ type HeadlessExperimentalBeginFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalBeginFrame) Call(caller Caller) (*HeadlessExperimentalBeginFrameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "HeadlessExperimental.beginFrame", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res HeadlessExperimentalBeginFrameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("HeadlessExperimental.beginFrame", m, &res, caller)
 }
 
 // HeadlessExperimentalBeginFrameResult Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
@@ -6338,9 +5657,7 @@ type HeadlessExperimentalDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeadlessExperimental.disable", m)
-	return err
+	return call("HeadlessExperimental.disable", m, nil, caller)
 }
 
 // HeadlessExperimentalEnable Enables headless events for the target.
@@ -6349,9 +5666,7 @@ type HeadlessExperimentalEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeadlessExperimental.enable", m)
-	return err
+	return call("HeadlessExperimental.enable", m, nil, caller)
 }
 
 // HeadlessExperimentalNeedsBeginFramesChanged (deprecated) Issued when the target starts or stops needing BeginFrames.
@@ -6381,9 +5696,7 @@ type IOClose struct {
 
 // Call of the command, sessionID is optional.
 func (m IOClose) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IO.close", m)
-	return err
+	return call("IO.close", m, nil, caller)
 }
 
 // IORead Read a chunk of the stream
@@ -6402,19 +5715,8 @@ type IORead struct {
 
 // Call of the command, sessionID is optional.
 func (m IORead) Call(caller Caller) (*IOReadResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IO.read", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IOReadResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IO.read", m, &res, caller)
 }
 
 // IOReadResult Read a chunk of the stream
@@ -6439,19 +5741,8 @@ type IOResolveBlob struct {
 
 // Call of the command, sessionID is optional.
 func (m IOResolveBlob) Call(caller Caller) (*IOResolveBlobResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IO.resolveBlob", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IOResolveBlobResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IO.resolveBlob", m, &res, caller)
 }
 
 // IOResolveBlobResult Return UUID of Blob object specified by a remote object id.
@@ -6614,9 +5905,7 @@ type IndexedDBClearObjectStore struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBClearObjectStore) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IndexedDB.clearObjectStore", m)
-	return err
+	return call("IndexedDB.clearObjectStore", m, nil, caller)
 }
 
 // IndexedDBDeleteDatabase Deletes a database.
@@ -6631,9 +5920,7 @@ type IndexedDBDeleteDatabase struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBDeleteDatabase) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IndexedDB.deleteDatabase", m)
-	return err
+	return call("IndexedDB.deleteDatabase", m, nil, caller)
 }
 
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store
@@ -6654,9 +5941,7 @@ type IndexedDBDeleteObjectStoreEntries struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBDeleteObjectStoreEntries) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IndexedDB.deleteObjectStoreEntries", m)
-	return err
+	return call("IndexedDB.deleteObjectStoreEntries", m, nil, caller)
 }
 
 // IndexedDBDisable Disables events from backend.
@@ -6665,9 +5950,7 @@ type IndexedDBDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IndexedDB.disable", m)
-	return err
+	return call("IndexedDB.disable", m, nil, caller)
 }
 
 // IndexedDBEnable Enables events from backend.
@@ -6676,9 +5959,7 @@ type IndexedDBEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "IndexedDB.enable", m)
-	return err
+	return call("IndexedDB.enable", m, nil, caller)
 }
 
 // IndexedDBRequestData Requests data from object store or index.
@@ -6708,19 +5989,8 @@ type IndexedDBRequestData struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestData) Call(caller Caller) (*IndexedDBRequestDataResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IndexedDB.requestData", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IndexedDBRequestDataResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IndexedDB.requestData", m, &res, caller)
 }
 
 // IndexedDBRequestDataResult Requests data from object store or index.
@@ -6748,19 +6018,8 @@ type IndexedDBGetMetadata struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBGetMetadata) Call(caller Caller) (*IndexedDBGetMetadataResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IndexedDB.getMetadata", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IndexedDBGetMetadataResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IndexedDB.getMetadata", m, &res, caller)
 }
 
 // IndexedDBGetMetadataResult Gets metadata of an object store
@@ -6787,19 +6046,8 @@ type IndexedDBRequestDatabase struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestDatabase) Call(caller Caller) (*IndexedDBRequestDatabaseResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IndexedDB.requestDatabase", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IndexedDBRequestDatabaseResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IndexedDB.requestDatabase", m, &res, caller)
 }
 
 // IndexedDBRequestDatabaseResult Requests database with given name in given frame.
@@ -6818,19 +6066,8 @@ type IndexedDBRequestDatabaseNames struct {
 
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestDatabaseNames) Call(caller Caller) (*IndexedDBRequestDatabaseNamesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "IndexedDB.requestDatabaseNames", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res IndexedDBRequestDatabaseNamesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("IndexedDB.requestDatabaseNames", m, &res, caller)
 }
 
 // IndexedDBRequestDatabaseNamesResult Requests database names for given security origin.
@@ -6931,7 +6168,7 @@ type InputDispatchKeyEvent struct {
 	Modifiers int64 `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
-	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
+	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 
 	// Text (optional) Text as generated by processing a virtual key code with a keyboard layout. Not needed for
 	// for `keyUp` and `rawKeyDown` events (default: "")
@@ -6973,9 +6210,7 @@ type InputDispatchKeyEvent struct {
 
 // Call of the command, sessionID is optional.
 func (m InputDispatchKeyEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.dispatchKeyEvent", m)
-	return err
+	return call("Input.dispatchKeyEvent", m, nil, caller)
 }
 
 // InputInsertText (experimental) This method emulates inserting text that doesn't come from a key press,
@@ -6988,9 +6223,7 @@ type InputInsertText struct {
 
 // Call of the command, sessionID is optional.
 func (m InputInsertText) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.insertText", m)
-	return err
+	return call("Input.insertText", m, nil, caller)
 }
 
 // InputDispatchMouseEventType enum
@@ -7039,7 +6272,7 @@ type InputDispatchMouseEvent struct {
 	Modifiers int64 `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
-	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
+	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 
 	// Button (optional) Mouse button (default: "none").
 	Button InputMouseButton `json:"button,omitempty"`
@@ -7063,9 +6296,7 @@ type InputDispatchMouseEvent struct {
 
 // Call of the command, sessionID is optional.
 func (m InputDispatchMouseEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.dispatchMouseEvent", m)
-	return err
+	return call("Input.dispatchMouseEvent", m, nil, caller)
 }
 
 // InputDispatchTouchEventType enum
@@ -7102,14 +6333,12 @@ type InputDispatchTouchEvent struct {
 	Modifiers int64 `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
-	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
+	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m InputDispatchTouchEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.dispatchTouchEvent", m)
-	return err
+	return call("Input.dispatchTouchEvent", m, nil, caller)
 }
 
 // InputEmulateTouchFromMouseEventType enum
@@ -7145,7 +6374,7 @@ type InputEmulateTouchFromMouseEvent struct {
 	Button InputMouseButton `json:"button"`
 
 	// Timestamp (optional) Time at which the event occurred (default: current time).
-	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
+	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 
 	// DeltaX (optional) X delta in DIP for mouse wheel event (default: 0).
 	DeltaX float64 `json:"deltaX,omitempty"`
@@ -7163,9 +6392,7 @@ type InputEmulateTouchFromMouseEvent struct {
 
 // Call of the command, sessionID is optional.
 func (m InputEmulateTouchFromMouseEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.emulateTouchFromMouseEvent", m)
-	return err
+	return call("Input.emulateTouchFromMouseEvent", m, nil, caller)
 }
 
 // InputSetIgnoreInputEvents Ignores input events (useful while auditing page).
@@ -7177,9 +6404,7 @@ type InputSetIgnoreInputEvents struct {
 
 // Call of the command, sessionID is optional.
 func (m InputSetIgnoreInputEvents) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.setIgnoreInputEvents", m)
-	return err
+	return call("Input.setIgnoreInputEvents", m, nil, caller)
 }
 
 // InputSynthesizePinchGesture (experimental) Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
@@ -7204,9 +6429,7 @@ type InputSynthesizePinchGesture struct {
 
 // Call of the command, sessionID is optional.
 func (m InputSynthesizePinchGesture) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.synthesizePinchGesture", m)
-	return err
+	return call("Input.synthesizePinchGesture", m, nil, caller)
 }
 
 // InputSynthesizeScrollGesture (experimental) Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
@@ -7254,9 +6477,7 @@ type InputSynthesizeScrollGesture struct {
 
 // Call of the command, sessionID is optional.
 func (m InputSynthesizeScrollGesture) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.synthesizeScrollGesture", m)
-	return err
+	return call("Input.synthesizeScrollGesture", m, nil, caller)
 }
 
 // InputSynthesizeTapGesture (experimental) Synthesizes a tap gesture over a time period by issuing appropriate touch events.
@@ -7281,9 +6502,7 @@ type InputSynthesizeTapGesture struct {
 
 // Call of the command, sessionID is optional.
 func (m InputSynthesizeTapGesture) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Input.synthesizeTapGesture", m)
-	return err
+	return call("Input.synthesizeTapGesture", m, nil, caller)
 }
 
 // InspectorDisable Disables inspector domain notifications.
@@ -7292,9 +6511,7 @@ type InspectorDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m InspectorDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Inspector.disable", m)
-	return err
+	return call("Inspector.disable", m, nil, caller)
 }
 
 // InspectorEnable Enables inspector domain notifications.
@@ -7303,9 +6520,7 @@ type InspectorEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m InspectorEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Inspector.enable", m)
-	return err
+	return call("Inspector.enable", m, nil, caller)
 }
 
 // InspectorDetached Fired when remote debugging connection is about to be terminated. Contains detach reason.
@@ -7462,19 +6677,8 @@ type LayerTreeCompositingReasons struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeCompositingReasons) Call(caller Caller) (*LayerTreeCompositingReasonsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.compositingReasons", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeCompositingReasonsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.compositingReasons", m, &res, caller)
 }
 
 // LayerTreeCompositingReasonsResult Provides the reasons why the given layer was composited.
@@ -7493,9 +6697,7 @@ type LayerTreeDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "LayerTree.disable", m)
-	return err
+	return call("LayerTree.disable", m, nil, caller)
 }
 
 // LayerTreeEnable Enables compositing tree inspection.
@@ -7504,9 +6706,7 @@ type LayerTreeEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "LayerTree.enable", m)
-	return err
+	return call("LayerTree.enable", m, nil, caller)
 }
 
 // LayerTreeLoadSnapshot Returns the snapshot identifier.
@@ -7518,19 +6718,8 @@ type LayerTreeLoadSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeLoadSnapshot) Call(caller Caller) (*LayerTreeLoadSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.loadSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeLoadSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.loadSnapshot", m, &res, caller)
 }
 
 // LayerTreeLoadSnapshotResult Returns the snapshot identifier.
@@ -7549,19 +6738,8 @@ type LayerTreeMakeSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeMakeSnapshot) Call(caller Caller) (*LayerTreeMakeSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.makeSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeMakeSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.makeSnapshot", m, &res, caller)
 }
 
 // LayerTreeMakeSnapshotResult Returns the layer snapshot identifier.
@@ -7589,19 +6767,8 @@ type LayerTreeProfileSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeProfileSnapshot) Call(caller Caller) (*LayerTreeProfileSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.profileSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeProfileSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.profileSnapshot", m, &res, caller)
 }
 
 // LayerTreeProfileSnapshotResult ...
@@ -7620,9 +6787,7 @@ type LayerTreeReleaseSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeReleaseSnapshot) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "LayerTree.releaseSnapshot", m)
-	return err
+	return call("LayerTree.releaseSnapshot", m, nil, caller)
 }
 
 // LayerTreeReplaySnapshot Replays the layer snapshot and returns the resulting bitmap.
@@ -7643,19 +6808,8 @@ type LayerTreeReplaySnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeReplaySnapshot) Call(caller Caller) (*LayerTreeReplaySnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.replaySnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeReplaySnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.replaySnapshot", m, &res, caller)
 }
 
 // LayerTreeReplaySnapshotResult Replays the layer snapshot and returns the resulting bitmap.
@@ -7674,19 +6828,8 @@ type LayerTreeSnapshotCommandLog struct {
 
 // Call of the command, sessionID is optional.
 func (m LayerTreeSnapshotCommandLog) Call(caller Caller) (*LayerTreeSnapshotCommandLogResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "LayerTree.snapshotCommandLog", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res LayerTreeSnapshotCommandLogResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("LayerTree.snapshotCommandLog", m, &res, caller)
 }
 
 // LayerTreeSnapshotCommandLogResult Replays the layer snapshot and returns canvas log.
@@ -7860,9 +7003,7 @@ type LogClear struct {
 
 // Call of the command, sessionID is optional.
 func (m LogClear) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Log.clear", m)
-	return err
+	return call("Log.clear", m, nil, caller)
 }
 
 // LogDisable Disables log domain, prevents further log entries from being reported to the client.
@@ -7871,9 +7012,7 @@ type LogDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m LogDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Log.disable", m)
-	return err
+	return call("Log.disable", m, nil, caller)
 }
 
 // LogEnable Enables log domain, sends the entries collected so far to the client by means of the
@@ -7883,9 +7022,7 @@ type LogEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m LogEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Log.enable", m)
-	return err
+	return call("Log.enable", m, nil, caller)
 }
 
 // LogStartViolationsReport start violation reporting.
@@ -7897,9 +7034,7 @@ type LogStartViolationsReport struct {
 
 // Call of the command, sessionID is optional.
 func (m LogStartViolationsReport) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Log.startViolationsReport", m)
-	return err
+	return call("Log.startViolationsReport", m, nil, caller)
 }
 
 // LogStopViolationsReport Stop violation reporting.
@@ -7908,9 +7043,7 @@ type LogStopViolationsReport struct {
 
 // Call of the command, sessionID is optional.
 func (m LogStopViolationsReport) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Log.stopViolationsReport", m)
-	return err
+	return call("Log.stopViolationsReport", m, nil, caller)
 }
 
 // LogEntryAdded Issued when new message was logged.
@@ -7982,19 +7115,8 @@ type MemoryGetDOMCounters struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryGetDOMCounters) Call(caller Caller) (*MemoryGetDOMCountersResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Memory.getDOMCounters", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res MemoryGetDOMCountersResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Memory.getDOMCounters", m, &res, caller)
 }
 
 // MemoryGetDOMCountersResult ...
@@ -8016,9 +7138,7 @@ type MemoryPrepareForLeakDetection struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryPrepareForLeakDetection) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.prepareForLeakDetection", m)
-	return err
+	return call("Memory.prepareForLeakDetection", m, nil, caller)
 }
 
 // MemoryForciblyPurgeJavaScriptMemory Simulate OomIntervention by purging V8 memory.
@@ -8027,9 +7147,7 @@ type MemoryForciblyPurgeJavaScriptMemory struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryForciblyPurgeJavaScriptMemory) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.forciblyPurgeJavaScriptMemory", m)
-	return err
+	return call("Memory.forciblyPurgeJavaScriptMemory", m, nil, caller)
 }
 
 // MemorySetPressureNotificationsSuppressed Enable/disable suppressing memory pressure notifications in all processes.
@@ -8041,9 +7159,7 @@ type MemorySetPressureNotificationsSuppressed struct {
 
 // Call of the command, sessionID is optional.
 func (m MemorySetPressureNotificationsSuppressed) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.setPressureNotificationsSuppressed", m)
-	return err
+	return call("Memory.setPressureNotificationsSuppressed", m, nil, caller)
 }
 
 // MemorySimulatePressureNotification Simulate a memory pressure notification in all processes.
@@ -8055,9 +7171,7 @@ type MemorySimulatePressureNotification struct {
 
 // Call of the command, sessionID is optional.
 func (m MemorySimulatePressureNotification) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.simulatePressureNotification", m)
-	return err
+	return call("Memory.simulatePressureNotification", m, nil, caller)
 }
 
 // MemoryStartSampling Start collecting native memory profile.
@@ -8072,9 +7186,7 @@ type MemoryStartSampling struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryStartSampling) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.startSampling", m)
-	return err
+	return call("Memory.startSampling", m, nil, caller)
 }
 
 // MemoryStopSampling Stop collecting native memory profile.
@@ -8083,9 +7195,7 @@ type MemoryStopSampling struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryStopSampling) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Memory.stopSampling", m)
-	return err
+	return call("Memory.stopSampling", m, nil, caller)
 }
 
 // MemoryGetAllTimeSamplingProfile Retrieve native memory allocations profile
@@ -8095,19 +7205,8 @@ type MemoryGetAllTimeSamplingProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryGetAllTimeSamplingProfile) Call(caller Caller) (*MemoryGetAllTimeSamplingProfileResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Memory.getAllTimeSamplingProfile", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res MemoryGetAllTimeSamplingProfileResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Memory.getAllTimeSamplingProfile", m, &res, caller)
 }
 
 // MemoryGetAllTimeSamplingProfileResult Retrieve native memory allocations profile
@@ -8125,19 +7224,8 @@ type MemoryGetBrowserSamplingProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryGetBrowserSamplingProfile) Call(caller Caller) (*MemoryGetBrowserSamplingProfileResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Memory.getBrowserSamplingProfile", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res MemoryGetBrowserSamplingProfileResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Memory.getBrowserSamplingProfile", m, &res, caller)
 }
 
 // MemoryGetBrowserSamplingProfileResult Retrieve native memory allocations profile
@@ -8155,19 +7243,8 @@ type MemoryGetSamplingProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m MemoryGetSamplingProfile) Call(caller Caller) (*MemoryGetSamplingProfileResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Memory.getSamplingProfile", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res MemoryGetSamplingProfileResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Memory.getSamplingProfile", m, &res, caller)
 }
 
 // MemoryGetSamplingProfileResult Retrieve native memory allocations profile collected since last
@@ -8504,7 +7581,7 @@ type NetworkSignedCertificateTimestamp struct {
 	LogID string `json:"logId"`
 
 	// Timestamp Issuance date.
-	Timestamp TimeSinceEpoch `json:"timestamp"`
+	Timestamp *TimeSinceEpoch `json:"timestamp"`
 
 	// HashAlgorithm Hash algorithm.
 	HashAlgorithm string `json:"hashAlgorithm"`
@@ -8547,10 +7624,10 @@ type NetworkSecurityDetails struct {
 	Issuer string `json:"issuer"`
 
 	// ValidFrom Certificate valid from date.
-	ValidFrom TimeSinceEpoch `json:"validFrom"`
+	ValidFrom *TimeSinceEpoch `json:"validFrom"`
 
 	// ValidTo Certificate valid to (expiration) date
-	ValidTo TimeSinceEpoch `json:"validTo"`
+	ValidTo *TimeSinceEpoch `json:"validTo"`
 
 	// SignedCertificateTimestampList List of signed certificate timestamps (SCTs).
 	SignedCertificateTimestampList []*NetworkSignedCertificateTimestamp `json:"signedCertificateTimestampList"`
@@ -8600,6 +7677,21 @@ const (
 
 	// NetworkBlockedReasonCollapsedByClient enum const
 	NetworkBlockedReasonCollapsedByClient NetworkBlockedReason = "collapsed-by-client"
+
+	// NetworkBlockedReasonCoepFrameResourceNeedsCoepHeader enum const
+	NetworkBlockedReasonCoepFrameResourceNeedsCoepHeader NetworkBlockedReason = "coep-frame-resource-needs-coep-header"
+
+	// NetworkBlockedReasonCoopSandboxedIframeCannotNavigateToCoopPage enum const
+	NetworkBlockedReasonCoopSandboxedIframeCannotNavigateToCoopPage NetworkBlockedReason = "coop-sandboxed-iframe-cannot-navigate-to-coop-page"
+
+	// NetworkBlockedReasonCorpNotSameOrigin enum const
+	NetworkBlockedReasonCorpNotSameOrigin NetworkBlockedReason = "corp-not-same-origin"
+
+	// NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep enum const
+	NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep NetworkBlockedReason = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep"
+
+	// NetworkBlockedReasonCorpNotSameSite enum const
+	NetworkBlockedReasonCorpNotSameSite NetworkBlockedReason = "corp-not-same-site"
 )
 
 // NetworkResponse HTTP response data.
@@ -8928,7 +8020,7 @@ type NetworkCookieParam struct {
 	SameSite NetworkCookieSameSite `json:"sameSite,omitempty"`
 
 	// Expires (optional) Cookie expiration date, session cookie if not set
-	Expires TimeSinceEpoch `json:"expires,omitempty"`
+	Expires *TimeSinceEpoch `json:"expires,omitempty"`
 
 	// Priority (experimental) (optional) Cookie Priority.
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
@@ -9128,19 +8220,8 @@ type NetworkCanClearBrowserCache struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkCanClearBrowserCache) Call(caller Caller) (*NetworkCanClearBrowserCacheResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.canClearBrowserCache", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkCanClearBrowserCacheResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.canClearBrowserCache", m, &res, caller)
 }
 
 // NetworkCanClearBrowserCacheResult (deprecated) Tells whether clearing browser cache is supported.
@@ -9156,19 +8237,8 @@ type NetworkCanClearBrowserCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkCanClearBrowserCookies) Call(caller Caller) (*NetworkCanClearBrowserCookiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.canClearBrowserCookies", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkCanClearBrowserCookiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.canClearBrowserCookies", m, &res, caller)
 }
 
 // NetworkCanClearBrowserCookiesResult (deprecated) Tells whether clearing browser cookies is supported.
@@ -9184,19 +8254,8 @@ type NetworkCanEmulateNetworkConditions struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkCanEmulateNetworkConditions) Call(caller Caller) (*NetworkCanEmulateNetworkConditionsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.canEmulateNetworkConditions", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkCanEmulateNetworkConditionsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.canEmulateNetworkConditions", m, &res, caller)
 }
 
 // NetworkCanEmulateNetworkConditionsResult (deprecated) Tells whether emulation of network conditions is supported.
@@ -9212,9 +8271,7 @@ type NetworkClearBrowserCache struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkClearBrowserCache) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.clearBrowserCache", m)
-	return err
+	return call("Network.clearBrowserCache", m, nil, caller)
 }
 
 // NetworkClearBrowserCookies Clears browser cookies.
@@ -9223,9 +8280,7 @@ type NetworkClearBrowserCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkClearBrowserCookies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.clearBrowserCookies", m)
-	return err
+	return call("Network.clearBrowserCookies", m, nil, caller)
 }
 
 // NetworkContinueInterceptedRequest (deprecated) (experimental) Response to Network.requestIntercepted which either modifies the request to continue with any
@@ -9268,9 +8323,7 @@ type NetworkContinueInterceptedRequest struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkContinueInterceptedRequest) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.continueInterceptedRequest", m)
-	return err
+	return call("Network.continueInterceptedRequest", m, nil, caller)
 }
 
 // NetworkDeleteCookies Deletes browser cookies with matching name and url or domain/path pair.
@@ -9292,9 +8345,7 @@ type NetworkDeleteCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkDeleteCookies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.deleteCookies", m)
-	return err
+	return call("Network.deleteCookies", m, nil, caller)
 }
 
 // NetworkDisable Disables network tracking, prevents network events from being sent to the client.
@@ -9303,9 +8354,7 @@ type NetworkDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.disable", m)
-	return err
+	return call("Network.disable", m, nil, caller)
 }
 
 // NetworkEmulateNetworkConditions Activates emulation of network conditions.
@@ -9329,9 +8378,7 @@ type NetworkEmulateNetworkConditions struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkEmulateNetworkConditions) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.emulateNetworkConditions", m)
-	return err
+	return call("Network.emulateNetworkConditions", m, nil, caller)
 }
 
 // NetworkEnable Enables network tracking, network events will now be delivered to the client.
@@ -9349,9 +8396,7 @@ type NetworkEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.enable", m)
-	return err
+	return call("Network.enable", m, nil, caller)
 }
 
 // NetworkGetAllCookies Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -9361,19 +8406,8 @@ type NetworkGetAllCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetAllCookies) Call(caller Caller) (*NetworkGetAllCookiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getAllCookies", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetAllCookiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getAllCookies", m, &res, caller)
 }
 
 // NetworkGetAllCookiesResult Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -9393,19 +8427,8 @@ type NetworkGetCertificate struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetCertificate) Call(caller Caller) (*NetworkGetCertificateResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getCertificate", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetCertificateResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getCertificate", m, &res, caller)
 }
 
 // NetworkGetCertificateResult (experimental) Returns the DER-encoded certificate.
@@ -9425,19 +8448,8 @@ type NetworkGetCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetCookies) Call(caller Caller) (*NetworkGetCookiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getCookies", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetCookiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getCookies", m, &res, caller)
 }
 
 // NetworkGetCookiesResult Returns all browser cookies for the current URL. Depending on the backend support, will return
@@ -9457,19 +8469,8 @@ type NetworkGetResponseBody struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetResponseBody) Call(caller Caller) (*NetworkGetResponseBodyResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getResponseBody", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetResponseBodyResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getResponseBody", m, &res, caller)
 }
 
 // NetworkGetResponseBodyResult Returns content served for the given request.
@@ -9491,19 +8492,8 @@ type NetworkGetRequestPostData struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetRequestPostData) Call(caller Caller) (*NetworkGetRequestPostDataResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getRequestPostData", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetRequestPostDataResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getRequestPostData", m, &res, caller)
 }
 
 // NetworkGetRequestPostDataResult Returns post data sent with the request. Returns an error when no data was sent with the request.
@@ -9522,19 +8512,8 @@ type NetworkGetResponseBodyForInterception struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkGetResponseBodyForInterception) Call(caller Caller) (*NetworkGetResponseBodyForInterceptionResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.getResponseBodyForInterception", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkGetResponseBodyForInterceptionResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.getResponseBodyForInterception", m, &res, caller)
 }
 
 // NetworkGetResponseBodyForInterceptionResult (experimental) Returns content served for the given currently intercepted request.
@@ -9559,19 +8538,8 @@ type NetworkTakeResponseBodyForInterceptionAsStream struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(caller Caller) (*NetworkTakeResponseBodyForInterceptionAsStreamResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.takeResponseBodyForInterceptionAsStream", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkTakeResponseBodyForInterceptionAsStreamResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.takeResponseBodyForInterceptionAsStream", m, &res, caller)
 }
 
 // NetworkTakeResponseBodyForInterceptionAsStreamResult (experimental) Returns a handle to the stream representing the response body. Note that after this command,
@@ -9595,9 +8563,7 @@ type NetworkReplayXHR struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkReplayXHR) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.replayXHR", m)
-	return err
+	return call("Network.replayXHR", m, nil, caller)
 }
 
 // NetworkSearchInResponseBody (experimental) Searches for given string in response content.
@@ -9618,19 +8584,8 @@ type NetworkSearchInResponseBody struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSearchInResponseBody) Call(caller Caller) (*NetworkSearchInResponseBodyResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.searchInResponseBody", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkSearchInResponseBodyResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.searchInResponseBody", m, &res, caller)
 }
 
 // NetworkSearchInResponseBodyResult (experimental) Searches for given string in response content.
@@ -9649,9 +8604,7 @@ type NetworkSetBlockedURLs struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetBlockedURLs) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setBlockedURLs", m)
-	return err
+	return call("Network.setBlockedURLs", m, nil, caller)
 }
 
 // NetworkSetBypassServiceWorker (experimental) Toggles ignoring of service worker for each request.
@@ -9663,9 +8616,7 @@ type NetworkSetBypassServiceWorker struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetBypassServiceWorker) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setBypassServiceWorker", m)
-	return err
+	return call("Network.setBypassServiceWorker", m, nil, caller)
 }
 
 // NetworkSetCacheDisabled Toggles ignoring cache for each request. If `true`, cache will not be used.
@@ -9677,9 +8628,7 @@ type NetworkSetCacheDisabled struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetCacheDisabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setCacheDisabled", m)
-	return err
+	return call("Network.setCacheDisabled", m, nil, caller)
 }
 
 // NetworkSetCookie Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -9711,7 +8660,7 @@ type NetworkSetCookie struct {
 	SameSite NetworkCookieSameSite `json:"sameSite,omitempty"`
 
 	// Expires (optional) Cookie expiration date, session cookie if not set
-	Expires TimeSinceEpoch `json:"expires,omitempty"`
+	Expires *TimeSinceEpoch `json:"expires,omitempty"`
 
 	// Priority (experimental) (optional) Cookie Priority type.
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
@@ -9719,19 +8668,8 @@ type NetworkSetCookie struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetCookie) Call(caller Caller) (*NetworkSetCookieResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Network.setCookie", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res NetworkSetCookieResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Network.setCookie", m, &res, caller)
 }
 
 // NetworkSetCookieResult Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -9750,9 +8688,7 @@ type NetworkSetCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetCookies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setCookies", m)
-	return err
+	return call("Network.setCookies", m, nil, caller)
 }
 
 // NetworkSetDataSizeLimitsForTest (experimental) For testing.
@@ -9767,9 +8703,7 @@ type NetworkSetDataSizeLimitsForTest struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetDataSizeLimitsForTest) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setDataSizeLimitsForTest", m)
-	return err
+	return call("Network.setDataSizeLimitsForTest", m, nil, caller)
 }
 
 // NetworkSetExtraHTTPHeaders Specifies whether to always send extra HTTP headers with the requests from this page.
@@ -9781,9 +8715,7 @@ type NetworkSetExtraHTTPHeaders struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetExtraHTTPHeaders) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setExtraHTTPHeaders", m)
-	return err
+	return call("Network.setExtraHTTPHeaders", m, nil, caller)
 }
 
 // NetworkSetRequestInterception (deprecated) (experimental) Sets the requests to intercept that match the provided patterns and optionally resource types.
@@ -9797,9 +8729,7 @@ type NetworkSetRequestInterception struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetRequestInterception) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setRequestInterception", m)
-	return err
+	return call("Network.setRequestInterception", m, nil, caller)
 }
 
 // NetworkSetUserAgentOverride Allows overriding user agent with the given string.
@@ -9817,9 +8747,7 @@ type NetworkSetUserAgentOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetUserAgentOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Network.setUserAgentOverride", m)
-	return err
+	return call("Network.setUserAgentOverride", m, nil, caller)
 }
 
 // NetworkDataReceived Fired when data chunk was received over the network.
@@ -9829,7 +8757,7 @@ type NetworkDataReceived struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// DataLength Data chunk length.
 	DataLength int64 `json:"dataLength"`
@@ -9850,7 +8778,7 @@ type NetworkEventSourceMessageReceived struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// EventName Message type.
 	EventName string `json:"eventName"`
@@ -9874,7 +8802,7 @@ type NetworkLoadingFailed struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// Type Resource type.
 	Type NetworkResourceType `json:"type"`
@@ -9901,7 +8829,7 @@ type NetworkLoadingFinished struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// EncodedDataLength Total number of bytes received for this request.
 	EncodedDataLength float64 `json:"encodedDataLength"`
@@ -9999,10 +8927,10 @@ type NetworkRequestWillBeSent struct {
 	Request *NetworkRequest `json:"request"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// WallTime Timestamp.
-	WallTime TimeSinceEpoch `json:"wallTime"`
+	WallTime *TimeSinceEpoch `json:"wallTime"`
 
 	// Initiator Request initiator.
 	Initiator *NetworkInitiator `json:"initiator"`
@@ -10035,7 +8963,7 @@ type NetworkResourceChangedPriority struct {
 	NewPriority NetworkResourcePriority `json:"newPriority"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
 // MethodName interface
@@ -10068,7 +8996,7 @@ type NetworkResponseReceived struct {
 	LoaderID NetworkLoaderID `json:"loaderId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// Type Resource type.
 	Type NetworkResourceType `json:"type"`
@@ -10092,7 +9020,7 @@ type NetworkWebSocketClosed struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
 // MethodName interface
@@ -10125,7 +9053,7 @@ type NetworkWebSocketFrameError struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// ErrorMessage WebSocket error message.
 	ErrorMessage string `json:"errorMessage"`
@@ -10143,7 +9071,7 @@ type NetworkWebSocketFrameReceived struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// Response WebSocket response data.
 	Response *NetworkWebSocketFrame `json:"response"`
@@ -10161,7 +9089,7 @@ type NetworkWebSocketFrameSent struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// Response WebSocket response data.
 	Response *NetworkWebSocketFrame `json:"response"`
@@ -10179,7 +9107,7 @@ type NetworkWebSocketHandshakeResponseReceived struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// Response WebSocket response data.
 	Response *NetworkWebSocketResponse `json:"response"`
@@ -10197,10 +9125,10 @@ type NetworkWebSocketWillSendHandshakeRequest struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// Timestamp Timestamp.
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// WallTime UTC Timestamp.
-	WallTime TimeSinceEpoch `json:"wallTime"`
+	WallTime *TimeSinceEpoch `json:"wallTime"`
 
 	// Request WebSocket request data.
 	Request *NetworkWebSocketRequest `json:"request"`
@@ -10325,9 +9253,7 @@ type OverlayDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.disable", m)
-	return err
+	return call("Overlay.disable", m, nil, caller)
 }
 
 // OverlayEnable Enables domain notifications.
@@ -10336,9 +9262,7 @@ type OverlayEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.enable", m)
-	return err
+	return call("Overlay.enable", m, nil, caller)
 }
 
 // OverlayGetHighlightObjectForTest For testing.
@@ -10356,19 +9280,8 @@ type OverlayGetHighlightObjectForTest struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayGetHighlightObjectForTest) Call(caller Caller) (*OverlayGetHighlightObjectForTestResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Overlay.getHighlightObjectForTest", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res OverlayGetHighlightObjectForTestResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Overlay.getHighlightObjectForTest", m, &res, caller)
 }
 
 // OverlayGetHighlightObjectForTestResult For testing.
@@ -10384,9 +9297,7 @@ type OverlayHideHighlight struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayHideHighlight) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.hideHighlight", m)
-	return err
+	return call("Overlay.hideHighlight", m, nil, caller)
 }
 
 // OverlayHighlightFrame Highlights owner element of the frame with given id.
@@ -10404,9 +9315,7 @@ type OverlayHighlightFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightFrame) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.highlightFrame", m)
-	return err
+	return call("Overlay.highlightFrame", m, nil, caller)
 }
 
 // OverlayHighlightNode Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
@@ -10431,9 +9340,7 @@ type OverlayHighlightNode struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightNode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.highlightNode", m)
-	return err
+	return call("Overlay.highlightNode", m, nil, caller)
 }
 
 // OverlayHighlightQuad Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
@@ -10451,9 +9358,7 @@ type OverlayHighlightQuad struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightQuad) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.highlightQuad", m)
-	return err
+	return call("Overlay.highlightQuad", m, nil, caller)
 }
 
 // OverlayHighlightRect Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
@@ -10480,9 +9385,7 @@ type OverlayHighlightRect struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightRect) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.highlightRect", m)
-	return err
+	return call("Overlay.highlightRect", m, nil, caller)
 }
 
 // OverlaySetInspectMode Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
@@ -10499,9 +9402,7 @@ type OverlaySetInspectMode struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetInspectMode) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setInspectMode", m)
-	return err
+	return call("Overlay.setInspectMode", m, nil, caller)
 }
 
 // OverlaySetShowAdHighlights Highlights owner element of all frames detected to be ads.
@@ -10513,9 +9414,7 @@ type OverlaySetShowAdHighlights struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowAdHighlights) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowAdHighlights", m)
-	return err
+	return call("Overlay.setShowAdHighlights", m, nil, caller)
 }
 
 // OverlaySetPausedInDebuggerMessage ...
@@ -10527,9 +9426,7 @@ type OverlaySetPausedInDebuggerMessage struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetPausedInDebuggerMessage) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setPausedInDebuggerMessage", m)
-	return err
+	return call("Overlay.setPausedInDebuggerMessage", m, nil, caller)
 }
 
 // OverlaySetShowDebugBorders Requests that backend shows debug borders on layers
@@ -10541,9 +9438,7 @@ type OverlaySetShowDebugBorders struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowDebugBorders) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowDebugBorders", m)
-	return err
+	return call("Overlay.setShowDebugBorders", m, nil, caller)
 }
 
 // OverlaySetShowFPSCounter Requests that backend shows the FPS counter
@@ -10555,9 +9450,7 @@ type OverlaySetShowFPSCounter struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowFPSCounter) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowFPSCounter", m)
-	return err
+	return call("Overlay.setShowFPSCounter", m, nil, caller)
 }
 
 // OverlaySetShowPaintRects Requests that backend shows paint rectangles
@@ -10569,9 +9462,7 @@ type OverlaySetShowPaintRects struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowPaintRects) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowPaintRects", m)
-	return err
+	return call("Overlay.setShowPaintRects", m, nil, caller)
 }
 
 // OverlaySetShowLayoutShiftRegions Requests that backend shows layout shift regions
@@ -10583,9 +9474,7 @@ type OverlaySetShowLayoutShiftRegions struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowLayoutShiftRegions) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowLayoutShiftRegions", m)
-	return err
+	return call("Overlay.setShowLayoutShiftRegions", m, nil, caller)
 }
 
 // OverlaySetShowScrollBottleneckRects Requests that backend shows scroll bottleneck rects
@@ -10597,9 +9486,7 @@ type OverlaySetShowScrollBottleneckRects struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowScrollBottleneckRects) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowScrollBottleneckRects", m)
-	return err
+	return call("Overlay.setShowScrollBottleneckRects", m, nil, caller)
 }
 
 // OverlaySetShowHitTestBorders Requests that backend shows hit-test borders on layers
@@ -10611,9 +9498,7 @@ type OverlaySetShowHitTestBorders struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowHitTestBorders) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowHitTestBorders", m)
-	return err
+	return call("Overlay.setShowHitTestBorders", m, nil, caller)
 }
 
 // OverlaySetShowViewportSizeOnResize Paints viewport size upon main frame resize.
@@ -10625,9 +9510,7 @@ type OverlaySetShowViewportSizeOnResize struct {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowViewportSizeOnResize) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Overlay.setShowViewportSizeOnResize", m)
-	return err
+	return call("Overlay.setShowViewportSizeOnResize", m, nil, caller)
 }
 
 // OverlayInspectNodeRequested Fired when the node should be inspected. This happens after call to `setInspectMode` or when
@@ -10723,7 +9606,7 @@ type PageFrameResource struct {
 	MIMEType string `json:"mimeType"`
 
 	// LastModified (optional) last-modified timestamp as reported by server.
-	LastModified TimeSinceEpoch `json:"lastModified,omitempty"`
+	LastModified *TimeSinceEpoch `json:"lastModified,omitempty"`
 
 	// ContentSize (optional) Resource content size.
 	ContentSize float64 `json:"contentSize,omitempty"`
@@ -10846,7 +9729,7 @@ type PageScreencastFrameMetadata struct {
 	ScrollOffsetY float64 `json:"scrollOffsetY"`
 
 	// Timestamp (optional) Frame swap timestamp.
-	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
+	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 }
 
 // PageDialogType Javascript dialog type.
@@ -11036,6 +9919,35 @@ type PageInstallabilityError struct {
 	ErrorArguments []*PageInstallabilityErrorArgument `json:"errorArguments"`
 }
 
+// PageReferrerPolicy (experimental) The referring-policy used for the navigation.
+type PageReferrerPolicy string
+
+const (
+	// PageReferrerPolicyNoReferrer enum const
+	PageReferrerPolicyNoReferrer PageReferrerPolicy = "noReferrer"
+
+	// PageReferrerPolicyNoReferrerWhenDowngrade enum const
+	PageReferrerPolicyNoReferrerWhenDowngrade PageReferrerPolicy = "noReferrerWhenDowngrade"
+
+	// PageReferrerPolicyOrigin enum const
+	PageReferrerPolicyOrigin PageReferrerPolicy = "origin"
+
+	// PageReferrerPolicyOriginWhenCrossOrigin enum const
+	PageReferrerPolicyOriginWhenCrossOrigin PageReferrerPolicy = "originWhenCrossOrigin"
+
+	// PageReferrerPolicySameOrigin enum const
+	PageReferrerPolicySameOrigin PageReferrerPolicy = "sameOrigin"
+
+	// PageReferrerPolicyStrictOrigin enum const
+	PageReferrerPolicyStrictOrigin PageReferrerPolicy = "strictOrigin"
+
+	// PageReferrerPolicyStrictOriginWhenCrossOrigin enum const
+	PageReferrerPolicyStrictOriginWhenCrossOrigin PageReferrerPolicy = "strictOriginWhenCrossOrigin"
+
+	// PageReferrerPolicyUnsafeURL enum const
+	PageReferrerPolicyUnsafeURL PageReferrerPolicy = "unsafeUrl"
+)
+
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
 
@@ -11045,19 +9957,8 @@ type PageAddScriptToEvaluateOnLoad struct {
 
 // Call of the command, sessionID is optional.
 func (m PageAddScriptToEvaluateOnLoad) Call(caller Caller) (*PageAddScriptToEvaluateOnLoadResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.addScriptToEvaluateOnLoad", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageAddScriptToEvaluateOnLoadResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.addScriptToEvaluateOnLoad", m, &res, caller)
 }
 
 // PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -11081,19 +9982,8 @@ type PageAddScriptToEvaluateOnNewDocument struct {
 
 // Call of the command, sessionID is optional.
 func (m PageAddScriptToEvaluateOnNewDocument) Call(caller Caller) (*PageAddScriptToEvaluateOnNewDocumentResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.addScriptToEvaluateOnNewDocument", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageAddScriptToEvaluateOnNewDocumentResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.addScriptToEvaluateOnNewDocument", m, &res, caller)
 }
 
 // PageAddScriptToEvaluateOnNewDocumentResult Evaluates given script in every frame upon creation (before loading frame's scripts).
@@ -11109,9 +9999,7 @@ type PageBringToFront struct {
 
 // Call of the command, sessionID is optional.
 func (m PageBringToFront) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.bringToFront", m)
-	return err
+	return call("Page.bringToFront", m, nil, caller)
 }
 
 // PageCaptureScreenshotFormat enum
@@ -11143,19 +10031,8 @@ type PageCaptureScreenshot struct {
 
 // Call of the command, sessionID is optional.
 func (m PageCaptureScreenshot) Call(caller Caller) (*PageCaptureScreenshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.captureScreenshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageCaptureScreenshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.captureScreenshot", m, &res, caller)
 }
 
 // PageCaptureScreenshotResult Capture page screenshot.
@@ -11183,19 +10060,8 @@ type PageCaptureSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m PageCaptureSnapshot) Call(caller Caller) (*PageCaptureSnapshotResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.captureSnapshot", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageCaptureSnapshotResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.captureSnapshot", m, &res, caller)
 }
 
 // PageCaptureSnapshotResult (experimental) Returns a snapshot of the page as a string. For MHTML format, the serialization includes
@@ -11212,9 +10078,7 @@ type PageClearDeviceMetricsOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageClearDeviceMetricsOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.clearDeviceMetricsOverride", m)
-	return err
+	return call("Page.clearDeviceMetricsOverride", m, nil, caller)
 }
 
 // PageClearDeviceOrientationOverride (deprecated) (experimental) Clears the overridden Device Orientation.
@@ -11223,9 +10087,7 @@ type PageClearDeviceOrientationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageClearDeviceOrientationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.clearDeviceOrientationOverride", m)
-	return err
+	return call("Page.clearDeviceOrientationOverride", m, nil, caller)
 }
 
 // PageClearGeolocationOverride (deprecated) Clears the overridden Geolocation Position and Error.
@@ -11234,9 +10096,7 @@ type PageClearGeolocationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageClearGeolocationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.clearGeolocationOverride", m)
-	return err
+	return call("Page.clearGeolocationOverride", m, nil, caller)
 }
 
 // PageCreateIsolatedWorld Creates an isolated world for the given frame.
@@ -11255,19 +10115,8 @@ type PageCreateIsolatedWorld struct {
 
 // Call of the command, sessionID is optional.
 func (m PageCreateIsolatedWorld) Call(caller Caller) (*PageCreateIsolatedWorldResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.createIsolatedWorld", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageCreateIsolatedWorldResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.createIsolatedWorld", m, &res, caller)
 }
 
 // PageCreateIsolatedWorldResult Creates an isolated world for the given frame.
@@ -11289,9 +10138,7 @@ type PageDeleteCookie struct {
 
 // Call of the command, sessionID is optional.
 func (m PageDeleteCookie) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.deleteCookie", m)
-	return err
+	return call("Page.deleteCookie", m, nil, caller)
 }
 
 // PageDisable Disables page domain notifications.
@@ -11300,9 +10147,7 @@ type PageDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m PageDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.disable", m)
-	return err
+	return call("Page.disable", m, nil, caller)
 }
 
 // PageEnable Enables page domain notifications.
@@ -11311,9 +10156,7 @@ type PageEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m PageEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.enable", m)
-	return err
+	return call("Page.enable", m, nil, caller)
 }
 
 // PageGetAppManifest ...
@@ -11322,19 +10165,8 @@ type PageGetAppManifest struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetAppManifest) Call(caller Caller) (*PageGetAppManifestResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getAppManifest", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetAppManifestResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getAppManifest", m, &res, caller)
 }
 
 // PageGetAppManifestResult ...
@@ -11359,28 +10191,14 @@ type PageGetInstallabilityErrors struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetInstallabilityErrors) Call(caller Caller) (*PageGetInstallabilityErrorsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getInstallabilityErrors", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetInstallabilityErrorsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getInstallabilityErrors", m, &res, caller)
 }
 
 // PageGetInstallabilityErrorsResult (experimental) ...
 type PageGetInstallabilityErrorsResult struct {
 
-	// Errors (deprecated) ...
-	Errors []string `json:"errors"`
-
-	// InstallabilityErrors (experimental) ...
+	// InstallabilityErrors ...
 	InstallabilityErrors []*PageInstallabilityError `json:"installabilityErrors"`
 }
 
@@ -11390,19 +10208,8 @@ type PageGetManifestIcons struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetManifestIcons) Call(caller Caller) (*PageGetManifestIconsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getManifestIcons", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetManifestIconsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getManifestIcons", m, &res, caller)
 }
 
 // PageGetManifestIconsResult (experimental) ...
@@ -11419,19 +10226,8 @@ type PageGetCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetCookies) Call(caller Caller) (*PageGetCookiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getCookies", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetCookiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getCookies", m, &res, caller)
 }
 
 // PageGetCookiesResult (deprecated) (experimental) Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -11448,19 +10244,8 @@ type PageGetFrameTree struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetFrameTree) Call(caller Caller) (*PageGetFrameTreeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getFrameTree", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetFrameTreeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getFrameTree", m, &res, caller)
 }
 
 // PageGetFrameTreeResult Returns present frame tree structure.
@@ -11476,19 +10261,8 @@ type PageGetLayoutMetrics struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetLayoutMetrics) Call(caller Caller) (*PageGetLayoutMetricsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getLayoutMetrics", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetLayoutMetricsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getLayoutMetrics", m, &res, caller)
 }
 
 // PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
@@ -11510,19 +10284,8 @@ type PageGetNavigationHistory struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetNavigationHistory) Call(caller Caller) (*PageGetNavigationHistoryResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getNavigationHistory", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetNavigationHistoryResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getNavigationHistory", m, &res, caller)
 }
 
 // PageGetNavigationHistoryResult Returns navigation history for the current page.
@@ -11541,9 +10304,7 @@ type PageResetNavigationHistory struct {
 
 // Call of the command, sessionID is optional.
 func (m PageResetNavigationHistory) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.resetNavigationHistory", m)
-	return err
+	return call("Page.resetNavigationHistory", m, nil, caller)
 }
 
 // PageGetResourceContent (experimental) Returns content of the given resource.
@@ -11558,19 +10319,8 @@ type PageGetResourceContent struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetResourceContent) Call(caller Caller) (*PageGetResourceContentResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getResourceContent", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetResourceContentResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getResourceContent", m, &res, caller)
 }
 
 // PageGetResourceContentResult (experimental) Returns content of the given resource.
@@ -11589,19 +10339,8 @@ type PageGetResourceTree struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGetResourceTree) Call(caller Caller) (*PageGetResourceTreeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.getResourceTree", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageGetResourceTreeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.getResourceTree", m, &res, caller)
 }
 
 // PageGetResourceTreeResult (experimental) Returns present frame / resource tree structure.
@@ -11624,9 +10363,7 @@ type PageHandleJavaScriptDialog struct {
 
 // Call of the command, sessionID is optional.
 func (m PageHandleJavaScriptDialog) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.handleJavaScriptDialog", m)
-	return err
+	return call("Page.handleJavaScriptDialog", m, nil, caller)
 }
 
 // PageNavigate Navigates current page to the given URL.
@@ -11643,23 +10380,15 @@ type PageNavigate struct {
 
 	// FrameID (optional) Frame id to navigate, if not specified navigates the top frame.
 	FrameID PageFrameID `json:"frameId,omitempty"`
+
+	// ReferrerPolicy (experimental) (optional) Referrer-policy used for the navigation.
+	ReferrerPolicy PageReferrerPolicy `json:"referrerPolicy,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m PageNavigate) Call(caller Caller) (*PageNavigateResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.navigate", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageNavigateResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.navigate", m, &res, caller)
 }
 
 // PageNavigateResult Navigates current page to the given URL.
@@ -11684,9 +10413,7 @@ type PageNavigateToHistoryEntry struct {
 
 // Call of the command, sessionID is optional.
 func (m PageNavigateToHistoryEntry) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.navigateToHistoryEntry", m)
-	return err
+	return call("Page.navigateToHistoryEntry", m, nil, caller)
 }
 
 // PagePrintToPDFTransferMode enum
@@ -11765,19 +10492,8 @@ type PagePrintToPDF struct {
 
 // Call of the command, sessionID is optional.
 func (m PagePrintToPDF) Call(caller Caller) (*PagePrintToPDFResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.printToPDF", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PagePrintToPDFResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.printToPDF", m, &res, caller)
 }
 
 // PagePrintToPDFResult Print page as PDF.
@@ -11803,9 +10519,7 @@ type PageReload struct {
 
 // Call of the command, sessionID is optional.
 func (m PageReload) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.reload", m)
-	return err
+	return call("Page.reload", m, nil, caller)
 }
 
 // PageRemoveScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
@@ -11817,9 +10531,7 @@ type PageRemoveScriptToEvaluateOnLoad struct {
 
 // Call of the command, sessionID is optional.
 func (m PageRemoveScriptToEvaluateOnLoad) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.removeScriptToEvaluateOnLoad", m)
-	return err
+	return call("Page.removeScriptToEvaluateOnLoad", m, nil, caller)
 }
 
 // PageRemoveScriptToEvaluateOnNewDocument Removes given script from the list.
@@ -11831,9 +10543,7 @@ type PageRemoveScriptToEvaluateOnNewDocument struct {
 
 // Call of the command, sessionID is optional.
 func (m PageRemoveScriptToEvaluateOnNewDocument) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.removeScriptToEvaluateOnNewDocument", m)
-	return err
+	return call("Page.removeScriptToEvaluateOnNewDocument", m, nil, caller)
 }
 
 // PageScreencastFrameAck (experimental) Acknowledges that a screencast frame has been received by the frontend.
@@ -11845,9 +10555,7 @@ type PageScreencastFrameAck struct {
 
 // Call of the command, sessionID is optional.
 func (m PageScreencastFrameAck) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.screencastFrameAck", m)
-	return err
+	return call("Page.screencastFrameAck", m, nil, caller)
 }
 
 // PageSearchInResource (experimental) Searches for given string in resource content.
@@ -11871,19 +10579,8 @@ type PageSearchInResource struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSearchInResource) Call(caller Caller) (*PageSearchInResourceResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Page.searchInResource", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PageSearchInResourceResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Page.searchInResource", m, &res, caller)
 }
 
 // PageSearchInResourceResult (experimental) Searches for given string in resource content.
@@ -11902,9 +10599,7 @@ type PageSetAdBlockingEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetAdBlockingEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setAdBlockingEnabled", m)
-	return err
+	return call("Page.setAdBlockingEnabled", m, nil, caller)
 }
 
 // PageSetBypassCSP (experimental) Enable page Content Security Policy by-passing.
@@ -11916,9 +10611,7 @@ type PageSetBypassCSP struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetBypassCSP) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setBypassCSP", m)
-	return err
+	return call("Page.setBypassCSP", m, nil, caller)
 }
 
 // PageSetDeviceMetricsOverride (deprecated) (experimental) Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -11966,9 +10659,7 @@ type PageSetDeviceMetricsOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetDeviceMetricsOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setDeviceMetricsOverride", m)
-	return err
+	return call("Page.setDeviceMetricsOverride", m, nil, caller)
 }
 
 // PageSetDeviceOrientationOverride (deprecated) (experimental) Overrides the Device Orientation.
@@ -11986,9 +10677,7 @@ type PageSetDeviceOrientationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetDeviceOrientationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setDeviceOrientationOverride", m)
-	return err
+	return call("Page.setDeviceOrientationOverride", m, nil, caller)
 }
 
 // PageSetFontFamilies (experimental) Set generic font families.
@@ -12000,9 +10689,7 @@ type PageSetFontFamilies struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetFontFamilies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setFontFamilies", m)
-	return err
+	return call("Page.setFontFamilies", m, nil, caller)
 }
 
 // PageSetFontSizes (experimental) Set default font sizes.
@@ -12014,9 +10701,7 @@ type PageSetFontSizes struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetFontSizes) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setFontSizes", m)
-	return err
+	return call("Page.setFontSizes", m, nil, caller)
 }
 
 // PageSetDocumentContent Sets given markup as the document's HTML.
@@ -12031,9 +10716,7 @@ type PageSetDocumentContent struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetDocumentContent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setDocumentContent", m)
-	return err
+	return call("Page.setDocumentContent", m, nil, caller)
 }
 
 // PageSetDownloadBehaviorBehavior enum
@@ -12050,7 +10733,7 @@ const (
 	PageSetDownloadBehaviorBehaviorDefault PageSetDownloadBehaviorBehavior = "default"
 )
 
-// PageSetDownloadBehavior (experimental) Set the behavior when downloading a file.
+// PageSetDownloadBehavior (deprecated) (experimental) Set the behavior when downloading a file.
 type PageSetDownloadBehavior struct {
 
 	// Behavior Whether to allow all or deny all download requests, or use default Chrome behavior if
@@ -12063,9 +10746,7 @@ type PageSetDownloadBehavior struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetDownloadBehavior) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setDownloadBehavior", m)
-	return err
+	return call("Page.setDownloadBehavior", m, nil, caller)
 }
 
 // PageSetGeolocationOverride (deprecated) Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -12084,9 +10765,7 @@ type PageSetGeolocationOverride struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetGeolocationOverride) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setGeolocationOverride", m)
-	return err
+	return call("Page.setGeolocationOverride", m, nil, caller)
 }
 
 // PageSetLifecycleEventsEnabled (experimental) Controls whether page will emit lifecycle events.
@@ -12098,9 +10777,7 @@ type PageSetLifecycleEventsEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetLifecycleEventsEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setLifecycleEventsEnabled", m)
-	return err
+	return call("Page.setLifecycleEventsEnabled", m, nil, caller)
 }
 
 // PageSetTouchEmulationEnabledConfiguration enum
@@ -12126,9 +10803,7 @@ type PageSetTouchEmulationEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetTouchEmulationEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setTouchEmulationEnabled", m)
-	return err
+	return call("Page.setTouchEmulationEnabled", m, nil, caller)
 }
 
 // PageStartScreencastFormat enum
@@ -12163,9 +10838,7 @@ type PageStartScreencast struct {
 
 // Call of the command, sessionID is optional.
 func (m PageStartScreencast) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.startScreencast", m)
-	return err
+	return call("Page.startScreencast", m, nil, caller)
 }
 
 // PageStopLoading Force the page stop all navigations and pending resource fetches.
@@ -12174,9 +10847,7 @@ type PageStopLoading struct {
 
 // Call of the command, sessionID is optional.
 func (m PageStopLoading) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.stopLoading", m)
-	return err
+	return call("Page.stopLoading", m, nil, caller)
 }
 
 // PageCrash (experimental) Crashes renderer on the IO thread, generates minidumps.
@@ -12185,9 +10856,7 @@ type PageCrash struct {
 
 // Call of the command, sessionID is optional.
 func (m PageCrash) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.crash", m)
-	return err
+	return call("Page.crash", m, nil, caller)
 }
 
 // PageClose (experimental) Tries to close page, running its beforeunload hooks, if any.
@@ -12196,9 +10865,7 @@ type PageClose struct {
 
 // Call of the command, sessionID is optional.
 func (m PageClose) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.close", m)
-	return err
+	return call("Page.close", m, nil, caller)
 }
 
 // PageSetWebLifecycleStateState enum
@@ -12223,9 +10890,7 @@ type PageSetWebLifecycleState struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetWebLifecycleState) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setWebLifecycleState", m)
-	return err
+	return call("Page.setWebLifecycleState", m, nil, caller)
 }
 
 // PageStopScreencast (experimental) Stops sending each frame in the `screencastFrame`.
@@ -12234,9 +10899,7 @@ type PageStopScreencast struct {
 
 // Call of the command, sessionID is optional.
 func (m PageStopScreencast) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.stopScreencast", m)
-	return err
+	return call("Page.stopScreencast", m, nil, caller)
 }
 
 // PageSetProduceCompilationCache (experimental) Forces compilation cache to be generated for every subresource script.
@@ -12248,9 +10911,7 @@ type PageSetProduceCompilationCache struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetProduceCompilationCache) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setProduceCompilationCache", m)
-	return err
+	return call("Page.setProduceCompilationCache", m, nil, caller)
 }
 
 // PageAddCompilationCache (experimental) Seeds compilation cache for given url. Compilation cache does not survive
@@ -12266,9 +10927,7 @@ type PageAddCompilationCache struct {
 
 // Call of the command, sessionID is optional.
 func (m PageAddCompilationCache) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.addCompilationCache", m)
-	return err
+	return call("Page.addCompilationCache", m, nil, caller)
 }
 
 // PageClearCompilationCache (experimental) Clears seeded compilation cache.
@@ -12277,9 +10936,7 @@ type PageClearCompilationCache struct {
 
 // Call of the command, sessionID is optional.
 func (m PageClearCompilationCache) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.clearCompilationCache", m)
-	return err
+	return call("Page.clearCompilationCache", m, nil, caller)
 }
 
 // PageGenerateTestReport (experimental) Generates a report for testing.
@@ -12294,9 +10951,7 @@ type PageGenerateTestReport struct {
 
 // Call of the command, sessionID is optional.
 func (m PageGenerateTestReport) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.generateTestReport", m)
-	return err
+	return call("Page.generateTestReport", m, nil, caller)
 }
 
 // PageWaitForDebugger (experimental) Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
@@ -12305,9 +10960,7 @@ type PageWaitForDebugger struct {
 
 // Call of the command, sessionID is optional.
 func (m PageWaitForDebugger) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.waitForDebugger", m)
-	return err
+	return call("Page.waitForDebugger", m, nil, caller)
 }
 
 // PageSetInterceptFileChooserDialog (experimental) Intercept file chooser requests and transfer control to protocol clients.
@@ -12321,16 +10974,14 @@ type PageSetInterceptFileChooserDialog struct {
 
 // Call of the command, sessionID is optional.
 func (m PageSetInterceptFileChooserDialog) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Page.setInterceptFileChooserDialog", m)
-	return err
+	return call("Page.setInterceptFileChooserDialog", m, nil, caller)
 }
 
 // PageDomContentEventFired ...
 type PageDomContentEventFired struct {
 
 	// Timestamp ...
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
 // MethodName interface
@@ -12501,6 +11152,9 @@ type PageDownloadWillBegin struct {
 	// FrameID Id of the frame that caused download to begin.
 	FrameID PageFrameID `json:"frameId"`
 
+	// GUID Global unique identifier of the download.
+	GUID string `json:"guid"`
+
 	// URL URL of the resource being downloaded.
 	URL string `json:"url"`
 }
@@ -12508,6 +11162,41 @@ type PageDownloadWillBegin struct {
 // MethodName interface
 func (evt PageDownloadWillBegin) MethodName() string {
 	return "Page.downloadWillBegin"
+}
+
+// PageDownloadProgressState enum
+type PageDownloadProgressState string
+
+const (
+	// PageDownloadProgressStateInProgress enum const
+	PageDownloadProgressStateInProgress PageDownloadProgressState = "inProgress"
+
+	// PageDownloadProgressStateCompleted enum const
+	PageDownloadProgressStateCompleted PageDownloadProgressState = "completed"
+
+	// PageDownloadProgressStateCanceled enum const
+	PageDownloadProgressStateCanceled PageDownloadProgressState = "canceled"
+)
+
+// PageDownloadProgress (experimental) Fired when download makes progress. Last call has |done| == true.
+type PageDownloadProgress struct {
+
+	// GUID Global unique identifier of the download.
+	GUID string `json:"guid"`
+
+	// TotalBytes Total expected bytes to download.
+	TotalBytes float64 `json:"totalBytes"`
+
+	// ReceivedBytes Total bytes received.
+	ReceivedBytes float64 `json:"receivedBytes"`
+
+	// State Download status.
+	State PageDownloadProgressState `json:"state"`
+}
+
+// MethodName interface
+func (evt PageDownloadProgress) MethodName() string {
+	return "Page.downloadProgress"
 }
 
 // PageInterstitialHidden Fired when interstitial page was hidden
@@ -12584,7 +11273,7 @@ type PageLifecycleEvent struct {
 	Name string `json:"name"`
 
 	// Timestamp ...
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
 // MethodName interface
@@ -12596,7 +11285,7 @@ func (evt PageLifecycleEvent) MethodName() string {
 type PageLoadEventFired struct {
 
 	// Timestamp ...
-	Timestamp MonotonicTime `json:"timestamp"`
+	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
 // MethodName interface
@@ -12703,20 +11392,30 @@ type PerformanceDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m PerformanceDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Performance.disable", m)
-	return err
+	return call("Performance.disable", m, nil, caller)
 }
+
+// PerformanceEnableTimeDomain enum
+type PerformanceEnableTimeDomain string
+
+const (
+	// PerformanceEnableTimeDomainTimeTicks enum const
+	PerformanceEnableTimeDomainTimeTicks PerformanceEnableTimeDomain = "timeTicks"
+
+	// PerformanceEnableTimeDomainThreadTicks enum const
+	PerformanceEnableTimeDomainThreadTicks PerformanceEnableTimeDomain = "threadTicks"
+)
 
 // PerformanceEnable Enable collecting and reporting metrics.
 type PerformanceEnable struct {
+
+	// TimeDomain (optional) Time domain to use for collecting and reporting duration metrics.
+	TimeDomain PerformanceEnableTimeDomain `json:"timeDomain,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m PerformanceEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Performance.enable", m)
-	return err
+	return call("Performance.enable", m, nil, caller)
 }
 
 // PerformanceSetTimeDomainTimeDomain enum
@@ -12730,7 +11429,7 @@ const (
 	PerformanceSetTimeDomainTimeDomainThreadTicks PerformanceSetTimeDomainTimeDomain = "threadTicks"
 )
 
-// PerformanceSetTimeDomain (experimental) Sets time domain to use for collecting and reporting duration metrics.
+// PerformanceSetTimeDomain (deprecated) (experimental) Sets time domain to use for collecting and reporting duration metrics.
 // Note that this must be called before enabling metrics collection. Calling
 // this method while metrics collection is enabled returns an error.
 type PerformanceSetTimeDomain struct {
@@ -12741,9 +11440,7 @@ type PerformanceSetTimeDomain struct {
 
 // Call of the command, sessionID is optional.
 func (m PerformanceSetTimeDomain) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Performance.setTimeDomain", m)
-	return err
+	return call("Performance.setTimeDomain", m, nil, caller)
 }
 
 // PerformanceGetMetrics Retrieve current values of run-time metrics.
@@ -12752,19 +11449,8 @@ type PerformanceGetMetrics struct {
 
 // Call of the command, sessionID is optional.
 func (m PerformanceGetMetrics) Call(caller Caller) (*PerformanceGetMetricsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Performance.getMetrics", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res PerformanceGetMetricsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Performance.getMetrics", m, &res, caller)
 }
 
 // PerformanceGetMetricsResult Retrieve current values of run-time metrics.
@@ -12858,10 +11544,10 @@ type SecurityCertificateSecurityState struct {
 	Issuer string `json:"issuer"`
 
 	// ValidFrom Certificate valid from date.
-	ValidFrom TimeSinceEpoch `json:"validFrom"`
+	ValidFrom *TimeSinceEpoch `json:"validFrom"`
 
 	// ValidTo Certificate valid to (expiration) date
-	ValidTo TimeSinceEpoch `json:"validTo"`
+	ValidTo *TimeSinceEpoch `json:"validTo"`
 
 	// CertificateNetworkError (optional) The highest priority network error code, if the certificate has an error.
 	CertificateNetworkError string `json:"certificateNetworkError,omitempty"`
@@ -12993,9 +11679,7 @@ type SecurityDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m SecurityDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Security.disable", m)
-	return err
+	return call("Security.disable", m, nil, caller)
 }
 
 // SecurityEnable Enables tracking security state changes.
@@ -13004,9 +11688,7 @@ type SecurityEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m SecurityEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Security.enable", m)
-	return err
+	return call("Security.enable", m, nil, caller)
 }
 
 // SecuritySetIgnoreCertificateErrors (experimental) Enable/disable whether all certificate errors should be ignored.
@@ -13018,9 +11700,7 @@ type SecuritySetIgnoreCertificateErrors struct {
 
 // Call of the command, sessionID is optional.
 func (m SecuritySetIgnoreCertificateErrors) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Security.setIgnoreCertificateErrors", m)
-	return err
+	return call("Security.setIgnoreCertificateErrors", m, nil, caller)
 }
 
 // SecurityHandleCertificateError (deprecated) Handles a certificate error that fired a certificateError event.
@@ -13035,9 +11715,7 @@ type SecurityHandleCertificateError struct {
 
 // Call of the command, sessionID is optional.
 func (m SecurityHandleCertificateError) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Security.handleCertificateError", m)
-	return err
+	return call("Security.handleCertificateError", m, nil, caller)
 }
 
 // SecuritySetOverrideCertificateErrors (deprecated) Enable/disable overriding certificate errors. If enabled, all certificate error events need to
@@ -13050,9 +11728,7 @@ type SecuritySetOverrideCertificateErrors struct {
 
 // Call of the command, sessionID is optional.
 func (m SecuritySetOverrideCertificateErrors) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Security.setOverrideCertificateErrors", m)
-	return err
+	return call("Security.setOverrideCertificateErrors", m, nil, caller)
 }
 
 // SecurityCertificateError (deprecated) There is a certificate error. If overriding certificate errors is enabled, then it should be
@@ -13238,9 +11914,7 @@ type ServiceWorkerDeliverPushMessage struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDeliverPushMessage) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.deliverPushMessage", m)
-	return err
+	return call("ServiceWorker.deliverPushMessage", m, nil, caller)
 }
 
 // ServiceWorkerDisable ...
@@ -13249,9 +11923,7 @@ type ServiceWorkerDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.disable", m)
-	return err
+	return call("ServiceWorker.disable", m, nil, caller)
 }
 
 // ServiceWorkerDispatchSyncEvent ...
@@ -13272,9 +11944,7 @@ type ServiceWorkerDispatchSyncEvent struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDispatchSyncEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.dispatchSyncEvent", m)
-	return err
+	return call("ServiceWorker.dispatchSyncEvent", m, nil, caller)
 }
 
 // ServiceWorkerDispatchPeriodicSyncEvent ...
@@ -13292,9 +11962,7 @@ type ServiceWorkerDispatchPeriodicSyncEvent struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.dispatchPeriodicSyncEvent", m)
-	return err
+	return call("ServiceWorker.dispatchPeriodicSyncEvent", m, nil, caller)
 }
 
 // ServiceWorkerEnable ...
@@ -13303,9 +11971,7 @@ type ServiceWorkerEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.enable", m)
-	return err
+	return call("ServiceWorker.enable", m, nil, caller)
 }
 
 // ServiceWorkerInspectWorker ...
@@ -13317,9 +11983,7 @@ type ServiceWorkerInspectWorker struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerInspectWorker) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.inspectWorker", m)
-	return err
+	return call("ServiceWorker.inspectWorker", m, nil, caller)
 }
 
 // ServiceWorkerSetForceUpdateOnPageLoad ...
@@ -13331,9 +11995,7 @@ type ServiceWorkerSetForceUpdateOnPageLoad struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.setForceUpdateOnPageLoad", m)
-	return err
+	return call("ServiceWorker.setForceUpdateOnPageLoad", m, nil, caller)
 }
 
 // ServiceWorkerSkipWaiting ...
@@ -13345,9 +12007,7 @@ type ServiceWorkerSkipWaiting struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerSkipWaiting) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.skipWaiting", m)
-	return err
+	return call("ServiceWorker.skipWaiting", m, nil, caller)
 }
 
 // ServiceWorkerStartWorker ...
@@ -13359,9 +12019,7 @@ type ServiceWorkerStartWorker struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStartWorker) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.startWorker", m)
-	return err
+	return call("ServiceWorker.startWorker", m, nil, caller)
 }
 
 // ServiceWorkerStopAllWorkers ...
@@ -13370,9 +12028,7 @@ type ServiceWorkerStopAllWorkers struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStopAllWorkers) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.stopAllWorkers", m)
-	return err
+	return call("ServiceWorker.stopAllWorkers", m, nil, caller)
 }
 
 // ServiceWorkerStopWorker ...
@@ -13384,9 +12040,7 @@ type ServiceWorkerStopWorker struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStopWorker) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.stopWorker", m)
-	return err
+	return call("ServiceWorker.stopWorker", m, nil, caller)
 }
 
 // ServiceWorkerUnregister ...
@@ -13398,9 +12052,7 @@ type ServiceWorkerUnregister struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerUnregister) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.unregister", m)
-	return err
+	return call("ServiceWorker.unregister", m, nil, caller)
 }
 
 // ServiceWorkerUpdateRegistration ...
@@ -13412,9 +12064,7 @@ type ServiceWorkerUpdateRegistration struct {
 
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerUpdateRegistration) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "ServiceWorker.updateRegistration", m)
-	return err
+	return call("ServiceWorker.updateRegistration", m, nil, caller)
 }
 
 // ServiceWorkerWorkerErrorReported ...
@@ -13513,9 +12163,7 @@ type StorageClearDataForOrigin struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageClearDataForOrigin) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.clearDataForOrigin", m)
-	return err
+	return call("Storage.clearDataForOrigin", m, nil, caller)
 }
 
 // StorageGetCookies Returns all browser cookies.
@@ -13527,19 +12175,8 @@ type StorageGetCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageGetCookies) Call(caller Caller) (*StorageGetCookiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Storage.getCookies", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res StorageGetCookiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Storage.getCookies", m, &res, caller)
 }
 
 // StorageGetCookiesResult Returns all browser cookies.
@@ -13561,9 +12198,7 @@ type StorageSetCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageSetCookies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.setCookies", m)
-	return err
+	return call("Storage.setCookies", m, nil, caller)
 }
 
 // StorageClearCookies Clears cookies.
@@ -13575,9 +12210,7 @@ type StorageClearCookies struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageClearCookies) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.clearCookies", m)
-	return err
+	return call("Storage.clearCookies", m, nil, caller)
 }
 
 // StorageGetUsageAndQuota Returns usage and quota in bytes.
@@ -13589,19 +12222,8 @@ type StorageGetUsageAndQuota struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageGetUsageAndQuota) Call(caller Caller) (*StorageGetUsageAndQuotaResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Storage.getUsageAndQuota", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res StorageGetUsageAndQuotaResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Storage.getUsageAndQuota", m, &res, caller)
 }
 
 // StorageGetUsageAndQuotaResult Returns usage and quota in bytes.
@@ -13626,9 +12248,7 @@ type StorageTrackCacheStorageForOrigin struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageTrackCacheStorageForOrigin) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.trackCacheStorageForOrigin", m)
-	return err
+	return call("Storage.trackCacheStorageForOrigin", m, nil, caller)
 }
 
 // StorageTrackIndexedDBForOrigin Registers origin to be notified when an update occurs to its IndexedDB.
@@ -13640,9 +12260,7 @@ type StorageTrackIndexedDBForOrigin struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageTrackIndexedDBForOrigin) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.trackIndexedDBForOrigin", m)
-	return err
+	return call("Storage.trackIndexedDBForOrigin", m, nil, caller)
 }
 
 // StorageUntrackCacheStorageForOrigin Unregisters origin from receiving notifications for cache storage.
@@ -13654,9 +12272,7 @@ type StorageUntrackCacheStorageForOrigin struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageUntrackCacheStorageForOrigin) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.untrackCacheStorageForOrigin", m)
-	return err
+	return call("Storage.untrackCacheStorageForOrigin", m, nil, caller)
 }
 
 // StorageUntrackIndexedDBForOrigin Unregisters origin from receiving notifications for IndexedDB.
@@ -13668,9 +12284,7 @@ type StorageUntrackIndexedDBForOrigin struct {
 
 // Call of the command, sessionID is optional.
 func (m StorageUntrackIndexedDBForOrigin) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Storage.untrackIndexedDBForOrigin", m)
-	return err
+	return call("Storage.untrackIndexedDBForOrigin", m, nil, caller)
 }
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
@@ -13891,19 +12505,8 @@ type SystemInfoGetInfo struct {
 
 // Call of the command, sessionID is optional.
 func (m SystemInfoGetInfo) Call(caller Caller) (*SystemInfoGetInfoResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "SystemInfo.getInfo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res SystemInfoGetInfoResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("SystemInfo.getInfo", m, &res, caller)
 }
 
 // SystemInfoGetInfoResult Returns information about the system.
@@ -13931,19 +12534,8 @@ type SystemInfoGetProcessInfo struct {
 
 // Call of the command, sessionID is optional.
 func (m SystemInfoGetProcessInfo) Call(caller Caller) (*SystemInfoGetProcessInfoResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "SystemInfo.getProcessInfo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res SystemInfoGetProcessInfoResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("SystemInfo.getProcessInfo", m, &res, caller)
 }
 
 // SystemInfoGetProcessInfoResult Returns information about all running processes.
@@ -14026,9 +12618,7 @@ type TargetActivateTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetActivateTarget) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.activateTarget", m)
-	return err
+	return call("Target.activateTarget", m, nil, caller)
 }
 
 // TargetAttachToTarget Attaches to the target with given id.
@@ -14045,19 +12635,8 @@ type TargetAttachToTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetAttachToTarget) Call(caller Caller) (*TargetAttachToTargetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.attachToTarget", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetAttachToTargetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.attachToTarget", m, &res, caller)
 }
 
 // TargetAttachToTargetResult Attaches to the target with given id.
@@ -14073,19 +12652,8 @@ type TargetAttachToBrowserTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetAttachToBrowserTarget) Call(caller Caller) (*TargetAttachToBrowserTargetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.attachToBrowserTarget", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetAttachToBrowserTargetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.attachToBrowserTarget", m, &res, caller)
 }
 
 // TargetAttachToBrowserTargetResult (experimental) Attaches to the browser target, only uses flat sessionId mode.
@@ -14104,19 +12672,8 @@ type TargetCloseTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetCloseTarget) Call(caller Caller) (*TargetCloseTargetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.closeTarget", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetCloseTargetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.closeTarget", m, &res, caller)
 }
 
 // TargetCloseTargetResult Closes the target. If the target is a page that gets closed too.
@@ -14145,31 +12702,21 @@ type TargetExposeDevToolsProtocol struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetExposeDevToolsProtocol) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.exposeDevToolsProtocol", m)
-	return err
+	return call("Target.exposeDevToolsProtocol", m, nil, caller)
 }
 
 // TargetCreateBrowserContext (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
 // one.
 type TargetCreateBrowserContext struct {
+
+	// DisposeOnDetach (optional) If specified, disposes this context when debugging session disconnects.
+	DisposeOnDetach bool `json:"disposeOnDetach,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m TargetCreateBrowserContext) Call(caller Caller) (*TargetCreateBrowserContextResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.createBrowserContext", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetCreateBrowserContextResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.createBrowserContext", m, &res, caller)
 }
 
 // TargetCreateBrowserContextResult (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
@@ -14186,19 +12733,8 @@ type TargetGetBrowserContexts struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetGetBrowserContexts) Call(caller Caller) (*TargetGetBrowserContextsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.getBrowserContexts", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetGetBrowserContextsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.getBrowserContexts", m, &res, caller)
 }
 
 // TargetGetBrowserContextsResult (experimental) Returns all browser contexts created with `Target.createBrowserContext` method.
@@ -14237,19 +12773,8 @@ type TargetCreateTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetCreateTarget) Call(caller Caller) (*TargetCreateTargetResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.createTarget", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetCreateTargetResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.createTarget", m, &res, caller)
 }
 
 // TargetCreateTargetResult Creates a new page.
@@ -14271,9 +12796,7 @@ type TargetDetachFromTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetDetachFromTarget) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.detachFromTarget", m)
-	return err
+	return call("Target.detachFromTarget", m, nil, caller)
 }
 
 // TargetDisposeBrowserContext (experimental) Deletes a BrowserContext. All the belonging pages will be closed without calling their
@@ -14286,9 +12809,7 @@ type TargetDisposeBrowserContext struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetDisposeBrowserContext) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.disposeBrowserContext", m)
-	return err
+	return call("Target.disposeBrowserContext", m, nil, caller)
 }
 
 // TargetGetTargetInfo (experimental) Returns information about a target.
@@ -14300,19 +12821,8 @@ type TargetGetTargetInfo struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetGetTargetInfo) Call(caller Caller) (*TargetGetTargetInfoResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.getTargetInfo", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetGetTargetInfoResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.getTargetInfo", m, &res, caller)
 }
 
 // TargetGetTargetInfoResult (experimental) Returns information about a target.
@@ -14328,19 +12838,8 @@ type TargetGetTargets struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetGetTargets) Call(caller Caller) (*TargetGetTargetsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Target.getTargets", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TargetGetTargetsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Target.getTargets", m, &res, caller)
 }
 
 // TargetGetTargetsResult Retrieves a list of available targets.
@@ -14367,9 +12866,7 @@ type TargetSendMessageToTarget struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetSendMessageToTarget) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.sendMessageToTarget", m)
-	return err
+	return call("Target.sendMessageToTarget", m, nil, caller)
 }
 
 // TargetSetAutoAttach (experimental) Controls whether to automatically attach to new targets which are considered to be related to
@@ -14388,16 +12885,11 @@ type TargetSetAutoAttach struct {
 	// We plan to make this the default, deprecate non-flattened mode,
 	// and eventually retire it. See crbug.com/991325.
 	Flatten bool `json:"flatten,omitempty"`
-
-	// WindowOpen (experimental) (optional) Auto-attach to the targets created via window.open from current target.
-	WindowOpen bool `json:"windowOpen,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m TargetSetAutoAttach) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.setAutoAttach", m)
-	return err
+	return call("Target.setAutoAttach", m, nil, caller)
 }
 
 // TargetSetDiscoverTargets Controls whether to discover available targets and notify via
@@ -14410,9 +12902,7 @@ type TargetSetDiscoverTargets struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetSetDiscoverTargets) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.setDiscoverTargets", m)
-	return err
+	return call("Target.setDiscoverTargets", m, nil, caller)
 }
 
 // TargetSetRemoteLocations (experimental) Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
@@ -14425,9 +12915,7 @@ type TargetSetRemoteLocations struct {
 
 // Call of the command, sessionID is optional.
 func (m TargetSetRemoteLocations) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Target.setRemoteLocations", m)
-	return err
+	return call("Target.setRemoteLocations", m, nil, caller)
 }
 
 // TargetAttachedToTarget (experimental) Issued when attached to target because of auto-attach or `attachToTarget` command.
@@ -14547,9 +13035,7 @@ type TetheringBind struct {
 
 // Call of the command, sessionID is optional.
 func (m TetheringBind) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Tethering.bind", m)
-	return err
+	return call("Tethering.bind", m, nil, caller)
 }
 
 // TetheringUnbind Request browser port unbinding.
@@ -14561,9 +13047,7 @@ type TetheringUnbind struct {
 
 // Call of the command, sessionID is optional.
 func (m TetheringUnbind) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Tethering.unbind", m)
-	return err
+	return call("Tethering.unbind", m, nil, caller)
 }
 
 // TetheringAccepted Informs that port was successfully bound and got a specified connection id.
@@ -14658,9 +13142,7 @@ type TracingEnd struct {
 
 // Call of the command, sessionID is optional.
 func (m TracingEnd) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Tracing.end", m)
-	return err
+	return call("Tracing.end", m, nil, caller)
 }
 
 // TracingGetCategories Gets supported tracing categories.
@@ -14669,19 +13151,8 @@ type TracingGetCategories struct {
 
 // Call of the command, sessionID is optional.
 func (m TracingGetCategories) Call(caller Caller) (*TracingGetCategoriesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Tracing.getCategories", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TracingGetCategoriesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Tracing.getCategories", m, &res, caller)
 }
 
 // TracingGetCategoriesResult Gets supported tracing categories.
@@ -14700,9 +13171,7 @@ type TracingRecordClockSyncMarker struct {
 
 // Call of the command, sessionID is optional.
 func (m TracingRecordClockSyncMarker) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Tracing.recordClockSyncMarker", m)
-	return err
+	return call("Tracing.recordClockSyncMarker", m, nil, caller)
 }
 
 // TracingRequestMemoryDump Request a global memory dump.
@@ -14714,19 +13183,8 @@ type TracingRequestMemoryDump struct {
 
 // Call of the command, sessionID is optional.
 func (m TracingRequestMemoryDump) Call(caller Caller) (*TracingRequestMemoryDumpResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Tracing.requestMemoryDump", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res TracingRequestMemoryDumpResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Tracing.requestMemoryDump", m, &res, caller)
 }
 
 // TracingRequestMemoryDumpResult Request a global memory dump.
@@ -14780,9 +13238,7 @@ type TracingStart struct {
 
 // Call of the command, sessionID is optional.
 func (m TracingStart) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Tracing.start", m)
-	return err
+	return call("Tracing.start", m, nil, caller)
 }
 
 // TracingBufferUsage ...
@@ -14945,9 +13401,7 @@ type FetchDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.disable", m)
-	return err
+	return call("Fetch.disable", m, nil, caller)
 }
 
 // FetchEnable Enables issuing of requestPaused events. A request will be paused until client
@@ -14966,9 +13420,7 @@ type FetchEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.enable", m)
-	return err
+	return call("Fetch.enable", m, nil, caller)
 }
 
 // FetchFailRequest Causes the request to fail with specified reason.
@@ -14983,9 +13435,7 @@ type FetchFailRequest struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchFailRequest) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.failRequest", m)
-	return err
+	return call("Fetch.failRequest", m, nil, caller)
 }
 
 // FetchFulfillRequest Provides response to the request.
@@ -15016,9 +13466,7 @@ type FetchFulfillRequest struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchFulfillRequest) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.fulfillRequest", m)
-	return err
+	return call("Fetch.fulfillRequest", m, nil, caller)
 }
 
 // FetchContinueRequest Continues the request, optionally modifying some of its parameters.
@@ -15036,15 +13484,13 @@ type FetchContinueRequest struct {
 	// PostData (optional) If set, overrides the post data in the request.
 	PostData string `json:"postData,omitempty"`
 
-	// Headers (optional) If set, overrides the request headrts.
+	// Headers (optional) If set, overrides the request headers.
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m FetchContinueRequest) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.continueRequest", m)
-	return err
+	return call("Fetch.continueRequest", m, nil, caller)
 }
 
 // FetchContinueWithAuth Continues a request supplying authChallengeResponse following authRequired event.
@@ -15059,9 +13505,7 @@ type FetchContinueWithAuth struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchContinueWithAuth) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Fetch.continueWithAuth", m)
-	return err
+	return call("Fetch.continueWithAuth", m, nil, caller)
 }
 
 // FetchGetResponseBody Causes the body of the response to be received from the server and
@@ -15078,19 +13522,8 @@ type FetchGetResponseBody struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchGetResponseBody) Call(caller Caller) (*FetchGetResponseBodyResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Fetch.getResponseBody", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res FetchGetResponseBodyResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Fetch.getResponseBody", m, &res, caller)
 }
 
 // FetchGetResponseBodyResult Causes the body of the response to be received from the server and
@@ -15126,19 +13559,8 @@ type FetchTakeResponseBodyAsStream struct {
 
 // Call of the command, sessionID is optional.
 func (m FetchTakeResponseBodyAsStream) Call(caller Caller) (*FetchTakeResponseBodyAsStreamResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Fetch.takeResponseBodyAsStream", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res FetchTakeResponseBodyAsStreamResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Fetch.takeResponseBodyAsStream", m, &res, caller)
 }
 
 // FetchTakeResponseBodyAsStreamResult Returns a handle to the stream representing the response body.
@@ -15408,9 +13830,7 @@ type WebAudioEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAudioEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAudio.enable", m)
-	return err
+	return call("WebAudio.enable", m, nil, caller)
 }
 
 // WebAudioDisable Disables the WebAudio domain.
@@ -15419,9 +13839,7 @@ type WebAudioDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAudioDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAudio.disable", m)
-	return err
+	return call("WebAudio.disable", m, nil, caller)
 }
 
 // WebAudioGetRealtimeData Fetch the realtime data from the registered contexts.
@@ -15433,19 +13851,8 @@ type WebAudioGetRealtimeData struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAudioGetRealtimeData) Call(caller Caller) (*WebAudioGetRealtimeDataResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "WebAudio.getRealtimeData", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res WebAudioGetRealtimeDataResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("WebAudio.getRealtimeData", m, &res, caller)
 }
 
 // WebAudioGetRealtimeDataResult Fetch the realtime data from the registered contexts.
@@ -15756,9 +14163,7 @@ type WebAuthnEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.enable", m)
-	return err
+	return call("WebAuthn.enable", m, nil, caller)
 }
 
 // WebAuthnDisable Disable the WebAuthn domain.
@@ -15767,9 +14172,7 @@ type WebAuthnDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.disable", m)
-	return err
+	return call("WebAuthn.disable", m, nil, caller)
 }
 
 // WebAuthnAddVirtualAuthenticator Creates and adds a virtual authenticator.
@@ -15781,19 +14184,8 @@ type WebAuthnAddVirtualAuthenticator struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnAddVirtualAuthenticator) Call(caller Caller) (*WebAuthnAddVirtualAuthenticatorResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "WebAuthn.addVirtualAuthenticator", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res WebAuthnAddVirtualAuthenticatorResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("WebAuthn.addVirtualAuthenticator", m, &res, caller)
 }
 
 // WebAuthnAddVirtualAuthenticatorResult Creates and adds a virtual authenticator.
@@ -15812,9 +14204,7 @@ type WebAuthnRemoveVirtualAuthenticator struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnRemoveVirtualAuthenticator) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.removeVirtualAuthenticator", m)
-	return err
+	return call("WebAuthn.removeVirtualAuthenticator", m, nil, caller)
 }
 
 // WebAuthnAddCredential Adds the credential to the specified authenticator.
@@ -15829,9 +14219,7 @@ type WebAuthnAddCredential struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnAddCredential) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.addCredential", m)
-	return err
+	return call("WebAuthn.addCredential", m, nil, caller)
 }
 
 // WebAuthnGetCredential Returns a single credential stored in the given virtual authenticator that
@@ -15847,19 +14235,8 @@ type WebAuthnGetCredential struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnGetCredential) Call(caller Caller) (*WebAuthnGetCredentialResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "WebAuthn.getCredential", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res WebAuthnGetCredentialResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("WebAuthn.getCredential", m, &res, caller)
 }
 
 // WebAuthnGetCredentialResult Returns a single credential stored in the given virtual authenticator that
@@ -15879,19 +14256,8 @@ type WebAuthnGetCredentials struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnGetCredentials) Call(caller Caller) (*WebAuthnGetCredentialsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "WebAuthn.getCredentials", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res WebAuthnGetCredentialsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("WebAuthn.getCredentials", m, &res, caller)
 }
 
 // WebAuthnGetCredentialsResult Returns all the credentials stored in the given virtual authenticator.
@@ -15913,9 +14279,7 @@ type WebAuthnRemoveCredential struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnRemoveCredential) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.removeCredential", m)
-	return err
+	return call("WebAuthn.removeCredential", m, nil, caller)
 }
 
 // WebAuthnClearCredentials Clears all the credentials from the specified device.
@@ -15927,9 +14291,7 @@ type WebAuthnClearCredentials struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnClearCredentials) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.clearCredentials", m)
-	return err
+	return call("WebAuthn.clearCredentials", m, nil, caller)
 }
 
 // WebAuthnSetUserVerified Sets whether User Verification succeeds or fails for an authenticator.
@@ -15945,9 +14307,7 @@ type WebAuthnSetUserVerified struct {
 
 // Call of the command, sessionID is optional.
 func (m WebAuthnSetUserVerified) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "WebAuthn.setUserVerified", m)
-	return err
+	return call("WebAuthn.setUserVerified", m, nil, caller)
 }
 
 // MediaPlayerID Players will get an ID that is unique within the agent context.
@@ -16003,9 +14363,7 @@ type MediaEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m MediaEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Media.enable", m)
-	return err
+	return call("Media.enable", m, nil, caller)
 }
 
 // MediaDisable Disables the Media domain.
@@ -16014,9 +14372,7 @@ type MediaDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m MediaDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Media.disable", m)
-	return err
+	return call("Media.disable", m, nil, caller)
 }
 
 // MediaPlayerPropertiesChanged This can be called multiple times, and can be used to set / override /
@@ -16151,9 +14507,7 @@ type ConsoleClearMessages struct {
 
 // Call of the command, sessionID is optional.
 func (m ConsoleClearMessages) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Console.clearMessages", m)
-	return err
+	return call("Console.clearMessages", m, nil, caller)
 }
 
 // ConsoleDisable Disables console domain, prevents further console messages from being reported to the client.
@@ -16162,9 +14516,7 @@ type ConsoleDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m ConsoleDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Console.disable", m)
-	return err
+	return call("Console.disable", m, nil, caller)
 }
 
 // ConsoleEnable Enables console domain, sends the messages collected so far to the client by means of the
@@ -16174,9 +14526,7 @@ type ConsoleEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m ConsoleEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Console.enable", m)
-	return err
+	return call("Console.enable", m, nil, caller)
 }
 
 // ConsoleMessageAdded Issued when new console message is added.
@@ -16278,6 +14628,9 @@ const (
 
 	// DebuggerScopeTypeModule enum const
 	DebuggerScopeTypeModule DebuggerScopeType = "module"
+
+	// DebuggerScopeTypeWasmExpressionStack enum const
+	DebuggerScopeTypeWasmExpressionStack DebuggerScopeType = "wasm-expression-stack"
 )
 
 // DebuggerScope Scope description.
@@ -16341,6 +14694,17 @@ type DebuggerBreakLocation struct {
 	Type DebuggerBreakLocationType `json:"type,omitempty"`
 }
 
+// DebuggerScriptLanguage Enum of possible script languages.
+type DebuggerScriptLanguage string
+
+const (
+	// DebuggerScriptLanguageJavaScript enum const
+	DebuggerScriptLanguageJavaScript DebuggerScriptLanguage = "JavaScript"
+
+	// DebuggerScriptLanguageWebAssembly enum const
+	DebuggerScriptLanguageWebAssembly DebuggerScriptLanguage = "WebAssembly"
+)
+
 // DebuggerContinueToLocationTargetCallFrames enum
 type DebuggerContinueToLocationTargetCallFrames string
 
@@ -16364,9 +14728,7 @@ type DebuggerContinueToLocation struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerContinueToLocation) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.continueToLocation", m)
-	return err
+	return call("Debugger.continueToLocation", m, nil, caller)
 }
 
 // DebuggerDisable Disables debugger for given page.
@@ -16375,9 +14737,7 @@ type DebuggerDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.disable", m)
-	return err
+	return call("Debugger.disable", m, nil, caller)
 }
 
 // DebuggerEnable Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -16391,19 +14751,8 @@ type DebuggerEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerEnable) Call(caller Caller) (*DebuggerEnableResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.enable", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerEnableResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.enable", m, &res, caller)
 }
 
 // DebuggerEnableResult Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -16450,19 +14799,8 @@ type DebuggerEvaluateOnCallFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerEvaluateOnCallFrame) Call(caller Caller) (*DebuggerEvaluateOnCallFrameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.evaluateOnCallFrame", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerEvaluateOnCallFrameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.evaluateOnCallFrame", m, &res, caller)
 }
 
 // DebuggerEvaluateOnCallFrameResult Evaluates expression on a given call frame.
@@ -16492,19 +14830,8 @@ type DebuggerGetPossibleBreakpoints struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerGetPossibleBreakpoints) Call(caller Caller) (*DebuggerGetPossibleBreakpointsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.getPossibleBreakpoints", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerGetPossibleBreakpointsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.getPossibleBreakpoints", m, &res, caller)
 }
 
 // DebuggerGetPossibleBreakpointsResult Returns possible locations for breakpoint. scriptId in start and end range locations should be
@@ -16524,19 +14851,8 @@ type DebuggerGetScriptSource struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerGetScriptSource) Call(caller Caller) (*DebuggerGetScriptSourceResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.getScriptSource", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerGetScriptSourceResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.getScriptSource", m, &res, caller)
 }
 
 // DebuggerGetScriptSourceResult Returns source for the script with given id.
@@ -16558,19 +14874,8 @@ type DebuggerGetWasmBytecode struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerGetWasmBytecode) Call(caller Caller) (*DebuggerGetWasmBytecodeResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.getWasmBytecode", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerGetWasmBytecodeResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.getWasmBytecode", m, &res, caller)
 }
 
 // DebuggerGetWasmBytecodeResult (deprecated) This command is deprecated. Use getScriptSource instead.
@@ -16589,19 +14894,8 @@ type DebuggerGetStackTrace struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerGetStackTrace) Call(caller Caller) (*DebuggerGetStackTraceResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.getStackTrace", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerGetStackTraceResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.getStackTrace", m, &res, caller)
 }
 
 // DebuggerGetStackTraceResult (experimental) Returns stack trace with given `stackTraceId`.
@@ -16617,9 +14911,7 @@ type DebuggerPause struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerPause) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.pause", m)
-	return err
+	return call("Debugger.pause", m, nil, caller)
 }
 
 // DebuggerPauseOnAsyncCall (deprecated) (experimental) ...
@@ -16631,9 +14923,7 @@ type DebuggerPauseOnAsyncCall struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerPauseOnAsyncCall) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.pauseOnAsyncCall", m)
-	return err
+	return call("Debugger.pauseOnAsyncCall", m, nil, caller)
 }
 
 // DebuggerRemoveBreakpoint Removes JavaScript breakpoint.
@@ -16645,9 +14935,7 @@ type DebuggerRemoveBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerRemoveBreakpoint) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.removeBreakpoint", m)
-	return err
+	return call("Debugger.removeBreakpoint", m, nil, caller)
 }
 
 // DebuggerRestartFrame Restarts particular call frame from the beginning.
@@ -16659,19 +14947,8 @@ type DebuggerRestartFrame struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerRestartFrame) Call(caller Caller) (*DebuggerRestartFrameResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.restartFrame", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerRestartFrameResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.restartFrame", m, &res, caller)
 }
 
 // DebuggerRestartFrameResult Restarts particular call frame from the beginning.
@@ -16689,13 +14966,18 @@ type DebuggerRestartFrameResult struct {
 
 // DebuggerResume Resumes JavaScript execution.
 type DebuggerResume struct {
+
+	// TerminateOnResume (optional) Set to true to terminate execution upon resuming execution. In contrast
+	// to Runtime.terminateExecution, this will allows to execute further
+	// JavaScript (i.e. via evaluation) until execution of the paused code
+	// is actually resumed, at which point termination is triggered.
+	// If execution is currently not paused, this parameter has no effect.
+	TerminateOnResume bool `json:"terminateOnResume,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m DebuggerResume) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.resume", m)
-	return err
+	return call("Debugger.resume", m, nil, caller)
 }
 
 // DebuggerSearchInContent Searches for given string in script content.
@@ -16716,19 +14998,8 @@ type DebuggerSearchInContent struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSearchInContent) Call(caller Caller) (*DebuggerSearchInContentResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.searchInContent", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSearchInContentResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.searchInContent", m, &res, caller)
 }
 
 // DebuggerSearchInContentResult Searches for given string in script content.
@@ -16748,9 +15019,7 @@ type DebuggerSetAsyncCallStackDepth struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetAsyncCallStackDepth) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setAsyncCallStackDepth", m)
-	return err
+	return call("Debugger.setAsyncCallStackDepth", m, nil, caller)
 }
 
 // DebuggerSetBlackboxPatterns (experimental) Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
@@ -16764,9 +15033,7 @@ type DebuggerSetBlackboxPatterns struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBlackboxPatterns) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setBlackboxPatterns", m)
-	return err
+	return call("Debugger.setBlackboxPatterns", m, nil, caller)
 }
 
 // DebuggerSetBlackboxedRanges (experimental) Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
@@ -16784,9 +15051,7 @@ type DebuggerSetBlackboxedRanges struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBlackboxedRanges) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setBlackboxedRanges", m)
-	return err
+	return call("Debugger.setBlackboxedRanges", m, nil, caller)
 }
 
 // DebuggerSetBreakpoint Sets JavaScript breakpoint at a given location.
@@ -16802,19 +15067,8 @@ type DebuggerSetBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpoint) Call(caller Caller) (*DebuggerSetBreakpointResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.setBreakpoint", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSetBreakpointResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.setBreakpoint", m, &res, caller)
 }
 
 // DebuggerSetBreakpointResult Sets JavaScript breakpoint at a given location.
@@ -16847,19 +15101,8 @@ type DebuggerSetInstrumentationBreakpoint struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetInstrumentationBreakpoint) Call(caller Caller) (*DebuggerSetInstrumentationBreakpointResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.setInstrumentationBreakpoint", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSetInstrumentationBreakpointResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.setInstrumentationBreakpoint", m, &res, caller)
 }
 
 // DebuggerSetInstrumentationBreakpointResult Sets instrumentation breakpoint.
@@ -16898,19 +15141,8 @@ type DebuggerSetBreakpointByURL struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointByURL) Call(caller Caller) (*DebuggerSetBreakpointByURLResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.setBreakpointByUrl", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSetBreakpointByURLResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.setBreakpointByUrl", m, &res, caller)
 }
 
 // DebuggerSetBreakpointByURLResult Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
@@ -16941,19 +15173,8 @@ type DebuggerSetBreakpointOnFunctionCall struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointOnFunctionCall) Call(caller Caller) (*DebuggerSetBreakpointOnFunctionCallResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.setBreakpointOnFunctionCall", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSetBreakpointOnFunctionCallResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.setBreakpointOnFunctionCall", m, &res, caller)
 }
 
 // DebuggerSetBreakpointOnFunctionCallResult (experimental) Sets JavaScript breakpoint before each call to the given function.
@@ -16974,9 +15195,7 @@ type DebuggerSetBreakpointsActive struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointsActive) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setBreakpointsActive", m)
-	return err
+	return call("Debugger.setBreakpointsActive", m, nil, caller)
 }
 
 // DebuggerSetPauseOnExceptionsState enum
@@ -17003,9 +15222,7 @@ type DebuggerSetPauseOnExceptions struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetPauseOnExceptions) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setPauseOnExceptions", m)
-	return err
+	return call("Debugger.setPauseOnExceptions", m, nil, caller)
 }
 
 // DebuggerSetReturnValue (experimental) Changes return value in top frame. Available only at return break position.
@@ -17017,9 +15234,7 @@ type DebuggerSetReturnValue struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetReturnValue) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setReturnValue", m)
-	return err
+	return call("Debugger.setReturnValue", m, nil, caller)
 }
 
 // DebuggerSetScriptSource Edits JavaScript source live.
@@ -17038,19 +15253,8 @@ type DebuggerSetScriptSource struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetScriptSource) Call(caller Caller) (*DebuggerSetScriptSourceResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Debugger.setScriptSource", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res DebuggerSetScriptSourceResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Debugger.setScriptSource", m, &res, caller)
 }
 
 // DebuggerSetScriptSourceResult Edits JavaScript source live.
@@ -17081,9 +15285,7 @@ type DebuggerSetSkipAllPauses struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetSkipAllPauses) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setSkipAllPauses", m)
-	return err
+	return call("Debugger.setSkipAllPauses", m, nil, caller)
 }
 
 // DebuggerSetVariableValue Changes value of variable in a callframe. Object-based scopes are not supported and must be
@@ -17106,9 +15308,7 @@ type DebuggerSetVariableValue struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerSetVariableValue) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.setVariableValue", m)
-	return err
+	return call("Debugger.setVariableValue", m, nil, caller)
 }
 
 // DebuggerStepInto Steps into the function call.
@@ -17121,9 +15321,7 @@ type DebuggerStepInto struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerStepInto) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.stepInto", m)
-	return err
+	return call("Debugger.stepInto", m, nil, caller)
 }
 
 // DebuggerStepOut Steps out of the function call.
@@ -17132,9 +15330,7 @@ type DebuggerStepOut struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerStepOut) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.stepOut", m)
-	return err
+	return call("Debugger.stepOut", m, nil, caller)
 }
 
 // DebuggerStepOver Steps over the statement.
@@ -17143,9 +15339,7 @@ type DebuggerStepOver struct {
 
 // Call of the command, sessionID is optional.
 func (m DebuggerStepOver) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Debugger.stepOver", m)
-	return err
+	return call("Debugger.stepOver", m, nil, caller)
 }
 
 // DebuggerBreakpointResolved Fired when breakpoint is resolved to an actual script and location.
@@ -17284,6 +15478,12 @@ type DebuggerScriptFailedToParse struct {
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
+
+	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
+	CodeOffset int64 `json:"codeOffset,omitempty"`
+
+	// ScriptLanguage (experimental) (optional) The language of the script.
+	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
 }
 
 // MethodName interface
@@ -17339,6 +15539,12 @@ type DebuggerScriptParsed struct {
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
+
+	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
+	CodeOffset int64 `json:"codeOffset,omitempty"`
+
+	// ScriptLanguage (experimental) (optional) The language of the script.
+	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
 }
 
 // MethodName interface
@@ -17399,9 +15605,7 @@ type HeapProfilerAddInspectedHeapObject struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerAddInspectedHeapObject) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.addInspectedHeapObject", m)
-	return err
+	return call("HeapProfiler.addInspectedHeapObject", m, nil, caller)
 }
 
 // HeapProfilerCollectGarbage ...
@@ -17410,9 +15614,7 @@ type HeapProfilerCollectGarbage struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerCollectGarbage) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.collectGarbage", m)
-	return err
+	return call("HeapProfiler.collectGarbage", m, nil, caller)
 }
 
 // HeapProfilerDisable ...
@@ -17421,9 +15623,7 @@ type HeapProfilerDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.disable", m)
-	return err
+	return call("HeapProfiler.disable", m, nil, caller)
 }
 
 // HeapProfilerEnable ...
@@ -17432,9 +15632,7 @@ type HeapProfilerEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.enable", m)
-	return err
+	return call("HeapProfiler.enable", m, nil, caller)
 }
 
 // HeapProfilerGetHeapObjectID ...
@@ -17446,19 +15644,8 @@ type HeapProfilerGetHeapObjectID struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetHeapObjectID) Call(caller Caller) (*HeapProfilerGetHeapObjectIDResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "HeapProfiler.getHeapObjectId", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res HeapProfilerGetHeapObjectIDResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("HeapProfiler.getHeapObjectId", m, &res, caller)
 }
 
 // HeapProfilerGetHeapObjectIDResult ...
@@ -17480,19 +15667,8 @@ type HeapProfilerGetObjectByHeapObjectID struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetObjectByHeapObjectID) Call(caller Caller) (*HeapProfilerGetObjectByHeapObjectIDResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "HeapProfiler.getObjectByHeapObjectId", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res HeapProfilerGetObjectByHeapObjectIDResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("HeapProfiler.getObjectByHeapObjectId", m, &res, caller)
 }
 
 // HeapProfilerGetObjectByHeapObjectIDResult ...
@@ -17508,19 +15684,8 @@ type HeapProfilerGetSamplingProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetSamplingProfile) Call(caller Caller) (*HeapProfilerGetSamplingProfileResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "HeapProfiler.getSamplingProfile", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res HeapProfilerGetSamplingProfileResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("HeapProfiler.getSamplingProfile", m, &res, caller)
 }
 
 // HeapProfilerGetSamplingProfileResult ...
@@ -17540,9 +15705,7 @@ type HeapProfilerStartSampling struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStartSampling) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.startSampling", m)
-	return err
+	return call("HeapProfiler.startSampling", m, nil, caller)
 }
 
 // HeapProfilerStartTrackingHeapObjects ...
@@ -17554,9 +15717,7 @@ type HeapProfilerStartTrackingHeapObjects struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStartTrackingHeapObjects) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.startTrackingHeapObjects", m)
-	return err
+	return call("HeapProfiler.startTrackingHeapObjects", m, nil, caller)
 }
 
 // HeapProfilerStopSampling ...
@@ -17565,19 +15726,8 @@ type HeapProfilerStopSampling struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStopSampling) Call(caller Caller) (*HeapProfilerStopSamplingResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "HeapProfiler.stopSampling", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res HeapProfilerStopSamplingResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("HeapProfiler.stopSampling", m, &res, caller)
 }
 
 // HeapProfilerStopSamplingResult ...
@@ -17600,9 +15750,7 @@ type HeapProfilerStopTrackingHeapObjects struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStopTrackingHeapObjects) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.stopTrackingHeapObjects", m)
-	return err
+	return call("HeapProfiler.stopTrackingHeapObjects", m, nil, caller)
 }
 
 // HeapProfilerTakeHeapSnapshot ...
@@ -17617,9 +15765,7 @@ type HeapProfilerTakeHeapSnapshot struct {
 
 // Call of the command, sessionID is optional.
 func (m HeapProfilerTakeHeapSnapshot) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "HeapProfiler.takeHeapSnapshot", m)
-	return err
+	return call("HeapProfiler.takeHeapSnapshot", m, nil, caller)
 }
 
 // HeapProfilerAddHeapSnapshotChunk ...
@@ -17830,9 +15976,7 @@ type ProfilerDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.disable", m)
-	return err
+	return call("Profiler.disable", m, nil, caller)
 }
 
 // ProfilerEnable ...
@@ -17841,9 +15985,7 @@ type ProfilerEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.enable", m)
-	return err
+	return call("Profiler.enable", m, nil, caller)
 }
 
 // ProfilerGetBestEffortCoverage Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -17853,19 +15995,8 @@ type ProfilerGetBestEffortCoverage struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerGetBestEffortCoverage) Call(caller Caller) (*ProfilerGetBestEffortCoverageResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.getBestEffortCoverage", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerGetBestEffortCoverageResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.getBestEffortCoverage", m, &res, caller)
 }
 
 // ProfilerGetBestEffortCoverageResult Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -17885,9 +16016,7 @@ type ProfilerSetSamplingInterval struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerSetSamplingInterval) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.setSamplingInterval", m)
-	return err
+	return call("Profiler.setSamplingInterval", m, nil, caller)
 }
 
 // ProfilerStart ...
@@ -17896,9 +16025,7 @@ type ProfilerStart struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStart) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.start", m)
-	return err
+	return call("Profiler.start", m, nil, caller)
 }
 
 // ProfilerStartPreciseCoverage Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -17911,23 +16038,15 @@ type ProfilerStartPreciseCoverage struct {
 
 	// Detailed (optional) Collect block-based coverage.
 	Detailed bool `json:"detailed,omitempty"`
+
+	// AllowTriggeredUpdates (optional) Allow the backend to send updates on its own initiative
+	AllowTriggeredUpdates bool `json:"allowTriggeredUpdates,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStartPreciseCoverage) Call(caller Caller) (*ProfilerStartPreciseCoverageResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.startPreciseCoverage", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerStartPreciseCoverageResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.startPreciseCoverage", m, &res, caller)
 }
 
 // ProfilerStartPreciseCoverageResult Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -17945,9 +16064,7 @@ type ProfilerStartTypeProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStartTypeProfile) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.startTypeProfile", m)
-	return err
+	return call("Profiler.startTypeProfile", m, nil, caller)
 }
 
 // ProfilerStop ...
@@ -17956,19 +16073,8 @@ type ProfilerStop struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStop) Call(caller Caller) (*ProfilerStopResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.stop", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerStopResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.stop", m, &res, caller)
 }
 
 // ProfilerStopResult ...
@@ -17985,9 +16091,7 @@ type ProfilerStopPreciseCoverage struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStopPreciseCoverage) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.stopPreciseCoverage", m)
-	return err
+	return call("Profiler.stopPreciseCoverage", m, nil, caller)
 }
 
 // ProfilerStopTypeProfile (experimental) Disable type profile. Disabling releases type profile data collected so far.
@@ -17996,9 +16100,7 @@ type ProfilerStopTypeProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerStopTypeProfile) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.stopTypeProfile", m)
-	return err
+	return call("Profiler.stopTypeProfile", m, nil, caller)
 }
 
 // ProfilerTakePreciseCoverage Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -18008,19 +16110,8 @@ type ProfilerTakePreciseCoverage struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerTakePreciseCoverage) Call(caller Caller) (*ProfilerTakePreciseCoverageResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.takePreciseCoverage", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerTakePreciseCoverageResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.takePreciseCoverage", m, &res, caller)
 }
 
 // ProfilerTakePreciseCoverageResult Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -18040,19 +16131,8 @@ type ProfilerTakeTypeProfile struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerTakeTypeProfile) Call(caller Caller) (*ProfilerTakeTypeProfileResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.takeTypeProfile", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerTakeTypeProfileResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.takeTypeProfile", m, &res, caller)
 }
 
 // ProfilerTakeTypeProfileResult (experimental) Collect type profile.
@@ -18068,9 +16148,7 @@ type ProfilerEnableRuntimeCallStats struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerEnableRuntimeCallStats) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.enableRuntimeCallStats", m)
-	return err
+	return call("Profiler.enableRuntimeCallStats", m, nil, caller)
 }
 
 // ProfilerDisableRuntimeCallStats (experimental) Disable run time call stats collection.
@@ -18079,9 +16157,7 @@ type ProfilerDisableRuntimeCallStats struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerDisableRuntimeCallStats) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Profiler.disableRuntimeCallStats", m)
-	return err
+	return call("Profiler.disableRuntimeCallStats", m, nil, caller)
 }
 
 // ProfilerGetRuntimeCallStats (experimental) Retrieve run time call stats.
@@ -18090,19 +16166,8 @@ type ProfilerGetRuntimeCallStats struct {
 
 // Call of the command, sessionID is optional.
 func (m ProfilerGetRuntimeCallStats) Call(caller Caller) (*ProfilerGetRuntimeCallStatsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Profiler.getRuntimeCallStats", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res ProfilerGetRuntimeCallStatsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Profiler.getRuntimeCallStats", m, &res, caller)
 }
 
 // ProfilerGetRuntimeCallStatsResult (experimental) Retrieve run time call stats.
@@ -18209,6 +16274,9 @@ const (
 
 	// RuntimeRemoteObjectTypeBigint enum const
 	RuntimeRemoteObjectTypeBigint RuntimeRemoteObjectType = "bigint"
+
+	// RuntimeRemoteObjectTypeWasm enum const
+	RuntimeRemoteObjectTypeWasm RuntimeRemoteObjectType = "wasm"
 )
 
 // RuntimeRemoteObjectSubtype enum
@@ -18265,6 +16333,21 @@ const (
 
 	// RuntimeRemoteObjectSubtypeDataview enum const
 	RuntimeRemoteObjectSubtypeDataview RuntimeRemoteObjectSubtype = "dataview"
+
+	// RuntimeRemoteObjectSubtypeI32 enum const
+	RuntimeRemoteObjectSubtypeI32 RuntimeRemoteObjectSubtype = "i32"
+
+	// RuntimeRemoteObjectSubtypeI64 enum const
+	RuntimeRemoteObjectSubtypeI64 RuntimeRemoteObjectSubtype = "i64"
+
+	// RuntimeRemoteObjectSubtypeF32 enum const
+	RuntimeRemoteObjectSubtypeF32 RuntimeRemoteObjectSubtype = "f32"
+
+	// RuntimeRemoteObjectSubtypeF64 enum const
+	RuntimeRemoteObjectSubtypeF64 RuntimeRemoteObjectSubtype = "f64"
+
+	// RuntimeRemoteObjectSubtypeV128 enum const
+	RuntimeRemoteObjectSubtypeV128 RuntimeRemoteObjectSubtype = "v128"
 )
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
@@ -18273,7 +16356,7 @@ type RuntimeRemoteObject struct {
 	// Type Object type.
 	Type RuntimeRemoteObjectType `json:"type"`
 
-	// Subtype (optional) Object subtype hint. Specified for `object` type values only.
+	// Subtype (optional) Object subtype hint. Specified for `object` or `wasm` type values only.
 	Subtype RuntimeRemoteObjectSubtype `json:"subtype,omitempty"`
 
 	// ClassName (optional) Object class (constructor) name. Specified for `object` type values only.
@@ -18709,19 +16792,8 @@ type RuntimeAwaitPromise struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeAwaitPromise) Call(caller Caller) (*RuntimeAwaitPromiseResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.awaitPromise", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeAwaitPromiseResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.awaitPromise", m, &res, caller)
 }
 
 // RuntimeAwaitPromiseResult Add handler to promise with given promise object id.
@@ -18777,19 +16849,8 @@ type RuntimeCallFunctionOn struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeCallFunctionOn) Call(caller Caller) (*RuntimeCallFunctionOnResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.callFunctionOn", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeCallFunctionOnResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.callFunctionOn", m, &res, caller)
 }
 
 // RuntimeCallFunctionOnResult Calls function with given declaration on the given object. Object group of the result is
@@ -18822,19 +16883,8 @@ type RuntimeCompileScript struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeCompileScript) Call(caller Caller) (*RuntimeCompileScriptResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.compileScript", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeCompileScriptResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.compileScript", m, &res, caller)
 }
 
 // RuntimeCompileScriptResult Compiles expression.
@@ -18853,9 +16903,7 @@ type RuntimeDisable struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeDisable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.disable", m)
-	return err
+	return call("Runtime.disable", m, nil, caller)
 }
 
 // RuntimeDiscardConsoleEntries Discards collected exceptions and console API calls.
@@ -18864,9 +16912,7 @@ type RuntimeDiscardConsoleEntries struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeDiscardConsoleEntries) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.discardConsoleEntries", m)
-	return err
+	return call("Runtime.discardConsoleEntries", m, nil, caller)
 }
 
 // RuntimeEnable Enables reporting of execution contexts creation by means of `executionContextCreated` event.
@@ -18877,9 +16923,7 @@ type RuntimeEnable struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeEnable) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.enable", m)
-	return err
+	return call("Runtime.enable", m, nil, caller)
 }
 
 // RuntimeEvaluate Evaluates expression on global object.
@@ -18925,25 +16969,16 @@ type RuntimeEvaluate struct {
 	// DisableBreaks (experimental) (optional) Disable breakpoints during execution.
 	DisableBreaks bool `json:"disableBreaks,omitempty"`
 
-	// ReplMode (experimental) (optional) Reserved flag for future REPL mode support. Setting this flag has currently no effect.
+	// ReplMode (experimental) (optional) Setting this flag to true enables `let` re-declaration and top-level `await`.
+	// Note that `let` variables can only be re-declared if they originate from
+	// `replMode` themselves.
 	ReplMode bool `json:"replMode,omitempty"`
 }
 
 // Call of the command, sessionID is optional.
 func (m RuntimeEvaluate) Call(caller Caller) (*RuntimeEvaluateResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.evaluate", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeEvaluateResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.evaluate", m, &res, caller)
 }
 
 // RuntimeEvaluateResult Evaluates expression on global object.
@@ -18962,19 +16997,8 @@ type RuntimeGetIsolateID struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeGetIsolateID) Call(caller Caller) (*RuntimeGetIsolateIDResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.getIsolateId", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeGetIsolateIDResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.getIsolateId", m, &res, caller)
 }
 
 // RuntimeGetIsolateIDResult (experimental) Returns the isolate id.
@@ -18991,19 +17015,8 @@ type RuntimeGetHeapUsage struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeGetHeapUsage) Call(caller Caller) (*RuntimeGetHeapUsageResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.getHeapUsage", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeGetHeapUsageResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.getHeapUsage", m, &res, caller)
 }
 
 // RuntimeGetHeapUsageResult (experimental) Returns the JavaScript heap usage.
@@ -19038,19 +17051,8 @@ type RuntimeGetProperties struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeGetProperties) Call(caller Caller) (*RuntimeGetPropertiesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.getProperties", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeGetPropertiesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.getProperties", m, &res, caller)
 }
 
 // RuntimeGetPropertiesResult Returns properties of a given object. Object group of the result is inherited from the target
@@ -19079,19 +17081,8 @@ type RuntimeGlobalLexicalScopeNames struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeGlobalLexicalScopeNames) Call(caller Caller) (*RuntimeGlobalLexicalScopeNamesResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.globalLexicalScopeNames", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeGlobalLexicalScopeNamesResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.globalLexicalScopeNames", m, &res, caller)
 }
 
 // RuntimeGlobalLexicalScopeNamesResult Returns all let, const and class variables from global scope.
@@ -19113,19 +17104,8 @@ type RuntimeQueryObjects struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeQueryObjects) Call(caller Caller) (*RuntimeQueryObjectsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.queryObjects", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeQueryObjectsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.queryObjects", m, &res, caller)
 }
 
 // RuntimeQueryObjectsResult ...
@@ -19144,9 +17124,7 @@ type RuntimeReleaseObject struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeReleaseObject) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.releaseObject", m)
-	return err
+	return call("Runtime.releaseObject", m, nil, caller)
 }
 
 // RuntimeReleaseObjectGroup Releases all remote objects that belong to a given group.
@@ -19158,9 +17136,7 @@ type RuntimeReleaseObjectGroup struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeReleaseObjectGroup) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.releaseObjectGroup", m)
-	return err
+	return call("Runtime.releaseObjectGroup", m, nil, caller)
 }
 
 // RuntimeRunIfWaitingForDebugger Tells inspected instance to run if it was waiting for debugger to attach.
@@ -19169,9 +17145,7 @@ type RuntimeRunIfWaitingForDebugger struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeRunIfWaitingForDebugger) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.runIfWaitingForDebugger", m)
-	return err
+	return call("Runtime.runIfWaitingForDebugger", m, nil, caller)
 }
 
 // RuntimeRunScript Runs script with given id in a given context.
@@ -19207,19 +17181,8 @@ type RuntimeRunScript struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeRunScript) Call(caller Caller) (*RuntimeRunScriptResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Runtime.runScript", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res RuntimeRunScriptResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Runtime.runScript", m, &res, caller)
 }
 
 // RuntimeRunScriptResult Runs script with given id in a given context.
@@ -19242,9 +17205,7 @@ type RuntimeSetAsyncCallStackDepth struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeSetAsyncCallStackDepth) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.setAsyncCallStackDepth", m)
-	return err
+	return call("Runtime.setAsyncCallStackDepth", m, nil, caller)
 }
 
 // RuntimeSetCustomObjectFormatterEnabled (experimental) ...
@@ -19256,9 +17217,7 @@ type RuntimeSetCustomObjectFormatterEnabled struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeSetCustomObjectFormatterEnabled) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.setCustomObjectFormatterEnabled", m)
-	return err
+	return call("Runtime.setCustomObjectFormatterEnabled", m, nil, caller)
 }
 
 // RuntimeSetMaxCallStackSizeToCapture (experimental) ...
@@ -19270,9 +17229,7 @@ type RuntimeSetMaxCallStackSizeToCapture struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeSetMaxCallStackSizeToCapture) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.setMaxCallStackSizeToCapture", m)
-	return err
+	return call("Runtime.setMaxCallStackSizeToCapture", m, nil, caller)
 }
 
 // RuntimeTerminateExecution (experimental) Terminate current or next JavaScript execution.
@@ -19282,9 +17239,7 @@ type RuntimeTerminateExecution struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeTerminateExecution) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.terminateExecution", m)
-	return err
+	return call("Runtime.terminateExecution", m, nil, caller)
 }
 
 // RuntimeAddBinding (experimental) If executionContextId is empty, adds binding with the given name on the
@@ -19306,9 +17261,7 @@ type RuntimeAddBinding struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeAddBinding) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.addBinding", m)
-	return err
+	return call("Runtime.addBinding", m, nil, caller)
 }
 
 // RuntimeRemoveBinding (experimental) This method does not remove binding function from global object but
@@ -19321,9 +17274,7 @@ type RuntimeRemoveBinding struct {
 
 // Call of the command, sessionID is optional.
 func (m RuntimeRemoveBinding) Call(caller Caller) error {
-	ctx, client, id := caller.CallContext()
-	_, err := client.Call(ctx, id, "Runtime.removeBinding", m)
-	return err
+	return call("Runtime.removeBinding", m, nil, caller)
 }
 
 // RuntimeBindingCalled (experimental) Notification is issued every time when binding is called.
@@ -19529,19 +17480,8 @@ type SchemaGetDomains struct {
 
 // Call of the command, sessionID is optional.
 func (m SchemaGetDomains) Call(caller Caller) (*SchemaGetDomainsResult, error) {
-	ctx, client, id := caller.CallContext()
-	bin, err := client.Call(ctx, id, "Schema.getDomains", m)
-	if err != nil {
-		return nil, err
-	}
-
 	var res SchemaGetDomainsResult
-	err = json.Unmarshal(bin, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return &res, call("Schema.getDomains", m, &res, caller)
 }
 
 // SchemaGetDomainsResult Returns supported domains.

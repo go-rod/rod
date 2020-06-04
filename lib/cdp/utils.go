@@ -11,10 +11,15 @@ import (
 	"github.com/ysmood/kit"
 )
 
-func prettyJSON(s []byte) string {
-	var val interface{}
-	_ = json.Unmarshal(s, &val)
-	return kit.Sdump(val)
+func prettyJSON(s interface{}) string {
+	raw, ok := s.(json.RawMessage)
+	if ok {
+		var val interface{}
+		_ = json.Unmarshal(raw, &val)
+		return kit.Sdump(val)
+	}
+
+	return kit.Sdump(raw)
 }
 
 func (cdp *Client) debugLog(obj interface{}) {
@@ -34,7 +39,7 @@ func (cdp *Client) debugLog(obj interface{}) {
 			val.ID,
 			val.Method,
 			val.SessionID,
-			kit.Sdump(val.Params),
+			prettyJSON(val.Params),
 		))
 	case *response:
 		kit.E(fmt.Fprintf(kit.Stdout,

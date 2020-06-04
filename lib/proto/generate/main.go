@@ -122,28 +122,15 @@ func (d *definition) format() (code string) {
 				code += kit.S(`
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) (*{{.name}}Result, error) {
-					ctx, client, id := caller.CallContext()
-					bin, err := client.Call(ctx, id, "{{.method}}", m)
-					if err != nil {
-						return nil, err
-					}
-		
 					var res {{.name}}Result
-					err = json.Unmarshal(bin, &res)
-					if err != nil {
-						return nil, err
-					}
-			
-					return &res, nil
+					return &res, call("{{.method}}", m, &res, caller)
 				}
 				`, "name", d.name, "method", method)
 			} else {
 				code += kit.S(`
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) error {
-					ctx, client, id := caller.CallContext()
-					_, err := client.Call(ctx, id, "{{.method}}", m)
-					return err
+					return call("{{.method}}", m, nil, caller)
 				}
 				`, "name", d.name, "method", method)
 			}
@@ -175,14 +162,6 @@ func (d *definition) formatTests() (code string) {
 					c := &Client{}
 					_, err := proto.{{.name}}{}.Call(&Caller{c})
 					assert.Nil(t, err)
-					
-					c = &Client{err: errors.New("err")}
-					_, err = proto.{{.name}}{}.Call(&Caller{c})
-					assert.Error(t, err)
-			
-					c = &Client{ret: "err"}
-					_, err = proto.{{.name}}{}.Call(&Caller{c})
-					assert.Error(t, err)
 				}
 				`, "name", d.name)
 		}
@@ -192,10 +171,6 @@ func (d *definition) formatTests() (code string) {
 				c := &Client{}
 				err := proto.{{.name}}{}.Call(&Caller{c})
 				assert.Nil(t, err)
-				
-				c = &Client{err: errors.New("err")}
-				err = proto.{{.name}}{}.Call(&Caller{c})
-				assert.Error(t, err)
 			}
 			`, "name", d.name)
 
