@@ -401,9 +401,8 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 				e := msg.(*cdp.Event)
 				sent := &proto.NetworkRequestWillBeSent{}
-				finished := &proto.NetworkLoadingFinished{}
+				finished := &proto.NetworkLoadingFinished{} // it will be after the Network.responseReceived
 				failed := &proto.NetworkLoadingFailed{}
-				received := &proto.NetworkResponseReceived{}
 
 				if Event(e, sent) {
 					timeout.Stop()
@@ -419,9 +418,6 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 				} else if Event(e, failed) {
 					kit.E(json.Unmarshal(e.Params, failed))
 					reset(failed.RequestID)
-				} else if Event(e, received) {
-					kit.E(json.Unmarshal(e.Params, received))
-					reset(received.RequestID)
 				}
 			}
 		}
