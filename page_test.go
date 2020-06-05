@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -299,7 +300,7 @@ func (s *S) TestMouseDrag() {
 	kit.E(proto.ConsoleEnable{}.Call(page))
 	go page.EachEvent(func(e *proto.ConsoleMessageAdded) bool {
 		logs = append(logs, e.Message.Text)
-		if e.Message.Text == "up" {
+		if strings.HasPrefix(e.Message.Text, "up") {
 			close(wait)
 			return true
 		}
@@ -313,7 +314,7 @@ func (s *S) TestMouseDrag() {
 
 	<-wait
 
-	s.Equal([]string{"move", "down", "move", "move", "move", "up"}, logs)
+	s.Equal([]string{"move 3 3", "down 3 3", "move 22 28", "move 41 54", "move 60 80", "up 60 80"}, logs)
 }
 
 func (s *S) TestNativeDrag() {
@@ -322,9 +323,18 @@ func (s *S) TestNativeDrag() {
 	page := s.page.Navigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
-	mouse.Move(60, 30)
+	box := page.Element("#draggable").Box()
+	x := box.Left + 3
+	y := box.Top + 3
+	toY := page.Element(".dropzone:nth-child(2)").Box().Top + 3
+
+	page.Overlay(x, y, 10, 10, "from")
+	page.Overlay(x, toY, 10, 10, "to")
+
+	mouse.Move(x, y)
 	mouse.Down("left")
-	kit.E(mouse.MoveE(60, 80, 5))
+	kit.E(mouse.MoveE(x, toY, 5))
+	page.Screenshot("")
 	mouse.Up("left")
 
 	page.Element(".dropzone:nth-child(2) #draggable")
