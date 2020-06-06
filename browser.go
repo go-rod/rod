@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/defaults"
@@ -37,7 +38,7 @@ type Browser struct {
 	monitorServer *kit.ServerContext
 
 	client *cdp.Client
-	event  *kit.Observable // all the browser events from cdp client
+	event  *goob.Observable // all the browser events from cdp client
 }
 
 // New creates a controller
@@ -184,21 +185,19 @@ func (b *Browser) PagesE() (Pages, error) {
 type EventFilter func(*cdp.Event) bool
 
 // WaitEventE returns a channel that resolves the next event and close
-func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
-	wait := make(chan error)
+func (b *Browser) WaitEventE(filter EventFilter) <-chan kit.Nil {
+	wait := make(chan kit.Nil)
 	go func() {
-		_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
-			return filter(e.(*cdp.Event))
+		goob.Each(b.event.Subscribe(b.ctx), func(e *cdp.Event) bool {
+			return filter(e)
 		})
-		wait <- err
 		close(wait)
 	}()
-
 	return wait
 }
 
 // Event returns the observable for browser events
-func (b *Browser) Event() *kit.Observable {
+func (b *Browser) Event() *goob.Observable {
 	return b.event
 }
 
@@ -226,10 +225,7 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 			}
 		}()
 
-		err = <-waitPaused
-		if err != nil {
-			return
-		}
+		<-waitPaused
 
 		err = proto.FetchContinueRequest{
 			RequestID: paused.RequestID,
@@ -238,10 +234,7 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 			return
 		}
 
-		err = <-waitAuth
-		if err != nil {
-			return
-		}
+		<-waitAuth
 
 		err = proto.FetchContinueWithAuth{
 			RequestID: auth.RequestID,
@@ -278,13 +271,12 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 }
 
 func (b *Browser) initEvents() error {
-	b.event = kit.NewObservable()
+	b.event = goob.New(b.ctx)
 
 	go func() {
 		for msg := range b.client.Event() {
 			b.event.Publish(msg)
 		}
-		b.event.UnsubscribeAll()
 	}()
 
 	err := proto.TargetSetDiscoverTargets{

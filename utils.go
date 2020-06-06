@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/proto"
@@ -94,21 +95,22 @@ func ginHTML(ctx kit.GinContext, body string) {
 	_, _ = ctx.Writer.WriteString(body)
 }
 
-func eachEvent(ob *kit.Observable, fn interface{}) {
+func eachEvent(ctx context.Context, ob *goob.Observable, fn interface{}) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	fnType := reflect.TypeOf(fn)
 	fnVal := reflect.ValueOf(fn)
 	eventType := fnType.In(0).Elem()
-	sub := ob.Subscribe()
-	defer ob.Unsubscribe(sub)
-	for e := range sub.C {
+
+	goob.Each(ob.Subscribe(ctx), func(e *cdp.Event) bool {
 		event := reflect.New(eventType)
-		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
+		if Event(e, event.Interface().(proto.Event)) {
 			ret := fnVal.Call([]reflect.Value{event})
 			if len(ret) > 0 {
-				if ret[0].Bool() {
-					break
-				}
+				return ret[0].Bool()
 			}
 		}
-	}
+		return false
+	})
 }

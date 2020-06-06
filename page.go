@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/assets"
 	"github.com/ysmood/rod/lib/cdp"
@@ -40,7 +41,7 @@ type Page struct {
 	getDownloadFileLock *sync.Mutex
 	viewport            *proto.EmulationSetDeviceMetricsOverride
 
-	event *kit.Observable
+	event *goob.Observable
 }
 
 // IsIframe tells if it's iframe
@@ -49,7 +50,7 @@ func (p *Page) IsIframe() bool {
 }
 
 // Event returns the observable for page events
-func (p *Page) Event() *kit.Observable {
+func (p *Page) Event() *goob.Observable {
 	return p.event
 }
 
@@ -188,15 +189,11 @@ func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	wait := p.WaitEventE(NewEventFilter(&proto.PageJavascriptDialogOpening{}))
 
 	return func() error {
-		err := <-wait
-		if err != nil {
-			return err
-		}
-		err = proto.PageHandleJavaScriptDialog{
+		<-wait
+		return proto.PageHandleJavaScriptDialog{
 			Accept:     accept,
 			PromptText: promptText,
 		}.Call(p)
-		return err
 	}
 }
 
@@ -242,10 +239,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			}
 		}()
 
-		err = <-wait
-		if err != nil {
-			return nil, nil, err
-		}
+		<-wait
 
 		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
 
@@ -343,10 +337,7 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 	})
 
 	return func() (*Page, error) {
-		err := <-wait
-		if err != nil {
-			return nil, err
-		}
+		<-wait
 		return p.browser.Context(p.ctx).PageFromTargetIDE(targetInfo.TargetID)
 	}
 }
@@ -361,19 +352,20 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
-	wait := p.WaitEventE(NewEventFilter(&proto.DebuggerResumed{}))
-	return <-wait
+	<-p.WaitEventE(NewEventFilter(&proto.DebuggerResumed{}))
+	return nil
 }
 
 // WaitRequestIdleE returns a wait function that waits until no request for d duration.
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
-	s := p.event.Subscribe()
+	ctx, cancel := context.WithCancel(p.ctx)
+	s := p.event.Subscribe(ctx)
 	done := make(chan error)
 
 	go func() {
-		defer p.browser.event.Unsubscribe(s)
+		defer cancel()
 
 		reqList := map[proto.NetworkRequestID]kit.Nil{}
 		timeout := time.NewTimer(d)
@@ -393,7 +385,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 			case <-timeout.C:
 				done <- nil
 				return
-			case msg, ok := <-s.C:
+			case msg, ok := <-s:
 				if !ok {
 					done <- nil
 					return
@@ -450,7 +442,7 @@ func (p *Page) WaitLoadE() error {
 }
 
 // WaitEventE doc is the same as the method WaitEvent
-func (p *Page) WaitEventE(filter EventFilter) <-chan error {
+func (p *Page) WaitEventE(filter EventFilter) <-chan kit.Nil {
 	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == string(p.SessionID) && filter(e)
 	})
@@ -585,15 +577,9 @@ func (p *Page) initSession() error {
 }
 
 func (p *Page) initEvents() error {
-	p.event = kit.NewObservable()
-
-	go func() {
-		for msg := range p.browser.event.Subscribe().C {
-			if msg.(*cdp.Event).SessionID == string(p.SessionID) {
-				p.event.Publish(msg)
-			}
-		}
-	}()
+	p.event = p.browser.event.Filter(p.ctx, func(e *cdp.Event) bool {
+		return e.SessionID == string(p.SessionID)
+	})
 
 	err := proto.PageEnable{}.Call(p)
 	if err != nil {

@@ -23,10 +23,9 @@ type Client struct {
 
 	callbacks map[uint64]chan *response // buffer for response from chrome
 
-	chReqMsg        chan *requestMsg // request from user
-	chRes           chan *response   // response from chrome
-	chEvent         chan *Event      // events from chrome
-	eventBufferSize int              // size of the chEvent
+	chReqMsg chan *requestMsg // request from user
+	chRes    chan *response   // response from chrome
+	chEvent  chan *Event      // events from chrome
 
 	count uint64
 
@@ -80,14 +79,14 @@ func New(websocketURL string) *Client {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	cdp := &Client{
-		ctx:             ctx,
-		ctxCancel:       cancel,
-		callbacks:       map[uint64]chan *response{},
-		chReqMsg:        make(chan *requestMsg),
-		chRes:           make(chan *response),
-		eventBufferSize: 1024,
-		wsURL:           websocketURL,
-		debug:           defaults.CDP,
+		ctx:       ctx,
+		ctxCancel: cancel,
+		callbacks: map[uint64]chan *response{},
+		chReqMsg:  make(chan *requestMsg),
+		chRes:     make(chan *response),
+		chEvent:   make(chan *Event),
+		wsURL:     websocketURL,
+		debug:     defaults.CDP,
 	}
 
 	return cdp
@@ -98,12 +97,6 @@ func (cdp *Client) Context(ctx context.Context) *Client {
 	ctx, cancel := context.WithCancel(ctx)
 	cdp.ctx = ctx
 	cdp.ctxCancel = cancel
-	return cdp
-}
-
-// EventBuffer set the size of the event buffer, default is 1024
-func (cdp *Client) EventBuffer(size int) *Client {
-	cdp.eventBufferSize = size
 	return cdp
 }
 
@@ -127,8 +120,6 @@ func (cdp *Client) Debug(enable bool) *Client {
 
 // ConnectE to chrome
 func (cdp *Client) ConnectE() error {
-	cdp.chEvent = make(chan *Event, cdp.eventBufferSize)
-
 	if cdp.ws == nil {
 		cdp.ws = DefaultWsClient{}
 	}

@@ -2,6 +2,7 @@ package cdp_test
 
 import (
 	"context"
+	"net/http"
 	"path/filepath"
 	"testing"
 	"time"
@@ -16,19 +17,16 @@ func TestBasic(t *testing.T) {
 	ctx, done := context.WithCancel(context.Background())
 	defer done()
 
-	ob := kit.NewObservable()
-
 	url := launcher.New().Launch()
 
-	client := cdp.New(url).Context(ctx).Websocket(nil).Connect()
+	client := cdp.New(url).Context(ctx).Websocket(nil).Header(http.Header{"test": {}}).Connect()
 
 	defer func() {
 		kit.E(client.Call(ctx, "", "Browser.close", nil))
 	}()
 
 	go func() {
-		for msg := range client.Event() {
-			ob.Publish(msg)
+		for range client.Event() {
 		}
 	}()
 
@@ -62,15 +60,7 @@ func TestBasic(t *testing.T) {
 	defer cancel()
 
 	sleeper := func() kit.Sleeper {
-		return kit.MergeSleepers(
-			kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil),
-			func(ctx context.Context) error {
-				_, err := ob.Until(ctx, func(_ kit.Event) bool {
-					return true
-				})
-				return err
-			},
-		)
+		return kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	}
 
 	// cancel call

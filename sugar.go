@@ -25,7 +25,7 @@ func (b *Browser) Close() {
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
 func (b *Browser) EachEvent(fn interface{}) {
-	eachEvent(b.Event(), fn)
+	eachEvent(b.ctx, b.Event(), fn)
 }
 
 // Incognito creates a new incognito browser
@@ -187,7 +187,7 @@ func (p *Page) Close() {
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
 func (p *Page) EachEvent(fn interface{}) {
-	eachEvent(p.Event(), fn)
+	eachEvent(p.ctx, p.Event(), fn)
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
