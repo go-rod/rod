@@ -13,6 +13,8 @@ type Mouse struct {
 	page *Page
 	sync.Mutex
 
+	id string // mouse svg dom element id
+
 	x float64
 	y float64
 
@@ -22,11 +24,6 @@ type Mouse struct {
 
 // MoveE to the absolute position with specified steps
 func (m *Mouse) MoveE(x, y float64, steps int) error {
-	if m.page.browser.trace {
-		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("move (%.2f, %.2f)", x, y))()
-	}
-	m.page.browser.trySlowmotion()
-
 	if steps < 1 {
 		steps = 1
 	}
@@ -40,6 +37,8 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
 	for i := 0; i < steps; i++ {
+		m.page.browser.trySlowmotion()
+
 		toX := m.x + stepX
 		toY := m.y + stepY
 
@@ -58,6 +57,13 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 		// to make sure set only when call is successful
 		m.x = toX
 		m.y = toY
+
+		if m.page.browser.trace {
+			_, err := m.page.EvalE(true, "", m.page.jsFn("updateMouseTracer"), Array{m.id, m.x, m.y})
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

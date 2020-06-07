@@ -619,6 +619,13 @@ func (p *Page) initJS() error {
 
 	p.windowObjectID = res.Result.ObjectID
 
+	if p.browser.trace {
+		_, err := p.EvalE(true, "", p.jsFn("initMouseTracer"), Array{p.Mouse.id, assets.MousePointer})
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

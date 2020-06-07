@@ -264,7 +264,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 		viewport:            &proto.EmulationSetDeviceMetricsOverride{},
 	}
 
-	page.Mouse = &Mouse{page: page}
+	page.Mouse = &Mouse{page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}
 
 	return page, page.initSession()
