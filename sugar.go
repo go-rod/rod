@@ -371,27 +371,27 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
-// Move to the location
+// Move to the absolute position
 func (m *Mouse) Move(x, y float64) {
 	kit.E(m.MoveE(x, y, 0))
 }
 
-// Scroll the wheel
+// Scroll with the relative offset
 func (m *Mouse) Scroll(x, y float64) {
 	kit.E(m.ScrollE(x, y, 0))
 }
 
-// Down button
+// Down holds the button down
 func (m *Mouse) Down(button proto.InputMouseButton) {
 	kit.E(m.DownE(button, 1))
 }
 
-// Up button
+// Up release the button
 func (m *Mouse) Up(button proto.InputMouseButton) {
 	kit.E(m.UpE(button, 1))
 }
 
-// Click button
+// Click will press then release the button
 func (m *Mouse) Click(button proto.InputMouseButton) {
 	kit.E(m.ClickE(button))
 }

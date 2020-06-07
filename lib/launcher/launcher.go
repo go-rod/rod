@@ -225,7 +225,7 @@ func (l *Launcher) Launch() string {
 	return u
 }
 
-// LaunchE doc is the same as the method Launch
+// LaunchE doc is similar to the method Launch
 func (l *Launcher) LaunchE() (string, error) {
 	if l.reap {
 		runReaper()

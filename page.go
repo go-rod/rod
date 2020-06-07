@@ -113,7 +113,7 @@ func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 	return req.Call(p)
 }
 
-// NavigateE doc is the same as the method Navigate
+// NavigateE doc is similar to the method Navigate
 func (p *Page) NavigateE(url string) error {
 	err := p.StopLoadingE()
 	if err != nil {
@@ -137,7 +137,7 @@ func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	return res.WindowID, err
 }
 
-// GetWindowE doc is the same as the method GetWindow
+// GetWindowE doc is similar to the method GetWindow
 func (p *Page) GetWindowE() (*proto.BrowserBounds, error) {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -163,7 +163,7 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// ViewportE doc is the same as the method Viewport
+// ViewportE doc is similar to the method Viewport
 func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
 	p.viewport = params
 	err := params.Call(p)
@@ -184,7 +184,7 @@ func (p *Page) CloseE() error {
 	return proto.PageClose{}.Call(p)
 }
 
-// HandleDialogE doc is the same as the method HandleDialog
+// HandleDialogE doc is similar to the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	wait := p.WaitEventE(NewEventFilter(&proto.PageJavascriptDialogOpening{}))
 
@@ -319,7 +319,7 @@ func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
 	return res.Data, nil
 }
 
-// WaitPageE doc is the same as the method WaitPage
+// WaitPageE doc is similar to the method WaitPage
 func (p *Page) WaitPageE() func() (*Page, error) {
 	var targetInfo *proto.TargetTargetInfo
 
@@ -342,7 +342,7 @@ func (p *Page) WaitPageE() func() (*Page, error) {
 	}
 }
 
-// PauseE doc is the same as the method Pause
+// PauseE doc is similar to the method Pause
 func (p *Page) PauseE() error {
 	_, err := proto.DebuggerEnable{}.Call(p)
 	if err != nil {
@@ -429,19 +429,19 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 	}
 }
 
-// WaitIdleE doc is the same as the method WaitIdle
+// WaitIdleE doc is similar to the method WaitIdle
 func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
 	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), Array{timeout.Seconds()})
 	return err
 }
 
-// WaitLoadE doc is the same as the method WaitLoad
+// WaitLoadE doc is similar to the method WaitLoad
 func (p *Page) WaitLoadE() error {
 	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
 	return err
 }
 
-// WaitEventE doc is the same as the method WaitEvent
+// WaitEventE doc is similar to the method WaitEvent
 func (p *Page) WaitEventE(filter EventFilter) <-chan kit.Nil {
 	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
 		return e.SessionID == string(p.SessionID) && filter(e)
@@ -535,7 +535,7 @@ func (p *Page) ElementFromObjectID(id proto.RuntimeRemoteObjectID) *Element {
 	}
 }
 
-// ReleaseE doc is the same as the method Release
+// ReleaseE doc is similar to the method Release
 func (p *Page) ReleaseE(objectID proto.RuntimeRemoteObjectID) error {
 	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)
 	return err

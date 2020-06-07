@@ -76,7 +76,7 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 	return b
 }
 
-// ConnectE doc is the same as the method Connect
+// ConnectE doc is similar to the method Connect
 func (b *Browser) ConnectE() error {
 	*b = *b.Context(b.ctx)
 
@@ -109,7 +109,7 @@ func (b *Browser) ConnectE() error {
 	return b.initEvents()
 }
 
-// CloseE doc is the same as the method Close
+// CloseE doc is similar to the method Close
 func (b *Browser) CloseE() error {
 	err := proto.BrowserClose{}.Call(b)
 	if err != nil && !websocket.IsCloseError(err, 1006) {
@@ -136,7 +136,7 @@ func (b *Browser) IncognitoE() (*Browser, error) {
 	return &incognito, nil
 }
 
-// PageE doc is the same as the method Page
+// PageE doc is similar to the method Page
 func (b *Browser) PageE(url string) (*Page, error) {
 	if url == "" {
 		url = "about:blank"
@@ -158,7 +158,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return b.PageFromTargetIDE(target.TargetID)
 }
 
-// PagesE doc is the same as the method Pages
+// PagesE doc is similar to the method Pages
 func (b *Browser) PagesE() (Pages, error) {
 	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {

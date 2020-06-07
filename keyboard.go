@@ -16,7 +16,7 @@ type Keyboard struct {
 	modifiers int64
 }
 
-// DownE doc is the same as the method Down
+// DownE doc is similar to the method Down
 func (k *Keyboard) DownE(key rune) error {
 	actions := input.Encode(key)
 
@@ -31,7 +31,7 @@ func (k *Keyboard) DownE(key rune) error {
 	return nil
 }
 
-// UpE doc is the same as the method Up
+// UpE doc is similar to the method Up
 func (k *Keyboard) UpE(key rune) error {
 	actions := input.Encode(key)
 
@@ -46,7 +46,7 @@ func (k *Keyboard) UpE(key rune) error {
 	return nil
 }
 
-// PressE doc is the same as the method Press
+// PressE doc is similar to the method Press
 func (k *Keyboard) PressE(key rune) error {
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
@@ -70,7 +70,7 @@ func (k *Keyboard) PressE(key rune) error {
 	return nil
 }
 
-// InsertTextE doc is the same as the method InsertText
+// InsertTextE doc is similar to the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()

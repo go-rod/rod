@@ -23,7 +23,7 @@ type Element struct {
 	ObjectID proto.RuntimeRemoteObjectID
 }
 
-// FocusE doc is the same as the method Focus
+// FocusE doc is similar to the method Focus
 func (el *Element) FocusE() error {
 	err := el.ScrollIntoViewE()
 	if err != nil {
@@ -34,7 +34,7 @@ func (el *Element) FocusE() error {
 	return err
 }
 
-// ScrollIntoViewE doc is the same as the method ScrollIntoViewIfNeeded
+// ScrollIntoViewE doc is similar to the method ScrollIntoViewIfNeeded
 func (el *Element) ScrollIntoViewE() error {
 	defer el.tryTrace("scroll into view")()
 	el.page.browser.trySlowmotion()
@@ -43,7 +43,7 @@ func (el *Element) ScrollIntoViewE() error {
 	return err
 }
 
-// ClickE doc is the same as the method Click
+// ClickE doc is similar to the method Click
 func (el *Element) ClickE(button proto.InputMouseButton) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -73,7 +73,7 @@ func (el *Element) ClickE(button proto.InputMouseButton) error {
 	return el.page.Mouse.ClickE(button)
 }
 
-// PressE doc is the same as the method Press
+// PressE doc is similar to the method Press
 func (el *Element) PressE(key rune) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -90,7 +90,7 @@ func (el *Element) PressE(key rune) error {
 	return el.page.Keyboard.PressE(key)
 }
 
-// SelectTextE doc is the same as the method SelectText
+// SelectTextE doc is similar to the method SelectText
 func (el *Element) SelectTextE(regex string) error {
 	err := el.FocusE()
 	if err != nil {
@@ -104,7 +104,7 @@ func (el *Element) SelectTextE(regex string) error {
 	return err
 }
 
-// SelectAllTextE doc is the same as the method SelectAllText
+// SelectAllTextE doc is similar to the method SelectAllText
 func (el *Element) SelectAllTextE() error {
 	err := el.FocusE()
 	if err != nil {
@@ -118,7 +118,7 @@ func (el *Element) SelectAllTextE() error {
 	return err
 }
 
-// InputE doc is the same as the method Input
+// InputE doc is similar to the method Input
 func (el *Element) InputE(text string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -141,7 +141,7 @@ func (el *Element) InputE(text string) error {
 	return err
 }
 
-// SelectE doc is the same as the method Select
+// SelectE doc is similar to the method Select
 func (el *Element) SelectE(selectors []string) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -157,7 +157,7 @@ func (el *Element) SelectE(selectors []string) error {
 	return err
 }
 
-// SetFilesE doc is the same as the method SetFiles
+// SetFilesE doc is similar to the method SetFiles
 func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}
 	for _, p := range paths {
@@ -179,7 +179,7 @@ func (el *Element) SetFilesE(paths []string) error {
 	return err
 }
 
-// DescribeE doc is the same as the method Describe
+// DescribeE doc is similar to the method Describe
 func (el *Element) DescribeE() (*proto.DOMNode, error) {
 	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID}.Call(el)
 	if err != nil {
@@ -206,7 +206,7 @@ func (el *Element) ShadowRootE() (*Element, error) {
 	return el.page.ElementFromObjectID(shadowNode.Object.ObjectID), nil
 }
 
-// FrameE doc is the same as the method Frame
+// FrameE doc is similar to the method Frame
 func (el *Element) FrameE() (*Page, error) {
 	node, err := el.DescribeE()
 	if err != nil {
@@ -221,19 +221,19 @@ func (el *Element) FrameE() (*Page, error) {
 	return &newPage, nil
 }
 
-// TextE doc is the same as the method Text
+// TextE doc is similar to the method Text
 func (el *Element) TextE() (string, error) {
 	str, err := el.EvalE(true, el.page.jsFn("text"), nil)
 	return str.Value.String(), err
 }
 
-// HTMLE doc is the same as the method HTML
+// HTMLE doc is similar to the method HTML
 func (el *Element) HTMLE() (string, error) {
 	str, err := el.EvalE(true, `() => this.outerHTML`, nil)
 	return str.Value.String(), err
 }
 
-// VisibleE doc is the same as the method Visible
+// VisibleE doc is similar to the method Visible
 func (el *Element) VisibleE() (bool, error) {
 	res, err := el.EvalE(true, el.page.jsFn("visible"), nil)
 	if err != nil {
@@ -270,7 +270,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 	return nil
 }
 
-// WaitE doc is the same as the method Wait
+// WaitE doc is similar to the method Wait
 func (el *Element) WaitE(js string, params Array) error {
 	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params)
@@ -286,12 +286,12 @@ func (el *Element) WaitE(js string, params Array) error {
 	})
 }
 
-// WaitVisibleE doc is the same as the method WaitVisible
+// WaitVisibleE doc is similar to the method WaitVisible
 func (el *Element) WaitVisibleE() error {
 	return el.WaitE(el.page.jsFn("visible"), nil)
 }
 
-// WaitInvisibleE doc is the same as the method WaitInvisible
+// WaitInvisibleE doc is similar to the method WaitInvisible
 func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(el.page.jsFn("invisible"), nil)
 }
@@ -304,7 +304,7 @@ type Box struct {
 	Height float64 `json:"height"`
 }
 
-// BoxE doc is the same as the method Box
+// BoxE doc is similar to the method Box
 func (el *Element) BoxE() (*Box, error) {
 	res, err := el.EvalE(true, el.page.jsFn("box"), nil)
 	if err != nil {
@@ -325,7 +325,7 @@ func (el *Element) BoxE() (*Box, error) {
 	return &rect, nil
 }
 
-// ResourceE doc is the same as the method Resource
+// ResourceE doc is similar to the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
 	src, err := el.EvalE(true, el.page.jsFn("resource"), nil)
 	if err != nil {
@@ -390,7 +390,7 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 	return el.page.Root().ScreenshotE(false, opts)
 }
 
-// ReleaseE doc is the same as the method Release
+// ReleaseE doc is similar to the method Release
 func (el *Element) ReleaseE() error {
 	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)
 }
@@ -400,7 +400,7 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 	return el.ctx, el.page.browser.client, string(el.page.SessionID)
 }
 
-// EvalE doc is the same as the method Eval
+// EvalE doc is similar to the method Eval
 func (el *Element) EvalE(byValue bool, js string, params Array) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
 }
