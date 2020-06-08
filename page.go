@@ -24,6 +24,7 @@ var _ proto.Caller = &Page{}
 type Page struct {
 	// these are the handler for ctx
 	ctx           context.Context
+	ctxCancel     func()
 	timeoutCancel func()
 
 	browser *Browser
@@ -181,7 +182,13 @@ func (p *Page) CloseE() error {
 	if err != nil {
 		return err
 	}
-	return proto.PageClose{}.Call(p)
+	err = proto.PageClose{}.Call(p)
+	if err != nil {
+		return err
+	}
+
+	p.ctxCancel()
+	return nil
 }
 
 // HandleDialogE doc is similar to the method HandleDialog
@@ -528,11 +535,10 @@ func (p *Page) Sleeper() kit.Sleeper {
 
 // ElementFromObjectID creates an Element from the remote object id.
 func (p *Page) ElementFromObjectID(id proto.RuntimeRemoteObjectID) *Element {
-	return &Element{
+	return (&Element{
 		page:     p,
-		ctx:      p.ctx,
 		ObjectID: id,
-	}
+	}).Context(p.ctx)
 }
 
 // ReleaseE doc is similar to the method Release

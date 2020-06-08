@@ -22,15 +22,7 @@ func (s *S) TestClick() {
 
 func (s *S) TestElementContext() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	el := p.Element("button")
-
-	el = el.Context(el.GetContext())
-
-	s.Equal(s.browser.GetContext(), p.GetContext())
-	s.Equal(s.browser.GetContext(), el.GetContext())
-	s.Equal(s.browser.GetContext(), el.Context(p.GetContext()).GetContext())
-
-	el = el.Timeout(time.Minute).CancelTimeout()
+	el := p.Element("button").Timeout(time.Minute).CancelTimeout()
 	s.Error(el.ClickE(proto.InputMouseButtonLeft))
 }
 
@@ -197,7 +189,7 @@ func (s *S) TestUseReleasedElement() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	btn := p.Element("button")
 	btn.Release()
-	s.EqualError(btn.ClickE("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
+	s.EqualError(btn.ClickE("left"), "context canceled")
 }
 
 func (s *S) TestFnErr() {

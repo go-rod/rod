@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -163,8 +164,11 @@ func (s *S) TestBlockingNavigation() {
 
 	url, engine, close := serve()
 	defer close()
+	pause, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	engine.GET("/a", func(ctx kit.GinContext) {
-		kit.Pause()
+		<-pause.Done()
 	})
 	engine.GET("/b", ginHTML(`<html>ok</html>`))
 
@@ -186,8 +190,12 @@ func (s *S) TestBlockingNavigation() {
 func (s *S) TestResolveBlocking() {
 	url, engine, close := serve()
 	defer close()
+
+	pause, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	engine.NoRoute(func(ctx kit.GinContext) {
-		kit.Pause()
+		<-pause.Done()
 	})
 
 	p := s.browser.Page("")

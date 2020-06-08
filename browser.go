@@ -27,6 +27,7 @@ var _ proto.Caller = &Browser{}
 type Browser struct {
 	// these are the handler for ctx
 	ctx           context.Context
+	ctxCancel     func()
 	timeoutCancel func()
 
 	// BrowserContextID is the id for incognito window
@@ -44,12 +45,11 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
-		ctx:        context.Background(),
 		trace:      defaults.Trace,
 		slowmotion: defaults.Slow,
 	}
 
-	return b
+	return b.Context(context.Background())
 }
 
 // ControlURL set the url to remote control browser.
@@ -78,8 +78,6 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 
 // ConnectE doc is similar to the method Connect
 func (b *Browser) ConnectE() error {
-	*b = *b.Context(b.ctx)
-
 	if b.client == nil {
 		u := defaults.URL
 		if defaults.Remote {
@@ -116,9 +114,7 @@ func (b *Browser) CloseE() error {
 		return err
 	}
 
-	if b.monitorServer != nil {
-		return b.monitorServer.Listener.Close()
-	}
+	b.ctxCancel()
 
 	return nil
 }
@@ -256,13 +252,12 @@ func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 
 // PageFromTargetIDE creates a Page instance from a targetID
 func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error) {
-	page := &Page{
-		ctx:                 b.ctx,
+	page := (&Page{
 		browser:             b,
 		TargetID:            targetID,
 		getDownloadFileLock: &sync.Mutex{},
 		viewport:            &proto.EmulationSetDeviceMetricsOverride{},
-	}
+	}).Context(b.ctx)
 
 	page.Mouse = &Mouse{page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}
@@ -271,11 +266,16 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 }
 
 func (b *Browser) initEvents() error {
-	b.event = goob.New(b.ctx)
+	b.event = goob.New()
 
 	go func() {
-		for msg := range b.client.Event() {
-			b.event.Publish(msg)
+		for {
+			select {
+			case <-b.ctx.Done():
+				return
+			case msg := <-b.client.Event():
+				b.event.Publish(msg)
+			}
 		}
 	}()
 

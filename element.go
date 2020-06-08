@@ -16,6 +16,7 @@ import (
 // Element represents the DOM element
 type Element struct {
 	ctx           context.Context
+	ctxCancel     func()
 	timeoutCancel func()
 
 	page *Page
@@ -392,7 +393,13 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 
 // ReleaseE doc is similar to the method Release
 func (el *Element) ReleaseE() error {
-	return el.page.Context(el.ctx).ReleaseE(el.ObjectID)
+	err := el.page.Context(el.ctx).ReleaseE(el.ObjectID)
+	if err != nil {
+		return err
+	}
+
+	el.ctxCancel()
+	return nil
 }
 
 // CallContext parameters for proto
