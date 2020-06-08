@@ -3,6 +3,7 @@
 package rod
 
 import (
+	"context"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -24,8 +25,13 @@ func (b *Browser) Close() {
 }
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (b *Browser) EachEvent(fn interface{}) {
-	eachEvent(b.ctx, b.Event(), fn)
+func (b *Browser) EachEvent() func(fn interface{}) {
+	ctx, cancel := context.WithCancel(b.ctx)
+	s := b.event.Subscribe(ctx)
+	return func(fn interface{}) {
+		defer cancel()
+		eachEvent(s)(fn)
+	}
 }
 
 // Incognito creates a new incognito browser
@@ -54,12 +60,6 @@ func (b *Browser) PageFromTargetID(targetID proto.TargetTargetID) *Page {
 	p, err := b.PageFromTargetIDE(targetID)
 	kit.E(err)
 	return p
-}
-
-// WaitEvent resolves the wait function when the filter returns true
-func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
-	w := b.WaitEventE(NewEventFilter(e))
-	return func() { kit.E(<-w) }
 }
 
 // HandleAuth for the next basic HTTP authentication.
@@ -186,8 +186,13 @@ func (p *Page) Close() {
 }
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (p *Page) EachEvent(fn interface{}) {
-	eachEvent(p.ctx, p.Event(), fn)
+func (p *Page) EachEvent() func(fn interface{}) {
+	ctx, cancel := context.WithCancel(p.ctx)
+	s := p.event.Subscribe(ctx)
+	return func(fn interface{}) {
+		defer cancel()
+		eachEvent(s)(fn)
+	}
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
@@ -233,9 +238,9 @@ func (p *Page) PDF() []byte {
 	return pdf
 }
 
-// WaitPage to be created from a new window
-func (p *Page) WaitPage() (wait func() *Page) {
-	w := p.WaitPageE()
+// WaitOpen to be created from a new window
+func (p *Page) WaitOpen() (wait func() *Page) {
+	w := p.WaitOpenE()
 	return func() *Page {
 		page, err := w()
 		kit.E(err)
@@ -266,12 +271,6 @@ func (p *Page) WaitIdle() *Page {
 func (p *Page) WaitLoad() *Page {
 	kit.E(p.WaitLoadE())
 	return p
-}
-
-// WaitEvent returns a wait function that waits for the next event to happen.
-func (p *Page) WaitEvent(e proto.Event) (wait func()) {
-	w := p.WaitEventE(NewEventFilter(e))
-	return func() { kit.E(<-w) }
 }
 
 // AddScriptTag to page. If url is empty, content will be used.

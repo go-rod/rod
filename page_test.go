@@ -173,15 +173,13 @@ func (s *S) TestUntilPage() {
 	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait := page.WaitPage()
+	wait := page.WaitOpen()
 
 	page.Element("a").Click()
 
 	newPage := wait()
 
 	s.Equal("click me", newPage.Element("button").Text())
-
-	wait()
 }
 
 func (s *S) TestPageWaitRequestIdle() {
@@ -230,9 +228,9 @@ func (s *S) TestPageWaitIdle() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
+	wait := s.page.WaitEvent()
 	s.page.Navigate(srcFile("fixtures/click.html"))
-	wait()
+	wait(&proto.PageFrameNavigated{})
 }
 
 func (s *S) TestAlert() {
@@ -298,7 +296,7 @@ func (s *S) TestMouseDrag() {
 	wait := make(chan kit.Nil)
 	logs := []string{}
 	kit.E(proto.ConsoleEnable{}.Call(page))
-	go page.EachEvent(func(e *proto.ConsoleMessageAdded) bool {
+	go page.EachEvent()(func(e *proto.ConsoleMessageAdded) bool {
 		logs = append(logs, e.Message.Text)
 		if strings.HasPrefix(e.Message.Text, "up") {
 			close(wait)

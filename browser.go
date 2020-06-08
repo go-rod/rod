@@ -177,19 +177,18 @@ func (b *Browser) PagesE() (Pages, error) {
 	return pageList, nil
 }
 
-// EventFilter to filter events
-type EventFilter func(*cdp.Event) bool
-
-// WaitEventE returns a channel that resolves the next event and close
-func (b *Browser) WaitEventE(filter EventFilter) <-chan kit.Nil {
-	wait := make(chan kit.Nil)
-	go func() {
-		goob.Each(b.event.Subscribe(b.ctx), func(e *cdp.Event) bool {
-			return filter(e)
-		})
-		close(wait)
-	}()
-	return wait
+// WaitEvent waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) WaitEvent() (wait func(proto.Event)) {
+	ctx, cancel := context.WithCancel(b.ctx)
+	s := b.event.Subscribe(ctx)
+	return func(e proto.Event) {
+		defer cancel()
+		for msg := range s {
+			if Event(msg.(*cdp.Event), e) {
+				return
+			}
+		}
+	}
 }
 
 // Event returns the observable for browser events
@@ -207,11 +206,8 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	auth := &proto.FetchAuthRequired{}
-	paused := &proto.FetchRequestPaused{}
-	waitPaused := b.WaitEventE(NewEventFilter(paused))
-	waitAuth := b.WaitEventE(NewEventFilter(auth))
+	waitPaused := b.WaitEvent()
+	waitAuth := b.WaitEvent()
 
 	return func() (err error) {
 		defer func() {
@@ -221,7 +217,8 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 			}
 		}()
 
-		<-waitPaused
+		paused := &proto.FetchRequestPaused{}
+		waitPaused(paused)
 
 		err = proto.FetchContinueRequest{
 			RequestID: paused.RequestID,
@@ -230,7 +227,8 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 			return
 		}
 
-		<-waitAuth
+		auth := &proto.FetchAuthRequired{}
+		waitAuth(auth)
 
 		err = proto.FetchContinueWithAuth{
 			RequestID: auth.RequestID,

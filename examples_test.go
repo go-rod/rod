@@ -190,30 +190,30 @@ func Example_direct_cdp() {
 	res, err := proto.NetworkSetCookie{
 		Name:  "rod",
 		Value: "test",
-		URL:   "https://github.com",
+		URL:   "https://example.com",
 	}.Call(page)
 	kit.E(err)
 
 	fmt.Println(res.Success)
 
-	page.Navigate("https://github.com")
+	page.Navigate("https://example.com")
 
 	// eval js on the page to get the cookie
 	cookie := page.Eval(`() => document.cookie`).String()
 
-	fmt.Println(cookie[:9])
+	fmt.Println(cookie)
 
 	// Or even more low-level way to use raw json to send request to chrome.
 	ctx, client, sessionID := page.CallContext()
 	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", map[string]string{
 		"name":  "rod",
 		"value": "test",
-		"url":   "https://github.com",
+		"url":   "https://example.com",
 	})
 
 	// Output:
 	// true
-	// rod=test;
+	// rod=test
 }
 
 // Shows how to subscribe events.
@@ -221,37 +221,42 @@ func Example_handle_events() {
 	browser := rod.New().Connect()
 	defer browser.Close()
 
-	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
+	go browser.EachEvent()(func(e *proto.TargetTargetCreated) {
 		// if it's not a page return
 		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {
 			return
 		}
 
 		// create a page from the page id
-		page := browser.PageFromTargetID(e.TargetInfo.TargetID)
+		page02 := browser.PageFromTargetID(e.TargetInfo.TargetID)
 
-		// set a global value on each newly created page
-		page.Eval(`() => window.hey = "ok"`)
+		// log "rod" on each newly created page
+		page02.Eval(`() => console.log("rod")`)
 	})
 
-	page := browser.Page("https://github.com")
+	page01 := browser.Page("")
+
+	// let rod client receive the events from log domain
+	kit.E(proto.ConsoleEnable{}.Call(page01))
+
+	// make sure capture events before they happen
+	eachEvent := page01.EachEvent()
+
+	page01.Navigate("https://example.com")
 
 	// you can also subscribe events only for a page
 	// here we return an optional stop signal at the first event to stop the loop
-	page.EachEvent(func(e *proto.PageLoadEventFired) bool {
-		fmt.Println("loaded")
-		return true
+	eachEvent(func(e *proto.ConsoleMessageAdded) bool {
+		return e.Message.Text == "rod"
 	})
 
 	// the above is the same as below
-	//
-	// e := &proto.PageLoadEventFired{}
-	// page.WaitEvent(e)()
+	if false {
+		page01.WaitEvent()(&proto.PageLoadEventFired{})
+	}
 
-	// create a new page and get the value of "hey"
-	fmt.Println(page.Eval(`() => hey`).String())
+	fmt.Println("done")
 
 	// Output:
-	// loaded
-	// ok
+	// done
 }

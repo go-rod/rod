@@ -39,9 +39,9 @@ func (s *S) TestIncognito() {
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := s.browser.WaitEvent(&proto.PageFrameNavigated{})
+	wait := s.browser.WaitEvent()
 	s.page.Navigate(srcFile("fixtures/click.html"))
-	wait()
+	wait(&proto.PageFrameNavigated{})
 }
 
 func (s *S) TestBrowserCall() {

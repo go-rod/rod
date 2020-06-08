@@ -47,17 +47,6 @@ func Event(msg *cdp.Event, evt proto.Event) bool {
 	return false
 }
 
-// NewEventFilter creates a event filter, when matches it will load data into the event object
-func NewEventFilter(event proto.Event) EventFilter {
-	return func(e *cdp.Event) bool {
-		if event.MethodName() == e.Method {
-			kit.E(json.Unmarshal(e.Params, event))
-			return true
-		}
-		return false
-	}
-}
-
 func isNilContextErr(err error) bool {
 	if err == nil {
 		return false
@@ -95,22 +84,21 @@ func ginHTML(ctx kit.GinContext, body string) {
 	_, _ = ctx.Writer.WriteString(body)
 }
 
-func eachEvent(ctx context.Context, ob *goob.Observable, fn interface{}) {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+func eachEvent(s chan goob.Event) func(fn interface{}) {
+	return func(fn interface{}) {
+		fnType := reflect.TypeOf(fn)
+		fnVal := reflect.ValueOf(fn)
+		eventType := fnType.In(0).Elem()
 
-	fnType := reflect.TypeOf(fn)
-	fnVal := reflect.ValueOf(fn)
-	eventType := fnType.In(0).Elem()
-
-	goob.Each(ob.Subscribe(ctx), func(e *cdp.Event) bool {
-		event := reflect.New(eventType)
-		if Event(e, event.Interface().(proto.Event)) {
-			ret := fnVal.Call([]reflect.Value{event})
-			if len(ret) > 0 {
-				return ret[0].Bool()
+		goob.Each(s, func(e *cdp.Event) bool {
+			event := reflect.New(eventType)
+			if Event(e, event.Interface().(proto.Event)) {
+				ret := fnVal.Call([]reflect.Value{event})
+				if len(ret) > 0 {
+					return ret[0].Bool()
+				}
 			}
-		}
-		return false
-	})
+			return false
+		})
+	}
 }

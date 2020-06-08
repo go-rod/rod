@@ -193,10 +193,10 @@ func (p *Page) CloseE() error {
 
 // HandleDialogE doc is similar to the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
-	wait := p.WaitEventE(NewEventFilter(&proto.PageJavascriptDialogOpening{}))
+	wait := p.WaitEvent()
 
 	return func() error {
-		<-wait
+		wait(&proto.PageJavascriptDialogOpening{})
 		return proto.PageHandleJavaScriptDialog{
 			Accept:     accept,
 			PromptText: promptText,
@@ -232,8 +232,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		return nil, err
 	}
 
-	msgReq := &proto.FetchRequestPaused{}
-	wait := p.WaitEventE(NewEventFilter(msgReq))
+	wait := p.WaitEvent()
 
 	return func() (http.Header, []byte, error) {
 		defer p.getDownloadFileLock.Unlock()
@@ -246,7 +245,8 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			}
 		}()
 
-		<-wait
+		msgReq := &proto.FetchRequestPaused{}
+		wait(msgReq)
 
 		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
 
@@ -326,26 +326,22 @@ func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
 	return res.Data, nil
 }
 
-// WaitPageE doc is similar to the method WaitPage
-func (p *Page) WaitPageE() func() (*Page, error) {
-	var targetInfo *proto.TargetTargetInfo
-
-	wait := p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
-		event := &proto.TargetTargetCreated{}
-		if e.Method == event.MethodName() {
-			kit.E(json.Unmarshal(e.Params, event))
-			targetInfo = event.TargetInfo
-
-			if targetInfo.OpenerID == p.TargetID {
-				return true
-			}
-		}
-		return false
-	})
+// WaitOpenE doc is similar to the method WaitPage
+func (p *Page) WaitOpenE() func() (*Page, error) {
+	b := p.browser.Context(p.ctx)
+	wait := b.EachEvent()
 
 	return func() (*Page, error) {
-		<-wait
-		return p.browser.Context(p.ctx).PageFromTargetIDE(targetInfo.TargetID)
+		var targetID proto.TargetTargetID
+
+		wait(func(e *proto.TargetTargetCreated) bool {
+			if e.TargetInfo.OpenerID == p.TargetID {
+				targetID = e.TargetInfo.TargetID
+				return true
+			}
+			return false
+		})
+		return b.PageFromTargetIDE(targetID)
 	}
 }
 
@@ -355,11 +351,12 @@ func (p *Page) PauseE() error {
 	if err != nil {
 		return err
 	}
+	wait := p.WaitEvent()
 	err = proto.DebuggerPause{}.Call(p)
 	if err != nil {
 		return err
 	}
-	<-p.WaitEventE(NewEventFilter(&proto.DebuggerResumed{}))
+	wait(&proto.DebuggerResumed{})
 	return nil
 }
 
@@ -448,11 +445,18 @@ func (p *Page) WaitLoadE() error {
 	return err
 }
 
-// WaitEventE doc is similar to the method WaitEvent
-func (p *Page) WaitEventE(filter EventFilter) <-chan kit.Nil {
-	return p.browser.Context(p.ctx).WaitEventE(func(e *cdp.Event) bool {
-		return e.SessionID == string(p.SessionID) && filter(e)
-	})
+// WaitEvent waits for the next event for one time. It will also load the data into the event object.
+func (p *Page) WaitEvent() (wait func(proto.Event)) {
+	ctx, cancel := context.WithCancel(p.ctx)
+	s := p.event.Subscribe(ctx)
+	return func(e proto.Event) {
+		defer cancel()
+		for msg := range s {
+			if Event(msg.(*cdp.Event), e) {
+				return
+			}
+		}
+	}
 }
 
 // AddScriptTagE to page. If url is empty, content will be used.
