@@ -50,6 +50,10 @@ var Helper = `
     async initMouseTracer (iconId, icon) {
       await rod.waitLoad()
 
+      if (document.getElementById(iconId)) {
+        return
+      }
+
       const tmp = document.createElement('div')
       tmp.innerHTML = icon
       const svg = tmp.lastChild
