@@ -186,7 +186,7 @@ func (s *S) TestPageWaitRequestIdle() {
 	url, engine, close := serve()
 	defer close()
 
-	sleep := 400 * time.Millisecond
+	sleep := time.Second
 
 	engine.GET("/r1", func(ctx kit.GinContext) {})
 	engine.GET("/r2", func(ctx kit.GinContext) { time.Sleep(sleep) })
