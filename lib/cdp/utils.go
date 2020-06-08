@@ -84,6 +84,11 @@ func (c DefaultWsClient) Connect(ctx context.Context, url string, header http.He
 		return nil, err
 	}
 
+	go func() {
+		<-ctx.Done()
+		_ = conn.Close()
+	}()
+
 	return &DefaultWsConn{conn: conn}, nil
 
 }

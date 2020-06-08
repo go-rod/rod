@@ -327,13 +327,20 @@ func (l *Launcher) read(reader io.Reader) {
 		if l.log != nil {
 			l.log(str)
 		}
-		l.output <- str
+		if l.output != nil {
+			l.output <- str
+		}
 	}
 }
 
 // ReadURL from chrome stderr
 func (l *Launcher) getURL() (string, error) {
 	out := ""
+
+	defer func() {
+		close(l.output)
+		l.output = nil
+	}()
 
 	for {
 		select {
