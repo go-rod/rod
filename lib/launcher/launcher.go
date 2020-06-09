@@ -327,9 +327,9 @@ func (l *Launcher) read(reader io.Reader) {
 		if l.log != nil {
 			l.log(str)
 		}
-		if l.output != nil {
+		_ = kit.Try(func() {
 			l.output <- str
-		}
+		})
 	}
 }
 
@@ -339,7 +339,6 @@ func (l *Launcher) getURL() (string, error) {
 
 	defer func() {
 		close(l.output)
-		l.output = nil
 	}()
 
 	for {
