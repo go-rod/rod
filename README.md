@@ -3,9 +3,9 @@
 [![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
 [![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
 [![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
-[![Gitter](https://badges.gitter.im/ysmood-rod/community.svg)](https://gitter.im/ysmood-rod/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)](https://discord.gg/sY3BcAk)
 
-![logo](fixtures/rod.png)
+![logo](fixtures/banner.png)
 
 Rod is a High-level Chrome Devtools driver directly based on [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
@@ -30,7 +30,7 @@ For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
-If you have questions, please raise an issue or join the [gitter room](https://gitter.im/ysmood-rod/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).
+If you have questions, please raise an issue or join the [chat room](https://discord.gg/sY3BcAk).
 
 ## How it works
 
