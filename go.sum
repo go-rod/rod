@@ -132,8 +132,8 @@ github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 h1:nIPpBwaJSVYIxUFsDv3M8ofm
 github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8/go.mod h1:HUYIGzjTL3rfEspMxjDjgmT5uz5wzYJKVo23qUhYTos=
 github.com/ysmood/byframe/v2 v2.0.2 h1:6/vQKeuE/DcP4C6rVvR3POVw0nF4rjpMUvcVm312BmE=
 github.com/ysmood/byframe/v2 v2.0.2/go.mod h1:FKUO9W0UUF29zC2oLCYtxoz3UBkFnV16sxKzdGsJ37k=
-github.com/ysmood/goob v0.0.3 h1:kDGLEmlIPWzHta+SZYrNooAVmB7xzK85bGwX/pgW/Hk=
-github.com/ysmood/goob v0.0.3/go.mod h1:8aCCLUSaScSZULUSFaodnW8/QQVxoBxv7H/kOEwTGtw=
+github.com/ysmood/goob v0.1.0 h1:Pf9Fx6qsjmPMIlzb1GHX/hwtaWfZMxHLzilqJYiWVNs=
+github.com/ysmood/goob v0.1.0/go.mod h1:8aCCLUSaScSZULUSFaodnW8/QQVxoBxv7H/kOEwTGtw=
 github.com/ysmood/kit v0.22.3 h1:oF8mqreGhoKh2mSweCIWuRb1osfY6MWURrhn3GThvyQ=
 github.com/ysmood/kit v0.22.3/go.mod h1:2HAZcw0k+WPDDZwcLkFT8Ie2UoGpF8kqfjAH2mJip0o=
 github.com/ysmood/kit v0.23.0 h1:sbQ4pY8whXl618TbicRtHzEwArE6rYxB+HcfsWofneE=
