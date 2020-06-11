@@ -9,6 +9,7 @@ import (
 
 func main() {
 	// Launch chrome remotely
+	// docker run -p 9222:9222 ysmood/rod
 	client := launcher.NewRemote("ws://localhost:9222").Client()
 
 	browser := rod.New().Client(client).Connect()
