@@ -123,6 +123,7 @@ func Example_wait_for_request() {
 	// the page will send a request to fetch the suggestions
 	wait := page.WaitRequestIdle()
 	page.Element("#search_form_input_homepage").Click().Input("test")
+	time.Sleep(300 * time.Millisecond) // wait for js debounce
 	wait()
 
 	// we must be able to get several suggestion items
