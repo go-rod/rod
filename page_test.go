@@ -468,11 +468,6 @@ func (s *S) TestNavigateErr() {
 		ctx.Writer.WriteHeader(500)
 	})
 
-	// proto.FetchEnable{}.Call(s.page)
-
-	// e := proto.FetchRequestPaused{}
-	// s.page.WaitEvent(e)
-
 	// will not panic
 	s.page.Navigate(url + "/404")
 	s.page.Navigate(url + "/500")
