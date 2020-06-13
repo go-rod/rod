@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -91,21 +90,18 @@ func (s *S) TestRemoteLaunch() {
 	srv.Engine.NoRoute(gin.WrapH(proxy))
 	go func() { _ = srv.Do() }()
 
-	oldRemote := defaults.Remote
-	oldURL := defaults.URL
-	defaults.Remote = true
-	defaults.URL = "ws://" + srv.Listener.Addr().String()
-	defer func() {
-		defaults.Remote = oldRemote
-		defaults.URL = oldURL
-	}()
-
-	b := rod.New().Connect()
-	defer b.Close()
+	l := launcher.NewRemote("ws://" + srv.Listener.Addr().String())
+	b := rod.New().Client(l.Client()).Connect()
 
 	p := b.Page(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
 	s.True(p.Has("[a=ok]"))
+
+	b.Close()
+
+	kit.Sleep(0.3)
+	dir, _ := l.Get("user-data-dir")
+	s.NoDirExists(dir)
 }
 
 func (s *S) TestConcurrentOperations() {

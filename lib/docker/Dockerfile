@@ -1,5 +1,10 @@
-# Example for china mirror:
-# docker build --build-arg goproxy=https://goproxy.io,direct --build-arg alpine_mirror=mirrors.tuna.tsinghua.edu.cn -t ysmood/rod -f lib/docker/Dockerfile .
+# Examples:
+# 
+#   docker build -t ysmood/rod -f lib/docker/Dockerfile .
+#
+#   // china mirror
+#   docker build --build-arg goproxy=https://goproxy.io,direct --build-arg alpine_mirror=mirrors.tuna.tsinghua.edu.cn \
+#     -t ysmood/rod -f lib/docker/Dockerfile .
 
 # build rod-launcher tool
 FROM golang:alpine AS go

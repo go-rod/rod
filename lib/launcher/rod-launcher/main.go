@@ -22,7 +22,7 @@ func main() {
 			proxy := &launcher.Proxy{
 				Log: func(s string) {
 					if !*quiet {
-						fmt.Println(s)
+						fmt.Print(s)
 					}
 				},
 			}

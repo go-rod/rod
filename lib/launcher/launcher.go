@@ -37,7 +37,6 @@ func New() *Launcher {
 	dir := ""
 	if defaults.Dir == "" {
 		dir = filepath.Join(os.TempDir(), "rod", "user-data", kit.RandString(8))
-		kit.E(os.MkdirAll(dir, 0700))
 	}
 
 	defaultFlags := map[string][]string{
@@ -193,6 +192,13 @@ func (l *Launcher) FormatArgs() []string {
 	for k, v := range l.Flags {
 		if k == "" {
 			continue
+		}
+
+		// fix a bug of chrome, if path is not absolute chrome will hang
+		if k == "user-data-dir" {
+			abs, err := filepath.Abs(v[0])
+			kit.E(err)
+			v[0] = abs
 		}
 
 		str := "--" + k
