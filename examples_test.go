@@ -245,10 +245,10 @@ func Example_handle_events() {
 
 	page01.Navigate("https://example.com")
 
-	// you can also subscribe events only for a page
+	// subscribe events for a specific page
 	// here we return an optional stop signal at the first event to stop the loop
-	eachEvent(func(e *proto.ConsoleMessageAdded) bool {
-		return e.Message.Text == "rod"
+	eachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
+		return true
 	})
 
 	// the above is the same as below
@@ -257,6 +257,8 @@ func Example_handle_events() {
 	}
 
 	fmt.Println("done")
+
+	kit.Sleep(1)
 
 	// Output:
 	// done
