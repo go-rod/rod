@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
 [![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
 [![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
-[![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)](https://discord.gg/sY3BcAk)
+[![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
 ![logo](fixtures/banner.png)
 
@@ -30,7 +30,7 @@ For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
-If you have questions, please raise an issue or join the [chat room](https://discord.gg/sY3BcAk).
+If you have questions, please raise an issue or join the [chat room][discord room].
 
 ## How it works
 
@@ -105,3 +105,6 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
+
+
+[discord room]: https://discord.gg/CpevuvY
