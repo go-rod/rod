@@ -245,16 +245,15 @@ func Example_handle_events() {
 		// create a page from the page id
 		page02 := browser.PageFromTargetID(e.TargetInfo.TargetID)
 
-		// set a global value each newly created page
-		page02.Eval(`() => window.hey = "ok"`)
+		// log "hey" on each newly created page
+		page02.Eval(`() => console.log("hey")`)
 	})()
 
 	page01 := browser.Page("")
 
-	// get all "console.log" outputs
+	// print all "console.log" outputs
 	go page01.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
-		log := page01.ObjectsToJSON(e.Args).Join(" ")
-		fmt.Println(e.Type, log)
+		page01.ObjectsToJSON(e.Args).Join(" ")
 	})()
 
 	// Subscribe events before they happen, run the "wait()" to start consuming the events.
@@ -273,8 +272,6 @@ func Example_handle_events() {
 	}
 
 	fmt.Println("done")
-
-	kit.Sleep(1)
 
 	// Output:
 	// done

@@ -12,6 +12,8 @@ const (
 	ErrExpectElements ErrCode = "expect js to return an array of elements"
 	// ErrElementNotFound error code
 	ErrElementNotFound ErrCode = "cannot find element"
+	// ErrWaitJSTimeout error code
+	ErrWaitJSTimeout ErrCode = "wait js timeout"
 	// ErrSrcNotFound error code
 	ErrSrcNotFound ErrCode = "element doesn't have src attribute"
 	// ErrEval error code

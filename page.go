@@ -493,6 +493,28 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	return res.Result, nil
 }
 
+// WaitE js function until it returns true
+func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
+	if sleeper == nil {
+		sleeper = func(_ context.Context) error {
+			return &Error{nil, ErrWaitJSTimeout, js}
+		}
+	}
+
+	if p.browser.trace {
+		defer p.traceFn(js, params)()
+	}
+
+	return kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		res, err := p.EvalE(true, thisID, js, params)
+		if err != nil {
+			return true, err
+		}
+
+		return res.Value.Bool(), nil
+	})
+}
+
 // ObjectToJSONE by object id
 func (p *Page) ObjectToJSONE(obj *proto.RuntimeRemoteObject) (proto.JSON, error) {
 	if obj.ObjectID == "" {

@@ -272,6 +272,11 @@ func (p *Page) Eval(js string, params ...interface{}) proto.JSON {
 	return res.Value
 }
 
+// Wait js function until it returns true
+func (p *Page) Wait(js string, params ...interface{}) {
+	kit.E(p.WaitE(p.Sleeper(), "", js, params))
+}
+
 // ObjectToJSON by remote object
 func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
 	j, err := p.ObjectToJSONE(obj)

@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -34,8 +35,12 @@ func (s *S) TestSetCookies() {
 
 	cookies := page.Cookies()
 
-	s.Equal("2", cookies[0].Value)
-	s.Equal("1", cookies[1].Value)
+	sort.Slice(cookies, func(i, j int) bool {
+		return cookies[i].Value < cookies[j].Value
+	})
+
+	s.Equal("1", cookies[0].Value)
+	s.Equal("2", cookies[1].Value)
 }
 
 func (s *S) TestSetExtraHeaders() {
@@ -185,6 +190,11 @@ func (s *S) TestUntilPage() {
 	newPage := wait()
 
 	s.Equal("click me", newPage.Element("button").Text())
+}
+
+func (s *S) TestPageWait() {
+	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/click.html"))
+	page.Wait(`() => document.querySelector('button') !== null`)
 }
 
 func (s *S) TestPageWaitRequestIdle() {
