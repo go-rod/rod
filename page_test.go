@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"image/png"
 	"io"
 	"path/filepath"
@@ -256,28 +255,6 @@ func (s *S) TestAlert() {
 	go page.Element("button").Click()
 
 	wait()
-}
-
-func (s *S) TestDownloadFile() {
-	url, engine, close := serve()
-	defer close()
-
-	content := "test content"
-
-	engine.GET("/d", func(ctx kit.GinContext) {
-		kit.E(ctx.Writer.Write([]byte(content)))
-	})
-	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
-
-	page := s.page.Navigate(url)
-
-	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
-
-	page.Element("a").Click()
-
-	_, data := wait()
-
-	s.Equal(content, string(data))
 }
 
 func (s *S) TestMouse() {

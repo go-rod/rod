@@ -50,6 +50,19 @@ func ginHTML(body string) gin.HandlerFunc {
 	}
 }
 
+func ginString(body string) gin.HandlerFunc {
+	return func(ctx kit.GinContext) {
+		kit.E(ctx.Writer.WriteString(body))
+	}
+}
+
+func ginHTMLFile(path string) gin.HandlerFunc {
+	body, err := kit.ReadString(path)
+	kit.E(err)
+	return ginHTML(body)
+}
+
+// returns url prefix, engin, close
 func serve() (string, *gin.Engine, func()) {
 	srv := kit.MustServer("127.0.0.1:0")
 	go func() { kit.Noop(srv.Do()) }()

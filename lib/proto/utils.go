@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 
@@ -182,4 +183,17 @@ func (e InputDispatchMouseEvent) Normalize() (json.RawMessage, error) {
 	}
 
 	return data, nil
+}
+
+// PatternToReg FetchRequestPattern.URLPattern to regular expression
+func PatternToReg(pattern string) string {
+	if pattern == "" {
+		return ""
+	}
+
+	pattern = " " + pattern
+	pattern = regexp.MustCompile(`([^\\])\*`).ReplaceAllString(pattern, "$1.*")
+	pattern = regexp.MustCompile(`([^\\])\?`).ReplaceAllString(pattern, "$1.")
+
+	return `\A` + strings.TrimSpace(pattern) + `\z`
 }

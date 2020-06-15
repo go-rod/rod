@@ -3,7 +3,6 @@
 package rod
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/tidwall/gjson"
@@ -180,18 +179,6 @@ func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 	w := p.HandleDialogE(accept, promptText)
 	return func() {
 		kit.E(w())
-	}
-}
-
-// GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
-// Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
-func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte)) {
-	w, err := p.GetDownloadFileE(pattern)
-	kit.E(err)
-	return func() (http.Header, []byte) {
-		header, data, err := w()
-		kit.E(err)
-		return header, data
 	}
 }
 

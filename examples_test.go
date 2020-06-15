@@ -277,6 +277,32 @@ func Example_handle_events() {
 	// done
 }
 
+// Request interception example to modify request or response.
+func Example_hijack_requests() {
+	browser := rod.New().Timeout(time.Minute).Connect()
+	defer browser.Close()
+
+	router := browser.HijackRequests()
+	defer router.Stop()
+
+	router.Add("*.js", func(ctx *rod.Hijack) {
+		// Send request load response from real destination as the default value to hijack.
+		// If you want to safe bandwidth and don't call it, you have to mock the entire response (status code, headers, body).
+		ctx.LoadResponse()
+
+		// override response body, we let all js log string "rod"
+		ctx.Response.SetBody(ctx.Response.StringBody() + "\n document.title = 'hi' ")
+	})
+
+	go router.Run()
+
+	browser.Page("https://www.wikipedia.org/").Wait(`() => document.title == 'hi'`)
+
+	fmt.Println("done")
+
+	// Output: done
+}
+
 func Example_states() {
 	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()

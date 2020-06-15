@@ -90,3 +90,13 @@ func TestNormalizeInputDispatchMouseEvent(t *testing.T) {
 
 	assert.Equal(t, `{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
 }
+
+func TestPatternToReg(t *testing.T) {
+	assert.Equal(t, ``, proto.PatternToReg(""))
+	assert.Equal(t, `\A.*\z`, proto.PatternToReg("*"))
+	assert.Equal(t, `\A.\z`, proto.PatternToReg("?"))
+	assert.Equal(t, `\Aa\z`, proto.PatternToReg("a"))
+	assert.Equal(t, `\Aa.com/.*/test\z`, proto.PatternToReg("a.com/*/test"))
+	assert.Equal(t, `\A\?\*\z`, proto.PatternToReg(`\?\*`))
+	assert.Equal(t, `\Aa.com\?a=10&b=\*\z`, proto.PatternToReg(`a.com\?a=10&b=\*`))
+}

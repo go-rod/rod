@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"net/http"
 	"strings"
 	"time"
 
@@ -199,71 +198,6 @@ func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 			PromptText: promptText,
 		}.Call(p)
 	}
-}
-
-// GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
-func (p *Page) GetDownloadFileE(pattern string) (func() (http.Header, []byte, error), error) {
-	err := proto.BrowserSetDownloadBehavior{
-		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
-		BrowserContextID: p.browser.BrowserContextID,
-	}.Call(p.browser)
-	if err != nil {
-		return nil, err
-	}
-
-	var fetchEnable *proto.FetchEnable
-	if pattern != "" {
-		fetchEnable = &proto.FetchEnable{
-			Patterns: []*proto.FetchRequestPattern{
-				{URLPattern: pattern},
-			},
-		}
-	}
-	recover := p.EnableDomain(fetchEnable)
-
-	msgReq := &proto.FetchRequestPaused{}
-	wait := p.WaitEvent(msgReq)
-
-	return func() (http.Header, []byte, error) {
-		defer recover()
-
-		wait()
-
-		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
-
-		for k, v := range msgReq.Request.Headers {
-			req.Header(k, v.String())
-		}
-
-		res, err := req.Response()
-		if err != nil {
-			return nil, nil, err
-		}
-
-		body, err := req.Bytes()
-		if err != nil {
-			return nil, nil, err
-		}
-
-		headers := []*proto.FetchHeaderEntry{}
-		for k, vs := range res.Header {
-			for _, v := range vs {
-				headers = append(headers, &proto.FetchHeaderEntry{Name: k, Value: v})
-			}
-		}
-
-		err = proto.FetchFulfillRequest{
-			RequestID:       msgReq.RequestID,
-			ResponseCode:    int64(res.StatusCode),
-			ResponseHeaders: headers,
-			Body:            body,
-		}.Call(p)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		return res.Header, body, nil
-	}, nil
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot

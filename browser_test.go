@@ -67,31 +67,6 @@ func (s *S) TestBrowserCall() {
 	s.Regexp("1.3", v.ProtocolVersion)
 }
 
-func (s *S) TestBrowserHandleAuth() {
-	url, engine, close := serve()
-	defer close()
-
-	// mock the server
-	engine.NoRoute(func(ctx kit.GinContext) {
-		u, p, ok := ctx.Request.BasicAuth()
-		if !ok {
-			ctx.Header("WWW-Authenticate", `Basic realm="web"`)
-			ctx.Writer.WriteHeader(401)
-			return
-		}
-
-		s.Equal("a", u)
-		s.Equal("b", p)
-		ginHTML(`<p>ok</p>`)(ctx)
-	})
-
-	s.browser.HandleAuth("a", "b")
-
-	page := s.browser.Page(url)
-	defer page.Close()
-	page.ElementMatches("p", "ok")
-}
-
 func (s *S) TestMonitor() {
 	b := rod.New().Timeout(1 * time.Minute).Connect()
 	defer b.Close()

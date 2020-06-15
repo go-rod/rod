@@ -282,47 +282,6 @@ func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID
 	return b.eachEvent(ctx, sessionID, fnVal.Interface())
 }
 
-// HandleAuthE for the next basic HTTP authentication.
-// It will prevent the popup that requires user to input user name and password.
-// Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
-func (b *Browser) HandleAuthE(username, password string) func() error {
-	recover := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
-		HandleAuthRequests: true,
-	})
-
-	paused := &proto.FetchRequestPaused{}
-	auth := &proto.FetchAuthRequired{}
-
-	waitPaused := b.WaitEvent(paused)
-	waitAuth := b.WaitEvent(auth)
-
-	return func() (err error) {
-		defer recover()
-
-		waitPaused()
-
-		err = proto.FetchContinueRequest{
-			RequestID: paused.RequestID,
-		}.Call(b)
-		if err != nil {
-			return
-		}
-
-		waitAuth()
-
-		err = proto.FetchContinueWithAuth{
-			RequestID: auth.RequestID,
-			AuthChallengeResponse: &proto.FetchAuthChallengeResponse{
-				Response: proto.FetchAuthChallengeResponseResponseProvideCredentials,
-				Username: username,
-				Password: password,
-			},
-		}.Call(b)
-
-		return
-	}
-}
-
 // Call raw cdp interface directly
 func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
 	b.set(proto.TargetSessionID(sessionID), methodName, params)
