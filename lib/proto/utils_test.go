@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,7 @@ type Client struct {
 
 var _ proto.Client = &Client{}
 
-func (c *Client) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
+func (c *Client) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
 	c.sessionID = sessionID
 	c.methodName = methodName
 	c.params = params
@@ -42,6 +43,11 @@ func TestE(t *testing.T) {
 	assert.Panics(t, func() {
 		proto.E(errors.New("err"))
 	})
+}
+
+func TestGetType(t *testing.T) {
+	method := proto.GetType("Page.enable")
+	assert.Equal(t, reflect.TypeOf(proto.PageEnable{}), method)
 }
 
 func TestJSON(t *testing.T) {

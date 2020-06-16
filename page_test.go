@@ -55,7 +55,8 @@ func (s *S) TestSetExtraHeaders() {
 		wg.Done()
 	})
 
-	s.page.SetExtraHeaders(key1, "1", key2, "2").Navigate(url)
+	defer s.page.SetExtraHeaders(key1, "1", key2, "2")()
+	s.page.Navigate(url)
 	wg.Wait()
 
 	s.Equal("1", out1)
@@ -90,6 +91,10 @@ func (s *S) TestClosePage() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Element("button")
+}
+
+func (s *S) TestLoadState() {
+	s.False(s.page.LoadState(&proto.PageEnable{}))
 }
 
 func (s *S) TestPageContext() {
@@ -228,9 +233,9 @@ func (s *S) TestPageWaitIdle() {
 }
 
 func (s *S) TestPageWaitEvent() {
-	wait := s.page.WaitEvent()
+	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
-	wait(&proto.PageFrameNavigated{})
+	wait()
 }
 
 func (s *S) TestAlert() {
@@ -295,15 +300,14 @@ func (s *S) TestMouseDrag() {
 
 	wait := make(chan kit.Nil)
 	logs := []string{}
-	kit.E(proto.ConsoleEnable{}.Call(page))
-	go page.EachEvent()(func(e *proto.ConsoleMessageAdded) bool {
+	go page.EachEvent(func(e *proto.ConsoleMessageAdded) bool {
 		logs = append(logs, e.Message.Text)
 		if strings.HasPrefix(e.Message.Text, "up") {
 			close(wait)
 			return true
 		}
 		return false
-	})
+	})()
 
 	mouse.Move(3, 3)
 	mouse.Down("left")

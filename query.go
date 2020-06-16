@@ -109,7 +109,7 @@ func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObject
 // If sleeper is nil, no retry will be performed.
 // thisID is the this value of the js function, when thisID is "", the this context will be the "window".
 // If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
-// retries once.
+// retry once.
 func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error

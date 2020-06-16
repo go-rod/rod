@@ -20,7 +20,7 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
-- No zombie chrome process after the crash ([how it works](https://github.com/ysmood/leakless))
+- No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
 
 ## Examples
 
@@ -67,7 +67,7 @@ For now, Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol,
 ### Q: Why is it called Rod
 
 Rod is related to puppetry, see [Rod Puppet](https://en.wikipedia.org/wiki/Puppet#Rod_puppet).
-So we are the puppeteer, Chrome is the puppet, we use the rod to control the puppet.
+So we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
 So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
 ### Q: How to contribute
@@ -92,7 +92,9 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [puppeteer](https://github.com/puppeteer/puppeteer)
 
-  With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to chrome will be async calls, so it's unfriendly for QA from the beginning.
+  With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to the browser will be async calls, so it's unfriendly for QA from the beginning.
+
+  Rod will only enable domain events when they are needed, puppeteer will always enable all the domains which will consume a lot of resources when driving a remote browser.
 
 - [chromedp](https://github.com/chromedp/chromedp)
 
@@ -100,7 +102,7 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   It's painful to use Chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
 
-  When a crash happens, Chromedp will leave the zombie chrome process on Windows and Mac.
+  When a crash happens, Chromedp will leave the zombie browser process on Windows and Mac.
 
 - [cypress](https://www.cypress.io/)
 

@@ -38,9 +38,9 @@ func (s *S) TestIncognito() {
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := s.browser.WaitEvent()
+	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
-	wait(&proto.PageFrameNavigated{})
+	wait()
 }
 
 func (s *S) TestBrowserCall() {
@@ -65,11 +65,14 @@ func (s *S) TestBrowserHandleAuth() {
 
 		s.Equal("a", u)
 		s.Equal("b", p)
+		ginHTML(`<p>ok</p>`)(ctx)
 	})
 
 	s.browser.HandleAuth("a", "b")
 
-	s.browser.Page(url).Close()
+	page := s.browser.Page(url)
+	defer page.Close()
+	page.ElementMatches("p", "ok")
 }
 
 func (s *S) TestMonitor() {

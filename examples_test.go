@@ -1,6 +1,8 @@
 package rod_test
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -143,8 +145,20 @@ func Example_customize_retry_strategy() {
 
 	// here we use low-level api ElementE other than Element to have more options,
 	// use backoff algorithm to do the retry
-	el, err := page.ElementE(backoff, "", "input")
-	kit.E(err)
+	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", "input")
+	if err == context.DeadlineExceeded {
+		fmt.Println("we can't find the element before timeout")
+	} else {
+		kit.E(err)
+	}
+
+	// get element without retry
+	el, err = page.ElementE(nil, "", "input")
+	if rod.IsError(err, rod.ErrElementNotFound) {
+		fmt.Println("element not found")
+	} else {
+		kit.E(err)
+	}
 
 	fmt.Println(el.Eval(`() => this.name`).String())
 
@@ -205,12 +219,12 @@ func Example_direct_cdp() {
 	fmt.Println(cookie)
 
 	// Or even more low-level way to use raw json to send request to chrome.
-	ctx, client, sessionID := page.CallContext()
-	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", map[string]string{
+	data, _ := json.Marshal(map[string]string{
 		"name":  "rod",
 		"value": "test",
 		"url":   "https://example.com",
 	})
+	_, _ = browser.Call(page.GetContext(), string(page.SessionID), "Network.SetCookie", data)
 
 	// Output:
 	// true
@@ -222,7 +236,7 @@ func Example_handle_events() {
 	browser := rod.New().Connect()
 	defer browser.Close()
 
-	go browser.EachEvent()(func(e *proto.TargetTargetCreated) {
+	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
 		// if it's not a page return
 		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {
 			return
@@ -233,27 +247,23 @@ func Example_handle_events() {
 
 		// log "rod" on each newly created page
 		page02.Eval(`() => console.log("rod")`)
-	})
+	})()
 
 	page01 := browser.Page("")
 
-	// let rod client receive the events from log domain
-	kit.E(proto.ConsoleEnable{}.Call(page01))
-
-	// make sure capture events before they happen
-	eachEvent := page01.EachEvent()
-
-	page01.Navigate("https://example.com")
-
-	// subscribe events for a specific page
+	// subscribe events before they happen, call the "wait" to actually consume the events
 	// here we return an optional stop signal at the first event to stop the loop
-	eachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
+	wait := page01.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
 		return true
 	})
 
+	page01.Navigate("https://example.com")
+
+	wait()
+
 	// the above is the same as below
 	if false {
-		page01.WaitEvent()(&proto.PageLoadEventFired{})
+		page01.WaitEvent(&proto.PageLoadEventFired{})()
 	}
 
 	fmt.Println("done")
@@ -262,4 +272,23 @@ func Example_handle_events() {
 
 	// Output:
 	// done
+}
+
+func Example_states() {
+	browser := rod.New().Connect()
+	defer browser.Close()
+
+	page := browser.Page("")
+
+	// to detect if network is enabled or not
+	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
+
+	_ = proto.NetworkEnable{}.Call(page)
+
+	// to detect if network is enabled or not
+	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
+
+	// Output:
+	// false
+	// true
 }

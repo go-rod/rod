@@ -3,7 +3,6 @@
 package rod
 
 import (
-	"context"
 	"net/http"
 	"path/filepath"
 	"time"
@@ -22,16 +21,6 @@ func (b *Browser) Connect() *Browser {
 // Close the browser and release related resources
 func (b *Browser) Close() {
 	kit.E(b.CloseE())
-}
-
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (b *Browser) EachEvent() func(fn interface{}) {
-	ctx, cancel := context.WithCancel(b.ctx)
-	s := b.event.Subscribe(ctx)
-	return func(fn interface{}) {
-		defer cancel()
-		eachEvent(s)(fn)
-	}
 }
 
 // Incognito creates a new incognito browser
@@ -66,8 +55,7 @@ func (b *Browser) PageFromTargetID(targetID proto.TargetTargetID) *Page {
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 func (b *Browser) HandleAuth(username, password string) {
-	wait, err := b.HandleAuthE(username, password)
-	kit.E(err)
+	wait := b.HandleAuthE(username, password)
 	go func() { kit.E(wait()) }()
 }
 
@@ -95,9 +83,10 @@ func (p *Page) SetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 
 // SetExtraHeaders whether to always send extra HTTP headers with the requests from this page.
 // The arguments are key-value pairs, you can set multiple key-value pairs at the same time.
-func (p *Page) SetExtraHeaders(dict ...string) *Page {
-	kit.E(p.SetExtraHeadersE(dict))
-	return p
+func (p *Page) SetExtraHeaders(dict ...string) (cleanup func()) {
+	cleanup, err := p.SetExtraHeadersE(dict)
+	kit.E(err)
+	return cleanup
 }
 
 // SetUserAgent Allows overriding user agent with the given string.
@@ -185,16 +174,6 @@ func (p *Page) Close() {
 	kit.E(p.CloseE())
 }
 
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (p *Page) EachEvent() func(fn interface{}) {
-	ctx, cancel := context.WithCancel(p.ctx)
-	s := p.event.Subscribe(ctx)
-	return func(fn interface{}) {
-		defer cancel()
-		eachEvent(s)(fn)
-	}
-}
-
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
 func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 	w := p.HandleDialogE(accept, promptText)
@@ -257,8 +236,7 @@ func (p *Page) Pause() *Page {
 // WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to exclude the requests by their url.
 func (p *Page) WaitRequestIdle(excludes ...string) (wait func()) {
-	w := p.WaitRequestIdleE(300*time.Millisecond, []string{""}, excludes)
-	return func() { kit.E(w()) }
+	return p.WaitRequestIdleE(300*time.Millisecond, []string{""}, excludes)
 }
 
 // WaitIdle wait until the next window.requestIdleCallback is called.

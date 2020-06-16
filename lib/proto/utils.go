@@ -3,6 +3,8 @@ package proto
 import (
 	"context"
 	"encoding/json"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/tidwall/gjson"
@@ -13,11 +15,11 @@ import (
 // Client interface to send the request.
 // So that this lib doesn't handle anything has side effect.
 type Client interface {
-	Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error)
+	Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error)
 }
 
-// Event interface returns the name of the event, such as "Page.loadEventFired"
-type Event interface {
+// Payload interface returns the name of the event, such as "Page.loadEventFired"
+type Payload interface {
 	// MethodName is called method name is because the json-schema definition of it is "method".
 	// And "eventName" is already used by a lot of existing fields.
 	MethodName() string
@@ -29,10 +31,11 @@ type Caller interface {
 	CallContext() (context.Context, Client, string)
 }
 
-func call(method string, req, res interface{}, caller Caller) error {
+// Call method with request and response containers.
+func Call(method string, req, res interface{}, caller Caller) error {
 	ctx, client, id := caller.CallContext()
 
-	payload, err := normalize(req)
+	payload, err := Normalize(req)
 	if err != nil {
 		return err
 	}
@@ -52,6 +55,18 @@ func call(method string, req, res interface{}, caller Caller) error {
 	return nil
 }
 
+// GetType from method name of this package,
+// such as proto.GetType("Page.enable") will return the type of proto.PageEnable
+func GetType(methodName string) reflect.Type {
+	return types[methodName]
+}
+
+// ParseMethodName to domain and name
+func ParseMethodName(method string) (domain, name string) {
+	arr := strings.Split(method, ".")
+	return arr[0], arr[1]
+}
+
 // Normalizable interface to transform the params into the correct data structure before being sent by the client.
 // Because the json-schema doesn't cover all the type constrains of the protocol, we need this extra layer to do
 // the normalization.
@@ -61,7 +76,7 @@ type Normalizable interface {
 }
 
 // Normalize the method payload
-func normalize(m interface{}) (json.RawMessage, error) {
+func Normalize(m interface{}) (json.RawMessage, error) {
 	n, ok := m.(Normalizable)
 	if ok {
 		return n.Normalize()

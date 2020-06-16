@@ -2,6 +2,8 @@
 
 package proto
 
+import "reflect"
+
 // Version of cdp protocol
 const Version = "v1.3"
 
@@ -351,9 +353,12 @@ type AccessibilityAXNode struct {
 type AccessibilityDisable struct {
 }
 
+// MethodName of the command
+func (m AccessibilityDisable) MethodName() string { return "Accessibility.disable" }
+
 // Call of the command, sessionID is optional.
 func (m AccessibilityDisable) Call(caller Caller) error {
-	return call("Accessibility.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AccessibilityEnable Enables the accessibility domain which causes `AXNodeId`s to remain consistent between method calls.
@@ -361,9 +366,12 @@ func (m AccessibilityDisable) Call(caller Caller) error {
 type AccessibilityEnable struct {
 }
 
+// MethodName of the command
+func (m AccessibilityEnable) MethodName() string { return "Accessibility.enable" }
+
 // Call of the command, sessionID is optional.
 func (m AccessibilityEnable) Call(caller Caller) error {
-	return call("Accessibility.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AccessibilityGetPartialAXTree (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -382,10 +390,13 @@ type AccessibilityGetPartialAXTree struct {
 	FetchRelatives bool `json:"fetchRelatives,omitempty"`
 }
 
+// MethodName of the command
+func (m AccessibilityGetPartialAXTree) MethodName() string { return "Accessibility.getPartialAXTree" }
+
 // Call of the command, sessionID is optional.
 func (m AccessibilityGetPartialAXTree) Call(caller Caller) (*AccessibilityGetPartialAXTreeResult, error) {
 	var res AccessibilityGetPartialAXTreeResult
-	return &res, call("Accessibility.getPartialAXTree", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AccessibilityGetPartialAXTreeResult (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -400,10 +411,13 @@ type AccessibilityGetPartialAXTreeResult struct {
 type AccessibilityGetFullAXTree struct {
 }
 
+// MethodName of the command
+func (m AccessibilityGetFullAXTree) MethodName() string { return "Accessibility.getFullAXTree" }
+
 // Call of the command, sessionID is optional.
 func (m AccessibilityGetFullAXTree) Call(caller Caller) (*AccessibilityGetFullAXTreeResult, error) {
 	var res AccessibilityGetFullAXTreeResult
-	return &res, call("Accessibility.getFullAXTree", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree
@@ -520,18 +534,24 @@ type AnimationKeyframeStyle struct {
 type AnimationDisable struct {
 }
 
+// MethodName of the command
+func (m AnimationDisable) MethodName() string { return "Animation.disable" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationDisable) Call(caller Caller) error {
-	return call("Animation.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationEnable Enables animation domain notifications.
 type AnimationEnable struct {
 }
 
+// MethodName of the command
+func (m AnimationEnable) MethodName() string { return "Animation.enable" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationEnable) Call(caller Caller) error {
-	return call("Animation.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationGetCurrentTime Returns the current time of the an animation.
@@ -541,10 +561,13 @@ type AnimationGetCurrentTime struct {
 	ID string `json:"id"`
 }
 
+// MethodName of the command
+func (m AnimationGetCurrentTime) MethodName() string { return "Animation.getCurrentTime" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationGetCurrentTime) Call(caller Caller) (*AnimationGetCurrentTimeResult, error) {
 	var res AnimationGetCurrentTimeResult
-	return &res, call("Animation.getCurrentTime", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AnimationGetCurrentTimeResult Returns the current time of the an animation.
@@ -558,10 +581,13 @@ type AnimationGetCurrentTimeResult struct {
 type AnimationGetPlaybackRate struct {
 }
 
+// MethodName of the command
+func (m AnimationGetPlaybackRate) MethodName() string { return "Animation.getPlaybackRate" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationGetPlaybackRate) Call(caller Caller) (*AnimationGetPlaybackRateResult, error) {
 	var res AnimationGetPlaybackRateResult
-	return &res, call("Animation.getPlaybackRate", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AnimationGetPlaybackRateResult Gets the playback rate of the document timeline.
@@ -578,9 +604,12 @@ type AnimationReleaseAnimations struct {
 	Animations []string `json:"animations"`
 }
 
+// MethodName of the command
+func (m AnimationReleaseAnimations) MethodName() string { return "Animation.releaseAnimations" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationReleaseAnimations) Call(caller Caller) error {
-	return call("Animation.releaseAnimations", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationResolveAnimation Gets the remote object of the Animation.
@@ -590,10 +619,13 @@ type AnimationResolveAnimation struct {
 	AnimationID string `json:"animationId"`
 }
 
+// MethodName of the command
+func (m AnimationResolveAnimation) MethodName() string { return "Animation.resolveAnimation" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationResolveAnimation) Call(caller Caller) (*AnimationResolveAnimationResult, error) {
 	var res AnimationResolveAnimationResult
-	return &res, call("Animation.resolveAnimation", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AnimationResolveAnimationResult Gets the remote object of the Animation.
@@ -613,9 +645,12 @@ type AnimationSeekAnimations struct {
 	CurrentTime float64 `json:"currentTime"`
 }
 
+// MethodName of the command
+func (m AnimationSeekAnimations) MethodName() string { return "Animation.seekAnimations" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationSeekAnimations) Call(caller Caller) error {
-	return call("Animation.seekAnimations", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationSetPaused Sets the paused state of a set of animations.
@@ -628,9 +663,12 @@ type AnimationSetPaused struct {
 	Paused bool `json:"paused"`
 }
 
+// MethodName of the command
+func (m AnimationSetPaused) MethodName() string { return "Animation.setPaused" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationSetPaused) Call(caller Caller) error {
-	return call("Animation.setPaused", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationSetPlaybackRate Sets the playback rate of the document timeline.
@@ -640,9 +678,12 @@ type AnimationSetPlaybackRate struct {
 	PlaybackRate float64 `json:"playbackRate"`
 }
 
+// MethodName of the command
+func (m AnimationSetPlaybackRate) MethodName() string { return "Animation.setPlaybackRate" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationSetPlaybackRate) Call(caller Caller) error {
-	return call("Animation.setPlaybackRate", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationSetTiming Sets the timing of an animation node.
@@ -658,9 +699,12 @@ type AnimationSetTiming struct {
 	Delay float64 `json:"delay"`
 }
 
+// MethodName of the command
+func (m AnimationSetTiming) MethodName() string { return "Animation.setTiming" }
+
 // Call of the command, sessionID is optional.
 func (m AnimationSetTiming) Call(caller Caller) error {
-	return call("Animation.setTiming", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AnimationAnimationCanceled Event for when an animation has been cancelled.
@@ -748,9 +792,12 @@ type ApplicationCacheFrameWithManifest struct {
 type ApplicationCacheEnable struct {
 }
 
+// MethodName of the command
+func (m ApplicationCacheEnable) MethodName() string { return "ApplicationCache.enable" }
+
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheEnable) Call(caller Caller) error {
-	return call("ApplicationCache.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ApplicationCacheGetApplicationCacheForFrame Returns relevant application cache data for the document in given frame.
@@ -760,10 +807,15 @@ type ApplicationCacheGetApplicationCacheForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
+// MethodName of the command
+func (m ApplicationCacheGetApplicationCacheForFrame) MethodName() string {
+	return "ApplicationCache.getApplicationCacheForFrame"
+}
+
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetApplicationCacheForFrame) Call(caller Caller) (*ApplicationCacheGetApplicationCacheForFrameResult, error) {
 	var res ApplicationCacheGetApplicationCacheForFrameResult
-	return &res, call("ApplicationCache.getApplicationCacheForFrame", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ApplicationCacheGetApplicationCacheForFrameResult Returns relevant application cache data for the document in given frame.
@@ -778,10 +830,15 @@ type ApplicationCacheGetApplicationCacheForFrameResult struct {
 type ApplicationCacheGetFramesWithManifests struct {
 }
 
+// MethodName of the command
+func (m ApplicationCacheGetFramesWithManifests) MethodName() string {
+	return "ApplicationCache.getFramesWithManifests"
+}
+
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetFramesWithManifests) Call(caller Caller) (*ApplicationCacheGetFramesWithManifestsResult, error) {
 	var res ApplicationCacheGetFramesWithManifestsResult
-	return &res, call("ApplicationCache.getFramesWithManifests", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ApplicationCacheGetFramesWithManifestsResult Returns array of frame identifiers with manifest urls for each frame containing a document
@@ -800,10 +857,15 @@ type ApplicationCacheGetManifestForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
+// MethodName of the command
+func (m ApplicationCacheGetManifestForFrame) MethodName() string {
+	return "ApplicationCache.getManifestForFrame"
+}
+
 // Call of the command, sessionID is optional.
 func (m ApplicationCacheGetManifestForFrame) Call(caller Caller) (*ApplicationCacheGetManifestForFrameResult, error) {
 	var res ApplicationCacheGetManifestForFrameResult
-	return &res, call("ApplicationCache.getManifestForFrame", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ApplicationCacheGetManifestForFrameResult Returns manifest URL for document in the given frame.
@@ -986,10 +1048,13 @@ type AuditsGetEncodedResponse struct {
 	SizeOnly bool `json:"sizeOnly,omitempty"`
 }
 
+// MethodName of the command
+func (m AuditsGetEncodedResponse) MethodName() string { return "Audits.getEncodedResponse" }
+
 // Call of the command, sessionID is optional.
 func (m AuditsGetEncodedResponse) Call(caller Caller) (*AuditsGetEncodedResponseResult, error) {
 	var res AuditsGetEncodedResponseResult
-	return &res, call("Audits.getEncodedResponse", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // AuditsGetEncodedResponseResult Returns the response body and size if it were re-encoded with the specified settings. Only
@@ -1010,9 +1075,12 @@ type AuditsGetEncodedResponseResult struct {
 type AuditsDisable struct {
 }
 
+// MethodName of the command
+func (m AuditsDisable) MethodName() string { return "Audits.disable" }
+
 // Call of the command, sessionID is optional.
 func (m AuditsDisable) Call(caller Caller) error {
-	return call("Audits.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AuditsEnable Enables issues domain, sends the issues collected so far to the client by means of the
@@ -1020,9 +1088,12 @@ func (m AuditsDisable) Call(caller Caller) error {
 type AuditsEnable struct {
 }
 
+// MethodName of the command
+func (m AuditsEnable) MethodName() string { return "Audits.enable" }
+
 // Call of the command, sessionID is optional.
 func (m AuditsEnable) Call(caller Caller) error {
-	return call("Audits.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // AuditsIssueAdded ...
@@ -1104,9 +1175,14 @@ type BackgroundServiceStartObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
+// MethodName of the command
+func (m BackgroundServiceStartObserving) MethodName() string {
+	return "BackgroundService.startObserving"
+}
+
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceStartObserving) Call(caller Caller) error {
-	return call("BackgroundService.startObserving", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BackgroundServiceStopObserving Disables event updates for the service.
@@ -1116,9 +1192,12 @@ type BackgroundServiceStopObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
+// MethodName of the command
+func (m BackgroundServiceStopObserving) MethodName() string { return "BackgroundService.stopObserving" }
+
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceStopObserving) Call(caller Caller) error {
-	return call("BackgroundService.stopObserving", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BackgroundServiceSetRecording Set the recording state for the service.
@@ -1131,9 +1210,12 @@ type BackgroundServiceSetRecording struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
+// MethodName of the command
+func (m BackgroundServiceSetRecording) MethodName() string { return "BackgroundService.setRecording" }
+
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceSetRecording) Call(caller Caller) error {
-	return call("BackgroundService.setRecording", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BackgroundServiceClearEvents Clears all stored data for the service.
@@ -1143,9 +1225,12 @@ type BackgroundServiceClearEvents struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
+// MethodName of the command
+func (m BackgroundServiceClearEvents) MethodName() string { return "BackgroundService.clearEvents" }
+
 // Call of the command, sessionID is optional.
 func (m BackgroundServiceClearEvents) Call(caller Caller) error {
-	return call("BackgroundService.clearEvents", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BackgroundServiceRecordingStateChanged Called when the recording state for the service has been updated.
@@ -1367,9 +1452,12 @@ type BrowserSetPermission struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserSetPermission) MethodName() string { return "Browser.setPermission" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserSetPermission) Call(caller Caller) error {
-	return call("Browser.setPermission", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserGrantPermissions (experimental) Grant specific permissions to the given origin and reject all others.
@@ -1385,9 +1473,12 @@ type BrowserGrantPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserGrantPermissions) MethodName() string { return "Browser.grantPermissions" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGrantPermissions) Call(caller Caller) error {
-	return call("Browser.grantPermissions", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserResetPermissions (experimental) Reset all permission management for all origins.
@@ -1397,9 +1488,12 @@ type BrowserResetPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserResetPermissions) MethodName() string { return "Browser.resetPermissions" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserResetPermissions) Call(caller Caller) error {
-	return call("Browser.resetPermissions", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserSetDownloadBehaviorBehavior enum
@@ -1435,46 +1529,61 @@ type BrowserSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserSetDownloadBehavior) MethodName() string { return "Browser.setDownloadBehavior" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserSetDownloadBehavior) Call(caller Caller) error {
-	return call("Browser.setDownloadBehavior", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserClose Close browser gracefully.
 type BrowserClose struct {
 }
 
+// MethodName of the command
+func (m BrowserClose) MethodName() string { return "Browser.close" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserClose) Call(caller Caller) error {
-	return call("Browser.close", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserCrash (experimental) Crashes browser on the main thread.
 type BrowserCrash struct {
 }
 
+// MethodName of the command
+func (m BrowserCrash) MethodName() string { return "Browser.crash" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserCrash) Call(caller Caller) error {
-	return call("Browser.crash", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserCrashGpuProcess (experimental) Crashes GPU process.
 type BrowserCrashGpuProcess struct {
 }
 
+// MethodName of the command
+func (m BrowserCrashGpuProcess) MethodName() string { return "Browser.crashGpuProcess" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserCrashGpuProcess) Call(caller Caller) error {
-	return call("Browser.crashGpuProcess", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserGetVersion Returns version information.
 type BrowserGetVersion struct {
 }
 
+// MethodName of the command
+func (m BrowserGetVersion) MethodName() string { return "Browser.getVersion" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetVersion) Call(caller Caller) (*BrowserGetVersionResult, error) {
 	var res BrowserGetVersionResult
-	return &res, call("Browser.getVersion", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetVersionResult Returns version information.
@@ -1501,10 +1610,13 @@ type BrowserGetVersionResult struct {
 type BrowserGetBrowserCommandLine struct {
 }
 
+// MethodName of the command
+func (m BrowserGetBrowserCommandLine) MethodName() string { return "Browser.getBrowserCommandLine" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetBrowserCommandLine) Call(caller Caller) (*BrowserGetBrowserCommandLineResult, error) {
 	var res BrowserGetBrowserCommandLineResult
-	return &res, call("Browser.getBrowserCommandLine", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetBrowserCommandLineResult (experimental) Returns the command line switches for the browser process if, and only if
@@ -1527,10 +1639,13 @@ type BrowserGetHistograms struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserGetHistograms) MethodName() string { return "Browser.getHistograms" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetHistograms) Call(caller Caller) (*BrowserGetHistogramsResult, error) {
 	var res BrowserGetHistogramsResult
-	return &res, call("Browser.getHistograms", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetHistogramsResult (experimental) Get Chrome histograms.
@@ -1550,10 +1665,13 @@ type BrowserGetHistogram struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserGetHistogram) MethodName() string { return "Browser.getHistogram" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetHistogram) Call(caller Caller) (*BrowserGetHistogramResult, error) {
 	var res BrowserGetHistogramResult
-	return &res, call("Browser.getHistogram", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetHistogramResult (experimental) Get a Chrome histogram by name.
@@ -1570,10 +1688,13 @@ type BrowserGetWindowBounds struct {
 	WindowID BrowserWindowID `json:"windowId"`
 }
 
+// MethodName of the command
+func (m BrowserGetWindowBounds) MethodName() string { return "Browser.getWindowBounds" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetWindowBounds) Call(caller Caller) (*BrowserGetWindowBoundsResult, error) {
 	var res BrowserGetWindowBoundsResult
-	return &res, call("Browser.getWindowBounds", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetWindowBoundsResult (experimental) Get position and size of the browser window.
@@ -1591,10 +1712,13 @@ type BrowserGetWindowForTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserGetWindowForTarget) MethodName() string { return "Browser.getWindowForTarget" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserGetWindowForTarget) Call(caller Caller) (*BrowserGetWindowForTargetResult, error) {
 	var res BrowserGetWindowForTargetResult
-	return &res, call("Browser.getWindowForTarget", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // BrowserGetWindowForTargetResult (experimental) Get the browser window that contains the devtools target.
@@ -1619,9 +1743,12 @@ type BrowserSetWindowBounds struct {
 	Bounds *BrowserBounds `json:"bounds"`
 }
 
+// MethodName of the command
+func (m BrowserSetWindowBounds) MethodName() string { return "Browser.setWindowBounds" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserSetWindowBounds) Call(caller Caller) error {
-	return call("Browser.setWindowBounds", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // BrowserSetDockTile (experimental) Set dock tile details, platform-specific.
@@ -1634,9 +1761,12 @@ type BrowserSetDockTile struct {
 	Image []byte `json:"image,omitempty"`
 }
 
+// MethodName of the command
+func (m BrowserSetDockTile) MethodName() string { return "Browser.setDockTile" }
+
 // Call of the command, sessionID is optional.
 func (m BrowserSetDockTile) Call(caller Caller) error {
-	return call("Browser.setDockTile", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSStyleSheetID ...
@@ -2053,10 +2183,13 @@ type CSSAddRule struct {
 	Location *CSSSourceRange `json:"location"`
 }
 
+// MethodName of the command
+func (m CSSAddRule) MethodName() string { return "CSS.addRule" }
+
 // Call of the command, sessionID is optional.
 func (m CSSAddRule) Call(caller Caller) (*CSSAddRuleResult, error) {
 	var res CSSAddRuleResult
-	return &res, call("CSS.addRule", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSAddRuleResult Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
@@ -2074,10 +2207,13 @@ type CSSCollectClassNames struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
+// MethodName of the command
+func (m CSSCollectClassNames) MethodName() string { return "CSS.collectClassNames" }
+
 // Call of the command, sessionID is optional.
 func (m CSSCollectClassNames) Call(caller Caller) (*CSSCollectClassNamesResult, error) {
 	var res CSSCollectClassNamesResult
-	return &res, call("CSS.collectClassNames", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSCollectClassNamesResult Returns all class names from specified stylesheet.
@@ -2094,10 +2230,13 @@ type CSSCreateStyleSheet struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
+// MethodName of the command
+func (m CSSCreateStyleSheet) MethodName() string { return "CSS.createStyleSheet" }
+
 // Call of the command, sessionID is optional.
 func (m CSSCreateStyleSheet) Call(caller Caller) (*CSSCreateStyleSheetResult, error) {
 	var res CSSCreateStyleSheetResult
-	return &res, call("CSS.createStyleSheet", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSCreateStyleSheetResult Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
@@ -2111,9 +2250,12 @@ type CSSCreateStyleSheetResult struct {
 type CSSDisable struct {
 }
 
+// MethodName of the command
+func (m CSSDisable) MethodName() string { return "CSS.disable" }
+
 // Call of the command, sessionID is optional.
 func (m CSSDisable) Call(caller Caller) error {
-	return call("CSS.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSEnable Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been
@@ -2121,9 +2263,12 @@ func (m CSSDisable) Call(caller Caller) error {
 type CSSEnable struct {
 }
 
+// MethodName of the command
+func (m CSSEnable) MethodName() string { return "CSS.enable" }
+
 // Call of the command, sessionID is optional.
 func (m CSSEnable) Call(caller Caller) error {
-	return call("CSS.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSForcePseudoState Ensures that the given node will have specified pseudo-classes whenever its style is computed by
@@ -2137,9 +2282,12 @@ type CSSForcePseudoState struct {
 	ForcedPseudoClasses []string `json:"forcedPseudoClasses"`
 }
 
+// MethodName of the command
+func (m CSSForcePseudoState) MethodName() string { return "CSS.forcePseudoState" }
+
 // Call of the command, sessionID is optional.
 func (m CSSForcePseudoState) Call(caller Caller) error {
-	return call("CSS.forcePseudoState", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSGetBackgroundColors ...
@@ -2149,10 +2297,13 @@ type CSSGetBackgroundColors struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m CSSGetBackgroundColors) MethodName() string { return "CSS.getBackgroundColors" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetBackgroundColors) Call(caller Caller) (*CSSGetBackgroundColorsResult, error) {
 	var res CSSGetBackgroundColorsResult
-	return &res, call("CSS.getBackgroundColors", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetBackgroundColorsResult ...
@@ -2180,10 +2331,13 @@ type CSSGetComputedStyleForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m CSSGetComputedStyleForNode) MethodName() string { return "CSS.getComputedStyleForNode" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetComputedStyleForNode) Call(caller Caller) (*CSSGetComputedStyleForNodeResult, error) {
 	var res CSSGetComputedStyleForNodeResult
-	return &res, call("CSS.getComputedStyleForNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetComputedStyleForNodeResult Returns the computed style for a DOM node identified by `nodeId`.
@@ -2201,10 +2355,13 @@ type CSSGetInlineStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m CSSGetInlineStylesForNode) MethodName() string { return "CSS.getInlineStylesForNode" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetInlineStylesForNode) Call(caller Caller) (*CSSGetInlineStylesForNodeResult, error) {
 	var res CSSGetInlineStylesForNodeResult
-	return &res, call("CSS.getInlineStylesForNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetInlineStylesForNodeResult Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
@@ -2225,10 +2382,13 @@ type CSSGetMatchedStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m CSSGetMatchedStylesForNode) MethodName() string { return "CSS.getMatchedStylesForNode" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetMatchedStylesForNode) Call(caller Caller) (*CSSGetMatchedStylesForNodeResult, error) {
 	var res CSSGetMatchedStylesForNodeResult
-	return &res, call("CSS.getMatchedStylesForNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetMatchedStylesForNodeResult Returns requested styles for a DOM node identified by `nodeId`.
@@ -2257,10 +2417,13 @@ type CSSGetMatchedStylesForNodeResult struct {
 type CSSGetMediaQueries struct {
 }
 
+// MethodName of the command
+func (m CSSGetMediaQueries) MethodName() string { return "CSS.getMediaQueries" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetMediaQueries) Call(caller Caller) (*CSSGetMediaQueriesResult, error) {
 	var res CSSGetMediaQueriesResult
-	return &res, call("CSS.getMediaQueries", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetMediaQueriesResult Returns all media queries parsed by the rendering engine.
@@ -2278,10 +2441,13 @@ type CSSGetPlatformFontsForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m CSSGetPlatformFontsForNode) MethodName() string { return "CSS.getPlatformFontsForNode" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetPlatformFontsForNode) Call(caller Caller) (*CSSGetPlatformFontsForNodeResult, error) {
 	var res CSSGetPlatformFontsForNodeResult
-	return &res, call("CSS.getPlatformFontsForNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetPlatformFontsForNodeResult Requests information about platform fonts which we used to render child TextNodes in the given
@@ -2299,10 +2465,13 @@ type CSSGetStyleSheetText struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
+// MethodName of the command
+func (m CSSGetStyleSheetText) MethodName() string { return "CSS.getStyleSheetText" }
+
 // Call of the command, sessionID is optional.
 func (m CSSGetStyleSheetText) Call(caller Caller) (*CSSGetStyleSheetTextResult, error) {
 	var res CSSGetStyleSheetTextResult
-	return &res, call("CSS.getStyleSheetText", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSGetStyleSheetTextResult Returns the current textual content for a stylesheet.
@@ -2326,9 +2495,14 @@ type CSSSetEffectivePropertyValueForNode struct {
 	Value string `json:"value"`
 }
 
+// MethodName of the command
+func (m CSSSetEffectivePropertyValueForNode) MethodName() string {
+	return "CSS.setEffectivePropertyValueForNode"
+}
+
 // Call of the command, sessionID is optional.
 func (m CSSSetEffectivePropertyValueForNode) Call(caller Caller) error {
-	return call("CSS.setEffectivePropertyValueForNode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSSetKeyframeKey Modifies the keyframe rule key text.
@@ -2344,10 +2518,13 @@ type CSSSetKeyframeKey struct {
 	KeyText string `json:"keyText"`
 }
 
+// MethodName of the command
+func (m CSSSetKeyframeKey) MethodName() string { return "CSS.setKeyframeKey" }
+
 // Call of the command, sessionID is optional.
 func (m CSSSetKeyframeKey) Call(caller Caller) (*CSSSetKeyframeKeyResult, error) {
 	var res CSSSetKeyframeKeyResult
-	return &res, call("CSS.setKeyframeKey", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSSetKeyframeKeyResult Modifies the keyframe rule key text.
@@ -2370,10 +2547,13 @@ type CSSSetMediaText struct {
 	Text string `json:"text"`
 }
 
+// MethodName of the command
+func (m CSSSetMediaText) MethodName() string { return "CSS.setMediaText" }
+
 // Call of the command, sessionID is optional.
 func (m CSSSetMediaText) Call(caller Caller) (*CSSSetMediaTextResult, error) {
 	var res CSSSetMediaTextResult
-	return &res, call("CSS.setMediaText", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSSetMediaTextResult Modifies the rule selector.
@@ -2396,10 +2576,13 @@ type CSSSetRuleSelector struct {
 	Selector string `json:"selector"`
 }
 
+// MethodName of the command
+func (m CSSSetRuleSelector) MethodName() string { return "CSS.setRuleSelector" }
+
 // Call of the command, sessionID is optional.
 func (m CSSSetRuleSelector) Call(caller Caller) (*CSSSetRuleSelectorResult, error) {
 	var res CSSSetRuleSelectorResult
-	return &res, call("CSS.setRuleSelector", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSSetRuleSelectorResult Modifies the rule selector.
@@ -2419,10 +2602,13 @@ type CSSSetStyleSheetText struct {
 	Text string `json:"text"`
 }
 
+// MethodName of the command
+func (m CSSSetStyleSheetText) MethodName() string { return "CSS.setStyleSheetText" }
+
 // Call of the command, sessionID is optional.
 func (m CSSSetStyleSheetText) Call(caller Caller) (*CSSSetStyleSheetTextResult, error) {
 	var res CSSSetStyleSheetTextResult
-	return &res, call("CSS.setStyleSheetText", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSSetStyleSheetTextResult Sets the new stylesheet text.
@@ -2439,10 +2625,13 @@ type CSSSetStyleTexts struct {
 	Edits []*CSSStyleDeclarationEdit `json:"edits"`
 }
 
+// MethodName of the command
+func (m CSSSetStyleTexts) MethodName() string { return "CSS.setStyleTexts" }
+
 // Call of the command, sessionID is optional.
 func (m CSSSetStyleTexts) Call(caller Caller) (*CSSSetStyleTextsResult, error) {
 	var res CSSSetStyleTextsResult
-	return &res, call("CSS.setStyleTexts", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSSetStyleTextsResult Applies specified style edits one after another in the given order.
@@ -2456,9 +2645,12 @@ type CSSSetStyleTextsResult struct {
 type CSSStartRuleUsageTracking struct {
 }
 
+// MethodName of the command
+func (m CSSStartRuleUsageTracking) MethodName() string { return "CSS.startRuleUsageTracking" }
+
 // Call of the command, sessionID is optional.
 func (m CSSStartRuleUsageTracking) Call(caller Caller) error {
-	return call("CSS.startRuleUsageTracking", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CSSStopRuleUsageTracking Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2466,10 +2658,13 @@ func (m CSSStartRuleUsageTracking) Call(caller Caller) error {
 type CSSStopRuleUsageTracking struct {
 }
 
+// MethodName of the command
+func (m CSSStopRuleUsageTracking) MethodName() string { return "CSS.stopRuleUsageTracking" }
+
 // Call of the command, sessionID is optional.
 func (m CSSStopRuleUsageTracking) Call(caller Caller) (*CSSStopRuleUsageTrackingResult, error) {
 	var res CSSStopRuleUsageTrackingResult
-	return &res, call("CSS.stopRuleUsageTracking", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSStopRuleUsageTrackingResult Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2485,10 +2680,13 @@ type CSSStopRuleUsageTrackingResult struct {
 type CSSTakeCoverageDelta struct {
 }
 
+// MethodName of the command
+func (m CSSTakeCoverageDelta) MethodName() string { return "CSS.takeCoverageDelta" }
+
 // Call of the command, sessionID is optional.
 func (m CSSTakeCoverageDelta) Call(caller Caller) (*CSSTakeCoverageDeltaResult, error) {
 	var res CSSTakeCoverageDeltaResult
-	return &res, call("CSS.takeCoverageDelta", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CSSTakeCoverageDeltaResult Obtain list of rules that became used since last call to this method (or since start of coverage
@@ -2652,9 +2850,12 @@ type CacheStorageDeleteCache struct {
 	CacheID CacheStorageCacheID `json:"cacheId"`
 }
 
+// MethodName of the command
+func (m CacheStorageDeleteCache) MethodName() string { return "CacheStorage.deleteCache" }
+
 // Call of the command, sessionID is optional.
 func (m CacheStorageDeleteCache) Call(caller Caller) error {
-	return call("CacheStorage.deleteCache", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CacheStorageDeleteEntry Deletes a cache entry.
@@ -2667,9 +2868,12 @@ type CacheStorageDeleteEntry struct {
 	Request string `json:"request"`
 }
 
+// MethodName of the command
+func (m CacheStorageDeleteEntry) MethodName() string { return "CacheStorage.deleteEntry" }
+
 // Call of the command, sessionID is optional.
 func (m CacheStorageDeleteEntry) Call(caller Caller) error {
-	return call("CacheStorage.deleteEntry", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CacheStorageRequestCacheNames Requests cache names.
@@ -2679,10 +2883,13 @@ type CacheStorageRequestCacheNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
+// MethodName of the command
+func (m CacheStorageRequestCacheNames) MethodName() string { return "CacheStorage.requestCacheNames" }
+
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestCacheNames) Call(caller Caller) (*CacheStorageRequestCacheNamesResult, error) {
 	var res CacheStorageRequestCacheNamesResult
-	return &res, call("CacheStorage.requestCacheNames", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CacheStorageRequestCacheNamesResult Requests cache names.
@@ -2705,10 +2912,15 @@ type CacheStorageRequestCachedResponse struct {
 	RequestHeaders []*CacheStorageHeader `json:"requestHeaders"`
 }
 
+// MethodName of the command
+func (m CacheStorageRequestCachedResponse) MethodName() string {
+	return "CacheStorage.requestCachedResponse"
+}
+
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestCachedResponse) Call(caller Caller) (*CacheStorageRequestCachedResponseResult, error) {
 	var res CacheStorageRequestCachedResponseResult
-	return &res, call("CacheStorage.requestCachedResponse", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CacheStorageRequestCachedResponseResult Fetches cache entry.
@@ -2734,10 +2946,13 @@ type CacheStorageRequestEntries struct {
 	PathFilter string `json:"pathFilter,omitempty"`
 }
 
+// MethodName of the command
+func (m CacheStorageRequestEntries) MethodName() string { return "CacheStorage.requestEntries" }
+
 // Call of the command, sessionID is optional.
 func (m CacheStorageRequestEntries) Call(caller Caller) (*CacheStorageRequestEntriesResult, error) {
 	var res CacheStorageRequestEntriesResult
-	return &res, call("CacheStorage.requestEntries", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // CacheStorageRequestEntriesResult Requests data from cache.
@@ -2776,18 +2991,24 @@ type CastEnable struct {
 	PresentationURL string `json:"presentationUrl,omitempty"`
 }
 
+// MethodName of the command
+func (m CastEnable) MethodName() string { return "Cast.enable" }
+
 // Call of the command, sessionID is optional.
 func (m CastEnable) Call(caller Caller) error {
-	return call("Cast.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CastDisable Stops observing for sinks and issues.
 type CastDisable struct {
 }
 
+// MethodName of the command
+func (m CastDisable) MethodName() string { return "Cast.disable" }
+
 // Call of the command, sessionID is optional.
 func (m CastDisable) Call(caller Caller) error {
-	return call("Cast.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CastSetSinkToUse Sets a sink to be used when the web page requests the browser to choose a
@@ -2798,9 +3019,12 @@ type CastSetSinkToUse struct {
 	SinkName string `json:"sinkName"`
 }
 
+// MethodName of the command
+func (m CastSetSinkToUse) MethodName() string { return "Cast.setSinkToUse" }
+
 // Call of the command, sessionID is optional.
 func (m CastSetSinkToUse) Call(caller Caller) error {
-	return call("Cast.setSinkToUse", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CastStartTabMirroring Starts mirroring the tab to the sink.
@@ -2810,9 +3034,12 @@ type CastStartTabMirroring struct {
 	SinkName string `json:"sinkName"`
 }
 
+// MethodName of the command
+func (m CastStartTabMirroring) MethodName() string { return "Cast.startTabMirroring" }
+
 // Call of the command, sessionID is optional.
 func (m CastStartTabMirroring) Call(caller Caller) error {
-	return call("Cast.startTabMirroring", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CastStopCasting Stops the active Cast session on the sink.
@@ -2822,9 +3049,12 @@ type CastStopCasting struct {
 	SinkName string `json:"sinkName"`
 }
 
+// MethodName of the command
+func (m CastStopCasting) MethodName() string { return "Cast.stopCasting" }
+
 // Call of the command, sessionID is optional.
 func (m CastStopCasting) Call(caller Caller) error {
-	return call("Cast.stopCasting", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // CastSinksUpdated This is fired whenever the list of available sinks changes. A sink is a
@@ -3111,10 +3341,15 @@ type DOMCollectClassNamesFromSubtree struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMCollectClassNamesFromSubtree) MethodName() string {
+	return "DOM.collectClassNamesFromSubtree"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMCollectClassNamesFromSubtree) Call(caller Caller) (*DOMCollectClassNamesFromSubtreeResult, error) {
 	var res DOMCollectClassNamesFromSubtreeResult
-	return &res, call("DOM.collectClassNamesFromSubtree", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMCollectClassNamesFromSubtreeResult (experimental) Collects class names for the node with given id and all of it's child nodes.
@@ -3139,10 +3374,13 @@ type DOMCopyTo struct {
 	InsertBeforeNodeID DOMNodeID `json:"insertBeforeNodeId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMCopyTo) MethodName() string { return "DOM.copyTo" }
+
 // Call of the command, sessionID is optional.
 func (m DOMCopyTo) Call(caller Caller) (*DOMCopyToResult, error) {
 	var res DOMCopyToResult
-	return &res, call("DOM.copyTo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMCopyToResult (experimental) Creates a deep copy of the specified node and places it into the target container before the
@@ -3175,10 +3413,13 @@ type DOMDescribeNode struct {
 	Pierce bool `json:"pierce,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMDescribeNode) MethodName() string { return "DOM.describeNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDescribeNode) Call(caller Caller) (*DOMDescribeNodeResult, error) {
 	var res DOMDescribeNodeResult
-	return &res, call("DOM.describeNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMDescribeNodeResult Describes node given its id, does not require domain to be enabled. Does not start tracking any
@@ -3208,18 +3449,24 @@ type DOMScrollIntoViewIfNeeded struct {
 	Rect *DOMRect `json:"rect,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMScrollIntoViewIfNeeded) MethodName() string { return "DOM.scrollIntoViewIfNeeded" }
+
 // Call of the command, sessionID is optional.
 func (m DOMScrollIntoViewIfNeeded) Call(caller Caller) error {
-	return call("DOM.scrollIntoViewIfNeeded", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDisable Disables DOM agent for the given page.
 type DOMDisable struct {
 }
 
+// MethodName of the command
+func (m DOMDisable) MethodName() string { return "DOM.disable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDisable) Call(caller Caller) error {
-	return call("DOM.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDiscardSearchResults (experimental) Discards search results from the session with the given id. `getSearchResults` should no longer
@@ -3230,18 +3477,24 @@ type DOMDiscardSearchResults struct {
 	SearchID string `json:"searchId"`
 }
 
+// MethodName of the command
+func (m DOMDiscardSearchResults) MethodName() string { return "DOM.discardSearchResults" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDiscardSearchResults) Call(caller Caller) error {
-	return call("DOM.discardSearchResults", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMEnable Enables DOM agent for the given page.
 type DOMEnable struct {
 }
 
+// MethodName of the command
+func (m DOMEnable) MethodName() string { return "DOM.enable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMEnable) Call(caller Caller) error {
-	return call("DOM.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMFocus Focuses the given element.
@@ -3257,9 +3510,12 @@ type DOMFocus struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMFocus) MethodName() string { return "DOM.focus" }
+
 // Call of the command, sessionID is optional.
 func (m DOMFocus) Call(caller Caller) error {
-	return call("DOM.focus", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMGetAttributes Returns attributes for the specified node.
@@ -3269,10 +3525,13 @@ type DOMGetAttributes struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMGetAttributes) MethodName() string { return "DOM.getAttributes" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetAttributes) Call(caller Caller) (*DOMGetAttributesResult, error) {
 	var res DOMGetAttributesResult
-	return &res, call("DOM.getAttributes", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetAttributesResult Returns attributes for the specified node.
@@ -3295,10 +3554,13 @@ type DOMGetBoxModel struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetBoxModel) MethodName() string { return "DOM.getBoxModel" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetBoxModel) Call(caller Caller) (*DOMGetBoxModelResult, error) {
 	var res DOMGetBoxModelResult
-	return &res, call("DOM.getBoxModel", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetBoxModelResult Returns boxes for the given node.
@@ -3322,10 +3584,13 @@ type DOMGetContentQuads struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetContentQuads) MethodName() string { return "DOM.getContentQuads" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetContentQuads) Call(caller Caller) (*DOMGetContentQuadsResult, error) {
 	var res DOMGetContentQuadsResult
-	return &res, call("DOM.getContentQuads", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetContentQuadsResult (experimental) Returns quads that describe node position on the page. This method
@@ -3348,10 +3613,13 @@ type DOMGetDocument struct {
 	Pierce bool `json:"pierce,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetDocument) MethodName() string { return "DOM.getDocument" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetDocument) Call(caller Caller) (*DOMGetDocumentResult, error) {
 	var res DOMGetDocumentResult
-	return &res, call("DOM.getDocument", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3373,10 +3641,13 @@ type DOMGetFlattenedDocument struct {
 	Pierce bool `json:"pierce,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetFlattenedDocument) MethodName() string { return "DOM.getFlattenedDocument" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetFlattenedDocument) Call(caller Caller) (*DOMGetFlattenedDocumentResult, error) {
 	var res DOMGetFlattenedDocumentResult
-	return &res, call("DOM.getFlattenedDocument", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetFlattenedDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3403,10 +3674,13 @@ type DOMGetNodeForLocation struct {
 	IgnorePointerEventsNone bool `json:"ignorePointerEventsNone,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetNodeForLocation) MethodName() string { return "DOM.getNodeForLocation" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetNodeForLocation) Call(caller Caller) (*DOMGetNodeForLocationResult, error) {
 	var res DOMGetNodeForLocationResult
-	return &res, call("DOM.getNodeForLocation", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetNodeForLocationResult Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
@@ -3436,10 +3710,13 @@ type DOMGetOuterHTML struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMGetOuterHTML) MethodName() string { return "DOM.getOuterHTML" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetOuterHTML) Call(caller Caller) (*DOMGetOuterHTMLResult, error) {
 	var res DOMGetOuterHTMLResult
-	return &res, call("DOM.getOuterHTML", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetOuterHTMLResult Returns node's HTML markup.
@@ -3456,10 +3733,13 @@ type DOMGetRelayoutBoundary struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMGetRelayoutBoundary) MethodName() string { return "DOM.getRelayoutBoundary" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetRelayoutBoundary) Call(caller Caller) (*DOMGetRelayoutBoundaryResult, error) {
 	var res DOMGetRelayoutBoundaryResult
-	return &res, call("DOM.getRelayoutBoundary", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetRelayoutBoundaryResult (experimental) Returns the id of the nearest ancestor that is a relayout boundary.
@@ -3483,10 +3763,13 @@ type DOMGetSearchResults struct {
 	ToIndex int64 `json:"toIndex"`
 }
 
+// MethodName of the command
+func (m DOMGetSearchResults) MethodName() string { return "DOM.getSearchResults" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetSearchResults) Call(caller Caller) (*DOMGetSearchResultsResult, error) {
 	var res DOMGetSearchResultsResult
-	return &res, call("DOM.getSearchResults", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetSearchResultsResult (experimental) Returns search results from given `fromIndex` to given `toIndex` from the search with the given
@@ -3501,36 +3784,48 @@ type DOMGetSearchResultsResult struct {
 type DOMHideHighlight struct {
 }
 
+// MethodName of the command
+func (m DOMHideHighlight) MethodName() string { return "DOM.hideHighlight" }
+
 // Call of the command, sessionID is optional.
 func (m DOMHideHighlight) Call(caller Caller) error {
-	return call("DOM.hideHighlight", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMHighlightNode Highlights DOM node.
 type DOMHighlightNode struct {
 }
 
+// MethodName of the command
+func (m DOMHighlightNode) MethodName() string { return "DOM.highlightNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMHighlightNode) Call(caller Caller) error {
-	return call("DOM.highlightNode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMHighlightRect Highlights given rectangle.
 type DOMHighlightRect struct {
 }
 
+// MethodName of the command
+func (m DOMHighlightRect) MethodName() string { return "DOM.highlightRect" }
+
 // Call of the command, sessionID is optional.
 func (m DOMHighlightRect) Call(caller Caller) error {
-	return call("DOM.highlightRect", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMMarkUndoableState (experimental) Marks last undoable state.
 type DOMMarkUndoableState struct {
 }
 
+// MethodName of the command
+func (m DOMMarkUndoableState) MethodName() string { return "DOM.markUndoableState" }
+
 // Call of the command, sessionID is optional.
 func (m DOMMarkUndoableState) Call(caller Caller) error {
-	return call("DOM.markUndoableState", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMMoveTo Moves node into the new container, places it before the given anchor.
@@ -3547,10 +3842,13 @@ type DOMMoveTo struct {
 	InsertBeforeNodeID DOMNodeID `json:"insertBeforeNodeId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMMoveTo) MethodName() string { return "DOM.moveTo" }
+
 // Call of the command, sessionID is optional.
 func (m DOMMoveTo) Call(caller Caller) (*DOMMoveToResult, error) {
 	var res DOMMoveToResult
-	return &res, call("DOM.moveTo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMMoveToResult Moves node into the new container, places it before the given anchor.
@@ -3571,10 +3869,13 @@ type DOMPerformSearch struct {
 	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMPerformSearch) MethodName() string { return "DOM.performSearch" }
+
 // Call of the command, sessionID is optional.
 func (m DOMPerformSearch) Call(caller Caller) (*DOMPerformSearchResult, error) {
 	var res DOMPerformSearchResult
-	return &res, call("DOM.performSearch", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMPerformSearchResult (experimental) Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
@@ -3595,10 +3896,13 @@ type DOMPushNodeByPathToFrontend struct {
 	Path string `json:"path"`
 }
 
+// MethodName of the command
+func (m DOMPushNodeByPathToFrontend) MethodName() string { return "DOM.pushNodeByPathToFrontend" }
+
 // Call of the command, sessionID is optional.
 func (m DOMPushNodeByPathToFrontend) Call(caller Caller) (*DOMPushNodeByPathToFrontendResult, error) {
 	var res DOMPushNodeByPathToFrontendResult
-	return &res, call("DOM.pushNodeByPathToFrontend", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMPushNodeByPathToFrontendResult (experimental) Requests that the node is sent to the caller given its path. // FIXME, use XPath
@@ -3615,10 +3919,15 @@ type DOMPushNodesByBackendIdsToFrontend struct {
 	BackendNodeIds []DOMBackendNodeID `json:"backendNodeIds"`
 }
 
+// MethodName of the command
+func (m DOMPushNodesByBackendIdsToFrontend) MethodName() string {
+	return "DOM.pushNodesByBackendIdsToFrontend"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMPushNodesByBackendIdsToFrontend) Call(caller Caller) (*DOMPushNodesByBackendIdsToFrontendResult, error) {
 	var res DOMPushNodesByBackendIdsToFrontendResult
-	return &res, call("DOM.pushNodesByBackendIdsToFrontend", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMPushNodesByBackendIdsToFrontendResult (experimental) Requests that a batch of nodes is sent to the caller given their backend node ids.
@@ -3639,10 +3948,13 @@ type DOMQuerySelector struct {
 	Selector string `json:"selector"`
 }
 
+// MethodName of the command
+func (m DOMQuerySelector) MethodName() string { return "DOM.querySelector" }
+
 // Call of the command, sessionID is optional.
 func (m DOMQuerySelector) Call(caller Caller) (*DOMQuerySelectorResult, error) {
 	var res DOMQuerySelectorResult
-	return &res, call("DOM.querySelector", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMQuerySelectorResult Executes `querySelector` on a given node.
@@ -3662,10 +3974,13 @@ type DOMQuerySelectorAll struct {
 	Selector string `json:"selector"`
 }
 
+// MethodName of the command
+func (m DOMQuerySelectorAll) MethodName() string { return "DOM.querySelectorAll" }
+
 // Call of the command, sessionID is optional.
 func (m DOMQuerySelectorAll) Call(caller Caller) (*DOMQuerySelectorAllResult, error) {
 	var res DOMQuerySelectorAllResult
-	return &res, call("DOM.querySelectorAll", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMQuerySelectorAllResult Executes `querySelectorAll` on a given node.
@@ -3679,9 +3994,12 @@ type DOMQuerySelectorAllResult struct {
 type DOMRedo struct {
 }
 
+// MethodName of the command
+func (m DOMRedo) MethodName() string { return "DOM.redo" }
+
 // Call of the command, sessionID is optional.
 func (m DOMRedo) Call(caller Caller) error {
-	return call("DOM.redo", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMRemoveAttribute Removes attribute with given name from an element with given id.
@@ -3694,9 +4012,12 @@ type DOMRemoveAttribute struct {
 	Name string `json:"name"`
 }
 
+// MethodName of the command
+func (m DOMRemoveAttribute) MethodName() string { return "DOM.removeAttribute" }
+
 // Call of the command, sessionID is optional.
 func (m DOMRemoveAttribute) Call(caller Caller) error {
-	return call("DOM.removeAttribute", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMRemoveNode Removes node with given id.
@@ -3706,9 +4027,12 @@ type DOMRemoveNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMRemoveNode) MethodName() string { return "DOM.removeNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMRemoveNode) Call(caller Caller) error {
-	return call("DOM.removeNode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMRequestChildNodes Requests that children of the node with given id are returned to the caller in form of
@@ -3728,9 +4052,12 @@ type DOMRequestChildNodes struct {
 	Pierce bool `json:"pierce,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMRequestChildNodes) MethodName() string { return "DOM.requestChildNodes" }
+
 // Call of the command, sessionID is optional.
 func (m DOMRequestChildNodes) Call(caller Caller) error {
-	return call("DOM.requestChildNodes", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMRequestNode Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -3742,10 +4069,13 @@ type DOMRequestNode struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
+// MethodName of the command
+func (m DOMRequestNode) MethodName() string { return "DOM.requestNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMRequestNode) Call(caller Caller) (*DOMRequestNodeResult, error) {
 	var res DOMRequestNodeResult
-	return &res, call("DOM.requestNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMRequestNodeResult Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -3773,10 +4103,13 @@ type DOMResolveNode struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMResolveNode) MethodName() string { return "DOM.resolveNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMResolveNode) Call(caller Caller) (*DOMResolveNodeResult, error) {
 	var res DOMResolveNodeResult
-	return &res, call("DOM.resolveNode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMResolveNodeResult Resolves the JavaScript node object for a given NodeId or BackendNodeId.
@@ -3799,9 +4132,12 @@ type DOMSetAttributeValue struct {
 	Value string `json:"value"`
 }
 
+// MethodName of the command
+func (m DOMSetAttributeValue) MethodName() string { return "DOM.setAttributeValue" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetAttributeValue) Call(caller Caller) error {
-	return call("DOM.setAttributeValue", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSetAttributesAsText Sets attributes on element with given id. This method is useful when user edits some existing
@@ -3819,9 +4155,12 @@ type DOMSetAttributesAsText struct {
 	Name string `json:"name,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMSetAttributesAsText) MethodName() string { return "DOM.setAttributesAsText" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetAttributesAsText) Call(caller Caller) error {
-	return call("DOM.setAttributesAsText", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSetFileInputFiles Sets files for the given file input element.
@@ -3840,9 +4179,12 @@ type DOMSetFileInputFiles struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMSetFileInputFiles) MethodName() string { return "DOM.setFileInputFiles" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetFileInputFiles) Call(caller Caller) error {
-	return call("DOM.setFileInputFiles", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSetNodeStackTracesEnabled (experimental) Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled.
@@ -3852,9 +4194,12 @@ type DOMSetNodeStackTracesEnabled struct {
 	Enable bool `json:"enable"`
 }
 
+// MethodName of the command
+func (m DOMSetNodeStackTracesEnabled) MethodName() string { return "DOM.setNodeStackTracesEnabled" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeStackTracesEnabled) Call(caller Caller) error {
-	return call("DOM.setNodeStackTracesEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMGetNodeStackTraces (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -3864,10 +4209,13 @@ type DOMGetNodeStackTraces struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMGetNodeStackTraces) MethodName() string { return "DOM.getNodeStackTraces" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetNodeStackTraces) Call(caller Caller) (*DOMGetNodeStackTracesResult, error) {
 	var res DOMGetNodeStackTracesResult
-	return &res, call("DOM.getNodeStackTraces", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetNodeStackTracesResult (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -3885,10 +4233,13 @@ type DOMGetFileInfo struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
+// MethodName of the command
+func (m DOMGetFileInfo) MethodName() string { return "DOM.getFileInfo" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetFileInfo) Call(caller Caller) (*DOMGetFileInfoResult, error) {
 	var res DOMGetFileInfoResult
-	return &res, call("DOM.getFileInfo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetFileInfoResult (experimental) Returns file information for the given
@@ -3907,9 +4258,12 @@ type DOMSetInspectedNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// MethodName of the command
+func (m DOMSetInspectedNode) MethodName() string { return "DOM.setInspectedNode" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetInspectedNode) Call(caller Caller) error {
-	return call("DOM.setInspectedNode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSetNodeName Sets node name for a node with given id.
@@ -3922,10 +4276,13 @@ type DOMSetNodeName struct {
 	Name string `json:"name"`
 }
 
+// MethodName of the command
+func (m DOMSetNodeName) MethodName() string { return "DOM.setNodeName" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeName) Call(caller Caller) (*DOMSetNodeNameResult, error) {
 	var res DOMSetNodeNameResult
-	return &res, call("DOM.setNodeName", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMSetNodeNameResult Sets node name for a node with given id.
@@ -3945,9 +4302,12 @@ type DOMSetNodeValue struct {
 	Value string `json:"value"`
 }
 
+// MethodName of the command
+func (m DOMSetNodeValue) MethodName() string { return "DOM.setNodeValue" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetNodeValue) Call(caller Caller) error {
-	return call("DOM.setNodeValue", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSetOuterHTML Sets node HTML markup, returns new node id.
@@ -3960,18 +4320,24 @@ type DOMSetOuterHTML struct {
 	OuterHTML string `json:"outerHTML"`
 }
 
+// MethodName of the command
+func (m DOMSetOuterHTML) MethodName() string { return "DOM.setOuterHTML" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSetOuterHTML) Call(caller Caller) error {
-	return call("DOM.setOuterHTML", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMUndo (experimental) Undoes the last performed action.
 type DOMUndo struct {
 }
 
+// MethodName of the command
+func (m DOMUndo) MethodName() string { return "DOM.undo" }
+
 // Call of the command, sessionID is optional.
 func (m DOMUndo) Call(caller Caller) error {
-	return call("DOM.undo", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMGetFrameOwner (experimental) Returns iframe node that owns iframe with the given domain.
@@ -3981,10 +4347,13 @@ type DOMGetFrameOwner struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
+// MethodName of the command
+func (m DOMGetFrameOwner) MethodName() string { return "DOM.getFrameOwner" }
+
 // Call of the command, sessionID is optional.
 func (m DOMGetFrameOwner) Call(caller Caller) (*DOMGetFrameOwnerResult, error) {
 	var res DOMGetFrameOwnerResult
-	return &res, call("DOM.getFrameOwner", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMGetFrameOwnerResult (experimental) Returns iframe node that owns iframe with the given domain.
@@ -4268,10 +4637,13 @@ type DOMDebuggerGetEventListeners struct {
 	Pierce bool `json:"pierce,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerGetEventListeners) MethodName() string { return "DOMDebugger.getEventListeners" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerGetEventListeners) Call(caller Caller) (*DOMDebuggerGetEventListenersResult, error) {
 	var res DOMDebuggerGetEventListenersResult
-	return &res, call("DOMDebugger.getEventListeners", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMDebuggerGetEventListenersResult Returns event listeners of the given object.
@@ -4291,9 +4663,12 @@ type DOMDebuggerRemoveDOMBreakpoint struct {
 	Type DOMDebuggerDOMBreakpointType `json:"type"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerRemoveDOMBreakpoint) MethodName() string { return "DOMDebugger.removeDOMBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveDOMBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.removeDOMBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerRemoveEventListenerBreakpoint Removes breakpoint on particular DOM event.
@@ -4306,9 +4681,14 @@ type DOMDebuggerRemoveEventListenerBreakpoint struct {
 	TargetName string `json:"targetName,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerRemoveEventListenerBreakpoint) MethodName() string {
+	return "DOMDebugger.removeEventListenerBreakpoint"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.removeEventListenerBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerRemoveInstrumentationBreakpoint (experimental) Removes breakpoint on particular native event.
@@ -4318,9 +4698,14 @@ type DOMDebuggerRemoveInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerRemoveInstrumentationBreakpoint) MethodName() string {
+	return "DOMDebugger.removeInstrumentationBreakpoint"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveInstrumentationBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.removeInstrumentationBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerRemoveXHRBreakpoint Removes breakpoint from XMLHttpRequest.
@@ -4330,9 +4715,12 @@ type DOMDebuggerRemoveXHRBreakpoint struct {
 	URL string `json:"url"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerRemoveXHRBreakpoint) MethodName() string { return "DOMDebugger.removeXHRBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveXHRBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.removeXHRBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerSetDOMBreakpoint Sets breakpoint on particular operation with DOM.
@@ -4345,9 +4733,12 @@ type DOMDebuggerSetDOMBreakpoint struct {
 	Type DOMDebuggerDOMBreakpointType `json:"type"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerSetDOMBreakpoint) MethodName() string { return "DOMDebugger.setDOMBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetDOMBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.setDOMBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerSetEventListenerBreakpoint Sets breakpoint on particular DOM event.
@@ -4361,9 +4752,14 @@ type DOMDebuggerSetEventListenerBreakpoint struct {
 	TargetName string `json:"targetName,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerSetEventListenerBreakpoint) MethodName() string {
+	return "DOMDebugger.setEventListenerBreakpoint"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetEventListenerBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.setEventListenerBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerSetInstrumentationBreakpoint (experimental) Sets breakpoint on particular native event.
@@ -4373,9 +4769,14 @@ type DOMDebuggerSetInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerSetInstrumentationBreakpoint) MethodName() string {
+	return "DOMDebugger.setInstrumentationBreakpoint"
+}
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetInstrumentationBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.setInstrumentationBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMDebuggerSetXHRBreakpoint Sets breakpoint on XMLHttpRequest.
@@ -4385,9 +4786,12 @@ type DOMDebuggerSetXHRBreakpoint struct {
 	URL string `json:"url"`
 }
 
+// MethodName of the command
+func (m DOMDebuggerSetXHRBreakpoint) MethodName() string { return "DOMDebugger.setXHRBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerSetXHRBreakpoint) Call(caller Caller) error {
-	return call("DOMDebugger.setXHRBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSnapshotDOMNode A Node in the DOM tree.
@@ -4736,18 +5140,24 @@ type DOMSnapshotTextBoxSnapshot struct {
 type DOMSnapshotDisable struct {
 }
 
+// MethodName of the command
+func (m DOMSnapshotDisable) MethodName() string { return "DOMSnapshot.disable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotDisable) Call(caller Caller) error {
-	return call("DOMSnapshot.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSnapshotEnable Enables DOM snapshot agent for the given page.
 type DOMSnapshotEnable struct {
 }
 
+// MethodName of the command
+func (m DOMSnapshotEnable) MethodName() string { return "DOMSnapshot.enable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotEnable) Call(caller Caller) error {
-	return call("DOMSnapshot.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMSnapshotGetSnapshot (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -4769,10 +5179,13 @@ type DOMSnapshotGetSnapshot struct {
 	IncludeUserAgentShadowTree bool `json:"includeUserAgentShadowTree,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMSnapshotGetSnapshot) MethodName() string { return "DOMSnapshot.getSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotGetSnapshot) Call(caller Caller) (*DOMSnapshotGetSnapshotResult, error) {
 	var res DOMSnapshotGetSnapshotResult
-	return &res, call("DOMSnapshot.getSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMSnapshotGetSnapshotResult (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -4807,10 +5220,13 @@ type DOMSnapshotCaptureSnapshot struct {
 	IncludeDOMRects bool `json:"includeDOMRects,omitempty"`
 }
 
+// MethodName of the command
+func (m DOMSnapshotCaptureSnapshot) MethodName() string { return "DOMSnapshot.captureSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m DOMSnapshotCaptureSnapshot) Call(caller Caller) (*DOMSnapshotCaptureSnapshotResult, error) {
 	var res DOMSnapshotCaptureSnapshotResult
-	return &res, call("DOMSnapshot.captureSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMSnapshotCaptureSnapshotResult Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -4846,27 +5262,36 @@ type DOMStorageClear struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
+// MethodName of the command
+func (m DOMStorageClear) MethodName() string { return "DOMStorage.clear" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageClear) Call(caller Caller) error {
-	return call("DOMStorage.clear", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMStorageDisable Disables storage tracking, prevents storage events from being sent to the client.
 type DOMStorageDisable struct {
 }
 
+// MethodName of the command
+func (m DOMStorageDisable) MethodName() string { return "DOMStorage.disable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageDisable) Call(caller Caller) error {
-	return call("DOMStorage.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMStorageEnable Enables storage tracking, storage events will now be delivered to the client.
 type DOMStorageEnable struct {
 }
 
+// MethodName of the command
+func (m DOMStorageEnable) MethodName() string { return "DOMStorage.enable" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageEnable) Call(caller Caller) error {
-	return call("DOMStorage.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMStorageGetDOMStorageItems ...
@@ -4876,10 +5301,13 @@ type DOMStorageGetDOMStorageItems struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
+// MethodName of the command
+func (m DOMStorageGetDOMStorageItems) MethodName() string { return "DOMStorage.getDOMStorageItems" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageGetDOMStorageItems) Call(caller Caller) (*DOMStorageGetDOMStorageItemsResult, error) {
 	var res DOMStorageGetDOMStorageItemsResult
-	return &res, call("DOMStorage.getDOMStorageItems", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DOMStorageGetDOMStorageItemsResult ...
@@ -4899,9 +5327,12 @@ type DOMStorageRemoveDOMStorageItem struct {
 	Key string `json:"key"`
 }
 
+// MethodName of the command
+func (m DOMStorageRemoveDOMStorageItem) MethodName() string { return "DOMStorage.removeDOMStorageItem" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageRemoveDOMStorageItem) Call(caller Caller) error {
-	return call("DOMStorage.removeDOMStorageItem", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMStorageSetDOMStorageItem ...
@@ -4917,9 +5348,12 @@ type DOMStorageSetDOMStorageItem struct {
 	Value string `json:"value"`
 }
 
+// MethodName of the command
+func (m DOMStorageSetDOMStorageItem) MethodName() string { return "DOMStorage.setDOMStorageItem" }
+
 // Call of the command, sessionID is optional.
 func (m DOMStorageSetDOMStorageItem) Call(caller Caller) error {
-	return call("DOMStorage.setDOMStorageItem", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DOMStorageDomStorageItemAdded ...
@@ -5021,18 +5455,24 @@ type DatabaseError struct {
 type DatabaseDisable struct {
 }
 
+// MethodName of the command
+func (m DatabaseDisable) MethodName() string { return "Database.disable" }
+
 // Call of the command, sessionID is optional.
 func (m DatabaseDisable) Call(caller Caller) error {
-	return call("Database.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DatabaseEnable Enables database tracking, database events will now be delivered to the client.
 type DatabaseEnable struct {
 }
 
+// MethodName of the command
+func (m DatabaseEnable) MethodName() string { return "Database.enable" }
+
 // Call of the command, sessionID is optional.
 func (m DatabaseEnable) Call(caller Caller) error {
-	return call("Database.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DatabaseExecuteSQL ...
@@ -5045,10 +5485,13 @@ type DatabaseExecuteSQL struct {
 	Query string `json:"query"`
 }
 
+// MethodName of the command
+func (m DatabaseExecuteSQL) MethodName() string { return "Database.executeSQL" }
+
 // Call of the command, sessionID is optional.
 func (m DatabaseExecuteSQL) Call(caller Caller) (*DatabaseExecuteSQLResult, error) {
 	var res DatabaseExecuteSQLResult
-	return &res, call("Database.executeSQL", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DatabaseExecuteSQLResult ...
@@ -5071,10 +5514,13 @@ type DatabaseGetDatabaseTableNames struct {
 	DatabaseID DatabaseDatabaseID `json:"databaseId"`
 }
 
+// MethodName of the command
+func (m DatabaseGetDatabaseTableNames) MethodName() string { return "Database.getDatabaseTableNames" }
+
 // Call of the command, sessionID is optional.
 func (m DatabaseGetDatabaseTableNames) Call(caller Caller) (*DatabaseGetDatabaseTableNamesResult, error) {
 	var res DatabaseGetDatabaseTableNamesResult
-	return &res, call("Database.getDatabaseTableNames", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DatabaseGetDatabaseTableNamesResult ...
@@ -5100,9 +5546,14 @@ func (evt DatabaseAddDatabase) MethodName() string {
 type DeviceOrientationClearDeviceOrientationOverride struct {
 }
 
+// MethodName of the command
+func (m DeviceOrientationClearDeviceOrientationOverride) MethodName() string {
+	return "DeviceOrientation.clearDeviceOrientationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m DeviceOrientationClearDeviceOrientationOverride) Call(caller Caller) error {
-	return call("DeviceOrientation.clearDeviceOrientationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DeviceOrientationSetDeviceOrientationOverride Overrides the Device Orientation.
@@ -5118,9 +5569,14 @@ type DeviceOrientationSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
+// MethodName of the command
+func (m DeviceOrientationSetDeviceOrientationOverride) MethodName() string {
+	return "DeviceOrientation.setDeviceOrientationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m DeviceOrientationSetDeviceOrientationOverride) Call(caller Caller) error {
-	return call("DeviceOrientation.setDeviceOrientationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationScreenOrientationType enum
@@ -5181,10 +5637,13 @@ const (
 type EmulationCanEmulate struct {
 }
 
+// MethodName of the command
+func (m EmulationCanEmulate) MethodName() string { return "Emulation.canEmulate" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationCanEmulate) Call(caller Caller) (*EmulationCanEmulateResult, error) {
 	var res EmulationCanEmulateResult
-	return &res, call("Emulation.canEmulate", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // EmulationCanEmulateResult Tells whether emulation is supported.
@@ -5198,27 +5657,40 @@ type EmulationCanEmulateResult struct {
 type EmulationClearDeviceMetricsOverride struct {
 }
 
+// MethodName of the command
+func (m EmulationClearDeviceMetricsOverride) MethodName() string {
+	return "Emulation.clearDeviceMetricsOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationClearDeviceMetricsOverride) Call(caller Caller) error {
-	return call("Emulation.clearDeviceMetricsOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationClearGeolocationOverride Clears the overridden Geolocation Position and Error.
 type EmulationClearGeolocationOverride struct {
 }
 
+// MethodName of the command
+func (m EmulationClearGeolocationOverride) MethodName() string {
+	return "Emulation.clearGeolocationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationClearGeolocationOverride) Call(caller Caller) error {
-	return call("Emulation.clearGeolocationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationResetPageScaleFactor (experimental) Requests that page scale factor is reset to initial values.
 type EmulationResetPageScaleFactor struct {
 }
 
+// MethodName of the command
+func (m EmulationResetPageScaleFactor) MethodName() string { return "Emulation.resetPageScaleFactor" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationResetPageScaleFactor) Call(caller Caller) error {
-	return call("Emulation.resetPageScaleFactor", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetFocusEmulationEnabled (experimental) Enables or disables simulating a focused and active page.
@@ -5228,9 +5700,14 @@ type EmulationSetFocusEmulationEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m EmulationSetFocusEmulationEnabled) MethodName() string {
+	return "Emulation.setFocusEmulationEnabled"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetFocusEmulationEnabled) Call(caller Caller) error {
-	return call("Emulation.setFocusEmulationEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
@@ -5240,9 +5717,12 @@ type EmulationSetCPUThrottlingRate struct {
 	Rate float64 `json:"rate"`
 }
 
+// MethodName of the command
+func (m EmulationSetCPUThrottlingRate) MethodName() string { return "Emulation.setCPUThrottlingRate" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetCPUThrottlingRate) Call(caller Caller) error {
-	return call("Emulation.setCPUThrottlingRate", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetDefaultBackgroundColorOverride Sets or clears an override of the default background color of the frame. This override is used
@@ -5254,9 +5734,14 @@ type EmulationSetDefaultBackgroundColorOverride struct {
 	Color *DOMRGBA `json:"color,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetDefaultBackgroundColorOverride) MethodName() string {
+	return "Emulation.setDefaultBackgroundColorOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetDefaultBackgroundColorOverride) Call(caller Caller) error {
-	return call("Emulation.setDefaultBackgroundColorOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetDeviceMetricsOverride Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -5303,9 +5788,14 @@ type EmulationSetDeviceMetricsOverride struct {
 	Viewport *PageViewport `json:"viewport,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetDeviceMetricsOverride) MethodName() string {
+	return "Emulation.setDeviceMetricsOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetDeviceMetricsOverride) Call(caller Caller) error {
-	return call("Emulation.setDeviceMetricsOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetScrollbarsHidden (experimental) ...
@@ -5315,9 +5805,12 @@ type EmulationSetScrollbarsHidden struct {
 	Hidden bool `json:"hidden"`
 }
 
+// MethodName of the command
+func (m EmulationSetScrollbarsHidden) MethodName() string { return "Emulation.setScrollbarsHidden" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetScrollbarsHidden) Call(caller Caller) error {
-	return call("Emulation.setScrollbarsHidden", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetDocumentCookieDisabled (experimental) ...
@@ -5327,9 +5820,14 @@ type EmulationSetDocumentCookieDisabled struct {
 	Disabled bool `json:"disabled"`
 }
 
+// MethodName of the command
+func (m EmulationSetDocumentCookieDisabled) MethodName() string {
+	return "Emulation.setDocumentCookieDisabled"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetDocumentCookieDisabled) Call(caller Caller) error {
-	return call("Emulation.setDocumentCookieDisabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetEmitTouchEventsForMouseConfiguration enum
@@ -5353,9 +5851,14 @@ type EmulationSetEmitTouchEventsForMouse struct {
 	Configuration EmulationSetEmitTouchEventsForMouseConfiguration `json:"configuration,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetEmitTouchEventsForMouse) MethodName() string {
+	return "Emulation.setEmitTouchEventsForMouse"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetEmitTouchEventsForMouse) Call(caller Caller) error {
-	return call("Emulation.setEmitTouchEventsForMouse", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetEmulatedMedia Emulates the given media type or media feature for CSS media queries.
@@ -5368,9 +5871,12 @@ type EmulationSetEmulatedMedia struct {
 	Features []*EmulationMediaFeature `json:"features,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetEmulatedMedia) MethodName() string { return "Emulation.setEmulatedMedia" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetEmulatedMedia) Call(caller Caller) error {
-	return call("Emulation.setEmulatedMedia", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetEmulatedVisionDeficiencyType enum
@@ -5403,9 +5909,14 @@ type EmulationSetEmulatedVisionDeficiency struct {
 	Type EmulationSetEmulatedVisionDeficiencyType `json:"type"`
 }
 
+// MethodName of the command
+func (m EmulationSetEmulatedVisionDeficiency) MethodName() string {
+	return "Emulation.setEmulatedVisionDeficiency"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetEmulatedVisionDeficiency) Call(caller Caller) error {
-	return call("Emulation.setEmulatedVisionDeficiency", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetGeolocationOverride Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -5422,9 +5933,14 @@ type EmulationSetGeolocationOverride struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetGeolocationOverride) MethodName() string {
+	return "Emulation.setGeolocationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetGeolocationOverride) Call(caller Caller) error {
-	return call("Emulation.setGeolocationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetNavigatorOverrides (deprecated) (experimental) Overrides value returned by the javascript navigator object.
@@ -5434,9 +5950,12 @@ type EmulationSetNavigatorOverrides struct {
 	Platform string `json:"platform"`
 }
 
+// MethodName of the command
+func (m EmulationSetNavigatorOverrides) MethodName() string { return "Emulation.setNavigatorOverrides" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetNavigatorOverrides) Call(caller Caller) error {
-	return call("Emulation.setNavigatorOverrides", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetPageScaleFactor (experimental) Sets a specified page scale factor.
@@ -5446,9 +5965,12 @@ type EmulationSetPageScaleFactor struct {
 	PageScaleFactor float64 `json:"pageScaleFactor"`
 }
 
+// MethodName of the command
+func (m EmulationSetPageScaleFactor) MethodName() string { return "Emulation.setPageScaleFactor" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetPageScaleFactor) Call(caller Caller) error {
-	return call("Emulation.setPageScaleFactor", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetScriptExecutionDisabled Switches script execution in the page.
@@ -5458,9 +5980,14 @@ type EmulationSetScriptExecutionDisabled struct {
 	Value bool `json:"value"`
 }
 
+// MethodName of the command
+func (m EmulationSetScriptExecutionDisabled) MethodName() string {
+	return "Emulation.setScriptExecutionDisabled"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetScriptExecutionDisabled) Call(caller Caller) error {
-	return call("Emulation.setScriptExecutionDisabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetTouchEmulationEnabled Enables touch on platforms which do not support them.
@@ -5473,9 +6000,14 @@ type EmulationSetTouchEmulationEnabled struct {
 	MaxTouchPoints int64 `json:"maxTouchPoints,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetTouchEmulationEnabled) MethodName() string {
+	return "Emulation.setTouchEmulationEnabled"
+}
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetTouchEmulationEnabled) Call(caller Caller) error {
-	return call("Emulation.setTouchEmulationEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetVirtualTimePolicy (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -5501,10 +6033,13 @@ type EmulationSetVirtualTimePolicy struct {
 	InitialVirtualTime *TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetVirtualTimePolicy) MethodName() string { return "Emulation.setVirtualTimePolicy" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetVirtualTimePolicy) Call(caller Caller) (*EmulationSetVirtualTimePolicyResult, error) {
 	var res EmulationSetVirtualTimePolicyResult
-	return &res, call("Emulation.setVirtualTimePolicy", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // EmulationSetVirtualTimePolicyResult (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -5523,9 +6058,12 @@ type EmulationSetLocaleOverride struct {
 	Locale string `json:"locale,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetLocaleOverride) MethodName() string { return "Emulation.setLocaleOverride" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetLocaleOverride) Call(caller Caller) error {
-	return call("Emulation.setLocaleOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetTimezoneOverride (experimental) Overrides default host system timezone with the specified one.
@@ -5536,9 +6074,12 @@ type EmulationSetTimezoneOverride struct {
 	TimezoneID string `json:"timezoneId"`
 }
 
+// MethodName of the command
+func (m EmulationSetTimezoneOverride) MethodName() string { return "Emulation.setTimezoneOverride" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetTimezoneOverride) Call(caller Caller) error {
-	return call("Emulation.setTimezoneOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetVisibleSize (deprecated) (experimental) Resizes the frame/viewport of the page. Note that this does not affect the frame's container
@@ -5553,9 +6094,12 @@ type EmulationSetVisibleSize struct {
 	Height int64 `json:"height"`
 }
 
+// MethodName of the command
+func (m EmulationSetVisibleSize) MethodName() string { return "Emulation.setVisibleSize" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetVisibleSize) Call(caller Caller) error {
-	return call("Emulation.setVisibleSize", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
@@ -5571,9 +6115,12 @@ type EmulationSetUserAgentOverride struct {
 	Platform string `json:"platform,omitempty"`
 }
 
+// MethodName of the command
+func (m EmulationSetUserAgentOverride) MethodName() string { return "Emulation.setUserAgentOverride" }
+
 // Call of the command, sessionID is optional.
 func (m EmulationSetUserAgentOverride) Call(caller Caller) error {
-	return call("Emulation.setUserAgentOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // EmulationVirtualTimeBudgetExpired (experimental) Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
@@ -5631,10 +6178,13 @@ type HeadlessExperimentalBeginFrame struct {
 	Screenshot *HeadlessExperimentalScreenshotParams `json:"screenshot,omitempty"`
 }
 
+// MethodName of the command
+func (m HeadlessExperimentalBeginFrame) MethodName() string { return "HeadlessExperimental.beginFrame" }
+
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalBeginFrame) Call(caller Caller) (*HeadlessExperimentalBeginFrameResult, error) {
 	var res HeadlessExperimentalBeginFrameResult
-	return &res, call("HeadlessExperimental.beginFrame", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // HeadlessExperimentalBeginFrameResult Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
@@ -5655,18 +6205,24 @@ type HeadlessExperimentalBeginFrameResult struct {
 type HeadlessExperimentalDisable struct {
 }
 
+// MethodName of the command
+func (m HeadlessExperimentalDisable) MethodName() string { return "HeadlessExperimental.disable" }
+
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalDisable) Call(caller Caller) error {
-	return call("HeadlessExperimental.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeadlessExperimentalEnable Enables headless events for the target.
 type HeadlessExperimentalEnable struct {
 }
 
+// MethodName of the command
+func (m HeadlessExperimentalEnable) MethodName() string { return "HeadlessExperimental.enable" }
+
 // Call of the command, sessionID is optional.
 func (m HeadlessExperimentalEnable) Call(caller Caller) error {
-	return call("HeadlessExperimental.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeadlessExperimentalNeedsBeginFramesChanged (deprecated) Issued when the target starts or stops needing BeginFrames.
@@ -5694,9 +6250,12 @@ type IOClose struct {
 	Handle IOStreamHandle `json:"handle"`
 }
 
+// MethodName of the command
+func (m IOClose) MethodName() string { return "IO.close" }
+
 // Call of the command, sessionID is optional.
 func (m IOClose) Call(caller Caller) error {
-	return call("IO.close", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IORead Read a chunk of the stream
@@ -5713,10 +6272,13 @@ type IORead struct {
 	Size int64 `json:"size,omitempty"`
 }
 
+// MethodName of the command
+func (m IORead) MethodName() string { return "IO.read" }
+
 // Call of the command, sessionID is optional.
 func (m IORead) Call(caller Caller) (*IOReadResult, error) {
 	var res IOReadResult
-	return &res, call("IO.read", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IOReadResult Read a chunk of the stream
@@ -5739,10 +6301,13 @@ type IOResolveBlob struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
+// MethodName of the command
+func (m IOResolveBlob) MethodName() string { return "IO.resolveBlob" }
+
 // Call of the command, sessionID is optional.
 func (m IOResolveBlob) Call(caller Caller) (*IOResolveBlobResult, error) {
 	var res IOResolveBlobResult
-	return &res, call("IO.resolveBlob", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IOResolveBlobResult Return UUID of Blob object specified by a remote object id.
@@ -5903,9 +6468,12 @@ type IndexedDBClearObjectStore struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
+// MethodName of the command
+func (m IndexedDBClearObjectStore) MethodName() string { return "IndexedDB.clearObjectStore" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBClearObjectStore) Call(caller Caller) error {
-	return call("IndexedDB.clearObjectStore", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IndexedDBDeleteDatabase Deletes a database.
@@ -5918,9 +6486,12 @@ type IndexedDBDeleteDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
+// MethodName of the command
+func (m IndexedDBDeleteDatabase) MethodName() string { return "IndexedDB.deleteDatabase" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBDeleteDatabase) Call(caller Caller) error {
-	return call("IndexedDB.deleteDatabase", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store
@@ -5939,27 +6510,38 @@ type IndexedDBDeleteObjectStoreEntries struct {
 	KeyRange *IndexedDBKeyRange `json:"keyRange"`
 }
 
+// MethodName of the command
+func (m IndexedDBDeleteObjectStoreEntries) MethodName() string {
+	return "IndexedDB.deleteObjectStoreEntries"
+}
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBDeleteObjectStoreEntries) Call(caller Caller) error {
-	return call("IndexedDB.deleteObjectStoreEntries", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IndexedDBDisable Disables events from backend.
 type IndexedDBDisable struct {
 }
 
+// MethodName of the command
+func (m IndexedDBDisable) MethodName() string { return "IndexedDB.disable" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBDisable) Call(caller Caller) error {
-	return call("IndexedDB.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IndexedDBEnable Enables events from backend.
 type IndexedDBEnable struct {
 }
 
+// MethodName of the command
+func (m IndexedDBEnable) MethodName() string { return "IndexedDB.enable" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBEnable) Call(caller Caller) error {
-	return call("IndexedDB.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // IndexedDBRequestData Requests data from object store or index.
@@ -5987,10 +6569,13 @@ type IndexedDBRequestData struct {
 	KeyRange *IndexedDBKeyRange `json:"keyRange,omitempty"`
 }
 
+// MethodName of the command
+func (m IndexedDBRequestData) MethodName() string { return "IndexedDB.requestData" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestData) Call(caller Caller) (*IndexedDBRequestDataResult, error) {
 	var res IndexedDBRequestDataResult
-	return &res, call("IndexedDB.requestData", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IndexedDBRequestDataResult Requests data from object store or index.
@@ -6016,10 +6601,13 @@ type IndexedDBGetMetadata struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
+// MethodName of the command
+func (m IndexedDBGetMetadata) MethodName() string { return "IndexedDB.getMetadata" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBGetMetadata) Call(caller Caller) (*IndexedDBGetMetadataResult, error) {
 	var res IndexedDBGetMetadataResult
-	return &res, call("IndexedDB.getMetadata", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IndexedDBGetMetadataResult Gets metadata of an object store
@@ -6044,10 +6632,13 @@ type IndexedDBRequestDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
+// MethodName of the command
+func (m IndexedDBRequestDatabase) MethodName() string { return "IndexedDB.requestDatabase" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestDatabase) Call(caller Caller) (*IndexedDBRequestDatabaseResult, error) {
 	var res IndexedDBRequestDatabaseResult
-	return &res, call("IndexedDB.requestDatabase", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IndexedDBRequestDatabaseResult Requests database with given name in given frame.
@@ -6064,10 +6655,13 @@ type IndexedDBRequestDatabaseNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
+// MethodName of the command
+func (m IndexedDBRequestDatabaseNames) MethodName() string { return "IndexedDB.requestDatabaseNames" }
+
 // Call of the command, sessionID is optional.
 func (m IndexedDBRequestDatabaseNames) Call(caller Caller) (*IndexedDBRequestDatabaseNamesResult, error) {
 	var res IndexedDBRequestDatabaseNamesResult
-	return &res, call("IndexedDB.requestDatabaseNames", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // IndexedDBRequestDatabaseNamesResult Requests database names for given security origin.
@@ -6208,9 +6802,12 @@ type InputDispatchKeyEvent struct {
 	Location int64 `json:"location,omitempty"`
 }
 
+// MethodName of the command
+func (m InputDispatchKeyEvent) MethodName() string { return "Input.dispatchKeyEvent" }
+
 // Call of the command, sessionID is optional.
 func (m InputDispatchKeyEvent) Call(caller Caller) error {
-	return call("Input.dispatchKeyEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputInsertText (experimental) This method emulates inserting text that doesn't come from a key press,
@@ -6221,9 +6818,12 @@ type InputInsertText struct {
 	Text string `json:"text"`
 }
 
+// MethodName of the command
+func (m InputInsertText) MethodName() string { return "Input.insertText" }
+
 // Call of the command, sessionID is optional.
 func (m InputInsertText) Call(caller Caller) error {
-	return call("Input.insertText", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputDispatchMouseEventType enum
@@ -6294,9 +6894,12 @@ type InputDispatchMouseEvent struct {
 	PointerType InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
 }
 
+// MethodName of the command
+func (m InputDispatchMouseEvent) MethodName() string { return "Input.dispatchMouseEvent" }
+
 // Call of the command, sessionID is optional.
 func (m InputDispatchMouseEvent) Call(caller Caller) error {
-	return call("Input.dispatchMouseEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputDispatchTouchEventType enum
@@ -6336,9 +6939,12 @@ type InputDispatchTouchEvent struct {
 	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 }
 
+// MethodName of the command
+func (m InputDispatchTouchEvent) MethodName() string { return "Input.dispatchTouchEvent" }
+
 // Call of the command, sessionID is optional.
 func (m InputDispatchTouchEvent) Call(caller Caller) error {
-	return call("Input.dispatchTouchEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputEmulateTouchFromMouseEventType enum
@@ -6390,9 +6996,14 @@ type InputEmulateTouchFromMouseEvent struct {
 	ClickCount int64 `json:"clickCount,omitempty"`
 }
 
+// MethodName of the command
+func (m InputEmulateTouchFromMouseEvent) MethodName() string {
+	return "Input.emulateTouchFromMouseEvent"
+}
+
 // Call of the command, sessionID is optional.
 func (m InputEmulateTouchFromMouseEvent) Call(caller Caller) error {
-	return call("Input.emulateTouchFromMouseEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputSetIgnoreInputEvents Ignores input events (useful while auditing page).
@@ -6402,9 +7013,12 @@ type InputSetIgnoreInputEvents struct {
 	Ignore bool `json:"ignore"`
 }
 
+// MethodName of the command
+func (m InputSetIgnoreInputEvents) MethodName() string { return "Input.setIgnoreInputEvents" }
+
 // Call of the command, sessionID is optional.
 func (m InputSetIgnoreInputEvents) Call(caller Caller) error {
-	return call("Input.setIgnoreInputEvents", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputSynthesizePinchGesture (experimental) Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
@@ -6427,9 +7041,12 @@ type InputSynthesizePinchGesture struct {
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
+// MethodName of the command
+func (m InputSynthesizePinchGesture) MethodName() string { return "Input.synthesizePinchGesture" }
+
 // Call of the command, sessionID is optional.
 func (m InputSynthesizePinchGesture) Call(caller Caller) error {
-	return call("Input.synthesizePinchGesture", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputSynthesizeScrollGesture (experimental) Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
@@ -6475,9 +7092,12 @@ type InputSynthesizeScrollGesture struct {
 	InteractionMarkerName string `json:"interactionMarkerName,omitempty"`
 }
 
+// MethodName of the command
+func (m InputSynthesizeScrollGesture) MethodName() string { return "Input.synthesizeScrollGesture" }
+
 // Call of the command, sessionID is optional.
 func (m InputSynthesizeScrollGesture) Call(caller Caller) error {
-	return call("Input.synthesizeScrollGesture", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InputSynthesizeTapGesture (experimental) Synthesizes a tap gesture over a time period by issuing appropriate touch events.
@@ -6500,27 +7120,36 @@ type InputSynthesizeTapGesture struct {
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
+// MethodName of the command
+func (m InputSynthesizeTapGesture) MethodName() string { return "Input.synthesizeTapGesture" }
+
 // Call of the command, sessionID is optional.
 func (m InputSynthesizeTapGesture) Call(caller Caller) error {
-	return call("Input.synthesizeTapGesture", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InspectorDisable Disables inspector domain notifications.
 type InspectorDisable struct {
 }
 
+// MethodName of the command
+func (m InspectorDisable) MethodName() string { return "Inspector.disable" }
+
 // Call of the command, sessionID is optional.
 func (m InspectorDisable) Call(caller Caller) error {
-	return call("Inspector.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InspectorEnable Enables inspector domain notifications.
 type InspectorEnable struct {
 }
 
+// MethodName of the command
+func (m InspectorEnable) MethodName() string { return "Inspector.enable" }
+
 // Call of the command, sessionID is optional.
 func (m InspectorEnable) Call(caller Caller) error {
-	return call("Inspector.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // InspectorDetached Fired when remote debugging connection is about to be terminated. Contains detach reason.
@@ -6675,10 +7304,13 @@ type LayerTreeCompositingReasons struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
+// MethodName of the command
+func (m LayerTreeCompositingReasons) MethodName() string { return "LayerTree.compositingReasons" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeCompositingReasons) Call(caller Caller) (*LayerTreeCompositingReasonsResult, error) {
 	var res LayerTreeCompositingReasonsResult
-	return &res, call("LayerTree.compositingReasons", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeCompositingReasonsResult Provides the reasons why the given layer was composited.
@@ -6695,18 +7327,24 @@ type LayerTreeCompositingReasonsResult struct {
 type LayerTreeDisable struct {
 }
 
+// MethodName of the command
+func (m LayerTreeDisable) MethodName() string { return "LayerTree.disable" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeDisable) Call(caller Caller) error {
-	return call("LayerTree.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LayerTreeEnable Enables compositing tree inspection.
 type LayerTreeEnable struct {
 }
 
+// MethodName of the command
+func (m LayerTreeEnable) MethodName() string { return "LayerTree.enable" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeEnable) Call(caller Caller) error {
-	return call("LayerTree.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LayerTreeLoadSnapshot Returns the snapshot identifier.
@@ -6716,10 +7354,13 @@ type LayerTreeLoadSnapshot struct {
 	Tiles []*LayerTreePictureTile `json:"tiles"`
 }
 
+// MethodName of the command
+func (m LayerTreeLoadSnapshot) MethodName() string { return "LayerTree.loadSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeLoadSnapshot) Call(caller Caller) (*LayerTreeLoadSnapshotResult, error) {
 	var res LayerTreeLoadSnapshotResult
-	return &res, call("LayerTree.loadSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeLoadSnapshotResult Returns the snapshot identifier.
@@ -6736,10 +7377,13 @@ type LayerTreeMakeSnapshot struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
+// MethodName of the command
+func (m LayerTreeMakeSnapshot) MethodName() string { return "LayerTree.makeSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeMakeSnapshot) Call(caller Caller) (*LayerTreeMakeSnapshotResult, error) {
 	var res LayerTreeMakeSnapshotResult
-	return &res, call("LayerTree.makeSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeMakeSnapshotResult Returns the layer snapshot identifier.
@@ -6765,10 +7409,13 @@ type LayerTreeProfileSnapshot struct {
 	ClipRect *DOMRect `json:"clipRect,omitempty"`
 }
 
+// MethodName of the command
+func (m LayerTreeProfileSnapshot) MethodName() string { return "LayerTree.profileSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeProfileSnapshot) Call(caller Caller) (*LayerTreeProfileSnapshotResult, error) {
 	var res LayerTreeProfileSnapshotResult
-	return &res, call("LayerTree.profileSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeProfileSnapshotResult ...
@@ -6785,9 +7432,12 @@ type LayerTreeReleaseSnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
+// MethodName of the command
+func (m LayerTreeReleaseSnapshot) MethodName() string { return "LayerTree.releaseSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeReleaseSnapshot) Call(caller Caller) error {
-	return call("LayerTree.releaseSnapshot", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LayerTreeReplaySnapshot Replays the layer snapshot and returns the resulting bitmap.
@@ -6806,10 +7456,13 @@ type LayerTreeReplaySnapshot struct {
 	Scale float64 `json:"scale,omitempty"`
 }
 
+// MethodName of the command
+func (m LayerTreeReplaySnapshot) MethodName() string { return "LayerTree.replaySnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeReplaySnapshot) Call(caller Caller) (*LayerTreeReplaySnapshotResult, error) {
 	var res LayerTreeReplaySnapshotResult
-	return &res, call("LayerTree.replaySnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeReplaySnapshotResult Replays the layer snapshot and returns the resulting bitmap.
@@ -6826,10 +7479,13 @@ type LayerTreeSnapshotCommandLog struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
+// MethodName of the command
+func (m LayerTreeSnapshotCommandLog) MethodName() string { return "LayerTree.snapshotCommandLog" }
+
 // Call of the command, sessionID is optional.
 func (m LayerTreeSnapshotCommandLog) Call(caller Caller) (*LayerTreeSnapshotCommandLogResult, error) {
 	var res LayerTreeSnapshotCommandLogResult
-	return &res, call("LayerTree.snapshotCommandLog", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // LayerTreeSnapshotCommandLogResult Replays the layer snapshot and returns canvas log.
@@ -7001,18 +7657,24 @@ type LogViolationSetting struct {
 type LogClear struct {
 }
 
+// MethodName of the command
+func (m LogClear) MethodName() string { return "Log.clear" }
+
 // Call of the command, sessionID is optional.
 func (m LogClear) Call(caller Caller) error {
-	return call("Log.clear", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LogDisable Disables log domain, prevents further log entries from being reported to the client.
 type LogDisable struct {
 }
 
+// MethodName of the command
+func (m LogDisable) MethodName() string { return "Log.disable" }
+
 // Call of the command, sessionID is optional.
 func (m LogDisable) Call(caller Caller) error {
-	return call("Log.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LogEnable Enables log domain, sends the entries collected so far to the client by means of the
@@ -7020,9 +7682,12 @@ func (m LogDisable) Call(caller Caller) error {
 type LogEnable struct {
 }
 
+// MethodName of the command
+func (m LogEnable) MethodName() string { return "Log.enable" }
+
 // Call of the command, sessionID is optional.
 func (m LogEnable) Call(caller Caller) error {
-	return call("Log.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LogStartViolationsReport start violation reporting.
@@ -7032,18 +7697,24 @@ type LogStartViolationsReport struct {
 	Config []*LogViolationSetting `json:"config"`
 }
 
+// MethodName of the command
+func (m LogStartViolationsReport) MethodName() string { return "Log.startViolationsReport" }
+
 // Call of the command, sessionID is optional.
 func (m LogStartViolationsReport) Call(caller Caller) error {
-	return call("Log.startViolationsReport", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LogStopViolationsReport Stop violation reporting.
 type LogStopViolationsReport struct {
 }
 
+// MethodName of the command
+func (m LogStopViolationsReport) MethodName() string { return "Log.stopViolationsReport" }
+
 // Call of the command, sessionID is optional.
 func (m LogStopViolationsReport) Call(caller Caller) error {
-	return call("Log.stopViolationsReport", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // LogEntryAdded Issued when new message was logged.
@@ -7113,10 +7784,13 @@ type MemoryModule struct {
 type MemoryGetDOMCounters struct {
 }
 
+// MethodName of the command
+func (m MemoryGetDOMCounters) MethodName() string { return "Memory.getDOMCounters" }
+
 // Call of the command, sessionID is optional.
 func (m MemoryGetDOMCounters) Call(caller Caller) (*MemoryGetDOMCountersResult, error) {
 	var res MemoryGetDOMCountersResult
-	return &res, call("Memory.getDOMCounters", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // MemoryGetDOMCountersResult ...
@@ -7136,18 +7810,26 @@ type MemoryGetDOMCountersResult struct {
 type MemoryPrepareForLeakDetection struct {
 }
 
+// MethodName of the command
+func (m MemoryPrepareForLeakDetection) MethodName() string { return "Memory.prepareForLeakDetection" }
+
 // Call of the command, sessionID is optional.
 func (m MemoryPrepareForLeakDetection) Call(caller Caller) error {
-	return call("Memory.prepareForLeakDetection", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemoryForciblyPurgeJavaScriptMemory Simulate OomIntervention by purging V8 memory.
 type MemoryForciblyPurgeJavaScriptMemory struct {
 }
 
+// MethodName of the command
+func (m MemoryForciblyPurgeJavaScriptMemory) MethodName() string {
+	return "Memory.forciblyPurgeJavaScriptMemory"
+}
+
 // Call of the command, sessionID is optional.
 func (m MemoryForciblyPurgeJavaScriptMemory) Call(caller Caller) error {
-	return call("Memory.forciblyPurgeJavaScriptMemory", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemorySetPressureNotificationsSuppressed Enable/disable suppressing memory pressure notifications in all processes.
@@ -7157,9 +7839,14 @@ type MemorySetPressureNotificationsSuppressed struct {
 	Suppressed bool `json:"suppressed"`
 }
 
+// MethodName of the command
+func (m MemorySetPressureNotificationsSuppressed) MethodName() string {
+	return "Memory.setPressureNotificationsSuppressed"
+}
+
 // Call of the command, sessionID is optional.
 func (m MemorySetPressureNotificationsSuppressed) Call(caller Caller) error {
-	return call("Memory.setPressureNotificationsSuppressed", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemorySimulatePressureNotification Simulate a memory pressure notification in all processes.
@@ -7169,9 +7856,14 @@ type MemorySimulatePressureNotification struct {
 	Level MemoryPressureLevel `json:"level"`
 }
 
+// MethodName of the command
+func (m MemorySimulatePressureNotification) MethodName() string {
+	return "Memory.simulatePressureNotification"
+}
+
 // Call of the command, sessionID is optional.
 func (m MemorySimulatePressureNotification) Call(caller Caller) error {
-	return call("Memory.simulatePressureNotification", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemoryStartSampling Start collecting native memory profile.
@@ -7184,18 +7876,24 @@ type MemoryStartSampling struct {
 	SuppressRandomness bool `json:"suppressRandomness,omitempty"`
 }
 
+// MethodName of the command
+func (m MemoryStartSampling) MethodName() string { return "Memory.startSampling" }
+
 // Call of the command, sessionID is optional.
 func (m MemoryStartSampling) Call(caller Caller) error {
-	return call("Memory.startSampling", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemoryStopSampling Stop collecting native memory profile.
 type MemoryStopSampling struct {
 }
 
+// MethodName of the command
+func (m MemoryStopSampling) MethodName() string { return "Memory.stopSampling" }
+
 // Call of the command, sessionID is optional.
 func (m MemoryStopSampling) Call(caller Caller) error {
-	return call("Memory.stopSampling", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MemoryGetAllTimeSamplingProfile Retrieve native memory allocations profile
@@ -7203,10 +7901,15 @@ func (m MemoryStopSampling) Call(caller Caller) error {
 type MemoryGetAllTimeSamplingProfile struct {
 }
 
+// MethodName of the command
+func (m MemoryGetAllTimeSamplingProfile) MethodName() string {
+	return "Memory.getAllTimeSamplingProfile"
+}
+
 // Call of the command, sessionID is optional.
 func (m MemoryGetAllTimeSamplingProfile) Call(caller Caller) (*MemoryGetAllTimeSamplingProfileResult, error) {
 	var res MemoryGetAllTimeSamplingProfileResult
-	return &res, call("Memory.getAllTimeSamplingProfile", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // MemoryGetAllTimeSamplingProfileResult Retrieve native memory allocations profile
@@ -7222,10 +7925,15 @@ type MemoryGetAllTimeSamplingProfileResult struct {
 type MemoryGetBrowserSamplingProfile struct {
 }
 
+// MethodName of the command
+func (m MemoryGetBrowserSamplingProfile) MethodName() string {
+	return "Memory.getBrowserSamplingProfile"
+}
+
 // Call of the command, sessionID is optional.
 func (m MemoryGetBrowserSamplingProfile) Call(caller Caller) (*MemoryGetBrowserSamplingProfileResult, error) {
 	var res MemoryGetBrowserSamplingProfileResult
-	return &res, call("Memory.getBrowserSamplingProfile", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // MemoryGetBrowserSamplingProfileResult Retrieve native memory allocations profile
@@ -7241,10 +7949,13 @@ type MemoryGetBrowserSamplingProfileResult struct {
 type MemoryGetSamplingProfile struct {
 }
 
+// MethodName of the command
+func (m MemoryGetSamplingProfile) MethodName() string { return "Memory.getSamplingProfile" }
+
 // Call of the command, sessionID is optional.
 func (m MemoryGetSamplingProfile) Call(caller Caller) (*MemoryGetSamplingProfileResult, error) {
 	var res MemoryGetSamplingProfileResult
-	return &res, call("Memory.getSamplingProfile", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // MemoryGetSamplingProfileResult Retrieve native memory allocations profile collected since last
@@ -8218,10 +8929,13 @@ type NetworkSignedExchangeInfo struct {
 type NetworkCanClearBrowserCache struct {
 }
 
+// MethodName of the command
+func (m NetworkCanClearBrowserCache) MethodName() string { return "Network.canClearBrowserCache" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkCanClearBrowserCache) Call(caller Caller) (*NetworkCanClearBrowserCacheResult, error) {
 	var res NetworkCanClearBrowserCacheResult
-	return &res, call("Network.canClearBrowserCache", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkCanClearBrowserCacheResult (deprecated) Tells whether clearing browser cache is supported.
@@ -8235,10 +8949,13 @@ type NetworkCanClearBrowserCacheResult struct {
 type NetworkCanClearBrowserCookies struct {
 }
 
+// MethodName of the command
+func (m NetworkCanClearBrowserCookies) MethodName() string { return "Network.canClearBrowserCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkCanClearBrowserCookies) Call(caller Caller) (*NetworkCanClearBrowserCookiesResult, error) {
 	var res NetworkCanClearBrowserCookiesResult
-	return &res, call("Network.canClearBrowserCookies", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkCanClearBrowserCookiesResult (deprecated) Tells whether clearing browser cookies is supported.
@@ -8252,10 +8969,15 @@ type NetworkCanClearBrowserCookiesResult struct {
 type NetworkCanEmulateNetworkConditions struct {
 }
 
+// MethodName of the command
+func (m NetworkCanEmulateNetworkConditions) MethodName() string {
+	return "Network.canEmulateNetworkConditions"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkCanEmulateNetworkConditions) Call(caller Caller) (*NetworkCanEmulateNetworkConditionsResult, error) {
 	var res NetworkCanEmulateNetworkConditionsResult
-	return &res, call("Network.canEmulateNetworkConditions", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkCanEmulateNetworkConditionsResult (deprecated) Tells whether emulation of network conditions is supported.
@@ -8269,18 +8991,24 @@ type NetworkCanEmulateNetworkConditionsResult struct {
 type NetworkClearBrowserCache struct {
 }
 
+// MethodName of the command
+func (m NetworkClearBrowserCache) MethodName() string { return "Network.clearBrowserCache" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkClearBrowserCache) Call(caller Caller) error {
-	return call("Network.clearBrowserCache", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkClearBrowserCookies Clears browser cookies.
 type NetworkClearBrowserCookies struct {
 }
 
+// MethodName of the command
+func (m NetworkClearBrowserCookies) MethodName() string { return "Network.clearBrowserCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkClearBrowserCookies) Call(caller Caller) error {
-	return call("Network.clearBrowserCookies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkContinueInterceptedRequest (deprecated) (experimental) Response to Network.requestIntercepted which either modifies the request to continue with any
@@ -8321,9 +9049,14 @@ type NetworkContinueInterceptedRequest struct {
 	AuthChallengeResponse *NetworkAuthChallengeResponse `json:"authChallengeResponse,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkContinueInterceptedRequest) MethodName() string {
+	return "Network.continueInterceptedRequest"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkContinueInterceptedRequest) Call(caller Caller) error {
-	return call("Network.continueInterceptedRequest", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkDeleteCookies Deletes browser cookies with matching name and url or domain/path pair.
@@ -8343,18 +9076,24 @@ type NetworkDeleteCookies struct {
 	Path string `json:"path,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkDeleteCookies) MethodName() string { return "Network.deleteCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkDeleteCookies) Call(caller Caller) error {
-	return call("Network.deleteCookies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkDisable Disables network tracking, prevents network events from being sent to the client.
 type NetworkDisable struct {
 }
 
+// MethodName of the command
+func (m NetworkDisable) MethodName() string { return "Network.disable" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkDisable) Call(caller Caller) error {
-	return call("Network.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkEmulateNetworkConditions Activates emulation of network conditions.
@@ -8376,9 +9115,14 @@ type NetworkEmulateNetworkConditions struct {
 	ConnectionType NetworkConnectionType `json:"connectionType,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkEmulateNetworkConditions) MethodName() string {
+	return "Network.emulateNetworkConditions"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkEmulateNetworkConditions) Call(caller Caller) error {
-	return call("Network.emulateNetworkConditions", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkEnable Enables network tracking, network events will now be delivered to the client.
@@ -8394,9 +9138,12 @@ type NetworkEnable struct {
 	MaxPostDataSize int64 `json:"maxPostDataSize,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkEnable) MethodName() string { return "Network.enable" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkEnable) Call(caller Caller) error {
-	return call("Network.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkGetAllCookies Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -8404,10 +9151,13 @@ func (m NetworkEnable) Call(caller Caller) error {
 type NetworkGetAllCookies struct {
 }
 
+// MethodName of the command
+func (m NetworkGetAllCookies) MethodName() string { return "Network.getAllCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetAllCookies) Call(caller Caller) (*NetworkGetAllCookiesResult, error) {
 	var res NetworkGetAllCookiesResult
-	return &res, call("Network.getAllCookies", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetAllCookiesResult Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -8425,10 +9175,13 @@ type NetworkGetCertificate struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m NetworkGetCertificate) MethodName() string { return "Network.getCertificate" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetCertificate) Call(caller Caller) (*NetworkGetCertificateResult, error) {
 	var res NetworkGetCertificateResult
-	return &res, call("Network.getCertificate", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetCertificateResult (experimental) Returns the DER-encoded certificate.
@@ -8446,10 +9199,13 @@ type NetworkGetCookies struct {
 	Urls []string `json:"urls,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkGetCookies) MethodName() string { return "Network.getCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetCookies) Call(caller Caller) (*NetworkGetCookiesResult, error) {
 	var res NetworkGetCookiesResult
-	return &res, call("Network.getCookies", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetCookiesResult Returns all browser cookies for the current URL. Depending on the backend support, will return
@@ -8467,10 +9223,13 @@ type NetworkGetResponseBody struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
+// MethodName of the command
+func (m NetworkGetResponseBody) MethodName() string { return "Network.getResponseBody" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetResponseBody) Call(caller Caller) (*NetworkGetResponseBodyResult, error) {
 	var res NetworkGetResponseBodyResult
-	return &res, call("Network.getResponseBody", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetResponseBodyResult Returns content served for the given request.
@@ -8490,10 +9249,13 @@ type NetworkGetRequestPostData struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
+// MethodName of the command
+func (m NetworkGetRequestPostData) MethodName() string { return "Network.getRequestPostData" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetRequestPostData) Call(caller Caller) (*NetworkGetRequestPostDataResult, error) {
 	var res NetworkGetRequestPostDataResult
-	return &res, call("Network.getRequestPostData", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetRequestPostDataResult Returns post data sent with the request. Returns an error when no data was sent with the request.
@@ -8510,10 +9272,15 @@ type NetworkGetResponseBodyForInterception struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
+// MethodName of the command
+func (m NetworkGetResponseBodyForInterception) MethodName() string {
+	return "Network.getResponseBodyForInterception"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkGetResponseBodyForInterception) Call(caller Caller) (*NetworkGetResponseBodyForInterceptionResult, error) {
 	var res NetworkGetResponseBodyForInterceptionResult
-	return &res, call("Network.getResponseBodyForInterception", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkGetResponseBodyForInterceptionResult (experimental) Returns content served for the given currently intercepted request.
@@ -8536,10 +9303,15 @@ type NetworkTakeResponseBodyForInterceptionAsStream struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
+// MethodName of the command
+func (m NetworkTakeResponseBodyForInterceptionAsStream) MethodName() string {
+	return "Network.takeResponseBodyForInterceptionAsStream"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(caller Caller) (*NetworkTakeResponseBodyForInterceptionAsStreamResult, error) {
 	var res NetworkTakeResponseBodyForInterceptionAsStreamResult
-	return &res, call("Network.takeResponseBodyForInterceptionAsStream", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkTakeResponseBodyForInterceptionAsStreamResult (experimental) Returns a handle to the stream representing the response body. Note that after this command,
@@ -8561,9 +9333,12 @@ type NetworkReplayXHR struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
+// MethodName of the command
+func (m NetworkReplayXHR) MethodName() string { return "Network.replayXHR" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkReplayXHR) Call(caller Caller) error {
-	return call("Network.replayXHR", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSearchInResponseBody (experimental) Searches for given string in response content.
@@ -8582,10 +9357,13 @@ type NetworkSearchInResponseBody struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkSearchInResponseBody) MethodName() string { return "Network.searchInResponseBody" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSearchInResponseBody) Call(caller Caller) (*NetworkSearchInResponseBodyResult, error) {
 	var res NetworkSearchInResponseBodyResult
-	return &res, call("Network.searchInResponseBody", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkSearchInResponseBodyResult (experimental) Searches for given string in response content.
@@ -8602,9 +9380,12 @@ type NetworkSetBlockedURLs struct {
 	Urls []string `json:"urls"`
 }
 
+// MethodName of the command
+func (m NetworkSetBlockedURLs) MethodName() string { return "Network.setBlockedURLs" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetBlockedURLs) Call(caller Caller) error {
-	return call("Network.setBlockedURLs", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetBypassServiceWorker (experimental) Toggles ignoring of service worker for each request.
@@ -8614,9 +9395,12 @@ type NetworkSetBypassServiceWorker struct {
 	Bypass bool `json:"bypass"`
 }
 
+// MethodName of the command
+func (m NetworkSetBypassServiceWorker) MethodName() string { return "Network.setBypassServiceWorker" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetBypassServiceWorker) Call(caller Caller) error {
-	return call("Network.setBypassServiceWorker", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetCacheDisabled Toggles ignoring cache for each request. If `true`, cache will not be used.
@@ -8626,9 +9410,12 @@ type NetworkSetCacheDisabled struct {
 	CacheDisabled bool `json:"cacheDisabled"`
 }
 
+// MethodName of the command
+func (m NetworkSetCacheDisabled) MethodName() string { return "Network.setCacheDisabled" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetCacheDisabled) Call(caller Caller) error {
-	return call("Network.setCacheDisabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetCookie Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -8666,10 +9453,13 @@ type NetworkSetCookie struct {
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkSetCookie) MethodName() string { return "Network.setCookie" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetCookie) Call(caller Caller) (*NetworkSetCookieResult, error) {
 	var res NetworkSetCookieResult
-	return &res, call("Network.setCookie", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // NetworkSetCookieResult Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -8686,9 +9476,12 @@ type NetworkSetCookies struct {
 	Cookies []*NetworkCookieParam `json:"cookies"`
 }
 
+// MethodName of the command
+func (m NetworkSetCookies) MethodName() string { return "Network.setCookies" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetCookies) Call(caller Caller) error {
-	return call("Network.setCookies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetDataSizeLimitsForTest (experimental) For testing.
@@ -8701,9 +9494,14 @@ type NetworkSetDataSizeLimitsForTest struct {
 	MaxResourceSize int64 `json:"maxResourceSize"`
 }
 
+// MethodName of the command
+func (m NetworkSetDataSizeLimitsForTest) MethodName() string {
+	return "Network.setDataSizeLimitsForTest"
+}
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetDataSizeLimitsForTest) Call(caller Caller) error {
-	return call("Network.setDataSizeLimitsForTest", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetExtraHTTPHeaders Specifies whether to always send extra HTTP headers with the requests from this page.
@@ -8713,9 +9511,12 @@ type NetworkSetExtraHTTPHeaders struct {
 	Headers NetworkHeaders `json:"headers"`
 }
 
+// MethodName of the command
+func (m NetworkSetExtraHTTPHeaders) MethodName() string { return "Network.setExtraHTTPHeaders" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetExtraHTTPHeaders) Call(caller Caller) error {
-	return call("Network.setExtraHTTPHeaders", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetRequestInterception (deprecated) (experimental) Sets the requests to intercept that match the provided patterns and optionally resource types.
@@ -8727,9 +9528,12 @@ type NetworkSetRequestInterception struct {
 	Patterns []*NetworkRequestPattern `json:"patterns"`
 }
 
+// MethodName of the command
+func (m NetworkSetRequestInterception) MethodName() string { return "Network.setRequestInterception" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetRequestInterception) Call(caller Caller) error {
-	return call("Network.setRequestInterception", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkSetUserAgentOverride Allows overriding user agent with the given string.
@@ -8745,9 +9549,12 @@ type NetworkSetUserAgentOverride struct {
 	Platform string `json:"platform,omitempty"`
 }
 
+// MethodName of the command
+func (m NetworkSetUserAgentOverride) MethodName() string { return "Network.setUserAgentOverride" }
+
 // Call of the command, sessionID is optional.
 func (m NetworkSetUserAgentOverride) Call(caller Caller) error {
-	return call("Network.setUserAgentOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // NetworkDataReceived Fired when data chunk was received over the network.
@@ -9251,18 +10058,24 @@ const (
 type OverlayDisable struct {
 }
 
+// MethodName of the command
+func (m OverlayDisable) MethodName() string { return "Overlay.disable" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayDisable) Call(caller Caller) error {
-	return call("Overlay.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayEnable Enables domain notifications.
 type OverlayEnable struct {
 }
 
+// MethodName of the command
+func (m OverlayEnable) MethodName() string { return "Overlay.enable" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayEnable) Call(caller Caller) error {
-	return call("Overlay.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayGetHighlightObjectForTest For testing.
@@ -9278,10 +10091,15 @@ type OverlayGetHighlightObjectForTest struct {
 	IncludeStyle bool `json:"includeStyle,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlayGetHighlightObjectForTest) MethodName() string {
+	return "Overlay.getHighlightObjectForTest"
+}
+
 // Call of the command, sessionID is optional.
 func (m OverlayGetHighlightObjectForTest) Call(caller Caller) (*OverlayGetHighlightObjectForTestResult, error) {
 	var res OverlayGetHighlightObjectForTestResult
-	return &res, call("Overlay.getHighlightObjectForTest", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // OverlayGetHighlightObjectForTestResult For testing.
@@ -9295,9 +10113,12 @@ type OverlayGetHighlightObjectForTestResult struct {
 type OverlayHideHighlight struct {
 }
 
+// MethodName of the command
+func (m OverlayHideHighlight) MethodName() string { return "Overlay.hideHighlight" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayHideHighlight) Call(caller Caller) error {
-	return call("Overlay.hideHighlight", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayHighlightFrame Highlights owner element of the frame with given id.
@@ -9313,9 +10134,12 @@ type OverlayHighlightFrame struct {
 	ContentOutlineColor *DOMRGBA `json:"contentOutlineColor,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlayHighlightFrame) MethodName() string { return "Overlay.highlightFrame" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightFrame) Call(caller Caller) error {
-	return call("Overlay.highlightFrame", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayHighlightNode Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
@@ -9338,9 +10162,12 @@ type OverlayHighlightNode struct {
 	Selector string `json:"selector,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlayHighlightNode) MethodName() string { return "Overlay.highlightNode" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightNode) Call(caller Caller) error {
-	return call("Overlay.highlightNode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayHighlightQuad Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
@@ -9356,9 +10183,12 @@ type OverlayHighlightQuad struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlayHighlightQuad) MethodName() string { return "Overlay.highlightQuad" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightQuad) Call(caller Caller) error {
-	return call("Overlay.highlightQuad", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayHighlightRect Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
@@ -9383,9 +10213,12 @@ type OverlayHighlightRect struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlayHighlightRect) MethodName() string { return "Overlay.highlightRect" }
+
 // Call of the command, sessionID is optional.
 func (m OverlayHighlightRect) Call(caller Caller) error {
-	return call("Overlay.highlightRect", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetInspectMode Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
@@ -9400,9 +10233,12 @@ type OverlaySetInspectMode struct {
 	HighlightConfig *OverlayHighlightConfig `json:"highlightConfig,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlaySetInspectMode) MethodName() string { return "Overlay.setInspectMode" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetInspectMode) Call(caller Caller) error {
-	return call("Overlay.setInspectMode", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowAdHighlights Highlights owner element of all frames detected to be ads.
@@ -9412,9 +10248,12 @@ type OverlaySetShowAdHighlights struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowAdHighlights) MethodName() string { return "Overlay.setShowAdHighlights" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowAdHighlights) Call(caller Caller) error {
-	return call("Overlay.setShowAdHighlights", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetPausedInDebuggerMessage ...
@@ -9424,9 +10263,14 @@ type OverlaySetPausedInDebuggerMessage struct {
 	Message string `json:"message,omitempty"`
 }
 
+// MethodName of the command
+func (m OverlaySetPausedInDebuggerMessage) MethodName() string {
+	return "Overlay.setPausedInDebuggerMessage"
+}
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetPausedInDebuggerMessage) Call(caller Caller) error {
-	return call("Overlay.setPausedInDebuggerMessage", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowDebugBorders Requests that backend shows debug borders on layers
@@ -9436,9 +10280,12 @@ type OverlaySetShowDebugBorders struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowDebugBorders) MethodName() string { return "Overlay.setShowDebugBorders" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowDebugBorders) Call(caller Caller) error {
-	return call("Overlay.setShowDebugBorders", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowFPSCounter Requests that backend shows the FPS counter
@@ -9448,9 +10295,12 @@ type OverlaySetShowFPSCounter struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowFPSCounter) MethodName() string { return "Overlay.setShowFPSCounter" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowFPSCounter) Call(caller Caller) error {
-	return call("Overlay.setShowFPSCounter", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowPaintRects Requests that backend shows paint rectangles
@@ -9460,9 +10310,12 @@ type OverlaySetShowPaintRects struct {
 	Result bool `json:"result"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowPaintRects) MethodName() string { return "Overlay.setShowPaintRects" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowPaintRects) Call(caller Caller) error {
-	return call("Overlay.setShowPaintRects", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowLayoutShiftRegions Requests that backend shows layout shift regions
@@ -9472,9 +10325,14 @@ type OverlaySetShowLayoutShiftRegions struct {
 	Result bool `json:"result"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowLayoutShiftRegions) MethodName() string {
+	return "Overlay.setShowLayoutShiftRegions"
+}
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowLayoutShiftRegions) Call(caller Caller) error {
-	return call("Overlay.setShowLayoutShiftRegions", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowScrollBottleneckRects Requests that backend shows scroll bottleneck rects
@@ -9484,9 +10342,14 @@ type OverlaySetShowScrollBottleneckRects struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowScrollBottleneckRects) MethodName() string {
+	return "Overlay.setShowScrollBottleneckRects"
+}
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowScrollBottleneckRects) Call(caller Caller) error {
-	return call("Overlay.setShowScrollBottleneckRects", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowHitTestBorders Requests that backend shows hit-test borders on layers
@@ -9496,9 +10359,12 @@ type OverlaySetShowHitTestBorders struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowHitTestBorders) MethodName() string { return "Overlay.setShowHitTestBorders" }
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowHitTestBorders) Call(caller Caller) error {
-	return call("Overlay.setShowHitTestBorders", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlaySetShowViewportSizeOnResize Paints viewport size upon main frame resize.
@@ -9508,9 +10374,14 @@ type OverlaySetShowViewportSizeOnResize struct {
 	Show bool `json:"show"`
 }
 
+// MethodName of the command
+func (m OverlaySetShowViewportSizeOnResize) MethodName() string {
+	return "Overlay.setShowViewportSizeOnResize"
+}
+
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowViewportSizeOnResize) Call(caller Caller) error {
-	return call("Overlay.setShowViewportSizeOnResize", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // OverlayInspectNodeRequested Fired when the node should be inspected. This happens after call to `setInspectMode` or when
@@ -9955,10 +10826,13 @@ type PageAddScriptToEvaluateOnLoad struct {
 	ScriptSource string `json:"scriptSource"`
 }
 
+// MethodName of the command
+func (m PageAddScriptToEvaluateOnLoad) MethodName() string { return "Page.addScriptToEvaluateOnLoad" }
+
 // Call of the command, sessionID is optional.
 func (m PageAddScriptToEvaluateOnLoad) Call(caller Caller) (*PageAddScriptToEvaluateOnLoadResult, error) {
 	var res PageAddScriptToEvaluateOnLoadResult
-	return &res, call("Page.addScriptToEvaluateOnLoad", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -9980,10 +10854,15 @@ type PageAddScriptToEvaluateOnNewDocument struct {
 	WorldName string `json:"worldName,omitempty"`
 }
 
+// MethodName of the command
+func (m PageAddScriptToEvaluateOnNewDocument) MethodName() string {
+	return "Page.addScriptToEvaluateOnNewDocument"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageAddScriptToEvaluateOnNewDocument) Call(caller Caller) (*PageAddScriptToEvaluateOnNewDocumentResult, error) {
 	var res PageAddScriptToEvaluateOnNewDocumentResult
-	return &res, call("Page.addScriptToEvaluateOnNewDocument", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageAddScriptToEvaluateOnNewDocumentResult Evaluates given script in every frame upon creation (before loading frame's scripts).
@@ -9997,9 +10876,12 @@ type PageAddScriptToEvaluateOnNewDocumentResult struct {
 type PageBringToFront struct {
 }
 
+// MethodName of the command
+func (m PageBringToFront) MethodName() string { return "Page.bringToFront" }
+
 // Call of the command, sessionID is optional.
 func (m PageBringToFront) Call(caller Caller) error {
-	return call("Page.bringToFront", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageCaptureScreenshotFormat enum
@@ -10029,10 +10911,13 @@ type PageCaptureScreenshot struct {
 	FromSurface bool `json:"fromSurface,omitempty"`
 }
 
+// MethodName of the command
+func (m PageCaptureScreenshot) MethodName() string { return "Page.captureScreenshot" }
+
 // Call of the command, sessionID is optional.
 func (m PageCaptureScreenshot) Call(caller Caller) (*PageCaptureScreenshotResult, error) {
 	var res PageCaptureScreenshotResult
-	return &res, call("Page.captureScreenshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageCaptureScreenshotResult Capture page screenshot.
@@ -10058,10 +10943,13 @@ type PageCaptureSnapshot struct {
 	Format PageCaptureSnapshotFormat `json:"format,omitempty"`
 }
 
+// MethodName of the command
+func (m PageCaptureSnapshot) MethodName() string { return "Page.captureSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m PageCaptureSnapshot) Call(caller Caller) (*PageCaptureSnapshotResult, error) {
 	var res PageCaptureSnapshotResult
-	return &res, call("Page.captureSnapshot", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageCaptureSnapshotResult (experimental) Returns a snapshot of the page as a string. For MHTML format, the serialization includes
@@ -10076,27 +10964,38 @@ type PageCaptureSnapshotResult struct {
 type PageClearDeviceMetricsOverride struct {
 }
 
+// MethodName of the command
+func (m PageClearDeviceMetricsOverride) MethodName() string { return "Page.clearDeviceMetricsOverride" }
+
 // Call of the command, sessionID is optional.
 func (m PageClearDeviceMetricsOverride) Call(caller Caller) error {
-	return call("Page.clearDeviceMetricsOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageClearDeviceOrientationOverride (deprecated) (experimental) Clears the overridden Device Orientation.
 type PageClearDeviceOrientationOverride struct {
 }
 
+// MethodName of the command
+func (m PageClearDeviceOrientationOverride) MethodName() string {
+	return "Page.clearDeviceOrientationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageClearDeviceOrientationOverride) Call(caller Caller) error {
-	return call("Page.clearDeviceOrientationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageClearGeolocationOverride (deprecated) Clears the overridden Geolocation Position and Error.
 type PageClearGeolocationOverride struct {
 }
 
+// MethodName of the command
+func (m PageClearGeolocationOverride) MethodName() string { return "Page.clearGeolocationOverride" }
+
 // Call of the command, sessionID is optional.
 func (m PageClearGeolocationOverride) Call(caller Caller) error {
-	return call("Page.clearGeolocationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageCreateIsolatedWorld Creates an isolated world for the given frame.
@@ -10113,10 +11012,13 @@ type PageCreateIsolatedWorld struct {
 	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
 }
 
+// MethodName of the command
+func (m PageCreateIsolatedWorld) MethodName() string { return "Page.createIsolatedWorld" }
+
 // Call of the command, sessionID is optional.
 func (m PageCreateIsolatedWorld) Call(caller Caller) (*PageCreateIsolatedWorldResult, error) {
 	var res PageCreateIsolatedWorldResult
-	return &res, call("Page.createIsolatedWorld", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageCreateIsolatedWorldResult Creates an isolated world for the given frame.
@@ -10136,37 +11038,49 @@ type PageDeleteCookie struct {
 	URL string `json:"url"`
 }
 
+// MethodName of the command
+func (m PageDeleteCookie) MethodName() string { return "Page.deleteCookie" }
+
 // Call of the command, sessionID is optional.
 func (m PageDeleteCookie) Call(caller Caller) error {
-	return call("Page.deleteCookie", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageDisable Disables page domain notifications.
 type PageDisable struct {
 }
 
+// MethodName of the command
+func (m PageDisable) MethodName() string { return "Page.disable" }
+
 // Call of the command, sessionID is optional.
 func (m PageDisable) Call(caller Caller) error {
-	return call("Page.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageEnable Enables page domain notifications.
 type PageEnable struct {
 }
 
+// MethodName of the command
+func (m PageEnable) MethodName() string { return "Page.enable" }
+
 // Call of the command, sessionID is optional.
 func (m PageEnable) Call(caller Caller) error {
-	return call("Page.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageGetAppManifest ...
 type PageGetAppManifest struct {
 }
 
+// MethodName of the command
+func (m PageGetAppManifest) MethodName() string { return "Page.getAppManifest" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetAppManifest) Call(caller Caller) (*PageGetAppManifestResult, error) {
 	var res PageGetAppManifestResult
-	return &res, call("Page.getAppManifest", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetAppManifestResult ...
@@ -10189,10 +11103,13 @@ type PageGetAppManifestResult struct {
 type PageGetInstallabilityErrors struct {
 }
 
+// MethodName of the command
+func (m PageGetInstallabilityErrors) MethodName() string { return "Page.getInstallabilityErrors" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetInstallabilityErrors) Call(caller Caller) (*PageGetInstallabilityErrorsResult, error) {
 	var res PageGetInstallabilityErrorsResult
-	return &res, call("Page.getInstallabilityErrors", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetInstallabilityErrorsResult (experimental) ...
@@ -10206,10 +11123,13 @@ type PageGetInstallabilityErrorsResult struct {
 type PageGetManifestIcons struct {
 }
 
+// MethodName of the command
+func (m PageGetManifestIcons) MethodName() string { return "Page.getManifestIcons" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetManifestIcons) Call(caller Caller) (*PageGetManifestIconsResult, error) {
 	var res PageGetManifestIconsResult
-	return &res, call("Page.getManifestIcons", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetManifestIconsResult (experimental) ...
@@ -10224,10 +11144,13 @@ type PageGetManifestIconsResult struct {
 type PageGetCookies struct {
 }
 
+// MethodName of the command
+func (m PageGetCookies) MethodName() string { return "Page.getCookies" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetCookies) Call(caller Caller) (*PageGetCookiesResult, error) {
 	var res PageGetCookiesResult
-	return &res, call("Page.getCookies", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetCookiesResult (deprecated) (experimental) Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -10242,10 +11165,13 @@ type PageGetCookiesResult struct {
 type PageGetFrameTree struct {
 }
 
+// MethodName of the command
+func (m PageGetFrameTree) MethodName() string { return "Page.getFrameTree" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetFrameTree) Call(caller Caller) (*PageGetFrameTreeResult, error) {
 	var res PageGetFrameTreeResult
-	return &res, call("Page.getFrameTree", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetFrameTreeResult Returns present frame tree structure.
@@ -10259,10 +11185,13 @@ type PageGetFrameTreeResult struct {
 type PageGetLayoutMetrics struct {
 }
 
+// MethodName of the command
+func (m PageGetLayoutMetrics) MethodName() string { return "Page.getLayoutMetrics" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetLayoutMetrics) Call(caller Caller) (*PageGetLayoutMetricsResult, error) {
 	var res PageGetLayoutMetricsResult
-	return &res, call("Page.getLayoutMetrics", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
@@ -10282,10 +11211,13 @@ type PageGetLayoutMetricsResult struct {
 type PageGetNavigationHistory struct {
 }
 
+// MethodName of the command
+func (m PageGetNavigationHistory) MethodName() string { return "Page.getNavigationHistory" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetNavigationHistory) Call(caller Caller) (*PageGetNavigationHistoryResult, error) {
 	var res PageGetNavigationHistoryResult
-	return &res, call("Page.getNavigationHistory", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetNavigationHistoryResult Returns navigation history for the current page.
@@ -10302,9 +11234,12 @@ type PageGetNavigationHistoryResult struct {
 type PageResetNavigationHistory struct {
 }
 
+// MethodName of the command
+func (m PageResetNavigationHistory) MethodName() string { return "Page.resetNavigationHistory" }
+
 // Call of the command, sessionID is optional.
 func (m PageResetNavigationHistory) Call(caller Caller) error {
-	return call("Page.resetNavigationHistory", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageGetResourceContent (experimental) Returns content of the given resource.
@@ -10317,10 +11252,13 @@ type PageGetResourceContent struct {
 	URL string `json:"url"`
 }
 
+// MethodName of the command
+func (m PageGetResourceContent) MethodName() string { return "Page.getResourceContent" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetResourceContent) Call(caller Caller) (*PageGetResourceContentResult, error) {
 	var res PageGetResourceContentResult
-	return &res, call("Page.getResourceContent", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetResourceContentResult (experimental) Returns content of the given resource.
@@ -10337,10 +11275,13 @@ type PageGetResourceContentResult struct {
 type PageGetResourceTree struct {
 }
 
+// MethodName of the command
+func (m PageGetResourceTree) MethodName() string { return "Page.getResourceTree" }
+
 // Call of the command, sessionID is optional.
 func (m PageGetResourceTree) Call(caller Caller) (*PageGetResourceTreeResult, error) {
 	var res PageGetResourceTreeResult
-	return &res, call("Page.getResourceTree", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageGetResourceTreeResult (experimental) Returns present frame / resource tree structure.
@@ -10361,9 +11302,12 @@ type PageHandleJavaScriptDialog struct {
 	PromptText string `json:"promptText,omitempty"`
 }
 
+// MethodName of the command
+func (m PageHandleJavaScriptDialog) MethodName() string { return "Page.handleJavaScriptDialog" }
+
 // Call of the command, sessionID is optional.
 func (m PageHandleJavaScriptDialog) Call(caller Caller) error {
-	return call("Page.handleJavaScriptDialog", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageNavigate Navigates current page to the given URL.
@@ -10385,10 +11329,13 @@ type PageNavigate struct {
 	ReferrerPolicy PageReferrerPolicy `json:"referrerPolicy,omitempty"`
 }
 
+// MethodName of the command
+func (m PageNavigate) MethodName() string { return "Page.navigate" }
+
 // Call of the command, sessionID is optional.
 func (m PageNavigate) Call(caller Caller) (*PageNavigateResult, error) {
 	var res PageNavigateResult
-	return &res, call("Page.navigate", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageNavigateResult Navigates current page to the given URL.
@@ -10411,9 +11358,12 @@ type PageNavigateToHistoryEntry struct {
 	EntryID int64 `json:"entryId"`
 }
 
+// MethodName of the command
+func (m PageNavigateToHistoryEntry) MethodName() string { return "Page.navigateToHistoryEntry" }
+
 // Call of the command, sessionID is optional.
 func (m PageNavigateToHistoryEntry) Call(caller Caller) error {
-	return call("Page.navigateToHistoryEntry", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PagePrintToPDFTransferMode enum
@@ -10490,10 +11440,13 @@ type PagePrintToPDF struct {
 	TransferMode PagePrintToPDFTransferMode `json:"transferMode,omitempty"`
 }
 
+// MethodName of the command
+func (m PagePrintToPDF) MethodName() string { return "Page.printToPDF" }
+
 // Call of the command, sessionID is optional.
 func (m PagePrintToPDF) Call(caller Caller) (*PagePrintToPDFResult, error) {
 	var res PagePrintToPDFResult
-	return &res, call("Page.printToPDF", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PagePrintToPDFResult Print page as PDF.
@@ -10517,9 +11470,12 @@ type PageReload struct {
 	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
 }
 
+// MethodName of the command
+func (m PageReload) MethodName() string { return "Page.reload" }
+
 // Call of the command, sessionID is optional.
 func (m PageReload) Call(caller Caller) error {
-	return call("Page.reload", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageRemoveScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
@@ -10529,9 +11485,14 @@ type PageRemoveScriptToEvaluateOnLoad struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
+// MethodName of the command
+func (m PageRemoveScriptToEvaluateOnLoad) MethodName() string {
+	return "Page.removeScriptToEvaluateOnLoad"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageRemoveScriptToEvaluateOnLoad) Call(caller Caller) error {
-	return call("Page.removeScriptToEvaluateOnLoad", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageRemoveScriptToEvaluateOnNewDocument Removes given script from the list.
@@ -10541,9 +11502,14 @@ type PageRemoveScriptToEvaluateOnNewDocument struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
+// MethodName of the command
+func (m PageRemoveScriptToEvaluateOnNewDocument) MethodName() string {
+	return "Page.removeScriptToEvaluateOnNewDocument"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageRemoveScriptToEvaluateOnNewDocument) Call(caller Caller) error {
-	return call("Page.removeScriptToEvaluateOnNewDocument", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageScreencastFrameAck (experimental) Acknowledges that a screencast frame has been received by the frontend.
@@ -10553,9 +11519,12 @@ type PageScreencastFrameAck struct {
 	SessionID int64 `json:"sessionId"`
 }
 
+// MethodName of the command
+func (m PageScreencastFrameAck) MethodName() string { return "Page.screencastFrameAck" }
+
 // Call of the command, sessionID is optional.
 func (m PageScreencastFrameAck) Call(caller Caller) error {
-	return call("Page.screencastFrameAck", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSearchInResource (experimental) Searches for given string in resource content.
@@ -10577,10 +11546,13 @@ type PageSearchInResource struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
+// MethodName of the command
+func (m PageSearchInResource) MethodName() string { return "Page.searchInResource" }
+
 // Call of the command, sessionID is optional.
 func (m PageSearchInResource) Call(caller Caller) (*PageSearchInResourceResult, error) {
 	var res PageSearchInResourceResult
-	return &res, call("Page.searchInResource", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PageSearchInResourceResult (experimental) Searches for given string in resource content.
@@ -10597,9 +11569,12 @@ type PageSetAdBlockingEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m PageSetAdBlockingEnabled) MethodName() string { return "Page.setAdBlockingEnabled" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetAdBlockingEnabled) Call(caller Caller) error {
-	return call("Page.setAdBlockingEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetBypassCSP (experimental) Enable page Content Security Policy by-passing.
@@ -10609,9 +11584,12 @@ type PageSetBypassCSP struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m PageSetBypassCSP) MethodName() string { return "Page.setBypassCSP" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetBypassCSP) Call(caller Caller) error {
-	return call("Page.setBypassCSP", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetDeviceMetricsOverride (deprecated) (experimental) Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -10657,9 +11635,12 @@ type PageSetDeviceMetricsOverride struct {
 	Viewport *PageViewport `json:"viewport,omitempty"`
 }
 
+// MethodName of the command
+func (m PageSetDeviceMetricsOverride) MethodName() string { return "Page.setDeviceMetricsOverride" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetDeviceMetricsOverride) Call(caller Caller) error {
-	return call("Page.setDeviceMetricsOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetDeviceOrientationOverride (deprecated) (experimental) Overrides the Device Orientation.
@@ -10675,9 +11656,14 @@ type PageSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
+// MethodName of the command
+func (m PageSetDeviceOrientationOverride) MethodName() string {
+	return "Page.setDeviceOrientationOverride"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageSetDeviceOrientationOverride) Call(caller Caller) error {
-	return call("Page.setDeviceOrientationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetFontFamilies (experimental) Set generic font families.
@@ -10687,9 +11673,12 @@ type PageSetFontFamilies struct {
 	FontFamilies *PageFontFamilies `json:"fontFamilies"`
 }
 
+// MethodName of the command
+func (m PageSetFontFamilies) MethodName() string { return "Page.setFontFamilies" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetFontFamilies) Call(caller Caller) error {
-	return call("Page.setFontFamilies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetFontSizes (experimental) Set default font sizes.
@@ -10699,9 +11688,12 @@ type PageSetFontSizes struct {
 	FontSizes *PageFontSizes `json:"fontSizes"`
 }
 
+// MethodName of the command
+func (m PageSetFontSizes) MethodName() string { return "Page.setFontSizes" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetFontSizes) Call(caller Caller) error {
-	return call("Page.setFontSizes", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetDocumentContent Sets given markup as the document's HTML.
@@ -10714,9 +11706,12 @@ type PageSetDocumentContent struct {
 	HTML string `json:"html"`
 }
 
+// MethodName of the command
+func (m PageSetDocumentContent) MethodName() string { return "Page.setDocumentContent" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetDocumentContent) Call(caller Caller) error {
-	return call("Page.setDocumentContent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetDownloadBehaviorBehavior enum
@@ -10744,9 +11739,12 @@ type PageSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
+// MethodName of the command
+func (m PageSetDownloadBehavior) MethodName() string { return "Page.setDownloadBehavior" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetDownloadBehavior) Call(caller Caller) error {
-	return call("Page.setDownloadBehavior", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetGeolocationOverride (deprecated) Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -10763,9 +11761,12 @@ type PageSetGeolocationOverride struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
+// MethodName of the command
+func (m PageSetGeolocationOverride) MethodName() string { return "Page.setGeolocationOverride" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetGeolocationOverride) Call(caller Caller) error {
-	return call("Page.setGeolocationOverride", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetLifecycleEventsEnabled (experimental) Controls whether page will emit lifecycle events.
@@ -10775,9 +11776,12 @@ type PageSetLifecycleEventsEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m PageSetLifecycleEventsEnabled) MethodName() string { return "Page.setLifecycleEventsEnabled" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetLifecycleEventsEnabled) Call(caller Caller) error {
-	return call("Page.setLifecycleEventsEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetTouchEmulationEnabledConfiguration enum
@@ -10801,9 +11805,12 @@ type PageSetTouchEmulationEnabled struct {
 	Configuration PageSetTouchEmulationEnabledConfiguration `json:"configuration,omitempty"`
 }
 
+// MethodName of the command
+func (m PageSetTouchEmulationEnabled) MethodName() string { return "Page.setTouchEmulationEnabled" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetTouchEmulationEnabled) Call(caller Caller) error {
-	return call("Page.setTouchEmulationEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageStartScreencastFormat enum
@@ -10836,36 +11843,48 @@ type PageStartScreencast struct {
 	EveryNthFrame int64 `json:"everyNthFrame,omitempty"`
 }
 
+// MethodName of the command
+func (m PageStartScreencast) MethodName() string { return "Page.startScreencast" }
+
 // Call of the command, sessionID is optional.
 func (m PageStartScreencast) Call(caller Caller) error {
-	return call("Page.startScreencast", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageStopLoading Force the page stop all navigations and pending resource fetches.
 type PageStopLoading struct {
 }
 
+// MethodName of the command
+func (m PageStopLoading) MethodName() string { return "Page.stopLoading" }
+
 // Call of the command, sessionID is optional.
 func (m PageStopLoading) Call(caller Caller) error {
-	return call("Page.stopLoading", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageCrash (experimental) Crashes renderer on the IO thread, generates minidumps.
 type PageCrash struct {
 }
 
+// MethodName of the command
+func (m PageCrash) MethodName() string { return "Page.crash" }
+
 // Call of the command, sessionID is optional.
 func (m PageCrash) Call(caller Caller) error {
-	return call("Page.crash", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageClose (experimental) Tries to close page, running its beforeunload hooks, if any.
 type PageClose struct {
 }
 
+// MethodName of the command
+func (m PageClose) MethodName() string { return "Page.close" }
+
 // Call of the command, sessionID is optional.
 func (m PageClose) Call(caller Caller) error {
-	return call("Page.close", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetWebLifecycleStateState enum
@@ -10888,18 +11907,24 @@ type PageSetWebLifecycleState struct {
 	State PageSetWebLifecycleStateState `json:"state"`
 }
 
+// MethodName of the command
+func (m PageSetWebLifecycleState) MethodName() string { return "Page.setWebLifecycleState" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetWebLifecycleState) Call(caller Caller) error {
-	return call("Page.setWebLifecycleState", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageStopScreencast (experimental) Stops sending each frame in the `screencastFrame`.
 type PageStopScreencast struct {
 }
 
+// MethodName of the command
+func (m PageStopScreencast) MethodName() string { return "Page.stopScreencast" }
+
 // Call of the command, sessionID is optional.
 func (m PageStopScreencast) Call(caller Caller) error {
-	return call("Page.stopScreencast", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetProduceCompilationCache (experimental) Forces compilation cache to be generated for every subresource script.
@@ -10909,9 +11934,12 @@ type PageSetProduceCompilationCache struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m PageSetProduceCompilationCache) MethodName() string { return "Page.setProduceCompilationCache" }
+
 // Call of the command, sessionID is optional.
 func (m PageSetProduceCompilationCache) Call(caller Caller) error {
-	return call("Page.setProduceCompilationCache", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageAddCompilationCache (experimental) Seeds compilation cache for given url. Compilation cache does not survive
@@ -10925,18 +11953,24 @@ type PageAddCompilationCache struct {
 	Data []byte `json:"data"`
 }
 
+// MethodName of the command
+func (m PageAddCompilationCache) MethodName() string { return "Page.addCompilationCache" }
+
 // Call of the command, sessionID is optional.
 func (m PageAddCompilationCache) Call(caller Caller) error {
-	return call("Page.addCompilationCache", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageClearCompilationCache (experimental) Clears seeded compilation cache.
 type PageClearCompilationCache struct {
 }
 
+// MethodName of the command
+func (m PageClearCompilationCache) MethodName() string { return "Page.clearCompilationCache" }
+
 // Call of the command, sessionID is optional.
 func (m PageClearCompilationCache) Call(caller Caller) error {
-	return call("Page.clearCompilationCache", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageGenerateTestReport (experimental) Generates a report for testing.
@@ -10949,18 +11983,24 @@ type PageGenerateTestReport struct {
 	Group string `json:"group,omitempty"`
 }
 
+// MethodName of the command
+func (m PageGenerateTestReport) MethodName() string { return "Page.generateTestReport" }
+
 // Call of the command, sessionID is optional.
 func (m PageGenerateTestReport) Call(caller Caller) error {
-	return call("Page.generateTestReport", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageWaitForDebugger (experimental) Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
 type PageWaitForDebugger struct {
 }
 
+// MethodName of the command
+func (m PageWaitForDebugger) MethodName() string { return "Page.waitForDebugger" }
+
 // Call of the command, sessionID is optional.
 func (m PageWaitForDebugger) Call(caller Caller) error {
-	return call("Page.waitForDebugger", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageSetInterceptFileChooserDialog (experimental) Intercept file chooser requests and transfer control to protocol clients.
@@ -10972,9 +12012,14 @@ type PageSetInterceptFileChooserDialog struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m PageSetInterceptFileChooserDialog) MethodName() string {
+	return "Page.setInterceptFileChooserDialog"
+}
+
 // Call of the command, sessionID is optional.
 func (m PageSetInterceptFileChooserDialog) Call(caller Caller) error {
-	return call("Page.setInterceptFileChooserDialog", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PageDomContentEventFired ...
@@ -11390,9 +12435,12 @@ type PerformanceMetric struct {
 type PerformanceDisable struct {
 }
 
+// MethodName of the command
+func (m PerformanceDisable) MethodName() string { return "Performance.disable" }
+
 // Call of the command, sessionID is optional.
 func (m PerformanceDisable) Call(caller Caller) error {
-	return call("Performance.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PerformanceEnableTimeDomain enum
@@ -11413,9 +12461,12 @@ type PerformanceEnable struct {
 	TimeDomain PerformanceEnableTimeDomain `json:"timeDomain,omitempty"`
 }
 
+// MethodName of the command
+func (m PerformanceEnable) MethodName() string { return "Performance.enable" }
+
 // Call of the command, sessionID is optional.
 func (m PerformanceEnable) Call(caller Caller) error {
-	return call("Performance.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PerformanceSetTimeDomainTimeDomain enum
@@ -11438,19 +12489,25 @@ type PerformanceSetTimeDomain struct {
 	TimeDomain PerformanceSetTimeDomainTimeDomain `json:"timeDomain"`
 }
 
+// MethodName of the command
+func (m PerformanceSetTimeDomain) MethodName() string { return "Performance.setTimeDomain" }
+
 // Call of the command, sessionID is optional.
 func (m PerformanceSetTimeDomain) Call(caller Caller) error {
-	return call("Performance.setTimeDomain", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // PerformanceGetMetrics Retrieve current values of run-time metrics.
 type PerformanceGetMetrics struct {
 }
 
+// MethodName of the command
+func (m PerformanceGetMetrics) MethodName() string { return "Performance.getMetrics" }
+
 // Call of the command, sessionID is optional.
 func (m PerformanceGetMetrics) Call(caller Caller) (*PerformanceGetMetricsResult, error) {
 	var res PerformanceGetMetricsResult
-	return &res, call("Performance.getMetrics", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // PerformanceGetMetricsResult Retrieve current values of run-time metrics.
@@ -11677,18 +12734,24 @@ const (
 type SecurityDisable struct {
 }
 
+// MethodName of the command
+func (m SecurityDisable) MethodName() string { return "Security.disable" }
+
 // Call of the command, sessionID is optional.
 func (m SecurityDisable) Call(caller Caller) error {
-	return call("Security.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // SecurityEnable Enables tracking security state changes.
 type SecurityEnable struct {
 }
 
+// MethodName of the command
+func (m SecurityEnable) MethodName() string { return "Security.enable" }
+
 // Call of the command, sessionID is optional.
 func (m SecurityEnable) Call(caller Caller) error {
-	return call("Security.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // SecuritySetIgnoreCertificateErrors (experimental) Enable/disable whether all certificate errors should be ignored.
@@ -11698,9 +12761,14 @@ type SecuritySetIgnoreCertificateErrors struct {
 	Ignore bool `json:"ignore"`
 }
 
+// MethodName of the command
+func (m SecuritySetIgnoreCertificateErrors) MethodName() string {
+	return "Security.setIgnoreCertificateErrors"
+}
+
 // Call of the command, sessionID is optional.
 func (m SecuritySetIgnoreCertificateErrors) Call(caller Caller) error {
-	return call("Security.setIgnoreCertificateErrors", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // SecurityHandleCertificateError (deprecated) Handles a certificate error that fired a certificateError event.
@@ -11713,9 +12781,12 @@ type SecurityHandleCertificateError struct {
 	Action SecurityCertificateErrorAction `json:"action"`
 }
 
+// MethodName of the command
+func (m SecurityHandleCertificateError) MethodName() string { return "Security.handleCertificateError" }
+
 // Call of the command, sessionID is optional.
 func (m SecurityHandleCertificateError) Call(caller Caller) error {
-	return call("Security.handleCertificateError", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // SecuritySetOverrideCertificateErrors (deprecated) Enable/disable overriding certificate errors. If enabled, all certificate error events need to
@@ -11726,9 +12797,14 @@ type SecuritySetOverrideCertificateErrors struct {
 	Override bool `json:"override"`
 }
 
+// MethodName of the command
+func (m SecuritySetOverrideCertificateErrors) MethodName() string {
+	return "Security.setOverrideCertificateErrors"
+}
+
 // Call of the command, sessionID is optional.
 func (m SecuritySetOverrideCertificateErrors) Call(caller Caller) error {
-	return call("Security.setOverrideCertificateErrors", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // SecurityCertificateError (deprecated) There is a certificate error. If overriding certificate errors is enabled, then it should be
@@ -11912,18 +12988,26 @@ type ServiceWorkerDeliverPushMessage struct {
 	Data string `json:"data"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerDeliverPushMessage) MethodName() string {
+	return "ServiceWorker.deliverPushMessage"
+}
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDeliverPushMessage) Call(caller Caller) error {
-	return call("ServiceWorker.deliverPushMessage", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerDisable ...
 type ServiceWorkerDisable struct {
 }
 
+// MethodName of the command
+func (m ServiceWorkerDisable) MethodName() string { return "ServiceWorker.disable" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDisable) Call(caller Caller) error {
-	return call("ServiceWorker.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerDispatchSyncEvent ...
@@ -11942,9 +13026,12 @@ type ServiceWorkerDispatchSyncEvent struct {
 	LastChance bool `json:"lastChance"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerDispatchSyncEvent) MethodName() string { return "ServiceWorker.dispatchSyncEvent" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDispatchSyncEvent) Call(caller Caller) error {
-	return call("ServiceWorker.dispatchSyncEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerDispatchPeriodicSyncEvent ...
@@ -11960,18 +13047,26 @@ type ServiceWorkerDispatchPeriodicSyncEvent struct {
 	Tag string `json:"tag"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerDispatchPeriodicSyncEvent) MethodName() string {
+	return "ServiceWorker.dispatchPeriodicSyncEvent"
+}
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(caller Caller) error {
-	return call("ServiceWorker.dispatchPeriodicSyncEvent", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerEnable ...
 type ServiceWorkerEnable struct {
 }
 
+// MethodName of the command
+func (m ServiceWorkerEnable) MethodName() string { return "ServiceWorker.enable" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerEnable) Call(caller Caller) error {
-	return call("ServiceWorker.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerInspectWorker ...
@@ -11981,9 +13076,12 @@ type ServiceWorkerInspectWorker struct {
 	VersionID string `json:"versionId"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerInspectWorker) MethodName() string { return "ServiceWorker.inspectWorker" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerInspectWorker) Call(caller Caller) error {
-	return call("ServiceWorker.inspectWorker", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerSetForceUpdateOnPageLoad ...
@@ -11993,9 +13091,14 @@ type ServiceWorkerSetForceUpdateOnPageLoad struct {
 	ForceUpdateOnPageLoad bool `json:"forceUpdateOnPageLoad"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerSetForceUpdateOnPageLoad) MethodName() string {
+	return "ServiceWorker.setForceUpdateOnPageLoad"
+}
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(caller Caller) error {
-	return call("ServiceWorker.setForceUpdateOnPageLoad", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerSkipWaiting ...
@@ -12005,9 +13108,12 @@ type ServiceWorkerSkipWaiting struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerSkipWaiting) MethodName() string { return "ServiceWorker.skipWaiting" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerSkipWaiting) Call(caller Caller) error {
-	return call("ServiceWorker.skipWaiting", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerStartWorker ...
@@ -12017,18 +13123,24 @@ type ServiceWorkerStartWorker struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerStartWorker) MethodName() string { return "ServiceWorker.startWorker" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStartWorker) Call(caller Caller) error {
-	return call("ServiceWorker.startWorker", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerStopAllWorkers ...
 type ServiceWorkerStopAllWorkers struct {
 }
 
+// MethodName of the command
+func (m ServiceWorkerStopAllWorkers) MethodName() string { return "ServiceWorker.stopAllWorkers" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStopAllWorkers) Call(caller Caller) error {
-	return call("ServiceWorker.stopAllWorkers", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerStopWorker ...
@@ -12038,9 +13150,12 @@ type ServiceWorkerStopWorker struct {
 	VersionID string `json:"versionId"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerStopWorker) MethodName() string { return "ServiceWorker.stopWorker" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerStopWorker) Call(caller Caller) error {
-	return call("ServiceWorker.stopWorker", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerUnregister ...
@@ -12050,9 +13165,12 @@ type ServiceWorkerUnregister struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerUnregister) MethodName() string { return "ServiceWorker.unregister" }
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerUnregister) Call(caller Caller) error {
-	return call("ServiceWorker.unregister", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerUpdateRegistration ...
@@ -12062,9 +13180,14 @@ type ServiceWorkerUpdateRegistration struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
+// MethodName of the command
+func (m ServiceWorkerUpdateRegistration) MethodName() string {
+	return "ServiceWorker.updateRegistration"
+}
+
 // Call of the command, sessionID is optional.
 func (m ServiceWorkerUpdateRegistration) Call(caller Caller) error {
-	return call("ServiceWorker.updateRegistration", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ServiceWorkerWorkerErrorReported ...
@@ -12161,9 +13284,12 @@ type StorageClearDataForOrigin struct {
 	StorageTypes string `json:"storageTypes"`
 }
 
+// MethodName of the command
+func (m StorageClearDataForOrigin) MethodName() string { return "Storage.clearDataForOrigin" }
+
 // Call of the command, sessionID is optional.
 func (m StorageClearDataForOrigin) Call(caller Caller) error {
-	return call("Storage.clearDataForOrigin", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageGetCookies Returns all browser cookies.
@@ -12173,10 +13299,13 @@ type StorageGetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m StorageGetCookies) MethodName() string { return "Storage.getCookies" }
+
 // Call of the command, sessionID is optional.
 func (m StorageGetCookies) Call(caller Caller) (*StorageGetCookiesResult, error) {
 	var res StorageGetCookiesResult
-	return &res, call("Storage.getCookies", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // StorageGetCookiesResult Returns all browser cookies.
@@ -12196,9 +13325,12 @@ type StorageSetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m StorageSetCookies) MethodName() string { return "Storage.setCookies" }
+
 // Call of the command, sessionID is optional.
 func (m StorageSetCookies) Call(caller Caller) error {
-	return call("Storage.setCookies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageClearCookies Clears cookies.
@@ -12208,9 +13340,12 @@ type StorageClearCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m StorageClearCookies) MethodName() string { return "Storage.clearCookies" }
+
 // Call of the command, sessionID is optional.
 func (m StorageClearCookies) Call(caller Caller) error {
-	return call("Storage.clearCookies", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageGetUsageAndQuota Returns usage and quota in bytes.
@@ -12220,10 +13355,13 @@ type StorageGetUsageAndQuota struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m StorageGetUsageAndQuota) MethodName() string { return "Storage.getUsageAndQuota" }
+
 // Call of the command, sessionID is optional.
 func (m StorageGetUsageAndQuota) Call(caller Caller) (*StorageGetUsageAndQuotaResult, error) {
 	var res StorageGetUsageAndQuotaResult
-	return &res, call("Storage.getUsageAndQuota", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // StorageGetUsageAndQuotaResult Returns usage and quota in bytes.
@@ -12246,9 +13384,14 @@ type StorageTrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m StorageTrackCacheStorageForOrigin) MethodName() string {
+	return "Storage.trackCacheStorageForOrigin"
+}
+
 // Call of the command, sessionID is optional.
 func (m StorageTrackCacheStorageForOrigin) Call(caller Caller) error {
-	return call("Storage.trackCacheStorageForOrigin", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageTrackIndexedDBForOrigin Registers origin to be notified when an update occurs to its IndexedDB.
@@ -12258,9 +13401,12 @@ type StorageTrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m StorageTrackIndexedDBForOrigin) MethodName() string { return "Storage.trackIndexedDBForOrigin" }
+
 // Call of the command, sessionID is optional.
 func (m StorageTrackIndexedDBForOrigin) Call(caller Caller) error {
-	return call("Storage.trackIndexedDBForOrigin", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageUntrackCacheStorageForOrigin Unregisters origin from receiving notifications for cache storage.
@@ -12270,9 +13416,14 @@ type StorageUntrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m StorageUntrackCacheStorageForOrigin) MethodName() string {
+	return "Storage.untrackCacheStorageForOrigin"
+}
+
 // Call of the command, sessionID is optional.
 func (m StorageUntrackCacheStorageForOrigin) Call(caller Caller) error {
-	return call("Storage.untrackCacheStorageForOrigin", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageUntrackIndexedDBForOrigin Unregisters origin from receiving notifications for IndexedDB.
@@ -12282,9 +13433,14 @@ type StorageUntrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
+// MethodName of the command
+func (m StorageUntrackIndexedDBForOrigin) MethodName() string {
+	return "Storage.untrackIndexedDBForOrigin"
+}
+
 // Call of the command, sessionID is optional.
 func (m StorageUntrackIndexedDBForOrigin) Call(caller Caller) error {
-	return call("Storage.untrackIndexedDBForOrigin", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
@@ -12503,10 +13659,13 @@ type SystemInfoProcessInfo struct {
 type SystemInfoGetInfo struct {
 }
 
+// MethodName of the command
+func (m SystemInfoGetInfo) MethodName() string { return "SystemInfo.getInfo" }
+
 // Call of the command, sessionID is optional.
 func (m SystemInfoGetInfo) Call(caller Caller) (*SystemInfoGetInfoResult, error) {
 	var res SystemInfoGetInfoResult
-	return &res, call("SystemInfo.getInfo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // SystemInfoGetInfoResult Returns information about the system.
@@ -12532,10 +13691,13 @@ type SystemInfoGetInfoResult struct {
 type SystemInfoGetProcessInfo struct {
 }
 
+// MethodName of the command
+func (m SystemInfoGetProcessInfo) MethodName() string { return "SystemInfo.getProcessInfo" }
+
 // Call of the command, sessionID is optional.
 func (m SystemInfoGetProcessInfo) Call(caller Caller) (*SystemInfoGetProcessInfoResult, error) {
 	var res SystemInfoGetProcessInfoResult
-	return &res, call("SystemInfo.getProcessInfo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // SystemInfoGetProcessInfoResult Returns information about all running processes.
@@ -12616,9 +13778,12 @@ type TargetActivateTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
+// MethodName of the command
+func (m TargetActivateTarget) MethodName() string { return "Target.activateTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetActivateTarget) Call(caller Caller) error {
-	return call("Target.activateTarget", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetAttachToTarget Attaches to the target with given id.
@@ -12633,10 +13798,13 @@ type TargetAttachToTarget struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetAttachToTarget) MethodName() string { return "Target.attachToTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetAttachToTarget) Call(caller Caller) (*TargetAttachToTargetResult, error) {
 	var res TargetAttachToTargetResult
-	return &res, call("Target.attachToTarget", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetAttachToTargetResult Attaches to the target with given id.
@@ -12650,10 +13818,13 @@ type TargetAttachToTargetResult struct {
 type TargetAttachToBrowserTarget struct {
 }
 
+// MethodName of the command
+func (m TargetAttachToBrowserTarget) MethodName() string { return "Target.attachToBrowserTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetAttachToBrowserTarget) Call(caller Caller) (*TargetAttachToBrowserTargetResult, error) {
 	var res TargetAttachToBrowserTargetResult
-	return &res, call("Target.attachToBrowserTarget", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetAttachToBrowserTargetResult (experimental) Attaches to the browser target, only uses flat sessionId mode.
@@ -12670,10 +13841,13 @@ type TargetCloseTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
+// MethodName of the command
+func (m TargetCloseTarget) MethodName() string { return "Target.closeTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetCloseTarget) Call(caller Caller) (*TargetCloseTargetResult, error) {
 	var res TargetCloseTargetResult
-	return &res, call("Target.closeTarget", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetCloseTargetResult Closes the target. If the target is a page that gets closed too.
@@ -12700,9 +13874,12 @@ type TargetExposeDevToolsProtocol struct {
 	BindingName string `json:"bindingName,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetExposeDevToolsProtocol) MethodName() string { return "Target.exposeDevToolsProtocol" }
+
 // Call of the command, sessionID is optional.
 func (m TargetExposeDevToolsProtocol) Call(caller Caller) error {
-	return call("Target.exposeDevToolsProtocol", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetCreateBrowserContext (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
@@ -12713,10 +13890,13 @@ type TargetCreateBrowserContext struct {
 	DisposeOnDetach bool `json:"disposeOnDetach,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetCreateBrowserContext) MethodName() string { return "Target.createBrowserContext" }
+
 // Call of the command, sessionID is optional.
 func (m TargetCreateBrowserContext) Call(caller Caller) (*TargetCreateBrowserContextResult, error) {
 	var res TargetCreateBrowserContextResult
-	return &res, call("Target.createBrowserContext", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetCreateBrowserContextResult (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
@@ -12731,10 +13911,13 @@ type TargetCreateBrowserContextResult struct {
 type TargetGetBrowserContexts struct {
 }
 
+// MethodName of the command
+func (m TargetGetBrowserContexts) MethodName() string { return "Target.getBrowserContexts" }
+
 // Call of the command, sessionID is optional.
 func (m TargetGetBrowserContexts) Call(caller Caller) (*TargetGetBrowserContextsResult, error) {
 	var res TargetGetBrowserContextsResult
-	return &res, call("Target.getBrowserContexts", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetGetBrowserContextsResult (experimental) Returns all browser contexts created with `Target.createBrowserContext` method.
@@ -12771,10 +13954,13 @@ type TargetCreateTarget struct {
 	Background bool `json:"background,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetCreateTarget) MethodName() string { return "Target.createTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetCreateTarget) Call(caller Caller) (*TargetCreateTargetResult, error) {
 	var res TargetCreateTargetResult
-	return &res, call("Target.createTarget", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetCreateTargetResult Creates a new page.
@@ -12794,9 +13980,12 @@ type TargetDetachFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetDetachFromTarget) MethodName() string { return "Target.detachFromTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetDetachFromTarget) Call(caller Caller) error {
-	return call("Target.detachFromTarget", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetDisposeBrowserContext (experimental) Deletes a BrowserContext. All the belonging pages will be closed without calling their
@@ -12807,9 +13996,12 @@ type TargetDisposeBrowserContext struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId"`
 }
 
+// MethodName of the command
+func (m TargetDisposeBrowserContext) MethodName() string { return "Target.disposeBrowserContext" }
+
 // Call of the command, sessionID is optional.
 func (m TargetDisposeBrowserContext) Call(caller Caller) error {
-	return call("Target.disposeBrowserContext", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetGetTargetInfo (experimental) Returns information about a target.
@@ -12819,10 +14011,13 @@ type TargetGetTargetInfo struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetGetTargetInfo) MethodName() string { return "Target.getTargetInfo" }
+
 // Call of the command, sessionID is optional.
 func (m TargetGetTargetInfo) Call(caller Caller) (*TargetGetTargetInfoResult, error) {
 	var res TargetGetTargetInfoResult
-	return &res, call("Target.getTargetInfo", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetGetTargetInfoResult (experimental) Returns information about a target.
@@ -12836,10 +14031,13 @@ type TargetGetTargetInfoResult struct {
 type TargetGetTargets struct {
 }
 
+// MethodName of the command
+func (m TargetGetTargets) MethodName() string { return "Target.getTargets" }
+
 // Call of the command, sessionID is optional.
 func (m TargetGetTargets) Call(caller Caller) (*TargetGetTargetsResult, error) {
 	var res TargetGetTargetsResult
-	return &res, call("Target.getTargets", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TargetGetTargetsResult Retrieves a list of available targets.
@@ -12864,9 +14062,12 @@ type TargetSendMessageToTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetSendMessageToTarget) MethodName() string { return "Target.sendMessageToTarget" }
+
 // Call of the command, sessionID is optional.
 func (m TargetSendMessageToTarget) Call(caller Caller) error {
-	return call("Target.sendMessageToTarget", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetSetAutoAttach (experimental) Controls whether to automatically attach to new targets which are considered to be related to
@@ -12887,9 +14088,12 @@ type TargetSetAutoAttach struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
+// MethodName of the command
+func (m TargetSetAutoAttach) MethodName() string { return "Target.setAutoAttach" }
+
 // Call of the command, sessionID is optional.
 func (m TargetSetAutoAttach) Call(caller Caller) error {
-	return call("Target.setAutoAttach", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetSetDiscoverTargets Controls whether to discover available targets and notify via
@@ -12900,9 +14104,12 @@ type TargetSetDiscoverTargets struct {
 	Discover bool `json:"discover"`
 }
 
+// MethodName of the command
+func (m TargetSetDiscoverTargets) MethodName() string { return "Target.setDiscoverTargets" }
+
 // Call of the command, sessionID is optional.
 func (m TargetSetDiscoverTargets) Call(caller Caller) error {
-	return call("Target.setDiscoverTargets", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetSetRemoteLocations (experimental) Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
@@ -12913,9 +14120,12 @@ type TargetSetRemoteLocations struct {
 	Locations []*TargetRemoteLocation `json:"locations"`
 }
 
+// MethodName of the command
+func (m TargetSetRemoteLocations) MethodName() string { return "Target.setRemoteLocations" }
+
 // Call of the command, sessionID is optional.
 func (m TargetSetRemoteLocations) Call(caller Caller) error {
-	return call("Target.setRemoteLocations", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TargetAttachedToTarget (experimental) Issued when attached to target because of auto-attach or `attachToTarget` command.
@@ -13033,9 +14243,12 @@ type TetheringBind struct {
 	Port int64 `json:"port"`
 }
 
+// MethodName of the command
+func (m TetheringBind) MethodName() string { return "Tethering.bind" }
+
 // Call of the command, sessionID is optional.
 func (m TetheringBind) Call(caller Caller) error {
-	return call("Tethering.bind", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TetheringUnbind Request browser port unbinding.
@@ -13045,9 +14258,12 @@ type TetheringUnbind struct {
 	Port int64 `json:"port"`
 }
 
+// MethodName of the command
+func (m TetheringUnbind) MethodName() string { return "Tethering.unbind" }
+
 // Call of the command, sessionID is optional.
 func (m TetheringUnbind) Call(caller Caller) error {
-	return call("Tethering.unbind", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TetheringAccepted Informs that port was successfully bound and got a specified connection id.
@@ -13140,19 +14356,25 @@ const (
 type TracingEnd struct {
 }
 
+// MethodName of the command
+func (m TracingEnd) MethodName() string { return "Tracing.end" }
+
 // Call of the command, sessionID is optional.
 func (m TracingEnd) Call(caller Caller) error {
-	return call("Tracing.end", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TracingGetCategories Gets supported tracing categories.
 type TracingGetCategories struct {
 }
 
+// MethodName of the command
+func (m TracingGetCategories) MethodName() string { return "Tracing.getCategories" }
+
 // Call of the command, sessionID is optional.
 func (m TracingGetCategories) Call(caller Caller) (*TracingGetCategoriesResult, error) {
 	var res TracingGetCategoriesResult
-	return &res, call("Tracing.getCategories", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TracingGetCategoriesResult Gets supported tracing categories.
@@ -13169,9 +14391,12 @@ type TracingRecordClockSyncMarker struct {
 	SyncID string `json:"syncId"`
 }
 
+// MethodName of the command
+func (m TracingRecordClockSyncMarker) MethodName() string { return "Tracing.recordClockSyncMarker" }
+
 // Call of the command, sessionID is optional.
 func (m TracingRecordClockSyncMarker) Call(caller Caller) error {
-	return call("Tracing.recordClockSyncMarker", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TracingRequestMemoryDump Request a global memory dump.
@@ -13181,10 +14406,13 @@ type TracingRequestMemoryDump struct {
 	Deterministic bool `json:"deterministic,omitempty"`
 }
 
+// MethodName of the command
+func (m TracingRequestMemoryDump) MethodName() string { return "Tracing.requestMemoryDump" }
+
 // Call of the command, sessionID is optional.
 func (m TracingRequestMemoryDump) Call(caller Caller) (*TracingRequestMemoryDumpResult, error) {
 	var res TracingRequestMemoryDumpResult
-	return &res, call("Tracing.requestMemoryDump", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // TracingRequestMemoryDumpResult Request a global memory dump.
@@ -13236,9 +14464,12 @@ type TracingStart struct {
 	TraceConfig *TracingTraceConfig `json:"traceConfig,omitempty"`
 }
 
+// MethodName of the command
+func (m TracingStart) MethodName() string { return "Tracing.start" }
+
 // Call of the command, sessionID is optional.
 func (m TracingStart) Call(caller Caller) error {
-	return call("Tracing.start", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // TracingBufferUsage ...
@@ -13399,9 +14630,12 @@ type FetchAuthChallengeResponse struct {
 type FetchDisable struct {
 }
 
+// MethodName of the command
+func (m FetchDisable) MethodName() string { return "Fetch.disable" }
+
 // Call of the command, sessionID is optional.
 func (m FetchDisable) Call(caller Caller) error {
-	return call("Fetch.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchEnable Enables issuing of requestPaused events. A request will be paused until client
@@ -13418,9 +14652,12 @@ type FetchEnable struct {
 	HandleAuthRequests bool `json:"handleAuthRequests,omitempty"`
 }
 
+// MethodName of the command
+func (m FetchEnable) MethodName() string { return "Fetch.enable" }
+
 // Call of the command, sessionID is optional.
 func (m FetchEnable) Call(caller Caller) error {
-	return call("Fetch.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchFailRequest Causes the request to fail with specified reason.
@@ -13433,9 +14670,12 @@ type FetchFailRequest struct {
 	ErrorReason NetworkErrorReason `json:"errorReason"`
 }
 
+// MethodName of the command
+func (m FetchFailRequest) MethodName() string { return "Fetch.failRequest" }
+
 // Call of the command, sessionID is optional.
 func (m FetchFailRequest) Call(caller Caller) error {
-	return call("Fetch.failRequest", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchFulfillRequest Provides response to the request.
@@ -13464,9 +14704,12 @@ type FetchFulfillRequest struct {
 	ResponsePhrase string `json:"responsePhrase,omitempty"`
 }
 
+// MethodName of the command
+func (m FetchFulfillRequest) MethodName() string { return "Fetch.fulfillRequest" }
+
 // Call of the command, sessionID is optional.
 func (m FetchFulfillRequest) Call(caller Caller) error {
-	return call("Fetch.fulfillRequest", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchContinueRequest Continues the request, optionally modifying some of its parameters.
@@ -13488,9 +14731,12 @@ type FetchContinueRequest struct {
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
 }
 
+// MethodName of the command
+func (m FetchContinueRequest) MethodName() string { return "Fetch.continueRequest" }
+
 // Call of the command, sessionID is optional.
 func (m FetchContinueRequest) Call(caller Caller) error {
-	return call("Fetch.continueRequest", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchContinueWithAuth Continues a request supplying authChallengeResponse following authRequired event.
@@ -13503,9 +14749,12 @@ type FetchContinueWithAuth struct {
 	AuthChallengeResponse *FetchAuthChallengeResponse `json:"authChallengeResponse"`
 }
 
+// MethodName of the command
+func (m FetchContinueWithAuth) MethodName() string { return "Fetch.continueWithAuth" }
+
 // Call of the command, sessionID is optional.
 func (m FetchContinueWithAuth) Call(caller Caller) error {
-	return call("Fetch.continueWithAuth", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // FetchGetResponseBody Causes the body of the response to be received from the server and
@@ -13520,10 +14769,13 @@ type FetchGetResponseBody struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
+// MethodName of the command
+func (m FetchGetResponseBody) MethodName() string { return "Fetch.getResponseBody" }
+
 // Call of the command, sessionID is optional.
 func (m FetchGetResponseBody) Call(caller Caller) (*FetchGetResponseBodyResult, error) {
 	var res FetchGetResponseBodyResult
-	return &res, call("Fetch.getResponseBody", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // FetchGetResponseBodyResult Causes the body of the response to be received from the server and
@@ -13557,10 +14809,13 @@ type FetchTakeResponseBodyAsStream struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
+// MethodName of the command
+func (m FetchTakeResponseBodyAsStream) MethodName() string { return "Fetch.takeResponseBodyAsStream" }
+
 // Call of the command, sessionID is optional.
 func (m FetchTakeResponseBodyAsStream) Call(caller Caller) (*FetchTakeResponseBodyAsStreamResult, error) {
 	var res FetchTakeResponseBodyAsStreamResult
-	return &res, call("Fetch.takeResponseBodyAsStream", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // FetchTakeResponseBodyAsStreamResult Returns a handle to the stream representing the response body.
@@ -13828,18 +15083,24 @@ type WebAudioAudioParam struct {
 type WebAudioEnable struct {
 }
 
+// MethodName of the command
+func (m WebAudioEnable) MethodName() string { return "WebAudio.enable" }
+
 // Call of the command, sessionID is optional.
 func (m WebAudioEnable) Call(caller Caller) error {
-	return call("WebAudio.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAudioDisable Disables the WebAudio domain.
 type WebAudioDisable struct {
 }
 
+// MethodName of the command
+func (m WebAudioDisable) MethodName() string { return "WebAudio.disable" }
+
 // Call of the command, sessionID is optional.
 func (m WebAudioDisable) Call(caller Caller) error {
-	return call("WebAudio.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAudioGetRealtimeData Fetch the realtime data from the registered contexts.
@@ -13849,10 +15110,13 @@ type WebAudioGetRealtimeData struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
+// MethodName of the command
+func (m WebAudioGetRealtimeData) MethodName() string { return "WebAudio.getRealtimeData" }
+
 // Call of the command, sessionID is optional.
 func (m WebAudioGetRealtimeData) Call(caller Caller) (*WebAudioGetRealtimeDataResult, error) {
 	var res WebAudioGetRealtimeDataResult
-	return &res, call("WebAudio.getRealtimeData", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // WebAudioGetRealtimeDataResult Fetch the realtime data from the registered contexts.
@@ -14161,18 +15425,24 @@ type WebAuthnCredential struct {
 type WebAuthnEnable struct {
 }
 
+// MethodName of the command
+func (m WebAuthnEnable) MethodName() string { return "WebAuthn.enable" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnEnable) Call(caller Caller) error {
-	return call("WebAuthn.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnDisable Disable the WebAuthn domain.
 type WebAuthnDisable struct {
 }
 
+// MethodName of the command
+func (m WebAuthnDisable) MethodName() string { return "WebAuthn.disable" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnDisable) Call(caller Caller) error {
-	return call("WebAuthn.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnAddVirtualAuthenticator Creates and adds a virtual authenticator.
@@ -14182,10 +15452,15 @@ type WebAuthnAddVirtualAuthenticator struct {
 	Options *WebAuthnVirtualAuthenticatorOptions `json:"options"`
 }
 
+// MethodName of the command
+func (m WebAuthnAddVirtualAuthenticator) MethodName() string {
+	return "WebAuthn.addVirtualAuthenticator"
+}
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnAddVirtualAuthenticator) Call(caller Caller) (*WebAuthnAddVirtualAuthenticatorResult, error) {
 	var res WebAuthnAddVirtualAuthenticatorResult
-	return &res, call("WebAuthn.addVirtualAuthenticator", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // WebAuthnAddVirtualAuthenticatorResult Creates and adds a virtual authenticator.
@@ -14202,9 +15477,14 @@ type WebAuthnRemoveVirtualAuthenticator struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
+// MethodName of the command
+func (m WebAuthnRemoveVirtualAuthenticator) MethodName() string {
+	return "WebAuthn.removeVirtualAuthenticator"
+}
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnRemoveVirtualAuthenticator) Call(caller Caller) error {
-	return call("WebAuthn.removeVirtualAuthenticator", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnAddCredential Adds the credential to the specified authenticator.
@@ -14217,9 +15497,12 @@ type WebAuthnAddCredential struct {
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
+// MethodName of the command
+func (m WebAuthnAddCredential) MethodName() string { return "WebAuthn.addCredential" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnAddCredential) Call(caller Caller) error {
-	return call("WebAuthn.addCredential", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnGetCredential Returns a single credential stored in the given virtual authenticator that
@@ -14233,10 +15516,13 @@ type WebAuthnGetCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
+// MethodName of the command
+func (m WebAuthnGetCredential) MethodName() string { return "WebAuthn.getCredential" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnGetCredential) Call(caller Caller) (*WebAuthnGetCredentialResult, error) {
 	var res WebAuthnGetCredentialResult
-	return &res, call("WebAuthn.getCredential", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // WebAuthnGetCredentialResult Returns a single credential stored in the given virtual authenticator that
@@ -14254,10 +15540,13 @@ type WebAuthnGetCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
+// MethodName of the command
+func (m WebAuthnGetCredentials) MethodName() string { return "WebAuthn.getCredentials" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnGetCredentials) Call(caller Caller) (*WebAuthnGetCredentialsResult, error) {
 	var res WebAuthnGetCredentialsResult
-	return &res, call("WebAuthn.getCredentials", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // WebAuthnGetCredentialsResult Returns all the credentials stored in the given virtual authenticator.
@@ -14277,9 +15566,12 @@ type WebAuthnRemoveCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
+// MethodName of the command
+func (m WebAuthnRemoveCredential) MethodName() string { return "WebAuthn.removeCredential" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnRemoveCredential) Call(caller Caller) error {
-	return call("WebAuthn.removeCredential", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnClearCredentials Clears all the credentials from the specified device.
@@ -14289,9 +15581,12 @@ type WebAuthnClearCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
+// MethodName of the command
+func (m WebAuthnClearCredentials) MethodName() string { return "WebAuthn.clearCredentials" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnClearCredentials) Call(caller Caller) error {
-	return call("WebAuthn.clearCredentials", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // WebAuthnSetUserVerified Sets whether User Verification succeeds or fails for an authenticator.
@@ -14305,9 +15600,12 @@ type WebAuthnSetUserVerified struct {
 	IsUserVerified bool `json:"isUserVerified"`
 }
 
+// MethodName of the command
+func (m WebAuthnSetUserVerified) MethodName() string { return "WebAuthn.setUserVerified" }
+
 // Call of the command, sessionID is optional.
 func (m WebAuthnSetUserVerified) Call(caller Caller) error {
-	return call("WebAuthn.setUserVerified", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MediaPlayerID Players will get an ID that is unique within the agent context.
@@ -14361,18 +15659,24 @@ type MediaPlayerEvent struct {
 type MediaEnable struct {
 }
 
+// MethodName of the command
+func (m MediaEnable) MethodName() string { return "Media.enable" }
+
 // Call of the command, sessionID is optional.
 func (m MediaEnable) Call(caller Caller) error {
-	return call("Media.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MediaDisable Disables the Media domain.
 type MediaDisable struct {
 }
 
+// MethodName of the command
+func (m MediaDisable) MethodName() string { return "Media.disable" }
+
 // Call of the command, sessionID is optional.
 func (m MediaDisable) Call(caller Caller) error {
-	return call("Media.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // MediaPlayerPropertiesChanged This can be called multiple times, and can be used to set / override /
@@ -14505,18 +15809,24 @@ type ConsoleConsoleMessage struct {
 type ConsoleClearMessages struct {
 }
 
+// MethodName of the command
+func (m ConsoleClearMessages) MethodName() string { return "Console.clearMessages" }
+
 // Call of the command, sessionID is optional.
 func (m ConsoleClearMessages) Call(caller Caller) error {
-	return call("Console.clearMessages", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ConsoleDisable Disables console domain, prevents further console messages from being reported to the client.
 type ConsoleDisable struct {
 }
 
+// MethodName of the command
+func (m ConsoleDisable) MethodName() string { return "Console.disable" }
+
 // Call of the command, sessionID is optional.
 func (m ConsoleDisable) Call(caller Caller) error {
-	return call("Console.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ConsoleEnable Enables console domain, sends the messages collected so far to the client by means of the
@@ -14524,9 +15834,12 @@ func (m ConsoleDisable) Call(caller Caller) error {
 type ConsoleEnable struct {
 }
 
+// MethodName of the command
+func (m ConsoleEnable) MethodName() string { return "Console.enable" }
+
 // Call of the command, sessionID is optional.
 func (m ConsoleEnable) Call(caller Caller) error {
-	return call("Console.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ConsoleMessageAdded Issued when new console message is added.
@@ -14726,18 +16039,24 @@ type DebuggerContinueToLocation struct {
 	TargetCallFrames DebuggerContinueToLocationTargetCallFrames `json:"targetCallFrames,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerContinueToLocation) MethodName() string { return "Debugger.continueToLocation" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerContinueToLocation) Call(caller Caller) error {
-	return call("Debugger.continueToLocation", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerDisable Disables debugger for given page.
 type DebuggerDisable struct {
 }
 
+// MethodName of the command
+func (m DebuggerDisable) MethodName() string { return "Debugger.disable" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerDisable) Call(caller Caller) error {
-	return call("Debugger.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerEnable Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -14749,10 +16068,13 @@ type DebuggerEnable struct {
 	MaxScriptsCacheSize float64 `json:"maxScriptsCacheSize,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerEnable) MethodName() string { return "Debugger.enable" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerEnable) Call(caller Caller) (*DebuggerEnableResult, error) {
 	var res DebuggerEnableResult
-	return &res, call("Debugger.enable", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerEnableResult Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -14797,10 +16119,13 @@ type DebuggerEvaluateOnCallFrame struct {
 	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerEvaluateOnCallFrame) MethodName() string { return "Debugger.evaluateOnCallFrame" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerEvaluateOnCallFrame) Call(caller Caller) (*DebuggerEvaluateOnCallFrameResult, error) {
 	var res DebuggerEvaluateOnCallFrameResult
-	return &res, call("Debugger.evaluateOnCallFrame", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerEvaluateOnCallFrameResult Evaluates expression on a given call frame.
@@ -14828,10 +16153,13 @@ type DebuggerGetPossibleBreakpoints struct {
 	RestrictToFunction bool `json:"restrictToFunction,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerGetPossibleBreakpoints) MethodName() string { return "Debugger.getPossibleBreakpoints" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerGetPossibleBreakpoints) Call(caller Caller) (*DebuggerGetPossibleBreakpointsResult, error) {
 	var res DebuggerGetPossibleBreakpointsResult
-	return &res, call("Debugger.getPossibleBreakpoints", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerGetPossibleBreakpointsResult Returns possible locations for breakpoint. scriptId in start and end range locations should be
@@ -14849,10 +16177,13 @@ type DebuggerGetScriptSource struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
+// MethodName of the command
+func (m DebuggerGetScriptSource) MethodName() string { return "Debugger.getScriptSource" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerGetScriptSource) Call(caller Caller) (*DebuggerGetScriptSourceResult, error) {
 	var res DebuggerGetScriptSourceResult
-	return &res, call("Debugger.getScriptSource", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerGetScriptSourceResult Returns source for the script with given id.
@@ -14872,10 +16203,13 @@ type DebuggerGetWasmBytecode struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
+// MethodName of the command
+func (m DebuggerGetWasmBytecode) MethodName() string { return "Debugger.getWasmBytecode" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerGetWasmBytecode) Call(caller Caller) (*DebuggerGetWasmBytecodeResult, error) {
 	var res DebuggerGetWasmBytecodeResult
-	return &res, call("Debugger.getWasmBytecode", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerGetWasmBytecodeResult (deprecated) This command is deprecated. Use getScriptSource instead.
@@ -14892,10 +16226,13 @@ type DebuggerGetStackTrace struct {
 	StackTraceID *RuntimeStackTraceID `json:"stackTraceId"`
 }
 
+// MethodName of the command
+func (m DebuggerGetStackTrace) MethodName() string { return "Debugger.getStackTrace" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerGetStackTrace) Call(caller Caller) (*DebuggerGetStackTraceResult, error) {
 	var res DebuggerGetStackTraceResult
-	return &res, call("Debugger.getStackTrace", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerGetStackTraceResult (experimental) Returns stack trace with given `stackTraceId`.
@@ -14909,9 +16246,12 @@ type DebuggerGetStackTraceResult struct {
 type DebuggerPause struct {
 }
 
+// MethodName of the command
+func (m DebuggerPause) MethodName() string { return "Debugger.pause" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerPause) Call(caller Caller) error {
-	return call("Debugger.pause", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerPauseOnAsyncCall (deprecated) (experimental) ...
@@ -14921,9 +16261,12 @@ type DebuggerPauseOnAsyncCall struct {
 	ParentStackTraceID *RuntimeStackTraceID `json:"parentStackTraceId"`
 }
 
+// MethodName of the command
+func (m DebuggerPauseOnAsyncCall) MethodName() string { return "Debugger.pauseOnAsyncCall" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerPauseOnAsyncCall) Call(caller Caller) error {
-	return call("Debugger.pauseOnAsyncCall", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerRemoveBreakpoint Removes JavaScript breakpoint.
@@ -14933,9 +16276,12 @@ type DebuggerRemoveBreakpoint struct {
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
 
+// MethodName of the command
+func (m DebuggerRemoveBreakpoint) MethodName() string { return "Debugger.removeBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerRemoveBreakpoint) Call(caller Caller) error {
-	return call("Debugger.removeBreakpoint", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerRestartFrame Restarts particular call frame from the beginning.
@@ -14945,10 +16291,13 @@ type DebuggerRestartFrame struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
+// MethodName of the command
+func (m DebuggerRestartFrame) MethodName() string { return "Debugger.restartFrame" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerRestartFrame) Call(caller Caller) (*DebuggerRestartFrameResult, error) {
 	var res DebuggerRestartFrameResult
-	return &res, call("Debugger.restartFrame", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerRestartFrameResult Restarts particular call frame from the beginning.
@@ -14975,9 +16324,12 @@ type DebuggerResume struct {
 	TerminateOnResume bool `json:"terminateOnResume,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerResume) MethodName() string { return "Debugger.resume" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerResume) Call(caller Caller) error {
-	return call("Debugger.resume", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSearchInContent Searches for given string in script content.
@@ -14996,10 +16348,13 @@ type DebuggerSearchInContent struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerSearchInContent) MethodName() string { return "Debugger.searchInContent" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSearchInContent) Call(caller Caller) (*DebuggerSearchInContentResult, error) {
 	var res DebuggerSearchInContentResult
-	return &res, call("Debugger.searchInContent", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSearchInContentResult Searches for given string in script content.
@@ -15017,9 +16372,12 @@ type DebuggerSetAsyncCallStackDepth struct {
 	MaxDepth int64 `json:"maxDepth"`
 }
 
+// MethodName of the command
+func (m DebuggerSetAsyncCallStackDepth) MethodName() string { return "Debugger.setAsyncCallStackDepth" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetAsyncCallStackDepth) Call(caller Caller) error {
-	return call("Debugger.setAsyncCallStackDepth", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetBlackboxPatterns (experimental) Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
@@ -15031,9 +16389,12 @@ type DebuggerSetBlackboxPatterns struct {
 	Patterns []string `json:"patterns"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBlackboxPatterns) MethodName() string { return "Debugger.setBlackboxPatterns" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBlackboxPatterns) Call(caller Caller) error {
-	return call("Debugger.setBlackboxPatterns", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetBlackboxedRanges (experimental) Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
@@ -15049,9 +16410,12 @@ type DebuggerSetBlackboxedRanges struct {
 	Positions []*DebuggerScriptPosition `json:"positions"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBlackboxedRanges) MethodName() string { return "Debugger.setBlackboxedRanges" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBlackboxedRanges) Call(caller Caller) error {
-	return call("Debugger.setBlackboxedRanges", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetBreakpoint Sets JavaScript breakpoint at a given location.
@@ -15065,10 +16429,13 @@ type DebuggerSetBreakpoint struct {
 	Condition string `json:"condition,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBreakpoint) MethodName() string { return "Debugger.setBreakpoint" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpoint) Call(caller Caller) (*DebuggerSetBreakpointResult, error) {
 	var res DebuggerSetBreakpointResult
-	return &res, call("Debugger.setBreakpoint", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSetBreakpointResult Sets JavaScript breakpoint at a given location.
@@ -15099,10 +16466,15 @@ type DebuggerSetInstrumentationBreakpoint struct {
 	Instrumentation DebuggerSetInstrumentationBreakpointInstrumentation `json:"instrumentation"`
 }
 
+// MethodName of the command
+func (m DebuggerSetInstrumentationBreakpoint) MethodName() string {
+	return "Debugger.setInstrumentationBreakpoint"
+}
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetInstrumentationBreakpoint) Call(caller Caller) (*DebuggerSetInstrumentationBreakpointResult, error) {
 	var res DebuggerSetInstrumentationBreakpointResult
-	return &res, call("Debugger.setInstrumentationBreakpoint", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSetInstrumentationBreakpointResult Sets instrumentation breakpoint.
@@ -15139,10 +16511,13 @@ type DebuggerSetBreakpointByURL struct {
 	Condition string `json:"condition,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBreakpointByURL) MethodName() string { return "Debugger.setBreakpointByUrl" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointByURL) Call(caller Caller) (*DebuggerSetBreakpointByURLResult, error) {
 	var res DebuggerSetBreakpointByURLResult
-	return &res, call("Debugger.setBreakpointByUrl", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSetBreakpointByURLResult Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
@@ -15171,10 +16546,15 @@ type DebuggerSetBreakpointOnFunctionCall struct {
 	Condition string `json:"condition,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBreakpointOnFunctionCall) MethodName() string {
+	return "Debugger.setBreakpointOnFunctionCall"
+}
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointOnFunctionCall) Call(caller Caller) (*DebuggerSetBreakpointOnFunctionCallResult, error) {
 	var res DebuggerSetBreakpointOnFunctionCallResult
-	return &res, call("Debugger.setBreakpointOnFunctionCall", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSetBreakpointOnFunctionCallResult (experimental) Sets JavaScript breakpoint before each call to the given function.
@@ -15193,9 +16573,12 @@ type DebuggerSetBreakpointsActive struct {
 	Active bool `json:"active"`
 }
 
+// MethodName of the command
+func (m DebuggerSetBreakpointsActive) MethodName() string { return "Debugger.setBreakpointsActive" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetBreakpointsActive) Call(caller Caller) error {
-	return call("Debugger.setBreakpointsActive", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetPauseOnExceptionsState enum
@@ -15220,9 +16603,12 @@ type DebuggerSetPauseOnExceptions struct {
 	State DebuggerSetPauseOnExceptionsState `json:"state"`
 }
 
+// MethodName of the command
+func (m DebuggerSetPauseOnExceptions) MethodName() string { return "Debugger.setPauseOnExceptions" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetPauseOnExceptions) Call(caller Caller) error {
-	return call("Debugger.setPauseOnExceptions", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetReturnValue (experimental) Changes return value in top frame. Available only at return break position.
@@ -15232,9 +16618,12 @@ type DebuggerSetReturnValue struct {
 	NewValue *RuntimeCallArgument `json:"newValue"`
 }
 
+// MethodName of the command
+func (m DebuggerSetReturnValue) MethodName() string { return "Debugger.setReturnValue" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetReturnValue) Call(caller Caller) error {
-	return call("Debugger.setReturnValue", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetScriptSource Edits JavaScript source live.
@@ -15251,10 +16640,13 @@ type DebuggerSetScriptSource struct {
 	DryRun bool `json:"dryRun,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerSetScriptSource) MethodName() string { return "Debugger.setScriptSource" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetScriptSource) Call(caller Caller) (*DebuggerSetScriptSourceResult, error) {
 	var res DebuggerSetScriptSourceResult
-	return &res, call("Debugger.setScriptSource", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // DebuggerSetScriptSourceResult Edits JavaScript source live.
@@ -15283,9 +16675,12 @@ type DebuggerSetSkipAllPauses struct {
 	Skip bool `json:"skip"`
 }
 
+// MethodName of the command
+func (m DebuggerSetSkipAllPauses) MethodName() string { return "Debugger.setSkipAllPauses" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetSkipAllPauses) Call(caller Caller) error {
-	return call("Debugger.setSkipAllPauses", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerSetVariableValue Changes value of variable in a callframe. Object-based scopes are not supported and must be
@@ -15306,9 +16701,12 @@ type DebuggerSetVariableValue struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
+// MethodName of the command
+func (m DebuggerSetVariableValue) MethodName() string { return "Debugger.setVariableValue" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerSetVariableValue) Call(caller Caller) error {
-	return call("Debugger.setVariableValue", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerStepInto Steps into the function call.
@@ -15319,27 +16717,36 @@ type DebuggerStepInto struct {
 	BreakOnAsyncCall bool `json:"breakOnAsyncCall,omitempty"`
 }
 
+// MethodName of the command
+func (m DebuggerStepInto) MethodName() string { return "Debugger.stepInto" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerStepInto) Call(caller Caller) error {
-	return call("Debugger.stepInto", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerStepOut Steps out of the function call.
 type DebuggerStepOut struct {
 }
 
+// MethodName of the command
+func (m DebuggerStepOut) MethodName() string { return "Debugger.stepOut" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerStepOut) Call(caller Caller) error {
-	return call("Debugger.stepOut", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerStepOver Steps over the statement.
 type DebuggerStepOver struct {
 }
 
+// MethodName of the command
+func (m DebuggerStepOver) MethodName() string { return "Debugger.stepOver" }
+
 // Call of the command, sessionID is optional.
 func (m DebuggerStepOver) Call(caller Caller) error {
-	return call("Debugger.stepOver", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // DebuggerBreakpointResolved Fired when breakpoint is resolved to an actual script and location.
@@ -15603,36 +17010,50 @@ type HeapProfilerAddInspectedHeapObject struct {
 	HeapObjectID HeapProfilerHeapSnapshotObjectID `json:"heapObjectId"`
 }
 
+// MethodName of the command
+func (m HeapProfilerAddInspectedHeapObject) MethodName() string {
+	return "HeapProfiler.addInspectedHeapObject"
+}
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerAddInspectedHeapObject) Call(caller Caller) error {
-	return call("HeapProfiler.addInspectedHeapObject", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerCollectGarbage ...
 type HeapProfilerCollectGarbage struct {
 }
 
+// MethodName of the command
+func (m HeapProfilerCollectGarbage) MethodName() string { return "HeapProfiler.collectGarbage" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerCollectGarbage) Call(caller Caller) error {
-	return call("HeapProfiler.collectGarbage", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerDisable ...
 type HeapProfilerDisable struct {
 }
 
+// MethodName of the command
+func (m HeapProfilerDisable) MethodName() string { return "HeapProfiler.disable" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerDisable) Call(caller Caller) error {
-	return call("HeapProfiler.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerEnable ...
 type HeapProfilerEnable struct {
 }
 
+// MethodName of the command
+func (m HeapProfilerEnable) MethodName() string { return "HeapProfiler.enable" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerEnable) Call(caller Caller) error {
-	return call("HeapProfiler.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerGetHeapObjectID ...
@@ -15642,10 +17063,13 @@ type HeapProfilerGetHeapObjectID struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
+// MethodName of the command
+func (m HeapProfilerGetHeapObjectID) MethodName() string { return "HeapProfiler.getHeapObjectId" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetHeapObjectID) Call(caller Caller) (*HeapProfilerGetHeapObjectIDResult, error) {
 	var res HeapProfilerGetHeapObjectIDResult
-	return &res, call("HeapProfiler.getHeapObjectId", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // HeapProfilerGetHeapObjectIDResult ...
@@ -15665,10 +17089,15 @@ type HeapProfilerGetObjectByHeapObjectID struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
+// MethodName of the command
+func (m HeapProfilerGetObjectByHeapObjectID) MethodName() string {
+	return "HeapProfiler.getObjectByHeapObjectId"
+}
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetObjectByHeapObjectID) Call(caller Caller) (*HeapProfilerGetObjectByHeapObjectIDResult, error) {
 	var res HeapProfilerGetObjectByHeapObjectIDResult
-	return &res, call("HeapProfiler.getObjectByHeapObjectId", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // HeapProfilerGetObjectByHeapObjectIDResult ...
@@ -15682,10 +17111,13 @@ type HeapProfilerGetObjectByHeapObjectIDResult struct {
 type HeapProfilerGetSamplingProfile struct {
 }
 
+// MethodName of the command
+func (m HeapProfilerGetSamplingProfile) MethodName() string { return "HeapProfiler.getSamplingProfile" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerGetSamplingProfile) Call(caller Caller) (*HeapProfilerGetSamplingProfileResult, error) {
 	var res HeapProfilerGetSamplingProfileResult
-	return &res, call("HeapProfiler.getSamplingProfile", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // HeapProfilerGetSamplingProfileResult ...
@@ -15703,9 +17135,12 @@ type HeapProfilerStartSampling struct {
 	SamplingInterval float64 `json:"samplingInterval,omitempty"`
 }
 
+// MethodName of the command
+func (m HeapProfilerStartSampling) MethodName() string { return "HeapProfiler.startSampling" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStartSampling) Call(caller Caller) error {
-	return call("HeapProfiler.startSampling", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerStartTrackingHeapObjects ...
@@ -15715,19 +17150,27 @@ type HeapProfilerStartTrackingHeapObjects struct {
 	TrackAllocations bool `json:"trackAllocations,omitempty"`
 }
 
+// MethodName of the command
+func (m HeapProfilerStartTrackingHeapObjects) MethodName() string {
+	return "HeapProfiler.startTrackingHeapObjects"
+}
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStartTrackingHeapObjects) Call(caller Caller) error {
-	return call("HeapProfiler.startTrackingHeapObjects", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerStopSampling ...
 type HeapProfilerStopSampling struct {
 }
 
+// MethodName of the command
+func (m HeapProfilerStopSampling) MethodName() string { return "HeapProfiler.stopSampling" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStopSampling) Call(caller Caller) (*HeapProfilerStopSamplingResult, error) {
 	var res HeapProfilerStopSamplingResult
-	return &res, call("HeapProfiler.stopSampling", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // HeapProfilerStopSamplingResult ...
@@ -15748,9 +17191,14 @@ type HeapProfilerStopTrackingHeapObjects struct {
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 }
 
+// MethodName of the command
+func (m HeapProfilerStopTrackingHeapObjects) MethodName() string {
+	return "HeapProfiler.stopTrackingHeapObjects"
+}
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerStopTrackingHeapObjects) Call(caller Caller) error {
-	return call("HeapProfiler.stopTrackingHeapObjects", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerTakeHeapSnapshot ...
@@ -15763,9 +17211,12 @@ type HeapProfilerTakeHeapSnapshot struct {
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 }
 
+// MethodName of the command
+func (m HeapProfilerTakeHeapSnapshot) MethodName() string { return "HeapProfiler.takeHeapSnapshot" }
+
 // Call of the command, sessionID is optional.
 func (m HeapProfilerTakeHeapSnapshot) Call(caller Caller) error {
-	return call("HeapProfiler.takeHeapSnapshot", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // HeapProfilerAddHeapSnapshotChunk ...
@@ -15974,18 +17425,24 @@ type ProfilerCounterInfo struct {
 type ProfilerDisable struct {
 }
 
+// MethodName of the command
+func (m ProfilerDisable) MethodName() string { return "Profiler.disable" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerDisable) Call(caller Caller) error {
-	return call("Profiler.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerEnable ...
 type ProfilerEnable struct {
 }
 
+// MethodName of the command
+func (m ProfilerEnable) MethodName() string { return "Profiler.enable" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerEnable) Call(caller Caller) error {
-	return call("Profiler.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerGetBestEffortCoverage Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -15993,10 +17450,13 @@ func (m ProfilerEnable) Call(caller Caller) error {
 type ProfilerGetBestEffortCoverage struct {
 }
 
+// MethodName of the command
+func (m ProfilerGetBestEffortCoverage) MethodName() string { return "Profiler.getBestEffortCoverage" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerGetBestEffortCoverage) Call(caller Caller) (*ProfilerGetBestEffortCoverageResult, error) {
 	var res ProfilerGetBestEffortCoverageResult
-	return &res, call("Profiler.getBestEffortCoverage", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerGetBestEffortCoverageResult Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -16014,18 +17474,24 @@ type ProfilerSetSamplingInterval struct {
 	Interval int64 `json:"interval"`
 }
 
+// MethodName of the command
+func (m ProfilerSetSamplingInterval) MethodName() string { return "Profiler.setSamplingInterval" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerSetSamplingInterval) Call(caller Caller) error {
-	return call("Profiler.setSamplingInterval", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerStart ...
 type ProfilerStart struct {
 }
 
+// MethodName of the command
+func (m ProfilerStart) MethodName() string { return "Profiler.start" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStart) Call(caller Caller) error {
-	return call("Profiler.start", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerStartPreciseCoverage Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -16043,10 +17509,13 @@ type ProfilerStartPreciseCoverage struct {
 	AllowTriggeredUpdates bool `json:"allowTriggeredUpdates,omitempty"`
 }
 
+// MethodName of the command
+func (m ProfilerStartPreciseCoverage) MethodName() string { return "Profiler.startPreciseCoverage" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStartPreciseCoverage) Call(caller Caller) (*ProfilerStartPreciseCoverageResult, error) {
 	var res ProfilerStartPreciseCoverageResult
-	return &res, call("Profiler.startPreciseCoverage", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerStartPreciseCoverageResult Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -16062,19 +17531,25 @@ type ProfilerStartPreciseCoverageResult struct {
 type ProfilerStartTypeProfile struct {
 }
 
+// MethodName of the command
+func (m ProfilerStartTypeProfile) MethodName() string { return "Profiler.startTypeProfile" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStartTypeProfile) Call(caller Caller) error {
-	return call("Profiler.startTypeProfile", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerStop ...
 type ProfilerStop struct {
 }
 
+// MethodName of the command
+func (m ProfilerStop) MethodName() string { return "Profiler.stop" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStop) Call(caller Caller) (*ProfilerStopResult, error) {
 	var res ProfilerStopResult
-	return &res, call("Profiler.stop", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerStopResult ...
@@ -16089,18 +17564,24 @@ type ProfilerStopResult struct {
 type ProfilerStopPreciseCoverage struct {
 }
 
+// MethodName of the command
+func (m ProfilerStopPreciseCoverage) MethodName() string { return "Profiler.stopPreciseCoverage" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStopPreciseCoverage) Call(caller Caller) error {
-	return call("Profiler.stopPreciseCoverage", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerStopTypeProfile (experimental) Disable type profile. Disabling releases type profile data collected so far.
 type ProfilerStopTypeProfile struct {
 }
 
+// MethodName of the command
+func (m ProfilerStopTypeProfile) MethodName() string { return "Profiler.stopTypeProfile" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerStopTypeProfile) Call(caller Caller) error {
-	return call("Profiler.stopTypeProfile", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerTakePreciseCoverage Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -16108,10 +17589,13 @@ func (m ProfilerStopTypeProfile) Call(caller Caller) error {
 type ProfilerTakePreciseCoverage struct {
 }
 
+// MethodName of the command
+func (m ProfilerTakePreciseCoverage) MethodName() string { return "Profiler.takePreciseCoverage" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerTakePreciseCoverage) Call(caller Caller) (*ProfilerTakePreciseCoverageResult, error) {
 	var res ProfilerTakePreciseCoverageResult
-	return &res, call("Profiler.takePreciseCoverage", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerTakePreciseCoverageResult Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -16129,10 +17613,13 @@ type ProfilerTakePreciseCoverageResult struct {
 type ProfilerTakeTypeProfile struct {
 }
 
+// MethodName of the command
+func (m ProfilerTakeTypeProfile) MethodName() string { return "Profiler.takeTypeProfile" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerTakeTypeProfile) Call(caller Caller) (*ProfilerTakeTypeProfileResult, error) {
 	var res ProfilerTakeTypeProfileResult
-	return &res, call("Profiler.takeTypeProfile", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerTakeTypeProfileResult (experimental) Collect type profile.
@@ -16146,28 +17633,39 @@ type ProfilerTakeTypeProfileResult struct {
 type ProfilerEnableRuntimeCallStats struct {
 }
 
+// MethodName of the command
+func (m ProfilerEnableRuntimeCallStats) MethodName() string { return "Profiler.enableRuntimeCallStats" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerEnableRuntimeCallStats) Call(caller Caller) error {
-	return call("Profiler.enableRuntimeCallStats", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerDisableRuntimeCallStats (experimental) Disable run time call stats collection.
 type ProfilerDisableRuntimeCallStats struct {
 }
 
+// MethodName of the command
+func (m ProfilerDisableRuntimeCallStats) MethodName() string {
+	return "Profiler.disableRuntimeCallStats"
+}
+
 // Call of the command, sessionID is optional.
 func (m ProfilerDisableRuntimeCallStats) Call(caller Caller) error {
-	return call("Profiler.disableRuntimeCallStats", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // ProfilerGetRuntimeCallStats (experimental) Retrieve run time call stats.
 type ProfilerGetRuntimeCallStats struct {
 }
 
+// MethodName of the command
+func (m ProfilerGetRuntimeCallStats) MethodName() string { return "Profiler.getRuntimeCallStats" }
+
 // Call of the command, sessionID is optional.
 func (m ProfilerGetRuntimeCallStats) Call(caller Caller) (*ProfilerGetRuntimeCallStatsResult, error) {
 	var res ProfilerGetRuntimeCallStatsResult
-	return &res, call("Profiler.getRuntimeCallStats", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // ProfilerGetRuntimeCallStatsResult (experimental) Retrieve run time call stats.
@@ -16790,10 +18288,13 @@ type RuntimeAwaitPromise struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeAwaitPromise) MethodName() string { return "Runtime.awaitPromise" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeAwaitPromise) Call(caller Caller) (*RuntimeAwaitPromiseResult, error) {
 	var res RuntimeAwaitPromiseResult
-	return &res, call("Runtime.awaitPromise", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeAwaitPromiseResult Add handler to promise with given promise object id.
@@ -16847,10 +18348,13 @@ type RuntimeCallFunctionOn struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeCallFunctionOn) MethodName() string { return "Runtime.callFunctionOn" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeCallFunctionOn) Call(caller Caller) (*RuntimeCallFunctionOnResult, error) {
 	var res RuntimeCallFunctionOnResult
-	return &res, call("Runtime.callFunctionOn", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeCallFunctionOnResult Calls function with given declaration on the given object. Object group of the result is
@@ -16881,10 +18385,13 @@ type RuntimeCompileScript struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeCompileScript) MethodName() string { return "Runtime.compileScript" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeCompileScript) Call(caller Caller) (*RuntimeCompileScriptResult, error) {
 	var res RuntimeCompileScriptResult
-	return &res, call("Runtime.compileScript", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeCompileScriptResult Compiles expression.
@@ -16901,18 +18408,24 @@ type RuntimeCompileScriptResult struct {
 type RuntimeDisable struct {
 }
 
+// MethodName of the command
+func (m RuntimeDisable) MethodName() string { return "Runtime.disable" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeDisable) Call(caller Caller) error {
-	return call("Runtime.disable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeDiscardConsoleEntries Discards collected exceptions and console API calls.
 type RuntimeDiscardConsoleEntries struct {
 }
 
+// MethodName of the command
+func (m RuntimeDiscardConsoleEntries) MethodName() string { return "Runtime.discardConsoleEntries" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeDiscardConsoleEntries) Call(caller Caller) error {
-	return call("Runtime.discardConsoleEntries", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeEnable Enables reporting of execution contexts creation by means of `executionContextCreated` event.
@@ -16921,9 +18434,12 @@ func (m RuntimeDiscardConsoleEntries) Call(caller Caller) error {
 type RuntimeEnable struct {
 }
 
+// MethodName of the command
+func (m RuntimeEnable) MethodName() string { return "Runtime.enable" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeEnable) Call(caller Caller) error {
-	return call("Runtime.enable", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeEvaluate Evaluates expression on global object.
@@ -16975,10 +18491,13 @@ type RuntimeEvaluate struct {
 	ReplMode bool `json:"replMode,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeEvaluate) MethodName() string { return "Runtime.evaluate" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeEvaluate) Call(caller Caller) (*RuntimeEvaluateResult, error) {
 	var res RuntimeEvaluateResult
-	return &res, call("Runtime.evaluate", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeEvaluateResult Evaluates expression on global object.
@@ -16995,10 +18514,13 @@ type RuntimeEvaluateResult struct {
 type RuntimeGetIsolateID struct {
 }
 
+// MethodName of the command
+func (m RuntimeGetIsolateID) MethodName() string { return "Runtime.getIsolateId" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeGetIsolateID) Call(caller Caller) (*RuntimeGetIsolateIDResult, error) {
 	var res RuntimeGetIsolateIDResult
-	return &res, call("Runtime.getIsolateId", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeGetIsolateIDResult (experimental) Returns the isolate id.
@@ -17013,10 +18535,13 @@ type RuntimeGetIsolateIDResult struct {
 type RuntimeGetHeapUsage struct {
 }
 
+// MethodName of the command
+func (m RuntimeGetHeapUsage) MethodName() string { return "Runtime.getHeapUsage" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeGetHeapUsage) Call(caller Caller) (*RuntimeGetHeapUsageResult, error) {
 	var res RuntimeGetHeapUsageResult
-	return &res, call("Runtime.getHeapUsage", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeGetHeapUsageResult (experimental) Returns the JavaScript heap usage.
@@ -17049,10 +18574,13 @@ type RuntimeGetProperties struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeGetProperties) MethodName() string { return "Runtime.getProperties" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeGetProperties) Call(caller Caller) (*RuntimeGetPropertiesResult, error) {
 	var res RuntimeGetPropertiesResult
-	return &res, call("Runtime.getProperties", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeGetPropertiesResult Returns properties of a given object. Object group of the result is inherited from the target
@@ -17079,10 +18607,13 @@ type RuntimeGlobalLexicalScopeNames struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeGlobalLexicalScopeNames) MethodName() string { return "Runtime.globalLexicalScopeNames" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeGlobalLexicalScopeNames) Call(caller Caller) (*RuntimeGlobalLexicalScopeNamesResult, error) {
 	var res RuntimeGlobalLexicalScopeNamesResult
-	return &res, call("Runtime.globalLexicalScopeNames", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeGlobalLexicalScopeNamesResult Returns all let, const and class variables from global scope.
@@ -17102,10 +18633,13 @@ type RuntimeQueryObjects struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeQueryObjects) MethodName() string { return "Runtime.queryObjects" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeQueryObjects) Call(caller Caller) (*RuntimeQueryObjectsResult, error) {
 	var res RuntimeQueryObjectsResult
-	return &res, call("Runtime.queryObjects", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeQueryObjectsResult ...
@@ -17122,9 +18656,12 @@ type RuntimeReleaseObject struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
+// MethodName of the command
+func (m RuntimeReleaseObject) MethodName() string { return "Runtime.releaseObject" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeReleaseObject) Call(caller Caller) error {
-	return call("Runtime.releaseObject", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeReleaseObjectGroup Releases all remote objects that belong to a given group.
@@ -17134,18 +18671,24 @@ type RuntimeReleaseObjectGroup struct {
 	ObjectGroup string `json:"objectGroup"`
 }
 
+// MethodName of the command
+func (m RuntimeReleaseObjectGroup) MethodName() string { return "Runtime.releaseObjectGroup" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeReleaseObjectGroup) Call(caller Caller) error {
-	return call("Runtime.releaseObjectGroup", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeRunIfWaitingForDebugger Tells inspected instance to run if it was waiting for debugger to attach.
 type RuntimeRunIfWaitingForDebugger struct {
 }
 
+// MethodName of the command
+func (m RuntimeRunIfWaitingForDebugger) MethodName() string { return "Runtime.runIfWaitingForDebugger" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeRunIfWaitingForDebugger) Call(caller Caller) error {
-	return call("Runtime.runIfWaitingForDebugger", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeRunScript Runs script with given id in a given context.
@@ -17179,10 +18722,13 @@ type RuntimeRunScript struct {
 	AwaitPromise bool `json:"awaitPromise,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeRunScript) MethodName() string { return "Runtime.runScript" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeRunScript) Call(caller Caller) (*RuntimeRunScriptResult, error) {
 	var res RuntimeRunScriptResult
-	return &res, call("Runtime.runScript", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // RuntimeRunScriptResult Runs script with given id in a given context.
@@ -17203,9 +18749,12 @@ type RuntimeSetAsyncCallStackDepth struct {
 	MaxDepth int64 `json:"maxDepth"`
 }
 
+// MethodName of the command
+func (m RuntimeSetAsyncCallStackDepth) MethodName() string { return "Runtime.setAsyncCallStackDepth" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeSetAsyncCallStackDepth) Call(caller Caller) error {
-	return call("Runtime.setAsyncCallStackDepth", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeSetCustomObjectFormatterEnabled (experimental) ...
@@ -17215,9 +18764,14 @@ type RuntimeSetCustomObjectFormatterEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
+// MethodName of the command
+func (m RuntimeSetCustomObjectFormatterEnabled) MethodName() string {
+	return "Runtime.setCustomObjectFormatterEnabled"
+}
+
 // Call of the command, sessionID is optional.
 func (m RuntimeSetCustomObjectFormatterEnabled) Call(caller Caller) error {
-	return call("Runtime.setCustomObjectFormatterEnabled", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeSetMaxCallStackSizeToCapture (experimental) ...
@@ -17227,9 +18781,14 @@ type RuntimeSetMaxCallStackSizeToCapture struct {
 	Size int64 `json:"size"`
 }
 
+// MethodName of the command
+func (m RuntimeSetMaxCallStackSizeToCapture) MethodName() string {
+	return "Runtime.setMaxCallStackSizeToCapture"
+}
+
 // Call of the command, sessionID is optional.
 func (m RuntimeSetMaxCallStackSizeToCapture) Call(caller Caller) error {
-	return call("Runtime.setMaxCallStackSizeToCapture", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeTerminateExecution (experimental) Terminate current or next JavaScript execution.
@@ -17237,9 +18796,12 @@ func (m RuntimeSetMaxCallStackSizeToCapture) Call(caller Caller) error {
 type RuntimeTerminateExecution struct {
 }
 
+// MethodName of the command
+func (m RuntimeTerminateExecution) MethodName() string { return "Runtime.terminateExecution" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeTerminateExecution) Call(caller Caller) error {
-	return call("Runtime.terminateExecution", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeAddBinding (experimental) If executionContextId is empty, adds binding with the given name on the
@@ -17259,9 +18821,12 @@ type RuntimeAddBinding struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
+// MethodName of the command
+func (m RuntimeAddBinding) MethodName() string { return "Runtime.addBinding" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeAddBinding) Call(caller Caller) error {
-	return call("Runtime.addBinding", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeRemoveBinding (experimental) This method does not remove binding function from global object but
@@ -17272,9 +18837,12 @@ type RuntimeRemoveBinding struct {
 	Name string `json:"name"`
 }
 
+// MethodName of the command
+func (m RuntimeRemoveBinding) MethodName() string { return "Runtime.removeBinding" }
+
 // Call of the command, sessionID is optional.
 func (m RuntimeRemoveBinding) Call(caller Caller) error {
-	return call("Runtime.removeBinding", m, nil, caller)
+	return Call(m.MethodName(), m, nil, caller)
 }
 
 // RuntimeBindingCalled (experimental) Notification is issued every time when binding is called.
@@ -17478,10 +19046,13 @@ type SchemaDomain struct {
 type SchemaGetDomains struct {
 }
 
+// MethodName of the command
+func (m SchemaGetDomains) MethodName() string { return "Schema.getDomains" }
+
 // Call of the command, sessionID is optional.
 func (m SchemaGetDomains) Call(caller Caller) (*SchemaGetDomainsResult, error) {
 	var res SchemaGetDomainsResult
-	return &res, call("Schema.getDomains", m, &res, caller)
+	return &res, Call(m.MethodName(), m, &res, caller)
 }
 
 // SchemaGetDomainsResult Returns supported domains.
@@ -17489,4 +19060,1000 @@ type SchemaGetDomainsResult struct {
 
 	// Domains List of supported domains.
 	Domains []*SchemaDomain `json:"domains"`
+}
+
+var types = map[string]reflect.Type{
+	"Accessibility.AXValueSource":                        reflect.TypeOf(AccessibilityAXValueSource{}),
+	"Accessibility.AXRelatedNode":                        reflect.TypeOf(AccessibilityAXRelatedNode{}),
+	"Accessibility.AXProperty":                           reflect.TypeOf(AccessibilityAXProperty{}),
+	"Accessibility.AXValue":                              reflect.TypeOf(AccessibilityAXValue{}),
+	"Accessibility.AXNode":                               reflect.TypeOf(AccessibilityAXNode{}),
+	"Accessibility.disable":                              reflect.TypeOf(AccessibilityDisable{}),
+	"Accessibility.enable":                               reflect.TypeOf(AccessibilityEnable{}),
+	"Accessibility.getPartialAXTree":                     reflect.TypeOf(AccessibilityGetPartialAXTree{}),
+	"Accessibility.getPartialAXTreeResult":               reflect.TypeOf(AccessibilityGetPartialAXTreeResult{}),
+	"Accessibility.getFullAXTree":                        reflect.TypeOf(AccessibilityGetFullAXTree{}),
+	"Accessibility.getFullAXTreeResult":                  reflect.TypeOf(AccessibilityGetFullAXTreeResult{}),
+	"Animation.Animation":                                reflect.TypeOf(AnimationAnimation{}),
+	"Animation.AnimationEffect":                          reflect.TypeOf(AnimationAnimationEffect{}),
+	"Animation.KeyframesRule":                            reflect.TypeOf(AnimationKeyframesRule{}),
+	"Animation.KeyframeStyle":                            reflect.TypeOf(AnimationKeyframeStyle{}),
+	"Animation.disable":                                  reflect.TypeOf(AnimationDisable{}),
+	"Animation.enable":                                   reflect.TypeOf(AnimationEnable{}),
+	"Animation.getCurrentTime":                           reflect.TypeOf(AnimationGetCurrentTime{}),
+	"Animation.getCurrentTimeResult":                     reflect.TypeOf(AnimationGetCurrentTimeResult{}),
+	"Animation.getPlaybackRate":                          reflect.TypeOf(AnimationGetPlaybackRate{}),
+	"Animation.getPlaybackRateResult":                    reflect.TypeOf(AnimationGetPlaybackRateResult{}),
+	"Animation.releaseAnimations":                        reflect.TypeOf(AnimationReleaseAnimations{}),
+	"Animation.resolveAnimation":                         reflect.TypeOf(AnimationResolveAnimation{}),
+	"Animation.resolveAnimationResult":                   reflect.TypeOf(AnimationResolveAnimationResult{}),
+	"Animation.seekAnimations":                           reflect.TypeOf(AnimationSeekAnimations{}),
+	"Animation.setPaused":                                reflect.TypeOf(AnimationSetPaused{}),
+	"Animation.setPlaybackRate":                          reflect.TypeOf(AnimationSetPlaybackRate{}),
+	"Animation.setTiming":                                reflect.TypeOf(AnimationSetTiming{}),
+	"Animation.animationCanceled":                        reflect.TypeOf(AnimationAnimationCanceled{}),
+	"Animation.animationCreated":                         reflect.TypeOf(AnimationAnimationCreated{}),
+	"Animation.animationStarted":                         reflect.TypeOf(AnimationAnimationStarted{}),
+	"ApplicationCache.ApplicationCacheResource":          reflect.TypeOf(ApplicationCacheApplicationCacheResource{}),
+	"ApplicationCache.ApplicationCache":                  reflect.TypeOf(ApplicationCacheApplicationCache{}),
+	"ApplicationCache.FrameWithManifest":                 reflect.TypeOf(ApplicationCacheFrameWithManifest{}),
+	"ApplicationCache.enable":                            reflect.TypeOf(ApplicationCacheEnable{}),
+	"ApplicationCache.getApplicationCacheForFrame":       reflect.TypeOf(ApplicationCacheGetApplicationCacheForFrame{}),
+	"ApplicationCache.getApplicationCacheForFrameResult": reflect.TypeOf(ApplicationCacheGetApplicationCacheForFrameResult{}),
+	"ApplicationCache.getFramesWithManifests":            reflect.TypeOf(ApplicationCacheGetFramesWithManifests{}),
+	"ApplicationCache.getFramesWithManifestsResult":      reflect.TypeOf(ApplicationCacheGetFramesWithManifestsResult{}),
+	"ApplicationCache.getManifestForFrame":               reflect.TypeOf(ApplicationCacheGetManifestForFrame{}),
+	"ApplicationCache.getManifestForFrameResult":         reflect.TypeOf(ApplicationCacheGetManifestForFrameResult{}),
+	"ApplicationCache.applicationCacheStatusUpdated":     reflect.TypeOf(ApplicationCacheApplicationCacheStatusUpdated{}),
+	"ApplicationCache.networkStateUpdated":               reflect.TypeOf(ApplicationCacheNetworkStateUpdated{}),
+	"Audits.AffectedCookie":                              reflect.TypeOf(AuditsAffectedCookie{}),
+	"Audits.SameSiteCookieIssueDetails":                  reflect.TypeOf(AuditsSameSiteCookieIssueDetails{}),
+	"Audits.AffectedResources":                           reflect.TypeOf(AuditsAffectedResources{}),
+	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
+	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
+	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
+	"Audits.getEncodedResponseResult":                    reflect.TypeOf(AuditsGetEncodedResponseResult{}),
+	"Audits.disable":                                     reflect.TypeOf(AuditsDisable{}),
+	"Audits.enable":                                      reflect.TypeOf(AuditsEnable{}),
+	"Audits.issueAdded":                                  reflect.TypeOf(AuditsIssueAdded{}),
+	"BackgroundService.EventMetadata":                    reflect.TypeOf(BackgroundServiceEventMetadata{}),
+	"BackgroundService.BackgroundServiceEvent":           reflect.TypeOf(BackgroundServiceBackgroundServiceEvent{}),
+	"BackgroundService.startObserving":                   reflect.TypeOf(BackgroundServiceStartObserving{}),
+	"BackgroundService.stopObserving":                    reflect.TypeOf(BackgroundServiceStopObserving{}),
+	"BackgroundService.setRecording":                     reflect.TypeOf(BackgroundServiceSetRecording{}),
+	"BackgroundService.clearEvents":                      reflect.TypeOf(BackgroundServiceClearEvents{}),
+	"BackgroundService.recordingStateChanged":            reflect.TypeOf(BackgroundServiceRecordingStateChanged{}),
+	"BackgroundService.backgroundServiceEventReceived":   reflect.TypeOf(BackgroundServiceBackgroundServiceEventReceived{}),
+	"Browser.Bounds":                                     reflect.TypeOf(BrowserBounds{}),
+	"Browser.PermissionDescriptor":                       reflect.TypeOf(BrowserPermissionDescriptor{}),
+	"Browser.Bucket":                                     reflect.TypeOf(BrowserBucket{}),
+	"Browser.Histogram":                                  reflect.TypeOf(BrowserHistogram{}),
+	"Browser.setPermission":                              reflect.TypeOf(BrowserSetPermission{}),
+	"Browser.grantPermissions":                           reflect.TypeOf(BrowserGrantPermissions{}),
+	"Browser.resetPermissions":                           reflect.TypeOf(BrowserResetPermissions{}),
+	"Browser.setDownloadBehavior":                        reflect.TypeOf(BrowserSetDownloadBehavior{}),
+	"Browser.close":                                      reflect.TypeOf(BrowserClose{}),
+	"Browser.crash":                                      reflect.TypeOf(BrowserCrash{}),
+	"Browser.crashGpuProcess":                            reflect.TypeOf(BrowserCrashGpuProcess{}),
+	"Browser.getVersion":                                 reflect.TypeOf(BrowserGetVersion{}),
+	"Browser.getVersionResult":                           reflect.TypeOf(BrowserGetVersionResult{}),
+	"Browser.getBrowserCommandLine":                      reflect.TypeOf(BrowserGetBrowserCommandLine{}),
+	"Browser.getBrowserCommandLineResult":                reflect.TypeOf(BrowserGetBrowserCommandLineResult{}),
+	"Browser.getHistograms":                              reflect.TypeOf(BrowserGetHistograms{}),
+	"Browser.getHistogramsResult":                        reflect.TypeOf(BrowserGetHistogramsResult{}),
+	"Browser.getHistogram":                               reflect.TypeOf(BrowserGetHistogram{}),
+	"Browser.getHistogramResult":                         reflect.TypeOf(BrowserGetHistogramResult{}),
+	"Browser.getWindowBounds":                            reflect.TypeOf(BrowserGetWindowBounds{}),
+	"Browser.getWindowBoundsResult":                      reflect.TypeOf(BrowserGetWindowBoundsResult{}),
+	"Browser.getWindowForTarget":                         reflect.TypeOf(BrowserGetWindowForTarget{}),
+	"Browser.getWindowForTargetResult":                   reflect.TypeOf(BrowserGetWindowForTargetResult{}),
+	"Browser.setWindowBounds":                            reflect.TypeOf(BrowserSetWindowBounds{}),
+	"Browser.setDockTile":                                reflect.TypeOf(BrowserSetDockTile{}),
+	"CSS.PseudoElementMatches":                           reflect.TypeOf(CSSPseudoElementMatches{}),
+	"CSS.InheritedStyleEntry":                            reflect.TypeOf(CSSInheritedStyleEntry{}),
+	"CSS.RuleMatch":                                      reflect.TypeOf(CSSRuleMatch{}),
+	"CSS.Value":                                          reflect.TypeOf(CSSValue{}),
+	"CSS.SelectorList":                                   reflect.TypeOf(CSSSelectorList{}),
+	"CSS.CSSStyleSheetHeader":                            reflect.TypeOf(CSSCSSStyleSheetHeader{}),
+	"CSS.CSSRule":                                        reflect.TypeOf(CSSCSSRule{}),
+	"CSS.RuleUsage":                                      reflect.TypeOf(CSSRuleUsage{}),
+	"CSS.SourceRange":                                    reflect.TypeOf(CSSSourceRange{}),
+	"CSS.ShorthandEntry":                                 reflect.TypeOf(CSSShorthandEntry{}),
+	"CSS.CSSComputedStyleProperty":                       reflect.TypeOf(CSSCSSComputedStyleProperty{}),
+	"CSS.CSSStyle":                                       reflect.TypeOf(CSSCSSStyle{}),
+	"CSS.CSSProperty":                                    reflect.TypeOf(CSSCSSProperty{}),
+	"CSS.CSSMedia":                                       reflect.TypeOf(CSSCSSMedia{}),
+	"CSS.MediaQuery":                                     reflect.TypeOf(CSSMediaQuery{}),
+	"CSS.MediaQueryExpression":                           reflect.TypeOf(CSSMediaQueryExpression{}),
+	"CSS.PlatformFontUsage":                              reflect.TypeOf(CSSPlatformFontUsage{}),
+	"CSS.FontFace":                                       reflect.TypeOf(CSSFontFace{}),
+	"CSS.CSSKeyframesRule":                               reflect.TypeOf(CSSCSSKeyframesRule{}),
+	"CSS.CSSKeyframeRule":                                reflect.TypeOf(CSSCSSKeyframeRule{}),
+	"CSS.StyleDeclarationEdit":                           reflect.TypeOf(CSSStyleDeclarationEdit{}),
+	"CSS.addRule":                                        reflect.TypeOf(CSSAddRule{}),
+	"CSS.addRuleResult":                                  reflect.TypeOf(CSSAddRuleResult{}),
+	"CSS.collectClassNames":                              reflect.TypeOf(CSSCollectClassNames{}),
+	"CSS.collectClassNamesResult":                        reflect.TypeOf(CSSCollectClassNamesResult{}),
+	"CSS.createStyleSheet":                               reflect.TypeOf(CSSCreateStyleSheet{}),
+	"CSS.createStyleSheetResult":                         reflect.TypeOf(CSSCreateStyleSheetResult{}),
+	"CSS.disable":                                        reflect.TypeOf(CSSDisable{}),
+	"CSS.enable":                                         reflect.TypeOf(CSSEnable{}),
+	"CSS.forcePseudoState":                               reflect.TypeOf(CSSForcePseudoState{}),
+	"CSS.getBackgroundColors":                            reflect.TypeOf(CSSGetBackgroundColors{}),
+	"CSS.getBackgroundColorsResult":                      reflect.TypeOf(CSSGetBackgroundColorsResult{}),
+	"CSS.getComputedStyleForNode":                        reflect.TypeOf(CSSGetComputedStyleForNode{}),
+	"CSS.getComputedStyleForNodeResult":                  reflect.TypeOf(CSSGetComputedStyleForNodeResult{}),
+	"CSS.getInlineStylesForNode":                         reflect.TypeOf(CSSGetInlineStylesForNode{}),
+	"CSS.getInlineStylesForNodeResult":                   reflect.TypeOf(CSSGetInlineStylesForNodeResult{}),
+	"CSS.getMatchedStylesForNode":                        reflect.TypeOf(CSSGetMatchedStylesForNode{}),
+	"CSS.getMatchedStylesForNodeResult":                  reflect.TypeOf(CSSGetMatchedStylesForNodeResult{}),
+	"CSS.getMediaQueries":                                reflect.TypeOf(CSSGetMediaQueries{}),
+	"CSS.getMediaQueriesResult":                          reflect.TypeOf(CSSGetMediaQueriesResult{}),
+	"CSS.getPlatformFontsForNode":                        reflect.TypeOf(CSSGetPlatformFontsForNode{}),
+	"CSS.getPlatformFontsForNodeResult":                  reflect.TypeOf(CSSGetPlatformFontsForNodeResult{}),
+	"CSS.getStyleSheetText":                              reflect.TypeOf(CSSGetStyleSheetText{}),
+	"CSS.getStyleSheetTextResult":                        reflect.TypeOf(CSSGetStyleSheetTextResult{}),
+	"CSS.setEffectivePropertyValueForNode":               reflect.TypeOf(CSSSetEffectivePropertyValueForNode{}),
+	"CSS.setKeyframeKey":                                 reflect.TypeOf(CSSSetKeyframeKey{}),
+	"CSS.setKeyframeKeyResult":                           reflect.TypeOf(CSSSetKeyframeKeyResult{}),
+	"CSS.setMediaText":                                   reflect.TypeOf(CSSSetMediaText{}),
+	"CSS.setMediaTextResult":                             reflect.TypeOf(CSSSetMediaTextResult{}),
+	"CSS.setRuleSelector":                                reflect.TypeOf(CSSSetRuleSelector{}),
+	"CSS.setRuleSelectorResult":                          reflect.TypeOf(CSSSetRuleSelectorResult{}),
+	"CSS.setStyleSheetText":                              reflect.TypeOf(CSSSetStyleSheetText{}),
+	"CSS.setStyleSheetTextResult":                        reflect.TypeOf(CSSSetStyleSheetTextResult{}),
+	"CSS.setStyleTexts":                                  reflect.TypeOf(CSSSetStyleTexts{}),
+	"CSS.setStyleTextsResult":                            reflect.TypeOf(CSSSetStyleTextsResult{}),
+	"CSS.startRuleUsageTracking":                         reflect.TypeOf(CSSStartRuleUsageTracking{}),
+	"CSS.stopRuleUsageTracking":                          reflect.TypeOf(CSSStopRuleUsageTracking{}),
+	"CSS.stopRuleUsageTrackingResult":                    reflect.TypeOf(CSSStopRuleUsageTrackingResult{}),
+	"CSS.takeCoverageDelta":                              reflect.TypeOf(CSSTakeCoverageDelta{}),
+	"CSS.takeCoverageDeltaResult":                        reflect.TypeOf(CSSTakeCoverageDeltaResult{}),
+	"CSS.fontsUpdated":                                   reflect.TypeOf(CSSFontsUpdated{}),
+	"CSS.mediaQueryResultChanged":                        reflect.TypeOf(CSSMediaQueryResultChanged{}),
+	"CSS.styleSheetAdded":                                reflect.TypeOf(CSSStyleSheetAdded{}),
+	"CSS.styleSheetChanged":                              reflect.TypeOf(CSSStyleSheetChanged{}),
+	"CSS.styleSheetRemoved":                              reflect.TypeOf(CSSStyleSheetRemoved{}),
+	"CacheStorage.DataEntry":                             reflect.TypeOf(CacheStorageDataEntry{}),
+	"CacheStorage.Cache":                                 reflect.TypeOf(CacheStorageCache{}),
+	"CacheStorage.Header":                                reflect.TypeOf(CacheStorageHeader{}),
+	"CacheStorage.CachedResponse":                        reflect.TypeOf(CacheStorageCachedResponse{}),
+	"CacheStorage.deleteCache":                           reflect.TypeOf(CacheStorageDeleteCache{}),
+	"CacheStorage.deleteEntry":                           reflect.TypeOf(CacheStorageDeleteEntry{}),
+	"CacheStorage.requestCacheNames":                     reflect.TypeOf(CacheStorageRequestCacheNames{}),
+	"CacheStorage.requestCacheNamesResult":               reflect.TypeOf(CacheStorageRequestCacheNamesResult{}),
+	"CacheStorage.requestCachedResponse":                 reflect.TypeOf(CacheStorageRequestCachedResponse{}),
+	"CacheStorage.requestCachedResponseResult":           reflect.TypeOf(CacheStorageRequestCachedResponseResult{}),
+	"CacheStorage.requestEntries":                        reflect.TypeOf(CacheStorageRequestEntries{}),
+	"CacheStorage.requestEntriesResult":                  reflect.TypeOf(CacheStorageRequestEntriesResult{}),
+	"Cast.Sink":                                          reflect.TypeOf(CastSink{}),
+	"Cast.enable":                                        reflect.TypeOf(CastEnable{}),
+	"Cast.disable":                                       reflect.TypeOf(CastDisable{}),
+	"Cast.setSinkToUse":                                  reflect.TypeOf(CastSetSinkToUse{}),
+	"Cast.startTabMirroring":                             reflect.TypeOf(CastStartTabMirroring{}),
+	"Cast.stopCasting":                                   reflect.TypeOf(CastStopCasting{}),
+	"Cast.sinksUpdated":                                  reflect.TypeOf(CastSinksUpdated{}),
+	"Cast.issueUpdated":                                  reflect.TypeOf(CastIssueUpdated{}),
+	"DOM.BackendNode":                                    reflect.TypeOf(DOMBackendNode{}),
+	"DOM.Node":                                           reflect.TypeOf(DOMNode{}),
+	"DOM.RGBA":                                           reflect.TypeOf(DOMRGBA{}),
+	"DOM.BoxModel":                                       reflect.TypeOf(DOMBoxModel{}),
+	"DOM.ShapeOutsideInfo":                               reflect.TypeOf(DOMShapeOutsideInfo{}),
+	"DOM.Rect":                                           reflect.TypeOf(DOMRect{}),
+	"DOM.collectClassNamesFromSubtree":                   reflect.TypeOf(DOMCollectClassNamesFromSubtree{}),
+	"DOM.collectClassNamesFromSubtreeResult":             reflect.TypeOf(DOMCollectClassNamesFromSubtreeResult{}),
+	"DOM.copyTo":                                         reflect.TypeOf(DOMCopyTo{}),
+	"DOM.copyToResult":                                   reflect.TypeOf(DOMCopyToResult{}),
+	"DOM.describeNode":                                   reflect.TypeOf(DOMDescribeNode{}),
+	"DOM.describeNodeResult":                             reflect.TypeOf(DOMDescribeNodeResult{}),
+	"DOM.scrollIntoViewIfNeeded":                         reflect.TypeOf(DOMScrollIntoViewIfNeeded{}),
+	"DOM.disable":                                        reflect.TypeOf(DOMDisable{}),
+	"DOM.discardSearchResults":                           reflect.TypeOf(DOMDiscardSearchResults{}),
+	"DOM.enable":                                         reflect.TypeOf(DOMEnable{}),
+	"DOM.focus":                                          reflect.TypeOf(DOMFocus{}),
+	"DOM.getAttributes":                                  reflect.TypeOf(DOMGetAttributes{}),
+	"DOM.getAttributesResult":                            reflect.TypeOf(DOMGetAttributesResult{}),
+	"DOM.getBoxModel":                                    reflect.TypeOf(DOMGetBoxModel{}),
+	"DOM.getBoxModelResult":                              reflect.TypeOf(DOMGetBoxModelResult{}),
+	"DOM.getContentQuads":                                reflect.TypeOf(DOMGetContentQuads{}),
+	"DOM.getContentQuadsResult":                          reflect.TypeOf(DOMGetContentQuadsResult{}),
+	"DOM.getDocument":                                    reflect.TypeOf(DOMGetDocument{}),
+	"DOM.getDocumentResult":                              reflect.TypeOf(DOMGetDocumentResult{}),
+	"DOM.getFlattenedDocument":                           reflect.TypeOf(DOMGetFlattenedDocument{}),
+	"DOM.getFlattenedDocumentResult":                     reflect.TypeOf(DOMGetFlattenedDocumentResult{}),
+	"DOM.getNodeForLocation":                             reflect.TypeOf(DOMGetNodeForLocation{}),
+	"DOM.getNodeForLocationResult":                       reflect.TypeOf(DOMGetNodeForLocationResult{}),
+	"DOM.getOuterHTML":                                   reflect.TypeOf(DOMGetOuterHTML{}),
+	"DOM.getOuterHTMLResult":                             reflect.TypeOf(DOMGetOuterHTMLResult{}),
+	"DOM.getRelayoutBoundary":                            reflect.TypeOf(DOMGetRelayoutBoundary{}),
+	"DOM.getRelayoutBoundaryResult":                      reflect.TypeOf(DOMGetRelayoutBoundaryResult{}),
+	"DOM.getSearchResults":                               reflect.TypeOf(DOMGetSearchResults{}),
+	"DOM.getSearchResultsResult":                         reflect.TypeOf(DOMGetSearchResultsResult{}),
+	"DOM.hideHighlight":                                  reflect.TypeOf(DOMHideHighlight{}),
+	"DOM.highlightNode":                                  reflect.TypeOf(DOMHighlightNode{}),
+	"DOM.highlightRect":                                  reflect.TypeOf(DOMHighlightRect{}),
+	"DOM.markUndoableState":                              reflect.TypeOf(DOMMarkUndoableState{}),
+	"DOM.moveTo":                                         reflect.TypeOf(DOMMoveTo{}),
+	"DOM.moveToResult":                                   reflect.TypeOf(DOMMoveToResult{}),
+	"DOM.performSearch":                                  reflect.TypeOf(DOMPerformSearch{}),
+	"DOM.performSearchResult":                            reflect.TypeOf(DOMPerformSearchResult{}),
+	"DOM.pushNodeByPathToFrontend":                       reflect.TypeOf(DOMPushNodeByPathToFrontend{}),
+	"DOM.pushNodeByPathToFrontendResult":                 reflect.TypeOf(DOMPushNodeByPathToFrontendResult{}),
+	"DOM.pushNodesByBackendIdsToFrontend":                reflect.TypeOf(DOMPushNodesByBackendIdsToFrontend{}),
+	"DOM.pushNodesByBackendIdsToFrontendResult":          reflect.TypeOf(DOMPushNodesByBackendIdsToFrontendResult{}),
+	"DOM.querySelector":                                  reflect.TypeOf(DOMQuerySelector{}),
+	"DOM.querySelectorResult":                            reflect.TypeOf(DOMQuerySelectorResult{}),
+	"DOM.querySelectorAll":                               reflect.TypeOf(DOMQuerySelectorAll{}),
+	"DOM.querySelectorAllResult":                         reflect.TypeOf(DOMQuerySelectorAllResult{}),
+	"DOM.redo":                                           reflect.TypeOf(DOMRedo{}),
+	"DOM.removeAttribute":                                reflect.TypeOf(DOMRemoveAttribute{}),
+	"DOM.removeNode":                                     reflect.TypeOf(DOMRemoveNode{}),
+	"DOM.requestChildNodes":                              reflect.TypeOf(DOMRequestChildNodes{}),
+	"DOM.requestNode":                                    reflect.TypeOf(DOMRequestNode{}),
+	"DOM.requestNodeResult":                              reflect.TypeOf(DOMRequestNodeResult{}),
+	"DOM.resolveNode":                                    reflect.TypeOf(DOMResolveNode{}),
+	"DOM.resolveNodeResult":                              reflect.TypeOf(DOMResolveNodeResult{}),
+	"DOM.setAttributeValue":                              reflect.TypeOf(DOMSetAttributeValue{}),
+	"DOM.setAttributesAsText":                            reflect.TypeOf(DOMSetAttributesAsText{}),
+	"DOM.setFileInputFiles":                              reflect.TypeOf(DOMSetFileInputFiles{}),
+	"DOM.setNodeStackTracesEnabled":                      reflect.TypeOf(DOMSetNodeStackTracesEnabled{}),
+	"DOM.getNodeStackTraces":                             reflect.TypeOf(DOMGetNodeStackTraces{}),
+	"DOM.getNodeStackTracesResult":                       reflect.TypeOf(DOMGetNodeStackTracesResult{}),
+	"DOM.getFileInfo":                                    reflect.TypeOf(DOMGetFileInfo{}),
+	"DOM.getFileInfoResult":                              reflect.TypeOf(DOMGetFileInfoResult{}),
+	"DOM.setInspectedNode":                               reflect.TypeOf(DOMSetInspectedNode{}),
+	"DOM.setNodeName":                                    reflect.TypeOf(DOMSetNodeName{}),
+	"DOM.setNodeNameResult":                              reflect.TypeOf(DOMSetNodeNameResult{}),
+	"DOM.setNodeValue":                                   reflect.TypeOf(DOMSetNodeValue{}),
+	"DOM.setOuterHTML":                                   reflect.TypeOf(DOMSetOuterHTML{}),
+	"DOM.undo":                                           reflect.TypeOf(DOMUndo{}),
+	"DOM.getFrameOwner":                                  reflect.TypeOf(DOMGetFrameOwner{}),
+	"DOM.getFrameOwnerResult":                            reflect.TypeOf(DOMGetFrameOwnerResult{}),
+	"DOM.attributeModified":                              reflect.TypeOf(DOMAttributeModified{}),
+	"DOM.attributeRemoved":                               reflect.TypeOf(DOMAttributeRemoved{}),
+	"DOM.characterDataModified":                          reflect.TypeOf(DOMCharacterDataModified{}),
+	"DOM.childNodeCountUpdated":                          reflect.TypeOf(DOMChildNodeCountUpdated{}),
+	"DOM.childNodeInserted":                              reflect.TypeOf(DOMChildNodeInserted{}),
+	"DOM.childNodeRemoved":                               reflect.TypeOf(DOMChildNodeRemoved{}),
+	"DOM.distributedNodesUpdated":                        reflect.TypeOf(DOMDistributedNodesUpdated{}),
+	"DOM.documentUpdated":                                reflect.TypeOf(DOMDocumentUpdated{}),
+	"DOM.inlineStyleInvalidated":                         reflect.TypeOf(DOMInlineStyleInvalidated{}),
+	"DOM.pseudoElementAdded":                             reflect.TypeOf(DOMPseudoElementAdded{}),
+	"DOM.pseudoElementRemoved":                           reflect.TypeOf(DOMPseudoElementRemoved{}),
+	"DOM.setChildNodes":                                  reflect.TypeOf(DOMSetChildNodes{}),
+	"DOM.shadowRootPopped":                               reflect.TypeOf(DOMShadowRootPopped{}),
+	"DOM.shadowRootPushed":                               reflect.TypeOf(DOMShadowRootPushed{}),
+	"DOMDebugger.EventListener":                          reflect.TypeOf(DOMDebuggerEventListener{}),
+	"DOMDebugger.getEventListeners":                      reflect.TypeOf(DOMDebuggerGetEventListeners{}),
+	"DOMDebugger.getEventListenersResult":                reflect.TypeOf(DOMDebuggerGetEventListenersResult{}),
+	"DOMDebugger.removeDOMBreakpoint":                    reflect.TypeOf(DOMDebuggerRemoveDOMBreakpoint{}),
+	"DOMDebugger.removeEventListenerBreakpoint":          reflect.TypeOf(DOMDebuggerRemoveEventListenerBreakpoint{}),
+	"DOMDebugger.removeInstrumentationBreakpoint":        reflect.TypeOf(DOMDebuggerRemoveInstrumentationBreakpoint{}),
+	"DOMDebugger.removeXHRBreakpoint":                    reflect.TypeOf(DOMDebuggerRemoveXHRBreakpoint{}),
+	"DOMDebugger.setDOMBreakpoint":                       reflect.TypeOf(DOMDebuggerSetDOMBreakpoint{}),
+	"DOMDebugger.setEventListenerBreakpoint":             reflect.TypeOf(DOMDebuggerSetEventListenerBreakpoint{}),
+	"DOMDebugger.setInstrumentationBreakpoint":           reflect.TypeOf(DOMDebuggerSetInstrumentationBreakpoint{}),
+	"DOMDebugger.setXHRBreakpoint":                       reflect.TypeOf(DOMDebuggerSetXHRBreakpoint{}),
+	"DOMSnapshot.DOMNode":                                reflect.TypeOf(DOMSnapshotDOMNode{}),
+	"DOMSnapshot.InlineTextBox":                          reflect.TypeOf(DOMSnapshotInlineTextBox{}),
+	"DOMSnapshot.LayoutTreeNode":                         reflect.TypeOf(DOMSnapshotLayoutTreeNode{}),
+	"DOMSnapshot.ComputedStyle":                          reflect.TypeOf(DOMSnapshotComputedStyle{}),
+	"DOMSnapshot.NameValue":                              reflect.TypeOf(DOMSnapshotNameValue{}),
+	"DOMSnapshot.RareStringData":                         reflect.TypeOf(DOMSnapshotRareStringData{}),
+	"DOMSnapshot.RareBooleanData":                        reflect.TypeOf(DOMSnapshotRareBooleanData{}),
+	"DOMSnapshot.RareIntegerData":                        reflect.TypeOf(DOMSnapshotRareIntegerData{}),
+	"DOMSnapshot.DocumentSnapshot":                       reflect.TypeOf(DOMSnapshotDocumentSnapshot{}),
+	"DOMSnapshot.NodeTreeSnapshot":                       reflect.TypeOf(DOMSnapshotNodeTreeSnapshot{}),
+	"DOMSnapshot.LayoutTreeSnapshot":                     reflect.TypeOf(DOMSnapshotLayoutTreeSnapshot{}),
+	"DOMSnapshot.TextBoxSnapshot":                        reflect.TypeOf(DOMSnapshotTextBoxSnapshot{}),
+	"DOMSnapshot.disable":                                reflect.TypeOf(DOMSnapshotDisable{}),
+	"DOMSnapshot.enable":                                 reflect.TypeOf(DOMSnapshotEnable{}),
+	"DOMSnapshot.getSnapshot":                            reflect.TypeOf(DOMSnapshotGetSnapshot{}),
+	"DOMSnapshot.getSnapshotResult":                      reflect.TypeOf(DOMSnapshotGetSnapshotResult{}),
+	"DOMSnapshot.captureSnapshot":                        reflect.TypeOf(DOMSnapshotCaptureSnapshot{}),
+	"DOMSnapshot.captureSnapshotResult":                  reflect.TypeOf(DOMSnapshotCaptureSnapshotResult{}),
+	"DOMStorage.StorageId":                               reflect.TypeOf(DOMStorageStorageID{}),
+	"DOMStorage.clear":                                   reflect.TypeOf(DOMStorageClear{}),
+	"DOMStorage.disable":                                 reflect.TypeOf(DOMStorageDisable{}),
+	"DOMStorage.enable":                                  reflect.TypeOf(DOMStorageEnable{}),
+	"DOMStorage.getDOMStorageItems":                      reflect.TypeOf(DOMStorageGetDOMStorageItems{}),
+	"DOMStorage.getDOMStorageItemsResult":                reflect.TypeOf(DOMStorageGetDOMStorageItemsResult{}),
+	"DOMStorage.removeDOMStorageItem":                    reflect.TypeOf(DOMStorageRemoveDOMStorageItem{}),
+	"DOMStorage.setDOMStorageItem":                       reflect.TypeOf(DOMStorageSetDOMStorageItem{}),
+	"DOMStorage.domStorageItemAdded":                     reflect.TypeOf(DOMStorageDomStorageItemAdded{}),
+	"DOMStorage.domStorageItemRemoved":                   reflect.TypeOf(DOMStorageDomStorageItemRemoved{}),
+	"DOMStorage.domStorageItemUpdated":                   reflect.TypeOf(DOMStorageDomStorageItemUpdated{}),
+	"DOMStorage.domStorageItemsCleared":                  reflect.TypeOf(DOMStorageDomStorageItemsCleared{}),
+	"Database.Database":                                  reflect.TypeOf(DatabaseDatabase{}),
+	"Database.Error":                                     reflect.TypeOf(DatabaseError{}),
+	"Database.disable":                                   reflect.TypeOf(DatabaseDisable{}),
+	"Database.enable":                                    reflect.TypeOf(DatabaseEnable{}),
+	"Database.executeSQL":                                reflect.TypeOf(DatabaseExecuteSQL{}),
+	"Database.executeSQLResult":                          reflect.TypeOf(DatabaseExecuteSQLResult{}),
+	"Database.getDatabaseTableNames":                     reflect.TypeOf(DatabaseGetDatabaseTableNames{}),
+	"Database.getDatabaseTableNamesResult":               reflect.TypeOf(DatabaseGetDatabaseTableNamesResult{}),
+	"Database.addDatabase":                               reflect.TypeOf(DatabaseAddDatabase{}),
+	"DeviceOrientation.clearDeviceOrientationOverride":   reflect.TypeOf(DeviceOrientationClearDeviceOrientationOverride{}),
+	"DeviceOrientation.setDeviceOrientationOverride":     reflect.TypeOf(DeviceOrientationSetDeviceOrientationOverride{}),
+	"Emulation.ScreenOrientation":                        reflect.TypeOf(EmulationScreenOrientation{}),
+	"Emulation.MediaFeature":                             reflect.TypeOf(EmulationMediaFeature{}),
+	"Emulation.canEmulate":                               reflect.TypeOf(EmulationCanEmulate{}),
+	"Emulation.canEmulateResult":                         reflect.TypeOf(EmulationCanEmulateResult{}),
+	"Emulation.clearDeviceMetricsOverride":               reflect.TypeOf(EmulationClearDeviceMetricsOverride{}),
+	"Emulation.clearGeolocationOverride":                 reflect.TypeOf(EmulationClearGeolocationOverride{}),
+	"Emulation.resetPageScaleFactor":                     reflect.TypeOf(EmulationResetPageScaleFactor{}),
+	"Emulation.setFocusEmulationEnabled":                 reflect.TypeOf(EmulationSetFocusEmulationEnabled{}),
+	"Emulation.setCPUThrottlingRate":                     reflect.TypeOf(EmulationSetCPUThrottlingRate{}),
+	"Emulation.setDefaultBackgroundColorOverride":        reflect.TypeOf(EmulationSetDefaultBackgroundColorOverride{}),
+	"Emulation.setDeviceMetricsOverride":                 reflect.TypeOf(EmulationSetDeviceMetricsOverride{}),
+	"Emulation.setScrollbarsHidden":                      reflect.TypeOf(EmulationSetScrollbarsHidden{}),
+	"Emulation.setDocumentCookieDisabled":                reflect.TypeOf(EmulationSetDocumentCookieDisabled{}),
+	"Emulation.setEmitTouchEventsForMouse":               reflect.TypeOf(EmulationSetEmitTouchEventsForMouse{}),
+	"Emulation.setEmulatedMedia":                         reflect.TypeOf(EmulationSetEmulatedMedia{}),
+	"Emulation.setEmulatedVisionDeficiency":              reflect.TypeOf(EmulationSetEmulatedVisionDeficiency{}),
+	"Emulation.setGeolocationOverride":                   reflect.TypeOf(EmulationSetGeolocationOverride{}),
+	"Emulation.setNavigatorOverrides":                    reflect.TypeOf(EmulationSetNavigatorOverrides{}),
+	"Emulation.setPageScaleFactor":                       reflect.TypeOf(EmulationSetPageScaleFactor{}),
+	"Emulation.setScriptExecutionDisabled":               reflect.TypeOf(EmulationSetScriptExecutionDisabled{}),
+	"Emulation.setTouchEmulationEnabled":                 reflect.TypeOf(EmulationSetTouchEmulationEnabled{}),
+	"Emulation.setVirtualTimePolicy":                     reflect.TypeOf(EmulationSetVirtualTimePolicy{}),
+	"Emulation.setVirtualTimePolicyResult":               reflect.TypeOf(EmulationSetVirtualTimePolicyResult{}),
+	"Emulation.setLocaleOverride":                        reflect.TypeOf(EmulationSetLocaleOverride{}),
+	"Emulation.setTimezoneOverride":                      reflect.TypeOf(EmulationSetTimezoneOverride{}),
+	"Emulation.setVisibleSize":                           reflect.TypeOf(EmulationSetVisibleSize{}),
+	"Emulation.setUserAgentOverride":                     reflect.TypeOf(EmulationSetUserAgentOverride{}),
+	"Emulation.virtualTimeBudgetExpired":                 reflect.TypeOf(EmulationVirtualTimeBudgetExpired{}),
+	"HeadlessExperimental.ScreenshotParams":              reflect.TypeOf(HeadlessExperimentalScreenshotParams{}),
+	"HeadlessExperimental.beginFrame":                    reflect.TypeOf(HeadlessExperimentalBeginFrame{}),
+	"HeadlessExperimental.beginFrameResult":              reflect.TypeOf(HeadlessExperimentalBeginFrameResult{}),
+	"HeadlessExperimental.disable":                       reflect.TypeOf(HeadlessExperimentalDisable{}),
+	"HeadlessExperimental.enable":                        reflect.TypeOf(HeadlessExperimentalEnable{}),
+	"HeadlessExperimental.needsBeginFramesChanged":       reflect.TypeOf(HeadlessExperimentalNeedsBeginFramesChanged{}),
+	"IO.close":                                              reflect.TypeOf(IOClose{}),
+	"IO.read":                                               reflect.TypeOf(IORead{}),
+	"IO.readResult":                                         reflect.TypeOf(IOReadResult{}),
+	"IO.resolveBlob":                                        reflect.TypeOf(IOResolveBlob{}),
+	"IO.resolveBlobResult":                                  reflect.TypeOf(IOResolveBlobResult{}),
+	"IndexedDB.DatabaseWithObjectStores":                    reflect.TypeOf(IndexedDBDatabaseWithObjectStores{}),
+	"IndexedDB.ObjectStore":                                 reflect.TypeOf(IndexedDBObjectStore{}),
+	"IndexedDB.ObjectStoreIndex":                            reflect.TypeOf(IndexedDBObjectStoreIndex{}),
+	"IndexedDB.Key":                                         reflect.TypeOf(IndexedDBKey{}),
+	"IndexedDB.KeyRange":                                    reflect.TypeOf(IndexedDBKeyRange{}),
+	"IndexedDB.DataEntry":                                   reflect.TypeOf(IndexedDBDataEntry{}),
+	"IndexedDB.KeyPath":                                     reflect.TypeOf(IndexedDBKeyPath{}),
+	"IndexedDB.clearObjectStore":                            reflect.TypeOf(IndexedDBClearObjectStore{}),
+	"IndexedDB.deleteDatabase":                              reflect.TypeOf(IndexedDBDeleteDatabase{}),
+	"IndexedDB.deleteObjectStoreEntries":                    reflect.TypeOf(IndexedDBDeleteObjectStoreEntries{}),
+	"IndexedDB.disable":                                     reflect.TypeOf(IndexedDBDisable{}),
+	"IndexedDB.enable":                                      reflect.TypeOf(IndexedDBEnable{}),
+	"IndexedDB.requestData":                                 reflect.TypeOf(IndexedDBRequestData{}),
+	"IndexedDB.requestDataResult":                           reflect.TypeOf(IndexedDBRequestDataResult{}),
+	"IndexedDB.getMetadata":                                 reflect.TypeOf(IndexedDBGetMetadata{}),
+	"IndexedDB.getMetadataResult":                           reflect.TypeOf(IndexedDBGetMetadataResult{}),
+	"IndexedDB.requestDatabase":                             reflect.TypeOf(IndexedDBRequestDatabase{}),
+	"IndexedDB.requestDatabaseResult":                       reflect.TypeOf(IndexedDBRequestDatabaseResult{}),
+	"IndexedDB.requestDatabaseNames":                        reflect.TypeOf(IndexedDBRequestDatabaseNames{}),
+	"IndexedDB.requestDatabaseNamesResult":                  reflect.TypeOf(IndexedDBRequestDatabaseNamesResult{}),
+	"Input.TouchPoint":                                      reflect.TypeOf(InputTouchPoint{}),
+	"Input.dispatchKeyEvent":                                reflect.TypeOf(InputDispatchKeyEvent{}),
+	"Input.insertText":                                      reflect.TypeOf(InputInsertText{}),
+	"Input.dispatchMouseEvent":                              reflect.TypeOf(InputDispatchMouseEvent{}),
+	"Input.dispatchTouchEvent":                              reflect.TypeOf(InputDispatchTouchEvent{}),
+	"Input.emulateTouchFromMouseEvent":                      reflect.TypeOf(InputEmulateTouchFromMouseEvent{}),
+	"Input.setIgnoreInputEvents":                            reflect.TypeOf(InputSetIgnoreInputEvents{}),
+	"Input.synthesizePinchGesture":                          reflect.TypeOf(InputSynthesizePinchGesture{}),
+	"Input.synthesizeScrollGesture":                         reflect.TypeOf(InputSynthesizeScrollGesture{}),
+	"Input.synthesizeTapGesture":                            reflect.TypeOf(InputSynthesizeTapGesture{}),
+	"Inspector.disable":                                     reflect.TypeOf(InspectorDisable{}),
+	"Inspector.enable":                                      reflect.TypeOf(InspectorEnable{}),
+	"Inspector.detached":                                    reflect.TypeOf(InspectorDetached{}),
+	"Inspector.targetCrashed":                               reflect.TypeOf(InspectorTargetCrashed{}),
+	"Inspector.targetReloadedAfterCrash":                    reflect.TypeOf(InspectorTargetReloadedAfterCrash{}),
+	"LayerTree.ScrollRect":                                  reflect.TypeOf(LayerTreeScrollRect{}),
+	"LayerTree.StickyPositionConstraint":                    reflect.TypeOf(LayerTreeStickyPositionConstraint{}),
+	"LayerTree.PictureTile":                                 reflect.TypeOf(LayerTreePictureTile{}),
+	"LayerTree.Layer":                                       reflect.TypeOf(LayerTreeLayer{}),
+	"LayerTree.compositingReasons":                          reflect.TypeOf(LayerTreeCompositingReasons{}),
+	"LayerTree.compositingReasonsResult":                    reflect.TypeOf(LayerTreeCompositingReasonsResult{}),
+	"LayerTree.disable":                                     reflect.TypeOf(LayerTreeDisable{}),
+	"LayerTree.enable":                                      reflect.TypeOf(LayerTreeEnable{}),
+	"LayerTree.loadSnapshot":                                reflect.TypeOf(LayerTreeLoadSnapshot{}),
+	"LayerTree.loadSnapshotResult":                          reflect.TypeOf(LayerTreeLoadSnapshotResult{}),
+	"LayerTree.makeSnapshot":                                reflect.TypeOf(LayerTreeMakeSnapshot{}),
+	"LayerTree.makeSnapshotResult":                          reflect.TypeOf(LayerTreeMakeSnapshotResult{}),
+	"LayerTree.profileSnapshot":                             reflect.TypeOf(LayerTreeProfileSnapshot{}),
+	"LayerTree.profileSnapshotResult":                       reflect.TypeOf(LayerTreeProfileSnapshotResult{}),
+	"LayerTree.releaseSnapshot":                             reflect.TypeOf(LayerTreeReleaseSnapshot{}),
+	"LayerTree.replaySnapshot":                              reflect.TypeOf(LayerTreeReplaySnapshot{}),
+	"LayerTree.replaySnapshotResult":                        reflect.TypeOf(LayerTreeReplaySnapshotResult{}),
+	"LayerTree.snapshotCommandLog":                          reflect.TypeOf(LayerTreeSnapshotCommandLog{}),
+	"LayerTree.snapshotCommandLogResult":                    reflect.TypeOf(LayerTreeSnapshotCommandLogResult{}),
+	"LayerTree.layerPainted":                                reflect.TypeOf(LayerTreeLayerPainted{}),
+	"LayerTree.layerTreeDidChange":                          reflect.TypeOf(LayerTreeLayerTreeDidChange{}),
+	"Log.LogEntry":                                          reflect.TypeOf(LogLogEntry{}),
+	"Log.ViolationSetting":                                  reflect.TypeOf(LogViolationSetting{}),
+	"Log.clear":                                             reflect.TypeOf(LogClear{}),
+	"Log.disable":                                           reflect.TypeOf(LogDisable{}),
+	"Log.enable":                                            reflect.TypeOf(LogEnable{}),
+	"Log.startViolationsReport":                             reflect.TypeOf(LogStartViolationsReport{}),
+	"Log.stopViolationsReport":                              reflect.TypeOf(LogStopViolationsReport{}),
+	"Log.entryAdded":                                        reflect.TypeOf(LogEntryAdded{}),
+	"Memory.SamplingProfileNode":                            reflect.TypeOf(MemorySamplingProfileNode{}),
+	"Memory.SamplingProfile":                                reflect.TypeOf(MemorySamplingProfile{}),
+	"Memory.Module":                                         reflect.TypeOf(MemoryModule{}),
+	"Memory.getDOMCounters":                                 reflect.TypeOf(MemoryGetDOMCounters{}),
+	"Memory.getDOMCountersResult":                           reflect.TypeOf(MemoryGetDOMCountersResult{}),
+	"Memory.prepareForLeakDetection":                        reflect.TypeOf(MemoryPrepareForLeakDetection{}),
+	"Memory.forciblyPurgeJavaScriptMemory":                  reflect.TypeOf(MemoryForciblyPurgeJavaScriptMemory{}),
+	"Memory.setPressureNotificationsSuppressed":             reflect.TypeOf(MemorySetPressureNotificationsSuppressed{}),
+	"Memory.simulatePressureNotification":                   reflect.TypeOf(MemorySimulatePressureNotification{}),
+	"Memory.startSampling":                                  reflect.TypeOf(MemoryStartSampling{}),
+	"Memory.stopSampling":                                   reflect.TypeOf(MemoryStopSampling{}),
+	"Memory.getAllTimeSamplingProfile":                      reflect.TypeOf(MemoryGetAllTimeSamplingProfile{}),
+	"Memory.getAllTimeSamplingProfileResult":                reflect.TypeOf(MemoryGetAllTimeSamplingProfileResult{}),
+	"Memory.getBrowserSamplingProfile":                      reflect.TypeOf(MemoryGetBrowserSamplingProfile{}),
+	"Memory.getBrowserSamplingProfileResult":                reflect.TypeOf(MemoryGetBrowserSamplingProfileResult{}),
+	"Memory.getSamplingProfile":                             reflect.TypeOf(MemoryGetSamplingProfile{}),
+	"Memory.getSamplingProfileResult":                       reflect.TypeOf(MemoryGetSamplingProfileResult{}),
+	"Network.ResourceTiming":                                reflect.TypeOf(NetworkResourceTiming{}),
+	"Network.Request":                                       reflect.TypeOf(NetworkRequest{}),
+	"Network.SignedCertificateTimestamp":                    reflect.TypeOf(NetworkSignedCertificateTimestamp{}),
+	"Network.SecurityDetails":                               reflect.TypeOf(NetworkSecurityDetails{}),
+	"Network.Response":                                      reflect.TypeOf(NetworkResponse{}),
+	"Network.WebSocketRequest":                              reflect.TypeOf(NetworkWebSocketRequest{}),
+	"Network.WebSocketResponse":                             reflect.TypeOf(NetworkWebSocketResponse{}),
+	"Network.WebSocketFrame":                                reflect.TypeOf(NetworkWebSocketFrame{}),
+	"Network.CachedResource":                                reflect.TypeOf(NetworkCachedResource{}),
+	"Network.Initiator":                                     reflect.TypeOf(NetworkInitiator{}),
+	"Network.Cookie":                                        reflect.TypeOf(NetworkCookie{}),
+	"Network.BlockedSetCookieWithReason":                    reflect.TypeOf(NetworkBlockedSetCookieWithReason{}),
+	"Network.BlockedCookieWithReason":                       reflect.TypeOf(NetworkBlockedCookieWithReason{}),
+	"Network.CookieParam":                                   reflect.TypeOf(NetworkCookieParam{}),
+	"Network.AuthChallenge":                                 reflect.TypeOf(NetworkAuthChallenge{}),
+	"Network.AuthChallengeResponse":                         reflect.TypeOf(NetworkAuthChallengeResponse{}),
+	"Network.RequestPattern":                                reflect.TypeOf(NetworkRequestPattern{}),
+	"Network.SignedExchangeSignature":                       reflect.TypeOf(NetworkSignedExchangeSignature{}),
+	"Network.SignedExchangeHeader":                          reflect.TypeOf(NetworkSignedExchangeHeader{}),
+	"Network.SignedExchangeError":                           reflect.TypeOf(NetworkSignedExchangeError{}),
+	"Network.SignedExchangeInfo":                            reflect.TypeOf(NetworkSignedExchangeInfo{}),
+	"Network.canClearBrowserCache":                          reflect.TypeOf(NetworkCanClearBrowserCache{}),
+	"Network.canClearBrowserCacheResult":                    reflect.TypeOf(NetworkCanClearBrowserCacheResult{}),
+	"Network.canClearBrowserCookies":                        reflect.TypeOf(NetworkCanClearBrowserCookies{}),
+	"Network.canClearBrowserCookiesResult":                  reflect.TypeOf(NetworkCanClearBrowserCookiesResult{}),
+	"Network.canEmulateNetworkConditions":                   reflect.TypeOf(NetworkCanEmulateNetworkConditions{}),
+	"Network.canEmulateNetworkConditionsResult":             reflect.TypeOf(NetworkCanEmulateNetworkConditionsResult{}),
+	"Network.clearBrowserCache":                             reflect.TypeOf(NetworkClearBrowserCache{}),
+	"Network.clearBrowserCookies":                           reflect.TypeOf(NetworkClearBrowserCookies{}),
+	"Network.continueInterceptedRequest":                    reflect.TypeOf(NetworkContinueInterceptedRequest{}),
+	"Network.deleteCookies":                                 reflect.TypeOf(NetworkDeleteCookies{}),
+	"Network.disable":                                       reflect.TypeOf(NetworkDisable{}),
+	"Network.emulateNetworkConditions":                      reflect.TypeOf(NetworkEmulateNetworkConditions{}),
+	"Network.enable":                                        reflect.TypeOf(NetworkEnable{}),
+	"Network.getAllCookies":                                 reflect.TypeOf(NetworkGetAllCookies{}),
+	"Network.getAllCookiesResult":                           reflect.TypeOf(NetworkGetAllCookiesResult{}),
+	"Network.getCertificate":                                reflect.TypeOf(NetworkGetCertificate{}),
+	"Network.getCertificateResult":                          reflect.TypeOf(NetworkGetCertificateResult{}),
+	"Network.getCookies":                                    reflect.TypeOf(NetworkGetCookies{}),
+	"Network.getCookiesResult":                              reflect.TypeOf(NetworkGetCookiesResult{}),
+	"Network.getResponseBody":                               reflect.TypeOf(NetworkGetResponseBody{}),
+	"Network.getResponseBodyResult":                         reflect.TypeOf(NetworkGetResponseBodyResult{}),
+	"Network.getRequestPostData":                            reflect.TypeOf(NetworkGetRequestPostData{}),
+	"Network.getRequestPostDataResult":                      reflect.TypeOf(NetworkGetRequestPostDataResult{}),
+	"Network.getResponseBodyForInterception":                reflect.TypeOf(NetworkGetResponseBodyForInterception{}),
+	"Network.getResponseBodyForInterceptionResult":          reflect.TypeOf(NetworkGetResponseBodyForInterceptionResult{}),
+	"Network.takeResponseBodyForInterceptionAsStream":       reflect.TypeOf(NetworkTakeResponseBodyForInterceptionAsStream{}),
+	"Network.takeResponseBodyForInterceptionAsStreamResult": reflect.TypeOf(NetworkTakeResponseBodyForInterceptionAsStreamResult{}),
+	"Network.replayXHR":                                     reflect.TypeOf(NetworkReplayXHR{}),
+	"Network.searchInResponseBody":                          reflect.TypeOf(NetworkSearchInResponseBody{}),
+	"Network.searchInResponseBodyResult":                    reflect.TypeOf(NetworkSearchInResponseBodyResult{}),
+	"Network.setBlockedURLs":                                reflect.TypeOf(NetworkSetBlockedURLs{}),
+	"Network.setBypassServiceWorker":                        reflect.TypeOf(NetworkSetBypassServiceWorker{}),
+	"Network.setCacheDisabled":                              reflect.TypeOf(NetworkSetCacheDisabled{}),
+	"Network.setCookie":                                     reflect.TypeOf(NetworkSetCookie{}),
+	"Network.setCookieResult":                               reflect.TypeOf(NetworkSetCookieResult{}),
+	"Network.setCookies":                                    reflect.TypeOf(NetworkSetCookies{}),
+	"Network.setDataSizeLimitsForTest":                      reflect.TypeOf(NetworkSetDataSizeLimitsForTest{}),
+	"Network.setExtraHTTPHeaders":                           reflect.TypeOf(NetworkSetExtraHTTPHeaders{}),
+	"Network.setRequestInterception":                        reflect.TypeOf(NetworkSetRequestInterception{}),
+	"Network.setUserAgentOverride":                          reflect.TypeOf(NetworkSetUserAgentOverride{}),
+	"Network.dataReceived":                                  reflect.TypeOf(NetworkDataReceived{}),
+	"Network.eventSourceMessageReceived":                    reflect.TypeOf(NetworkEventSourceMessageReceived{}),
+	"Network.loadingFailed":                                 reflect.TypeOf(NetworkLoadingFailed{}),
+	"Network.loadingFinished":                               reflect.TypeOf(NetworkLoadingFinished{}),
+	"Network.requestIntercepted":                            reflect.TypeOf(NetworkRequestIntercepted{}),
+	"Network.requestServedFromCache":                        reflect.TypeOf(NetworkRequestServedFromCache{}),
+	"Network.requestWillBeSent":                             reflect.TypeOf(NetworkRequestWillBeSent{}),
+	"Network.resourceChangedPriority":                       reflect.TypeOf(NetworkResourceChangedPriority{}),
+	"Network.signedExchangeReceived":                        reflect.TypeOf(NetworkSignedExchangeReceived{}),
+	"Network.responseReceived":                              reflect.TypeOf(NetworkResponseReceived{}),
+	"Network.webSocketClosed":                               reflect.TypeOf(NetworkWebSocketClosed{}),
+	"Network.webSocketCreated":                              reflect.TypeOf(NetworkWebSocketCreated{}),
+	"Network.webSocketFrameError":                           reflect.TypeOf(NetworkWebSocketFrameError{}),
+	"Network.webSocketFrameReceived":                        reflect.TypeOf(NetworkWebSocketFrameReceived{}),
+	"Network.webSocketFrameSent":                            reflect.TypeOf(NetworkWebSocketFrameSent{}),
+	"Network.webSocketHandshakeResponseReceived":            reflect.TypeOf(NetworkWebSocketHandshakeResponseReceived{}),
+	"Network.webSocketWillSendHandshakeRequest":             reflect.TypeOf(NetworkWebSocketWillSendHandshakeRequest{}),
+	"Network.requestWillBeSentExtraInfo":                    reflect.TypeOf(NetworkRequestWillBeSentExtraInfo{}),
+	"Network.responseReceivedExtraInfo":                     reflect.TypeOf(NetworkResponseReceivedExtraInfo{}),
+	"Overlay.HighlightConfig":                               reflect.TypeOf(OverlayHighlightConfig{}),
+	"Overlay.disable":                                       reflect.TypeOf(OverlayDisable{}),
+	"Overlay.enable":                                        reflect.TypeOf(OverlayEnable{}),
+	"Overlay.getHighlightObjectForTest":                     reflect.TypeOf(OverlayGetHighlightObjectForTest{}),
+	"Overlay.getHighlightObjectForTestResult":               reflect.TypeOf(OverlayGetHighlightObjectForTestResult{}),
+	"Overlay.hideHighlight":                                 reflect.TypeOf(OverlayHideHighlight{}),
+	"Overlay.highlightFrame":                                reflect.TypeOf(OverlayHighlightFrame{}),
+	"Overlay.highlightNode":                                 reflect.TypeOf(OverlayHighlightNode{}),
+	"Overlay.highlightQuad":                                 reflect.TypeOf(OverlayHighlightQuad{}),
+	"Overlay.highlightRect":                                 reflect.TypeOf(OverlayHighlightRect{}),
+	"Overlay.setInspectMode":                                reflect.TypeOf(OverlaySetInspectMode{}),
+	"Overlay.setShowAdHighlights":                           reflect.TypeOf(OverlaySetShowAdHighlights{}),
+	"Overlay.setPausedInDebuggerMessage":                    reflect.TypeOf(OverlaySetPausedInDebuggerMessage{}),
+	"Overlay.setShowDebugBorders":                           reflect.TypeOf(OverlaySetShowDebugBorders{}),
+	"Overlay.setShowFPSCounter":                             reflect.TypeOf(OverlaySetShowFPSCounter{}),
+	"Overlay.setShowPaintRects":                             reflect.TypeOf(OverlaySetShowPaintRects{}),
+	"Overlay.setShowLayoutShiftRegions":                     reflect.TypeOf(OverlaySetShowLayoutShiftRegions{}),
+	"Overlay.setShowScrollBottleneckRects":                  reflect.TypeOf(OverlaySetShowScrollBottleneckRects{}),
+	"Overlay.setShowHitTestBorders":                         reflect.TypeOf(OverlaySetShowHitTestBorders{}),
+	"Overlay.setShowViewportSizeOnResize":                   reflect.TypeOf(OverlaySetShowViewportSizeOnResize{}),
+	"Overlay.inspectNodeRequested":                          reflect.TypeOf(OverlayInspectNodeRequested{}),
+	"Overlay.nodeHighlightRequested":                        reflect.TypeOf(OverlayNodeHighlightRequested{}),
+	"Overlay.screenshotRequested":                           reflect.TypeOf(OverlayScreenshotRequested{}),
+	"Overlay.inspectModeCanceled":                           reflect.TypeOf(OverlayInspectModeCanceled{}),
+	"Page.Frame":                                            reflect.TypeOf(PageFrame{}),
+	"Page.FrameResource":                                    reflect.TypeOf(PageFrameResource{}),
+	"Page.FrameResourceTree":                                reflect.TypeOf(PageFrameResourceTree{}),
+	"Page.FrameTree":                                        reflect.TypeOf(PageFrameTree{}),
+	"Page.NavigationEntry":                                  reflect.TypeOf(PageNavigationEntry{}),
+	"Page.ScreencastFrameMetadata":                          reflect.TypeOf(PageScreencastFrameMetadata{}),
+	"Page.AppManifestError":                                 reflect.TypeOf(PageAppManifestError{}),
+	"Page.AppManifestParsedProperties":                      reflect.TypeOf(PageAppManifestParsedProperties{}),
+	"Page.LayoutViewport":                                   reflect.TypeOf(PageLayoutViewport{}),
+	"Page.VisualViewport":                                   reflect.TypeOf(PageVisualViewport{}),
+	"Page.Viewport":                                         reflect.TypeOf(PageViewport{}),
+	"Page.FontFamilies":                                     reflect.TypeOf(PageFontFamilies{}),
+	"Page.FontSizes":                                        reflect.TypeOf(PageFontSizes{}),
+	"Page.InstallabilityErrorArgument":                      reflect.TypeOf(PageInstallabilityErrorArgument{}),
+	"Page.InstallabilityError":                              reflect.TypeOf(PageInstallabilityError{}),
+	"Page.addScriptToEvaluateOnLoad":                        reflect.TypeOf(PageAddScriptToEvaluateOnLoad{}),
+	"Page.addScriptToEvaluateOnLoadResult":                  reflect.TypeOf(PageAddScriptToEvaluateOnLoadResult{}),
+	"Page.addScriptToEvaluateOnNewDocument":                 reflect.TypeOf(PageAddScriptToEvaluateOnNewDocument{}),
+	"Page.addScriptToEvaluateOnNewDocumentResult":           reflect.TypeOf(PageAddScriptToEvaluateOnNewDocumentResult{}),
+	"Page.bringToFront":                                     reflect.TypeOf(PageBringToFront{}),
+	"Page.captureScreenshot":                                reflect.TypeOf(PageCaptureScreenshot{}),
+	"Page.captureScreenshotResult":                          reflect.TypeOf(PageCaptureScreenshotResult{}),
+	"Page.captureSnapshot":                                  reflect.TypeOf(PageCaptureSnapshot{}),
+	"Page.captureSnapshotResult":                            reflect.TypeOf(PageCaptureSnapshotResult{}),
+	"Page.clearDeviceMetricsOverride":                       reflect.TypeOf(PageClearDeviceMetricsOverride{}),
+	"Page.clearDeviceOrientationOverride":                   reflect.TypeOf(PageClearDeviceOrientationOverride{}),
+	"Page.clearGeolocationOverride":                         reflect.TypeOf(PageClearGeolocationOverride{}),
+	"Page.createIsolatedWorld":                              reflect.TypeOf(PageCreateIsolatedWorld{}),
+	"Page.createIsolatedWorldResult":                        reflect.TypeOf(PageCreateIsolatedWorldResult{}),
+	"Page.deleteCookie":                                     reflect.TypeOf(PageDeleteCookie{}),
+	"Page.disable":                                          reflect.TypeOf(PageDisable{}),
+	"Page.enable":                                           reflect.TypeOf(PageEnable{}),
+	"Page.getAppManifest":                                   reflect.TypeOf(PageGetAppManifest{}),
+	"Page.getAppManifestResult":                             reflect.TypeOf(PageGetAppManifestResult{}),
+	"Page.getInstallabilityErrors":                          reflect.TypeOf(PageGetInstallabilityErrors{}),
+	"Page.getInstallabilityErrorsResult":                    reflect.TypeOf(PageGetInstallabilityErrorsResult{}),
+	"Page.getManifestIcons":                                 reflect.TypeOf(PageGetManifestIcons{}),
+	"Page.getManifestIconsResult":                           reflect.TypeOf(PageGetManifestIconsResult{}),
+	"Page.getCookies":                                       reflect.TypeOf(PageGetCookies{}),
+	"Page.getCookiesResult":                                 reflect.TypeOf(PageGetCookiesResult{}),
+	"Page.getFrameTree":                                     reflect.TypeOf(PageGetFrameTree{}),
+	"Page.getFrameTreeResult":                               reflect.TypeOf(PageGetFrameTreeResult{}),
+	"Page.getLayoutMetrics":                                 reflect.TypeOf(PageGetLayoutMetrics{}),
+	"Page.getLayoutMetricsResult":                           reflect.TypeOf(PageGetLayoutMetricsResult{}),
+	"Page.getNavigationHistory":                             reflect.TypeOf(PageGetNavigationHistory{}),
+	"Page.getNavigationHistoryResult":                       reflect.TypeOf(PageGetNavigationHistoryResult{}),
+	"Page.resetNavigationHistory":                           reflect.TypeOf(PageResetNavigationHistory{}),
+	"Page.getResourceContent":                               reflect.TypeOf(PageGetResourceContent{}),
+	"Page.getResourceContentResult":                         reflect.TypeOf(PageGetResourceContentResult{}),
+	"Page.getResourceTree":                                  reflect.TypeOf(PageGetResourceTree{}),
+	"Page.getResourceTreeResult":                            reflect.TypeOf(PageGetResourceTreeResult{}),
+	"Page.handleJavaScriptDialog":                           reflect.TypeOf(PageHandleJavaScriptDialog{}),
+	"Page.navigate":                                         reflect.TypeOf(PageNavigate{}),
+	"Page.navigateResult":                                   reflect.TypeOf(PageNavigateResult{}),
+	"Page.navigateToHistoryEntry":                           reflect.TypeOf(PageNavigateToHistoryEntry{}),
+	"Page.printToPDF":                                       reflect.TypeOf(PagePrintToPDF{}),
+	"Page.printToPDFResult":                                 reflect.TypeOf(PagePrintToPDFResult{}),
+	"Page.reload":                                           reflect.TypeOf(PageReload{}),
+	"Page.removeScriptToEvaluateOnLoad":                     reflect.TypeOf(PageRemoveScriptToEvaluateOnLoad{}),
+	"Page.removeScriptToEvaluateOnNewDocument":              reflect.TypeOf(PageRemoveScriptToEvaluateOnNewDocument{}),
+	"Page.screencastFrameAck":                               reflect.TypeOf(PageScreencastFrameAck{}),
+	"Page.searchInResource":                                 reflect.TypeOf(PageSearchInResource{}),
+	"Page.searchInResourceResult":                           reflect.TypeOf(PageSearchInResourceResult{}),
+	"Page.setAdBlockingEnabled":                             reflect.TypeOf(PageSetAdBlockingEnabled{}),
+	"Page.setBypassCSP":                                     reflect.TypeOf(PageSetBypassCSP{}),
+	"Page.setDeviceMetricsOverride":                         reflect.TypeOf(PageSetDeviceMetricsOverride{}),
+	"Page.setDeviceOrientationOverride":                     reflect.TypeOf(PageSetDeviceOrientationOverride{}),
+	"Page.setFontFamilies":                                  reflect.TypeOf(PageSetFontFamilies{}),
+	"Page.setFontSizes":                                     reflect.TypeOf(PageSetFontSizes{}),
+	"Page.setDocumentContent":                               reflect.TypeOf(PageSetDocumentContent{}),
+	"Page.setDownloadBehavior":                              reflect.TypeOf(PageSetDownloadBehavior{}),
+	"Page.setGeolocationOverride":                           reflect.TypeOf(PageSetGeolocationOverride{}),
+	"Page.setLifecycleEventsEnabled":                        reflect.TypeOf(PageSetLifecycleEventsEnabled{}),
+	"Page.setTouchEmulationEnabled":                         reflect.TypeOf(PageSetTouchEmulationEnabled{}),
+	"Page.startScreencast":                                  reflect.TypeOf(PageStartScreencast{}),
+	"Page.stopLoading":                                      reflect.TypeOf(PageStopLoading{}),
+	"Page.crash":                                            reflect.TypeOf(PageCrash{}),
+	"Page.close":                                            reflect.TypeOf(PageClose{}),
+	"Page.setWebLifecycleState":                             reflect.TypeOf(PageSetWebLifecycleState{}),
+	"Page.stopScreencast":                                   reflect.TypeOf(PageStopScreencast{}),
+	"Page.setProduceCompilationCache":                       reflect.TypeOf(PageSetProduceCompilationCache{}),
+	"Page.addCompilationCache":                              reflect.TypeOf(PageAddCompilationCache{}),
+	"Page.clearCompilationCache":                            reflect.TypeOf(PageClearCompilationCache{}),
+	"Page.generateTestReport":                               reflect.TypeOf(PageGenerateTestReport{}),
+	"Page.waitForDebugger":                                  reflect.TypeOf(PageWaitForDebugger{}),
+	"Page.setInterceptFileChooserDialog":                    reflect.TypeOf(PageSetInterceptFileChooserDialog{}),
+	"Page.domContentEventFired":                             reflect.TypeOf(PageDomContentEventFired{}),
+	"Page.fileChooserOpened":                                reflect.TypeOf(PageFileChooserOpened{}),
+	"Page.frameAttached":                                    reflect.TypeOf(PageFrameAttached{}),
+	"Page.frameClearedScheduledNavigation":                  reflect.TypeOf(PageFrameClearedScheduledNavigation{}),
+	"Page.frameDetached":                                    reflect.TypeOf(PageFrameDetached{}),
+	"Page.frameNavigated":                                   reflect.TypeOf(PageFrameNavigated{}),
+	"Page.frameResized":                                     reflect.TypeOf(PageFrameResized{}),
+	"Page.frameRequestedNavigation":                         reflect.TypeOf(PageFrameRequestedNavigation{}),
+	"Page.frameScheduledNavigation":                         reflect.TypeOf(PageFrameScheduledNavigation{}),
+	"Page.frameStartedLoading":                              reflect.TypeOf(PageFrameStartedLoading{}),
+	"Page.frameStoppedLoading":                              reflect.TypeOf(PageFrameStoppedLoading{}),
+	"Page.downloadWillBegin":                                reflect.TypeOf(PageDownloadWillBegin{}),
+	"Page.downloadProgress":                                 reflect.TypeOf(PageDownloadProgress{}),
+	"Page.interstitialHidden":                               reflect.TypeOf(PageInterstitialHidden{}),
+	"Page.interstitialShown":                                reflect.TypeOf(PageInterstitialShown{}),
+	"Page.javascriptDialogClosed":                           reflect.TypeOf(PageJavascriptDialogClosed{}),
+	"Page.javascriptDialogOpening":                          reflect.TypeOf(PageJavascriptDialogOpening{}),
+	"Page.lifecycleEvent":                                   reflect.TypeOf(PageLifecycleEvent{}),
+	"Page.loadEventFired":                                   reflect.TypeOf(PageLoadEventFired{}),
+	"Page.navigatedWithinDocument":                          reflect.TypeOf(PageNavigatedWithinDocument{}),
+	"Page.screencastFrame":                                  reflect.TypeOf(PageScreencastFrame{}),
+	"Page.screencastVisibilityChanged":                      reflect.TypeOf(PageScreencastVisibilityChanged{}),
+	"Page.windowOpen":                                       reflect.TypeOf(PageWindowOpen{}),
+	"Page.compilationCacheProduced":                         reflect.TypeOf(PageCompilationCacheProduced{}),
+	"Performance.Metric":                                    reflect.TypeOf(PerformanceMetric{}),
+	"Performance.disable":                                   reflect.TypeOf(PerformanceDisable{}),
+	"Performance.enable":                                    reflect.TypeOf(PerformanceEnable{}),
+	"Performance.setTimeDomain":                             reflect.TypeOf(PerformanceSetTimeDomain{}),
+	"Performance.getMetrics":                                reflect.TypeOf(PerformanceGetMetrics{}),
+	"Performance.getMetricsResult":                          reflect.TypeOf(PerformanceGetMetricsResult{}),
+	"Performance.metrics":                                   reflect.TypeOf(PerformanceMetrics{}),
+	"Security.CertificateSecurityState":                     reflect.TypeOf(SecurityCertificateSecurityState{}),
+	"Security.SafetyTipInfo":                                reflect.TypeOf(SecuritySafetyTipInfo{}),
+	"Security.VisibleSecurityState":                         reflect.TypeOf(SecurityVisibleSecurityState{}),
+	"Security.SecurityStateExplanation":                     reflect.TypeOf(SecuritySecurityStateExplanation{}),
+	"Security.InsecureContentStatus":                        reflect.TypeOf(SecurityInsecureContentStatus{}),
+	"Security.disable":                                      reflect.TypeOf(SecurityDisable{}),
+	"Security.enable":                                       reflect.TypeOf(SecurityEnable{}),
+	"Security.setIgnoreCertificateErrors":                   reflect.TypeOf(SecuritySetIgnoreCertificateErrors{}),
+	"Security.handleCertificateError":                       reflect.TypeOf(SecurityHandleCertificateError{}),
+	"Security.setOverrideCertificateErrors":                 reflect.TypeOf(SecuritySetOverrideCertificateErrors{}),
+	"Security.certificateError":                             reflect.TypeOf(SecurityCertificateError{}),
+	"Security.visibleSecurityStateChanged":                  reflect.TypeOf(SecurityVisibleSecurityStateChanged{}),
+	"Security.securityStateChanged":                         reflect.TypeOf(SecuritySecurityStateChanged{}),
+	"ServiceWorker.ServiceWorkerRegistration":               reflect.TypeOf(ServiceWorkerServiceWorkerRegistration{}),
+	"ServiceWorker.ServiceWorkerVersion":                    reflect.TypeOf(ServiceWorkerServiceWorkerVersion{}),
+	"ServiceWorker.ServiceWorkerErrorMessage":               reflect.TypeOf(ServiceWorkerServiceWorkerErrorMessage{}),
+	"ServiceWorker.deliverPushMessage":                      reflect.TypeOf(ServiceWorkerDeliverPushMessage{}),
+	"ServiceWorker.disable":                                 reflect.TypeOf(ServiceWorkerDisable{}),
+	"ServiceWorker.dispatchSyncEvent":                       reflect.TypeOf(ServiceWorkerDispatchSyncEvent{}),
+	"ServiceWorker.dispatchPeriodicSyncEvent":               reflect.TypeOf(ServiceWorkerDispatchPeriodicSyncEvent{}),
+	"ServiceWorker.enable":                                  reflect.TypeOf(ServiceWorkerEnable{}),
+	"ServiceWorker.inspectWorker":                           reflect.TypeOf(ServiceWorkerInspectWorker{}),
+	"ServiceWorker.setForceUpdateOnPageLoad":                reflect.TypeOf(ServiceWorkerSetForceUpdateOnPageLoad{}),
+	"ServiceWorker.skipWaiting":                             reflect.TypeOf(ServiceWorkerSkipWaiting{}),
+	"ServiceWorker.startWorker":                             reflect.TypeOf(ServiceWorkerStartWorker{}),
+	"ServiceWorker.stopAllWorkers":                          reflect.TypeOf(ServiceWorkerStopAllWorkers{}),
+	"ServiceWorker.stopWorker":                              reflect.TypeOf(ServiceWorkerStopWorker{}),
+	"ServiceWorker.unregister":                              reflect.TypeOf(ServiceWorkerUnregister{}),
+	"ServiceWorker.updateRegistration":                      reflect.TypeOf(ServiceWorkerUpdateRegistration{}),
+	"ServiceWorker.workerErrorReported":                     reflect.TypeOf(ServiceWorkerWorkerErrorReported{}),
+	"ServiceWorker.workerRegistrationUpdated":               reflect.TypeOf(ServiceWorkerWorkerRegistrationUpdated{}),
+	"ServiceWorker.workerVersionUpdated":                    reflect.TypeOf(ServiceWorkerWorkerVersionUpdated{}),
+	"Storage.UsageForType":                                  reflect.TypeOf(StorageUsageForType{}),
+	"Storage.clearDataForOrigin":                            reflect.TypeOf(StorageClearDataForOrigin{}),
+	"Storage.getCookies":                                    reflect.TypeOf(StorageGetCookies{}),
+	"Storage.getCookiesResult":                              reflect.TypeOf(StorageGetCookiesResult{}),
+	"Storage.setCookies":                                    reflect.TypeOf(StorageSetCookies{}),
+	"Storage.clearCookies":                                  reflect.TypeOf(StorageClearCookies{}),
+	"Storage.getUsageAndQuota":                              reflect.TypeOf(StorageGetUsageAndQuota{}),
+	"Storage.getUsageAndQuotaResult":                        reflect.TypeOf(StorageGetUsageAndQuotaResult{}),
+	"Storage.trackCacheStorageForOrigin":                    reflect.TypeOf(StorageTrackCacheStorageForOrigin{}),
+	"Storage.trackIndexedDBForOrigin":                       reflect.TypeOf(StorageTrackIndexedDBForOrigin{}),
+	"Storage.untrackCacheStorageForOrigin":                  reflect.TypeOf(StorageUntrackCacheStorageForOrigin{}),
+	"Storage.untrackIndexedDBForOrigin":                     reflect.TypeOf(StorageUntrackIndexedDBForOrigin{}),
+	"Storage.cacheStorageContentUpdated":                    reflect.TypeOf(StorageCacheStorageContentUpdated{}),
+	"Storage.cacheStorageListUpdated":                       reflect.TypeOf(StorageCacheStorageListUpdated{}),
+	"Storage.indexedDBContentUpdated":                       reflect.TypeOf(StorageIndexedDBContentUpdated{}),
+	"Storage.indexedDBListUpdated":                          reflect.TypeOf(StorageIndexedDBListUpdated{}),
+	"SystemInfo.GPUDevice":                                  reflect.TypeOf(SystemInfoGPUDevice{}),
+	"SystemInfo.Size":                                       reflect.TypeOf(SystemInfoSize{}),
+	"SystemInfo.VideoDecodeAcceleratorCapability":           reflect.TypeOf(SystemInfoVideoDecodeAcceleratorCapability{}),
+	"SystemInfo.VideoEncodeAcceleratorCapability":           reflect.TypeOf(SystemInfoVideoEncodeAcceleratorCapability{}),
+	"SystemInfo.ImageDecodeAcceleratorCapability":           reflect.TypeOf(SystemInfoImageDecodeAcceleratorCapability{}),
+	"SystemInfo.GPUInfo":                                    reflect.TypeOf(SystemInfoGPUInfo{}),
+	"SystemInfo.ProcessInfo":                                reflect.TypeOf(SystemInfoProcessInfo{}),
+	"SystemInfo.getInfo":                                    reflect.TypeOf(SystemInfoGetInfo{}),
+	"SystemInfo.getInfoResult":                              reflect.TypeOf(SystemInfoGetInfoResult{}),
+	"SystemInfo.getProcessInfo":                             reflect.TypeOf(SystemInfoGetProcessInfo{}),
+	"SystemInfo.getProcessInfoResult":                       reflect.TypeOf(SystemInfoGetProcessInfoResult{}),
+	"Target.TargetInfo":                                     reflect.TypeOf(TargetTargetInfo{}),
+	"Target.RemoteLocation":                                 reflect.TypeOf(TargetRemoteLocation{}),
+	"Target.activateTarget":                                 reflect.TypeOf(TargetActivateTarget{}),
+	"Target.attachToTarget":                                 reflect.TypeOf(TargetAttachToTarget{}),
+	"Target.attachToTargetResult":                           reflect.TypeOf(TargetAttachToTargetResult{}),
+	"Target.attachToBrowserTarget":                          reflect.TypeOf(TargetAttachToBrowserTarget{}),
+	"Target.attachToBrowserTargetResult":                    reflect.TypeOf(TargetAttachToBrowserTargetResult{}),
+	"Target.closeTarget":                                    reflect.TypeOf(TargetCloseTarget{}),
+	"Target.closeTargetResult":                              reflect.TypeOf(TargetCloseTargetResult{}),
+	"Target.exposeDevToolsProtocol":                         reflect.TypeOf(TargetExposeDevToolsProtocol{}),
+	"Target.createBrowserContext":                           reflect.TypeOf(TargetCreateBrowserContext{}),
+	"Target.createBrowserContextResult":                     reflect.TypeOf(TargetCreateBrowserContextResult{}),
+	"Target.getBrowserContexts":                             reflect.TypeOf(TargetGetBrowserContexts{}),
+	"Target.getBrowserContextsResult":                       reflect.TypeOf(TargetGetBrowserContextsResult{}),
+	"Target.createTarget":                                   reflect.TypeOf(TargetCreateTarget{}),
+	"Target.createTargetResult":                             reflect.TypeOf(TargetCreateTargetResult{}),
+	"Target.detachFromTarget":                               reflect.TypeOf(TargetDetachFromTarget{}),
+	"Target.disposeBrowserContext":                          reflect.TypeOf(TargetDisposeBrowserContext{}),
+	"Target.getTargetInfo":                                  reflect.TypeOf(TargetGetTargetInfo{}),
+	"Target.getTargetInfoResult":                            reflect.TypeOf(TargetGetTargetInfoResult{}),
+	"Target.getTargets":                                     reflect.TypeOf(TargetGetTargets{}),
+	"Target.getTargetsResult":                               reflect.TypeOf(TargetGetTargetsResult{}),
+	"Target.sendMessageToTarget":                            reflect.TypeOf(TargetSendMessageToTarget{}),
+	"Target.setAutoAttach":                                  reflect.TypeOf(TargetSetAutoAttach{}),
+	"Target.setDiscoverTargets":                             reflect.TypeOf(TargetSetDiscoverTargets{}),
+	"Target.setRemoteLocations":                             reflect.TypeOf(TargetSetRemoteLocations{}),
+	"Target.attachedToTarget":                               reflect.TypeOf(TargetAttachedToTarget{}),
+	"Target.detachedFromTarget":                             reflect.TypeOf(TargetDetachedFromTarget{}),
+	"Target.receivedMessageFromTarget":                      reflect.TypeOf(TargetReceivedMessageFromTarget{}),
+	"Target.targetCreated":                                  reflect.TypeOf(TargetTargetCreated{}),
+	"Target.targetDestroyed":                                reflect.TypeOf(TargetTargetDestroyed{}),
+	"Target.targetCrashed":                                  reflect.TypeOf(TargetTargetCrashed{}),
+	"Target.targetInfoChanged":                              reflect.TypeOf(TargetTargetInfoChanged{}),
+	"Tethering.bind":                                        reflect.TypeOf(TetheringBind{}),
+	"Tethering.unbind":                                      reflect.TypeOf(TetheringUnbind{}),
+	"Tethering.accepted":                                    reflect.TypeOf(TetheringAccepted{}),
+	"Tracing.TraceConfig":                                   reflect.TypeOf(TracingTraceConfig{}),
+	"Tracing.end":                                           reflect.TypeOf(TracingEnd{}),
+	"Tracing.getCategories":                                 reflect.TypeOf(TracingGetCategories{}),
+	"Tracing.getCategoriesResult":                           reflect.TypeOf(TracingGetCategoriesResult{}),
+	"Tracing.recordClockSyncMarker":                         reflect.TypeOf(TracingRecordClockSyncMarker{}),
+	"Tracing.requestMemoryDump":                             reflect.TypeOf(TracingRequestMemoryDump{}),
+	"Tracing.requestMemoryDumpResult":                       reflect.TypeOf(TracingRequestMemoryDumpResult{}),
+	"Tracing.start":                                         reflect.TypeOf(TracingStart{}),
+	"Tracing.bufferUsage":                                   reflect.TypeOf(TracingBufferUsage{}),
+	"Tracing.dataCollected":                                 reflect.TypeOf(TracingDataCollected{}),
+	"Tracing.tracingComplete":                               reflect.TypeOf(TracingTracingComplete{}),
+	"Fetch.RequestPattern":                                  reflect.TypeOf(FetchRequestPattern{}),
+	"Fetch.HeaderEntry":                                     reflect.TypeOf(FetchHeaderEntry{}),
+	"Fetch.AuthChallenge":                                   reflect.TypeOf(FetchAuthChallenge{}),
+	"Fetch.AuthChallengeResponse":                           reflect.TypeOf(FetchAuthChallengeResponse{}),
+	"Fetch.disable":                                         reflect.TypeOf(FetchDisable{}),
+	"Fetch.enable":                                          reflect.TypeOf(FetchEnable{}),
+	"Fetch.failRequest":                                     reflect.TypeOf(FetchFailRequest{}),
+	"Fetch.fulfillRequest":                                  reflect.TypeOf(FetchFulfillRequest{}),
+	"Fetch.continueRequest":                                 reflect.TypeOf(FetchContinueRequest{}),
+	"Fetch.continueWithAuth":                                reflect.TypeOf(FetchContinueWithAuth{}),
+	"Fetch.getResponseBody":                                 reflect.TypeOf(FetchGetResponseBody{}),
+	"Fetch.getResponseBodyResult":                           reflect.TypeOf(FetchGetResponseBodyResult{}),
+	"Fetch.takeResponseBodyAsStream":                        reflect.TypeOf(FetchTakeResponseBodyAsStream{}),
+	"Fetch.takeResponseBodyAsStreamResult":                  reflect.TypeOf(FetchTakeResponseBodyAsStreamResult{}),
+	"Fetch.requestPaused":                                   reflect.TypeOf(FetchRequestPaused{}),
+	"Fetch.authRequired":                                    reflect.TypeOf(FetchAuthRequired{}),
+	"WebAudio.ContextRealtimeData":                          reflect.TypeOf(WebAudioContextRealtimeData{}),
+	"WebAudio.BaseAudioContext":                             reflect.TypeOf(WebAudioBaseAudioContext{}),
+	"WebAudio.AudioListener":                                reflect.TypeOf(WebAudioAudioListener{}),
+	"WebAudio.AudioNode":                                    reflect.TypeOf(WebAudioAudioNode{}),
+	"WebAudio.AudioParam":                                   reflect.TypeOf(WebAudioAudioParam{}),
+	"WebAudio.enable":                                       reflect.TypeOf(WebAudioEnable{}),
+	"WebAudio.disable":                                      reflect.TypeOf(WebAudioDisable{}),
+	"WebAudio.getRealtimeData":                              reflect.TypeOf(WebAudioGetRealtimeData{}),
+	"WebAudio.getRealtimeDataResult":                        reflect.TypeOf(WebAudioGetRealtimeDataResult{}),
+	"WebAudio.contextCreated":                               reflect.TypeOf(WebAudioContextCreated{}),
+	"WebAudio.contextWillBeDestroyed":                       reflect.TypeOf(WebAudioContextWillBeDestroyed{}),
+	"WebAudio.contextChanged":                               reflect.TypeOf(WebAudioContextChanged{}),
+	"WebAudio.audioListenerCreated":                         reflect.TypeOf(WebAudioAudioListenerCreated{}),
+	"WebAudio.audioListenerWillBeDestroyed":                 reflect.TypeOf(WebAudioAudioListenerWillBeDestroyed{}),
+	"WebAudio.audioNodeCreated":                             reflect.TypeOf(WebAudioAudioNodeCreated{}),
+	"WebAudio.audioNodeWillBeDestroyed":                     reflect.TypeOf(WebAudioAudioNodeWillBeDestroyed{}),
+	"WebAudio.audioParamCreated":                            reflect.TypeOf(WebAudioAudioParamCreated{}),
+	"WebAudio.audioParamWillBeDestroyed":                    reflect.TypeOf(WebAudioAudioParamWillBeDestroyed{}),
+	"WebAudio.nodesConnected":                               reflect.TypeOf(WebAudioNodesConnected{}),
+	"WebAudio.nodesDisconnected":                            reflect.TypeOf(WebAudioNodesDisconnected{}),
+	"WebAudio.nodeParamConnected":                           reflect.TypeOf(WebAudioNodeParamConnected{}),
+	"WebAudio.nodeParamDisconnected":                        reflect.TypeOf(WebAudioNodeParamDisconnected{}),
+	"WebAuthn.VirtualAuthenticatorOptions":                  reflect.TypeOf(WebAuthnVirtualAuthenticatorOptions{}),
+	"WebAuthn.Credential":                                   reflect.TypeOf(WebAuthnCredential{}),
+	"WebAuthn.enable":                                       reflect.TypeOf(WebAuthnEnable{}),
+	"WebAuthn.disable":                                      reflect.TypeOf(WebAuthnDisable{}),
+	"WebAuthn.addVirtualAuthenticator":                      reflect.TypeOf(WebAuthnAddVirtualAuthenticator{}),
+	"WebAuthn.addVirtualAuthenticatorResult":                reflect.TypeOf(WebAuthnAddVirtualAuthenticatorResult{}),
+	"WebAuthn.removeVirtualAuthenticator":                   reflect.TypeOf(WebAuthnRemoveVirtualAuthenticator{}),
+	"WebAuthn.addCredential":                                reflect.TypeOf(WebAuthnAddCredential{}),
+	"WebAuthn.getCredential":                                reflect.TypeOf(WebAuthnGetCredential{}),
+	"WebAuthn.getCredentialResult":                          reflect.TypeOf(WebAuthnGetCredentialResult{}),
+	"WebAuthn.getCredentials":                               reflect.TypeOf(WebAuthnGetCredentials{}),
+	"WebAuthn.getCredentialsResult":                         reflect.TypeOf(WebAuthnGetCredentialsResult{}),
+	"WebAuthn.removeCredential":                             reflect.TypeOf(WebAuthnRemoveCredential{}),
+	"WebAuthn.clearCredentials":                             reflect.TypeOf(WebAuthnClearCredentials{}),
+	"WebAuthn.setUserVerified":                              reflect.TypeOf(WebAuthnSetUserVerified{}),
+	"Media.PlayerProperty":                                  reflect.TypeOf(MediaPlayerProperty{}),
+	"Media.PlayerEvent":                                     reflect.TypeOf(MediaPlayerEvent{}),
+	"Media.enable":                                          reflect.TypeOf(MediaEnable{}),
+	"Media.disable":                                         reflect.TypeOf(MediaDisable{}),
+	"Media.playerPropertiesChanged":                         reflect.TypeOf(MediaPlayerPropertiesChanged{}),
+	"Media.playerEventsAdded":                               reflect.TypeOf(MediaPlayerEventsAdded{}),
+	"Media.playersCreated":                                  reflect.TypeOf(MediaPlayersCreated{}),
+	"Console.ConsoleMessage":                                reflect.TypeOf(ConsoleConsoleMessage{}),
+	"Console.clearMessages":                                 reflect.TypeOf(ConsoleClearMessages{}),
+	"Console.disable":                                       reflect.TypeOf(ConsoleDisable{}),
+	"Console.enable":                                        reflect.TypeOf(ConsoleEnable{}),
+	"Console.messageAdded":                                  reflect.TypeOf(ConsoleMessageAdded{}),
+	"Debugger.Location":                                     reflect.TypeOf(DebuggerLocation{}),
+	"Debugger.ScriptPosition":                               reflect.TypeOf(DebuggerScriptPosition{}),
+	"Debugger.CallFrame":                                    reflect.TypeOf(DebuggerCallFrame{}),
+	"Debugger.Scope":                                        reflect.TypeOf(DebuggerScope{}),
+	"Debugger.SearchMatch":                                  reflect.TypeOf(DebuggerSearchMatch{}),
+	"Debugger.BreakLocation":                                reflect.TypeOf(DebuggerBreakLocation{}),
+	"Debugger.continueToLocation":                           reflect.TypeOf(DebuggerContinueToLocation{}),
+	"Debugger.disable":                                      reflect.TypeOf(DebuggerDisable{}),
+	"Debugger.enable":                                       reflect.TypeOf(DebuggerEnable{}),
+	"Debugger.enableResult":                                 reflect.TypeOf(DebuggerEnableResult{}),
+	"Debugger.evaluateOnCallFrame":                          reflect.TypeOf(DebuggerEvaluateOnCallFrame{}),
+	"Debugger.evaluateOnCallFrameResult":                    reflect.TypeOf(DebuggerEvaluateOnCallFrameResult{}),
+	"Debugger.getPossibleBreakpoints":                       reflect.TypeOf(DebuggerGetPossibleBreakpoints{}),
+	"Debugger.getPossibleBreakpointsResult":                 reflect.TypeOf(DebuggerGetPossibleBreakpointsResult{}),
+	"Debugger.getScriptSource":                              reflect.TypeOf(DebuggerGetScriptSource{}),
+	"Debugger.getScriptSourceResult":                        reflect.TypeOf(DebuggerGetScriptSourceResult{}),
+	"Debugger.getWasmBytecode":                              reflect.TypeOf(DebuggerGetWasmBytecode{}),
+	"Debugger.getWasmBytecodeResult":                        reflect.TypeOf(DebuggerGetWasmBytecodeResult{}),
+	"Debugger.getStackTrace":                                reflect.TypeOf(DebuggerGetStackTrace{}),
+	"Debugger.getStackTraceResult":                          reflect.TypeOf(DebuggerGetStackTraceResult{}),
+	"Debugger.pause":                                        reflect.TypeOf(DebuggerPause{}),
+	"Debugger.pauseOnAsyncCall":                             reflect.TypeOf(DebuggerPauseOnAsyncCall{}),
+	"Debugger.removeBreakpoint":                             reflect.TypeOf(DebuggerRemoveBreakpoint{}),
+	"Debugger.restartFrame":                                 reflect.TypeOf(DebuggerRestartFrame{}),
+	"Debugger.restartFrameResult":                           reflect.TypeOf(DebuggerRestartFrameResult{}),
+	"Debugger.resume":                                       reflect.TypeOf(DebuggerResume{}),
+	"Debugger.searchInContent":                              reflect.TypeOf(DebuggerSearchInContent{}),
+	"Debugger.searchInContentResult":                        reflect.TypeOf(DebuggerSearchInContentResult{}),
+	"Debugger.setAsyncCallStackDepth":                       reflect.TypeOf(DebuggerSetAsyncCallStackDepth{}),
+	"Debugger.setBlackboxPatterns":                          reflect.TypeOf(DebuggerSetBlackboxPatterns{}),
+	"Debugger.setBlackboxedRanges":                          reflect.TypeOf(DebuggerSetBlackboxedRanges{}),
+	"Debugger.setBreakpoint":                                reflect.TypeOf(DebuggerSetBreakpoint{}),
+	"Debugger.setBreakpointResult":                          reflect.TypeOf(DebuggerSetBreakpointResult{}),
+	"Debugger.setInstrumentationBreakpoint":                 reflect.TypeOf(DebuggerSetInstrumentationBreakpoint{}),
+	"Debugger.setInstrumentationBreakpointResult":           reflect.TypeOf(DebuggerSetInstrumentationBreakpointResult{}),
+	"Debugger.setBreakpointByUrl":                           reflect.TypeOf(DebuggerSetBreakpointByURL{}),
+	"Debugger.setBreakpointByUrlResult":                     reflect.TypeOf(DebuggerSetBreakpointByURLResult{}),
+	"Debugger.setBreakpointOnFunctionCall":                  reflect.TypeOf(DebuggerSetBreakpointOnFunctionCall{}),
+	"Debugger.setBreakpointOnFunctionCallResult":            reflect.TypeOf(DebuggerSetBreakpointOnFunctionCallResult{}),
+	"Debugger.setBreakpointsActive":                         reflect.TypeOf(DebuggerSetBreakpointsActive{}),
+	"Debugger.setPauseOnExceptions":                         reflect.TypeOf(DebuggerSetPauseOnExceptions{}),
+	"Debugger.setReturnValue":                               reflect.TypeOf(DebuggerSetReturnValue{}),
+	"Debugger.setScriptSource":                              reflect.TypeOf(DebuggerSetScriptSource{}),
+	"Debugger.setScriptSourceResult":                        reflect.TypeOf(DebuggerSetScriptSourceResult{}),
+	"Debugger.setSkipAllPauses":                             reflect.TypeOf(DebuggerSetSkipAllPauses{}),
+	"Debugger.setVariableValue":                             reflect.TypeOf(DebuggerSetVariableValue{}),
+	"Debugger.stepInto":                                     reflect.TypeOf(DebuggerStepInto{}),
+	"Debugger.stepOut":                                      reflect.TypeOf(DebuggerStepOut{}),
+	"Debugger.stepOver":                                     reflect.TypeOf(DebuggerStepOver{}),
+	"Debugger.breakpointResolved":                           reflect.TypeOf(DebuggerBreakpointResolved{}),
+	"Debugger.paused":                                       reflect.TypeOf(DebuggerPaused{}),
+	"Debugger.resumed":                                      reflect.TypeOf(DebuggerResumed{}),
+	"Debugger.scriptFailedToParse":                          reflect.TypeOf(DebuggerScriptFailedToParse{}),
+	"Debugger.scriptParsed":                                 reflect.TypeOf(DebuggerScriptParsed{}),
+	"HeapProfiler.SamplingHeapProfileNode":                  reflect.TypeOf(HeapProfilerSamplingHeapProfileNode{}),
+	"HeapProfiler.SamplingHeapProfileSample":                reflect.TypeOf(HeapProfilerSamplingHeapProfileSample{}),
+	"HeapProfiler.SamplingHeapProfile":                      reflect.TypeOf(HeapProfilerSamplingHeapProfile{}),
+	"HeapProfiler.addInspectedHeapObject":                   reflect.TypeOf(HeapProfilerAddInspectedHeapObject{}),
+	"HeapProfiler.collectGarbage":                           reflect.TypeOf(HeapProfilerCollectGarbage{}),
+	"HeapProfiler.disable":                                  reflect.TypeOf(HeapProfilerDisable{}),
+	"HeapProfiler.enable":                                   reflect.TypeOf(HeapProfilerEnable{}),
+	"HeapProfiler.getHeapObjectId":                          reflect.TypeOf(HeapProfilerGetHeapObjectID{}),
+	"HeapProfiler.getHeapObjectIdResult":                    reflect.TypeOf(HeapProfilerGetHeapObjectIDResult{}),
+	"HeapProfiler.getObjectByHeapObjectId":                  reflect.TypeOf(HeapProfilerGetObjectByHeapObjectID{}),
+	"HeapProfiler.getObjectByHeapObjectIdResult":            reflect.TypeOf(HeapProfilerGetObjectByHeapObjectIDResult{}),
+	"HeapProfiler.getSamplingProfile":                       reflect.TypeOf(HeapProfilerGetSamplingProfile{}),
+	"HeapProfiler.getSamplingProfileResult":                 reflect.TypeOf(HeapProfilerGetSamplingProfileResult{}),
+	"HeapProfiler.startSampling":                            reflect.TypeOf(HeapProfilerStartSampling{}),
+	"HeapProfiler.startTrackingHeapObjects":                 reflect.TypeOf(HeapProfilerStartTrackingHeapObjects{}),
+	"HeapProfiler.stopSampling":                             reflect.TypeOf(HeapProfilerStopSampling{}),
+	"HeapProfiler.stopSamplingResult":                       reflect.TypeOf(HeapProfilerStopSamplingResult{}),
+	"HeapProfiler.stopTrackingHeapObjects":                  reflect.TypeOf(HeapProfilerStopTrackingHeapObjects{}),
+	"HeapProfiler.takeHeapSnapshot":                         reflect.TypeOf(HeapProfilerTakeHeapSnapshot{}),
+	"HeapProfiler.addHeapSnapshotChunk":                     reflect.TypeOf(HeapProfilerAddHeapSnapshotChunk{}),
+	"HeapProfiler.heapStatsUpdate":                          reflect.TypeOf(HeapProfilerHeapStatsUpdate{}),
+	"HeapProfiler.lastSeenObjectId":                         reflect.TypeOf(HeapProfilerLastSeenObjectID{}),
+	"HeapProfiler.reportHeapSnapshotProgress":               reflect.TypeOf(HeapProfilerReportHeapSnapshotProgress{}),
+	"HeapProfiler.resetProfiles":                            reflect.TypeOf(HeapProfilerResetProfiles{}),
+	"Profiler.ProfileNode":                                  reflect.TypeOf(ProfilerProfileNode{}),
+	"Profiler.Profile":                                      reflect.TypeOf(ProfilerProfile{}),
+	"Profiler.PositionTickInfo":                             reflect.TypeOf(ProfilerPositionTickInfo{}),
+	"Profiler.CoverageRange":                                reflect.TypeOf(ProfilerCoverageRange{}),
+	"Profiler.FunctionCoverage":                             reflect.TypeOf(ProfilerFunctionCoverage{}),
+	"Profiler.ScriptCoverage":                               reflect.TypeOf(ProfilerScriptCoverage{}),
+	"Profiler.TypeObject":                                   reflect.TypeOf(ProfilerTypeObject{}),
+	"Profiler.TypeProfileEntry":                             reflect.TypeOf(ProfilerTypeProfileEntry{}),
+	"Profiler.ScriptTypeProfile":                            reflect.TypeOf(ProfilerScriptTypeProfile{}),
+	"Profiler.CounterInfo":                                  reflect.TypeOf(ProfilerCounterInfo{}),
+	"Profiler.disable":                                      reflect.TypeOf(ProfilerDisable{}),
+	"Profiler.enable":                                       reflect.TypeOf(ProfilerEnable{}),
+	"Profiler.getBestEffortCoverage":                        reflect.TypeOf(ProfilerGetBestEffortCoverage{}),
+	"Profiler.getBestEffortCoverageResult":                  reflect.TypeOf(ProfilerGetBestEffortCoverageResult{}),
+	"Profiler.setSamplingInterval":                          reflect.TypeOf(ProfilerSetSamplingInterval{}),
+	"Profiler.start":                                        reflect.TypeOf(ProfilerStart{}),
+	"Profiler.startPreciseCoverage":                         reflect.TypeOf(ProfilerStartPreciseCoverage{}),
+	"Profiler.startPreciseCoverageResult":                   reflect.TypeOf(ProfilerStartPreciseCoverageResult{}),
+	"Profiler.startTypeProfile":                             reflect.TypeOf(ProfilerStartTypeProfile{}),
+	"Profiler.stop":                                         reflect.TypeOf(ProfilerStop{}),
+	"Profiler.stopResult":                                   reflect.TypeOf(ProfilerStopResult{}),
+	"Profiler.stopPreciseCoverage":                          reflect.TypeOf(ProfilerStopPreciseCoverage{}),
+	"Profiler.stopTypeProfile":                              reflect.TypeOf(ProfilerStopTypeProfile{}),
+	"Profiler.takePreciseCoverage":                          reflect.TypeOf(ProfilerTakePreciseCoverage{}),
+	"Profiler.takePreciseCoverageResult":                    reflect.TypeOf(ProfilerTakePreciseCoverageResult{}),
+	"Profiler.takeTypeProfile":                              reflect.TypeOf(ProfilerTakeTypeProfile{}),
+	"Profiler.takeTypeProfileResult":                        reflect.TypeOf(ProfilerTakeTypeProfileResult{}),
+	"Profiler.enableRuntimeCallStats":                       reflect.TypeOf(ProfilerEnableRuntimeCallStats{}),
+	"Profiler.disableRuntimeCallStats":                      reflect.TypeOf(ProfilerDisableRuntimeCallStats{}),
+	"Profiler.getRuntimeCallStats":                          reflect.TypeOf(ProfilerGetRuntimeCallStats{}),
+	"Profiler.getRuntimeCallStatsResult":                    reflect.TypeOf(ProfilerGetRuntimeCallStatsResult{}),
+	"Profiler.consoleProfileFinished":                       reflect.TypeOf(ProfilerConsoleProfileFinished{}),
+	"Profiler.consoleProfileStarted":                        reflect.TypeOf(ProfilerConsoleProfileStarted{}),
+	"Profiler.preciseCoverageDeltaUpdate":                   reflect.TypeOf(ProfilerPreciseCoverageDeltaUpdate{}),
+	"Runtime.RemoteObject":                                  reflect.TypeOf(RuntimeRemoteObject{}),
+	"Runtime.CustomPreview":                                 reflect.TypeOf(RuntimeCustomPreview{}),
+	"Runtime.ObjectPreview":                                 reflect.TypeOf(RuntimeObjectPreview{}),
+	"Runtime.PropertyPreview":                               reflect.TypeOf(RuntimePropertyPreview{}),
+	"Runtime.EntryPreview":                                  reflect.TypeOf(RuntimeEntryPreview{}),
+	"Runtime.PropertyDescriptor":                            reflect.TypeOf(RuntimePropertyDescriptor{}),
+	"Runtime.InternalPropertyDescriptor":                    reflect.TypeOf(RuntimeInternalPropertyDescriptor{}),
+	"Runtime.PrivatePropertyDescriptor":                     reflect.TypeOf(RuntimePrivatePropertyDescriptor{}),
+	"Runtime.CallArgument":                                  reflect.TypeOf(RuntimeCallArgument{}),
+	"Runtime.ExecutionContextDescription":                   reflect.TypeOf(RuntimeExecutionContextDescription{}),
+	"Runtime.ExceptionDetails":                              reflect.TypeOf(RuntimeExceptionDetails{}),
+	"Runtime.CallFrame":                                     reflect.TypeOf(RuntimeCallFrame{}),
+	"Runtime.StackTrace":                                    reflect.TypeOf(RuntimeStackTrace{}),
+	"Runtime.StackTraceId":                                  reflect.TypeOf(RuntimeStackTraceID{}),
+	"Runtime.awaitPromise":                                  reflect.TypeOf(RuntimeAwaitPromise{}),
+	"Runtime.awaitPromiseResult":                            reflect.TypeOf(RuntimeAwaitPromiseResult{}),
+	"Runtime.callFunctionOn":                                reflect.TypeOf(RuntimeCallFunctionOn{}),
+	"Runtime.callFunctionOnResult":                          reflect.TypeOf(RuntimeCallFunctionOnResult{}),
+	"Runtime.compileScript":                                 reflect.TypeOf(RuntimeCompileScript{}),
+	"Runtime.compileScriptResult":                           reflect.TypeOf(RuntimeCompileScriptResult{}),
+	"Runtime.disable":                                       reflect.TypeOf(RuntimeDisable{}),
+	"Runtime.discardConsoleEntries":                         reflect.TypeOf(RuntimeDiscardConsoleEntries{}),
+	"Runtime.enable":                                        reflect.TypeOf(RuntimeEnable{}),
+	"Runtime.evaluate":                                      reflect.TypeOf(RuntimeEvaluate{}),
+	"Runtime.evaluateResult":                                reflect.TypeOf(RuntimeEvaluateResult{}),
+	"Runtime.getIsolateId":                                  reflect.TypeOf(RuntimeGetIsolateID{}),
+	"Runtime.getIsolateIdResult":                            reflect.TypeOf(RuntimeGetIsolateIDResult{}),
+	"Runtime.getHeapUsage":                                  reflect.TypeOf(RuntimeGetHeapUsage{}),
+	"Runtime.getHeapUsageResult":                            reflect.TypeOf(RuntimeGetHeapUsageResult{}),
+	"Runtime.getProperties":                                 reflect.TypeOf(RuntimeGetProperties{}),
+	"Runtime.getPropertiesResult":                           reflect.TypeOf(RuntimeGetPropertiesResult{}),
+	"Runtime.globalLexicalScopeNames":                       reflect.TypeOf(RuntimeGlobalLexicalScopeNames{}),
+	"Runtime.globalLexicalScopeNamesResult":                 reflect.TypeOf(RuntimeGlobalLexicalScopeNamesResult{}),
+	"Runtime.queryObjects":                                  reflect.TypeOf(RuntimeQueryObjects{}),
+	"Runtime.queryObjectsResult":                            reflect.TypeOf(RuntimeQueryObjectsResult{}),
+	"Runtime.releaseObject":                                 reflect.TypeOf(RuntimeReleaseObject{}),
+	"Runtime.releaseObjectGroup":                            reflect.TypeOf(RuntimeReleaseObjectGroup{}),
+	"Runtime.runIfWaitingForDebugger":                       reflect.TypeOf(RuntimeRunIfWaitingForDebugger{}),
+	"Runtime.runScript":                                     reflect.TypeOf(RuntimeRunScript{}),
+	"Runtime.runScriptResult":                               reflect.TypeOf(RuntimeRunScriptResult{}),
+	"Runtime.setAsyncCallStackDepth":                        reflect.TypeOf(RuntimeSetAsyncCallStackDepth{}),
+	"Runtime.setCustomObjectFormatterEnabled":               reflect.TypeOf(RuntimeSetCustomObjectFormatterEnabled{}),
+	"Runtime.setMaxCallStackSizeToCapture":                  reflect.TypeOf(RuntimeSetMaxCallStackSizeToCapture{}),
+	"Runtime.terminateExecution":                            reflect.TypeOf(RuntimeTerminateExecution{}),
+	"Runtime.addBinding":                                    reflect.TypeOf(RuntimeAddBinding{}),
+	"Runtime.removeBinding":                                 reflect.TypeOf(RuntimeRemoveBinding{}),
+	"Runtime.bindingCalled":                                 reflect.TypeOf(RuntimeBindingCalled{}),
+	"Runtime.consoleAPICalled":                              reflect.TypeOf(RuntimeConsoleAPICalled{}),
+	"Runtime.exceptionRevoked":                              reflect.TypeOf(RuntimeExceptionRevoked{}),
+	"Runtime.exceptionThrown":                               reflect.TypeOf(RuntimeExceptionThrown{}),
+	"Runtime.executionContextCreated":                       reflect.TypeOf(RuntimeExecutionContextCreated{}),
+	"Runtime.executionContextDestroyed":                     reflect.TypeOf(RuntimeExecutionContextDestroyed{}),
+	"Runtime.executionContextsCleared":                      reflect.TypeOf(RuntimeExecutionContextsCleared{}),
+	"Runtime.inspectRequested":                              reflect.TypeOf(RuntimeInspectRequested{}),
+	"Schema.Domain":                                         reflect.TypeOf(SchemaDomain{}),
+	"Schema.getDomains":                                     reflect.TypeOf(SchemaGetDomains{}),
+	"Schema.getDomainsResult":                               reflect.TypeOf(SchemaGetDomainsResult{}),
 }

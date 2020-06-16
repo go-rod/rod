@@ -4,16 +4,13 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"encoding/json"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/assets"
-	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/proto"
 )
 
@@ -37,10 +34,8 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	element             *Element                    // iframe only
-	windowObjectID      proto.RuntimeRemoteObjectID // used as the thisObject when eval js
-	getDownloadFileLock *sync.Mutex
-	viewport            *proto.EmulationSetDeviceMetricsOverride
+	element        *Element                    // iframe only
+	windowObjectID proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 
 	event *goob.Observable
 }
@@ -48,11 +43,6 @@ type Page struct {
 // IsIframe tells if it's iframe
 func (p *Page) IsIframe() bool {
 	return p.element != nil
-}
-
-// Event returns the observable for page events
-func (p *Page) Event() *goob.Observable {
-	return p.event
 }
 
 // Root page of the iframe, if it's not a iframe returns itself
@@ -92,14 +82,14 @@ func (p *Page) SetCookiesE(cookies []*proto.NetworkCookieParam) error {
 }
 
 // SetExtraHeadersE whether to always send extra HTTP headers with the requests from this page.
-func (p *Page) SetExtraHeadersE(dict []string) error {
+func (p *Page) SetExtraHeadersE(dict []string) (func(), error) {
 	headers := proto.NetworkHeaders{}
 
 	for i := 0; i < len(dict); i += 2 {
 		headers[dict[i]] = proto.NewJSON(dict[i+1])
 	}
 
-	return proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
+	return p.EnableDomain(&proto.NetworkEnable{}), proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
 }
 
 // SetUserAgentE Allows overriding user agent with the given string.
@@ -166,12 +156,11 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 
 // ViewportE doc is similar to the method Viewport
 func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
-	p.viewport = params
 	err := params.Call(p)
 	return err
 }
 
-// StopLoadingE forces the page stop all navigations and pending resource fetches.
+// StopLoadingE forces the page stop navigation and pending resource fetches.
 func (p *Page) StopLoadingE() error {
 	return proto.PageStopLoading{}.Call(p)
 }
@@ -193,10 +182,14 @@ func (p *Page) CloseE() error {
 
 // HandleDialogE doc is similar to the method HandleDialog
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
-	wait := p.WaitEvent()
+	recover := p.EnableDomain(&proto.PageEnable{})
+
+	wait := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
 
 	return func() error {
-		wait(&proto.PageJavascriptDialogOpening{})
+		defer recover()
+
+		wait()
 		return proto.PageHandleJavaScriptDialog{
 			Accept:     accept,
 			PromptText: promptText,
@@ -206,6 +199,16 @@ func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
 func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), error) {
+
+	err := proto.BrowserSetDownloadBehavior{
+		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorAllow,
+		BrowserContextID: p.browser.BrowserContextID,
+		DownloadPath:     dir,
+	}.Call(p.browser)
+	if err != nil {
+		return nil, err
+	}
+
 	var fetchEnable *proto.FetchEnable
 	if pattern != "" {
 		fetchEnable = &proto.FetchEnable{
@@ -214,39 +217,15 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 			},
 		}
 	}
+	recover := p.EnableDomain(fetchEnable)
 
-	// both Page.setDownloadBehavior and Fetch.enable will pollute the global status,
-	// we have to prevent race condition here
-	p.getDownloadFileLock.Lock()
-
-	err := proto.PageSetDownloadBehavior{
-		Behavior:     proto.PageSetDownloadBehaviorBehaviorAllow,
-		DownloadPath: dir,
-	}.Call(p)
-	if err != nil {
-		return nil, err
-	}
-
-	err = fetchEnable.Call(p)
-	if err != nil {
-		return nil, err
-	}
-
-	wait := p.WaitEvent()
+	msgReq := &proto.FetchRequestPaused{}
+	wait := p.WaitEvent(msgReq)
 
 	return func() (http.Header, []byte, error) {
-		defer p.getDownloadFileLock.Unlock()
+		defer recover()
 
-		var err error
-		defer func() {
-			e := proto.FetchDisable{}.Call(p)
-			if err == nil {
-				err = e
-			}
-		}()
-
-		msgReq := &proto.FetchRequestPaused{}
-		wait(msgReq)
+		wait()
 
 		req := kit.Req(msgReq.Request.URL).Context(p.ctx)
 
@@ -293,7 +272,8 @@ func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]b
 			return nil, err
 		}
 
-		oldView := p.viewport
+		oldView := &proto.EmulationSetDeviceMetricsOverride{}
+		set := p.LoadState(oldView)
 		view := *oldView
 		view.Width = int64(metrics.ContentSize.Width)
 		view.Height = int64(metrics.ContentSize.Height)
@@ -303,6 +283,14 @@ func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]b
 			return nil, err
 		}
 		defer func() {
+			if !set {
+				e := proto.EmulationClearDeviceMetricsOverride{}.Call(p)
+				if err == nil {
+					err = e
+				}
+				return
+			}
+
 			e := p.ViewportE(oldView)
 			if err == nil {
 				err = e
@@ -329,107 +317,92 @@ func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
 // WaitOpenE doc is similar to the method WaitPage
 func (p *Page) WaitOpenE() func() (*Page, error) {
 	b := p.browser.Context(p.ctx)
-	wait := b.EachEvent()
+	var targetID proto.TargetTargetID
+
+	wait := b.EachEvent(func(e *proto.TargetTargetCreated) bool {
+		if e.TargetInfo.OpenerID == p.TargetID {
+			targetID = e.TargetInfo.TargetID
+			return true
+		}
+		return false
+	})
 
 	return func() (*Page, error) {
-		var targetID proto.TargetTargetID
-
-		wait(func(e *proto.TargetTargetCreated) bool {
-			if e.TargetInfo.OpenerID == p.TargetID {
-				targetID = e.TargetInfo.TargetID
-				return true
-			}
-			return false
-		})
+		wait()
 		return b.PageFromTargetIDE(targetID)
 	}
 }
 
 // PauseE doc is similar to the method Pause
 func (p *Page) PauseE() error {
-	_, err := proto.DebuggerEnable{}.Call(p)
+	wait := p.WaitEvent(&proto.DebuggerResumed{})
+	err := proto.DebuggerPause{}.Call(p)
 	if err != nil {
 		return err
 	}
-	wait := p.WaitEvent()
-	err = proto.DebuggerPause{}.Call(p)
-	if err != nil {
-		return err
-	}
-	wait(&proto.DebuggerResumed{})
+	wait()
 	return nil
+}
+
+// EachEvent of the specified event type, if the fn returns true the event loop will stop.
+// The fn can accpet multiple events, such as EachEventE(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
+// only one argument will be non-null, others will null.
+func (p *Page) EachEvent(fn interface{}) (wait func()) {
+	return p.browser.eachEvent(p.ctx, p.SessionID, fn)
+}
+
+// WaitEvent waits for the next event for one time. It will also load the data into the event object.
+func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
+	return p.browser.waitEvent(p.ctx, p.SessionID, e)
 }
 
 // WaitRequestIdleE returns a wait function that waits until no request for d duration.
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
-func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() error {
+func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() {
 	ctx, cancel := context.WithCancel(p.ctx)
-	s := p.event.Subscribe(ctx)
-	done := make(chan error)
+
+	reqList := map[proto.NetworkRequestID]kit.Nil{}
+	timeout := time.NewTimer(d)
+	timeout.Stop()
+
+	reset := func(id proto.NetworkRequestID) {
+		delete(reqList, id)
+		if len(reqList) == 0 {
+			timeout.Reset(d)
+		}
+	}
 
 	go func() {
-		defer cancel()
-
-		reqList := map[proto.NetworkRequestID]kit.Nil{}
-		timeout := time.NewTimer(d)
-
-		reset := func(id proto.NetworkRequestID) {
-			delete(reqList, id)
-			if len(reqList) == 0 {
-				timeout.Reset(d)
-			}
-		}
-
-		for {
-			select {
-			case <-p.ctx.Done():
-				done <- p.ctx.Err()
-				return
-			case <-timeout.C:
-				done <- nil
-				return
-			case msg, ok := <-s:
-				if !ok {
-					done <- nil
-					return
-				}
-
-				e := msg.(*cdp.Event)
-				sent := &proto.NetworkRequestWillBeSent{}
-				finished := &proto.NetworkLoadingFinished{} // it will be after the Network.responseReceived
-				failed := &proto.NetworkLoadingFailed{}
-
-				if Event(e, sent) {
-					timeout.Stop()
-					kit.E(json.Unmarshal(e.Params, sent))
-					url := sent.Request.URL
-					id := sent.RequestID
-					if matchWithFilter(url, includes, excludes) {
-						reqList[id] = kit.Nil{}
-					}
-				} else if Event(e, finished) {
-					kit.E(json.Unmarshal(e.Params, finished))
-					reset(finished.RequestID)
-				} else if Event(e, failed) {
-					kit.E(json.Unmarshal(e.Params, failed))
-					reset(failed.RequestID)
-				}
-			}
-		}
+		<-timeout.C
+		cancel()
 	}()
 
-	return func() (err error) {
-		defer func() { done = nil }()
-		if done == nil {
-			panic("can't use wait function twice")
+	wait := p.browser.eachEvent(ctx, p.SessionID, func(
+		sent *proto.NetworkRequestWillBeSent,
+		finished *proto.NetworkLoadingFinished,
+		failed *proto.NetworkLoadingFailed,
+	) {
+		if sent != nil {
+			timeout.Stop()
+			url := sent.Request.URL
+			id := sent.RequestID
+			if matchWithFilter(url, includes, excludes) {
+				reqList[id] = kit.Nil{}
+			}
+		} else if finished != nil {
+			reset(finished.RequestID)
+		} else if failed != nil {
+			reset(failed.RequestID)
 		}
+	})
 
+	return func() {
 		if p.browser.trace {
 			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
 		}
-
-		return <-done
+		timeout.Reset(d)
+		wait()
 	}
 }
 
@@ -443,20 +416,6 @@ func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
 func (p *Page) WaitLoadE() error {
 	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
 	return err
-}
-
-// WaitEvent waits for the next event for one time. It will also load the data into the event object.
-func (p *Page) WaitEvent() (wait func(proto.Event)) {
-	ctx, cancel := context.WithCancel(p.ctx)
-	s := p.event.Subscribe(ctx)
-	return func(e proto.Event) {
-		defer cancel()
-		for msg := range s {
-			if Event(msg.(*cdp.Event), e) {
-				return
-			}
-		}
-	}
 }
 
 // AddScriptTagE to page. If url is empty, content will be used.
@@ -553,7 +512,7 @@ func (p *Page) ReleaseE(objectID proto.RuntimeRemoteObjectID) error {
 
 // CallContext parameters for proto
 func (p *Page) CallContext() (context.Context, proto.Client, string) {
-	return p.ctx, p.browser.client, string(p.SessionID)
+	return p.ctx, p.browser, string(p.SessionID)
 }
 
 func (p *Page) initSession() error {
@@ -566,11 +525,6 @@ func (p *Page) initSession() error {
 	}
 	p.SessionID = obj.SessionID
 
-	err = p.initEvents()
-	if err != nil {
-		return err
-	}
-
 	res, err := proto.DOMGetDocument{}.Call(p)
 	if err != nil {
 		return err
@@ -581,24 +535,6 @@ func (p *Page) initSession() error {
 		if frameID != "" {
 			p.FrameID = frameID
 		}
-	}
-
-	return nil
-}
-
-func (p *Page) initEvents() error {
-	p.event = p.browser.event.Filter(p.ctx, func(e *cdp.Event) bool {
-		return e.SessionID == string(p.SessionID)
-	})
-
-	err := proto.PageEnable{}.Call(p)
-	if err != nil {
-		return err
-	}
-
-	err = proto.NetworkEnable{}.Call(p)
-	if err != nil {
-		return err
 	}
 
 	return nil

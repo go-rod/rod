@@ -22,6 +22,9 @@ func main() {
 		const Version = "v{{.major}}.{{.minor}}"
 	`, "major", schema.Get("version.major").String(), "minor", schema.Get("version.minor").String())
 
+	init := `
+		var types = map[string]reflect.Type{`
+
 	testsCode := comment + `
 
 		package proto_test
@@ -44,10 +47,22 @@ func main() {
 
 			code += definition.format()
 			testsCode += definition.formatTests()
+
+			if definition.originName != "" {
+				init += kit.S(`
+					"{{.name}}": reflect.TypeOf({{.type}}{}),`,
+					"name", definition.domain.name+"."+definition.originName,
+					"type", definition.name,
+				)
+			}
 		}
 	}
 
-	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code, nil))
+	init += `
+		}
+	`
+
+	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
 	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
 
 	kit.MustGoTool("golang.org/x/tools/cmd/goimports")
@@ -120,17 +135,23 @@ func (d *definition) format() (code string) {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
 				code += kit.S(`
+				// MethodName of the command
+				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) (*{{.name}}Result, error) {
 					var res {{.name}}Result
-					return &res, call("{{.method}}", m, &res, caller)
+					return &res, Call(m.MethodName(), m, &res, caller)
 				}
 				`, "name", d.name, "method", method)
 			} else {
 				code += kit.S(`
+				// MethodName of the command
+				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) error {
-					return call("{{.method}}", m, nil, caller)
+					return Call(m.MethodName(), m, nil, caller)
 				}
 				`, "name", d.name, "method", method)
 			}

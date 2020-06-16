@@ -333,6 +333,8 @@ func (el *Element) ResourceE() ([]byte, error) {
 		return nil, err
 	}
 
+	defer el.page.EnableDomain(&proto.PageEnable{})()
+
 	res, err := proto.PageGetResourceContent{
 		FrameID: el.page.FrameID,
 		URL:     src.Value.String(),
@@ -404,7 +406,7 @@ func (el *Element) ReleaseE() error {
 
 // CallContext parameters for proto
 func (el *Element) CallContext() (context.Context, proto.Client, string) {
-	return el.ctx, el.page.browser.client, string(el.page.SessionID)
+	return el.ctx, el.page.browser, string(el.page.SessionID)
 }
 
 // EvalE doc is similar to the method Eval

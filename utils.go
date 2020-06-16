@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"time"
 
-	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/proto"
@@ -38,8 +36,8 @@ func CancelPanic(err error) {
 	}
 }
 
-// Event helps to convert a cdp.Event to proto.Event. Returns false if the conversion fails
-func Event(msg *cdp.Event, evt proto.Event) bool {
+// Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
+func Event(msg *cdp.Event, evt proto.Payload) bool {
 	if msg.Method == evt.MethodName() {
 		err := json.Unmarshal(msg.Params, evt)
 		return err == nil
@@ -82,23 +80,4 @@ func saveScreenshot(bin []byte, toFile []string) error {
 func ginHTML(ctx kit.GinContext, body string) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	_, _ = ctx.Writer.WriteString(body)
-}
-
-func eachEvent(s chan goob.Event) func(fn interface{}) {
-	return func(fn interface{}) {
-		fnType := reflect.TypeOf(fn)
-		fnVal := reflect.ValueOf(fn)
-		eventType := fnType.In(0).Elem()
-
-		goob.Each(s, func(e *cdp.Event) bool {
-			event := reflect.New(eventType)
-			if Event(e, event.Interface().(proto.Event)) {
-				ret := fnVal.Call([]reflect.Value{event})
-				if len(ret) > 0 {
-					return ret[0].Bool()
-				}
-			}
-			return false
-		})
-	}
 }

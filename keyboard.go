@@ -1,8 +1,6 @@
 package rod
 
 import (
-	"sync"
-
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -10,7 +8,6 @@ import (
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
 	page *Page
-	sync.Mutex
 
 	// modifiers are currently beening pressed
 	modifiers int64
@@ -19,9 +16,6 @@ type Keyboard struct {
 // DownE doc is similar to the method Down
 func (k *Keyboard) DownE(key rune) error {
 	actions := input.Encode(key)
-
-	k.Lock()
-	defer k.Unlock()
 
 	err := actions[0].Call(k.page)
 	if err != nil {
@@ -34,9 +28,6 @@ func (k *Keyboard) DownE(key rune) error {
 // UpE doc is similar to the method Up
 func (k *Keyboard) UpE(key rune) error {
 	actions := input.Encode(key)
-
-	k.Lock()
-	defer k.Unlock()
 
 	err := actions[len(actions)-1].Call(k.page)
 	if err != nil {
@@ -54,9 +45,6 @@ func (k *Keyboard) PressE(key rune) error {
 	k.page.browser.trySlowmotion()
 
 	actions := input.Encode(key)
-
-	k.Lock()
-	defer k.Unlock()
 
 	k.modifiers = actions[0].Modifiers
 	defer func() { k.modifiers = 0 }()

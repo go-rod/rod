@@ -2,7 +2,6 @@ package rod
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
@@ -11,7 +10,6 @@ import (
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
 	page *Page
-	sync.Mutex
 
 	id string // mouse svg dom element id
 
@@ -27,9 +25,6 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 	if steps < 1 {
 		steps = 1
 	}
-
-	m.Lock()
-	defer m.Unlock()
 
 	stepX := (x - m.x) / float64(steps)
 	stepY := (y - m.y) / float64(steps)
@@ -106,9 +101,6 @@ func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
 
 // DownE doc is similar to the method Down
 func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
-	m.Lock()
-	defer m.Unlock()
-
 	toButtons := append(m.buttons, button)
 
 	_, buttons := input.EncodeMouseButton(toButtons)
@@ -131,9 +123,6 @@ func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
 
 // UpE doc is similar to the method Up
 func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
-	m.Lock()
-	defer m.Unlock()
-
 	toButtons := []proto.InputMouseButton{}
 	for _, btn := range m.buttons {
 		if btn == button {
