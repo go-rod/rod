@@ -112,7 +112,9 @@ func (b *Browser) ConnectE() error {
 
 	b.monitorServer = b.ServeMonitor(defaults.Monitor)
 
-	return b.initEvents()
+	b.initEvents()
+
+	return nil
 }
 
 // CloseE doc is similar to the method Close
@@ -223,10 +225,13 @@ func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID
 		// handle enable and recover domain
 		arg := reflect.New(info.argType.Elem()).Interface().(proto.Payload)
 		domain, _ := proto.ParseMethodName(arg.MethodName())
-		if method := proto.GetType(domain + ".enable"); method != nil {
-			enable := reflect.New(method).Interface().(proto.Payload)
-			info.recover = b.EnableDomain(ctx, sessionID, enable)
+		var enable proto.Payload
+		if domain == "Target" { // only Target domain is special
+			enable = proto.TargetSetDiscoverTargets{Discover: true}
+		} else {
+			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Payload)
 		}
+		info.recover = b.EnableDomain(ctx, sessionID, enable)
 
 		argInfos = append(argInfos, info)
 	}
@@ -349,7 +354,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	return page, page.initSession()
 }
 
-func (b *Browser) initEvents() error {
+func (b *Browser) initEvents() {
 	b.event = goob.New()
 
 	go func() {
@@ -362,10 +367,4 @@ func (b *Browser) initEvents() error {
 			}
 		}
 	}()
-
-	err := proto.TargetSetDiscoverTargets{
-		Discover: true,
-	}.Call(b)
-
-	return err
 }

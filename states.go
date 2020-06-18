@@ -27,6 +27,12 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 
 	key := ""
 	switch methodName {
+	case "Target.setDiscoverTargets": // only Target domain is special
+		method := &proto.TargetSetDiscoverTargets{}
+		kit.E(json.Unmarshal(params, method))
+		if !method.Discover {
+			key = "Target.setDiscoverTargets"
+		}
 	case "Emulation.clearDeviceMetricsOverride":
 		key = "Emulation.setDeviceMetricsOverride"
 	case "Emulation.clearGeolocationOverride":
@@ -65,6 +71,11 @@ func (b *Browser) EnableDomain(ctx context.Context, sessionID proto.TargetSessio
 
 	return func() {
 		if !enabled {
+			if method.MethodName() == "Target.setDiscoverTargets" { // only Target domain is special
+				_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
+				return
+			}
+
 			domain, _ := proto.ParseMethodName(method.MethodName())
 			_, _ = b.Call(ctx, string(sessionID), domain+".disable", nil)
 		}
