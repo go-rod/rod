@@ -11,7 +11,7 @@ import (
 func TestCancelCall(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	cdp := New("").Context(ctx)
+	cdp := New("").Context(ctx, cancel)
 	go func() {
 		<-cdp.chReqMsg
 	}()

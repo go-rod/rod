@@ -93,8 +93,7 @@ func New(websocketURL string) *Client {
 }
 
 // Context set the context
-func (cdp *Client) Context(ctx context.Context) *Client {
-	ctx, cancel := context.WithCancel(ctx)
+func (cdp *Client) Context(ctx context.Context, cancel func()) *Client {
 	cdp.ctx = ctx
 	cdp.ctxCancel = cancel
 	return cdp
@@ -146,6 +145,13 @@ func (cdp *Client) Connect() *Client {
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
 func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) (res []byte, err error) {
+	defer func() {
+		err := recover()
+		if err != nil {
+			cdp.debugLog(err)
+		}
+	}()
+
 	req := &Request{
 		ID:        atomic.AddUint64(&cdp.count, 1),
 		SessionID: sessionID,
@@ -192,7 +198,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 }
 
 // Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
-func (cdp *Client) Event() chan *Event {
+func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
 
@@ -204,6 +210,17 @@ type requestMsg struct {
 
 // consume messages from client and chrome
 func (cdp *Client) consumeMsg() {
+	defer func() {
+		close(cdp.chReqMsg)
+		close(cdp.chRes)
+		close(cdp.chEvent)
+
+		err := recover()
+		if err != nil {
+			cdp.debugLog(err)
+		}
+	}()
+
 	for {
 		select {
 		case <-cdp.ctx.Done():
@@ -247,6 +264,13 @@ func (cdp *Client) readMsgFromChrome() {
 }
 
 func (cdp *Client) produceMsg(data []byte) {
+	defer func() {
+		err := recover()
+		if err != nil {
+			cdp.debugLog(err)
+		}
+	}()
+
 	if kit.JSON(data).Get("id").Exists() {
 		var res response
 		err := json.Unmarshal(data, &res)

@@ -105,7 +105,7 @@ func (b *Browser) ConnectE() error {
 		}
 	}
 
-	err := b.client.Context(b.ctx).ConnectE()
+	err := b.client.Context(b.ctx, b.ctxCancel).ConnectE()
 	if err != nil {
 		return err
 	}

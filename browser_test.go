@@ -43,6 +43,23 @@ func (s *S) TestBrowserWaitEvent() {
 	wait()
 }
 
+func (s *S) TestBrowserCrash() {
+	browser := rod.New().Timeout(1 * time.Minute).Connect()
+	page := browser.Page("")
+
+	wait := browser.WaitEvent(&proto.PageFrameNavigated{})
+	go func() {
+		kit.Sleep(0.3)
+		_ = proto.BrowserCrash{}.Call(browser)
+	}()
+
+	s.Panics(func() {
+		page.Eval(`() => new Promise(() => {})`)
+	})
+
+	wait()
+}
+
 func (s *S) TestBrowserCall() {
 	v, err := proto.BrowserGetVersion{}.Call(s.browser)
 	kit.E(err)
@@ -76,7 +93,7 @@ func (s *S) TestBrowserHandleAuth() {
 }
 
 func (s *S) TestMonitor() {
-	b := rod.New().Connect()
+	b := rod.New().Timeout(1 * time.Minute).Connect()
 	defer b.Close()
 	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
 	host := b.ServeMonitor("127.0.0.1:0").Listener.Addr().String()
@@ -94,7 +111,7 @@ func (s *S) TestRemoteLaunch() {
 	go func() { _ = srv.Do() }()
 
 	l := launcher.NewRemote("ws://" + srv.Listener.Addr().String())
-	b := rod.New().Client(l.Client()).Connect()
+	b := rod.New().Timeout(1 * time.Minute).Client(l.Client()).Connect()
 
 	p := b.Page(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
@@ -213,7 +230,7 @@ func (s *S) TestResolveBlocking() {
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {
-	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
@@ -251,7 +268,7 @@ func BenchmarkCacheOff(b *testing.B) {
 }
 
 func BenchmarkCache(b *testing.B) {
-	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 

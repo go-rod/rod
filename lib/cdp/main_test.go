@@ -19,7 +19,7 @@ func TestBasic(t *testing.T) {
 
 	url := launcher.New().Launch()
 
-	client := cdp.New(url).Context(ctx).Websocket(nil).Header(http.Header{"test": {}}).Connect()
+	client := cdp.New(url).Context(ctx, done).Websocket(nil).Header(http.Header{"test": {}}).Connect()
 
 	defer func() {
 		kit.E(client.Call(ctx, "", "Browser.close", nil))
