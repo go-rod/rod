@@ -476,25 +476,3 @@ func (s *S) TestNavigateErr() {
 	s.page.Navigate(url + "/404")
 	s.page.Navigate(url + "/500")
 }
-
-func (s *S) TestPageErrors() {
-	p := s.page.Navigate(srcFile("fixtures/input.html"))
-
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-
-	err := p.Context(ctx).NavigateE("")
-	s.Error(err)
-
-	err = p.Context(ctx).WindowE(nil)
-	s.Error(err)
-
-	_, err = p.Context(ctx).GetDownloadFileE("", "")
-	s.Error(err)
-
-	_, err = p.Context(ctx).ScreenshotE(false, &proto.PageCaptureScreenshot{})
-	s.Error(err)
-
-	err = p.Context(ctx).PauseE()
-	s.Error(err)
-}

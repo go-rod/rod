@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"sync"
 	"sync/atomic"
 
 	"github.com/ysmood/kit"
@@ -21,11 +22,11 @@ type Client struct {
 	ws     Websocketable
 	wsConn WebsocketableConn
 
-	callbacks map[uint64]chan *response // buffer for response from chrome
+	callbacks *sync.Map // buffer for response from chrome
 
-	chReqMsg chan *requestMsg // request from user
-	chRes    chan *response   // response from chrome
-	chEvent  chan *Event      // events from chrome
+	chReq   chan []byte    // request from user
+	chRes   chan *response // response from chrome
+	chEvent chan *Event    // events from chrome
 
 	count uint64
 
@@ -81,8 +82,8 @@ func New(websocketURL string) *Client {
 	cdp := &Client{
 		ctx:       ctx,
 		ctxCancel: cancel,
-		callbacks: map[uint64]chan *response{},
-		chReqMsg:  make(chan *requestMsg),
+		callbacks: &sync.Map{},
+		chReq:     make(chan []byte),
 		chRes:     make(chan *response),
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
@@ -93,8 +94,7 @@ func New(websocketURL string) *Client {
 }
 
 // Context set the context
-func (cdp *Client) Context(ctx context.Context) *Client {
-	ctx, cancel := context.WithCancel(ctx)
+func (cdp *Client) Context(ctx context.Context, cancel func()) *Client {
 	cdp.ctx = ctx
 	cdp.ctxCancel = cancel
 	return cdp
@@ -145,7 +145,7 @@ func (cdp *Client) Connect() *Client {
 }
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
-func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) (res []byte, err error) {
+func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 	req := &Request{
 		ID:        atomic.AddUint64(&cdp.count, 1),
 		SessionID: sessionID,
@@ -159,69 +159,80 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 	kit.E(err)
 
 	callback := make(chan *response)
+	defer close(callback)
 
-	cdp.chReqMsg <- &requestMsg{
-		request:  req,
-		callback: callback,
-		data:     data,
+	cdp.callbacks.Store(req.ID, callback)
+	defer cdp.callbacks.Delete(req.ID)
+
+	e := kit.Try(func() {
+		cdp.chReq <- data
+	})
+	if err, ok := e.(error); ok {
+		if cdp.ctxCancelErr != nil {
+			return nil, cdp.ctxCancelErr
+		}
+		return nil, err
 	}
 
 	select {
-	case data := <-callback:
-		if data.Error != nil {
-			return nil, data.Error
-		}
-		return data.Result, nil
-
 	case <-cdp.ctx.Done():
 		if cdp.ctxCancelErr != nil {
-			err = cdp.ctxCancelErr
-		} else {
-			err = cdp.ctx.Err()
+			return nil, cdp.ctxCancelErr
 		}
+		return nil, cdp.ctx.Err()
 
 	case <-ctx.Done():
-		err = ctx.Err()
+		return nil, ctx.Err()
 
-		// to prevent req from leaking
-		cdp.chRes <- &response{ID: req.ID}
-		<-callback
+	case res := <-callback:
+		if res.Error != nil {
+			return nil, res.Error
+		}
+		return res.Result, nil
 	}
 
-	return
 }
 
 // Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
-func (cdp *Client) Event() chan *Event {
+func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
 
 type requestMsg struct {
-	request  *Request
-	data     []byte
-	callback chan *response
+	request *Request
+	data    []byte
 }
 
 // consume messages from client and chrome
 func (cdp *Client) consumeMsg() {
+	defer close(cdp.chReq)
+
 	for {
 		select {
 		case <-cdp.ctx.Done():
 			return
 
-		case msg := <-cdp.chReqMsg:
-			err := cdp.wsConn.Send(msg.data)
-			if err != nil {
-				cdp.socketClose(err)
+		case data, ok := <-cdp.chReq:
+			if !ok {
 				return
 			}
-			cdp.callbacks[msg.request.ID] = msg.callback
 
-		case res := <-cdp.chRes:
-			callback, has := cdp.callbacks[res.ID]
+			err := cdp.wsConn.Send(data)
+			if err != nil {
+				cdp.close(err)
+				return
+			}
+
+		case res, ok := <-cdp.chRes:
+			if !ok {
+				return
+			}
+
+			callback, has := cdp.callbacks.Load(res.ID)
 			if has {
-				delete(cdp.callbacks, res.ID)
-				callback <- res
+				_ = kit.Try(func() {
+					callback.(chan *response) <- res
+				})
 			}
 		}
 	}
@@ -235,34 +246,34 @@ type response struct {
 }
 
 func (cdp *Client) readMsgFromChrome() {
+	defer close(cdp.chRes)
+	defer close(cdp.chEvent)
+
 	for cdp.ctx.Err() == nil {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
-			cdp.socketClose(err)
+			cdp.close(err)
 			return
 		}
 
-		cdp.produceMsg(data)
+		if kit.JSON(data).Get("id").Exists() {
+			var res response
+			err := json.Unmarshal(data, &res)
+			kit.E(err)
+			cdp.debugLog(&res)
+			cdp.chRes <- &res
+		} else {
+			var evt Event
+			err := json.Unmarshal(data, &evt)
+			kit.E(err)
+			cdp.debugLog(&evt)
+			cdp.chEvent <- &evt
+		}
+
 	}
 }
 
-func (cdp *Client) produceMsg(data []byte) {
-	if kit.JSON(data).Get("id").Exists() {
-		var res response
-		err := json.Unmarshal(data, &res)
-		kit.E(err)
-		cdp.debugLog(&res)
-		cdp.chRes <- &res
-	} else {
-		var evt Event
-		err := json.Unmarshal(data, &evt)
-		kit.E(err)
-		cdp.debugLog(&evt)
-		cdp.chEvent <- &evt
-	}
-}
-
-func (cdp *Client) socketClose(err error) {
+func (cdp *Client) close(err error) {
 	cdp.debugLog(err)
 	cdp.ctxCancelErr = err
 	cdp.ctxCancel()

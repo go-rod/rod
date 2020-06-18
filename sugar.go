@@ -20,7 +20,7 @@ func (b *Browser) Connect() *Browser {
 
 // Close the browser and release related resources
 func (b *Browser) Close() {
-	kit.E(b.CloseE())
+	_ = b.CloseE()
 }
 
 // Incognito creates a new incognito browser

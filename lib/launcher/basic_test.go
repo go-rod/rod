@@ -69,7 +69,7 @@ func TestRemoteLaunch(t *testing.T) {
 
 	u := "ws://" + srv.Listener.Addr().String()
 	client := launcher.NewRemote(u).Client()
-	b := client.Context(ctx).Connect()
+	b := client.Context(ctx, cancel).Connect()
 	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 }

@@ -62,11 +62,11 @@ func Example_debug_mode() {
 		Launch()
 
 	browser := rod.New().
+		Timeout(time.Minute).
 		ControlURL(url).
 		Trace(true).                 // show trace of each input action
 		Slowmotion(2 * time.Second). // each input action will take 2 second
-		Connect().
-		Timeout(time.Minute)
+		Connect()
 
 	// the monitor server that plays the screenshots of each tab, useful when debugging headlee mode
 	browser.ServeMonitor(":9777")
@@ -97,7 +97,7 @@ func Example_debug_mode() {
 // the click trigger by Rod are based on mouse point location, so usually you need wait a button is stable before
 // you can click it.
 func Example_wait_for_animation() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/")
@@ -117,7 +117,7 @@ func Example_wait_for_animation() {
 
 // Some page interaction finishes after some network requests, WaitRequestIdle is designed for it.
 func Example_wait_for_request() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://duckduckgo.com/")
@@ -136,7 +136,7 @@ func Example_wait_for_request() {
 
 // Useful when you want to customize the element query retry logic
 func Example_customize_retry_strategy() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://github.com")
@@ -191,13 +191,13 @@ func Example_customize_chrome_launch() {
 
 // Useful when rod doesn't have the function you want, you can call the cdp interface directly easily.
 func Example_direct_cdp() {
-	browser := rod.New().Connect()
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	// The code here is how SetCookies works
 	// Normally, you use something like browser.Page("").SetCookies(...).Navigate(url)
 
-	page := browser.Page("").Timeout(time.Minute)
+	page := browser.Page("")
 
 	// call cdp interface directly here
 	// set the cookie before we visit the website
@@ -233,7 +233,7 @@ func Example_direct_cdp() {
 
 // Shows how to subscribe events.
 func Example_handle_events() {
-	browser := rod.New().Connect()
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
@@ -275,7 +275,7 @@ func Example_handle_events() {
 }
 
 func Example_states() {
-	browser := rod.New().Connect()
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("")

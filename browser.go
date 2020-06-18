@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
@@ -105,7 +104,7 @@ func (b *Browser) ConnectE() error {
 		}
 	}
 
-	err := b.client.Context(b.ctx).ConnectE()
+	err := b.client.Context(b.ctx, b.ctxCancel).ConnectE()
 	if err != nil {
 		return err
 	}
@@ -119,14 +118,8 @@ func (b *Browser) ConnectE() error {
 
 // CloseE doc is similar to the method Close
 func (b *Browser) CloseE() error {
-	err := proto.BrowserClose{}.Call(b)
-	if err != nil && !websocket.IsCloseError(err, 1006) {
-		return err
-	}
-
-	b.ctxCancel()
-
-	return nil
+	defer b.ctxCancel()
+	return proto.BrowserClose{}.Call(b)
 }
 
 // IncognitoE creates a new incognito browser
