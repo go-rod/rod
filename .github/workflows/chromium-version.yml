@@ -1,0 +1,43 @@
+name: sync chromium version
+
+on:
+  push:
+  
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: sync the version
+      run: |
+        DefaultRevision="$(cat lib/launcher/chrome.go | grep -oP '^const[ \t]+DefaultRevision[ \t]?=[ \t]?\d+' | grep -oP '\d+')"
+        if [ -z "${DefaultRevision}" ]; then
+          echo "get version from source code failed"
+          exit 1
+        fi
+        
+        RemoteVersion="$(curl -s https://npm.taobao.org/mirrors/chromium-browser-snapshots/Linux_x64/ | grep -oP '(?<="/mirrors/chromium-browser-snapshots/Linux_x64/)\d+' | tail -1)"
+        if [ -z "${RemoteVersion}" ]; then
+          echo "get remote version failed"
+          exit 1
+        fi
+        
+        if [ "${RemoteVersion}" = "${DefaultRevision}" ]; then
+          exit 0
+        fi
+        
+        sed -i "s/${DefaultRevision}/${RemoteVersion}/" lib/launcher/chrome.go
+        
+        git add lib/launcher/chrome.go
+        git commit -m "[ci] sync chromium version"
+        git push
+        
+        
