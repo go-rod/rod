@@ -16,7 +16,7 @@ func main() {
 
 		package proto
 
-		import "encoding/json"
+		import "reflect"
 
 		// Version of cdp protocol
 		const Version = "v{{.major}}.{{.minor}}"
@@ -30,8 +30,6 @@ func main() {
 		package proto_test
 
 		import (
-			"context"
-			"errors"
 			"testing"
 
 			"github.com/stretchr/testify/assert"
