@@ -3,7 +3,6 @@ package rod_test
 import (
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -22,7 +21,7 @@ type S struct {
 
 func Test(t *testing.T) {
 	s := new(S)
-	s.browser = rod.New().Timeout(2 * time.Minute).Trace(true).Client(nil).Connect()
+	s.browser = rod.New().Trace(true).Client(nil).Connect()
 
 	defer s.browser.Close()
 
