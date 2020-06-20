@@ -261,7 +261,7 @@ func (s *S) TestDownloadFile() {
 
 	page := s.page.Navigate(url)
 
-	wait := page.GetDownloadFile("*")
+	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
 
 	page.Element("a").Click()
 

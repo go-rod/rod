@@ -198,12 +198,10 @@ func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 }
 
 // GetDownloadFileE how it works is to proxy the request, the dir is the dir to save the file.
-func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byte, error), error) {
-
+func (p *Page) GetDownloadFileE(pattern string) (func() (http.Header, []byte, error), error) {
 	err := proto.BrowserSetDownloadBehavior{
-		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorAllow,
+		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
 		BrowserContextID: p.browser.BrowserContextID,
-		DownloadPath:     dir,
 	}.Call(p.browser)
 	if err != nil {
 		return nil, err
@@ -261,7 +259,7 @@ func (p *Page) GetDownloadFileE(dir, pattern string) (func() (http.Header, []byt
 		}
 
 		return res.Header, body, nil
-	}, err
+	}, nil
 }
 
 // ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot

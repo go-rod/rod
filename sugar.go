@@ -4,7 +4,6 @@ package rod
 
 import (
 	"net/http"
-	"path/filepath"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -185,7 +184,7 @@ func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 // GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
 // Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
 func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte)) {
-	w, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
+	w, err := p.GetDownloadFileE(pattern)
 	kit.E(err)
 	return func() (http.Header, []byte) {
 		header, data, err := w()
