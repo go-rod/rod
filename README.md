@@ -27,7 +27,8 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 You can find examples from [here](examples_test.go) or [here](lib/examples).
 
 For more detailed examples, please search the unit tests.
-Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
+Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`,
+for example, use Github online [search in repository](https://github.com/ysmood/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
@@ -65,8 +66,8 @@ Rod should work with any browser that supports [DevTools Protocol](https://chrom
 
 - Microsoft Edge can pass all the unit tests.
 - Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol.
-- Safari doesn't have any plan to support it
-- IE won't support it
+- Safari doesn't have any plan to support it yet.
+- IE won't support it.
 
 ### Q: Why is it called Rod
 
@@ -111,6 +112,5 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
-
 
 [discord room]: https://discord.gg/CpevuvY
