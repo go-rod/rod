@@ -11,7 +11,7 @@ import (
 	"github.com/ysmood/rod/lib/defaults"
 )
 
-// Client is a chrome devtools protocol connection instance.
+// Client is a devtools protocol connection instance.
 type Client struct {
 	ctx          context.Context
 	ctxCancel    func()
@@ -22,18 +22,18 @@ type Client struct {
 	ws     Websocketable
 	wsConn WebsocketableConn
 
-	callbacks *sync.Map // buffer for response from chrome
+	callbacks *sync.Map // buffer for response from browser
 
 	chReq   chan []byte    // request from user
-	chRes   chan *response // response from chrome
-	chEvent chan *Event    // events from chrome
+	chRes   chan *response // response from browser
+	chEvent chan *Event    // events from browser
 
 	count uint64
 
 	debug bool
 }
 
-// Request to send to chrome
+// Request to send to browser
 type Request struct {
 	ID        uint64      `json:"id"`
 	SessionID string      `json:"sessionId,omitempty"`
@@ -41,7 +41,7 @@ type Request struct {
 	Params    interface{} `json:"params,omitempty"`
 }
 
-// Event from chrome
+// Event from browser
 type Event struct {
 	SessionID string          `json:"sessionId,omitempty"`
 	Method    string          `json:"method"`
@@ -118,7 +118,7 @@ func (cdp *Client) Debug(enable bool) *Client {
 	return cdp
 }
 
-// ConnectE to chrome
+// ConnectE to browser
 func (cdp *Client) ConnectE() error {
 	if cdp.ws == nil {
 		cdp.ws = DefaultWsClient{}
@@ -133,12 +133,12 @@ func (cdp *Client) ConnectE() error {
 
 	go cdp.consumeMsg()
 
-	go cdp.readMsgFromChrome()
+	go cdp.readMsgFromBrowser()
 
 	return nil
 }
 
-// Connect to chrome
+// Connect to browser
 func (cdp *Client) Connect() *Client {
 	kit.E(cdp.ConnectE())
 	return cdp
@@ -193,7 +193,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 
 }
 
-// Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
+// Event returns a channel that will emit browser devtools protocol events. Must be consumed or will block producer.
 func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
@@ -203,7 +203,7 @@ type requestMsg struct {
 	data    []byte
 }
 
-// consume messages from client and chrome
+// consume messages from client and browser
 func (cdp *Client) consumeMsg() {
 	defer close(cdp.chReq)
 
@@ -238,14 +238,14 @@ func (cdp *Client) consumeMsg() {
 	}
 }
 
-// response from chrome
+// response from browser
 type response struct {
 	ID     uint64          `json:"id"`
 	Result json.RawMessage `json:"result,omitempty"`
 	Error  *Error          `json:"error,omitempty"`
 }
 
-func (cdp *Client) readMsgFromChrome() {
+func (cdp *Client) readMsgFromBrowser() {
 	defer close(cdp.chRes)
 	defer close(cdp.chEvent)
 

@@ -7,7 +7,7 @@
 
 ![logo](fixtures/banner.png)
 
-Rod is a High-level Chrome Devtools driver directly based on [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+Rod is a High-level Devtools driver directly based on [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
 ## Features
@@ -36,7 +36,7 @@ If you have questions, please raise an issue or join the [chat room][discord roo
 
 Here's the common start process of Rod:
 
-1. Try to connect to a Chrome Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
+1. Try to connect to a Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
 
 1. Use the JSON-RPC to talk to the browser endpoint to control it. The client to handle it is [here](lib/cdp).
 
@@ -55,14 +55,18 @@ To let rod work with docker is very easy:
 2. Open another terminal and run a go program like this [example](lib/examples/remote-launch/main.go)
 
 The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
-can dynamically launch a chrome for each remote driver with customizable chrome flags.
+can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
 
 ### Q: Does it support other browsers like Firefox or Edge
 
-Rod should work with any browser that supports [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
-For now, Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol, and Edge will adopt chromium as their backend, so it seems like most major browsers will support it in the future except for Safari.
+Rod should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+
+- Microsoft Edge can pass all the unit tests.
+- Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol.
+- Safari doesn't have any plan to support it
+- IE won't support it
 
 ### Q: Why is it called Rod
 

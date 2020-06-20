@@ -65,7 +65,7 @@ func (b *Browser) ControlURL(url string) *Browser {
 	return b
 }
 
-// Slowmotion set the delay for each chrome control action
+// Slowmotion set the delay for each control action, such as the simulation of the human inputs
 func (b *Browser) Slowmotion(delay time.Duration) *Browser {
 	b.slowmotion = delay
 	return b

@@ -9,7 +9,7 @@ import (
 )
 
 func ExampleClient() {
-	// launch a chrome
+	// launch a browser
 	url := launcher.New().Headless(false).Launch()
 
 	// create a controller

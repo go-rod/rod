@@ -32,7 +32,7 @@ func NewRemote(remoteURL string) *Launcher {
 	return l
 }
 
-// KeepUserDataDir after remote chrome is closed. By default user-data-dir will be removed.
+// KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
 func (l *Launcher) KeepUserDataDir() *Launcher {
 	l.Set("keep-user-data-dir")
 	return l
@@ -43,18 +43,18 @@ func (l *Launcher) JSON() []byte {
 	return kit.MustToJSONBytes(l)
 }
 
-// Client for launching chrome remotely
+// Client for launching browser remotely
 func (l *Launcher) Client() *cdp.Client {
 	header := http.Header{}
 	header.Add(HeaderName, kit.MustToJSON(l))
 	return cdp.New(l.url).Header(header)
 }
 
-// Proxy to help launch chrome remotely.
+// Proxy to help launch browser remotely.
 // Any http request will return a default Launcher based on remote OS environment.
-// Any websocket request will start a new chrome and the request will be proxied to the chrome.
-// The websocket header "Rod-Launcher" holds the options to launch chrome.
-// If the websocket is closed, the chrome will be killed.
+// Any websocket request will start a new browser and the request will be proxied to the browser.
+// The websocket header "Rod-Launcher" holds the options to launch browser.
+// If the websocket is closed, the browser will be killed.
 type Proxy struct {
 	Log func(string)
 }

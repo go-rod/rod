@@ -17,7 +17,7 @@ import (
 	"github.com/ysmood/rod/lib/defaults"
 )
 
-// Launcher is a helper to launch chrome binary smartly
+// Launcher is a helper to launch browser binary smartly
 type Launcher struct {
 	ctx    context.Context
 	bin    string
@@ -30,7 +30,7 @@ type Launcher struct {
 	reap   bool
 }
 
-// New returns the default arguments to start chrome.
+// New returns the default arguments to start browser.
 // "--" is optional, with or without it won't affect the result.
 // List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
@@ -143,7 +143,7 @@ func (l *Launcher) Delete(name string) *Launcher {
 	return l
 }
 
-// Bin set chrome executable file path
+// Bin set browser executable file path
 func (l *Launcher) Bin(path string) *Launcher {
 	l.bin = path
 	return l
@@ -210,7 +210,7 @@ func (l *Launcher) FormatArgs() []string {
 	return append(execArgs, l.Flags[""]...)
 }
 
-// Log function to handle stdout and stderr from chrome
+// Log function to handle stdout and stderr from browser
 func (l *Launcher) Log(log func(string)) *Launcher {
 	l.log = log
 	return l
@@ -240,9 +240,9 @@ func (l *Launcher) LaunchE() (string, error) {
 	bin := l.bin
 	if bin == "" {
 		var err error
-		chrome := NewChrome()
-		chrome.Context = l.ctx
-		bin, err = chrome.Get()
+		b := NewBrowser()
+		b.Context = l.ctx
+		bin, err = b.Get()
 		if err != nil {
 			return "", err
 		}
@@ -310,7 +310,7 @@ func (l *Launcher) LaunchE() (string, error) {
 	return GetWebSocketDebuggerURL(l.ctx, u)
 }
 
-// PID returns the chrome process pid
+// PID returns the browser process pid
 func (l *Launcher) PID() int {
 	return l.pid
 }
@@ -339,7 +339,7 @@ func (l *Launcher) read(reader io.Reader) {
 	}
 }
 
-// ReadURL from chrome stderr
+// ReadURL from browser stderr
 func (l *Launcher) getURL() (string, error) {
 	out := ""
 
@@ -355,7 +355,7 @@ func (l *Launcher) getURL() (string, error) {
 			out += e
 
 			if strings.Contains(out, "Opening in existing browser session") {
-				return "", errors.New("[launcher] Quit the current running Chrome first")
+				return "", errors.New("[launcher] Quit the current running browser first")
 			}
 
 			str := regexp.MustCompile(`ws://.+/`).FindString(out)
@@ -372,7 +372,7 @@ func (l *Launcher) getURL() (string, error) {
 	}
 }
 
-// GetWebSocketDebuggerURL from chrome remote url
+// GetWebSocketDebuggerURL from browser remote url
 func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
 	parsed, err := url.Parse(u)
 	if err != nil {

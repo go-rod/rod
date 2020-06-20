@@ -35,7 +35,7 @@ var Port = "0"
 // URL of the remote debugging address
 var URL = ""
 
-// Remote enables to launch chrome remotely
+// Remote enables to launch browser remotely
 var Remote bool
 
 // CDP enables cdp log

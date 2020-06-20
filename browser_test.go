@@ -64,7 +64,7 @@ func (s *S) TestBrowserCall() {
 	v, err := proto.BrowserGetVersion{}.Call(s.browser)
 	kit.E(err)
 
-	s.Regexp("HeadlessChrome", v.Product)
+	s.Regexp("1.3", v.ProtocolVersion)
 }
 
 func (s *S) TestBrowserHandleAuth() {

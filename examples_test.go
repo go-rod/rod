@@ -39,7 +39,7 @@ func Example_basic() {
 }
 
 // Such as you logged in your github account and you want to reuse the login session,
-// you may want to launch Chrome like this example.
+// you may want to launch the browser like this example.
 func Example_reuse_sessions() {
 	url := launcher.NewUserMode().Launch()
 
@@ -57,7 +57,7 @@ func Example_reuse_sessions() {
 // list at "lib/defaults".
 func Example_debug_mode() {
 	url := launcher.New().
-		Headless(false). // run chrome on foreground, you can also use env "rod=show"
+		Headless(false). // run browser on foreground, you can also use env "rod=show"
 		Devtools(true).  // open devtools for each new tab
 		Launch()
 
@@ -165,10 +165,10 @@ func Example_customize_retry_strategy() {
 	// Output: q
 }
 
-// The launcher lib comes with a lot of default switches (flags) to launch chrome,
+// The launcher lib comes with a lot of default switches (flags) to launch browser,
 // this example shows how to add or delete switches.
-func Example_customize_chrome_launch() {
-	// set custom chrome options
+func Example_customize_browser_launch() {
+	// set custom browser options
 	// use IDE to check the doc of launcher.New you will find out more info
 	url := launcher.New().
 		Set("proxy-server", "127.0.0.1:8080"). // add a flag, here we set a http proxy
@@ -201,7 +201,7 @@ func Example_direct_cdp() {
 
 	// call cdp interface directly here
 	// set the cookie before we visit the website
-	// the "proto" lib contains every JSON schema you need to communicate with chrome
+	// the "proto" lib contains every JSON schema you need to communicate with browser
 	res, err := proto.NetworkSetCookie{
 		Name:  "rod",
 		Value: "test",
@@ -218,7 +218,7 @@ func Example_direct_cdp() {
 
 	fmt.Println(cookie)
 
-	// Or even more low-level way to use raw json to send request to chrome.
+	// Or even more low-level way to use raw json to send request to browser.
 	data, _ := json.Marshal(map[string]string{
 		"name":  "rod",
 		"value": "test",

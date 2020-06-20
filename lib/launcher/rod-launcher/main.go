@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	app := kit.TasksNew("rod-launcher", "a cli tool to launch chrome remotely")
+	app := kit.TasksNew("rod-launcher", "a cli tool to launch browser remotely")
 	app.Version(defaults.Version)
 
 	kit.Tasks().App(app).Add(kit.Task("serve", "start server").Init(func(cmd kit.TaskCmd) func() {
