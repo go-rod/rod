@@ -300,9 +300,10 @@ func (s *S) TestMouseDrag() {
 
 	wait := make(chan kit.Nil)
 	logs := []string{}
-	go page.EachEvent(func(e *proto.ConsoleMessageAdded) bool {
-		logs = append(logs, e.Message.Text)
-		if strings.HasPrefix(e.Message.Text, "up") {
+	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
+		log := page.ObjectsToJSON(e.Args).Join(" ")
+		logs = append(logs, log)
+		if strings.HasPrefix(log, `up`) {
 			close(wait)
 			return true
 		}
@@ -419,6 +420,16 @@ func (s *S) TestPageScroll() {
 		}
 		return false, nil
 	}))
+}
+
+func (s *S) TestPageConsoleLog() {
+	p := s.page.Navigate("")
+	e := &proto.RuntimeConsoleAPICalled{}
+	wait := p.WaitEvent(e)
+	p.Eval(`() => console.log(1, {b: ['test']})`)
+	wait()
+	s.Equal("test", p.ObjectToJSON(e.Args[1]).Get("b.0").String())
+	s.Equal(`1 {"b":["test"]}`, p.ObjectsToJSON(e.Args).Join(" "))
 }
 
 func (s *S) TestPageOthers() {

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -268,6 +270,25 @@ func (p *Page) Eval(js string, params ...interface{}) proto.JSON {
 	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
 	return res.Value
+}
+
+// ObjectToJSON by remote object
+func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
+	j, err := p.ObjectToJSONE(obj)
+	kit.E(err)
+	return j
+}
+
+// ObjectsToJSON by remote objects
+func (p *Page) ObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
+	result := "[]"
+	for _, obj := range list {
+		j, err := p.ObjectToJSONE(obj)
+		kit.E(err)
+		result, err = sjson.SetRaw(result, "-1", j.Raw)
+		kit.E(err)
+	}
+	return proto.JSON{Result: gjson.Parse(result)}
 }
 
 // Release remote object

@@ -114,6 +114,17 @@ func (j JSON) MarshalJSON() ([]byte, error) {
 	return []byte(j.Raw), nil
 }
 
+// Join elements
+func (j JSON) Join(sep string) string {
+	list := []string{}
+
+	for _, el := range j.Array() {
+		list = append(list, el.String())
+	}
+
+	return strings.Join(list, sep)
+}
+
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
 type TimeSinceEpoch struct {
 	time.Time

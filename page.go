@@ -106,6 +106,10 @@ func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 
 // NavigateE doc is similar to the method Navigate
 func (p *Page) NavigateE(url string) error {
+	if url == "" {
+		url = "about:blank"
+	}
+
 	err := p.StopLoadingE()
 	if err != nil {
 		return err
@@ -487,6 +491,23 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	}
 
 	return res.Result, nil
+}
+
+// ObjectToJSONE by object id
+func (p *Page) ObjectToJSONE(obj *proto.RuntimeRemoteObject) (proto.JSON, error) {
+	if obj.ObjectID == "" {
+		return obj.Value, nil
+	}
+
+	res, err := proto.RuntimeCallFunctionOn{
+		ObjectID:            obj.ObjectID,
+		FunctionDeclaration: `function() { return this }`,
+		ReturnByValue:       true,
+	}.Call(p)
+	if err != nil {
+		return proto.JSON{}, err
+	}
+	return res.Result.Value, nil
 }
 
 // Sleeper returns the default sleeper for retry, it uses backoff and requestIdleCallback to wait
