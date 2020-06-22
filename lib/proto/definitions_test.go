@@ -3,7 +3,6 @@
 package proto_test
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,160 +13,84 @@ func TestAccessibilityDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.AccessibilityDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AccessibilityDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAccessibilityEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.AccessibilityEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AccessibilityEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAccessibilityGetPartialAXTree(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AccessibilityGetPartialAXTree{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AccessibilityGetPartialAXTree{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.AccessibilityGetPartialAXTree{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAccessibilityGetFullAXTree(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AccessibilityGetFullAXTree{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AccessibilityGetFullAXTree{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.AccessibilityGetFullAXTree{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationGetCurrentTime(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AnimationGetCurrentTime{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AnimationGetCurrentTime{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.AnimationGetCurrentTime{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationGetPlaybackRate(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AnimationGetPlaybackRate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AnimationGetPlaybackRate{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.AnimationGetPlaybackRate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationReleaseAnimations(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationReleaseAnimations{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationReleaseAnimations{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationResolveAnimation(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AnimationResolveAnimation{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AnimationResolveAnimation{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.AnimationResolveAnimation{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationSeekAnimations(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationSeekAnimations{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationSeekAnimations{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationSetPaused(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationSetPaused{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationSetPaused{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationSetPlaybackRate(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationSetPlaybackRate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationSetPlaybackRate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationSetTiming(t *testing.T) {
 	c := &Client{}
 	err := proto.AnimationSetTiming{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.AnimationSetTiming{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestAnimationAnimationCanceled(t *testing.T) {
@@ -189,52 +112,24 @@ func TestApplicationCacheEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.ApplicationCacheEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ApplicationCacheEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestApplicationCacheGetApplicationCacheForFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestApplicationCacheGetFramesWithManifests(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetFramesWithManifests{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ApplicationCacheGetFramesWithManifests{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ApplicationCacheGetFramesWithManifests{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestApplicationCacheGetManifestForFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetManifestForFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ApplicationCacheGetManifestForFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ApplicationCacheGetManifestForFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestApplicationCacheApplicationCacheStatusUpdated(t *testing.T) {
@@ -251,54 +146,47 @@ func TestAuditsGetEncodedResponse(t *testing.T) {
 	c := &Client{}
 	_, err := proto.AuditsGetEncodedResponse{}.Call(&Caller{c})
 	assert.Nil(t, err)
+}
 
-	c = &Client{err: errors.New("err")}
-	_, err = proto.AuditsGetEncodedResponse{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestAuditsDisable(t *testing.T) {
+	c := &Client{}
+	err := proto.AuditsDisable{}.Call(&Caller{c})
+	assert.Nil(t, err)
+}
 
-	c = &Client{ret: "err"}
-	_, err = proto.AuditsGetEncodedResponse{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestAuditsEnable(t *testing.T) {
+	c := &Client{}
+	err := proto.AuditsEnable{}.Call(&Caller{c})
+	assert.Nil(t, err)
+}
+
+func TestAuditsIssueAdded(t *testing.T) {
+	e := proto.AuditsIssueAdded{}
+	e.MethodName()
 }
 
 func TestBackgroundServiceStartObserving(t *testing.T) {
 	c := &Client{}
 	err := proto.BackgroundServiceStartObserving{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BackgroundServiceStartObserving{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBackgroundServiceStopObserving(t *testing.T) {
 	c := &Client{}
 	err := proto.BackgroundServiceStopObserving{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BackgroundServiceStopObserving{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBackgroundServiceSetRecording(t *testing.T) {
 	c := &Client{}
 	err := proto.BackgroundServiceSetRecording{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BackgroundServiceSetRecording{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBackgroundServiceClearEvents(t *testing.T) {
 	c := &Client{}
 	err := proto.BackgroundServiceClearEvents{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BackgroundServiceClearEvents{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBackgroundServiceRecordingStateChanged(t *testing.T) {
@@ -315,452 +203,222 @@ func TestBrowserSetPermission(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserSetPermission{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserSetPermission{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGrantPermissions(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserGrantPermissions{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserGrantPermissions{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserResetPermissions(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserResetPermissions{}.Call(&Caller{c})
 	assert.Nil(t, err)
+}
 
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserResetPermissions{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestBrowserSetDownloadBehavior(t *testing.T) {
+	c := &Client{}
+	err := proto.BrowserSetDownloadBehavior{}.Call(&Caller{c})
+	assert.Nil(t, err)
 }
 
 func TestBrowserClose(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserClose{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserClose{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserCrash(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserCrash{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserCrash{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserCrashGpuProcess(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserCrashGpuProcess{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserCrashGpuProcess{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetVersion(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetVersion{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetVersion{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetVersion{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetBrowserCommandLine(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetBrowserCommandLine{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetBrowserCommandLine{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetBrowserCommandLine{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetHistograms(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetHistograms{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetHistograms{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetHistograms{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetHistogram(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetHistogram{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetHistogram{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetHistogram{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetWindowBounds(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowBounds{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetWindowBounds{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetWindowBounds{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserGetWindowForTarget(t *testing.T) {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowForTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.BrowserGetWindowForTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.BrowserGetWindowForTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserSetWindowBounds(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserSetWindowBounds{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserSetWindowBounds{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestBrowserSetDockTile(t *testing.T) {
 	c := &Client{}
 	err := proto.BrowserSetDockTile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.BrowserSetDockTile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSAddRule(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSAddRule{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSAddRule{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSAddRule{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSCollectClassNames(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSCollectClassNames{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSCollectClassNames{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSCollectClassNames{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSCreateStyleSheet(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSCreateStyleSheet{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSCreateStyleSheet{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSCreateStyleSheet{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.CSSDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CSSDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.CSSEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CSSEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSForcePseudoState(t *testing.T) {
 	c := &Client{}
 	err := proto.CSSForcePseudoState{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CSSForcePseudoState{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetBackgroundColors(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetBackgroundColors{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetBackgroundColors{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetBackgroundColors{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetComputedStyleForNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetComputedStyleForNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetComputedStyleForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetComputedStyleForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetInlineStylesForNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetInlineStylesForNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetInlineStylesForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetInlineStylesForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetMatchedStylesForNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetMatchedStylesForNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetMatchedStylesForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetMatchedStylesForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetMediaQueries(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetMediaQueries{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetMediaQueries{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetMediaQueries{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetPlatformFontsForNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetPlatformFontsForNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetPlatformFontsForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetPlatformFontsForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSGetStyleSheetText(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSGetStyleSheetText{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSGetStyleSheetText{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSGetStyleSheetText{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetEffectivePropertyValueForNode(t *testing.T) {
 	c := &Client{}
 	err := proto.CSSSetEffectivePropertyValueForNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CSSSetEffectivePropertyValueForNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetKeyframeKey(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSSetKeyframeKey{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSSetKeyframeKey{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSSetKeyframeKey{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetMediaText(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSSetMediaText{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSSetMediaText{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSSetMediaText{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetRuleSelector(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSSetRuleSelector{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSSetRuleSelector{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetStyleSheetText(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSSetStyleSheetText{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSSetStyleSheetText{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSSetStyleSheetText{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSSetStyleTexts(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSSetStyleTexts{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSSetStyleTexts{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSSetStyleTexts{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSStartRuleUsageTracking(t *testing.T) {
 	c := &Client{}
 	err := proto.CSSStartRuleUsageTracking{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CSSStartRuleUsageTracking{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSStopRuleUsageTracking(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSStopRuleUsageTracking{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSStopRuleUsageTracking{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSStopRuleUsageTracking{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSTakeCoverageDelta(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CSSTakeCoverageDelta{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CSSTakeCoverageDelta{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CSSTakeCoverageDelta{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCSSFontsUpdated(t *testing.T) {
@@ -792,112 +450,60 @@ func TestCacheStorageDeleteCache(t *testing.T) {
 	c := &Client{}
 	err := proto.CacheStorageDeleteCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CacheStorageDeleteCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCacheStorageDeleteEntry(t *testing.T) {
 	c := &Client{}
 	err := proto.CacheStorageDeleteEntry{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CacheStorageDeleteEntry{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCacheStorageRequestCacheNames(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCacheNames{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CacheStorageRequestCacheNames{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CacheStorageRequestCacheNames{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCacheStorageRequestCachedResponse(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCachedResponse{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CacheStorageRequestCachedResponse{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CacheStorageRequestCachedResponse{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCacheStorageRequestEntries(t *testing.T) {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestEntries{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.CacheStorageRequestEntries{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.CacheStorageRequestEntries{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.CastEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CastEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.CastDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CastDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastSetSinkToUse(t *testing.T) {
 	c := &Client{}
 	err := proto.CastSetSinkToUse{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CastSetSinkToUse{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastStartTabMirroring(t *testing.T) {
 	c := &Client{}
 	err := proto.CastStartTabMirroring{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CastStartTabMirroring{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastStopCasting(t *testing.T) {
 	c := &Client{}
 	err := proto.CastStopCasting{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.CastStopCasting{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestCastSinksUpdated(t *testing.T) {
@@ -914,536 +520,270 @@ func TestDOMCollectClassNamesFromSubtree(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMCollectClassNamesFromSubtree{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMCollectClassNamesFromSubtree{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMCollectClassNamesFromSubtree{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMCopyTo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMCopyTo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMCopyTo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMCopyTo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDescribeNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMDescribeNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
+}
 
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMDescribeNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMDescribeNode{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestDOMScrollIntoViewIfNeeded(t *testing.T) {
+	c := &Client{}
+	err := proto.DOMScrollIntoViewIfNeeded{}.Call(&Caller{c})
+	assert.Nil(t, err)
 }
 
 func TestDOMDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDiscardSearchResults(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDiscardSearchResults{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDiscardSearchResults{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMFocus(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMFocus{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMFocus{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetAttributes(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetAttributes{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetAttributes{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetAttributes{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetBoxModel(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetBoxModel{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetBoxModel{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetBoxModel{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetContentQuads(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetContentQuads{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetContentQuads{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetContentQuads{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetDocument(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetDocument{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetFlattenedDocument(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetFlattenedDocument{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetFlattenedDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetFlattenedDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetNodeForLocation(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetNodeForLocation{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetNodeForLocation{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetNodeForLocation{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetOuterHTML(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetOuterHTML{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetOuterHTML{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetOuterHTML{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetRelayoutBoundary(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetRelayoutBoundary{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetRelayoutBoundary{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetRelayoutBoundary{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetSearchResults(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetSearchResults{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetSearchResults{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetSearchResults{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMHideHighlight(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMHideHighlight{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMHideHighlight{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMHighlightNode(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMHighlightNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMHighlightNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMHighlightRect(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMHighlightRect{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMHighlightRect{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMMarkUndoableState(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMMarkUndoableState{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMMarkUndoableState{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMMoveTo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMMoveTo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMMoveTo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMMoveTo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMPerformSearch(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMPerformSearch{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMPerformSearch{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMPerformSearch{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMPushNodeByPathToFrontend(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMPushNodeByPathToFrontend{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMPushNodeByPathToFrontend{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMPushNodeByPathToFrontend{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMPushNodesByBackendIdsToFrontend(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMPushNodesByBackendIdsToFrontend{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMPushNodesByBackendIdsToFrontend{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMPushNodesByBackendIdsToFrontend{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMQuerySelector(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMQuerySelector{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMQuerySelector{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMQuerySelector{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMQuerySelectorAll(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMQuerySelectorAll{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMQuerySelectorAll{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMQuerySelectorAll{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMRedo(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMRedo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMRedo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMRemoveAttribute(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMRemoveAttribute{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMRemoveAttribute{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMRemoveNode(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMRemoveNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMRemoveNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMRequestChildNodes(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMRequestChildNodes{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMRequestChildNodes{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMRequestNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMRequestNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMRequestNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMRequestNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMResolveNode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMResolveNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMResolveNode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMResolveNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetAttributeValue(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetAttributeValue{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetAttributeValue{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetAttributesAsText(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetAttributesAsText{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetAttributesAsText{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetFileInputFiles(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetFileInputFiles{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetFileInputFiles{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetNodeStackTracesEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetNodeStackTracesEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetNodeStackTracesEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetNodeStackTraces(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetNodeStackTraces{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetNodeStackTraces{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetNodeStackTraces{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetFileInfo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetFileInfo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetFileInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetFileInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetInspectedNode(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetInspectedNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetInspectedNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetNodeName(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMSetNodeName{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMSetNodeName{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMSetNodeName{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetNodeValue(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetNodeValue{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetNodeValue{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSetOuterHTML(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSetOuterHTML{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSetOuterHTML{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMUndo(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMUndo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMUndo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMGetFrameOwner(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMGetFrameOwner{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMGetFrameOwner{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMGetFrameOwner{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMAttributeModified(t *testing.T) {
@@ -1520,206 +860,114 @@ func TestDOMDebuggerGetEventListeners(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMDebuggerGetEventListeners{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMDebuggerGetEventListeners{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMDebuggerGetEventListeners{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerRemoveDOMBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveDOMBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerRemoveDOMBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerRemoveEventListenerBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveEventListenerBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerRemoveEventListenerBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerRemoveInstrumentationBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveInstrumentationBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerRemoveInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerRemoveXHRBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveXHRBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerRemoveXHRBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerSetDOMBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerSetDOMBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerSetDOMBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerSetEventListenerBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerSetEventListenerBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerSetEventListenerBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerSetInstrumentationBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMDebuggerSetXHRBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMDebuggerSetXHRBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMDebuggerSetXHRBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSnapshotDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSnapshotDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSnapshotDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSnapshotEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMSnapshotEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMSnapshotEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSnapshotGetSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMSnapshotGetSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMSnapshotGetSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMSnapshotGetSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMSnapshotCaptureSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMSnapshotCaptureSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMSnapshotCaptureSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMSnapshotCaptureSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageClear(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMStorageClear{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMStorageClear{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMStorageDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMStorageDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMStorageEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMStorageEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageGetDOMStorageItems(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DOMStorageGetDOMStorageItems{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DOMStorageGetDOMStorageItems{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DOMStorageGetDOMStorageItems{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageRemoveDOMStorageItem(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMStorageRemoveDOMStorageItem{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMStorageRemoveDOMStorageItem{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageSetDOMStorageItem(t *testing.T) {
 	c := &Client{}
 	err := proto.DOMStorageSetDOMStorageItem{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DOMStorageSetDOMStorageItem{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDOMStorageDomStorageItemAdded(t *testing.T) {
@@ -1746,48 +994,24 @@ func TestDatabaseDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.DatabaseDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DatabaseDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDatabaseEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.DatabaseEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DatabaseEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDatabaseExecuteSQL(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DatabaseExecuteSQL{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DatabaseExecuteSQL{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DatabaseExecuteSQL{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDatabaseGetDatabaseTableNames(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DatabaseGetDatabaseTableNames{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DatabaseGetDatabaseTableNames{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DatabaseGetDatabaseTableNames{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDatabaseAddDatabase(t *testing.T) {
@@ -1799,238 +1023,150 @@ func TestDeviceOrientationClearDeviceOrientationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.DeviceOrientationClearDeviceOrientationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DeviceOrientationClearDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDeviceOrientationSetDeviceOrientationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.DeviceOrientationSetDeviceOrientationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DeviceOrientationSetDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationCanEmulate(t *testing.T) {
 	c := &Client{}
 	_, err := proto.EmulationCanEmulate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.EmulationCanEmulate{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.EmulationCanEmulate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationClearDeviceMetricsOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationClearDeviceMetricsOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationClearDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationClearGeolocationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationClearGeolocationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationClearGeolocationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationResetPageScaleFactor(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationResetPageScaleFactor{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationResetPageScaleFactor{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetFocusEmulationEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetFocusEmulationEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetFocusEmulationEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetCPUThrottlingRate(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetCPUThrottlingRate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetCPUThrottlingRate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetDefaultBackgroundColorOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetDefaultBackgroundColorOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetDefaultBackgroundColorOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetDeviceMetricsOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetDeviceMetricsOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetScrollbarsHidden(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetScrollbarsHidden{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetScrollbarsHidden{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetDocumentCookieDisabled(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetDocumentCookieDisabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetDocumentCookieDisabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetEmitTouchEventsForMouse(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetEmitTouchEventsForMouse{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetEmitTouchEventsForMouse{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetEmulatedMedia(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetEmulatedMedia{}.Call(&Caller{c})
 	assert.Nil(t, err)
+}
 
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetEmulatedMedia{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestEmulationSetEmulatedVisionDeficiency(t *testing.T) {
+	c := &Client{}
+	err := proto.EmulationSetEmulatedVisionDeficiency{}.Call(&Caller{c})
+	assert.Nil(t, err)
 }
 
 func TestEmulationSetGeolocationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetGeolocationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetGeolocationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetNavigatorOverrides(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetNavigatorOverrides{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetNavigatorOverrides{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetPageScaleFactor(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetPageScaleFactor{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetPageScaleFactor{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetScriptExecutionDisabled(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetScriptExecutionDisabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetScriptExecutionDisabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetTouchEmulationEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetTouchEmulationEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetTouchEmulationEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetVirtualTimePolicy(t *testing.T) {
 	c := &Client{}
 	_, err := proto.EmulationSetVirtualTimePolicy{}.Call(&Caller{c})
 	assert.Nil(t, err)
+}
 
-	c = &Client{err: errors.New("err")}
-	_, err = proto.EmulationSetVirtualTimePolicy{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.EmulationSetVirtualTimePolicy{}.Call(&Caller{c})
-	assert.Error(t, err)
+func TestEmulationSetLocaleOverride(t *testing.T) {
+	c := &Client{}
+	err := proto.EmulationSetLocaleOverride{}.Call(&Caller{c})
+	assert.Nil(t, err)
 }
 
 func TestEmulationSetTimezoneOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetTimezoneOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetTimezoneOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetVisibleSize(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetVisibleSize{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetVisibleSize{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationSetUserAgentOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.EmulationSetUserAgentOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.EmulationSetUserAgentOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestEmulationVirtualTimeBudgetExpired(t *testing.T) {
@@ -2042,34 +1178,18 @@ func TestHeadlessExperimentalBeginFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.HeadlessExperimentalBeginFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.HeadlessExperimentalBeginFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.HeadlessExperimentalBeginFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeadlessExperimentalDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.HeadlessExperimentalDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeadlessExperimentalDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeadlessExperimentalEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.HeadlessExperimentalEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeadlessExperimentalEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeadlessExperimentalNeedsBeginFramesChanged(t *testing.T) {
@@ -2081,254 +1201,138 @@ func TestIOClose(t *testing.T) {
 	c := &Client{}
 	err := proto.IOClose{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IOClose{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIORead(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IORead{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IORead{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IORead{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIOResolveBlob(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IOResolveBlob{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IOResolveBlob{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IOResolveBlob{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBClearObjectStore(t *testing.T) {
 	c := &Client{}
 	err := proto.IndexedDBClearObjectStore{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IndexedDBClearObjectStore{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBDeleteDatabase(t *testing.T) {
 	c := &Client{}
 	err := proto.IndexedDBDeleteDatabase{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IndexedDBDeleteDatabase{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBDeleteObjectStoreEntries(t *testing.T) {
 	c := &Client{}
 	err := proto.IndexedDBDeleteObjectStoreEntries{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IndexedDBDeleteObjectStoreEntries{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.IndexedDBDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IndexedDBDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.IndexedDBEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.IndexedDBEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBRequestData(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestData{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IndexedDBRequestData{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IndexedDBRequestData{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBGetMetadata(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IndexedDBGetMetadata{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IndexedDBGetMetadata{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IndexedDBGetMetadata{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBRequestDatabase(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabase{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IndexedDBRequestDatabase{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IndexedDBRequestDatabase{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestIndexedDBRequestDatabaseNames(t *testing.T) {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabaseNames{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.IndexedDBRequestDatabaseNames{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.IndexedDBRequestDatabaseNames{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputDispatchKeyEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.InputDispatchKeyEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputDispatchKeyEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputInsertText(t *testing.T) {
 	c := &Client{}
 	err := proto.InputInsertText{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputInsertText{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputDispatchMouseEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.InputDispatchMouseEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputDispatchMouseEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputDispatchTouchEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.InputDispatchTouchEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputDispatchTouchEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputEmulateTouchFromMouseEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.InputEmulateTouchFromMouseEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputEmulateTouchFromMouseEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputSetIgnoreInputEvents(t *testing.T) {
 	c := &Client{}
 	err := proto.InputSetIgnoreInputEvents{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputSetIgnoreInputEvents{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputSynthesizePinchGesture(t *testing.T) {
 	c := &Client{}
 	err := proto.InputSynthesizePinchGesture{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputSynthesizePinchGesture{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputSynthesizeScrollGesture(t *testing.T) {
 	c := &Client{}
 	err := proto.InputSynthesizeScrollGesture{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputSynthesizeScrollGesture{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInputSynthesizeTapGesture(t *testing.T) {
 	c := &Client{}
 	err := proto.InputSynthesizeTapGesture{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InputSynthesizeTapGesture{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInspectorDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.InspectorDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InspectorDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInspectorEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.InspectorEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.InspectorEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestInspectorDetached(t *testing.T) {
@@ -2350,114 +1354,54 @@ func TestLayerTreeCompositingReasons(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeCompositingReasons{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeCompositingReasons{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeCompositingReasons{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.LayerTreeDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LayerTreeDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.LayerTreeEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LayerTreeEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeLoadSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeLoadSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeLoadSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeLoadSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeMakeSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeMakeSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeMakeSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeMakeSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeProfileSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeProfileSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeProfileSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeProfileSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeReleaseSnapshot(t *testing.T) {
 	c := &Client{}
 	err := proto.LayerTreeReleaseSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LayerTreeReleaseSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeReplaySnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeReplaySnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeReplaySnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeReplaySnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeSnapshotCommandLog(t *testing.T) {
 	c := &Client{}
 	_, err := proto.LayerTreeSnapshotCommandLog{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.LayerTreeSnapshotCommandLog{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.LayerTreeSnapshotCommandLog{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLayerTreeLayerPainted(t *testing.T) {
@@ -2474,50 +1418,30 @@ func TestLogClear(t *testing.T) {
 	c := &Client{}
 	err := proto.LogClear{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LogClear{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLogDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.LogDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LogDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLogEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.LogEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LogEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLogStartViolationsReport(t *testing.T) {
 	c := &Client{}
 	err := proto.LogStartViolationsReport{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LogStartViolationsReport{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLogStopViolationsReport(t *testing.T) {
 	c := &Client{}
 	err := proto.LogStopViolationsReport{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.LogStopViolationsReport{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestLogEntryAdded(t *testing.T) {
@@ -2529,444 +1453,228 @@ func TestMemoryGetDOMCounters(t *testing.T) {
 	c := &Client{}
 	_, err := proto.MemoryGetDOMCounters{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.MemoryGetDOMCounters{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.MemoryGetDOMCounters{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryPrepareForLeakDetection(t *testing.T) {
 	c := &Client{}
 	err := proto.MemoryPrepareForLeakDetection{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemoryPrepareForLeakDetection{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryForciblyPurgeJavaScriptMemory(t *testing.T) {
 	c := &Client{}
 	err := proto.MemoryForciblyPurgeJavaScriptMemory{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemoryForciblyPurgeJavaScriptMemory{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemorySetPressureNotificationsSuppressed(t *testing.T) {
 	c := &Client{}
 	err := proto.MemorySetPressureNotificationsSuppressed{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemorySetPressureNotificationsSuppressed{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemorySimulatePressureNotification(t *testing.T) {
 	c := &Client{}
 	err := proto.MemorySimulatePressureNotification{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemorySimulatePressureNotification{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryStartSampling(t *testing.T) {
 	c := &Client{}
 	err := proto.MemoryStartSampling{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemoryStartSampling{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryStopSampling(t *testing.T) {
 	c := &Client{}
 	err := proto.MemoryStopSampling{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MemoryStopSampling{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryGetAllTimeSamplingProfile(t *testing.T) {
 	c := &Client{}
 	_, err := proto.MemoryGetAllTimeSamplingProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.MemoryGetAllTimeSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.MemoryGetAllTimeSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryGetBrowserSamplingProfile(t *testing.T) {
 	c := &Client{}
 	_, err := proto.MemoryGetBrowserSamplingProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.MemoryGetBrowserSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.MemoryGetBrowserSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMemoryGetSamplingProfile(t *testing.T) {
 	c := &Client{}
 	_, err := proto.MemoryGetSamplingProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.MemoryGetSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.MemoryGetSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkCanClearBrowserCache(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkCanClearBrowserCache{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkCanClearBrowserCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkCanClearBrowserCookies(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkCanClearBrowserCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkCanClearBrowserCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkCanEmulateNetworkConditions(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkCanEmulateNetworkConditions{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkCanEmulateNetworkConditions{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkCanEmulateNetworkConditions{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkClearBrowserCache(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkClearBrowserCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkClearBrowserCookies(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkClearBrowserCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkContinueInterceptedRequest(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkContinueInterceptedRequest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkContinueInterceptedRequest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkDeleteCookies(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkDeleteCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkDeleteCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkEmulateNetworkConditions(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkEmulateNetworkConditions{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkEmulateNetworkConditions{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetAllCookies(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetAllCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetAllCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetAllCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetCertificate(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetCertificate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetCertificate{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetCertificate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetCookies(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetResponseBody(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBody{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetRequestPostData(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetRequestPostData{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetRequestPostData{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetRequestPostData{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkGetResponseBodyForInterception(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBodyForInterception{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkGetResponseBodyForInterception{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkGetResponseBodyForInterception{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkTakeResponseBodyForInterceptionAsStream(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkTakeResponseBodyForInterceptionAsStream{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkTakeResponseBodyForInterceptionAsStream{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkTakeResponseBodyForInterceptionAsStream{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkReplayXHR(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkReplayXHR{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkReplayXHR{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSearchInResponseBody(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkSearchInResponseBody{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkSearchInResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkSearchInResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetBlockedURLs(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetBlockedURLs{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetBlockedURLs{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetBypassServiceWorker(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetBypassServiceWorker{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetBypassServiceWorker{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetCacheDisabled(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetCacheDisabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetCacheDisabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetCookie(t *testing.T) {
 	c := &Client{}
 	_, err := proto.NetworkSetCookie{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.NetworkSetCookie{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.NetworkSetCookie{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetCookies(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetDataSizeLimitsForTest(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetDataSizeLimitsForTest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetDataSizeLimitsForTest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetExtraHTTPHeaders(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetExtraHTTPHeaders{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetExtraHTTPHeaders{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetRequestInterception(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetRequestInterception{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetRequestInterception{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkSetUserAgentOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.NetworkSetUserAgentOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.NetworkSetUserAgentOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestNetworkDataReceived(t *testing.T) {
@@ -3068,184 +1776,108 @@ func TestOverlayDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayGetHighlightObjectForTest(t *testing.T) {
 	c := &Client{}
 	_, err := proto.OverlayGetHighlightObjectForTest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.OverlayGetHighlightObjectForTest{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.OverlayGetHighlightObjectForTest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayHideHighlight(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayHideHighlight{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayHideHighlight{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayHighlightFrame(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayHighlightFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayHighlightFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayHighlightNode(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayHighlightNode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayHighlightNode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayHighlightQuad(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayHighlightQuad{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayHighlightQuad{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayHighlightRect(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlayHighlightRect{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlayHighlightRect{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetInspectMode(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetInspectMode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetInspectMode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowAdHighlights(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowAdHighlights{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowAdHighlights{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetPausedInDebuggerMessage(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetPausedInDebuggerMessage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetPausedInDebuggerMessage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowDebugBorders(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowDebugBorders{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowDebugBorders{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowFPSCounter(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowFPSCounter{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowFPSCounter{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowPaintRects(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowPaintRects{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowPaintRects{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowLayoutShiftRegions(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowLayoutShiftRegions{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowLayoutShiftRegions{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowScrollBottleneckRects(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowScrollBottleneckRects{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowScrollBottleneckRects{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowHitTestBorders(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowHitTestBorders{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowHitTestBorders{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlaySetShowViewportSizeOnResize(t *testing.T) {
 	c := &Client{}
 	err := proto.OverlaySetShowViewportSizeOnResize{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.OverlaySetShowViewportSizeOnResize{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestOverlayInspectNodeRequested(t *testing.T) {
@@ -3272,608 +1904,324 @@ func TestPageAddScriptToEvaluateOnLoad(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnLoad{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageAddScriptToEvaluateOnLoad{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageAddScriptToEvaluateOnLoad{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageAddScriptToEvaluateOnNewDocument(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageAddScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageAddScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageBringToFront(t *testing.T) {
 	c := &Client{}
 	err := proto.PageBringToFront{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageBringToFront{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageCaptureScreenshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageCaptureScreenshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageCaptureScreenshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageCaptureScreenshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageCaptureSnapshot(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageCaptureSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageCaptureSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageCaptureSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageClearDeviceMetricsOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageClearDeviceMetricsOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageClearDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageClearDeviceOrientationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageClearDeviceOrientationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageClearDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageClearGeolocationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageClearGeolocationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageClearGeolocationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageCreateIsolatedWorld(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageCreateIsolatedWorld{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageCreateIsolatedWorld{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageCreateIsolatedWorld{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageDeleteCookie(t *testing.T) {
 	c := &Client{}
 	err := proto.PageDeleteCookie{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageDeleteCookie{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.PageDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.PageEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetAppManifest(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetAppManifest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetAppManifest{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetAppManifest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetInstallabilityErrors(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetInstallabilityErrors{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetInstallabilityErrors{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetInstallabilityErrors{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetManifestIcons(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetManifestIcons{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetManifestIcons{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetManifestIcons{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetCookies(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetFrameTree(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetFrameTree{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetFrameTree{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetFrameTree{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetLayoutMetrics(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetLayoutMetrics{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetLayoutMetrics{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetLayoutMetrics{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetNavigationHistory(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetNavigationHistory{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetNavigationHistory{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetNavigationHistory{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageResetNavigationHistory(t *testing.T) {
 	c := &Client{}
 	err := proto.PageResetNavigationHistory{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageResetNavigationHistory{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetResourceContent(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetResourceContent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetResourceContent{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetResourceContent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGetResourceTree(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageGetResourceTree{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageGetResourceTree{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageGetResourceTree{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageHandleJavaScriptDialog(t *testing.T) {
 	c := &Client{}
 	err := proto.PageHandleJavaScriptDialog{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageHandleJavaScriptDialog{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageNavigate(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageNavigate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageNavigate{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageNavigate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageNavigateToHistoryEntry(t *testing.T) {
 	c := &Client{}
 	err := proto.PageNavigateToHistoryEntry{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageNavigateToHistoryEntry{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPagePrintToPDF(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PagePrintToPDF{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PagePrintToPDF{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PagePrintToPDF{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageReload(t *testing.T) {
 	c := &Client{}
 	err := proto.PageReload{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageReload{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageRemoveScriptToEvaluateOnLoad(t *testing.T) {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnLoad{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageRemoveScriptToEvaluateOnLoad{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageRemoveScriptToEvaluateOnNewDocument(t *testing.T) {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageRemoveScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageScreencastFrameAck(t *testing.T) {
 	c := &Client{}
 	err := proto.PageScreencastFrameAck{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageScreencastFrameAck{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSearchInResource(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PageSearchInResource{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PageSearchInResource{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PageSearchInResource{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetAdBlockingEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetAdBlockingEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetAdBlockingEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetBypassCSP(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetBypassCSP{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetBypassCSP{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetDeviceMetricsOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetDeviceMetricsOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetDeviceOrientationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetDeviceOrientationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetFontFamilies(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetFontFamilies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetFontFamilies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetFontSizes(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetFontSizes{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetFontSizes{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetDocumentContent(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetDocumentContent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetDocumentContent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetDownloadBehavior(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetDownloadBehavior{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetDownloadBehavior{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetGeolocationOverride(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetGeolocationOverride{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetGeolocationOverride{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetLifecycleEventsEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetLifecycleEventsEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetLifecycleEventsEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetTouchEmulationEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetTouchEmulationEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetTouchEmulationEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageStartScreencast(t *testing.T) {
 	c := &Client{}
 	err := proto.PageStartScreencast{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageStartScreencast{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageStopLoading(t *testing.T) {
 	c := &Client{}
 	err := proto.PageStopLoading{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageStopLoading{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageCrash(t *testing.T) {
 	c := &Client{}
 	err := proto.PageCrash{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageCrash{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageClose(t *testing.T) {
 	c := &Client{}
 	err := proto.PageClose{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageClose{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetWebLifecycleState(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetWebLifecycleState{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetWebLifecycleState{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageStopScreencast(t *testing.T) {
 	c := &Client{}
 	err := proto.PageStopScreencast{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageStopScreencast{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetProduceCompilationCache(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetProduceCompilationCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetProduceCompilationCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageAddCompilationCache(t *testing.T) {
 	c := &Client{}
 	err := proto.PageAddCompilationCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageAddCompilationCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageClearCompilationCache(t *testing.T) {
 	c := &Client{}
 	err := proto.PageClearCompilationCache{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageClearCompilationCache{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageGenerateTestReport(t *testing.T) {
 	c := &Client{}
 	err := proto.PageGenerateTestReport{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageGenerateTestReport{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageWaitForDebugger(t *testing.T) {
 	c := &Client{}
 	err := proto.PageWaitForDebugger{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageWaitForDebugger{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageSetInterceptFileChooserDialog(t *testing.T) {
 	c := &Client{}
 	err := proto.PageSetInterceptFileChooserDialog{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PageSetInterceptFileChooserDialog{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPageDomContentEventFired(t *testing.T) {
@@ -3936,6 +2284,11 @@ func TestPageDownloadWillBegin(t *testing.T) {
 	e.MethodName()
 }
 
+func TestPageDownloadProgress(t *testing.T) {
+	e := proto.PageDownloadProgress{}
+	e.MethodName()
+}
+
 func TestPageInterstitialHidden(t *testing.T) {
 	e := proto.PageInterstitialHidden{}
 	e.MethodName()
@@ -3995,44 +2348,24 @@ func TestPerformanceDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.PerformanceDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PerformanceDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPerformanceEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.PerformanceEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PerformanceEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPerformanceSetTimeDomain(t *testing.T) {
 	c := &Client{}
 	err := proto.PerformanceSetTimeDomain{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.PerformanceSetTimeDomain{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPerformanceGetMetrics(t *testing.T) {
 	c := &Client{}
 	_, err := proto.PerformanceGetMetrics{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.PerformanceGetMetrics{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.PerformanceGetMetrics{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestPerformanceMetrics(t *testing.T) {
@@ -4044,50 +2377,30 @@ func TestSecurityDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.SecurityDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.SecurityDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSecurityEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.SecurityEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.SecurityEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSecuritySetIgnoreCertificateErrors(t *testing.T) {
 	c := &Client{}
 	err := proto.SecuritySetIgnoreCertificateErrors{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.SecuritySetIgnoreCertificateErrors{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSecurityHandleCertificateError(t *testing.T) {
 	c := &Client{}
 	err := proto.SecurityHandleCertificateError{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.SecurityHandleCertificateError{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSecuritySetOverrideCertificateErrors(t *testing.T) {
 	c := &Client{}
 	err := proto.SecuritySetOverrideCertificateErrors{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.SecuritySetOverrideCertificateErrors{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSecurityCertificateError(t *testing.T) {
@@ -4109,130 +2422,78 @@ func TestServiceWorkerDeliverPushMessage(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerDeliverPushMessage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerDeliverPushMessage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerDispatchSyncEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchSyncEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerDispatchSyncEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerDispatchPeriodicSyncEvent(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchPeriodicSyncEvent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerDispatchPeriodicSyncEvent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerInspectWorker(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerInspectWorker{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerInspectWorker{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerSetForceUpdateOnPageLoad(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerSetForceUpdateOnPageLoad{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerSetForceUpdateOnPageLoad{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerSkipWaiting(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerSkipWaiting{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerSkipWaiting{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerStartWorker(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerStartWorker{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerStartWorker{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerStopAllWorkers(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerStopAllWorkers{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerStopAllWorkers{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerStopWorker(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerStopWorker{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerStopWorker{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerUnregister(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerUnregister{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerUnregister{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerUpdateRegistration(t *testing.T) {
 	c := &Client{}
 	err := proto.ServiceWorkerUpdateRegistration{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ServiceWorkerUpdateRegistration{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestServiceWorkerWorkerErrorReported(t *testing.T) {
@@ -4254,98 +2515,54 @@ func TestStorageClearDataForOrigin(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageClearDataForOrigin{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageClearDataForOrigin{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageGetCookies(t *testing.T) {
 	c := &Client{}
 	_, err := proto.StorageGetCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.StorageGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.StorageGetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageSetCookies(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageSetCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageSetCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageClearCookies(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageClearCookies{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageClearCookies{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageGetUsageAndQuota(t *testing.T) {
 	c := &Client{}
 	_, err := proto.StorageGetUsageAndQuota{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.StorageGetUsageAndQuota{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.StorageGetUsageAndQuota{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageTrackCacheStorageForOrigin(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageTrackCacheStorageForOrigin{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageTrackCacheStorageForOrigin{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageTrackIndexedDBForOrigin(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageTrackIndexedDBForOrigin{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageTrackIndexedDBForOrigin{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageUntrackCacheStorageForOrigin(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageUntrackCacheStorageForOrigin{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageUntrackCacheStorageForOrigin{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageUntrackIndexedDBForOrigin(t *testing.T) {
 	c := &Client{}
 	err := proto.StorageUntrackIndexedDBForOrigin{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.StorageUntrackIndexedDBForOrigin{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestStorageCacheStorageContentUpdated(t *testing.T) {
@@ -4372,220 +2589,108 @@ func TestSystemInfoGetInfo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.SystemInfoGetInfo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.SystemInfoGetInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.SystemInfoGetInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestSystemInfoGetProcessInfo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.SystemInfoGetProcessInfo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.SystemInfoGetProcessInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.SystemInfoGetProcessInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetActivateTarget(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetActivateTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetActivateTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetAttachToTarget(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetAttachToTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetAttachToTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetAttachToTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetAttachToBrowserTarget(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetAttachToBrowserTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetAttachToBrowserTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetAttachToBrowserTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetCloseTarget(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetCloseTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetCloseTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetCloseTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetExposeDevToolsProtocol(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetExposeDevToolsProtocol{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetExposeDevToolsProtocol{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetCreateBrowserContext(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetCreateBrowserContext{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetCreateBrowserContext{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetCreateBrowserContext{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetGetBrowserContexts(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetGetBrowserContexts{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetGetBrowserContexts{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetGetBrowserContexts{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetCreateTarget(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetCreateTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetCreateTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetCreateTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetDetachFromTarget(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetDetachFromTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetDetachFromTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetDisposeBrowserContext(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetDisposeBrowserContext{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetDisposeBrowserContext{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetGetTargetInfo(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetGetTargetInfo{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetGetTargetInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetGetTargetInfo{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetGetTargets(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TargetGetTargets{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TargetGetTargets{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TargetGetTargets{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetSendMessageToTarget(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetSendMessageToTarget{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetSendMessageToTarget{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetSetAutoAttach(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetSetAutoAttach{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetSetAutoAttach{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetSetDiscoverTargets(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetSetDiscoverTargets{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetSetDiscoverTargets{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetSetRemoteLocations(t *testing.T) {
 	c := &Client{}
 	err := proto.TargetSetRemoteLocations{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TargetSetRemoteLocations{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTargetAttachedToTarget(t *testing.T) {
@@ -4627,20 +2732,12 @@ func TestTetheringBind(t *testing.T) {
 	c := &Client{}
 	err := proto.TetheringBind{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TetheringBind{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTetheringUnbind(t *testing.T) {
 	c := &Client{}
 	err := proto.TetheringUnbind{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TetheringUnbind{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTetheringAccepted(t *testing.T) {
@@ -4652,58 +2749,30 @@ func TestTracingEnd(t *testing.T) {
 	c := &Client{}
 	err := proto.TracingEnd{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TracingEnd{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTracingGetCategories(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TracingGetCategories{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TracingGetCategories{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TracingGetCategories{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTracingRecordClockSyncMarker(t *testing.T) {
 	c := &Client{}
 	err := proto.TracingRecordClockSyncMarker{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TracingRecordClockSyncMarker{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTracingRequestMemoryDump(t *testing.T) {
 	c := &Client{}
 	_, err := proto.TracingRequestMemoryDump{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.TracingRequestMemoryDump{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.TracingRequestMemoryDump{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTracingStart(t *testing.T) {
 	c := &Client{}
 	err := proto.TracingStart{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.TracingStart{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestTracingBufferUsage(t *testing.T) {
@@ -4725,88 +2794,48 @@ func TestFetchDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchFailRequest(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchFailRequest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchFailRequest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchFulfillRequest(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchFulfillRequest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchFulfillRequest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchContinueRequest(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchContinueRequest{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchContinueRequest{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchContinueWithAuth(t *testing.T) {
 	c := &Client{}
 	err := proto.FetchContinueWithAuth{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.FetchContinueWithAuth{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchGetResponseBody(t *testing.T) {
 	c := &Client{}
 	_, err := proto.FetchGetResponseBody{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.FetchGetResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.FetchGetResponseBody{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchTakeResponseBodyAsStream(t *testing.T) {
 	c := &Client{}
 	_, err := proto.FetchTakeResponseBodyAsStream{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.FetchTakeResponseBodyAsStream{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.FetchTakeResponseBodyAsStream{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestFetchRequestPaused(t *testing.T) {
@@ -4823,34 +2852,18 @@ func TestWebAudioEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAudioEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAudioEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAudioDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAudioDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAudioDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAudioGetRealtimeData(t *testing.T) {
 	c := &Client{}
 	_, err := proto.WebAudioGetRealtimeData{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.WebAudioGetRealtimeData{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.WebAudioGetRealtimeData{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAudioContextCreated(t *testing.T) {
@@ -4922,132 +2935,72 @@ func TestWebAuthnEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnAddVirtualAuthenticator(t *testing.T) {
 	c := &Client{}
 	_, err := proto.WebAuthnAddVirtualAuthenticator{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.WebAuthnAddVirtualAuthenticator{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.WebAuthnAddVirtualAuthenticator{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnRemoveVirtualAuthenticator(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnRemoveVirtualAuthenticator{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnRemoveVirtualAuthenticator{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnAddCredential(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnAddCredential{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnAddCredential{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnGetCredential(t *testing.T) {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredential{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.WebAuthnGetCredential{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.WebAuthnGetCredential{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnGetCredentials(t *testing.T) {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredentials{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.WebAuthnGetCredentials{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.WebAuthnGetCredentials{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnRemoveCredential(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnRemoveCredential{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnRemoveCredential{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnClearCredentials(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnClearCredentials{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnClearCredentials{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestWebAuthnSetUserVerified(t *testing.T) {
 	c := &Client{}
 	err := proto.WebAuthnSetUserVerified{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.WebAuthnSetUserVerified{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMediaEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.MediaEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MediaEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMediaDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.MediaDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.MediaDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestMediaPlayerPropertiesChanged(t *testing.T) {
@@ -5069,30 +3022,18 @@ func TestConsoleClearMessages(t *testing.T) {
 	c := &Client{}
 	err := proto.ConsoleClearMessages{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ConsoleClearMessages{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestConsoleDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.ConsoleDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ConsoleDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestConsoleEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.ConsoleEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ConsoleEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestConsoleMessageAdded(t *testing.T) {
@@ -5104,352 +3045,180 @@ func TestDebuggerContinueToLocation(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerContinueToLocation{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerContinueToLocation{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerEnable(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerEvaluateOnCallFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerEvaluateOnCallFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerEvaluateOnCallFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerEvaluateOnCallFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerGetPossibleBreakpoints(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerGetPossibleBreakpoints{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerGetPossibleBreakpoints{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerGetPossibleBreakpoints{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerGetScriptSource(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerGetScriptSource{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerGetScriptSource{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerGetScriptSource{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerGetWasmBytecode(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerGetWasmBytecode{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerGetWasmBytecode{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerGetWasmBytecode{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerGetStackTrace(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerGetStackTrace{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerGetStackTrace{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerGetStackTrace{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerPause(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerPause{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerPause{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerPauseOnAsyncCall(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerPauseOnAsyncCall{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerPauseOnAsyncCall{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerRemoveBreakpoint(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerRemoveBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerRemoveBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerRestartFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerRestartFrame{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerRestartFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerRestartFrame{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerResume(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerResume{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerResume{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSearchInContent(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSearchInContent{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSearchInContent{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSearchInContent{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetAsyncCallStackDepth(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetAsyncCallStackDepth{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetAsyncCallStackDepth{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBlackboxPatterns(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxPatterns{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetBlackboxPatterns{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBlackboxedRanges(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxedRanges{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetBlackboxedRanges{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBreakpoint(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSetBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSetBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetInstrumentationBreakpoint(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBreakpointByURL(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointByURL{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSetBreakpointByURL{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSetBreakpointByURL{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBreakpointOnFunctionCall(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointOnFunctionCall{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSetBreakpointOnFunctionCall{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSetBreakpointOnFunctionCall{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetBreakpointsActive(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetBreakpointsActive{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetBreakpointsActive{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetPauseOnExceptions(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetPauseOnExceptions{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetPauseOnExceptions{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetReturnValue(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetReturnValue{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetReturnValue{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetScriptSource(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerSetScriptSource{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.DebuggerSetScriptSource{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.DebuggerSetScriptSource{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetSkipAllPauses(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetSkipAllPauses{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetSkipAllPauses{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerSetVariableValue(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerSetVariableValue{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerSetVariableValue{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerStepInto(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerStepInto{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerStepInto{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerStepOut(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerStepOut{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerStepOut{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerStepOver(t *testing.T) {
 	c := &Client{}
 	err := proto.DebuggerStepOver{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.DebuggerStepOver{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestDebuggerBreakpointResolved(t *testing.T) {
@@ -5481,136 +3250,72 @@ func TestHeapProfilerAddInspectedHeapObject(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerAddInspectedHeapObject{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerAddInspectedHeapObject{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerCollectGarbage(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerCollectGarbage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerCollectGarbage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerGetHeapObjectID(t *testing.T) {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetHeapObjectID{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.HeapProfilerGetHeapObjectID{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.HeapProfilerGetHeapObjectID{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerGetObjectByHeapObjectID(t *testing.T) {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetObjectByHeapObjectID{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.HeapProfilerGetObjectByHeapObjectID{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.HeapProfilerGetObjectByHeapObjectID{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerGetSamplingProfile(t *testing.T) {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetSamplingProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.HeapProfilerGetSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.HeapProfilerGetSamplingProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerStartSampling(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerStartSampling{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerStartSampling{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerStartTrackingHeapObjects(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerStartTrackingHeapObjects{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerStartTrackingHeapObjects{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerStopSampling(t *testing.T) {
 	c := &Client{}
 	_, err := proto.HeapProfilerStopSampling{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.HeapProfilerStopSampling{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.HeapProfilerStopSampling{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerStopTrackingHeapObjects(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerStopTrackingHeapObjects{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerStopTrackingHeapObjects{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerTakeHeapSnapshot(t *testing.T) {
 	c := &Client{}
 	err := proto.HeapProfilerTakeHeapSnapshot{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.HeapProfilerTakeHeapSnapshot{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestHeapProfilerAddHeapSnapshotChunk(t *testing.T) {
@@ -5642,174 +3347,90 @@ func TestProfilerDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerGetBestEffortCoverage(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerGetBestEffortCoverage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerGetBestEffortCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerGetBestEffortCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerSetSamplingInterval(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerSetSamplingInterval{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerSetSamplingInterval{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStart(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerStart{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerStart{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStartPreciseCoverage(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerStartPreciseCoverage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerStartPreciseCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerStartPreciseCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStartTypeProfile(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerStartTypeProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerStartTypeProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStop(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerStop{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerStop{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerStop{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStopPreciseCoverage(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerStopPreciseCoverage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerStopPreciseCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerStopTypeProfile(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerStopTypeProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerStopTypeProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerTakePreciseCoverage(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerTakePreciseCoverage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerTakePreciseCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerTakePreciseCoverage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerTakeTypeProfile(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerTakeTypeProfile{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerTakeTypeProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerTakeTypeProfile{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerEnableRuntimeCallStats(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerEnableRuntimeCallStats{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerEnableRuntimeCallStats{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerDisableRuntimeCallStats(t *testing.T) {
 	c := &Client{}
 	err := proto.ProfilerDisableRuntimeCallStats{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.ProfilerDisableRuntimeCallStats{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerGetRuntimeCallStats(t *testing.T) {
 	c := &Client{}
 	_, err := proto.ProfilerGetRuntimeCallStats{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.ProfilerGetRuntimeCallStats{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.ProfilerGetRuntimeCallStats{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestProfilerConsoleProfileFinished(t *testing.T) {
@@ -5831,260 +3452,132 @@ func TestRuntimeAwaitPromise(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeAwaitPromise{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeAwaitPromise{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeAwaitPromise{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeCallFunctionOn(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeCallFunctionOn{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeCallFunctionOn{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeCallFunctionOn{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeCompileScript(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeCompileScript{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeCompileScript{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeCompileScript{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeDisable(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeDisable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeDisable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeDiscardConsoleEntries(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeDiscardConsoleEntries{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeDiscardConsoleEntries{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeEnable(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeEnable{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeEnable{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeEvaluate(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeEvaluate{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeEvaluate{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeEvaluate{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeGetIsolateID(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeGetIsolateID{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeGetIsolateID{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeGetIsolateID{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeGetHeapUsage(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeGetHeapUsage{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeGetHeapUsage{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeGetHeapUsage{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeGetProperties(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeGetProperties{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeGetProperties{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeGetProperties{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeGlobalLexicalScopeNames(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeGlobalLexicalScopeNames{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeGlobalLexicalScopeNames{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeGlobalLexicalScopeNames{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeQueryObjects(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeQueryObjects{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeQueryObjects{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeQueryObjects{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeReleaseObject(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeReleaseObject{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeReleaseObject{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeReleaseObjectGroup(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeReleaseObjectGroup{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeReleaseObjectGroup{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeRunIfWaitingForDebugger(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeRunIfWaitingForDebugger{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeRunIfWaitingForDebugger{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeRunScript(t *testing.T) {
 	c := &Client{}
 	_, err := proto.RuntimeRunScript{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.RuntimeRunScript{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.RuntimeRunScript{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeSetAsyncCallStackDepth(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeSetAsyncCallStackDepth{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeSetAsyncCallStackDepth{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeSetCustomObjectFormatterEnabled(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeSetCustomObjectFormatterEnabled{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeSetCustomObjectFormatterEnabled{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeSetMaxCallStackSizeToCapture(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeSetMaxCallStackSizeToCapture{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeSetMaxCallStackSizeToCapture{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeTerminateExecution(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeTerminateExecution{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeTerminateExecution{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeAddBinding(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeAddBinding{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeAddBinding{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeRemoveBinding(t *testing.T) {
 	c := &Client{}
 	err := proto.RuntimeRemoveBinding{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	err = proto.RuntimeRemoveBinding{}.Call(&Caller{c})
-	assert.Error(t, err)
 }
 
 func TestRuntimeBindingCalled(t *testing.T) {
@@ -6131,12 +3624,4 @@ func TestSchemaGetDomains(t *testing.T) {
 	c := &Client{}
 	_, err := proto.SchemaGetDomains{}.Call(&Caller{c})
 	assert.Nil(t, err)
-
-	c = &Client{err: errors.New("err")}
-	_, err = proto.SchemaGetDomains{}.Call(&Caller{c})
-	assert.Error(t, err)
-
-	c = &Client{ret: "err"}
-	_, err = proto.SchemaGetDomains{}.Call(&Caller{c})
-	assert.Error(t, err)
 }

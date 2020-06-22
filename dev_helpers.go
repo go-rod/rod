@@ -17,14 +17,20 @@ import (
 )
 
 // check method and sleep if needed
-func (b *Browser) trySlowmotion(method string) {
+func (b *Browser) trySlowmotion() {
 	if b.slowmotion == 0 {
 		return
 	}
 
-	if strings.HasPrefix(method, "Input.") {
-		time.Sleep(b.slowmotion)
+	time.Sleep(b.slowmotion)
+}
+
+func (el *Element) tryTrace(htmlMessage string) func() {
+	if !el.page.browser.trace {
+		return func() {}
 	}
+
+	return el.Trace(htmlMessage)
 }
 
 // ServeMonitor starts the monitor server
@@ -63,6 +69,10 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 	})
 
 	go func() { _ = srv.Do() }()
+	go func() {
+		<-b.ctx.Done()
+		_ = srv.Listener.Close()
+	}()
 
 	url := "http://" + srv.Listener.Addr().String()
 	kit.Log("[rod] monitor server on", url, "(open it with your browser)")

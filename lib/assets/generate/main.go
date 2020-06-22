@@ -20,6 +20,9 @@ package assets
 // Helper for rod
 var Helper = {{.helper}}
 
+// MousePointer for rod
+var MousePointer = {{.mousePointer}}
+
 // Monitor for rod
 var Monitor = {{.monitor}}
 
@@ -27,6 +30,7 @@ var Monitor = {{.monitor}}
 var MonitorPage = {{.monitorPage}}
 `,
 		"helper", get("helper.js"),
+		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
 		"monitor", get("monitor.gohtml"),
 		"monitorPage", get("monitor-page.gohtml"),
 	)

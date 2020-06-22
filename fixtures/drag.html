@@ -28,6 +28,19 @@
 </body>
 
 <script>
+
+document.onmousedown = (e) => {
+    console.log("down", e.clientX, e.clientY)
+}
+
+document.onmousemove = (e) => {
+    console.log("move", e.clientX, e.clientY)
+}
+
+document.onmouseup = (e) => {
+    console.log("up", e.clientX, e.clientY)
+}
+
 var dragged;
 
 /* events fired on the draggable target */

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"time"
 
@@ -37,24 +36,13 @@ func CancelPanic(err error) {
 	}
 }
 
-// Event helps to convert a cdp.Event to proto.Event. Returns false if the conversion fails
-func Event(msg *cdp.Event, evt proto.Event) bool {
+// Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
+func Event(msg *cdp.Event, evt proto.Payload) bool {
 	if msg.Method == evt.MethodName() {
 		err := json.Unmarshal(msg.Params, evt)
 		return err == nil
 	}
 	return false
-}
-
-// NewEventFilter creates a event filter, when matches it will load data into the event object
-func NewEventFilter(event proto.Event) EventFilter {
-	return func(e *cdp.Event) bool {
-		if event.MethodName() == e.Method {
-			kit.E(json.Unmarshal(e.Params, event))
-			return true
-		}
-		return false
-	}
 }
 
 func isNilContextErr(err error) bool {
@@ -92,23 +80,4 @@ func saveScreenshot(bin []byte, toFile []string) error {
 func ginHTML(ctx kit.GinContext, body string) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	_, _ = ctx.Writer.WriteString(body)
-}
-
-func eachEvent(ob *kit.Observable, fn interface{}) {
-	fnType := reflect.TypeOf(fn)
-	fnVal := reflect.ValueOf(fn)
-	eventType := fnType.In(0).Elem()
-	sub := ob.Subscribe()
-	defer ob.Unsubscribe(sub)
-	for e := range sub.C {
-		event := reflect.New(eventType)
-		if Event(e.(*cdp.Event), event.Interface().(proto.Event)) {
-			ret := fnVal.Call([]reflect.Value{event})
-			if len(ret) > 0 {
-				if ret[0].Bool() {
-					break
-				}
-			}
-		}
-	}
 }

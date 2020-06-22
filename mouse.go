@@ -1,7 +1,7 @@
 package rod
 
 import (
-	"sync"
+	"fmt"
 
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
@@ -10,7 +10,8 @@ import (
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
 	page *Page
-	sync.Mutex
+
+	id string // mouse svg dom element id
 
 	x float64
 	y float64
@@ -19,14 +20,11 @@ type Mouse struct {
 	buttons []proto.InputMouseButton
 }
 
-// MoveE doc is the same as the method Move
+// MoveE to the absolute position with specified steps
 func (m *Mouse) MoveE(x, y float64, steps int) error {
 	if steps < 1 {
 		steps = 1
 	}
-
-	m.Lock()
-	defer m.Unlock()
 
 	stepX := (x - m.x) / float64(steps)
 	stepY := (y - m.y) / float64(steps)
@@ -34,6 +32,8 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
 	for i := 0; i < steps; i++ {
+		m.page.browser.trySlowmotion()
+
 		toX := m.x + stepX
 		toY := m.y + stepY
 
@@ -52,21 +52,33 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 		// to make sure set only when call is successful
 		m.x = toX
 		m.y = toY
+
+		if m.page.browser.trace {
+			_, err := m.page.EvalE(true, "", m.page.jsFn("updateMouseTracer"), Array{m.id, m.x, m.y})
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
 }
 
-// ScrollE doc is the same as the method Scroll
-func (m *Mouse) ScrollE(x, y float64, steps int) error {
+// ScrollE the relative offset with specified steps
+func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
+	if m.page.browser.trace {
+		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
+	}
+	m.page.browser.trySlowmotion()
+
 	if steps < 1 {
 		steps = 1
 	}
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	stepX := x / float64(steps)
-	stepY := y / float64(steps)
+	stepX := offsetX / float64(steps)
+	stepY := offsetY / float64(steps)
 
 	for i := 0; i < steps; i++ {
 		err := proto.InputDispatchMouseEvent{
@@ -87,11 +99,8 @@ func (m *Mouse) ScrollE(x, y float64, steps int) error {
 	return nil
 }
 
-// DownE doc is the same as the method Down
+// DownE doc is similar to the method Down
 func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
-	m.Lock()
-	defer m.Unlock()
-
 	toButtons := append(m.buttons, button)
 
 	_, buttons := input.EncodeMouseButton(toButtons)
@@ -112,11 +121,8 @@ func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// UpE doc is the same as the method Up
+// UpE doc is similar to the method Up
 func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
-	m.Lock()
-	defer m.Unlock()
-
 	toButtons := []proto.InputMouseButton{}
 	for _, btn := range m.buttons {
 		if btn == button {
@@ -142,8 +148,13 @@ func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// ClickE doc is the same as the method Click
+// ClickE doc is similar to the method Click
 func (m *Mouse) ClickE(button proto.InputMouseButton) error {
+	if m.page.browser.trace {
+		defer m.page.Overlay(0, 0, 200, 0, "click "+string(button))()
+	}
+	m.page.browser.trySlowmotion()
+
 	err := m.DownE(button, 1)
 	if err != nil {
 		return err

@@ -37,12 +37,22 @@ To support the fluent API design, we trade more code to make this lib more user 
 
 The entry point of all tests is the `setup_test.go` file.
 
-Example to run a single test: `go test -v -run Test/Click`, `Click` is the pattern to match the test function name.
+### Example to run a single test
 
-Disable headless mode: `rod=show go test -v -run Test/Click`.
+`go test -v -run Test/Click`, `Click` is the pattern to match the test function name.
 
-Disable headless and use chrome that is inside docker:
+### To disable headless mode
 
-1. `docker run --rm -p 9222:9222 -v $(pwd):$(pwd) -w $(pwd) ysmood/rod`
+`rod=show go test -v -run Test/Click`.
 
-2. `rod=remote,monitor go test -v Test/Click`
+### To run inside docker
+
+1. `docker build -t rod -f lib/docker/test.Dockerfile .`
+
+2. `docker run --name rod -itp 9273:9273 -v $(pwd):/t -w /t rod sh`
+
+3. `rod=monitor go test -v -run Test/Click`
+
+4. visit `http://[::]:9273` to monitor the tests
+
+After you exit the container, you can reuse it with `docker start -i rod`.

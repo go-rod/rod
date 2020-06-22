@@ -7,12 +7,18 @@ import (
 
 // Context creates a clone with a context that inherits the previous one
 func (b *Browser) Context(ctx context.Context) *Browser {
-	if ctx == b.ctx {
-		return b
+	ctx, cancel := context.WithCancel(ctx)
+
+	if b.ctx != nil {
+		go func() {
+			<-b.ctx.Done()
+			cancel()
+		}()
 	}
 
 	newObj := *b
 	newObj.ctx = ctx
+	newObj.ctxCancel = cancel
 	return &newObj
 }
 
@@ -36,12 +42,18 @@ func (b *Browser) CancelTimeout() *Browser {
 
 // Context creates a clone with a context that inherits the previous one
 func (p *Page) Context(ctx context.Context) *Page {
-	if ctx == p.ctx {
-		return p
+	ctx, cancel := context.WithCancel(ctx)
+
+	if p.ctx != nil {
+		go func() {
+			<-p.ctx.Done()
+			cancel()
+		}()
 	}
 
 	newObj := *p
 	newObj.ctx = ctx
+	newObj.ctxCancel = cancel
 	return &newObj
 }
 
@@ -65,12 +77,18 @@ func (p *Page) CancelTimeout() *Page {
 
 // Context creates a clone with a context that inherits the previous one
 func (el *Element) Context(ctx context.Context) *Element {
-	if ctx == el.ctx {
-		return el
+	ctx, cancel := context.WithCancel(ctx)
+
+	if el.ctx != nil {
+		go func() {
+			<-el.ctx.Done()
+			cancel()
+		}()
 	}
 
 	newObj := *el
 	newObj.ctx = ctx
+	newObj.ctxCancel = cancel
 	return &newObj
 }
 

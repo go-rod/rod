@@ -35,13 +35,13 @@ var Port = "0"
 // URL of the remote debugging address
 var URL = ""
 
-// Remote enables to launch chrome remotely
+// Remote enables to launch browser remotely
 var Remote bool
 
 // CDP enables cdp log
 var CDP bool
 
-// Monitor enables the monitor server that plays the screenshots of each tab, default value is 127.0.0.1:9273
+// Monitor enables the monitor server that plays the screenshots of each tab, default value is 0.0.0.0:9273
 var Monitor string
 
 // Parse the flags
@@ -77,7 +77,7 @@ func parse(options string) {
 		case "cdp":
 			CDP = true
 		case "monitor":
-			Monitor = "127.0.0.1:9273"
+			Monitor = ":9273"
 			if len(kv) == 2 {
 				Monitor = kv[1]
 			}

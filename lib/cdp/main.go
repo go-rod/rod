@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"sync"
 	"sync/atomic"
 
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/defaults"
 )
 
-// Client is a chrome devtools protocol connection instance.
+// Client is a devtools protocol connection instance.
 type Client struct {
 	ctx          context.Context
 	ctxCancel    func()
@@ -21,17 +22,18 @@ type Client struct {
 	ws     Websocketable
 	wsConn WebsocketableConn
 
-	callbacks map[uint64]chan *response
-	chReqMsg  chan *requestMsg
-	chRes     chan *response
-	chEvent   chan *Event
+	callbacks *sync.Map // buffer for response from browser
+
+	chReq   chan []byte    // request from user
+	chRes   chan *response // response from browser
+	chEvent chan *Event    // events from browser
 
 	count uint64
 
 	debug bool
 }
 
-// Request to send to chrome
+// Request to send to browser
 type Request struct {
 	ID        uint64      `json:"id"`
 	SessionID string      `json:"sessionId,omitempty"`
@@ -39,7 +41,7 @@ type Request struct {
 	Params    interface{} `json:"params,omitempty"`
 }
 
-// Event from chrome
+// Event from browser
 type Event struct {
 	SessionID string          `json:"sessionId,omitempty"`
 	Method    string          `json:"method"`
@@ -80,8 +82,8 @@ func New(websocketURL string) *Client {
 	cdp := &Client{
 		ctx:       ctx,
 		ctxCancel: cancel,
-		callbacks: map[uint64]chan *response{},
-		chReqMsg:  make(chan *requestMsg),
+		callbacks: &sync.Map{},
+		chReq:     make(chan []byte),
 		chRes:     make(chan *response),
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
@@ -92,8 +94,7 @@ func New(websocketURL string) *Client {
 }
 
 // Context set the context
-func (cdp *Client) Context(ctx context.Context) *Client {
-	ctx, cancel := context.WithCancel(ctx)
+func (cdp *Client) Context(ctx context.Context, cancel func()) *Client {
 	cdp.ctx = ctx
 	cdp.ctxCancel = cancel
 	return cdp
@@ -117,7 +118,7 @@ func (cdp *Client) Debug(enable bool) *Client {
 	return cdp
 }
 
-// ConnectE to chrome
+// ConnectE to browser
 func (cdp *Client) ConnectE() error {
 	if cdp.ws == nil {
 		cdp.ws = DefaultWsClient{}
@@ -132,19 +133,19 @@ func (cdp *Client) ConnectE() error {
 
 	go cdp.consumeMsg()
 
-	go cdp.readMsgFromChrome()
+	go cdp.readMsgFromBrowser()
 
 	return nil
 }
 
-// Connect to chrome
+// Connect to browser
 func (cdp *Client) Connect() *Client {
 	kit.E(cdp.ConnectE())
 	return cdp
 }
 
 // Call a method and get its response, if ctx is nil context.Background() will be used
-func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) (res []byte, err error) {
+func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 	req := &Request{
 		ID:        atomic.AddUint64(&cdp.count, 1),
 		SessionID: sessionID,
@@ -158,80 +159,97 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 	kit.E(err)
 
 	callback := make(chan *response)
+	defer close(callback)
 
-	cdp.chReqMsg <- &requestMsg{
-		request:  req,
-		callback: callback,
-		data:     data,
+	cdp.callbacks.Store(req.ID, callback)
+	defer cdp.callbacks.Delete(req.ID)
+
+	e := kit.Try(func() {
+		cdp.chReq <- data
+	})
+	if err, ok := e.(error); ok {
+		if cdp.ctxCancelErr != nil {
+			return nil, cdp.ctxCancelErr
+		}
+		return nil, err
 	}
 
 	select {
-	case data := <-callback:
-		if data.Error != nil {
-			return nil, data.Error
-		}
-		return data.Result, nil
-
 	case <-cdp.ctx.Done():
 		if cdp.ctxCancelErr != nil {
-			err = cdp.ctxCancelErr
-		} else {
-			err = cdp.ctx.Err()
+			return nil, cdp.ctxCancelErr
 		}
+		return nil, cdp.ctx.Err()
 
 	case <-ctx.Done():
-		err = ctx.Err()
+		return nil, ctx.Err()
 
-		// to prevent req from leaking
-		cdp.chRes <- &response{ID: req.ID}
-		<-callback
+	case res := <-callback:
+		if res.Error != nil {
+			return nil, res.Error
+		}
+		return res.Result, nil
 	}
 
-	return
 }
 
-// Event returns a channel that will emit chrome devtools protocol events. Must be consumed or will block producer.
-func (cdp *Client) Event() chan *Event {
+// Event returns a channel that will emit browser devtools protocol events. Must be consumed or will block producer.
+func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
 
 type requestMsg struct {
-	request  *Request
-	data     []byte
-	callback chan *response
+	request *Request
+	data    []byte
 }
 
-// consume messages from client and chrome
+// consume messages from client and browser
 func (cdp *Client) consumeMsg() {
+	defer close(cdp.chReq)
+
 	for {
 		select {
-		case msg := <-cdp.chReqMsg:
-			err := cdp.wsConn.Send(msg.data)
+		case <-cdp.ctx.Done():
+			return
+
+		case data, ok := <-cdp.chReq:
+			if !ok {
+				return
+			}
+
+			err := cdp.wsConn.Send(data)
 			if err != nil {
 				cdp.close(err)
 				return
 			}
-			cdp.callbacks[msg.request.ID] = msg.callback
 
-		case res := <-cdp.chRes:
-			callback, has := cdp.callbacks[res.ID]
+		case res, ok := <-cdp.chRes:
+			if !ok {
+				return
+			}
+
+			callback, has := cdp.callbacks.Load(res.ID)
 			if has {
-				delete(cdp.callbacks, res.ID)
-				callback <- res
+				_ = kit.Try(func() {
+					callback.(chan *response) <- res
+				})
 			}
 		}
 	}
 }
 
-// response from chrome
+// response from browser
 type response struct {
 	ID     uint64          `json:"id"`
 	Result json.RawMessage `json:"result,omitempty"`
 	Error  *Error          `json:"error,omitempty"`
 }
 
-func (cdp *Client) readMsgFromChrome() {
-	for {
+func (cdp *Client) readMsgFromBrowser() {
+	defer close(cdp.chRes)
+	defer close(cdp.chEvent)
+
+	for cdp.ctx.Err() == nil {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
 			cdp.close(err)
@@ -251,6 +269,7 @@ func (cdp *Client) readMsgFromChrome() {
 			cdp.debugLog(&evt)
 			cdp.chEvent <- &evt
 		}
+
 	}
 }
 

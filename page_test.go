@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -54,7 +55,8 @@ func (s *S) TestSetExtraHeaders() {
 		wg.Done()
 	})
 
-	s.page.SetExtraHeaders(key1, "1", key2, "2").Navigate(url)
+	defer s.page.SetExtraHeaders(key1, "1", key2, "2")()
+	s.page.Navigate(url)
 	wg.Wait()
 
 	s.Equal("1", out1)
@@ -89,6 +91,10 @@ func (s *S) TestClosePage() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Element("button")
+}
+
+func (s *S) TestLoadState() {
+	s.False(s.page.LoadState(&proto.PageEnable{}))
 }
 
 func (s *S) TestPageContext() {
@@ -172,22 +178,20 @@ func (s *S) TestUntilPage() {
 	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait := page.WaitPage()
+	wait := page.WaitOpen()
 
 	page.Element("a").Click()
 
 	newPage := wait()
 
 	s.Equal("click me", newPage.Element("button").Text())
-
-	wait()
 }
 
 func (s *S) TestPageWaitRequestIdle() {
 	url, engine, close := serve()
 	defer close()
 
-	sleep := 400 * time.Millisecond
+	sleep := time.Second
 
 	engine.GET("/r1", func(ctx kit.GinContext) {})
 	engine.GET("/r2", func(ctx kit.GinContext) { time.Sleep(sleep) })
@@ -207,13 +211,13 @@ func (s *S) TestPageWaitRequestIdle() {
 	page.Element("button").Click()
 	start := time.Now()
 	wait()
-	s.True(time.Since(start) > sleep)
+	s.Greater(int64(time.Since(start)), int64(sleep))
 
 	wait = page.WaitRequestIdle("/r2")
 	page.Element("button").Click()
 	start = time.Now()
 	wait()
-	s.True(time.Since(start) < sleep)
+	s.Less(int64(time.Since(start)), int64(sleep))
 
 	s.Panics(func() {
 		wait()
@@ -257,7 +261,7 @@ func (s *S) TestDownloadFile() {
 
 	page := s.page.Navigate(url)
 
-	wait := page.GetDownloadFile("*")
+	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
 
 	page.Element("a").Click()
 
@@ -290,15 +294,50 @@ func (s *S) TestMouseClick() {
 	s.True(page.Has("[a=ok]"))
 }
 
-func (s *S) TestDrag() {
+func (s *S) TestMouseDrag() {
+	page := s.page.Navigate(srcFile("fixtures/drag.html")).WaitLoad()
+	mouse := page.Mouse
+
+	wait := make(chan kit.Nil)
+	logs := []string{}
+	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
+		log := page.ObjectsToJSON(e.Args).Join(" ")
+		logs = append(logs, log)
+		if strings.HasPrefix(log, `up`) {
+			close(wait)
+			return true
+		}
+		return false
+	})()
+
+	mouse.Move(3, 3)
+	mouse.Down("left")
+	kit.E(mouse.MoveE(60, 80, 3))
+	mouse.Up("left")
+
+	<-wait
+
+	s.Equal([]string{"move 3 3", "down 3 3", "move 22 28", "move 41 54", "move 60 80", "up 60 80"}, logs)
+}
+
+func (s *S) TestNativeDrag() {
 	s.T().Skip("not able to use mouse event to simulate it for now")
 
 	page := s.page.Navigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
-	mouse.Move(60, 30)
+	box := page.Element("#draggable").Box()
+	x := box.Left + 3
+	y := box.Top + 3
+	toY := page.Element(".dropzone:nth-child(2)").Box().Top + 3
+
+	page.Overlay(x, y, 10, 10, "from")
+	page.Overlay(x, toY, 10, 10, "to")
+
+	mouse.Move(x, y)
 	mouse.Down("left")
-	kit.E(mouse.MoveE(60, 80, 5))
+	kit.E(mouse.MoveE(x, toY, 5))
+	page.Screenshot("")
 	mouse.Up("left")
 
 	page.Element(".dropzone:nth-child(2) #draggable")
@@ -345,6 +384,14 @@ func (s *S) TestScreenshotFullPage() {
 	s.EqualValues(600, res.Get("h").Int())
 }
 
+func (s *S) TestScreenshotFullPageInit() {
+	p := s.browser.Page(srcFile("fixtures/scroll.html"))
+	defer p.Close()
+
+	// should not panic
+	p.ScreenshotFullPage()
+}
+
 func (s *S) TestPageInput() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
@@ -358,18 +405,31 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	for range make([]kit.Nil, 10) {
-		p := s.page.Navigate(srcFile("fixtures/scroll.html")).WaitLoad()
-		p.Mouse.Scroll(100, 200)
+	kit.E(kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
+		p := s.browser.Page(srcFile("fixtures/scroll.html")).WaitLoad()
+		defer p.Close()
+
+		p.Mouse.Scroll(0, 10)
+		p.Mouse.Scroll(100, 190)
 		kit.E(p.Mouse.ScrollE(200, 300, 5))
 		p.Element("button").WaitStable()
 		offset := p.Eval("() => ({x: window.pageXOffset, y: window.pageYOffset})")
 		if offset.Get("x").Int() == 300 {
 			s.EqualValues(500, offset.Get("y").Int())
-			return
+			return true, nil
 		}
-	}
-	s.FailNow("scroll doesn't work as expected")
+		return false, nil
+	}))
+}
+
+func (s *S) TestPageConsoleLog() {
+	p := s.page.Navigate("")
+	e := &proto.RuntimeConsoleAPICalled{}
+	wait := p.WaitEvent(e)
+	p.Eval(`() => console.log(1, {b: ['test']})`)
+	wait()
+	s.Equal("test", p.ObjectToJSON(e.Args[1]).Get("b.0").String())
+	s.Equal(`1 {"b":["test"]}`, p.ObjectsToJSON(e.Args).Join(" "))
 }
 
 func (s *S) TestPageOthers() {
@@ -423,34 +483,7 @@ func (s *S) TestNavigateErr() {
 		ctx.Writer.WriteHeader(500)
 	})
 
-	// proto.FetchEnable{}.Call(s.page)
-
-	// e := proto.FetchRequestPaused{}
-	// s.page.WaitEvent(e)
-
 	// will not panic
 	s.page.Navigate(url + "/404")
 	s.page.Navigate(url + "/500")
-}
-
-func (s *S) TestPageErrors() {
-	p := s.page.Navigate(srcFile("fixtures/input.html"))
-
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-
-	err := p.Context(ctx).NavigateE("")
-	s.Error(err)
-
-	err = p.Context(ctx).WindowE(nil)
-	s.Error(err)
-
-	_, err = p.Context(ctx).GetDownloadFileE("", "")
-	s.Error(err)
-
-	_, err = p.Context(ctx).ScreenshotE(false, &proto.PageCaptureScreenshot{})
-	s.Error(err)
-
-	err = p.Context(ctx).PauseE()
-	s.Error(err)
 }

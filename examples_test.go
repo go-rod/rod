@@ -1,6 +1,8 @@
 package rod_test
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -37,7 +39,7 @@ func Example_basic() {
 }
 
 // Such as you logged in your github account and you want to reuse the login session,
-// you may want to launch Chrome like this example.
+// you may want to launch the browser like this example.
 func Example_reuse_sessions() {
 	url := launcher.NewUserMode().Launch()
 
@@ -55,16 +57,16 @@ func Example_reuse_sessions() {
 // list at "lib/defaults".
 func Example_debug_mode() {
 	url := launcher.New().
-		Headless(false). // run chrome on foreground, you can also use env "rod=show"
+		Headless(false). // run browser on foreground, you can also use env "rod=show"
 		Devtools(true).  // open devtools for each new tab
 		Launch()
 
 	browser := rod.New().
+		Timeout(time.Minute).
 		ControlURL(url).
-		Trace(true).             // show trace of each input action
-		Slowmotion(time.Second). // each input action will take 1 second
-		Connect().
-		Timeout(time.Minute)
+		Trace(true).                 // show trace of each input action
+		Slowmotion(2 * time.Second). // each input action will take 2 second
+		Connect()
 
 	// the monitor server that plays the screenshots of each tab, useful when debugging headlee mode
 	browser.ServeMonitor(":9777")
@@ -95,7 +97,7 @@ func Example_debug_mode() {
 // the click trigger by Rod are based on mouse point location, so usually you need wait a button is stable before
 // you can click it.
 func Example_wait_for_animation() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/")
@@ -115,7 +117,7 @@ func Example_wait_for_animation() {
 
 // Some page interaction finishes after some network requests, WaitRequestIdle is designed for it.
 func Example_wait_for_request() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://duckduckgo.com/")
@@ -123,9 +125,10 @@ func Example_wait_for_request() {
 	// the page will send a request to fetch the suggestions
 	wait := page.WaitRequestIdle()
 	page.Element("#search_form_input_homepage").Click().Input("test")
+	time.Sleep(300 * time.Millisecond) // wait for js debounce
 	wait()
 
-	// we must get several suggestion items
+	// we must be able to get several suggestion items
 	fmt.Println(len(page.Elements(".search__autocomplete .acp")) > 0)
 
 	// Output: true
@@ -133,7 +136,7 @@ func Example_wait_for_request() {
 
 // Useful when you want to customize the element query retry logic
 func Example_customize_retry_strategy() {
-	browser := rod.New().Connect().Timeout(time.Minute)
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	page := browser.Page("https://github.com")
@@ -142,77 +145,95 @@ func Example_customize_retry_strategy() {
 
 	// here we use low-level api ElementE other than Element to have more options,
 	// use backoff algorithm to do the retry
-	el, err := page.ElementE(backoff, "", "input")
-	kit.E(err)
+	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", "input")
+	if err == context.DeadlineExceeded {
+		fmt.Println("we can't find the element before timeout")
+	} else {
+		kit.E(err)
+	}
+
+	// get element without retry
+	el, err = page.ElementE(nil, "", "input")
+	if rod.IsError(err, rod.ErrElementNotFound) {
+		fmt.Println("element not found")
+	} else {
+		kit.E(err)
+	}
 
 	fmt.Println(el.Eval(`() => this.name`).String())
 
 	// Output: q
 }
 
-// To enable or disable some special chrome launch flags
-func Example_customize_chrome_launch() {
-	// set custom chrome options
+// The launcher lib comes with a lot of default switches (flags) to launch browser,
+// this example shows how to add or delete switches.
+func Example_customize_browser_launch() {
+	// set custom browser options
+	// use IDE to check the doc of launcher.New you will find out more info
 	url := launcher.New().
-		Set("disable-sync").         // add flag
-		Delete("use-mock-keychain"). // delete flag
+		Set("proxy-server", "127.0.0.1:8080"). // add a flag, here we set a http proxy
+		Delete("use-mock-keychain").           // delete a flag
 		Launch()
 
-	browser := rod.New().ControlURL(url).Connect().Timeout(time.Minute)
+	browser := rod.New().ControlURL(url).Connect()
 	defer browser.Close()
 
-	el := browser.Page("https://github.com").Element("title")
+	// auth the proxy
+	// here we use cli tool "mitmproxy --proxyauth user:pass" as an example
+	browser.HandleAuth("user", "pass")
 
-	fmt.Println(el.Text())
+	// mitmproxy needs cert config to support https, use http here as an example
+	fmt.Println(browser.Page("http://example.com/").Element("title").Text())
 
-	// Output: The world’s leading software development platform · GitHub
+	// Skip
+	// Output: Example Domain
 }
 
 // Useful when rod doesn't have the function you want, you can call the cdp interface directly easily.
 func Example_direct_cdp() {
-	browser := rod.New().Connect()
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	// The code here is how SetCookies works
 	// Normally, you use something like browser.Page("").SetCookies(...).Navigate(url)
 
-	page := browser.Page("").Timeout(time.Minute)
+	page := browser.Page("")
 
 	// call cdp interface directly here
 	// set the cookie before we visit the website
-	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+	// the "proto" lib contains every JSON schema you need to communicate with browser
 	res, err := proto.NetworkSetCookie{
 		Name:  "rod",
 		Value: "test",
-		URL:   "https://github.com",
+		URL:   "https://example.com",
 	}.Call(page)
 	kit.E(err)
 
 	fmt.Println(res.Success)
 
-	page.Navigate("https://github.com")
+	page.Navigate("https://example.com")
 
 	// eval js on the page to get the cookie
 	cookie := page.Eval(`() => document.cookie`).String()
 
-	fmt.Println(cookie[:9])
+	fmt.Println(cookie)
 
-	// Or even more low-level way to use raw json to send request to chrome.
-	ctx, client, sessionID := page.CallContext()
-	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", map[string]string{
+	// Or even more low-level way to use raw json to send request to browser.
+	data, _ := json.Marshal(map[string]string{
 		"name":  "rod",
 		"value": "test",
-		"url":   "https://github.com",
+		"url":   "https://example.com",
 	})
+	_, _ = browser.Call(page.GetContext(), string(page.SessionID), "Network.SetCookie", data)
 
 	// Output:
 	// true
-	// rod=test;
+	// rod=test
 }
 
 // Shows how to subscribe events.
 func Example_handle_events() {
-	browser := rod.New().Connect()
+	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
 	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
@@ -222,30 +243,58 @@ func Example_handle_events() {
 		}
 
 		// create a page from the page id
-		page := browser.PageFromTargetID(e.TargetInfo.TargetID)
+		page02 := browser.PageFromTargetID(e.TargetInfo.TargetID)
 
-		// set a global value on each newly created page
-		page.Eval(`() => window.hey = "ok"`)
-	})
+		// set a global value each newly created page
+		page02.Eval(`() => window.hey = "ok"`)
+	})()
 
-	page := browser.Page("https://github.com")
+	page01 := browser.Page("")
 
-	// you can also subscribe events only for a page
-	// here we return an optional stop signal at the first event to stop the loop
-	page.EachEvent(func(e *proto.PageLoadEventFired) bool {
-		fmt.Println("loaded")
+	// get all "console.log" outputs
+	go page01.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
+		log := page01.ObjectsToJSON(e.Args).Join(" ")
+		fmt.Println(e.Type, log)
+	})()
+
+	// Subscribe events before they happen, run the "wait()" to start consuming the events.
+	// Here we return an optional stop signal at the first event to stop the loop.
+	wait := page01.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
 		return true
 	})
 
-	// the above is the same as below
-	//
-	// e := &proto.PageLoadEventFired{}
-	// page.WaitEvent(e)()
+	page01.Navigate("https://example.com")
 
-	// create a new page and get the value of "hey"
-	fmt.Println(page.Eval(`() => hey`).String())
+	wait()
+
+	// the above is the same as below
+	if false {
+		page01.WaitEvent(&proto.PageLoadEventFired{})()
+	}
+
+	fmt.Println("done")
+
+	kit.Sleep(1)
 
 	// Output:
-	// loaded
-	// ok
+	// done
+}
+
+func Example_states() {
+	browser := rod.New().Timeout(time.Minute).Connect()
+	defer browser.Close()
+
+	page := browser.Page("")
+
+	// to detect if network is enabled or not
+	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
+
+	_ = proto.NetworkEnable{}.Call(page)
+
+	// to detect if network is enabled or not
+	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
+
+	// Output:
+	// false
+	// true
 }

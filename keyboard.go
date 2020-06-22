@@ -1,8 +1,6 @@
 package rod
 
 import (
-	"sync"
-
 	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -10,18 +8,14 @@ import (
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
 	page *Page
-	sync.Mutex
 
 	// modifiers are currently beening pressed
 	modifiers int64
 }
 
-// DownE doc is the same as the method Down
+// DownE doc is similar to the method Down
 func (k *Keyboard) DownE(key rune) error {
 	actions := input.Encode(key)
-
-	k.Lock()
-	defer k.Unlock()
 
 	err := actions[0].Call(k.page)
 	if err != nil {
@@ -31,12 +25,9 @@ func (k *Keyboard) DownE(key rune) error {
 	return nil
 }
 
-// UpE doc is the same as the method Up
+// UpE doc is similar to the method Up
 func (k *Keyboard) UpE(key rune) error {
 	actions := input.Encode(key)
-
-	k.Lock()
-	defer k.Unlock()
 
 	err := actions[len(actions)-1].Call(k.page)
 	if err != nil {
@@ -46,12 +37,14 @@ func (k *Keyboard) UpE(key rune) error {
 	return nil
 }
 
-// PressE doc is the same as the method Press
+// PressE doc is similar to the method Press
 func (k *Keyboard) PressE(key rune) error {
-	actions := input.Encode(key)
+	if k.page.browser.trace {
+		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
+	}
+	k.page.browser.trySlowmotion()
 
-	k.Lock()
-	defer k.Unlock()
+	actions := input.Encode(key)
 
 	k.modifiers = actions[0].Modifiers
 	defer func() { k.modifiers = 0 }()
@@ -65,8 +58,13 @@ func (k *Keyboard) PressE(key rune) error {
 	return nil
 }
 
-// InsertTextE doc is the same as the method InsertText
+// InsertTextE doc is similar to the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
+	if k.page.browser.trace {
+		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()
+	}
+	k.page.browser.trySlowmotion()
+
 	err := proto.InputInsertText{Text: text}.Call(k.page)
 	return err
 }

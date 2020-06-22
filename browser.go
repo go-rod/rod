@@ -1,19 +1,26 @@
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/assets/generate
+//go:generate go run ./lib/launcher/revision
 
 package rod
 
 import (
 	"context"
+	"encoding/json"
+	"reflect"
 	"sync"
 	"time"
 
+	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod/lib/cdp"
 	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
 	"github.com/ysmood/rod/lib/proto"
 )
+
+// Browser implements the proto.Caller interface
+var _ proto.Caller = &Browser{}
 
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
@@ -22,6 +29,7 @@ import (
 type Browser struct {
 	// these are the handler for ctx
 	ctx           context.Context
+	ctxCancel     func()
 	timeoutCancel func()
 
 	// BrowserContextID is the id for incognito window
@@ -33,18 +41,23 @@ type Browser struct {
 	monitorServer *kit.ServerContext
 
 	client *cdp.Client
-	event  *kit.Observable // all the browser events from cdp client
+	event  *goob.Observable // all the browser events from cdp client
+
+	// stores all the previous cdp call of same type. Browser doesn't have enough API
+	// for us to retrieve all its internal states. This is an workaround to map them to local.
+	// For example you can't use cdp API to get the current position of mouse.
+	states *sync.Map
 }
 
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
-		ctx:        context.Background(),
 		trace:      defaults.Trace,
 		slowmotion: defaults.Slow,
+		states:     &sync.Map{},
 	}
 
-	return b
+	return b.Context(context.Background())
 }
 
 // ControlURL set the url to remote control browser.
@@ -53,7 +66,7 @@ func (b *Browser) ControlURL(url string) *Browser {
 	return b
 }
 
-// Slowmotion set the delay for each chrome control action
+// Slowmotion set the delay for each control action, such as the simulation of the human inputs
 func (b *Browser) Slowmotion(delay time.Duration) *Browser {
 	b.slowmotion = delay
 	return b
@@ -71,10 +84,8 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 	return b
 }
 
-// ConnectE doc is the same as the method Connect
+// ConnectE doc is similar to the method Connect
 func (b *Browser) ConnectE() error {
-	*b = *b.Context(b.ctx)
-
 	if b.client == nil {
 		u := defaults.URL
 		if defaults.Remote {
@@ -94,28 +105,22 @@ func (b *Browser) ConnectE() error {
 		}
 	}
 
-	err := b.client.Context(b.ctx).ConnectE()
+	err := b.client.Context(b.ctx, b.ctxCancel).ConnectE()
 	if err != nil {
 		return err
 	}
 
 	b.monitorServer = b.ServeMonitor(defaults.Monitor)
 
-	return b.initEvents()
-}
-
-// CloseE doc is the same as the method Close
-func (b *Browser) CloseE() error {
-	err := proto.BrowserClose{}.Call(b)
-	if err != nil {
-		return err
-	}
-
-	if b.monitorServer != nil {
-		return b.monitorServer.Listener.Close()
-	}
+	b.initEvents()
 
 	return nil
+}
+
+// CloseE doc is similar to the method Close
+func (b *Browser) CloseE() error {
+	defer b.ctxCancel()
+	return proto.BrowserClose{}.Call(b)
 }
 
 // IncognitoE creates a new incognito browser
@@ -131,7 +136,7 @@ func (b *Browser) IncognitoE() (*Browser, error) {
 	return &incognito, nil
 }
 
-// PageE doc is the same as the method Page
+// PageE doc is similar to the method Page
 func (b *Browser) PageE(url string) (*Page, error) {
 	if url == "" {
 		url = "about:blank"
@@ -141,9 +146,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		URL: url,
 	}
 
-	if b.BrowserContextID != "" {
-		req.BrowserContextID = b.BrowserContextID
-	}
+	req.BrowserContextID = b.BrowserContextID
 
 	target, err := req.Call(b)
 	if err != nil {
@@ -153,7 +156,7 @@ func (b *Browser) PageE(url string) (*Page, error) {
 	return b.PageFromTargetIDE(target.TargetID)
 }
 
-// PagesE doc is the same as the method Pages
+// PagesE doc is similar to the method Pages
 func (b *Browser) PagesE() (Pages, error) {
 	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {
@@ -176,56 +179,127 @@ func (b *Browser) PagesE() (Pages, error) {
 	return pageList, nil
 }
 
-// EventFilter to filter events
-type EventFilter func(*cdp.Event) bool
-
-// WaitEventE returns a channel that resolves the next event and close
-func (b *Browser) WaitEventE(filter EventFilter) <-chan error {
-	wait := make(chan error)
-	go func() {
-		_, err := b.event.Until(b.ctx, func(e kit.Event) bool {
-			return filter(e.(*cdp.Event))
-		})
-		wait <- err
-		close(wait)
-	}()
-
-	return wait
+// Event returns the observable for browser events
+func (b *Browser) Event() *goob.Observable {
+	return b.event
 }
 
-// Event returns the observable for browser events
-func (b *Browser) Event() *kit.Observable {
-	return b.event
+// EachEvent of the specified event type, if the fn returns true the event loop will stop.
+// The fn can accpet multiple events, such as EachEvent(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
+// only one argument will be non-null, others will null.
+func (b *Browser) EachEvent(fn interface{}) (wait func()) {
+	return b.eachEvent(b.ctx, "", fn)
+}
+
+// WaitEvent waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) WaitEvent(e proto.Payload) (wait func()) {
+	return b.waitEvent(b.ctx, "", e)
+}
+
+// If the fn returns true the event loop will stop.
+// The fn can accpet multiple events, such as EachEventE("", func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
+// only one argument will be non-null, others will null.
+// It will enable the related domains if not enabled, and recover them after wait ends.
+func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID, fn interface{}) (wait func()) {
+	type argInfo struct {
+		argType reflect.Type
+		recover func()
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+
+	fnType := reflect.TypeOf(fn)
+	fnVal := reflect.ValueOf(fn)
+	argInfos := []argInfo{}
+	for i := 0; i < fnType.NumIn(); i++ {
+		info := argInfo{
+			argType: fnType.In(i),
+		}
+
+		// handle enable and recover domain
+		arg := reflect.New(info.argType.Elem()).Interface().(proto.Payload)
+		domain, _ := proto.ParseMethodName(arg.MethodName())
+		var enable proto.Payload
+		if domain == "Target" { // only Target domain is special
+			enable = proto.TargetSetDiscoverTargets{Discover: true}
+		} else {
+			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Payload)
+		}
+		info.recover = b.EnableDomain(ctx, sessionID, enable)
+
+		argInfos = append(argInfos, info)
+	}
+
+	s := b.event.Subscribe(ctx)
+
+	return func() {
+		defer func() {
+			for _, state := range argInfos {
+				if state.recover != nil {
+					state.recover()
+				}
+			}
+
+			cancel()
+			s = nil
+		}()
+
+		if s == nil {
+			panic("can't use wait function twice")
+		}
+
+		goob.Each(s, func(e *cdp.Event) bool {
+			args := []reflect.Value{}
+			has := false
+			for _, info := range argInfos {
+				event := reflect.New(info.argType.Elem())
+				if Event(e, event.Interface().(proto.Payload)) {
+					has = true
+				} else {
+					event = reflect.Zero(info.argType)
+				}
+				args = append(args, event)
+			}
+			if has {
+				ret := fnVal.Call(args)
+				if len(ret) > 0 {
+					return ret[0].Bool()
+				}
+			}
+			return false
+		})
+	}
+}
+
+// waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID, e proto.Payload) (wait func()) {
+	val := reflect.ValueOf(e)
+	fnType := reflect.FuncOf([]reflect.Type{val.Type()}, []reflect.Type{reflect.TypeOf(true)}, false)
+	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
+		val.Elem().Set(args[0].Elem())
+		return []reflect.Value{reflect.ValueOf(true)}
+	})
+	return b.eachEvent(ctx, sessionID, fnVal.Interface())
 }
 
 // HandleAuthE for the next basic HTTP authentication.
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
-func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
-	err := proto.FetchEnable{
+func (b *Browser) HandleAuthE(username, password string) func() error {
+	recover := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
 		HandleAuthRequests: true,
-	}.Call(b)
-	if err != nil {
-		return nil, err
-	}
+	})
 
-	auth := &proto.FetchAuthRequired{}
 	paused := &proto.FetchRequestPaused{}
-	waitPaused := b.WaitEventE(NewEventFilter(paused))
-	waitAuth := b.WaitEventE(NewEventFilter(auth))
+	auth := &proto.FetchAuthRequired{}
+
+	waitPaused := b.WaitEvent(paused)
+	waitAuth := b.WaitEvent(auth)
 
 	return func() (err error) {
-		defer func() {
-			e := proto.FetchDisable{}.Call(b)
-			if err == nil {
-				err = e
-			}
-		}()
+		defer recover()
 
-		err = <-waitPaused
-		if err != nil {
-			return
-		}
+		waitPaused()
 
 		err = proto.FetchContinueRequest{
 			RequestID: paused.RequestID,
@@ -234,10 +308,7 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 			return
 		}
 
-		err = <-waitAuth
-		if err != nil {
-			return
-		}
+		waitAuth()
 
 		err = proto.FetchContinueWithAuth{
 			RequestID: auth.RequestID,
@@ -249,44 +320,45 @@ func (b *Browser) HandleAuthE(username, password string) (func() error, error) {
 		}.Call(b)
 
 		return
-	}, nil
+	}
+}
+
+// Call raw cdp interface directly
+func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
+	b.set(proto.TargetSessionID(sessionID), methodName, params)
+
+	return b.client.Call(ctx, sessionID, methodName, params)
 }
 
 // CallContext parameters for proto
 func (b *Browser) CallContext() (context.Context, proto.Client, string) {
-	return b.ctx, b.client, ""
+	return b.ctx, b, ""
 }
 
 // PageFromTargetIDE creates a Page instance from a targetID
 func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error) {
-	page := &Page{
-		ctx:                 b.ctx,
-		browser:             b,
-		TargetID:            targetID,
-		getDownloadFileLock: &sync.Mutex{},
-	}
+	page := (&Page{
+		browser:  b,
+		TargetID: targetID,
+	}).Context(b.ctx)
 
-	page.Mouse = &Mouse{page: page}
+	page.Mouse = &Mouse{page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}
 
 	return page, page.initSession()
 }
 
-func (b *Browser) initEvents() error {
-	b.event = kit.NewObservable()
+func (b *Browser) initEvents() {
+	b.event = goob.New()
 
 	go func() {
-		for msg := range b.client.Event() {
-			// we must use goroutine here because subscriber can trigger another event
-			// to cause deadlock
-			go b.event.Publish(msg)
+		for {
+			select {
+			case <-b.ctx.Done():
+				return
+			case msg := <-b.client.Event():
+				b.event.Publish(msg)
+			}
 		}
-		b.event.UnsubscribeAll()
 	}()
-
-	err := proto.TargetSetDiscoverTargets{
-		Discover: true,
-	}.Call(b)
-
-	return err
 }

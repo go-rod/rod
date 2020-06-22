@@ -1,13 +1,13 @@
 package rod_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/defaults"
 	"github.com/ysmood/rod/lib/launcher"
 	"github.com/ysmood/rod/lib/proto"
 )
@@ -38,8 +38,25 @@ func (s *S) TestIncognito() {
 }
 
 func (s *S) TestBrowserWaitEvent() {
-	wait := s.browser.WaitEvent(&proto.PageFrameNavigated{})
+	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
+	wait()
+}
+
+func (s *S) TestBrowserCrash() {
+	browser := rod.New().Timeout(1 * time.Minute).Connect()
+	page := browser.Page("")
+
+	wait := browser.WaitEvent(&proto.PageFrameNavigated{})
+	go func() {
+		kit.Sleep(0.3)
+		_ = proto.BrowserCrash{}.Call(browser)
+	}()
+
+	s.Panics(func() {
+		page.Eval(`() => new Promise(() => {})`)
+	})
+
 	wait()
 }
 
@@ -47,7 +64,7 @@ func (s *S) TestBrowserCall() {
 	v, err := proto.BrowserGetVersion{}.Call(s.browser)
 	kit.E(err)
 
-	s.Regexp("HeadlessChrome", v.Product)
+	s.Regexp("1.3", v.ProtocolVersion)
 }
 
 func (s *S) TestBrowserHandleAuth() {
@@ -65,15 +82,18 @@ func (s *S) TestBrowserHandleAuth() {
 
 		s.Equal("a", u)
 		s.Equal("b", p)
+		ginHTML(`<p>ok</p>`)(ctx)
 	})
 
 	s.browser.HandleAuth("a", "b")
 
-	s.browser.Page(url).Close()
+	page := s.browser.Page(url)
+	defer page.Close()
+	page.ElementMatches("p", "ok")
 }
 
 func (s *S) TestMonitor() {
-	b := rod.New().Connect()
+	b := rod.New().Timeout(1 * time.Minute).Connect()
 	defer b.Close()
 	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
 	host := b.ServeMonitor("127.0.0.1:0").Listener.Addr().String()
@@ -90,21 +110,18 @@ func (s *S) TestRemoteLaunch() {
 	srv.Engine.NoRoute(gin.WrapH(proxy))
 	go func() { _ = srv.Do() }()
 
-	oldRemote := defaults.Remote
-	oldURL := defaults.URL
-	defaults.Remote = true
-	defaults.URL = "ws://" + srv.Listener.Addr().String()
-	defer func() {
-		defaults.Remote = oldRemote
-		defaults.URL = oldURL
-	}()
-
-	b := rod.New().Connect()
-	defer b.Close()
+	l := launcher.NewRemote("ws://" + srv.Listener.Addr().String())
+	b := rod.New().Timeout(1 * time.Minute).Client(l.Client()).Connect()
 
 	p := b.Page(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
 	s.True(p.Has("[a=ok]"))
+
+	b.Close()
+
+	kit.Sleep(0.3)
+	dir, _ := l.Get("user-data-dir")
+	s.NoDirExists(dir)
 }
 
 func (s *S) TestConcurrentOperations() {
@@ -163,8 +180,11 @@ func (s *S) TestBlockingNavigation() {
 
 	url, engine, close := serve()
 	defer close()
+	pause, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	engine.GET("/a", func(ctx kit.GinContext) {
-		kit.Pause()
+		<-pause.Done()
 	})
 	engine.GET("/b", ginHTML(`<html>ok</html>`))
 
@@ -186,8 +206,12 @@ func (s *S) TestBlockingNavigation() {
 func (s *S) TestResolveBlocking() {
 	url, engine, close := serve()
 	defer close()
+
+	pause, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	engine.NoRoute(func(ctx kit.GinContext) {
-		kit.Pause()
+		<-pause.Done()
 	})
 
 	p := s.browser.Page("")
@@ -206,7 +230,7 @@ func (s *S) TestResolveBlocking() {
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {
-	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
@@ -244,7 +268,7 @@ func BenchmarkCacheOff(b *testing.B) {
 }
 
 func BenchmarkCache(b *testing.B) {
-	p := rod.New().Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 

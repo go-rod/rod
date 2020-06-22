@@ -62,7 +62,7 @@ func (ps Pages) FindByURLE(regex string) (*Page, error) {
 	return nil, nil
 }
 
-// HasE doc is the same as the method Has
+// HasE doc is similar to the method Has
 func (p *Page) HasE(selector string) (bool, error) {
 	_, err := p.ElementE(nil, "", selector)
 	if IsError(err, ErrElementNotFound) {
@@ -71,7 +71,7 @@ func (p *Page) HasE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasXE doc is the same as the method HasX
+// HasXE doc is similar to the method HasX
 func (p *Page) HasXE(selector string) (bool, error) {
 	_, err := p.ElementXE(nil, "", selector)
 	if IsError(err, ErrElementNotFound) {
@@ -80,7 +80,7 @@ func (p *Page) HasXE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasMatchesE doc is the same as the method HasMatches
+// HasMatchesE doc is similar to the method HasMatches
 func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 	_, err := p.ElementMatchesE(nil, "", selector, regex)
 	if IsError(err, ErrElementNotFound) {
@@ -94,7 +94,7 @@ func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectI
 	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), Array{selector})
 }
 
-// ElementMatchesE doc is the same as the method ElementMatches
+// ElementMatchesE doc is similar to the method ElementMatches
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector, regex string) (*Element, error) {
 	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), Array{selector, regex})
 }
@@ -109,7 +109,7 @@ func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObject
 // If sleeper is nil, no retry will be performed.
 // thisID is the this value of the js function, when thisID is "", the this context will be the "window".
 // If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
-// retries once.
+// retry once.
 func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
@@ -147,12 +147,12 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 	return p.ElementFromObjectID(res.ObjectID), nil
 }
 
-// ElementsE doc is the same as the method Elements
+// ElementsE doc is similar to the method Elements
 func (p *Page) ElementsE(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
 	return p.ElementsByJSE(objectID, p.jsFn("elements"), Array{selector})
 }
 
-// ElementsXE doc is the same as the method ElementsX
+// ElementsXE doc is similar to the method ElementsX
 func (p *Page) ElementsXE(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
 	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), Array{xpath})
 }
@@ -196,7 +196,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	return elemList, err
 }
 
-// HasE doc is the same as the method Has
+// HasE doc is similar to the method Has
 func (el *Element) HasE(selector string) (bool, error) {
 	_, err := el.ElementE(selector)
 	if IsError(err, ErrElementNotFound) {
@@ -205,7 +205,7 @@ func (el *Element) HasE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasXE doc is the same as the method HasX
+// HasXE doc is similar to the method HasX
 func (el *Element) HasXE(selector string) (bool, error) {
 	_, err := el.ElementXE(selector)
 	if IsError(err, ErrElementNotFound) {
@@ -214,7 +214,7 @@ func (el *Element) HasXE(selector string) (bool, error) {
 	return err == nil, err
 }
 
-// HasMatchesE doc is the same as the method HasMatches
+// HasMatchesE doc is similar to the method HasMatches
 func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
 	_, err := el.ElementMatchesE(selector, regex)
 	if IsError(err, ErrElementNotFound) {
@@ -223,22 +223,22 @@ func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
 	return err == nil, err
 }
 
-// ElementE doc is the same as the method Element
+// ElementE doc is similar to the method Element
 func (el *Element) ElementE(selector string) (*Element, error) {
 	return el.page.ElementE(nil, el.ObjectID, selector)
 }
 
-// ElementXE doc is the same as the method ElementX
+// ElementXE doc is similar to the method ElementX
 func (el *Element) ElementXE(xpath string) (*Element, error) {
 	return el.page.ElementXE(nil, el.ObjectID, xpath)
 }
 
-// ElementByJSE doc is the same as the method ElementByJS
+// ElementByJSE doc is similar to the method ElementByJS
 func (el *Element) ElementByJSE(js string, params Array) (*Element, error) {
 	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
 }
 
-// ParentE doc is the same as the method Parent
+// ParentE doc is similar to the method Parent
 func (el *Element) ParentE() (*Element, error) {
 	return el.ElementByJSE(`() => this.parentElement`, nil)
 }
@@ -248,32 +248,32 @@ func (el *Element) ParentsE(selector string) (Elements, error) {
 	return el.ElementsByJSE(el.page.jsFn("parents"), Array{selector})
 }
 
-// NextE doc is the same as the method Next
+// NextE doc is similar to the method Next
 func (el *Element) NextE() (*Element, error) {
 	return el.ElementByJSE(`() => this.nextElementSibling`, nil)
 }
 
-// PreviousE doc is the same as the method Previous
+// PreviousE doc is similar to the method Previous
 func (el *Element) PreviousE() (*Element, error) {
 	return el.ElementByJSE(`() => this.previousElementSibling`, nil)
 }
 
-// ElementMatchesE doc is the same as the method ElementMatches
+// ElementMatchesE doc is similar to the method ElementMatches
 func (el *Element) ElementMatchesE(selector, regex string) (*Element, error) {
 	return el.page.ElementMatchesE(nil, el.ObjectID, selector, regex)
 }
 
-// ElementsE doc is the same as the method Elements
+// ElementsE doc is similar to the method Elements
 func (el *Element) ElementsE(selector string) (Elements, error) {
 	return el.page.ElementsE(el.ObjectID, selector)
 }
 
-// ElementsXE doc is the same as the method ElementsX
+// ElementsXE doc is similar to the method ElementsX
 func (el *Element) ElementsXE(xpath string) (Elements, error) {
 	return el.page.ElementsXE(el.ObjectID, xpath)
 }
 
-// ElementsByJSE doc is the same as the method ElementsByJS
+// ElementsByJSE doc is similar to the method ElementsByJS
 func (el *Element) ElementsByJSE(js string, params Array) (Elements, error) {
 	return el.page.ElementsByJSE(el.ObjectID, js, params)
 }

@@ -16,19 +16,20 @@ func main() {
 
 		package proto
 
-		import "encoding/json"
+		import "reflect"
 
 		// Version of cdp protocol
 		const Version = "v{{.major}}.{{.minor}}"
 	`, "major", schema.Get("version.major").String(), "minor", schema.Get("version.minor").String())
+
+	init := `
+		var types = map[string]reflect.Type{`
 
 	testsCode := comment + `
 
 		package proto_test
 
 		import (
-			"context"
-			"errors"
 			"testing"
 
 			"github.com/stretchr/testify/assert"
@@ -44,10 +45,22 @@ func main() {
 
 			code += definition.format()
 			testsCode += definition.formatTests()
+
+			if definition.originName != "" {
+				init += kit.S(`
+					"{{.name}}": reflect.TypeOf({{.type}}{}),`,
+					"name", definition.domain.name+"."+definition.originName,
+					"type", definition.name,
+				)
+			}
 		}
 	}
 
-	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code, nil))
+	init += `
+		}
+	`
+
+	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
 	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
 
 	kit.MustGoTool("golang.org/x/tools/cmd/goimports")
@@ -120,30 +133,23 @@ func (d *definition) format() (code string) {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
 				code += kit.S(`
+				// MethodName of the command
+				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) (*{{.name}}Result, error) {
-					ctx, client, id := caller.CallContext()
-					bin, err := client.Call(ctx, id, "{{.method}}", m)
-					if err != nil {
-						return nil, err
-					}
-		
 					var res {{.name}}Result
-					err = json.Unmarshal(bin, &res)
-					if err != nil {
-						return nil, err
-					}
-			
-					return &res, nil
+					return &res, Call(m.MethodName(), m, &res, caller)
 				}
 				`, "name", d.name, "method", method)
 			} else {
 				code += kit.S(`
+				// MethodName of the command
+				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(caller Caller) error {
-					ctx, client, id := caller.CallContext()
-					_, err := client.Call(ctx, id, "{{.method}}", m)
-					return err
+					return Call(m.MethodName(), m, nil, caller)
 				}
 				`, "name", d.name, "method", method)
 			}
@@ -175,14 +181,6 @@ func (d *definition) formatTests() (code string) {
 					c := &Client{}
 					_, err := proto.{{.name}}{}.Call(&Caller{c})
 					assert.Nil(t, err)
-					
-					c = &Client{err: errors.New("err")}
-					_, err = proto.{{.name}}{}.Call(&Caller{c})
-					assert.Error(t, err)
-			
-					c = &Client{ret: "err"}
-					_, err = proto.{{.name}}{}.Call(&Caller{c})
-					assert.Error(t, err)
 				}
 				`, "name", d.name)
 		}
@@ -192,10 +190,6 @@ func (d *definition) formatTests() (code string) {
 				c := &Client{}
 				err := proto.{{.name}}{}.Call(&Caller{c})
 				assert.Nil(t, err)
-				
-				c = &Client{err: errors.New("err")}
-				err = proto.{{.name}}{}.Call(&Caller{c})
-				assert.Error(t, err)
 			}
 			`, "name", d.name)
 

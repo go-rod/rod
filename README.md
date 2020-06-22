@@ -3,11 +3,11 @@
 [![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
 [![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
 [![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
-[![Gitter](https://badges.gitter.im/ysmood-rod/community.svg)](https://gitter.im/ysmood-rod/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
-![logo](fixtures/rod.png)
+![logo](fixtures/banner.png)
 
-Rod is a High-level Chrome Devtools driver directly based on [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+Rod is a High-level Devtools driver directly based on [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
 ## Features
@@ -20,25 +20,28 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
-- No zombie chrome process after the crash ([how it works](https://github.com/ysmood/leakless))
+- No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
 
 ## Examples
 
 You can find examples from [here](examples_test.go) or [here](lib/examples).
 
 For more detailed examples, please search the unit tests.
-Such as the usage of method `HandleAuth`, search the all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`.
-You can also search the github issues, they contain a lot of usage examples too.
+Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`,
+for example, use Github online [search in repository](https://github.com/ysmood/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
+You can also search the GitHub issues, they contain a lot of usage examples too.
 
-If you have questions, please raise an issue or join the [gitter room](https://gitter.im/ysmood-rod/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).
+If you have questions, please raise an issue or join the [chat room][discord room].
 
 ## How it works
 
 Here's the common start process of Rod:
 
-1. Try to connect to a Chrome Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
+1. Try to connect to a Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
 
-1. Use the JSON-RPC protocol to talk to the browser endpoint to control it. The lib to handle it is  [here](lib/cdp).
+1. Use the JSON-RPC to talk to the browser endpoint to control it. The client to handle it is [here](lib/cdp).
+
+1. The type definitions of the data transmitted via JSON-RPC are handled by this [lib](lib/proto).
 
 1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/assets).
 
@@ -53,24 +56,28 @@ To let rod work with docker is very easy:
 2. Open another terminal and run a go program like this [example](lib/examples/remote-launch/main.go)
 
 The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
-can dynamically launch a chrome for each remote driver with customizable chrome flags.
+can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
 
 ### Q: Does it support other browsers like Firefox or Edge
 
-Rod should work with any browser that supports [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
-For now, Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol, and Edge will adopt chromium as their backend, so it seems like most major browsers will support it in the future except for Safari.
+Rod should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+
+- Microsoft Edge can pass all the unit tests.
+- Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol.
+- Safari doesn't have any plan to support it yet.
+- IE won't support it.
 
 ### Q: Why is it called Rod
 
 Rod is related to puppetry, see [Rod Puppet](https://en.wikipedia.org/wiki/Puppet#Rod_puppet).
-So we are the puppeteer, Chrome is the puppet, we use the rod to control the puppet.
+So we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
 So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
 ### Q: How to contribute
 
-Please check this [file](.github/CONTRIBUTING.md).
+Please check this [doc](.github/CONTRIBUTING.md).
 
 ### Q: How versioning is handled
 
@@ -90,7 +97,9 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [puppeteer](https://github.com/puppeteer/puppeteer)
 
-  With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to chrome will be async calls, so it's unfriendly for QA from the beginning.
+  With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to the browser will be async calls, so it's unfriendly for QA from the beginning.
+
+  Rod will only enable domain events when they are needed, puppeteer will always enable all the domains which will consume a lot of resources when driving a remote browser.
 
 - [chromedp](https://github.com/chromedp/chromedp)
 
@@ -98,8 +107,10 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   It's painful to use Chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
 
-  When a crash happens, Chromedp will leave the zombie chrome process on Windows and Mac.
+  When a crash happens, Chromedp will leave the zombie browser process on Windows and Mac.
 
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
+
+[discord room]: https://discord.gg/CpevuvY

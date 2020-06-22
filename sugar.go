@@ -4,11 +4,11 @@ package rod
 
 import (
 	"net/http"
-	"path/filepath"
 	"time"
 
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/input"
 	"github.com/ysmood/rod/lib/proto"
 )
 
@@ -21,12 +21,7 @@ func (b *Browser) Connect() *Browser {
 
 // Close the browser and release related resources
 func (b *Browser) Close() {
-	kit.E(b.CloseE())
-}
-
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (b *Browser) EachEvent(fn interface{}) {
-	eachEvent(b.Event(), fn)
+	_ = b.CloseE()
 }
 
 // Incognito creates a new incognito browser
@@ -57,18 +52,11 @@ func (b *Browser) PageFromTargetID(targetID proto.TargetTargetID) *Page {
 	return p
 }
 
-// WaitEvent resolves the wait function when the filter returns true
-func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
-	w := b.WaitEventE(NewEventFilter(e))
-	return func() { kit.E(<-w) }
-}
-
 // HandleAuth for the next basic HTTP authentication.
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 func (b *Browser) HandleAuth(username, password string) {
-	wait, err := b.HandleAuthE(username, password)
-	kit.E(err)
+	wait := b.HandleAuthE(username, password)
 	go func() { kit.E(wait()) }()
 }
 
@@ -96,9 +84,10 @@ func (p *Page) SetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 
 // SetExtraHeaders whether to always send extra HTTP headers with the requests from this page.
 // The arguments are key-value pairs, you can set multiple key-value pairs at the same time.
-func (p *Page) SetExtraHeaders(dict ...string) *Page {
-	kit.E(p.SetExtraHeadersE(dict))
-	return p
+func (p *Page) SetExtraHeaders(dict ...string) (cleanup func()) {
+	cleanup, err := p.SetExtraHeadersE(dict)
+	kit.E(err)
+	return cleanup
 }
 
 // SetUserAgent Allows overriding user agent with the given string.
@@ -186,11 +175,6 @@ func (p *Page) Close() {
 	kit.E(p.CloseE())
 }
 
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-func (p *Page) EachEvent(fn interface{}) {
-	eachEvent(p.Event(), fn)
-}
-
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
 func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 	w := p.HandleDialogE(accept, promptText)
@@ -202,7 +186,7 @@ func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 // GetDownloadFile of the next download url that matches the pattern, returns the response header and file content.
 // Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash. Omitting is equivalent to "*".
 func (p *Page) GetDownloadFile(pattern string) (wait func() (http.Header, []byte)) {
-	w, err := p.GetDownloadFileE(filepath.FromSlash("tmp/rod-downloads"), pattern)
+	w, err := p.GetDownloadFileE(pattern)
 	kit.E(err)
 	return func() (http.Header, []byte) {
 		header, data, err := w()
@@ -234,9 +218,9 @@ func (p *Page) PDF() []byte {
 	return pdf
 }
 
-// WaitPage to be created from a new window
-func (p *Page) WaitPage() (wait func() *Page) {
-	w := p.WaitPageE()
+// WaitOpen to be created from a new window
+func (p *Page) WaitOpen() (wait func() *Page) {
+	w := p.WaitOpenE()
 	return func() *Page {
 		page, err := w()
 		kit.E(err)
@@ -253,8 +237,7 @@ func (p *Page) Pause() *Page {
 // WaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to exclude the requests by their url.
 func (p *Page) WaitRequestIdle(excludes ...string) (wait func()) {
-	w := p.WaitRequestIdleE(300*time.Millisecond, []string{""}, excludes)
-	return func() { kit.E(w()) }
+	return p.WaitRequestIdleE(300*time.Millisecond, []string{""}, excludes)
 }
 
 // WaitIdle wait until the next window.requestIdleCallback is called.
@@ -267,12 +250,6 @@ func (p *Page) WaitIdle() *Page {
 func (p *Page) WaitLoad() *Page {
 	kit.E(p.WaitLoadE())
 	return p
-}
-
-// WaitEvent returns a wait function that waits for the next event to happen.
-func (p *Page) WaitEvent(e proto.Event) (wait func()) {
-	w := p.WaitEventE(NewEventFilter(e))
-	return func() { kit.E(<-w) }
 }
 
 // AddScriptTag to page. If url is empty, content will be used.
@@ -293,6 +270,25 @@ func (p *Page) Eval(js string, params ...interface{}) proto.JSON {
 	res, err := p.EvalE(true, "", js, params)
 	kit.E(err)
 	return res.Value
+}
+
+// ObjectToJSON by remote object
+func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
+	j, err := p.ObjectToJSONE(obj)
+	kit.E(err)
+	return j
+}
+
+// ObjectsToJSON by remote objects
+func (p *Page) ObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
+	result := "[]"
+	for _, obj := range list {
+		j, err := p.ObjectToJSONE(obj)
+		kit.E(err)
+		result, err = sjson.SetRaw(result, "-1", j.Raw)
+		kit.E(err)
+	}
+	return proto.JSON{Result: gjson.Parse(result)}
 }
 
 // Release remote object
@@ -372,27 +368,27 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
-// Move to the location
+// Move to the absolute position
 func (m *Mouse) Move(x, y float64) {
 	kit.E(m.MoveE(x, y, 0))
 }
 
-// Scroll the wheel
+// Scroll with the relative offset
 func (m *Mouse) Scroll(x, y float64) {
 	kit.E(m.ScrollE(x, y, 0))
 }
 
-// Down button
+// Down holds the button down
 func (m *Mouse) Down(button proto.InputMouseButton) {
 	kit.E(m.DownE(button, 1))
 }
 
-// Up button
+// Up release the button
 func (m *Mouse) Up(button proto.InputMouseButton) {
 	kit.E(m.UpE(button, 1))
 }
 
-// Click button
+// Click will press then release the button
 func (m *Mouse) Click(button proto.InputMouseButton) {
 	kit.E(m.ClickE(button))
 }
@@ -409,10 +405,6 @@ func (k *Keyboard) Up(key rune) {
 
 // Press a key
 func (k *Keyboard) Press(key rune) {
-	if k.page.browser.trace {
-		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
-	}
-
 	kit.E(k.PressE(key))
 }
 

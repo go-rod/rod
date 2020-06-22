@@ -204,7 +204,8 @@ func optimize(json *string) {
 		"page", "background_page", "service_worker", "shared_worker", "browser", "other",
 	})
 
-	set("domains.19.types.3.skip", true)
-	set("domains.24.types.6.skip", true)
-	set("domains.24.types.5.skip", true)
+	// replace these with better type definition
+	set("domains.19.types.3.skip", true) // Input.TimeSinceEpoch
+	set("domains.24.types.5.skip", true) // Network.TimeSinceEpoch
+	set("domains.24.types.6.skip", true) // Network.MonotonicTime
 }

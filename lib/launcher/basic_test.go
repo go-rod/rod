@@ -13,15 +13,15 @@ import (
 )
 
 func TestDownload(t *testing.T) {
-	c := launcher.NewChrome()
+	c := launcher.NewBrowser()
 	kit.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 }
 
 func TestDownloadFromChina(t *testing.T) {
-	c := launcher.NewChrome()
+	c := launcher.NewBrowser()
 	c.Hosts = []string{"https://github.com", launcher.HostChina}
-	c.Dir = filepath.Join("tmp", "chrome-from-china", kit.RandString(8))
+	c.Dir = filepath.Join("tmp", "browser-from-china", kit.RandString(8))
 	kit.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 }
@@ -69,7 +69,7 @@ func TestRemoteLaunch(t *testing.T) {
 
 	u := "ws://" + srv.Listener.Addr().String()
 	client := launcher.NewRemote(u).Client()
-	b := client.Context(ctx).Connect()
+	b := client.Context(ctx, cancel).Connect()
 	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 }

@@ -7,10 +7,11 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/ramr/go-reaper v0.2.0
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
-	github.com/ysmood/kit v0.22.3
+	github.com/ysmood/goob v0.1.0
+	github.com/ysmood/kit v0.24.0
 	github.com/ysmood/leakless v0.5.1
 	github.com/ysmood/lookpath v1.1.0
 )
