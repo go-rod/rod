@@ -18,7 +18,6 @@ RUN go build ./lib/launcher/rod-launcher
 
 FROM alpine:latest
 
-
 ARG alpine_mirror="dl-cdn.alpinelinux.org"
 
 # to take advantage of the cache, don't put everything in one line
