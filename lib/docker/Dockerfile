@@ -1,5 +1,5 @@
 # Examples:
-# 
+#
 #   docker build -t ysmood/rod -f lib/docker/Dockerfile .
 #
 #   // china mirror
@@ -16,12 +16,11 @@ WORKDIR /rod
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-launcher
 
-
 FROM alpine:latest
 
 ARG alpine_mirror="dl-cdn.alpinelinux.org"
 
-# to take advantage of the cahce, don't put everything in one line
+# to take advantage of the cache, don't put everything in one line
 
 RUN sed -i "s/dl-cdn.alpinelinux.org/$alpine_mirror/g" /etc/apk/repositories
 RUN cat /etc/apk/repositories
