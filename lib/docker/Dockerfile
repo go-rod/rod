@@ -4,11 +4,9 @@ COPY . /rod
 WORKDIR /rod
 RUN go build ./lib/launcher/rod-launcher
 
-
 FROM alpine:latest
 
-# to take advantage of the cahce, don't put everything in one line
-
+# to take advantage of the cache, don't put everything in one line
 RUN apk add chromium
 
 # install fonts for pupular languages, so that screenshot for webpages can work properly
