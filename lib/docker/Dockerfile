@@ -2,7 +2,7 @@
 #
 #   docker build -t ysmood/rod -f lib/docker/Dockerfile .
 #
-#   // china mirror
+#   // use mirrors
 #   docker build --build-arg goproxy=https://goproxy.io,direct --build-arg alpine_mirror=mirrors.tuna.tsinghua.edu.cn \
 #     -t ysmood/rod -f lib/docker/Dockerfile .
 
@@ -16,6 +16,7 @@ WORKDIR /rod
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-launcher
 
+# use alpine to build the image
 FROM alpine:latest
 
 ARG alpine_mirror="dl-cdn.alpinelinux.org"
@@ -43,4 +44,5 @@ COPY --from=go /rod/rod-launcher /usr/bin/
 
 CMD rod-launcher
 
+# the default port for rod-launcher
 EXPOSE 9222

@@ -13,7 +13,7 @@ import (
 	"github.com/ysmood/rod/lib/proto"
 )
 
-// Open wikipedia, search for "idempotent", and print the title of result page
+// Open github, search for "git"
 func Example_basic() {
 	// launch and connect to a browser
 	browser := rod.New().Connect()

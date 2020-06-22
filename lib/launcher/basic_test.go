@@ -18,10 +18,10 @@ func TestDownload(t *testing.T) {
 	assert.FileExists(t, c.ExecPath())
 }
 
-func TestDownloadFromChina(t *testing.T) {
+func TestDownloadWithMirror(t *testing.T) {
 	c := launcher.NewBrowser()
-	c.Hosts = []string{"https://github.com", launcher.HostChina}
-	c.Dir = filepath.Join("tmp", "browser-from-china", kit.RandString(8))
+	c.Hosts = []string{"https://github.com", launcher.HostTaobao}
+	c.Dir = filepath.Join("tmp", "browser-from-mirror", kit.RandString(8))
 	kit.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 }

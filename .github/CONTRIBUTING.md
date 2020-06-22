@@ -56,3 +56,9 @@ The entry point of all tests is the `setup_test.go` file.
 4. visit `http://[::]:9273` to monitor the tests
 
 After you exit the container, you can reuse it with `docker start -i rod`.
+
+## Become a maintainer
+
+Since this is a small project, we will use a very simple model to promote contributors to maintainers.
+Only the first 2 maintainers will grant permission from me, then we will start to elect
+new contributors by voting in the public issue. If no one votes down and 2/3 votes up then one election will pass.

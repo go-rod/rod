@@ -20,8 +20,8 @@ import (
 // HostGoogle to download browser
 const HostGoogle = "https://storage.googleapis.com"
 
-// HostChina to download browser
-const HostChina = "https://npm.taobao.org/mirrors"
+// HostTaobao to download browser
+const HostTaobao = "https://npm.taobao.org/mirrors"
 
 // Browser is a helper to download browser smartly
 type Browser struct {
@@ -48,7 +48,7 @@ func NewBrowser() *Browser {
 	return &Browser{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
-		Hosts:    []string{HostGoogle, HostChina},
+		Hosts:    []string{HostGoogle, HostTaobao},
 		Dir:      filepath.Join(os.TempDir(), "rod"),
 		Log: func(str string) {
 			fmt.Print(str)
