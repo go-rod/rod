@@ -44,8 +44,13 @@ func (s *S) TestHijack() {
 		// send request load response from real destination as the default value to hijack
 		ctx.LoadResponse()
 
+		s.Equal(200, ctx.Response.StatusCode())
+
 		// override status code
 		ctx.Response.SetStatusCode(201)
+
+		s.Equal("4", ctx.Response.Header("Content-Length"))
+		s.Equal("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
