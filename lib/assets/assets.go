@@ -67,6 +67,9 @@ var Helper = `
 
     updateMouseTracer (iconId, x, y) {
       const svg = document.getElementById(iconId)
+      if (!svg) {
+        return
+      }
       svg.style.left = x - 2 + 'px'
       svg.style.top = y - 3 + 'px'
     },
