@@ -414,7 +414,7 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 	_ = proto.BrowserSetDownloadBehavior{
 		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
 		BrowserContextID: p.browser.BrowserContextID,
-	}.Call(p)
+	}.Call(p.browser)
 
 	r := p.HijackRequests()
 
