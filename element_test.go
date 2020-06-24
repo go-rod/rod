@@ -269,36 +269,36 @@ func (s *S) TestElementErrors() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
-	_, err := el.Context(ctx).DescribeE()
+	_, err := el.Context(ctx, cancel).DescribeE()
 	s.Error(err)
 
-	_, err = el.Context(ctx).FrameE()
+	_, err = el.Context(ctx, cancel).FrameE()
 	s.Error(err)
 
-	err = el.Context(ctx).FocusE()
+	err = el.Context(ctx, cancel).FocusE()
 	s.Error(err)
 
-	err = el.Context(ctx).PressE('a')
+	err = el.Context(ctx, cancel).PressE('a')
 	s.Error(err)
 
-	err = el.Context(ctx).InputE("a")
+	err = el.Context(ctx, cancel).InputE("a")
 	s.Error(err)
 
-	err = el.Context(ctx).SelectE([]string{"a"})
+	err = el.Context(ctx, cancel).SelectE([]string{"a"})
 	s.Error(err)
 
-	err = el.Context(ctx).WaitStableE(0)
+	err = el.Context(ctx, cancel).WaitStableE(0)
 	s.Error(err)
 
-	_, err = el.Context(ctx).BoxE()
+	_, err = el.Context(ctx, cancel).BoxE()
 	s.Error(err)
 
-	_, err = el.Context(ctx).ResourceE()
+	_, err = el.Context(ctx, cancel).ResourceE()
 	s.Error(err)
 
-	err = el.Context(ctx).InputE("a")
+	err = el.Context(ctx, cancel).InputE("a")
 	s.Error(err)
 
-	err = el.Context(ctx).InputE("a")
+	err = el.Context(ctx, cancel).InputE("a")
 	s.Error(err)
 }

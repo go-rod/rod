@@ -205,7 +205,11 @@ type requestMsg struct {
 
 // consume messages from client and browser
 func (cdp *Client) consumeMsg() {
-	defer close(cdp.chReq)
+	defer func() {
+		close(cdp.chReq)
+		close(cdp.chRes)
+		close(cdp.chEvent)
+	}()
 
 	for {
 		select {
@@ -246,9 +250,6 @@ type response struct {
 }
 
 func (cdp *Client) readMsgFromBrowser() {
-	defer close(cdp.chRes)
-	defer close(cdp.chEvent)
-
 	for cdp.ctx.Err() == nil {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
@@ -261,15 +262,18 @@ func (cdp *Client) readMsgFromBrowser() {
 			err := json.Unmarshal(data, &res)
 			kit.E(err)
 			cdp.debugLog(&res)
-			cdp.chRes <- &res
+			_ = kit.Try(func() {
+				cdp.chRes <- &res
+			})
 		} else {
 			var evt Event
 			err := json.Unmarshal(data, &evt)
 			kit.E(err)
 			cdp.debugLog(&evt)
-			cdp.chEvent <- &evt
+			_ = kit.Try(func() {
+				cdp.chEvent <- &evt
+			})
 		}
-
 	}
 }
 

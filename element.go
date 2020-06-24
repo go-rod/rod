@@ -5,10 +5,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/tidwall/gjson"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
@@ -426,7 +427,7 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 
 // ReleaseE doc is similar to the method Release
 func (el *Element) ReleaseE() error {
-	err := el.page.Context(el.ctx).ReleaseE(el.ObjectID)
+	err := el.page.Context(el.ctx, el.ctxCancel).ReleaseE(el.ObjectID)
 	if err != nil {
 		return err
 	}
@@ -442,5 +443,5 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 
 // EvalE doc is similar to the method Eval
 func (el *Element) EvalE(byValue bool, js string, params Array) (*proto.RuntimeRemoteObject, error) {
-	return el.page.Context(el.ctx).EvalE(byValue, el.ObjectID, js, params)
+	return el.page.Context(el.ctx, el.ctxCancel).EvalE(byValue, el.ObjectID, js, params)
 }

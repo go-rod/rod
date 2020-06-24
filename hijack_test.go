@@ -3,6 +3,7 @@ package rod_test
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 
 	"github.com/go-rod/rod"
 	"github.com/ysmood/kit"
@@ -29,17 +30,16 @@ func (s *S) TestHijack() {
 	defer router.Stop()
 
 	router.Add(url+"/a", func(ctx *rod.Hijack) {
-		// override request method
-		ctx.Request.SetMethod(ctx.Request.Method())
-
-		// override request url
-		ctx.Request.SetURL(ctx.Request.URL().String())
-
-		// override request header
-		ctx.Request.SetHeader("Test", "header")
-
-		// override request body
-		ctx.Request.SetBody(ctx.Request.Body())
+		ctx.Request.
+			SetClient(&http.Client{
+				Transport: &http.Transport{
+					DisableKeepAlives: true,
+				},
+			}).                                 // customize http client
+			SetMethod(ctx.Request.Method()).    // override request method
+			SetURL(ctx.Request.URL().String()). // override request url
+			SetHeader("Test", "header").        // override request header
+			SetBody(ctx.Request.Body())         // override request body
 
 		// send request load response from real destination as the default value to hijack
 		ctx.LoadResponse()

@@ -57,7 +57,8 @@ func New() *Browser {
 		states:     &sync.Map{},
 	}
 
-	return b.Context(context.Background())
+	ctx, cancel := context.WithCancel(context.Background())
+	return b.Context(ctx, cancel)
 }
 
 // ControlURL set the url to remote control browser.
@@ -299,7 +300,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	page := (&Page{
 		browser:  b,
 		TargetID: targetID,
-	}).Context(b.ctx)
+	}).Context(context.WithCancel(b.ctx))
 
 	page.Mouse = &Mouse{page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}

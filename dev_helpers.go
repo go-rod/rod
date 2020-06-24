@@ -41,6 +41,10 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 	}
 
 	srv := kit.MustServer(host)
+	opts := &http.Server{}
+	opts.SetKeepAlivesEnabled(false)
+	srv.Set(opts)
+
 	srv.Engine.GET("/", func(ctx kit.GinContext) {
 		res, err := proto.TargetGetTargets{}.Call(b)
 		kit.E(err)

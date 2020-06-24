@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"net/http"
 	"path/filepath"
 	"testing"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
+	"go.uber.org/goleak"
 )
 
 var slash = filepath.FromSlash
@@ -17,6 +19,17 @@ type S struct {
 	suite.Suite
 	browser *rod.Browser
 	page    *rod.Page
+}
+
+func TestMain(m *testing.M) {
+	// to prevent false positive of goleak
+	http.DefaultClient = &http.Client{
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+		},
+	}
+
+	goleak.VerifyTestMain(m)
 }
 
 func Test(t *testing.T) {
@@ -65,6 +78,9 @@ func ginHTMLFile(path string) gin.HandlerFunc {
 // returns url prefix, engin, close
 func serve() (string, *gin.Engine, func()) {
 	srv := kit.MustServer("127.0.0.1:0")
+	opt := &http.Server{}
+	opt.SetKeepAlivesEnabled(false)
+	srv.Set(opt)
 	go func() { kit.Noop(srv.Do()) }()
 
 	url := "http://" + srv.Listener.Addr().String()

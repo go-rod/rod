@@ -252,7 +252,7 @@ func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
 
 // WaitOpenE doc is similar to the method WaitPage
 func (p *Page) WaitOpenE() func() (*Page, error) {
-	b := p.browser.Context(p.ctx)
+	b := p.browser.Context(p.ctx, p.ctxCancel)
 	var targetID proto.TargetTargetID
 
 	wait := b.EachEvent(func(e *proto.TargetTargetCreated) bool {
@@ -476,7 +476,7 @@ func (p *Page) ElementFromObjectID(id proto.RuntimeRemoteObjectID) *Element {
 	return (&Element{
 		page:     p,
 		ObjectID: id,
-	}).Context(p.ctx)
+	}).Context(context.WithCancel(p.ctx))
 }
 
 // ReleaseE doc is similar to the method Release

@@ -256,27 +256,31 @@ func (ctx *HijackRequest) JSONBody() gjson.Result {
 }
 
 // SetMethod of request
-func (ctx *HijackRequest) SetMethod(name string) {
+func (ctx *HijackRequest) SetMethod(name string) *HijackRequest {
 	ctx.req.Method(name)
+	return ctx
 }
 
 // SetHeader via key-value pairs
-func (ctx *HijackRequest) SetHeader(pairs ...string) {
+func (ctx *HijackRequest) SetHeader(pairs ...string) *HijackRequest {
 	ctx.req.Header(pairs...)
+	return ctx
 }
 
 // SetQuery of the request, example Query(k, v, k, v ...)
-func (ctx *HijackRequest) SetQuery(pairs ...interface{}) {
+func (ctx *HijackRequest) SetQuery(pairs ...interface{}) *HijackRequest {
 	ctx.req.Query(pairs...)
+	return ctx
 }
 
 // SetURL of the request
-func (ctx *HijackRequest) SetURL(url string) {
+func (ctx *HijackRequest) SetURL(url string) *HijackRequest {
 	ctx.req.URL(url)
+	return ctx
 }
 
 // SetBody of the request, if obj is []byte or string, raw body will be used, else it will be encoded as json.
-func (ctx *HijackRequest) SetBody(obj interface{}) {
+func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 	// reset to empty
 	ctx.req.StringBody("")
 	ctx.req.JSONBody(nil)
@@ -290,6 +294,13 @@ func (ctx *HijackRequest) SetBody(obj interface{}) {
 	default:
 		ctx.req.JSONBody(obj)
 	}
+	return ctx
+}
+
+// SetClient for http
+func (ctx *HijackRequest) SetClient(client *http.Client) *HijackRequest {
+	ctx.req.Client(client)
+	return ctx
 }
 
 // HijackResponse context
@@ -392,7 +403,7 @@ func (ctx *HijackResponse) JSONBody() gjson.Result {
 }
 
 // SetBody of response, if obj is []byte, raw body will be used, else it will be encoded as json
-func (ctx *HijackResponse) SetBody(obj interface{}) {
+func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 	switch body := obj.(type) {
 	case []byte:
 		ctx.payload.Body = body
@@ -404,6 +415,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) {
 		ctx.payload.Body, err = json.Marshal(obj)
 		kit.E(err)
 	}
+	return ctx
 }
 
 // GetDownloadFileE of the next download url that matches the pattern, returns the file content.

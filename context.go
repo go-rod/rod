@@ -6,15 +6,8 @@ import (
 )
 
 // Context creates a clone with a context that inherits the previous one
-func (b *Browser) Context(ctx context.Context) *Browser {
-	ctx, cancel := context.WithCancel(ctx)
-
-	if b.ctx != nil {
-		go func() {
-			<-b.ctx.Done()
-			cancel()
-		}()
-	}
+func (b *Browser) Context(ctx context.Context, cancel func()) *Browser {
+	chainContext(b.ctx, ctx, cancel)
 
 	newObj := *b
 	newObj.ctx = ctx
@@ -31,7 +24,7 @@ func (b *Browser) GetContext() context.Context {
 func (b *Browser) Timeout(d time.Duration) *Browser {
 	ctx, cancel := context.WithTimeout(b.ctx, d)
 	b.timeoutCancel = cancel
-	return b.Context(ctx)
+	return b.Context(ctx, cancel)
 }
 
 // CancelTimeout context
@@ -41,15 +34,8 @@ func (b *Browser) CancelTimeout() *Browser {
 }
 
 // Context creates a clone with a context that inherits the previous one
-func (p *Page) Context(ctx context.Context) *Page {
-	ctx, cancel := context.WithCancel(ctx)
-
-	if p.ctx != nil {
-		go func() {
-			<-p.ctx.Done()
-			cancel()
-		}()
-	}
+func (p *Page) Context(ctx context.Context, cancel func()) *Page {
+	chainContext(p.ctx, ctx, cancel)
 
 	newObj := *p
 	newObj.ctx = ctx
@@ -66,7 +52,7 @@ func (p *Page) GetContext() context.Context {
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
 	p.timeoutCancel = cancel
-	return p.Context(ctx)
+	return p.Context(ctx, cancel)
 }
 
 // CancelTimeout context
@@ -76,15 +62,8 @@ func (p *Page) CancelTimeout() *Page {
 }
 
 // Context creates a clone with a context that inherits the previous one
-func (el *Element) Context(ctx context.Context) *Element {
-	ctx, cancel := context.WithCancel(ctx)
-
-	if el.ctx != nil {
-		go func() {
-			<-el.ctx.Done()
-			cancel()
-		}()
-	}
+func (el *Element) Context(ctx context.Context, cancel func()) *Element {
+	chainContext(el.ctx, ctx, cancel)
 
 	newObj := *el
 	newObj.ctx = ctx
@@ -101,11 +80,24 @@ func (el *Element) GetContext() context.Context {
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
 	el.timeoutCancel = cancel
-	return el.Context(ctx)
+	return el.Context(ctx, cancel)
 }
 
 // CancelTimeout context
 func (el *Element) CancelTimeout() *Element {
 	el.timeoutCancel()
 	return el
+}
+
+// when parent stops, the child should also stop
+func chainContext(parent, child context.Context, cancelChild func()) {
+	if parent != nil {
+		go func() {
+			select {
+			case <-parent.Done():
+				cancelChild()
+			case <-child.Done():
+			}
+		}()
+	}
 }

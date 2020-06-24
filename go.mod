@@ -10,8 +10,9 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
-	github.com/ysmood/goob v0.1.2
-	github.com/ysmood/kit v0.24.2
+	github.com/ysmood/goob v0.2.0
+	github.com/ysmood/kit v0.24.4
 	github.com/ysmood/leakless v0.5.1
 	github.com/ysmood/lookpath v1.1.0
+	go.uber.org/goleak v1.0.0
 )

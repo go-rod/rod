@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -79,14 +80,15 @@ func (s *S) TestMonitor() {
 }
 
 func (s *S) TestRemoteLaunch() {
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { _ = srv.Listener.Close() }()
-	proxy := &launcher.Proxy{Log: func(s string) {}}
-	srv.Engine.NoRoute(gin.WrapH(proxy))
-	go func() { _ = srv.Do() }()
+	url, engine, close := serve()
+	defer close()
 
-	l := launcher.NewRemote("ws://" + srv.Listener.Addr().String())
+	proxy := &launcher.Proxy{Log: func(s string) {}}
+	engine.NoRoute(gin.WrapH(proxy))
+
+	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))
 	b := rod.New().Timeout(1 * time.Minute).Client(l.Client()).Connect()
+	defer b.CancelTimeout()
 
 	p := b.Page(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
