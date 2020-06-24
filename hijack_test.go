@@ -79,7 +79,7 @@ func (s *S) TestHijack() {
 	s.Equal("b", s.page.Element("#b").Text())
 }
 
-func (s *S) TestBrowserHandleAuth() {
+func (s *S) TestHandleAuth() {
 	url, engine, close := serve()
 	defer close()
 
@@ -104,7 +104,7 @@ func (s *S) TestBrowserHandleAuth() {
 	page.ElementMatches("p", "ok")
 }
 
-func (s *S) TestDownloadFile() {
+func (s *S) TestGetDownloadFile() {
 	url, engine, close := serve()
 	defer close()
 
@@ -116,6 +116,33 @@ func (s *S) TestDownloadFile() {
 	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
 	page := s.page.Navigate(url)
+
+	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
+	page.Element("a").Click()
+	data := wait()
+
+	s.Equal(content, string(data))
+}
+
+func (s *S) TestGetDownloadFileWithHijack() {
+	url, engine, close := serve()
+	defer close()
+
+	content := "test content"
+
+	engine.GET("/d", func(ctx kit.GinContext) {
+		kit.E(ctx.Writer.Write([]byte(content)))
+	})
+	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
+
+	page := s.page.Navigate(url)
+
+	r := page.HijackRequests()
+	r.Add("*", func(ctx *rod.Hijack) {
+		ctx.LoadResponse()
+	})
+	go r.Run()
+	defer r.Stop()
 
 	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
 	page.Element("a").Click()

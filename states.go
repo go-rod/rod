@@ -82,7 +82,33 @@ func (b *Browser) EnableDomain(ctx context.Context, sessionID proto.TargetSessio
 	}
 }
 
+// DisableDomain and returns a recover function to restore previous state
+func (b *Browser) DisableDomain(ctx context.Context, sessionID proto.TargetSessionID, method proto.Payload) (recover func()) {
+	_, enabled := b.states.Load(b.key(sessionID, method.MethodName()))
+	domain, _ := proto.ParseMethodName(method.MethodName())
+
+	if enabled {
+		if method.MethodName() == "Target.setDiscoverTargets" { // only Target domain is special
+			_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
+		} else {
+			_, _ = b.Call(ctx, string(sessionID), domain+".disable", nil)
+		}
+	}
+
+	return func() {
+		if enabled {
+			payload, _ := proto.Normalize(method)
+			_, _ = b.Call(ctx, string(sessionID), method.MethodName(), payload)
+		}
+	}
+}
+
 // EnableDomain and returns a recover function to restore previous state
 func (p *Page) EnableDomain(method proto.Payload) (recover func()) {
 	return p.browser.EnableDomain(p.ctx, p.SessionID, method)
+}
+
+// DisableDomain and returns a recover function to restore previous state
+func (p *Page) DisableDomain(method proto.Payload) (recover func()) {
+	return p.browser.DisableDomain(p.ctx, p.SessionID, method)
 }

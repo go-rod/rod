@@ -15,7 +15,7 @@ import (
 )
 
 // HijackRequests creates a new router instance for requests hijacking.
-// A router must be singleton for a page. Enabling hijacking disables page caching,
+// When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
 // but such as 304 Not Modified will still work as expected.
 func (b *Browser) HijackRequests() *HijackRouter {
 	return newHijackRouter(b, b).initEvents()
@@ -150,16 +150,9 @@ func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
 	}
 }
 
-// RunE the router, after you call it, you shouldn't add new handler to it.
-func (r *HijackRouter) RunE() error {
-	r.run()
-	return r.enable.Call(r.caller)
-}
-
 // Run the router, after you call it, you shouldn't add new handler to it.
-// You can stop and run the same router without limitation.
 func (r *HijackRouter) Run() {
-	kit.E(r.RunE())
+	r.run()
 }
 
 // StopE the router
@@ -416,6 +409,8 @@ func (ctx *HijackResponse) SetBody(obj interface{}) {
 // GetDownloadFileE of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
 func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
+	enable := p.DisableDomain(&proto.FetchEnable{})
+
 	_ = proto.BrowserSetDownloadBehavior{
 		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
 		BrowserContextID: p.browser.BrowserContextID,
@@ -424,6 +419,8 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 	r := p.HijackRequests()
 
 	return func() ([]byte, error) {
+		defer enable()
+
 		defer func() {
 			_ = proto.BrowserSetDownloadBehavior{
 				Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
@@ -481,7 +478,8 @@ func (p *Page) GetDownloadFile(pattern string) func() []byte {
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 func (b *Browser) HandleAuthE(username, password string) func() error {
-	recover := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
+	enable := b.DisableDomain(b.ctx, "", &proto.FetchEnable{})
+	disable := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
 		HandleAuthRequests: true,
 	})
 
@@ -492,7 +490,8 @@ func (b *Browser) HandleAuthE(username, password string) func() error {
 	waitAuth := b.WaitEvent(auth)
 
 	return func() (err error) {
-		defer recover()
+		defer enable()
+		defer disable()
 
 		waitPaused()
 
