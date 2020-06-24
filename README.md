@@ -17,7 +17,7 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/ysmood/rod/actions) tested on Linux, Mac, and Windows
-- High-level helpers like WaitStable, WaitRequestIdle, GetDownloadFile, Resource
+- High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
 - No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
@@ -59,6 +59,10 @@ The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
 can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
+
+### Q: Why functions don't return error values
+
+See the [E suffix](.github/CONTRIBUTING.md#e-suffix).
 
 ### Q: Does it support other browsers like Firefox or Edge
 
