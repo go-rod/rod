@@ -94,7 +94,7 @@ func Example_debug_mode() {
 }
 
 // If a button is moving too fast, you cannot click it as a human, to perfectly simulate human inputs
-// the click trigger by Rod are based on mouse point location, so usually you need wait a button is stable before
+// the clicks triggerred by Rod are based on mouse point location, so usually you should wait a button is stable before
 // you can click it.
 func Example_wait_for_animation() {
 	browser := rod.New().Timeout(time.Minute).Connect()
@@ -286,11 +286,15 @@ func Example_hijack_requests() {
 	defer router.Stop()
 
 	router.Add("*.js", func(ctx *rod.Hijack) {
+		// Override request header, rod also supports to override all other parts of the request
+		ctx.Request.SetHeader("My-Header", "test")
+
 		// Send request load response from real destination as the default value to hijack.
 		// If you want to safe bandwidth and don't call it, you have to mock the entire response (status code, headers, body).
+		// You should override the request before this method.
 		ctx.LoadResponse()
 
-		// override response body, we let all js log string "rod"
+		// override response body, we set page title to "hi"
 		ctx.Response.SetBody(ctx.Response.StringBody() + "\n document.title = 'hi' ")
 	})
 
