@@ -33,6 +33,8 @@ You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
+#### You can find a comparison of our library to chromedp [here](lib/examples/compare-chromedp).
+
 ## How it works
 
 Here's the common start process of Rod:
