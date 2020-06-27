@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/ysmood/rod"
+    "url": "github.com/go-rod/rod"
   },
   "keywords": [
     "rod",

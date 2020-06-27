@@ -8,9 +8,9 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Array of any type

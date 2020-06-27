@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/launcher"
 	"log"
 	"time"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 // This example demonstrates how to use a selector to click on an element.

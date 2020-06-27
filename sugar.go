@@ -5,10 +5,10 @@ package rod
 import (
 	"time"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Connect to the browser and start to control it.

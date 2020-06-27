@@ -7,8 +7,8 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/defaults"
 )
 
 // Client is a devtools protocol connection instance.

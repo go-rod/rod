@@ -1,7 +1,7 @@
 package rod_test
 
 import (
-	"github.com/ysmood/rod"
+	"github.com/go-rod/rod"
 )
 
 func (s *S) TestPageElements() {

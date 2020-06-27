@@ -1,8 +1,8 @@
 package rod
 
 import (
-	"github.com/ysmood/rod/lib/input"
-	"github.com/ysmood/rod/lib/proto"
+	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame

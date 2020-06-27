@@ -1,8 +1,8 @@
 # Overview
 
-[![GoDoc](https://godoc.org/github.com/ysmood/rod?status.svg)](https://pkg.go.dev/github.com/ysmood/rod?tab=doc)
-[![codecov](https://codecov.io/gh/ysmood/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/ysmood/rod)
-[![goreport](https://goreportcard.com/badge/github.com/ysmood/rod)](https://goreportcard.com/report/github.com/ysmood/rod)
+[![GoDoc](https://godoc.org/github.com/go-rod/rod?status.svg)](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
+[![codecov](https://codecov.io/gh/go-rod/rod/branch/master/graph/badge.svg)](https://codecov.io/gh/go-rod/rod)
+[![goreport](https://goreportcard.com/badge/github.com/go-rod/rod)](https://goreportcard.com/report/github.com/go-rod/rod)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
 ![logo](fixtures/banner.png)
@@ -16,7 +16,7 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Automatically find or download [browser](lib/launcher)
-- No external dependencies, [CI](https://github.com/ysmood/rod/actions) tested on Linux, Mac, and Windows
+- No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
@@ -28,7 +28,7 @@ You can find examples from [here](examples_test.go) or [here](lib/examples).
 
 For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`,
-for example, use Github online [search in repository](https://github.com/ysmood/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
+for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [chat room][discord room].

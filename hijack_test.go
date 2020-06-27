@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/go-rod/rod"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
 )
 
 func (s *S) TestHijack() {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 type stateKey struct {

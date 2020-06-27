@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/ysmood/rod"
 	"log"
+
+	"github.com/go-rod/rod"
 )
 
 // This example shows how we can use Eval to run scripts in the page.

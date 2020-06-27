@@ -9,8 +9,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
 )
 
 // HeaderName for remote launch

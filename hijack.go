@@ -9,9 +9,9 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // HijackRequests creates a new router instance for requests hijacking.

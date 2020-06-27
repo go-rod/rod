@@ -3,7 +3,7 @@ package input
 import (
 	"runtime"
 
-	"github.com/ysmood/rod/lib/proto"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // Key contains information for generating a key press based off the unicode

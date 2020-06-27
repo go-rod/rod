@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
 )
 
 var slash = filepath.FromSlash

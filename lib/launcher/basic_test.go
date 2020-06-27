@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 func TestDownload(t *testing.T) {

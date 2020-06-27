@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/ysmood/rod"
 	"log"
 	"strings"
+
+	"github.com/go-rod/rod"
 )
 
 // This example demonstrates  how to extract text from a specific element.

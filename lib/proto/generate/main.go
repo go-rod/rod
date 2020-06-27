@@ -33,7 +33,7 @@ func main() {
 			"testing"
 
 			"github.com/stretchr/testify/assert"
-			"github.com/ysmood/rod/lib/proto"
+			"github.com/go-rod/rod/lib/proto"
 		)
 	`
 

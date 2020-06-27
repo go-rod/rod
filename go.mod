@@ -1,4 +1,4 @@
-module github.com/ysmood/rod
+module github.com/go-rod/rod
 
 go 1.14
 

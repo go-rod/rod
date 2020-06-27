@@ -5,8 +5,8 @@ package proto_test
 import (
 	"testing"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/stretchr/testify/assert"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 func TestAccessibilityDisable(t *testing.T) {

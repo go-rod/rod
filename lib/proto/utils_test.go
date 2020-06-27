@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 type Client struct {

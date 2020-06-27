@@ -3,8 +3,8 @@ package rod
 import (
 	"fmt"
 
-	"github.com/ysmood/rod/lib/input"
-	"github.com/ysmood/rod/lib/proto"
+	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // Mouse represents the mouse on a page, it's always related the main frame

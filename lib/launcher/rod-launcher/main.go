@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/defaults"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 func main() {

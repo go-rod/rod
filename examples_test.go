@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/input"
-	"github.com/ysmood/rod/lib/launcher"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Example_basic is a simple test that opens https://github.com/, searches for

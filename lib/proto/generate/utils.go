@@ -7,9 +7,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/launcher"
 )
 
 func getSchema() gjson.Result {

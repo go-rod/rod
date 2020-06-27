@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/ysmood/rod"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/go-rod/rod"
 )
 
 func main() {

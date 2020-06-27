@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/assets"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // check method and sleep if needed

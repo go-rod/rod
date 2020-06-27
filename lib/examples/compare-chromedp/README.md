@@ -5,19 +5,19 @@ chromedp is one of the most popular libraries available for Go which controls th
 We have emulated the examples they provide using our own library so you can compare which one you prefer.
 
 Occasionally, some of these examples may break if the Rod API gets updated or if the specific websites these examples use get updated.
-We suggest you create an [issue](https://github.com/ysmood/rod/issues/new/choose).
+We suggest you create an [issue](https://github.com/go-rod/rod/issues/new/choose).
 
 You can build and run these examples in the usual Go way:
 
 ```sh
 # retrieve examples
-$ go get -u -d github.com/ysmood/rod/
+$ go get -u -d github.com/go-rod/rod/
 
 # run example <prog>
-$ go run $GOPATH/src/github.com/ysmood/rod/lib/examples/compare-chromedp/<prog>/main.go
+$ go run $GOPATH/src/github.com/go-rod/rod/lib/examples/compare-chromedp/<prog>/main.go
 
 # build example <prog>
-$ go build -o <prog> github.com/ysmood/rod/lib/examples/compare-chromedp/<prog>/ && ./<prog>
+$ go build -o <prog> github.com/go-rod/rod/lib/examples/compare-chromedp/<prog>/ && ./<prog>
 ```
 
 | Example                   | chromedp Example                                              | Description                                                                  |

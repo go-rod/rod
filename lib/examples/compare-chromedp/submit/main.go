@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/input"
 	"log"
 	"strings"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/input"
 )
 
 //This example demonstrates how to fill out and submit a form.

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Element represents the DOM element

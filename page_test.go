@@ -12,10 +12,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/input"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 func (s *S) TestSetCookies() {

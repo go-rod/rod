@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/leakless"
-	"github.com/ysmood/rod/lib/defaults"
 )
 
 // Launcher is a helper to launch browser binary smartly

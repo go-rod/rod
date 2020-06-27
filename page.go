@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/assets"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Page implements the proto.Caller interface

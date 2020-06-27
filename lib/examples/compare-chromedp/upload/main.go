@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/launcher"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")

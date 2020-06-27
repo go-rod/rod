@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
 	"log"
 	"net/http"
+
+	"github.com/go-rod/rod"
+	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")

@@ -11,12 +11,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/cdp"
-	"github.com/ysmood/rod/lib/defaults"
-	"github.com/ysmood/rod/lib/launcher"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Browser implements the proto.Caller interface
@@ -25,7 +25,7 @@ var _ proto.Caller = &Browser{}
 // Browser represents the browser
 // It doesn't depends on file system, it should work with remote browser seamlessly.
 // To check the env var you can use to quickly enable options from CLI, check here:
-// https://pkg.go.dev/github.com/ysmood/rod/lib/defaults
+// https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 type Browser struct {
 	// these are the handler for ctx
 	ctx           context.Context

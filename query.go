@@ -6,8 +6,8 @@ import (
 	"context"
 	"regexp"
 
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 // Elements provides some helpers to deal with element list

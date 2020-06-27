@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/launcher"
-	"github.com/ysmood/rod/lib/proto"
 )
 
 func (s *S) TestBrowserPages() {

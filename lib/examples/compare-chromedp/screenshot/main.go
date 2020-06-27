@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/ysmood/kit"
-	"github.com/ysmood/rod"
-	"github.com/ysmood/rod/lib/proto"
 	"io/ioutil"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/kit"
 )
 
 // This example demonstrates how to take a screenshot of a specific element and
