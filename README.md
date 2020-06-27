@@ -53,11 +53,11 @@ Here's the common start process of Rod:
 
 To let rod work with docker is very easy:
 
-1. Run the Rod image `docker run -p 9222:9222 ysmood/rod`
+1. Run the Rod image `docker run -p 9222:9222 rodorg/rod`
 
 2. Open another terminal and run a go program like this [example](lib/examples/remote-launch/main.go)
 
-The [Rod image](https://hub.docker.com/repository/docker/ysmood/rod)
+The [Rod image](https://hub.docker.com/repository/docker/rodorg/rod)
 can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.

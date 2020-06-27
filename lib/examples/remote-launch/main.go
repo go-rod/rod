@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Launch browser remotely
-	// docker run -p 9222:9222 ysmood/rod
+	// docker run -p 9222:9222 rodorg/rod
 	client := launcher.NewRemote("ws://localhost:9222").Client()
 
 	browser := rod.New().Client(client).Connect()

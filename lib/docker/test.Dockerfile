@@ -1,6 +1,6 @@
 # this is only for rod unit tests
 
-FROM ysmood/rod
+FROM rodorg/rod
 
 RUN apk add git go
 

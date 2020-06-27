@@ -63,6 +63,6 @@ jobs:
 
     - name: test
       run: |
-        docker build -t ysmood/rod -f lib/docker/Dockerfile .
+        docker build -t rodorg/rod -f lib/docker/Dockerfile .
         docker build -t test -f lib/docker/test.Dockerfile .
         docker run -v $(pwd):/t -w /t test

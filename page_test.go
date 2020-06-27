@@ -444,7 +444,7 @@ func (s *S) TestFonts() {
 		So this one should be checked manually:
 
 		GOOS=linux go test -c -o tmp/rod.test
-		docker run --rm -itv $(pwd):/t -w /t ysmood/rod sh
+		docker run --rm -itv $(pwd):/t -w /t rodorg/rod sh
 		./tmp/rod.test -test.v -test.run Test/TestFonts
 		open tmp/fonts.pdf
 	*/

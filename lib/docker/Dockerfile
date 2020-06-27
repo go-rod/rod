@@ -1,10 +1,10 @@
 # Examples:
 #
-#   docker build -t ysmood/rod -f lib/docker/Dockerfile .
+#   docker build -t rodorg/rod -f lib/docker/Dockerfile .
 #
 #   // use mirrors
 #   docker build --build-arg goproxy=https://goproxy.io,direct --build-arg alpine_mirror=mirrors.tuna.tsinghua.edu.cn \
-#     -t ysmood/rod -f lib/docker/Dockerfile .
+#     -t rodorg/rod -f lib/docker/Dockerfile .
 
 # build rod-launcher tool
 FROM golang:alpine AS go
