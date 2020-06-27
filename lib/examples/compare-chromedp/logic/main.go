@@ -50,7 +50,7 @@ func listAwesomeGoProjects(browser *rod.Browser, sect string) (map[string]projec
 	res := make(map[string]projectDesc)
 	for i := 0; i < len(projects); i++ {
 		res[projects[i].Describe().NodeValue] = projectDesc{
-			URL:         linksAndDescriptions[2*i].Eval("() => this.href").Raw,
+			URL:         linksAndDescriptions[2*i].Property("href").Str,
 			Description: strings.TrimPrefix(strings.TrimSpace(linksAndDescriptions[2*i+1].Describe().NodeValue), "- "),
 		}
 	}
