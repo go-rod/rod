@@ -55,7 +55,7 @@ func (s *S) TestPageElementsX() {
 	s.page.Navigate(srcFile("fixtures/input.html"))
 	s.page.Element("body")
 	list := s.page.ElementsX("//input")
-	s.Len(list, 3)
+	s.Len(list, 4)
 }
 
 func (s *S) TestElementMatches() {
