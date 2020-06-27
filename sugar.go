@@ -471,10 +471,25 @@ func (el *Element) Input(text string) *Element {
 	return el
 }
 
+// Blur will call the blur function on the element.
+// On inputs, this will deselect the element.
+func (el *Element) Blur() *Element {
+	kit.E(el.BlurE())
+	return el
+}
+
 // Select the option elements that match the selectors, the selector can be text content or css selector
 func (el *Element) Select(selectors ...string) *Element {
 	kit.E(el.SelectE(selectors))
 	return el
+}
+
+// Attribute returns the requested attribute's value of the element
+// if the attribute is not found, it will return an empty string.
+func (el *Element) Attribute(name string) *string {
+	attr, err := el.AttributeE(name)
+	kit.E(err)
+	return attr
 }
 
 // SetFiles sets files for the given file input element

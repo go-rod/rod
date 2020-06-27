@@ -90,12 +90,35 @@ func (s *S) TestSelectText() {
 	s.Equal("t__t", el.Text())
 }
 
+func (s *S) TestBlur() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	el := p.Element("#blur").Input("test").Blur()
+
+	s.Equal("ok", *el.Attribute("a"))
+}
+
 func (s *S) TestSelect() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("select")
 	el.Select("C")
 
 	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
+}
+
+func (s *S) TestAttribute() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	el := p.Element("textarea")
+	cols := el.Attribute("cols")
+	rows := el.Attribute("rows")
+
+	s.Equal("30", *cols)
+	s.Equal("10", *rows)
+
+	p = s.page.Navigate(srcFile("fixtures/click.html"))
+	el = p.Element("button").Click()
+
+	s.Equal("ok", *el.Attribute("a"))
+	s.Nil(el.Attribute("b"))
 }
 
 func (s *S) TestSetFiles() {

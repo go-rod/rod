@@ -423,7 +423,7 @@ func (s *S) TestPageOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
 	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().LocalName)
-	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 3)
+	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 4)
 	s.EqualValues(1, p.Eval(`() => 1`).Int())
 
 	s.Panics(func() {
