@@ -34,7 +34,7 @@ RUN apk add chromium
 RUN apk add font-noto
 RUN apk add font-noto-cjk
 RUN apk add font-noto-arabic font-noto-thai font-noto-devanagari
-RUN apk add font-noto-emoji --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+RUN apk add font-noto-emoji --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 COPY lib/docker/fonts-local.conf /etc/fonts/local.conf
 
 # timezone support
