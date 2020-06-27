@@ -179,6 +179,16 @@ func (el *Element) AttributeE(name string) (*string, error) {
 	return &attr.Value.Str, nil
 }
 
+// PropertyE is similar to the method Property
+func (el *Element) PropertyE(name string) (proto.JSON, error) {
+	prop, err := el.EvalE(true, "(n) => this[n]", Array{name})
+	if err != nil {
+		return proto.JSON{}, err
+	}
+
+	return prop.Value, nil
+}
+
 // SetFilesE doc is similar to the method SetFiles
 func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}

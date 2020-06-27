@@ -492,6 +492,14 @@ func (el *Element) Attribute(name string) *string {
 	return attr
 }
 
+// Property returns the value of the element's property as a json format.
+// If the property is not found, it will return a null JSON object.
+func (el *Element) Property(name string) proto.JSON {
+	prop, err := el.PropertyE(name)
+	kit.E(err)
+	return prop
+}
+
 // SetFiles sets files for the given file input element
 func (el *Element) SetFiles(paths ...string) *Element {
 	kit.E(el.SetFilesE(paths))
