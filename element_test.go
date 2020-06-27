@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"github.com/tidwall/gjson"
 	"image/png"
 	"path/filepath"
 	"time"
@@ -119,6 +120,23 @@ func (s *S) TestAttribute() {
 
 	s.Equal("ok", *el.Attribute("a"))
 	s.Nil(el.Attribute("b"))
+}
+
+func (s *S) TestProperty() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	el := p.Element("textarea")
+	cols := el.Property("cols")
+	rows := el.Property("rows")
+
+	s.Equal(float64(30), cols.Num)
+	s.Equal(float64(10), rows.Num)
+
+	p = s.page.Navigate(srcFile("fixtures/open-page.html"))
+	el = p.Element("a")
+
+	s.Equal("link", el.Property("id").Str)
+	s.Equal("_blank", el.Property("target").Str)
+	s.Equal(gjson.Null, el.Property("test").Type)
 }
 
 func (s *S) TestSetFiles() {
