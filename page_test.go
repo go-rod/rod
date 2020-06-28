@@ -402,7 +402,7 @@ func (s *S) TestPageScroll() {
 		p.Element("button").WaitStable()
 		offset := p.Eval("() => ({x: window.pageXOffset, y: window.pageYOffset})")
 		if offset.Get("x").Int() == 300 {
-			s.EqualValues(500, offset.Get("y").Int())
+			s.GreaterOrEqual(int64(10), 500-offset.Get("y").Int())
 			return true, nil
 		}
 		return false, nil

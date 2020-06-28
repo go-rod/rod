@@ -228,6 +228,8 @@ var Helper = `
         case 'INPUT':
         case 'TEXTAREA':
           return this.value
+        case 'SELECT':
+          return Array.from(this.selectedOptions).map(el => el.innerText).join()
         default:
           return this.innerText
       }

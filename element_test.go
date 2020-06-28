@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/tidwall/gjson"
 	"image/png"
 	"path/filepath"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 )
 
@@ -98,12 +98,13 @@ func (s *S) TestBlur() {
 	s.Equal("ok", *el.Attribute("a"))
 }
 
-func (s *S) TestSelect() {
+func (s *S) TestSelectOptions() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("select")
-	el.Select("C")
+	el.Select("B", "C")
 
-	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
+	s.Equal("B,C", el.Text())
+	s.EqualValues(1, el.Property("selectedIndex").Int())
 }
 
 func (s *S) TestAttribute() {
@@ -165,7 +166,7 @@ func (s *S) TestSelectQueryNum() {
 	el := p.Element("select")
 	el.Select("123")
 
-	s.EqualValues(0, el.Eval("() => this.selectedIndex").Int())
+	s.EqualValues(-1, el.Eval("() => this.selectedIndex").Int())
 }
 
 func (s *S) TestEnter() {
