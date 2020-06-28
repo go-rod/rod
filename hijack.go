@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -61,6 +63,10 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 					if ctx.Skip {
 						return
+					}
+
+					if ctx.Skip {
+						continue
 					}
 
 					err := ctx.Response.payload.Call(r.caller)
@@ -184,7 +190,7 @@ type Hijack struct {
 }
 
 // LoadResponseE will send request to the real destination and load the response as default response to override.
-func (h *Hijack) LoadResponseE() error {
+func (h *Hijack) LoadResponseE(loadBody bool) error {
 	code, err := h.Response.StatusCodeE()
 	if err != nil {
 		return err
@@ -203,18 +209,20 @@ func (h *Hijack) LoadResponseE() error {
 	}
 	h.Response.SetHeader(list...)
 
-	body, err := h.Response.BodyE()
-	if err != nil {
-		return err
+	if loadBody {
+		body, err := h.Response.BodyE()
+		if err != nil {
+			return err
+		}
+		h.Response.SetBody(body)
 	}
-	h.Response.SetBody(body)
 
 	return nil
 }
 
 // LoadResponse will send request to the real destination and load the response as default response to override.
 func (h *Hijack) LoadResponse() {
-	kit.E(h.LoadResponseE())
+	kit.E(h.LoadResponseE(true))
 }
 
 // HijackRequest context
@@ -392,6 +400,22 @@ func (ctx *HijackResponse) Body() []byte {
 	return b
 }
 
+// BodyStreamE returns the stream of the body
+func (ctx *HijackResponse) BodyStreamE() (io.Reader, error) {
+	res, err := ctx.req.Response()
+	if err != nil {
+		return nil, err
+	}
+	return res.Body, nil
+}
+
+// BodyStream returns the stream of the body
+func (ctx *HijackResponse) BodyStream() io.Reader {
+	body, err := ctx.BodyStreamE()
+	kit.E(err)
+	return body
+}
+
 // StringBody of response
 func (ctx *HijackResponse) StringBody() string {
 	return string(ctx.Body())
@@ -420,7 +444,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 
 // GetDownloadFileE of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
-func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
+func (p *Page) GetDownloadFileE(pattern string) func() (http.Header, io.Reader, error) {
 	enable := p.DisableDomain(&proto.FetchEnable{})
 
 	_ = proto.BrowserSetDownloadBehavior{
@@ -430,7 +454,7 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 
 	r := p.HijackRequests()
 
-	return func() ([]byte, error) {
+	return func() (http.Header, io.Reader, error) {
 		defer enable()
 
 		defer func() {
@@ -440,7 +464,8 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 			}.Call(r.caller)
 		}()
 
-		var data []byte
+		var body io.Reader
+		var header http.Header
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
 
@@ -448,31 +473,37 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 		err = r.AddE(pattern, func(ctx *Hijack) {
 			defer wg.Done()
 
+			ctx.Skip = true
+
 			ctx.OnError = func(e error) {
 				err = e
 			}
 
-			err = ctx.LoadResponseE()
+			err = ctx.LoadResponseE(false)
 			if err != nil {
 				return
 			}
 
-			data, err = ctx.Response.BodyE()
+			header, err = ctx.Response.HeadersE()
+			if err != nil {
+				return
+			}
+
+			body, err = ctx.Response.BodyStreamE()
 		})
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		go r.Run()
-		defer r.Stop()
-
 		wg.Wait()
+		r.Stop()
 
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		return data, nil
+		return header, body, nil
 	}
 }
 
@@ -480,7 +511,9 @@ func (p *Page) GetDownloadFileE(pattern string) func() ([]byte, error) {
 func (p *Page) GetDownloadFile(pattern string) func() []byte {
 	wait := p.GetDownloadFileE(pattern)
 	return func() []byte {
-		data, err := wait()
+		_, body, err := wait()
+		kit.E(err)
+		data, err := ioutil.ReadAll(body)
 		kit.E(err)
 		return data
 	}
