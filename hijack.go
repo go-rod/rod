@@ -61,7 +61,12 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 				if h.regexp.MatchString(e.Request.URL) {
 					h.handler(ctx)
 
-					if ctx.Skip {
+					if ctx.continueRequest != nil {
+						ctx.continueRequest.RequestID = e.RequestID
+						err := ctx.continueRequest.Call(r.caller)
+						if err != nil {
+							ctx.OnError(err)
+						}
 						return
 					}
 
@@ -187,6 +192,13 @@ type Hijack struct {
 
 	// Skip to next handler
 	Skip bool
+
+	continueRequest *proto.FetchContinueRequest
+}
+
+// ContinueRequest without hijacking
+func (h *Hijack) ContinueRequest(cq *proto.FetchContinueRequest) {
+	h.continueRequest = cq
 }
 
 // LoadResponseE will send request to the real destination and load the response as default response to override.

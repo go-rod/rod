@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
 )
 
@@ -77,6 +78,34 @@ func (s *S) TestHijack() {
 
 	s.Equal("201 test key=val", s.page.Element("#a").Text())
 	s.Equal("b", s.page.Element("#b").Text())
+}
+
+func (s *S) TestHijackContinue() {
+	url, engine, close := serve()
+	defer close()
+
+	// to simulate a backend server
+	engine.GET("/", ginHTML(`<html>
+	<body></body>
+	<script>
+		fetch('/a').then(async (res) => {
+			document.body.innerText = await res.text()
+		})
+	</script></html>`))
+	engine.GET("/a", ginString(`ok`))
+
+	router := s.page.HijackRequests()
+	defer router.Stop()
+
+	router.Add(url+"/a", func(ctx *rod.Hijack) {
+		ctx.ContinueRequest(&proto.FetchContinueRequest{})
+	})
+
+	go router.Run()
+
+	s.page.Navigate(url)
+
+	s.Equal("ok", s.page.Element("body").Text())
 }
 
 func (s *S) TestHandleAuth() {
