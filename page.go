@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/kit"
@@ -157,10 +158,25 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// ViewportE doc is similar to the method Viewport
+// ViewportE doc is similar to the method Viewport. If params is nil, it will clear the override.
 func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
-	err := params.Call(p)
-	return err
+	if params == nil {
+		return proto.EmulationClearDeviceMetricsOverride{}.Call(p)
+	}
+	return params.Call(p)
+}
+
+// EmulateE the device, such as iPhone9. If device is empty, it will clear the override.
+func (p *Page) EmulateE(device devices.DeviceType, landscape bool) error {
+	v := devices.GetViewport(device, landscape)
+	u := devices.GetUserAgent(device)
+
+	err := p.ViewportE(v)
+	if err != nil {
+		return err
+	}
+
+	return p.SetUserAgentE(u)
 }
 
 // StopLoadingE forces the page stop navigation and pending resource fetches.

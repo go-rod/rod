@@ -28,11 +28,15 @@ var Monitor = {{.monitor}}
 
 // MonitorPage for rod
 var MonitorPage = {{.monitorPage}}
+
+// DeviceList for rod
+var DeviceList = {{.deviceList}}
 `,
 		"helper", get("helper.js"),
 		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
 		"monitor", get("monitor.gohtml"),
 		"monitorPage", get("monitor-page.gohtml"),
+		"deviceList", getDeviceList(),
 	)
 
 	kit.E(kit.OutputFile(slash("lib/assets/assets.go"), build, nil))
@@ -63,4 +67,13 @@ func lint() {
 	}
 
 	kit.Exec(eslint, "--fix", ".").MustDo()
+}
+
+func getDeviceList() string {
+	// we use the list from the web UI of devtools
+	data := kit.Req(
+		"https://raw.githubusercontent.com/ChromeDevTools/devtools-frontend/master/front_end/emulated_devices/module.json",
+	).MustJSON().Get("extensions").Raw
+
+	return encode(data)
 }

@@ -5,6 +5,7 @@ package rod
 import (
 	"time"
 
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -160,6 +161,12 @@ func (p *Page) Viewport(width, height int64, deviceScaleFactor float64, mobile b
 		DeviceScaleFactor: deviceScaleFactor,
 		Mobile:            mobile,
 	}))
+	return p
+}
+
+// Emulate the device, such as iPhone9. If device is empty, it will clear the override.
+func (p *Page) Emulate(device devices.DeviceType) *Page {
+	kit.E(p.EmulateE(device, false))
 	return p
 }
 

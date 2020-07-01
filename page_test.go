@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
@@ -147,6 +148,19 @@ func (s *S) TestSetViewport() {
 	defer page2.Close()
 	res = page2.Eval(`() => [window.innerWidth, window.innerHeight]`)
 	s.NotEqual(int64(317), res.Get("0").Int())
+}
+
+func (s *S) TestEmulateDevice() {
+	page := s.browser.Page(srcFile("fixtures/click.html"))
+	defer page.Close()
+	page.Emulate(devices.IPhone6or7or8Plus)
+	res := page.Eval(`() => [window.innerWidth, window.innerHeight, navigator.userAgent]`)
+	s.EqualValues(980, res.Get("0").Int())
+	s.EqualValues(1743, res.Get("1").Int())
+	s.Equal(
+		"Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		res.Get("2").String(),
+	)
 }
 
 func (s *S) TestPageAddScriptTag() {

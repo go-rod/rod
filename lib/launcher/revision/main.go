@@ -29,7 +29,6 @@ func main() {
 	}
 
 	revision := matchs[len(matchs)-1][1]
-	fmt.Println(revision)
 
 	if revision == "" {
 		kit.E(fmt.Errorf("empty version of the latest chromium %s", revision))
