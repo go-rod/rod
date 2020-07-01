@@ -19,6 +19,11 @@ import (
 	"github.com/ysmood/kit"
 )
 
+func (s *S) TestGetPageURL() {
+	s.page.Navigate(srcFile("fixtures/click-iframe.html")).WaitLoad()
+	s.Regexp(`/fixtures/click-iframe.html\z`, s.page.Info().URL)
+}
+
 func (s *S) TestSetCookies() {
 	url, _, close := serve()
 	defer close()

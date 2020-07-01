@@ -31,9 +31,10 @@ Such as the usage of method `HandleAuth`, you can search all the `*_test.go` fil
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
+[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and chromedp.
+
 If you have questions, please raise an issue or join the [chat room][discord room].
 
-#### You can find a comparison of our library to chromedp [here](lib/examples/compare-chromedp).
 
 ## How it works
 

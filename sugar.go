@@ -67,6 +67,13 @@ func (ps Pages) FindByURL(regex string) *Page {
 	return p
 }
 
+// Info of the page, such as the URL or title of the page
+func (p *Page) Info() *proto.TargetTargetInfo {
+	info, err := p.InfoE()
+	kit.E(err)
+	return info
+}
+
 // Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
 func (p *Page) Cookies(urls ...string) []*proto.NetworkCookie {

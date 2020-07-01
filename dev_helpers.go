@@ -58,11 +58,9 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 		))
 	})
 	srv.Engine.GET("/api/page/:id", func(ctx kit.GinContext) {
-		info, err := proto.TargetGetTargetInfo{
-			TargetID: proto.TargetTargetID(ctx.Param("id")),
-		}.Call(b)
+		info, err := b.pageInfo(proto.TargetTargetID(ctx.Param("id")))
 		kit.E(err)
-		ctx.PureJSON(http.StatusOK, info.TargetInfo)
+		ctx.PureJSON(http.StatusOK, info)
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
 		id := proto.TargetTargetID(ctx.Param("id"))

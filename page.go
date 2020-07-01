@@ -56,15 +56,20 @@ func (p *Page) Root() *Page {
 	return f
 }
 
+// InfoE of the page, such as the URL or title of the page
+func (p *Page) InfoE() (*proto.TargetTargetInfo, error) {
+	return p.browser.pageInfo(p.TargetID)
+}
+
 // CookiesE returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
 func (p *Page) CookiesE(urls []string) ([]*proto.NetworkCookie, error) {
 	if len(urls) == 0 {
-		info, err := proto.TargetGetTargetInfo{TargetID: p.TargetID}.Call(p)
+		info, err := p.InfoE()
 		if err != nil {
 			return nil, err
 		}
-		urls = []string{info.TargetInfo.URL}
+		urls = []string{info.URL}
 	}
 
 	res, err := proto.NetworkGetCookies{Urls: urls}.Call(p)
