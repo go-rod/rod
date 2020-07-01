@@ -90,9 +90,10 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 // AddE a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
-func (r *HijackRouter) AddE(pattern string, handler func(*Hijack)) error {
+func (r *HijackRouter) AddE(pattern string, resourceType proto.NetworkResourceType, handler func(*Hijack)) error {
 	r.enable.Patterns = append(r.enable.Patterns, &proto.FetchRequestPattern{
-		URLPattern: pattern,
+		URLPattern:   pattern,
+		ResourceType: resourceType,
 	})
 
 	reg := regexp.MustCompile(proto.PatternToReg(pattern))
@@ -109,7 +110,7 @@ func (r *HijackRouter) AddE(pattern string, handler func(*Hijack)) error {
 // Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
 func (r *HijackRouter) Add(pattern string, handler func(*Hijack)) {
-	kit.E(r.AddE(pattern, handler))
+	kit.E(r.AddE(pattern, "", handler))
 }
 
 // RemoveE handler via the pattern
@@ -456,7 +457,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 
 // GetDownloadFileE of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
-func (p *Page) GetDownloadFileE(pattern string) func() (http.Header, io.Reader, error) {
+func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResourceType) func() (http.Header, io.Reader, error) {
 	enable := p.DisableDomain(&proto.FetchEnable{})
 
 	_ = proto.BrowserSetDownloadBehavior{
@@ -482,7 +483,7 @@ func (p *Page) GetDownloadFileE(pattern string) func() (http.Header, io.Reader, 
 		wg.Add(1)
 
 		var err error
-		err = r.AddE(pattern, func(ctx *Hijack) {
+		err = r.AddE(pattern, resourceType, func(ctx *Hijack) {
 			defer wg.Done()
 
 			ctx.Skip = true
@@ -521,7 +522,7 @@ func (p *Page) GetDownloadFileE(pattern string) func() (http.Header, io.Reader, 
 
 // GetDownloadFile of the next download url that matches the pattern, returns the file content.
 func (p *Page) GetDownloadFile(pattern string) func() []byte {
-	wait := p.GetDownloadFileE(pattern)
+	wait := p.GetDownloadFileE(pattern, "")
 	return func() []byte {
 		_, body, err := wait()
 		kit.E(err)
