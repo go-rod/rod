@@ -20,24 +20,38 @@ func main() {
 	flag.Parse()
 
 	// start cookie server
-	go kit.E(cookieServer(fmt.Sprintf(":%d", *flagPort)))
-
-	browser := rod.New().Connect()
-	defer browser.Close()
+	go cookieServer(fmt.Sprintf(":%d", *flagPort))
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
+	expr := &proto.TimeSinceEpoch{Time: time.Now().Add(180 * 24 * time.Hour)}
 
-	res := setcookies(browser.Page(""),
-		host,
-		"cookie1", "value1",
-		"cookie2", "value2",
-	)
+	page := rod.New().Connect().Page("")
 
-	log.Printf("chrome received cookies: %s", res)
+	page.SetCookies(&proto.NetworkCookieParam{
+		Name:     "cookie1",
+		Value:    "value1",
+		Domain:   "localhost",
+		HTTPOnly: true,
+		Expires:  expr,
+	}, &proto.NetworkCookieParam{
+		Name:     "cookie2",
+		Value:    "value2",
+		Domain:   "localhost",
+		HTTPOnly: true,
+		Expires:  expr,
+	})
+
+	page.Navigate(host)
+
+	// read network values
+	kit.Dump(page.Cookies())
+
+	// chrome received cookies
+	log.Printf("chrome received cookies: %s", page.Element(`#result`).Text())
 }
 
 // cookieServer creates a simple HTTP server that logs any passed cookies.
-func cookieServer(addr string) error {
+func cookieServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
 		cookies := req.Cookies()
@@ -51,40 +65,7 @@ func cookieServer(addr string) error {
 		}
 		kit.E(fmt.Fprintf(res, indexHTML, string(buf)))
 	})
-	return http.ListenAndServe(addr, mux)
-}
-
-// setcookies runs a task to navigate to a host with the passed cookies set
-// on the network request.
-func setcookies(page *rod.Page, host string, cookies ...string) (res string) {
-	if len(cookies)%2 != 0 {
-		panic("length of cookies must be divisible by 2")
-	}
-
-	expr := proto.TimeSinceEpoch{Time: time.Now().Add(180 * 24 * time.Hour)}
-
-	cookieList := make([]*proto.NetworkCookieParam, 0)
-	for i := 0; i < len(cookies); i += 2 {
-		cookieList = append(cookieList, &proto.NetworkCookieParam{
-			Name:     cookies[i],
-			Value:    cookies[i+1],
-			Domain:   "localhost",
-			HTTPOnly: true,
-			Expires:  &expr,
-		})
-	}
-
-	page.SetCookies(cookieList...)
-
-	page.Navigate(host)
-
-	res = page.Element(`#result`).Text()
-
-	for i, cookie := range page.Cookies() {
-		log.Printf("chrome cookie: %d: %+v", i, cookie)
-	}
-
-	return
+	kit.E(http.ListenAndServe(addr, mux))
 }
 
 const (

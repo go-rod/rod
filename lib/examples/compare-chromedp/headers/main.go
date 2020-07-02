@@ -18,14 +18,11 @@ func main() {
 	flag.Parse()
 
 	// run server
-	go kit.E(headerServer(fmt.Sprintf(":%d", *flagPort)))
-
-	browser := rod.New().Connect()
-	defer browser.Close()
+	go headerServer(fmt.Sprintf(":%d", *flagPort))
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 
-	page := browser.Page(host)
+	page := rod.New().Connect().Page(host)
 
 	page.SetExtraHeaders("X-Header", "my request header")
 	page.Navigate(host)
@@ -35,7 +32,7 @@ func main() {
 }
 
 // headerServer is a simple HTTP server that displays the passed headers in the html.
-func headerServer(addr string) error {
+func headerServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
 		buf, err := json.MarshalIndent(req.Header, "", "  ")
@@ -45,7 +42,7 @@ func headerServer(addr string) error {
 		}
 		kit.E(fmt.Fprintf(res, indexHTML, string(buf)))
 	})
-	return http.ListenAndServe(addr, mux)
+	kit.E(http.ListenAndServe(addr, mux))
 }
 
 const indexHTML = `<!doctype html>

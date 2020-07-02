@@ -10,10 +10,10 @@ import (
 // Note: `this` in the eval function will refer to the element that Eval is
 // called  on. This can be useful for things such as blurring elements.
 func main() {
-	browser := rod.New().Connect()
-
-	page := browser.Page("https://www.google.com/")
-	res := page.Element("#main").Eval("() => Object.keys(window)")
+	res := rod.New().Connect().
+		Page("https://www.google.com/").
+		Element("#main").
+		Eval("() => Object.keys(window)")
 
 	log.Printf("window object keys: %v", res)
 }

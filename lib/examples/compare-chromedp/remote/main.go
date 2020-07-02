@@ -17,9 +17,7 @@ func main() {
 		log.Fatal("must specify -devtools-ws-url")
 	}
 
-	browser := rod.New().ControlURL(*flagDevToolWsURL).Connect()
-
-	page := browser.Page("https://duckduckgo.com")
+	page := rod.New().ControlURL(*flagDevToolWsURL).Connect().Page("https://duckduckgo.com")
 
 	page.Element("#logo_homepage_link").WaitVisible()
 	body := page.Element("html").HTML()

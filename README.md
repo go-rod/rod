@@ -116,6 +116,8 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   When a crash happens, Chromedp will leave the zombie browser process on Windows and Mac.
 
+  For more comparison you can check [here](lib/examples/compare-chromedp). If you compare the `logic` example between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is. Besides, rod has more high-level helpers like WaitRequestIdle, GetDownloadFile, HijackRequests, etc.
+
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.

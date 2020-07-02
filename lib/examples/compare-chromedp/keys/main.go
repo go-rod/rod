@@ -19,14 +19,11 @@ func main() {
 	flag.Parse()
 
 	// run server
-	go kit.E(testServer(fmt.Sprintf(":%d", *flagPort)))
-
-	browser := rod.New().Connect()
-	defer browser.Close()
+	go testServer(fmt.Sprintf(":%d", *flagPort))
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 
-	page := browser.Page(host)
+	page := rod.New().Connect().Page(host)
 
 	val1 := page.Element("#input1").Text()
 	val2 := page.Element("#textarea1").Input("\\b\\b\\n\\naoeu\\n\\ntest1\\n\\nblah2\\n\\n\\t\\t\\t\\b\\bother box!\\t\\ntest4").Text()
@@ -40,12 +37,12 @@ func main() {
 }
 
 // testServer is a simple HTTP server that displays elements and inputs
-func testServer(addr string) error {
+func testServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
 		kit.E(fmt.Fprint(res, indexHTML))
 	})
-	return http.ListenAndServe(addr, mux)
+	kit.E(http.ListenAndServe(addr, mux))
 }
 
 const indexHTML = `<!doctype html>

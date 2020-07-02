@@ -13,10 +13,11 @@ import (
 // to store it into a file.
 func main() {
 	browser := rod.New().Connect()
-	defer browser.Close()
 
+	// capture screenshot of an element
 	browser.Page("https://google.com").Element("#main").Screenshot("elementScreenshot.png")
 
+	// capture entire browser viewport, returning png with quality=90
 	buf, err := browser.Page("https://brank.as/").ScreenshotE(true, &proto.PageCaptureScreenshot{
 		Format:  "png",
 		Quality: 90,

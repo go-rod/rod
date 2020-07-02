@@ -16,23 +16,17 @@ func main() {
 	flag.Parse()
 
 	// run server
-	go kit.E(testServer(fmt.Sprintf(":%d", *flagPort)))
+	go testServer(fmt.Sprintf(":%d", *flagPort))
 
-	browser := rod.New().Connect()
-
-	host := fmt.Sprintf("http://localhost:%d", *flagPort)
-
-	page := browser.Page(host)
+	page := rod.New().Connect().Page(fmt.Sprintf("http://localhost:%d", *flagPort))
 	page.Eval(makeVisibleScript)
 
 	log.Printf("waiting 3s for box to become visible")
 
 	page.Element("#box1").WaitVisible()
-
 	log.Printf(">>>>>>>>>>>>>>>>>>>> BOX1 IS VISIBLE")
 
 	page.Element("#box2").WaitVisible()
-
 	log.Printf(">>>>>>>>>>>>>>>>>>>> BOX2 IS VISIBLE")
 }
 
@@ -43,12 +37,12 @@ const (
 )
 
 // testServer is a simple HTTP server that serves a static html page.
-func testServer(addr string) error {
+func testServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
 		kit.E(fmt.Fprint(res, indexHTML))
 	})
-	return http.ListenAndServe(addr, mux)
+	kit.E(http.ListenAndServe(addr, mux))
 }
 
 const indexHTML = `<!doctype html>

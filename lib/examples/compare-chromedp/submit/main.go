@@ -10,19 +10,11 @@ import (
 
 //This example demonstrates how to fill out and submit a form.
 func main() {
-	browser := rod.New().Connect()
-	defer browser.Close()
+	page := rod.New().Connect().Page("https://github.com/search")
 
-	page := browser.Page("https://github.com/search")
+	page.Element(`input[name=q]`).WaitVisible().Input("chromedp").Press(input.Enter)
 
-	page.ElementX(`//input[@name="q"]`).WaitVisible().Input("chromedp").Press(input.Enter)
-
-	elems := page.ElementsX(`//*[@id="js-pjax-container"]//h2[contains(., 'Search more than')]`)
-	if !elems.Empty() {
-		elems[0].WaitInvisible()
-	}
-
-	res := page.ElementX(`(//*[@id="js-pjax-container"]//ul[contains(@class, "repo-list")]/li[1]//p)[1]`).Text()
+	res := page.ElementMatches("a", "chromedp").Parent().Next().Text()
 
 	log.Printf("got: `%s`", strings.TrimSpace(res))
 }

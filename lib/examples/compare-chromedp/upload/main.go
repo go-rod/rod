@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/ysmood/kit"
 )
 
@@ -19,34 +18,29 @@ var flagPort = flag.Int("port", 8544, "port")
 func main() {
 	flag.Parse()
 
-	// get wd
-	wd, err := os.Getwd()
-	kit.E(err)
-
-	filepath := wd + "/main.go"
-
-	// get some info about the file
-	fi, err := os.Stat(filepath)
-	kit.E(err)
-
 	// start upload server
-	result := make(chan int, 1)
-	go kit.E(uploadServer(fmt.Sprintf(":%d", *flagPort), result))
+	go uploadServer(fmt.Sprintf(":%d", *flagPort))
 
-	url := launcher.New().Headless(false).Launch()
-	browser := rod.New().ControlURL(url).Connect()
-
-	page := browser.Page(fmt.Sprintf("http://localhost:%d", *flagPort))
+	page := rod.New().Connect().Page(fmt.Sprintf("http://localhost:%d", *flagPort))
 
 	page.Element(`input[name="upload"]`).SetFiles("./main.go")
 	page.Element(`input[name="submit"]`).Click()
 
-	page.Element("#result").Text()
-
-	log.Printf("original size: %d, upload size: %d", fi.Size(), <-result)
+	log.Printf(
+		"original size: %d, upload size: %s",
+		size("./main.go"),
+		page.Element("#result").Text(),
+	)
 }
 
-func uploadServer(addr string, result chan int) error {
+// get some info about the file
+func size(file string) int64 {
+	fi, err := os.Stat(file)
+	kit.E(err)
+	return fi.Size()
+}
+
+func uploadServer(addr string) {
 	// create http server and result channel
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -67,10 +61,8 @@ func uploadServer(addr string, result chan int) error {
 		}
 
 		kit.E(fmt.Fprintf(res, resultHTML, len(buf)))
-
-		result <- len(buf)
 	})
-	return http.ListenAndServe(addr, mux)
+	kit.E(http.ListenAndServe(addr, mux))
 }
 
 const (
