@@ -575,6 +575,9 @@ func (p *Page) jsFnPrefix() string {
 	return "rod" + string(p.FrameID) + "."
 }
 
+// Generate full method name in the "lib/assets/helper.js".
+// For example a return value may look like "rod<frameID>.elementMatches"
+// The methods are imported by Page.initJS()
 func (p *Page) jsFn(fnName string) string {
 	return p.jsFnPrefix() + fnName
 }
