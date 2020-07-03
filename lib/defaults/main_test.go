@@ -11,7 +11,7 @@ func TestBasic(t *testing.T) {
 	parse("")
 	assert.Equal(t, "", Monitor)
 
-	parse("show,trace,slow=2s,port=8080,remote,dir=tmp,url=http://test.com,cdp,monitor")
+	parse("show,trace,slow=2s,port=8080,remote,dir=tmp,url=http://test.com,cdp,monitor,blind")
 
 	assert.True(t, Show)
 	assert.True(t, Trace)
@@ -22,6 +22,7 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, "http://test.com", URL)
 	assert.True(t, CDP)
 	assert.Equal(t, ":9273", Monitor)
+	assert.Equal(t, true, Blind)
 
 	parse("monitor=:1234")
 	assert.Equal(t, ":1234", Monitor)

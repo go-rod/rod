@@ -51,7 +51,7 @@ The entry point of all tests is the `setup_test.go` file.
 
 2. `docker run --name rod -itp 9273:9273 -v $(pwd):/t -w /t rod sh`
 
-3. `rod=monitor go test -v -run Test/Click`
+3. `rod=monitor,blind go test -v -run Test/Click`
 
 4. visit `http://[::]:9273` to monitor the tests
 

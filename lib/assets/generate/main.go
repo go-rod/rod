@@ -34,8 +34,8 @@ var DeviceList = {{.deviceList}}
 `,
 		"helper", get("helper.js"),
 		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
-		"monitor", get("monitor.gohtml"),
-		"monitorPage", get("monitor-page.gohtml"),
+		"monitor", get("monitor.html"),
+		"monitorPage", get("monitor-page.html"),
 		"deviceList", getDeviceList(),
 	)
 

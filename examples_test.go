@@ -86,9 +86,8 @@ func Example_headless_with_debug() {
 		Connect()
 
 	// ServeMonitor plays screenshots of each tab. This feature is extremely
-	// useful when debugging with headless mode. Run this example and visit
-	// http://localhost:9777 to see how it works.
-	browser.ServeMonitor(":9777")
+	// useful when debugging with headless mode.
+	browser.ServeMonitor(":9777", true)
 
 	defer browser.Close()
 

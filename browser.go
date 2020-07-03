@@ -112,7 +112,7 @@ func (b *Browser) ConnectE() error {
 		return err
 	}
 
-	b.monitorServer = b.ServeMonitor(defaults.Monitor)
+	b.monitorServer = b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 
 	b.initEvents()
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/ysmood/kit"
 )
 
 func main() {
@@ -15,9 +16,11 @@ func main() {
 	browser := rod.New().Client(client).Connect()
 
 	// You may want to start a server to watch the screenshots inside the docker
-	browser.ServeMonitor(":7777")
+	browser.ServeMonitor(":7777", true)
 
 	fmt.Println(
 		browser.Page("https://github.com").Eval("() => document.title"),
 	)
+
+	kit.Pause()
 }

@@ -44,6 +44,9 @@ var CDP bool
 // Monitor enables the monitor server that plays the screenshots of each tab, default value is 0.0.0.0:9273
 var Monitor string
 
+// Blind whether to open a browser to watch the screenshots or not
+var Blind bool
+
 // Parse the flags
 func init() {
 	parse(os.Getenv("rod"))
@@ -81,6 +84,8 @@ func parse(options string) {
 			if len(kv) == 2 {
 				Monitor = kv[1]
 			}
+		case "blind":
+			Blind = true
 		default:
 			panic("no such rod option: " + kv[0])
 		}

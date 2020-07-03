@@ -32,8 +32,24 @@
 <body>
     <h3>Choose a Page to Monitor</h3>
 
-    {{range .list}}
-        <a href='/page/{{.TargetID}}' title="{{.URL}}">{{.Title}}</a>
-    {{end}}
+    <div id='targets'>
+
+    </div>
+
+    <script>
+        async function update () {
+            const list = await (await fetch('/pages')).json()
+            let html = ""
+            list.forEach((el) => {
+                html += `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>`
+            })
+
+            targets.innerHTML = html
+
+            setTimeout(update, 1000)
+        }
+
+        update()
+    </script>
 </body>
 </html>

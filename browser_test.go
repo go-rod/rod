@@ -79,11 +79,13 @@ func (s *S) TestMonitor() {
 	b := rod.New().Timeout(1 * time.Minute).Connect()
 	defer b.Close()
 	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
-	host := b.ServeMonitor("127.0.0.1:0").Listener.Addr().String()
+	host := b.ServeMonitor("127.0.0.1:0", false).Listener.Addr().String()
 
-	s.Contains(kit.Req("http://"+host).MustString(), string(p.TargetID))
-	s.Contains(kit.Req("http://"+host+"/page/"+string(p.TargetID)).MustString(), p.TargetID)
-	s.Greater(len(kit.Req("http://"+host+"/screenshot/"+string(p.TargetID)).MustBytes()), 1000)
+	page := s.page.Navigate("http://" + host)
+	s.Contains(page.WaitLoad().Element("#targets").HTML(), string(p.TargetID))
+
+	page.Navigate("http://" + host + "/page/" + string(p.TargetID))
+	s.Contains(page.Eval(`() => document.title`).Str, p.TargetID)
 }
 
 func (s *S) TestRemoteLaunch() {

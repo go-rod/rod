@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
 )
@@ -33,9 +34,10 @@ func (el *Element) tryTrace(htmlMessage string) func() {
 	return el.Trace(htmlMessage)
 }
 
-// ServeMonitor starts the monitor server
+// ServeMonitor starts the monitor server.
+// If openBrowser is true, it will try to launcher a browser to play the screenshots.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
-func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
+func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext {
 	if host == "" {
 		return nil
 	}
@@ -45,17 +47,24 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 	opts.SetKeepAlivesEnabled(false)
 	srv.Set(opts)
 
+	srv.Engine.Use(func(ctx kit.GinContext) {
+		defer func() {
+			if err := recover(); err != nil {
+				kit.E(ctx.AbortWithError(400, fmt.Errorf("%v", err)))
+			}
+		}()
+		ctx.Next()
+	})
 	srv.Engine.GET("/", func(ctx kit.GinContext) {
+		ginHTML(ctx, assets.Monitor)
+	})
+	srv.Engine.GET("/pages", func(ctx kit.GinContext) {
 		res, err := proto.TargetGetTargets{}.Call(b)
 		kit.E(err)
-
-		ginHTML(ctx, kit.S(assets.Monitor, "list", res.TargetInfos))
+		ctx.PureJSON(http.StatusOK, res.TargetInfos)
 	})
 	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
-		ginHTML(ctx, kit.S(
-			assets.MonitorPage,
-			"id", ctx.Param("id"),
-		))
+		ginHTML(ctx, assets.MonitorPage)
 	})
 	srv.Engine.GET("/api/page/:id", func(ctx kit.GinContext) {
 		info, err := b.pageInfo(proto.TargetTargetID(ctx.Param("id")))
@@ -70,14 +79,25 @@ func (b *Browser) ServeMonitor(host string) *kit.ServerContext {
 		_, _ = ctx.Writer.Write(p.Screenshot())
 	})
 
+	var viewer *Browser
+
 	go func() { _ = srv.Do() }()
 	go func() {
 		<-b.ctx.Done()
 		_ = srv.Listener.Close()
+		if openBrowser {
+			_ = viewer.CloseE()
+		}
 	}()
 
 	url := "http://" + srv.Listener.Addr().String()
-	kit.Log("[rod] monitor server on", url, "(open it with your browser)")
+
+	if openBrowser {
+		viewer = New().Context(b.ctx, b.ctxCancel).ControlURL(
+			launcher.New().Headless(false).Launch(),
+		).Connect()
+		viewer.Page(url)
+	}
 
 	return srv
 }

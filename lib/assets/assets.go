@@ -365,16 +365,31 @@ var Monitor = `<html>
 <body>
     <h3>Choose a Page to Monitor</h3>
 
-    {{range .list}}
-        <a href='/page/{{.TargetID}}' title="{{.URL}}">{{.Title}}</a>
-    {{end}}
+    <div id='targets'>
+
+    </div>
+
+    <script>
+        async function update () {
+            const list = await (await fetch('/pages')).json()
+            let html = ""
+            list.forEach((el) => {
+                html += ` + "`" + `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>` + "`" + `
+            })
+
+            targets.innerHTML = html
+
+            setTimeout(update, 1000)
+        }
+
+        update()
+    </script>
 </body>
 </html>`
 
 // MonitorPage for rod
 var MonitorPage = `<html>
 <head>
-    <title>Rod Monitor - {{.id}}</title>
     <style>
         body {
             margin: 0;
@@ -425,21 +440,24 @@ var MonitorPage = `<html>
     <img class="screen">
 </body>
 <script>
+    const id = location.pathname.split('/').slice(-1)[0]
     let elImg = document.querySelector('.screen')
     let elTitle = document.querySelector('.title')
     let elUrl = document.querySelector('.url')
     let elRate = document.querySelector('.rate')
     let elErr = document.querySelector('.error')
 
+    document.title = ` + "`" + `Rod Monitor - ${id}` + "`" + `
+
     async function update() {
-        let res = await fetch('/api/page/{{.id}}')
+        let res = await fetch(` + "`" + `/api/page/${id}` + "`" + `)
         let info = await res.json()
         elTitle.value = info.title
         elUrl.value = info.url 
 
         await new Promise((resolve, reject) => {
             let now = new Date()
-            elImg.src = '/screenshot/{{.id}}?t=' + now.getTime()
+            elImg.src = ` + "`" + `/screenshot/${id}?t=${now.getTime()}` + "`" + `
             elImg.style.maxWidth = innerWidth + 'px'
             elImg.onload = resolve
             elImg.onerror = () => reject('error loading screenshots')
