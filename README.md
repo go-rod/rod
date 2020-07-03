@@ -67,6 +67,10 @@ You can easily load balance requests to the cluster of this image, each containe
 
 See the [E suffix](.github/CONTRIBUTING.md#e-suffix).
 
+### Q: Why there is always an "about:blank" page
+
+It's an issue of the browser itself. If we enable the `--no-first-run` flag and we don't create a blank page, it will create a hello page which will consume more power.
+
 ### Q: Does it support other browsers like Firefox or Edge
 
 Rod should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
