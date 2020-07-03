@@ -20,7 +20,7 @@ import (
 // Show disables headless mode
 var Show bool
 
-// Trace enables trace
+// Trace enables tracing
 var Trace bool
 
 // Slow enables slowmotion mode if not zero
@@ -44,7 +44,7 @@ var CDP bool
 // Monitor enables the monitor server that plays the screenshots of each tab, default value is 0.0.0.0:9273
 var Monitor string
 
-// Blind whether to open a browser to watch the screenshots or not
+// Blind is only useful when Monitor is enabled, it decides whether to open a browser to watch the screenshots or not
 var Blind bool
 
 // Parse the flags
