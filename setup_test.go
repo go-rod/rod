@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 
 func Test(t *testing.T) {
 	s := new(S)
-	s.browser = rod.New().Trace(true).Client(nil).Connect()
+	s.browser = rod.New().Client(nil).Connect()
 
 	defer s.browser.Close()
 

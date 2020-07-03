@@ -31,6 +31,10 @@ func (el *Element) tryTrace(htmlMessage string) func() {
 		return func() {}
 	}
 
+	if !el.page.browser.quiet {
+		kit.Log(kit.C("[trace]", "cyan"), htmlMessage)
+	}
+
 	return el.Trace(htmlMessage)
 }
 
@@ -50,7 +54,7 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	srv.Engine.Use(func(ctx kit.GinContext) {
 		defer func() {
 			if err := recover(); err != nil {
-				kit.E(ctx.AbortWithError(400, fmt.Errorf("%v", err)))
+				_ = ctx.AbortWithError(400, fmt.Errorf("%v", err))
 			}
 		}()
 		ctx.Next()
@@ -141,9 +145,19 @@ func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
 	return
 }
 
-func (p *Page) traceFn(js string, params Array) func() {
+func (p *Page) tryTraceFn(js string, params Array) func() {
+	if !p.browser.trace {
+		return func() {}
+	}
+
 	fnName := strings.Replace(js, p.jsFnPrefix(), "rod.", 1)
-	paramsStr := html.EscapeString(strings.Trim(kit.MustToJSON(params), "[]"))
-	msg := fmt.Sprintf("retry <code>%s(%s)</code>", fnName, paramsStr)
+	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
+
+	if !p.browser.quiet {
+		msg := fmt.Sprintf("%s(%s)", fnName, paramsStr)
+		kit.Log(kit.C("[trace]", "cyan"), kit.C("js", "yellow"), msg)
+	}
+
+	msg := fmt.Sprintf("js <code>%s(%s)</code>", fnName, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
 }

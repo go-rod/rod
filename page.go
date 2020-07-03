@@ -456,11 +456,14 @@ func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js
 		}
 	}
 
-	if p.browser.trace {
-		defer p.traceFn(js, params)()
-	}
+	removeTrace := func() {}
+	defer removeTrace()
 
 	return kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		remove := p.tryTraceFn(js, params)
+		removeTrace()
+		removeTrace = remove
+
 		res, err := p.EvalE(true, thisID, js, params)
 		if err != nil {
 			return true, err

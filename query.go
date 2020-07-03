@@ -120,11 +120,12 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 		}
 	}
 
-	if p.browser.trace {
-		defer p.traceFn(js, params)()
-	}
-
+	removeTrace := func() {}
 	err = kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		remove := p.tryTraceFn(js, params)
+		removeTrace()
+		removeTrace = remove
+
 		res, err = p.EvalE(false, thisID, js, params)
 		if err != nil {
 			return true, err
@@ -136,6 +137,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 
 		return true, nil
 	})
+	removeTrace()
 	if err != nil {
 		return nil, err
 	}

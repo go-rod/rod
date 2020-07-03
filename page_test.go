@@ -327,7 +327,8 @@ func (s *S) TestMouseDrag() {
 }
 
 func (s *S) TestNativeDrag() {
-	s.T().Skip("not able to use mouse event to simulate it for now")
+	// devtools doesn't support to use mouse event to simulate it for now
+	s.T().SkipNow()
 
 	page := s.page.Navigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse

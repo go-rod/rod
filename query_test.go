@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/defaults"
 )
 
 func (s *S) TestPageElements() {
@@ -121,6 +122,11 @@ func (s *S) TestElementsFromElementsX() {
 }
 
 func (s *S) TestElementTracing() {
+	s.browser.Trace(true).Quiet(true)
+	defer func() {
+		s.browser.Trace(defaults.Trace).Quiet(defaults.Quiet)
+	}()
+
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	s.Equal(`rod.element("code")`, p.Element("code").Text())
 }

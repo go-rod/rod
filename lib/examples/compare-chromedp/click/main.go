@@ -9,7 +9,11 @@ import (
 
 // This example demonstrates how to use a selector to click on an element.
 func main() {
-	page := rod.New().Connect().Timeout(15 * time.Second).Page("https://golang.org/pkg/time/")
+	page := rod.New().
+		Connect().
+		Trace(true). // log useful info about what rod is doing
+		Timeout(15 * time.Second).
+		Page("https://golang.org/pkg/time/")
 
 	// wait for footer element is visible (ie, page is loaded)
 	page.Element(`body > footer`).WaitVisible()

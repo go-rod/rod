@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -80,4 +81,14 @@ func saveScreenshot(bin []byte, toFile []string) error {
 func ginHTML(ctx kit.GinContext, body string) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 	_, _ = ctx.Writer.WriteString(body)
+}
+
+func mustToJSONForDev(value interface{}) string {
+	buf := new(bytes.Buffer)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+
+	kit.E(enc.Encode(value))
+
+	return buf.String()
 }

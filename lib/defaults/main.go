@@ -23,6 +23,9 @@ var Show bool
 // Trace enables tracing
 var Trace bool
 
+// Quiet is only useful when Trace is enabled. It decides whether to log tracing message or not.
+var Quiet bool
+
 // Slow enables slowmotion mode if not zero
 var Slow time.Duration
 
@@ -65,6 +68,8 @@ func parse(options string) {
 			Show = true
 		case "trace":
 			Trace = true
+		case "quiet":
+			Quiet = true
 		case "slow":
 			var err error
 			Slow, err = time.ParseDuration(kv[1])

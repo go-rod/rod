@@ -36,8 +36,9 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
-	slowmotion time.Duration // slowdown user inputs
-	trace      bool          // enable show auto tracing of user inputs
+	slowmotion time.Duration // see defaults.slow
+	trace      bool          // see defaults.Trace
+	quiet      bool          // see defaults.Quiet
 
 	monitorServer *kit.ServerContext
 
@@ -53,8 +54,9 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
-		trace:      defaults.Trace,
 		slowmotion: defaults.Slow,
+		trace:      defaults.Trace,
+		quiet:      defaults.Quiet,
 		states:     &sync.Map{},
 	}
 
@@ -77,6 +79,12 @@ func (b *Browser) Slowmotion(delay time.Duration) *Browser {
 // Trace enables/disables the visual tracing of the input actions on the page
 func (b *Browser) Trace(enable bool) *Browser {
 	b.trace = enable
+	return b
+}
+
+// Quiet enables/disables log of the. Only useful when Trace is set to true.
+func (b *Browser) Quiet(quiet bool) *Browser {
+	b.quiet = quiet
 	return b
 }
 
