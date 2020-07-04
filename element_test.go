@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"image/png"
 	"path/filepath"
@@ -249,6 +250,19 @@ func (s *S) TestFnErr() {
 	s.Nil(errors.Unwrap(err))
 }
 
+func (s *S) TestElementEWithDepth() {
+	checkStr := `green tea`
+	p := s.page.Navigate(srcFile("fixtures/describe.html"))
+
+	ulDOMNode, err := p.Element(`ul`).DescribeE(-1, true)
+	s.Nil(errors.Unwrap(err))
+
+	data, err := json.Marshal(ulDOMNode)
+	s.Nil(errors.Unwrap(err))
+	// The depth is -1, should contain checkStr
+	s.Contains(string(data), checkStr)
+}
+
 func (s *S) TestElementOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("form")
@@ -269,7 +283,7 @@ func (s *S) TestElementErrors() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
-	_, err := el.Context(ctx, cancel).DescribeE()
+	_, err := el.Context(ctx, cancel).DescribeE(-1, true)
 	s.Error(err)
 
 	_, err = el.Context(ctx, cancel).FrameE()

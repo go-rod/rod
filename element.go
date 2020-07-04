@@ -213,8 +213,19 @@ func (el *Element) SetFilesE(paths []string) error {
 }
 
 // DescribeE doc is similar to the method Describe
-func (el *Element) DescribeE() (*proto.DOMNode, error) {
-	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID}.Call(el)
+// But it can choose depth, depth default is 1, -1 to all
+// please see https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-describeNode
+func (el *Element) DescribeE(depth int, pierce bool) (*proto.DOMNode, error) {
+	var Depth int64
+	switch {
+	case depth < 0:
+		Depth = -1 // -1 to all
+	case depth == 0:
+		Depth = 1
+	default:
+		Depth = int64(depth)
+	}
+	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID, Depth: Depth, Pierce: pierce}.Call(el)
 	if err != nil {
 		return nil, err
 	}
@@ -223,7 +234,7 @@ func (el *Element) DescribeE() (*proto.DOMNode, error) {
 
 // ShadowRootE returns the shadow root of this element
 func (el *Element) ShadowRootE() (*Element, error) {
-	node, err := el.DescribeE()
+	node, err := el.DescribeE(1, false)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +252,7 @@ func (el *Element) ShadowRootE() (*Element, error) {
 
 // FrameE doc is similar to the method Frame
 func (el *Element) FrameE() (*Page, error) {
-	node, err := el.DescribeE()
+	node, err := el.DescribeE(1, false)
 	if err != nil {
 		return nil, err
 	}
