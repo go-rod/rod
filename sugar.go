@@ -422,7 +422,7 @@ func (k *Keyboard) InsertText(text string) {
 // Describe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) Describe() *proto.DOMNode {
-	node, err := el.DescribeE()
+	node, err := el.DescribeE(1, false)
 	kit.E(err)
 	return node
 }
