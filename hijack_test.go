@@ -168,6 +168,7 @@ func (s *S) TestGetDownloadFileWithHijack() {
 
 	r := page.HijackRequests()
 	r.Add("*", func(ctx *rod.Hijack) {
+		ctx.OnError = func(error) {}
 		ctx.LoadResponse()
 	})
 	go r.Run()
