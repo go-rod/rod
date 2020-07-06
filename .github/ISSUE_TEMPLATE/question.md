@@ -9,6 +9,8 @@ assignees: ''
 
 The community is not charity. We welcome constructive questions, but not without limitation.
 
+Learn [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html) will make our life better.
+
 Check before you submit:
 
 - Is this issue general enough to benefit others?

@@ -9,6 +9,8 @@ assignees: ''
 
 **Rod Version:** v0.0.0
 
+[Don't rush to claim that you have found a bug.](http://www.catb.org/~esr/faqs/smart-questions.html#idm368)
+
 ## To Reproduce
 
 Check before you submit:
