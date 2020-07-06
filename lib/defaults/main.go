@@ -35,6 +35,9 @@ var Dir string
 // Port of the remote debugging port
 var Port = "0"
 
+// Bin path of chrome executable file
+var Bin = ""
+
 // URL of the remote debugging address
 var URL = ""
 
@@ -74,6 +77,8 @@ func parse(options string) {
 			var err error
 			Slow, err = time.ParseDuration(kv[1])
 			kit.E(err)
+		case "bin":
+			Bin = kv[1]
 		case "dir":
 			Dir = kv[1]
 		case "port":
