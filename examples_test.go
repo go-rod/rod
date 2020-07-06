@@ -257,51 +257,38 @@ func Example_handle_events() {
 	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
 
-	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
-		// We only want to listen to events which are when a Page is created.
-		// This filters out all other target types are created, e.g service
-		// workers, shared workers, and background pages.
-		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {
-			return
-		}
+	page := browser.Page("")
 
-		// We use the ID to obtain the page ourselves to use.
-		page02 := browser.PageFromTargetID(e.TargetInfo.TargetID)
-
-		// Log "hey" on each newly created page.
-		page02.Eval(`() => console.log("hey")`)
-	})()
-
-	page01 := browser.Page("")
+	done := make(chan kit.Nil)
 
 	// Listen to all events of console output.
-	go page01.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
-		page01.ObjectsToJSON(e.Args).Join(" ")
+	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
+		log := page.ObjectsToJSON(e.Args).Join(" ")
+		fmt.Println(log)
+		close(done)
 	})()
 
-	// You subscribe to events before they occur. To start listening and
-	// consuming to the elements, you must run wait().
-	// Subscribe events before they happen, run the "wait()" to start consuming
-	// the events. We return an optional stop signal at the first event to halt
-	// the event subscription.
-	wait := page01.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
-		return true
-	})
-
-	page01.Navigate("https://example.com")
-
+	wait := page.WaitEvent(&proto.PageLoadEventFired{})
+	page.Navigate("https://example.com")
 	wait()
 
-	// WaitEvent allows us to achieve the same functionality as above.
-	// It waits until the event is called once.
+	// EachEvent allows us to achieve the same functionality as above.
 	if false {
-		page01.WaitEvent(&proto.PageLoadEventFired{})()
+		// Subscribe events before they happen, run the "wait()" to start consuming
+		// the events. We can return an optional stop signal unsubscribe events.
+		wait := page.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
+			return true
+		})
+		page.Navigate("https://example.com")
+		wait()
 	}
 
-	fmt.Println("done")
+	page.Eval(`() => console.log("hello", "world")`)
+
+	<-done
 
 	// Output:
-	// done
+	// hello world
 }
 
 // Example_hijack_requests shows how we can intercept requests and modify
