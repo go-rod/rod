@@ -90,6 +90,7 @@ func New() *Launcher {
 		Flags:  defaultFlags,
 		output: make(chan string),
 		exit:   make(chan kit.Nil),
+		bin:    defaults.Bin,
 		reap:   true,
 	}
 }
