@@ -45,6 +45,14 @@ The entry point of all tests is the `setup_test.go` file.
 
 `rod=show go test -v -run Test/Click`.
 
+### To lint the project
+
+You can use [godev](https://github.com/ysmood/kit#godev) to lint the project on your local:
+
+`godev lint`
+
+We also use it in the CI to enforce the minimum test coverage.
+
 ### To run inside docker
 
 1. `docker build -t rod -f lib/docker/test.Dockerfile .`
