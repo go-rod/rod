@@ -32,6 +32,7 @@ func (b *Browser) Incognito() *Browser {
 }
 
 // Page creates a new tab
+// If url is empty, the default target will be "about:blank".
 func (b *Browser) Page(url string) *Page {
 	p, err := b.PageE(url)
 	kit.E(err)
@@ -98,12 +99,14 @@ func (p *Page) SetExtraHeaders(dict ...string) (cleanup func()) {
 }
 
 // SetUserAgent Allows overriding user agent with the given string.
+// If req is nil, the default user agent will be the same as a mac chrome.
 func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) *Page {
 	kit.E(p.SetUserAgentE(req))
 	return p
 }
 
 // Navigate to url
+// If url is empty, it will navigate to "about:blank".
 func (p *Page) Navigate(url string) *Page {
 	kit.E(p.NavigateE(url))
 	return p
@@ -263,6 +266,12 @@ func (p *Page) AddScriptTag(url string) *Page {
 func (p *Page) AddStyleTag(url string) *Page {
 	kit.E(p.AddStyleTagE(url, ""))
 	return p
+}
+
+// EvalOnNewDocument Evaluates given script in every frame upon creation (before loading frame's scripts).
+func (p *Page) EvalOnNewDocument(js string) {
+	_, err := p.EvalOnNewDocumentE(js)
+	kit.E(err)
 }
 
 // Eval js on the page. The first param must be a js function definition.

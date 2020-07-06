@@ -147,6 +147,7 @@ func (b *Browser) IncognitoE() (*Browser, error) {
 }
 
 // PageE doc is similar to the method Page
+// If url is empty, the default target will be "about:blank".
 func (b *Browser) PageE(url string) (*Page, error) {
 	if url == "" {
 		url = "about:blank"

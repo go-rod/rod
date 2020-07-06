@@ -98,6 +98,7 @@ func (p *Page) SetExtraHeadersE(dict []string) (func(), error) {
 }
 
 // SetUserAgentE Allows overriding user agent with the given string.
+// If req is nil, the default user agent will be the same as a mac chrome.
 func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 	if req == nil {
 		req = &proto.NetworkSetUserAgentOverride{
@@ -110,6 +111,7 @@ func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 }
 
 // NavigateE doc is similar to the method Navigate
+// If url is empty, it will navigate to "about:blank".
 func (p *Page) NavigateE(url string) error {
 	if url == "" {
 		url = "about:blank"
@@ -391,6 +393,16 @@ func (p *Page) AddStyleTagE(url, content string) error {
 	return err
 }
 
+// EvalOnNewDocumentE Evaluates given script in every frame upon creation (before loading frame's scripts).
+func (p *Page) EvalOnNewDocumentE(js string) (proto.PageScriptIdentifier, error) {
+	res, err := proto.PageAddScriptToEvaluateOnNewDocument{Source: js}.Call(p)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Identifier, nil
+}
+
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
 func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
@@ -523,6 +535,11 @@ func (p *Page) initSession() error {
 		return err
 	}
 	p.SessionID = obj.SessionID
+
+	err = proto.PageEnable{}.Call(p)
+	if err != nil {
+		return err
+	}
 
 	res, err := proto.DOMGetDocument{}.Call(p)
 	if err != nil {

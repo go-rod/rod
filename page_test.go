@@ -104,7 +104,7 @@ func (s *S) TestClosePage() {
 }
 
 func (s *S) TestLoadState() {
-	s.False(s.page.LoadState(&proto.PageEnable{}))
+	s.True(s.page.LoadState(&proto.PageEnable{}))
 }
 
 func (s *S) TestPageContext() {
@@ -195,6 +195,22 @@ func (s *S) TestPageAddStyleTag() {
 	kit.E(p.AddStyleTagE("", "h4 { color: green; }"))
 	res = p.Element("h4").Eval(`() => getComputedStyle(this).color`)
 	s.Equal("rgb(0, 128, 0)", res.String())
+}
+
+func (s *S) TestPageEvalOnNewDocument() {
+	p := s.browser.Page("")
+	defer p.Close()
+
+	p.EvalOnNewDocument(`
+  		Object.defineProperty(navigator, 'rod', {
+    		get: () => "rod",
+  		});`)
+
+	// to activate the script
+	p.Navigate("")
+
+	s.Equal("rod", p.Eval("() => navigator.rod").String())
+
 }
 
 func (s *S) TestUntilPage() {
