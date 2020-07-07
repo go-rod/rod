@@ -40,28 +40,6 @@ func Example_basic() {
 	// Output: Git is the most widely used version control system.
 }
 
-// Example_reuse_sessions allows you to use the same session to reduce
-// boilerplate code between multiple actions. An example is when you log into
-// your github account, and you want to reuse the login session in a different
-// task. You can use this method to achieve such functionality.
-func Example_reuse_sessions() {
-	// Launches a new browser with the "new user mode" option, and returns
-	// the URL to control that browser. You can reuse the browser url in
-	// multiple places instead of creating a new browser for each task.
-	url := launcher.NewUserMode().Launch()
-
-	// Using the ControlURL function, we control our single browser instance
-	// instead of creating a new one.
-	browser := rod.New().ControlURL(url).Connect()
-
-	browser.Page("https://github.com")
-
-	fmt.Println("done")
-
-	// Skip
-	// Output: done
-}
-
 // Example_headless_with_debug shows how we can start a browser with debug
 // information and headless mode disabled to show the browser in the foreground.
 // Rod provides a lot of debug options, you can use the Set method to enable
