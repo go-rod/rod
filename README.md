@@ -35,18 +35,17 @@ You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
-
 ## How it works
 
 Here's the common start process of Rod:
 
-1. Try to connect to a Devtools endpoint, if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [here](lib/launcher).
+1. Try to connect to a Devtools endpoint (WebSocket), if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [launcher](lib/launcher).
 
-1. Use the JSON-RPC to talk to the browser endpoint to control it. The client to handle it is [here](lib/cdp).
+1. Use the JSON-RPC to talk to the Devtools endpoint to control the browser. The lib handles it is [cdp](lib/cdp).
 
-1. The type definitions of the data transmitted via JSON-RPC are handled by this [lib](lib/proto).
+1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
 
-1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is [here](lib/assets).
+1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
 
 ## FAQ
 
