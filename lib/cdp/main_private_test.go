@@ -35,5 +35,5 @@ func TestWriteError(t *testing.T) {
 	cdp.wsConn = &wsWriteErrConn{}
 	go cdp.consumeMsg()
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	assert.EqualError(t, err, "err")
+	assert.EqualError(t, err, "context canceled")
 }

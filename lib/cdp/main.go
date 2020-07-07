@@ -13,9 +13,8 @@ import (
 
 // Client is a devtools protocol connection instance.
 type Client struct {
-	ctx          context.Context
-	ctxCancel    func()
-	ctxCancelErr error
+	ctx       context.Context
+	ctxCancel func()
 
 	wsURL  string
 	header http.Header
@@ -159,26 +158,21 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 	kit.E(err)
 
 	callback := make(chan *response)
-	defer close(callback)
 
 	cdp.callbacks.Store(req.ID, callback)
 	defer cdp.callbacks.Delete(req.ID)
 
-	e := kit.Try(func() {
-		cdp.chReq <- data
-	})
-	if err, ok := e.(error); ok {
-		if cdp.ctxCancelErr != nil {
-			return nil, cdp.ctxCancelErr
-		}
-		return nil, err
+	select {
+	case <-cdp.ctx.Done():
+		return nil, cdp.ctx.Err()
+
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case cdp.chReq <- data:
 	}
 
 	select {
 	case <-cdp.ctx.Done():
-		if cdp.ctxCancelErr != nil {
-			return nil, cdp.ctxCancelErr
-		}
 		return nil, cdp.ctx.Err()
 
 	case <-ctx.Done():
@@ -205,12 +199,6 @@ type requestMsg struct {
 
 // consume messages from client and browser
 func (cdp *Client) consumeMsg() {
-	defer func() {
-		close(cdp.chReq)
-		close(cdp.chRes)
-		close(cdp.chEvent)
-	}()
-
 	for {
 		select {
 		case <-cdp.ctx.Done():
@@ -234,9 +222,11 @@ func (cdp *Client) consumeMsg() {
 
 			callback, has := cdp.callbacks.Load(res.ID)
 			if has {
-				_ = kit.Try(func() {
-					callback.(chan *response) <- res
-				})
+				select {
+				case <-cdp.ctx.Done():
+					return
+				case callback.(chan *response) <- res:
+				}
 			}
 		}
 	}
@@ -262,23 +252,26 @@ func (cdp *Client) readMsgFromBrowser() {
 			err := json.Unmarshal(data, &res)
 			kit.E(err)
 			cdp.debugLog(&res)
-			_ = kit.Try(func() {
-				cdp.chRes <- &res
-			})
+			select {
+			case <-cdp.ctx.Done():
+				return
+			case cdp.chRes <- &res:
+			}
 		} else {
 			var evt Event
 			err := json.Unmarshal(data, &evt)
 			kit.E(err)
 			cdp.debugLog(&evt)
-			_ = kit.Try(func() {
-				cdp.chEvent <- &evt
-			})
+			select {
+			case <-cdp.ctx.Done():
+				return
+			case cdp.chEvent <- &evt:
+			}
 		}
 	}
 }
 
 func (cdp *Client) close(err error) {
 	cdp.debugLog(err)
-	cdp.ctxCancelErr = err
 	cdp.ctxCancel()
 }

@@ -19,15 +19,16 @@ import (
 
 // Launcher is a helper to launch browser binary smartly
 type Launcher struct {
-	ctx    context.Context
-	bin    string
-	url    string
-	log    func(string)
-	Flags  map[string][]string `json:"flags"`
-	output chan string
-	pid    int
-	exit   chan kit.Nil
-	reap   bool
+	ctx       context.Context
+	ctxCancel func()
+	bin       string
+	url       string
+	log       func(string)
+	Flags     map[string][]string `json:"flags"`
+	output    chan string
+	pid       int
+	exit      chan kit.Nil
+	reap      bool
 }
 
 // New returns the default arguments to start browser.
@@ -85,13 +86,15 @@ func New() *Launcher {
 		defaultFlags["no-sandbox"] = nil
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
 	return &Launcher{
-		ctx:    context.Background(),
-		Flags:  defaultFlags,
-		output: make(chan string),
-		exit:   make(chan kit.Nil),
-		bin:    defaults.Bin,
-		reap:   true,
+		ctx:       ctx,
+		ctxCancel: cancel,
+		Flags:     defaultFlags,
+		output:    make(chan string),
+		exit:      make(chan kit.Nil),
+		bin:       defaults.Bin,
+		reap:      true,
 	}
 }
 
@@ -99,8 +102,10 @@ func New() *Launcher {
 // If you see any error, it may because you can't launch debug port for existing browser, the solution is to
 // completely close the running browser. Unfortunately, there's no API for rod to tell it automatically yet.
 func NewUserMode() *Launcher {
+	ctx, cancel := context.WithCancel(context.Background())
 	return &Launcher{
-		ctx: context.Background(),
+		ctx:       ctx,
+		ctxCancel: cancel,
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
 		},
@@ -111,7 +116,9 @@ func NewUserMode() *Launcher {
 
 // Context set the context
 func (l *Launcher) Context(ctx context.Context) *Launcher {
+	ctx, cancel := context.WithCancel(ctx)
 	l.ctx = ctx
+	l.ctxCancel = cancel
 	return l
 }
 
@@ -240,6 +247,8 @@ func (l *Launcher) LaunchE() (string, error) {
 		runReaper()
 	}
 
+	defer l.ctxCancel()
+
 	bin := l.bin
 	if bin == "" {
 		var err error
@@ -336,19 +345,17 @@ func (l *Launcher) read(reader io.Reader) {
 		if l.log != nil {
 			l.log(str)
 		}
-		_ = kit.Try(func() {
-			l.output <- str
-		})
+		select {
+		case <-l.ctx.Done():
+			return
+		case l.output <- str:
+		}
 	}
 }
 
 // ReadURL from browser stderr
 func (l *Launcher) getURL() (string, error) {
 	out := ""
-
-	defer func() {
-		close(l.output)
-	}()
 
 	for {
 		select {

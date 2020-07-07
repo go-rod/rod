@@ -163,5 +163,5 @@ func TestCrash(t *testing.T) {
 		"expression":   `new Promise(() => {})`,
 		"awaitPromise": true,
 	})
-	assert.Regexp(t, `websocket: close 1006 \(abnormal closure\)|forcibly closed by the remote host`, err.Error())
+	assert.Regexp(t, `context canceled`, err.Error())
 }
