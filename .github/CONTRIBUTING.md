@@ -2,6 +2,8 @@
 
 Your help is more than welcome! Even just open an issue to ask a question may greatly help others.
 
+We use [Github Projects](https://github.com/go-rod/rod/projects/1) to manage tasks. You can see the priority and progress of the issues there.
+
 You might want to learn the basics of [Go Testing](https://golang.org/pkg/testing), [Sub-tests](https://golang.org/pkg/testing), and [Test Suite](https://github.com/stretchr/testify#suite-package) first.
 
 You can get started by reading the unit tests by their nature hierarchy: `Browser -> Page -> Element`.
