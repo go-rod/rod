@@ -1,12 +1,16 @@
 package rod
 
 import (
+	"sync"
+
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
+	lock *sync.Mutex
+
 	page *Page
 
 	// modifiers are currently beening pressed
@@ -15,6 +19,9 @@ type Keyboard struct {
 
 // DownE doc is similar to the method Down
 func (k *Keyboard) DownE(key rune) error {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
 	actions := input.Encode(key)
 
 	err := actions[0].Call(k.page)
@@ -27,6 +34,9 @@ func (k *Keyboard) DownE(key rune) error {
 
 // UpE doc is similar to the method Up
 func (k *Keyboard) UpE(key rune) error {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
 	actions := input.Encode(key)
 
 	err := actions[len(actions)-1].Call(k.page)
@@ -39,6 +49,9 @@ func (k *Keyboard) UpE(key rune) error {
 
 // PressE doc is similar to the method Press
 func (k *Keyboard) PressE(key rune) error {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
 	}
@@ -60,6 +73,9 @@ func (k *Keyboard) PressE(key rune) error {
 
 // InsertTextE doc is similar to the method InsertText
 func (k *Keyboard) InsertTextE(text string) error {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()
 	}

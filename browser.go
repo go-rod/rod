@@ -28,6 +28,8 @@ var _ proto.Caller = &Browser{}
 // To check the env var you can use to quickly enable options from CLI, check here:
 // https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 type Browser struct {
+	lock *sync.Mutex
+
 	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
@@ -54,6 +56,7 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
+		lock:       &sync.Mutex{},
 		slowmotion: defaults.Slow,
 		trace:      defaults.Trace,
 		quiet:      defaults.Quiet,
@@ -62,6 +65,19 @@ func New() *Browser {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	return b.Context(ctx, cancel)
+}
+
+// IncognitoE creates a new incognito browser
+func (b *Browser) IncognitoE() (*Browser, error) {
+	res, err := proto.TargetCreateBrowserContext{}.Call(b)
+	if err != nil {
+		return nil, err
+	}
+
+	incognito := *b
+	incognito.BrowserContextID = res.BrowserContextID
+
+	return &incognito, nil
 }
 
 // ControlURL set the url to remote control browser.
@@ -131,19 +147,6 @@ func (b *Browser) ConnectE() error {
 func (b *Browser) CloseE() error {
 	defer b.ctxCancel()
 	return proto.BrowserClose{}.Call(b)
-}
-
-// IncognitoE creates a new incognito browser
-func (b *Browser) IncognitoE() (*Browser, error) {
-	res, err := proto.TargetCreateBrowserContext{}.Call(b)
-	if err != nil {
-		return nil, err
-	}
-
-	incognito := *b
-	incognito.BrowserContextID = res.BrowserContextID
-
-	return &incognito, nil
 }
 
 // PageE doc is similar to the method Page
@@ -307,13 +310,23 @@ func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 
 // PageFromTargetIDE creates a Page instance from a targetID
 func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error) {
+	b.lock.Lock()
+	defer b.lock.Unlock()
+
+	if cache, ok := b.states.Load(targetID); ok {
+		return cache.(*Page), nil
+	}
+
 	page := (&Page{
+		lock:     &sync.Mutex{},
 		browser:  b,
 		TargetID: targetID,
 	}).Context(context.WithCancel(b.ctx))
 
-	page.Mouse = &Mouse{page: page, id: kit.RandString(8)}
-	page.Keyboard = &Keyboard{page: page}
+	b.states.Store(targetID, page)
+
+	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: kit.RandString(8)}
+	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
 
 	return page, page.initSession()
 }

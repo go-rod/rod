@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
@@ -19,6 +20,8 @@ var _ proto.Caller = &Page{}
 
 // Page represents the webpage
 type Page struct {
+	lock *sync.Mutex
+
 	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
@@ -201,6 +204,8 @@ func (p *Page) CloseE() error {
 	if err != nil {
 		return err
 	}
+
+	p.browser.states.Delete(p.TargetID)
 
 	p.ctxCancel()
 	return nil
@@ -414,16 +419,26 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	// js context will be invalid if a frame is reloaded
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
 		if thisID == "" {
-			if p.windowObjectID == "" {
-				err := p.initJS()
-				if err != nil {
-					if isNilContextErr(err) {
-						return false, nil
+			err := func() error {
+				p.lock.Lock()
+				defer p.lock.Unlock()
+
+				if p.windowObjectID == "" {
+					windowID, err := p.initJS()
+					if err != nil {
+						if isNilContextErr(err) {
+							return nil
+						}
+						return err
 					}
-					return true, err
+					p.windowObjectID = windowID
 				}
+				objectID = p.windowObjectID
+				return nil
+			}()
+			if err != nil {
+				return true, err
 			}
-			objectID = p.windowObjectID
 		}
 
 		args := []*proto.RuntimeCallArgument{}
@@ -441,7 +456,15 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 
 		if thisID == "" {
 			if isNilContextErr(err) {
-				_ = p.initJS()
+				func() {
+					p.lock.Lock()
+					defer p.lock.Unlock()
+
+					windowID, err := p.initJS()
+					if err == nil {
+						p.windowObjectID = windowID
+					}
+				}()
 				return false, nil
 			}
 		}
@@ -556,7 +579,7 @@ func (p *Page) initSession() error {
 	return nil
 }
 
-func (p *Page) initJS() error {
+func (p *Page) initJS() (proto.RuntimeRemoteObjectID, error) {
 	scriptURL := "\n//# sourceURL=__rod_helper__"
 
 	params := &proto.RuntimeEvaluate{
@@ -568,7 +591,7 @@ func (p *Page) initJS() error {
 			FrameID: p.FrameID,
 		}.Call(p)
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		params.ContextID = res.ExecutionContextID
@@ -576,19 +599,10 @@ func (p *Page) initJS() error {
 
 	res, err := params.Call(p)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	p.windowObjectID = res.Result.ObjectID
-
-	if p.browser.trace {
-		_, err := p.EvalE(true, "", p.jsFn("initMouseTracer"), Array{p.Mouse.id, assets.MousePointer})
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return res.Result.ObjectID, nil
 }
 
 func (p *Page) jsFnPrefix() string {

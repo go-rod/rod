@@ -2,6 +2,7 @@ package rod
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -9,6 +10,8 @@ import (
 
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
+	lock *sync.Mutex
+
 	page *Page
 
 	id string // mouse svg dom element id
@@ -22,6 +25,9 @@ type Mouse struct {
 
 // MoveE to the absolute position with specified steps
 func (m *Mouse) MoveE(x, y float64, steps int) error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
 	if steps < 1 {
 		steps = 1
 	}
@@ -66,6 +72,9 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 
 // ScrollE the relative offset with specified steps
 func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
 	if m.page.browser.trace {
 		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
 	}
@@ -101,6 +110,9 @@ func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
 
 // DownE doc is similar to the method Down
 func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
 	toButtons := append(m.buttons, button)
 
 	_, buttons := input.EncodeMouseButton(toButtons)
@@ -123,6 +135,9 @@ func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
 
 // UpE doc is similar to the method Up
 func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
 	toButtons := []proto.InputMouseButton{}
 	for _, btn := range m.buttons {
 		if btn == button {

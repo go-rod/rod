@@ -4,6 +4,7 @@ import (
 	"context"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -113,11 +114,17 @@ func (s *S) TestRemoteLaunch() {
 func (s *S) TestConcurrentOperations() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	list := []int64{}
+	lock := sync.Mutex{}
+	add := func(item int64) {
+		lock.Lock()
+		defer lock.Unlock()
+		list = append(list, item)
+	}
 
 	kit.All(func() {
-		list = append(list, p.Eval(`() => new Promise(r => setTimeout(r, 100, 2))`).Int())
+		add(p.Eval(`() => new Promise(r => setTimeout(r, 100, 2))`).Int())
 	}, func() {
-		list = append(list, p.Eval(`() => 1`).Int())
+		add(p.Eval(`() => 1`).Int())
 	})()
 
 	s.Equal([]int64{1, 2}, list)
