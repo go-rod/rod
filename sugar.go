@@ -384,48 +384,57 @@ func (p *Page) ElementsByJS(js string, params ...interface{}) Elements {
 }
 
 // Move to the absolute position
-func (m *Mouse) Move(x, y float64) {
+func (m *Mouse) Move(x, y float64) *Mouse {
 	kit.E(m.MoveE(x, y, 0))
+	return m
 }
 
 // Scroll with the relative offset
-func (m *Mouse) Scroll(x, y float64) {
+func (m *Mouse) Scroll(x, y float64) *Mouse {
 	kit.E(m.ScrollE(x, y, 0))
+	return m
 }
 
 // Down holds the button down
-func (m *Mouse) Down(button proto.InputMouseButton) {
+func (m *Mouse) Down(button proto.InputMouseButton) *Mouse {
 	kit.E(m.DownE(button, 1))
+	return m
 }
 
 // Up release the button
-func (m *Mouse) Up(button proto.InputMouseButton) {
+func (m *Mouse) Up(button proto.InputMouseButton) *Mouse {
 	kit.E(m.UpE(button, 1))
+	return m
 }
 
 // Click will press then release the button
-func (m *Mouse) Click(button proto.InputMouseButton) {
+func (m *Mouse) Click(button proto.InputMouseButton) *Mouse {
 	kit.E(m.ClickE(button))
+	return m
 }
 
 // Down holds key down
-func (k *Keyboard) Down(key rune) {
+func (k *Keyboard) Down(key rune) *Keyboard {
 	kit.E(k.DownE(key))
+	return k
 }
 
 // Up releases the key
-func (k *Keyboard) Up(key rune) {
+func (k *Keyboard) Up(key rune) *Keyboard {
 	kit.E(k.UpE(key))
+	return k
 }
 
 // Press a key
-func (k *Keyboard) Press(key rune) {
+func (k *Keyboard) Press(key rune) *Keyboard {
 	kit.E(k.PressE(key))
+	return k
 }
 
 // InsertText like paste text into the page
-func (k *Keyboard) InsertText(text string) {
+func (k *Keyboard) InsertText(text string) *Keyboard {
 	kit.E(k.InsertTextE(text))
+	return k
 }
 
 // Describe returns the element info
