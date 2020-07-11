@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -37,8 +38,9 @@ type Page struct {
 	Mouse    *Mouse
 	Keyboard *Keyboard
 
-	element        *Element                    // iframe only
-	windowObjectID proto.RuntimeRemoteObjectID // used as the thisObject when eval js
+	element          *Element                    // iframe only
+	windowObjectID   proto.RuntimeRemoteObjectID // used as the thisObject when eval js
+	jsHelperObjectID proto.RuntimeRemoteObjectID
 
 	event *goob.Observable
 }
@@ -372,13 +374,15 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 // WaitIdleE doc is similar to the method WaitIdle
 func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
-	_, err = p.EvalE(true, "", p.jsFn("waitIdle"), Array{timeout.Seconds()})
+	js, jsArgs := p.jsHelper("waitIdle", Array{timeout.Seconds()})
+	_, err = p.EvalE(true, "", js, jsArgs)
 	return err
 }
 
 // WaitLoadE doc is similar to the method WaitLoad
 func (p *Page) WaitLoadE() error {
-	_, err := p.EvalE(true, "", p.jsFn("waitLoad"), nil)
+	js, jsArgs := p.jsHelper("waitLoad", nil)
+	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
 
@@ -386,7 +390,8 @@ func (p *Page) WaitLoadE() error {
 func (p *Page) AddScriptTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalE(true, "", p.jsFn("addScriptTag"), Array{id, url, content})
+	js, jsArgs := p.jsHelper("addScriptTag", Array{id, url, content})
+	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
 
@@ -394,7 +399,8 @@ func (p *Page) AddScriptTagE(url, content string) error {
 func (p *Page) AddStyleTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalE(true, "", p.jsFn("addStyleTag"), Array{id, url, content})
+	js, jsArgs := p.jsHelper("addStyleTag", Array{id, url, content})
+	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
 
@@ -410,6 +416,7 @@ func (p *Page) EvalOnNewDocumentE(js string) (proto.PageScriptIdentifier, error)
 
 // EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
+// If the item in jsArgs is proto.RuntimeRemoteObjectID, the remote object will be used, else the item will be treated as JSON value.
 func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := thisID
@@ -424,7 +431,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 				defer p.lock.Unlock()
 
 				if p.windowObjectID == "" {
-					windowID, err := p.initJS()
+					windowID, helperID, err := p.initJS()
 					if err != nil {
 						if isNilContextErr(err) {
 							return nil
@@ -432,6 +439,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 						return err
 					}
 					p.windowObjectID = windowID
+					p.jsHelperObjectID = helperID
 				}
 				objectID = p.windowObjectID
 				return nil
@@ -442,8 +450,15 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 		}
 
 		args := []*proto.RuntimeCallArgument{}
-		for _, p := range jsArgs {
-			args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(p)})
+		for _, arg := range jsArgs {
+			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok {
+				if id == "" {
+					id = p.jsHelperObjectID
+				}
+				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(nil), ObjectID: id})
+			} else {
+				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
+			}
 		}
 
 		res, err = proto.RuntimeCallFunctionOn{
@@ -460,9 +475,10 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 					p.lock.Lock()
 					defer p.lock.Unlock()
 
-					windowID, err := p.initJS()
+					windowID, helperID, err := p.initJS()
 					if err == nil {
 						p.windowObjectID = windowID
+						p.jsHelperObjectID = helperID
 					}
 				}()
 				return false, nil
@@ -579,39 +595,39 @@ func (p *Page) initSession() error {
 	return nil
 }
 
-func (p *Page) initJS() (proto.RuntimeRemoteObjectID, error) {
-	scriptURL := "\n//# sourceURL=__rod_helper__"
-
-	params := &proto.RuntimeEvaluate{
-		Expression: sprintFnApply(assets.Helper, Array{p.FrameID}) + scriptURL,
-	}
+func (p *Page) initJS() (windowID proto.RuntimeRemoteObjectID, objectID proto.RuntimeRemoteObjectID, err error) {
+	params := &proto.RuntimeEvaluate{}
 
 	if p.IsIframe() {
 		res, err := proto.PageCreateIsolatedWorld{
 			FrameID: p.FrameID,
 		}.Call(p)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 
 		params.ContextID = res.ExecutionContextID
 	}
 
-	res, err := params.Call(p)
+	params.Expression = "window"
+	window, err := params.Call(p)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return res.Result.ObjectID, nil
+	params.Expression = assets.Helper
+	helper, err := params.Call(p)
+	if err != nil {
+		return "", "", err
+	}
+
+	return window.Result.ObjectID, helper.Result.ObjectID, nil
 }
 
-func (p *Page) jsFnPrefix() string {
-	return "rod" + string(p.FrameID) + "."
-}
-
-// Generate full method name in the "lib/assets/helper.js".
-// For example a return value may look like "rod<frameID>.elementMatches"
+// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
 // The methods are imported by Page.initJS()
-func (p *Page) jsFn(fnName string) string {
-	return p.jsFnPrefix() + fnName
+func (p *Page) jsHelper(name string, jsArgs Array) (string, Array) {
+	jsArgs = append(Array{proto.RuntimeRemoteObjectID("")}, jsArgs...)
+	js := fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name)
+	return js, jsArgs
 }

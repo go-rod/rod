@@ -210,7 +210,15 @@ func (s *S) TestPageEvalOnNewDocument() {
 	p.Navigate("")
 
 	s.Equal("rod", p.Eval("() => navigator.rod").String())
+}
 
+func (s *S) TestPageExposeJSHelper() {
+	page := s.browser.Page(srcFile("fixtures/click.html"))
+	defer page.Close()
+
+	s.Equal("undefined", page.Eval("() => typeof(rod)").Str)
+	page.ExposeJSHelper()
+	s.Equal("object", page.Eval("() => typeof(rod)").Str)
 }
 
 func (s *S) TestUntilPage() {

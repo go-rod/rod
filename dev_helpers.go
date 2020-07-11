@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -109,9 +110,9 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	root := p.Root()
-	id := "rod-" + kit.RandString(8)
+	id := kit.RandString(8)
 
-	_, err := root.EvalE(true, "", root.jsFn("overlay"), Array{
+	js, jsArgs := p.jsHelper("overlay", Array{
 		id,
 		left,
 		top,
@@ -119,45 +120,62 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		height,
 		msg,
 	})
+	_, err := root.EvalE(true, "", js, jsArgs)
 	CancelPanic(err)
 
 	remove = func() {
-		_, _ = root.EvalE(true, "", root.jsFn("removeOverlay"), Array{id})
+		js, jsArgs := p.jsHelper("removeOverlay", Array{id})
+		_, _ = root.EvalE(true, "", js, jsArgs)
 	}
 
 	return
+}
+
+// ExposeJSHelper to page's window object, so you can debug helper.js in the browser console.
+// Such as run `rod.elementMatches("div", "ok")` in the browser console to test the Page.ElementMatches.
+func (p *Page) ExposeJSHelper() *Page {
+	p.Eval(`rod => window.rod = rod`, proto.RuntimeRemoteObjectID(""))
+	return p
 }
 
 // Trace with an overlay on the element
 func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
-	id := "rod-" + kit.RandString(8)
+	id := kit.RandString(8)
 
-	_, err := el.EvalE(true, el.page.jsFn("elementOverlay"), Array{
+	js, jsArgs := el.page.jsHelper("elementOverlay", Array{
 		id,
 		htmlMessage,
 	})
+	_, err := el.EvalE(true, js, jsArgs)
 	CancelPanic(err)
 
 	removeOverlay = func() {
-		_, _ = el.EvalE(true, el.page.jsFn("removeOverlay"), Array{id})
+		js, jsArgs := el.page.jsHelper("removeOverlay", Array{id})
+		_, _ = el.EvalE(true, js, jsArgs)
 	}
 
 	return
 }
+
+var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
 
 func (p *Page) tryTraceFn(js string, params Array) func() {
 	if !p.browser.trace {
 		return func() {}
 	}
 
-	fnName := strings.Replace(js, p.jsFnPrefix(), "rod.", 1)
+	matches := regHelperJS.FindStringSubmatch(js)
+	if matches != nil {
+		js = matches[1]
+		params = params[1:]
+	}
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
 	if !p.browser.quiet {
-		msg := fmt.Sprintf("%s(%s)", fnName, paramsStr)
+		msg := fmt.Sprintf("%s(%s)", js, paramsStr)
 		kit.Log(kit.C("[trace]", "cyan"), kit.C("js", "yellow"), msg)
 	}
 
-	msg := fmt.Sprintf("js <code>%s(%s)</code>", fnName, html.EscapeString(paramsStr))
+	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
 }

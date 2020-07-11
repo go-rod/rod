@@ -91,17 +91,20 @@ func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 
 // ElementE finds element by css selector
 func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("element"), Array{selector})
+	js, jsArgs := p.jsHelper("element", Array{selector})
+	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementMatchesE doc is similar to the method ElementMatches
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector, regex string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementMatches"), Array{selector, regex})
+	js, jsArgs := p.jsHelper("elementMatches", Array{selector, regex})
+	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementXE finds elements by XPath
 func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xpath string) (*Element, error) {
-	return p.ElementByJSE(sleeper, objectID, p.jsFn("elementX"), Array{xpath})
+	js, jsArgs := p.jsHelper("elementX", Array{xpath})
+	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementByJSE returns the element from the return value of the js function.
@@ -151,12 +154,14 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 
 // ElementsE doc is similar to the method Elements
 func (p *Page) ElementsE(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elements"), Array{selector})
+	js, jsArgs := p.jsHelper("elements", Array{selector})
+	return p.ElementsByJSE(objectID, js, jsArgs)
 }
 
 // ElementsXE doc is similar to the method ElementsX
 func (p *Page) ElementsXE(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
-	return p.ElementsByJSE(objectID, p.jsFn("elementsX"), Array{xpath})
+	js, jsArgs := p.jsHelper("elementsX", Array{xpath})
+	return p.ElementsByJSE(objectID, js, jsArgs)
 }
 
 // ElementsByJSE is different from ElementByJSE, it doesn't do retry
@@ -247,7 +252,8 @@ func (el *Element) ParentE() (*Element, error) {
 
 // ParentsE that match the selector
 func (el *Element) ParentsE(selector string) (Elements, error) {
-	return el.ElementsByJSE(el.page.jsFn("parents"), Array{selector})
+	js, params := el.page.jsHelper("parents", Array{selector})
+	return el.ElementsByJSE(js, params)
 }
 
 // NextE doc is similar to the method Next

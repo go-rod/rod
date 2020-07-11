@@ -60,7 +60,8 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 		m.y = toY
 
 		if m.page.browser.trace {
-			_, err := m.page.EvalE(true, "", m.page.jsFn("updateMouseTracer"), Array{m.id, m.x, m.y})
+			js, jsArgs := m.page.jsHelper("updateMouseTracer", Array{m.id, m.x, m.y})
+			_, err := m.page.EvalE(true, "", js, jsArgs)
 			if err != nil {
 				return err
 			}

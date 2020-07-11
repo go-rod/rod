@@ -42,7 +42,8 @@ func (el *Element) ScrollIntoViewE() error {
 	defer el.tryTrace("scroll into view")()
 	el.page.browser.trySlowmotion()
 
-	_, err := el.EvalE(true, el.page.jsFn("scrollIntoViewIfNeeded"), nil)
+	js, jsArgs := el.page.jsHelper("scrollIntoViewIfNeeded", nil)
+	_, err := el.EvalE(true, js, jsArgs)
 	return err
 }
 
@@ -103,7 +104,8 @@ func (el *Element) SelectTextE(regex string) error {
 	defer el.tryTrace("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalE(true, el.page.jsFn("selectText"), Array{regex})
+	js, jsArgs := el.page.jsHelper("selectText", Array{regex})
+	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
 
@@ -117,7 +119,8 @@ func (el *Element) SelectAllTextE() error {
 	defer el.tryTrace("select all text")()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalE(true, el.page.jsFn("selectAllText"), nil)
+	js, jsArgs := el.page.jsHelper("selectAllText", nil)
+	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
 
@@ -140,7 +143,8 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	_, err = el.EvalE(true, el.page.jsFn("inputEvent"), nil)
+	js, jsArgs := el.page.jsHelper("inputEvent", nil)
+	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
 
@@ -162,7 +166,8 @@ func (el *Element) SelectE(selectors []string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalE(true, el.page.jsFn("select"), Array{selectors})
+	js, jsArgs := el.page.jsHelper("select", Array{selectors})
+	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
 
@@ -267,7 +272,8 @@ func (el *Element) FrameE() (*Page, error) {
 
 // TextE doc is similar to the method Text
 func (el *Element) TextE() (string, error) {
-	str, err := el.EvalE(true, el.page.jsFn("text"), nil)
+	js, jsArgs := el.page.jsHelper("text", nil)
+	str, err := el.EvalE(true, js, jsArgs)
 	return str.Value.String(), err
 }
 
@@ -279,7 +285,8 @@ func (el *Element) HTMLE() (string, error) {
 
 // VisibleE doc is similar to the method Visible
 func (el *Element) VisibleE() (bool, error) {
-	res, err := el.EvalE(true, el.page.jsFn("visible"), nil)
+	js, jsArgs := el.page.jsHelper("visible", nil)
+	res, err := el.EvalE(true, js, jsArgs)
 	if err != nil {
 		return false, err
 	}
@@ -332,12 +339,14 @@ func (el *Element) WaitE(js string, params Array) error {
 
 // WaitVisibleE doc is similar to the method WaitVisible
 func (el *Element) WaitVisibleE() error {
-	return el.WaitE(el.page.jsFn("visible"), nil)
+	js, jsArgs := el.page.jsHelper("visible", nil)
+	return el.WaitE(js, jsArgs)
 }
 
 // WaitInvisibleE doc is similar to the method WaitInvisible
 func (el *Element) WaitInvisibleE() error {
-	return el.WaitE(el.page.jsFn("invisible"), nil)
+	js, jsArgs := el.page.jsHelper("invisible", nil)
+	return el.WaitE(js, jsArgs)
 }
 
 // Box represents the element bounding rect
@@ -350,7 +359,8 @@ type Box struct {
 
 // BoxE doc is similar to the method Box
 func (el *Element) BoxE() (*Box, error) {
-	res, err := el.EvalE(true, el.page.jsFn("box"), nil)
+	js, jsArgs := el.page.jsHelper("box", nil)
+	res, err := el.EvalE(true, js, jsArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -371,7 +381,8 @@ func (el *Element) BoxE() (*Box, error) {
 
 // ResourceE doc is similar to the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
-	src, err := el.EvalE(true, el.page.jsFn("resource"), nil)
+	js, jsArgs := el.page.jsHelper("resource", nil)
+	src, err := el.EvalE(true, js, jsArgs)
 	if err != nil {
 		return nil, err
 	}

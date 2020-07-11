@@ -3,8 +3,7 @@
 package assets
 
 // Helper for rod
-var Helper = `
-(frameId) => { // eslint-disable-line no-unused-expressions
+var Helper = `(() => {
   const rod = {
     element (selector) {
       return (this.document || this).querySelector(selector)
@@ -297,12 +296,10 @@ var Helper = `
     }
   }
 
-  window['rod' + frameId] = rod
+  return rod
+})()
 
-  if (!window.rod) window.rod = rod
-
-  return window
-}
+// # sourceURL=__rod_helper__
 `
 
 // MousePointer for rod
