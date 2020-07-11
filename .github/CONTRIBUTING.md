@@ -67,6 +67,10 @@ We also use it in the CI to enforce the minimum test coverage.
 
 After you exit the container, you can reuse it with `docker start -i rod`.
 
+### Convention of the git commit message
+
+The commit message follows the rules [here](https://github.com/torvalds/subsurface-for-dirk/blame/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88). We don't use rules like [Conventional Commits](https://www.conventionalcommits.org/) because it's hard for beginners to write correct commit messages. It will encourage reviewers to spend more time on high-level problems, not the details. We also want to reduce the overhead when reading the git-blame, for example, `fix: correct minor typos in code` is the same as `fix minor typos in code`, there's no need to repeat content in the title line.
+
 ## Become a maintainer
 
 Since this is a small project, we will use a very simple model to promote contributors to maintainers.
