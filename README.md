@@ -7,7 +7,7 @@
 
 ![logo](fixtures/banner.png)
 
-Rod is a High-level Devtools driver directly based on [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
 It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
 ## Features
@@ -104,11 +104,15 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [selenium](https://www.selenium.dev/)
 
-  It's slower by design because it encourages the use of hard-coded sleep. When work with Rod, you generally don't use sleep at all.
-  Therefore it's more buggy to use selenium if the network is unstable.
-  It's harder to setup and maintain because of extra dependencies like a browser driver.
+  Selenium is based on [webdriver protocol](https://www.w3.org/TR/webdriver/) which has much less functions compare to [devtools protocol][devtools protocol]. Such as it can't handle [closed shadow DOM](https://github.com/sukgu/shadow-automation-selenium/issues/7#issuecomment-563062460). No way to save page as PDF. No support for tools like [Profiler](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) or [Performance](https://chromedevtools.github.io/devtools-protocol/tot/Performance/), etc.
+  
+  Harder to setup and maintain because of extra dependencies like a browser driver.
+  
+  Though selenium sells itself for better cross-browser support, but it's usually very hard to make it work for all major browsers.
+  
+  There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of [puppeteer][puppeteer].
 
-- [puppeteer](https://github.com/puppeteer/puppeteer)
+- [puppeteer][puppeteer]
 
   With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to the browser will be async calls, so it's unfriendly for QA from the beginning.
 
@@ -128,4 +132,6 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
 
+[devtools protocol]: https://chromedevtools.github.io/devtools-protocol
+[puppeteer]: https://github.com/puppeteer/puppeteer
 [discord room]: https://discord.gg/CpevuvY
