@@ -158,7 +158,11 @@ func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
 				RequestID:    e.RequestID,
 			},
 		},
-		OnError: func(err error) { kit.Err(err) },
+		OnError: func(err error) {
+			if err != context.Canceled {
+				kit.Err(err)
+			}
+		},
 	}
 }
 
