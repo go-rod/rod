@@ -50,7 +50,7 @@ func (ps Pages) Find(selector string) *Page {
 // FindByURLE returns the page that has the url that matches the regex
 func (ps Pages) FindByURLE(regex string) (*Page, error) {
 	for _, page := range ps {
-		res, err := page.EvalE(true, "", `() => location.href`, nil)
+		res, err := page.EvalE(true, "", `location.href`, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -247,7 +247,7 @@ func (el *Element) ElementByJSE(js string, params Array) (*Element, error) {
 
 // ParentE doc is similar to the method Parent
 func (el *Element) ParentE() (*Element, error) {
-	return el.ElementByJSE(`() => this.parentElement`, nil)
+	return el.ElementByJSE(`this.parentElement`, nil)
 }
 
 // ParentsE that match the selector
@@ -258,12 +258,12 @@ func (el *Element) ParentsE(selector string) (Elements, error) {
 
 // NextE doc is similar to the method Next
 func (el *Element) NextE() (*Element, error) {
-	return el.ElementByJSE(`() => this.nextElementSibling`, nil)
+	return el.ElementByJSE(`this.nextElementSibling`, nil)
 }
 
 // PreviousE doc is similar to the method Previous
 func (el *Element) PreviousE() (*Element, error) {
-	return el.ElementByJSE(`() => this.previousElementSibling`, nil)
+	return el.ElementByJSE(`this.previousElementSibling`, nil)
 }
 
 // ElementMatchesE doc is similar to the method ElementMatches

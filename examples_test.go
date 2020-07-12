@@ -37,7 +37,19 @@ func Example_basic() {
 
 	fmt.Println(text)
 
-	// Output: Git is the most widely used version control system.
+	// Eval js on the page
+	page.Eval(`console.log("hello world")`)
+
+	// Pass parameters as json objects to the js function. This one will return 3
+	fmt.Println(page.Eval(`(a, b) => a + b`, 1, 2).Int())
+
+	// When eval on an element, you can use "this" to access the DOM element.
+	fmt.Println(page.Element("title").Eval(`this.innerText`).String())
+
+	// Output:
+	// Git is the most widely used version control system.
+	// 3
+	// Search · git · GitHub
 }
 
 // Example_headless_with_debug shows how we can start a browser with debug
@@ -170,7 +182,7 @@ func Example_customize_retry_strategy() {
 		kit.E(err)
 	}
 
-	fmt.Println(el.Eval(`() => this.name`).String())
+	fmt.Println(el.Eval(`this.name`).String())
 
 	// Output: q
 }
@@ -234,7 +246,7 @@ func Example_direct_cdp() {
 
 	// Eval injects a script into the page. We use this to return the cookies
 	// that JS detects to validate our cdp call.
-	cookie := page.Eval(`() => document.cookie`).String()
+	cookie := page.Eval(`document.cookie`).String()
 
 	fmt.Println(cookie)
 
@@ -283,7 +295,7 @@ func Example_handle_events() {
 		wait()
 	}
 
-	page.Eval(`() => console.log("hello", "world")`)
+	page.Eval(`console.log("hello", "world")`)
 
 	<-done
 
@@ -318,7 +330,7 @@ func Example_hijack_requests() {
 
 	go router.Run()
 
-	browser.Page("https://www.wikipedia.org/").Wait(`() => document.title === 'hi'`)
+	browser.Page("https://www.wikipedia.org/").Wait(`document.title === 'hi'`)
 
 	fmt.Println("done")
 

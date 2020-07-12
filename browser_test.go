@@ -63,7 +63,7 @@ func (s *S) TestBrowserCrash() {
 	}()
 
 	s.Panics(func() {
-		page.Eval(`() => new Promise(() => {})`)
+		page.Eval(`new Promise(() => {})`)
 	})
 
 	wait()
@@ -86,7 +86,7 @@ func (s *S) TestMonitor() {
 	s.Contains(page.WaitLoad().Element("#targets").HTML(), string(p.TargetID))
 
 	page.Navigate("http://" + host + "/page/" + string(p.TargetID))
-	s.Contains(page.Eval(`() => document.title`).Str, p.TargetID)
+	s.Contains(page.Eval(`document.title`).Str, p.TargetID)
 }
 
 func (s *S) TestRemoteLaunch() {
@@ -122,9 +122,9 @@ func (s *S) TestConcurrentOperations() {
 	}
 
 	kit.All(func() {
-		add(p.Eval(`() => new Promise(r => setTimeout(r, 100, 2))`).Int())
+		add(p.Eval(`new Promise(r => setTimeout(r, 100, 2))`).Int())
 	}, func() {
-		add(p.Eval(`() => 1`).Int())
+		add(p.Eval(`1`).Int())
 	})()
 
 	s.Equal([]int64{1, 2}, list)
@@ -142,7 +142,7 @@ func (s *S) TestPromiseLeak() {
 	var out string
 
 	kit.All(func() {
-		out = p.Eval(`() => new Promise(r => setTimeout(() => r(location.href), 200))`).String()
+		out = p.Eval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
 	}, func() {
 		kit.Sleep(0.1)
 		p.Navigate(srcFile("fixtures/input.html"))

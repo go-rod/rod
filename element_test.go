@@ -149,7 +149,7 @@ func (s *S) TestSetFiles() {
 		slash("fixtures/alert.html"),
 	)
 
-	list := el.Eval("() => Array.from(this.files).map(f => f.name)").Array()
+	list := el.Eval("Array.from(this.files).map(f => f.name)").Array()
 	s.Len(list, 2)
 	s.Equal("alert.html", list[1].String())
 }
@@ -159,7 +159,7 @@ func (s *S) TestSelectQuery() {
 	el := p.Element("select")
 	el.Select("[value=c]")
 
-	s.EqualValues(2, el.Eval("() => this.selectedIndex").Int())
+	s.EqualValues(2, el.Eval("this.selectedIndex").Int())
 }
 
 func (s *S) TestSelectQueryNum() {
@@ -167,7 +167,7 @@ func (s *S) TestSelectQueryNum() {
 	el := p.Element("select")
 	el.Select("123")
 
-	s.EqualValues(-1, el.Eval("() => this.selectedIndex").Int())
+	s.EqualValues(-1, el.Eval("this.selectedIndex").Int())
 }
 
 func (s *S) TestEnter() {
@@ -192,9 +192,9 @@ func (s *S) TestWaitInvisible() {
 
 	go func() {
 		kit.Sleep(0.03)
-		h4.Eval(`() => this.remove()`)
+		h4.Eval(`this.remove()`)
 		kit.Sleep(0.03)
-		btn.Eval(`() => this.style.visibility = 'hidden'`)
+		btn.Eval(`this.style.visibility = 'hidden'`)
 	}()
 
 	h4.Timeout(timeout).WaitInvisible()
@@ -271,9 +271,9 @@ func (s *S) TestElementOthers() {
 	s.EqualValues(784, el.Box().Width)
 	s.Equal("submit", el.Element("[type=submit]").Text())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.Element("[type=submit]").HTML())
-	el.Wait(`() => true`)
-	s.Equal("form", el.ElementByJS(`() => this`).Describe().LocalName)
-	s.Len(el.ElementsByJS(`() => []`), 0)
+	el.Wait(`true`)
+	s.Equal("form", el.ElementByJS(`this`).Describe().LocalName)
+	s.Len(el.ElementsByJS(`[]`), 0)
 }
 
 func (s *S) TestElementErrors() {

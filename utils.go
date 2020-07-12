@@ -17,9 +17,12 @@ import (
 // Array of any type
 type Array []interface{}
 
-// SprintFnThis wrap js with this
+// SprintFnThis wrap js with this, wrap function call if it's js expression
 func SprintFnThis(js string) string {
-	return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
+	if detectJSFunction(js) {
+		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
+	}
+	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
 // CancelPanic graceful panic
@@ -83,4 +86,51 @@ func mustToJSONForDev(value interface{}) string {
 	kit.E(enc.Encode(value))
 
 	return buf.String()
+}
+
+// detect if a js string is a function definition
+var regFn = regexp.MustCompile(`\A\s*function\s*\(`)
+
+// detect if a js string is a function definition
+// Samples:
+//
+// function () {}
+// a => {}
+// (a, b, c) =>
+// ({a: b}, ...list) => {}
+func detectJSFunction(js string) bool {
+	if regFn.MatchString(js) {
+		return true
+	}
+
+	// The algorithm is pretty simple, the braces before "=>" must be balanced.
+	// Such as "foo(() => {})", there are 2 "(", but only 1 ")".
+	// Here we use a simple state machine.
+
+	balanced := true
+	last := ' '
+	for _, r := range js {
+		if r == '(' {
+			if balanced {
+				balanced = false
+			} else {
+				return false
+			}
+		}
+		if r == ')' {
+			if balanced {
+				return false
+			}
+			balanced = true
+		}
+
+		if last == '=' && r == '>' {
+			if balanced {
+				return true
+			}
+			return false
+		}
+		last = r
+	}
+	return false
 }

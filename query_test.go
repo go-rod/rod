@@ -90,7 +90,7 @@ func (s *S) TestElementsFromElement() {
 func (s *S) TestElementParent() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("input").Parent()
-	s.Equal("FORM", el.Eval(`() => this.tagName`).String())
+	s.Equal("FORM", el.Eval(`this.tagName`).String())
 }
 
 func (s *S) TestElementParents() {
@@ -105,8 +105,8 @@ func (s *S) TestElementSiblings() {
 	a := el.Previous()
 	b := el.Next()
 
-	s.Equal("INPUT", a.Eval(`() => this.tagName`).String())
-	s.Equal("SELECT", b.Eval(`() => this.tagName`).String())
+	s.Equal("INPUT", a.Eval(`this.tagName`).String())
+	s.Equal("SELECT", b.Eval(`this.tagName`).String())
 }
 
 func (s *S) TestElementFromElementX() {
@@ -133,17 +133,17 @@ func (s *S) TestElementTracing() {
 
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementByJSE(p.Sleeper(), "", `() => 1`, nil)
+	_, err := p.ElementByJSE(p.Sleeper(), "", `1`, nil)
 	s.EqualError(err, "[rod] expect js to return an element\n&{number   1  1  <nil> <nil>}")
 }
 
 func (s *S) TestPageElementsByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementsByJSE("", `() => [1]`, nil)
+	_, err := p.ElementsByJSE("", `[1]`, nil)
 	s.EqualError(err, "[rod] expect js to return an array of elements\n&{number   1  1  <nil> <nil>}")
-	_, err = p.ElementsByJSE("", `() => 1`, nil)
+	_, err = p.ElementsByJSE("", `1`, nil)
 	s.EqualError(err, "[rod] expect js to return an array of elements\n&{number   1  1  <nil> <nil>}")
-	_, err = p.ElementsByJSE("", `() => foo()`, nil)
+	_, err = p.ElementsByJSE("", `foo()`, nil)
 	s.Error(err)
 }
 

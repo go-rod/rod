@@ -33,7 +33,7 @@ func (el *Element) FocusE() error {
 		return err
 	}
 
-	_, err = el.EvalE(true, `() => this.focus()`, nil)
+	_, err = el.EvalE(true, `this.focus()`, nil)
 	return err
 }
 
@@ -150,7 +150,7 @@ func (el *Element) InputE(text string) error {
 
 // BlurE is similar to the method Blur
 func (el *Element) BlurE() error {
-	_, err := el.EvalE(true, "() => this.blur()", nil)
+	_, err := el.EvalE(true, "this.blur()", nil)
 	return err
 }
 
@@ -279,7 +279,7 @@ func (el *Element) TextE() (string, error) {
 
 // HTMLE doc is similar to the method HTML
 func (el *Element) HTMLE() (string, error) {
-	str, err := el.EvalE(true, `() => this.outerHTML`, nil)
+	str, err := el.EvalE(true, `this.outerHTML`, nil)
 	return str.Value.String(), err
 }
 

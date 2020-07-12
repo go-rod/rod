@@ -113,7 +113,7 @@ func (s *S) TestPageContext() {
 }
 
 func (s *S) TestRelease() {
-	res, err := s.page.EvalE(false, "", `() => document`, nil)
+	res, err := s.page.EvalE(false, "", `document`, nil)
 	kit.E(err)
 	s.page.Release(res.ObjectID)
 }
@@ -137,21 +137,21 @@ func (s *S) TestWindow() {
 	page.WindowMinimize()
 	page.WindowNormal()
 	page.Window(0, 0, 1211, 611)
-	s.EqualValues(1211, page.Eval(`() => window.innerWidth`).Int())
-	s.EqualValues(611, page.Eval(`() => window.innerHeight`).Int())
+	s.EqualValues(1211, page.Eval(`window.innerWidth`).Int())
+	s.EqualValues(611, page.Eval(`window.innerHeight`).Int())
 }
 
 func (s *S) TestSetViewport() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Viewport(317, 419, 0, false)
-	res := page.Eval(`() => [window.innerWidth, window.innerHeight]`)
+	res := page.Eval(`[window.innerWidth, window.innerHeight]`)
 	s.EqualValues(317, res.Get("0").Int())
 	s.EqualValues(419, res.Get("1").Int())
 
 	page2 := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page2.Close()
-	res = page2.Eval(`() => [window.innerWidth, window.innerHeight]`)
+	res = page2.Eval(`[window.innerWidth, window.innerHeight]`)
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
@@ -159,7 +159,7 @@ func (s *S) TestEmulateDevice() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 	page.Emulate(devices.IPhone6or7or8Plus)
-	res := page.Eval(`() => [window.innerWidth, window.innerHeight, navigator.userAgent]`)
+	res := page.Eval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
 	s.EqualValues(980, res.Get("0").Int())
 	s.EqualValues(1743, res.Get("1").Int())
 	s.Equal(
@@ -171,14 +171,14 @@ func (s *S) TestEmulateDevice() {
 func (s *S) TestPageAddScriptTag() {
 	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
 
-	res := p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`() => count()`)
+	res := p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`count()`)
 	s.EqualValues(0, res.Int())
 
-	res = p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`() => count()`)
+	res = p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`count()`)
 	s.EqualValues(1, res.Int())
 
 	kit.E(p.AddScriptTagE("", `let ok = 'yes'`))
-	res = p.Eval(`() => ok`)
+	res = p.Eval(`ok`)
 	s.Equal("yes", res.String())
 }
 
@@ -186,14 +186,14 @@ func (s *S) TestPageAddStyleTag() {
 	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
 
 	res := p.AddStyleTag(srcFile("fixtures/add-style-tag.css")).
-		Element("h4").Eval(`() => getComputedStyle(this).color`)
+		Element("h4").Eval(`getComputedStyle(this).color`)
 	s.Equal("rgb(255, 0, 0)", res.String())
 
 	p.AddStyleTag(srcFile("fixtures/add-style-tag.css"))
 	s.Len(p.Elements("link"), 1)
 
 	kit.E(p.AddStyleTagE("", "h4 { color: green; }"))
-	res = p.Element("h4").Eval(`() => getComputedStyle(this).color`)
+	res = p.Element("h4").Eval(`getComputedStyle(this).color`)
 	s.Equal("rgb(0, 128, 0)", res.String())
 }
 
@@ -209,16 +209,16 @@ func (s *S) TestPageEvalOnNewDocument() {
 	// to activate the script
 	p.Navigate("")
 
-	s.Equal("rod", p.Eval("() => navigator.rod").String())
+	s.Equal("rod", p.Eval("navigator.rod").String())
 }
 
 func (s *S) TestPageExposeJSHelper() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 
-	s.Equal("undefined", page.Eval("() => typeof(rod)").Str)
+	s.Equal("undefined", page.Eval("typeof(rod)").Str)
 	page.ExposeJSHelper()
-	s.Equal("object", page.Eval("() => typeof(rod)").Str)
+	s.Equal("object", page.Eval("typeof(rod)").Str)
 }
 
 func (s *S) TestUntilPage() {
@@ -236,7 +236,7 @@ func (s *S) TestUntilPage() {
 
 func (s *S) TestPageWait() {
 	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/click.html"))
-	page.Wait(`() => document.querySelector('button') !== null`)
+	page.Wait(`document.querySelector('button') !== null`)
 }
 
 func (s *S) TestPageWaitRequestIdle() {
@@ -377,7 +377,7 @@ func (s *S) TestNativeDrag() {
 func (s *S) TestPagePause() {
 	go s.page.Pause()
 	kit.Sleep(0.03)
-	go s.page.Eval(`() => 10`)
+	go s.page.Eval(`10`)
 	kit.Sleep(0.03)
 	kit.E(proto.DebuggerResume{}.Call(s.page))
 }
@@ -405,12 +405,12 @@ func (s *S) TestScreenshotFullPage() {
 	data := p.ScreenshotFullPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
-	res := p.Eval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	res := p.Eval(`({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
 	s.EqualValues(res.Get("w").Int(), img.Bounds().Dx())
 	s.EqualValues(res.Get("h").Int(), img.Bounds().Dy())
 
 	// after the full page screenshot the window size should be the same as before
-	res = p.Eval(`() => ({w: innerWidth, h: innerHeight})`)
+	res = p.Eval(`({w: innerWidth, h: innerHeight})`)
 	s.EqualValues(800, res.Get("w").Int())
 	s.EqualValues(600, res.Get("h").Int())
 }
@@ -444,7 +444,7 @@ func (s *S) TestPageScroll() {
 		p.Mouse.Scroll(100, 190)
 		kit.E(p.Mouse.ScrollE(200, 300, 5))
 		p.Element("button").WaitStable()
-		offset := p.Eval("() => ({x: window.pageXOffset, y: window.pageYOffset})")
+		offset := p.Eval("({x: window.pageXOffset, y: window.pageYOffset})")
 		if offset.Get("x").Int() == 300 {
 			s.GreaterOrEqual(int64(10), 500-offset.Get("y").Int())
 			return true, nil
@@ -457,7 +457,7 @@ func (s *S) TestPageConsoleLog() {
 	p := s.page.Navigate("")
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
-	p.Eval(`() => console.log(1, {b: ['test']})`)
+	p.Eval(`console.log(1, {b: ['test']})`)
 	wait()
 	s.Equal("test", p.ObjectToJSON(e.Args[1]).Get("b.0").String())
 	s.Equal(`1 {"b":["test"]}`, p.ObjectsToJSON(e.Args).Join(" "))
@@ -466,9 +466,9 @@ func (s *S) TestPageConsoleLog() {
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 
-	s.Equal("body", p.ElementByJS(`() => document.body`).Describe().LocalName)
-	s.Len(p.ElementsByJS(`() => document.querySelectorAll('input')`), 4)
-	s.EqualValues(1, p.Eval(`() => 1`).Int())
+	s.Equal("body", p.ElementByJS(`document.body`).Describe().LocalName)
+	s.Len(p.ElementsByJS(`document.querySelectorAll('input')`), 4)
+	s.EqualValues(1, p.Eval(`1`).Int())
 
 	s.Panics(func() {
 		rod.CancelPanic(errors.New("err"))
