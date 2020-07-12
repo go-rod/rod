@@ -33,6 +33,7 @@ func Example_basic() {
 	page.Element("input").Input("git").Press(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
+	// You can also pass multiple selectors to race the result, useful when dealing with multiple possible results.
 	text := page.Element(".codesearch-results p").Text()
 
 	fmt.Println(text)
@@ -166,7 +167,7 @@ func Example_customize_retry_strategy() {
 	// ElementE is used in this context instead of Element. When The XxxxxE
 	// version of functions are used, there will be more access to customise
 	// options, like give access to the backoff algorithm.
-	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", "input")
+	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", []string{"input"})
 	if err == context.DeadlineExceeded {
 		fmt.Println("unable to find the input element before timeout")
 	} else {
@@ -175,7 +176,7 @@ func Example_customize_retry_strategy() {
 
 	// ElementE with the Sleeper parameter being nil will get the element
 	// without retrying. Instead returning an error.
-	el, err = page.ElementE(nil, "", "input")
+	el, err = page.ElementE(nil, "", []string{"input"})
 	if rod.IsError(err, rod.ErrElementNotFound) {
 		fmt.Println("element not found")
 	} else {

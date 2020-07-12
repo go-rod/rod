@@ -5,18 +5,30 @@ package assets
 // Helper for rod
 var Helper = `(() => {
   const rod = {
-    element (selector) {
-      return (this.document || this).querySelector(selector)
+    element (...selectors) {
+      for (const selector of selectors) {
+        const el = (this.document || this).querySelector(selector)
+        if (el) {
+          return el
+        }
+      }
+      return null
     },
 
     elements (selector) {
       return (this.document || this).querySelectorAll(selector)
     },
 
-    elementX (xpath) {
-      return document.evaluate(
-        xpath, (this.document || this), null, XPathResult.FIRST_ORDERED_NODE_TYPE
-      ).singleNodeValue
+    elementX (...xPaths) {
+      for (const xPath of xPaths) {
+        const el = document.evaluate(
+          xPath, (this.document || this), null, XPathResult.FIRST_ORDERED_NODE_TYPE
+        ).singleNodeValue
+        if (el) {
+          return el
+        }
+      }
+      return null
     },
 
     elementsX (xpath) {
@@ -27,11 +39,19 @@ var Helper = `(() => {
       return list
     },
 
-    elementMatches (selector, reg) {
-      const r = new RegExp(reg)
-      const filter = el => rod.text.call(el).match(r)
-      const el = Array.from((this.document || this).querySelectorAll(selector)).find(filter)
-      return el || null
+    elementMatches (...pairs) {
+      for (let i = 0; i < pairs.length - 1; i += 2) {
+        const selector = pairs[i]
+        const pattern = pairs[i + 1]
+        const reg = new RegExp(pattern)
+        const el = Array.from((this.document || this).querySelectorAll(selector)).find(
+          e => reg.test(rod.text.call(e))
+        )
+        if (el) {
+          return el
+        }
+      }
+      return null
     },
 
     parents (selector) {

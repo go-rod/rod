@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"time"
 
@@ -16,6 +17,16 @@ import (
 
 // Array of any type
 type Array []interface{}
+
+// ArrayFromList converts a random list into Array type
+func ArrayFromList(list interface{}) Array {
+	arr := Array{}
+	val := reflect.ValueOf(list)
+	for i := 0; i < val.Len(); i++ {
+		arr = append(arr, val.Index(i).Interface())
+	}
+	return arr
+}
 
 // SprintFnThis wrap js with this, wrap function call if it's js expression
 func SprintFnThis(js string) string {

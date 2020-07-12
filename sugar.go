@@ -333,17 +333,18 @@ func (p *Page) HasMatches(selector, regex string) bool {
 	return has
 }
 
-// Element retries until returns the first element in the page that matches the CSS selector
-func (p *Page) Element(selector string) *Element {
-	el, err := p.ElementE(p.Sleeper(), "", selector)
+// Element retries until an element in the page that matches one of the CSS selectors
+func (p *Page) Element(selectors ...string) *Element {
+	el, err := p.ElementE(p.Sleeper(), "", selectors)
 	kit.E(err)
 	return el
 }
 
-// ElementMatches retries until returns the first element in the page that matches the CSS selector and its text matches the regex.
+// ElementMatches retries until an element in the page that matches one of the pairs.
+// Each pairs is a css selector and a regex. A sample call will look like page.ElementMatches("div", "click me").
 // The regex is the js regex, not golang's.
-func (p *Page) ElementMatches(selector, regex string) *Element {
-	el, err := p.ElementMatchesE(p.Sleeper(), "", selector, regex)
+func (p *Page) ElementMatches(pairs ...string) *Element {
+	el, err := p.ElementMatchesE(p.Sleeper(), "", pairs)
 	kit.E(err)
 	return el
 }
@@ -369,9 +370,9 @@ func (p *Page) ElementsX(xpath string) Elements {
 	return list
 }
 
-// ElementX retries until returns the first element in the page that matches the XPath selector
-func (p *Page) ElementX(xpath string) *Element {
-	el, err := p.ElementXE(p.Sleeper(), "", xpath)
+// ElementX retries until an element in the page that matches one of the XPath selectors
+func (p *Page) ElementX(xPaths ...string) *Element {
+	el, err := p.ElementXE(p.Sleeper(), "", xPaths)
 	kit.E(err)
 	return el
 }

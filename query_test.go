@@ -34,6 +34,12 @@ func (s *S) TestPageHas() {
 	s.False(s.page.HasMatches("button", "11"))
 }
 
+func (s *S) TestPageRaceElement() {
+	s.page.Navigate(srcFile("fixtures/selector.html"))
+	el := s.page.Element("p", "button")
+	s.Equal("01", el.Text())
+}
+
 func (s *S) TestElementHas() {
 	s.page.Navigate(srcFile("fixtures/selector.html"))
 	b := s.page.Element("body")

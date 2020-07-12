@@ -63,8 +63,8 @@ func (ps Pages) FindByURLE(regex string) (*Page, error) {
 }
 
 // HasE doc is similar to the method Has
-func (p *Page) HasE(selector string) (bool, error) {
-	_, err := p.ElementE(nil, "", selector)
+func (p *Page) HasE(selectors ...string) (bool, error) {
+	_, err := p.ElementE(nil, "", selectors)
 	if IsError(err, ErrElementNotFound) {
 		return false, nil
 	}
@@ -72,8 +72,8 @@ func (p *Page) HasE(selector string) (bool, error) {
 }
 
 // HasXE doc is similar to the method HasX
-func (p *Page) HasXE(selector string) (bool, error) {
-	_, err := p.ElementXE(nil, "", selector)
+func (p *Page) HasXE(selectors ...string) (bool, error) {
+	_, err := p.ElementXE(nil, "", selectors)
 	if IsError(err, ErrElementNotFound) {
 		return false, nil
 	}
@@ -81,8 +81,8 @@ func (p *Page) HasXE(selector string) (bool, error) {
 }
 
 // HasMatchesE doc is similar to the method HasMatches
-func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
-	_, err := p.ElementMatchesE(nil, "", selector, regex)
+func (p *Page) HasMatchesE(pairs ...string) (bool, error) {
+	_, err := p.ElementMatchesE(nil, "", pairs)
 	if IsError(err, ErrElementNotFound) {
 		return false, nil
 	}
@@ -90,20 +90,20 @@ func (p *Page) HasMatchesE(selector, regex string) (bool, error) {
 }
 
 // ElementE finds element by css selector
-func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector string) (*Element, error) {
-	js, jsArgs := p.jsHelper("element", Array{selector})
+func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selectors []string) (*Element, error) {
+	js, jsArgs := p.jsHelper("element", ArrayFromList(selectors))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementMatchesE doc is similar to the method ElementMatches
-func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selector, regex string) (*Element, error) {
-	js, jsArgs := p.jsHelper("elementMatches", Array{selector, regex})
+func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, pairs []string) (*Element, error) {
+	js, jsArgs := p.jsHelper("elementMatches", ArrayFromList(pairs))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementXE finds elements by XPath
-func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xpath string) (*Element, error) {
-	js, jsArgs := p.jsHelper("elementX", Array{xpath})
+func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xPaths []string) (*Element, error) {
+	js, jsArgs := p.jsHelper("elementX", ArrayFromList(xPaths))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
@@ -231,13 +231,13 @@ func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
 }
 
 // ElementE doc is similar to the method Element
-func (el *Element) ElementE(selector string) (*Element, error) {
-	return el.page.ElementE(nil, el.ObjectID, selector)
+func (el *Element) ElementE(selectors ...string) (*Element, error) {
+	return el.page.ElementE(nil, el.ObjectID, selectors)
 }
 
 // ElementXE doc is similar to the method ElementX
-func (el *Element) ElementXE(xpath string) (*Element, error) {
-	return el.page.ElementXE(nil, el.ObjectID, xpath)
+func (el *Element) ElementXE(xPaths ...string) (*Element, error) {
+	return el.page.ElementXE(nil, el.ObjectID, xPaths)
 }
 
 // ElementByJSE doc is similar to the method ElementByJS
@@ -267,8 +267,8 @@ func (el *Element) PreviousE() (*Element, error) {
 }
 
 // ElementMatchesE doc is similar to the method ElementMatches
-func (el *Element) ElementMatchesE(selector, regex string) (*Element, error) {
-	return el.page.ElementMatchesE(nil, el.ObjectID, selector, regex)
+func (el *Element) ElementMatchesE(pairs ...string) (*Element, error) {
+	return el.page.ElementMatchesE(nil, el.ObjectID, pairs)
 }
 
 // ElementsE doc is similar to the method Elements
