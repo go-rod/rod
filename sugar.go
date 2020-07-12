@@ -516,6 +516,13 @@ func (el *Element) Select(selectors ...string) *Element {
 	return el
 }
 
+// Matches checks if the element can be selected by the css selector
+func (el *Element) Matches(selector string) bool {
+	res, err := el.MatchesE(selector)
+	kit.E(err)
+	return res
+}
+
 // Attribute returns the requested attribute's value of the element
 // if the attribute is not found, it will return an empty string.
 func (el *Element) Attribute(name string) *string {

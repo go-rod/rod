@@ -171,6 +171,15 @@ func (el *Element) SelectE(selectors []string) error {
 	return err
 }
 
+// MatchesE checks if the element can be selected by the css selector
+func (el *Element) MatchesE(selector string) (bool, error) {
+	res, err := el.EvalE(true, `s => this.matches(s)`, Array{selector})
+	if err != nil {
+		return false, err
+	}
+	return res.Value.Bool(), nil
+}
+
 // AttributeE is similar to the method Attribute
 func (el *Element) AttributeE(name string) (*string, error) {
 	attr, err := el.EvalE(true, "(n) => this.getAttribute(n)", Array{name})

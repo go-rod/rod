@@ -108,6 +108,11 @@ func (s *S) TestSelectOptions() {
 	s.EqualValues(1, el.Property("selectedIndex").Int())
 }
 
+func (s *S) TestMatches() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	s.True(p.Element("textarea").Matches(`[cols="30"]`))
+}
+
 func (s *S) TestAttribute() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("textarea")
