@@ -13,7 +13,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mholt/archiver"
 	"github.com/ysmood/kit"
 )
 
@@ -137,10 +136,11 @@ func (lc *Browser) download(u string) error {
 
 	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
 	_ = os.RemoveAll(unzipPath)
-	err = archiver.Unarchive(zipPath, unzipPath)
+	err = unzip(zipPath, unzipPath)
 	if err != nil {
 		return err
 	}
+
 	lc.Log("[rod/lib/launcher] Unzipped chromium bin to: " + lc.ExecPath() + "\n")
 	return nil
 }
