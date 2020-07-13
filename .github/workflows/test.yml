@@ -52,7 +52,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: test
-      run: go test -v -race
+      run: go test -v -race -run Test
 
   docker:
 
