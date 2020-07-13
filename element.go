@@ -162,7 +162,7 @@ func (el *Element) SelectE(selectors []string) error {
 	}
 
 	defer el.tryTrace(fmt.Sprintf(
-		`<span style="color: #777;">select</span> <code>%s</code>`,
+		`select "%s"`,
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 

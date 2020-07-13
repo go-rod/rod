@@ -27,16 +27,16 @@ func (b *Browser) trySlowmotion() {
 	time.Sleep(b.slowmotion)
 }
 
-func (el *Element) tryTrace(htmlMessage string) func() {
+func (el *Element) tryTrace(msg string) func() {
 	if !el.page.browser.trace {
 		return func() {}
 	}
 
 	if !el.page.browser.quiet {
-		kit.Log(kit.C("[trace]", "cyan"), htmlMessage)
+		kit.Log(kit.C("[trace]", "cyan"), msg)
 	}
 
-	return el.Trace(htmlMessage)
+	return el.Trace(msg)
 }
 
 // ServeMonitor starts the monitor server.
@@ -139,12 +139,12 @@ func (p *Page) ExposeJSHelper() *Page {
 }
 
 // Trace with an overlay on the element
-func (el *Element) Trace(htmlMessage string) (removeOverlay func()) {
+func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := kit.RandString(8)
 
 	js, jsArgs := el.page.jsHelper("elementOverlay", Array{
 		id,
-		htmlMessage,
+		msg,
 	})
 	_, err := el.EvalE(true, js, jsArgs)
 	CancelPanic(err)

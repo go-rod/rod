@@ -264,12 +264,6 @@ var Helper = `(() => {
       })
     },
 
-    stripHTML (html) {
-      const div = document.createElement('div')
-      div.innerHTML = html
-      return div.innerText
-    },
-
     addScriptTag (id, url, content) {
       if (document.getElementById(id)) return
 
