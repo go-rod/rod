@@ -23,6 +23,8 @@ func main() {
 	page.Element("#id_password").Input(*password).Press(input.Enter)
 
 	errSelector := ".error-message__27FL"
+
+	// Here we race two selectors, wait until one resolves
 	el := page.Element(".nav-user-icon-base", errSelector)
 
 	if el.Matches(errSelector) {

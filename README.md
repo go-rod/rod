@@ -7,8 +7,8 @@
 
 ![logo](fixtures/banner.png)
 
-Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
-It's designed for web automation and scraping. Rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
+`rod` is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
+It's designed for web automation and scraping. rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
 ## Features
 
@@ -18,7 +18,7 @@ It's designed for web automation and scraping. Rod also tries to expose low-leve
 - Thread-safe for all operations
 - Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
-- High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource
+- High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource, etc
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
 - No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
@@ -32,13 +32,13 @@ Such as the usage of method `HandleAuth`, you can search all the `*_test.go` fil
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
-[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and chromedp.
+[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and [chromedp][chromedp].
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
 ## How it works
 
-Here's the common start process of Rod:
+Here's the common start process of rod:
 
 1. Try to connect to a Devtools endpoint (WebSocket), if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [launcher](lib/launcher).
 
@@ -46,19 +46,30 @@ Here's the common start process of Rod:
 
 1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
 
-1. To control a specific page, Rod will first inject a js helper script to it. Rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
+1. To control a specific page, `rod` will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
 
 ## FAQ
 
-### Q: How to use Rod with docker
+### TOC
+
+- [How to use rod with docker](#q-how-to-use-rod-with-docker)
+- [Why functions don't return error values](#q-why-functions-dont-return-error-values)
+- [Why there is always an "about:blank" page](#q-why-there-is-always-an-aboutblank-page)
+- [Does it support other browsers like Firefox or Edge](#q-does-it-support-other-browsers-like-firefox-or-edge)
+- [Why is it called rod](#q-why-is-it-called-rod)
+- [How to contribute](#q-how-to-contribute)
+- [How versioning is handled](#q-how-versioning-is-handled)
+- [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
+
+### Q: How to use rod with docker
 
 To let rod work with docker is very easy:
 
-1. Run the Rod image `docker run -p 9222:9222 rodorg/rod`
+1. Run the rod image `docker run -p 9222:9222 rodorg/rod`
 
 2. Open another terminal and run a go program like this [example](lib/examples/remote-launch/main.go)
 
-The [Rod image](https://hub.docker.com/repository/docker/rodorg/rod)
+The [rod image](https://hub.docker.com/repository/docker/rodorg/rod)
 can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
@@ -73,16 +84,16 @@ It's an issue of the browser itself. If we enable the `--no-first-run` flag and 
 
 ### Q: Does it support other browsers like Firefox or Edge
 
-Rod should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+`rod` should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 
 - Microsoft Edge can pass all the unit tests.
 - Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol.
 - Safari doesn't have any plan to support it yet.
 - IE won't support it.
 
-### Q: Why is it called Rod
+### Q: Why is it called rod
 
-Rod is related to puppetry, see [Rod Puppet](https://en.wikipedia.org/wiki/Puppet#Rod_puppet).
+rod is related to puppetry, see [rod Puppet](https://en.wikipedia.org/wiki/Puppet#rod_puppet).
 So we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
 So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
@@ -102,15 +113,27 @@ You can use the Github's release comparison to see the automated changelog, for 
 
 There are a lot of great projects, but no one is perfect, choose the best one that fits your needs is important.
 
+- [chromedp][chromedp]
+
+  With chromedp, you have to use their verbose DSL like tasks to handle the main logic, because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The DSL like wrapper also makes the Go type useless when tracking issues.
+
+  It's painful to use chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
+
+  chromedp doesn't support shadow DOM.
+
+  When a crash happens, chromedp will leave the zombie browser process on Windows and Mac.
+
+  For more comparison you can check [here](lib/examples/compare-chromedp). If you compare the `logic` example between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is. Besides, rod has more high-level helpers like WaitRequestIdle, GetDownloadFile, HijackRequests, etc.
+
 - [selenium](https://www.selenium.dev/)
 
   Selenium is based on [webdriver protocol](https://www.w3.org/TR/webdriver/) which has much less functions compare to [devtools protocol][devtools protocol]. Such as it can't handle [closed shadow DOM](https://github.com/sukgu/shadow-automation-selenium/issues/7#issuecomment-563062460). No way to save page as PDF. No support for tools like [Profiler](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) or [Performance](https://chromedevtools.github.io/devtools-protocol/tot/Performance/), etc.
   
-  Harder to setup and maintain because of extra dependencies like a browser driver.
+  Harder to set up and maintain because of extra dependencies like a browser driver.
   
-  Though selenium sells itself for better cross-browser support, but it's usually very hard to make it work for all major browsers.
+  Though selenium sells itself for better cross-browser support, it's usually very hard to make it work for all major browsers.
   
-  There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of [puppeteer][puppeteer].
+  There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of puppeteer.
 
 - [puppeteer][puppeteer]
 
@@ -118,20 +141,13 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   Rod will only enable domain events when they are needed, puppeteer will always enable all the domains which will consume a lot of resources when driving a remote browser.
 
-- [chromedp](https://github.com/chromedp/chromedp)
-
-  With Chromedp, you have to use their verbose DSL like tasks to handle the main logic, because Chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The DSL like wrapper also make the Go type useless when tracking issues.
-
-  It's painful to use Chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
-
-  When a crash happens, Chromedp will leave the zombie browser process on Windows and Mac.
-
-  For more comparison you can check [here](lib/examples/compare-chromedp). If you compare the `logic` example between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is. Besides, rod has more high-level helpers like WaitRequestIdle, GetDownloadFile, HijackRequests, etc.
-
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
 
+  If you want to cooperate with us to create a testing focused framework base on rod to overcome the limitation of cypress, please contact us.
+
 [devtools protocol]: https://chromedevtools.github.io/devtools-protocol
+[chromedp]: https://github.com/chromedp/chromedp
 [puppeteer]: https://github.com/puppeteer/puppeteer
 [discord room]: https://discord.gg/CpevuvY
