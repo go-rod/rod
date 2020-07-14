@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"image/color"
 	"image/png"
 	"path/filepath"
 	"time"
@@ -214,6 +215,13 @@ func (s *S) TestWaitStable() {
 	el.WaitStable()
 	el.Click()
 	p.Has("[event=click]")
+}
+
+func (s *S) TestCanvasToImage() {
+	p := s.page.Navigate(srcFile("fixtures/canvas.html"))
+	src, err := png.Decode(bytes.NewBuffer(p.Element("#canvas").CanvasToImage("", 1.0)))
+	kit.E(err)
+	s.Equal(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }
 
 func (s *S) TestResource() {

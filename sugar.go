@@ -601,6 +601,16 @@ func (el *Element) Box() *Box {
 	return box
 }
 
+// CanvasToImage get image data of a canvas.
+// The default format is image/png.
+// The default quality is 0.92.
+// doc: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+func (el *Element) CanvasToImage(format string, quality float64) []byte {
+	bin, err := el.CanvasToImageE(format, quality)
+	kit.E(err)
+	return bin
+}
+
 // Resource returns the binary of the "src" properly, such as the image or audio file.
 func (el *Element) Resource() []byte {
 	bin, err := el.ResourceE()

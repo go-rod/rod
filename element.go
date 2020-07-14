@@ -388,6 +388,26 @@ func (el *Element) BoxE() (*Box, error) {
 	return &rect, nil
 }
 
+// CanvasToImageE get image data of a canvas.
+// The default format is image/png.
+// The default quality is 0.92.
+// doc: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+func (el *Element) CanvasToImageE(format string, quality float64) ([]byte, error) {
+	str, err := el.EvalE(true,
+		`(format, quality) => this.toDataURL(format, quality).split(",")[1]`,
+		Array{format, quality})
+	if err != nil {
+		return nil, err
+	}
+
+	bin, err := base64.StdEncoding.DecodeString(str.Value.String())
+	if err != nil {
+		return nil, err
+	}
+
+	return bin, nil
+}
+
 // ResourceE doc is similar to the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
 	js, jsArgs := el.page.jsHelper("resource", nil)
