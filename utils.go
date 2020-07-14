@@ -52,6 +52,23 @@ func Event(msg *cdp.Event, evt proto.Payload) bool {
 	return false
 }
 
+// Try try fn with recover, return the panic as value
+func Try(fn func()) (err error) {
+	defer func() {
+		if val := recover(); val != nil {
+			var ok bool
+			err, ok = val.(error)
+			if !ok {
+				err = &Error{ErrValue, val}
+			}
+		}
+	}()
+
+	fn()
+
+	return err
+}
+
 func isNilContextErr(err error) bool {
 	if err == nil {
 		return false

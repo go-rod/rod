@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"context"
+	"errors"
 	"runtime"
 	"strings"
 	"sync"
@@ -218,6 +219,16 @@ func (s *S) TestResolveBlocking() {
 	s.Panics(func() {
 		p.Navigate(url)
 	})
+}
+
+func (s *S) TestTry() {
+	s.Nil(rod.Try(func() {}))
+
+	err := rod.Try(func() { panic(1) })
+	var errVal *rod.Error
+	ok := errors.As(err, &errVal)
+	s.True(ok)
+	s.Equal(1, errVal.Details)
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

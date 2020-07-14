@@ -52,14 +52,18 @@ Here's the common start process of rod:
 
 ### TOC
 
-- [How to use rod with docker](#q-how-to-use-rod-with-docker)
 - [Why functions don't return error values](#q-why-functions-dont-return-error-values)
+- [How to use rod with docker](#q-how-to-use-rod-with-docker)
 - [Why there is always an "about:blank" page](#q-why-there-is-always-an-aboutblank-page)
 - [Does it support other browsers like Firefox or Edge](#q-does-it-support-other-browsers-like-firefox-or-edge)
 - [Why is it called rod](#q-why-is-it-called-rod)
 - [How to contribute](#q-how-to-contribute)
 - [How versioning is handled](#q-how-versioning-is-handled)
 - [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
+
+### Q: Why functions don't return error values
+
+Please read the [E suffixed function family](.github/CONTRIBUTING.md#e-suffixed-function-family).
 
 ### Q: How to use rod with docker
 
@@ -73,10 +77,6 @@ The [rod image](https://hub.docker.com/repository/docker/rodorg/rod)
 can dynamically launch a browser for each remote driver with customizable browser flags.
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
-
-### Q: Why functions don't return error values
-
-See the [E suffix](.github/CONTRIBUTING.md#e-suffix).
 
 ### Q: Why there is always an "about:blank" page
 

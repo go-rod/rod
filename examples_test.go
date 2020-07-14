@@ -3,6 +3,7 @@ package rod_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -47,10 +48,20 @@ func Example_basic() {
 	// When eval on an element, you can use "this" to access the DOM element.
 	fmt.Println(page.Element("title").Eval(`this.innerText`).String())
 
+	// To handle errors in rod, you can use rod.Try or E suffixed function family like "page.ElementE"
+	err := rod.Try(func() {
+		page.Element("#2020")
+	})
+	if errors.Is(err, rod.ErrEval) {
+		// https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
+		fmt.Println("you need to learn how to use css selector")
+	}
+
 	// Output:
 	// Git is the most widely used version control system.
 	// 3
 	// Search · git · GitHub
+	// you need to learn how to use css selector
 }
 
 // Example_headless_with_debug shows how we can start a browser with debug
@@ -177,7 +188,7 @@ func Example_customize_retry_strategy() {
 	// ElementE with the Sleeper parameter being nil will get the element
 	// without retrying. Instead returning an error.
 	el, err = page.ElementE(nil, "", []string{"input"})
-	if rod.IsError(err, rod.ErrElementNotFound) {
+	if errors.Is(err, rod.ErrElementNotFound) {
 		fmt.Println("element not found")
 	} else {
 		kit.E(err)

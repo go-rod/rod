@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
@@ -255,12 +256,12 @@ func (s *S) TestFnErr() {
 	_, err := el.EvalE(true, "foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
-	s.Nil(errors.Unwrap(err))
+	s.Equal(rod.ErrEval, errors.Unwrap(err))
 
 	_, err = el.ElementByJSE("foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
-	s.Nil(errors.Unwrap(err))
+	s.Equal(rod.ErrEval, errors.Unwrap(err))
 }
 
 func (s *S) TestElementEWithDepth() {

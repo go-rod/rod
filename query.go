@@ -4,6 +4,7 @@ package rod
 
 import (
 	"context"
+	"errors"
 	"regexp"
 
 	"github.com/go-rod/rod/lib/proto"
@@ -65,7 +66,7 @@ func (ps Pages) FindByURLE(regex string) (*Page, error) {
 // HasE doc is similar to the method Has
 func (p *Page) HasE(selectors ...string) (bool, error) {
 	_, err := p.ElementE(nil, "", selectors)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
@@ -74,7 +75,7 @@ func (p *Page) HasE(selectors ...string) (bool, error) {
 // HasXE doc is similar to the method HasX
 func (p *Page) HasXE(selectors ...string) (bool, error) {
 	_, err := p.ElementXE(nil, "", selectors)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
@@ -83,7 +84,7 @@ func (p *Page) HasXE(selectors ...string) (bool, error) {
 // HasMatchesE doc is similar to the method HasMatches
 func (p *Page) HasMatchesE(pairs ...string) (bool, error) {
 	_, err := p.ElementMatchesE(nil, "", pairs)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
@@ -119,7 +120,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return &Error{nil, ErrElementNotFound, js}
+			return &Error{ErrElementNotFound, js}
 		}
 	}
 
@@ -146,7 +147,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, &Error{nil, ErrExpectElement, res}
+		return nil, &Error{ErrExpectElement, res}
 	}
 
 	return p.ElementFromObjectID(res.ObjectID), nil
@@ -172,7 +173,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, &Error{nil, ErrExpectElements, res}
+		return nil, &Error{ErrExpectElements, res}
 	}
 
 	objectID := res.ObjectID
@@ -194,7 +195,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, &Error{nil, ErrExpectElements, val}
+			return nil, &Error{ErrExpectElements, val}
 		}
 
 		elemList = append(elemList, p.ElementFromObjectID(val.ObjectID))
@@ -206,7 +207,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 // HasE doc is similar to the method Has
 func (el *Element) HasE(selector string) (bool, error) {
 	_, err := el.ElementE(selector)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
@@ -215,7 +216,7 @@ func (el *Element) HasE(selector string) (bool, error) {
 // HasXE doc is similar to the method HasX
 func (el *Element) HasXE(selector string) (bool, error) {
 	_, err := el.ElementXE(selector)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
@@ -224,7 +225,7 @@ func (el *Element) HasXE(selector string) (bool, error) {
 // HasMatchesE doc is similar to the method HasMatches
 func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
 	_, err := el.ElementMatchesE(selector, regex)
-	if IsError(err, ErrElementNotFound) {
+	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err

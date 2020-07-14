@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"image/png"
-	"io"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -473,8 +472,6 @@ func (s *S) TestPageOthers() {
 	s.Panics(func() {
 		rod.CancelPanic(errors.New("err"))
 	})
-
-	s.False(rod.IsError(io.EOF, rod.ErrElementNotFound))
 
 	p.Mouse.Down("left")
 	defer p.Mouse.Up("left")

@@ -17,7 +17,7 @@ You may see redundant code everywhere to reduce the use of interfaces or dynamic
 So that everything should map to your brain like a tree, not a graph.
 So that you can always jump from one definition to another in a uni-directional manner, the reverse search should be rare.
 
-## E suffix
+## E suffixed function family
 
 If you read the function list, you will notice a lot of functions have two versions, such as `Screenshot` and `ScreenshotE`,
 the `E` suffix means error. Functions end with E suffix will return an error as the last value. The non-E version is usually a wrapper

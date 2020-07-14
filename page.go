@@ -131,7 +131,7 @@ func (p *Page) NavigateE(url string) error {
 		return err
 	}
 	if res.ErrorText != "" {
-		return &Error{Code: ErrNavigation, Details: res.ErrorText}
+		return &Error{Err: ErrNavigation, Details: res.ErrorText}
 	}
 	return nil
 }
@@ -346,7 +346,7 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 	wait := p.browser.eachEvent(ctx, p.SessionID, func(
 		sent *proto.NetworkRequestWillBeSent,
-		finished *proto.NetworkLoadingFinished,
+		finished *proto.NetworkLoadingFinished, // not use responseReceived because https://crbug.com/883475
 		failed *proto.NetworkLoadingFailed,
 	) {
 		if sent != nil {
@@ -493,7 +493,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	}
 
 	if res.ExceptionDetails != nil {
-		return nil, &Error{nil, ErrEval, res.ExceptionDetails.Exception.Description}
+		return nil, &Error{ErrEval, res.ExceptionDetails.Exception.Description}
 	}
 
 	return res.Result, nil
@@ -503,7 +503,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return &Error{nil, ErrWaitJSTimeout, js}
+			return &Error{ErrWaitJSTimeout, js}
 		}
 	}
 
