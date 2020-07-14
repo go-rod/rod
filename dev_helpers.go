@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"os/exec"
 	"regexp"
 	"strings"
 	"time"
@@ -94,7 +95,9 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 		url := "http://" + strings.Replace(srv.Listener.Addr().String(), "[::]", "[::1]", 1)
 		bin, err := launcher.NewBrowser().Get()
 		kit.E(err)
-		kit.Exec(bin, url).MustDo()
+		p := exec.Command(bin, url)
+		kit.E(p.Start())
+		kit.E(p.Process.Release())
 	}
 
 	return srv
