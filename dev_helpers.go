@@ -91,7 +91,7 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	}()
 
 	if openBrowser {
-		url := "http://" + srv.Listener.Addr().String()
+		url := "http://" + strings.Replace(srv.Listener.Addr().String(), "[::]", "[::1]", 1)
 		bin, err := launcher.NewBrowser().Get()
 		kit.E(err)
 		kit.Exec(bin, url).MustDo()
