@@ -84,24 +84,17 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 		_, _ = ctx.Writer.Write(p.Screenshot())
 	})
 
-	var viewer *Browser
-
 	go func() { _ = srv.Do() }()
 	go func() {
 		<-b.ctx.Done()
 		_ = srv.Listener.Close()
-		if openBrowser {
-			_ = viewer.CloseE()
-		}
 	}()
 
-	url := "http://" + srv.Listener.Addr().String()
-
 	if openBrowser {
-		viewer = New().Context(b.ctx, b.ctxCancel).ControlURL(
-			launcher.New().Headless(false).Launch(),
-		).Connect()
-		viewer.Page(url)
+		url := "http://" + srv.Listener.Addr().String()
+		bin, err := launcher.NewBrowser().Get()
+		kit.E(err)
+		kit.Exec(bin, url).MustDo()
 	}
 
 	return srv
