@@ -247,6 +247,23 @@ func (s *S) TestUseReleasedElement() {
 	btn := p.Element("button")
 	btn.Release()
 	s.EqualError(btn.ClickE("left"), "context canceled")
+
+	btn = p.Element("button")
+	kit.E(proto.RuntimeReleaseObject{ObjectID: btn.ObjectID}.Call(p))
+	s.EqualError(btn.ClickE("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
+}
+
+func (s *S) TestElementMultipleTimes() {
+	// To see whether chrome will reuse the remote object ID or not.
+	// Seems like it will not.
+
+	page := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	btn01 := page.Element("button")
+	btn02 := page.Element("button")
+
+	s.Equal(btn01.Text(), btn02.Text())
+	s.NotEqual(btn01.ObjectID, btn02.ObjectID)
 }
 
 func (s *S) TestFnErr() {

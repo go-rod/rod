@@ -31,7 +31,7 @@ jobs:
     - name: test
       run: |
         godev --version
-        rod=trace godev -l -m 94
+        rod=trace godev -l -m 93
 
     - uses: codecov/codecov-action@v1
 
