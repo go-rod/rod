@@ -38,9 +38,12 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
-	slowmotion time.Duration // see defaults.slow
-	trace      bool          // see defaults.Trace
-	quiet      bool          // see defaults.Quiet
+	slowmotion  time.Duration // see defaults.slow
+	quiet       bool          // see defaults.Quiet
+	trace       bool          // see defaults.Trace
+	traceLogAct func(string)
+	traceLogJS  func(string, Array)
+	traceLogErr func(error)
 
 	monitorServer *kit.ServerContext
 
@@ -56,11 +59,14 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
-		lock:       &sync.Mutex{},
-		slowmotion: defaults.Slow,
-		trace:      defaults.Trace,
-		quiet:      defaults.Quiet,
-		states:     &sync.Map{},
+		lock:        &sync.Mutex{},
+		slowmotion:  defaults.Slow,
+		quiet:       defaults.Quiet,
+		trace:       defaults.Trace,
+		traceLogAct: defaultTraceLogAct,
+		traceLogJS:  defaultTraceLogJS,
+		traceLogErr: defaultTraceLogErr,
+		states:      &sync.Map{},
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -95,6 +101,14 @@ func (b *Browser) Slowmotion(delay time.Duration) *Browser {
 // Trace enables/disables the visual tracing of the input actions on the page
 func (b *Browser) Trace(enable bool) *Browser {
 	b.trace = enable
+	return b
+}
+
+// TraceLog overrides the default log functions for trace
+func (b *Browser) TraceLog(msg func(string), js func(string, Array), err func(error)) *Browser {
+	b.traceLogAct = msg
+	b.traceLogJS = js
+	b.traceLogErr = err
 	return b
 }
 

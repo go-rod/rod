@@ -19,11 +19,7 @@ func prettyJSON(s interface{}) string {
 	return kit.Sdump(raw)
 }
 
-func (cdp *Client) debugLog(obj interface{}) {
-	if !cdp.debug {
-		return
-	}
-
+func defaultDebugLog(obj interface{}) {
 	prefix := time.Now().Format("[cdp] [2006-01-02 15:04:05]")
 
 	switch val := obj.(type) {

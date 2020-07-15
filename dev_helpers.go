@@ -20,27 +20,6 @@ import (
 	"github.com/ysmood/kit"
 )
 
-// check method and sleep if needed
-func (b *Browser) trySlowmotion() {
-	if b.slowmotion == 0 {
-		return
-	}
-
-	time.Sleep(b.slowmotion)
-}
-
-func (el *Element) tryTrace(msg string) func() {
-	if !el.page.browser.trace {
-		return func() {}
-	}
-
-	if !el.page.browser.quiet {
-		kit.Log(kit.C("[trace]", "cyan"), msg)
-	}
-
-	return el.Trace(msg)
-}
-
 // ServeMonitor starts the monitor server.
 // If openBrowser is true, it will try to launcher a browser to play the screenshots.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
@@ -118,7 +97,9 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		msg,
 	})
 	_, err := root.EvalE(true, "", js, jsArgs)
-	logTraceErr(err)
+	if err != nil {
+		p.browser.traceLogErr(err)
+	}
 
 	remove = func() {
 		js, jsArgs := p.jsHelper("removeOverlay", Array{id})
@@ -144,7 +125,9 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 		msg,
 	})
 	_, err := el.EvalE(true, js, jsArgs)
-	logTraceErr(err)
+	if err != nil {
+		el.page.browser.traceLogErr(err)
+	}
 
 	removeOverlay = func() {
 		js, jsArgs := el.page.jsHelper("removeOverlay", Array{id})
@@ -152,6 +135,27 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 	}
 
 	return
+}
+
+// check method and sleep if needed
+func (b *Browser) trySlowmotion() {
+	if b.slowmotion == 0 {
+		return
+	}
+
+	time.Sleep(b.slowmotion)
+}
+
+func (el *Element) tryTrace(msg string) func() {
+	if !el.page.browser.trace {
+		return func() {}
+	}
+
+	if !el.page.browser.quiet {
+		el.page.browser.traceLogAct(msg)
+	}
+
+	return el.Trace(msg)
 }
 
 var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
@@ -169,16 +173,25 @@ func (p *Page) tryTraceFn(js string, params Array) func() {
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
 	if !p.browser.quiet {
-		msg := fmt.Sprintf("%s(%s)", js, paramsStr)
-		kit.Log(kit.C("[trace]", "cyan"), kit.C("js", "yellow"), msg)
+		p.browser.traceLogJS(js, params)
 	}
 
 	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
-func logTraceErr(err error) {
-	if err != nil && err != context.Canceled && err != context.DeadlineExceeded {
+func defaultTraceLogAct(msg string) {
+	kit.Log(kit.C("act", "cyan"), msg)
+}
+
+func defaultTraceLogJS(js string, params Array) {
+	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
+	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
+	kit.Log(kit.C("js", "yellow"), msg)
+}
+
+func defaultTraceLogErr(err error) {
+	if err != context.Canceled && err != context.DeadlineExceeded {
 		kit.Err(err)
 	}
 }

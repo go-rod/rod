@@ -29,7 +29,8 @@ type Client struct {
 
 	count uint64
 
-	debug bool
+	debug    bool
+	debugLog func(interface{})
 }
 
 // Request to send to browser
@@ -87,6 +88,7 @@ func New(websocketURL string) *Client {
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
 		debug:     defaults.CDP,
+		debugLog:  defaultDebugLog,
 	}
 
 	return cdp
@@ -114,6 +116,12 @@ func (cdp *Client) Websocket(ws Websocketable) *Client {
 // Debug is the flag to enable debug log to stdout.
 func (cdp *Client) Debug(enable bool) *Client {
 	cdp.debug = enable
+	return cdp
+}
+
+// DebugLog override the defaultDebugLog function
+func (cdp *Client) DebugLog(fn func(interface{})) *Client {
+	cdp.debugLog = fn
 	return cdp
 }
 
@@ -152,7 +160,9 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 		Params:    params,
 	}
 
-	cdp.debugLog(req)
+	if cdp.debug {
+		cdp.debugLog(req)
+	}
 
 	data, err := json.Marshal(req)
 	kit.E(err)
@@ -251,7 +261,9 @@ func (cdp *Client) readMsgFromBrowser() {
 			var res response
 			err := json.Unmarshal(data, &res)
 			kit.E(err)
-			cdp.debugLog(&res)
+			if cdp.debug {
+				cdp.debugLog(&res)
+			}
 			select {
 			case <-cdp.ctx.Done():
 				return
@@ -261,7 +273,9 @@ func (cdp *Client) readMsgFromBrowser() {
 			var evt Event
 			err := json.Unmarshal(data, &evt)
 			kit.E(err)
-			cdp.debugLog(&evt)
+			if cdp.debug {
+				cdp.debugLog(&evt)
+			}
 			select {
 			case <-cdp.ctx.Done():
 				return
@@ -272,6 +286,8 @@ func (cdp *Client) readMsgFromBrowser() {
 }
 
 func (cdp *Client) close(err error) {
-	cdp.debugLog(err)
+	if cdp.debug {
+		cdp.debugLog(err)
+	}
 	cdp.ctxCancel()
 }
