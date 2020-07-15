@@ -5,6 +5,7 @@
 package rod
 
 import (
+	"context"
 	"fmt"
 	"html"
 	"net/http"
@@ -117,7 +118,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		msg,
 	})
 	_, err := root.EvalE(true, "", js, jsArgs)
-	CancelPanic(err)
+	logTraceErr(err)
 
 	remove = func() {
 		js, jsArgs := p.jsHelper("removeOverlay", Array{id})
@@ -143,7 +144,7 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 		msg,
 	})
 	_, err := el.EvalE(true, js, jsArgs)
-	CancelPanic(err)
+	logTraceErr(err)
 
 	removeOverlay = func() {
 		js, jsArgs := el.page.jsHelper("removeOverlay", Array{id})
@@ -174,4 +175,10 @@ func (p *Page) tryTraceFn(js string, params Array) func() {
 
 	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
+}
+
+func logTraceErr(err error) {
+	if err != nil && err != context.Canceled && err != context.DeadlineExceeded {
+		kit.Err(err)
+	}
 }

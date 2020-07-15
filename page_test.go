@@ -3,7 +3,6 @@ package rod_test
 import (
 	"bytes"
 	"context"
-	"errors"
 	"image/png"
 	"path/filepath"
 	"sort"
@@ -11,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -468,10 +466,6 @@ func (s *S) TestPageOthers() {
 	s.Equal("body", p.ElementByJS(`document.body`).Describe().LocalName)
 	s.Len(p.ElementsByJS(`document.querySelectorAll('input')`), 4)
 	s.EqualValues(1, p.Eval(`1`).Int())
-
-	s.Panics(func() {
-		rod.CancelPanic(errors.New("err"))
-	})
 
 	p.Mouse.Down("left")
 	defer p.Mouse.Up("left")

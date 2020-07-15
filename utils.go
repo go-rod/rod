@@ -2,7 +2,6 @@ package rod
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"path/filepath"
@@ -34,13 +33,6 @@ func SprintFnThis(js string) string {
 		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 	}
 	return fmt.Sprintf(`function() { return %s }`, js)
-}
-
-// CancelPanic graceful panic
-func CancelPanic(err error) {
-	if err != nil && err != context.Canceled {
-		panic(err)
-	}
 }
 
 // Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
