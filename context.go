@@ -7,8 +7,6 @@ import (
 
 // Context creates a clone with a context that inherits the previous one
 func (b *Browser) Context(ctx context.Context, cancel func()) *Browser {
-	chainContext(b.ctx, ctx, cancel)
-
 	newObj := *b
 	newObj.ctx = ctx
 	newObj.ctxCancel = cancel
@@ -35,8 +33,6 @@ func (b *Browser) CancelTimeout() *Browser {
 
 // Context creates a clone with a context that inherits the previous one
 func (p *Page) Context(ctx context.Context, cancel func()) *Page {
-	chainContext(p.ctx, ctx, cancel)
-
 	newObj := *p
 	newObj.ctx = ctx
 	newObj.ctxCancel = cancel
@@ -63,8 +59,6 @@ func (p *Page) CancelTimeout() *Page {
 
 // Context creates a clone with a context that inherits the previous one
 func (el *Element) Context(ctx context.Context, cancel func()) *Element {
-	chainContext(el.ctx, ctx, cancel)
-
 	newObj := *el
 	newObj.ctx = ctx
 	newObj.ctxCancel = cancel
@@ -87,17 +81,4 @@ func (el *Element) Timeout(d time.Duration) *Element {
 func (el *Element) CancelTimeout() *Element {
 	el.timeoutCancel()
 	return el
-}
-
-// when parent stops, the child should also stop
-func chainContext(parent, child context.Context, cancelChild func()) {
-	if parent != nil {
-		go func() {
-			select {
-			case <-parent.Done():
-				cancelChild()
-			case <-child.Done():
-			}
-		}()
-	}
 }
