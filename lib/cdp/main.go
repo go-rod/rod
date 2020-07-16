@@ -88,10 +88,9 @@ func New(websocketURL string) *Client {
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
 		debug:     defaults.CDP,
-		debugLog:  defaultDebugLog,
 	}
 
-	return cdp
+	return cdp.DebugLog(defaultDebugLog)
 }
 
 // Context set the context
@@ -216,22 +215,14 @@ func (cdp *Client) consumeMsg() {
 		case <-cdp.ctx.Done():
 			return
 
-		case data, ok := <-cdp.chReq:
-			if !ok {
-				return
-			}
-
+		case data := <-cdp.chReq:
 			err := cdp.wsConn.Send(data)
 			if err != nil {
 				cdp.close(err)
 				return
 			}
 
-		case res, ok := <-cdp.chRes:
-			if !ok {
-				return
-			}
-
+		case res := <-cdp.chRes:
 			callback, has := cdp.callbacks.Load(res.ID)
 			if has {
 				select {
