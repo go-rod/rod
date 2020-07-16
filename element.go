@@ -393,14 +393,14 @@ func (el *Element) BoxE() (*Box, error) {
 // The default quality is 0.92.
 // doc: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
 func (el *Element) CanvasToImageE(format string, quality float64) ([]byte, error) {
-	str, err := el.EvalE(true,
-		`(format, quality) => this.toDataURL(format, quality).split(",")[1]`,
+	res, err := el.EvalE(true,
+		`(format, quality) => this.toDataURL(format, quality)`,
 		Array{format, quality})
 	if err != nil {
 		return nil, err
 	}
 
-	bin, err := base64.StdEncoding.DecodeString(str.Value.String())
+	_, bin := parseDataURI(res.Value.Str)
 	if err != nil {
 		return nil, err
 	}

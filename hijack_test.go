@@ -153,6 +153,36 @@ func (s *S) TestGetDownloadFile() {
 	s.Equal(content, string(data))
 }
 
+func (s *S) TestGetDownloadFileFromDataURI() {
+	url, engine, close := serve()
+	defer close()
+
+	engine.GET("/", ginHTML(
+		`<html>
+			<a id="a" href="data:text/plain;base64,dGVzdCBkYXRh" download>click</a>
+			<a id="b" download>click</a>
+			<script>
+				const b = document.getElementById('b')
+				b.href = URL.createObjectURL(new Blob(['test blob'], {
+					type: "text/plain; charset=utf-8"
+				}))
+			</script>
+		</html>`,
+	))
+
+	page := s.page.Navigate(url)
+
+	wait := page.GetDownloadFile("data:*")
+	page.Element("#a").Click()
+	data := wait()
+	s.Equal("test data", string(data))
+
+	wait = page.GetDownloadFile("data:*")
+	page.Element("#b").Click()
+	data = wait()
+	s.Equal("test blob", string(data))
+}
+
 func (s *S) TestGetDownloadFileWithHijack() {
 	url, engine, close := serve()
 	defer close()

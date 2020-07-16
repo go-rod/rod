@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/go-rod/rod/lib/proto"
@@ -471,8 +472,13 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 
 	r := p.HijackRequests()
 
+	ctx, cancel := context.WithCancel(p.ctx)
+	downloading := &proto.PageDownloadWillBegin{}
+	waitDownload := p.Context(ctx, cancel).WaitEvent(downloading)
+
 	return func() (http.Header, io.Reader, error) {
 		defer enable()
+		defer cancel()
 
 		defer func() {
 			_ = proto.BrowserSetDownloadBehavior{
@@ -513,6 +519,32 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 		}
 
 		go r.Run()
+		go func() {
+			waitDownload()
+
+			u := downloading.URL
+			if strings.HasPrefix(u, "blob:") {
+				js, params := p.jsHelper("fetchAsDataURL", Array{u})
+				res, e := p.EvalE(true, "", js, params)
+				if e != nil {
+					err = e
+					wg.Done()
+					return
+				}
+				u = res.Value.Str
+			}
+
+			if strings.HasPrefix(u, "data:") {
+				t, d := parseDataURI(u)
+				header = http.Header{"Content-Type": []string{t}}
+				body = bytes.NewBuffer(d)
+			} else {
+				return
+			}
+
+			wg.Done()
+		}()
+
 		wg.Wait()
 		r.Stop()
 

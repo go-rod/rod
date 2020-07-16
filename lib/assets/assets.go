@@ -307,6 +307,17 @@ var Helper = `(() => {
         el.onerror = reject
         document.head.appendChild(el)
       })
+    },
+
+    fetchAsDataURL (url) {
+      return fetch(url)
+        .then(res => res.blob())
+        .then(data => new Promise((resolve, reject) => {
+          var reader = new FileReader()
+          reader.onload = () => resolve(reader.result)
+          reader.onerror = () => reject(reader.error)
+          reader.readAsDataURL(data)
+        }))
     }
   }
 

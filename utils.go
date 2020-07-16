@@ -2,8 +2,10 @@ package rod
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -153,4 +155,22 @@ func detectJSFunction(js string) bool {
 		last = r
 	}
 	return false
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
+var regDataURI = regexp.MustCompile(`\Adata:(.+?)?(;base64)?,`)
+
+func parseDataURI(uri string) (string, []byte) {
+	matches := regDataURI.FindStringSubmatch(uri)
+	l := len(matches[0])
+	contentType := matches[1]
+	codec := matches[2]
+
+	if codec == ";base64" {
+		bin, _ := base64.StdEncoding.DecodeString(uri[l:])
+		return contentType, bin
+	}
+
+	s, _ := url.PathUnescape(uri[l:])
+	return matches[1], []byte(s)
 }
