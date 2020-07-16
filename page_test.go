@@ -410,6 +410,10 @@ func (s *S) TestScreenshotFullPage() {
 	res = p.Eval(`({w: innerWidth, h: innerHeight})`)
 	s.EqualValues(800, res.Get("w").Int())
 	s.EqualValues(600, res.Get("h").Int())
+
+	kit.E(kit.Remove(slash("tmp/screenshots")))
+	p.ScreenshotFullPage("")
+	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
 func (s *S) TestScreenshotFullPageInit() {
