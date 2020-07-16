@@ -212,6 +212,7 @@ func (p *Page) Screenshot(toFile ...string) []byte {
 func (p *Page) ScreenshotFullPage(toFile ...string) []byte {
 	bin, err := p.ScreenshotE(true, &proto.PageCaptureScreenshot{})
 	kit.E(err)
+	kit.E(saveScreenshot(bin, toFile))
 	return bin
 }
 
