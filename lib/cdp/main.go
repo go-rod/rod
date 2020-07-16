@@ -128,7 +128,9 @@ func (cdp *Client) DebugLog(fn func(interface{})) *Client {
 // ConnectE to browser
 func (cdp *Client) ConnectE() error {
 	if cdp.ws == nil {
-		cdp.ws = DefaultWsClient{}
+		cdp.ws = DefaultWsClient{
+			WriteBufferSize: 1 * 1024 * 1024,
+		}
 	}
 
 	conn, err := cdp.ws.Connect(cdp.ctx, cdp.wsURL, cdp.header)

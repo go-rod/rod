@@ -8,7 +8,9 @@ import (
 )
 
 // DefaultWsClient is the default websocket client
-type DefaultWsClient struct{}
+type DefaultWsClient struct {
+	WriteBufferSize int
+}
 
 // DefaultWsConn is the default websocket connection type
 type DefaultWsConn struct {
@@ -18,8 +20,7 @@ type DefaultWsConn struct {
 // Connect interface
 func (c DefaultWsClient) Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error) {
 	dialer := *websocket.DefaultDialer
-	dialer.ReadBufferSize = 25 * 1024 * 1024
-	dialer.WriteBufferSize = 10 * 1024 * 1024
+	dialer.WriteBufferSize = c.WriteBufferSize
 
 	conn, _, err := dialer.DialContext(ctx, url, header)
 	if err != nil {
