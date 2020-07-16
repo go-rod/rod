@@ -580,17 +580,11 @@ func (p *Page) initSession() error {
 		return err
 	}
 
-	res, err := proto.DOMGetDocument{}.Call(p)
+	res, err := proto.PageGetFrameTree{}.Call(p)
 	if err != nil {
 		return err
 	}
-
-	for _, child := range res.Root.Children {
-		frameID := child.FrameID
-		if frameID != "" {
-			p.FrameID = frameID
-		}
-	}
+	p.FrameID = res.FrameTree.Frame.ID
 
 	return nil
 }
