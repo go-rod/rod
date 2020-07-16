@@ -511,7 +511,7 @@ func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js
 	defer removeTrace()
 
 	return kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		remove := p.tryTraceFn(js, params)
+		remove := p.tryTraceFn(fmt.Sprintf("wait(%s)", js), params)
 		removeTrace()
 		removeTrace = remove
 

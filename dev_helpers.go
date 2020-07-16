@@ -185,7 +185,10 @@ func defaultTraceLogAct(msg string) {
 }
 
 func defaultTraceLogJS(js string, params Array) {
-	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
+	paramsStr := ""
+	if len(params) > 0 {
+		paramsStr = strings.Trim(mustToJSONForDev(params), "[]\r\n")
+	}
 	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
 	kit.Log(kit.C("js", "yellow"), msg)
 }
