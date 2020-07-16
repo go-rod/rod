@@ -281,11 +281,21 @@ func (l *Launcher) LaunchE() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer func() {
+		if l.log == nil {
+			_ = stdout.Close()
+		}
+	}()
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return "", err
 	}
+	defer func() {
+		if l.log == nil {
+			_ = stderr.Close()
+		}
+	}()
 
 	err = cmd.Start()
 	if err != nil {
@@ -347,7 +357,9 @@ func (l *Launcher) read(reader io.Reader) {
 		}
 		select {
 		case <-l.ctx.Done():
-			return
+			if l.log == nil {
+				return
+			}
 		case l.output <- str:
 		}
 	}
