@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"io"
@@ -345,22 +346,17 @@ func (l *Launcher) kill() {
 }
 
 func (l *Launcher) read(reader io.Reader) {
-	buf := make([]byte, 256*1024) // 256KB
-	for {
-		n, err := reader.Read(buf)
-		if err != nil {
-			return
-		}
-		str := string(buf[:n])
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
 		if l.log != nil {
-			l.log(str)
+			l.log(scanner.Text() + "\n")
 		}
 		select {
 		case <-l.ctx.Done():
 			if l.log == nil {
 				return
 			}
-		case l.output <- str:
+		case l.output <- scanner.Text() + "\n":
 		}
 	}
 }
