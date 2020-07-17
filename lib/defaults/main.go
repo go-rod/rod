@@ -33,13 +33,13 @@ var Slow time.Duration
 var Dir string
 
 // Port of the remote debugging port
-var Port = "0"
+var Port string
 
 // Bin path of chrome executable file
-var Bin = ""
+var Bin string
 
 // URL of the remote debugging address
-var URL = ""
+var URL string
 
 // Remote enables to launch browser remotely
 var Remote bool
@@ -55,7 +55,23 @@ var Blind bool
 
 // Parse the flags
 func init() {
+	Reset()
 	parse(os.Getenv("rod"))
+}
+
+// Reset all flags
+func Reset() {
+	CDP = false
+	Trace = false
+	URL = ""
+	Dir = ""
+	Bin = ""
+	Port = "0"
+	Blind = false
+	Monitor = ""
+	Quiet = false
+	Show = false
+	Slow = 0
 }
 
 // parse options and set them globally
