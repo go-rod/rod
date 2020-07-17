@@ -307,6 +307,13 @@ func (p *Page) ObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
 	return proto.JSON{Result: gjson.Parse(result)}
 }
 
+// ElementFromNode creates an Element from the node id
+func (p *Page) ElementFromNode(id proto.DOMNodeID) *Element {
+	el, err := p.ElementFromNodeE(id)
+	kit.E(err)
+	return el
+}
+
 // Release remote object
 func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) *Page {
 	kit.E(p.ReleaseE(objectID))
@@ -445,13 +452,6 @@ func (el *Element) Describe() *proto.DOMNode {
 	node, err := el.DescribeE(1, false)
 	kit.E(err)
 	return node
-}
-
-// Frame creates a page instance that represents the iframe
-func (el *Element) Frame() *Page {
-	f, err := el.FrameE()
-	kit.E(err)
-	return f
 }
 
 // ShadowRoot returns the shadow root of this element

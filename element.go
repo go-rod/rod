@@ -3,7 +3,6 @@ package rod
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -261,22 +260,15 @@ func (el *Element) ShadowRootE() (*Element, error) {
 		return nil, err
 	}
 
-	return el.page.ElementFromObjectID(shadowNode.Object.ObjectID), nil
+	return el.page.ElementFromObject(shadowNode.Object.ObjectID), nil
 }
 
-// FrameE doc is similar to the method Frame
-func (el *Element) FrameE() (*Page, error) {
-	node, err := el.DescribeE(1, false)
-	if err != nil {
-		return nil, err
-	}
-
+// Frame creates a page instance that represents the iframe
+func (el *Element) Frame() *Page {
 	newPage := *el.page
-	newPage.FrameID = node.FrameID
 	newPage.element = el
 	newPage.windowObjectID = ""
-
-	return &newPage, nil
+	return &newPage
 }
 
 // TextE doc is similar to the method Text
@@ -368,24 +360,16 @@ type Box struct {
 
 // BoxE doc is similar to the method Box
 func (el *Element) BoxE() (*Box, error) {
-	js, jsArgs := el.page.jsHelper("box", nil)
-	res, err := el.EvalE(true, js, jsArgs)
+	res, err := proto.DOMGetBoxModel{ObjectID: el.ObjectID}.Call(el)
 	if err != nil {
 		return nil, err
 	}
-
-	var rect Box
-	kit.E(json.Unmarshal([]byte(res.Value.Raw), &rect))
-
-	if el.page.IsIframe() {
-		frameRect, err := el.page.element.BoxE() // recursively get the box
-		if err != nil {
-			return nil, err
-		}
-		rect.Left += frameRect.Left
-		rect.Top += frameRect.Top
-	}
-	return &rect, nil
+	return &Box{
+		Top:    res.Model.Content[1],
+		Left:   res.Model.Content[0],
+		Width:  res.Model.Content[2] - res.Model.Content[0],
+		Height: res.Model.Content[7] - res.Model.Content[1],
+	}, nil
 }
 
 // CanvasToImageE get image data of a canvas.
@@ -418,8 +402,13 @@ func (el *Element) ResourceE() ([]byte, error) {
 
 	defer el.page.EnableDomain(&proto.PageEnable{})()
 
+	frameID, err := el.page.frameID()
+	if err != nil {
+		return nil, err
+	}
+
 	res, err := proto.PageGetResourceContent{
-		FrameID: el.page.FrameID,
+		FrameID: frameID,
 		URL:     src.Value.String(),
 	}.Call(el)
 	if err != nil {

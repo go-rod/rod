@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/goob"
@@ -20,6 +21,7 @@ import (
 var _ proto.Caller = &Page{}
 
 // Page represents the webpage
+// We try to hold as less states as possible
 type Page struct {
 	lock *sync.Mutex
 
@@ -32,7 +34,6 @@ type Page struct {
 
 	TargetID  proto.TargetTargetID
 	SessionID proto.TargetSessionID
-	FrameID   proto.PageFrameID
 
 	// devices
 	Mouse    *Mouse
@@ -426,34 +427,21 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	// js context will be invalid if a frame is reloaded
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
 		if thisID == "" {
-			err := func() error {
-				p.lock.Lock()
-				defer p.lock.Unlock()
-
-				if p.windowObjectID == "" {
-					windowID, helperID, err := p.initJS()
-					if err != nil {
-						if isNilContextErr(err) {
-							return nil
-						}
-						return err
-					}
-					p.windowObjectID = windowID
-					p.jsHelperObjectID = helperID
-				}
-				objectID = p.windowObjectID
-				return nil
-			}()
+			err := p.initJS(false)
 			if err != nil {
+				if isNilContextErr(err) {
+					return false, nil
+				}
 				return true, err
 			}
+			objectID = p.getWindowObjectID()
 		}
 
 		args := []*proto.RuntimeCallArgument{}
 		for _, arg := range jsArgs {
 			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok {
-				if id == "" {
-					id = p.jsHelperObjectID
+				if id == jsHelperID {
+					id = p.getJSHelperObjectID()
 				}
 				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(nil), ObjectID: id})
 			} else {
@@ -468,21 +456,9 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 			FunctionDeclaration: SprintFnThis(js),
 			Arguments:           args,
 		}.Call(p)
-
-		if thisID == "" {
-			if isNilContextErr(err) {
-				func() {
-					p.lock.Lock()
-					defer p.lock.Unlock()
-
-					windowID, helperID, err := p.initJS()
-					if err == nil {
-						p.windowObjectID = windowID
-						p.jsHelperObjectID = helperID
-					}
-				}()
-				return false, nil
-			}
+		if thisID == "" && isNilContextErr(err) {
+			_ = p.initJS(true)
+			return false, nil
 		}
 
 		return true, err
@@ -546,12 +522,54 @@ func (p *Page) Sleeper() kit.Sleeper {
 	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }
 
-// ElementFromObjectID creates an Element from the remote object id.
-func (p *Page) ElementFromObjectID(id proto.RuntimeRemoteObjectID) *Element {
+// ElementFromObject creates an Element from the remote object id.
+func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 	return (&Element{
 		page:     p,
 		ObjectID: id,
 	}).Context(context.WithCancel(p.ctx))
+}
+
+// ElementFromNodeE creates an Element from the node id
+func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
+	res, err := proto.DOMResolveNode{
+		NodeID: id,
+	}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	el := p.ElementFromObject(res.Object.ObjectID)
+
+	// This block will ensure the node inside an iframe can work properly.
+	// We don't have a good way to detect if a node is inside an iframe.
+	// Currently this is most efficient way to do it.
+	_, err = p.EvalE(true, "", `() => {}`, Array{el.ObjectID})
+	if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
+		eval := proto.RuntimeCallFunctionOn{
+			ObjectID:            el.ObjectID,
+			FunctionDeclaration: `() => window`,
+		}
+
+		win, err := eval.Call(p)
+		if err != nil {
+			return nil, err
+		}
+
+		eval.FunctionDeclaration = assets.Helper
+		helper, err := eval.Call(p)
+
+		newPage := *el.page
+		newPage.windowObjectID = win.Result.ObjectID
+		newPage.jsHelperObjectID = helper.Result.ObjectID
+		el.page = &newPage
+	}
+
+	if res.Object.ClassName == "Text" {
+		return el.ParentE()
+	}
+
+	return el, nil
 }
 
 // ReleaseE doc is similar to the method Release
@@ -580,48 +598,84 @@ func (p *Page) initSession() error {
 		return err
 	}
 
-	res, err := proto.PageGetFrameTree{}.Call(p)
+	return nil
+}
+
+func (p *Page) initJS(force bool) error {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+
+	if !force && p.windowObjectID != "" {
+		return nil
+	}
+
+	eval := &proto.RuntimeEvaluate{Expression: "window"}
+
+	if p.IsIframe() {
+		frameID, err := p.frameID()
+		if err != nil {
+			return err
+		}
+		world, err := proto.PageCreateIsolatedWorld{FrameID: frameID}.Call(p)
+		if err != nil {
+			return err
+		}
+		eval.ContextID = world.ExecutionContextID
+	}
+
+	window, err := eval.Call(p)
 	if err != nil {
 		return err
 	}
-	p.FrameID = res.FrameTree.Frame.ID
+
+	helper, err := proto.RuntimeCallFunctionOn{
+		ObjectID:            window.Result.ObjectID,
+		FunctionDeclaration: assets.Helper,
+	}.Call(p)
+	if err != nil {
+		return err
+	}
+
+	p.windowObjectID = window.Result.ObjectID
+	p.jsHelperObjectID = helper.Result.ObjectID
 
 	return nil
 }
 
-func (p *Page) initJS() (windowID proto.RuntimeRemoteObjectID, objectID proto.RuntimeRemoteObjectID, err error) {
-	params := &proto.RuntimeEvaluate{}
-
-	if p.IsIframe() {
-		res, err := proto.PageCreateIsolatedWorld{
-			FrameID: p.FrameID,
-		}.Call(p)
-		if err != nil {
-			return "", "", err
-		}
-
-		params.ContextID = res.ExecutionContextID
-	}
-
-	params.Expression = "window"
-	window, err := params.Call(p)
-	if err != nil {
-		return "", "", err
-	}
-
-	params.Expression = assets.Helper
-	helper, err := params.Call(p)
-	if err != nil {
-		return "", "", err
-	}
-
-	return window.Result.ObjectID, helper.Result.ObjectID, nil
-}
+const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
 
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-// The methods are imported by Page.initJS()
 func (p *Page) jsHelper(name string, jsArgs Array) (string, Array) {
-	jsArgs = append(Array{proto.RuntimeRemoteObjectID("")}, jsArgs...)
+	jsArgs = append(Array{jsHelperID}, jsArgs...)
 	js := fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name)
 	return js, jsArgs
+}
+
+func (p *Page) frameID() (proto.PageFrameID, error) {
+	// this is the only way we can get the window object from the iframe
+	if p.IsIframe() {
+		node, err := p.element.DescribeE(1, false)
+		if err != nil {
+			return "", err
+		}
+		return node.FrameID, nil
+	}
+
+	res, err := proto.PageGetFrameTree{}.Call(p)
+	if err != nil {
+		return "", err
+	}
+	return res.FrameTree.Frame.ID, nil
+}
+
+func (p *Page) getWindowObjectID() proto.RuntimeRemoteObjectID {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+	return p.windowObjectID
+}
+
+func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
+	p.lock.Lock()
+	defer p.lock.Unlock()
+	return p.jsHelperObjectID
 }

@@ -3,7 +3,7 @@
 package assets
 
 // Helper for rod
-var Helper = `(() => {
+var Helper = `() => { // eslint-disable-line no-unused-expressions
   const rod = {
     element (...selectors) {
       for (const selector of selectors) {
@@ -322,7 +322,7 @@ var Helper = `(() => {
   }
 
   return rod
-})()
+}
 
 // # sourceURL=__rod_helper__
 `

@@ -317,9 +317,6 @@ func (s *S) TestElementErrors() {
 	_, err := el.Context(ctx, cancel).DescribeE(-1, true)
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).FrameE()
-	s.Error(err)
-
 	err = el.Context(ctx, cancel).FocusE()
 	s.Error(err)
 

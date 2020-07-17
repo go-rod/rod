@@ -68,7 +68,7 @@ func isNilContextErr(err error) bool {
 		return false
 	}
 	cdpErr, ok := err.(*cdp.Error)
-	return ok && cdpErr.Code == -32000
+	return ok && cdpErr.Code == -32000 && cdpErr.Message != "Argument should belong to the same JavaScript world as target object"
 }
 
 func matchWithFilter(s string, includes, excludes []string) bool {
