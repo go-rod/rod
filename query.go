@@ -204,6 +204,71 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	return elemList, err
 }
 
+// SearchE for a given query in the DOM tree until the result count is not zero.
+// The query can be plain text or css selector or xpath.
+// It will search nested iframes and shadow doms too.
+func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Elements, error) {
+	if sleeper == nil {
+		sleeper = func(_ context.Context) error {
+			return &Error{ErrElementNotFound, query}
+		}
+	}
+
+	recover := p.EnableDomain(proto.DOMEnable{})
+	defer recover()
+
+	list := Elements{}
+
+	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		// TODO: I don't know why we need this, seems like a bug of chrome T_T.
+		// We should remove it once chrome fixed this bug.
+		_, _ = proto.DOMGetDocument{}.Call(p)
+
+		search, err := proto.DOMPerformSearch{
+			Query:                     query,
+			IncludeUserAgentShadowDOM: true,
+		}.Call(p)
+		defer func() {
+			_ = proto.DOMDiscardSearchResults{SearchID: search.SearchID}.Call(p)
+		}()
+		if err != nil {
+			return true, err
+		}
+
+		if search.ResultCount == 0 {
+			return false, nil
+		}
+
+		result, err := proto.DOMGetSearchResults{
+			SearchID:  search.SearchID,
+			FromIndex: int64(from),
+			ToIndex:   int64(to),
+		}.Call(p)
+		if err != nil {
+			return true, err
+		}
+
+		for _, id := range result.NodeIds {
+			if id == 0 {
+				return false, nil
+			}
+
+			el, err := p.ElementFromNodeE(id)
+			if err != nil {
+				return true, err
+			}
+			list = append(list, el)
+		}
+
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return list, nil
+}
+
 // HasE doc is similar to the method Has
 func (el *Element) HasE(selector string) (bool, error) {
 	_, err := el.ElementE(selector)

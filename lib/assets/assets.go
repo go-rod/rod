@@ -235,6 +235,8 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
           return this.value
         case 'SELECT':
           return Array.from(this.selectedOptions).map(el => el.innerText).join()
+        case undefined:
+          return this.textContent
         default:
           return this.innerText
       }

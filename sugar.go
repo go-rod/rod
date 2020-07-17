@@ -341,6 +341,15 @@ func (p *Page) HasMatches(selector, regex string) bool {
 	return has
 }
 
+// Search for a given query in the DOM tree until the result count is not zero.
+// The query can be plain text or css selector or xpath.
+// It will search nested iframes and shadow doms too.
+func (p *Page) Search(query string) *Element {
+	list, err := p.SearchE(p.Sleeper(), query, 0, 1)
+	kit.E(err)
+	return list.First()
+}
+
 // Element retries until an element in the page that matches one of the CSS selectors
 func (p *Page) Element(selectors ...string) *Element {
 	el, err := p.ElementE(p.Sleeper(), "", selectors)

@@ -64,6 +64,22 @@ func Example_basic() {
 	// you need to learn how to use css selector
 }
 
+// Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
+// It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
+func Example_search() {
+	browser := rod.New().Timeout(time.Minute).Connect()
+	defer browser.Close()
+
+	page := browser.Page("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+
+	// get the code mirror editor inside the iframe
+	el := page.Search(".CodeMirror")
+
+	fmt.Println(*el.Attribute("class"))
+
+	// Output: CodeMirror cm-s-default CodeMirror-wrap
+}
+
 // Example_headless_with_debug shows how we can start a browser with debug
 // information and headless mode disabled to show the browser in the foreground.
 // Rod provides a lot of debug options, you can use the Set method to enable
