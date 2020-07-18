@@ -146,9 +146,12 @@ func detectJSFunction(js string) bool {
 			balanced = true
 		}
 
-		if last == '=' && r == '>' {
-			if balanced {
-				return true
+		if last == '=' {
+			if r == '>' {
+				if balanced {
+					return true
+				}
+				return false
 			}
 			return false
 		}

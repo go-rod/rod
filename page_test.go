@@ -209,6 +209,18 @@ func (s *S) TestPageEvalOnNewDocument() {
 	s.Equal("rod", p.Eval("navigator.rod").String())
 }
 
+func (s *S) TestPageEval() {
+	page := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	s.EqualValues(1, page.Eval(`
+		() => 1
+	`).Int())
+	s.EqualValues(1, page.Eval(`a => 1`).Int())
+	s.EqualValues(1, page.Eval(`function() { return 1 }`).Int())
+	s.NotEqualValues(1, page.Eval(`a = () => 1`).Int())
+	s.NotEqualValues(1, page.Eval(`a = function() { return 1 }`))
+}
+
 func (s *S) TestPageExposeJSHelper() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
