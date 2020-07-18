@@ -2,26 +2,25 @@ package rod
 
 import (
 	"errors"
-	"fmt"
 )
 
 var (
 	// ErrValue error
-	ErrValue = errors.New("error value")
+	ErrValue = errors.New("[rod] error value")
 	// ErrExpectElement error
-	ErrExpectElement = errors.New("expect js to return an element")
+	ErrExpectElement = errors.New("[rod] expect js to return an element")
 	// ErrExpectElements error
-	ErrExpectElements = errors.New("expect js to return an array of elements")
+	ErrExpectElements = errors.New("[rod] expect js to return an array of elements")
 	// ErrElementNotFound error
-	ErrElementNotFound = errors.New("cannot find element")
+	ErrElementNotFound = errors.New("[rod] cannot find element")
 	// ErrWaitJSTimeout error
-	ErrWaitJSTimeout = errors.New("wait js timeout")
+	ErrWaitJSTimeout = errors.New("[rod] wait js timeout")
 	// ErrSrcNotFound error
-	ErrSrcNotFound = errors.New("element doesn't have src attribute")
+	ErrSrcNotFound = errors.New("[rod] element doesn't have src attribute")
 	// ErrEval error
-	ErrEval = errors.New("eval error")
+	ErrEval = errors.New("[rod] eval error")
 	// ErrNavigation error
-	ErrNavigation = errors.New("navigation failed")
+	ErrNavigation = errors.New("[rod] navigation failed")
 )
 
 // Error ...
@@ -30,9 +29,13 @@ type Error struct {
 	Details interface{}
 }
 
+func newErr(e error, details interface{}) *Error {
+	return &Error{e, details}
+}
+
 // Error ...
 func (e *Error) Error() string {
-	return fmt.Sprintf("[rod] %v\n%v", e.Err, e.Details)
+	return e.Err.Error()
 }
 
 // Unwrap ...

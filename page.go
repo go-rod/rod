@@ -133,7 +133,7 @@ func (p *Page) NavigateE(url string) error {
 		return err
 	}
 	if res.ErrorText != "" {
-		return &Error{Err: ErrNavigation, Details: res.ErrorText}
+		return fmt.Errorf("%w: %s", newErr(ErrNavigation, res.ErrorText), res.ErrorText)
 	}
 	return nil
 }
@@ -472,7 +472,8 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	}
 
 	if res.ExceptionDetails != nil {
-		return nil, &Error{ErrEval, res.ExceptionDetails.Exception.Description}
+		exp := res.ExceptionDetails.Exception.Description
+		return nil, fmt.Errorf("%w: %s", newErr(ErrEval, exp), exp)
 	}
 
 	return res.Result, nil
@@ -482,7 +483,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return &Error{ErrWaitJSTimeout, js}
+			return fmt.Errorf("%w: %s", newErr(ErrWaitJSTimeout, js), js)
 		}
 	}
 

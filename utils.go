@@ -68,7 +68,7 @@ func Try(fn func()) (err error) {
 			var ok bool
 			err, ok = val.(error)
 			if !ok {
-				err = &Error{ErrValue, val}
+				err = fmt.Errorf("%w: %s", newErr(ErrValue, val), kit.MustToJSON(val))
 			}
 		}
 	}()

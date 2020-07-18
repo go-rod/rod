@@ -5,6 +5,7 @@ package rod
 import (
 	"context"
 	"errors"
+	"fmt"
 	"regexp"
 
 	"github.com/go-rod/rod/lib/proto"
@@ -120,7 +121,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return &Error{ErrElementNotFound, js}
+			return fmt.Errorf("%w by js: %s", newErr(ErrElementNotFound, js), js)
 		}
 	}
 
@@ -147,7 +148,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, &Error{ErrExpectElement, res}
+		return nil, fmt.Errorf("%w but got: %s", newErr(ErrExpectElement, res), kit.MustToJSON(res))
 	}
 
 	return p.ElementFromObject(res.ObjectID), nil
@@ -173,7 +174,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, &Error{ErrExpectElements, res}
+		return nil, fmt.Errorf("%w but got: %s", newErr(ErrExpectElements, res), kit.MustToJSON(res))
 	}
 
 	objectID := res.ObjectID
@@ -195,7 +196,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, &Error{ErrExpectElements, val}
+			return nil, fmt.Errorf("%w: %s", newErr(ErrExpectElements, val), kit.MustToJSON(val))
 		}
 
 		elemList = append(elemList, p.ElementFromObject(val.ObjectID))
@@ -210,7 +211,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Elements, error) {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return &Error{ErrElementNotFound, query}
+			return fmt.Errorf("%w by query: %s", newErr(ErrElementNotFound, query), query)
 		}
 	}
 

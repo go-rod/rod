@@ -273,12 +273,12 @@ func (s *S) TestFnErr() {
 	_, err := el.EvalE(true, "foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
-	s.Equal(rod.ErrEval, errors.Unwrap(err))
+	s.True(errors.Is(err, rod.ErrEval))
 
 	_, err = el.ElementByJSE("foo()", nil)
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
-	s.Equal(rod.ErrEval, errors.Unwrap(err))
+	s.True(errors.Is(err, rod.ErrEval))
 }
 
 func (s *S) TestElementEWithDepth() {
