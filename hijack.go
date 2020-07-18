@@ -524,7 +524,7 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 
 			u := downloading.URL
 			if strings.HasPrefix(u, "blob:") {
-				js, params := p.jsHelper("fetchAsDataURL", Array{u})
+				js, params := jsHelper("fetchAsDataURL", Array{u})
 				res, e := p.EvalE(true, "", js, params)
 				if e != nil {
 					err = e

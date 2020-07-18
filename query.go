@@ -92,19 +92,19 @@ func (p *Page) HasMatchesE(pairs ...string) (bool, error) {
 
 // ElementE finds element by css selector
 func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selectors []string) (*Element, error) {
-	js, jsArgs := p.jsHelper("element", ArrayFromList(selectors))
+	js, jsArgs := jsHelper("element", ArrayFromList(selectors))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementMatchesE doc is similar to the method ElementMatches
 func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, pairs []string) (*Element, error) {
-	js, jsArgs := p.jsHelper("elementMatches", ArrayFromList(pairs))
+	js, jsArgs := jsHelper("elementMatches", ArrayFromList(pairs))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
 // ElementXE finds elements by XPath
 func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xPaths []string) (*Element, error) {
-	js, jsArgs := p.jsHelper("elementX", ArrayFromList(xPaths))
+	js, jsArgs := jsHelper("elementX", ArrayFromList(xPaths))
 	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
 }
 
@@ -155,13 +155,13 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 
 // ElementsE doc is similar to the method Elements
 func (p *Page) ElementsE(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
-	js, jsArgs := p.jsHelper("elements", Array{selector})
+	js, jsArgs := jsHelper("elements", Array{selector})
 	return p.ElementsByJSE(objectID, js, jsArgs)
 }
 
 // ElementsXE doc is similar to the method ElementsX
 func (p *Page) ElementsXE(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
-	js, jsArgs := p.jsHelper("elementsX", Array{xpath})
+	js, jsArgs := jsHelper("elementsX", Array{xpath})
 	return p.ElementsByJSE(objectID, js, jsArgs)
 }
 
@@ -253,7 +253,7 @@ func (el *Element) ParentE() (*Element, error) {
 
 // ParentsE that match the selector
 func (el *Element) ParentsE(selector string) (Elements, error) {
-	js, params := el.page.jsHelper("parents", Array{selector})
+	js, params := jsHelper("parents", Array{selector})
 	return el.ElementsByJSE(js, params)
 }
 

@@ -88,7 +88,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	root := p.Root()
 	id := kit.RandString(8)
 
-	js, jsArgs := p.jsHelper("overlay", Array{
+	js, jsArgs := jsHelper("overlay", Array{
 		id,
 		left,
 		top,
@@ -102,7 +102,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	}
 
 	remove = func() {
-		js, jsArgs := p.jsHelper("removeOverlay", Array{id})
+		js, jsArgs := jsHelper("removeOverlay", Array{id})
 		_, _ = root.EvalE(true, "", js, jsArgs)
 	}
 
@@ -120,7 +120,7 @@ func (p *Page) ExposeJSHelper() *Page {
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := kit.RandString(8)
 
-	js, jsArgs := el.page.jsHelper("elementOverlay", Array{
+	js, jsArgs := jsHelper("elementOverlay", Array{
 		id,
 		msg,
 	})
@@ -130,7 +130,7 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 	}
 
 	removeOverlay = func() {
-		js, jsArgs := el.page.jsHelper("removeOverlay", Array{id})
+		js, jsArgs := jsHelper("removeOverlay", Array{id})
 		_, _ = el.EvalE(true, js, jsArgs)
 	}
 

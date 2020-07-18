@@ -375,14 +375,14 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 
 // WaitIdleE doc is similar to the method WaitIdle
 func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
-	js, jsArgs := p.jsHelper("waitIdle", Array{timeout.Seconds()})
+	js, jsArgs := jsHelper("waitIdle", Array{timeout.Seconds()})
 	_, err = p.EvalE(true, "", js, jsArgs)
 	return err
 }
 
 // WaitLoadE doc is similar to the method WaitLoad
 func (p *Page) WaitLoadE() error {
-	js, jsArgs := p.jsHelper("waitLoad", nil)
+	js, jsArgs := jsHelper("waitLoad", nil)
 	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
@@ -391,7 +391,7 @@ func (p *Page) WaitLoadE() error {
 func (p *Page) AddScriptTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	js, jsArgs := p.jsHelper("addScriptTag", Array{id, url, content})
+	js, jsArgs := jsHelper("addScriptTag", Array{id, url, content})
 	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
@@ -400,7 +400,7 @@ func (p *Page) AddScriptTagE(url, content string) error {
 func (p *Page) AddStyleTagE(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	js, jsArgs := p.jsHelper("addStyleTag", Array{id, url, content})
+	js, jsArgs := jsHelper("addStyleTag", Array{id, url, content})
 	_, err := p.EvalE(true, "", js, jsArgs)
 	return err
 }
@@ -643,13 +643,6 @@ func (p *Page) initJS(force bool) error {
 }
 
 const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
-
-// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func (p *Page) jsHelper(name string, jsArgs Array) (string, Array) {
-	jsArgs = append(Array{jsHelperID}, jsArgs...)
-	js := fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name)
-	return js, jsArgs
-}
 
 func (p *Page) frameID() (proto.PageFrameID, error) {
 	// this is the only way we can get the window object from the iframe

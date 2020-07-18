@@ -37,6 +37,13 @@ func SprintFnThis(js string) string {
 	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
+// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
+func jsHelper(name string, jsArgs Array) (string, Array) {
+	jsArgs = append(Array{jsHelperID}, jsArgs...)
+	js := fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name)
+	return js, jsArgs
+}
+
 // Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
 func Event(msg *cdp.Event, evt proto.Payload) bool {
 	if msg.Method == evt.MethodName() {

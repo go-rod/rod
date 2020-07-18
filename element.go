@@ -41,7 +41,7 @@ func (el *Element) ScrollIntoViewE() error {
 	defer el.tryTrace("scroll into view")()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := el.page.jsHelper("scrollIntoViewIfNeeded", nil)
+	js, jsArgs := jsHelper("scrollIntoViewIfNeeded", nil)
 	_, err := el.EvalE(true, js, jsArgs)
 	return err
 }
@@ -103,7 +103,7 @@ func (el *Element) SelectTextE(regex string) error {
 	defer el.tryTrace("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := el.page.jsHelper("selectText", Array{regex})
+	js, jsArgs := jsHelper("selectText", Array{regex})
 	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
@@ -118,7 +118,7 @@ func (el *Element) SelectAllTextE() error {
 	defer el.tryTrace("select all text")()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := el.page.jsHelper("selectAllText", nil)
+	js, jsArgs := jsHelper("selectAllText", nil)
 	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
@@ -142,7 +142,7 @@ func (el *Element) InputE(text string) error {
 		return err
 	}
 
-	js, jsArgs := el.page.jsHelper("inputEvent", nil)
+	js, jsArgs := jsHelper("inputEvent", nil)
 	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
@@ -165,7 +165,7 @@ func (el *Element) SelectE(selectors []string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := el.page.jsHelper("select", Array{selectors})
+	js, jsArgs := jsHelper("select", Array{selectors})
 	_, err = el.EvalE(true, js, jsArgs)
 	return err
 }
@@ -273,7 +273,7 @@ func (el *Element) Frame() *Page {
 
 // TextE doc is similar to the method Text
 func (el *Element) TextE() (string, error) {
-	js, jsArgs := el.page.jsHelper("text", nil)
+	js, jsArgs := jsHelper("text", nil)
 	str, err := el.EvalE(true, js, jsArgs)
 	return str.Value.String(), err
 }
@@ -286,7 +286,7 @@ func (el *Element) HTMLE() (string, error) {
 
 // VisibleE doc is similar to the method Visible
 func (el *Element) VisibleE() (bool, error) {
-	js, jsArgs := el.page.jsHelper("visible", nil)
+	js, jsArgs := jsHelper("visible", nil)
 	res, err := el.EvalE(true, js, jsArgs)
 	if err != nil {
 		return false, err
@@ -340,13 +340,13 @@ func (el *Element) WaitE(js string, params Array) error {
 
 // WaitVisibleE doc is similar to the method WaitVisible
 func (el *Element) WaitVisibleE() error {
-	js, jsArgs := el.page.jsHelper("visible", nil)
+	js, jsArgs := jsHelper("visible", nil)
 	return el.WaitE(js, jsArgs)
 }
 
 // WaitInvisibleE doc is similar to the method WaitInvisible
 func (el *Element) WaitInvisibleE() error {
-	js, jsArgs := el.page.jsHelper("invisible", nil)
+	js, jsArgs := jsHelper("invisible", nil)
 	return el.WaitE(js, jsArgs)
 }
 
@@ -394,7 +394,7 @@ func (el *Element) CanvasToImageE(format string, quality float64) ([]byte, error
 
 // ResourceE doc is similar to the method Resource
 func (el *Element) ResourceE() ([]byte, error) {
-	js, jsArgs := el.page.jsHelper("resource", nil)
+	js, jsArgs := jsHelper("resource", nil)
 	src, err := el.EvalE(true, js, jsArgs)
 	if err != nil {
 		return nil, err
