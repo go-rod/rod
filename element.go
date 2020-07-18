@@ -41,9 +41,7 @@ func (el *Element) ScrollIntoViewE() error {
 	defer el.tryTrace("scroll into view")()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := jsHelper("scrollIntoViewIfNeeded", nil)
-	_, err := el.EvalE(true, js, jsArgs)
-	return err
+	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
 }
 
 // ClickE doc is similar to the method Click

@@ -175,20 +175,6 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
       })
     },
 
-    async scrollIntoViewIfNeeded () {
-      if (!this.isConnected) { throw new Error('Node is detached from document') }
-      if (this.nodeType !== Node.ELEMENT_NODE) { throw new Error('Node is not of type HTMLElement') }
-
-      const visibleRatio = await new Promise(resolve => {
-        const observer = new IntersectionObserver(entries => {
-          resolve(entries[0].intersectionRatio)
-          observer.disconnect()
-        })
-        observer.observe(this)
-      })
-      if (visibleRatio !== 1.0) { this.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' }) }
-    },
-
     inputEvent () {
       this.dispatchEvent(new Event('input', { bubbles: true }))
       this.dispatchEvent(new Event('change', { bubbles: true }))
