@@ -149,7 +149,7 @@ func (s *S) TestElementTracing() {
 
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementByJSE(p.Sleeper(), "", `1`, nil)
+	_, err := p.ElementByJSE(rod.Sleeper(), "", `1`, nil)
 	s.EqualError(err, "[rod] expect js to return an element\n&{number   1  1  <nil> <nil>}")
 }
 

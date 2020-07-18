@@ -322,7 +322,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 
 // WaitE doc is similar to the method Wait
 func (el *Element) WaitE(js string, params Array) error {
-	return kit.Retry(el.ctx, el.page.Sleeper(), func() (bool, error) {
+	return kit.Retry(el.ctx, Sleeper(), func() (bool, error) {
 		res, err := el.EvalE(true, js, params)
 		if err != nil {
 			return true, err

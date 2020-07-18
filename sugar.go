@@ -285,7 +285,7 @@ func (p *Page) Eval(js string, params ...interface{}) proto.JSON {
 
 // Wait js function until it returns true
 func (p *Page) Wait(js string, params ...interface{}) {
-	kit.E(p.WaitE(p.Sleeper(), "", js, params))
+	kit.E(p.WaitE(Sleeper(), "", js, params))
 }
 
 // ObjectToJSON by remote object
@@ -345,14 +345,14 @@ func (p *Page) HasMatches(selector, regex string) bool {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) Search(query string) *Element {
-	list, err := p.SearchE(p.Sleeper(), query, 0, 1)
+	list, err := p.SearchE(Sleeper(), query, 0, 1)
 	kit.E(err)
 	return list.First()
 }
 
 // Element retries until an element in the page that matches one of the CSS selectors
 func (p *Page) Element(selectors ...string) *Element {
-	el, err := p.ElementE(p.Sleeper(), "", selectors)
+	el, err := p.ElementE(Sleeper(), "", selectors)
 	kit.E(err)
 	return el
 }
@@ -361,14 +361,14 @@ func (p *Page) Element(selectors ...string) *Element {
 // Each pairs is a css selector and a regex. A sample call will look like page.ElementMatches("div", "click me").
 // The regex is the js regex, not golang's.
 func (p *Page) ElementMatches(pairs ...string) *Element {
-	el, err := p.ElementMatchesE(p.Sleeper(), "", pairs)
+	el, err := p.ElementMatchesE(Sleeper(), "", pairs)
 	kit.E(err)
 	return el
 }
 
 // ElementByJS retries until returns the element from the return value of the js function
 func (p *Page) ElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJSE(p.Sleeper(), "", js, params)
+	el, err := p.ElementByJSE(Sleeper(), "", js, params)
 	kit.E(err)
 	return el
 }
@@ -389,7 +389,7 @@ func (p *Page) ElementsX(xpath string) Elements {
 
 // ElementX retries until an element in the page that matches one of the XPath selectors
 func (p *Page) ElementX(xPaths ...string) *Element {
-	el, err := p.ElementXE(p.Sleeper(), "", xPaths)
+	el, err := p.ElementXE(Sleeper(), "", xPaths)
 	kit.E(err)
 	return el
 }
