@@ -273,13 +273,19 @@ func (el *Element) Frame() *Page {
 func (el *Element) TextE() (string, error) {
 	js, jsArgs := jsHelper("text", nil)
 	str, err := el.EvalE(true, js, jsArgs)
-	return str.Value.String(), err
+	if err != nil {
+		return "", err
+	}
+	return str.Value.String(), nil
 }
 
 // HTMLE doc is similar to the method HTML
 func (el *Element) HTMLE() (string, error) {
 	str, err := el.EvalE(true, `this.outerHTML`, nil)
-	return str.Value.String(), err
+	if err != nil {
+		return "", err
+	}
+	return str.Value.String(), nil
 }
 
 // VisibleE doc is similar to the method Visible
