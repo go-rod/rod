@@ -198,3 +198,18 @@ func defaultTraceLogErr(err error) {
 		kit.Err(err)
 	}
 }
+
+func (m *Mouse) initMouseTracer() {
+	js, params := jsHelper("initMouseTracer", Array{m.id, assets.MousePointer})
+	_, _ = m.page.EvalE(true, "", js, params)
+}
+
+func (m *Mouse) updateMouseTracer() bool {
+	js, jsArgs := jsHelper("updateMouseTracer", Array{m.id, m.x, m.y})
+	kit.Log(m.id, m.x, m.y)
+	res, err := m.page.EvalE(true, "", js, jsArgs)
+	if err != nil {
+		return true
+	}
+	return res.Value.Bool()
+}
