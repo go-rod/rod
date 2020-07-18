@@ -367,9 +367,9 @@ func (s *S) TestNativeDrag() {
 	mouse := page.Mouse
 
 	box := page.Element("#draggable").Box()
-	x := box.Left + 3
-	y := box.Top + 3
-	toY := page.Element(".dropzone:nth-child(2)").Box().Top + 3
+	x := box.X + 3
+	y := box.Y + 3
+	toY := page.Element(".dropzone:nth-child(2)").Box().Y + 3
 
 	page.Overlay(x, y, 10, 10, "from")
 	page.Overlay(x, toY, 10, 10, "to")

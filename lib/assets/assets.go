@@ -69,6 +69,17 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
       return list
     },
 
+    containsElement (target) {
+      var node = target
+      while (node != null) {
+        if (node === this) {
+          return true
+        }
+        node = node.parentElement
+      }
+      return false
+    },
+
     async initMouseTracer (iconId, icon) {
       await rod.waitLoad()
 

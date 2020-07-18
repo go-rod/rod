@@ -21,6 +21,8 @@ var (
 	ErrEval = errors.New("[rod] eval error")
 	// ErrNavigation error
 	ErrNavigation = errors.New("[rod] navigation failed")
+	// ErrNotClickable error
+	ErrNotClickable = errors.New("[rod] element is not clickable")
 )
 
 // Error ...

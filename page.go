@@ -558,15 +558,12 @@ func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
 	return el, nil
 }
 
-// ElementFromPointE creates an Element from the absolute point on the page
-func (p *Page) ElementFromPointE(left, top int64) (*Element, error) {
+// ElementFromPointE creates an Element from the absolute point on the page.
+// The point should include the window scroll offset.
+func (p *Page) ElementFromPointE(x, y int64) (*Element, error) {
 	p.enableNodeQuery()
 
-	node, err := proto.DOMGetNodeForLocation{
-		X:                         left,
-		Y:                         top,
-		IncludeUserAgentShadowDOM: true,
-	}.Call(p)
+	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
 	if err != nil {
 		return nil, err
 	}

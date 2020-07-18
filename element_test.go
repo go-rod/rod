@@ -24,6 +24,23 @@ func (s *S) TestClick() {
 	s.True(p.Has("[a=ok]"))
 }
 
+func (s *S) TestClickable() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	s.True(p.Element("button").Clickable())
+}
+
+func (s *S) TestNotClickable() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+
+	// cover the button with a green div
+	p.WaitLoad().Eval(`() => {
+		let div = document.createElement('div')
+		div.style = 'position: absolute; left: 0; top: 0; width: 500px; height: 500px;'
+		document.body.append(div)
+	}`)
+	s.False(p.Element("button").Clickable())
+}
+
 func (s *S) TestElementContext() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	el := p.Element("button").Timeout(time.Minute).CancelTimeout()
@@ -35,6 +52,13 @@ func (s *S) TestIframes() {
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
 	frame.Element("button").Click()
 	s.True(frame.Has("[a=ok]"))
+}
+
+func (s *S) TestContains() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	a := p.Element("button")
+	b := p.Element("button")
+	s.True(a.ContainsElement(b))
 }
 
 func (s *S) TestShadowDOM() {

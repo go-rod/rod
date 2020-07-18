@@ -62,6 +62,7 @@ func (s *S) TestSearchIframes() {
 	p := s.page.Navigate(srcFile("fixtures/click-iframes.html"))
 	el := p.Search("button[onclick]")
 	s.Equal("click me", el.Text())
+	s.True(el.Click().Matches("[a=ok]"))
 }
 
 func (s *S) TestPageElementX() {

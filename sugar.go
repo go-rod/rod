@@ -314,6 +314,14 @@ func (p *Page) ElementFromNode(id proto.DOMNodeID) *Element {
 	return el
 }
 
+// ElementFromPoint creates an Element from the absolute point on the page.
+// The point should include the window scroll offset.
+func (p *Page) ElementFromPoint(left, top int) *Element {
+	el, err := p.ElementFromPointE(int64(left), int64(top))
+	kit.E(err)
+	return el
+}
+
 // Release remote object
 func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) *Page {
 	kit.E(p.ReleaseE(objectID))
@@ -489,6 +497,13 @@ func (el *Element) Click() *Element {
 	return el
 }
 
+// Clickable checks if the element is behind another element, such as when covered by a modal.
+func (el *Element) Clickable() bool {
+	clickable, err := el.ClickableE()
+	kit.E(err)
+	return clickable
+}
+
 // Press a key
 func (el *Element) Press(key rune) *Element {
 	kit.E(el.PressE(key))
@@ -550,6 +565,13 @@ func (el *Element) Property(name string) proto.JSON {
 	return prop
 }
 
+// ContainsElement check if the target is equal or inside the element.
+func (el *Element) ContainsElement(target *Element) bool {
+	contains, err := el.ContainsElementE(target)
+	kit.E(err)
+	return contains
+}
+
 // SetFiles sets files for the given file input element
 func (el *Element) SetFiles(paths ...string) *Element {
 	kit.E(el.SetFilesE(paths))
@@ -603,9 +625,7 @@ func (el *Element) WaitInvisible() *Element {
 }
 
 // Box returns the size of an element and its position relative to the main frame.
-// It will recursively calculate the box with all ancestors. The spec is here:
-// https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-func (el *Element) Box() *Box {
+func (el *Element) Box() *proto.DOMRect {
 	box, err := el.BoxE()
 	kit.E(err)
 	return box

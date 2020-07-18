@@ -45,7 +45,7 @@ func (el *Element) ScrollIntoViewE() error {
 	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
 }
 
-// ClickE doc is similar to the method Click
+// ClickE will press then release the button just like a human.
 func (el *Element) ClickE(button proto.InputMouseButton) error {
 	err := el.WaitVisibleE()
 	if err != nil {
@@ -57,22 +57,85 @@ func (el *Element) ClickE(button proto.InputMouseButton) error {
 		return err
 	}
 
-	box, err := el.BoxE()
+	box, err := el.boxCenter()
 	if err != nil {
 		return err
 	}
 
-	x := box.Left + box.Width/2
-	y := box.Top + box.Height/2
-
-	err = el.page.Mouse.MoveE(x, y, 1)
+	err = el.page.Mouse.MoveE(box.X, box.Y, 1)
 	if err != nil {
 		return err
+	}
+
+	clickable, err := el.ClickableE()
+	if err != nil {
+		return err
+	}
+	if !clickable {
+		return fmt.Errorf("%w: %s", newErr(ErrNotClickable, el.HTML()), "such as covered by a modal")
 	}
 
 	defer el.tryTrace(string(button) + " click")()
 
 	return el.page.Mouse.ClickE(button)
+}
+
+// ClickableE checks if the element is behind another element, such as when invisible or covered by a modal.
+func (el *Element) ClickableE() (bool, error) {
+	box, err := el.boxCenter()
+	if err != nil {
+		return false, err
+	}
+
+	scroll, err := el.page.Root().EvalE(true, "", `{ x: window.scrollX, y: window.scrollY }`, nil)
+	if err != nil {
+		return false, err
+	}
+
+	elAtPoint, err := el.page.ElementFromPointE(
+		int64(box.X)+scroll.Value.Get("x").Int(),
+		int64(box.Y)+scroll.Value.Get("y").Int(),
+	)
+	if err != nil {
+		return false, err
+	}
+
+	contains, err := el.ContainsElementE(elAtPoint)
+	if err != nil {
+		return false, err
+	}
+
+	if contains {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (el *Element) boxCenter() (*proto.DOMRect, error) {
+	box, err := el.BoxE()
+	if err != nil {
+		return nil, err
+	}
+
+	x := box.X + box.Width/2
+	y := box.Y + box.Height/2
+
+	return &proto.DOMRect{X: x, Y: y}, nil
+}
+
+// BoxE returns the size of an element and its position relative to the main frame.
+func (el *Element) BoxE() (*proto.DOMRect, error) {
+	res, err := proto.DOMGetBoxModel{ObjectID: el.ObjectID}.Call(el)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.DOMRect{
+		X:      res.Model.Content[0],
+		Y:      res.Model.Content[1],
+		Width:  res.Model.Content[2] - res.Model.Content[0],
+		Height: res.Model.Content[7] - res.Model.Content[1],
+	}, nil
 }
 
 // PressE doc is similar to the method Press
@@ -261,6 +324,16 @@ func (el *Element) Frame() *Page {
 	return &newPage
 }
 
+// ContainsElementE check if the target is equal or inside the element.
+func (el *Element) ContainsElementE(target *Element) (bool, error) {
+	js, args := jsHelper("containsElement", Array{target.ObjectID})
+	res, err := el.EvalE(true, js, args)
+	if err != nil {
+		return false, err
+	}
+	return res.Value.Bool(), nil
+}
+
 // TextE doc is similar to the method Text
 func (el *Element) TextE() (string, error) {
 	js, jsArgs := jsHelper("text", nil)
@@ -346,28 +419,6 @@ func (el *Element) WaitInvisibleE() error {
 	return el.WaitE(js, jsArgs)
 }
 
-// Box represents the element bounding rect
-type Box struct {
-	Top    float64 `json:"top"`
-	Left   float64 `json:"left"`
-	Width  float64 `json:"width"`
-	Height float64 `json:"height"`
-}
-
-// BoxE doc is similar to the method Box
-func (el *Element) BoxE() (*Box, error) {
-	res, err := proto.DOMGetBoxModel{ObjectID: el.ObjectID}.Call(el)
-	if err != nil {
-		return nil, err
-	}
-	return &Box{
-		Top:    res.Model.Content[1],
-		Left:   res.Model.Content[0],
-		Width:  res.Model.Content[2] - res.Model.Content[0],
-		Height: res.Model.Content[7] - res.Model.Content[1],
-	}, nil
-}
-
 // CanvasToImageE get image data of a canvas.
 // The default format is image/png.
 // The default quality is 0.92.
@@ -446,8 +497,8 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 	opts := &proto.PageCaptureScreenshot{
 		Format: format,
 		Clip: &proto.PageViewport{
-			X:      box.Left,
-			Y:      box.Top,
+			X:      box.X,
+			Y:      box.Y,
 			Width:  box.Width,
 			Height: box.Height,
 			Scale:  1,
