@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"path/filepath"
 	"strings"
 	"time"
@@ -265,6 +266,7 @@ func (el *Element) ShadowRootE() (*Element, error) {
 func (el *Element) Frame() *Page {
 	newPage := *el.page
 	newPage.element = el
+	newPage.jsHelperObjectID = ""
 	newPage.windowObjectID = ""
 	return &newPage
 }
@@ -488,4 +490,55 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 // EvalE doc is similar to the method Eval
 func (el *Element) EvalE(byValue bool, js string, params Array) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx, el.ctxCancel).EvalE(byValue, el.ObjectID, js, params)
+}
+
+func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeRemoteObjectID) error {
+	has, err := el.page.hasElement(objID)
+	if err != nil {
+		return err
+	}
+	if has {
+		return nil
+	}
+
+	// DFS for the iframe that holds the element
+	var walk func(page *Page) error
+	walk = func(page *Page) error {
+		list, err := page.ElementsE("", "iframe")
+		if err != nil {
+			return err
+		}
+
+		for _, f := range list {
+			p := f.Frame()
+
+			objID, err := p.resolveNode(nodeID)
+			if err != nil {
+				return err
+			}
+			if objID != "" {
+				el.page = p
+				el.ObjectID = objID
+				return io.EOF
+			}
+
+			err = walk(p)
+
+			err = f.ReleaseE()
+			if err != nil {
+				return err
+			}
+
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	err = walk(el.page)
+	if err == io.EOF {
+		return nil
+	}
+	return err
 }

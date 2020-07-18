@@ -55,11 +55,6 @@ func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Payloa
 	return
 }
 
-// LoadState into the method.
-func (p *Page) LoadState(method proto.Payload) (has bool) {
-	return p.browser.LoadState(p.SessionID, method)
-}
-
 // EnableDomain and returns a recover function to restore previous state
 func (b *Browser) EnableDomain(ctx context.Context, sessionID proto.TargetSessionID, method proto.Payload) (recover func()) {
 	_, enabled := b.states.Load(b.key(sessionID, method.MethodName()))
@@ -103,6 +98,22 @@ func (b *Browser) DisableDomain(ctx context.Context, sessionID proto.TargetSessi
 	}
 }
 
+func (b *Browser) storePage(page *Page) {
+	b.states.Store(page.TargetID, page)
+}
+
+func (b *Browser) loadPage(id proto.TargetTargetID) *Page {
+	if cache, ok := b.states.Load(id); ok {
+		return cache.(*Page)
+	}
+	return nil
+}
+
+// LoadState into the method.
+func (p *Page) LoadState(method proto.Payload) (has bool) {
+	return p.browser.LoadState(p.SessionID, method)
+}
+
 // EnableDomain and returns a recover function to restore previous state
 func (p *Page) EnableDomain(method proto.Payload) (recover func()) {
 	return p.browser.EnableDomain(p.ctx, p.SessionID, method)
@@ -111,4 +122,8 @@ func (p *Page) EnableDomain(method proto.Payload) (recover func()) {
 // DisableDomain and returns a recover function to restore previous state
 func (p *Page) DisableDomain(method proto.Payload) (recover func()) {
 	return p.browser.DisableDomain(p.ctx, p.SessionID, method)
+}
+
+func (p *Page) cleanupStates() {
+	p.browser.states.Delete(p.TargetID)
 }

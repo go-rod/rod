@@ -43,6 +43,8 @@ func SprintFnThis(js string) string {
 	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
+const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
+
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
 func jsHelper(name string, jsArgs Array) (string, Array) {
 	jsArgs = append(Array{jsHelperID}, jsArgs...)

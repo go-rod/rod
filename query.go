@@ -214,15 +214,10 @@ func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Element
 		}
 	}
 
-	recover := p.EnableDomain(proto.DOMEnable{})
-	defer recover()
-
 	list := Elements{}
 
 	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		// TODO: I don't know why we need this, seems like a bug of chrome T_T.
-		// We should remove it once chrome fixed this bug.
-		_, _ = proto.DOMGetDocument{}.Call(p)
+		p.enableNodeQuery()
 
 		search, err := proto.DOMPerformSearch{
 			Query:                     query,

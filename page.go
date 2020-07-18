@@ -42,6 +42,7 @@ type Page struct {
 	element          *Element                    // iframe only
 	windowObjectID   proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	jsHelperObjectID proto.RuntimeRemoteObjectID
+	executionIDs     map[proto.PageFrameID]proto.RuntimeExecutionContextID
 
 	event *goob.Observable
 }
@@ -208,7 +209,7 @@ func (p *Page) CloseE() error {
 		return err
 	}
 
-	p.browser.states.Delete(p.TargetID)
+	p.cleanupStates()
 
 	p.ctxCancel()
 	return nil
@@ -426,7 +427,7 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 
 	// js context will be invalid if a frame is reloaded
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
-		if thisID == "" {
+		if p.getWindowObjectID() == "" || thisID == "" {
 			err := p.initJS(false)
 			if err != nil {
 				if isNilContextErr(err) {
@@ -434,6 +435,8 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 				}
 				return true, err
 			}
+		}
+		if thisID == "" {
 			objectID = p.getWindowObjectID()
 		}
 
@@ -517,12 +520,6 @@ func (p *Page) ObjectToJSONE(obj *proto.RuntimeRemoteObject) (proto.JSON, error)
 	return res.Result.Value, nil
 }
 
-// Sleeper returns the default sleeper for retry, it uses backoff to grow the interval.
-// The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
-func (p *Page) Sleeper() kit.Sleeper {
-	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
-}
-
 // ElementFromObject creates an Element from the remote object id.
 func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 	return (&Element{
@@ -533,44 +530,47 @@ func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 
 // ElementFromNodeE creates an Element from the node id
 func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
-	res, err := proto.DOMResolveNode{
-		NodeID: id,
+	objID, err := p.resolveNode(id)
+	if err != nil {
+		return nil, err
+	}
+
+	el := p.ElementFromObject(objID)
+
+	err = el.ensureParentPage(id, objID)
+	if err != nil {
+		return nil, err
+	}
+
+	// make sure always return an element node
+	desc, err := el.DescribeE(0, false)
+	if err != nil {
+		return nil, err
+	}
+	if desc.NodeName == "#text" {
+		el, err = el.ParentE()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return el, nil
+}
+
+// ElementFromPointE creates an Element from the absolute point on the page
+func (p *Page) ElementFromPointE(left, top int64) (*Element, error) {
+	p.enableNodeQuery()
+
+	node, err := proto.DOMGetNodeForLocation{
+		X:                         left,
+		Y:                         top,
+		IncludeUserAgentShadowDOM: true,
 	}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	el := p.ElementFromObject(res.Object.ObjectID)
-
-	// This block will ensure the node inside an iframe can work properly.
-	// We don't have a good way to detect if a node is inside an iframe.
-	// Currently this is most efficient way to do it.
-	_, err = p.EvalE(true, "", `() => {}`, Array{el.ObjectID})
-	if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
-		eval := proto.RuntimeCallFunctionOn{
-			ObjectID:            el.ObjectID,
-			FunctionDeclaration: `() => window`,
-		}
-
-		win, err := eval.Call(p)
-		if err != nil {
-			return nil, err
-		}
-
-		eval.FunctionDeclaration = assets.Helper
-		helper, err := eval.Call(p)
-
-		newPage := *el.page
-		newPage.windowObjectID = win.Result.ObjectID
-		newPage.jsHelperObjectID = helper.Result.ObjectID
-		el.page = &newPage
-	}
-
-	if res.Object.ClassName == "Text" {
-		return el.ParentE()
-	}
-
-	return el, nil
+	return p.ElementFromNodeE(node.NodeID)
 }
 
 // ReleaseE doc is similar to the method Release
@@ -603,6 +603,11 @@ func (p *Page) initSession() error {
 }
 
 func (p *Page) initJS(force bool) error {
+	contextID, err := p.getExecutionID(force)
+	if err != nil {
+		return err
+	}
+
 	p.lock.Lock()
 	defer p.lock.Unlock()
 
@@ -610,21 +615,10 @@ func (p *Page) initJS(force bool) error {
 		return nil
 	}
 
-	eval := &proto.RuntimeEvaluate{Expression: "window"}
-
-	if p.IsIframe() {
-		frameID, err := p.frameID()
-		if err != nil {
-			return err
-		}
-		world, err := proto.PageCreateIsolatedWorld{FrameID: frameID}.Call(p)
-		if err != nil {
-			return err
-		}
-		eval.ContextID = world.ExecutionContextID
-	}
-
-	window, err := eval.Call(p)
+	window, err := proto.RuntimeEvaluate{
+		Expression: "window",
+		ContextID:  contextID,
+	}.Call(p)
 	if err != nil {
 		return err
 	}
@@ -643,7 +637,37 @@ func (p *Page) initJS(force bool) error {
 	return nil
 }
 
-const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
+func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, error) {
+	if !p.IsIframe() {
+		return 0, nil
+	}
+
+	frameID, err := p.frameID()
+	if err != nil {
+		return 0, err
+	}
+
+	p.lock.Lock()
+	defer p.lock.Unlock()
+
+	if !force {
+		if ctxID, has := p.executionIDs[frameID]; has {
+			return ctxID, nil
+		}
+	}
+
+	world, err := proto.PageCreateIsolatedWorld{
+		FrameID:   frameID,
+		WorldName: "rod_iframe_world",
+	}.Call(p)
+	if err != nil {
+		return 0, err
+	}
+
+	p.executionIDs[frameID] = world.ExecutionContextID
+
+	return world.ExecutionContextID, nil
+}
 
 func (p *Page) frameID() (proto.PageFrameID, error) {
 	// this is the only way we can get the window object from the iframe
@@ -672,4 +696,40 @@ func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	return p.jsHelperObjectID
+}
+
+func (p *Page) enableNodeQuery() {
+	// TODO: I don't know why we need this, seems like a bug of chrome.
+	// We should remove it once chrome fixed this bug.
+	_, _ = proto.DOMGetDocument{}.Call(p)
+}
+
+func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID, error) {
+	ctxID, err := p.getExecutionID(false)
+	if err != nil {
+		return "", err
+	}
+
+	node, err := proto.DOMResolveNode{
+		NodeID:             nodeID,
+		ExecutionContextID: ctxID,
+	}.Call(p)
+	if err != nil {
+		return "", err
+	}
+
+	return node.Object.ObjectID, nil
+}
+
+func (p *Page) hasElement(id proto.RuntimeRemoteObjectID) (bool, error) {
+	// We don't have a good way to detect if a node is inside an iframe.
+	// Currently this is most efficient way to do it.
+	_, err := p.EvalE(true, "", "() => {}", Array{id})
+	if err == nil {
+		return true, nil
+	}
+	if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
+		return false, nil
+	}
+	return false, err
 }

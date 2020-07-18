@@ -327,17 +327,19 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	b.lock.Lock()
 	defer b.lock.Unlock()
 
-	if cache, ok := b.states.Load(targetID); ok {
-		return cache.(*Page), nil
+	page := b.loadPage(targetID)
+	if page != nil {
+		return page, nil
 	}
 
-	page := (&Page{
-		lock:     &sync.Mutex{},
-		browser:  b,
-		TargetID: targetID,
+	page = (&Page{
+		lock:         &sync.Mutex{},
+		browser:      b,
+		TargetID:     targetID,
+		executionIDs: map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
 	}).Context(context.WithCancel(b.ctx))
 
-	b.states.Store(targetID, page)
+	b.storePage(page)
 
 	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
