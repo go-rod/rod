@@ -517,7 +517,8 @@ func (p *Page) ObjectToJSONE(obj *proto.RuntimeRemoteObject) (proto.JSON, error)
 	return res.Result.Value, nil
 }
 
-// Sleeper returns the default sleeper for retry, it uses backoff and requestIdleCallback to wait
+// Sleeper returns the default sleeper for retry, it uses backoff to grow the interval.
+// The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
 func (p *Page) Sleeper() kit.Sleeper {
 	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }

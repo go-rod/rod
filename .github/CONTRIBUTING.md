@@ -21,19 +21,18 @@ So that you can always jump from one definition to another in a uni-directional 
 
 If you read the function list, you will notice a lot of functions have two versions, such as `Screenshot` and `ScreenshotE`,
 the `E` suffix means error. Functions end with E suffix will return an error as the last value. The non-E version is usually a wrapper
-for the E version with fixed default options to make it easier to use, and it will panic if the error is not nil other than return the error.
+for the E version with fixed default options to make it easier to use, and it will panic if the error is not nil.
 Usually, The E function is a low-level version of the non-E functions with more options.
 
 For example the source code of `Element.Click` and `Element.ClickE`. `Click` has no argument.
 But with `ClickE` you can pass `button` argument to it to decide which button to click.
-`Click` calls `ClickE` inside it and passes left-button to it.
+`Click` calls `ClickE` inside it and always passes the left-button to it.
 
-All the non-E version functions should be inside the sugar files (files end with sugar.go). Since even we remove all those high-level functions the low-level version of them can still do the job, users just need to type a little bit more code.
+The idea is not new. It's similar to Golang's built-in [regexp.MustCompile](https://golang.org/pkg/regexp/#MustCompile) and [regexp.Compile](https://golang.org/pkg/regexp/#Compile). In rod it becomes `regexp.Compile` and `regexp.CompileE`.
+
+All the non-E version functions should be inside the sugar files (files end with sugar.go). So even we remove all those high-level functions the low-level version of them can still do the job, users just need to type a little bit more code.
 
 When you adding a new function to this lib, please make two versions of it if possible.
-
-The reason to have redundant functions is because of Golang is lacking the support of generics.
-To support the fluent API design, we trade more code to make this lib more user friendly.
 
 ## Run tests
 

@@ -49,6 +49,7 @@ func Example_basic() {
 	fmt.Println(page.Element("title").Eval(`this.innerText`).String())
 
 	// To handle errors in rod, you can use rod.Try or E suffixed function family like "page.ElementE"
+	// https://github.com/go-rod/rod#q-why-functions-dont-return-error-values
 	err := rod.Try(func() {
 		page.Element("#2020")
 	})
@@ -192,7 +193,7 @@ func Example_customize_retry_strategy() {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 
 	// ElementE is used in this context instead of Element. When The XxxxxE
-	// version of functions are used, there will be more access to customise
+	// version of functions are used, there will be more access to customize
 	// options, like give access to the backoff algorithm.
 	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", []string{"input"})
 	if err == context.DeadlineExceeded {

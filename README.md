@@ -16,6 +16,7 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 - Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations
+- Two styles of error handling to [choose](.github/CONTRIBUTING.md#e-suffixed-function-family).
 - Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource, etc
