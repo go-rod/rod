@@ -225,19 +225,9 @@ func (el *Element) SetFilesE(paths []string) error {
 }
 
 // DescribeE doc is similar to the method Describe
-// But it can choose depth, depth default is 1, -1 to all
 // please see https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-describeNode
 func (el *Element) DescribeE(depth int, pierce bool) (*proto.DOMNode, error) {
-	var Depth int64
-	switch {
-	case depth < 0:
-		Depth = -1 // -1 to all
-	case depth == 0:
-		Depth = 1
-	default:
-		Depth = int64(depth)
-	}
-	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID, Depth: Depth, Pierce: pierce}.Call(el)
+	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID, Depth: int64(depth), Pierce: pierce}.Call(el)
 	if err != nil {
 		return nil, err
 	}
