@@ -561,7 +561,7 @@ func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
 // ElementFromPointE creates an Element from the absolute point on the page.
 // The point should include the window scroll offset.
 func (p *Page) ElementFromPointE(x, y int64) (*Element, error) {
-	p.enableNodeQuery()
+	defer p.enableNodeQuery()()
 
 	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
 	if err != nil {
@@ -696,10 +696,14 @@ func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
 	return p.jsHelperObjectID
 }
 
-func (p *Page) enableNodeQuery() {
+func (p *Page) enableNodeQuery() func() {
+	recover := p.EnableDomain(&proto.DOMEnable{})
+
 	// TODO: I don't know why we need this, seems like a bug of chrome.
 	// We should remove it once chrome fixed this bug.
 	_, _ = proto.DOMGetDocument{}.Call(p)
+
+	return recover
 }
 
 func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID, error) {

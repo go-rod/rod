@@ -218,7 +218,7 @@ func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Element
 	list := Elements{}
 
 	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		p.enableNodeQuery()
+		defer p.enableNodeQuery()()
 
 		search, err := proto.DOMPerformSearch{
 			Query:                     query,
