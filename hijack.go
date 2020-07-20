@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -161,7 +162,7 @@ func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
 		},
 		OnError: func(err error) {
 			if err != context.Canceled {
-				kit.Err(err)
+				log.Println(kit.C("[rod hijack err]", "yellow"), err)
 			}
 		},
 	}

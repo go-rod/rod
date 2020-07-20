@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"html"
+	"log"
 	"net/http"
 	"os/exec"
 	"regexp"
@@ -181,7 +182,7 @@ func (p *Page) tryTraceFn(js string, params Array) func() {
 }
 
 func defaultTraceLogAct(msg string) {
-	kit.Log(kit.C("act", "cyan"), msg)
+	log.Println(kit.C("act", "cyan"), msg)
 }
 
 func defaultTraceLogJS(js string, params Array) {
@@ -190,12 +191,12 @@ func defaultTraceLogJS(js string, params Array) {
 		paramsStr = strings.Trim(mustToJSONForDev(params), "[]\r\n")
 	}
 	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
-	kit.Log(kit.C("js", "yellow"), msg)
+	log.Println(kit.C("js", "yellow"), msg)
 }
 
 func defaultTraceLogErr(err error) {
 	if err != context.Canceled && err != context.DeadlineExceeded {
-		kit.Err(err)
+		log.Println(kit.C("[rod trace err]", "yellow"), err)
 	}
 }
 
@@ -206,7 +207,6 @@ func (m *Mouse) initMouseTracer() {
 
 func (m *Mouse) updateMouseTracer() bool {
 	js, jsArgs := jsHelper("updateMouseTracer", Array{m.id, m.x, m.y})
-	kit.Log(m.id, m.x, m.y)
 	res, err := m.page.EvalE(true, "", js, jsArgs)
 	if err != nil {
 		return true

@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"log"
 	"net/http"
 	"path/filepath"
 	"testing"
@@ -19,6 +20,10 @@ type S struct {
 	suite.Suite
 	browser *rod.Browser
 	page    *rod.Page
+}
+
+func init() {
+	log.SetFlags(log.Ltime | log.Lshortfile)
 }
 
 func TestMain(m *testing.M) {

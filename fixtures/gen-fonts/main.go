@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/go-rod/rod"
@@ -42,7 +43,7 @@ func main() {
 			kit.Sleep(0.1)
 			result = p.Element(".tlid-translation").Text()
 		}
-		kit.Log(name, result)
+		log.Println(name, result)
 		html += fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>\n", name, result)
 	}
 

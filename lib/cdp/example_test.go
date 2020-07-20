@@ -2,6 +2,7 @@ package cdp_test
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
@@ -23,7 +24,7 @@ func ExampleClient() {
 	})
 	kit.E(err)
 
-	kit.Log(kit.JSON(res).Get("targetId").String())
+	fmt.Println(kit.JSON(res).Get("targetId").String())
 
 	kit.Pause()
 

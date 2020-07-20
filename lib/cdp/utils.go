@@ -3,6 +3,8 @@ package cdp
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"runtime/debug"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -54,6 +56,6 @@ func defaultDebugLog(obj interface{}) {
 		))
 
 	default:
-		kit.Err(kit.Sdump(obj))
+		log.Println(kit.Sdump(obj), "\n"+string(debug.Stack()))
 	}
 }
