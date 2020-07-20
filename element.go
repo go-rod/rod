@@ -130,12 +130,7 @@ func (el *Element) BoxE() (*proto.DOMRect, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &proto.DOMRect{
-		X:      res.Model.Content[0],
-		Y:      res.Model.Content[1],
-		Width:  res.Model.Content[2] - res.Model.Content[0],
-		Height: res.Model.Content[7] - res.Model.Content[1],
-	}, nil
+	return res.Model.Rect(), nil
 }
 
 // PressE doc is similar to the method Press

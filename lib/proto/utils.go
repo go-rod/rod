@@ -197,3 +197,13 @@ func PatternToReg(pattern string) string {
 
 	return `\A` + strings.TrimSpace(pattern) + `\z`
 }
+
+// Rect of the box model
+func (box *DOMBoxModel) Rect() *DOMRect {
+	return &DOMRect{
+		X:      box.Content[0],
+		Y:      box.Content[1],
+		Width:  box.Content[2] - box.Content[0],
+		Height: box.Content[7] - box.Content[1],
+	}
+}
