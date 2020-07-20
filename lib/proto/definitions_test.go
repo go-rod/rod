@@ -1880,6 +1880,12 @@ func TestOverlaySetShowViewportSizeOnResize(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestOverlaySetShowHinge(t *testing.T) {
+	c := &Client{}
+	err := proto.OverlaySetShowHinge{}.Call(&Caller{c})
+	assert.Nil(t, err)
+}
+
 func TestOverlayInspectNodeRequested(t *testing.T) {
 	e := proto.OverlayInspectNodeRequested{}
 	e.MethodName()
@@ -3013,6 +3019,16 @@ func TestMediaPlayerEventsAdded(t *testing.T) {
 	e.MethodName()
 }
 
+func TestMediaPlayerMessagesLogged(t *testing.T) {
+	e := proto.MediaPlayerMessagesLogged{}
+	e.MethodName()
+}
+
+func TestMediaPlayerErrorsRaised(t *testing.T) {
+	e := proto.MediaPlayerErrorsRaised{}
+	e.MethodName()
+}
+
 func TestMediaPlayersCreated(t *testing.T) {
 	e := proto.MediaPlayersCreated{}
 	e.MethodName()
@@ -3062,6 +3078,12 @@ func TestDebuggerEnable(t *testing.T) {
 func TestDebuggerEvaluateOnCallFrame(t *testing.T) {
 	c := &Client{}
 	_, err := proto.DebuggerEvaluateOnCallFrame{}.Call(&Caller{c})
+	assert.Nil(t, err)
+}
+
+func TestDebuggerExecuteWasmEvaluator(t *testing.T) {
+	c := &Client{}
+	_, err := proto.DebuggerExecuteWasmEvaluator{}.Call(&Caller{c})
 	assert.Nil(t, err)
 }
 

@@ -916,10 +916,23 @@ type AuditsAffectedCookie struct {
 
 	// Domain ...
 	Domain string `json:"domain"`
+}
 
-	// SiteForCookies (optional) Optionally identifies the site-for-cookies, which may be used by the
-	// front-end as additional context.
-	SiteForCookies string `json:"siteForCookies,omitempty"`
+// AuditsAffectedRequest Information about a request that is affected by an inspector issue.
+type AuditsAffectedRequest struct {
+
+	// RequestID The unique request id.
+	RequestID NetworkRequestID `json:"requestId"`
+
+	// URL (optional) ...
+	URL string `json:"url,omitempty"`
+}
+
+// AuditsAffectedFrame Information about the frame affected by an inspector issue.
+type AuditsAffectedFrame struct {
+
+	// FrameID ...
+	FrameID PageFrameID `json:"frameId"`
 }
 
 // AuditsSameSiteCookieExclusionReason ...
@@ -946,23 +959,31 @@ const (
 	// AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe enum const
 	AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteUnspecifiedLaxAllowUnsafe"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLMethodUnsafe enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLMethodUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlMethodUnsafe"
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictLaxDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLLax enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLLax AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlLax"
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictCrossDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLStrict enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeSecureURLStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeSecureUrlStrict"
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictCrossDowngradeLax"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLMethodUnsafe enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLMethodUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlMethodUnsafe"
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteLaxCrossDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLLax enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLLax AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlLax"
+	// AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax enum const
+	AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax AuditsSameSiteCookieWarningReason = "WarnSameSiteLaxCrossDowngradeLax"
+)
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLStrict enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteCrossSchemeInsecureURLStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteCrossSchemeInsecureUrlStrict"
+// AuditsSameSiteCookieOperation ...
+type AuditsSameSiteCookieOperation string
+
+const (
+	// AuditsSameSiteCookieOperationSetCookie enum const
+	AuditsSameSiteCookieOperationSetCookie AuditsSameSiteCookieOperation = "SetCookie"
+
+	// AuditsSameSiteCookieOperationReadCookie enum const
+	AuditsSameSiteCookieOperationReadCookie AuditsSameSiteCookieOperation = "ReadCookie"
 )
 
 // AuditsSameSiteCookieIssueDetails This information is currently necessary, as the front-end has a difficult
@@ -970,38 +991,175 @@ const (
 // information without the cookie.
 type AuditsSameSiteCookieIssueDetails struct {
 
+	// Cookie ...
+	Cookie *AuditsAffectedCookie `json:"cookie"`
+
 	// CookieWarningReasons ...
 	CookieWarningReasons []AuditsSameSiteCookieWarningReason `json:"cookieWarningReasons"`
 
 	// CookieExclusionReasons ...
 	CookieExclusionReasons []AuditsSameSiteCookieExclusionReason `json:"cookieExclusionReasons"`
+
+	// Operation Optionally identifies the site-for-cookies and the cookie url, which
+	// may be used by the front-end as additional context.
+	Operation AuditsSameSiteCookieOperation `json:"operation"`
+
+	// SiteForCookies (optional) ...
+	SiteForCookies string `json:"siteForCookies,omitempty"`
+
+	// CookieURL (optional) ...
+	CookieURL string `json:"cookieUrl,omitempty"`
+
+	// Request (optional) ...
+	Request *AuditsAffectedRequest `json:"request,omitempty"`
 }
 
-// AuditsAffectedResources ...
-type AuditsAffectedResources struct {
+// AuditsMixedContentResolutionStatus ...
+type AuditsMixedContentResolutionStatus string
 
-	// Cookies (optional) ...
-	Cookies []*AuditsAffectedCookie `json:"cookies,omitempty"`
+const (
+	// AuditsMixedContentResolutionStatusMixedContentBlocked enum const
+	AuditsMixedContentResolutionStatusMixedContentBlocked AuditsMixedContentResolutionStatus = "MixedContentBlocked"
+
+	// AuditsMixedContentResolutionStatusMixedContentAutomaticallyUpgraded enum const
+	AuditsMixedContentResolutionStatusMixedContentAutomaticallyUpgraded AuditsMixedContentResolutionStatus = "MixedContentAutomaticallyUpgraded"
+
+	// AuditsMixedContentResolutionStatusMixedContentWarning enum const
+	AuditsMixedContentResolutionStatusMixedContentWarning AuditsMixedContentResolutionStatus = "MixedContentWarning"
+)
+
+// AuditsMixedContentResourceType ...
+type AuditsMixedContentResourceType string
+
+const (
+	// AuditsMixedContentResourceTypeAudio enum const
+	AuditsMixedContentResourceTypeAudio AuditsMixedContentResourceType = "Audio"
+
+	// AuditsMixedContentResourceTypeBeacon enum const
+	AuditsMixedContentResourceTypeBeacon AuditsMixedContentResourceType = "Beacon"
+
+	// AuditsMixedContentResourceTypeCSPReport enum const
+	AuditsMixedContentResourceTypeCSPReport AuditsMixedContentResourceType = "CSPReport"
+
+	// AuditsMixedContentResourceTypeDownload enum const
+	AuditsMixedContentResourceTypeDownload AuditsMixedContentResourceType = "Download"
+
+	// AuditsMixedContentResourceTypeEventSource enum const
+	AuditsMixedContentResourceTypeEventSource AuditsMixedContentResourceType = "EventSource"
+
+	// AuditsMixedContentResourceTypeFavicon enum const
+	AuditsMixedContentResourceTypeFavicon AuditsMixedContentResourceType = "Favicon"
+
+	// AuditsMixedContentResourceTypeFont enum const
+	AuditsMixedContentResourceTypeFont AuditsMixedContentResourceType = "Font"
+
+	// AuditsMixedContentResourceTypeForm enum const
+	AuditsMixedContentResourceTypeForm AuditsMixedContentResourceType = "Form"
+
+	// AuditsMixedContentResourceTypeFrame enum const
+	AuditsMixedContentResourceTypeFrame AuditsMixedContentResourceType = "Frame"
+
+	// AuditsMixedContentResourceTypeImage enum const
+	AuditsMixedContentResourceTypeImage AuditsMixedContentResourceType = "Image"
+
+	// AuditsMixedContentResourceTypeImport enum const
+	AuditsMixedContentResourceTypeImport AuditsMixedContentResourceType = "Import"
+
+	// AuditsMixedContentResourceTypeManifest enum const
+	AuditsMixedContentResourceTypeManifest AuditsMixedContentResourceType = "Manifest"
+
+	// AuditsMixedContentResourceTypePing enum const
+	AuditsMixedContentResourceTypePing AuditsMixedContentResourceType = "Ping"
+
+	// AuditsMixedContentResourceTypePluginData enum const
+	AuditsMixedContentResourceTypePluginData AuditsMixedContentResourceType = "PluginData"
+
+	// AuditsMixedContentResourceTypePluginResource enum const
+	AuditsMixedContentResourceTypePluginResource AuditsMixedContentResourceType = "PluginResource"
+
+	// AuditsMixedContentResourceTypePrefetch enum const
+	AuditsMixedContentResourceTypePrefetch AuditsMixedContentResourceType = "Prefetch"
+
+	// AuditsMixedContentResourceTypeResource enum const
+	AuditsMixedContentResourceTypeResource AuditsMixedContentResourceType = "Resource"
+
+	// AuditsMixedContentResourceTypeScript enum const
+	AuditsMixedContentResourceTypeScript AuditsMixedContentResourceType = "Script"
+
+	// AuditsMixedContentResourceTypeServiceWorker enum const
+	AuditsMixedContentResourceTypeServiceWorker AuditsMixedContentResourceType = "ServiceWorker"
+
+	// AuditsMixedContentResourceTypeSharedWorker enum const
+	AuditsMixedContentResourceTypeSharedWorker AuditsMixedContentResourceType = "SharedWorker"
+
+	// AuditsMixedContentResourceTypeStylesheet enum const
+	AuditsMixedContentResourceTypeStylesheet AuditsMixedContentResourceType = "Stylesheet"
+
+	// AuditsMixedContentResourceTypeTrack enum const
+	AuditsMixedContentResourceTypeTrack AuditsMixedContentResourceType = "Track"
+
+	// AuditsMixedContentResourceTypeVideo enum const
+	AuditsMixedContentResourceTypeVideo AuditsMixedContentResourceType = "Video"
+
+	// AuditsMixedContentResourceTypeWorker enum const
+	AuditsMixedContentResourceTypeWorker AuditsMixedContentResourceType = "Worker"
+
+	// AuditsMixedContentResourceTypeXMLHTTPRequest enum const
+	AuditsMixedContentResourceTypeXMLHTTPRequest AuditsMixedContentResourceType = "XMLHttpRequest"
+
+	// AuditsMixedContentResourceTypeXSLT enum const
+	AuditsMixedContentResourceTypeXSLT AuditsMixedContentResourceType = "XSLT"
+)
+
+// AuditsMixedContentIssueDetails ...
+type AuditsMixedContentIssueDetails struct {
+
+	// ResourceType (optional) The type of resource causing the mixed content issue (css, js, iframe,
+	// form,...). Marked as optional because it is mapped to from
+	// blink::mojom::RequestContextType, which will be replaced
+	// by network::mojom::RequestDestination
+	ResourceType AuditsMixedContentResourceType `json:"resourceType,omitempty"`
+
+	// ResolutionStatus The way the mixed content issue is being resolved.
+	ResolutionStatus AuditsMixedContentResolutionStatus `json:"resolutionStatus"`
+
+	// InsecureURL The unsafe http url causing the mixed content issue.
+	InsecureURL string `json:"insecureURL"`
+
+	// MainResourceURL The url responsible for the call to an unsafe url.
+	MainResourceURL string `json:"mainResourceURL"`
+
+	// Request (optional) The mixed content request.
+	// Does not always exist (e.g. for unsafe form submission urls).
+	Request *AuditsAffectedRequest `json:"request,omitempty"`
+
+	// Frame (optional) Optional because not every mixed content issue is necessarily linked to a frame.
+	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
 }
 
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
-// information about the kind of issue, and AffectedResources to identify
-// resources that are affected by this issue.
+// information about the kind of issue.
 type AuditsInspectorIssueCode string
 
 const (
 	// AuditsInspectorIssueCodeSameSiteCookieIssue enum const
 	AuditsInspectorIssueCodeSameSiteCookieIssue AuditsInspectorIssueCode = "SameSiteCookieIssue"
+
+	// AuditsInspectorIssueCodeMixedContentIssue enum const
+	AuditsInspectorIssueCodeMixedContentIssue AuditsInspectorIssueCode = "MixedContentIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
-// pertaining to the kind of issue. This is useful if there is a number of
-// very similar issues that only differ in details.
+// specific to the kind of issue. When adding a new issue code, please also
+// add a new optional field to this type.
 type AuditsInspectorIssueDetails struct {
 
 	// SameSiteCookieIssueDetails (optional) ...
 	SameSiteCookieIssueDetails *AuditsSameSiteCookieIssueDetails `json:"sameSiteCookieIssueDetails,omitempty"`
+
+	// MixedContentIssueDetails (optional) ...
+	MixedContentIssueDetails *AuditsMixedContentIssueDetails `json:"mixedContentIssueDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
@@ -1012,9 +1170,6 @@ type AuditsInspectorIssue struct {
 
 	// Details ...
 	Details *AuditsInspectorIssueDetails `json:"details"`
-
-	// Resources ...
-	Resources *AuditsAffectedResources `json:"resources"`
 }
 
 // AuditsGetEncodedResponseEncoding enum
@@ -1439,14 +1594,14 @@ type BrowserHistogram struct {
 // BrowserSetPermission (experimental) Set permission settings for given origin.
 type BrowserSetPermission struct {
 
-	// Origin (optional) Origin the permission applies to, all origins if not specified.
-	Origin string `json:"origin,omitempty"`
-
 	// Permission Descriptor of permission to override.
 	Permission *BrowserPermissionDescriptor `json:"permission"`
 
 	// Setting Setting of the permission.
 	Setting BrowserPermissionSetting `json:"setting"`
+
+	// Origin (optional) Origin the permission applies to, all origins if not specified.
+	Origin string `json:"origin,omitempty"`
 
 	// BrowserContextID (optional) Context to override. When omitted, default browser context is used.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -1463,11 +1618,11 @@ func (m BrowserSetPermission) Call(caller Caller) error {
 // BrowserGrantPermissions (experimental) Grant specific permissions to the given origin and reject all others.
 type BrowserGrantPermissions struct {
 
-	// Origin (optional) Origin the permission applies to, all origins if not specified.
-	Origin string `json:"origin,omitempty"`
-
 	// Permissions ...
 	Permissions []BrowserPermissionType `json:"permissions"`
+
+	// Origin (optional) Origin the permission applies to, all origins if not specified.
+	Origin string `json:"origin,omitempty"`
 
 	// BrowserContextID (optional) BrowserContext to override permissions. When omitted, default browser context is used.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -5633,6 +5788,41 @@ const (
 	EmulationVirtualTimePolicyPauseIfNetworkFetchesPending EmulationVirtualTimePolicy = "pauseIfNetworkFetchesPending"
 )
 
+// EmulationUserAgentBrandVersion (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+type EmulationUserAgentBrandVersion struct {
+
+	// Brand ...
+	Brand string `json:"brand"`
+
+	// Version ...
+	Version string `json:"version"`
+}
+
+// EmulationUserAgentMetadata (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+type EmulationUserAgentMetadata struct {
+
+	// Brands ...
+	Brands []*EmulationUserAgentBrandVersion `json:"brands"`
+
+	// FullVersion ...
+	FullVersion string `json:"fullVersion"`
+
+	// Platform ...
+	Platform string `json:"platform"`
+
+	// PlatformVersion ...
+	PlatformVersion string `json:"platformVersion"`
+
+	// Architecture ...
+	Architecture string `json:"architecture"`
+
+	// Model ...
+	Model string `json:"model"`
+
+	// Mobile ...
+	Mobile bool `json:"mobile"`
+}
+
 // EmulationCanEmulate Tells whether emulation is supported.
 type EmulationCanEmulate struct {
 }
@@ -6113,6 +6303,9 @@ type EmulationSetUserAgentOverride struct {
 
 	// Platform (optional) The platform navigator.platform should return.
 	Platform string `json:"platform,omitempty"`
+
+	// UserAgentMetadata (experimental) (optional) To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+	UserAgentMetadata *EmulationUserAgentMetadata `json:"userAgentMetadata,omitempty"`
 }
 
 // MethodName of the command
@@ -9547,6 +9740,9 @@ type NetworkSetUserAgentOverride struct {
 
 	// Platform (optional) The platform navigator.platform should return.
 	Platform string `json:"platform,omitempty"`
+
+	// UserAgentMetadata (experimental) (optional) To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+	UserAgentMetadata *EmulationUserAgentMetadata `json:"userAgentMetadata,omitempty"`
 }
 
 // MethodName of the command
@@ -9955,9 +10151,9 @@ type NetworkRequestWillBeSentExtraInfo struct {
 	// RequestID Request identifier. Used to match this information to an existing requestWillBeSent event.
 	RequestID NetworkRequestID `json:"requestId"`
 
-	// BlockedCookies A list of cookies which will not be sent with this request along with corresponding reasons
-	// for blocking.
-	BlockedCookies []*NetworkBlockedCookieWithReason `json:"blockedCookies"`
+	// AssociatedCookies A list of cookies potentially associated to the requested URL. This includes both cookies sent with
+	// the request and the ones not sent; the latter are distinguished by having blockedReason field set.
+	AssociatedCookies []*NetworkBlockedCookieWithReason `json:"associatedCookies"`
 
 	// Headers Raw request headers as they will be sent over the wire.
 	Headers NetworkHeaders `json:"headers"`
@@ -9992,6 +10188,37 @@ type NetworkResponseReceivedExtraInfo struct {
 // MethodName interface
 func (evt NetworkResponseReceivedExtraInfo) MethodName() string {
 	return "Network.responseReceivedExtraInfo"
+}
+
+// OverlayGridHighlightConfig Configuration data for the highlighting of Grid elements.
+type OverlayGridHighlightConfig struct {
+
+	// ShowGridExtensionLines (optional) Whether the extension lines from grid cells to the rulers should be shown (default: false).
+	ShowGridExtensionLines bool `json:"showGridExtensionLines,omitempty"`
+
+	// GridBorderColor (optional) The grid container border highlight color (default: transparent).
+	GridBorderColor *DOMRGBA `json:"gridBorderColor,omitempty"`
+
+	// CellBorderColor (optional) The cell border color (default: transparent).
+	CellBorderColor *DOMRGBA `json:"cellBorderColor,omitempty"`
+
+	// GridBorderDash (optional) Whether the grid border is dashed (default: false).
+	GridBorderDash bool `json:"gridBorderDash,omitempty"`
+
+	// CellBorderDash (optional) Whether the cell border is dashed (default: false).
+	CellBorderDash bool `json:"cellBorderDash,omitempty"`
+
+	// RowGapColor (optional) The row gap highlight fill color (default: transparent).
+	RowGapColor *DOMRGBA `json:"rowGapColor,omitempty"`
+
+	// RowHatchColor (optional) The row gap hatching fill color (default: transparent).
+	RowHatchColor *DOMRGBA `json:"rowHatchColor,omitempty"`
+
+	// ColumnGapColor (optional) The column gap highlight fill color (default: transparent).
+	ColumnGapColor *DOMRGBA `json:"columnGapColor,omitempty"`
+
+	// ColumnHatchColor (optional) The column gap hatching fill color (default: transparent).
+	ColumnHatchColor *DOMRGBA `json:"columnHatchColor,omitempty"`
 }
 
 // OverlayHighlightConfig Configuration data for the highlighting of page elements.
@@ -10032,6 +10259,39 @@ type OverlayHighlightConfig struct {
 
 	// CSSGridColor (optional) The grid layout color (default: transparent).
 	CSSGridColor *DOMRGBA `json:"cssGridColor,omitempty"`
+
+	// ColorFormat (optional) The color format used to format color styles (default: hex).
+	ColorFormat OverlayColorFormat `json:"colorFormat,omitempty"`
+
+	// GridHighlightConfig (optional) The grid layout highlight configuration (default: all transparent).
+	GridHighlightConfig *OverlayGridHighlightConfig `json:"gridHighlightConfig,omitempty"`
+}
+
+// OverlayColorFormat ...
+type OverlayColorFormat string
+
+const (
+	// OverlayColorFormatRgb enum const
+	OverlayColorFormatRgb OverlayColorFormat = "rgb"
+
+	// OverlayColorFormatHsl enum const
+	OverlayColorFormatHsl OverlayColorFormat = "hsl"
+
+	// OverlayColorFormatHex enum const
+	OverlayColorFormatHex OverlayColorFormat = "hex"
+)
+
+// OverlayHingeConfig Configuration for dual screen hinge
+type OverlayHingeConfig struct {
+
+	// Rect A rectangle represent hinge
+	Rect *DOMRect `json:"rect"`
+
+	// ContentColor (optional) The content box highlight fill color (default: a dark color).
+	ContentColor *DOMRGBA `json:"contentColor,omitempty"`
+
+	// OutlineColor (optional) The content box highlight outline color (default: transparent).
+	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
 // OverlayInspectMode ...
@@ -10089,6 +10349,9 @@ type OverlayGetHighlightObjectForTest struct {
 
 	// IncludeStyle (optional) Whether to include style info.
 	IncludeStyle bool `json:"includeStyle,omitempty"`
+
+	// ColorFormat (optional) The color format to get config with (default: hex)
+	ColorFormat OverlayColorFormat `json:"colorFormat,omitempty"`
 }
 
 // MethodName of the command
@@ -10381,6 +10644,21 @@ func (m OverlaySetShowViewportSizeOnResize) MethodName() string {
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowViewportSizeOnResize) Call(caller Caller) error {
+	return Call(m.MethodName(), m, nil, caller)
+}
+
+// OverlaySetShowHinge Add a dual screen device hinge
+type OverlaySetShowHinge struct {
+
+	// HingeConfig (optional) hinge data, null means hideHinge
+	HingeConfig *OverlayHingeConfig `json:"hingeConfig,omitempty"`
+}
+
+// MethodName of the command
+func (m OverlaySetShowHinge) MethodName() string { return "Overlay.setShowHinge" }
+
+// Call of the command, sessionID is optional.
+func (m OverlaySetShowHinge) Call(caller Caller) error {
 	return Call(m.MethodName(), m, nil, caller)
 }
 
@@ -10768,6 +11046,23 @@ const (
 
 	// PageClientNavigationReasonAnchorClick enum const
 	PageClientNavigationReasonAnchorClick PageClientNavigationReason = "anchorClick"
+)
+
+// PageClientNavigationDisposition (experimental) ...
+type PageClientNavigationDisposition string
+
+const (
+	// PageClientNavigationDispositionCurrentTab enum const
+	PageClientNavigationDispositionCurrentTab PageClientNavigationDisposition = "currentTab"
+
+	// PageClientNavigationDispositionNewTab enum const
+	PageClientNavigationDispositionNewTab PageClientNavigationDisposition = "newTab"
+
+	// PageClientNavigationDispositionNewWindow enum const
+	PageClientNavigationDispositionNewWindow PageClientNavigationDisposition = "newWindow"
+
+	// PageClientNavigationDispositionDownload enum const
+	PageClientNavigationDispositionDownload PageClientNavigationDisposition = "download"
 )
 
 // PageInstallabilityErrorArgument (experimental) ...
@@ -12138,6 +12433,9 @@ type PageFrameRequestedNavigation struct {
 
 	// URL The destination URL for the requested navigation.
 	URL string `json:"url"`
+
+	// Disposition The disposition for the navigation.
+	Disposition PageClientNavigationDisposition `json:"disposition"`
 }
 
 // MethodName interface
@@ -12202,6 +12500,9 @@ type PageDownloadWillBegin struct {
 
 	// URL URL of the resource being downloaded.
 	URL string `json:"url"`
+
+	// SuggestedFilename Suggested file name of the resource (the actual name of the file saved on disk may differ).
+	SuggestedFilename string `json:"suggestedFilename"`
 }
 
 // MethodName interface
@@ -15614,45 +15915,85 @@ type MediaPlayerID string
 // MediaTimestamp ...
 type MediaTimestamp float64
 
-// MediaPlayerProperty Player Property type
-type MediaPlayerProperty struct {
-
-	// Name ...
-	Name string `json:"name"`
-
-	// Value (optional) ...
-	Value string `json:"value,omitempty"`
-}
-
-// MediaPlayerEventType Break out events into different types
-type MediaPlayerEventType string
+// MediaPlayerMessageLevel enum
+type MediaPlayerMessageLevel string
 
 const (
-	// MediaPlayerEventTypeErrorEvent enum const
-	MediaPlayerEventTypeErrorEvent MediaPlayerEventType = "errorEvent"
+	// MediaPlayerMessageLevelError enum const
+	MediaPlayerMessageLevelError MediaPlayerMessageLevel = "error"
 
-	// MediaPlayerEventTypeTriggeredEvent enum const
-	MediaPlayerEventTypeTriggeredEvent MediaPlayerEventType = "triggeredEvent"
+	// MediaPlayerMessageLevelWarning enum const
+	MediaPlayerMessageLevelWarning MediaPlayerMessageLevel = "warning"
 
-	// MediaPlayerEventTypeMessageEvent enum const
-	MediaPlayerEventTypeMessageEvent MediaPlayerEventType = "messageEvent"
+	// MediaPlayerMessageLevelInfo enum const
+	MediaPlayerMessageLevelInfo MediaPlayerMessageLevel = "info"
+
+	// MediaPlayerMessageLevelDebug enum const
+	MediaPlayerMessageLevelDebug MediaPlayerMessageLevel = "debug"
 )
 
-// MediaPlayerEvent ...
-type MediaPlayerEvent struct {
+// MediaPlayerMessage Have one type per entry in MediaLogRecord::Type
+// Corresponds to kMessage
+type MediaPlayerMessage struct {
 
-	// Type ...
-	Type MediaPlayerEventType `json:"type"`
+	// Level Keep in sync with MediaLogMessageLevel
+	// We are currently keeping the message level 'error' separate from the
+	// PlayerError type because right now they represent different things,
+	// this one being a DVLOG(ERROR) style log message that gets printed
+	// based on what log level is selected in the UI, and the other is a
+	// representation of a media::PipelineStatus object. Soon however we're
+	// going to be moving away from using PipelineStatus for errors and
+	// introducing a new error type which should hopefully let us integrate
+	// the error log level into the PlayerError type.
+	Level MediaPlayerMessageLevel `json:"level"`
 
-	// Timestamp Events are timestamped relative to the start of the player creation
-	// not relative to the start of playback.
-	Timestamp MediaTimestamp `json:"timestamp"`
+	// Message ...
+	Message string `json:"message"`
+}
+
+// MediaPlayerProperty Corresponds to kMediaPropertyChange
+type MediaPlayerProperty struct {
 
 	// Name ...
 	Name string `json:"name"`
 
 	// Value ...
 	Value string `json:"value"`
+}
+
+// MediaPlayerEvent Corresponds to kMediaEventTriggered
+type MediaPlayerEvent struct {
+
+	// Timestamp ...
+	Timestamp MediaTimestamp `json:"timestamp"`
+
+	// Value ...
+	Value string `json:"value"`
+}
+
+// MediaPlayerErrorType enum
+type MediaPlayerErrorType string
+
+const (
+	// MediaPlayerErrorTypePipelineError enum const
+	MediaPlayerErrorTypePipelineError MediaPlayerErrorType = "pipeline_error"
+
+	// MediaPlayerErrorTypeMediaError enum const
+	MediaPlayerErrorTypeMediaError MediaPlayerErrorType = "media_error"
+)
+
+// MediaPlayerError Corresponds to kMediaError
+type MediaPlayerError struct {
+
+	// Type ...
+	Type MediaPlayerErrorType `json:"type"`
+
+	// ErrorCode When this switches to using media::Status instead of PipelineStatus
+	// we can remove "errorCode" and replace it with the fields from
+	// a Status instance. This also seems like a duplicate of the error
+	// level enum - there is a todo bug to have that level removed and
+	// use this instead. (crbug.com/1068454)
+	ErrorCode string `json:"errorCode"`
 }
 
 // MediaEnable Enables the Media domain
@@ -15709,6 +16050,36 @@ type MediaPlayerEventsAdded struct {
 // MethodName interface
 func (evt MediaPlayerEventsAdded) MethodName() string {
 	return "Media.playerEventsAdded"
+}
+
+// MediaPlayerMessagesLogged Send a list of any messages that need to be delivered.
+type MediaPlayerMessagesLogged struct {
+
+	// PlayerID ...
+	PlayerID MediaPlayerID `json:"playerId"`
+
+	// Messages ...
+	Messages []*MediaPlayerMessage `json:"messages"`
+}
+
+// MethodName interface
+func (evt MediaPlayerMessagesLogged) MethodName() string {
+	return "Media.playerMessagesLogged"
+}
+
+// MediaPlayerErrorsRaised Send a list of any errors that need to be delivered.
+type MediaPlayerErrorsRaised struct {
+
+	// PlayerID ...
+	PlayerID MediaPlayerID `json:"playerId"`
+
+	// Errors ...
+	Errors []*MediaPlayerError `json:"errors"`
+}
+
+// MethodName interface
+func (evt MediaPlayerErrorsRaised) MethodName() string {
+	return "Media.playerErrorsRaised"
 }
 
 // MediaPlayersCreated Called whenever a player is created, or when a new agent joins and receives
@@ -16018,6 +16389,33 @@ const (
 	DebuggerScriptLanguageWebAssembly DebuggerScriptLanguage = "WebAssembly"
 )
 
+// DebuggerDebugSymbolsType enum
+type DebuggerDebugSymbolsType string
+
+const (
+	// DebuggerDebugSymbolsTypeNone enum const
+	DebuggerDebugSymbolsTypeNone DebuggerDebugSymbolsType = "None"
+
+	// DebuggerDebugSymbolsTypeSourceMap enum const
+	DebuggerDebugSymbolsTypeSourceMap DebuggerDebugSymbolsType = "SourceMap"
+
+	// DebuggerDebugSymbolsTypeEmbeddedDWARF enum const
+	DebuggerDebugSymbolsTypeEmbeddedDWARF DebuggerDebugSymbolsType = "EmbeddedDWARF"
+
+	// DebuggerDebugSymbolsTypeExternalDWARF enum const
+	DebuggerDebugSymbolsTypeExternalDWARF DebuggerDebugSymbolsType = "ExternalDWARF"
+)
+
+// DebuggerDebugSymbols Debug symbols available for a wasm script.
+type DebuggerDebugSymbols struct {
+
+	// Type Type of the debug symbols.
+	Type DebuggerDebugSymbolsType `json:"type"`
+
+	// ExternalURL (optional) URL of the external symbol source.
+	ExternalURL string `json:"externalURL,omitempty"`
+}
+
 // DebuggerContinueToLocationTargetCallFrames enum
 type DebuggerContinueToLocationTargetCallFrames string
 
@@ -16130,6 +16528,38 @@ func (m DebuggerEvaluateOnCallFrame) Call(caller Caller) (*DebuggerEvaluateOnCal
 
 // DebuggerEvaluateOnCallFrameResult Evaluates expression on a given call frame.
 type DebuggerEvaluateOnCallFrameResult struct {
+
+	// Result Object wrapper for the evaluation result.
+	Result *RuntimeRemoteObject `json:"result"`
+
+	// ExceptionDetails (optional) Exception details.
+	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
+}
+
+// DebuggerExecuteWasmEvaluator (experimental) Execute a Wasm Evaluator module on a given call frame.
+type DebuggerExecuteWasmEvaluator struct {
+
+	// CallFrameID WebAssembly call frame identifier to evaluate on.
+	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
+
+	// Evaluator Code of the evaluator module.
+	Evaluator []byte `json:"evaluator"`
+
+	// Timeout (experimental) (optional) Terminate execution after timing out (number of milliseconds).
+	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
+}
+
+// MethodName of the command
+func (m DebuggerExecuteWasmEvaluator) MethodName() string { return "Debugger.executeWasmEvaluator" }
+
+// Call of the command, sessionID is optional.
+func (m DebuggerExecuteWasmEvaluator) Call(caller Caller) (*DebuggerExecuteWasmEvaluatorResult, error) {
+	var res DebuggerExecuteWasmEvaluatorResult
+	return &res, Call(m.MethodName(), m, &res, caller)
+}
+
+// DebuggerExecuteWasmEvaluatorResult (experimental) Execute a Wasm Evaluator module on a given call frame.
+type DebuggerExecuteWasmEvaluatorResult struct {
 
 	// Result Object wrapper for the evaluation result.
 	Result *RuntimeRemoteObject `json:"result"`
@@ -16952,6 +17382,9 @@ type DebuggerScriptParsed struct {
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
+
+	// DebugSymbols (experimental) (optional) If the scriptLanguage is WebASsembly, the source of debug symbols for the module.
+	DebugSymbols *DebuggerDebugSymbols `json:"debugSymbols,omitempty"`
 }
 
 // MethodName interface
@@ -17846,6 +18279,9 @@ const (
 
 	// RuntimeRemoteObjectSubtypeV128 enum const
 	RuntimeRemoteObjectSubtypeV128 RuntimeRemoteObjectSubtype = "v128"
+
+	// RuntimeRemoteObjectSubtypeAnyref enum const
+	RuntimeRemoteObjectSubtypeAnyref RuntimeRemoteObjectSubtype = "anyref"
 )
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
@@ -19107,8 +19543,10 @@ var types = map[string]reflect.Type{
 	"ApplicationCache.applicationCacheStatusUpdated":     reflect.TypeOf(ApplicationCacheApplicationCacheStatusUpdated{}),
 	"ApplicationCache.networkStateUpdated":               reflect.TypeOf(ApplicationCacheNetworkStateUpdated{}),
 	"Audits.AffectedCookie":                              reflect.TypeOf(AuditsAffectedCookie{}),
+	"Audits.AffectedRequest":                             reflect.TypeOf(AuditsAffectedRequest{}),
+	"Audits.AffectedFrame":                               reflect.TypeOf(AuditsAffectedFrame{}),
 	"Audits.SameSiteCookieIssueDetails":                  reflect.TypeOf(AuditsSameSiteCookieIssueDetails{}),
-	"Audits.AffectedResources":                           reflect.TypeOf(AuditsAffectedResources{}),
+	"Audits.MixedContentIssueDetails":                    reflect.TypeOf(AuditsMixedContentIssueDetails{}),
 	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
 	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
 	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
@@ -19377,6 +19815,8 @@ var types = map[string]reflect.Type{
 	"DeviceOrientation.setDeviceOrientationOverride":     reflect.TypeOf(DeviceOrientationSetDeviceOrientationOverride{}),
 	"Emulation.ScreenOrientation":                        reflect.TypeOf(EmulationScreenOrientation{}),
 	"Emulation.MediaFeature":                             reflect.TypeOf(EmulationMediaFeature{}),
+	"Emulation.UserAgentBrandVersion":                    reflect.TypeOf(EmulationUserAgentBrandVersion{}),
+	"Emulation.UserAgentMetadata":                        reflect.TypeOf(EmulationUserAgentMetadata{}),
 	"Emulation.canEmulate":                               reflect.TypeOf(EmulationCanEmulate{}),
 	"Emulation.canEmulateResult":                         reflect.TypeOf(EmulationCanEmulateResult{}),
 	"Emulation.clearDeviceMetricsOverride":               reflect.TypeOf(EmulationClearDeviceMetricsOverride{}),
@@ -19575,7 +20015,9 @@ var types = map[string]reflect.Type{
 	"Network.webSocketWillSendHandshakeRequest":             reflect.TypeOf(NetworkWebSocketWillSendHandshakeRequest{}),
 	"Network.requestWillBeSentExtraInfo":                    reflect.TypeOf(NetworkRequestWillBeSentExtraInfo{}),
 	"Network.responseReceivedExtraInfo":                     reflect.TypeOf(NetworkResponseReceivedExtraInfo{}),
+	"Overlay.GridHighlightConfig":                           reflect.TypeOf(OverlayGridHighlightConfig{}),
 	"Overlay.HighlightConfig":                               reflect.TypeOf(OverlayHighlightConfig{}),
+	"Overlay.HingeConfig":                                   reflect.TypeOf(OverlayHingeConfig{}),
 	"Overlay.disable":                                       reflect.TypeOf(OverlayDisable{}),
 	"Overlay.enable":                                        reflect.TypeOf(OverlayEnable{}),
 	"Overlay.getHighlightObjectForTest":                     reflect.TypeOf(OverlayGetHighlightObjectForTest{}),
@@ -19595,6 +20037,7 @@ var types = map[string]reflect.Type{
 	"Overlay.setShowScrollBottleneckRects":                  reflect.TypeOf(OverlaySetShowScrollBottleneckRects{}),
 	"Overlay.setShowHitTestBorders":                         reflect.TypeOf(OverlaySetShowHitTestBorders{}),
 	"Overlay.setShowViewportSizeOnResize":                   reflect.TypeOf(OverlaySetShowViewportSizeOnResize{}),
+	"Overlay.setShowHinge":                                  reflect.TypeOf(OverlaySetShowHinge{}),
 	"Overlay.inspectNodeRequested":                          reflect.TypeOf(OverlayInspectNodeRequested{}),
 	"Overlay.nodeHighlightRequested":                        reflect.TypeOf(OverlayNodeHighlightRequested{}),
 	"Overlay.screenshotRequested":                           reflect.TypeOf(OverlayScreenshotRequested{}),
@@ -19875,12 +20318,16 @@ var types = map[string]reflect.Type{
 	"WebAuthn.removeCredential":                             reflect.TypeOf(WebAuthnRemoveCredential{}),
 	"WebAuthn.clearCredentials":                             reflect.TypeOf(WebAuthnClearCredentials{}),
 	"WebAuthn.setUserVerified":                              reflect.TypeOf(WebAuthnSetUserVerified{}),
+	"Media.PlayerMessage":                                   reflect.TypeOf(MediaPlayerMessage{}),
 	"Media.PlayerProperty":                                  reflect.TypeOf(MediaPlayerProperty{}),
 	"Media.PlayerEvent":                                     reflect.TypeOf(MediaPlayerEvent{}),
+	"Media.PlayerError":                                     reflect.TypeOf(MediaPlayerError{}),
 	"Media.enable":                                          reflect.TypeOf(MediaEnable{}),
 	"Media.disable":                                         reflect.TypeOf(MediaDisable{}),
 	"Media.playerPropertiesChanged":                         reflect.TypeOf(MediaPlayerPropertiesChanged{}),
 	"Media.playerEventsAdded":                               reflect.TypeOf(MediaPlayerEventsAdded{}),
+	"Media.playerMessagesLogged":                            reflect.TypeOf(MediaPlayerMessagesLogged{}),
+	"Media.playerErrorsRaised":                              reflect.TypeOf(MediaPlayerErrorsRaised{}),
 	"Media.playersCreated":                                  reflect.TypeOf(MediaPlayersCreated{}),
 	"Console.ConsoleMessage":                                reflect.TypeOf(ConsoleConsoleMessage{}),
 	"Console.clearMessages":                                 reflect.TypeOf(ConsoleClearMessages{}),
@@ -19893,12 +20340,15 @@ var types = map[string]reflect.Type{
 	"Debugger.Scope":                                        reflect.TypeOf(DebuggerScope{}),
 	"Debugger.SearchMatch":                                  reflect.TypeOf(DebuggerSearchMatch{}),
 	"Debugger.BreakLocation":                                reflect.TypeOf(DebuggerBreakLocation{}),
+	"Debugger.DebugSymbols":                                 reflect.TypeOf(DebuggerDebugSymbols{}),
 	"Debugger.continueToLocation":                           reflect.TypeOf(DebuggerContinueToLocation{}),
 	"Debugger.disable":                                      reflect.TypeOf(DebuggerDisable{}),
 	"Debugger.enable":                                       reflect.TypeOf(DebuggerEnable{}),
 	"Debugger.enableResult":                                 reflect.TypeOf(DebuggerEnableResult{}),
 	"Debugger.evaluateOnCallFrame":                          reflect.TypeOf(DebuggerEvaluateOnCallFrame{}),
 	"Debugger.evaluateOnCallFrameResult":                    reflect.TypeOf(DebuggerEvaluateOnCallFrameResult{}),
+	"Debugger.executeWasmEvaluator":                         reflect.TypeOf(DebuggerExecuteWasmEvaluator{}),
+	"Debugger.executeWasmEvaluatorResult":                   reflect.TypeOf(DebuggerExecuteWasmEvaluatorResult{}),
 	"Debugger.getPossibleBreakpoints":                       reflect.TypeOf(DebuggerGetPossibleBreakpoints{}),
 	"Debugger.getPossibleBreakpointsResult":                 reflect.TypeOf(DebuggerGetPossibleBreakpointsResult{}),
 	"Debugger.getScriptSource":                              reflect.TypeOf(DebuggerGetScriptSource{}),
