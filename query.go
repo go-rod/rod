@@ -241,6 +241,9 @@ func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Element
 			ToIndex:   int64(to),
 		}.Call(p)
 		if err != nil {
+			if isNilContextErr(err) {
+				return false, nil
+			}
 			return true, err
 		}
 
