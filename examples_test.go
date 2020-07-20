@@ -202,6 +202,14 @@ func Example_customize_retry_strategy() {
 		kit.E(err)
 	}
 
+	// ElementE below will retry on each browser event until it gets one input element
+	events := browser.Event().Subscribe(page.GetContext())
+	sleeper := func(context.Context) error {
+		<-events
+		return nil
+	}
+	el, _ = page.ElementE(sleeper, "", []string{"input"})
+
 	// ElementE with the Sleeper parameter being nil will get the element
 	// without retrying. Instead returning an error.
 	el, err = page.ElementE(nil, "", []string{"input"})
