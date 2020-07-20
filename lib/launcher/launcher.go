@@ -149,6 +149,16 @@ func (l *Launcher) Set(name string, values ...string) *Launcher {
 	return l
 }
 
+// Append values to the flag
+func (l *Launcher) Append(name string, values ...string) *Launcher {
+	flags, has := l.GetFlags(name)
+	if !has {
+		flags = []string{}
+	}
+	l.Set(name, append(flags, values...)...)
+	return l
+}
+
 // Delete flag
 func (l *Launcher) Delete(name string) *Launcher {
 	delete(l.Flags, strings.TrimLeft(name, "-"))

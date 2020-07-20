@@ -46,6 +46,11 @@ func TestLaunchOptions(t *testing.T) {
 	_, has := l.Get("not-exists")
 	assert.False(t, has)
 
+	l.Append("test-append", "a")
+	f, has := l.Get("test-append")
+	assert.True(t, has)
+	assert.Equal(t, "a", f)
+
 	dir, _ := l.Get("user-data-dir")
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
