@@ -6,8 +6,9 @@ package assets
 var Helper = `() => { // eslint-disable-line no-unused-expressions
   const rod = {
     element (...selectors) {
+      const scope = ensureScope(this)
       for (const selector of selectors) {
-        const el = (this.document || this).querySelector(selector)
+        const el = scope.querySelector(selector)
         if (el) {
           return el
         }
@@ -16,13 +17,14 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
     },
 
     elements (selector) {
-      return (this.document || this).querySelectorAll(selector)
+      return ensureScope(this).querySelectorAll(selector)
     },
 
     elementX (...xPaths) {
+      const scope = ensureScope(this)
       for (const xPath of xPaths) {
         const el = document.evaluate(
-          xPath, (this.document || this), null, XPathResult.FIRST_ORDERED_NODE_TYPE
+          xPath, scope, null, XPathResult.FIRST_ORDERED_NODE_TYPE
         ).singleNodeValue
         if (el) {
           return el
@@ -32,7 +34,8 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
     },
 
     elementsX (xpath) {
-      const iter = document.evaluate(xpath, (this.document || this), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
+      const scope = ensureScope(this)
+      const iter = document.evaluate(xpath, scope, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
       const list = []
       let el
       while ((el = iter.iterateNext())) list.push(el)
@@ -131,15 +134,16 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
 
     async elementOverlay (id, msg) {
       const interval = 100
+      const el = ensureElement(this)
 
-      let pre = rod.box.call(this)
+      let pre = el.getBoundingClientRect()
       await rod.overlay(id, pre.left, pre.top, pre.width, pre.height, msg)
 
       const update = () => {
         const overlay = document.getElementById(id)
         if (overlay === null) return
 
-        const box = rod.box.call(this)
+        const box = el.getBoundingClientRect()
         if (pre.left === box.left && pre.top === box.top && pre.width === box.width && pre.height === box.height) {
           setTimeout(update, interval)
           return
@@ -207,8 +211,9 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
     },
 
     visible () {
-      const box = this.getBoundingClientRect()
-      const style = window.getComputedStyle(this)
+      const el = ensureElement(this)
+      const box = el.getBoundingClientRect()
+      const style = window.getComputedStyle(el)
       return style.display !== 'none' &&
         style.visibility !== 'hidden' &&
         !!(box.top || box.bottom || box.width || box.height)
@@ -216,16 +221,6 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
 
     invisible () {
       return !rod.visible.apply(this)
-    },
-
-    box () {
-      const box = this.getBoundingClientRect().toJSON()
-      if (this.tagName === 'IFRAME') {
-        const style = window.getComputedStyle(this)
-        box.left += parseInt(style.paddingLeft) + parseInt(style.borderLeftWidth)
-        box.top += parseInt(style.paddingTop) + parseInt(style.borderTopWidth)
-      }
-      return box
     },
 
     text () {
@@ -307,6 +302,17 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
           reader.readAsDataURL(data)
         }))
     }
+  }
+
+  function ensureScope (s) {
+    return s === window ? s.document : s
+  }
+
+  function ensureElement (el) {
+    if (!el.tagName) {
+      return el.parentElement
+    }
+    return el
   }
 
   return rod
