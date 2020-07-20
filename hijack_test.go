@@ -108,6 +108,33 @@ func (s *S) TestHijackContinue() {
 	s.Equal("ok", s.page.Element("body").Text())
 }
 
+func (s *S) TestHijackFailRequest() {
+	url, engine, close := serve()
+	defer close()
+
+	// to simulate a backend server
+	engine.GET("/", ginHTML(`<html>
+	<body></body>
+	<script>
+		fetch('/a').catch(async (err) => {
+			document.body.innerText = err.message
+		})
+	</script></html>`))
+
+	router := s.page.HijackRequests()
+	defer router.Stop()
+
+	router.Add(url+"/a", func(ctx *rod.Hijack) {
+		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
+	})
+
+	go router.Run()
+
+	s.page.Navigate(url)
+
+	s.Equal("Failed to fetch", s.page.Element("body").Text())
+}
+
 func (s *S) TestHandleAuth() {
 	url, engine, close := serve()
 	defer close()

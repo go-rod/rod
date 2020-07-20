@@ -76,6 +76,14 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 						continue
 					}
 
+					if ctx.Response.fail.ErrorReason != "" {
+						err := ctx.Response.fail.Call(r.caller)
+						if err != nil {
+							ctx.OnError(err)
+						}
+						return
+					}
+
 					err := ctx.Response.payload.Call(r.caller)
 					if err != nil {
 						ctx.OnError(err)
@@ -158,6 +166,9 @@ func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
 			payload: &proto.FetchFulfillRequest{
 				ResponseCode: 200,
 				RequestID:    e.RequestID,
+			},
+			fail: &proto.FetchFailRequest{
+				RequestID: e.RequestID,
 			},
 		},
 		OnError: func(err error) {
@@ -334,6 +345,7 @@ func (ctx *HijackRequest) SetClient(client *http.Client) *HijackRequest {
 type HijackResponse struct {
 	req     *kit.ReqContext
 	payload *proto.FetchFulfillRequest
+	fail    *proto.FetchFailRequest
 }
 
 // StatusCodeE of response
@@ -458,6 +470,12 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 		ctx.payload.Body, err = json.Marshal(obj)
 		kit.E(err)
 	}
+	return ctx
+}
+
+// Fail request
+func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse {
+	ctx.fail.ErrorReason = reason
 	return ctx
 }
 
