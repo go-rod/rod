@@ -108,7 +108,8 @@ func NewUserMode() *Launcher {
 		ctx:       ctx,
 		ctxCancel: cancel,
 		Flags: map[string][]string{
-			"remote-debugging-port": {"37712"},
+			"remote-debugging-port":  {"37712"},
+			"disable-blink-features": {"AutomationControlled"},
 		},
 		output: make(chan string),
 		exit:   make(chan kit.Nil),
