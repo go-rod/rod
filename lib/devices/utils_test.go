@@ -20,6 +20,14 @@ func TestE(t *testing.T) {
 	assert.EqualValues(t, 90, v.ScreenOrientation.Angle)
 	assert.EqualValues(t, true, v.Mobile)
 
+	assert.Nil(t, devices.GetViewport("", true), v)
+
 	u := devices.GetUserAgent(devices.IPad)
 	assert.Equal(t, "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1", u.UserAgent)
+
+	assert.Nil(t, devices.GetUserAgent(""))
+
+	assert.Panics(t, func() {
+		devices.GetUserAgent("xxx")
+	})
 }
