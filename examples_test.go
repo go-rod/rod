@@ -288,12 +288,13 @@ func Example_direct_cdp() {
 	fmt.Println(cookie)
 
 	// You can also use your own raw JSON to send a json request.
-	data, _ := json.Marshal(map[string]string{
+	params, _ := json.Marshal(map[string]string{
 		"name":  "rod",
 		"value": "test",
 		"url":   "https://example.com",
 	})
-	_, _ = browser.Call(page.GetContext(), string(page.SessionID), "Network.SetCookie", data)
+	ctx, client, sessionID := page.CallContext()
+	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", params)
 
 	// Output:
 	// true
