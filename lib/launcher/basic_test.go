@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
@@ -24,6 +24,17 @@ func TestDownloadWithMirror(t *testing.T) {
 	c.Dir = filepath.Join("tmp", "browser-from-mirror", kit.RandString(8))
 	kit.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
+
+	c.Hosts = []string{}
+	assert.Error(t, c.Download())
+
+	c.Hosts = []string{"not-exists"}
+	assert.Error(t, c.Download())
+
+	c.Dir = ""
+	c.ExecSearchMap = map[string][]string{runtime.GOOS: {}}
+	_, err := c.Get()
+	assert.Error(t, err)
 }
 
 func TestLaunch(t *testing.T) {
@@ -37,7 +48,7 @@ func TestLaunch(t *testing.T) {
 	assert.NotEmpty(t, url)
 }
 
-func TestLaunchOptions(t *testing.T) {
+func TestLaunchUserMode(t *testing.T) {
 	l := launcher.NewUserMode()
 	defer func() {
 		_ = kit.KillTree(l.PID())
@@ -52,35 +63,39 @@ func TestLaunchOptions(t *testing.T) {
 	assert.Equal(t, "a", f)
 
 	dir, _ := l.Get("user-data-dir")
+	port := 58472
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
 		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
-		Headless(false).Headless(true).RemoteDebuggingPort(0).
+		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).
 		Launch()
 
-	assert.NotEmpty(t, url)
+	assert.Equal(t,
+		url,
+		launcher.NewUserMode().RemoteDebuggingPort(port).Launch(),
+	)
 }
 
-func TestRemoteLaunch(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { _ = srv.Listener.Close() }()
-	proxy := &launcher.Proxy{Log: func(s string) {}}
-	srv.Engine.NoRoute(gin.WrapH(proxy))
-	go func() { _ = srv.Do() }()
+func TestUserModeErr(t *testing.T) {
+	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").LaunchE()
+	assert.Error(t, err)
 
-	u := "ws://" + srv.Listener.Addr().String()
-	client := launcher.NewRemote(u).Client()
-	b := client.Context(ctx, cancel).Connect()
-	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
-	_, _ = b.Call(ctx, "", "Browser.close", nil)
+	_, err = launcher.NewUserMode().RemoteDebuggingPort(58217).Bin("echo").LaunchE()
+	assert.Error(t, err)
+}
+
+func TestGetWebSocketDebuggerURLErr(t *testing.T) {
+	_, err := launcher.GetWebSocketDebuggerURL(context.Background(), "1://")
+	assert.Error(t, err)
 }
 
 func TestLaunchErr(t *testing.T) {
 	assert.Panics(t, func() {
 		launcher.New().Bin("not-exists").Launch()
+	})
+	assert.Panics(t, func() {
+		launcher.New().Headless(false).Bin("not-exists").Launch()
 	})
 }

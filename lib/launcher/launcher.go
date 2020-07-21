@@ -82,8 +82,7 @@ func New() *Launcher {
 		delete(defaultFlags, "headless")
 	}
 
-	// if inside a docker container
-	if kit.FileExists("/.dockerenv") {
+	if isInDocker {
 		defaultFlags["no-sandbox"] = nil
 	}
 
@@ -254,7 +253,13 @@ func (l *Launcher) Launch() string {
 }
 
 // LaunchE doc is similar to the method Launch
-func (l *Launcher) LaunchE() (string, error) {
+func (l *Launcher) LaunchE() (wsURL string, err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
 	if l.reap {
 		runReaper()
 	}
@@ -267,9 +272,7 @@ func (l *Launcher) LaunchE() (string, error) {
 		b := NewBrowser()
 		b.Context = l.ctx
 		bin, err = b.Get()
-		if err != nil {
-			return "", err
-		}
+		kit.E(err)
 	}
 
 	var ll *leakless.Launcher
@@ -290,9 +293,7 @@ func (l *Launcher) LaunchE() (string, error) {
 	}
 
 	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return "", err
-	}
+	kit.E(err)
 	defer func() {
 		if l.log == nil {
 			_ = stdout.Close()
@@ -300,9 +301,7 @@ func (l *Launcher) LaunchE() (string, error) {
 	}()
 
 	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return "", err
-	}
+	kit.E(err)
 	defer func() {
 		if l.log == nil {
 			_ = stderr.Close()
@@ -310,9 +309,7 @@ func (l *Launcher) LaunchE() (string, error) {
 	}()
 
 	err = cmd.Start()
-	if err != nil {
-		return "", err
-	}
+	kit.E(err)
 
 	if headless {
 		select {
@@ -373,30 +370,34 @@ func (l *Launcher) read(reader io.Reader) {
 }
 
 // ReadURL from browser stderr
-func (l *Launcher) getURL() (string, error) {
+func (l *Launcher) getURL() (u string, err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
 	out := ""
 
 	for {
 		select {
 		case <-l.ctx.Done():
-			return "", l.ctx.Err()
+			kit.E(l.ctx.Err())
 		case e := <-l.output:
 			out += e
 
 			if strings.Contains(out, "Opening in existing browser session") {
-				return "", errors.New("[launcher] Quit the current running browser first")
+				kit.E(errors.New("[launcher] Quit the current running browser first"))
 			}
 
 			str := regexp.MustCompile(`ws://.+/`).FindString(out)
 			if str != "" {
 				u, err := url.Parse(strings.TrimSpace(str))
-				if err != nil {
-					return "", err
-				}
+				kit.E(err)
 				return "http://" + u.Host, nil
 			}
 		case <-l.exit:
-			return "", errors.New("[launcher] Failed to get the debug url: " + out)
+			kit.E(errors.New("[launcher] Failed to get the debug url: " + out))
 		}
 	}
 }
