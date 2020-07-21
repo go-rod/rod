@@ -1,6 +1,8 @@
 package devices
 
 import (
+	"errors"
+
 	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
@@ -11,12 +13,7 @@ import (
 type DeviceType string
 
 // ErrDeviceNotExists err
-type ErrDeviceNotExists struct {
-}
-
-func (e ErrDeviceNotExists) Error() string {
-	return "device not exists"
-}
+var ErrDeviceNotExists = errors.New("device not exists")
 
 var list = kit.JSON(assets.DeviceList).Array()
 
@@ -70,5 +67,5 @@ func find(name DeviceType) gjson.Result {
 			return d.Get("device")
 		}
 	}
-	panic(ErrDeviceNotExists{})
+	panic(ErrDeviceNotExists)
 }
