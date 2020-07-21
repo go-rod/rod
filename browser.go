@@ -312,9 +312,14 @@ func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID
 
 // Call raw cdp interface directly
 func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
+	res, err = b.client.Call(ctx, sessionID, methodName, params)
+	if err != nil {
+		return nil, err
+	}
+
 	b.set(proto.TargetSessionID(sessionID), methodName, params)
 
-	return b.client.Call(ctx, sessionID, methodName, params)
+	return
 }
 
 // CallContext parameters for proto
