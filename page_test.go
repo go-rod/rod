@@ -219,6 +219,7 @@ func (s *S) TestPageEval() {
 	s.EqualValues(1, page.Eval(`function() { return 1 }`).Int())
 	s.NotEqualValues(1, page.Eval(`a = () => 1`).Int())
 	s.NotEqualValues(1, page.Eval(`a = function() { return 1 }`))
+	s.NotEqualValues(1, page.Eval(`/* ) */`))
 }
 
 func (s *S) TestPageExposeJSHelper() {
@@ -283,6 +284,10 @@ func (s *S) TestPageWaitRequestIdle() {
 	s.Panics(func() {
 		wait()
 	})
+
+	wait = page.WaitRequestIdleE(100*time.Millisecond, []string{}, []string{})
+	page.Element("button").Click()
+	wait()
 }
 
 func (s *S) TestPageWaitIdle() {

@@ -186,7 +186,7 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 
 	engine.GET("/", ginHTML(
 		`<html>
-			<a id="a" href="data:text/plain;base64,dGVzdCBkYXRh" download>click</a>
+			<a id="a" href="data:text/plain;,test%20data" download>click</a>
 			<a id="b" download>click</a>
 			<script>
 				const b = document.getElementById('b')

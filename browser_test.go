@@ -17,6 +17,8 @@ import (
 )
 
 func (s *S) TestBrowserContext() {
+	s.browser.GetContext()
+	s.page.GetContext()
 	s.browser.Timeout(time.Minute).CancelTimeout()
 }
 
@@ -45,6 +47,13 @@ func (s *S) TestBrowserPages() {
 	}
 
 	s.Len(pages, 3)
+}
+
+func (s *S) TestBrowserClearStates() {
+	kit.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
+
+	defer s.browser.EnableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{})()
+	s.browser.DisableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{})()
 }
 
 func (s *S) TestBrowserWaitEvent() {
