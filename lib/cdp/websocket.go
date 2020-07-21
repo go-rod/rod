@@ -12,13 +12,20 @@ type DefaultWsClient struct {
 	WriteBufferSize int
 }
 
+// NewDefaultWsClient instance
+func NewDefaultWsClient() *DefaultWsClient {
+	return &DefaultWsClient{
+		WriteBufferSize: 1 * 1024 * 1024,
+	}
+}
+
 // DefaultWsConn is the default websocket connection type
 type DefaultWsConn struct {
 	conn *websocket.Conn
 }
 
 // Connect interface
-func (c DefaultWsClient) Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error) {
+func (c *DefaultWsClient) Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error) {
 	dialer := *websocket.DefaultDialer
 	dialer.WriteBufferSize = c.WriteBufferSize
 
