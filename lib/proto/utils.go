@@ -95,24 +95,27 @@ func E(err error) {
 // JSON value
 type JSON struct {
 	gjson.Result
+	raw []byte
 }
 
 // NewJSON json object
 func NewJSON(val interface{}) JSON {
 	j := JSON{}
-	j.Raw = kit.MustToJSON(val)
+	j.raw = kit.MustToJSONBytes(val)
+	j.Result = gjson.ParseBytes(j.raw)
 	return j
 }
 
 // UnmarshalJSON interface
 func (j *JSON) UnmarshalJSON(b []byte) error {
+	j.raw = b
 	j.Result = gjson.ParseBytes(b)
 	return nil
 }
 
 // MarshalJSON interface
 func (j JSON) MarshalJSON() ([]byte, error) {
-	return []byte(j.Raw), nil
+	return []byte(j.raw), nil
 }
 
 // Join elements
@@ -165,21 +168,13 @@ func (t MonotonicTime) MarshalJSON() ([]byte, error) {
 var _ Normalizable = InputDispatchMouseEvent{}
 
 // Normalize interface
+// All the fields are staticcally typed, this function can't have error.
 func (e InputDispatchMouseEvent) Normalize() (json.RawMessage, error) {
-	data, err := json.Marshal(e)
-	if err != nil {
-		return nil, err
-	}
+	data, _ := json.Marshal(e)
 
 	if e.Type == InputDispatchMouseEventTypeMouseWheel {
-		data, err = sjson.SetBytes(data, "deltaX", e.DeltaX)
-		if err != nil {
-			return nil, err
-		}
-		data, err = sjson.SetBytes(data, "deltaY", e.DeltaY)
-		if err != nil {
-			return nil, err
-		}
+		data, _ = sjson.SetBytes(data, "deltaX", e.DeltaX)
+		data, _ = sjson.SetBytes(data, "deltaY", e.DeltaY)
 	}
 
 	return data, nil
