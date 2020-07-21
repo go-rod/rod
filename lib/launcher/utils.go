@@ -13,6 +13,8 @@ import (
 	"github.com/ysmood/kit"
 )
 
+var isInDocker = kit.FileExists("/.dockerenv")
+
 type progresser struct {
 	size  int
 	count int
@@ -47,52 +49,42 @@ func toHTTP(u *url.URL) {
 	}
 }
 
-func unzip(from, to string) error {
+func unzip(from, to string) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
 	zr, err := zip.OpenReader(from)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	err = kit.Mkdir(to, nil)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	for _, f := range zr.File {
 		p := filepath.Join(to, f.Name)
 
 		if f.FileInfo().IsDir() {
 			err := os.Mkdir(p, f.Mode())
-			if err != nil {
-				return err
-			}
+			kit.E(err)
 			continue
 		}
 
 		r, err := f.Open()
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 
 		data, err := ioutil.ReadAll(r)
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 
 		dst, err := os.OpenFile(p, os.O_CREATE|os.O_RDWR, f.Mode())
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 
 		_, err = dst.Write(data)
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 
 		err = dst.Close()
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 	}
 
 	return zr.Close()

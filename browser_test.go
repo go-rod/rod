@@ -94,7 +94,7 @@ func (s *S) TestRemoteLaunch() {
 	url, engine, close := serve()
 	defer close()
 
-	proxy := &launcher.Proxy{Log: func(s string) {}}
+	proxy := launcher.NewProxy()
 	engine.NoRoute(gin.WrapH(proxy))
 
 	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))

@@ -56,10 +56,19 @@ func (l *Launcher) Client() *cdp.Client {
 // The websocket header "Rod-Launcher" holds the options to launch browser.
 // If the websocket is closed, the browser will be killed.
 type Proxy struct {
-	Log func(string)
+	Log       func(string)
+	isWindows bool
 }
 
 var _ http.Handler = &Proxy{}
+
+// NewProxy instance
+func NewProxy() *Proxy {
+	return &Proxy{
+		Log:       func(s string) {},
+		isWindows: runtime.GOOS == "windows",
+	}
+}
 
 func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Upgrade") == "websocket" {
@@ -93,15 +102,13 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// TODO: Seems like a delay bug for windows chrome?
-		if runtime.GOOS == "windows" {
+		if p.isWindows {
 			kit.Sleep(0.1)
 		}
 
 		if _, has := l.Get("keep-user-data-dir"); !has {
 			dir, _ := l.Get("user-data-dir")
-			if p.Log != nil {
-				p.Log(fmt.Sprintln(kit.C("Remove", "cyan"), dir))
-			}
+			p.Log(fmt.Sprintln(kit.C("Remove", "cyan"), dir))
 
 			_ = os.RemoveAll(dir)
 		}
@@ -110,10 +117,8 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	parsedURL, err := url.Parse(u)
 	kit.E(err)
 
-	if p.Log != nil {
-		p.Log(fmt.Sprintln(kit.C("Launch", "cyan"), u, l.FormatArgs()))
-		defer func() { p.Log(fmt.Sprintln(kit.C("Close", "cyan"), u)) }()
-	}
+	p.Log(fmt.Sprintln(kit.C("Launch", "cyan"), u, l.FormatArgs()))
+	defer func() { p.Log(fmt.Sprintln(kit.C("Close", "cyan"), u)) }()
 
 	parsedWS, err := url.Parse(u)
 	kit.E(err)

@@ -40,6 +40,8 @@ type Browser struct {
 
 	// Log to print output
 	Log func(string)
+
+	ExecSearchMap map[string][]string
 }
 
 // NewBrowser with default values
@@ -51,6 +53,25 @@ func NewBrowser() *Browser {
 		Dir:      filepath.Join(os.TempDir(), "rod"),
 		Log: func(str string) {
 			fmt.Print(str)
+		},
+		ExecSearchMap: map[string][]string{
+			"darwin": {
+				"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+				"/Applications/Chromium.app/Contents/MacOS/Chromium",
+			},
+			"linux": {
+				"chromium",
+				"chromium-browser",
+				"google-chrome",
+				"/usr/bin/google-chrome",
+			},
+			"windows": {
+				"chrome",
+				`C:\Program Files\Google\Chrome\Application\chrome.exe`,
+				`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
+				`C:\Program Files\Microsoft\Edge\Application\msedge.exe`,
+				`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`,
+			},
 		},
 	}
 }
@@ -89,32 +110,30 @@ func (lc *Browser) Download() error {
 	return errors.New("[rod/lib/launcher] failed to download chrome")
 }
 
-func (lc *Browser) download(u string) error {
+func (lc *Browser) download(u string) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
 	lc.Log("[rod/lib/launcher] Download chromium from: " + u + "\n[rod/lib/launcher] ")
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
-	err := kit.Mkdir(lc.Dir, nil)
-	if err != nil {
-		return err
-	}
+	err = kit.Mkdir(lc.Dir, nil)
+	kit.E(err)
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	res, err := kit.Req(u).Context(lc.Context).Client(&http.Client{
 		Transport: &http.Transport{IdleConnTimeout: 30 * time.Second},
 	}).Response()
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	progress := &progresser{
 		size: int(size),
@@ -123,23 +142,17 @@ func (lc *Browser) download(u string) error {
 	}
 
 	_, err = io.Copy(zipFile, progress)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	lc.Log("[rod/lib/launcher] Download chromium complete: " + zipPath + "\n")
 
 	err = zipFile.Close()
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
 	_ = os.RemoveAll(unzipPath)
 	err = unzip(zipPath, unzipPath)
-	if err != nil {
-		return err
-	}
+	kit.E(err)
 
 	lc.Log("[rod/lib/launcher] Unzipped chromium bin to: " + lc.ExecPath() + "\n")
 	return nil
@@ -151,7 +164,7 @@ func (lc *Browser) download(u string) error {
 func (lc *Browser) Get() (string, error) {
 	execPath := lc.ExecPath()
 
-	list := append(execSearchMap[runtime.GOOS], execPath)
+	list := append(lc.ExecSearchMap[runtime.GOOS], execPath)
 
 	for _, path := range list {
 		found, err := exec.LookPath(path)
@@ -161,24 +174,4 @@ func (lc *Browser) Get() (string, error) {
 	}
 
 	return execPath, lc.Download()
-}
-
-var execSearchMap = map[string][]string{
-	"darwin": {
-		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-		"/Applications/Chromium.app/Contents/MacOS/Chromium",
-	},
-	"linux": {
-		"chromium",
-		"chromium-browser",
-		"google-chrome",
-		"/usr/bin/google-chrome",
-	},
-	"windows": {
-		"chrome",
-		`C:\Program Files\Google\Chrome\Application\chrome.exe`,
-		`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
-		`C:\Program Files\Microsoft\Edge\Application\msedge.exe`,
-		`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`,
-	},
 }

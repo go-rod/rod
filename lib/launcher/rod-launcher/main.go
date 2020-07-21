@@ -19,12 +19,11 @@ func main() {
 		quiet := cmd.Flag("quiet", "silent the log").Short('q').Bool()
 
 		return func() {
-			proxy := &launcher.Proxy{
-				Log: func(s string) {
-					if !*quiet {
-						fmt.Print(s)
-					}
-				},
+			proxy := launcher.NewProxy()
+			proxy.Log = func(s string) {
+				if !*quiet {
+					fmt.Print(s)
+				}
 			}
 
 			srv := kit.MustServer(*addr)
