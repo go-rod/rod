@@ -58,7 +58,7 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 	r.run = r.browser.eachEvent(eventCtx, proto.TargetSessionID(sessionID), func(e *proto.FetchRequestPaused) bool {
 		go func() {
-			ctx := r.new(e)
+			ctx := r.new(eventCtx, e)
 			for _, h := range r.handlers {
 				if h.regexp.MatchString(e.Request.URL) {
 					h.handler(ctx)
@@ -145,7 +145,7 @@ func (r *HijackRouter) Remove(pattern string) {
 }
 
 // new context
-func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
+func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hijack {
 	headers := http.Header{}
 	for k, v := range e.Request.Headers {
 		headers[k] = []string{v.String()}
@@ -154,7 +154,8 @@ func (r *HijackRouter) new(e *proto.FetchRequestPaused) *Hijack {
 	req := kit.Req(e.Request.URL).
 		Method(e.Request.Method).
 		Headers(headers).
-		StringBody(e.Request.PostData)
+		StringBody(e.Request.PostData).
+		Context(ctx)
 
 	return &Hijack{
 		Request: &HijackRequest{
