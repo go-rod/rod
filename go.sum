@@ -100,10 +100,10 @@ github.com/ysmood/byframe/v2 v2.0.2 h1:6/vQKeuE/DcP4C6rVvR3POVw0nF4rjpMUvcVm312B
 github.com/ysmood/byframe/v2 v2.0.2/go.mod h1:FKUO9W0UUF29zC2oLCYtxoz3UBkFnV16sxKzdGsJ37k=
 github.com/ysmood/goob v0.2.2 h1:3WDGn6xZRB4riAyioATQJBi1eqcRIXsp6vGN3xbPAEk=
 github.com/ysmood/goob v0.2.2/go.mod h1:ilZKgv9nYmX7p8t1i9LVTzqHtLWNg0YOUBJhVb9xTIk=
-github.com/ysmood/kit v0.24.6 h1:js0hWEflrVVUA93Hdq47v6dn2ZSJiDMS9LX9dyiPAWo=
-github.com/ysmood/kit v0.24.6/go.mod h1:pCtRJuhw3s/v8GuNRn6IH0UirKSP8EOOL1KdxeCexqE=
-github.com/ysmood/leakless v0.5.3 h1:cI0PDGUfNlnqVsS5sdZRMpEWxHCzZzJuwCZf8R97cyI=
-github.com/ysmood/leakless v0.5.3/go.mod h1:ybqejz4hThM2oF4eaniRU837DzOBkGY89LAFxVcgkQg=
+github.com/ysmood/kit v0.24.7 h1:cYAAOINmWKu7Tjmm+geO1xFbeqsuv4KCh5TJMwteKH8=
+github.com/ysmood/kit v0.24.7/go.mod h1:pCtRJuhw3s/v8GuNRn6IH0UirKSP8EOOL1KdxeCexqE=
+github.com/ysmood/leakless v0.5.4 h1:iHokDBnyY56fG5QrtlgmPutgLp2MUB0N5Jd32AQbn6s=
+github.com/ysmood/leakless v0.5.4/go.mod h1:qG3Mm6U1DlZ66drENg2vFjaPQWM6y6MTcU0b829uB8g=
 github.com/ysmood/lookpath v1.1.0 h1:heliJRj3thM8qw7236g5qDeI+vKELGndm+SWzwjxHqI=
 github.com/ysmood/lookpath v1.1.0/go.mod h1:QQh4rXcDdYAacpl7Q8cgZqkf+NRMJ4wc+lpQp0FgW+0=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

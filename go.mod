@@ -10,8 +10,8 @@ require (
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
 	github.com/ysmood/goob v0.2.2
-	github.com/ysmood/kit v0.24.6
-	github.com/ysmood/leakless v0.5.3
+	github.com/ysmood/kit v0.24.7
+	github.com/ysmood/leakless v0.5.4
 	github.com/ysmood/lookpath v1.1.0
 	go.uber.org/goleak v1.0.0
 )
