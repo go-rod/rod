@@ -3,7 +3,7 @@
 package assets
 
 // Helper for rod
-var Helper = `() => { // eslint-disable-line no-unused-expressions
+const Helper = `() => { // eslint-disable-line no-unused-expressions
   const rod = {
     element (...selectors) {
       const scope = ensureScope(this)
@@ -333,7 +333,7 @@ var Helper = `() => { // eslint-disable-line no-unused-expressions
 `
 
 // MousePointer for rod
-var MousePointer = `<?xml version="1.0" encoding="UTF-8"?>
+const MousePointer = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="277px" height="401px" viewBox="0 0 277 401" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
     <title>mouse-pointer</title>
@@ -358,7 +358,7 @@ var MousePointer = `<?xml version="1.0" encoding="UTF-8"?>
 </svg>`
 
 // Monitor for rod
-var Monitor = `<html>
+const Monitor = `<html>
 <head>
     <title>Rod Monitor - Pages</title>
     <style>
@@ -415,7 +415,7 @@ var Monitor = `<html>
 </html>`
 
 // MonitorPage for rod
-var MonitorPage = `<html>
+const MonitorPage = `<html>
 <head>
     <style>
         body {
@@ -508,7 +508,7 @@ var MonitorPage = `<html>
 </html>`
 
 // DeviceList for rod
-var DeviceList = `[
+const DeviceList = `[
     {
       "type": "emulated-device",
       "device": {

@@ -18,19 +18,19 @@ func main() {
 package assets
 
 // Helper for rod
-var Helper = {{.helper}}
+const Helper = {{.helper}}
 
 // MousePointer for rod
-var MousePointer = {{.mousePointer}}
+const MousePointer = {{.mousePointer}}
 
 // Monitor for rod
-var Monitor = {{.monitor}}
+const Monitor = {{.monitor}}
 
 // MonitorPage for rod
-var MonitorPage = {{.monitorPage}}
+const MonitorPage = {{.monitorPage}}
 
 // DeviceList for rod
-var DeviceList = {{.deviceList}}
+const DeviceList = {{.deviceList}}
 `,
 		"helper", get("helper.js"),
 		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
