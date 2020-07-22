@@ -95,7 +95,7 @@ func (p *Page) SetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 func (p *Page) SetExtraHeaders(dict ...string) (cleanup func()) {
 	cleanup, err := p.SetExtraHeadersE(dict)
 	kit.E(err)
-	return cleanup
+	return
 }
 
 // SetUserAgent Allows overriding user agent with the given string.
