@@ -19,7 +19,7 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 - Two styles of error handling to [choose](.github/CONTRIBUTING.md#e-suffixed-function-family).
 - Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
-- High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetResource, etc
+- High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetDownloadFile, etc
 - Two-step WaitEvent design, never miss an event
 - Correctly handles nested iframes
 - No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
