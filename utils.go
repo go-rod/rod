@@ -18,7 +18,7 @@ import (
 
 // Sleeper returns the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
-func Sleeper() kit.Sleeper {
+var Sleeper = func() kit.Sleeper {
 	return kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }
 
