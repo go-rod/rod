@@ -549,16 +549,18 @@ func (el *Element) Matches(selector string) bool {
 	return res
 }
 
-// Attribute returns the requested attribute's value of the element
-// if the attribute is not found, it will return an empty string.
+// Attribute returns the value of a specified attribute on the element.
+// Please check the Property function before you use it, usually you don't want to use Attribute.
+// https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
 func (el *Element) Attribute(name string) *string {
 	attr, err := el.AttributeE(name)
 	kit.E(err)
 	return attr
 }
 
-// Property returns the value of the element's property as a json format.
-// If the property is not found, it will return a null JSON object.
+// Property returns the value of a specified property on the element.
+// It's similar to Attribute but attributes can only be string, properties can be types like bool, float, etc.
+// https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
 func (el *Element) Property(name string) proto.JSON {
 	prop, err := el.PropertyE(name)
 	kit.E(err)
