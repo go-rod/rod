@@ -23,7 +23,7 @@ type S struct {
 }
 
 func init() {
-	log.SetFlags(log.Ltime | log.Lshortfile)
+	log.SetFlags(log.Ltime)
 }
 
 func TestMain(m *testing.M) {

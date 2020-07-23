@@ -2,10 +2,8 @@ package cdp
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"runtime/debug"
-	"time"
 
 	"github.com/ysmood/kit"
 )
@@ -22,38 +20,32 @@ func prettyJSON(s interface{}) string {
 }
 
 func defaultDebugLog(obj interface{}) {
-	prefix := time.Now().Format("[cdp] [2006-01-02 15:04:05]")
-
 	switch val := obj.(type) {
 	case *Request:
-		kit.E(fmt.Fprintf(
-			kit.Stdout,
-			"%s %s %d %s %s %s\n",
-			prefix,
-			kit.C("-> req", "green"),
+		log.Printf(
+			"[rod/cdp] %s %d %s %s %s\n",
+			kit.C("->", "green"),
 			val.ID,
 			val.Method,
 			val.SessionID,
 			prettyJSON(val.Params),
-		))
+		)
 	case *response:
-		kit.E(fmt.Fprintf(kit.Stdout,
-			"%s %s %d %s %s\n",
-			prefix,
-			kit.C("<- res", "yellow"),
+		log.Printf(
+			"[rod/cdp] %s %d %s %s\n",
+			kit.C("<-", "yellow"),
 			val.ID,
 			prettyJSON(val.Result),
 			kit.Sdump(val.Error),
-		))
+		)
 	case *Event:
-		kit.E(fmt.Fprintf(kit.Stdout,
-			"%s %s %s %s %s\n",
-			prefix,
+		log.Printf(
+			"[rod/cdp] %s %s %s %s\n",
 			kit.C("evt", "blue"),
 			val.Method,
 			val.SessionID,
 			prettyJSON(val.Params),
-		))
+		)
 
 	default:
 		log.Println(kit.Sdump(obj), "\n"+string(debug.Stack()))
