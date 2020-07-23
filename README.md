@@ -7,7 +7,7 @@
 
 ![logo](fixtures/banner.png)
 
-`rod` is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
+Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
 It's designed for web automation and scraping. rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
 ## Features
@@ -47,7 +47,7 @@ Here's the common start process of rod:
 
 1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
 
-1. To control a specific page, `rod` will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
+1. To control a specific page, rod will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
 
 ## FAQ
 
@@ -85,7 +85,7 @@ It's an issue of the browser itself. If we enable the `--no-first-run` flag and 
 
 ### Q: Does it support other browsers like Firefox or Edge
 
-`rod` should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
+Rod should work with any browser that supports [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 
 - Microsoft Edge can pass all the unit tests.
 - Firefox is [supporting](https://wiki.mozilla.org/Remote) this protocol.
@@ -94,7 +94,7 @@ It's an issue of the browser itself. If we enable the `--no-first-run` flag and 
 
 ### Q: Why is it called rod
 
-rod is related to puppetry, see [rod Puppet](https://en.wikipedia.org/wiki/Puppet#rod_puppet).
+Rod is related to puppetry, see [rod Puppet](https://en.wikipedia.org/wiki/Puppet#rod_puppet).
 So we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
 So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
 
@@ -116,15 +116,16 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [chromedp][chromedp]
 
-  With chromedp, you have to use their verbose DSL like tasks to handle the main logic, because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The DSL like wrapper also makes the Go type useless when tracking issues.
+  For direct code comparison you can check [here](lib/examples/compare-chromedp). If you compare the example called `logic` between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is.
 
-  It's painful to use chromedp to deal with iframes, this [ticket](https://github.com/chromedp/chromedp/issues/72) is still open after years.
+  With chromedp, you have to use their verbose DSL like tasks to handle the main logic, because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The heavily used interfaces also makes the static types useless when tracking issues. In contrast, rod uses classical object model to abstract browser, page, and element.
 
-  chromedp doesn't support shadow DOM.
+  The main problem of chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), but puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent chromedp's maintainers from adding high-level functions that are coupled with runtime.
+  For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years.
 
   When a crash happens, chromedp will leave the zombie browser process on Windows and Mac.
 
-  For more comparison you can check [here](lib/examples/compare-chromedp). If you compare the `logic` example between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is. Besides, rod has more high-level helpers like WaitRequestIdle, GetDownloadFile, HijackRequests, etc.
+  Rod has a simpler code structure and better test coverage, you should find it's easier to contribute code to rod. Therefore compared with chromedp, rod has the potential to have more nice functions from the community in the future.
 
 - [selenium](https://www.selenium.dev/)
 
