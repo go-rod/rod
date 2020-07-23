@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="610px" height="602px" viewBox="0 0 610 602" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: #FFFFFF;">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>object-model</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="557" height="222"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="557" height="222" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <rect id="path-3" x="0" y="0" width="103" height="25" rx="3"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="25" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+        <rect id="path-5" x="0" y="0" width="103" height="25" rx="3"></rect>
+        <mask id="mask-6" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="25" fill="white">
+            <use xlink:href="#path-5"></use>
+        </mask>
+        <rect id="path-7" x="0" y="0" width="103" height="25" rx="3"></rect>
+        <mask id="mask-8" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="25" fill="white">
+            <use xlink:href="#path-7"></use>
+        </mask>
+        <rect id="path-9" x="0" y="0" width="103" height="25" rx="3"></rect>
+        <mask id="mask-10" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="25" fill="white">
+            <use xlink:href="#path-9"></use>
+        </mask>
+        <rect id="path-11" x="0" y="0" width="103" height="25" rx="3"></rect>
+        <mask id="mask-12" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="25" fill="white">
+            <use xlink:href="#path-11"></use>
+        </mask>
+        <rect id="path-13" x="0" y="0" width="103" height="26" rx="3"></rect>
+        <mask id="mask-14" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="26" fill="white">
+            <use xlink:href="#path-13"></use>
+        </mask>
+        <rect id="path-15" x="0" y="0" width="103" height="26" rx="3"></rect>
+        <mask id="mask-16" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="103" height="26" fill="white">
+            <use xlink:href="#path-15"></use>
+        </mask>
+    </defs>
+    <g id="object-model" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="objects" transform="translate(25.000000, 19.000000)">
+            <use id="Rectangle" stroke="#444444" mask="url(#mask-2)" stroke-width="2" stroke-dasharray="3,3" xlink:href="#path-1"></use>
+            <g id="rod.Browser" transform="translate(24.000000, 24.000000)">
+                <g id="base">
+                    <rect id="Rectangle" stroke="#007AFF" fill="#DDEDFF" x="0.5" y="0.5" width="128" height="174" rx="8"></rect>
+                    <text id="rod.Browser" font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                        <tspan x="15.3308105" y="31">rod.Browser</tspan>
+                    </text>
+                </g>
+                <g id="window" transform="translate(13.000000, 53.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-4)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-3"></use>
+                    <text font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="31.4902344" y="16">window</tspan>
+                    </text>
+                </g>
+                <g id="incognito-window" transform="translate(13.000000, 92.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-6)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-5"></use>
+                    <text font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="5.80566406" y="16">incognito window</tspan>
+                    </text>
+                </g>
+            </g>
+            <g id="rod.Page" transform="translate(213.000000, 24.000000)">
+                <g id="base">
+                    <rect id="Rectangle" stroke="#007AFF" fill="#DDEDFF" x="0.5" y="0.5" width="128" height="174" rx="8"></rect>
+                    <rect id="Rectangle" stroke="#007AFF" fill="#DDEDFF" x="0.5" y="0.5" width="128" height="174" rx="8"></rect>
+                    <text id="rod.Page" font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                        <tspan x="28.3769531" y="30">rod.Page</tspan>
+                    </text>
+                </g>
+                <g id="tab" transform="translate(13.000000, 53.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-8)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-7"></use>
+                    <text font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="43.1591797" y="16">tab</tspan>
+                    </text>
+                </g>
+                <g id="iframe" transform="translate(13.000000, 92.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-10)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-9"></use>
+                    <text font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="35.3300781" y="16">iframe</tspan>
+                    </text>
+                </g>
+                <g id="web-worker" transform="translate(13.000000, 131.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-12)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-11"></use>
+                    <text font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="21.3232422" y="16">web worker</tspan>
+                    </text>
+                </g>
+            </g>
+            <g id="rod.Element" transform="translate(402.000000, 24.000000)">
+                <g id="base">
+                    <rect id="Rectangle" stroke="#007AFF" fill="#DDEDFF" x="0.5" y="0.5" width="128" height="174" rx="8"></rect>
+                    <rect id="Rectangle" stroke="#007AFF" fill="#DDEDFF" x="0.5" y="0.5" width="128" height="174" rx="8"></rect>
+                    <text id="rod.Element" font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                        <tspan x="15.3308105" y="32">rod.Element</tspan>
+                    </text>
+                </g>
+                <g id="dom-element" transform="translate(15.000000, 52.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-14)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-13"></use>
+                    <text id="DOM-element" font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="14.4892578" y="16">DOM element</tspan>
+                    </text>
+                </g>
+                <g id="shadow-dom" transform="translate(15.000000, 91.000000)">
+                    <use id="Rectangle" stroke="#7179A1" mask="url(#mask-16)" stroke-width="2" fill="#CCE4FF" stroke-dasharray="3,3" xlink:href="#path-15"></use>
+                    <text id="shadow-DOM" font-family="ArialMT, Arial" font-size="12" font-weight="normal" fill="#18395F">
+                        <tspan x="15.1542969" y="16">shadow DOM</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+        <g id="proto.*" transform="translate(238.000000, 304.000000)">
+            <rect id="Rectangle" stroke="#007AFF" fill="#F3DDFF" x="0.5" y="0.5" width="128" height="55" rx="8"></rect>
+            <text font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                <tspan x="33.392334" y="32">proto.*</tspan>
+            </text>
+        </g>
+        <g id="Browser" transform="translate(238.000000, 521.000000)">
+            <rect id="Rectangle" stroke="#007AFF" fill="#FFF8DD" x="0.5" y="0.5" width="128" height="55" rx="27.5"></rect>
+            <text font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                <tspan x="33.392334" y="32">Browser</tspan>
+            </text>
+        </g>
+        <g id="launcher.Launcher" transform="translate(25.000000, 522.000000)">
+            <rect id="Rectangle" stroke="#007AFF" fill="#F3FFE1" x="0.5" y="0.5" width="128" height="55" rx="8"></rect>
+            <text font-family="Menlo-Regular, Menlo" font-size="11" font-weight="normal" fill="#18395F">
+                <tspan x="8.70825195" y="32">launcher.Launcher</tspan>
+            </text>
+        </g>
+        <g id="rdp.Client" transform="translate(238.000000, 400.000000)">
+            <rect id="Rectangle" stroke="#007AFF" fill="#DDFEFF" x="0.5" y="0.5" width="128" height="55" rx="8"></rect>
+            <text id="cdp.Client" font-family="Menlo-Regular, Menlo" font-size="15" font-weight="normal" fill="#18395F">
+                <tspan x="19.3461914" y="32">cdp.Client</tspan>
+            </text>
+        </g>
+        <path id="Line-6" d="M229.5,549.5 L154,549.5 L153.5,549.5 L153.5,548.5 L154,548.5 L229.5,548.5 L229.5,544.5 L238.5,549 L229.5,553.5 L229.5,549.5 Z" fill="#979797" fill-rule="nonzero"></path>
+        <path id="Line-4" d="M302.5,391.5 L302.5,360 L302.5,359.5 L303.5,359.5 L303.5,360 L303.5,391.5 L307.5,391.5 L303,400.5 L298.5,391.5 L302.5,391.5 Z" fill="#979797" fill-rule="nonzero"></path>
+        <path id="Line-5" d="M302.434632,512.504098 L302.000015,456.003846 L301.996169,455.503861 L302.996139,455.496169 L302.999985,455.996154 L303.434603,512.496405 L307.434484,512.465637 L303.003846,521.499985 L298.43475,512.534866 L302.434632,512.504098 Z" fill="#979797" fill-rule="nonzero"></path>
+        <path id="Line" d="M303,295.5 L303,241 L303,240.5 L304,240.5 L304,241 L304,295.5 L308,295.5 L303.5,304.5 L299,295.5 L303,295.5 Z" fill="#979797" fill-rule="nonzero"></path>
+        <text id="use-proto-lib-to-tal" font-family="ArialMT, Arial" font-size="15" font-weight="normal" fill="#18395F">
+            <tspan x="313" y="276">use proto lib to talk with cdp.Client</tspan>
+        </text>
+        <text id="use-websocket-to-tal" font-family="ArialMT, Arial" font-size="15" font-weight="normal" fill="#18395F">
+            <tspan x="313" y="495">use websocket to talk with browser</tspan>
+        </text>
+        <text id="launch" font-family="ArialMT, Arial" font-size="15" font-weight="normal" fill="#18395F">
+            <tspan x="174" y="540">launch</tspan>
+        </text>
+    </g>
+</svg>

@@ -1,3 +1,3 @@
 # Overview
 
-The images under this folder are all come from `design.sketch`.
+The source code for all images under this folder are all come from file `./design.sketch`.

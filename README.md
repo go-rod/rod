@@ -49,6 +49,10 @@ Here's the common start process of rod:
 
 1. To control a specific page, rod will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
 
+Object model:
+
+![object model](fixtures/object-model.svg)
+
 ## FAQ
 
 ### TOC
