@@ -257,7 +257,7 @@ func (s *S) TestCanvasToImage() {
 
 func (s *S) TestResource() {
 	p := s.page.Navigate(srcFile("fixtures/resource.html"))
-	s.Equal(15456, len(p.Element("img").Resource()))
+	s.Equal(15456, len(p.Element("img").WaitLoad().Resource()))
 }
 
 func (s *S) TestElementScreenshot() {

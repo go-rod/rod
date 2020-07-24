@@ -358,6 +358,13 @@ func (el *Element) VisibleE() (bool, error) {
 	return res.Value.Bool(), nil
 }
 
+// WaitLoadE for element like <img />
+func (el *Element) WaitLoadE() error {
+	js, jsArgs := jsHelper("waitLoad", nil)
+	_, err := el.EvalE(true, js, jsArgs)
+	return err
+}
+
 // WaitStableE not using requestAnimation here because it can trigger to many checks,
 // or miss checks for jQuery css animation.
 func (el *Element) WaitStableE(interval time.Duration) error {

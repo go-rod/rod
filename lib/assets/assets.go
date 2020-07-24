@@ -184,9 +184,19 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
     },
 
     waitLoad () {
-      return new Promise((resolve) => {
-        if (document.readyState === 'complete') return resolve()
-        window.addEventListener('load', resolve)
+      const isWin = this === window
+      return new Promise((resolve, reject) => {
+        if (isWin) {
+          if (document.readyState === 'complete') return resolve()
+          window.addEventListener('load', resolve)
+        } else {
+          if (this.complete === undefined || this.complete) {
+            resolve()
+          } else {
+            this.addEventListener('load', resolve)
+            this.addEventListener('error', reject)
+          }
+        }
       })
     },
 

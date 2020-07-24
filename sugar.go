@@ -601,6 +601,12 @@ func (el *Element) Visible() bool {
 	return v
 }
 
+// WaitLoad for element like <img />
+func (el *Element) WaitLoad() *Element {
+	kit.E(el.WaitLoadE())
+	return el
+}
+
 // WaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
 // or button to complete so that we can simulate the mouse to move to it and click on it.
 func (el *Element) WaitStable() *Element {
