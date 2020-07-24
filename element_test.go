@@ -104,6 +104,12 @@ func (s *S) TestText() {
 	s.True(p.Has("[event=textarea-change]"))
 }
 
+func (s *S) TestCheckbox() {
+	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	el := p.Element("[type=checkbox]")
+	s.True(el.Click().Property("checked").Bool())
+}
+
 func (s *S) TestSelectText() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("textarea")
