@@ -5,6 +5,8 @@ package assets
 // Helper for rod
 const Helper = `() => { // eslint-disable-line no-unused-expressions
   const rod = {
+    _ () {},
+
     element (...selectors) {
       const scope = ensureScope(this)
       for (const selector of selectors) {
