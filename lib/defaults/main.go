@@ -81,40 +81,43 @@ func parse(options string) {
 	}
 
 	for _, f := range strings.Split(options, ",") {
-		kv := strings.Split(f, "=")
-		switch kv[0] {
-		case "show":
-			Show = true
-		case "trace":
-			Trace = true
-		case "quiet":
-			Quiet = true
-		case "slow":
-			var err error
-			Slow, err = time.ParseDuration(kv[1])
-			kit.E(err)
-		case "bin":
-			Bin = kv[1]
-		case "dir":
-			Dir = kv[1]
-		case "port":
-			Port = kv[1]
-		case "url":
-			URL = kv[1]
-		case "remote":
-			Remote = true
-		case "cdp":
-			CDP = true
-		case "monitor":
-			Monitor = ":9273"
-			if len(kv) == 2 {
-				Monitor = kv[1]
-			}
-		case "blind":
-			Blind = true
-		default:
-			panic("no such rod option: " + kv[0])
-		}
+		set(f)
 	}
+}
 
+func set(f string) {
+	kv := strings.Split(f, "=")
+	switch kv[0] {
+	case "show":
+		Show = true
+	case "trace":
+		Trace = true
+	case "quiet":
+		Quiet = true
+	case "slow":
+		var err error
+		Slow, err = time.ParseDuration(kv[1])
+		kit.E(err)
+	case "bin":
+		Bin = kv[1]
+	case "dir":
+		Dir = kv[1]
+	case "port":
+		Port = kv[1]
+	case "url":
+		URL = kv[1]
+	case "remote":
+		Remote = true
+	case "cdp":
+		CDP = true
+	case "monitor":
+		Monitor = ":9273"
+		if len(kv) == 2 {
+			Monitor = kv[1]
+		}
+	case "blind":
+		Blind = true
+	default:
+		panic("no such rod option: " + kv[0])
+	}
 }
