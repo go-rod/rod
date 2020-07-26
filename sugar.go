@@ -471,6 +471,13 @@ func (el *Element) Describe() *proto.DOMNode {
 	return node
 }
 
+// NodeID of the node
+func (el *Element) NodeID() proto.DOMNodeID {
+	id, err := el.NodeIDE()
+	kit.E(err)
+	return id
+}
+
 // ShadowRoot returns the shadow root of this element
 func (el *Element) ShadowRoot() *Element {
 	node, err := el.ShadowRootE()

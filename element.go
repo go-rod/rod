@@ -292,6 +292,17 @@ func (el *Element) DescribeE(depth int, pierce bool) (*proto.DOMNode, error) {
 	return val.Node, nil
 }
 
+// NodeIDE of the node
+func (el *Element) NodeIDE() (proto.DOMNodeID, error) {
+	defer el.page.enableNodeQuery()()
+
+	node, err := proto.DOMRequestNode{ObjectID: el.ObjectID}.Call(el)
+	if err != nil {
+		return 0, err
+	}
+	return node.NodeID, nil
+}
+
 // ShadowRootE returns the shadow root of this element
 func (el *Element) ShadowRootE() (*Element, error) {
 	node, err := el.DescribeE(1, false)
