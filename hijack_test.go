@@ -39,8 +39,15 @@ func (s *S) TestHijack() {
 			}).                                 // customize http client
 			SetMethod(ctx.Request.Method()).    // override request method
 			SetURL(ctx.Request.URL().String()). // override request url
-			SetHeader("Test", "header").        // override request header
-			SetBody(ctx.Request.Body())         // override request body
+			SetQuery("a", "b").
+			SetHeader("Test", "header"). // override request header
+			SetBody(0).
+			SetBody([]byte("")).
+			SetBody(ctx.Request.Body()) // override request body
+
+		s.Contains(ctx.Request.Header("Origin"), url)
+		s.Len(ctx.Request.Headers(), 5)
+		s.Equal("", ctx.Request.JSONBody().String())
 
 		// send request load response from real destination as the default value to hijack
 		ctx.LoadResponse()
@@ -57,9 +64,12 @@ func (s *S) TestHijack() {
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
 
 		// override response body
-		ctx.Response.SetBody(map[string]string{
+		ctx.Response.SetBody("").SetBody(map[string]string{
 			"text": ctx.Response.StringBody(),
 		})
+
+		s.NotNil(ctx.Response.BodyStream())
+		s.Equal("true", ctx.Response.JSONBody().String())
 	})
 
 	router.Add(url+"/b", func(ctx *rod.Hijack) {
@@ -121,7 +131,7 @@ func (s *S) TestHijackFailRequest() {
 		})
 	</script></html>`))
 
-	router := s.page.HijackRequests()
+	router := s.browser.HijackRequests()
 	defer router.Stop()
 
 	router.Add(url+"/a", func(ctx *rod.Hijack) {
@@ -186,7 +196,7 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 
 	engine.GET("/", ginHTML(
 		`<html>
-			<a id="a" href="data:text/plain;base64,dGVzdCBkYXRh" download>click</a>
+			<a id="a" href="data:text/plain;,test%20data" download>click</a>
 			<a id="b" download>click</a>
 			<script>
 				const b = document.getElementById('b')

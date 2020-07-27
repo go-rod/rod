@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ysmood/kit"
@@ -174,4 +175,16 @@ func (lc *Browser) Get() (string, error) {
 	}
 
 	return execPath, lc.Download()
+}
+
+// Open url via a browser
+func (lc *Browser) Open(url string) {
+	// Windows doesn't support format [::]
+	url = strings.Replace(url, "[::]", "[::1]", 1)
+
+	bin, err := lc.Get()
+	kit.E(err)
+	p := exec.Command(bin, url)
+	kit.E(p.Start())
+	kit.E(p.Process.Release())
 }

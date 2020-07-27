@@ -1,6 +1,8 @@
 package rod_test
 
 import (
+	"context"
+	"errors"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -8,6 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"go.uber.org/goleak"
@@ -18,6 +22,7 @@ var slash = filepath.FromSlash
 // S test suite
 type S struct {
 	suite.Suite
+	client  *cdp.Client
 	browser *rod.Browser
 	page    *rod.Page
 }
@@ -38,8 +43,17 @@ func TestMain(m *testing.M) {
 }
 
 func Test(t *testing.T) {
+	extPath, err := filepath.Abs("fixtures/chrome-extension")
+	kit.E(err)
+
+	u := launcher.New().
+		Delete("disable-extensions").
+		Set("load-extension", extPath).
+		Launch()
+
 	s := new(S)
-	s.browser = rod.New().Client(nil).Connect()
+	s.client = cdp.New(u)
+	s.browser = rod.New().ControlURL("").Client(s.client).Connect()
 
 	defer s.browser.Close()
 
@@ -63,7 +77,7 @@ func file(path string) string {
 
 func ginHTML(body string) gin.HandlerFunc {
 	return func(ctx kit.GinContext) {
-		ctx.Header("Content-Type", "text/html;")
+		ctx.Header("Content-Type", "text/html; charset=utf-8")
 		kit.E(ctx.Writer.WriteString(body))
 	}
 }
@@ -91,4 +105,69 @@ func serve() (string, *gin.Engine, func()) {
 	url := "http://" + srv.Listener.Addr().String()
 
 	return url, srv.Engine, func() { kit.E(srv.Listener.Close()) }
+}
+
+func serveStatic() (string, func()) {
+	u, engine, close := serve()
+	engine.Static("/fixtures", "fixtures")
+
+	return u + "/", close
+}
+
+func (s *S) countCall() {
+	count := 0
+	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		count++
+		log.Println("[call count]", count)
+		return s.client.Call(ctx, sessionID, method, params)
+	})
+}
+
+// when call the cdp.Client.Call the nth time use fn instead
+func (s *S) at(n int, fn func([]byte, error) ([]byte, error)) (recover func()) {
+	count := 0
+	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		res, err := s.client.Call(ctx, sessionID, method, params)
+		count++
+		if count == n {
+			return fn(res, err)
+		}
+		return res, err
+	})
+	cancel := preventLeak()
+
+	return func() {
+		s.browser.CDPCall(nil)
+		cancel()
+	}
+}
+
+// when call the cdp.Client.Call the nth time return error
+func (s *S) errorAt(n int, err error) (recover func()) {
+	if err == nil {
+		err = errors.New("")
+	}
+	count := 0
+	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		count++
+		if count == n {
+			return nil, err
+		}
+		return s.client.Call(ctx, sessionID, method, params)
+	})
+
+	cancel := preventLeak()
+
+	return func() {
+		s.browser.CDPCall(nil)
+		cancel()
+	}
+}
+
+func preventLeak() func() {
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		<-ctx.Done() // go.uber.org/goleak will report error if it's not released
+	}()
+	return cancel
 }

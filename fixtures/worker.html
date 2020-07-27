@@ -1,0 +1,7 @@
+<html>
+    <script>
+        const w = new Worker('worker.js')
+        w.postMessage('ok')
+        w.onmessage = (e) => console.log(e.data)
+    </script>
+</html>

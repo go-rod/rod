@@ -49,21 +49,21 @@ func (s *S) TestSetExtraHeaders() {
 	url, engine, close := serve()
 	defer close()
 
-	key1 := kit.RandString(8)
-	key2 := kit.RandString(8)
-
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
 	var out1, out2 string
 	engine.NoRoute(func(ctx kit.GinContext) {
-		out1 = ctx.GetHeader(key1)
-		out2 = ctx.GetHeader(key2)
+		out1 = ctx.GetHeader("a")
+		out2 = ctx.GetHeader("b")
 		wg.Done()
 	})
 
-	defer s.page.SetExtraHeaders(key1, "1", key2, "2")()
-	s.page.Navigate(url)
+	page := s.browser.Page("")
+	defer page.Close()
+
+	defer page.SetExtraHeaders("a", "1", "b", "2")()
+	page.Navigate(url)
 	wg.Wait()
 
 	s.Equal("1", out1)
@@ -219,6 +219,7 @@ func (s *S) TestPageEval() {
 	s.EqualValues(1, page.Eval(`function() { return 1 }`).Int())
 	s.NotEqualValues(1, page.Eval(`a = () => 1`).Int())
 	s.NotEqualValues(1, page.Eval(`a = function() { return 1 }`))
+	s.NotEqualValues(1, page.Eval(`/* ) */`))
 }
 
 func (s *S) TestPageExposeJSHelper() {
@@ -283,6 +284,10 @@ func (s *S) TestPageWaitRequestIdle() {
 	s.Panics(func() {
 		wait()
 	})
+
+	wait = page.WaitRequestIdleE(100*time.Millisecond, []string{}, []string{})
+	page.Element("button").Click()
+	wait()
 }
 
 func (s *S) TestPageWaitIdle() {
@@ -478,6 +483,8 @@ func (s *S) TestPageConsoleLog() {
 
 func (s *S) TestPageOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
+
+	s.IsType(s.browser.GetContext(), p.GetContext())
 
 	s.Equal("body", p.ElementByJS(`document.body`).Describe().LocalName)
 	s.Len(p.ElementsByJS(`document.querySelectorAll('input')`), 5)

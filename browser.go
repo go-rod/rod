@@ -47,8 +47,9 @@ type Browser struct {
 
 	monitorServer *kit.ServerContext
 
-	client *cdp.Client
-	event  *goob.Observable // all the browser events from cdp client
+	client  *cdp.Client
+	cdpCall CDPCall
+	event   *goob.Observable // all the browser events from cdp client
 
 	// stores all the previous cdp call of same type. Browser doesn't have enough API
 	// for us to retrieve all its internal states. This is an workaround to map them to local.
@@ -124,8 +125,20 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 	return b
 }
 
+// CDPCall overrides the cdp.Client.Call
+func (b *Browser) CDPCall(c CDPCall) *Browser {
+	b.cdpCall = c
+	return b
+}
+
 // ConnectE doc is similar to the method Connect
-func (b *Browser) ConnectE() error {
+func (b *Browser) ConnectE() (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = e.(error)
+		}
+	}()
+
 	if b.client == nil {
 		u := defaults.URL
 		if defaults.Remote {
@@ -135,20 +148,13 @@ func (b *Browser) ConnectE() error {
 			b.client = launcher.NewRemote(u).Client()
 		} else {
 			if u == "" {
-				var err error
-				u, err = launcher.New().Context(b.ctx).LaunchE()
-				if err != nil {
-					return err
-				}
+				u = launcher.New().Context(b.ctx).Launch()
 			}
 			b.client = cdp.New(u)
 		}
 	}
 
-	err := b.client.Context(b.ctx, b.ctxCancel).ConnectE()
-	if err != nil {
-		return err
-	}
+	b.client.Context(b.ctx, b.ctxCancel).Connect()
 
 	b.monitorServer = b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 
@@ -312,7 +318,11 @@ func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID
 
 // Call raw cdp interface directly
 func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
-	res, err = b.client.Call(ctx, sessionID, methodName, params)
+	if b.cdpCall == nil {
+		res, err = b.client.Call(ctx, sessionID, methodName, params)
+	} else {
+		res, err = b.cdpCall(ctx, sessionID, methodName, params)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -344,12 +354,17 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 		executionIDs: map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
 	}).Context(context.WithCancel(b.ctx))
 
-	b.storePage(page)
-
 	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: kit.RandString(8)}
 	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
 
-	return page, page.initSession()
+	err := page.initSession()
+	if err != nil {
+		return nil, err
+	}
+
+	b.storePage(page)
+
+	return page, nil
 }
 
 func (b *Browser) initEvents() {

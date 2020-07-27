@@ -2,6 +2,7 @@ package rod
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -15,6 +16,9 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/kit"
 )
+
+// CDPCall type for cdp.Client.CDPCall
+type CDPCall func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 
 // Sleeper returns the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s

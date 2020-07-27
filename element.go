@@ -265,9 +265,7 @@ func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}
 	for _, p := range paths {
 		absPath, err := filepath.Abs(p)
-		if err != nil {
-			return err
-		}
+		kit.E(err)
 		absPaths = append(absPaths, absPath)
 	}
 
@@ -294,8 +292,7 @@ func (el *Element) DescribeE(depth int, pierce bool) (*proto.DOMNode, error) {
 
 // NodeIDE of the node
 func (el *Element) NodeIDE() (proto.DOMNodeID, error) {
-	defer el.page.enableNodeQuery()()
-
+	el.page.enableNodeQuery()
 	node, err := proto.DOMRequestNode{ObjectID: el.ObjectID}.Call(el)
 	if err != nil {
 		return 0, err
@@ -389,7 +386,7 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 	t := time.NewTicker(interval)
 	defer t.Stop()
 
-	for range t.C {
+	for {
 		select {
 		case <-t.C:
 		case <-el.ctx.Done():
@@ -445,10 +442,6 @@ func (el *Element) CanvasToImageE(format string, quality float64) ([]byte, error
 	}
 
 	_, bin := parseDataURI(res.Value.Str)
-	if err != nil {
-		return nil, err
-	}
-
 	return bin, nil
 }
 
@@ -480,9 +473,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 	var bin []byte
 	if res.Base64Encoded {
 		bin, err = base64.StdEncoding.DecodeString(data)
-		if err != nil {
-			return nil, err
-		}
+		kit.E(err)
 	} else {
 		bin = []byte(data)
 	}
@@ -516,10 +507,6 @@ func (el *Element) ScreenshotE(format proto.PageCaptureScreenshotFormat, quality
 			Height: box.Height,
 			Scale:  1,
 		},
-	}
-
-	if quality > -1 {
-		opts.Quality = int64(quality)
 	}
 
 	return el.page.Root().ScreenshotE(false, opts)
@@ -577,12 +564,6 @@ func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeR
 			}
 
 			err = walk(p)
-
-			err = f.ReleaseE()
-			if err != nil {
-				return err
-			}
-
 			if err != nil {
 				return err
 			}

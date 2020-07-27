@@ -561,7 +561,7 @@ func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
 // ElementFromPointE creates an Element from the absolute point on the page.
 // The point should include the window scroll offset.
 func (p *Page) ElementFromPointE(x, y int64) (*Element, error) {
-	defer p.enableNodeQuery()()
+	p.enableNodeQuery()
 
 	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
 	if err != nil {
@@ -592,10 +592,13 @@ func (p *Page) initSession() error {
 	}
 	p.SessionID = obj.SessionID
 
-	err = proto.PageEnable{}.Call(p)
-	if err != nil {
-		return err
-	}
+	// If we don't enable it, it will cause a lot of unexpected browser behavior.
+	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
+	p.EnableDomain(&proto.PageEnable{})
+
+	// If we don't enable it, it will remove remote node id whenever we disable the domain
+	// even after we re-enable it again we can't query the ids any more.
+	p.EnableDomain(&proto.DOMEnable{})
 
 	return nil
 }
@@ -696,14 +699,10 @@ func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
 	return p.jsHelperObjectID
 }
 
-func (p *Page) enableNodeQuery() func() {
-	recover := p.EnableDomain(&proto.DOMEnable{})
-
+func (p *Page) enableNodeQuery() {
 	// TODO: I don't know why we need this, seems like a bug of chrome.
 	// We should remove it once chrome fixed this bug.
 	_, _ = proto.DOMGetDocument{}.Call(p)
-
-	return recover
 }
 
 func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID, error) {

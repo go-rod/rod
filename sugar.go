@@ -223,8 +223,8 @@ func (p *Page) PDF() []byte {
 	return pdf
 }
 
-// WaitOpen to be created from a new window
-func (p *Page) WaitOpen() (wait func() *Page) {
+// WaitOpen waits for a new page opened by the current one
+func (p *Page) WaitOpen() (wait func() (newPage *Page)) {
 	w := p.WaitOpenE()
 	return func() *Page {
 		page, err := w()
@@ -665,7 +665,7 @@ func (el *Element) Resource() []byte {
 
 // Screenshot of the area of the element
 func (el *Element) Screenshot(toFile ...string) []byte {
-	bin, err := el.ScreenshotE(proto.PageCaptureScreenshotFormatPng, -1)
+	bin, err := el.ScreenshotE(proto.PageCaptureScreenshotFormatPng, 0)
 	kit.E(err)
 	kit.E(saveScreenshot(bin, toFile))
 	return bin

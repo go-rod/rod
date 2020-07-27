@@ -13,12 +13,9 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
 )
-
-func (s *S) TestBrowserContext() {
-	s.browser.Timeout(time.Minute).CancelTimeout()
-}
 
 func (s *S) TestIncognito() {
 	file := srcFile("fixtures/click.html")
@@ -41,13 +38,46 @@ func (s *S) TestBrowserPages() {
 	// TODO: I don't know why sometimes windows can miss one
 	if runtime.GOOS == "windows" {
 		s.GreaterOrEqual(len(pages), 2)
-		return
-	}
+	} else {
+		s.Len(pages, 3)
 
-	s.Len(pages, 3)
+		func() {
+			defer s.at(1, func(d []byte, err error) ([]byte, error) {
+				return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
+			})()
+			pages := s.browser.Pages()
+			s.Len(pages, 2)
+		}()
+	}
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		s.browser.Page("")
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		s.browser.Pages()
+	})
+	s.Panics(func() {
+		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
+		kit.E(err)
+		defer func() {
+			s.browser.PageFromTargetID(res.TargetID).Close()
+		}()
+		defer s.errorAt(2, nil)()
+		s.browser.Pages()
+	})
+}
+
+func (s *S) TestBrowserClearStates() {
+	kit.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
+
+	defer s.browser.EnableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: true})()
+	s.browser.DisableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: false})()
 }
 
 func (s *S) TestBrowserWaitEvent() {
+	s.NotNil(s.browser.Event())
+
 	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
 	s.page.Navigate(srcFile("fixtures/click.html"))
 	wait()
@@ -81,7 +111,7 @@ func (s *S) TestMonitor() {
 	b := rod.New().Timeout(1 * time.Minute).Connect()
 	defer b.Close()
 	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
-	host := b.ServeMonitor("127.0.0.1:0", false).Listener.Addr().String()
+	host := b.ServeMonitor("127.0.0.1:0", true).Listener.Addr().String()
 
 	page := s.page.Navigate("http://" + host)
 	s.Contains(page.WaitLoad().Element("#targets").HTML(), string(p.TargetID))
@@ -97,19 +127,47 @@ func (s *S) TestRemoteLaunch() {
 	proxy := launcher.NewProxy()
 	engine.NoRoute(gin.WrapH(proxy))
 
+	ctx, cancel := context.WithCancel(context.Background())
 	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))
-	b := rod.New().Timeout(1 * time.Minute).Client(l.Client()).Connect()
-	defer b.CancelTimeout()
+	c := l.Client().Context(ctx, cancel)
+	b := rod.New().Context(ctx, cancel).Client(c).Connect()
+	defer b.Close()
 
 	p := b.Page(srcFile("fixtures/click.html"))
 	p.Element("button").Click()
 	s.True(p.Has("[a=ok]"))
+}
 
-	b.Close()
+func (s *S) TestTrace() {
+	msg := ""
+	var errs []error
+	s.browser.TraceLog(
+		func(s string) {
+			msg = s
+		},
+		func(string, rod.Array) {},
+		func(e error) {
+			errs = append(errs, e)
+		},
+	)
+	s.browser.Trace(true).Slowmotion(time.Microsecond)
+	defer func() {
+		s.browser.TraceLog(nil, nil, nil)
+		s.browser.Trace(false).Slowmotion(0)
+	}()
 
-	kit.Sleep(0.3)
-	dir, _ := l.Get("user-data-dir")
-	s.NoDirExists(dir)
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	el := p.Element("button")
+	el.Click()
+	s.Equal("left click", msg)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	p.Context(ctx, cancel).Overlay(0, 0, 100, 100, "msg")
+	s.Error(errs[0])
+
+	el.Context(ctx, cancel).Trace("ok")
+	s.Error(errs[1])
 }
 
 func (s *S) TestConcurrentOperations() {
@@ -229,6 +287,17 @@ func (s *S) TestTry() {
 	ok := errors.As(err, &errVal)
 	s.True(ok)
 	s.Equal(1, errVal.Details)
+}
+
+func (s *S) TestBrowserOthers() {
+	s.browser.Timeout(time.Minute).CancelTimeout()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	s.Panics(func() {
+		s.browser.Context(ctx, cancel).Incognito()
+	})
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

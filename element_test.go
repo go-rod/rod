@@ -14,14 +14,37 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
 )
 
 func (s *S) TestClick() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	p.Element("button").Click()
+	el := p.Element("button")
+	el.Click()
 
 	s.True(p.Has("[a=ok]"))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Click()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.Click()
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		el.Click()
+	})
+	s.Panics(func() {
+		defer s.errorAt(4, nil)()
+		el.Click()
+	})
+	s.Panics(func() {
+		defer s.errorAt(5, nil)()
+		el.Click()
+	})
 }
 
 func (s *S) TestClickable() {
@@ -31,6 +54,7 @@ func (s *S) TestClickable() {
 
 func (s *S) TestNotClickable() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	el := p.Element("button")
 
 	// cover the button with a green div
 	p.WaitLoad().Eval(`() => {
@@ -38,7 +62,22 @@ func (s *S) TestNotClickable() {
 		div.style = 'position: absolute; left: 0; top: 0; width: 500px; height: 500px;'
 		document.body.append(div)
 	}`)
-	s.False(p.Element("button").Clickable())
+	s.Panics(func() {
+		el.Click()
+	})
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.Clickable()
+	})
+	s.Panics(func() {
+		defer s.errorAt(4, nil)()
+		el.Clickable()
+	})
+	s.Panics(func() {
+		defer s.errorAt(8, nil)()
+		el.Clickable()
+	})
 }
 
 func (s *S) TestElementContext() {
@@ -50,21 +89,65 @@ func (s *S) TestElementContext() {
 func (s *S) TestIframes() {
 	p := s.page.Navigate(srcFile("fixtures/click-iframes.html"))
 	frame := p.Element("iframe").Frame().Element("iframe").Frame()
-	frame.Element("button").Click()
+	el := frame.Element("button")
+	el.Click()
 	s.True(frame.Has("[a=ok]"))
+
+	id := el.NodeID()
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		p.ElementFromNode(id)
+	})
+	s.Panics(func() {
+		defer s.at(4, func(d []byte, err error) ([]byte, error) {
+			return sjson.SetBytes(d, "result", rod.Array{})
+		})()
+		p.ElementFromNode(id).Text()
+	})
+	s.Panics(func() {
+		defer s.errorAt(7, nil)()
+		p.ElementFromNode(id)
+	})
+	s.Panics(func() {
+		defer s.errorAt(12, nil)()
+		p.ElementFromNode(id)
+	})
+	s.Panics(func() {
+		defer s.errorAt(16, nil)()
+		p.ElementFromNode(id)
+	})
 }
 
 func (s *S) TestContains() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	a := p.Element("button")
-	b := p.Element("button")
+
+	b := p.ElementFromNode(a.NodeID())
 	s.True(a.ContainsElement(b))
+
+	box := a.Box()
+	c := p.ElementFromPoint(int(box.X)+3, int(box.Y)+3)
+	s.True(a.ContainsElement(c))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		a.ContainsElement(b)
+	})
 }
 
 func (s *S) TestShadowDOM() {
 	p := s.page.Navigate(srcFile("fixtures/shadow-dom.html")).WaitLoad()
-	el := p.Element("#container").ShadowRoot()
-	s.Equal("inside", el.Element("p").Text())
+	el := p.Element("#container")
+	s.Equal("inside", el.ShadowRoot().Element("p").Text())
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.ShadowRoot()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.ShadowRoot()
+	})
 }
 
 func (s *S) TestPress() {
@@ -75,6 +158,15 @@ func (s *S) TestPress() {
 	el.Press('b')
 
 	s.Equal("A b", el.Text())
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.Press(' ')
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.SelectAllText()
+	})
 }
 
 func (s *S) TestKeyDown() {
@@ -102,6 +194,11 @@ func (s *S) TestText() {
 
 	s.Equal(text, el.Text())
 	s.True(p.Has("[event=textarea-change]"))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Text()
+	})
 }
 
 func (s *S) TestCheckbox() {
@@ -122,6 +219,24 @@ func (s *S) TestSelectText() {
 	el.Input("__")
 
 	s.Equal("t__t", el.Text())
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.SelectText("")
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.SelectAllText()
+	})
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.Input("")
+	})
+	s.Panics(func() {
+		defer s.errorAt(4, nil)()
+		el.Input("")
+	})
 }
 
 func (s *S) TestBlur() {
@@ -142,7 +257,13 @@ func (s *S) TestSelectOptions() {
 
 func (s *S) TestMatches() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
-	s.True(p.Element("textarea").Matches(`[cols="30"]`))
+	el := p.Element("textarea")
+	s.True(el.Matches(`[cols="30"]`))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Matches("")
+	})
 }
 
 func (s *S) TestAttribute() {
@@ -159,6 +280,11 @@ func (s *S) TestAttribute() {
 
 	s.Equal("ok", *el.Attribute("a"))
 	s.Nil(el.Attribute("b"))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Attribute("")
+	})
 }
 
 func (s *S) TestProperty() {
@@ -176,6 +302,11 @@ func (s *S) TestProperty() {
 	s.Equal("link", el.Property("id").Str)
 	s.Equal("_blank", el.Property("target").Str)
 	s.Equal(gjson.Null, el.Property("test").Type)
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Property("")
+	})
 }
 
 func (s *S) TestSetFiles() {
@@ -246,6 +377,13 @@ func (s *S) TestWaitStable() {
 	el.WaitStable()
 	el.Click()
 	p.Has("[event=click]")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		kit.Sleep(0.2)
+		cancel()
+	}()
+	s.Error(el.Context(ctx, cancel).WaitStableE(time.Minute))
 }
 
 func (s *S) TestCanvasToImage() {
@@ -257,19 +395,54 @@ func (s *S) TestCanvasToImage() {
 
 func (s *S) TestResource() {
 	p := s.page.Navigate(srcFile("fixtures/resource.html"))
-	s.Equal(15456, len(p.Element("img").WaitLoad().Resource()))
+	el := p.Element("img").WaitLoad()
+	s.Equal(15456, len(el.Resource()))
+
+	func() {
+		defer s.at(3, func(res []byte, err error) ([]byte, error) {
+			return kit.MustToJSONBytes(proto.PageGetResourceContentResult{
+				Content:       "ok",
+				Base64Encoded: false,
+			}), nil
+		})()
+		s.Equal([]byte("ok"), el.Resource())
+	}()
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.Resource()
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		el.Resource()
+	})
 }
 
 func (s *S) TestElementScreenshot() {
 	f := filepath.Join("tmp", kit.RandString(8)+".png")
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	el := p.Element("h4")
 
-	data := p.Element("h4").Screenshot(f)
+	data := el.Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	kit.E(err)
 	s.EqualValues(200, img.Bounds().Dx())
 	s.EqualValues(30, img.Bounds().Dy())
 	s.FileExists(f)
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		el.Screenshot()
+	})
+	s.Panics(func() {
+		s.countCall()
+		defer s.errorAt(2, nil)()
+		el.Screenshot()
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		el.Screenshot()
+	})
 }
 
 func (s *S) TestUseReleasedElement() {
@@ -327,6 +500,7 @@ func (s *S) TestElementEWithDepth() {
 func (s *S) TestElementOthers() {
 	p := s.page.Navigate(srcFile("fixtures/input.html"))
 	el := p.Element("form")
+	s.IsType(p.GetContext(), el.GetContext())
 	el.Focus()
 	el.ScrollIntoView()
 	s.EqualValues(784, el.Box().Width)
@@ -373,4 +547,22 @@ func (s *S) TestElementErrors() {
 
 	err = el.Context(ctx, cancel).InputE("a")
 	s.Error(err)
+
+	_, err = el.Context(ctx, cancel).HTMLE()
+	s.Error(err)
+
+	_, err = el.Context(ctx, cancel).VisibleE()
+	s.Error(err)
+
+	_, err = el.Context(ctx, cancel).CanvasToImageE("", 0)
+	s.Error(err)
+
+	err = el.Context(ctx, cancel).ReleaseE()
+	s.Error(err)
+
+	s.Panics(func() {
+		s.countCall()
+		defer s.errorAt(2, nil)()
+		el.NodeID()
+	})
 }

@@ -10,7 +10,6 @@ import (
 	"html"
 	"log"
 	"net/http"
-	"os/exec"
 	"regexp"
 	"strings"
 	"time"
@@ -73,12 +72,7 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	}()
 
 	if openBrowser {
-		url := "http://" + strings.Replace(srv.Listener.Addr().String(), "[::]", "[::1]", 1)
-		bin, err := launcher.NewBrowser().Get()
-		kit.E(err)
-		p := exec.Command(bin, url)
-		kit.E(p.Start())
-		kit.E(p.Process.Release())
+		launcher.NewBrowser().Open("http://" + srv.Listener.Addr().String())
 	}
 
 	return srv

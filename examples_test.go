@@ -342,7 +342,7 @@ func Example_handle_events() {
 }
 
 // Example_hijack_requests shows how we can intercept requests and modify
-// both the request or the response.
+// both the request and the response.
 func Example_hijack_requests() {
 	browser := rod.New().Timeout(time.Minute).Connect()
 	defer browser.Close()
@@ -362,7 +362,8 @@ func Example_hijack_requests() {
 		// response struct.
 		ctx.LoadResponse()
 
-		// Here we update the body of all requests to update the document title to "hi"
+		// Here we append some code to every js file.
+		// The code will update the document title to "hi"
 		ctx.Response.SetBody(ctx.Response.StringBody() + "\n document.title = 'hi' ")
 	})
 

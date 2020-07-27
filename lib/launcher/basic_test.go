@@ -78,6 +78,10 @@ func TestLaunchUserMode(t *testing.T) {
 	)
 }
 
+func TestOpen(t *testing.T) {
+	launcher.NewBrowser().Open("about:blank")
+}
+
 func TestUserModeErr(t *testing.T) {
 	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").LaunchE()
 	assert.Error(t, err)

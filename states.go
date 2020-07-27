@@ -43,7 +43,9 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 			key = domain + ".enable"
 		}
 	}
-	b.states.Delete(b.key(sessionID, key))
+	if key != "" {
+		b.states.Delete(b.key(sessionID, key))
+	}
 }
 
 // LoadState into the method, seesionID can be empty.
