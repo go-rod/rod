@@ -16,7 +16,8 @@ import (
 // HeaderName for remote launch
 const HeaderName = "Rod-Launcher"
 
-// NewRemote create a Launcher instance from remote defaults
+// NewRemote create a Launcher instance from remote defaults. You must use it with launch.NewProxy or
+// use the docker image mentioned from here: https://github.com/go-rod/rod/blob/master/lib/examples/remote-launch
 func NewRemote(remoteURL string) *Launcher {
 	u, err := url.Parse(remoteURL)
 	kit.E(err)
@@ -24,6 +25,7 @@ func NewRemote(remoteURL string) *Launcher {
 	toHTTP(u)
 
 	l := New()
+	l.remote = true
 	l.url = remoteURL
 	l.Flags = nil
 
@@ -34,6 +36,7 @@ func NewRemote(remoteURL string) *Launcher {
 
 // KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
 func (l *Launcher) KeepUserDataDir() *Launcher {
+	l.mustRemote()
 	l.Set("keep-user-data-dir")
 	return l
 }
@@ -43,11 +46,18 @@ func (l *Launcher) JSON() []byte {
 	return kit.MustToJSONBytes(l)
 }
 
-// Client for launching browser remotely
+// Client for launching browser remotely, such as browser from a docker container.
 func (l *Launcher) Client() *cdp.Client {
+	l.mustRemote()
 	header := http.Header{}
 	header.Add(HeaderName, kit.MustToJSON(l))
 	return cdp.New(l.url).Header(header)
+}
+
+func (l *Launcher) mustRemote() {
+	if !l.remote {
+		panic("Must be used with launcher.NewRemote")
+	}
 }
 
 // Proxy to help launch browser remotely.

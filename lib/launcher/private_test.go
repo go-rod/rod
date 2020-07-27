@@ -76,11 +76,21 @@ func TestRemoteLaunch(t *testing.T) {
 	go func() { _ = srv.Do() }()
 
 	u := "ws://" + srv.Listener.Addr().String()
-	client := NewRemote(u).KeepUserDataDir().Delete("keep-user-data-dir").Client()
+	l := NewRemote(u).KeepUserDataDir()
+	client := l.Delete("keep-user-data-dir").Client()
 	b := client.Context(ctx, cancel).Connect()
 	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
+	dir, _ := l.Get("user-data-dir")
+
+	kit.Sleep(1)
+	assert.NoDirExists(t, dir)
+
+	assert.Panics(t, func() {
+		New().KeepUserDataDir()
+	})
 }
+
 func TestLaunchErr(t *testing.T) {
 	l := New().Bin("echo")
 	go func() {

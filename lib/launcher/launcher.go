@@ -29,6 +29,7 @@ type Launcher struct {
 	output    chan string
 	pid       int
 	exit      chan kit.Nil
+	remote    bool // remote mode or not
 	reap      bool
 }
 
