@@ -131,6 +131,9 @@ func TestRect(t *testing.T) {
 	b := &proto.DOMBoxModel{Content: proto.DOMQuad{
 		336, 382, 361, 382, 361, 421, 336, 412,
 	}}
+	rect := b.Rect()
+	assert.Equal(t, proto.DOMRect{X: 336, Y: 382, Width: 25, Height: 30}, *rect)
 
-	assert.Equal(t, proto.DOMRect{X: 336, Y: 382, Width: 25, Height: 30}, *b.Rect())
+	assert.Equal(t, 348.5, rect.CenterX())
+	assert.Equal(t, 397.0, rect.CenterY())
 }

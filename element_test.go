@@ -80,6 +80,14 @@ func (s *S) TestNotClickable() {
 	})
 }
 
+func (s *S) TestHover() {
+	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	el := p.Element("button")
+	el.Eval(`this.onmouseenter = () => this.dataset['a'] = 1`)
+	el.Hover()
+	s.Equal("1", el.Eval(`this.dataset['a']`).String())
+}
+
 func (s *S) TestElementContext() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	el := p.Element("button").Timeout(time.Minute).CancelTimeout()

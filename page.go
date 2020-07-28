@@ -638,6 +638,7 @@ func (p *Page) initJS(force bool) error {
 	return nil
 }
 
+// We use this function to make sure every frame(page, iframe) will only have one IsolatedWorld.
 func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, error) {
 	if !p.IsIframe() {
 		return 0, nil

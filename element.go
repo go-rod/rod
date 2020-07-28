@@ -45,8 +45,8 @@ func (el *Element) ScrollIntoViewE() error {
 	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
 }
 
-// ClickE will press then release the button just like a human.
-func (el *Element) ClickE(button proto.InputMouseButton) error {
+// HoverE the mouse over the center of the element.
+func (el *Element) HoverE() error {
 	err := el.WaitVisibleE()
 	if err != nil {
 		return err
@@ -57,12 +57,22 @@ func (el *Element) ClickE(button proto.InputMouseButton) error {
 		return err
 	}
 
-	box, err := el.boxCenter()
+	box, err := el.BoxE()
 	if err != nil {
 		return err
 	}
 
-	err = el.page.Mouse.MoveE(box.X, box.Y, 1)
+	err = el.page.Mouse.MoveE(box.CenterX(), box.CenterY(), 1)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ClickE will press then release the button just like a human.
+func (el *Element) ClickE(button proto.InputMouseButton) error {
+	err := el.HoverE()
 	if err != nil {
 		return err
 	}
@@ -82,7 +92,7 @@ func (el *Element) ClickE(button proto.InputMouseButton) error {
 
 // ClickableE checks if the element is behind another element, such as when invisible or covered by a modal.
 func (el *Element) ClickableE() (bool, error) {
-	box, err := el.boxCenter()
+	box, err := el.BoxE()
 	if err != nil {
 		return false, err
 	}
@@ -93,8 +103,8 @@ func (el *Element) ClickableE() (bool, error) {
 	}
 
 	elAtPoint, err := el.page.ElementFromPointE(
-		int64(box.X)+scroll.Value.Get("x").Int(),
-		int64(box.Y)+scroll.Value.Get("y").Int(),
+		int64(box.CenterX())+scroll.Value.Get("x").Int(),
+		int64(box.CenterY())+scroll.Value.Get("y").Int(),
 	)
 	if err != nil {
 		return false, err
@@ -110,18 +120,6 @@ func (el *Element) ClickableE() (bool, error) {
 	}
 
 	return false, nil
-}
-
-func (el *Element) boxCenter() (*proto.DOMRect, error) {
-	box, err := el.BoxE()
-	if err != nil {
-		return nil, err
-	}
-
-	x := box.X + box.Width/2
-	y := box.Y + box.Height/2
-
-	return &proto.DOMRect{X: x, Y: y}, nil
 }
 
 // BoxE returns the size of an element and its position relative to the main frame.

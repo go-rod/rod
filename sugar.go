@@ -498,6 +498,12 @@ func (el *Element) ScrollIntoView() *Element {
 	return el
 }
 
+// Hover the mouse over the center of the element.
+func (el *Element) Hover() *Element {
+	kit.E(el.HoverE())
+	return el
+}
+
 // Click the element
 func (el *Element) Click() *Element {
 	kit.E(el.ClickE(proto.InputMouseButtonLeft))

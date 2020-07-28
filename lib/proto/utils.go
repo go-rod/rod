@@ -202,3 +202,13 @@ func (box *DOMBoxModel) Rect() *DOMRect {
 		Height: box.Content[7] - box.Content[1],
 	}
 }
+
+// CenterX of the rectangle
+func (rect *DOMRect) CenterX() float64 {
+	return rect.X + rect.Width/2
+}
+
+// CenterY of the rectangle
+func (rect *DOMRect) CenterY() float64 {
+	return rect.Y + rect.Height/2
+}
