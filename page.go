@@ -653,7 +653,12 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 
 	if !force {
 		if ctxID, has := p.executionIDs[frameID]; has {
-			return ctxID, nil
+			_, err := proto.RuntimeEvaluate{ContextID: ctxID, Expression: `0`}.Call(p)
+			if err == nil {
+				return ctxID, nil
+			} else if !isNilContextErr(err) {
+				return 0, err
+			}
 		}
 	}
 
