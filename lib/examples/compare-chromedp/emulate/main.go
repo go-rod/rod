@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/devices"
-	"github.com/ysmood/kit"
 )
 
 func main() {
@@ -11,7 +10,9 @@ func main() {
 
 	// emulate iPhone 7 landscape
 	err := page.EmulateE(devices.IPhone6or7or8, true)
-	kit.E(err)
+	if err != nil {
+		panic(err)
+	}
 
 	page.Navigate("https://www.whatsmyua.info/")
 	page.Screenshot("screenshot1.png")

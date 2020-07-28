@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/go-rod/rod"
-	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")
@@ -40,9 +39,9 @@ func headerServer(addr string) {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		kit.E(fmt.Fprintf(res, indexHTML, string(buf)))
+		_, _ = fmt.Fprintf(res, indexHTML, string(buf))
 	})
-	kit.E(http.ListenAndServe(addr, mux))
+	_ = http.ListenAndServe(addr, mux)
 }
 
 const indexHTML = `<!doctype html>

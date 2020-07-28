@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/go-rod/rod"
-	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")
@@ -36,7 +35,9 @@ func main() {
 // get some info about the file
 func size(file string) int64 {
 	fi, err := os.Stat(file)
-	kit.E(err)
+	if err != nil {
+		panic(err)
+	}
 	return fi.Size()
 }
 
@@ -44,7 +45,7 @@ func uploadServer(addr string) {
 	// create http server and result channel
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		kit.E(fmt.Fprintf(res, uploadHTML))
+		_, _ = fmt.Fprintf(res, uploadHTML)
 	})
 	mux.HandleFunc("/upload", func(res http.ResponseWriter, req *http.Request) {
 		f, _, err := req.FormFile("upload")
@@ -52,7 +53,7 @@ func uploadServer(addr string) {
 			http.Error(res, err.Error(), http.StatusBadRequest)
 			return
 		}
-		defer kit.E(f.Close())
+		defer func() { _ = f.Close() }()
 
 		buf, err := ioutil.ReadAll(f)
 		if err != nil {
@@ -60,9 +61,9 @@ func uploadServer(addr string) {
 			return
 		}
 
-		kit.E(fmt.Fprintf(res, resultHTML, len(buf)))
+		_, _ = fmt.Fprintf(res, resultHTML, len(buf))
 	})
-	kit.E(http.ListenAndServe(addr, mux))
+	_ = http.ListenAndServe(addr, mux)
 }
 
 const (

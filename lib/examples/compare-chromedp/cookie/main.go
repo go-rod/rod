@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")
@@ -44,7 +43,7 @@ func main() {
 	page.Navigate(host)
 
 	// read network values
-	kit.Dump(page.Cookies())
+	log.Printf("%+v\n", page.Cookies())
 
 	// chrome received cookies
 	log.Printf("chrome received cookies: %s", page.Element(`#result`).Text())
@@ -63,9 +62,9 @@ func cookieServer(addr string) {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		kit.E(fmt.Fprintf(res, indexHTML, string(buf)))
+		_, _ = fmt.Fprintf(res, indexHTML, string(buf))
 	})
-	kit.E(http.ListenAndServe(addr, mux))
+	_ = http.ListenAndServe(addr, mux)
 }
 
 const (

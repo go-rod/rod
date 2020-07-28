@@ -26,7 +26,7 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 
 ## Examples
 
-You can find examples from [here](examples_test.go) or [here](lib/examples).
+Please check the [examples_test.go](examples_test.go) file first, then check the [examples](lib/examples) folder.
 
 For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`,
@@ -127,9 +127,19 @@ There are a lot of great projects, but no one is perfect, choose the best one th
   The main problem of chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), but puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent chromedp's maintainers from adding high-level functions that are coupled with runtime.
   For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years.
 
+  Rod is more configurable, such as you can even replace the WebSocket lib with the lib you like.
+
   When a crash happens, chromedp will leave the zombie browser process on Windows and Mac.
 
   Rod has a simpler code structure and better test coverage, you should find it's easier to contribute code to rod. Therefore compared with chromedp, rod has the potential to have more nice functions from the community in the future.
+
+- [puppeteer][puppeteer]
+
+  With puppeteer, you have to handle promise/async/await a lot. End to end tests requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all IO operations are async calls, so usually, people end up typing tons of async/await. The overhead grows when your project grows.
+
+  Rod is type-safe by default. It has type bindings with all the API of Devtools protocol.
+
+  Rod will disable domain events whenever possible, puppeteer will always enable all the domains. It will consume a lot of resources when driving a remote browser.
 
 - [selenium](https://www.selenium.dev/)
 
@@ -140,12 +150,6 @@ There are a lot of great projects, but no one is perfect, choose the best one th
   Though selenium sells itself for better cross-browser support, it's usually very hard to make it work for all major browsers.
   
   There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of puppeteer.
-
-- [puppeteer][puppeteer]
-
-  With Puppeteer, you have to handle promise/async/await a lot. It requires a deep understanding of how promises works which are usually painful for QA to write automation tests. End to end tests usually requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all control signals it sends to the browser will be async calls, so it's unfriendly for QA from the beginning.
-
-  Rod will only enable domain events when they are needed, puppeteer will always enable all the domains which will consume a lot of resources when driving a remote browser.
 
 - [cypress](https://www.cypress.io/)
 

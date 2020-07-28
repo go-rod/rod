@@ -11,7 +11,6 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/kit"
 )
 
 // Example_basic is a simple test that opens https://github.com/, searches for
@@ -39,6 +38,10 @@ func Example_basic() {
 
 	fmt.Println(text)
 
+	// Get all input elements. Rod supports query elements by css selector, xpath, and regex.
+	// For more detailed usage, check the query_test.go file.
+	fmt.Println(len(page.Elements("input")))
+
 	// Eval js on the page
 	page.Eval(`console.log("hello world")`)
 
@@ -51,18 +54,19 @@ func Example_basic() {
 	// To handle errors in rod, you can use rod.Try or E suffixed function family like "page.ElementE"
 	// https://github.com/go-rod/rod#q-why-functions-dont-return-error-values
 	err := rod.Try(func() {
-		page.Element("#2020")
+		// Here we will catch timeout or query error
+		page.Timeout(time.Second / 2).Element("element-not-exists")
 	})
-	if errors.Is(err, rod.ErrEval) {
-		// https://stackoverflow.com/questions/20306204/using-queryselector-with-ids-that-are-numbers
-		fmt.Println("you need to learn how to use css selector")
+	if errors.Is(err, context.DeadlineExceeded) {
+		fmt.Println("after 0.5 seconds, the element is still not rendered")
 	}
 
 	// Output:
 	// Git is the most widely used version control system.
+	// 5
 	// 3
 	// Search · git · GitHub
-	// you need to learn how to use css selector
+	// after 0.5 seconds, the element is still not rendered
 }
 
 // Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
@@ -119,9 +123,8 @@ func Example_headless_with_debug() {
 	fmt.Println(page.Element("#firstHeading").Text())
 
 	// Response gets the binary of the image as a []byte.
-	// We use OutputFile to write the content of the image into ./tmp/img.jpg
-	img := page.Element(`[alt="Hot Dry Noodles.jpg"]`)
-	_ = kit.OutputFile("tmp/img.jpg", img.Resource(), nil)
+	img := page.Element(`[alt="Hot Dry Noodles.jpg"]`).Resource()
+	fmt.Println(len(img)) // print the size of the image
 
 	// Pause temporarily halts JavaScript execution on the website.
 	// You can resume execution in the devtools window by clicking the resume
@@ -190,33 +193,20 @@ func Example_customize_retry_strategy() {
 
 	page := browser.Page("https://github.com")
 
-	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-
-	// ElementE is used in this context instead of Element. When The XxxxxE
-	// version of functions are used, there will be more access to customize
-	// options, like give access to the backoff algorithm.
-	el, err := page.Timeout(10*time.Second).ElementE(backoff, "", []string{"input"})
-	if err == context.DeadlineExceeded {
-		fmt.Println("unable to find the input element before timeout")
-	} else {
-		kit.E(err)
-	}
-
-	// ElementE below will retry on each browser event until it gets one input element
-	events := browser.Event().Subscribe(page.GetContext())
+	// sleep for 0.5 seconds before every retry
 	sleeper := func(context.Context) error {
-		<-events
+		time.Sleep(time.Second / 2)
 		return nil
 	}
-	el, _ = page.ElementE(sleeper, "", []string{"input"})
+	el, _ := page.ElementE(sleeper, "", []string{"input"})
 
-	// ElementE with the Sleeper parameter being nil will get the element
-	// without retrying. Instead returning an error.
-	el, err = page.ElementE(nil, "", []string{"input"})
+	// If sleeper is nil page.ElementE will query without retrying.
+	// If nothing found it will return an error.
+	el, err := page.ElementE(nil, "", []string{"input"})
 	if errors.Is(err, rod.ErrElementNotFound) {
 		fmt.Println("element not found")
-	} else {
-		kit.E(err)
+	} else if err != nil {
+		panic(err)
 	}
 
 	fmt.Println(el.Eval(`this.name`).String())
@@ -275,7 +265,9 @@ func Example_direct_cdp() {
 		Value: "test",
 		URL:   "https://example.com",
 	}.Call(page)
-	kit.E(err)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(res.Success)
 
@@ -309,7 +301,7 @@ func Example_handle_events() {
 
 	page := browser.Page("")
 
-	done := make(chan kit.Nil)
+	done := make(chan int)
 
 	// Listen to all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {

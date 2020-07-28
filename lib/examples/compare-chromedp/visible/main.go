@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/go-rod/rod"
-	"github.com/ysmood/kit"
 )
 
 var flagPort = flag.Int("port", 8544, "port")
@@ -40,9 +39,9 @@ const (
 func testServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
-		kit.E(fmt.Fprint(res, indexHTML))
+		_, _ = fmt.Fprintf(res, indexHTML)
 	})
-	kit.E(http.ListenAndServe(addr, mux))
+	_ = http.ListenAndServe(addr, mux)
 }
 
 const indexHTML = `<!doctype html>
