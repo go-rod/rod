@@ -114,10 +114,12 @@ func (s *S) TestMonitor() {
 	host := b.ServeMonitor("127.0.0.1:0", true).Listener.Addr().String()
 
 	page := s.page.Navigate("http://" + host)
-	s.Contains(page.WaitLoad().Element("#targets").HTML(), string(p.TargetID))
+	s.Contains(page.Element("#targets a").Parent().HTML(), string(p.TargetID))
 
 	page.Navigate("http://" + host + "/page/" + string(p.TargetID))
 	s.Contains(page.Eval(`document.title`).Str, p.TargetID)
+
+	s.Equal(400, kit.Req("http://"+host+"/api/page/test").MustResponse().StatusCode)
 }
 
 func (s *S) TestRemoteLaunch() {

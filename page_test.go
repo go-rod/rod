@@ -307,11 +307,8 @@ func (s *S) TestPageWaitEvent() {
 func (s *S) TestAlert() {
 	page := s.page.Navigate(srcFile("fixtures/alert.html"))
 
-	wait := page.HandleDialog(true, "")
-
-	go page.Element("button").Click()
-
-	wait()
+	go page.HandleDialog(true, "")()
+	page.Element("button").Click()
 }
 
 func (s *S) TestMouse() {

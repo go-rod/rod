@@ -1,6 +1,8 @@
 package rod_test
 
 import (
+	"errors"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/defaults"
 )
@@ -56,6 +58,9 @@ func (s *S) TestSearch() {
 	el := p.Search("click me")
 	s.Equal("click me", el.Text())
 	s.True(el.Click().Matches("[a=ok]"))
+
+	_, err := p.SearchE(nil, []string{"not-exists"}, 0, 1)
+	s.True(errors.Is(err, rod.ErrElementNotFound))
 }
 
 func (s *S) TestSearchIframes() {

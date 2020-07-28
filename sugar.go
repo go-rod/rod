@@ -192,6 +192,8 @@ func (p *Page) Close() {
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
+// Because alert will block js, usually you have to run the wait function inside a goroutine. Check the unit test
+// for it for more information.
 func (p *Page) HandleDialog(accept bool, promptText string) (wait func()) {
 	w := p.HandleDialogE(accept, promptText)
 	return func() {
