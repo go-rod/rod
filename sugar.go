@@ -349,11 +349,11 @@ func (p *Page) HasMatches(selector, regex string) bool {
 	return has
 }
 
-// Search for a given query in the DOM tree until the result count is not zero.
+// Search for each given query in the DOM tree until find one, before that it will keep retrying.
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
-func (p *Page) Search(query string) *Element {
-	list, err := p.SearchE(Sleeper(), query, 0, 1)
+func (p *Page) Search(queries ...string) *Element {
+	list, err := p.SearchE(Sleeper(), queries, 0, 1)
 	kit.E(err)
 	return list.First()
 }

@@ -205,21 +205,19 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	return elemList, err
 }
 
-// SearchE for a given query in the DOM tree until the result count is not zero.
+// SearchE for each given query in the DOM tree until the result count is not zero, before that it will keep retrying.
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
-func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Elements, error) {
+func (p *Page) SearchE(sleeper kit.Sleeper, queries []string, from, to int) (Elements, error) {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return fmt.Errorf("%w by query: %s", newErr(ErrElementNotFound, query), query)
+			return fmt.Errorf("%w by query: %v", newErr(ErrElementNotFound, queries), queries)
 		}
 	}
 
 	list := Elements{}
 
-	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
-		p.enableNodeQuery()
-
+	search := func(query string) (bool, error) {
 		search, err := proto.DOMPerformSearch{
 			Query:                     query,
 			IncludeUserAgentShadowDOM: true,
@@ -260,6 +258,18 @@ func (p *Page) SearchE(sleeper kit.Sleeper, query string, from, to int) (Element
 		}
 
 		return true, nil
+	}
+
+	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
+		p.enableNodeQuery()
+
+		for _, query := range queries {
+			stop, err := search(query)
+			if stop {
+				return stop, err
+			}
+		}
+		return false, nil
 	})
 	if err != nil {
 		return nil, err
