@@ -45,6 +45,7 @@ func (s *S) TestHijack() {
 			SetBody([]byte("")).
 			SetBody(ctx.Request.Body()) // override request body
 
+		s.Equal(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		s.Contains(ctx.Request.Header("Origin"), url)
 		s.Len(ctx.Request.Headers(), 5)
 		s.Equal("", ctx.Request.JSONBody().String())

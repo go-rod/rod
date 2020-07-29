@@ -262,6 +262,11 @@ type HijackRequest struct {
 	req   *kit.ReqContext
 }
 
+// Type of the resource
+func (ctx *HijackRequest) Type() proto.NetworkResourceType {
+	return ctx.event.ResourceType
+}
+
 // Method of the request
 func (ctx *HijackRequest) Method() string {
 	return ctx.event.Request.Method
