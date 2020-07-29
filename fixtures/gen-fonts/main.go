@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -58,5 +59,5 @@ func main() {
 		html,
 	)
 
-	kit.E(kit.OutputFile("fixtures/fonts.html", html, nil))
+	utils.E(kit.OutputFile("fixtures/fonts.html", html, nil))
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
 )
@@ -59,7 +60,7 @@ func (s *S) TestBrowserPages() {
 	})
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
-		kit.E(err)
+		utils.E(err)
 		defer func() {
 			s.browser.PageFromTargetID(res.TargetID).Close()
 		}()
@@ -69,7 +70,7 @@ func (s *S) TestBrowserPages() {
 }
 
 func (s *S) TestBrowserClearStates() {
-	kit.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
+	utils.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
 
 	defer s.browser.EnableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: true})()
 	s.browser.DisableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: false})()
@@ -102,7 +103,7 @@ func (s *S) TestBrowserCrash() {
 
 func (s *S) TestBrowserCall() {
 	v, err := proto.BrowserGetVersion{}.Call(s.browser)
-	kit.E(err)
+	utils.E(err)
 
 	s.Regexp("1.3", v.ProtocolVersion)
 }

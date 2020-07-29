@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 )
@@ -24,13 +25,13 @@ func getSchema() gjson.Result {
 
 	u := l.Launch()
 	parsed, err := url.Parse(u)
-	kit.E(err)
+	utils.E(err)
 	parsed.Scheme = "http"
 	parsed.Path = "/json/protocol"
 
 	data := kit.Req(parsed.String()).MustString()
 
-	kit.E(kit.OutputFile("tmp/proto.json", data, nil))
+	utils.E(kit.OutputFile("tmp/proto.json", data, nil))
 
 	return gjson.Parse(data)
 }

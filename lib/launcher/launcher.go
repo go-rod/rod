@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/leakless"
 )
@@ -219,7 +220,7 @@ func (l *Launcher) FormatArgs() []string {
 		// fix a bug of chrome, if path is not absolute chrome will hang
 		if k == "user-data-dir" {
 			abs, err := filepath.Abs(v[0])
-			kit.E(err)
+			utils.E(err)
 			v[0] = abs
 		}
 
@@ -249,7 +250,7 @@ func (l *Launcher) Reap(enable bool) *Launcher {
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
 func (l *Launcher) Launch() string {
 	u, err := l.LaunchE()
-	kit.E(err)
+	utils.E(err)
 	return u
 }
 
@@ -273,7 +274,7 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 		b := NewBrowser()
 		b.Context = l.ctx
 		bin, err = b.Get()
-		kit.E(err)
+		utils.E(err)
 	}
 
 	var ll *leakless.Launcher
@@ -294,7 +295,7 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 	}
 
 	stdout, err := cmd.StdoutPipe()
-	kit.E(err)
+	utils.E(err)
 	defer func() {
 		if l.log == nil {
 			_ = stdout.Close()
@@ -302,7 +303,7 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 	}()
 
 	stderr, err := cmd.StderrPipe()
-	kit.E(err)
+	utils.E(err)
 	defer func() {
 		if l.log == nil {
 			_ = stderr.Close()
@@ -310,7 +311,7 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 	}()
 
 	err = cmd.Start()
-	kit.E(err)
+	utils.E(err)
 
 	if headless {
 		select {
@@ -383,22 +384,22 @@ func (l *Launcher) getURL() (u string, err error) {
 	for {
 		select {
 		case <-l.ctx.Done():
-			kit.E(l.ctx.Err())
+			utils.E(l.ctx.Err())
 		case e := <-l.output:
 			out += e
 
 			if strings.Contains(out, "Opening in existing browser session") {
-				kit.E(errors.New("[launcher] Quit the current running browser first"))
+				utils.E(errors.New("[launcher] Quit the current running browser first"))
 			}
 
 			str := regexp.MustCompile(`ws://.+/`).FindString(out)
 			if str != "" {
 				u, err := url.Parse(strings.TrimSpace(str))
-				kit.E(err)
+				utils.E(err)
 				return "http://" + u.Host, nil
 			}
 		case <-l.exit:
-			kit.E(errors.New("[launcher] Failed to get the debug url: " + out))
+			utils.E(errors.New("[launcher] Failed to get the debug url: " + out))
 		}
 	}
 }

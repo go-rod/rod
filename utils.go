@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -124,7 +125,7 @@ func mustToJSONForDev(value interface{}) string {
 	enc := json.NewEncoder(buf)
 	enc.SetEscapeHTML(false)
 
-	kit.E(enc.Encode(value))
+	utils.E(enc.Encode(value))
 
 	return buf.String()
 }

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -29,7 +30,7 @@ func main() {
 	`, "code", code)
 
 	path := "./lib/devices/types.go"
-	kit.E(kit.OutputFile(path, code, nil))
+	utils.E(kit.OutputFile(path, code, nil))
 
 	kit.Exec("gofmt", "-s", "-w", path).MustDo()
 	kit.Exec("goimports", "-w", path).MustDo()

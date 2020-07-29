@@ -13,6 +13,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"github.com/ysmood/kit"
@@ -397,7 +398,7 @@ func (s *S) TestWaitStable() {
 func (s *S) TestCanvasToImage() {
 	p := s.page.Navigate(srcFile("fixtures/canvas.html"))
 	src, err := png.Decode(bytes.NewBuffer(p.Element("#canvas").CanvasToImage("", 1.0)))
-	kit.E(err)
+	utils.E(err)
 	s.Equal(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }
 
@@ -433,7 +434,7 @@ func (s *S) TestElementScreenshot() {
 
 	data := el.Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
-	kit.E(err)
+	utils.E(err)
 	s.EqualValues(200, img.Bounds().Dx())
 	s.EqualValues(30, img.Bounds().Dy())
 	s.FileExists(f)
@@ -460,7 +461,7 @@ func (s *S) TestUseReleasedElement() {
 	s.EqualError(btn.ClickE("left"), "context canceled")
 
 	btn = p.Element("button")
-	kit.E(proto.RuntimeReleaseObject{ObjectID: btn.ObjectID}.Call(p))
+	utils.E(proto.RuntimeReleaseObject{ObjectID: btn.ObjectID}.Call(p))
 	s.EqualError(btn.ClickE("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
 }
 

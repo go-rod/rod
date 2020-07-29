@@ -17,6 +17,7 @@ import (
 	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -46,7 +47,7 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	})
 	srv.Engine.GET("/pages", func(ctx kit.GinContext) {
 		res, err := proto.TargetGetTargets{}.Call(b)
-		kit.E(err)
+		utils.E(err)
 		ctx.PureJSON(http.StatusOK, res.TargetInfos)
 	})
 	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
@@ -54,7 +55,7 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	})
 	srv.Engine.GET("/api/page/:id", func(ctx kit.GinContext) {
 		info, err := b.pageInfo(proto.TargetTargetID(ctx.Param("id")))
-		kit.E(err)
+		utils.E(err)
 		ctx.PureJSON(http.StatusOK, info)
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {

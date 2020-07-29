@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
 )
@@ -22,7 +23,7 @@ func TestBasic(t *testing.T) {
 	client := cdp.New(url).Context(ctx, done).Websocket(nil).Header(http.Header{"test": {}}).Connect()
 
 	defer func() {
-		kit.E(client.Call(ctx, "", "Browser.close", nil))
+		utils.E(client.Call(ctx, "", "Browser.close", nil))
 	}()
 
 	go func() {
@@ -31,12 +32,12 @@ func TestBasic(t *testing.T) {
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
-	kit.E(err)
+	utils.E(err)
 
 	res, err := client.Call(ctx, "", "Target.createTarget", map[string]string{
 		"url": "file://" + file,
 	})
-	kit.E(err)
+	utils.E(err)
 
 	targetID := kit.JSON(res).Get("targetId").String()
 
@@ -44,12 +45,12 @@ func TestBasic(t *testing.T) {
 		"targetId": targetID,
 		"flatten":  true, // if it's not set no response will return
 	})
-	kit.E(err)
+	utils.E(err)
 
 	sessionID := kit.JSON(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
-	kit.E(err)
+	utils.E(err)
 
 	_, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
 		"targetId": "abc",
@@ -71,7 +72,7 @@ func TestBasic(t *testing.T) {
 	})
 	assert.EqualError(t, err, context.Canceled.Error())
 
-	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
+	utils.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
 			"expression": `document.querySelector('iframe')`,
 		})
@@ -82,20 +83,20 @@ func TestBasic(t *testing.T) {
 	res, err = client.Call(ctx, sessionID, "DOM.describeNode", map[string]interface{}{
 		"objectId": kit.JSON(res).Get("result.objectId").String(),
 	})
-	kit.E(err)
+	utils.E(err)
 
 	frameId := kit.JSON(res).Get("node.frameId").String()
 
 	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	kit.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
+	utils.E(kit.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, sessionID, "Page.createIsolatedWorld", map[string]interface{}{
 			"frameId": frameId,
 		})
-		kit.E(err)
+		utils.E(err)
 
 		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
 			"contextId":  kit.JSON(res).Get("executionContextId").Int(),
@@ -108,7 +109,7 @@ func TestBasic(t *testing.T) {
 	res, err = client.Call(ctx, sessionID, "DOM.getOuterHTML", map[string]interface{}{
 		"objectId": kit.JSON(res).Get("result.objectId").String(),
 	})
-	kit.E(err)
+	utils.E(err)
 
 	assert.Equal(t, "<h4>it works</h4>", kit.JSON(res).Get("outerHTML").String())
 }
@@ -134,12 +135,12 @@ func TestCrash(t *testing.T) {
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
-	kit.E(err)
+	utils.E(err)
 
 	res, err := client.Call(ctx, "", "Target.createTarget", map[string]interface{}{
 		"url": "file://" + file,
 	})
-	kit.E(err)
+	utils.E(err)
 
 	targetID := kit.JSON(res).Get("targetId").String()
 
@@ -147,12 +148,12 @@ func TestCrash(t *testing.T) {
 		"targetId": targetID,
 		"flatten":  true,
 	})
-	kit.E(err)
+	utils.E(err)
 
 	sessionID := kit.JSON(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
-	kit.E(err)
+	utils.E(err)
 
 	go func() {
 		kit.Sleep(2)

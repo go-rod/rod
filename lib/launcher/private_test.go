@@ -79,7 +79,7 @@ func TestRemoteLaunch(t *testing.T) {
 	l := NewRemote(u).KeepUserDataDir()
 	client := l.Delete("keep-user-data-dir").Client()
 	b := client.Context(ctx, cancel).Connect()
-	kit.E(b.Call(ctx, "", "Browser.getVersion", nil))
+	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 	dir, _ := l.Get("user-data-dir")
 

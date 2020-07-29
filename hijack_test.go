@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -20,7 +21,7 @@ func (s *S) TestHijack() {
 		s.Equal("header", ctx.GetHeader("Test"))
 
 		b, err := ioutil.ReadAll(ctx.Request.Body)
-		kit.E(err)
+		utils.E(err)
 		s.Equal("a", string(b))
 
 		ginString("test")(ctx)
@@ -178,7 +179,7 @@ func (s *S) TestGetDownloadFile() {
 	content := "test content"
 
 	engine.GET("/d", func(ctx kit.GinContext) {
-		kit.E(ctx.Writer.Write([]byte(content)))
+		utils.E(ctx.Writer.Write([]byte(content)))
 	})
 	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
@@ -228,7 +229,7 @@ func (s *S) TestGetDownloadFileWithHijack() {
 	content := "test content"
 
 	engine.GET("/d", func(ctx kit.GinContext) {
-		kit.E(ctx.Writer.Write([]byte(content)))
+		utils.E(ctx.Writer.Write([]byte(content)))
 	})
 	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 

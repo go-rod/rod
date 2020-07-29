@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -146,7 +147,7 @@ func (cdp *Client) ConnectE() error {
 
 // Connect to browser
 func (cdp *Client) Connect() *Client {
-	kit.E(cdp.ConnectE())
+	utils.E(cdp.ConnectE())
 	return cdp
 }
 
@@ -164,7 +165,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 	}
 
 	data, err := json.Marshal(req)
-	kit.E(err)
+	utils.E(err)
 
 	callback := make(chan *response)
 
@@ -251,7 +252,7 @@ func (cdp *Client) readMsgFromBrowser() {
 		if kit.JSON(data).Get("id").Exists() {
 			var res response
 			err := json.Unmarshal(data, &res)
-			kit.E(err)
+			utils.E(err)
 			if cdp.debug {
 				cdp.debugLog(&res)
 			}
@@ -263,7 +264,7 @@ func (cdp *Client) readMsgFromBrowser() {
 		} else {
 			var evt Event
 			err := json.Unmarshal(data, &evt)
-			kit.E(err)
+			utils.E(err)
 			if cdp.debug {
 				cdp.debugLog(&evt)
 			}

@@ -3,9 +3,9 @@ package main
 import (
 	"strings"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/ysmood/kit"
 )
 
 type objType int
@@ -197,7 +197,7 @@ func optimize(json *string) {
 
 	set := func(path string, value interface{}) {
 		*json, err = sjson.Set(*json, path, value)
-		kit.E(err)
+		utils.E(err)
 	}
 
 	set("domains.32.types.2.properties.1.enum", []string{

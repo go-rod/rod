@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -60,8 +61,8 @@ func main() {
 		}
 	`
 
-	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
-	kit.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
+	utils.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
+	utils.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
 
 	kit.MustGoTool("golang.org/x/tools/cmd/goimports")
 	kit.MustGoTool("github.com/client9/misspell/cmd/misspell")

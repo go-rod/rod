@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -57,34 +58,34 @@ func unzip(from, to string) (err error) {
 	}()
 
 	zr, err := zip.OpenReader(from)
-	kit.E(err)
+	utils.E(err)
 
 	err = kit.Mkdir(to, nil)
-	kit.E(err)
+	utils.E(err)
 
 	for _, f := range zr.File {
 		p := filepath.Join(to, f.Name)
 
 		if f.FileInfo().IsDir() {
 			err := os.Mkdir(p, f.Mode())
-			kit.E(err)
+			utils.E(err)
 			continue
 		}
 
 		r, err := f.Open()
-		kit.E(err)
+		utils.E(err)
 
 		data, err := ioutil.ReadAll(r)
-		kit.E(err)
+		utils.E(err)
 
 		dst, err := os.OpenFile(p, os.O_CREATE|os.O_RDWR, f.Mode())
-		kit.E(err)
+		utils.E(err)
 
 		_, err = dst.Write(data)
-		kit.E(err)
+		utils.E(err)
 
 		err = dst.Close()
-		kit.E(err)
+		utils.E(err)
 	}
 
 	return zr.Close()

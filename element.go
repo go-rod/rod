@@ -12,6 +12,7 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -263,7 +264,7 @@ func (el *Element) SetFilesE(paths []string) error {
 	absPaths := []string{}
 	for _, p := range paths {
 		absPath, err := filepath.Abs(p)
-		kit.E(err)
+		utils.E(err)
 		absPaths = append(absPaths, absPath)
 	}
 
@@ -471,7 +472,7 @@ func (el *Element) ResourceE() ([]byte, error) {
 	var bin []byte
 	if res.Base64Encoded {
 		bin, err = base64.StdEncoding.DecodeString(data)
-		kit.E(err)
+		utils.E(err)
 	} else {
 		bin = []byte(data)
 	}

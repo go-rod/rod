@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
 )
@@ -76,7 +77,7 @@ func TestGetType(t *testing.T) {
 
 func TestJSON(t *testing.T) {
 	var j proto.JSON
-	kit.E(json.Unmarshal([]byte("10"), &j))
+	utils.E(json.Unmarshal([]byte("10"), &j))
 	assert.EqualValues(t, 10, j.Int())
 
 	assert.Equal(t, "true", kit.MustToJSON(proto.NewJSON(true)))
@@ -87,22 +88,22 @@ func TestJSON(t *testing.T) {
 func TestTimeCodec(t *testing.T) {
 	raw := []byte("123.123")
 	var duration proto.MonotonicTime
-	kit.E(json.Unmarshal(raw, &duration))
+	utils.E(json.Unmarshal(raw, &duration))
 
 	assert.EqualValues(t, 123123, duration.Milliseconds())
 
 	data, err := json.Marshal(duration)
-	kit.E(err)
+	utils.E(err)
 	assert.Equal(t, raw, data)
 
 	raw = []byte("123")
 	var datetime proto.TimeSinceEpoch
-	kit.E(json.Unmarshal(raw, &datetime))
+	utils.E(json.Unmarshal(raw, &datetime))
 
 	assert.EqualValues(t, 123, datetime.Unix())
 
 	data, err = json.Marshal(datetime)
-	kit.E(err)
+	utils.E(err)
 	assert.Equal(t, raw, data)
 }
 
@@ -112,7 +113,7 @@ func TestNormalizeInputDispatchMouseEvent(t *testing.T) {
 	}
 
 	data, err := e.Normalize()
-	kit.E(err)
+	utils.E(err)
 
 	assert.Equal(t, `{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
 }

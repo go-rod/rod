@@ -13,6 +13,7 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -111,7 +112,7 @@ func (s *S) TestPageContext() {
 
 func (s *S) TestRelease() {
 	res, err := s.page.EvalE(false, "", `document`, nil)
-	kit.E(err)
+	utils.E(err)
 	s.page.Release(res.ObjectID)
 }
 
@@ -174,7 +175,7 @@ func (s *S) TestPageAddScriptTag() {
 	res = p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`count()`)
 	s.EqualValues(1, res.Int())
 
-	kit.E(p.AddScriptTagE("", `let ok = 'yes'`))
+	utils.E(p.AddScriptTagE("", `let ok = 'yes'`))
 	res = p.Eval(`ok`)
 	s.Equal("yes", res.String())
 }
@@ -189,7 +190,7 @@ func (s *S) TestPageAddStyleTag() {
 	p.AddStyleTag(srcFile("fixtures/add-style-tag.css"))
 	s.Len(p.Elements("link"), 1)
 
-	kit.E(p.AddStyleTagE("", "h4 { color: green; }"))
+	utils.E(p.AddStyleTagE("", "h4 { color: green; }"))
 	res = p.Element("h4").Eval(`getComputedStyle(this).color`)
 	s.Equal("rgb(0, 128, 0)", res.String())
 }
@@ -353,7 +354,7 @@ func (s *S) TestMouseDrag() {
 
 	mouse.Move(3, 3)
 	mouse.Down("left")
-	kit.E(mouse.MoveE(60, 80, 3))
+	utils.E(mouse.MoveE(60, 80, 3))
 	mouse.Up("left")
 
 	<-wait
@@ -378,7 +379,7 @@ func (s *S) TestNativeDrag() {
 
 	mouse.Move(x, y)
 	mouse.Down("left")
-	kit.E(mouse.MoveE(x, toY, 5))
+	utils.E(mouse.MoveE(x, toY, 5))
 	page.Screenshot("")
 	mouse.Up("left")
 
@@ -390,7 +391,7 @@ func (s *S) TestPagePause() {
 	kit.Sleep(0.03)
 	go s.page.Eval(`10`)
 	kit.Sleep(0.03)
-	kit.E(proto.DebuggerResume{}.Call(s.page))
+	utils.E(proto.DebuggerResume{}.Call(s.page))
 }
 
 func (s *S) TestPageScreenshot() {
@@ -400,12 +401,12 @@ func (s *S) TestPageScreenshot() {
 	p.Screenshot()
 	data := p.Screenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
-	kit.E(err)
+	utils.E(err)
 	s.Equal(800, img.Bounds().Dx())
 	s.Equal(600, img.Bounds().Dy())
 	s.FileExists(f)
 
-	kit.E(kit.Remove(slash("tmp/screenshots")))
+	utils.E(kit.Remove(slash("tmp/screenshots")))
 	p.Screenshot("")
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
@@ -415,7 +416,7 @@ func (s *S) TestScreenshotFullPage() {
 	p.Element("button")
 	data := p.ScreenshotFullPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
-	kit.E(err)
+	utils.E(err)
 	res := p.Eval(`({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
 	s.EqualValues(res.Get("w").Int(), img.Bounds().Dx())
 	s.EqualValues(res.Get("h").Int(), img.Bounds().Dy())
@@ -425,7 +426,7 @@ func (s *S) TestScreenshotFullPage() {
 	s.EqualValues(800, res.Get("w").Int())
 	s.EqualValues(600, res.Get("h").Int())
 
-	kit.E(kit.Remove(slash("tmp/screenshots")))
+	utils.E(kit.Remove(slash("tmp/screenshots")))
 	p.ScreenshotFullPage("")
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
@@ -451,13 +452,13 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	kit.E(kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
+	utils.E(kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
 		p := s.browser.Page(srcFile("fixtures/scroll.html")).WaitLoad()
 		defer p.Close()
 
 		p.Mouse.Scroll(0, 10)
 		p.Mouse.Scroll(100, 190)
-		kit.E(p.Mouse.ScrollE(200, 300, 5))
+		utils.E(p.Mouse.ScrollE(200, 300, 5))
 		p.Element("button").WaitStable()
 		offset := p.Eval("({x: window.pageXOffset, y: window.pageYOffset})")
 		if offset.Get("x").Int() == 300 {
@@ -506,7 +507,7 @@ func (s *S) TestFonts() {
 
 	p := s.page.Navigate(srcFile("fixtures/fonts.html")).WaitLoad()
 
-	kit.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
+	utils.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
 }
 
 func (s *S) TestPageExpose() {

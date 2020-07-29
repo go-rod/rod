@@ -10,6 +10,7 @@ import (
 	"runtime"
 
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -20,7 +21,7 @@ const HeaderName = "Rod-Launcher"
 // use the docker image mentioned from here: https://github.com/go-rod/rod/blob/master/lib/examples/remote-launch
 func NewRemote(remoteURL string) *Launcher {
 	u, err := url.Parse(remoteURL)
-	kit.E(err)
+	utils.E(err)
 
 	toHTTP(u)
 
@@ -29,7 +30,7 @@ func NewRemote(remoteURL string) *Launcher {
 	l.url = remoteURL
 	l.Flags = nil
 
-	kit.E(json.Unmarshal(kit.Req(u.String()).MustBytes(), l))
+	utils.E(json.Unmarshal(kit.Req(u.String()).MustBytes(), l))
 
 	return l
 }
@@ -91,7 +92,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (p *Proxy) defaults(w http.ResponseWriter, _ *http.Request) {
 	l := New()
-	kit.E(w.Write(l.JSON()))
+	utils.E(w.Write(l.JSON()))
 }
 
 func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +101,7 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	options := r.Header.Get(HeaderName)
 	if options != "" {
 		l.Flags = nil
-		kit.E(json.Unmarshal([]byte(options), l))
+		utils.E(json.Unmarshal([]byte(options), l))
 	}
 
 	u := l.Launch()
@@ -125,13 +126,13 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	parsedURL, err := url.Parse(u)
-	kit.E(err)
+	utils.E(err)
 
 	p.Log(fmt.Sprintln(kit.C("Launch", "cyan"), u, l.FormatArgs()))
 	defer func() { p.Log(fmt.Sprintln(kit.C("Close", "cyan"), u)) }()
 
 	parsedWS, err := url.Parse(u)
-	kit.E(err)
+	utils.E(err)
 	parsedURL.Path = parsedWS.Path
 	toHTTP(parsedURL)
 

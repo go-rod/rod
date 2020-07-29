@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -123,18 +124,18 @@ func (lc *Browser) download(u string) (err error) {
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
 	err = kit.Mkdir(lc.Dir, nil)
-	kit.E(err)
+	utils.E(err)
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
-	kit.E(err)
+	utils.E(err)
 
 	res, err := kit.Req(u).Context(lc.Context).Client(&http.Client{
 		Transport: &http.Transport{IdleConnTimeout: 30 * time.Second},
 	}).Response()
-	kit.E(err)
+	utils.E(err)
 
 	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
-	kit.E(err)
+	utils.E(err)
 
 	progress := &progresser{
 		size: int(size),
@@ -143,17 +144,17 @@ func (lc *Browser) download(u string) (err error) {
 	}
 
 	_, err = io.Copy(zipFile, progress)
-	kit.E(err)
+	utils.E(err)
 
 	lc.Log("[rod/lib/launcher] Download chromium complete: " + zipPath + "\n")
 
 	err = zipFile.Close()
-	kit.E(err)
+	utils.E(err)
 
 	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
 	_ = os.RemoveAll(unzipPath)
 	err = unzip(zipPath, unzipPath)
-	kit.E(err)
+	utils.E(err)
 
 	lc.Log("[rod/lib/launcher] Unzipped chromium bin to: " + lc.ExecPath() + "\n")
 	return nil
@@ -183,8 +184,8 @@ func (lc *Browser) Open(url string) {
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
 	bin, err := lc.Get()
-	kit.E(err)
+	utils.E(err)
 	p := exec.Command(bin, url)
-	kit.E(p.Start())
-	kit.E(p.Process.Release())
+	utils.E(p.Start())
+	utils.E(p.Process.Release())
 }

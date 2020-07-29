@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ysmood/kit"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Show disables headless mode
@@ -97,7 +97,7 @@ func set(f string) {
 	case "slow":
 		var err error
 		Slow, err = time.ParseDuration(kv[1])
-		kit.E(err)
+		utils.E(err)
 	case "bin":
 		Bin = kv[1]
 	case "dir":

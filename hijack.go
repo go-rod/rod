@@ -14,6 +14,7 @@ import (
 	"sync"
 
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/ysmood/kit"
 )
@@ -120,7 +121,7 @@ func (r *HijackRouter) AddE(pattern string, resourceType proto.NetworkResourceTy
 // Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
 func (r *HijackRouter) Add(pattern string, handler func(*Hijack)) {
-	kit.E(r.AddE(pattern, "", handler))
+	utils.E(r.AddE(pattern, "", handler))
 }
 
 // RemoveE handler via the pattern
@@ -141,7 +142,7 @@ func (r *HijackRouter) RemoveE(pattern string) error {
 
 // Remove handler via the pattern
 func (r *HijackRouter) Remove(pattern string) {
-	kit.E(r.RemoveE(pattern))
+	utils.E(r.RemoveE(pattern))
 }
 
 // new context
@@ -193,7 +194,7 @@ func (r *HijackRouter) StopE() error {
 
 // Stop the router
 func (r *HijackRouter) Stop() {
-	kit.E(r.StopE())
+	utils.E(r.StopE())
 }
 
 // hijackHandler to handle each request that match the regexp
@@ -253,7 +254,7 @@ func (h *Hijack) LoadResponseE(loadBody bool) error {
 
 // LoadResponse will send request to the real destination and load the response as default response to override.
 func (h *Hijack) LoadResponse() {
-	kit.E(h.LoadResponseE(true))
+	utils.E(h.LoadResponseE(true))
 }
 
 // HijackRequest context
@@ -275,7 +276,7 @@ func (ctx *HijackRequest) Method() string {
 // URL of the request
 func (ctx *HijackRequest) URL() *url.URL {
 	u, err := url.Parse(ctx.event.Request.URL)
-	kit.E(err) // no way this will happen, if it happens it's fatal
+	utils.E(err) // no way this will happen, if it happens it's fatal
 	return u
 }
 
@@ -367,7 +368,7 @@ func (ctx *HijackResponse) StatusCodeE() (int, error) {
 // StatusCode of response
 func (ctx *HijackResponse) StatusCode() int {
 	code, err := ctx.StatusCodeE()
-	kit.E(err)
+	utils.E(err)
 	return code
 }
 
@@ -389,7 +390,7 @@ func (ctx *HijackResponse) HeaderE(key string) (string, error) {
 // Header via key
 func (ctx *HijackResponse) Header(key string) string {
 	val, err := ctx.HeaderE(key)
-	kit.E(err)
+	utils.E(err)
 	return val
 }
 
@@ -406,7 +407,7 @@ func (ctx *HijackResponse) HeadersE() (http.Header, error) {
 // Headers of request
 func (ctx *HijackResponse) Headers() http.Header {
 	val, err := ctx.HeadersE()
-	kit.E(err)
+	utils.E(err)
 	return val
 }
 
@@ -433,7 +434,7 @@ func (ctx *HijackResponse) BodyE() ([]byte, error) {
 // Body of response
 func (ctx *HijackResponse) Body() []byte {
 	b, err := ctx.BodyE()
-	kit.E(err)
+	utils.E(err)
 	return b
 }
 
@@ -449,7 +450,7 @@ func (ctx *HijackResponse) BodyStreamE() (io.Reader, error) {
 // BodyStream returns the stream of the body
 func (ctx *HijackResponse) BodyStream() io.Reader {
 	body, err := ctx.BodyStreamE()
-	kit.E(err)
+	utils.E(err)
 	return body
 }
 
@@ -474,7 +475,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 		ctx.SetHeader("Content-Type", "application/json; charset=utf-8")
 		var err error
 		ctx.payload.Body, err = json.Marshal(obj)
-		kit.E(err)
+		utils.E(err)
 	}
 	return ctx
 }
@@ -586,9 +587,9 @@ func (p *Page) GetDownloadFile(pattern string) func() []byte {
 	wait := p.GetDownloadFileE(pattern, "")
 	return func() []byte {
 		_, body, err := wait()
-		kit.E(err)
+		utils.E(err)
 		data, err := ioutil.ReadAll(body)
-		kit.E(err)
+		utils.E(err)
 		return data
 	}
 }

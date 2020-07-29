@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -22,7 +23,7 @@ func ExampleClient() {
 	res, err := client.Call(context.Background(), "", "Target.createTarget", map[string]string{
 		"url": "https://google.com",
 	})
-	kit.E(err)
+	utils.E(err)
 
 	fmt.Println(kit.JSON(res).Get("targetId").String())
 

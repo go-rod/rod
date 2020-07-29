@@ -12,6 +12,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
 	"go.uber.org/goleak"
@@ -44,7 +45,7 @@ func TestMain(m *testing.M) {
 
 func Test(t *testing.T) {
 	extPath, err := filepath.Abs("fixtures/chrome-extension")
-	kit.E(err)
+	utils.E(err)
 
 	u := launcher.New().
 		Delete("disable-extensions").
@@ -71,26 +72,26 @@ func srcFile(path string) string {
 // get abs file path from fixtures folder, return sample "/a/b/click.html"
 func file(path string) string {
 	f, err := filepath.Abs(slash(path))
-	kit.E(err)
+	utils.E(err)
 	return f
 }
 
 func ginHTML(body string) gin.HandlerFunc {
 	return func(ctx kit.GinContext) {
 		ctx.Header("Content-Type", "text/html; charset=utf-8")
-		kit.E(ctx.Writer.WriteString(body))
+		utils.E(ctx.Writer.WriteString(body))
 	}
 }
 
 func ginString(body string) gin.HandlerFunc {
 	return func(ctx kit.GinContext) {
-		kit.E(ctx.Writer.WriteString(body))
+		utils.E(ctx.Writer.WriteString(body))
 	}
 }
 
 func ginHTMLFile(path string) gin.HandlerFunc {
 	body, err := kit.ReadString(path)
-	kit.E(err)
+	utils.E(err)
 	return ginHTML(body)
 }
 
@@ -104,7 +105,7 @@ func serve() (string, *gin.Engine, func()) {
 
 	url := "http://" + srv.Listener.Addr().String()
 
-	return url, srv.Engine, func() { kit.E(srv.Listener.Close()) }
+	return url, srv.Engine, func() { utils.E(srv.Listener.Close()) }
 }
 
 func serveStatic() (string, func()) {

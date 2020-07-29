@@ -8,13 +8,14 @@ import (
 	"testing"
 
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/ysmood/kit"
 )
 
 func TestDownload(t *testing.T) {
 	c := launcher.NewBrowser()
-	kit.E(c.Download())
+	utils.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 }
 
@@ -22,7 +23,7 @@ func TestDownloadWithMirror(t *testing.T) {
 	c := launcher.NewBrowser()
 	c.Hosts = []string{"https://github.com", launcher.HostTaobao}
 	c.Dir = filepath.Join("tmp", "browser-from-mirror", kit.RandString(8))
-	kit.E(c.Download())
+	utils.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 
 	c.Hosts = []string{}
@@ -66,7 +67,7 @@ func TestLaunchUserMode(t *testing.T) {
 	port := 58472
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
-		Log(func(s string) { kit.E(os.Stdout.WriteString(s)) }).
+		Log(func(s string) { utils.E(os.Stdout.WriteString(s)) }).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).

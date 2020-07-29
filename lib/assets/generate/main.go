@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 	"github.com/ysmood/lookpath"
 )
@@ -43,14 +44,14 @@ const DeviceList = {{.deviceList}}
 		"deviceList", getDeviceList(),
 	)
 
-	kit.E(kit.OutputFile(slash("lib/assets/assets.go"), build, nil))
+	utils.E(kit.OutputFile(slash("lib/assets/assets.go"), build, nil))
 
-	kit.E(kit.OutputFile(slash("lib/assets/js/main.go"), genHelperList(helper), nil))
+	utils.E(kit.OutputFile(slash("lib/assets/js/main.go"), genHelperList(helper), nil))
 }
 
 func get(path string) string {
 	code, err := kit.ReadString(slash("lib/assets/" + path))
-	kit.E(err)
+	utils.E(err)
 	return encode(code)
 }
 
@@ -68,7 +69,7 @@ func lint() {
 	if err != nil {
 		kit.Exec("npm", "i", "--no-audit", "--no-fund").MustDo()
 		eslint, err = lookpath.LookPath(slash("node_modules/.bin"), "eslint")
-		kit.E(err)
+		utils.E(err)
 	}
 
 	kit.Exec(eslint, "--fix", ".").MustDo()

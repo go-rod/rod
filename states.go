@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/kit"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 type stateKey struct {
@@ -29,7 +29,7 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 	switch methodName {
 	case "Target.setDiscoverTargets": // only Target domain is special
 		method := &proto.TargetSetDiscoverTargets{}
-		kit.E(json.Unmarshal(params, method))
+		utils.E(json.Unmarshal(params, method))
 		if !method.Discover {
 			key = "Target.setDiscoverTargets"
 		}
@@ -52,7 +52,7 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Payload) (has bool) {
 	data, has := b.states.Load(b.key(sessionID, method.MethodName()))
 	if has {
-		kit.E(json.Unmarshal(data.(json.RawMessage), method))
+		utils.E(json.Unmarshal(data.(json.RawMessage), method))
 	}
 	return
 }
