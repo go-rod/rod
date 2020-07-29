@@ -512,6 +512,18 @@ func (s *S) TestFonts() {
 	kit.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
 }
 
+func (s *S) TestPageExpose() {
+	cb, stop := s.page.Expose("exposedFunc")
+	page := s.page.Navigate(srcFile("fixtures/click.html"))
+	page.Eval(`exposedFunc('ok')`)
+	s.Equal("ok", <-cb)
+	stop()
+	s.Panics(func() {
+		page := s.page.Navigate(srcFile("fixtures/click.html"))
+		page.Eval(`exposedFunc('')`)
+	})
+}
+
 func (s *S) TestNavigateErr() {
 	// dns error
 	s.Panics(func() {
