@@ -235,6 +235,19 @@ func (p *Page) WaitOpen() (wait func() (newPage *Page)) {
 	}
 }
 
+// WaitPauseOpen waits for a page opened by the current page, before opening pause the js execution.
+// Because the js will be paused, you should put the code that triggers it in a goroutine, such as the click.
+func (p *Page) WaitPauseOpen() (wait func() *Page, resume func()) {
+	newPage, r, err := p.WaitPauseOpenE()
+	utils.E(err)
+
+	return func() *Page {
+		page, err := newPage()
+		utils.E(err)
+		return page
+	}, func() { utils.E(r()) }
+}
+
 // Pause stops on the next JavaScript statement
 func (p *Page) Pause() *Page {
 	utils.E(p.PauseE())

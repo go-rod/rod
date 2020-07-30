@@ -232,7 +232,7 @@ func (s *S) TestPageExposeJSHelper() {
 	s.Equal("object", page.Eval("typeof(rod)").Str)
 }
 
-func (s *S) TestUntilPage() {
+func (s *S) TestPageWaitOpen() {
 	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
@@ -241,8 +241,35 @@ func (s *S) TestUntilPage() {
 	page.Element("a").Click()
 
 	newPage := wait()
+	defer newPage.Close()
 
-	s.Equal("click me", newPage.Element("button").Text())
+	s.Equal("new page", newPage.Eval("window.a").String())
+}
+
+func (s *S) TestPageWaitPauseOpen() {
+	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
+	defer page.CancelTimeout()
+
+	wait, resume := page.WaitPauseOpen()
+
+	go page.Element("a").Click()
+
+	newPage := wait()
+
+	newPage.EvalOnNewDocument(`window.a = 'ok'`)
+	defer newPage.Close()
+	resume()
+
+	s.Equal("ok", newPage.Eval(`window.a`).String())
+
+	w := page.WaitOpen()
+
+	page.Element("a").Click()
+
+	newPage = w()
+	defer newPage.Close()
+
+	s.Equal("new page", newPage.Eval("window.a").String())
 }
 
 func (s *S) TestPageWait() {

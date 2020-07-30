@@ -215,7 +215,8 @@ func (p *Page) CloseE() error {
 	return nil
 }
 
-// HandleDialogE doc is similar to the method HandleDialog
+// HandleDialogE doc is similar to the method HandleDialog.
+// Because the js will be paused, you should put the code that triggers in a goroutine.
 func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	recover := p.EnableDomain(&proto.PageEnable{})
 
@@ -299,6 +300,35 @@ func (p *Page) WaitOpenE() func() (*Page, error) {
 		wait()
 		return b.PageFromTargetIDE(targetID)
 	}
+}
+
+// WaitPauseOpenE waits for a page opened by the current page, before opening pause the js execution.
+// Because the js will be paused, you should put the code that triggers it in a goroutine.
+func (p *Page) WaitPauseOpenE() (wait func() (*Page, error), resume func() error, err error) {
+	wait = p.WaitOpenE()
+
+	// TODO: we have to use the browser to call, seems like a chrome bug
+	err = proto.TargetSetAutoAttach{
+		AutoAttach:             true,
+		WaitForDebuggerOnStart: true,
+		Flatten:                true,
+	}.Call(p.browser.Context(p.ctx, p.ctxCancel))
+	if err != nil {
+		return
+	}
+
+	resume = func() error {
+		err = proto.TargetSetAutoAttach{
+			Flatten: true,
+		}.Call(p.browser.Context(p.ctx, p.ctxCancel))
+		if err != nil {
+			return err
+		}
+
+		return proto.RuntimeRunIfWaitingForDebugger{}.Call(p)
+	}
+
+	return
 }
 
 // PauseE doc is similar to the method Pause
