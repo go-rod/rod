@@ -120,6 +120,8 @@ func (s *S) TestWindow() {
 	page := s.browser.Page(srcFile("fixtures/click.html"))
 	defer page.Close()
 
+	utils.E(page.ViewportE(nil))
+
 	bounds := page.GetWindow()
 	defer page.Window(
 		bounds.Left,

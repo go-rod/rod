@@ -59,7 +59,6 @@ func Test(t *testing.T) {
 	defer s.browser.Close()
 
 	s.page = s.browser.Page("")
-	s.page.Viewport(800, 600, 1, false)
 
 	suite.Run(t, s)
 }

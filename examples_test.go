@@ -26,8 +26,8 @@ func Example_basic() {
 	// The code will panic out if any chained call is used after the timeout.
 	page := browser.Timeout(time.Minute).Page("https://github.com")
 
-	// Resize the window make sure window size is always consistent.
-	page.Window(0, 0, 1200, 600)
+	// Make sure viewport is always consistent.
+	page.Viewport(1200, 600, 1, false)
 
 	// We use css selector to get the search input element and input "git"
 	page.Element("input").Input("git").Press(input.Enter)

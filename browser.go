@@ -45,6 +45,8 @@ type Browser struct {
 	traceLogJS  func(string, Array)
 	traceLogErr func(error)
 
+	defaultViewport *proto.EmulationSetDeviceMetricsOverride
+
 	monitorServer *kit.ServerContext
 
 	client  *cdp.Client
@@ -67,7 +69,13 @@ func New() *Browser {
 		traceLogAct: defaultTraceLogAct,
 		traceLogJS:  defaultTraceLogJS,
 		traceLogErr: defaultTraceLogErr,
-		states:      &sync.Map{},
+		defaultViewport: &proto.EmulationSetDeviceMetricsOverride{
+			Width: 800, Height: 600, DeviceScaleFactor: 1, Mobile: false,
+			ScreenOrientation: &proto.EmulationScreenOrientation{
+				Type: proto.EmulationScreenOrientationTypeLandscapePrimary,
+			},
+		},
+		states: &sync.Map{},
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -128,6 +136,13 @@ func (b *Browser) Client(c *cdp.Client) *Browser {
 // CDPCall overrides the cdp.Client.Call
 func (b *Browser) CDPCall(c CDPCall) *Browser {
 	b.cdpCall = c
+	return b
+}
+
+// DefaultViewport sets the default viewport for new page in the future. Default size is 800x600.
+// Set it to nil to disable it.
+func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverride) *Browser {
+	b.defaultViewport = viewport
 	return b
 }
 
@@ -360,6 +375,13 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	err := page.initSession()
 	if err != nil {
 		return nil, err
+	}
+
+	if b.defaultViewport != nil {
+		err = page.ViewportE(b.defaultViewport)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	b.storePage(page)
