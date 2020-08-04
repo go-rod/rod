@@ -282,7 +282,7 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 
 	_, headless := l.Get("headless")
 
-	if headless {
+	if headless && leakless.Support() {
 		ll = leakless.New()
 		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
