@@ -59,7 +59,7 @@ func (s *S) TestSearch() {
 	s.Equal("click me", el.MustText())
 	s.True(el.MustClick().MustMatches("[a=ok]"))
 
-	_, err := p.Sleeper(nil).Search([]string{"not-exists"}, 0, 1)
+	_, err := p.Sleeper(nil).Search(0, 1, "not-exists")
 	s.True(errors.Is(err, rod.ErrElementNotFound))
 }
 
@@ -167,17 +167,17 @@ func (s *S) TestElementTracing() {
 
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementByJS("", `1`, nil)
+	_, err := p.ElementByJS(rod.NewEvalOptions(`1`, nil))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
 func (s *S) TestPageElementsByJS_Err() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementsByJS("", `[1]`, nil)
+	_, err := p.ElementsByJS(rod.NewEvalOptions(`[1]`, nil))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJS("", `1`, nil)
+	_, err = p.ElementsByJS(rod.NewEvalOptions(`1`, nil))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJS("", `foo()`, nil)
+	_, err = p.ElementsByJS(rod.NewEvalOptions(`foo()`, nil))
 	s.Error(err)
 }
 

@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -38,21 +39,55 @@ func ArrayFromList(list interface{}) Array {
 	return arr
 }
 
+// EvalOptions object
+type EvalOptions struct {
+	// If enabled the eval will return an reference id for the
+	// remote object. If disabled the remote object will be return as json.
+	ByValue bool
+
+	// ThisID is the this object when eval the js
+	ThisID proto.RuntimeRemoteObjectID
+
+	// JS function code to eval
+	JS string
+
+	// JSArgs of the js function
+	JSArgs Array
+}
+
+// This set the ThisID
+func (e *EvalOptions) This(id proto.RuntimeRemoteObjectID) *EvalOptions {
+	e.ThisID = id
+	return e
+}
+
+// ByObject disables ByValue.
+func (e *EvalOptions) ByObject() *EvalOptions {
+	e.ByValue = false
+	return e
+}
+
+// NewEvalOptions creates a new EvalPayload
+func NewEvalOptions(js string, jsArgs Array) *EvalOptions {
+	return &EvalOptions{true, "", js, jsArgs}
+}
+
+const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
+
+// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
+func jsHelper(name js.Name, args Array) *EvalOptions {
+	return &EvalOptions{
+		JSArgs: append(Array{jsHelperID}, args...),
+		JS:     fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
+	}
+}
+
 // SprintFnThis wrap js with this, wrap function call if it's js expression
 func SprintFnThis(js string) string {
 	if detectJSFunction(js) {
 		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 	}
 	return fmt.Sprintf(`function() { return %s }`, js)
-}
-
-const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
-
-// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func jsHelper(name string, jsArgs Array) (string, Array) {
-	jsArgs = append(Array{jsHelperID}, jsArgs...)
-	js := fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name)
-	return js, jsArgs
 }
 
 // Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails

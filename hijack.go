@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
@@ -493,8 +494,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 
 			u := downloading.URL
 			if strings.HasPrefix(u, "blob:") {
-				js, params := jsHelper("fetchAsDataURL", Array{u})
-				res, e := p.Eval(true, "", js, params)
+				res, e := p.EvalWithOptions(jsHelper(js.FetchAsDataURL, Array{u}))
 				if e != nil {
 					err = e
 					wg.Done()

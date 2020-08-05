@@ -11,6 +11,7 @@ import (
 
 	"github.com/tidwall/gjson"
 
+	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
@@ -35,7 +36,7 @@ func (el *Element) Focus() error {
 		return err
 	}
 
-	_, err = el.Eval(true, `this.focus()`, nil)
+	_, err = el.Eval(`this.focus()`)
 	return err
 }
 
@@ -103,7 +104,7 @@ func (el *Element) Clickable() (bool, error) {
 		return false, err
 	}
 
-	scroll, err := el.page.Root().Eval(true, "", `{ x: window.scrollX, y: window.scrollY }`, nil)
+	scroll, err := el.page.Root().Eval(`{ x: window.scrollX, y: window.scrollY }`)
 	if err != nil {
 		return false, err
 	}
@@ -164,8 +165,7 @@ func (el *Element) SelectText(regex string) error {
 	defer el.tryTrace("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := jsHelper("selectText", Array{regex})
-	_, err = el.Eval(true, js, jsArgs)
+	_, err = el.EvalWithOptions(jsHelper(js.SelectText, Array{regex}))
 	return err
 }
 
@@ -179,8 +179,7 @@ func (el *Element) SelectAllText() error {
 	defer el.tryTrace("select all text")()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := jsHelper("selectAllText", nil)
-	_, err = el.Eval(true, js, jsArgs)
+	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil))
 	return err
 }
 
@@ -203,14 +202,13 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	js, jsArgs := jsHelper("inputEvent", nil)
-	_, err = el.Eval(true, js, jsArgs)
+	_, err = el.EvalWithOptions(jsHelper(js.InputEvent, nil))
 	return err
 }
 
 // Blur is similar to the method Blur
 func (el *Element) Blur() error {
-	_, err := el.Eval(true, "this.blur()", nil)
+	_, err := el.Eval("this.blur()")
 	return err
 }
 
@@ -226,14 +224,13 @@ func (el *Element) Select(selectors []string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	js, jsArgs := jsHelper("select", Array{selectors})
-	_, err = el.Eval(true, js, jsArgs)
+	_, err = el.EvalWithOptions(jsHelper(js.Select, Array{selectors}))
 	return err
 }
 
 // Matches checks if the element can be selected by the css selector
 func (el *Element) Matches(selector string) (bool, error) {
-	res, err := el.Eval(true, `s => this.matches(s)`, Array{selector})
+	res, err := el.Eval(`s => this.matches(s)`, selector)
 	if err != nil {
 		return false, err
 	}
@@ -242,7 +239,7 @@ func (el *Element) Matches(selector string) (bool, error) {
 
 // Attribute is similar to the method Attribute
 func (el *Element) Attribute(name string) (*string, error) {
-	attr, err := el.Eval(true, "(n) => this.getAttribute(n)", Array{name})
+	attr, err := el.Eval("(n) => this.getAttribute(n)", name)
 	if err != nil {
 		return nil, err
 	}
@@ -256,7 +253,7 @@ func (el *Element) Attribute(name string) (*string, error) {
 
 // Property is similar to the method Property
 func (el *Element) Property(name string) (proto.JSON, error) {
-	prop, err := el.Eval(true, "(n) => this[n]", Array{name})
+	prop, err := el.Eval("(n) => this[n]", name)
 	if err != nil {
 		return proto.JSON{}, err
 	}
@@ -333,8 +330,7 @@ func (el *Element) Frame() *Page {
 
 // ContainsElement check if the target is equal or inside the element.
 func (el *Element) ContainsElement(target *Element) (bool, error) {
-	js, args := jsHelper("containsElement", Array{target.ObjectID})
-	res, err := el.Eval(true, js, args)
+	res, err := el.EvalWithOptions(jsHelper(js.ContainsElement, Array{target.ObjectID}))
 	if err != nil {
 		return false, err
 	}
@@ -343,8 +339,7 @@ func (el *Element) ContainsElement(target *Element) (bool, error) {
 
 // Text doc is similar to the method MustText
 func (el *Element) Text() (string, error) {
-	js, jsArgs := jsHelper("text", nil)
-	str, err := el.Eval(true, js, jsArgs)
+	str, err := el.EvalWithOptions(jsHelper(js.Text, nil))
 	if err != nil {
 		return "", err
 	}
@@ -353,7 +348,7 @@ func (el *Element) Text() (string, error) {
 
 // HTML doc is similar to the method MustHTML
 func (el *Element) HTML() (string, error) {
-	str, err := el.Eval(true, `this.outerHTML`, nil)
+	str, err := el.Eval(`this.outerHTML`)
 	if err != nil {
 		return "", err
 	}
@@ -362,8 +357,7 @@ func (el *Element) HTML() (string, error) {
 
 // Visible doc is similar to the method MustVisible
 func (el *Element) Visible() (bool, error) {
-	js, jsArgs := jsHelper("visible", nil)
-	res, err := el.Eval(true, js, jsArgs)
+	res, err := el.EvalWithOptions(jsHelper(js.Visible, nil))
 	if err != nil {
 		return false, err
 	}
@@ -372,8 +366,7 @@ func (el *Element) Visible() (bool, error) {
 
 // WaitLoad for element like <img />
 func (el *Element) WaitLoad() error {
-	js, jsArgs := jsHelper("waitLoad", nil)
-	_, err := el.Eval(true, js, jsArgs)
+	_, err := el.EvalWithOptions(jsHelper(js.WaitLoad, nil))
 	return err
 }
 
@@ -412,9 +405,9 @@ func (el *Element) WaitStable(interval time.Duration) error {
 }
 
 // Wait doc is similar to the method MustWait
-func (el *Element) Wait(js string, params Array) error {
+func (el *Element) Wait(js string, params ...interface{}) error {
 	return kit.Retry(el.ctx, el.sleeper, func() (bool, error) {
-		res, err := el.Eval(true, js, params)
+		res, err := el.Eval(js, params...)
 		if err != nil {
 			return true, err
 		}
@@ -429,14 +422,14 @@ func (el *Element) Wait(js string, params Array) error {
 
 // WaitVisible doc is similar to the method MustWaitVisible
 func (el *Element) WaitVisible() error {
-	js, jsArgs := jsHelper("visible", nil)
-	return el.Wait(js, jsArgs)
+	opts := jsHelper(js.Visible, nil)
+	return el.Wait(opts.JS, opts.JSArgs...)
 }
 
 // WaitInvisible doc is similar to the method MustWaitInvisible
 func (el *Element) WaitInvisible() error {
-	js, jsArgs := jsHelper("invisible", nil)
-	return el.Wait(js, jsArgs)
+	opts := jsHelper(js.Invisible, nil)
+	return el.Wait(opts.JS, opts.JSArgs...)
 }
 
 // CanvasToImage get image data of a canvas.
@@ -444,9 +437,7 @@ func (el *Element) WaitInvisible() error {
 // The default quality is 0.92.
 // doc: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
 func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error) {
-	res, err := el.Eval(true,
-		`(format, quality) => this.toDataURL(format, quality)`,
-		Array{format, quality})
+	res, err := el.Eval(`(format, quality) => this.toDataURL(format, quality)`, format, quality)
 	if err != nil {
 		return nil, err
 	}
@@ -457,8 +448,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 
 // Resource doc is similar to the method MustResource
 func (el *Element) Resource() ([]byte, error) {
-	js, jsArgs := jsHelper("resource", nil)
-	src, err := el.Eval(true, js, jsArgs)
+	src, err := el.EvalWithOptions(jsHelper(js.Resource, nil))
 	if err != nil {
 		return nil, err
 	}
@@ -539,8 +529,13 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 }
 
 // Eval doc is similar to the method MustEval
-func (el *Element) Eval(byValue bool, js string, params Array) (*proto.RuntimeRemoteObject, error) {
-	return el.page.Context(el.ctx, el.ctxCancel).Eval(byValue, el.ObjectID, js, params)
+func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
+	return el.EvalWithOptions(NewEvalOptions(js, params))
+}
+
+// EvalWithOptions of Eval
+func (el *Element) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
+	return el.page.Context(el.ctx, el.ctxCancel).EvalWithOptions(opts.This(el.ObjectID))
 }
 
 func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeRemoteObjectID) error {
@@ -555,7 +550,7 @@ func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeR
 	// DFS for the iframe that holds the element
 	var walk func(page *Page) error
 	walk = func(page *Page) error {
-		list, err := page.Elements("", "iframe")
+		list, err := page.Elements("iframe")
 		if err != nil {
 			return err
 		}

@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -111,7 +112,7 @@ func (s *S) TestPageContext() {
 }
 
 func (s *S) TestRelease() {
-	res, err := s.page.Eval(false, "", `document`, nil)
+	res, err := s.page.EvalWithOptions(rod.NewEvalOptions(`document`, nil).ByObject())
 	utils.E(err)
 	s.page.MustRelease(res.ObjectID)
 }
@@ -215,9 +216,9 @@ func (s *S) TestPageEvalOnNewDocument() {
 func (s *S) TestPageEval() {
 	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
 
-	s.EqualValues(1, page.MustEval(`
-		() => 1
-	`).Int())
+	s.EqualValues(3, page.MustEval(`
+		(a, b) => a + b
+	`, 1, 2).Int())
 	s.EqualValues(1, page.MustEval(`a => 1`).Int())
 	s.EqualValues(1, page.MustEval(`function() { return 1 }`).Int())
 	s.NotEqualValues(1, page.MustEval(`a = () => 1`).Int())

@@ -316,7 +316,7 @@ func (p *Page) MustExpose(name string) (callback chan string, stop func()) {
 // MustEval js on the page. The first param must be a js function definition.
 // For example page.MustEval(`n => n + 1`, 1) will return 2
 func (p *Page) MustEval(js string, params ...interface{}) proto.JSON {
-	res, err := p.Eval(true, "", js, params)
+	res, err := p.Eval(js, params...)
 	utils.E(err)
 	return res.Value
 }
@@ -391,14 +391,14 @@ func (p *Page) MustHasMatches(selector, regex string) bool {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) MustSearch(queries ...string) *Element {
-	list, err := p.Search(queries, 0, 1)
+	list, err := p.Search(0, 1, queries...)
 	utils.E(err)
 	return list.First()
 }
 
 // MustElement retries until an element in the page that matches one of the CSS selectors
 func (p *Page) MustElement(selectors ...string) *Element {
-	el, err := p.Element("", selectors)
+	el, err := p.Element(selectors...)
 	utils.E(err)
 	return el
 }
@@ -407,42 +407,42 @@ func (p *Page) MustElement(selectors ...string) *Element {
 // Each pairs is a css selector and a regex. A sample call will look like page.MustElementMatches("div", "click me").
 // The regex is the js regex, not golang's.
 func (p *Page) MustElementMatches(pairs ...string) *Element {
-	el, err := p.ElementMatches("", pairs)
+	el, err := p.ElementMatches(pairs...)
 	utils.E(err)
 	return el
 }
 
 // MustElementByJS retries until returns the element from the return value of the js function
 func (p *Page) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJS("", js, params)
+	el, err := p.ElementByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return el
 }
 
 // MustElements returns all elements that match the css selector
 func (p *Page) MustElements(selector string) Elements {
-	list, err := p.Elements("", selector)
+	list, err := p.Elements(selector)
 	utils.E(err)
 	return list
 }
 
 // MustElementsX returns all elements that match the XPath selector
 func (p *Page) MustElementsX(xpath string) Elements {
-	list, err := p.ElementsX("", xpath)
+	list, err := p.ElementsX(xpath)
 	utils.E(err)
 	return list
 }
 
 // MustElementX retries until an element in the page that matches one of the XPath selectors
 func (p *Page) MustElementX(xPaths ...string) *Element {
-	el, err := p.ElementX("", xPaths)
+	el, err := p.ElementX(xPaths...)
 	utils.E(err)
 	return el
 }
 
 // MustElementsByJS returns the elements from the return value of the js
 func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
-	list, err := p.ElementsByJS("", js, params)
+	list, err := p.ElementsByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return list
 }
@@ -723,7 +723,7 @@ func (el *Element) MustRelease() {
 // MustEval evaluates js function on the element, the first param must be a js function definition
 // For example: el.MustEval(`name => this.getAttribute(name)`, "value")
 func (el *Element) MustEval(js string, params ...interface{}) proto.JSON {
-	res, err := el.Eval(true, js, params)
+	res, err := el.Eval(js, params...)
 	utils.E(err)
 	return res.Value
 }
@@ -765,7 +765,7 @@ func (el *Element) MustElementX(xpath string) *Element {
 
 // MustElementByJS returns the element from the return value of the js
 func (el *Element) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := el.ElementByJS(js, params)
+	el, err := el.ElementByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return el
 }
@@ -822,7 +822,7 @@ func (el *Element) MustElementsX(xpath string) Elements {
 
 // MustElementsByJS returns the elements from the return value of the js
 func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
-	list, err := el.ElementsByJS(js, params)
+	list, err := el.ElementsByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return list
 }

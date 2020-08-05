@@ -482,12 +482,12 @@ func (s *S) TestFnErr() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
-	_, err := el.Eval(true, "foo()", nil)
+	_, err := el.Eval("foo()")
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.True(errors.Is(err, rod.ErrEval))
 
-	_, err = el.ElementByJS("foo()", nil)
+	_, err = el.ElementByJS(rod.NewEvalOptions("foo()", nil))
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.True(errors.Is(err, rod.ErrEval))

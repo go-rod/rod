@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
@@ -407,15 +408,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle doc is similar to the method MustWaitIdle
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	js, jsArgs := jsHelper("waitIdle", Array{timeout.Seconds()})
-	_, err = p.Eval(true, "", js, jsArgs)
+	_, err = p.EvalWithOptions(jsHelper(js.WaitIdle, Array{timeout.Seconds()}))
 	return err
 }
 
 // WaitLoad doc is similar to the method MustWaitLoad
 func (p *Page) WaitLoad() error {
-	js, jsArgs := jsHelper("waitLoad", nil)
-	_, err := p.Eval(true, "", js, jsArgs)
+	_, err := p.EvalWithOptions(jsHelper(js.WaitLoad, nil))
 	return err
 }
 
@@ -423,8 +422,7 @@ func (p *Page) WaitLoad() error {
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	js, jsArgs := jsHelper("addScriptTag", Array{id, url, content})
-	_, err := p.Eval(true, "", js, jsArgs)
+	_, err := p.EvalWithOptions(jsHelper(js.AddScriptTag, Array{id, url, content}))
 	return err
 }
 
@@ -432,8 +430,7 @@ func (p *Page) AddScriptTag(url, content string) error {
 func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	js, jsArgs := jsHelper("addStyleTag", Array{id, url, content})
-	_, err := p.Eval(true, "", js, jsArgs)
+	_, err := p.EvalWithOptions(jsHelper(js.AddStyleTag, Array{id, url, content}))
 	return err
 }
 
@@ -475,18 +472,23 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 	return
 }
 
-// Eval thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
+// Eval evalutes javascript on the page.
+func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
+	return p.EvalWithOptions(NewEvalOptions(js, jsArgs))
+}
+
+// EvalWithOptions thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
 // If the item in jsArgs is proto.RuntimeRemoteObjectID, the remote object will be used, else the item will be treated as JSON value.
-func (p *Page) Eval(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
+func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-	objectID := thisID
+	objectID := opts.ThisID
 	var err error
 	var res *proto.RuntimeCallFunctionOnResult
 
 	// js context will be invalid if a frame is reloaded
 	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
-		if p.getWindowObjectID() == "" || thisID == "" {
+		if p.getWindowObjectID() == "" || opts.ThisID == "" {
 			err := p.initJS(false)
 			if err != nil {
 				if isNilContextErr(err) {
@@ -495,12 +497,12 @@ func (p *Page) Eval(byValue bool, thisID proto.RuntimeRemoteObjectID, js string,
 				return true, err
 			}
 		}
-		if thisID == "" {
+		if opts.ThisID == "" {
 			objectID = p.getWindowObjectID()
 		}
 
 		args := []*proto.RuntimeCallArgument{}
-		for _, arg := range jsArgs {
+		for _, arg := range opts.JSArgs {
 			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok {
 				if id == jsHelperID {
 					id = p.getJSHelperObjectID()
@@ -514,11 +516,11 @@ func (p *Page) Eval(byValue bool, thisID proto.RuntimeRemoteObjectID, js string,
 		res, err = proto.RuntimeCallFunctionOn{
 			ObjectID:            objectID,
 			AwaitPromise:        true,
-			ReturnByValue:       byValue,
-			FunctionDeclaration: SprintFnThis(js),
+			ReturnByValue:       opts.ByValue,
+			FunctionDeclaration: SprintFnThis(opts.JS),
 			Arguments:           args,
 		}.Call(p)
-		if thisID == "" && isNilContextErr(err) {
+		if opts.ThisID == "" && isNilContextErr(err) {
 			_ = p.initJS(true)
 			return false, nil
 		}
@@ -555,7 +557,7 @@ func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array)
 		removeTrace()
 		removeTrace = remove
 
-		res, err := p.Eval(true, thisID, js, params)
+		res, err := p.EvalWithOptions(NewEvalOptions(js, params).This(thisID))
 		if err != nil {
 			return true, err
 		}
@@ -792,7 +794,7 @@ func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID,
 func (p *Page) hasElement(id proto.RuntimeRemoteObjectID) (bool, error) {
 	// We don't have a good way to detect if a node is inside an iframe.
 	// Currently this is most efficient way to do it.
-	_, err := p.Eval(true, "", "() => {}", Array{id})
+	_, err := p.Eval("() => {}", id)
 	if err == nil {
 		return true, nil
 	}

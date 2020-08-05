@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
+	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -84,22 +85,20 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	root := p.Root()
 	id := kit.RandString(8)
 
-	js, jsArgs := jsHelper("overlay", Array{
+	_, err := root.EvalWithOptions(jsHelper(js.Overlay, Array{
 		id,
 		left,
 		top,
 		width,
 		height,
 		msg,
-	})
-	_, err := root.Eval(true, "", js, jsArgs)
+	}))
 	if err != nil {
 		p.browser.traceLogErr(err)
 	}
 
 	remove = func() {
-		js, jsArgs := jsHelper("removeOverlay", Array{id})
-		_, _ = root.Eval(true, "", js, jsArgs)
+		_, _ = root.EvalWithOptions(jsHelper(js.RemoveOverlay, Array{id}))
 	}
 
 	return
@@ -116,18 +115,16 @@ func (p *Page) ExposeJSHelper() *Page {
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := kit.RandString(8)
 
-	js, jsArgs := jsHelper("elementOverlay", Array{
+	_, err := el.EvalWithOptions(jsHelper(js.ElementOverlay, Array{
 		id,
 		msg,
-	})
-	_, err := el.Eval(true, js, jsArgs)
+	}))
 	if err != nil {
 		el.page.browser.traceLogErr(err)
 	}
 
 	removeOverlay = func() {
-		js, jsArgs := jsHelper("removeOverlay", Array{id})
-		_, _ = el.Eval(true, js, jsArgs)
+		_, _ = el.EvalWithOptions(jsHelper(js.RemoveOverlay, Array{id}))
 	}
 
 	return
@@ -196,13 +193,11 @@ func defaultTraceLogErr(err error) {
 }
 
 func (m *Mouse) initMouseTracer() {
-	js, params := jsHelper("initMouseTracer", Array{m.id, assets.MousePointer})
-	_, _ = m.page.Eval(true, "", js, params)
+	_, _ = m.page.EvalWithOptions(jsHelper(js.InitMouseTracer, Array{m.id, assets.MousePointer}))
 }
 
 func (m *Mouse) updateMouseTracer() bool {
-	js, jsArgs := jsHelper("updateMouseTracer", Array{m.id, m.x, m.y})
-	res, err := m.page.Eval(true, "", js, jsArgs)
+	res, err := m.page.EvalWithOptions(jsHelper(js.UpdateMouseTracer, Array{m.id, m.x, m.y}))
 	if err != nil {
 		return true
 	}
