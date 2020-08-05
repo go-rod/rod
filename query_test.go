@@ -59,7 +59,7 @@ func (s *S) TestSearch() {
 	s.Equal("click me", el.MustText())
 	s.True(el.MustClick().MustMatches("[a=ok]"))
 
-	_, err := p.Search(nil, []string{"not-exists"}, 0, 1)
+	_, err := p.Sleeper(nil).Search([]string{"not-exists"}, 0, 1)
 	s.True(errors.Is(err, rod.ErrElementNotFound))
 }
 
@@ -166,18 +166,18 @@ func (s *S) TestElementTracing() {
 }
 
 func (s *S) TestPageElementByJS_Err() {
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementByJSE(rod.Sleeper(), "", `1`, nil)
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	_, err := p.ElementByJS("", `1`, nil)
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
 func (s *S) TestPageElementsByJS_Err() {
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementsByJSE("", `[1]`, nil)
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	_, err := p.ElementsByJS("", `[1]`, nil)
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJSE("", `1`, nil)
+	_, err = p.ElementsByJS("", `1`, nil)
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJSE("", `foo()`, nil)
+	_, err = p.ElementsByJS("", `foo()`, nil)
 	s.Error(err)
 }
 

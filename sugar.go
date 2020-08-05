@@ -323,7 +323,7 @@ func (p *Page) MustEval(js string, params ...interface{}) proto.JSON {
 
 // MustWait js function until it returns true
 func (p *Page) MustWait(js string, params ...interface{}) {
-	utils.E(p.Wait(Sleeper(), "", js, params))
+	utils.E(p.Wait("", js, params))
 }
 
 // MustObjectToJSON by remote object
@@ -391,14 +391,14 @@ func (p *Page) MustHasMatches(selector, regex string) bool {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) MustSearch(queries ...string) *Element {
-	list, err := p.Search(Sleeper(), queries, 0, 1)
+	list, err := p.Search(queries, 0, 1)
 	utils.E(err)
 	return list.First()
 }
 
 // MustElement retries until an element in the page that matches one of the CSS selectors
 func (p *Page) MustElement(selectors ...string) *Element {
-	el, err := p.Element(Sleeper(), "", selectors)
+	el, err := p.Element("", selectors)
 	utils.E(err)
 	return el
 }
@@ -407,14 +407,14 @@ func (p *Page) MustElement(selectors ...string) *Element {
 // Each pairs is a css selector and a regex. A sample call will look like page.MustElementMatches("div", "click me").
 // The regex is the js regex, not golang's.
 func (p *Page) MustElementMatches(pairs ...string) *Element {
-	el, err := p.ElementMatches(Sleeper(), "", pairs)
+	el, err := p.ElementMatches("", pairs)
 	utils.E(err)
 	return el
 }
 
 // MustElementByJS retries until returns the element from the return value of the js function
 func (p *Page) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJS(Sleeper(), "", js, params)
+	el, err := p.ElementByJS("", js, params)
 	utils.E(err)
 	return el
 }
@@ -435,7 +435,7 @@ func (p *Page) MustElementsX(xpath string) Elements {
 
 // MustElementX retries until an element in the page that matches one of the XPath selectors
 func (p *Page) MustElementX(xPaths ...string) *Element {
-	el, err := p.ElementX(Sleeper(), "", xPaths)
+	el, err := p.ElementX("", xPaths)
 	utils.E(err)
 	return el
 }

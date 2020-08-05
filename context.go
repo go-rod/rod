@@ -3,6 +3,8 @@ package rod
 import (
 	"context"
 	"time"
+
+	"github.com/ysmood/kit"
 )
 
 // Context creates a clone with a context that inherits the previous one
@@ -31,6 +33,13 @@ func (b *Browser) CancelTimeout() *Browser {
 	return b
 }
 
+// Sleeper for chained sub-operations
+func (b *Browser) Sleeper(sleeper kit.Sleeper) *Browser {
+	newObj := *b
+	newObj.sleeper = sleeper
+	return &newObj
+}
+
 // Context creates a clone with a context that inherits the previous one
 func (p *Page) Context(ctx context.Context, cancel func()) *Page {
 	newObj := *p
@@ -57,6 +66,13 @@ func (p *Page) CancelTimeout() *Page {
 	return p
 }
 
+// Sleeper for chained sub-operations
+func (p *Page) Sleeper(sleeper kit.Sleeper) *Page {
+	newObj := *p
+	newObj.sleeper = sleeper
+	return &newObj
+}
+
 // Context creates a clone with a context that inherits the previous one
 func (el *Element) Context(ctx context.Context, cancel func()) *Element {
 	newObj := *el
@@ -81,4 +97,11 @@ func (el *Element) Timeout(d time.Duration) *Element {
 func (el *Element) CancelTimeout() *Element {
 	el.timeoutCancel()
 	return el
+}
+
+// Sleeper for chained sub-operations
+func (el *Element) Sleeper(sleeper kit.Sleeper) *Element {
+	newObj := *el
+	newObj.sleeper = sleeper
+	return &newObj
 }

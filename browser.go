@@ -34,6 +34,7 @@ type Browser struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
+	sleeper       kit.Sleeper
 
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
@@ -62,6 +63,7 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	b := &Browser{
+		sleeper:     Sleeper,
 		lock:        &sync.Mutex{},
 		slowmotion:  defaults.Slow,
 		quiet:       defaults.Quiet,
@@ -363,6 +365,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	page = (&Page{
+		sleeper:      b.sleeper,
 		lock:         &sync.Mutex{},
 		browser:      b,
 		TargetID:     targetID,

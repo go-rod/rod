@@ -29,6 +29,7 @@ type Page struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
+	sleeper       kit.Sleeper
 
 	browser *Browser
 
@@ -538,7 +539,8 @@ func (p *Page) Eval(byValue bool, thisID proto.RuntimeRemoteObjectID, js string,
 }
 
 // Wait js function until it returns true
-func (p *Page) Wait(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
+func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
+	sleeper := p.sleeper
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
 			return newErr(ErrWaitJSTimeout, js, js)
@@ -582,6 +584,7 @@ func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (proto.JSON, error) 
 // ElementFromObject creates an Element from the remote object id.
 func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 	return (&Element{
+		sleeper:  p.sleeper,
 		page:     p,
 		ObjectID: id,
 	}).Context(context.WithCancel(p.ctx))
