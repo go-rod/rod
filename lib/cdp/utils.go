@@ -5,6 +5,7 @@ import (
 	"log"
 	"runtime/debug"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -24,7 +25,7 @@ func defaultDebugLog(obj interface{}) {
 	case *Request:
 		log.Printf(
 			"[rod/cdp] %s %d %s %s %s\n",
-			kit.C("->", "green"),
+			utils.C("->", "green"),
 			val.ID,
 			val.Method,
 			val.SessionID,
@@ -33,7 +34,7 @@ func defaultDebugLog(obj interface{}) {
 	case *response:
 		log.Printf(
 			"[rod/cdp] %s %d %s %s\n",
-			kit.C("<-", "yellow"),
+			utils.C("<-", "yellow"),
 			val.ID,
 			prettyJSON(val.Result),
 			kit.Sdump(val.Error),
@@ -41,7 +42,7 @@ func defaultDebugLog(obj interface{}) {
 	case *Event:
 		log.Printf(
 			"[rod/cdp] %s %s %s %s\n",
-			kit.C("evt", "blue"),
+			utils.C("evt", "blue"),
 			val.Method,
 			val.SessionID,
 			prettyJSON(val.Params),

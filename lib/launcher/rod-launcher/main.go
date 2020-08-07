@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/kit"
 )
 
@@ -28,7 +29,7 @@ func main() {
 
 			srv := kit.MustServer(*addr)
 			srv.Engine.NoRoute(gin.WrapH(proxy))
-			fmt.Println("Remote control url is", kit.C("ws://"+srv.Listener.Addr().String(), "green"))
+			fmt.Println("Remote control url is", utils.C("ws://"+srv.Listener.Addr().String(), "green"))
 			srv.MustDo()
 		}
 	})).Do()

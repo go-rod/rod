@@ -119,7 +119,7 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 
 		if _, has := l.Get("keep-user-data-dir"); !has {
 			dir, _ := l.Get("user-data-dir")
-			p.Log(fmt.Sprintln(kit.C("Remove", "cyan"), dir))
+			p.Log(fmt.Sprintln(utils.C("Remove", "cyan"), dir))
 
 			_ = os.RemoveAll(dir)
 		}
@@ -128,8 +128,8 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	parsedURL, err := url.Parse(u)
 	utils.E(err)
 
-	p.Log(fmt.Sprintln(kit.C("Launch", "cyan"), u, l.FormatArgs()))
-	defer func() { p.Log(fmt.Sprintln(kit.C("Close", "cyan"), u)) }()
+	p.Log(fmt.Sprintln(utils.C("Launch", "cyan"), u, l.FormatArgs()))
+	defer func() { p.Log(fmt.Sprintln(utils.C("Close", "cyan"), u)) }()
 
 	parsedWS, err := url.Parse(u)
 	utils.E(err)

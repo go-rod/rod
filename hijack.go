@@ -175,7 +175,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 		},
 		OnError: func(err error) {
 			if err != context.Canceled {
-				log.Println(kit.C("[rod hijack err]", "yellow"), err)
+				log.Println(utils.C("[rod hijack err]", "yellow"), err)
 			}
 		},
 	}

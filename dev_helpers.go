@@ -177,7 +177,7 @@ func (p *Page) tryTraceFn(js string, params Array) func() {
 }
 
 func defaultTraceLogAct(msg string) {
-	log.Println(kit.C("act", "cyan"), msg)
+	log.Println(utils.C("act", "cyan"), msg)
 }
 
 func defaultTraceLogJS(js string, params Array) {
@@ -186,12 +186,12 @@ func defaultTraceLogJS(js string, params Array) {
 		paramsStr = strings.Trim(mustToJSONForDev(params), "[]\r\n")
 	}
 	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
-	log.Println(kit.C("js", "yellow"), msg)
+	log.Println(utils.C("js", "yellow"), msg)
 }
 
 func defaultTraceLogErr(err error) {
 	if err != context.Canceled && err != context.DeadlineExceeded {
-		log.Println(kit.C("[rod trace err]", "yellow"), err)
+		log.Println(utils.C("[rod trace err]", "yellow"), err)
 	}
 }
 
