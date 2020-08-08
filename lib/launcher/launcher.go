@@ -76,7 +76,7 @@ func New() *Launcher {
 		"force-color-profile":                                {"srgb"},
 		"metrics-recording-only":                             nil,
 		"no-first-run":                                       nil,
-		"password-store=basic":                               nil,
+		"password-store":                                     {"basic"},
 		"use-mock-keychain":                                  nil,
 	}
 
