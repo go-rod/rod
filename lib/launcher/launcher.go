@@ -77,7 +77,6 @@ func New() *Launcher {
 		"metrics-recording-only":                             nil,
 		"no-first-run":                                       nil,
 		"use-mock-keychain":                                  nil,
-		// "password-store":                                     {"basic"},
 	}
 
 	if defaults.Show {
