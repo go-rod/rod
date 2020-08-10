@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"os"
 	"runtime"
 
 	"github.com/go-rod/rod/lib/cdp"
@@ -32,13 +31,6 @@ func NewRemote(remoteURL string) *Launcher {
 
 	utils.E(json.Unmarshal(kit.Req(u.String()).MustBytes(), l))
 
-	return l
-}
-
-// KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
-func (l *Launcher) KeepUserDataDir() *Launcher {
-	l.mustRemote()
-	l.Set("keep-user-data-dir")
 	return l
 }
 
@@ -106,23 +98,9 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 
 	u := l.Launch()
 	defer func() {
-		proc, err := os.FindProcess(l.PID())
 		l.kill()
-		if err == nil {
-			_, _ = proc.Wait()
-		}
 
-		// TODO: Seems like a delay bug for windows chrome?
-		if p.isWindows {
-			kit.Sleep(0.1)
-		}
-
-		if _, has := l.Get("keep-user-data-dir"); !has {
-			dir, _ := l.Get("user-data-dir")
-			p.Log(fmt.Sprintln(utils.C("Remove", "cyan"), dir))
-
-			_ = os.RemoveAll(dir)
-		}
+		l.Cleanup()
 	}()
 
 	parsedURL, err := url.Parse(u)

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/url"
 	"os"
@@ -347,6 +348,17 @@ func (l *Launcher) PID() int {
 	return l.pid
 }
 
+// Cleanup wait until the Browser exits and release related resources
+func (l *Launcher) Cleanup() {
+	<-l.exit
+	if _, has := l.Get("keep-user-data-dir"); !has {
+		dir, _ := l.Get("user-data-dir")
+		fmt.Println(utils.C("Remove", "cyan"), dir)
+
+		_ = os.RemoveAll(dir)
+	}
+}
+
 func (l *Launcher) kill() {
 	p, err := os.FindProcess(l.pid)
 	if err == nil {
@@ -401,6 +413,12 @@ func (l *Launcher) getURL() (u string, err error) {
 			utils.E(errors.New("[launcher] Failed to get the debug url: " + out))
 		}
 	}
+}
+
+// KeepUserDataDir after browser is closed. By default user-data-dir will be removed.
+func (l *Launcher) KeepUserDataDir() *Launcher {
+	l.Set("keep-user-data-dir")
+	return l
 }
 
 // GetWebSocketDebuggerURL from browser remote url

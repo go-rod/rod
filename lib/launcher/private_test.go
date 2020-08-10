@@ -85,10 +85,6 @@ func TestRemoteLaunch(t *testing.T) {
 
 	kit.Sleep(1)
 	assert.NoDirExists(t, dir)
-
-	assert.Panics(t, func() {
-		New().KeepUserDataDir()
-	})
 }
 
 func TestLaunchErr(t *testing.T) {
