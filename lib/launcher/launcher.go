@@ -315,7 +315,6 @@ func (l *Launcher) LaunchE() (wsURL string, err error) {
 
 	if headless {
 		select {
-		case <-l.exit:
 		case pid := <-ll.Pid():
 			l.pid = pid
 			if ll.Err() != "" {
