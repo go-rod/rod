@@ -93,10 +93,11 @@ func Example_search() {
 func Example_headless_with_debug() {
 	// Headless runs the browser on foreground, you can also use env "rod=show"
 	// Devtools opens the tab in each new tab opened automatically
-	url := launcher.New().
+	l := launcher.New().
 		Headless(false).
-		Devtools(true).
-		Launch()
+		Devtools(true)
+	defer l.Cleanup()
+	url := l.Launch()
 
 	// Trace shows verbose debug information for each action executed
 	// Slowmotion is a debug related function that waits 2 seconds between
