@@ -83,7 +83,11 @@ func (el *Element) ClickE(button proto.InputMouseButton) error {
 		return err
 	}
 	if !clickable {
-		return fmt.Errorf("%w: %s", newErr(ErrNotClickable, el.HTML()), "such as covered by a modal")
+		s, err := el.HTMLE()
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("%w: %s", newErr(ErrNotClickable, s), "such as covered by a modal")
 	}
 
 	defer el.tryTrace(string(button) + " click")()
@@ -380,7 +384,10 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 		return err
 	}
 
-	box := el.Box()
+	box, err := el.BoxE()
+	if err != nil {
+		return err
+	}
 
 	t := time.NewTicker(interval)
 	defer t.Stop()
@@ -391,7 +398,10 @@ func (el *Element) WaitStableE(interval time.Duration) error {
 		case <-el.ctx.Done():
 			return el.ctx.Err()
 		}
-		current := el.Box()
+		current, err := el.BoxE()
+		if err != nil {
+			return err
+		}
 		if *box == *current {
 			break
 		}
