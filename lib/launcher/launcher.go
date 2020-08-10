@@ -353,7 +353,9 @@ func (l *Launcher) Cleanup() {
 	<-l.exit
 	if _, has := l.Get("keep-user-data-dir"); !has {
 		dir, _ := l.Get("user-data-dir")
-		fmt.Println(utils.C("Remove", "cyan"), dir)
+		if l.log != nil {
+			l.log(fmt.Sprintln(utils.C("Remove", "cyan"), dir))
+		}
 
 		_ = os.RemoveAll(dir)
 	}
