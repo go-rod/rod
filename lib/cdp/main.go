@@ -25,7 +25,7 @@ type Client struct {
 	callbacks *sync.Map // buffer for response from browser
 
 	chReq   chan []byte    // request from user
-	chRes   chan *response // response from browser
+	chRes   chan *Response // response from browser
 	chEvent chan *Event    // events from browser
 
 	count uint64
@@ -85,7 +85,7 @@ func New(websocketURL string) *Client {
 		ctxCancel: cancel,
 		callbacks: &sync.Map{},
 		chReq:     make(chan []byte),
-		chRes:     make(chan *response),
+		chRes:     make(chan *Response),
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
 		debug:     defaults.CDP,
@@ -167,7 +167,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 	data, err := json.Marshal(req)
 	utils.E(err)
 
-	callback := make(chan *response)
+	callback := make(chan *Response)
 
 	cdp.callbacks.Store(req.ID, callback)
 	defer cdp.callbacks.Delete(req.ID)
@@ -227,15 +227,15 @@ func (cdp *Client) consumeMsg() {
 				select {
 				case <-cdp.ctx.Done():
 					return
-				case callback.(chan *response) <- res:
+				case callback.(chan *Response) <- res:
 				}
 			}
 		}
 	}
 }
 
-// response from browser
-type response struct {
+// Response from browser
+type Response struct {
 	ID     uint64          `json:"id"`
 	Result json.RawMessage `json:"result,omitempty"`
 	Error  *Error          `json:"error,omitempty"`
@@ -250,7 +250,7 @@ func (cdp *Client) readMsgFromBrowser() {
 		}
 
 		if kit.JSON(data).Get("id").Exists() {
-			var res response
+			var res Response
 			err := json.Unmarshal(data, &res)
 			utils.E(err)
 			if cdp.debug {

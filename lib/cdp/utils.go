@@ -31,7 +31,7 @@ func defaultDebugLog(obj interface{}) {
 			val.SessionID,
 			prettyJSON(val.Params),
 		)
-	case *response:
+	case *Response:
 		log.Printf(
 			"[rod/cdp] %s %d %s %s\n",
 			utils.C("<-", "yellow"),

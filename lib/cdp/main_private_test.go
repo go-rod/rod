@@ -84,8 +84,8 @@ func TestCancelOnCallback(t *testing.T) {
 
 	go cdp.consumeMsg()
 
-	cdp.callbacks.Store(uint64(1), make(chan *response))
-	cdp.chRes <- &response{
+	cdp.callbacks.Store(uint64(1), make(chan *Response))
+	cdp.chRes <- &Response{
 		ID:     1,
 		Result: nil,
 		Error:  nil,
@@ -99,7 +99,7 @@ func TestCancelOnReadRes(t *testing.T) {
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
 			cdp.ctxCancel()
-			return kit.MustToJSONBytes(&response{
+			return kit.MustToJSONBytes(&Response{
 				ID:     1,
 				Result: nil,
 				Error:  nil,
