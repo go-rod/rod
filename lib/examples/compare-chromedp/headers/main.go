@@ -21,11 +21,11 @@ func main() {
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 
-	page := rod.New().Connect().Page(host)
+	page := rod.New().MustConnect().MustPage(host)
 
-	page.SetExtraHeaders("X-Header", "my request header")
-	page.Navigate(host)
-	res := page.Element("#result").Text()
+	page.MustSetExtraHeaders("X-Header", "my request header")
+	page.MustNavigate(host)
+	res := page.MustElement("#result").MustText()
 
 	log.Printf("received headers: %s", res)
 }

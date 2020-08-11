@@ -23,7 +23,7 @@ func main() {
 // Put your code here, press Ctrl+C when you feel the program is hanging.
 // Read each goroutine's stack that is related to your own code logic.
 func yourCodeHere() {
-	rod.New().Connect().Page("http://example.com").Element("not-exists")
+	rod.New().MustConnect().MustPage("http://example.com").MustElement("not-exists")
 }
 
 // For this example you will find something like this below:

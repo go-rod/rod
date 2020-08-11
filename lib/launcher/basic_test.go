@@ -44,7 +44,7 @@ func TestLaunch(t *testing.T) {
 		_ = kit.KillTree(l.PID())
 	}()
 
-	url := l.Launch()
+	url := l.MustLaunch()
 
 	assert.NotEmpty(t, url)
 }
@@ -71,11 +71,11 @@ func TestLaunchUserMode(t *testing.T) {
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).
-		Launch()
+		MustLaunch()
 
 	assert.Equal(t,
 		url,
-		launcher.NewUserMode().RemoteDebuggingPort(port).Launch(),
+		launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch(),
 	)
 }
 
@@ -84,10 +84,10 @@ func TestOpen(t *testing.T) {
 }
 
 func TestUserModeErr(t *testing.T) {
-	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").LaunchE()
+	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").Launch()
 	assert.Error(t, err)
 
-	_, err = launcher.NewUserMode().RemoteDebuggingPort(58217).Bin("echo").LaunchE()
+	_, err = launcher.NewUserMode().RemoteDebuggingPort(58217).Bin("echo").Launch()
 	assert.Error(t, err)
 }
 
@@ -98,9 +98,9 @@ func TestGetWebSocketDebuggerURLErr(t *testing.T) {
 
 func TestLaunchErr(t *testing.T) {
 	assert.Panics(t, func() {
-		launcher.New().Bin("not-exists").Launch()
+		launcher.New().Bin("not-exists").MustLaunch()
 	})
 	assert.Panics(t, func() {
-		launcher.New().Headless(false).Bin("not-exists").Launch()
+		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
 }

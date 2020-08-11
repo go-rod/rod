@@ -45,7 +45,7 @@ func (s *S) TestBrowserErrs() {
 	defer func() {
 		defaults.Remote = oldRemote
 	}()
-	s.Error(b.ConnectE())
+	s.Error(b.Connect())
 
 	b = &Browser{cdpCall: func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 		return nil, errors.New("err")

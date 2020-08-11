@@ -85,13 +85,6 @@ func Normalize(m interface{}) (json.RawMessage, error) {
 	return json.Marshal(m)
 }
 
-// E panics err if err not nil
-func E(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 // JSON value
 type JSON struct {
 	gjson.Result

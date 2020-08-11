@@ -125,8 +125,8 @@ func (cdp *Client) DebugLog(fn func(interface{})) *Client {
 	return cdp
 }
 
-// ConnectE to browser
-func (cdp *Client) ConnectE() error {
+// Connect to browser
+func (cdp *Client) Connect() error {
 	if cdp.ws == nil {
 		cdp.ws = NewDefaultWsClient()
 	}
@@ -145,9 +145,9 @@ func (cdp *Client) ConnectE() error {
 	return nil
 }
 
-// Connect to browser
-func (cdp *Client) Connect() *Client {
-	utils.E(cdp.ConnectE())
+// MustConnect to browser
+func (cdp *Client) MustConnect() *Client {
+	utils.E(cdp.Connect())
 	return cdp
 }
 

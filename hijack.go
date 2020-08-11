@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -99,9 +98,9 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 	return r
 }
 
-// AddE a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
+// Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
-func (r *HijackRouter) AddE(pattern string, resourceType proto.NetworkResourceType, handler func(*Hijack)) error {
+func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceType, handler func(*Hijack)) error {
 	r.enable.Patterns = append(r.enable.Patterns, &proto.FetchRequestPattern{
 		URLPattern:   pattern,
 		ResourceType: resourceType,
@@ -118,14 +117,8 @@ func (r *HijackRouter) AddE(pattern string, resourceType proto.NetworkResourceTy
 	return r.enable.Call(r.caller)
 }
 
-// Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
-// You can add new handler even after the "Run" is called.
-func (r *HijackRouter) Add(pattern string, handler func(*Hijack)) {
-	utils.E(r.AddE(pattern, "", handler))
-}
-
-// RemoveE handler via the pattern
-func (r *HijackRouter) RemoveE(pattern string) error {
+// Remove handler via the pattern
+func (r *HijackRouter) Remove(pattern string) error {
 	patterns := []*proto.FetchRequestPattern{}
 	handlers := []*hijackHandler{}
 	for _, h := range r.handlers {
@@ -138,11 +131,6 @@ func (r *HijackRouter) RemoveE(pattern string) error {
 	r.handlers = handlers
 
 	return r.enable.Call(r.caller)
-}
-
-// Remove handler via the pattern
-func (r *HijackRouter) Remove(pattern string) {
-	utils.E(r.RemoveE(pattern))
 }
 
 // new context
@@ -186,15 +174,10 @@ func (r *HijackRouter) Run() {
 	r.run()
 }
 
-// StopE the router
-func (r *HijackRouter) StopE() error {
+// Stop the router
+func (r *HijackRouter) Stop() error {
 	r.stopEvents()
 	return proto.FetchDisable{}.Call(r.caller)
-}
-
-// Stop the router
-func (r *HijackRouter) Stop() {
-	utils.E(r.StopE())
 }
 
 // hijackHandler to handle each request that match the regexp
@@ -221,15 +204,15 @@ func (h *Hijack) ContinueRequest(cq *proto.FetchContinueRequest) {
 	h.continueRequest = cq
 }
 
-// LoadResponseE will send request to the real destination and load the response as default response to override.
-func (h *Hijack) LoadResponseE(loadBody bool) error {
-	code, err := h.Response.StatusCodeE()
+// LoadResponse will send request to the real destination and load the response as default response to override.
+func (h *Hijack) LoadResponse(loadBody bool) error {
+	code, err := h.Response.StatusCode()
 	if err != nil {
 		return err
 	}
 	h.Response.SetStatusCode(code)
 
-	headers, err := h.Response.HeadersE()
+	headers, err := h.Response.Headers()
 	if err != nil {
 		return err
 	}
@@ -242,7 +225,7 @@ func (h *Hijack) LoadResponseE(loadBody bool) error {
 	h.Response.SetHeader(list...)
 
 	if loadBody {
-		body, err := h.Response.BodyE()
+		body, err := h.Response.Body()
 		if err != nil {
 			return err
 		}
@@ -250,11 +233,6 @@ func (h *Hijack) LoadResponseE(loadBody bool) error {
 	}
 
 	return nil
-}
-
-// LoadResponse will send request to the real destination and load the response as default response to override.
-func (h *Hijack) LoadResponse() {
-	utils.E(h.LoadResponseE(true))
 }
 
 // HijackRequest context
@@ -355,8 +333,8 @@ type HijackResponse struct {
 	fail    *proto.FetchFailRequest
 }
 
-// StatusCodeE of response
-func (ctx *HijackResponse) StatusCodeE() (int, error) {
+// StatusCode of response
+func (ctx *HijackResponse) StatusCode() (int, error) {
 	res, err := ctx.req.Response()
 	if err != nil {
 		return 0, err
@@ -365,20 +343,13 @@ func (ctx *HijackResponse) StatusCodeE() (int, error) {
 	return res.StatusCode, nil
 }
 
-// StatusCode of response
-func (ctx *HijackResponse) StatusCode() int {
-	code, err := ctx.StatusCodeE()
-	utils.E(err)
-	return code
-}
-
 // SetStatusCode of response
 func (ctx *HijackResponse) SetStatusCode(code int) {
 	ctx.payload.ResponseCode = int64(code)
 }
 
-// HeaderE via key
-func (ctx *HijackResponse) HeaderE(key string) (string, error) {
+// Header via key
+func (ctx *HijackResponse) Header(key string) (string, error) {
 	res, err := ctx.req.Response()
 	if err != nil {
 		return "", err
@@ -387,28 +358,14 @@ func (ctx *HijackResponse) HeaderE(key string) (string, error) {
 	return res.Header.Get(key), nil
 }
 
-// Header via key
-func (ctx *HijackResponse) Header(key string) string {
-	val, err := ctx.HeaderE(key)
-	utils.E(err)
-	return val
-}
-
-// HeadersE of request
-func (ctx *HijackResponse) HeadersE() (http.Header, error) {
+// Headers of request
+func (ctx *HijackResponse) Headers() (http.Header, error) {
 	res, err := ctx.req.Response()
 	if err != nil {
 		return nil, err
 	}
 
 	return res.Header, nil
-}
-
-// Headers of request
-func (ctx *HijackResponse) Headers() http.Header {
-	val, err := ctx.HeadersE()
-	utils.E(err)
-	return val
 }
 
 // SetHeader via key-value pairs
@@ -421,8 +378,8 @@ func (ctx *HijackResponse) SetHeader(pairs ...string) {
 	}
 }
 
-// BodyE of response
-func (ctx *HijackResponse) BodyE() ([]byte, error) {
+// Body of response
+func (ctx *HijackResponse) Body() ([]byte, error) {
 	b, err := ctx.req.Bytes()
 	if err != nil {
 		return nil, err
@@ -431,15 +388,8 @@ func (ctx *HijackResponse) BodyE() ([]byte, error) {
 	return b, nil
 }
 
-// Body of response
-func (ctx *HijackResponse) Body() []byte {
-	b, err := ctx.BodyE()
-	utils.E(err)
-	return b
-}
-
-// BodyStreamE returns the stream of the body
-func (ctx *HijackResponse) BodyStreamE() (io.Reader, error) {
+// BodyStream returns the stream of the body
+func (ctx *HijackResponse) BodyStream() (io.Reader, error) {
 	res, err := ctx.req.Response()
 	if err != nil {
 		return nil, err
@@ -447,21 +397,14 @@ func (ctx *HijackResponse) BodyStreamE() (io.Reader, error) {
 	return res.Body, nil
 }
 
-// BodyStream returns the stream of the body
-func (ctx *HijackResponse) BodyStream() io.Reader {
-	body, err := ctx.BodyStreamE()
-	utils.E(err)
-	return body
-}
-
 // StringBody of response
 func (ctx *HijackResponse) StringBody() string {
-	return string(ctx.Body())
+	return string(ctx.MustBody())
 }
 
 // JSONBody of response
 func (ctx *HijackResponse) JSONBody() gjson.Result {
-	return gjson.ParseBytes(ctx.Body())
+	return gjson.ParseBytes(ctx.MustBody())
 }
 
 // SetBody of response, if obj is []byte, raw body will be used, else it will be encoded as json
@@ -486,9 +429,9 @@ func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse
 	return ctx
 }
 
-// GetDownloadFileE of the next download url that matches the pattern, returns the file content.
+// GetDownloadFile of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
-func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResourceType) func() (http.Header, io.Reader, error) {
+func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType) func() (http.Header, io.Reader, error) {
 	enable := p.DisableDomain(&proto.FetchEnable{})
 
 	_ = proto.BrowserSetDownloadBehavior{
@@ -519,7 +462,7 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 		wg.Add(1)
 
 		var err error
-		err = r.AddE(pattern, resourceType, func(ctx *Hijack) {
+		err = r.Add(pattern, resourceType, func(ctx *Hijack) {
 			defer wg.Done()
 
 			ctx.Skip = true
@@ -528,17 +471,17 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 				err = e
 			}
 
-			err = ctx.LoadResponseE(false)
+			err = ctx.LoadResponse(false)
 			if err != nil {
 				return
 			}
 
-			header, err = ctx.Response.HeadersE()
+			header, err = ctx.Response.Headers()
 			if err != nil {
 				return
 			}
 
-			body, err = ctx.Response.BodyStreamE()
+			body, err = ctx.Response.BodyStream()
 		})
 		if err != nil {
 			return nil, nil, err
@@ -551,7 +494,7 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 			u := downloading.URL
 			if strings.HasPrefix(u, "blob:") {
 				js, params := jsHelper("fetchAsDataURL", Array{u})
-				res, e := p.EvalE(true, "", js, params)
+				res, e := p.Eval(true, "", js, params)
 				if e != nil {
 					err = e
 					wg.Done()
@@ -572,7 +515,7 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 		}()
 
 		wg.Wait()
-		r.Stop()
+		r.MustStop()
 
 		if err != nil {
 			return nil, nil, err
@@ -582,22 +525,10 @@ func (p *Page) GetDownloadFileE(pattern string, resourceType proto.NetworkResour
 	}
 }
 
-// GetDownloadFile of the next download url that matches the pattern, returns the file content.
-func (p *Page) GetDownloadFile(pattern string) func() []byte {
-	wait := p.GetDownloadFileE(pattern, "")
-	return func() []byte {
-		_, body, err := wait()
-		utils.E(err)
-		data, err := ioutil.ReadAll(body)
-		utils.E(err)
-		return data
-	}
-}
-
-// HandleAuthE for the next basic HTTP authentication.
+// HandleAuth for the next basic HTTP authentication.
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
-func (b *Browser) HandleAuthE(username, password string) func() error {
+func (b *Browser) HandleAuth(username, password string) func() error {
 	enable := b.DisableDomain(b.ctx, "", &proto.FetchEnable{})
 	disable := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
 		HandleAuthRequests: true,

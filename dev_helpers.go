@@ -60,10 +60,10 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext
 	})
 	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
 		id := proto.TargetTargetID(ctx.Param("id"))
-		p := b.PageFromTargetID(id)
+		p := b.MustPageFromTargetID(id)
 
 		ctx.Header("Content-Type", "image/png;")
-		_, _ = ctx.Writer.Write(p.Screenshot())
+		_, _ = ctx.Writer.Write(p.MustScreenshot())
 	})
 
 	go func() { _ = srv.Do() }()
@@ -92,14 +92,14 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		height,
 		msg,
 	})
-	_, err := root.EvalE(true, "", js, jsArgs)
+	_, err := root.Eval(true, "", js, jsArgs)
 	if err != nil {
 		p.browser.traceLogErr(err)
 	}
 
 	remove = func() {
 		js, jsArgs := jsHelper("removeOverlay", Array{id})
-		_, _ = root.EvalE(true, "", js, jsArgs)
+		_, _ = root.Eval(true, "", js, jsArgs)
 	}
 
 	return
@@ -108,7 +108,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 // ExposeJSHelper to page's window object, so you can debug helper.js in the browser console.
 // Such as run `rod.elementMatches("div", "ok")` in the browser console to test the Page.ElementMatches.
 func (p *Page) ExposeJSHelper() *Page {
-	p.Eval(`rod => window.rod = rod`, proto.RuntimeRemoteObjectID(""))
+	p.MustEval(`rod => window.rod = rod`, proto.RuntimeRemoteObjectID(""))
 	return p
 }
 
@@ -120,14 +120,14 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 		id,
 		msg,
 	})
-	_, err := el.EvalE(true, js, jsArgs)
+	_, err := el.Eval(true, js, jsArgs)
 	if err != nil {
 		el.page.browser.traceLogErr(err)
 	}
 
 	removeOverlay = func() {
 		js, jsArgs := jsHelper("removeOverlay", Array{id})
-		_, _ = el.EvalE(true, js, jsArgs)
+		_, _ = el.Eval(true, js, jsArgs)
 	}
 
 	return
@@ -197,12 +197,12 @@ func defaultTraceLogErr(err error) {
 
 func (m *Mouse) initMouseTracer() {
 	js, params := jsHelper("initMouseTracer", Array{m.id, assets.MousePointer})
-	_, _ = m.page.EvalE(true, "", js, params)
+	_, _ = m.page.Eval(true, "", js, params)
 }
 
 func (m *Mouse) updateMouseTracer() bool {
 	js, jsArgs := jsHelper("updateMouseTracer", Array{m.id, m.x, m.y})
-	res, err := m.page.EvalE(true, "", js, jsArgs)
+	res, err := m.page.Eval(true, "", js, jsArgs)
 	if err != nil {
 		return true
 	}

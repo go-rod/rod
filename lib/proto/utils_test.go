@@ -58,12 +58,6 @@ func TestCall(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestE(t *testing.T) {
-	assert.Panics(t, func() {
-		proto.E(errors.New("err"))
-	})
-}
-
 func TestParseMethodName(t *testing.T) {
 	d, n := proto.ParseMethodName("Page.enable")
 	assert.Equal(t, "Page", d)

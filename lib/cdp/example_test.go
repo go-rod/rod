@@ -12,10 +12,10 @@ import (
 
 func ExampleClient() {
 	// launch a browser
-	url := launcher.New().Headless(false).Launch()
+	url := launcher.New().Headless(false).MustLaunch()
 
 	// create a controller
-	client := cdp.New(url).Connect()
+	client := cdp.New(url).MustConnect()
 
 	// Such as call this endpoint on the api doc:
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page#method-navigate

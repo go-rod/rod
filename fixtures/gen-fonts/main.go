@@ -16,33 +16,33 @@ import (
 )
 
 func main() {
-	url := launcher.New().Headless(true).Launch()
-	b := rod.New().ControlURL(url).Connect()
-	defer b.Close()
+	url := launcher.New().Headless(true).MustLaunch()
+	b := rod.New().ControlURL(url).MustConnect()
+	defer b.MustClose()
 
-	p := b.Page("https://translate.google.com/")
+	p := b.MustPage("https://translate.google.com/")
 
-	p.Element("#source").Input("Test the google translate.")
+	p.MustElement("#source").MustInput("Test the google translate.")
 
-	if p.Has(".tlid-dismiss-button") {
-		p.Element(".tlid-dismiss-button").Click()
+	if p.MustHas(".tlid-dismiss-button") {
+		p.MustElement(".tlid-dismiss-button").MustClick()
 	}
 
-	showList := p.Element(".tlid-open-target-language-list")
-	list := p.Elements(".language-list:nth-child(2) .language_list_section:nth-child(2) .language_list_item_language_name")
+	showList := p.MustElement(".tlid-open-target-language-list")
+	list := p.MustElements(".language-list:nth-child(2) .language_list_section:nth-child(2) .language_list_item_language_name")
 
 	html := ""
 
 	for _, lang := range list {
-		showList.Click()
-		wait := p.WaitRequestIdle()
-		lang.Click()
+		showList.MustClick()
+		wait := p.MustWaitRequestIdle()
+		lang.MustClick()
 		wait()
-		name := lang.Text()
-		result := p.Element(".tlid-translation").Text()
+		name := lang.MustText()
+		result := p.MustElement(".tlid-translation").MustText()
 		for strings.Contains(result, "...") {
 			kit.Sleep(0.1)
-			result = p.Element(".tlid-translation").Text()
+			result = p.MustElement(".tlid-translation").MustText()
 		}
 		log.Println(name, result)
 		html += fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>\n", name, result)

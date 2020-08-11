@@ -9,8 +9,8 @@ import (
 
 // This example demonstrates  how to extract text from a specific element.
 func main() {
-	page := rod.New().Connect().Page("https://golang.org/pkg/time")
+	page := rod.New().MustConnect().MustPage("https://golang.org/pkg/time")
 
-	res := page.Element("#pkg-overview").Text()
+	res := page.MustElement("#pkg-overview").MustText()
 	log.Println(strings.TrimSpace(res))
 }

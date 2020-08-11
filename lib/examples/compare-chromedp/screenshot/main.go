@@ -11,13 +11,13 @@ import (
 // of the entire browser viewport, as well as using `kit`
 // to store it into a file.
 func main() {
-	browser := rod.New().Connect()
+	browser := rod.New().MustConnect()
 
 	// capture screenshot of an element
-	browser.Page("https://google.com").Element("#main").Screenshot("elementScreenshot.png")
+	browser.MustPage("https://google.com").MustElement("#main").MustScreenshot("elementScreenshot.png")
 
 	// capture entire browser viewport, returning jpg with quality=90
-	buf, err := browser.Page("https://brank.as/").ScreenshotE(true, &proto.PageCaptureScreenshot{
+	buf, err := browser.MustPage("https://brank.as/").Screenshot(true, &proto.PageCaptureScreenshot{
 		Format:  proto.PageCaptureScreenshotFormatJpeg,
 		Quality: 90,
 	})

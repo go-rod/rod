@@ -10,9 +10,9 @@ import (
 func main() {
 	// Make sure you have closed your browser completely, UserMode can't control a browser that is not launched by it.
 	// Launches a new browser with the "new user mode" option, and returns the URL to control that browser.
-	url := launcher.NewUserMode().Launch()
+	url := launcher.NewUserMode().MustLaunch()
 
-	browser := rod.New().ControlURL(url).Connect()
+	browser := rod.New().ControlURL(url).MustConnect()
 
-	browser.Page("https://github.com")
+	browser.MustPage("https://github.com")
 }

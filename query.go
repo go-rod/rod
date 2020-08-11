@@ -42,17 +42,17 @@ type Pages []*Page
 // Find the page that has the specified element with the css selector
 func (ps Pages) Find(selector string) *Page {
 	for _, page := range ps {
-		if page.Has(selector) {
+		if page.MustHas(selector) {
 			return page
 		}
 	}
 	return nil
 }
 
-// FindByURLE returns the page that has the url that matches the regex
-func (ps Pages) FindByURLE(regex string) (*Page, error) {
+// FindByURL returns the page that has the url that matches the regex
+func (ps Pages) FindByURL(regex string) (*Page, error) {
 	for _, page := range ps {
-		res, err := page.EvalE(true, "", `location.href`, nil)
+		res, err := page.Eval(true, "", `location.href`, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -64,58 +64,58 @@ func (ps Pages) FindByURLE(regex string) (*Page, error) {
 	return nil, nil
 }
 
-// HasE doc is similar to the method Has
-func (p *Page) HasE(selectors ...string) (bool, error) {
-	_, err := p.ElementE(nil, "", selectors)
+// Has doc is similar to the method MustHas
+func (p *Page) Has(selectors ...string) (bool, error) {
+	_, err := p.Element(nil, "", selectors)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// HasXE doc is similar to the method HasX
-func (p *Page) HasXE(selectors ...string) (bool, error) {
-	_, err := p.ElementXE(nil, "", selectors)
+// HasX doc is similar to the method MustHasX
+func (p *Page) HasX(selectors ...string) (bool, error) {
+	_, err := p.ElementX(nil, "", selectors)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// HasMatchesE doc is similar to the method HasMatches
-func (p *Page) HasMatchesE(pairs ...string) (bool, error) {
-	_, err := p.ElementMatchesE(nil, "", pairs)
+// HasMatches doc is similar to the method MustHasMatches
+func (p *Page) HasMatches(pairs ...string) (bool, error) {
+	_, err := p.ElementMatches(nil, "", pairs)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// ElementE finds element by css selector
-func (p *Page) ElementE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selectors []string) (*Element, error) {
+// Element finds element by css selector
+func (p *Page) Element(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, selectors []string) (*Element, error) {
 	js, jsArgs := jsHelper("element", ArrayFromList(selectors))
-	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
+	return p.ElementByJS(sleeper, objectID, js, jsArgs)
 }
 
-// ElementMatchesE doc is similar to the method ElementMatches
-func (p *Page) ElementMatchesE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, pairs []string) (*Element, error) {
+// ElementMatches doc is similar to the method MustElementMatches
+func (p *Page) ElementMatches(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, pairs []string) (*Element, error) {
 	js, jsArgs := jsHelper("elementMatches", ArrayFromList(pairs))
-	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
+	return p.ElementByJS(sleeper, objectID, js, jsArgs)
 }
 
-// ElementXE finds elements by XPath
-func (p *Page) ElementXE(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xPaths []string) (*Element, error) {
+// ElementX finds elements by XPath
+func (p *Page) ElementX(sleeper kit.Sleeper, objectID proto.RuntimeRemoteObjectID, xPaths []string) (*Element, error) {
 	js, jsArgs := jsHelper("elementX", ArrayFromList(xPaths))
-	return p.ElementByJSE(sleeper, objectID, js, jsArgs)
+	return p.ElementByJS(sleeper, objectID, js, jsArgs)
 }
 
-// ElementByJSE returns the element from the return value of the js function.
+// ElementByJS returns the element from the return value of the js function.
 // sleeper is used to sleep before retry the operation.
 // If sleeper is nil, no retry will be performed.
 // thisID is the this value of the js function, when thisID is "", the this context will be the "window".
-// If the js function returns "null", ElementByJSE will retry, you can use custom sleeper to make it only
+// If the js function returns "null", ElementByJS will retry, you can use custom sleeper to make it only
 // retry once.
-func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) (*Element, error) {
+func (p *Page) ElementByJS(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
 
@@ -131,7 +131,7 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 		removeTrace()
 		removeTrace = remove
 
-		res, err = p.EvalE(false, thisID, js, params)
+		res, err = p.Eval(false, thisID, js, params)
 		if err != nil {
 			return true, err
 		}
@@ -154,21 +154,21 @@ func (p *Page) ElementByJSE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjec
 	return p.ElementFromObject(res.ObjectID), nil
 }
 
-// ElementsE doc is similar to the method Elements
-func (p *Page) ElementsE(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
+// Elements doc is similar to the method MustElements
+func (p *Page) Elements(objectID proto.RuntimeRemoteObjectID, selector string) (Elements, error) {
 	js, jsArgs := jsHelper("elements", Array{selector})
-	return p.ElementsByJSE(objectID, js, jsArgs)
+	return p.ElementsByJS(objectID, js, jsArgs)
 }
 
-// ElementsXE doc is similar to the method ElementsX
-func (p *Page) ElementsXE(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
+// ElementsX doc is similar to the method MustElementsX
+func (p *Page) ElementsX(objectID proto.RuntimeRemoteObjectID, xpath string) (Elements, error) {
 	js, jsArgs := jsHelper("elementsX", Array{xpath})
-	return p.ElementsByJSE(objectID, js, jsArgs)
+	return p.ElementsByJS(objectID, js, jsArgs)
 }
 
-// ElementsByJSE is different from ElementByJSE, it doesn't do retry
-func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, params Array) (Elements, error) {
-	res, err := p.EvalE(false, thisID, js, params)
+// ElementsByJS is different from ElementByJSE, it doesn't do retry
+func (p *Page) ElementsByJS(thisID proto.RuntimeRemoteObjectID, js string, params Array) (Elements, error) {
+	res, err := p.Eval(false, thisID, js, params)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	}
 
 	objectID := res.ObjectID
-	defer func() { err = p.ReleaseE(objectID) }()
+	defer func() { err = p.Release(objectID) }()
 
 	list, err := proto.RuntimeGetProperties{
 		ObjectID:      objectID,
@@ -205,10 +205,10 @@ func (p *Page) ElementsByJSE(thisID proto.RuntimeRemoteObjectID, js string, para
 	return elemList, err
 }
 
-// SearchE for each given query in the DOM tree until the result count is not zero, before that it will keep retrying.
+// Search for each given query in the DOM tree until the result count is not zero, before that it will keep retrying.
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
-func (p *Page) SearchE(sleeper kit.Sleeper, queries []string, from, to int) (Elements, error) {
+func (p *Page) Search(sleeper kit.Sleeper, queries []string, from, to int) (Elements, error) {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
 			return fmt.Errorf("%w by query: %v", newErr(ErrElementNotFound, queries), queries)
@@ -250,7 +250,7 @@ func (p *Page) SearchE(sleeper kit.Sleeper, queries []string, from, to int) (Ele
 				return false, nil
 			}
 
-			el, err := p.ElementFromNodeE(id)
+			el, err := p.ElementFromNode(id)
 			if err != nil {
 				return true, err
 			}
@@ -278,85 +278,85 @@ func (p *Page) SearchE(sleeper kit.Sleeper, queries []string, from, to int) (Ele
 	return list, nil
 }
 
-// HasE doc is similar to the method Has
-func (el *Element) HasE(selector string) (bool, error) {
-	_, err := el.ElementE(selector)
+// Has doc is similar to the method MustHas
+func (el *Element) Has(selector string) (bool, error) {
+	_, err := el.Element(selector)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// HasXE doc is similar to the method HasX
-func (el *Element) HasXE(selector string) (bool, error) {
-	_, err := el.ElementXE(selector)
+// HasX doc is similar to the method MustHasX
+func (el *Element) HasX(selector string) (bool, error) {
+	_, err := el.ElementX(selector)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// HasMatchesE doc is similar to the method HasMatches
-func (el *Element) HasMatchesE(selector, regex string) (bool, error) {
-	_, err := el.ElementMatchesE(selector, regex)
+// HasMatches doc is similar to the method MustHasMatches
+func (el *Element) HasMatches(selector, regex string) (bool, error) {
+	_, err := el.ElementMatches(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil
 	}
 	return err == nil, err
 }
 
-// ElementE doc is similar to the method Element
-func (el *Element) ElementE(selectors ...string) (*Element, error) {
-	return el.page.ElementE(nil, el.ObjectID, selectors)
+// Element doc is similar to the method MustElement
+func (el *Element) Element(selectors ...string) (*Element, error) {
+	return el.page.Element(nil, el.ObjectID, selectors)
 }
 
-// ElementXE doc is similar to the method ElementX
-func (el *Element) ElementXE(xPaths ...string) (*Element, error) {
-	return el.page.ElementXE(nil, el.ObjectID, xPaths)
+// ElementX doc is similar to the method MustElementX
+func (el *Element) ElementX(xPaths ...string) (*Element, error) {
+	return el.page.ElementX(nil, el.ObjectID, xPaths)
 }
 
-// ElementByJSE doc is similar to the method ElementByJS
-func (el *Element) ElementByJSE(js string, params Array) (*Element, error) {
-	return el.page.ElementByJSE(nil, el.ObjectID, js, params)
+// ElementByJS doc is similar to the method MustElementByJS
+func (el *Element) ElementByJS(js string, params Array) (*Element, error) {
+	return el.page.ElementByJS(nil, el.ObjectID, js, params)
 }
 
-// ParentE doc is similar to the method Parent
-func (el *Element) ParentE() (*Element, error) {
-	return el.ElementByJSE(`this.parentElement`, nil)
+// Parent doc is similar to the method MustParent
+func (el *Element) Parent() (*Element, error) {
+	return el.ElementByJS(`this.parentElement`, nil)
 }
 
-// ParentsE that match the selector
-func (el *Element) ParentsE(selector string) (Elements, error) {
+// Parents that match the selector
+func (el *Element) Parents(selector string) (Elements, error) {
 	js, params := jsHelper("parents", Array{selector})
-	return el.ElementsByJSE(js, params)
+	return el.ElementsByJS(js, params)
 }
 
-// NextE doc is similar to the method Next
-func (el *Element) NextE() (*Element, error) {
-	return el.ElementByJSE(`this.nextElementSibling`, nil)
+// Next doc is similar to the method MustNext
+func (el *Element) Next() (*Element, error) {
+	return el.ElementByJS(`this.nextElementSibling`, nil)
 }
 
-// PreviousE doc is similar to the method Previous
-func (el *Element) PreviousE() (*Element, error) {
-	return el.ElementByJSE(`this.previousElementSibling`, nil)
+// Previous doc is similar to the method MustPrevious
+func (el *Element) Previous() (*Element, error) {
+	return el.ElementByJS(`this.previousElementSibling`, nil)
 }
 
-// ElementMatchesE doc is similar to the method ElementMatches
-func (el *Element) ElementMatchesE(pairs ...string) (*Element, error) {
-	return el.page.ElementMatchesE(nil, el.ObjectID, pairs)
+// ElementMatches doc is similar to the method MustElementMatches
+func (el *Element) ElementMatches(pairs ...string) (*Element, error) {
+	return el.page.ElementMatches(nil, el.ObjectID, pairs)
 }
 
-// ElementsE doc is similar to the method Elements
-func (el *Element) ElementsE(selector string) (Elements, error) {
-	return el.page.ElementsE(el.ObjectID, selector)
+// Elements doc is similar to the method MustElements
+func (el *Element) Elements(selector string) (Elements, error) {
+	return el.page.Elements(el.ObjectID, selector)
 }
 
-// ElementsXE doc is similar to the method ElementsX
-func (el *Element) ElementsXE(xpath string) (Elements, error) {
-	return el.page.ElementsXE(el.ObjectID, xpath)
+// ElementsX doc is similar to the method MustElementsX
+func (el *Element) ElementsX(xpath string) (Elements, error) {
+	return el.page.ElementsX(el.ObjectID, xpath)
 }
 
-// ElementsByJSE doc is similar to the method ElementsByJS
-func (el *Element) ElementsByJSE(js string, params Array) (Elements, error) {
-	return el.page.ElementsByJSE(el.ObjectID, js, params)
+// ElementsByJS doc is similar to the method MustElementsByJS
+func (el *Element) ElementsByJS(js string, params Array) (Elements, error) {
+	return el.page.ElementsByJS(el.ObjectID, js, params)
 }

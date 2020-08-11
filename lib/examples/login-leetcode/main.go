@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -26,27 +27,27 @@ func main() {
 func login() string {
 
 	// Launch a new browser with default options, and connect to it.
-	browser := rod.New().Connect()
-	defer browser.Close()
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("https://leetcode.com/accounts/login/")
+	page := browser.MustPage("https://leetcode.com/accounts/login/")
 
-	page.Element("#id_login").Input(*username)
-	page.Element("#id_password").Input(*password).Press(input.Enter)
+	page.MustElement("#id_login").MustInput(*username)
+	page.MustElement("#id_password").MustInput(*password).MustPress(input.Enter)
 
 	errSelector := ".error-message__27FL"
 
 	// Here we race two selectors, wait until one resolves
-	el := page.Element(".nav-user-icon-base", errSelector)
+	el := page.MustElement(".nav-user-icon-base", errSelector)
 
-	if el.Matches(errSelector) {
-		panic(el.Text())
+	if el.MustMatches(errSelector) {
+		panic(el.MustText())
 	}
 
 	// print user name
-	fmt.Println(*el.Attribute("title"))
+	fmt.Println(*el.MustAttribute("title"))
 
-	b, err := json.Marshal(page.Cookies())
+	b, err := json.Marshal(page.MustCookies())
 	if err != nil {
 		panic(err)
 	}
@@ -64,14 +65,14 @@ func reuse(cookies string) {
 	}
 
 	// Launch a new browser with default options, and connect to it.
-	browser := rod.New().Connect()
-	defer browser.Close()
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("").SetCookies(c...).Navigate("https://leetcode.com/accounts/login/")
+	page := browser.MustPage("").MustSetCookies(c...).MustNavigate("https://leetcode.com/accounts/login/")
 
-	el := page.Element(".nav-user-icon-base")
+	el := page.MustElement(".nav-user-icon-base")
 
 	// print user name
-	fmt.Println(*el.Attribute("title"))
+	fmt.Println(*el.MustAttribute("title"))
 
 }

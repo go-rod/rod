@@ -94,7 +94,7 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 		utils.E(json.Unmarshal([]byte(options), l))
 	}
 
-	u := l.Launch()
+	u := l.MustLaunch()
 	defer func() {
 		l.kill()
 

@@ -24,9 +24,9 @@ func main() {
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 	expr := &proto.TimeSinceEpoch{Time: time.Now().Add(180 * 24 * time.Hour)}
 
-	page := rod.New().Connect().Page("")
+	page := rod.New().MustConnect().MustPage("")
 
-	page.SetCookies(&proto.NetworkCookieParam{
+	page.MustSetCookies(&proto.NetworkCookieParam{
 		Name:     "cookie1",
 		Value:    "value1",
 		Domain:   "localhost",
@@ -40,13 +40,13 @@ func main() {
 		Expires:  expr,
 	})
 
-	page.Navigate(host)
+	page.MustNavigate(host)
 
 	// read network values
-	log.Printf("%+v\n", page.Cookies())
+	log.Printf("%+v\n", page.MustCookies())
 
 	// chrome received cookies
-	log.Printf("chrome received cookies: %s", page.Element(`#result`).Text())
+	log.Printf("chrome received cookies: %s", page.MustElement(`#result`).MustText())
 }
 
 // cookieServer creates a simple HTTP server that logs any passed cookies.

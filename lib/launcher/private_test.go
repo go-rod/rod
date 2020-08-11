@@ -84,7 +84,7 @@ func TestRemoteLaunch(t *testing.T) {
 	u := "ws://" + srv.Listener.Addr().String()
 	l := NewRemote(u).KeepUserDataDir()
 	client := l.Delete("keep-user-data-dir").Client()
-	b := client.Context(ctx, cancel).Connect()
+	b := client.Context(ctx, cancel).MustConnect()
 	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 	dir, _ := l.Get("user-data-dir")
@@ -98,6 +98,6 @@ func TestLaunchErr(t *testing.T) {
 	go func() {
 		l.exit <- utils.Nil{}
 	}()
-	_, err := l.LaunchE()
+	_, err := l.Launch()
 	assert.Error(t, err)
 }

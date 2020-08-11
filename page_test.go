@@ -18,15 +18,15 @@ import (
 )
 
 func (s *S) TestGetPageURL() {
-	s.page.Navigate(srcFile("fixtures/click-iframe.html")).WaitLoad()
-	s.Regexp(`/fixtures/click-iframe.html\z`, s.page.Info().URL)
+	s.page.MustNavigate(srcFile("fixtures/click-iframe.html")).MustWaitLoad()
+	s.Regexp(`/fixtures/click-iframe.html\z`, s.page.MustInfo().URL)
 }
 
 func (s *S) TestSetCookies() {
 	url, _, close := serve()
 	defer close()
 
-	page := s.page.SetCookies(&proto.NetworkCookieParam{
+	page := s.page.MustSetCookies(&proto.NetworkCookieParam{
 		Name:  "a",
 		Value: "1",
 		URL:   url,
@@ -34,9 +34,9 @@ func (s *S) TestSetCookies() {
 		Name:  "b",
 		Value: "2",
 		URL:   url,
-	}).Navigate(url)
+	}).MustNavigate(url)
 
-	cookies := page.Cookies()
+	cookies := page.MustCookies()
 
 	sort.Slice(cookies, func(i, j int) bool {
 		return cookies[i].Value < cookies[j].Value
@@ -60,11 +60,11 @@ func (s *S) TestSetExtraHeaders() {
 		wg.Done()
 	})
 
-	page := s.browser.Page("")
-	defer page.Close()
+	page := s.browser.MustPage("")
+	defer page.MustClose()
 
-	defer page.SetExtraHeaders("a", "1", "b", "2")()
-	page.Navigate(url)
+	defer page.MustSetExtraHeaders("a", "1", "b", "2")()
+	page.MustNavigate(url)
 	wg.Wait()
 
 	s.Equal("1", out1)
@@ -87,8 +87,8 @@ func (s *S) TestSetUserAgent() {
 		wg.Done()
 	})
 
-	p := s.browser.Page("").SetUserAgent(nil).Navigate(url)
-	defer p.Close()
+	p := s.browser.MustPage("").MustSetUserAgent(nil).MustNavigate(url)
+	defer p.MustClose()
 	wg.Wait()
 
 	s.Equal("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36", ua)
@@ -96,9 +96,9 @@ func (s *S) TestSetUserAgent() {
 }
 
 func (s *S) TestClosePage() {
-	page := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page.Close()
-	page.Element("button")
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
+	page.MustElement("button")
 }
 
 func (s *S) TestLoadState() {
@@ -107,59 +107,59 @@ func (s *S) TestLoadState() {
 
 func (s *S) TestPageContext() {
 	p := s.page.Timeout(time.Minute).CancelTimeout()
-	s.Panics(func() { p.Eval(`() => {}`) })
+	s.Panics(func() { p.MustEval(`() => {}`) })
 }
 
 func (s *S) TestRelease() {
-	res, err := s.page.EvalE(false, "", `document`, nil)
+	res, err := s.page.Eval(false, "", `document`, nil)
 	utils.E(err)
-	s.page.Release(res.ObjectID)
+	s.page.MustRelease(res.ObjectID)
 }
 
 func (s *S) TestWindow() {
-	page := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page.Close()
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
 
-	utils.E(page.ViewportE(nil))
+	utils.E(page.Viewport(nil))
 
-	bounds := page.GetWindow()
-	defer page.Window(
+	bounds := page.MustGetWindow()
+	defer page.MustWindow(
 		bounds.Left,
 		bounds.Top,
 		bounds.Width,
 		bounds.Height,
 	)
 
-	page.WindowMaximize()
-	page.WindowNormal()
-	page.WindowFullscreen()
-	page.WindowNormal()
-	page.WindowMinimize()
-	page.WindowNormal()
-	page.Window(0, 0, 1211, 611)
-	s.EqualValues(1211, page.Eval(`window.innerWidth`).Int())
-	s.EqualValues(611, page.Eval(`window.innerHeight`).Int())
+	page.MustWindowMaximize()
+	page.MustWindowNormal()
+	page.MustWindowFullscreen()
+	page.MustWindowNormal()
+	page.MustWindowMinimize()
+	page.MustWindowNormal()
+	page.MustWindow(0, 0, 1211, 611)
+	s.EqualValues(1211, page.MustEval(`window.innerWidth`).Int())
+	s.EqualValues(611, page.MustEval(`window.innerHeight`).Int())
 }
 
 func (s *S) TestSetViewport() {
-	page := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page.Close()
-	page.Viewport(317, 419, 0, false)
-	res := page.Eval(`[window.innerWidth, window.innerHeight]`)
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
+	page.MustViewport(317, 419, 0, false)
+	res := page.MustEval(`[window.innerWidth, window.innerHeight]`)
 	s.EqualValues(317, res.Get("0").Int())
 	s.EqualValues(419, res.Get("1").Int())
 
-	page2 := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page2.Close()
-	res = page2.Eval(`[window.innerWidth, window.innerHeight]`)
+	page2 := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page2.MustClose()
+	res = page2.MustEval(`[window.innerWidth, window.innerHeight]`)
 	s.NotEqual(int64(317), res.Get("0").Int())
 }
 
 func (s *S) TestEmulateDevice() {
-	page := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page.Close()
-	page.Emulate(devices.IPhone6or7or8Plus)
-	res := page.Eval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
+	page.MustEmulate(devices.IPhone6or7or8Plus)
+	res := page.MustEval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
 	s.EqualValues(980, res.Get("0").Int())
 	s.EqualValues(1743, res.Get("1").Int())
 	s.Equal(
@@ -169,114 +169,114 @@ func (s *S) TestEmulateDevice() {
 }
 
 func (s *S) TestPageAddScriptTag() {
-	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
+	p := s.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
 
-	res := p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`count()`)
+	res := p.MustAddScriptTag(srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
 	s.EqualValues(0, res.Int())
 
-	res = p.AddScriptTag(srcFile("fixtures/add-script-tag.js")).Eval(`count()`)
+	res = p.MustAddScriptTag(srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
 	s.EqualValues(1, res.Int())
 
-	utils.E(p.AddScriptTagE("", `let ok = 'yes'`))
-	res = p.Eval(`ok`)
+	utils.E(p.AddScriptTag("", `let ok = 'yes'`))
+	res = p.MustEval(`ok`)
 	s.Equal("yes", res.String())
 }
 
 func (s *S) TestPageAddStyleTag() {
-	p := s.page.Navigate(srcFile("fixtures/click.html")).WaitLoad()
+	p := s.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
 
-	res := p.AddStyleTag(srcFile("fixtures/add-style-tag.css")).
-		Element("h4").Eval(`getComputedStyle(this).color`)
+	res := p.MustAddStyleTag(srcFile("fixtures/add-style-tag.css")).
+		MustElement("h4").MustEval(`getComputedStyle(this).color`)
 	s.Equal("rgb(255, 0, 0)", res.String())
 
-	p.AddStyleTag(srcFile("fixtures/add-style-tag.css"))
-	s.Len(p.Elements("link"), 1)
+	p.MustAddStyleTag(srcFile("fixtures/add-style-tag.css"))
+	s.Len(p.MustElements("link"), 1)
 
-	utils.E(p.AddStyleTagE("", "h4 { color: green; }"))
-	res = p.Element("h4").Eval(`getComputedStyle(this).color`)
+	utils.E(p.AddStyleTag("", "h4 { color: green; }"))
+	res = p.MustElement("h4").MustEval(`getComputedStyle(this).color`)
 	s.Equal("rgb(0, 128, 0)", res.String())
 }
 
 func (s *S) TestPageEvalOnNewDocument() {
-	p := s.browser.Page("")
-	defer p.Close()
+	p := s.browser.MustPage("")
+	defer p.MustClose()
 
-	p.EvalOnNewDocument(`
+	p.MustEvalOnNewDocument(`
   		Object.defineProperty(navigator, 'rod', {
     		get: () => "rod",
   		});`)
 
 	// to activate the script
-	p.Navigate("")
+	p.MustNavigate("")
 
-	s.Equal("rod", p.Eval("navigator.rod").String())
+	s.Equal("rod", p.MustEval("navigator.rod").String())
 }
 
 func (s *S) TestPageEval() {
-	page := s.page.Navigate(srcFile("fixtures/click.html"))
+	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
 
-	s.EqualValues(1, page.Eval(`
+	s.EqualValues(1, page.MustEval(`
 		() => 1
 	`).Int())
-	s.EqualValues(1, page.Eval(`a => 1`).Int())
-	s.EqualValues(1, page.Eval(`function() { return 1 }`).Int())
-	s.NotEqualValues(1, page.Eval(`a = () => 1`).Int())
-	s.NotEqualValues(1, page.Eval(`a = function() { return 1 }`))
-	s.NotEqualValues(1, page.Eval(`/* ) */`))
+	s.EqualValues(1, page.MustEval(`a => 1`).Int())
+	s.EqualValues(1, page.MustEval(`function() { return 1 }`).Int())
+	s.NotEqualValues(1, page.MustEval(`a = () => 1`).Int())
+	s.NotEqualValues(1, page.MustEval(`a = function() { return 1 }`))
+	s.NotEqualValues(1, page.MustEval(`/* ) */`))
 }
 
 func (s *S) TestPageExposeJSHelper() {
-	page := s.browser.Page(srcFile("fixtures/click.html"))
-	defer page.Close()
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
 
-	s.Equal("undefined", page.Eval("typeof(rod)").Str)
+	s.Equal("undefined", page.MustEval("typeof(rod)").Str)
 	page.ExposeJSHelper()
-	s.Equal("object", page.Eval("typeof(rod)").Str)
+	s.Equal("object", page.MustEval("typeof(rod)").Str)
 }
 
 func (s *S) TestPageWaitOpen() {
-	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
+	page := s.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait := page.WaitOpen()
+	wait := page.MustWaitOpen()
 
-	page.Element("a").Click()
+	page.MustElement("a").MustClick()
 
 	newPage := wait()
-	defer newPage.Close()
+	defer newPage.MustClose()
 
-	s.Equal("new page", newPage.Eval("window.a").String())
+	s.Equal("new page", newPage.MustEval("window.a").String())
 }
 
 func (s *S) TestPageWaitPauseOpen() {
-	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/open-page.html"))
+	page := s.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
-	wait, resume := page.WaitPauseOpen()
+	wait, resume := page.MustWaitPauseOpen()
 
-	go page.Element("a").Click()
+	go page.MustElement("a").MustClick()
 
 	newPage := wait()
 
-	newPage.EvalOnNewDocument(`window.a = 'ok'`)
-	defer newPage.Close()
+	newPage.MustEvalOnNewDocument(`window.a = 'ok'`)
+	defer newPage.MustClose()
 	resume()
 
-	s.Equal("ok", newPage.Eval(`window.a`).String())
+	s.Equal("ok", newPage.MustEval(`window.a`).String())
 
-	w := page.WaitOpen()
+	w := page.MustWaitOpen()
 
-	page.Element("a").Click()
+	page.MustElement("a").MustClick()
 
 	newPage = w()
-	defer newPage.Close()
+	defer newPage.MustClose()
 
-	s.Equal("new page", newPage.Eval("window.a").String())
+	s.Equal("new page", newPage.MustEval("window.a").String())
 }
 
 func (s *S) TestPageWait() {
-	page := s.page.Timeout(3 * time.Second).Navigate(srcFile("fixtures/click.html"))
-	page.Wait(`document.querySelector('button') !== null`)
+	page := s.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/click.html"))
+	page.MustWait(`document.querySelector('button') !== null`)
 }
 
 func (s *S) TestPageWaitRequestIdle() {
@@ -297,16 +297,16 @@ func (s *S) TestPageWaitRequestIdle() {
 		</script>
 	</html>`))
 
-	page := s.page.Navigate(url)
+	page := s.page.MustNavigate(url)
 
-	wait := page.WaitRequestIdle("/r1")
-	page.Element("button").Click()
+	wait := page.MustWaitRequestIdle("/r1")
+	page.MustElement("button").MustClick()
 	start := time.Now()
 	wait()
 	s.Greater(int64(time.Since(start)), int64(sleep))
 
-	wait = page.WaitRequestIdle("/r2")
-	page.Element("button").Click()
+	wait = page.MustWaitRequestIdle("/r2")
+	page.MustElement("button").MustClick()
 	start = time.Now()
 	wait()
 	s.Less(int64(time.Since(start)), int64(sleep))
@@ -315,64 +315,64 @@ func (s *S) TestPageWaitRequestIdle() {
 		wait()
 	})
 
-	wait = page.WaitRequestIdleE(100*time.Millisecond, []string{}, []string{})
-	page.Element("button").Click()
+	wait = page.WaitRequestIdle(100*time.Millisecond, []string{}, []string{})
+	page.MustElement("button").MustClick()
 	wait()
 }
 
 func (s *S) TestPageWaitIdle() {
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	p.Element("button").Click()
-	p.WaitIdle()
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p.MustElement("button").MustClick()
+	p.MustWaitIdle()
 
-	s.True(p.Has("[a=ok]"))
+	s.True(p.MustHas("[a=ok]"))
 }
 
 func (s *S) TestPageWaitEvent() {
 	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
-	s.page.Navigate(srcFile("fixtures/click.html"))
+	s.page.MustNavigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
 func (s *S) TestAlert() {
-	page := s.page.Navigate(srcFile("fixtures/alert.html"))
+	page := s.page.MustNavigate(srcFile("fixtures/alert.html"))
 
-	go page.HandleDialog(true, "")()
-	page.Element("button").Click()
+	go page.MustHandleDialog(true, "")()
+	page.MustElement("button").MustClick()
 }
 
 func (s *S) TestMouse() {
-	page := s.page.Navigate(srcFile("fixtures/click.html"))
-	page.Element("button")
+	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	page.MustElement("button")
 	mouse := page.Mouse
 
-	mouse.Move(140, 160)
-	mouse.Down("left")
-	mouse.Up("left")
+	mouse.MustMove(140, 160)
+	mouse.MustDown("left")
+	mouse.MustUp("left")
 
-	s.True(page.Has("[a=ok]"))
+	s.True(page.MustHas("[a=ok]"))
 }
 
 func (s *S) TestMouseClick() {
 	s.browser.Slowmotion(1)
 	defer func() { s.browser.Slowmotion(0) }()
 
-	page := s.page.Navigate(srcFile("fixtures/click.html"))
-	page.Element("button")
+	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	page.MustElement("button")
 	mouse := page.Mouse
-	mouse.Move(140, 160)
-	mouse.Click("left")
-	s.True(page.Has("[a=ok]"))
+	mouse.MustMove(140, 160)
+	mouse.MustClick("left")
+	s.True(page.MustHas("[a=ok]"))
 }
 
 func (s *S) TestMouseDrag() {
-	page := s.page.Navigate(srcFile("fixtures/drag.html")).WaitLoad()
+	page := s.page.MustNavigate(srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Mouse
 
 	wait := make(chan kit.Nil)
 	logs := []string{}
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
-		log := page.ObjectsToJSON(e.Args).Join(" ")
+		log := page.MustObjectsToJSON(e.Args).Join(" ")
 		logs = append(logs, log)
 		if strings.HasPrefix(log, `up`) {
 			close(wait)
@@ -381,10 +381,10 @@ func (s *S) TestMouseDrag() {
 		return false
 	})()
 
-	mouse.Move(3, 3)
-	mouse.Down("left")
-	utils.E(mouse.MoveE(60, 80, 3))
-	mouse.Up("left")
+	mouse.MustMove(3, 3)
+	mouse.MustDown("left")
+	utils.E(mouse.Move(60, 80, 3))
+	mouse.MustUp("left")
 
 	<-wait
 
@@ -395,40 +395,40 @@ func (s *S) TestNativeDrag() {
 	// devtools doesn't support to use mouse event to simulate it for now
 	s.T().SkipNow()
 
-	page := s.page.Navigate(srcFile("fixtures/drag.html"))
+	page := s.page.MustNavigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
-	box := page.Element("#draggable").Box()
+	box := page.MustElement("#draggable").MustBox()
 	x := box.X + 3
 	y := box.Y + 3
-	toY := page.Element(".dropzone:nth-child(2)").Box().Y + 3
+	toY := page.MustElement(".dropzone:nth-child(2)").MustBox().Y + 3
 
 	page.Overlay(x, y, 10, 10, "from")
 	page.Overlay(x, toY, 10, 10, "to")
 
-	mouse.Move(x, y)
-	mouse.Down("left")
-	utils.E(mouse.MoveE(x, toY, 5))
-	page.Screenshot("")
-	mouse.Up("left")
+	mouse.MustMove(x, y)
+	mouse.MustDown("left")
+	utils.E(mouse.Move(x, toY, 5))
+	page.MustScreenshot("")
+	mouse.MustUp("left")
 
-	page.Element(".dropzone:nth-child(2) #draggable")
+	page.MustElement(".dropzone:nth-child(2) #draggable")
 }
 
 func (s *S) TestPagePause() {
-	go s.page.Pause()
+	go s.page.MustPause()
 	kit.Sleep(0.03)
-	go s.page.Eval(`10`)
+	go s.page.MustEval(`10`)
 	kit.Sleep(0.03)
 	utils.E(proto.DebuggerResume{}.Call(s.page))
 }
 
 func (s *S) TestPageScreenshot() {
 	f := filepath.Join("tmp", kit.RandString(8)+".png")
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	p.Element("button")
-	p.Screenshot()
-	data := p.Screenshot(f)
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p.MustElement("button")
+	p.MustScreenshot()
+	data := p.MustScreenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
 	utils.E(err)
 	s.Equal(800, img.Bounds().Dx())
@@ -436,60 +436,60 @@ func (s *S) TestPageScreenshot() {
 	s.FileExists(f)
 
 	utils.E(kit.Remove(slash("tmp/screenshots")))
-	p.Screenshot("")
+	p.MustScreenshot("")
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
 func (s *S) TestScreenshotFullPage() {
-	p := s.page.Navigate(srcFile("fixtures/scroll.html"))
-	p.Element("button")
-	data := p.ScreenshotFullPage()
+	p := s.page.MustNavigate(srcFile("fixtures/scroll.html"))
+	p.MustElement("button")
+	data := p.MustScreenshotFullPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	utils.E(err)
-	res := p.Eval(`({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	res := p.MustEval(`({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
 	s.EqualValues(res.Get("w").Int(), img.Bounds().Dx())
 	s.EqualValues(res.Get("h").Int(), img.Bounds().Dy())
 
 	// after the full page screenshot the window size should be the same as before
-	res = p.Eval(`({w: innerWidth, h: innerHeight})`)
+	res = p.MustEval(`({w: innerWidth, h: innerHeight})`)
 	s.EqualValues(800, res.Get("w").Int())
 	s.EqualValues(600, res.Get("h").Int())
 
 	utils.E(kit.Remove(slash("tmp/screenshots")))
-	p.ScreenshotFullPage("")
+	p.MustScreenshotFullPage("")
 	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
 }
 
 func (s *S) TestScreenshotFullPageInit() {
-	p := s.browser.Page(srcFile("fixtures/scroll.html"))
-	defer p.Close()
+	p := s.browser.MustPage(srcFile("fixtures/scroll.html"))
+	defer p.MustClose()
 
 	// should not panic
-	p.ScreenshotFullPage()
+	p.MustScreenshotFullPage()
 }
 
 func (s *S) TestPageInput() {
-	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
 
-	el := p.Element("input")
-	el.Focus()
-	p.Keyboard.Press('A')
-	p.Keyboard.InsertText(" Test")
-	p.Keyboard.Press(input.Tab)
+	el := p.MustElement("input")
+	el.MustFocus()
+	p.Keyboard.MustPress('A')
+	p.Keyboard.MustInsertText(" Test")
+	p.Keyboard.MustPress(input.Tab)
 
-	s.Equal("A Test", el.Text())
+	s.Equal("A Test", el.MustText())
 }
 
 func (s *S) TestPageScroll() {
 	utils.E(kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
-		p := s.browser.Page(srcFile("fixtures/scroll.html")).WaitLoad()
-		defer p.Close()
+		p := s.browser.MustPage(srcFile("fixtures/scroll.html")).MustWaitLoad()
+		defer p.MustClose()
 
-		p.Mouse.Scroll(0, 10)
-		p.Mouse.Scroll(100, 190)
-		utils.E(p.Mouse.ScrollE(200, 300, 5))
-		p.Element("button").WaitStable()
-		offset := p.Eval("({x: window.pageXOffset, y: window.pageYOffset})")
+		p.Mouse.MustScroll(0, 10)
+		p.Mouse.MustScroll(100, 190)
+		utils.E(p.Mouse.Scroll(200, 300, 5))
+		p.MustElement("button").MustWaitStable()
+		offset := p.MustEval("({x: window.pageXOffset, y: window.pageYOffset})")
 		if offset.Get("x").Int() == 300 {
 			s.GreaterOrEqual(int64(10), 500-offset.Get("y").Int())
 			return true, nil
@@ -499,28 +499,28 @@ func (s *S) TestPageScroll() {
 }
 
 func (s *S) TestPageConsoleLog() {
-	p := s.page.Navigate("")
+	p := s.page.MustNavigate("")
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
-	p.Eval(`console.log(1, {b: ['test']})`)
+	p.MustEval(`console.log(1, {b: ['test']})`)
 	wait()
-	s.Equal("test", p.ObjectToJSON(e.Args[1]).Get("b.0").String())
-	s.Equal(`1 {"b":["test"]}`, p.ObjectsToJSON(e.Args).Join(" "))
+	s.Equal("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
+	s.Equal(`1 {"b":["test"]}`, p.MustObjectsToJSON(e.Args).Join(" "))
 }
 
 func (s *S) TestPageOthers() {
-	p := s.page.Navigate(srcFile("fixtures/input.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
 
 	s.IsType(s.browser.GetContext(), p.GetContext())
 
-	s.Equal("body", p.ElementByJS(`document.body`).Describe().LocalName)
-	s.Len(p.ElementsByJS(`document.querySelectorAll('input')`), 5)
-	s.EqualValues(1, p.Eval(`1`).Int())
+	s.Equal("body", p.MustElementByJS(`document.body`).MustDescribe().LocalName)
+	s.Len(p.MustElementsByJS(`document.querySelectorAll('input')`), 5)
+	s.EqualValues(1, p.MustEval(`1`).Int())
 
-	p.Mouse.Down("left")
-	defer p.Mouse.Up("left")
-	p.Mouse.Down("right")
-	defer p.Mouse.Up("right")
+	p.Mouse.MustDown("left")
+	defer p.Mouse.MustUp("left")
+	p.Mouse.MustDown("right")
+	defer p.Mouse.MustUp("right")
 }
 
 func (s *S) TestFonts() {
@@ -534,27 +534,27 @@ func (s *S) TestFonts() {
 		open tmp/fonts.pdf
 	*/
 
-	p := s.page.Navigate(srcFile("fixtures/fonts.html")).WaitLoad()
+	p := s.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
 
-	utils.E(kit.OutputFile("tmp/fonts.pdf", p.PDF(), nil))
+	utils.E(kit.OutputFile("tmp/fonts.pdf", p.MustPDF(), nil))
 }
 
 func (s *S) TestPageExpose() {
-	cb, stop := s.page.Expose("exposedFunc")
-	page := s.page.Navigate(srcFile("fixtures/click.html"))
-	page.Eval(`exposedFunc('ok')`)
+	cb, stop := s.page.MustExpose("exposedFunc")
+	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	page.MustEval(`exposedFunc('ok')`)
 	s.Equal("ok", <-cb)
 	stop()
 	s.Panics(func() {
-		page := s.page.Navigate(srcFile("fixtures/click.html"))
-		page.Eval(`exposedFunc('')`)
+		page := s.page.MustNavigate(srcFile("fixtures/click.html"))
+		page.MustEval(`exposedFunc('')`)
 	})
 }
 
 func (s *S) TestNavigateErr() {
 	// dns error
 	s.Panics(func() {
-		s.page.Navigate("http://" + kit.RandString(8))
+		s.page.MustNavigate("http://" + kit.RandString(8))
 	})
 
 	url, engine, close := serve()
@@ -568,6 +568,6 @@ func (s *S) TestNavigateErr() {
 	})
 
 	// will not panic
-	s.page.Navigate(url + "/404")
-	s.page.Navigate(url + "/500")
+	s.page.MustNavigate(url + "/404")
+	s.page.MustNavigate(url + "/500")
 }

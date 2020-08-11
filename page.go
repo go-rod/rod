@@ -63,16 +63,16 @@ func (p *Page) Root() *Page {
 	return f
 }
 
-// InfoE of the page, such as the URL or title of the page
-func (p *Page) InfoE() (*proto.TargetTargetInfo, error) {
+// Info of the page, such as the URL or title of the page
+func (p *Page) Info() (*proto.TargetTargetInfo, error) {
 	return p.browser.pageInfo(p.TargetID)
 }
 
-// CookiesE returns the page cookies. By default it will return the cookies for current page.
+// Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
-func (p *Page) CookiesE(urls []string) ([]*proto.NetworkCookie, error) {
+func (p *Page) Cookies(urls []string) ([]*proto.NetworkCookie, error) {
 	if len(urls) == 0 {
-		info, err := p.InfoE()
+		info, err := p.Info()
 		if err != nil {
 			return nil, err
 		}
@@ -86,15 +86,15 @@ func (p *Page) CookiesE(urls []string) ([]*proto.NetworkCookie, error) {
 	return res.Cookies, nil
 }
 
-// SetCookiesE of the page.
+// SetCookies of the page.
 // Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
-func (p *Page) SetCookiesE(cookies []*proto.NetworkCookieParam) error {
+func (p *Page) SetCookies(cookies []*proto.NetworkCookieParam) error {
 	err := proto.NetworkSetCookies{Cookies: cookies}.Call(p)
 	return err
 }
 
-// SetExtraHeadersE whether to always send extra HTTP headers with the requests from this page.
-func (p *Page) SetExtraHeadersE(dict []string) (func(), error) {
+// SetExtraHeaders whether to always send extra HTTP headers with the requests from this page.
+func (p *Page) SetExtraHeaders(dict []string) (func(), error) {
 	headers := proto.NetworkHeaders{}
 
 	for i := 0; i < len(dict); i += 2 {
@@ -104,9 +104,9 @@ func (p *Page) SetExtraHeadersE(dict []string) (func(), error) {
 	return p.EnableDomain(&proto.NetworkEnable{}), proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
 }
 
-// SetUserAgentE Allows overriding user agent with the given string.
+// SetUserAgent Allows overriding user agent with the given string.
 // If req is nil, the default user agent will be the same as a mac chrome.
-func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
+func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	if req == nil {
 		req = &proto.NetworkSetUserAgentOverride{
 			UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
@@ -117,14 +117,14 @@ func (p *Page) SetUserAgentE(req *proto.NetworkSetUserAgentOverride) error {
 	return req.Call(p)
 }
 
-// NavigateE doc is similar to the method Navigate
+// Navigate doc is similar to the method MustNavigate
 // If url is empty, it will navigate to "about:blank".
-func (p *Page) NavigateE(url string) error {
+func (p *Page) Navigate(url string) error {
 	if url == "" {
 		url = "about:blank"
 	}
 
-	err := p.StopLoadingE()
+	err := p.StopLoading()
 	if err != nil {
 		return err
 	}
@@ -146,8 +146,8 @@ func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	return res.WindowID, err
 }
 
-// GetWindowE doc is similar to the method GetWindow
-func (p *Page) GetWindowE() (*proto.BrowserBounds, error) {
+// GetWindow doc is similar to the method MustGetWindow
+func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	id, err := p.getWindowID()
 	if err != nil {
 		return nil, err
@@ -161,8 +161,8 @@ func (p *Page) GetWindowE() (*proto.BrowserBounds, error) {
 	return res.Bounds, nil
 }
 
-// WindowE https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
-func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
+// Window https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
+func (p *Page) Window(bounds *proto.BrowserBounds) error {
 	id, err := p.getWindowID()
 	if err != nil {
 		return err
@@ -172,35 +172,35 @@ func (p *Page) WindowE(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// ViewportE doc is similar to the method Viewport. If params is nil, it will clear the override.
-func (p *Page) ViewportE(params *proto.EmulationSetDeviceMetricsOverride) error {
+// Viewport doc is similar to the method MustViewport. If params is nil, it will clear the override.
+func (p *Page) Viewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 	if params == nil {
 		return proto.EmulationClearDeviceMetricsOverride{}.Call(p)
 	}
 	return params.Call(p)
 }
 
-// EmulateE the device, such as iPhone9. If device is empty, it will clear the override.
-func (p *Page) EmulateE(device devices.DeviceType, landscape bool) error {
+// Emulate the device, such as iPhone9. If device is empty, it will clear the override.
+func (p *Page) Emulate(device devices.DeviceType, landscape bool) error {
 	v := devices.GetViewport(device, landscape)
 	u := devices.GetUserAgent(device)
 
-	err := p.ViewportE(v)
+	err := p.Viewport(v)
 	if err != nil {
 		return err
 	}
 
-	return p.SetUserAgentE(u)
+	return p.SetUserAgent(u)
 }
 
-// StopLoadingE forces the page stop navigation and pending resource fetches.
-func (p *Page) StopLoadingE() error {
+// StopLoading forces the page stop navigation and pending resource fetches.
+func (p *Page) StopLoading() error {
 	return proto.PageStopLoading{}.Call(p)
 }
 
-// CloseE page
-func (p *Page) CloseE() error {
-	err := p.StopLoadingE()
+// Close page
+func (p *Page) Close() error {
+	err := p.StopLoading()
 	if err != nil {
 		return err
 	}
@@ -215,9 +215,9 @@ func (p *Page) CloseE() error {
 	return nil
 }
 
-// HandleDialogE doc is similar to the method HandleDialog.
+// HandleDialog doc is similar to the method MustHandleDialog.
 // Because the js will be paused, you should put the code that triggers in a goroutine.
-func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
+func (p *Page) HandleDialog(accept bool, promptText string) func() error {
 	recover := p.EnableDomain(&proto.PageEnable{})
 
 	wait := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
@@ -233,8 +233,8 @@ func (p *Page) HandleDialogE(accept bool, promptText string) func() error {
 	}
 }
 
-// ScreenshotE options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
-func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
+// Screenshot options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
+func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
 	if fullpage {
 		metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
 		if err != nil {
@@ -247,7 +247,7 @@ func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]b
 		view.Width = int64(metrics.ContentSize.Width)
 		view.Height = int64(metrics.ContentSize.Height)
 
-		err = p.ViewportE(&view)
+		err = p.Viewport(&view)
 		if err != nil {
 			return nil, err
 		}
@@ -260,7 +260,7 @@ func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]b
 				return
 			}
 
-			e := p.ViewportE(oldView)
+			e := p.Viewport(oldView)
 			if err == nil {
 				err = e
 			}
@@ -274,8 +274,8 @@ func (p *Page) ScreenshotE(fullpage bool, req *proto.PageCaptureScreenshot) ([]b
 	return shot.Data, nil
 }
 
-// PDFE prints page as PDF
-func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
+// PDF prints page as PDF
+func (p *Page) PDF(req *proto.PagePrintToPDF) ([]byte, error) {
 	res, err := req.Call(p)
 	if err != nil {
 		return nil, err
@@ -283,8 +283,8 @@ func (p *Page) PDFE(req *proto.PagePrintToPDF) ([]byte, error) {
 	return res.Data, nil
 }
 
-// WaitOpenE doc is similar to the method WaitPage
-func (p *Page) WaitOpenE() func() (*Page, error) {
+// WaitOpen doc is similar to the method MustWaitPage
+func (p *Page) WaitOpen() func() (*Page, error) {
 	b := p.browser.Context(p.ctx, p.ctxCancel)
 	var targetID proto.TargetTargetID
 
@@ -298,14 +298,14 @@ func (p *Page) WaitOpenE() func() (*Page, error) {
 
 	return func() (*Page, error) {
 		wait()
-		return b.PageFromTargetIDE(targetID)
+		return b.PageFromTarget(targetID)
 	}
 }
 
-// WaitPauseOpenE waits for a page opened by the current page, before opening pause the js execution.
+// WaitPauseOpen waits for a page opened by the current page, before opening pause the js execution.
 // Because the js will be paused, you should put the code that triggers it in a goroutine.
-func (p *Page) WaitPauseOpenE() (wait func() (*Page, error), resume func() error, err error) {
-	wait = p.WaitOpenE()
+func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error, err error) {
+	wait = p.WaitOpen()
 
 	// TODO: we have to use the browser to call, seems like a chrome bug
 	err = proto.TargetSetAutoAttach{
@@ -331,8 +331,8 @@ func (p *Page) WaitPauseOpenE() (wait func() (*Page, error), resume func() error
 	return
 }
 
-// PauseE doc is similar to the method Pause
-func (p *Page) PauseE() error {
+// Pause doc is similar to the method MustPause
+func (p *Page) Pause() error {
 	wait := p.WaitEvent(&proto.DebuggerResumed{})
 	err := proto.DebuggerPause{}.Call(p)
 	if err != nil {
@@ -343,7 +343,7 @@ func (p *Page) PauseE() error {
 }
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
-// The fn can accpet multiple events, such as EachEventE(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
+// The fn can accpet multiple events, such as EachEvent(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
 // only one argument will be non-null, others will null.
 func (p *Page) EachEvent(fn interface{}) (wait func()) {
 	return p.browser.eachEvent(p.ctx, p.SessionID, fn)
@@ -354,10 +354,10 @@ func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
 	return p.browser.waitEvent(p.ctx, p.SessionID, e)
 }
 
-// WaitRequestIdleE returns a wait function that waits until no request for d duration.
+// WaitRequestIdle returns a wait function that waits until no request for d duration.
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
-func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) func() {
+func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) func() {
 	ctx, cancel := context.WithCancel(p.ctx)
 
 	reqList := map[proto.NetworkRequestID]kit.Nil{}
@@ -404,40 +404,40 @@ func (p *Page) WaitRequestIdleE(d time.Duration, includes, excludes []string) fu
 	}
 }
 
-// WaitIdleE doc is similar to the method WaitIdle
-func (p *Page) WaitIdleE(timeout time.Duration) (err error) {
+// WaitIdle doc is similar to the method MustWaitIdle
+func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 	js, jsArgs := jsHelper("waitIdle", Array{timeout.Seconds()})
-	_, err = p.EvalE(true, "", js, jsArgs)
+	_, err = p.Eval(true, "", js, jsArgs)
 	return err
 }
 
-// WaitLoadE doc is similar to the method WaitLoad
-func (p *Page) WaitLoadE() error {
+// WaitLoad doc is similar to the method MustWaitLoad
+func (p *Page) WaitLoad() error {
 	js, jsArgs := jsHelper("waitLoad", nil)
-	_, err := p.EvalE(true, "", js, jsArgs)
+	_, err := p.Eval(true, "", js, jsArgs)
 	return err
 }
 
-// AddScriptTagE to page. If url is empty, content will be used.
-func (p *Page) AddScriptTagE(url, content string) error {
+// AddScriptTag to page. If url is empty, content will be used.
+func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
 	js, jsArgs := jsHelper("addScriptTag", Array{id, url, content})
-	_, err := p.EvalE(true, "", js, jsArgs)
+	_, err := p.Eval(true, "", js, jsArgs)
 	return err
 }
 
-// AddStyleTagE to page. If url is empty, content will be used.
-func (p *Page) AddStyleTagE(url, content string) error {
+// AddStyleTag to page. If url is empty, content will be used.
+func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
 	js, jsArgs := jsHelper("addStyleTag", Array{id, url, content})
-	_, err := p.EvalE(true, "", js, jsArgs)
+	_, err := p.Eval(true, "", js, jsArgs)
 	return err
 }
 
-// EvalOnNewDocumentE Evaluates given script in every frame upon creation (before loading frame's scripts).
-func (p *Page) EvalOnNewDocumentE(js string) (proto.PageScriptIdentifier, error) {
+// EvalOnNewDocument Evaluates given script in every frame upon creation (before loading frame's scripts).
+func (p *Page) EvalOnNewDocument(js string) (proto.PageScriptIdentifier, error) {
 	res, err := proto.PageAddScriptToEvaluateOnNewDocument{Source: js}.Call(p)
 	if err != nil {
 		return "", err
@@ -446,9 +446,9 @@ func (p *Page) EvalOnNewDocumentE(js string) (proto.PageScriptIdentifier, error)
 	return res.Identifier, nil
 }
 
-// ExposeE function to the page's window object. Must bind before navigate to the page. Bindings survive reloads.
+// Expose function to the page's window object. Must bind before navigate to the page. Bindings survive reloads.
 // Binding function takes exactly one argument, this argument should be string.
-func (p *Page) ExposeE(name string) (callback chan string, stop func(), err error) {
+func (p *Page) Expose(name string) (callback chan string, stop func(), err error) {
 	err = proto.RuntimeAddBinding{Name: name}.Call(p)
 	if err != nil {
 		return
@@ -474,10 +474,10 @@ func (p *Page) ExposeE(name string) (callback chan string, stop func(), err erro
 	return
 }
 
-// EvalE thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
+// Eval thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
 // Set the byValue to true to reduce memory occupation.
 // If the item in jsArgs is proto.RuntimeRemoteObjectID, the remote object will be used, else the item will be treated as JSON value.
-func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
+func (p *Page) Eval(byValue bool, thisID proto.RuntimeRemoteObjectID, js string, jsArgs Array) (*proto.RuntimeRemoteObject, error) {
 	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := thisID
 	var err error
@@ -537,8 +537,8 @@ func (p *Page) EvalE(byValue bool, thisID proto.RuntimeRemoteObjectID, js string
 	return res.Result, nil
 }
 
-// WaitE js function until it returns true
-func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
+// Wait js function until it returns true
+func (p *Page) Wait(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
 			return fmt.Errorf("%w: %s", newErr(ErrWaitJSTimeout, js), js)
@@ -553,7 +553,7 @@ func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js
 		removeTrace()
 		removeTrace = remove
 
-		res, err := p.EvalE(true, thisID, js, params)
+		res, err := p.Eval(true, thisID, js, params)
 		if err != nil {
 			return true, err
 		}
@@ -562,8 +562,8 @@ func (p *Page) WaitE(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObjectID, js
 	})
 }
 
-// ObjectToJSONE by object id
-func (p *Page) ObjectToJSONE(obj *proto.RuntimeRemoteObject) (proto.JSON, error) {
+// ObjectToJSON by object id
+func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (proto.JSON, error) {
 	if obj.ObjectID == "" {
 		return obj.Value, nil
 	}
@@ -587,8 +587,8 @@ func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 	}).Context(context.WithCancel(p.ctx))
 }
 
-// ElementFromNodeE creates an Element from the node id
-func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
+// ElementFromNode creates an Element from the node id
+func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
 	objID, err := p.resolveNode(id)
 	if err != nil {
 		return nil, err
@@ -602,12 +602,12 @@ func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
 	}
 
 	// make sure always return an element node
-	desc, err := el.DescribeE(0, false)
+	desc, err := el.Describe(0, false)
 	if err != nil {
 		return nil, err
 	}
 	if desc.NodeName == "#text" {
-		el, err = el.ParentE()
+		el, err = el.Parent()
 		if err != nil {
 			return nil, err
 		}
@@ -616,9 +616,9 @@ func (p *Page) ElementFromNodeE(id proto.DOMNodeID) (*Element, error) {
 	return el, nil
 }
 
-// ElementFromPointE creates an Element from the absolute point on the page.
+// ElementFromPoint creates an Element from the absolute point on the page.
 // The point should include the window scroll offset.
-func (p *Page) ElementFromPointE(x, y int64) (*Element, error) {
+func (p *Page) ElementFromPoint(x, y int64) (*Element, error) {
 	p.enableNodeQuery()
 
 	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
@@ -626,11 +626,11 @@ func (p *Page) ElementFromPointE(x, y int64) (*Element, error) {
 		return nil, err
 	}
 
-	return p.ElementFromNodeE(node.NodeID)
+	return p.ElementFromNode(node.NodeID)
 }
 
-// ReleaseE doc is similar to the method Release
-func (p *Page) ReleaseE(objectID proto.RuntimeRemoteObjectID) error {
+// Release doc is similar to the method MustRelease
+func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) error {
 	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)
 	return err
 }
@@ -737,7 +737,7 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 func (p *Page) frameID() (proto.PageFrameID, error) {
 	// this is the only way we can get the window object from the iframe
 	if p.IsIframe() {
-		node, err := p.element.DescribeE(1, false)
+		node, err := p.element.Describe(1, false)
 		if err != nil {
 			return "", err
 		}
@@ -789,7 +789,7 @@ func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID,
 func (p *Page) hasElement(id proto.RuntimeRemoteObjectID) (bool, error) {
 	// We don't have a good way to detect if a node is inside an iframe.
 	// Currently this is most efficient way to do it.
-	_, err := p.EvalE(true, "", "() => {}", Array{id})
+	_, err := p.Eval(true, "", "() => {}", Array{id})
 	if err == nil {
 		return true, nil
 	}

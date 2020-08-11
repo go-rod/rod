@@ -17,10 +17,10 @@ func main() {
 		log.Fatal("must specify -devtools-ws-url")
 	}
 
-	page := rod.New().ControlURL(*flagDevToolWsURL).Connect().Page("https://duckduckgo.com")
+	page := rod.New().ControlURL(*flagDevToolWsURL).MustConnect().MustPage("https://duckduckgo.com")
 
-	page.Element("#logo_homepage_link").WaitVisible()
-	body := page.Element("html").HTML()
+	page.MustElement("#logo_homepage_link").MustWaitVisible()
+	body := page.MustElement("html").MustHTML()
 
 	log.Println("Body of duckduckgo.com starts with:")
 	log.Println(body[0:100])

@@ -17,8 +17,8 @@ type Keyboard struct {
 	modifiers int64
 }
 
-// DownE doc is similar to the method Down
-func (k *Keyboard) DownE(key rune) error {
+// Down doc is similar to the method MustDown
+func (k *Keyboard) Down(key rune) error {
 	k.lock.Lock()
 	defer k.lock.Unlock()
 
@@ -32,8 +32,8 @@ func (k *Keyboard) DownE(key rune) error {
 	return nil
 }
 
-// UpE doc is similar to the method Up
-func (k *Keyboard) UpE(key rune) error {
+// Up doc is similar to the method MustUp
+func (k *Keyboard) Up(key rune) error {
 	k.lock.Lock()
 	defer k.lock.Unlock()
 
@@ -47,8 +47,8 @@ func (k *Keyboard) UpE(key rune) error {
 	return nil
 }
 
-// PressE doc is similar to the method Press
-func (k *Keyboard) PressE(key rune) error {
+// Press doc is similar to the method MustPress
+func (k *Keyboard) Press(key rune) error {
 	k.lock.Lock()
 	defer k.lock.Unlock()
 
@@ -71,8 +71,8 @@ func (k *Keyboard) PressE(key rune) error {
 	return nil
 }
 
-// InsertTextE doc is similar to the method InsertText
-func (k *Keyboard) InsertTextE(text string) error {
+// InsertText doc is similar to the method MustInsertText
+func (k *Keyboard) InsertText(text string) error {
 	k.lock.Lock()
 	defer k.lock.Unlock()
 

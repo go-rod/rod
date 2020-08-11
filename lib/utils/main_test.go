@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestE(t *testing.T) {
+func TestErr(t *testing.T) {
 	utils.E(nil)
 
 	assert.Panics(t, func() {

@@ -22,19 +22,19 @@ func (s *S) TestIncognito() {
 	file := srcFile("fixtures/click.html")
 	k := kit.RandString(8)
 
-	b := s.browser.Incognito()
-	page := b.Page(file)
-	page.Eval(`k => localStorage[k] = 1`, k)
+	b := s.browser.MustIncognito()
+	page := b.MustPage(file)
+	page.MustEval(`k => localStorage[k] = 1`, k)
 
-	s.Nil(s.page.Navigate(file).Eval(`k => localStorage[k]`, k).Value())
-	s.EqualValues(1, page.Eval(`k => localStorage[k]`, k).Int())
+	s.Nil(s.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
+	s.EqualValues(1, page.MustEval(`k => localStorage[k]`, k).Int())
 }
 
 func (s *S) TestBrowserPages() {
-	page := s.browser.Page(srcFile("fixtures/click.html")).WaitLoad()
-	defer page.Close()
+	page := s.browser.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
+	defer page.MustClose()
 
-	pages := s.browser.Pages()
+	pages := s.browser.MustPages()
 
 	// TODO: I don't know why sometimes windows can miss one
 	if runtime.GOOS == "windows" {
@@ -46,26 +46,26 @@ func (s *S) TestBrowserPages() {
 			defer s.at(1, func(d []byte, err error) ([]byte, error) {
 				return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
 			})()
-			pages := s.browser.Pages()
+			pages := s.browser.MustPages()
 			s.Len(pages, 2)
 		}()
 	}
 	s.Panics(func() {
 		defer s.errorAt(1, nil)()
-		s.browser.Page("")
+		s.browser.MustPage("")
 	})
 	s.Panics(func() {
 		defer s.errorAt(1, nil)()
-		s.browser.Pages()
+		s.browser.MustPages()
 	})
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
 		utils.E(err)
 		defer func() {
-			s.browser.PageFromTargetID(res.TargetID).Close()
+			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
 		defer s.errorAt(2, nil)()
-		s.browser.Pages()
+		s.browser.MustPages()
 	})
 }
 
@@ -80,13 +80,13 @@ func (s *S) TestBrowserWaitEvent() {
 	s.NotNil(s.browser.Event())
 
 	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
-	s.page.Navigate(srcFile("fixtures/click.html"))
+	s.page.MustNavigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
 func (s *S) TestBrowserCrash() {
-	browser := rod.New().Timeout(1 * time.Minute).Connect()
-	page := browser.Page("")
+	browser := rod.New().Timeout(1 * time.Minute).MustConnect()
+	page := browser.MustPage("")
 
 	wait := browser.WaitEvent(&proto.PageFrameNavigated{})
 	go func() {
@@ -95,7 +95,7 @@ func (s *S) TestBrowserCrash() {
 	}()
 
 	s.Panics(func() {
-		page.Eval(`new Promise(() => {})`)
+		page.MustEval(`new Promise(() => {})`)
 	})
 
 	wait()
@@ -109,16 +109,16 @@ func (s *S) TestBrowserCall() {
 }
 
 func (s *S) TestMonitor() {
-	b := rod.New().Timeout(1 * time.Minute).Connect()
-	defer b.Close()
-	p := b.Page(srcFile("fixtures/click.html")).WaitLoad()
+	b := rod.New().Timeout(1 * time.Minute).MustConnect()
+	defer b.MustClose()
+	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
 	host := b.ServeMonitor("127.0.0.1:0", true).Listener.Addr().String()
 
-	page := s.page.Navigate("http://" + host)
-	s.Contains(page.Element("#targets a").Parent().HTML(), string(p.TargetID))
+	page := s.page.MustNavigate("http://" + host)
+	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
 
-	page.Navigate("http://" + host + "/page/" + string(p.TargetID))
-	s.Contains(page.Eval(`document.title`).Str, p.TargetID)
+	page.MustNavigate("http://" + host + "/page/" + string(p.TargetID))
+	s.Contains(page.MustEval(`document.title`).Str, p.TargetID)
 
 	s.Equal(400, kit.Req("http://"+host+"/api/page/test").MustResponse().StatusCode)
 }
@@ -133,12 +133,12 @@ func (s *S) TestRemoteLaunch() {
 	ctx, cancel := context.WithCancel(context.Background())
 	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))
 	c := l.Client().Context(ctx, cancel)
-	b := rod.New().Context(ctx, cancel).Client(c).Connect()
-	defer b.Close()
+	b := rod.New().Context(ctx, cancel).Client(c).MustConnect()
+	defer b.MustClose()
 
-	p := b.Page(srcFile("fixtures/click.html"))
-	p.Element("button").Click()
-	s.True(p.Has("[a=ok]"))
+	p := b.MustPage(srcFile("fixtures/click.html"))
+	p.MustElement("button").MustClick()
+	s.True(p.MustHas("[a=ok]"))
 }
 
 func (s *S) TestTrace() {
@@ -159,9 +159,9 @@ func (s *S) TestTrace() {
 		s.browser.Trace(false).Slowmotion(0)
 	}()
 
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
-	el := p.Element("button")
-	el.Click()
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	el := p.MustElement("button")
+	el.MustClick()
 	s.Equal("left click", msg)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -174,7 +174,7 @@ func (s *S) TestTrace() {
 }
 
 func (s *S) TestConcurrentOperations() {
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	list := []int64{}
 	lock := sync.Mutex{}
 	add := func(item int64) {
@@ -184,9 +184,9 @@ func (s *S) TestConcurrentOperations() {
 	}
 
 	kit.All(func() {
-		add(p.Eval(`new Promise(r => setTimeout(r, 100, 2))`).Int())
+		add(p.MustEval(`new Promise(r => setTimeout(r, 100, 2))`).Int())
 	}, func() {
-		add(p.Eval(`1`).Int())
+		add(p.MustEval(`1`).Int())
 	})()
 
 	s.Equal([]int64{1, 2}, list)
@@ -200,14 +200,14 @@ func (s *S) TestPromiseLeak() {
 		The unexpected part is that the promise will resolve to the next page's url.
 	*/
 
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	var out string
 
 	kit.All(func() {
-		out = p.Eval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
+		out = p.MustEval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
 	}, func() {
 		kit.Sleep(0.1)
-		p.Navigate(srcFile("fixtures/input.html"))
+		p.MustNavigate(srcFile("fixtures/input.html"))
 	})()
 
 	s.Contains(out, "input.html")
@@ -218,12 +218,12 @@ func (s *S) TestObjectLeak() {
 		Seems like it won't leak
 	*/
 
-	p := s.page.Navigate(srcFile("fixtures/click.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 
-	el := p.Element("button")
-	p.Navigate(srcFile("fixtures/input.html")).WaitLoad()
+	el := p.MustElement("button")
+	p.MustNavigate(srcFile("fixtures/input.html")).MustWaitLoad()
 	s.Panics(func() {
-		el.Describe()
+		el.MustDescribe()
 	})
 }
 
@@ -243,19 +243,19 @@ func (s *S) TestBlockingNavigation() {
 	})
 	engine.GET("/b", ginHTML(`<html>ok</html>`))
 
-	blocked := s.browser.Page("")
-	defer blocked.Close()
+	blocked := s.browser.MustPage("")
+	defer blocked.MustClose()
 
 	go func() {
 		s.Panics(func() {
-			blocked.Navigate(url + "/a")
+			blocked.MustNavigate(url + "/a")
 		})
 	}()
 
 	kit.Sleep(0.3)
 
-	p := s.browser.Page(url + "/b")
-	defer p.Close()
+	p := s.browser.MustPage(url + "/b")
+	defer p.MustClose()
 }
 
 func (s *S) TestResolveBlocking() {
@@ -269,16 +269,16 @@ func (s *S) TestResolveBlocking() {
 		<-pause.Done()
 	})
 
-	p := s.browser.Page("")
-	defer p.Close()
+	p := s.browser.MustPage("")
+	defer p.MustClose()
 
 	go func() {
 		kit.Sleep(0.1)
-		p.StopLoading()
+		p.MustStopLoading()
 	}()
 
 	s.Panics(func() {
-		p.Navigate(url)
+		p.MustNavigate(url)
 	})
 }
 
@@ -299,19 +299,19 @@ func (s *S) TestBrowserOthers() {
 	cancel()
 
 	s.Panics(func() {
-		s.browser.Context(ctx, cancel).Incognito()
+		s.browser.Context(ctx, cancel).MustIncognito()
 	})
 }
 
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {
-	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		p.Eval(`(time) => {
+		p.MustEval(`(time) => {
 			// won't call this function, it's used to make the declaration longer
 			function foo (id, left, top, width, height, msg) {
 				var div = document.createElement('div')
@@ -344,12 +344,12 @@ func BenchmarkCacheOff(b *testing.B) {
 }
 
 func BenchmarkCache(b *testing.B) {
-	p := rod.New().Timeout(1 * time.Minute).Connect().Page(srcFile("fixtures/click.html"))
+	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		p.Eval(`(time) => {
+		p.MustEval(`(time) => {
 			return time
 		}`, time.Now().UnixNano())
 	}

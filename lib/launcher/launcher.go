@@ -245,17 +245,17 @@ func (l *Launcher) Reap(enable bool) *Launcher {
 	return l
 }
 
-// Launch a standalone temp browser instance and returns the debug url.
+// MustLaunch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
-func (l *Launcher) Launch() string {
-	u, err := l.LaunchE()
+func (l *Launcher) MustLaunch() string {
+	u, err := l.Launch()
 	utils.E(err)
 	return u
 }
 
-// LaunchE doc is similar to the method Launch
-func (l *Launcher) LaunchE() (wsURL string, err error) {
+// Launch doc is similar to the method MustLaunch
+func (l *Launcher) Launch() (wsURL string, err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = e.(error)

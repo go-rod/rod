@@ -29,9 +29,9 @@ func (s *S) TestHijack() {
 	engine.GET("/b", ginString("b"))
 
 	router := s.page.HijackRequests()
-	defer router.Stop()
+	defer router.MustStop()
 
-	router.Add(url+"/a", func(ctx *rod.Hijack) {
+	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
 		ctx.Request.
 			SetClient(&http.Client{
 				Transport: &http.Transport{
@@ -52,15 +52,15 @@ func (s *S) TestHijack() {
 		s.Equal("", ctx.Request.JSONBody().String())
 
 		// send request load response from real destination as the default value to hijack
-		ctx.LoadResponse()
+		ctx.MustLoadResponse()
 
-		s.Equal(200, ctx.Response.StatusCode())
+		s.Equal(200, ctx.Response.MustStatusCode())
 
 		// override status code
 		ctx.Response.SetStatusCode(201)
 
-		s.Equal("4", ctx.Response.Header("Content-Length"))
-		s.Equal("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
+		s.Equal("4", ctx.Response.MustHeader("Content-Length"))
+		s.Equal("text/plain; charset=utf-8", ctx.Response.MustHeaders().Get("Content-Type"))
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
@@ -70,26 +70,26 @@ func (s *S) TestHijack() {
 			"text": ctx.Response.StringBody(),
 		})
 
-		s.NotNil(ctx.Response.BodyStream())
+		s.NotNil(ctx.Response.MustBodyStream())
 		s.Equal("true", ctx.Response.JSONBody().String())
 	})
 
-	router.Add(url+"/b", func(ctx *rod.Hijack) {
+	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
 		panic("should not come to here")
 	})
-	router.Remove(url + "/b")
+	router.MustRemove(url + "/b")
 
-	router.Add(url+"/b", func(ctx *rod.Hijack) {
+	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
 		// transparent proxy
-		ctx.LoadResponse()
+		ctx.MustLoadResponse()
 	})
 
 	go router.Run()
 
-	s.page.Navigate(url)
+	s.page.MustNavigate(url)
 
-	s.Equal("201 test key=val", s.page.Element("#a").Text())
-	s.Equal("b", s.page.Element("#b").Text())
+	s.Equal("201 test key=val", s.page.MustElement("#a").MustText())
+	s.Equal("b", s.page.MustElement("#b").MustText())
 }
 
 func (s *S) TestHijackContinue() {
@@ -107,17 +107,17 @@ func (s *S) TestHijackContinue() {
 	engine.GET("/a", ginString(`ok`))
 
 	router := s.page.HijackRequests()
-	defer router.Stop()
+	defer router.MustStop()
 
-	router.Add(url+"/a", func(ctx *rod.Hijack) {
+	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 	})
 
 	go router.Run()
 
-	s.page.Navigate(url)
+	s.page.MustNavigate(url)
 
-	s.Equal("ok", s.page.Element("body").Text())
+	s.Equal("ok", s.page.MustElement("body").MustText())
 }
 
 func (s *S) TestHijackFailRequest() {
@@ -134,17 +134,17 @@ func (s *S) TestHijackFailRequest() {
 	</script></html>`))
 
 	router := s.browser.HijackRequests()
-	defer router.Stop()
+	defer router.MustStop()
 
-	router.Add(url+"/a", func(ctx *rod.Hijack) {
+	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
 		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
 	})
 
 	go router.Run()
 
-	s.page.Navigate(url)
+	s.page.MustNavigate(url)
 
-	s.Equal("Failed to fetch", s.page.Element("body").Text())
+	s.Equal("Failed to fetch", s.page.MustElement("body").MustText())
 }
 
 func (s *S) TestHandleAuth() {
@@ -165,11 +165,11 @@ func (s *S) TestHandleAuth() {
 		ginHTML(`<p>ok</p>`)(ctx)
 	})
 
-	s.browser.HandleAuth("a", "b")
+	s.browser.MustHandleAuth("a", "b")
 
-	page := s.browser.Page(url)
-	defer page.Close()
-	page.ElementMatches("p", "ok")
+	page := s.browser.MustPage(url)
+	defer page.MustClose()
+	page.MustElementMatches("p", "ok")
 }
 
 func (s *S) TestGetDownloadFile() {
@@ -183,10 +183,10 @@ func (s *S) TestGetDownloadFile() {
 	})
 	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
-	page := s.page.Navigate(url)
+	page := s.page.MustNavigate(url)
 
-	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
-	page.Element("a").Click()
+	wait := page.MustGetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
+	page.MustElement("a").MustClick()
 	data := wait()
 
 	s.Equal(content, string(data))
@@ -209,15 +209,15 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 		</html>`,
 	))
 
-	page := s.page.Navigate(url)
+	page := s.page.MustNavigate(url)
 
-	wait := page.GetDownloadFile("data:*")
-	page.Element("#a").Click()
+	wait := page.MustGetDownloadFile("data:*")
+	page.MustElement("#a").MustClick()
 	data := wait()
 	s.Equal("test data", string(data))
 
-	wait = page.GetDownloadFile("data:*")
-	page.Element("#b").Click()
+	wait = page.MustGetDownloadFile("data:*")
+	page.MustElement("#b").MustClick()
 	data = wait()
 	s.Equal("test blob", string(data))
 }
@@ -233,18 +233,18 @@ func (s *S) TestGetDownloadFileWithHijack() {
 	})
 	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
-	page := s.page.Navigate(url)
+	page := s.page.MustNavigate(url)
 
 	r := page.HijackRequests()
-	r.Add("*", func(ctx *rod.Hijack) {
+	r.MustAdd("*", func(ctx *rod.Hijack) {
 		ctx.OnError = func(error) {}
-		ctx.LoadResponse()
+		ctx.MustLoadResponse()
 	})
 	go r.Run()
-	defer r.Stop()
+	defer r.MustStop()
 
-	wait := page.GetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
-	page.Element("a").Click()
+	wait := page.MustGetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
+	page.MustElement("a").MustClick()
 	data := wait()
 
 	s.Equal(content, string(data))

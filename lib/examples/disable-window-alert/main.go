@@ -7,22 +7,22 @@ import (
 )
 
 func main() {
-	page := rod.New().Connect().Page("https://teslainventory.teslastats.no/")
+	page := rod.New().MustConnect().MustPage("https://teslainventory.teslastats.no/")
 
 	// Disable all alerts by making window.alert no-op.
-	page.Eval(`window.alert = () => {}`)
+	page.MustEval(`window.alert = () => {}`)
 
 	// Navigate through country, model options whitout worrying about alert messages.
-	country := page.Element("#car_list_country")
-	model := page.Element("#car_list_model")
+	country := page.MustElement("#car_list_country")
+	model := page.MustElement("#car_list_model")
 
-	for _, c := range page.Elements("#car_list_country option") {
-		country.Select(c.Text())
+	for _, c := range page.MustElements("#car_list_country option") {
+		country.MustSelect(c.MustText())
 
-		for _, m := range page.Elements("#car_list_model option") {
-			model.Select(m.Text())
+		for _, m := range page.MustElements("#car_list_model option") {
+			model.MustSelect(m.MustText())
 
-			fmt.Println(c.Text(), m.Text(), "selected.")
+			fmt.Println(c.MustText(), m.MustText(), "selected.")
 		}
 	}
 }

@@ -10,11 +10,11 @@ import (
 
 //This example demonstrates how to fill out and submit a form.
 func main() {
-	page := rod.New().Connect().Page("https://github.com/search")
+	page := rod.New().MustConnect().MustPage("https://github.com/search")
 
-	page.Element(`input[name=q]`).WaitVisible().Input("chromedp").Press(input.Enter)
+	page.MustElement(`input[name=q]`).MustWaitVisible().MustInput("chromedp").MustPress(input.Enter)
 
-	res := page.ElementMatches("a", "chromedp").Parent().Next().Text()
+	res := page.MustElementMatches("a", "chromedp").MustParent().MustNext().MustText()
 
 	log.Printf("got: `%s`", strings.TrimSpace(res))
 }

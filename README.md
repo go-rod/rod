@@ -16,7 +16,6 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 - Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations
-- Two styles of error handling to [choose](.github/CONTRIBUTING.md#e-suffixed-function-family).
 - Automatically find or download [browser](lib/launcher)
 - No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetDownloadFile, etc
@@ -57,7 +56,6 @@ Object model:
 
 ### TOC
 
-- [Why functions don't return error values](#q-why-functions-dont-return-error-values)
 - [How to use rod with docker](#q-how-to-use-rod-with-docker)
 - [Why there is always an "about:blank" page](#q-why-there-is-always-an-aboutblank-page)
 - [Does it support other browsers like Firefox or Edge](#q-does-it-support-other-browsers-like-firefox-or-edge)
@@ -65,10 +63,6 @@ Object model:
 - [How to contribute](#q-how-to-contribute)
 - [How versioning is handled](#q-how-versioning-is-handled)
 - [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
-
-### Q: Why functions don't return error values
-
-Please read the [E suffixed function family](.github/CONTRIBUTING.md#e-suffixed-function-family).
 
 ### Q: How to use rod with docker
 

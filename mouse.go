@@ -23,8 +23,8 @@ type Mouse struct {
 	buttons []proto.InputMouseButton
 }
 
-// MoveE to the absolute position with specified steps
-func (m *Mouse) MoveE(x, y float64, steps int) error {
+// Move to the absolute position with specified steps
+func (m *Mouse) Move(x, y float64, steps int) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -70,8 +70,8 @@ func (m *Mouse) MoveE(x, y float64, steps int) error {
 	return nil
 }
 
-// ScrollE the relative offset with specified steps
-func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
+// Scroll the relative offset with specified steps
+func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -108,8 +108,8 @@ func (m *Mouse) ScrollE(offsetX, offsetY float64, steps int) error {
 	return nil
 }
 
-// DownE doc is similar to the method Down
-func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
+// Down doc is similar to the method MustDown
+func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -133,8 +133,8 @@ func (m *Mouse) DownE(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// UpE doc is similar to the method Up
-func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
+// Up doc is similar to the method MustUp
+func (m *Mouse) Up(button proto.InputMouseButton, clicks int64) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -163,17 +163,17 @@ func (m *Mouse) UpE(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// ClickE doc is similar to the method Click
-func (m *Mouse) ClickE(button proto.InputMouseButton) error {
+// Click doc is similar to the method MustClick
+func (m *Mouse) Click(button proto.InputMouseButton) error {
 	if m.page.browser.trace {
 		defer m.page.Overlay(0, 0, 200, 0, "click "+string(button))()
 	}
 	m.page.browser.trySlowmotion()
 
-	err := m.DownE(button, 1)
+	err := m.Down(button, 1)
 	if err != nil {
 		return err
 	}
 
-	return m.UpE(button, 1)
+	return m.Up(button, 1)
 }

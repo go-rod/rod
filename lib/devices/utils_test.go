@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestE(t *testing.T) {
+func TestErr(t *testing.T) {
 	v := devices.GetViewport(devices.IPad, false)
 	assert.EqualValues(t, 768, v.Width)
 	assert.EqualValues(t, 1024, v.Height)

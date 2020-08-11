@@ -11,15 +11,15 @@ func main() {
 	// get the first commandline argument
 	source := os.Args[1]
 
-	browser := rod.New().Connect()
+	browser := rod.New().MustConnect()
 
-	page := browser.Page("https://www.bing.com/translator")
+	page := browser.MustPage("https://www.bing.com/translator")
 
-	wait := page.WaitRequestIdle()
-	page.Element("#tta_input_ta").Click().Input(source)
+	wait := page.MustWaitRequestIdle()
+	page.MustElement("#tta_input_ta").MustClick().MustInput(source)
 	wait()
 
-	result := page.Element("#tta_output_ta").Text()
+	result := page.MustElement("#tta_output_ta").MustText()
 
 	fmt.Println(result)
 }

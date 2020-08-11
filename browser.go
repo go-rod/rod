@@ -82,8 +82,8 @@ func New() *Browser {
 	return b.Context(ctx, cancel)
 }
 
-// IncognitoE creates a new incognito browser
-func (b *Browser) IncognitoE() (*Browser, error) {
+// Incognito creates a new incognito browser
+func (b *Browser) Incognito() (*Browser, error) {
 	res, err := proto.TargetCreateBrowserContext{}.Call(b)
 	if err != nil {
 		return nil, err
@@ -146,8 +146,8 @@ func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverr
 	return b
 }
 
-// ConnectE doc is similar to the method Connect
-func (b *Browser) ConnectE() (err error) {
+// Connect doc is similar to the method MustConnect
+func (b *Browser) Connect() (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = e.(error)
@@ -163,13 +163,13 @@ func (b *Browser) ConnectE() (err error) {
 			b.client = launcher.NewRemote(u).Client()
 		} else {
 			if u == "" {
-				u = launcher.New().Context(b.ctx).Launch()
+				u = launcher.New().Context(b.ctx).MustLaunch()
 			}
 			b.client = cdp.New(u)
 		}
 	}
 
-	b.client.Context(b.ctx, b.ctxCancel).Connect()
+	b.client.Context(b.ctx, b.ctxCancel).MustConnect()
 
 	b.monitorServer = b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 
@@ -178,15 +178,15 @@ func (b *Browser) ConnectE() (err error) {
 	return nil
 }
 
-// CloseE doc is similar to the method Close
-func (b *Browser) CloseE() error {
+// Close doc is similar to the method MustClose
+func (b *Browser) Close() error {
 	defer b.ctxCancel()
 	return proto.BrowserClose{}.Call(b)
 }
 
-// PageE doc is similar to the method Page
+// Page doc is similar to the method MustPage
 // If url is empty, the default target will be "about:blank".
-func (b *Browser) PageE(url string) (*Page, error) {
+func (b *Browser) Page(url string) (*Page, error) {
 	if url == "" {
 		url = "about:blank"
 	}
@@ -202,11 +202,11 @@ func (b *Browser) PageE(url string) (*Page, error) {
 		return nil, err
 	}
 
-	return b.PageFromTargetIDE(target.TargetID)
+	return b.PageFromTarget(target.TargetID)
 }
 
-// PagesE doc is similar to the method Pages
-func (b *Browser) PagesE() (Pages, error) {
+// Pages doc is similar to the method MustPages
+func (b *Browser) Pages() (Pages, error) {
 	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {
 		return nil, err
@@ -218,7 +218,7 @@ func (b *Browser) PagesE() (Pages, error) {
 			continue
 		}
 
-		page, err := b.PageFromTargetIDE(target.TargetID)
+		page, err := b.PageFromTarget(target.TargetID)
 		if err != nil {
 			return nil, err
 		}
@@ -246,7 +246,7 @@ func (b *Browser) WaitEvent(e proto.Payload) (wait func()) {
 }
 
 // If the fn returns true the event loop will stop.
-// The fn can accpet multiple events, such as EachEventE("", func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
+// The fn can accpet multiple events, such as EachEvent("", func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
 // only one argument will be non-null, others will null.
 // It will enable the related domains if not enabled, and recover them after wait ends.
 func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID, fn interface{}) (wait func()) {
@@ -352,8 +352,8 @@ func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 	return b.ctx, b, ""
 }
 
-// PageFromTargetIDE creates a Page instance from a targetID
-func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error) {
+// PageFromTarget creates a Page instance from a targetID
+func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 
@@ -378,7 +378,7 @@ func (b *Browser) PageFromTargetIDE(targetID proto.TargetTargetID) (*Page, error
 	}
 
 	if b.defaultViewport != nil {
-		err = page.ViewportE(b.defaultViewport)
+		err = page.Viewport(b.defaultViewport)
 		if err != nil {
 			return nil, err
 		}

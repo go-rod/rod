@@ -17,45 +17,45 @@ import (
 // "git", and then gets the header element which gives the description for Git.
 func Example_basic() {
 	// Launch a new browser with default options, and connect to it.
-	browser := rod.New().Connect()
+	browser := rod.New().MustConnect()
 
 	// Even you forget to close, rod will close it after main process ends.
-	defer browser.Close()
+	defer browser.MustClose()
 
 	// Timeout will be passed to all chained function calls.
 	// The code will panic out if any chained call is used after the timeout.
-	page := browser.Timeout(time.Minute).Page("https://github.com")
+	page := browser.Timeout(time.Minute).MustPage("https://github.com")
 
 	// Make sure viewport is always consistent.
-	page.Viewport(1200, 600, 1, false)
+	page.MustViewport(1200, 600, 1, false)
 
 	// We use css selector to get the search input element and input "git"
-	page.Element("input").Input("git").Press(input.Enter)
+	page.MustElement("input").MustInput("git").MustPress(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
 	// You can also pass multiple selectors to race the result, useful when dealing with multiple possible results.
-	text := page.Element(".codesearch-results p").Text()
+	text := page.MustElement(".codesearch-results p").MustText()
 
 	fmt.Println(text)
 
 	// Get all input elements. Rod supports query elements by css selector, xpath, and regex.
 	// For more detailed usage, check the query_test.go file.
-	fmt.Println(len(page.Elements("input")))
+	fmt.Println(len(page.MustElements("input")))
 
 	// Eval js on the page
-	page.Eval(`console.log("hello world")`)
+	page.MustEval(`console.log("hello world")`)
 
 	// Pass parameters as json objects to the js function. This one will return 3
-	fmt.Println(page.Eval(`(a, b) => a + b`, 1, 2).Int())
+	fmt.Println(page.MustEval(`(a, b) => a + b`, 1, 2).Int())
 
 	// When eval on an element, you can use "this" to access the DOM element.
-	fmt.Println(page.Element("title").Eval(`this.innerText`).String())
+	fmt.Println(page.MustElement("title").MustEval(`this.innerText`).String())
 
 	// To handle errors in rod, you can use rod.Try or E suffixed function family like "page.ElementE"
 	// https://github.com/go-rod/rod#q-why-functions-dont-return-error-values
 	err := rod.Try(func() {
 		// Here we will catch timeout or query error
-		page.Timeout(time.Second / 2).Element("element-not-exists")
+		page.Timeout(time.Second / 2).MustElement("element-not-exists")
 	})
 	if errors.Is(err, context.DeadlineExceeded) {
 		fmt.Println("after 0.5 seconds, the element is still not rendered")
@@ -72,15 +72,15 @@ func Example_basic() {
 // Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
 // It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
 func Example_search() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
 
 	// get the code mirror editor inside the iframe
-	el := page.Search(".CodeMirror")
+	el := page.MustSearch(".CodeMirror")
 
-	fmt.Println(*el.Attribute("class"))
+	fmt.Println(*el.MustAttribute("class"))
 
 	// Output: CodeMirror cm-s-default CodeMirror-wrap
 }
@@ -97,7 +97,7 @@ func Example_headless_with_debug() {
 		Headless(false).
 		Devtools(true)
 	defer l.Cleanup()
-	url := l.Launch()
+	url := l.MustLaunch()
 
 	// Trace shows verbose debug information for each action executed
 	// Slowmotion is a debug related function that waits 2 seconds between
@@ -107,30 +107,30 @@ func Example_headless_with_debug() {
 		ControlURL(url).
 		Trace(true).
 		Slowmotion(2 * time.Second).
-		Connect()
+		MustConnect()
 
 	// ServeMonitor plays screenshots of each tab. This feature is extremely
 	// useful when debugging with headless mode.
 	browser.ServeMonitor(":9777", true)
 
-	defer browser.Close()
+	defer browser.MustClose()
 
-	page := browser.Page("https://www.wikipedia.org/")
+	page := browser.MustPage("https://www.wikipedia.org/")
 
-	page.Element("#searchLanguage").Select("[lang=zh]")
-	page.Element("#searchInput").Input("热干面")
-	page.Keyboard.Press(input.Enter)
+	page.MustElement("#searchLanguage").MustSelect("[lang=zh]")
+	page.MustElement("#searchInput").MustInput("热干面")
+	page.Keyboard.MustPress(input.Enter)
 
-	fmt.Println(page.Element("#firstHeading").Text())
+	fmt.Println(page.MustElement("#firstHeading").MustText())
 
 	// Response gets the binary of the image as a []byte.
-	img := page.Element(`[alt="Hot Dry Noodles.jpg"]`).Resource()
+	img := page.MustElement(`[alt="Hot Dry Noodles.jpg"]`).MustResource()
 	fmt.Println(len(img)) // print the size of the image
 
 	// Pause temporarily halts JavaScript execution on the website.
 	// You can resume execution in the devtools window by clicking the resume
 	// button in the "source" tab.
-	page.Pause()
+	page.MustPause()
 
 	// Skip
 	// Output: 热干面
@@ -142,20 +142,20 @@ func Example_headless_with_debug() {
 // mouse point location, so you can allow Rod to wait for the button to become
 // stable before it tries clicking it.
 func Example_wait_for_animation() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("https://getbootstrap.com/docs/4.0/components/modal/")
+	page := browser.MustPage("https://getbootstrap.com/docs/4.0/components/modal/")
 
-	page.WaitLoad().Element("[data-target='#exampleModalLive']").Click()
+	page.MustWaitLoad().MustElement("[data-target='#exampleModalLive']").MustClick()
 
-	saveBtn := page.ElementMatches("#exampleModalLive button", "Close")
+	saveBtn := page.MustElementMatches("#exampleModalLive button", "Close")
 
 	// Here, WaitStable will wait until the save button's position becomes
 	// stable. The timeout is 5 seconds, after which it times out (or after 1
 	// minute since the browser was created). Timeouts from parents are
 	// inherited to the children as well.
-	saveBtn.Timeout(5 * time.Second).WaitStable().Click().WaitInvisible()
+	saveBtn.Timeout(5 * time.Second).MustWaitStable().MustClick().MustWaitInvisible()
 
 	fmt.Println("done")
 
@@ -166,21 +166,21 @@ func Example_wait_for_animation() {
 // requests on the page to complete (such as network request) before interacting
 // with the page.
 func Example_wait_for_request() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("https://duckduckgo.com/")
+	page := browser.MustPage("https://duckduckgo.com/")
 
 	// WaitRequestIdle will wait for all possible ajax calls to complete before
 	// continuing on with further execution calls.
-	wait := page.WaitRequestIdle()
-	page.Element("#search_form_input_homepage").Click().Input("test")
+	wait := page.MustWaitRequestIdle()
+	page.MustElement("#search_form_input_homepage").MustClick().MustInput("test")
 	time.Sleep(300 * time.Millisecond) // Wait for js debounce.
 	wait()
 
 	// We want to make sure that after waiting, there are some autocomplete
 	// suggestions available.
-	fmt.Println(len(page.Elements(".search__autocomplete .acp")) > 0)
+	fmt.Println(len(page.MustElements(".search__autocomplete .acp")) > 0)
 
 	// Output: true
 }
@@ -189,28 +189,28 @@ func Example_wait_for_request() {
 // options that is used to query elements. This is useful when you want to
 // customize the element query retry logic.
 func Example_customize_retry_strategy() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("https://github.com")
+	page := browser.MustPage("https://github.com")
 
 	// sleep for 0.5 seconds before every retry
 	sleeper := func(context.Context) error {
 		time.Sleep(time.Second / 2)
 		return nil
 	}
-	el, _ := page.ElementE(sleeper, "", []string{"input"})
+	el, _ := page.Element(sleeper, "", []string{"input"})
 
 	// If sleeper is nil page.ElementE will query without retrying.
 	// If nothing found it will return an error.
-	el, err := page.ElementE(nil, "", []string{"input"})
+	el, err := page.Element(nil, "", []string{"input"})
 	if errors.Is(err, rod.ErrElementNotFound) {
 		fmt.Println("element not found")
 	} else if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(el.Eval(`this.name`).String())
+	fmt.Println(el.MustEval(`this.name`).String())
 
 	// Output: q
 }
@@ -227,18 +227,18 @@ func Example_customize_browser_launch() {
 		Set("proxy-server", "127.0.0.1:8080").
 		// Delete a flag- remove the mock-keychain flag
 		Delete("use-mock-keychain").
-		Launch()
+		MustLaunch()
 
-	browser := rod.New().ControlURL(url).Connect()
-	defer browser.Close()
+	browser := rod.New().ControlURL(url).MustConnect()
+	defer browser.MustClose()
 
 	// Adding authentication to the proxy, for the next auth request.
 	// We use CLI tool "mitmproxy --proxyauth user:pass" as an example.
-	browser.HandleAuth("user", "pass")
+	browser.MustHandleAuth("user", "pass")
 
 	// mitmproxy needs a cert config to support https. We use http here instead,
 	// for example
-	fmt.Println(browser.Page("http://example.com/").Element("title").Text())
+	fmt.Println(browser.MustPage("http://example.com/").MustElement("title").MustText())
 
 	// Skip
 	// Output: Example Domain
@@ -248,14 +248,14 @@ func Example_customize_browser_launch() {
 // or a feature that you would like to use. You can easily call the cdp
 // interface.
 func Example_direct_cdp() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
 	// The code here shows how SetCookies works.
 	// Normally, you use something like
 	// browser.Page("").SetCookies(...).Navigate(url).
 
-	page := browser.Page("")
+	page := browser.MustPage("")
 
 	// Call the cdp interface directly.
 	// We set the cookie before we visit the website.
@@ -272,11 +272,11 @@ func Example_direct_cdp() {
 
 	fmt.Println(res.Success)
 
-	page.Navigate("https://example.com")
+	page.MustNavigate("https://example.com")
 
 	// Eval injects a script into the page. We use this to return the cookies
 	// that JS detects to validate our cdp call.
-	cookie := page.Eval(`document.cookie`).String()
+	cookie := page.MustEval(`document.cookie`).String()
 
 	fmt.Println(cookie)
 
@@ -297,22 +297,22 @@ func Example_direct_cdp() {
 // Example_handle_events is an example showing how we can use Rod to subscribe
 // to events.
 func Example_handle_events() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("")
+	page := browser.MustPage("")
 
 	done := make(chan int)
 
 	// Listen to all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
-		log := page.ObjectsToJSON(e.Args).Join(" ")
+		log := page.MustObjectsToJSON(e.Args).Join(" ")
 		fmt.Println(log)
 		close(done)
 	})()
 
 	wait := page.WaitEvent(&proto.PageLoadEventFired{})
-	page.Navigate("https://example.com")
+	page.MustNavigate("https://example.com")
 	wait()
 
 	// EachEvent allows us to achieve the same functionality as above.
@@ -322,11 +322,11 @@ func Example_handle_events() {
 		wait := page.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
 			return true
 		})
-		page.Navigate("https://example.com")
+		page.MustNavigate("https://example.com")
 		wait()
 	}
 
-	page.Eval(`console.log("hello", "world")`)
+	page.MustEval(`console.log("hello", "world")`)
 
 	<-done
 
@@ -337,13 +337,13 @@ func Example_handle_events() {
 // Example_hijack_requests shows how we can intercept requests and modify
 // both the request and the response.
 func Example_hijack_requests() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
 	router := browser.HijackRequests()
-	defer router.Stop()
+	defer router.MustStop()
 
-	router.Add("*.js", func(ctx *rod.Hijack) {
+	router.MustAdd("*.js", func(ctx *rod.Hijack) {
 		// Here we update the request's header. Rod gives functionality to
 		// change or update all parts of the request. Refer to the documentation
 		// for more information.
@@ -353,7 +353,7 @@ func Example_hijack_requests() {
 		// Not calling this will require you to mock the entire response.
 		// This can be done with the SetXxx (Status, Header, Body) functions on the
 		// response struct.
-		ctx.LoadResponse()
+		ctx.MustLoadResponse()
 
 		// Here we append some code to every js file.
 		// The code will update the document title to "hi"
@@ -362,7 +362,7 @@ func Example_hijack_requests() {
 
 	go router.Run()
 
-	browser.Page("https://www.wikipedia.org/").Wait(`document.title === 'hi'`)
+	browser.MustPage("https://www.wikipedia.org/").MustWait(`document.title === 'hi'`)
 
 	fmt.Println("done")
 
@@ -372,10 +372,10 @@ func Example_hijack_requests() {
 // Example_states allows us to update the state of the current page.
 // In this example we enable network access.
 func Example_states() {
-	browser := rod.New().Timeout(time.Minute).Connect()
-	defer browser.Close()
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
 
-	page := browser.Page("")
+	page := browser.MustPage("")
 
 	// LoadState detects whether the  network is enabled or not.
 	fmt.Println(page.LoadState(&proto.NetworkEnable{}))

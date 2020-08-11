@@ -23,7 +23,7 @@ func getSchema() gjson.Result {
 		}
 	}()
 
-	u := l.Launch()
+	u := l.MustLaunch()
 	parsed, err := url.Parse(u)
 	utils.E(err)
 	parsed.Scheme = "http"

@@ -17,15 +17,15 @@ func main() {
 	// run server
 	go testServer(fmt.Sprintf(":%d", *flagPort))
 
-	page := rod.New().Connect().Page(fmt.Sprintf("http://localhost:%d", *flagPort))
-	page.Eval(makeVisibleScript)
+	page := rod.New().MustConnect().MustPage(fmt.Sprintf("http://localhost:%d", *flagPort))
+	page.MustEval(makeVisibleScript)
 
 	log.Printf("waiting 3s for box to become visible")
 
-	page.Element("#box1").WaitVisible()
+	page.MustElement("#box1").MustWaitVisible()
 	log.Printf(">>>>>>>>>>>>>>>>>>>> BOX1 IS VISIBLE")
 
-	page.Element("#box2").WaitVisible()
+	page.MustElement("#box2").MustWaitVisible()
 	log.Printf(">>>>>>>>>>>>>>>>>>>> BOX2 IS VISIBLE")
 }
 

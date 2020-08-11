@@ -10,19 +10,19 @@ import (
 // This example demonstrates how to use a selector to click on an element.
 func main() {
 	page := rod.New().
-		Connect().
+		MustConnect().
 		Trace(true). // log useful info about what rod is doing
 		Timeout(15 * time.Second).
-		Page("https://golang.org/pkg/time/")
+		MustPage("https://golang.org/pkg/time/")
 
 	// wait for footer element is visible (ie, page is loaded)
-	page.Element(`body > footer`).WaitVisible()
+	page.MustElement(`body > footer`).MustWaitVisible()
 
 	// find and click "Expand All" link
-	page.Element(`#pkg-examples > div`).Click()
+	page.MustElement(`#pkg-examples > div`).MustClick()
 
 	// retrieve the value of the textarea
-	example := page.Element(`#example_After .play .input textarea`).Text()
+	example := page.MustElement(`#example_After .play .input textarea`).MustText()
 
 	log.Printf("Go's time.After example:\n%s", example)
 }

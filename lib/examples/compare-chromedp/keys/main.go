@@ -22,12 +22,12 @@ func main() {
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 
-	page := rod.New().Connect().Page(host)
+	page := rod.New().MustConnect().MustPage(host)
 
-	val1 := page.Element("#input1").Text()
-	val2 := page.Element("#textarea1").Input("\\b\\b\\n\\naoeu\\n\\ntest1\\n\\nblah2\\n\\n\\t\\t\\t\\b\\bother box!\\t\\ntest4").Text()
-	val3 := page.Element("#input2").Input("test3").Text()
-	val4 := page.Element("#select1").Press(input.ArrowDown).Press(input.ArrowDown).Eval("() => this.value").Raw
+	val1 := page.MustElement("#input1").MustText()
+	val2 := page.MustElement("#textarea1").MustInput("\\b\\b\\n\\naoeu\\n\\ntest1\\n\\nblah2\\n\\n\\t\\t\\t\\b\\bother box!\\t\\ntest4").MustText()
+	val3 := page.MustElement("#input2").MustInput("test3").MustText()
+	val4 := page.MustElement("#select1").MustPress(input.ArrowDown).MustPress(input.ArrowDown).MustEval("() => this.value").Raw
 
 	log.Printf("#input1 value: %s", val1)
 	log.Printf("#textarea1 value: %s", val2)

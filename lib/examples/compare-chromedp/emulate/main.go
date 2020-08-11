@@ -6,21 +6,21 @@ import (
 )
 
 func main() {
-	page := rod.New().Connect().Page("")
+	page := rod.New().MustConnect().MustPage("")
 
 	// emulate iPhone 7 landscape
-	err := page.EmulateE(devices.IPhone6or7or8, true)
+	err := page.Emulate(devices.IPhone6or7or8, true)
 	if err != nil {
 		panic(err)
 	}
 
-	page.Navigate("https://www.whatsmyua.info/")
-	page.Screenshot("screenshot1.png")
+	page.MustNavigate("https://www.whatsmyua.info/")
+	page.MustScreenshot("screenshot1.png")
 
 	// reset
-	page.Emulate("")
+	page.MustEmulate("")
 
-	page.Viewport(1920, 2000, 1, false)
-	page.Navigate("https://www.whatsmyua.info/?a")
-	page.Screenshot("screenshot2.png")
+	page.MustViewport(1920, 2000, 1, false)
+	page.MustNavigate("https://www.whatsmyua.info/?a")
+	page.MustScreenshot("screenshot2.png")
 }

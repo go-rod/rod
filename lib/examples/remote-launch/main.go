@@ -16,13 +16,13 @@ func main() {
 	// Manipulate flags like the example in examples_test.go
 	l.Set("window-size", "1920,1080").Delete("any-flag")
 
-	browser := rod.New().Client(l.Client()).Connect()
+	browser := rod.New().Client(l.Client()).MustConnect()
 
 	// You may want to start a server to watch the screenshots inside the docker
 	browser.ServeMonitor(":7777", true)
 
 	fmt.Println(
-		browser.Page("https://github.com").Eval("() => document.title"),
+		browser.MustPage("https://github.com").MustEval("() => document.title"),
 	)
 
 	kit.Pause()

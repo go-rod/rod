@@ -20,15 +20,15 @@ func main() {
 	// start upload server
 	go uploadServer(fmt.Sprintf(":%d", *flagPort))
 
-	page := rod.New().Connect().Page(fmt.Sprintf("http://localhost:%d", *flagPort))
+	page := rod.New().MustConnect().MustPage(fmt.Sprintf("http://localhost:%d", *flagPort))
 
-	page.Element(`input[name="upload"]`).SetFiles("./main.go")
-	page.Element(`input[name="submit"]`).Click()
+	page.MustElement(`input[name="upload"]`).MustSetFiles("./main.go")
+	page.MustElement(`input[name="submit"]`).MustClick()
 
 	log.Printf(
 		"original size: %d, upload size: %s",
 		size("./main.go"),
-		page.Element("#result").Text(),
+		page.MustElement("#result").MustText(),
 	)
 }
 
