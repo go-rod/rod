@@ -121,7 +121,7 @@ func (p *Page) ElementByJS(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObject
 
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return fmt.Errorf("%w by js: %s", newErr(ErrElementNotFound, js), js)
+			return newErr(ErrElementNotFound, js, js)
 		}
 	}
 
@@ -148,7 +148,7 @@ func (p *Page) ElementByJS(sleeper kit.Sleeper, thisID proto.RuntimeRemoteObject
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, fmt.Errorf("%w but got: %s", newErr(ErrExpectElement, res), kit.MustToJSON(res))
+		return nil, newErr(ErrExpectElement, res, kit.MustToJSON(res))
 	}
 
 	return p.ElementFromObject(res.ObjectID), nil
@@ -174,7 +174,7 @@ func (p *Page) ElementsByJS(thisID proto.RuntimeRemoteObjectID, js string, param
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, fmt.Errorf("%w but got: %s", newErr(ErrExpectElements, res), kit.MustToJSON(res))
+		return nil, newErr(ErrExpectElements, res, kit.MustToJSON(res))
 	}
 
 	objectID := res.ObjectID
@@ -196,7 +196,7 @@ func (p *Page) ElementsByJS(thisID proto.RuntimeRemoteObjectID, js string, param
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, fmt.Errorf("%w: %s", newErr(ErrExpectElements, val), kit.MustToJSON(val))
+			return nil, newErr(ErrExpectElements, val, kit.MustToJSON(val))
 		}
 
 		elemList = append(elemList, p.ElementFromObject(val.ObjectID))
@@ -211,7 +211,7 @@ func (p *Page) ElementsByJS(thisID proto.RuntimeRemoteObjectID, js string, param
 func (p *Page) Search(sleeper kit.Sleeper, queries []string, from, to int) (Elements, error) {
 	if sleeper == nil {
 		sleeper = func(_ context.Context) error {
-			return fmt.Errorf("%w by query: %v", newErr(ErrElementNotFound, queries), queries)
+			return newErr(ErrElementNotFound, queries, fmt.Sprintf("%v", queries))
 		}
 	}
 

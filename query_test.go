@@ -168,15 +168,15 @@ func (s *S) TestElementTracing() {
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	_, err := p.ElementByJSE(rod.Sleeper(), "", `1`, nil)
-	s.EqualError(err, `[rod] expect js to return an element but got: {"type":"number","value":1,"description":"1"}`)
+	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
 func (s *S) TestPageElementsByJS_Err() {
 	p := s.page.Navigate(srcFile("fixtures/click.html"))
 	_, err := p.ElementsByJSE("", `[1]`, nil)
-	s.EqualError(err, `[rod] expect js to return an array of elements: {"type":"number","value":1,"description":"1"}`)
+	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJSE("", `1`, nil)
-	s.EqualError(err, `[rod] expect js to return an array of elements but got: {"type":"number","value":1,"description":"1"}`)
+	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJSE("", `foo()`, nil)
 	s.Error(err)
 }
