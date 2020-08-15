@@ -14,12 +14,18 @@ import (
 
 func TestToHTTP(t *testing.T) {
 	u, _ := url.Parse("wss://a.com")
-	toHTTP(u)
-	assert.Equal(t, "https", u.Scheme)
+	assert.Equal(t, "https", toHTTP(*u).Scheme)
 
 	u, _ = url.Parse("ws://a.com")
-	toHTTP(u)
-	assert.Equal(t, "http", u.Scheme)
+	assert.Equal(t, "http", toHTTP(*u).Scheme)
+}
+
+func TestToWS(t *testing.T) {
+	u, _ := url.Parse("https://a.com")
+	assert.Equal(t, "wss", toWS(*u).Scheme)
+
+	u, _ = url.Parse("http://a.com")
+	assert.Equal(t, "ws", toWS(*u).Scheme)
 }
 
 func TestUnzip(t *testing.T) {

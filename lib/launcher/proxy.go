@@ -22,14 +22,12 @@ func NewRemote(remoteURL string) *Launcher {
 	u, err := url.Parse(remoteURL)
 	utils.E(err)
 
-	toHTTP(u)
-
 	l := New()
 	l.remote = true
-	l.url = remoteURL
+	l.url = toWS(*u).String()
 	l.Flags = nil
 
-	utils.E(json.Unmarshal(kit.Req(u.String()).MustBytes(), l))
+	utils.E(json.Unmarshal(kit.Req(toHTTP(*u).String()).MustBytes(), l))
 
 	return l
 }
@@ -112,7 +110,6 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	parsedWS, err := url.Parse(u)
 	utils.E(err)
 	parsedURL.Path = parsedWS.Path
-	toHTTP(parsedURL)
 
-	httputil.NewSingleHostReverseProxy(parsedURL).ServeHTTP(w, r)
+	httputil.NewSingleHostReverseProxy(toHTTP(*parsedURL)).ServeHTTP(w, r)
 }

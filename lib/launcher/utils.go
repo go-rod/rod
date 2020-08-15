@@ -42,12 +42,24 @@ func (p *progresser) Read(buf []byte) (n int, err error) {
 	return
 }
 
-func toHTTP(u *url.URL) {
-	if u.Scheme == "ws" {
-		u.Scheme = "http"
-	} else if u.Scheme == "wss" {
-		u.Scheme = "https"
+func toHTTP(u url.URL) *url.URL {
+	newURL := u
+	if newURL.Scheme == "ws" {
+		newURL.Scheme = "http"
+	} else if newURL.Scheme == "wss" {
+		newURL.Scheme = "https"
 	}
+	return &newURL
+}
+
+func toWS(u url.URL) *url.URL {
+	newURL := u
+	if newURL.Scheme == "http" {
+		newURL.Scheme = "ws"
+	} else if newURL.Scheme == "https" {
+		newURL.Scheme = "wss"
+	}
+	return &newURL
 }
 
 func unzip(from, to string) (err error) {

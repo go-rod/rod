@@ -429,8 +429,7 @@ func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
 		return "", err
 	}
 
-	toHTTP(parsed)
-
+	parsed = toHTTP(*parsed)
 	parsed.Path = "/json/version"
 
 	obj, err := kit.Req(parsed.String()).Context(ctx).JSON()
