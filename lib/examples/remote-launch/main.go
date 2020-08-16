@@ -11,9 +11,12 @@ import (
 func main() {
 	// Launch browser remotely
 	// docker run -p 9222:9222 rodorg/rod
-	client := launcher.NewRemote("ws://localhost:9222").Client()
+	l := launcher.NewRemote("ws://localhost:9222")
 
-	browser := rod.New().Client(client).Connect()
+	// Manipulate flags like the example in examples_test.go
+	l.Set("window-size", "1920,1080").Delete("any-flag")
+
+	browser := rod.New().Client(l.Client()).Connect()
 
 	// You may want to start a server to watch the screenshots inside the docker
 	browser.ServeMonitor(":7777", true)
