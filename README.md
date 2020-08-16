@@ -86,7 +86,7 @@ You can easily load balance requests to the cluster of this image, each containe
 You can also use it to launch a browser manually:
 
 ```bash
-docker run -p 9222:9222 rodorg/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222
+docker run -p 9222:9222 rodorg/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0
 ```
 
 ### Q: Why there is always an "about:blank" page
