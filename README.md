@@ -12,7 +12,6 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 
 ## Features
 
-- Fluent interface design to reduce verbose code
 - Chained context design, intuitive to timeout or cancel the long-running task
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations

@@ -26,9 +26,5 @@ To run an example:
 | [upload](./upload)         | [upload](https://github.com/chromedp/examples/blob/master/upload)         | upload a file on a form                                                      |
 | [visible](./visible)       | [visible](https://github.com/chromedp/examples/blob/master/visible)       | wait until an element is visible                                             |
 
-If you compare the `logic` example between [rod](logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is:
-
-![rod-vs-chromedp](https://user-images.githubusercontent.com/1415488/88812682-f91dec00-d1f2-11ea-8f3c-8a0cd270f19b.jpg)
-
 Occasionally, some of these examples may break if the specific websites these examples use get updated.
 We suggest you create an [issue](https://github.com/go-rod/rod/issues/new/choose).
