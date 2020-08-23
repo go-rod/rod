@@ -12,6 +12,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/suite"
 	"github.com/ysmood/kit"
@@ -54,7 +55,10 @@ func Test(t *testing.T) {
 
 	s := new(S)
 	s.client = cdp.New(u)
-	s.browser = rod.New().ControlURL("").Client(s.client).MustConnect()
+	s.browser = rod.New().ControlURL("").Client(s.client).MustConnect().
+		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
+			Width: 800, Height: 600, DeviceScaleFactor: 1,
+		})
 
 	defer s.browser.MustClose()
 

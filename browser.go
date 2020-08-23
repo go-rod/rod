@@ -72,7 +72,7 @@ func New() *Browser {
 		traceLogJS:  defaultTraceLogJS,
 		traceLogErr: defaultTraceLogErr,
 		defaultViewport: &proto.EmulationSetDeviceMetricsOverride{
-			Width: 800, Height: 600, DeviceScaleFactor: 1, Mobile: false,
+			Width: 1200, Height: 900, DeviceScaleFactor: 1, Mobile: false,
 			ScreenOrientation: &proto.EmulationScreenOrientation{
 				Type: proto.EmulationScreenOrientationTypeLandscapePrimary,
 			},
@@ -141,7 +141,7 @@ func (b *Browser) CDPCall(c CDPCall) *Browser {
 	return b
 }
 
-// DefaultViewport sets the default viewport for new page in the future. Default size is 800x600.
+// DefaultViewport sets the default viewport for new page in the future. Default size is 1200x900.
 // Set it to nil to disable it.
 func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverride) *Browser {
 	b.defaultViewport = viewport
