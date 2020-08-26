@@ -41,13 +41,17 @@ func (els Elements) Empty() bool {
 type Pages []*Page
 
 // Find the page that has the specified element with the css selector
-func (ps Pages) Find(selector string) *Page {
+func (ps Pages) Find(selector string) (*Page, error) {
 	for _, page := range ps {
-		if page.MustHas(selector) {
-			return page
+		has, err := page.Has(selector)
+		if err != nil {
+			return nil, err
+		}
+		if has {
+			return page, nil
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 // FindByURL returns the page that has the url that matches the regex

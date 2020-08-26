@@ -18,7 +18,7 @@ func (s *S) TestPageElements() {
 func (s *S) TestPages() {
 	s.page.MustNavigate(srcFile("fixtures/click.html"))
 
-	s.True(s.browser.MustPages().Find("button").MustHas("button"))
+	s.True(s.browser.MustPages().MustFind("button").MustHas("button"))
 	s.True(s.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
 
 	s.Nil(s.browser.MustPages().Find("____"))

@@ -64,6 +64,13 @@ func (b *Browser) MustHandleAuth(username, password string) {
 	go func() { utils.E(wait()) }()
 }
 
+// MustFind the page that has the specified element with the css selector
+func (ps Pages) MustFind(selector string) *Page {
+	p, err := ps.Find(selector)
+	utils.E(err)
+	return p
+}
+
 // MustFindByURL returns the page that has the url that matches the regex
 func (ps Pages) MustFindByURL(regex string) *Page {
 	p, err := ps.FindByURL(regex)
