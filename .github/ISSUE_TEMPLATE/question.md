@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+**Rod Version:** v0.0.0
+
 The community is not charity. We welcome constructive questions, but not without limitation.
 
 Check before you submit:
