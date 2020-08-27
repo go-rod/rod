@@ -1137,6 +1137,80 @@ type AuditsMixedContentIssueDetails struct {
 	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
 }
 
+// AuditsBlockedByResponseReason Enum indicating the reason a response has been blocked. These reasons are
+// refinements of the net error BLOCKED_BY_RESPONSE.
+type AuditsBlockedByResponseReason string
+
+const (
+	// AuditsBlockedByResponseReasonCoepFrameResourceNeedsCoepHeader enum const
+	AuditsBlockedByResponseReasonCoepFrameResourceNeedsCoepHeader AuditsBlockedByResponseReason = "CoepFrameResourceNeedsCoepHeader"
+
+	// AuditsBlockedByResponseReasonCoopSandboxedIFrameCannotNavigateToCoopPage enum const
+	AuditsBlockedByResponseReasonCoopSandboxedIFrameCannotNavigateToCoopPage AuditsBlockedByResponseReason = "CoopSandboxedIFrameCannotNavigateToCoopPage"
+
+	// AuditsBlockedByResponseReasonCorpNotSameOrigin enum const
+	AuditsBlockedByResponseReasonCorpNotSameOrigin AuditsBlockedByResponseReason = "CorpNotSameOrigin"
+
+	// AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep enum const
+	AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep AuditsBlockedByResponseReason = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep"
+
+	// AuditsBlockedByResponseReasonCorpNotSameSite enum const
+	AuditsBlockedByResponseReasonCorpNotSameSite AuditsBlockedByResponseReason = "CorpNotSameSite"
+)
+
+// AuditsBlockedByResponseIssueDetails Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+// code. Currently only used for COEP/COOP, but may be extended to include
+// some CSP errors in the future.
+type AuditsBlockedByResponseIssueDetails struct {
+
+	// Request ...
+	Request *AuditsAffectedRequest `json:"request"`
+
+	// Frame (optional) ...
+	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
+
+	// Reason ...
+	Reason AuditsBlockedByResponseReason `json:"reason"`
+}
+
+// AuditsHeavyAdResolutionStatus ...
+type AuditsHeavyAdResolutionStatus string
+
+const (
+	// AuditsHeavyAdResolutionStatusHeavyAdBlocked enum const
+	AuditsHeavyAdResolutionStatusHeavyAdBlocked AuditsHeavyAdResolutionStatus = "HeavyAdBlocked"
+
+	// AuditsHeavyAdResolutionStatusHeavyAdWarning enum const
+	AuditsHeavyAdResolutionStatusHeavyAdWarning AuditsHeavyAdResolutionStatus = "HeavyAdWarning"
+)
+
+// AuditsHeavyAdReason ...
+type AuditsHeavyAdReason string
+
+const (
+	// AuditsHeavyAdReasonNetworkTotalLimit enum const
+	AuditsHeavyAdReasonNetworkTotalLimit AuditsHeavyAdReason = "NetworkTotalLimit"
+
+	// AuditsHeavyAdReasonCPUTotalLimit enum const
+	AuditsHeavyAdReasonCPUTotalLimit AuditsHeavyAdReason = "CpuTotalLimit"
+
+	// AuditsHeavyAdReasonCPUPeakLimit enum const
+	AuditsHeavyAdReasonCPUPeakLimit AuditsHeavyAdReason = "CpuPeakLimit"
+)
+
+// AuditsHeavyAdIssueDetails ...
+type AuditsHeavyAdIssueDetails struct {
+
+	// Resolution The resolution status, either blocking the content or warning.
+	Resolution AuditsHeavyAdResolutionStatus `json:"resolution"`
+
+	// Reason The reason the ad was blocked, total network or cpu or peak cpu.
+	Reason AuditsHeavyAdReason `json:"reason"`
+
+	// Frame The frame that was blocked.
+	Frame *AuditsAffectedFrame `json:"frame"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -1148,6 +1222,12 @@ const (
 
 	// AuditsInspectorIssueCodeMixedContentIssue enum const
 	AuditsInspectorIssueCodeMixedContentIssue AuditsInspectorIssueCode = "MixedContentIssue"
+
+	// AuditsInspectorIssueCodeBlockedByResponseIssue enum const
+	AuditsInspectorIssueCodeBlockedByResponseIssue AuditsInspectorIssueCode = "BlockedByResponseIssue"
+
+	// AuditsInspectorIssueCodeHeavyAdIssue enum const
+	AuditsInspectorIssueCodeHeavyAdIssue AuditsInspectorIssueCode = "HeavyAdIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -1160,6 +1240,12 @@ type AuditsInspectorIssueDetails struct {
 
 	// MixedContentIssueDetails (optional) ...
 	MixedContentIssueDetails *AuditsMixedContentIssueDetails `json:"mixedContentIssueDetails,omitempty"`
+
+	// BlockedByResponseIssueDetails (optional) ...
+	BlockedByResponseIssueDetails *AuditsBlockedByResponseIssueDetails `json:"blockedByResponseIssueDetails,omitempty"`
+
+	// HeavyAdIssueDetails (optional) ...
+	HeavyAdIssueDetails *AuditsHeavyAdIssueDetails `json:"heavyAdIssueDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
@@ -2029,6 +2115,12 @@ type CSSCSSStyleSheetHeader struct {
 	// IsInline Whether this stylesheet is created for STYLE tag by parser. This flag is not set for
 	// document.written STYLE tags.
 	IsInline bool `json:"isInline"`
+
+	// IsMutable Whether this stylesheet is mutable. Inline stylesheets become mutable
+	// after they have been modified via CSSOM API.
+	// <link> element's stylesheets are never mutable. Constructed stylesheets
+	// (new CSSStyleSheet()) are mutable immediately after creation.
+	IsMutable bool `json:"isMutable"`
 
 	// StartLine Line offset of the stylesheet within the resource (zero based).
 	StartLine float64 `json:"startLine"`
@@ -6993,6 +7085,11 @@ type InputDispatchKeyEvent struct {
 	// Location (optional) Whether the event was from the left or right side of the keyboard. 1=Left, 2=Right (default:
 	// 0).
 	Location int64 `json:"location,omitempty"`
+
+	// Commands (experimental) (optional) Editing commands to send with the key event (e.g., 'selectAll') (default: []).
+	// These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
+	// See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+	Commands []string `json:"commands,omitempty"`
 }
 
 // MethodName of the command
@@ -8370,6 +8467,12 @@ type NetworkResourceTiming struct {
 	// WorkerReady (experimental) Finished Starting ServiceWorker.
 	WorkerReady float64 `json:"workerReady"`
 
+	// WorkerFetchStart (experimental) Started fetch event.
+	WorkerFetchStart float64 `json:"workerFetchStart"`
+
+	// WorkerRespondWithSettled (experimental) Settled fetch event respondWith promise.
+	WorkerRespondWithSettled float64 `json:"workerRespondWithSettled"`
+
 	// SendStart Started sending request.
 	SendStart float64 `json:"sendStart"`
 
@@ -8598,6 +8701,23 @@ const (
 	NetworkBlockedReasonCorpNotSameSite NetworkBlockedReason = "corp-not-same-site"
 )
 
+// NetworkServiceWorkerResponseSource Source of serviceworker response.
+type NetworkServiceWorkerResponseSource string
+
+const (
+	// NetworkServiceWorkerResponseSourceCacheStorage enum const
+	NetworkServiceWorkerResponseSourceCacheStorage NetworkServiceWorkerResponseSource = "cache-storage"
+
+	// NetworkServiceWorkerResponseSourceHTTPCache enum const
+	NetworkServiceWorkerResponseSourceHTTPCache NetworkServiceWorkerResponseSource = "http-cache"
+
+	// NetworkServiceWorkerResponseSourceFallbackCode enum const
+	NetworkServiceWorkerResponseSourceFallbackCode NetworkServiceWorkerResponseSource = "fallback-code"
+
+	// NetworkServiceWorkerResponseSourceNetwork enum const
+	NetworkServiceWorkerResponseSourceNetwork NetworkServiceWorkerResponseSource = "network"
+)
+
 // NetworkResponse HTTP response data.
 type NetworkResponse struct {
 
@@ -8651,6 +8771,15 @@ type NetworkResponse struct {
 
 	// Timing (optional) Timing information for the given request.
 	Timing *NetworkResourceTiming `json:"timing,omitempty"`
+
+	// ServiceWorkerResponseSource (optional) Response source of response from ServiceWorker.
+	ServiceWorkerResponseSource NetworkServiceWorkerResponseSource `json:"serviceWorkerResponseSource,omitempty"`
+
+	// ResponseTime (optional) The time at which the returned response was generated.
+	ResponseTime *TimeSinceEpoch `json:"responseTime,omitempty"`
+
+	// CacheStorageCacheName (optional) Cache Storage Cache Name.
+	CacheStorageCacheName string `json:"cacheStorageCacheName,omitempty"`
 
 	// Protocol (optional) Protocol used to fetch this request.
 	Protocol string `json:"protocol,omitempty"`
@@ -10196,6 +10325,12 @@ type OverlayGridHighlightConfig struct {
 	// ShowGridExtensionLines (optional) Whether the extension lines from grid cells to the rulers should be shown (default: false).
 	ShowGridExtensionLines bool `json:"showGridExtensionLines,omitempty"`
 
+	// ShowPositiveLineNumbers (optional) Show Positive line number labels (default: false).
+	ShowPositiveLineNumbers bool `json:"showPositiveLineNumbers,omitempty"`
+
+	// ShowNegativeLineNumbers (optional) Show Negative line number labels (default: false).
+	ShowNegativeLineNumbers bool `json:"showNegativeLineNumbers,omitempty"`
+
 	// GridBorderColor (optional) The grid container border highlight color (default: transparent).
 	GridBorderColor *DOMRGBA `json:"gridBorderColor,omitempty"`
 
@@ -10232,6 +10367,9 @@ type OverlayHighlightConfig struct {
 
 	// ShowRulers (optional) Whether the rulers should be shown (default: false).
 	ShowRulers bool `json:"showRulers,omitempty"`
+
+	// ShowAccessibilityInfo (optional) Whether the a11y info should be shown (default: true).
+	ShowAccessibilityInfo bool `json:"showAccessibilityInfo,omitempty"`
 
 	// ShowExtensionLines (optional) Whether the extension lines from node to the rulers should be shown (default: false).
 	ShowExtensionLines bool `json:"showExtensionLines,omitempty"`
@@ -10350,8 +10488,11 @@ type OverlayGetHighlightObjectForTest struct {
 	// IncludeStyle (optional) Whether to include style info.
 	IncludeStyle bool `json:"includeStyle,omitempty"`
 
-	// ColorFormat (optional) The color format to get config with (default: hex)
+	// ColorFormat (optional) The color format to get config with (default: hex).
 	ColorFormat OverlayColorFormat `json:"colorFormat,omitempty"`
+
+	// ShowAccessibilityInfo (optional) Whether to show accessibility info (default: true).
+	ShowAccessibilityInfo bool `json:"showAccessibilityInfo,omitempty"`
 }
 
 // MethodName of the command
@@ -14189,6 +14330,12 @@ type TargetCreateBrowserContext struct {
 
 	// DisposeOnDetach (optional) If specified, disposes this context when debugging session disconnects.
 	DisposeOnDetach bool `json:"disposeOnDetach,omitempty"`
+
+	// ProxyServer (optional) Proxy server, similar to the one passed to --proxy-server
+	ProxyServer string `json:"proxyServer,omitempty"`
+
+	// ProxyBypassList (optional) Proxy bypass list, similar to the one passed to --proxy-bypass-list
+	ProxyBypassList string `json:"proxyBypassList,omitempty"`
 }
 
 // MethodName of the command
@@ -18280,8 +18427,8 @@ const (
 	// RuntimeRemoteObjectSubtypeV128 enum const
 	RuntimeRemoteObjectSubtypeV128 RuntimeRemoteObjectSubtype = "v128"
 
-	// RuntimeRemoteObjectSubtypeAnyref enum const
-	RuntimeRemoteObjectSubtypeAnyref RuntimeRemoteObjectSubtype = "anyref"
+	// RuntimeRemoteObjectSubtypeExternref enum const
+	RuntimeRemoteObjectSubtypeExternref RuntimeRemoteObjectSubtype = "externref"
 )
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
@@ -18925,6 +19072,12 @@ type RuntimeEvaluate struct {
 	// Note that `let` variables can only be re-declared if they originate from
 	// `replMode` themselves.
 	ReplMode bool `json:"replMode,omitempty"`
+
+	// AllowUnsafeEvalBlockedByCSP (experimental) (optional) The Content Security Policy (CSP) for the target might block 'unsafe-eval'
+	// which includes eval(), Function(), setTimeout() and setInterval()
+	// when called with non-callable arguments. This flag bypasses CSP for this
+	// evaluation and allows unsafe-eval. Defaults to true.
+	AllowUnsafeEvalBlockedByCSP bool `json:"allowUnsafeEvalBlockedByCSP,omitempty"`
 }
 
 // MethodName of the command
@@ -19547,6 +19700,8 @@ var types = map[string]reflect.Type{
 	"Audits.AffectedFrame":                               reflect.TypeOf(AuditsAffectedFrame{}),
 	"Audits.SameSiteCookieIssueDetails":                  reflect.TypeOf(AuditsSameSiteCookieIssueDetails{}),
 	"Audits.MixedContentIssueDetails":                    reflect.TypeOf(AuditsMixedContentIssueDetails{}),
+	"Audits.BlockedByResponseIssueDetails":               reflect.TypeOf(AuditsBlockedByResponseIssueDetails{}),
+	"Audits.HeavyAdIssueDetails":                         reflect.TypeOf(AuditsHeavyAdIssueDetails{}),
 	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
 	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
 	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
