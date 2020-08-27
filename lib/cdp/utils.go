@@ -17,7 +17,7 @@ func prettyJSON(s interface{}) string {
 		return kit.Sdump(val)
 	}
 
-	return kit.Sdump(raw)
+	return kit.Sdump(s)
 }
 
 func defaultDebugLog(obj interface{}) {
