@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/ysmood/kit"
 )
 
 type wsMockConn struct {
@@ -50,7 +50,7 @@ func TestCancelOnReq(t *testing.T) {
 	cdp := New("")
 
 	go func() {
-		kit.Sleep(0.1)
+		utils.Sleep(0.1)
 		cancel()
 	}()
 
@@ -58,7 +58,7 @@ func TestCancelOnReq(t *testing.T) {
 	assert.EqualError(t, err, "context canceled")
 
 	go func() {
-		kit.Sleep(0.1)
+		utils.Sleep(0.1)
 		cdp.ctxCancel()
 	}()
 
@@ -90,7 +90,7 @@ func TestCancelOnCallback(t *testing.T) {
 		Result: nil,
 		Error:  nil,
 	}
-	kit.Sleep(0.1)
+	utils.Sleep(0.1)
 	cdp.ctxCancel()
 }
 
@@ -99,7 +99,7 @@ func TestCancelOnReadRes(t *testing.T) {
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
 			cdp.ctxCancel()
-			return kit.MustToJSONBytes(&Response{
+			return utils.MustToJSONBytes(&Response{
 				ID:     1,
 				Result: nil,
 				Error:  nil,
@@ -118,7 +118,7 @@ func TestCancelOnReadEvent(t *testing.T) {
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
 			cdp.ctxCancel()
-			return kit.MustToJSONBytes(&Event{}), nil
+			return utils.MustToJSONBytes(&Event{}), nil
 		},
 	}
 

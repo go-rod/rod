@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
+	"github.com/tidwall/gjson"
 )
 
 // Client is a devtools protocol connection instance.
@@ -73,7 +73,7 @@ type WebsocketableConn interface {
 
 // Error interface
 func (e *Error) Error() string {
-	return kit.MustToJSON(e)
+	return utils.MustToJSON(e)
 }
 
 // New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
@@ -249,7 +249,7 @@ func (cdp *Client) readMsgFromBrowser() {
 			return
 		}
 
-		if kit.JSON(data).Get("id").Exists() {
+		if gjson.ParseBytes(data).Get("id").Exists() {
 			var res Response
 			err := json.Unmarshal(data, &res)
 			utils.E(err)

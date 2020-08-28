@@ -16,7 +16,6 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/ysmood/kit"
 )
 
 func (s *S) TestClick() {
@@ -368,9 +367,9 @@ func (s *S) TestWaitInvisible() {
 	h4t.CancelTimeout()
 
 	go func() {
-		kit.Sleep(0.03)
+		utils.Sleep(0.03)
 		h4.MustEval(`this.remove()`)
-		kit.Sleep(0.03)
+		utils.Sleep(0.03)
 		btn.MustEval(`this.style.visibility = 'hidden'`)
 	}()
 
@@ -389,7 +388,7 @@ func (s *S) TestWaitStable() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
-		kit.Sleep(0.2)
+		utils.Sleep(0.2)
 		cancel()
 	}()
 	s.Error(el.Context(ctx, cancel).WaitStable(time.Minute))
@@ -409,7 +408,7 @@ func (s *S) TestResource() {
 
 	func() {
 		defer s.at(3, func(res []byte, err error) ([]byte, error) {
-			return kit.MustToJSONBytes(proto.PageGetResourceContentResult{
+			return utils.MustToJSONBytes(proto.PageGetResourceContentResult{
 				Content:       "ok",
 				Base64Encoded: false,
 			}), nil
@@ -428,7 +427,7 @@ func (s *S) TestResource() {
 }
 
 func (s *S) TestElementScreenshot() {
-	f := filepath.Join("tmp", kit.RandString(8)+".png")
+	f := filepath.Join("tmp", utils.RandString(8)+".png")
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("h4")
 

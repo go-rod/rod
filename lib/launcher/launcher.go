@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
@@ -16,7 +18,7 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
+	"github.com/tidwall/gjson"
 	"github.com/ysmood/leakless"
 )
 
@@ -30,7 +32,7 @@ type Launcher struct {
 	Flags     map[string][]string `json:"flags"`
 	output    chan string
 	pid       int
-	exit      chan kit.Nil
+	exit      chan struct{}
 	remote    bool // remote mode or not
 	reap      bool
 }
@@ -41,7 +43,7 @@ type Launcher struct {
 func New() *Launcher {
 	dir := ""
 	if defaults.Dir == "" {
-		dir = filepath.Join(os.TempDir(), "rod", "user-data", kit.RandString(8))
+		dir = filepath.Join(os.TempDir(), "rod", "user-data", utils.RandString(8))
 	}
 
 	defaultFlags := map[string][]string{
@@ -94,7 +96,7 @@ func New() *Launcher {
 		ctxCancel: cancel,
 		Flags:     defaultFlags,
 		output:    make(chan string),
-		exit:      make(chan kit.Nil),
+		exit:      make(chan struct{}),
 		bin:       defaults.Bin,
 		reap:      true,
 	}
@@ -113,7 +115,7 @@ func NewUserMode() *Launcher {
 			"disable-blink-features": {"AutomationControlled"},
 		},
 		output: make(chan string),
-		exit:   make(chan kit.Nil),
+		exit:   make(chan struct{}),
 	}
 }
 
@@ -287,7 +289,7 @@ func (l *Launcher) Launch() (wsURL string, err error) {
 		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
 		port, _ := l.Get("remote-debugging-port")
-		u, err := GetWebSocketDebuggerURL(l.ctx, "http://127.0.0.1:"+port)
+		u, err := GetWebSocketDebuggerURL("http://127.0.0.1:" + port)
 		if err == nil {
 			return u, nil
 		}
@@ -339,7 +341,7 @@ func (l *Launcher) Launch() (wsURL string, err error) {
 		return "", err
 	}
 
-	return GetWebSocketDebuggerURL(l.ctx, u)
+	return GetWebSocketDebuggerURL(u)
 }
 
 // PID returns the browser process pid
@@ -353,7 +355,7 @@ func (l *Launcher) Cleanup() {
 	if _, has := l.Get("keep-user-data-dir"); !has {
 		dir, _ := l.Get("user-data-dir")
 		if l.log != nil {
-			l.log(fmt.Sprintln(utils.C("Remove", "cyan"), dir))
+			l.log(fmt.Sprintln("Remove", dir))
 		}
 
 		_ = os.RemoveAll(dir)
@@ -423,7 +425,7 @@ func (l *Launcher) KeepUserDataDir() *Launcher {
 }
 
 // GetWebSocketDebuggerURL from browser remote url
-func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
+func GetWebSocketDebuggerURL(u string) (string, error) {
 	parsed, err := url.Parse(u)
 	if err != nil {
 		return "", err
@@ -432,9 +434,14 @@ func GetWebSocketDebuggerURL(ctx context.Context, u string) (string, error) {
 	parsed = toHTTP(*parsed)
 	parsed.Path = "/json/version"
 
-	obj, err := kit.Req(parsed.String()).Context(ctx).JSON()
+	res, err := http.Get(parsed.String())
 	if err != nil {
 		return "", err
 	}
-	return obj.Get("webSocketDebuggerUrl").String(), nil
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return gjson.ParseBytes(b).Get("webSocketDebuggerUrl").String(), nil
 }

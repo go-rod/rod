@@ -6,7 +6,6 @@ import (
 	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/tidwall/gjson"
-	"github.com/ysmood/kit"
 )
 
 // DeviceType for devices
@@ -15,7 +14,7 @@ type DeviceType string
 // ErrDeviceNotExists err
 var ErrDeviceNotExists = errors.New("device not exists")
 
-var list = kit.JSON(assets.DeviceList).Array()
+var list = gjson.Parse(assets.DeviceList).Array()
 
 // GetViewport of the device
 func GetViewport(device DeviceType, landscape bool) *proto.EmulationSetDeviceMetricsOverride {

@@ -8,14 +8,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/suite"
-	"github.com/ysmood/kit"
 	"go.uber.org/goleak"
 )
 
@@ -41,7 +39,14 @@ func TestMain(m *testing.M) {
 		},
 	}
 
-	goleak.VerifyTestMain(m)
+	goleak.VerifyTestMain(
+		m,
+		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),
+		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),
+		goleak.IgnoreTopFunction("net/http.(*persistConn).readLoop"),
+		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.sigChildHandler"),
+		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.reapChildren"),
+	)
 }
 
 func Test(t *testing.T) {
@@ -79,41 +84,28 @@ func file(path string) string {
 	return f
 }
 
-func ginHTML(body string) gin.HandlerFunc {
-	return func(ctx kit.GinContext) {
-		ctx.Header("Content-Type", "text/html; charset=utf-8")
-		utils.E(ctx.Writer.WriteString(body))
+func httpHTML(body string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+		utils.E(w.Write([]byte(body)))
 	}
 }
 
-func ginString(body string) gin.HandlerFunc {
-	return func(ctx kit.GinContext) {
-		utils.E(ctx.Writer.WriteString(body))
+func httpString(body string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		utils.E(w.Write([]byte(body)))
 	}
 }
 
-func ginHTMLFile(path string) gin.HandlerFunc {
-	body, err := kit.ReadString(path)
+func httpHTMLFile(path string) http.HandlerFunc {
+	body, err := utils.ReadString(path)
 	utils.E(err)
-	return ginHTML(body)
-}
-
-// returns url prefix, engin, close
-func serve() (string, *gin.Engine, func()) {
-	srv := kit.MustServer("127.0.0.1:0")
-	opt := &http.Server{}
-	opt.SetKeepAlivesEnabled(false)
-	srv.Set(opt)
-	go func() { kit.Noop(srv.Do()) }()
-
-	url := "http://" + srv.Listener.Addr().String()
-
-	return url, srv.Engine, func() { utils.E(srv.Listener.Close()) }
+	return httpHTML(body)
 }
 
 func serveStatic() (string, func()) {
-	u, engine, close := serve()
-	engine.Static("/fixtures", "fixtures")
+	u, mux, close := utils.Serve("")
+	mux.Handle("/fixtures", http.FileServer(http.Dir("fixtures")))
 
 	return u + "/", close
 }

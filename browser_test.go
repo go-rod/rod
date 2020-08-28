@@ -3,24 +3,25 @@ package rod_test
 import (
 	"context"
 	"errors"
+	"net/http"
+	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/sjson"
-	"github.com/ysmood/kit"
 )
 
 func (s *S) TestIncognito() {
 	file := srcFile("fixtures/click.html")
-	k := kit.RandString(8)
+	k := utils.RandString(8)
 
 	b := s.browser.MustIncognito()
 	page := b.MustPage(file)
@@ -90,7 +91,7 @@ func (s *S) TestBrowserCrash() {
 
 	wait := browser.WaitEvent(&proto.PageFrameNavigated{})
 	go func() {
-		kit.Sleep(0.3)
+		utils.Sleep(0.3)
 		_ = proto.BrowserCrash{}.Call(browser)
 	}()
 
@@ -112,23 +113,25 @@ func (s *S) TestMonitor() {
 	b := rod.New().Timeout(1 * time.Minute).MustConnect()
 	defer b.MustClose()
 	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
-	host := b.ServeMonitor("127.0.0.1:0", true).Listener.Addr().String()
+	host := b.ServeMonitor("127.0.0.1:0", true)
 
-	page := s.page.MustNavigate("http://" + host)
+	page := s.page.MustNavigate(host)
 	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
 
-	page.MustNavigate("http://" + host + "/page/" + string(p.TargetID))
+	page.MustNavigate(host + "/page/" + string(p.TargetID))
 	s.Contains(page.MustEval(`document.title`).Str, p.TargetID)
 
-	s.Equal(400, kit.Req("http://"+host+"/api/page/test").MustResponse().StatusCode)
+	res, err := http.Get(host + "/api/page/test")
+	utils.E(err)
+	s.Equal(400, res.StatusCode)
 }
 
 func (s *S) TestRemoteLaunch() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	proxy := launcher.NewProxy()
-	engine.NoRoute(gin.WrapH(proxy))
+	mux.Handle("/", proxy)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))
@@ -183,7 +186,7 @@ func (s *S) TestConcurrentOperations() {
 		list = append(list, item)
 	}
 
-	kit.All(func() {
+	utils.All(func() {
 		add(p.MustEval(`new Promise(r => setTimeout(r, 100, 2))`).Int())
 	}, func() {
 		add(p.MustEval(`1`).Int())
@@ -203,10 +206,10 @@ func (s *S) TestPromiseLeak() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	var out string
 
-	kit.All(func() {
+	utils.All(func() {
 		out = p.MustEval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
 	}, func() {
-		kit.Sleep(0.1)
+		utils.Sleep(0.1)
 		p.MustNavigate(srcFile("fixtures/input.html"))
 	})()
 
@@ -233,15 +236,15 @@ func (s *S) TestBlockingNavigation() {
 		If one page is blocked, other pages should still work.
 	*/
 
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 	pause, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	engine.GET("/a", func(ctx kit.GinContext) {
+	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
-	engine.GET("/b", ginHTML(`<html>ok</html>`))
+	mux.HandleFunc("/b", httpHTML(`<html>ok</html>`))
 
 	blocked := s.browser.MustPage("")
 	defer blocked.MustClose()
@@ -252,20 +255,20 @@ func (s *S) TestBlockingNavigation() {
 		})
 	}()
 
-	kit.Sleep(0.3)
+	utils.Sleep(0.3)
 
 	p := s.browser.MustPage(url + "/b")
 	defer p.MustClose()
 }
 
 func (s *S) TestResolveBlocking() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	pause, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	engine.NoRoute(func(ctx kit.GinContext) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
 
@@ -273,7 +276,7 @@ func (s *S) TestResolveBlocking() {
 	defer p.MustClose()
 
 	go func() {
-		kit.Sleep(0.1)
+		utils.Sleep(0.1)
 		p.MustStopLoading()
 	}()
 
@@ -301,6 +304,30 @@ func (s *S) TestBrowserOthers() {
 	s.Panics(func() {
 		s.browser.Context(ctx, cancel).MustIncognito()
 	})
+}
+
+func (s *S) TestBinarySize() {
+	if runtime.GOOS == "windows" {
+		s.T().SkipNow()
+	}
+
+	cmd := exec.Command("go", "build",
+		"-trimpath",
+		"-ldflags", "-w -s",
+		"-o", "tmp/translator",
+		"./lib/examples/translator")
+
+	cmd.Env = append(os.Environ(), "GOOS=linux")
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		s.T().Skip(err, string(out))
+	}
+
+	stat, err := os.Stat("tmp/translator")
+	utils.E(err)
+
+	s.Less(float64(stat.Size())/1024/1024, 8.65) // mb
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

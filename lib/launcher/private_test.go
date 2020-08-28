@@ -5,11 +5,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/ysmood/kit"
-	"github.com/ysmood/kit/pkg/utils"
 )
 
 func TestToHTTP(t *testing.T) {
@@ -74,14 +72,14 @@ func TestGetURLErr(t *testing.T) {
 func TestRemoteLaunch(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	srv := kit.MustServer("127.0.0.1:0")
-	defer func() { _ = srv.Listener.Close() }()
+	u, mux, close := utils.Serve("")
+	defer close()
+
 	proxy := NewProxy()
 	proxy.isWindows = true
-	srv.Engine.NoRoute(gin.WrapH(proxy))
-	go func() { _ = srv.Do() }()
 
-	u := "ws://" + srv.Listener.Addr().String()
+	mux.Handle("/", proxy)
+
 	l := NewRemote(u).KeepUserDataDir()
 	client := l.Delete("keep-user-data-dir").Client()
 	b := client.Context(ctx, cancel).MustConnect()
@@ -89,14 +87,14 @@ func TestRemoteLaunch(t *testing.T) {
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 	dir, _ := l.Get("user-data-dir")
 
-	kit.Sleep(1)
+	utils.Sleep(1)
 	assert.NoDirExists(t, dir)
 }
 
 func TestLaunchErr(t *testing.T) {
 	l := New().Bin("echo")
 	go func() {
-		l.exit <- utils.Nil{}
+		l.exit <- struct{}{}
 	}()
 	_, err := l.Launch()
 	assert.Error(t, err)

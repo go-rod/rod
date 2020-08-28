@@ -7,7 +7,7 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
+	"github.com/tidwall/gjson"
 )
 
 func ExampleClient() {
@@ -25,9 +25,9 @@ func ExampleClient() {
 	})
 	utils.E(err)
 
-	fmt.Println(kit.JSON(res).Get("targetId").String())
+	fmt.Println(gjson.ParseBytes(res).Get("targetId").String())
 
-	kit.Pause()
+	utils.Pause()
 
 	// Skip
 	// Output: id

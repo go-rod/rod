@@ -3,8 +3,6 @@
 package rod
 
 import (
-	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -237,13 +235,11 @@ func (p *Page) MustPDF() []byte {
 
 // MustGetDownloadFile of the next download url that matches the pattern, returns the file content.
 func (p *Page) MustGetDownloadFile(pattern string) func() []byte {
-	wait := p.GetDownloadFile(pattern, "")
+	wait := p.GetDownloadFile(pattern, "", http.DefaultClient)
 	return func() []byte {
 		_, body, err := wait()
 		utils.E(err)
-		data, err := ioutil.ReadAll(body)
-		utils.E(err)
-		return data
+		return body
 	}
 }
 
@@ -852,40 +848,5 @@ func (r *HijackRouter) MustStop() {
 
 // MustLoadResponse will send request to the real destination and load the response as default response to override.
 func (h *Hijack) MustLoadResponse() {
-	utils.E(h.LoadResponse(true))
-}
-
-// MustHeader via key
-func (ctx *HijackResponse) MustHeader(key string) string {
-	val, err := ctx.Header(key)
-	utils.E(err)
-	return val
-}
-
-// MustStatusCode of response
-func (ctx *HijackResponse) MustStatusCode() int {
-	code, err := ctx.StatusCode()
-	utils.E(err)
-	return code
-}
-
-// MustHeaders of request
-func (ctx *HijackResponse) MustHeaders() http.Header {
-	val, err := ctx.Headers()
-	utils.E(err)
-	return val
-}
-
-// MustBody of response
-func (ctx *HijackResponse) MustBody() []byte {
-	b, err := ctx.Body()
-	utils.E(err)
-	return b
-}
-
-// MustBodyStream returns the stream of the body
-func (ctx *HijackResponse) MustBodyStream() io.Reader {
-	body, err := ctx.BodyStream()
-	utils.E(err)
-	return body
+	utils.E(h.LoadResponse(http.DefaultClient, true))
 }

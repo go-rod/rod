@@ -410,7 +410,7 @@ const Monitor = `<html>
 
     <script>
         async function update () {
-            const list = await (await fetch('/pages')).json()
+            const list = await (await fetch('/api/pages')).json()
             let html = ""
             list.forEach((el) => {
                 html += ` + "`" + `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>` + "`" + `

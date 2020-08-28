@@ -19,71 +19,62 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 // ServeMonitor starts the monitor server.
 // If openBrowser is true, it will try to launcher a browser to play the screenshots.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
-func (b *Browser) ServeMonitor(host string, openBrowser bool) *kit.ServerContext {
+func (b *Browser) ServeMonitor(host string, openBrowser bool) string {
 	if host == "" {
-		return nil
+		return ""
 	}
 
-	srv := kit.MustServer(host)
-	opts := &http.Server{}
-	opts.SetKeepAlivesEnabled(false)
-	srv.Set(opts)
+	u, mux, close := utils.Serve(host)
 
-	srv.Engine.Use(func(ctx kit.GinContext) {
-		defer func() {
-			if err := recover(); err != nil {
-				_ = ctx.AbortWithError(400, fmt.Errorf("%v", err))
-			}
-		}()
-		ctx.Next()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		httHTML(w, assets.Monitor)
 	})
-	srv.Engine.GET("/", func(ctx kit.GinContext) {
-		ginHTML(ctx, assets.Monitor)
-	})
-	srv.Engine.GET("/pages", func(ctx kit.GinContext) {
+	mux.HandleFunc("/api/pages", func(w http.ResponseWriter, r *http.Request) {
 		res, err := proto.TargetGetTargets{}.Call(b)
 		utils.E(err)
-		ctx.PureJSON(http.StatusOK, res.TargetInfos)
+		w.WriteHeader(http.StatusOK)
+		utils.E(w.Write(utils.MustToJSONBytes(res.TargetInfos)))
 	})
-	srv.Engine.GET("/page/:id", func(ctx kit.GinContext) {
-		ginHTML(ctx, assets.MonitorPage)
+	mux.HandleFunc("/page/", func(w http.ResponseWriter, r *http.Request) {
+		httHTML(w, assets.MonitorPage)
 	})
-	srv.Engine.GET("/api/page/:id", func(ctx kit.GinContext) {
-		info, err := b.pageInfo(proto.TargetTargetID(ctx.Param("id")))
+	mux.HandleFunc("/api/page/", func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Path[strings.LastIndex(r.URL.Path, "/")+1:]
+		info, err := b.pageInfo(proto.TargetTargetID(id))
 		utils.E(err)
-		ctx.PureJSON(http.StatusOK, info)
+		w.WriteHeader(http.StatusOK)
+		utils.E(w.Write(utils.MustToJSONBytes(info)))
 	})
-	srv.Engine.GET("/screenshot/:id", func(ctx kit.GinContext) {
-		id := proto.TargetTargetID(ctx.Param("id"))
-		p := b.MustPageFromTargetID(id)
+	mux.HandleFunc("/screenshot/", func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Path[strings.LastIndex(r.URL.Path, "/")+1:]
+		target := proto.TargetTargetID(id)
+		p := b.MustPageFromTargetID(target)
 
-		ctx.Header("Content-Type", "image/png;")
-		_, _ = ctx.Writer.Write(p.MustScreenshot())
+		w.Header().Add("Content-Type", "image/png;")
+		utils.E(w.Write(p.MustScreenshot()))
 	})
 
-	go func() { _ = srv.Do() }()
 	go func() {
 		<-b.ctx.Done()
-		_ = srv.Listener.Close()
+		close()
 	}()
 
 	if openBrowser {
-		launcher.NewBrowser().Open("http://" + srv.Listener.Addr().String())
+		launcher.NewBrowser().Open(u)
 	}
 
-	return srv
+	return u
 }
 
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	root := p.Root()
-	id := kit.RandString(8)
+	id := utils.RandString(8)
 
 	_, err := root.EvalWithOptions(jsHelper(js.Overlay, Array{
 		id,
@@ -113,7 +104,7 @@ func (p *Page) ExposeJSHelper() *Page {
 
 // Trace with an overlay on the element
 func (el *Element) Trace(msg string) (removeOverlay func()) {
-	id := kit.RandString(8)
+	id := utils.RandString(8)
 
 	_, err := el.EvalWithOptions(jsHelper(js.ElementOverlay, Array{
 		id,
@@ -174,7 +165,7 @@ func (p *Page) tryTraceFn(js string, params Array) func() {
 }
 
 func defaultTraceLogAct(msg string) {
-	log.Println(utils.C("act", "cyan"), msg)
+	log.Println("act", msg)
 }
 
 func defaultTraceLogJS(js string, params Array) {
@@ -183,12 +174,12 @@ func defaultTraceLogJS(js string, params Array) {
 		paramsStr = strings.Trim(mustToJSONForDev(params), "[]\r\n")
 	}
 	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
-	log.Println(utils.C("js", "yellow"), msg)
+	log.Println("js", msg)
 }
 
 func defaultTraceLogErr(err error) {
 	if err != context.Canceled && err != context.DeadlineExceeded {
-		log.Println(utils.C("[rod trace err]", "yellow"), err)
+		log.Println("[rod trace err]", err)
 	}
 }
 

@@ -39,7 +39,7 @@ We also use it in the CI to enforce the minimum test coverage.
 
 ### To run inside docker
 
-1. `docker build -t rod -f lib/docker/test.Dockerfile .`
+1. `docker build -t rod -f lib/docker/Dockerfile .`
 
 2. `docker run --name rod -itp 9273:9273 -v $(pwd):/t -w /t rod sh`
 

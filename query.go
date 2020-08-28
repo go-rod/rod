@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/kit"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Elements provides some helpers to deal with element list
@@ -128,7 +128,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	}
 
 	removeTrace := func() {}
-	err = kit.Retry(p.ctx, sleeper, func() (bool, error) {
+	err = utils.Retry(p.ctx, sleeper, func() (bool, error) {
 		remove := p.tryTraceFn(opts.JS, opts.JSArgs)
 		removeTrace()
 		removeTrace = remove
@@ -150,7 +150,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, newErr(ErrExpectElement, res, kit.MustToJSON(res))
+		return nil, newErr(ErrExpectElement, res, utils.MustToJSON(res))
 	}
 
 	return p.ElementFromObject(res.ObjectID), nil
@@ -174,7 +174,7 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, newErr(ErrExpectElements, res, kit.MustToJSON(res))
+		return nil, newErr(ErrExpectElements, res, utils.MustToJSON(res))
 	}
 
 	objectID := res.ObjectID
@@ -196,7 +196,7 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, newErr(ErrExpectElements, val, kit.MustToJSON(val))
+			return nil, newErr(ErrExpectElements, val, utils.MustToJSON(val))
 		}
 
 		elemList = append(elemList, p.ElementFromObject(val.ObjectID))
@@ -261,7 +261,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 		return true, nil
 	}
 
-	err := kit.Retry(p.ctx, sleeper, func() (bool, error) {
+	err := utils.Retry(p.ctx, sleeper, func() (bool, error) {
 		p.enableNodeQuery()
 
 		for _, query := range queries {

@@ -16,8 +16,8 @@ import (
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/goob"
-	"github.com/ysmood/kit"
 )
 
 // Browser implements the proto.Caller interface
@@ -34,7 +34,7 @@ type Browser struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
-	sleeper       kit.Sleeper
+	sleeper       utils.Sleeper
 
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
@@ -47,8 +47,6 @@ type Browser struct {
 	traceLogErr func(error)
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
-
-	monitorServer *kit.ServerContext
 
 	client  *cdp.Client
 	cdpCall CDPCall
@@ -173,7 +171,7 @@ func (b *Browser) Connect() (err error) {
 
 	b.client.Context(b.ctx, b.ctxCancel).MustConnect()
 
-	b.monitorServer = b.ServeMonitor(defaults.Monitor, !defaults.Blind)
+	b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 
 	b.initEvents()
 
@@ -372,7 +370,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		executionIDs: map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
 	}).Context(context.WithCancel(b.ctx))
 
-	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: kit.RandString(8)}
+	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: utils.RandString(8)}
 	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
 
 	err := page.initSession()

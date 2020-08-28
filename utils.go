@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path/filepath"
 	"reflect"
@@ -16,7 +17,6 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 // CDPCall type for cdp.Client.CDPCall
@@ -24,7 +24,7 @@ type CDPCall func(ctx context.Context, sessionID, method string, params interfac
 
 // Sleeper is the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
-var Sleeper = kit.BackoffSleeper(100*time.Millisecond, time.Second, nil)
+var Sleeper = utils.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 
 // Array of any type
 type Array []interface{}
@@ -106,7 +106,7 @@ func Try(fn func()) (err error) {
 			var ok bool
 			err, ok = val.(error)
 			if !ok {
-				err = newErr(ErrValue, val, kit.MustToJSON(val))
+				err = newErr(ErrValue, val, utils.MustToJSON(val))
 			}
 		}
 	}()
@@ -145,12 +145,12 @@ func saveScreenshot(bin []byte, toFile []string) error {
 	if toFile[0] == "" {
 		toFile = []string{"tmp", "screenshots", fmt.Sprintf("%d", time.Now().UnixNano()) + ".png"}
 	}
-	return kit.OutputFile(filepath.Join(toFile...), bin, nil)
+	return utils.OutputFile(filepath.Join(toFile...), bin, nil)
 }
 
-func ginHTML(ctx kit.GinContext, body string) {
-	ctx.Header("Content-Type", "text/html; charset=utf-8")
-	_, _ = ctx.Writer.WriteString(body)
+func httHTML(w http.ResponseWriter, body string) {
+	w.Header().Add("Content-Type", "text/html; charset=utf-8")
+	_, _ = w.Write([]byte(body))
 }
 
 func mustToJSONForDev(value interface{}) string {

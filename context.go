@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ysmood/kit"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Context creates a clone with a context that inherits the previous one
@@ -34,7 +34,7 @@ func (b *Browser) CancelTimeout() *Browser {
 }
 
 // Sleeper for chained sub-operations
-func (b *Browser) Sleeper(sleeper kit.Sleeper) *Browser {
+func (b *Browser) Sleeper(sleeper utils.Sleeper) *Browser {
 	newObj := *b
 	newObj.sleeper = sleeper
 	return &newObj
@@ -67,7 +67,7 @@ func (p *Page) CancelTimeout() *Page {
 }
 
 // Sleeper for chained sub-operations
-func (p *Page) Sleeper(sleeper kit.Sleeper) *Page {
+func (p *Page) Sleeper(sleeper utils.Sleeper) *Page {
 	newObj := *p
 	newObj.sleeper = sleeper
 	return &newObj
@@ -100,7 +100,7 @@ func (el *Element) CancelTimeout() *Element {
 }
 
 // Sleeper for chained sub-operations
-func (el *Element) Sleeper(sleeper kit.Sleeper) *Element {
+func (el *Element) Sleeper(sleeper utils.Sleeper) *Element {
 	newObj := *el
 	newObj.sleeper = sleeper
 	return &newObj

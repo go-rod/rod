@@ -1,36 +1,43 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"net"
+	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
+var addr = flag.String("address", ":9222", "the address to listen to")
+var quiet = flag.Bool("quiet", false, "silent the log")
+var ver = flag.Bool("version", false, "display version")
+
+// a cli tool to launch browser remotely
 func main() {
-	app := kit.TasksNew("rod-launcher", "a cli tool to launch browser remotely")
-	app.Version(defaults.Version)
+	flag.Parse()
 
-	kit.Tasks().App(app).Add(kit.Task("serve", "start server").Init(func(cmd kit.TaskCmd) func() {
-		cmd.Default()
-		addr := cmd.Arg("address", "the address to listen to").Default(":9222").String()
-		quiet := cmd.Flag("quiet", "silent the log").Short('q').Bool()
+	if *ver {
+		fmt.Println(defaults.Version)
+		return
+	}
 
-		return func() {
-			proxy := launcher.NewProxy()
-			proxy.Log = func(s string) {
-				if !*quiet {
-					fmt.Print(s)
-				}
-			}
-
-			srv := kit.MustServer(*addr)
-			srv.Engine.NoRoute(gin.WrapH(proxy))
-			fmt.Println("Remote control url is", utils.C("ws://"+srv.Listener.Addr().String(), "green"))
-			srv.MustDo()
+	proxy := launcher.NewProxy()
+	proxy.Log = func(s string) {
+		if !*quiet {
+			fmt.Print(s)
 		}
-	})).Do()
+	}
+
+	l, err := net.Listen("tcp", *addr)
+	if err != nil {
+		utils.E(err)
+	}
+
+	fmt.Println("Remote control url is", "ws://"+l.Addr().String())
+
+	srv := &http.Server{Handler: proxy}
+	utils.E(srv.Serve(l))
 }

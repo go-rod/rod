@@ -1,10 +1,11 @@
 package main
 
 import (
+	"os"
+	"os/signal"
 	"runtime/debug"
 
 	"github.com/go-rod/rod"
-	"github.com/ysmood/kit"
 )
 
 // This example shows how to detect the hanging points of golang code.
@@ -13,7 +14,7 @@ func main() {
 	debug.SetTraceback("all")
 
 	go func() {
-		kit.WaitSignal()
+		wait()
 		panic("exit")
 	}()
 
@@ -39,3 +40,14 @@ main.main()
 */
 
 // Now you know the line 26's Element is blocking the code.
+
+func wait(signals ...os.Signal) {
+	c := make(chan os.Signal, 1)
+	if len(signals) == 0 {
+		signals = append(signals, os.Interrupt)
+	}
+	signal.Notify(c, signals...)
+	<-c
+	signal.Stop(c)
+	close(c)
+}

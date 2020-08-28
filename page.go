@@ -14,8 +14,8 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/goob"
-	"github.com/ysmood/kit"
 )
 
 // Page implements the proto.Caller interface
@@ -30,7 +30,7 @@ type Page struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
-	sleeper       kit.Sleeper
+	sleeper       utils.Sleeper
 
 	browser *Browser
 
@@ -362,7 +362,7 @@ func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
 func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) func() {
 	ctx, cancel := context.WithCancel(p.ctx)
 
-	reqList := map[proto.NetworkRequestID]kit.Nil{}
+	reqList := map[proto.NetworkRequestID]struct{}{}
 	timeout := time.NewTimer(d)
 	timeout.Stop()
 
@@ -388,7 +388,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 			url := sent.Request.URL
 			id := sent.RequestID
 			if matchWithFilter(url, includes, excludes) {
-				reqList[id] = kit.Nil{}
+				reqList[id] = struct{}{}
 			}
 		} else if finished != nil {
 			reset(finished.RequestID)
@@ -481,13 +481,13 @@ func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObjec
 // Set the byValue to true to reduce memory occupation.
 // If the item in jsArgs is proto.RuntimeRemoteObjectID, the remote object will be used, else the item will be treated as JSON value.
 func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
-	backoff := kit.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
+	backoff := utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := opts.ThisID
 	var err error
 	var res *proto.RuntimeCallFunctionOnResult
 
 	// js context will be invalid if a frame is reloaded
-	err = kit.Retry(p.ctx, backoff, func() (bool, error) {
+	err = utils.Retry(p.ctx, backoff, func() (bool, error) {
 		if p.getWindowObjectID() == "" || opts.ThisID == "" {
 			err := p.initJS(false)
 			if err != nil {
@@ -552,7 +552,7 @@ func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array)
 	removeTrace := func() {}
 	defer removeTrace()
 
-	return kit.Retry(p.ctx, sleeper, func() (bool, error) {
+	return utils.Retry(p.ctx, sleeper, func() (bool, error) {
 		remove := p.tryTraceFn(fmt.Sprintf("wait(%s)", js), params)
 		removeTrace()
 		removeTrace = remove

@@ -21,13 +21,17 @@ jobs:
 
     - uses: actions/setup-go@v2
       with:
-        go-version: 1.14
+        go-version: 1.15
 
     - uses: actions/checkout@v2
 
     - name: setup
       run: |
-        (cd ~ && GO111MODULE=on go get github.com/ysmood/kit/cmd/godev)
+        (cd ~ && GO111MODULE=on go get \
+          github.com/ysmood/kit/cmd/godev \
+          golang.org/x/tools/cmd/goimports \
+          github.com/client9/misspell/cmd/misspell \
+        )
         go generate
 
     - name: test
@@ -49,7 +53,7 @@ jobs:
 
     - uses: actions/setup-go@v2
       with:
-        go-version: 1.14
+        go-version: 1.15
 
     - uses: actions/checkout@v2
 

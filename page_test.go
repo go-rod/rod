@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"context"
 	"image/png"
+	"io/ioutil"
+	"net/http"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -15,7 +18,6 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 func (s *S) TestGetPageURL() {
@@ -24,7 +26,7 @@ func (s *S) TestGetPageURL() {
 }
 
 func (s *S) TestSetCookies() {
-	url, _, close := serve()
+	url, _, close := utils.Serve("")
 	defer close()
 
 	page := s.page.MustSetCookies(&proto.NetworkCookieParam{
@@ -48,16 +50,16 @@ func (s *S) TestSetCookies() {
 }
 
 func (s *S) TestSetExtraHeaders() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
 	var out1, out2 string
-	engine.NoRoute(func(ctx kit.GinContext) {
-		out1 = ctx.GetHeader("a")
-		out2 = ctx.GetHeader("b")
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		out1 = r.Header.Get("a")
+		out2 = r.Header.Get("b")
 		wg.Done()
 	})
 
@@ -73,7 +75,7 @@ func (s *S) TestSetExtraHeaders() {
 }
 
 func (s *S) TestSetUserAgent() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	ua := ""
@@ -82,9 +84,9 @@ func (s *S) TestSetUserAgent() {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	engine.NoRoute(func(ctx kit.GinContext) {
-		ua = ctx.GetHeader("User-Agent")
-		lang = ctx.GetHeader("Accept-Language")
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		ua = r.Header.Get("User-Agent")
+		lang = r.Header.Get("Accept-Language")
 		wg.Done()
 	})
 
@@ -281,14 +283,14 @@ func (s *S) TestPageWait() {
 }
 
 func (s *S) TestPageWaitRequestIdle() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	sleep := time.Second
 
-	engine.GET("/r1", func(ctx kit.GinContext) {})
-	engine.GET("/r2", func(ctx kit.GinContext) { time.Sleep(sleep) })
-	engine.GET("/", ginHTML(`<html>
+	mux.HandleFunc("/r1", func(w http.ResponseWriter, r *http.Request) {})
+	mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) { time.Sleep(sleep) })
+	mux.HandleFunc("/", httpHTML(`<html>
 		<button>click</button>
 		<script>
 			document.querySelector("button").onclick = () => {
@@ -370,7 +372,7 @@ func (s *S) TestMouseDrag() {
 	page := s.page.MustNavigate(srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Mouse
 
-	wait := make(chan kit.Nil)
+	wait := make(chan struct{})
 	logs := []string{}
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
 		log := page.MustObjectsToJSON(e.Args).Join(" ")
@@ -418,14 +420,14 @@ func (s *S) TestNativeDrag() {
 
 func (s *S) TestPagePause() {
 	go s.page.MustPause()
-	kit.Sleep(0.03)
+	utils.Sleep(0.03)
 	go s.page.MustEval(`10`)
-	kit.Sleep(0.03)
+	utils.Sleep(0.03)
 	utils.E(proto.DebuggerResume{}.Call(s.page))
 }
 
 func (s *S) TestPageScreenshot() {
-	f := filepath.Join("tmp", kit.RandString(8)+".png")
+	f := filepath.Join("tmp", utils.RandString(8)+".png")
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	p.MustElement("button")
 	p.MustScreenshot()
@@ -436,9 +438,12 @@ func (s *S) TestPageScreenshot() {
 	s.Equal(600, img.Bounds().Dy())
 	s.FileExists(f)
 
-	utils.E(kit.Remove(slash("tmp/screenshots")))
+	utils.E(os.RemoveAll(slash("tmp/screenshots")))
 	p.MustScreenshot("")
-	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
+
+	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
+	utils.E(err)
+	s.Len(list, 1)
 }
 
 func (s *S) TestScreenshotFullPage() {
@@ -456,9 +461,12 @@ func (s *S) TestScreenshotFullPage() {
 	s.EqualValues(800, res.Get("w").Int())
 	s.EqualValues(600, res.Get("h").Int())
 
-	utils.E(kit.Remove(slash("tmp/screenshots")))
+	utils.E(os.RemoveAll(slash("tmp/screenshots")))
 	p.MustScreenshotFullPage("")
-	s.Len(kit.Walk(slash("tmp/screenshots/*")).MustList(), 1)
+
+	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
+	utils.E(err)
+	s.Len(list, 1)
 }
 
 func (s *S) TestScreenshotFullPageInit() {
@@ -482,7 +490,7 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	utils.E(kit.Retry(context.Background(), kit.CountSleeper(10), func() (bool, error) {
+	utils.E(utils.Retry(context.Background(), utils.CountSleeper(10), func() (bool, error) {
 		p := s.browser.MustPage(srcFile("fixtures/scroll.html")).MustWaitLoad()
 		defer p.MustClose()
 
@@ -529,15 +537,15 @@ func (s *S) TestFonts() {
 		I don't want to include a large OCR lib just for this test
 		So this one should be checked manually:
 
-		GOOS=linux go test -c -o tmp/rod.test
+		GOOS=linux go test -c
 		docker run --rm -itv $(pwd):/t -w /t rodorg/rod sh
-		./tmp/rod.test -test.v -test.run Test/TestFonts
+		./rod.test -test.v -test.run Test/TestFonts
 		open tmp/fonts.pdf
 	*/
 
 	p := s.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
 
-	utils.E(kit.OutputFile("tmp/fonts.pdf", p.MustPDF(), nil))
+	utils.E(utils.OutputFile("tmp/fonts.pdf", p.MustPDF(), nil))
 }
 
 func (s *S) TestPageExpose() {
@@ -555,17 +563,17 @@ func (s *S) TestPageExpose() {
 func (s *S) TestNavigateErr() {
 	// dns error
 	s.Panics(func() {
-		s.page.MustNavigate("http://" + kit.RandString(8))
+		s.page.MustNavigate("http://" + utils.RandString(8))
 	})
 
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
-	engine.GET("/404", func(ctx kit.GinContext) {
-		ctx.Writer.WriteHeader(404)
+	mux.HandleFunc("/404", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(404)
 	})
-	engine.GET("/500", func(ctx kit.GinContext) {
-		ctx.Writer.WriteHeader(500)
+	mux.HandleFunc("/500", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(500)
 	})
 
 	// will not panic

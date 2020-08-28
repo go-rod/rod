@@ -3,8 +3,7 @@ package rod
 import (
 	"bytes"
 	"context"
-	"encoding/json"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -16,7 +15,6 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
-	"github.com/ysmood/kit"
 )
 
 // HijackRequests creates a new router instance for requests hijacking.
@@ -141,19 +139,21 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 		headers[k] = []string{v.String()}
 	}
 
-	req := kit.Req(e.Request.URL).
-		Method(e.Request.Method).
-		Headers(headers).
-		StringBody(e.Request.PostData).
-		Context(ctx)
+	u, _ := url.Parse(e.Request.URL)
+
+	req := &http.Request{
+		Method: e.Request.Method,
+		URL:    u,
+		Body:   ioutil.NopCloser(strings.NewReader(e.Request.PostData)),
+		Header: headers,
+	}
 
 	return &Hijack{
 		Request: &HijackRequest{
 			event: e,
-			req:   req,
+			req:   req.WithContext(ctx),
 		},
 		Response: &HijackResponse{
-			req: req,
 			payload: &proto.FetchFulfillRequest{
 				ResponseCode: 200,
 				RequestID:    e.RequestID,
@@ -164,7 +164,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 		},
 		OnError: func(err error) {
 			if err != context.Canceled {
-				log.Println(utils.C("[rod hijack err]", "yellow"), err)
+				log.Println("[rod hijack err]", err)
 			}
 		},
 	}
@@ -206,19 +206,18 @@ func (h *Hijack) ContinueRequest(cq *proto.FetchContinueRequest) {
 }
 
 // LoadResponse will send request to the real destination and load the response as default response to override.
-func (h *Hijack) LoadResponse(loadBody bool) error {
-	code, err := h.Response.StatusCode()
+func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
+	res, err := client.Do(h.Request.req)
 	if err != nil {
 		return err
 	}
-	h.Response.SetStatusCode(code)
 
-	headers, err := h.Response.Headers()
-	if err != nil {
-		return err
-	}
+	defer func() { _ = res.Body.Close() }()
+
+	h.Response.payload.ResponseCode = int64(res.StatusCode)
+
 	list := []string{}
-	for k, vs := range headers {
+	for k, vs := range res.Header {
 		for _, v := range vs {
 			list = append(list, k, v)
 		}
@@ -226,11 +225,11 @@ func (h *Hijack) LoadResponse(loadBody bool) error {
 	h.Response.SetHeader(list...)
 
 	if loadBody {
-		body, err := h.Response.Body()
+		b, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			return err
 		}
-		h.Response.SetBody(body)
+		h.Response.payload.Body = b
 	}
 
 	return nil
@@ -239,7 +238,7 @@ func (h *Hijack) LoadResponse(loadBody bool) error {
 // HijackRequest context
 type HijackRequest struct {
 	event *proto.FetchRequestPaused
-	req   *kit.ReqContext
+	req   *http.Request
 }
 
 // Type of the resource
@@ -254,8 +253,7 @@ func (ctx *HijackRequest) Method() string {
 
 // URL of the request
 func (ctx *HijackRequest) URL() *url.URL {
-	u, err := url.Parse(ctx.event.Request.URL)
-	utils.E(err) // no way this will happen, if it happens it's fatal
+	u, _ := url.Parse(ctx.event.Request.URL)
 	return u
 }
 
@@ -279,136 +277,68 @@ func (ctx *HijackRequest) JSONBody() gjson.Result {
 	return gjson.Parse(ctx.Body())
 }
 
-// SetMethod of request
-func (ctx *HijackRequest) SetMethod(name string) *HijackRequest {
-	ctx.req.Method(name)
-	return ctx
-}
-
-// SetHeader via key-value pairs
-func (ctx *HijackRequest) SetHeader(pairs ...string) *HijackRequest {
-	ctx.req.Header(pairs...)
-	return ctx
-}
-
-// SetQuery of the request, example Query(k, v, k, v ...)
-func (ctx *HijackRequest) SetQuery(pairs ...interface{}) *HijackRequest {
-	ctx.req.Query(pairs...)
-	return ctx
-}
-
-// SetURL of the request
-func (ctx *HijackRequest) SetURL(url string) *HijackRequest {
-	ctx.req.URL(url)
-	return ctx
+// Req returns the underlaying http.Request instance that will be used to send the request.
+func (ctx *HijackRequest) Req() *http.Request {
+	return ctx.req
 }
 
 // SetBody of the request, if obj is []byte or string, raw body will be used, else it will be encoded as json.
 func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
-	// reset to empty
-	ctx.req.StringBody("")
-	ctx.req.JSONBody(nil)
+	var b []byte
 
 	switch body := obj.(type) {
 	case []byte:
-		buf := bytes.NewBuffer(body)
-		ctx.req.Body(buf)
+		b = body
 	case string:
-		ctx.req.StringBody(body)
+		b = []byte(body)
 	default:
-		ctx.req.JSONBody(obj)
+		b = utils.MustToJSONBytes(body)
 	}
-	return ctx
-}
 
-// SetClient for http
-func (ctx *HijackRequest) SetClient(client *http.Client) *HijackRequest {
-	ctx.req.Client(client)
+	ctx.req.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+
 	return ctx
 }
 
 // HijackResponse context
 type HijackResponse struct {
-	req     *kit.ReqContext
 	payload *proto.FetchFulfillRequest
 	fail    *proto.FetchFailRequest
 }
 
-// StatusCode of response
-func (ctx *HijackResponse) StatusCode() (int, error) {
-	res, err := ctx.req.Response()
-	if err != nil {
-		return 0, err
+// Payload to respond the request from the browser.
+func (ctx *HijackResponse) Payload() *proto.FetchFulfillRequest {
+	return ctx.payload
+}
+
+// Body of the payload
+func (ctx *HijackResponse) Body() string {
+	return string(ctx.payload.Body)
+}
+
+// Headers of the payload
+func (ctx *HijackResponse) Headers() http.Header {
+	header := http.Header{}
+
+	for _, h := range ctx.payload.ResponseHeaders {
+		header.Add(h.Name, h.Value)
 	}
 
-	return res.StatusCode, nil
+	return header
 }
 
-// SetStatusCode of response
-func (ctx *HijackResponse) SetStatusCode(code int) {
-	ctx.payload.ResponseCode = int64(code)
-}
-
-// Header via key
-func (ctx *HijackResponse) Header(key string) (string, error) {
-	res, err := ctx.req.Response()
-	if err != nil {
-		return "", err
-	}
-
-	return res.Header.Get(key), nil
-}
-
-// Headers of request
-func (ctx *HijackResponse) Headers() (http.Header, error) {
-	res, err := ctx.req.Response()
-	if err != nil {
-		return nil, err
-	}
-
-	return res.Header, nil
-}
-
-// SetHeader via key-value pairs
-func (ctx *HijackResponse) SetHeader(pairs ...string) {
+// SetHeader of the payload via key-value pairs
+func (ctx *HijackResponse) SetHeader(pairs ...string) *HijackResponse {
 	for i := 0; i < len(pairs); i += 2 {
 		ctx.payload.ResponseHeaders = append(ctx.payload.ResponseHeaders, &proto.FetchHeaderEntry{
 			Name:  pairs[i],
 			Value: pairs[i+1],
 		})
 	}
+	return ctx
 }
 
-// Body of response
-func (ctx *HijackResponse) Body() ([]byte, error) {
-	b, err := ctx.req.Bytes()
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
-
-// BodyStream returns the stream of the body
-func (ctx *HijackResponse) BodyStream() (io.Reader, error) {
-	res, err := ctx.req.Response()
-	if err != nil {
-		return nil, err
-	}
-	return res.Body, nil
-}
-
-// StringBody of response
-func (ctx *HijackResponse) StringBody() string {
-	return string(ctx.MustBody())
-}
-
-// JSONBody of response
-func (ctx *HijackResponse) JSONBody() gjson.Result {
-	return gjson.ParseBytes(ctx.MustBody())
-}
-
-// SetBody of response, if obj is []byte, raw body will be used, else it will be encoded as json
+// SetBody of the payload, if obj is []byte or string, raw body will be used, else it will be encoded as json.
 func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 	switch body := obj.(type) {
 	case []byte:
@@ -416,10 +346,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 	case string:
 		ctx.payload.Body = []byte(body)
 	default:
-		ctx.SetHeader("Content-Type", "application/json; charset=utf-8")
-		var err error
-		ctx.payload.Body, err = json.Marshal(obj)
-		utils.E(err)
+		ctx.payload.Body = utils.MustToJSONBytes(body)
 	}
 	return ctx
 }
@@ -432,7 +359,7 @@ func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse
 
 // GetDownloadFile of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
-func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType) func() (http.Header, io.Reader, error) {
+func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType, client *http.Client) func() (http.Header, []byte, error) {
 	enable := p.DisableDomain(&proto.FetchEnable{})
 
 	_ = proto.BrowserSetDownloadBehavior{
@@ -446,7 +373,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 	downloading := &proto.PageDownloadWillBegin{}
 	waitDownload := p.Context(ctx, cancel).WaitEvent(downloading)
 
-	return func() (http.Header, io.Reader, error) {
+	return func() (http.Header, []byte, error) {
 		defer enable()
 		defer cancel()
 
@@ -457,7 +384,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 			}.Call(r.caller)
 		}()
 
-		var body io.Reader
+		var body []byte
 		var header http.Header
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
@@ -472,17 +399,13 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 				err = e
 			}
 
-			err = ctx.LoadResponse(false)
+			err = ctx.LoadResponse(client, true)
 			if err != nil {
 				return
 			}
 
-			header, err = ctx.Response.Headers()
-			if err != nil {
-				return
-			}
-
-			body, err = ctx.Response.BodyStream()
+			header = ctx.Response.Headers()
+			body = ctx.Response.payload.Body
 		})
 		if err != nil {
 			return nil, nil, err
@@ -506,7 +429,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 			if strings.HasPrefix(u, "data:") {
 				t, d := parseDataURI(u)
 				header = http.Header{"Content-Type": []string{t}}
-				body = bytes.NewBuffer(d)
+				body = d
 			} else {
 				return
 			}

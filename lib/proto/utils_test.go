@@ -10,7 +10,6 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/ysmood/kit"
 )
 
 type Client struct {
@@ -27,7 +26,7 @@ func (c *Client) Call(ctx context.Context, sessionID, methodName string, params 
 	c.sessionID = sessionID
 	c.methodName = methodName
 	c.params = params
-	return kit.MustToJSONBytes(c.ret), c.err
+	return utils.MustToJSONBytes(c.ret), c.err
 }
 
 type Caller struct {
@@ -74,7 +73,7 @@ func TestJSON(t *testing.T) {
 	utils.E(json.Unmarshal([]byte("10"), &j))
 	assert.EqualValues(t, 10, j.Int())
 
-	assert.Equal(t, "true", kit.MustToJSON(proto.NewJSON(true)))
+	assert.Equal(t, "true", utils.MustToJSON(proto.NewJSON(true)))
 
 	assert.Equal(t, "1 2 3", proto.NewJSON([]int{1, 2, 3}).Join(" "))
 }

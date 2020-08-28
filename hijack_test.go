@@ -8,43 +8,37 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 func (s *S) TestHijack() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	// to simulate a backend server
-	engine.GET("/", ginHTMLFile("fixtures/fetch.html"))
-	engine.POST("/a", func(ctx kit.GinContext) {
-		s.Equal("header", ctx.GetHeader("Test"))
+	mux.HandleFunc("/", httpHTMLFile("fixtures/fetch.html"))
+	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			panic("wrong http method")
+		}
 
-		b, err := ioutil.ReadAll(ctx.Request.Body)
+		s.Equal("header", r.Header.Get("Test"))
+
+		b, err := ioutil.ReadAll(r.Body)
 		utils.E(err)
 		s.Equal("a", string(b))
 
-		ginString("test")(ctx)
+		httpString("test")(w, r)
 	})
-	engine.GET("/b", ginString("b"))
+	mux.HandleFunc("/b", httpString("b"))
 
 	router := s.page.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
-		ctx.Request.
-			SetClient(&http.Client{
-				Transport: &http.Transport{
-					DisableKeepAlives: true,
-				},
-			}).                                 // customize http client
-			SetMethod(ctx.Request.Method()).    // override request method
-			SetURL(ctx.Request.URL().String()). // override request url
-			SetQuery("a", "b").
-			SetHeader("Test", "header"). // override request header
-			SetBody(0).
-			SetBody([]byte("")).
-			SetBody(ctx.Request.Body()) // override request body
+		r := ctx.Request
+		r.Req().URL = r.Req().URL            // override request url
+		r.Req().Header.Set("Test", "header") // override request header
+		r.SetBody(r.Body())                  // override request body
 
 		s.Equal(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		s.Contains(ctx.Request.Header("Origin"), url)
@@ -54,24 +48,23 @@ func (s *S) TestHijack() {
 		// send request load response from real destination as the default value to hijack
 		ctx.MustLoadResponse()
 
-		s.Equal(200, ctx.Response.MustStatusCode())
+		s.EqualValues(200, ctx.Response.Payload().ResponseCode)
 
 		// override status code
-		ctx.Response.SetStatusCode(201)
+		ctx.Response.Payload().ResponseCode = http.StatusCreated
 
-		s.Equal("4", ctx.Response.MustHeader("Content-Length"))
-		s.Equal("text/plain; charset=utf-8", ctx.Response.MustHeaders().Get("Content-Type"))
+		s.Equal("4", ctx.Response.Headers().Get("Content-Length"))
+		s.Equal("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
 
 		// override response body
-		ctx.Response.SetBody("").SetBody(map[string]string{
-			"text": ctx.Response.StringBody(),
-		})
+		ctx.Response.SetBody(utils.MustToJSON(map[string]string{
+			"text": ctx.Response.Body(),
+		}))
 
-		s.NotNil(ctx.Response.MustBodyStream())
-		s.Equal("true", ctx.Response.JSONBody().String())
+		s.Equal("{\"text\":\"test\"}", ctx.Response.Body())
 	})
 
 	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
@@ -93,18 +86,18 @@ func (s *S) TestHijack() {
 }
 
 func (s *S) TestHijackContinue() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	// to simulate a backend server
-	engine.GET("/", ginHTML(`<html>
+	mux.HandleFunc("/", httpHTML(`<html>
 	<body></body>
 	<script>
 		fetch('/a').then(async (res) => {
 			document.body.innerText = await res.text()
 		})
 	</script></html>`))
-	engine.GET("/a", ginString(`ok`))
+	mux.HandleFunc("/a", httpString(`ok`))
 
 	router := s.page.HijackRequests()
 	defer router.MustStop()
@@ -121,11 +114,11 @@ func (s *S) TestHijackContinue() {
 }
 
 func (s *S) TestHijackFailRequest() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	// to simulate a backend server
-	engine.GET("/", ginHTML(`<html>
+	mux.HandleFunc("/", httpHTML(`<html>
 	<body></body>
 	<script>
 		fetch('/a').catch(async (err) => {
@@ -148,21 +141,21 @@ func (s *S) TestHijackFailRequest() {
 }
 
 func (s *S) TestHandleAuth() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	// mock the server
-	engine.NoRoute(func(ctx kit.GinContext) {
-		u, p, ok := ctx.Request.BasicAuth()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		u, p, ok := r.BasicAuth()
 		if !ok {
-			ctx.Header("WWW-Authenticate", `Basic realm="web"`)
-			ctx.Writer.WriteHeader(401)
+			w.Header().Add("WWW-Authenticate", `Basic realm="web"`)
+			w.WriteHeader(401)
 			return
 		}
 
 		s.Equal("a", u)
 		s.Equal("b", p)
-		ginHTML(`<p>ok</p>`)(ctx)
+		httpHTML(`<p>ok</p>`)(w, r)
 	})
 
 	s.browser.MustHandleAuth("a", "b")
@@ -173,15 +166,15 @@ func (s *S) TestHandleAuth() {
 }
 
 func (s *S) TestGetDownloadFile() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	content := "test content"
 
-	engine.GET("/d", func(ctx kit.GinContext) {
-		utils.E(ctx.Writer.Write([]byte(content)))
+	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
+		utils.E(w.Write([]byte(content)))
 	})
-	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
+	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
 	page := s.page.MustNavigate(url)
 
@@ -193,10 +186,10 @@ func (s *S) TestGetDownloadFile() {
 }
 
 func (s *S) TestGetDownloadFileFromDataURI() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
-	engine.GET("/", ginHTML(
+	mux.HandleFunc("/", httpHTML(
 		`<html>
 			<a id="a" href="data:text/plain;,test%20data" download>click</a>
 			<a id="b" download>click</a>
@@ -223,15 +216,15 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 }
 
 func (s *S) TestGetDownloadFileWithHijack() {
-	url, engine, close := serve()
+	url, mux, close := utils.Serve("")
 	defer close()
 
 	content := "test content"
 
-	engine.GET("/d", func(ctx kit.GinContext) {
-		utils.E(ctx.Writer.Write([]byte(content)))
+	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
+		utils.E(w.Write([]byte(content)))
 	})
-	engine.GET("/", ginHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
+	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
 	page := s.page.MustNavigate(url)
 

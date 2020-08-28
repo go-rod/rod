@@ -11,10 +11,9 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
-var isInDocker = kit.FileExists("/.dockerenv")
+var isInDocker = utils.FileExists("/.dockerenv")
 
 type progresser struct {
 	size  int
@@ -72,7 +71,7 @@ func unzip(from, to string) (err error) {
 	zr, err := zip.OpenReader(from)
 	utils.E(err)
 
-	err = kit.Mkdir(to, nil)
+	err = utils.Mkdir(to, nil)
 	utils.E(err)
 
 	for _, f := range zr.File {

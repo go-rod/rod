@@ -5,12 +5,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"syscall"
 	"testing"
 
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/ysmood/kit"
 )
 
 func TestDownload(t *testing.T) {
@@ -22,7 +22,7 @@ func TestDownload(t *testing.T) {
 func TestDownloadWithMirror(t *testing.T) {
 	c := launcher.NewBrowser()
 	c.Hosts = []string{"https://github.com", launcher.HostTaobao}
-	c.Dir = filepath.Join("tmp", "browser-from-mirror", kit.RandString(8))
+	c.Dir = filepath.Join("tmp", "browser-from-mirror", utils.RandString(8))
 	utils.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 
@@ -40,9 +40,7 @@ func TestDownloadWithMirror(t *testing.T) {
 
 func TestLaunch(t *testing.T) {
 	l := launcher.New()
-	defer func() {
-		_ = kit.KillTree(l.PID())
-	}()
+	defer func() { killTree(l.PID()) }()
 
 	url := l.MustLaunch()
 
@@ -51,9 +49,7 @@ func TestLaunch(t *testing.T) {
 
 func TestLaunchUserMode(t *testing.T) {
 	l := launcher.NewUserMode()
-	defer func() {
-		_ = kit.KillTree(l.PID())
-	}()
+	defer func() { killTree(l.PID()) }()
 
 	_, has := l.Get("not-exists")
 	assert.False(t, has)
@@ -92,7 +88,7 @@ func TestUserModeErr(t *testing.T) {
 }
 
 func TestGetWebSocketDebuggerURLErr(t *testing.T) {
-	_, err := launcher.GetWebSocketDebuggerURL(context.Background(), "1://")
+	_, err := launcher.GetWebSocketDebuggerURL("1://")
 	assert.Error(t, err)
 }
 
@@ -103,4 +99,10 @@ func TestLaunchErr(t *testing.T) {
 	assert.Panics(t, func() {
 		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
+}
+
+func killTree(pid int) {
+	group, _ := os.FindProcess(-1 * pid)
+
+	_ = group.Signal(syscall.SIGTERM)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -10,7 +11,6 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
-	"github.com/ysmood/kit"
 )
 
 func getSchema() gjson.Result {
@@ -29,9 +29,11 @@ func getSchema() gjson.Result {
 	parsed.Scheme = "http"
 	parsed.Path = "/json/protocol"
 
-	data := kit.Req(parsed.String()).MustString()
+	res, err := http.Get(parsed.String())
+	utils.E(err)
+	data := utils.MustReadString(res.Body)
 
-	utils.E(kit.OutputFile("tmp/proto.json", data, nil))
+	utils.E(utils.OutputFile("tmp/proto.json", data, nil))
 
 	return gjson.Parse(data)
 }

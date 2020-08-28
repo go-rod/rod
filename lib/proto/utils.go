@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/ysmood/kit"
 )
 
 // Client interface to send the request.
@@ -94,7 +94,7 @@ type JSON struct {
 // NewJSON json object
 func NewJSON(val interface{}) JSON {
 	j := JSON{}
-	j.raw = kit.MustToJSONBytes(val)
+	j.raw = utils.MustToJSONBytes(val)
 	j.Result = gjson.ParseBytes(j.raw)
 	return j
 }

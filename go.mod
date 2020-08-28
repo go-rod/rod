@@ -1,19 +1,16 @@
 module github.com/go-rod/rod
 
-go 1.14
+go 1.15
 
 require (
-	github.com/gin-gonic/gin v1.6.3
 	github.com/gorilla/websocket v1.4.2
-	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/pkg/errors v0.9.1
 	github.com/ramr/go-reaper v0.2.0
 	github.com/stretchr/testify v1.6.1
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/sjson v1.1.1
 	github.com/ysmood/goob v0.2.2
-	github.com/ysmood/kit v0.24.7
-	github.com/ysmood/leakless v0.5.5
+	github.com/ysmood/leakless v0.5.6
 	github.com/ysmood/lookpath v1.1.0
 	go.uber.org/goleak v1.1.10
 )

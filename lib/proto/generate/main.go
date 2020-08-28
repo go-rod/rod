@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 func main() {
@@ -13,7 +12,7 @@ func main() {
 
 	schema := getSchema()
 
-	code := comment + kit.S(`
+	code := comment + utils.S(`
 
 		package proto
 
@@ -48,7 +47,7 @@ func main() {
 			testsCode += definition.formatTests()
 
 			if definition.originName != "" {
-				init += kit.S(`
+				init += utils.S(`
 					"{{.name}}": reflect.TypeOf({{.type}}{}),`,
 					"name", definition.domain.name+"."+definition.originName,
 					"type", definition.name,
@@ -61,14 +60,12 @@ func main() {
 		}
 	`
 
-	utils.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
-	utils.E(kit.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
+	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
+	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
 
-	kit.MustGoTool("golang.org/x/tools/cmd/goimports")
-	kit.MustGoTool("github.com/client9/misspell/cmd/misspell")
-	kit.Exec("gofmt", "-s", "-w", "./lib/proto").MustDo()
-	kit.Exec("goimports", "-w", "./lib/proto").MustDo()
-	kit.Exec("misspell", "-w", "-q", "./lib/proto").MustDo()
+	utils.Exec("gofmt", "-s", "-w", "./lib/proto")
+	utils.Exec("goimports", "-w", "./lib/proto")      // golang.org/x/tools/cmd/goimports
+	utils.Exec("misspell", "-w", "-q", "./lib/proto") // github.com/client9/misspell/cmd/misspell
 }
 
 func (d *definition) comment() string {
@@ -96,7 +93,7 @@ func (d *definition) comment() string {
 func (d *definition) format() (code string) {
 	switch d.objType {
 	case objTypePrimitive:
-		code = kit.S(`
+		code = utils.S(`
 		{{.comment}}
 		type {{.name}} {{.type}}
 		`, "name", d.name, "type", d.typeName, "comment", d.comment())
@@ -105,7 +102,7 @@ func (d *definition) format() (code string) {
 			code += "const ("
 			for _, value := range d.enum {
 				name := d.name + symbol(value)
-				code += kit.S(`
+				code += utils.S(`
 				// {{.name}} enum const
 				{{.name}} {{.type}} = "{{.value}}"
 				`, "name", name, "type", d.name, "value", value)
@@ -114,7 +111,7 @@ func (d *definition) format() (code string) {
 		}
 
 	case objTypeStruct:
-		code = kit.S(`
+		code = utils.S(`
 		{{.comment}}
 		type {{.name}} struct {
 		`, "name", d.name, "comment", d.comment())
@@ -122,7 +119,7 @@ func (d *definition) format() (code string) {
 		for _, prop := range d.props {
 			tag := jsonTag(prop.originName, prop.optional)
 
-			code += kit.S(`
+			code += utils.S(`
 			{{.comment}}
 			{{.name}} {{.type}} {{.tag}}
 			`, "comment", prop.comment(), "name", prop.name, "type", prop.typeName, "tag", tag)
@@ -133,7 +130,7 @@ func (d *definition) format() (code string) {
 		if d.command {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
-				code += kit.S(`
+				code += utils.S(`
 				// MethodName of the command
 				func (m {{.name}}) MethodName() string { return "{{.method}}" }
 
@@ -144,7 +141,7 @@ func (d *definition) format() (code string) {
 				}
 				`, "name", d.name, "method", method)
 			} else {
-				code += kit.S(`
+				code += utils.S(`
 				// MethodName of the command
 				func (m {{.name}}) MethodName() string { return "{{.method}}" }
 
@@ -157,7 +154,7 @@ func (d *definition) format() (code string) {
 		}
 
 		if d.cdpType == cdpTypeEvents {
-			code += kit.S(`
+			code += utils.S(`
 				// MethodName interface
 				func (evt {{.name}}) MethodName() string {
 					return "{{.event}}"
@@ -177,7 +174,7 @@ func (d *definition) formatTests() (code string) {
 		}
 
 		if d.returnValue {
-			return kit.S(`
+			return utils.S(`
 				func Test{{.name}}(t *testing.T) {
 					c := &Client{}
 					_, err := proto.{{.name}}{}.Call(&Caller{c})
@@ -186,7 +183,7 @@ func (d *definition) formatTests() (code string) {
 				`, "name", d.name)
 		}
 
-		return kit.S(`
+		return utils.S(`
 			func Test{{.name}}(t *testing.T) {
 				c := &Client{}
 				err := proto.{{.name}}{}.Call(&Caller{c})
@@ -195,7 +192,7 @@ func (d *definition) formatTests() (code string) {
 			`, "name", d.name)
 
 	case cdpTypeEvents:
-		return kit.S(`
+		return utils.S(`
 		func Test{{.name}}(t *testing.T) {
 			e := proto.{{.name}}{}
 			e.MethodName()

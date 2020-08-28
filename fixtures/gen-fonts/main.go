@@ -12,7 +12,6 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 func main() {
@@ -41,7 +40,7 @@ func main() {
 		name := lang.MustText()
 		result := p.MustElement(".tlid-translation").MustText()
 		for strings.Contains(result, "...") {
-			kit.Sleep(0.1)
+			utils.Sleep(0.1)
 			result = p.MustElement(".tlid-translation").MustText()
 		}
 		log.Println(name, result)
@@ -59,5 +58,5 @@ func main() {
 		html,
 	)
 
-	utils.E(kit.OutputFile("fixtures/fonts.html", html, nil))
+	utils.E(utils.OutputFile("fixtures/fonts.html", html, nil))
 }

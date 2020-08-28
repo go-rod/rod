@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/ysmood/kit"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
@@ -25,5 +25,5 @@ func main() {
 		browser.MustPage("https://github.com").MustEval("() => document.title"),
 	)
 
-	kit.Pause()
+	utils.Pause()
 }

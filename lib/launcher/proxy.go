@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 // HeaderName for remote launch
@@ -27,21 +26,24 @@ func NewRemote(remoteURL string) *Launcher {
 	l.url = toWS(*u).String()
 	l.Flags = nil
 
-	utils.E(json.Unmarshal(kit.Req(toHTTP(*u).String()).MustBytes(), l))
+	res, err := http.Get(toHTTP(*u).String())
+	utils.E(err)
+
+	utils.E(json.Unmarshal(utils.MustReadBytes(res.Body), l))
 
 	return l
 }
 
 // JSON serialization
 func (l *Launcher) JSON() []byte {
-	return kit.MustToJSONBytes(l)
+	return utils.MustToJSONBytes(l)
 }
 
 // Client for launching browser remotely, such as browser from a docker container.
 func (l *Launcher) Client() *cdp.Client {
 	l.mustRemote()
 	header := http.Header{}
-	header.Add(HeaderName, kit.MustToJSON(l))
+	header.Add(HeaderName, utils.MustToJSON(l))
 	return cdp.New(l.url).Header(header)
 }
 
@@ -104,8 +106,8 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	parsedURL, err := url.Parse(u)
 	utils.E(err)
 
-	p.Log(fmt.Sprintln(utils.C("Launch", "cyan"), u, l.FormatArgs()))
-	defer func() { p.Log(fmt.Sprintln(utils.C("Close", "cyan"), u)) }()
+	p.Log(fmt.Sprintln("Launch", u, l.FormatArgs()))
+	defer func() { p.Log(fmt.Sprintln("Close", u)) }()
 
 	parsedWS, err := url.Parse(u)
 	utils.E(err)

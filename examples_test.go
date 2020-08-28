@@ -347,7 +347,7 @@ func Example_hijack_requests() {
 		// Here we update the request's header. Rod gives functionality to
 		// change or update all parts of the request. Refer to the documentation
 		// for more information.
-		ctx.Request.SetHeader("My-Header", "test")
+		ctx.Request.Req().Header.Set("My-Header", "test")
 
 		// LoadResponse runs the default request to the destination of the request.
 		// Not calling this will require you to mock the entire response.
@@ -357,7 +357,7 @@ func Example_hijack_requests() {
 
 		// Here we append some code to every js file.
 		// The code will update the document title to "hi"
-		ctx.Response.SetBody(ctx.Response.StringBody() + "\n document.title = 'hi' ")
+		ctx.Response.SetBody(ctx.Response.Body() + "\n document.title = 'hi' ")
 	})
 
 	go router.Run()

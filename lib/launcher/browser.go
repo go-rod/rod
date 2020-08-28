@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 // HostGoogle to download browser
@@ -123,15 +122,18 @@ func (lc *Browser) download(u string) (err error) {
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
-	err = kit.Mkdir(lc.Dir, nil)
+	err = utils.Mkdir(lc.Dir, nil)
 	utils.E(err)
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	utils.E(err)
 
-	res, err := kit.Req(u).Context(lc.Context).Client(&http.Client{
+	q, err := http.NewRequestWithContext(lc.Context, http.MethodGet, u, nil)
+	utils.E(err)
+
+	res, err := (&http.Client{
 		Transport: &http.Transport{IdleConnTimeout: 30 * time.Second},
-	}).Response()
+	}).Do(q)
 	utils.E(err)
 
 	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)

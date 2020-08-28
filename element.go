@@ -14,7 +14,6 @@ import (
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/kit"
 )
 
 // Element represents the DOM element
@@ -22,7 +21,7 @@ type Element struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
-	sleeper       kit.Sleeper
+	sleeper       utils.Sleeper
 
 	page *Page
 
@@ -406,7 +405,7 @@ func (el *Element) WaitStable(interval time.Duration) error {
 
 // Wait doc is similar to the method MustWait
 func (el *Element) Wait(js string, params ...interface{}) error {
-	return kit.Retry(el.ctx, el.sleeper, func() (bool, error) {
+	return utils.Retry(el.ctx, el.sleeper, func() (bool, error) {
 		res, err := el.Eval(js, params...)
 		if err != nil {
 			return true, err
