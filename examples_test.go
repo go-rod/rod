@@ -336,6 +336,9 @@ func Example_handle_events() {
 
 // Example_hijack_requests shows how we can intercept requests and modify
 // both the request and the response.
+// The entire process of hijacking one request:
+//    browser -req-> rod --> server --> rod -res-> browser
+// The -req-> and -res-> are the parts that can be modified.
 func Example_hijack_requests() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
