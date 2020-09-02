@@ -40,6 +40,27 @@ func (els Elements) Empty() bool {
 // Pages provides some helpers to deal with page list
 type Pages []*Page
 
+// First returns the first page, if the list is empty returns nil
+func (ps Pages) First() *Page {
+	if ps.Empty() {
+		return nil
+	}
+	return ps[0]
+}
+
+// Last returns the last page, if the list is empty returns nil
+func (ps Pages) Last() *Page {
+	if ps.Empty() {
+		return nil
+	}
+	return ps[len(ps)-1]
+}
+
+// Empty returns true if the list is empty
+func (ps Pages) Empty() bool {
+	return len(ps) == 0
+}
+
 // Find the page that has the specified element with the css selector
 func (ps Pages) Find(selector string) (*Page, error) {
 	for _, page := range ps {
