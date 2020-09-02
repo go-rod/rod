@@ -168,7 +168,7 @@ func Sleep(seconds float64) {
 }
 
 // Sleeper sleeps for sometime, returns the reason to wake, if ctx is done release resource
-type Sleeper func(ctx context.Context) error
+type Sleeper func(context.Context) error
 
 // ErrMaxSleepCount ...
 var ErrMaxSleepCount = errors.New("max sleep count")

@@ -11,6 +11,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Example_basic is a simple test that opens https://github.com/, searches for
@@ -195,9 +196,11 @@ func Example_customize_retry_strategy() {
 	page := browser.MustPage("https://github.com")
 
 	// sleep for 0.5 seconds before every retry
-	sleeper := func(context.Context) error {
-		time.Sleep(time.Second / 2)
-		return nil
+	sleeper := func() utils.Sleeper {
+		return func(context.Context) error {
+			time.Sleep(time.Second / 2)
+			return nil
+		}
 	}
 	el, _ := page.Sleeper(sleeper).Element("input")
 

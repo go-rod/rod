@@ -21,7 +21,7 @@ type Element struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
-	sleeper       utils.Sleeper
+	sleeper       func() utils.Sleeper
 
 	page *Page
 
@@ -405,7 +405,7 @@ func (el *Element) WaitStable(interval time.Duration) error {
 
 // Wait doc is similar to the method MustWait
 func (el *Element) Wait(js string, params ...interface{}) error {
-	return utils.Retry(el.ctx, el.sleeper, func() (bool, error) {
+	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
 		res, err := el.Eval(js, params...)
 		if err != nil {
 			return true, err

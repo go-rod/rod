@@ -63,7 +63,7 @@ func Test(t *testing.T) {
 	s.browser = rod.New().ControlURL("").Client(s.client).MustConnect().
 		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
 			Width: 800, Height: 600, DeviceScaleFactor: 1,
-		})
+		}).Sleeper(rod.DefaultSleeper)
 
 	defer s.browser.MustClose()
 

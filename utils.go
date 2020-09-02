@@ -22,9 +22,18 @@ import (
 // CDPCall type for cdp.Client.CDPCall
 type CDPCall func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 
-// Sleeper is the default sleeper for retry, it uses backoff to grow the interval.
+// DefaultSleeper generates the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
-var Sleeper = utils.BackoffSleeper(100*time.Millisecond, time.Second, nil)
+var DefaultSleeper = func() utils.Sleeper {
+	return utils.BackoffSleeper(100*time.Millisecond, time.Second, nil)
+}
+
+func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
+	if gen == nil {
+		return func() utils.Sleeper { return nil }
+	}
+	return gen
+}
 
 // Array of any type
 type Array []interface{}

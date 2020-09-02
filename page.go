@@ -30,7 +30,7 @@ type Page struct {
 	ctx           context.Context
 	ctxCancel     func()
 	timeoutCancel func()
-	sleeper       utils.Sleeper
+	sleeper       func() utils.Sleeper
 
 	browser *Browser
 
@@ -542,9 +542,9 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 
 // Wait js function until it returns true
 func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
-	sleeper := p.sleeper
+	sleeper := p.sleeper()
 	if sleeper == nil {
-		sleeper = func(_ context.Context) error {
+		sleeper = func(context.Context) error {
 			return newErr(ErrWaitJSTimeout, js, js)
 		}
 	}

@@ -141,9 +141,9 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
 
-	sleeper := p.sleeper
+	sleeper := p.sleeper()
 	if sleeper == nil {
-		sleeper = func(_ context.Context) error {
+		sleeper = func(context.Context) error {
 			return newErr(ErrElementNotFound, opts, opts.JS)
 		}
 	}
@@ -230,9 +230,9 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
-	sleeper := p.sleeper
+	sleeper := p.sleeper()
 	if sleeper == nil {
-		sleeper = func(_ context.Context) error {
+		sleeper = func(context.Context) error {
 			return newErr(ErrElementNotFound, queries, fmt.Sprintf("%v", queries))
 		}
 	}

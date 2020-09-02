@@ -91,7 +91,7 @@ func (s *S) TestHover() {
 func (s *S) TestElementContext() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button").Timeout(time.Minute).CancelTimeout()
-	s.Error(el.Click(proto.InputMouseButtonLeft))
+	s.Error(el.Sleeper(rod.DefaultSleeper).Click(proto.InputMouseButtonLeft))
 }
 
 func (s *S) TestIframes() {

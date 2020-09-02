@@ -34,9 +34,9 @@ func (b *Browser) CancelTimeout() *Browser {
 }
 
 // Sleeper for chained sub-operations
-func (b *Browser) Sleeper(sleeper utils.Sleeper) *Browser {
+func (b *Browser) Sleeper(sleeper func() utils.Sleeper) *Browser {
 	newObj := *b
-	newObj.sleeper = sleeper
+	newObj.sleeper = ensureSleeper(sleeper)
 	return &newObj
 }
 
@@ -67,9 +67,9 @@ func (p *Page) CancelTimeout() *Page {
 }
 
 // Sleeper for chained sub-operations
-func (p *Page) Sleeper(sleeper utils.Sleeper) *Page {
+func (p *Page) Sleeper(sleeper func() utils.Sleeper) *Page {
 	newObj := *p
-	newObj.sleeper = sleeper
+	newObj.sleeper = ensureSleeper(sleeper)
 	return &newObj
 }
 
@@ -100,8 +100,8 @@ func (el *Element) CancelTimeout() *Element {
 }
 
 // Sleeper for chained sub-operations
-func (el *Element) Sleeper(sleeper utils.Sleeper) *Element {
+func (el *Element) Sleeper(sleeper func() utils.Sleeper) *Element {
 	newObj := *el
-	newObj.sleeper = sleeper
+	newObj.sleeper = ensureSleeper(sleeper)
 	return &newObj
 }
