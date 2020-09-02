@@ -143,11 +143,11 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 - [selenium](https://www.selenium.dev/)
 
   Selenium is based on [webdriver protocol](https://www.w3.org/TR/webdriver/) which has much less functions compare to [devtools protocol][devtools protocol]. Such as it can't handle [closed shadow DOM](https://github.com/sukgu/shadow-automation-selenium/issues/7#issuecomment-563062460). No way to save page as PDF. No support for tools like [Profiler](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) or [Performance](https://chromedevtools.github.io/devtools-protocol/tot/Performance/), etc.
-  
+
   Harder to set up and maintain because of extra dependencies like a browser driver.
-  
+
   Though selenium sells itself for better cross-browser support, it's usually very hard to make it work for all major browsers.
-  
+
   There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of puppeteer.
 
 - [cypress](https://www.cypress.io/)

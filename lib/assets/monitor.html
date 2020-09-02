@@ -1,55 +1,53 @@
 <html>
-<head>
+  <head>
     <title>Rod Monitor - Pages</title>
     <style>
-        body {
-            margin: 0;
-            background: #2d2c2f;
-            color: white;
-            padding: 20px;
-            font-family: sans-serif;
-        }
-        a {
-            color: white;
-            padding: 1em;
-            margin: 0.5em 0;
-            font-size: 1em;
-            text-decoration: none;
-            display: block;
-            border-radius: 0.3em;
-            border: 1px solid transparent;
-            background: #212225;
-        }
-        a:visited {
-            color: #c3c3c3;
-        }
-        a:hover {
-            background: #25272d;
-            border-color: #8d8d96; 
-        }
+      body {
+        margin: 0;
+        background: #2d2c2f;
+        color: white;
+        padding: 20px;
+        font-family: sans-serif;
+      }
+      a {
+        color: white;
+        padding: 1em;
+        margin: 0.5em 0;
+        font-size: 1em;
+        text-decoration: none;
+        display: block;
+        border-radius: 0.3em;
+        border: 1px solid transparent;
+        background: #212225;
+      }
+      a:visited {
+        color: #c3c3c3;
+      }
+      a:hover {
+        background: #25272d;
+        border-color: #8d8d96;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h3>Choose a Page to Monitor</h3>
 
-    <div id='targets'>
-
-    </div>
+    <div id="targets"></div>
 
     <script>
-        async function update () {
-            const list = await (await fetch('/api/pages')).json()
-            let html = ""
-            list.forEach((el) => {
-                html += `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>`
-            })
+      async function update() {
+        const list = await (await fetch('/api/pages')).json()
+        let html = ''
+        list.forEach((el) => {
+          html += `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>`
+        })
 
-            targets.innerHTML = html
+        window.targets.innerHTML = html
 
-            setTimeout(update, 1000)
-        }
+        setTimeout(update, 1000)
+      }
 
-        update()
+      update()
     </script>
-</body>
+  </body>
 </html>

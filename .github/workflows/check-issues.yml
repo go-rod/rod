@@ -4,20 +4,17 @@ on:
     types: [opened]
 
 jobs:
-
   run:
-
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
 
-    - uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
-
-    - name: check
-      env:
-        GH_ROBOT_TOKEN: ${{ secrets.GH_ROBOT_TOKEN }}
-      run: go run ./lib/utils/check-issue
+      - name: check
+        env:
+          GH_ROBOT_TOKEN: ${{ secrets.GH_ROBOT_TOKEN }}
+        run: go run ./lib/utils/check-issue

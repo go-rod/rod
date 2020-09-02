@@ -3,11 +3,11 @@
 package assets
 
 // Helper for rod
-const Helper = `() => { // eslint-disable-line no-unused-expressions
+const Helper = `() => {
   const rod = {
-    _ () {},
+    _() {},
 
-    element (...selectors) {
+    element(...selectors) {
       const scope = ensureScope(this)
       for (const selector of selectors) {
         const el = scope.querySelector(selector)
@@ -18,15 +18,18 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return null
     },
 
-    elements (selector) {
+    elements(selector) {
       return ensureScope(this).querySelectorAll(selector)
     },
 
-    elementX (...xPaths) {
+    elementX(...xPaths) {
       const scope = ensureScope(this)
       for (const xPath of xPaths) {
         const el = document.evaluate(
-          xPath, scope, null, XPathResult.FIRST_ORDERED_NODE_TYPE
+          xPath,
+          scope,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE
         ).singleNodeValue
         if (el) {
           return el
@@ -35,23 +38,28 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return null
     },
 
-    elementsX (xpath) {
+    elementsX(xpath) {
       const scope = ensureScope(this)
-      const iter = document.evaluate(xpath, scope, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
+      const iter = document.evaluate(
+        xpath,
+        scope,
+        null,
+        XPathResult.ORDERED_NODE_ITERATOR_TYPE
+      )
       const list = []
       let el
       while ((el = iter.iterateNext())) list.push(el)
       return list
     },
 
-    elementMatches (...pairs) {
+    elementMatches(...pairs) {
       for (let i = 0; i < pairs.length - 1; i += 2) {
         const selector = pairs[i]
         const pattern = pairs[i + 1]
         const reg = new RegExp(pattern)
-        const el = Array.from((this.document || this).querySelectorAll(selector)).find(
-          e => reg.test(rod.text.call(e))
-        )
+        const el = Array.from(
+          (this.document || this).querySelectorAll(selector)
+        ).find((e) => reg.test(rod.text.call(e)))
         if (el) {
           return el
         }
@@ -59,7 +67,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return null
     },
 
-    parents (selector) {
+    parents(selector) {
       let p = this.parentElement
       const list = []
       while (p) {
@@ -71,7 +79,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return list
     },
 
-    containsElement (target) {
+    containsElement(target) {
       var node = target
       while (node != null) {
         if (node === this) {
@@ -82,7 +90,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return false
     },
 
-    async initMouseTracer (iconId, icon) {
+    async initMouseTracer(iconId, icon) {
       await rod.waitLoad()
 
       if (document.getElementById(iconId)) {
@@ -93,13 +101,14 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       tmp.innerHTML = icon
       const svg = tmp.lastChild
       svg.id = iconId
-      svg.style = 'position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;'
+      svg.style =
+        'position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;'
       svg.removeAttribute('width')
       svg.removeAttribute('height')
       document.body.appendChild(svg)
     },
 
-    updateMouseTracer (iconId, x, y) {
+    updateMouseTracer(iconId, x, y) {
       const svg = document.getElementById(iconId)
       if (!svg) {
         return false
@@ -109,7 +118,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       return true
     },
 
-    async overlay (id, left, top, width, height, msg) {
+    async overlay(id, left, top, width, height, msg) {
       await rod.waitLoad()
 
       const div = document.createElement('div')
@@ -145,7 +154,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       }
     },
 
-    async elementOverlay (id, msg) {
+    async elementOverlay(id, msg) {
       const interval = 100
       const el = ensureElement(this)
 
@@ -157,7 +166,12 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
         if (overlay === null) return
 
         const box = el.getBoundingClientRect()
-        if (pre.left === box.left && pre.top === box.top && pre.width === box.width && pre.height === box.height) {
+        if (
+          pre.left === box.left &&
+          pre.top === box.top &&
+          pre.width === box.width &&
+          pre.height === box.height
+        ) {
           setTimeout(update, interval)
           return
         }
@@ -174,18 +188,18 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       setTimeout(update, interval)
     },
 
-    removeOverlay (id) {
+    removeOverlay(id) {
       const el = document.getElementById(id)
       el && el.remove()
     },
 
-    waitIdle (timeout) {
+    waitIdle(timeout) {
       return new Promise((resolve) => {
         window.requestIdleCallback(resolve, { timeout })
       })
     },
 
-    waitLoad () {
+    waitLoad() {
       const isWin = this === window
       return new Promise((resolve, reject) => {
         if (isWin) {
@@ -202,57 +216,61 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       })
     },
 
-    inputEvent () {
+    inputEvent() {
       this.dispatchEvent(new Event('input', { bubbles: true }))
       this.dispatchEvent(new Event('change', { bubbles: true }))
     },
 
-    selectText (pattern) {
+    selectText(pattern) {
       const m = this.value.match(new RegExp(pattern))
       if (m) {
         this.setSelectionRange(m.index, m.index + m[0].length)
       }
     },
 
-    selectAllText () {
+    selectAllText() {
       this.select()
     },
 
-    select (selectors) {
-      selectors.forEach(s => {
-        Array.from(this.options).find(el => {
+    select(selectors) {
+      selectors.forEach((s) => {
+        Array.from(this.options).find((el) => {
           try {
             if (el.innerText.includes(s) || el.matches(s)) {
               el.selected = true
               return true
             }
-          } catch (e) { }
+          } catch (e) {}
         })
       })
       this.dispatchEvent(new Event('input', { bubbles: true }))
       this.dispatchEvent(new Event('change', { bubbles: true }))
     },
 
-    visible () {
+    visible() {
       const el = ensureElement(this)
       const box = el.getBoundingClientRect()
       const style = window.getComputedStyle(el)
-      return style.display !== 'none' &&
+      return (
+        style.display !== 'none' &&
         style.visibility !== 'hidden' &&
         !!(box.top || box.bottom || box.width || box.height)
+      )
     },
 
-    invisible () {
+    invisible() {
       return !rod.visible.apply(this)
     },
 
-    text () {
+    text() {
       switch (this.tagName) {
         case 'INPUT':
         case 'TEXTAREA':
           return this.value
         case 'SELECT':
-          return Array.from(this.selectedOptions).map(el => el.innerText).join()
+          return Array.from(this.selectedOptions)
+            .map((el) => el.innerText)
+            .join()
         case undefined:
           return this.textContent
         default:
@@ -260,7 +278,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       }
     },
 
-    resource () {
+    resource() {
       return new Promise((resolve, reject) => {
         if (this.complete) {
           return resolve(this.currentSrc)
@@ -270,7 +288,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       })
     },
 
-    addScriptTag (id, url, content) {
+    addScriptTag(id, url, content) {
       if (document.getElementById(id)) return
 
       return new Promise((resolve, reject) => {
@@ -291,7 +309,7 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       })
     },
 
-    addStyleTag (id, url, content) {
+    addStyleTag(id, url, content) {
       if (document.getElementById(id)) return
 
       return new Promise((resolve, reject) => {
@@ -315,23 +333,26 @@ const Helper = `() => { // eslint-disable-line no-unused-expressions
       })
     },
 
-    fetchAsDataURL (url) {
+    fetchAsDataURL(url) {
       return fetch(url)
-        .then(res => res.blob())
-        .then(data => new Promise((resolve, reject) => {
-          var reader = new FileReader()
-          reader.onload = () => resolve(reader.result)
-          reader.onerror = () => reject(reader.error)
-          reader.readAsDataURL(data)
-        }))
+        .then((res) => res.blob())
+        .then(
+          (data) =>
+            new Promise((resolve, reject) => {
+              var reader = new FileReader()
+              reader.onload = () => resolve(reader.result)
+              reader.onerror = () => reject(reader.error)
+              reader.readAsDataURL(data)
+            })
+        )
     }
   }
 
-  function ensureScope (s) {
+  function ensureScope(s) {
     return s === window ? s.document : s
   }
 
-  function ensureElement (el) {
+  function ensureElement(el) {
     if (!el.tagName) {
       return el.parentElement
     }
@@ -371,153 +392,165 @@ const MousePointer = `<?xml version="1.0" encoding="UTF-8"?>
 
 // Monitor for rod
 const Monitor = `<html>
-<head>
+  <head>
     <title>Rod Monitor - Pages</title>
     <style>
-        body {
-            margin: 0;
-            background: #2d2c2f;
-            color: white;
-            padding: 20px;
-            font-family: sans-serif;
-        }
-        a {
-            color: white;
-            padding: 1em;
-            margin: 0.5em 0;
-            font-size: 1em;
-            text-decoration: none;
-            display: block;
-            border-radius: 0.3em;
-            border: 1px solid transparent;
-            background: #212225;
-        }
-        a:visited {
-            color: #c3c3c3;
-        }
-        a:hover {
-            background: #25272d;
-            border-color: #8d8d96; 
-        }
+      body {
+        margin: 0;
+        background: #2d2c2f;
+        color: white;
+        padding: 20px;
+        font-family: sans-serif;
+      }
+      a {
+        color: white;
+        padding: 1em;
+        margin: 0.5em 0;
+        font-size: 1em;
+        text-decoration: none;
+        display: block;
+        border-radius: 0.3em;
+        border: 1px solid transparent;
+        background: #212225;
+      }
+      a:visited {
+        color: #c3c3c3;
+      }
+      a:hover {
+        background: #25272d;
+        border-color: #8d8d96;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h3>Choose a Page to Monitor</h3>
 
-    <div id='targets'>
-
-    </div>
+    <div id="targets"></div>
 
     <script>
-        async function update () {
-            const list = await (await fetch('/api/pages')).json()
-            let html = ""
-            list.forEach((el) => {
-                html += ` + "`" + `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>` + "`" + `
-            })
+      async function update() {
+        const list = await (await fetch('/api/pages')).json()
+        let html = ''
+        list.forEach((el) => {
+          html += ` + "`" + `<a href='/page/${el.targetId}' title="${el.url}">${el.title}</a>` + "`" + `
+        })
 
-            targets.innerHTML = html
+        window.targets.innerHTML = html
 
-            setTimeout(update, 1000)
-        }
+        setTimeout(update, 1000)
+      }
 
-        update()
+      update()
     </script>
-</body>
-</html>`
+  </body>
+</html>
+`
 
 // MonitorPage for rod
 const MonitorPage = `<html>
-<head>
+  <head>
     <style>
-        body {
-            margin: 0;
-            background: #2d2c2f;
-            color: #ffffff;
-        }
-        .navbar {
-            font-family: sans-serif;
-            border-bottom: 1px solid #1413158c;
-            display: flex;
-            flex-direction: row;
-        }
-        .error {
-            color: #ff3f3f;
-            background: #3e1f1f;
-            border-bottom: 1px solid #1413158c;
-            display: none;
-            padding: 10px;
-            margin: 0;
-        }
-        input {
-            background: transparent;
-            color: white;
-            border: none;
-            border: 1px solid #4f475a;
-            border-radius: 3px;
-            padding: 5px;
-            margin: 5px;
-        }
-        .title {
-            flex: 2;
-        }
-        .url {
-            flex: 5;
-        }
-        .rate {
-            flex: 1;
-        }
+      body {
+        margin: 0;
+        background: #2d2c2f;
+        color: #ffffff;
+      }
+      .navbar {
+        font-family: sans-serif;
+        border-bottom: 1px solid #1413158c;
+        display: flex;
+        flex-direction: row;
+      }
+      .error {
+        color: #ff3f3f;
+        background: #3e1f1f;
+        border-bottom: 1px solid #1413158c;
+        display: none;
+        padding: 10px;
+        margin: 0;
+      }
+      input {
+        background: transparent;
+        color: white;
+        border: none;
+        border: 1px solid #4f475a;
+        border-radius: 3px;
+        padding: 5px;
+        margin: 5px;
+      }
+      .title {
+        flex: 2;
+      }
+      .url {
+        flex: 5;
+      }
+      .rate {
+        flex: 1;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="navbar">
-        <input type="text" class="title" title="title of the remote page" readonly>
-        <input type="text" class="url" title="url of the remote page" readonly>
-        <input type="number" class="rate" value="0.5" min="0" step="0.1" title="refresh rate (second)">
+      <input
+        type="text"
+        class="title"
+        title="title of the remote page"
+        readonly
+      />
+      <input type="text" class="url" title="url of the remote page" readonly />
+      <input
+        type="number"
+        class="rate"
+        value="0.5"
+        min="0"
+        step="0.1"
+        title="refresh rate (second)"
+      />
     </div>
     <pre class="error"></pre>
-    <img class="screen">
-</body>
-<script>
+    <img class="screen" />
+  </body>
+  <script>
     const id = location.pathname.split('/').slice(-1)[0]
-    let elImg = document.querySelector('.screen')
-    let elTitle = document.querySelector('.title')
-    let elUrl = document.querySelector('.url')
-    let elRate = document.querySelector('.rate')
-    let elErr = document.querySelector('.error')
+    const elImg = document.querySelector('.screen')
+    const elTitle = document.querySelector('.title')
+    const elUrl = document.querySelector('.url')
+    const elRate = document.querySelector('.rate')
+    const elErr = document.querySelector('.error')
 
     document.title = ` + "`" + `Rod Monitor - ${id}` + "`" + `
 
     async function update() {
-        let res = await fetch(` + "`" + `/api/page/${id}` + "`" + `)
-        let info = await res.json()
-        elTitle.value = info.title
-        elUrl.value = info.url 
+      const res = await fetch(` + "`" + `/api/page/${id}` + "`" + `)
+      const info = await res.json()
+      elTitle.value = info.title
+      elUrl.value = info.url
 
-        await new Promise((resolve, reject) => {
-            let now = new Date()
-            elImg.src = ` + "`" + `/screenshot/${id}?t=${now.getTime()}` + "`" + `
-            elImg.style.maxWidth = innerWidth + 'px'
-            elImg.onload = resolve
-            elImg.onerror = () => reject('error loading screenshots')
-        })
+      await new Promise((resolve, reject) => {
+        const now = new Date()
+        elImg.src = ` + "`" + `/screenshot/${id}?t=${now.getTime()}` + "`" + `
+        elImg.style.maxWidth = innerWidth + 'px'
+        elImg.onload = resolve
+        elImg.onerror = () => reject(new Error('error loading screenshots'))
+      })
     }
 
     async function mainLoop() {
-        try {
-            await update()
-            elErr.attributeStyleMap.delete("display")
-        } catch (err) {
-            elErr.style.display = "block"
-            elErr.textContent = err + ""
-        }
+      try {
+        await update()
+        elErr.attributeStyleMap.delete('display')
+      } catch (err) {
+        elErr.style.display = 'block'
+        elErr.textContent = err + ''
+      }
 
-        setTimeout(mainLoop, parseFloat(elRate.value) * 1000)
+      setTimeout(mainLoop, parseFloat(elRate.value) * 1000)
     }
 
     mainLoop()
-</script>
-</html>`
+  </script>
+</html>
+`
 
 // DeviceList for rod
 const DeviceList = `[

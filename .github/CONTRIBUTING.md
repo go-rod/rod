@@ -13,7 +13,7 @@ The test is intentionally being designed to be easily understandable.
 Here's an example to run a single test case: `go test -v -run Test/TestClick`, `TestClick` is the function name you want to run.
 
 We trade off code lines to reduce function call distance to the source code of Golang itself.
-You may see redundant code everywhere to reduce the use of interfaces or dynamic tricks.
+You may see redundant code everywhere to reduce the use of interfaces or dynamic tricks. We shall only use interfaces for IO and dependency injection.
 So that everything should map to your brain like a tree, not a graph.
 So that you can always jump from one definition to another in a uni-directional manner, the reverse search should be rare.
 
@@ -33,9 +33,21 @@ The entry point of all tests is the `setup_test.go` file.
 
 You can use [godev](https://github.com/ysmood/kit#godev) to lint the project on your local:
 
-`godev lint`
+```bash
+godev lint # lint golang code
+go run ./lib/utils/lint # lint other languages such as js, html, markdown, etc
+```
 
 We also use it in the CI to enforce the minimum test coverage.
+
+### To inject cdp call in tests
+
+To cover the error branch of the code, we have to be able to intercept cdp calls.
+There are several helper functions in the [setup_test.go](../setup_test.go) we can use:
+
+- countCall
+- at
+- errorAt
 
 ### To run inside docker
 

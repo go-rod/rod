@@ -1,6 +1,5 @@
-
 window.n = 0
 
-function count () {
-    return n++
+window.count = () => {
+  return window.n++
 }

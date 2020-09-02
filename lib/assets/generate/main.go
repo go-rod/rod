@@ -58,6 +58,7 @@ func get(path string) string {
 
 // not using encoding like base64 or gzip because of they will make git diff every large for small change
 func encode(s string) string {
+	s = strings.Replace(s, "// eslint-disable-next-line no-unused-expressions\n;", "", 1)
 	return "`" + strings.ReplaceAll(s, "`", "` + \"`\" + `") + "`"
 }
 

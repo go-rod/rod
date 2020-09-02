@@ -1,11 +1,11 @@
 <html>
-    <body>
-        <div id='container'></div>
-    </body>
-    <script>
-        let s = document.querySelector('div').attachShadow({mode: 'closed'})
-        let p = document.createElement('p')
-        p.innerText = 'inside'
-        s.appendChild(p)
-    </script>
+  <body>
+    <div id="container"></div>
+  </body>
+  <script>
+    const s = document.querySelector('div').attachShadow({ mode: 'closed' })
+    const p = document.createElement('p')
+    p.innerText = 'inside'
+    s.appendChild(p)
+  </script>
 </html>

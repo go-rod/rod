@@ -8,4 +8,12 @@ globals:
   SharedArrayBuffer: readonly
 parserOptions:
   ecmaVersion: 2018
-rules: {}
+rules:
+  space-before-function-paren:
+    - error
+    - named: never
+plugins:
+  - html
+ignorePatterns:
+  - 'tmp/'
+  - 'node_modules/'

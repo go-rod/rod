@@ -1,25 +1,23 @@
 <html>
-    <body>
-        
-    </body>
-    <script>
-        (async () => {
-            let res = await fetch("/a", {
-                method: 'post',
-                body: "a"
-            })
-            let data = await res.json()
-            let div = document.createElement('div')
-            div.innerText = `${res.status} ${data.text} ${document.cookie}`
-            div.id = "a"
-            document.body.appendChild(div)
+  <body></body>
+  <script>
+    ;(async () => {
+      let res = await fetch('/a', {
+        method: 'post',
+        body: 'a'
+      })
+      let data = await res.json()
+      let div = document.createElement('div')
+      div.innerText = `${res.status} ${data.text} ${document.cookie}`
+      div.id = 'a'
+      document.body.appendChild(div)
 
-            res = await fetch("/b")
-            data = await res.text()
-            div = document.createElement('div')
-            div.innerText = data
-            div.id = "b"
-            document.body.appendChild(div)
-        })()
-    </script>
+      res = await fetch('/b')
+      data = await res.text()
+      div = document.createElement('div')
+      div.innerText = data
+      div.id = 'b'
+      document.body.appendChild(div)
+    })()
+  </script>
 </html>

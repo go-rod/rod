@@ -10,39 +10,31 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-
   linux:
-
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/setup-node@v1
 
-    - uses: actions/setup-node@v1        
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
 
-    - uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - name: test
+        run: |
+          go generate
+          godev -m 95
 
-    - name: setup
-      run: |
-        (cd ~ && GO111MODULE=on go get \
-          github.com/ysmood/kit/cmd/godev \
-          golang.org/x/tools/cmd/goimports \
-          github.com/client9/misspell/cmd/misspell \
-        )
-        go generate
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage.txt
 
-    - name: test
-      run: |
-        godev --version
-        godev -l -m 92
-
-    - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v1
 
   others:
-
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
@@ -50,26 +42,23 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
 
-    - uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
-
-    - name: test
-      run: go test -v -race -run Test
+      - name: test
+        run: go test -v -race -run Test
 
   docker:
-
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
-
-    - name: test
-      run: |
-        docker build -t rodorg/rod -f lib/docker/Dockerfile .
-        docker build -t test -f lib/docker/test.Dockerfile .
-        docker run -v $(pwd):/t -w /t test
+      - name: test
+        run: |
+          docker build -t rodorg/rod -f lib/docker/Dockerfile .
+          docker build -t test -f lib/docker/test.Dockerfile .
+          docker run -v $(pwd):/t -w /t test
