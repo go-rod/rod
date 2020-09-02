@@ -3,6 +3,7 @@ package cdp
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"sync"
 	"sync/atomic"
@@ -14,8 +15,7 @@ import (
 
 // Client is a devtools protocol connection instance.
 type Client struct {
-	ctx       context.Context
-	ctxCancel func()
+	ctx context.Context
 
 	wsURL  string
 	header http.Header
@@ -49,6 +49,16 @@ type Event struct {
 	Params    json.RawMessage `json:"params,omitempty"`
 }
 
+// WebsocketErr returns error if the event is an websocket error event
+func (e *Event) WebsocketErr() error {
+	if e.Method == "Websocketable.error" {
+		var s string
+		_ = json.Unmarshal(e.Params, &s)
+		return errors.New(s)
+	}
+	return nil
+}
+
 // Error of the Response
 type Error struct {
 	Code    int64  `json:"code"`
@@ -78,11 +88,7 @@ func (e *Error) Error() string {
 
 // New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
 func New(websocketURL string) *Client {
-	ctx, cancel := context.WithCancel(context.Background())
-
 	cdp := &Client{
-		ctx:       ctx,
-		ctxCancel: cancel,
 		callbacks: &sync.Map{},
 		chReq:     make(chan []byte),
 		chRes:     make(chan *Response),
@@ -92,13 +98,6 @@ func New(websocketURL string) *Client {
 	}
 
 	return cdp.DebugLog(defaultDebugLog)
-}
-
-// Context set the context
-func (cdp *Client) Context(ctx context.Context, cancel func()) *Client {
-	cdp.ctx = ctx
-	cdp.ctxCancel = cancel
-	return cdp
 }
 
 // Header set the header of the remote control websocket request
@@ -126,16 +125,17 @@ func (cdp *Client) DebugLog(fn func(interface{})) *Client {
 }
 
 // Connect to browser
-func (cdp *Client) Connect() error {
+func (cdp *Client) Connect(ctx context.Context) error {
 	if cdp.ws == nil {
 		cdp.ws = NewDefaultWsClient()
 	}
 
-	conn, err := cdp.ws.Connect(cdp.ctx, cdp.wsURL, cdp.header)
+	conn, err := cdp.ws.Connect(ctx, cdp.wsURL, cdp.header)
 	if err != nil {
 		return err
 	}
 
+	cdp.ctx = ctx
 	cdp.wsConn = conn
 
 	go cdp.consumeMsg()
@@ -146,8 +146,8 @@ func (cdp *Client) Connect() error {
 }
 
 // MustConnect to browser
-func (cdp *Client) MustConnect() *Client {
-	utils.E(cdp.Connect())
+func (cdp *Client) MustConnect(ctx context.Context) *Client {
+	utils.E(cdp.Connect(ctx))
 	return cdp
 }
 
@@ -178,6 +178,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 
 	case <-ctx.Done():
 		return nil, ctx.Err()
+
 	case cdp.chReq <- data:
 	}
 
@@ -198,6 +199,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 }
 
 // Event returns a channel that will emit browser devtools protocol events. Must be consumed or will block producer.
+// When the Event.Method is Websocketable.error the websocket closes with error.
 func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
@@ -217,7 +219,7 @@ func (cdp *Client) consumeMsg() {
 		case data := <-cdp.chReq:
 			err := cdp.wsConn.Send(data)
 			if err != nil {
-				cdp.close(err)
+				cdp.wsClose(err)
 				return
 			}
 
@@ -245,7 +247,7 @@ func (cdp *Client) readMsgFromBrowser() {
 	for cdp.ctx.Err() == nil {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
-			cdp.close(err)
+			cdp.wsClose(err)
 			return
 		}
 
@@ -277,9 +279,18 @@ func (cdp *Client) readMsgFromBrowser() {
 	}
 }
 
-func (cdp *Client) close(err error) {
+func (cdp *Client) wsClose(err error) {
 	if cdp.debug {
 		cdp.debugLog(err)
 	}
-	cdp.ctxCancel()
+
+	msg := &Event{
+		Method: "Websocketable.error",
+		Params: json.RawMessage(utils.MustToJSONBytes(err.Error())),
+	}
+
+	select {
+	case <-cdp.ctx.Done():
+	case cdp.chEvent <- msg:
+	}
 }

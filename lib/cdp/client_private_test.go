@@ -25,21 +25,31 @@ func (c *wsMockConn) Read() ([]byte, error) {
 func TestCancelCall(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	cdp := New("").Context(ctx, cancel)
+	cdp := New("")
 	go func() {
 		<-cdp.chReq
 	}()
-	_, err := cdp.Call(context.Background(), "", "", nil)
+	cdp.ctx = context.Background()
+	_, err := cdp.Call(ctx, "", "", nil)
 	assert.Error(t, err)
 }
 
 func TestReqErr(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 	cdp.wsConn = &wsMockConn{
 		send: func([]byte) error { return errors.New("err") },
 	}
 
 	go cdp.consumeMsg()
+	go func() {
+		for e := range cdp.Event() {
+			if e.WebsocketErr() != nil {
+				cancel()
+			}
+		}
+	}()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.Error(t, err)
@@ -48,6 +58,7 @@ func TestReqErr(t *testing.T) {
 func TestCancelOnReq(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 
 	go func() {
 		utils.Sleep(0.1)
@@ -59,7 +70,7 @@ func TestCancelOnReq(t *testing.T) {
 
 	go func() {
 		utils.Sleep(0.1)
-		cdp.ctxCancel()
+		cancel()
 	}()
 
 	_, err = cdp.Call(context.Background(), "", "", nil)
@@ -69,6 +80,7 @@ func TestCancelOnReq(t *testing.T) {
 func TestCancelBeforeSend(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 
 	go func() {
 		<-cdp.chReq
@@ -80,7 +92,9 @@ func TestCancelBeforeSend(t *testing.T) {
 }
 
 func TestCancelOnCallback(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 
 	go cdp.consumeMsg()
 
@@ -91,14 +105,16 @@ func TestCancelOnCallback(t *testing.T) {
 		Error:  nil,
 	}
 	utils.Sleep(0.1)
-	cdp.ctxCancel()
+	cancel()
 }
 
 func TestCancelOnReadRes(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
-			cdp.ctxCancel()
+			cancel()
 			return utils.MustToJSONBytes(&Response{
 				ID:     1,
 				Result: nil,
@@ -114,10 +130,12 @@ func TestCancelOnReadRes(t *testing.T) {
 }
 
 func TestCancelOnReadEvent(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
+	cdp.ctx = ctx
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
-			cdp.ctxCancel()
+			cancel()
 			return utils.MustToJSONBytes(&Event{}), nil
 		},
 	}
@@ -126,4 +144,12 @@ func TestCancelOnReadEvent(t *testing.T) {
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.Error(t, err)
+}
+
+func TestCancelClose(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	cdp := New("")
+	cdp.ctx = ctx
+	cdp.wsClose(errors.New("err"))
 }

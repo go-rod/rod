@@ -244,12 +244,13 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 			Query:                     query,
 			IncludeUserAgentShadowDOM: true,
 		}.Call(p)
-		defer func() {
-			_ = proto.DOMDiscardSearchResults{SearchID: search.SearchID}.Call(p)
-		}()
 		if err != nil {
 			return true, err
 		}
+
+		defer func() {
+			_ = proto.DOMDiscardSearchResults{SearchID: search.SearchID}.Call(p)
+		}()
 
 		if search.ResultCount == 0 {
 			return false, nil
@@ -261,6 +262,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 			ToIndex:   int64(to),
 		}.Call(p)
 		if err != nil {
+			// when the page is still loading the search result is not ready
 			if isNilContextErr(err) {
 				return false, nil
 			}
@@ -268,6 +270,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 		}
 
 		for _, id := range result.NodeIds {
+			// TODO: some times the node id can be zero, feels like a bug of devtools server
 			if id == 0 {
 				return false, nil
 			}

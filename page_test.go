@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -47,6 +48,15 @@ func (s *S) TestSetCookies() {
 
 	s.Equal("1", cookies[0].Value)
 	s.Equal("2", cookies[1].Value)
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustCookies()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		page.MustCookies()
+	})
 }
 
 func (s *S) TestSetExtraHeaders() {
@@ -142,6 +152,19 @@ func (s *S) TestWindow() {
 	page.MustWindow(0, 0, 1211, 611)
 	s.EqualValues(1211, page.MustEval(`window.innerWidth`).Int())
 	s.EqualValues(611, page.MustEval(`window.innerHeight`).Int())
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustGetWindow()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		page.MustGetWindow()
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustWindow(0, 0, 1000, 1000)
+	})
 }
 
 func (s *S) TestSetViewport() {
@@ -169,6 +192,22 @@ func (s *S) TestEmulateDevice() {
 		"Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
 		res.Get("2").String(),
 	)
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustEmulate(devices.IPhone6or7or8Plus)
+	})
+}
+
+func (s *S) TestPageCloseErr() {
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustClose()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		page.MustClose()
+	})
 }
 
 func (s *S) TestPageAddScriptTag() {
@@ -213,6 +252,11 @@ func (s *S) TestPageEvalOnNewDocument() {
 	p.MustNavigate("")
 
 	s.Equal("rod", p.MustEval("navigator.rod").String())
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		p.MustEvalOnNewDocument(`1`)
+	})
 }
 
 func (s *S) TestPageEval() {
@@ -243,6 +287,8 @@ func (s *S) TestPageWaitOpen() {
 
 	wait := page.MustWaitOpen()
 
+	s.browser.MustPage("").MustClose()
+
 	page.MustElement("a").MustClick()
 
 	newPage := wait()
@@ -252,34 +298,65 @@ func (s *S) TestPageWaitOpen() {
 }
 
 func (s *S) TestPageWaitPauseOpen() {
-	page := s.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
+	page := s.page.Timeout(5 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
 	wait, resume := page.MustWaitPauseOpen()
 
 	go page.MustElement("a").MustClick()
 
-	newPage := wait()
+	pageA := wait()
 
-	newPage.MustEvalOnNewDocument(`window.a = 'ok'`)
-	defer newPage.MustClose()
+	pageA.MustEvalOnNewDocument(`window.a = 'ok'`)
+	defer pageA.MustClose()
 	resume()
 
-	s.Equal("ok", newPage.MustEval(`window.a`).String())
+	s.Equal("ok", pageA.MustEval(`window.a`).String())
 
 	w := page.MustWaitOpen()
 
 	page.MustElement("a").MustClick()
 
-	newPage = w()
-	defer newPage.MustClose()
+	pageB := w()
+	defer pageB.MustClose()
 
-	s.Equal("new page", newPage.MustEval("window.a").String())
+	pageB.MustWait(`window.a == 'new page'`)
+
+	s.Panics(func() {
+		defer func() {
+			_ = proto.TargetSetAutoAttach{
+				Flatten: true,
+			}.Call(s.browser)
+		}()
+
+		p := s.browser.MustPage("")
+		defer p.MustClose()
+		defer s.errorAt(2, nil)()
+		p.MustWaitPauseOpen()
+	})
+	s.Panics(func() {
+		defer func() {
+			_ = proto.TargetSetAutoAttach{
+				Flatten: true,
+			}.Call(s.browser)
+		}()
+
+		p := s.browser.MustPage("")
+		defer p.MustClose()
+		defer s.errorAt(2, nil)()
+		_, r := p.MustWaitPauseOpen()
+		r()
+	})
 }
 
 func (s *S) TestPageWait() {
-	page := s.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/click.html"))
+	page := s.page.Timeout(5 * time.Second).MustNavigate(srcFile("fixtures/click.html"))
 	page.MustWait(`document.querySelector('button') !== null`)
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustWait(``)
+	})
 }
 
 func (s *S) TestPageWaitRequestIdle() {
@@ -287,15 +364,19 @@ func (s *S) TestPageWaitRequestIdle() {
 	defer close()
 
 	sleep := time.Second
+	timeout, cancel := context.WithTimeout(s.browser.GetContext(), sleep)
+	defer cancel()
 
 	mux.HandleFunc("/r1", func(w http.ResponseWriter, r *http.Request) {})
-	mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) { time.Sleep(sleep) })
+	mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) {
+		<-timeout.Done()
+	})
 	mux.HandleFunc("/", httpHTML(`<html>
 		<button>click</button>
 		<script>
 			document.querySelector("button").onclick = () => {
-				fetch('/r1')
 				fetch('/r2').then(r => r.text())
+				fetch('/r1')
 			}
 		</script>
 	</html>`))
@@ -303,16 +384,18 @@ func (s *S) TestPageWaitRequestIdle() {
 	page := s.page.MustNavigate(url)
 
 	wait := page.MustWaitRequestIdle("/r1")
-	page.MustElement("button").MustClick()
 	start := time.Now()
+	page.MustElement("button").MustClick()
+	s.browser.Trace(true)
 	wait()
-	s.Greater(int64(time.Since(start)), int64(sleep))
+	s.browser.Trace(defaults.Trace)
+	s.Greater(time.Since(start), sleep)
 
 	wait = page.MustWaitRequestIdle("/r2")
 	page.MustElement("button").MustClick()
 	start = time.Now()
 	wait()
-	s.Less(int64(time.Since(start)), int64(sleep))
+	s.Less(time.Since(start), sleep)
 
 	s.Panics(func() {
 		wait()
@@ -349,11 +432,31 @@ func (s *S) TestMouse() {
 	page.MustElement("button")
 	mouse := page.Mouse
 
+	s.browser.Trace(true)
+	mouse.MustScroll(0, 10)
+	s.browser.Trace(defaults.Trace)
 	mouse.MustMove(140, 160)
 	mouse.MustDown("left")
 	mouse.MustUp("left")
 
 	s.True(page.MustHas("[a=ok]"))
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		mouse.MustScroll(0, 10)
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		mouse.MustDown(proto.InputMouseButtonLeft)
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		mouse.MustUp(proto.InputMouseButtonLeft)
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		mouse.MustClick(proto.InputMouseButtonLeft)
+	})
 }
 
 func (s *S) TestMouseClick() {
@@ -418,14 +521,6 @@ func (s *S) TestNativeDrag() {
 	page.MustElement(".dropzone:nth-child(2) #draggable")
 }
 
-func (s *S) TestPagePause() {
-	go s.page.MustPause()
-	utils.Sleep(0.03)
-	go s.page.MustEval(`10`)
-	utils.Sleep(0.03)
-	utils.E(proto.DebuggerResume{}.Call(s.page))
-}
-
 func (s *S) TestPageScreenshot() {
 	f := filepath.Join("tmp", utils.RandString(8)+".png")
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
@@ -444,6 +539,11 @@ func (s *S) TestPageScreenshot() {
 	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
 	utils.E(err)
 	s.Len(list, 1)
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		p.MustScreenshot()
+	})
 }
 
 func (s *S) TestScreenshotFullPage() {
@@ -467,6 +567,19 @@ func (s *S) TestScreenshotFullPage() {
 	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
 	utils.E(err)
 	s.Len(list, 1)
+
+	noEmulation := s.browser.MustPage(srcFile("fixtures/click.html"))
+	utils.E(noEmulation.Viewport(nil))
+	noEmulation.MustScreenshotFullPage()
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		p.MustScreenshotFullPage()
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		p.MustScreenshotFullPage()
+	})
 }
 
 func (s *S) TestScreenshotFullPageInit() {
@@ -482,11 +595,26 @@ func (s *S) TestPageInput() {
 
 	el := p.MustElement("input")
 	el.MustFocus()
+	s.browser.Trace(true)
 	p.Keyboard.MustPress('A')
 	p.Keyboard.MustInsertText(" Test")
+	s.browser.Trace(defaults.Trace)
 	p.Keyboard.MustPress(input.Tab)
 
 	s.Equal("A Test", el.MustText())
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		p.Keyboard.MustDown('a')
+	})
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		p.Keyboard.MustUp('a')
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		p.Keyboard.MustPress('a')
+	})
 }
 
 func (s *S) TestPageScroll() {
@@ -548,15 +676,49 @@ func (s *S) TestFonts() {
 	utils.E(utils.OutputFile("tmp/fonts.pdf", p.MustPDF(), nil))
 }
 
+func (s *S) TestPagePDFErr() {
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		s.page.MustPDF()
+	})
+}
+
 func (s *S) TestPageExpose() {
 	cb, stop := s.page.MustExpose("exposedFunc")
 	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	page.MustEval(`exposedFunc('ok')`)
 	s.Equal("ok", <-cb)
+	page.MustEval(`exposedFunc('ok')`)
 	stop()
 	s.Panics(func() {
 		page := s.page.MustNavigate(srcFile("fixtures/click.html"))
 		page.MustEval(`exposedFunc('')`)
+	})
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		page.MustExpose("exposedFunc")
+	})
+}
+
+func (s *S) TestPageObjectErr() {
+	s.Panics(func() {
+		s.page.MustObjectToJSON(&proto.RuntimeRemoteObject{
+			ObjectID: "not-exists",
+		})
+	})
+	s.Panics(func() {
+		s.page.MustElementFromNode(-1)
+	})
+	s.Panics(func() {
+		id := s.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		defer s.errorAt(1, nil)()
+		s.page.MustElementFromNode(id)
+	})
+	s.Panics(func() {
+		id := s.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		defer s.errorAt(3, nil)()
+		s.page.MustElementFromNode(id)
 	})
 }
 
@@ -579,4 +741,25 @@ func (s *S) TestNavigateErr() {
 	// will not panic
 	s.page.MustNavigate(url + "/404")
 	s.page.MustNavigate(url + "/500")
+
+	s.Panics(func() {
+		defer s.errorAt(1, nil)()
+		s.page.MustNavigate(srcFile("fixtures/click.html"))
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		s.page.MustNavigate(srcFile("fixtures/click.html"))
+	})
+}
+
+func (s *S) TestPageInitJSErr() {
+	p := s.browser.MustPage(srcFile("fixtures/click-iframe.html")).MustElement("iframe").Frame()
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		p.MustEval(`1`)
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		p.MustEval(`1`)
+	})
 }

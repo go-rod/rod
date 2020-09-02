@@ -27,9 +27,10 @@ func TestErr(t *T) {
 	})
 }
 
-func TestSDump(t *T) {
-	assert.Equal(t, "{\n \"a\": \"b\"\n}", utils.SDump(map[string]string{"a": "b"}))
+func TestDump(t *T) {
+	assert.Equal(t, "{\n  \"a\": \"b\"\n}", utils.SDump(map[string]string{"a": "b"}))
 	assert.Equal(t, "10", utils.SDump(json.RawMessage("10")))
+	utils.Dump("")
 }
 
 func TestSTemplate(t *T) {
@@ -166,7 +167,7 @@ func TestFileExists(t *T) {
 }
 
 func TestExec(t *T) {
-	utils.Exec("go", "version")
+	utils.Exec("echo")
 }
 
 func TestServe(t *T) {
@@ -193,7 +194,15 @@ func (r *errReader) Read(p []byte) (n int, err error) {
 
 func TestReader(t *T) {
 	utils.MustReadJSON(bytes.NewBufferString(""))
+
 	_, err := utils.ReadJSON(&errReader{err: errors.New("err")})
 	assert.Error(t, err)
+
 	utils.MustReadString(bytes.NewBufferString(""))
+
+	_, err = utils.ReadJSONPathAsString(bytes.NewBufferString("{}"), "")
+	assert.Nil(t, err)
+
+	_, err = utils.ReadJSONPathAsString(&errReader{err: errors.New("err")}, "")
+	assert.Error(t, err)
 }

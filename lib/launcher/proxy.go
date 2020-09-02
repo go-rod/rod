@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"runtime"
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/utils"
@@ -59,8 +58,7 @@ func (l *Launcher) mustRemote() {
 // The websocket header "Rod-Launcher" holds the options to launch browser.
 // If the websocket is closed, the browser will be killed.
 type Proxy struct {
-	Log       func(string)
-	isWindows bool
+	Log func(string)
 }
 
 var _ http.Handler = &Proxy{}
@@ -68,8 +66,7 @@ var _ http.Handler = &Proxy{}
 // NewProxy instance
 func NewProxy() *Proxy {
 	return &Proxy{
-		Log:       func(s string) {},
-		isWindows: runtime.GOOS == "windows",
+		Log: func(s string) {},
 	}
 }
 

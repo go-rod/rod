@@ -55,23 +55,29 @@ var Blind bool
 
 // Parse the flags
 func init() {
-	Reset()
-	parse(os.Getenv("rod"))
+	ResetWithEnv()
 }
 
-// Reset all flags
+// Reset all flags to their init values.
 func Reset() {
-	CDP = false
-	Trace = false
-	URL = ""
-	Dir = ""
-	Bin = ""
-	Port = "0"
-	Blind = false
-	Monitor = ""
-	Quiet = false
 	Show = false
+	Trace = false
+	Quiet = false
 	Slow = 0
+	Dir = ""
+	Port = "0"
+	Bin = ""
+	URL = ""
+	Remote = false
+	CDP = false
+	Monitor = ""
+	Blind = false
+}
+
+// ResetWithEnv all flags by the value of the rod env var.
+func ResetWithEnv() {
+	Reset()
+	parse(os.Getenv("rod"))
 }
 
 // parse options and set them globally

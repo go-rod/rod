@@ -1,3 +1,5 @@
+//go:generate go run ./lib/utils/install-deps
+//go:generate go run ./lib/utils/lint
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/assets/generate
 //go:generate go run ./lib/devices/generate
@@ -28,8 +30,6 @@ var _ proto.Caller = &Browser{}
 // To check the env var you can use to quickly enable options from CLI, check here:
 // https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 type Browser struct {
-	lock *sync.Mutex
-
 	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
@@ -48,9 +48,9 @@ type Browser struct {
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
 
-	client  *cdp.Client
-	cdpCall CDPCall
-	event   *goob.Observable // all the browser events from cdp client
+	client      Client
+	event       *goob.Observable // all the browser events from cdp client
+	targetsLock *sync.Mutex
 
 	// stores all the previous cdp call of same type. Browser doesn't have enough API
 	// for us to retrieve all its internal states. This is an workaround to map them to local.
@@ -62,7 +62,6 @@ type Browser struct {
 func New() *Browser {
 	b := &Browser{
 		sleeper:     DefaultSleeper,
-		lock:        &sync.Mutex{},
 		slowmotion:  defaults.Slow,
 		quiet:       defaults.Quiet,
 		trace:       defaults.Trace,
@@ -75,7 +74,8 @@ func New() *Browser {
 				Type: proto.EmulationScreenOrientationTypeLandscapePrimary,
 			},
 		},
-		states: &sync.Map{},
+		targetsLock: &sync.Mutex{},
+		states:      &sync.Map{},
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -115,9 +115,21 @@ func (b *Browser) Trace(enable bool) *Browser {
 
 // TraceLog overrides the default log functions for trace
 func (b *Browser) TraceLog(msg func(string), js func(string, Array), err func(error)) *Browser {
-	b.traceLogAct = msg
-	b.traceLogJS = js
-	b.traceLogErr = err
+	if msg == nil {
+		b.traceLogAct = defaultTraceLogAct
+	} else {
+		b.traceLogAct = msg
+	}
+	if js == nil {
+		b.traceLogJS = defaultTraceLogJS
+	} else {
+		b.traceLogJS = js
+	}
+	if err == nil {
+		b.traceLogErr = defaultTraceLogErr
+	} else {
+		b.traceLogErr = err
+	}
 	return b
 }
 
@@ -128,14 +140,8 @@ func (b *Browser) Quiet(quiet bool) *Browser {
 }
 
 // Client set the cdp client
-func (b *Browser) Client(c *cdp.Client) *Browser {
+func (b *Browser) Client(c Client) *Browser {
 	b.client = c
-	return b
-}
-
-// CDPCall overrides the cdp.Client.Call
-func (b *Browser) CDPCall(c CDPCall) *Browser {
-	b.cdpCall = c
 	return b
 }
 
@@ -169,7 +175,8 @@ func (b *Browser) Connect() (err error) {
 		}
 	}
 
-	b.client.Context(b.ctx, b.ctxCancel).MustConnect()
+	err = b.client.Connect(b.ctx)
+	utils.E(err)
 
 	b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 
@@ -333,11 +340,7 @@ func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID
 
 // Call raw cdp interface directly
 func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
-	if b.cdpCall == nil {
-		res, err = b.client.Call(ctx, sessionID, methodName, params)
-	} else {
-		res, err = b.cdpCall(ctx, sessionID, methodName, params)
-	}
+	res, err = b.client.Call(ctx, sessionID, methodName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -354,8 +357,8 @@ func (b *Browser) CallContext() (context.Context, proto.Client, string) {
 
 // PageFromTarget creates a Page instance from a targetID
 func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
-	b.lock.Lock()
-	defer b.lock.Unlock()
+	b.targetsLock.Lock()
+	defer b.targetsLock.Unlock()
 
 	page := b.loadPage(targetID)
 	if page != nil {
@@ -363,11 +366,11 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	page = (&Page{
-		sleeper:      b.sleeper,
-		lock:         &sync.Mutex{},
-		browser:      b,
-		TargetID:     targetID,
-		executionIDs: map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
+		sleeper:       b.sleeper,
+		jsContextLock: &sync.Mutex{},
+		browser:       b,
+		TargetID:      targetID,
+		executionIDs:  map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
 	}).Context(context.WithCancel(b.ctx))
 
 	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: utils.RandString(8)}
@@ -399,6 +402,11 @@ func (b *Browser) initEvents() {
 			case <-b.ctx.Done():
 				return
 			case msg := <-b.client.Event():
+				if msg.WebsocketErr() != nil {
+					b.ctxCancel()
+					return
+				}
+
 				b.event.Publish(msg)
 			}
 		}

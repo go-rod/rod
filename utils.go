@@ -19,8 +19,12 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// CDPCall type for cdp.Client.CDPCall
-type CDPCall func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
+// Client interface
+type Client interface {
+	Connect(ctx context.Context) error
+	Event() <-chan *cdp.Event
+	Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
+}
 
 // DefaultSleeper generates the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
@@ -138,12 +142,13 @@ func matchWithFilter(s string, includes, excludes []string) bool {
 		if regexp.MustCompile(include).MatchString(s) {
 			for _, exclude := range excludes {
 				if regexp.MustCompile(exclude).MatchString(s) {
-					return false
+					goto end
 				}
 			}
 			return true
 		}
 	}
+end:
 	return false
 }
 

@@ -8,8 +8,17 @@ import (
 )
 
 func TestBasic(t *testing.T) {
+	Show = true
+	URL = "test"
+	Monitor = "test"
+	Remote = true
+
+	ResetWithEnv()
 	parse("")
+	assert.False(t, Show)
 	assert.Equal(t, "", Monitor)
+	assert.Equal(t, "", URL)
+	assert.False(t, Remote)
 
 	parse("show,trace,slow=2s,port=8080,remote,dir=tmp,url=http://test.com,cdp,monitor,blind,quiet,bin=/path/to/chrome")
 

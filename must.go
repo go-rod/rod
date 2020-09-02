@@ -1,4 +1,10 @@
 // This file contains the methods that panics when error return value is not nil.
+// Their function names are all prefixed with Must.
+// A function here is usually a wrapper for the error version with fixed default options to make it easier to use.
+//
+// For example the source code of `Element.Click` and `Element.MustClick`. `MustClick` has no argument.
+// But `Click` has a `button` argument to decide which button to click.
+// `MustClick` feels like a version of `Click` with some default behaviors.
 
 package rod
 
@@ -264,12 +270,6 @@ func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
 		utils.E(err)
 		return page
 	}, func() { utils.E(r()) }
-}
-
-// MustPause stops on the next JavaScript statement
-func (p *Page) MustPause() *Page {
-	utils.E(p.Pause())
-	return p
 }
 
 // MustWaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
@@ -832,13 +832,15 @@ func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
 
 // MustAdd a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
-func (r *HijackRouter) MustAdd(pattern string, handler func(*Hijack)) {
+func (r *HijackRouter) MustAdd(pattern string, handler func(*Hijack)) *HijackRouter {
 	utils.E(r.Add(pattern, "", handler))
+	return r
 }
 
 // MustRemove handler via the pattern
-func (r *HijackRouter) MustRemove(pattern string) {
+func (r *HijackRouter) MustRemove(pattern string) *HijackRouter {
 	utils.E(r.Remove(pattern))
+	return r
 }
 
 // MustStop the router

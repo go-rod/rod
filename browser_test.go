@@ -7,12 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -29,6 +29,15 @@ func (s *S) TestIncognito() {
 
 	s.Nil(s.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
 	s.EqualValues(1, page.MustEval(`k => localStorage[k]`, k).Int())
+}
+
+func (s *S) TestPageFromTarget() {
+	s.Panics(func() {
+		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
+		utils.E(err)
+		defer s.errorAt(4, nil)()
+		s.browser.MustPageFromTargetID(res.TargetID)
+	})
 }
 
 func (s *S) TestBrowserPages() {
@@ -119,24 +128,31 @@ func (s *S) TestMonitor() {
 	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
 
 	page.MustNavigate(host + "/page/" + string(p.TargetID))
-	s.Contains(page.MustEval(`document.title`).Str, p.TargetID)
+	page.MustWait(`(id) => document.title.includes(id)`, p.TargetID)
 
-	res, err := http.Get(host + "/api/page/test")
+	res, err := http.Get(host + "/screenshot")
+	utils.E(err)
+	s.Greater(len(utils.MustReadBytes(res.Body)), 10)
+
+	res, err = http.Get(host + "/api/page/test")
 	utils.E(err)
 	s.Equal(400, res.StatusCode)
+	s.EqualValues(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
 }
 
 func (s *S) TestRemoteLaunch() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
+	defaults.Remote = true
+	defaults.URL = url
+	defer defaults.ResetWithEnv()
+
 	proxy := launcher.NewProxy()
 	mux.Handle("/", proxy)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	l := launcher.NewRemote(strings.ReplaceAll(url, "http", "ws"))
-	c := l.Client().Context(ctx, cancel)
-	b := rod.New().Context(ctx, cancel).Client(c).MustConnect()
+	b := rod.New().Context(ctx, cancel).MustConnect()
 	defer b.MustClose()
 
 	p := b.MustPage(srcFile("fixtures/click.html"))
@@ -159,7 +175,7 @@ func (s *S) TestTrace() {
 	s.browser.Trace(true).Slowmotion(time.Microsecond)
 	defer func() {
 		s.browser.TraceLog(nil, nil, nil)
-		s.browser.Trace(false).Slowmotion(0)
+		s.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
 	}()
 
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
@@ -174,6 +190,27 @@ func (s *S) TestTrace() {
 
 	el.Context(ctx, cancel).Trace("ok")
 	s.Error(errs[1])
+
+	func() {
+		defer s.errorAt(2, nil)()
+		_ = p.Mouse.Move(10, 10, 1)
+	}()
+}
+
+func (s *S) TestTraceLogs() {
+	s.browser.Trace(true)
+	defer func() {
+		s.browser.Trace(defaults.Trace)
+	}()
+
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	el := p.MustElement("button")
+	el.MustClick()
+
+	func() {
+		defer s.errorAt(1, nil)()
+		p.Overlay(0, 0, 100, 30, "")
+	}()
 }
 
 func (s *S) TestConcurrentOperations() {
@@ -328,6 +365,17 @@ func (s *S) TestBinarySize() {
 	utils.E(err)
 
 	s.Less(float64(stat.Size())/1024/1024, 8.65) // mb
+}
+
+func (s *S) TestBrowserConnectErr() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defaults.Remote = true
+	defer defaults.ResetWithEnv()
+
+	s.Panics(func() {
+		cancel()
+		rod.New().Context(ctx, cancel).MustConnect()
+	})
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

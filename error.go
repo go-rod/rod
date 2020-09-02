@@ -13,8 +13,6 @@ var (
 	ErrExpectElements = errors.New("expect js to return an array of elements")
 	// ErrElementNotFound error
 	ErrElementNotFound = errors.New("cannot find element")
-	// ErrWaitJSTimeout error
-	ErrWaitJSTimeout = errors.New("wait js timeout")
 	// ErrSrcNotFound error
 	ErrSrcNotFound = errors.New("element doesn't have src attribute")
 	// ErrEval error

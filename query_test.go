@@ -4,7 +4,10 @@ import (
 	"errors"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 func (s *S) TestPageElements() {
@@ -23,6 +26,15 @@ func (s *S) TestPages() {
 
 	s.Nil(s.browser.MustPages().Find("____"))
 	s.Nil(s.browser.MustPages().MustFindByURL("____"))
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		s.browser.MustPages().MustFind("button")
+	})
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		s.browser.MustPages().MustFindByURL("____")
+	})
 }
 
 func (s *S) TestPageHas() {
@@ -61,6 +73,37 @@ func (s *S) TestSearch() {
 
 	_, err := p.Sleeper(nil).Search(0, 1, "not-exists")
 	s.True(errors.Is(err, rod.ErrElementNotFound))
+
+	// when search result is not ready
+	func() {
+		defer s.at(3, func([]byte, error) ([]byte, error) {
+			return nil, &cdp.Error{Code: -32000}
+		})()
+		p.MustSearch("click me")
+	}()
+
+	// when node id is zero
+	func() {
+		defer s.at(3, func([]byte, error) ([]byte, error) {
+			return utils.MustToJSONBytes(proto.DOMGetSearchResultsResult{
+				NodeIds: []proto.DOMNodeID{0},
+			}), nil
+		})()
+		p.MustSearch("click me")
+	}()
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		p.MustSearch("click me")
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		p.MustSearch("click me")
+	})
+	s.Panics(func() {
+		defer s.errorAt(7, nil)()
+		p.MustSearch("click me")
+	})
 }
 
 func (s *S) TestSearchIframes() {
@@ -173,17 +216,34 @@ func (s *S) TestPageElementByJS_Err() {
 }
 
 func (s *S) TestPageElementsByJS_Err() {
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := s.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
 	_, err := p.ElementsByJS(rod.NewEvalOptions(`[1]`, nil))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJS(rod.NewEvalOptions(`1`, nil))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJS(rod.NewEvalOptions(`foo()`, nil))
 	s.Error(err)
+
+	func() {
+		defer s.errorAt(2, nil)()
+		_, err := p.ElementsByJS(rod.NewEvalOptions(`[document.body]`, nil))
+		s.Error(err)
+	}()
 }
 
 func (s *S) TestElementsOthers() {
-	list := &rod.Elements{}
+	list := rod.Elements{}
 	s.Nil(list.First())
 	s.Nil(list.Last())
+}
+
+func (s *S) TestPagesOthers() {
+	list := rod.Pages{}
+	s.Nil(list.First())
+	s.Nil(list.Last())
+
+	list = append(list, &rod.Page{})
+
+	s.NotNil(list.First())
+	s.NotNil(list.Last())
 }

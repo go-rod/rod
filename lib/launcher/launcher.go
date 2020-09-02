@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -18,7 +17,6 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
 	"github.com/ysmood/leakless"
 )
 
@@ -438,10 +436,6 @@ func GetWebSocketDebuggerURL(u string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	b, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
 
-	return gjson.ParseBytes(b).Get("webSocketDebuggerUrl").String(), nil
+	return utils.ReadJSONPathAsString(res.Body, "webSocketDebuggerUrl")
 }

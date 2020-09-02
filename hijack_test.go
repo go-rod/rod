@@ -1,9 +1,11 @@
 package rod_test
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
@@ -89,21 +91,16 @@ func (s *S) TestHijackContinue() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
-	// to simulate a backend server
-	mux.HandleFunc("/", httpHTML(`<html>
-	<body></body>
-	<script>
-		fetch('/a').then(async (res) => {
-			document.body.innerText = await res.text()
-		})
-	</script></html>`))
-	mux.HandleFunc("/a", httpString(`ok`))
+	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
 
 	router := s.page.HijackRequests()
 	defer router.MustStop()
 
-	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	router.MustAdd("*", func(ctx *rod.Hijack) {
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
+		wg.Done()
 	})
 
 	go router.Run()
@@ -111,6 +108,16 @@ func (s *S) TestHijackContinue() {
 	s.page.MustNavigate(url)
 
 	s.Equal("ok", s.page.MustElement("body").MustText())
+
+	func() { // test error log
+		ctx, cancel := context.WithCancel(s.browser.GetContext())
+		defer cancel()
+		defer s.errorAt(3, nil)()
+		go func() {
+			_ = s.page.Context(ctx, cancel).Navigate(url)
+		}()
+		wg.Wait()
+	}()
 }
 
 func (s *S) TestHijackFailRequest() {
@@ -129,7 +136,9 @@ func (s *S) TestHijackFailRequest() {
 	router := s.browser.HijackRequests()
 	defer router.MustStop()
 
+	err := make(chan error)
 	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
+		ctx.OnError = func(e error) { err <- e }
 		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
 	})
 
@@ -138,6 +147,12 @@ func (s *S) TestHijackFailRequest() {
 	s.page.MustNavigate(url)
 
 	s.Equal("Failed to fetch", s.page.MustElement("body").MustText())
+
+	func() { // test error log
+		defer s.errorAt(3, nil)()
+		s.page.MustNavigate(url)
+		s.Error(<-err)
+	}()
 }
 
 func (s *S) TestHandleAuth() {

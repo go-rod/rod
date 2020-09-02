@@ -11,24 +11,33 @@ import (
 )
 
 func ExampleClient() {
+	ctx := context.Background()
+
 	// launch a browser
-	url := launcher.New().Headless(false).MustLaunch()
+	url := launcher.New().MustLaunch()
 
 	// create a controller
-	client := cdp.New(url).MustConnect()
+	client := cdp.New(url).MustConnect(ctx)
+
+	go func() {
+		for range client.Event() {
+			// you must consume the events
+		}
+	}()
 
 	// Such as call this endpoint on the api doc:
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page#method-navigate
 	// This will create a new tab and navigate to the test.com
-	res, err := client.Call(context.Background(), "", "Target.createTarget", map[string]string{
-		"url": "https://google.com",
+	res, err := client.Call(ctx, "", "Target.createTarget", map[string]string{
+		"url": "http://test.com",
 	})
 	utils.E(err)
 
-	fmt.Println(gjson.ParseBytes(res).Get("targetId").String())
+	fmt.Println(len(gjson.ParseBytes(res).Get("targetId").Str))
 
-	utils.Pause()
+	// close browser
+	_, err = client.Call(ctx, "", "Browser.close", nil)
+	utils.E(err)
 
-	// Skip
-	// Output: id
+	// Output: 32
 }

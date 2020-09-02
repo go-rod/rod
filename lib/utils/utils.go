@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	mr "math/rand"
 	"net"
 	"net/http"
@@ -37,20 +38,19 @@ func E(args ...interface{}) []interface{} {
 }
 
 // SDump a value
-func SDump(s interface{}) string {
-	raw, ok := s.(json.RawMessage)
-	if ok {
-		var val interface{}
-		err := json.Unmarshal(raw, &val)
-		E(err)
-		d, err := json.MarshalIndent(val, "", " ")
-		E(err)
-		return string(d)
-	}
-
-	d, err := json.MarshalIndent(s, "", " ")
+func SDump(v interface{}) string {
+	d, err := json.MarshalIndent(v, "", "  ")
 	E(err)
 	return string(d)
+}
+
+// Dump values to logger
+func Dump(list ...interface{}) {
+	out := ""
+	for _, v := range list {
+		out += SDump(v)
+	}
+	log.Println(out)
 }
 
 // S Template render, the params is key-value pairs
@@ -282,10 +282,15 @@ func FileExists(path string) bool {
 // Exec command
 func Exec(name string, args ...string) {
 	cmd := exec.Command(name, args...)
+	SetCmdStdPipe(cmd)
+	E(cmd.Run())
+}
+
+// SetCmdStdPipe command
+func SetCmdStdPipe(cmd *exec.Cmd) {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-	E(cmd.Run())
 }
 
 type errMuxWrapper struct {
@@ -320,7 +325,9 @@ func Serve(host string) (string, *http.ServeMux, func()) {
 
 	url := "http://" + l.Addr().String()
 
-	return url, mux, func() { E(l.Close()) }
+	return url, mux, func() {
+		E(srv.Close())
+	}
 }
 
 // ReadJSON from reader
@@ -330,6 +337,16 @@ func ReadJSON(r io.Reader) (gjson.Result, error) {
 		return gjson.Result{}, err
 	}
 	return gjson.ParseBytes(b), nil
+}
+
+// ReadJSONPathAsString ...
+func ReadJSONPathAsString(r io.Reader, path string) (string, error) {
+	obj, err := ReadJSON(r)
+	if err != nil {
+		return "", err
+	}
+
+	return obj.Get(path).String(), nil
 }
 
 // MustReadJSON from reader

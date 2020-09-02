@@ -3,9 +3,13 @@ package rod_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
+	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/go-rod/rod"
@@ -22,9 +26,9 @@ var slash = filepath.FromSlash
 // S test suite
 type S struct {
 	suite.Suite
-	client  *cdp.Client
-	browser *rod.Browser
-	page    *rod.Page
+	mockClient *MockClient
+	browser    *rod.Browser
+	page       *rod.Page
 }
 
 func init() {
@@ -41,9 +45,6 @@ func TestMain(m *testing.M) {
 
 	goleak.VerifyTestMain(
 		m,
-		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),
-		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),
-		goleak.IgnoreTopFunction("net/http.(*persistConn).readLoop"),
 		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.sigChildHandler"),
 		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.reapChildren"),
 	)
@@ -59,8 +60,10 @@ func Test(t *testing.T) {
 		MustLaunch()
 
 	s := new(S)
-	s.client = cdp.New(u)
-	s.browser = rod.New().ControlURL("").Client(s.client).MustConnect().
+	s.mockClient = newMockClient(s, cdp.New(u))
+	s.browser = rod.New().ControlURL("").
+		Client(s.mockClient).
+		MustConnect().
 		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
 			Width: 800, Height: 600, DeviceScaleFactor: 1,
 		}).Sleeper(rod.DefaultSleeper)
@@ -110,60 +113,105 @@ func serveStatic() (string, func()) {
 	return u + "/", close
 }
 
+type Call func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
+
+var _ rod.Client = &MockClient{}
+
+type MockClient struct {
+	sync.RWMutex
+	suit      *S
+	principal *cdp.Client
+	call      Call
+}
+
+func newMockClient(s *S, c *cdp.Client) *MockClient {
+	return &MockClient{suit: s, principal: c}
+}
+
+func (c *MockClient) Connect(ctx context.Context) error {
+	return c.principal.Connect(ctx)
+}
+
+func (c *MockClient) Event() <-chan *cdp.Event {
+	return c.principal.Event()
+}
+
+func (c *MockClient) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+	return c.getCall()(ctx, sessionID, method, params)
+}
+
+func (c *MockClient) getCall() Call {
+	c.RLock()
+	defer c.RUnlock()
+
+	if c.call == nil {
+		return c.principal.Call
+	}
+	return c.call
+}
+
+func (c *MockClient) setCall(fn Call) {
+	c.Lock()
+	defer c.Unlock()
+
+	if c.call != nil {
+		c.suit.T().Fatal("forget to call the cleanup function of previous mock")
+	}
+	c.call = fn
+}
+
+func (c *MockClient) resetCall() {
+	c.Lock()
+	defer c.Unlock()
+	c.call = nil
+}
+
+// Use it to find out which cdp call to intercept. Put a special like log.Println("*****") after the cdp call you want to intercept.
+// The output of the test should has something like:
+//
+//     [countCall] 1
+//     [countCall] 2
+//     [countCall] 3
+//     01:49:43 *****
+//
+// So the 3rd call is the one we want to intercept, then you can use the 3 with s.at or s.errorAt.
 func (s *S) countCall() {
-	count := 0
-	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		count++
-		log.Println("[call count]", count)
-		return s.client.Call(ctx, sessionID, method, params)
+	count := int64(0)
+	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		c := atomic.AddInt64(&count, 1)
+		utils.E(fmt.Fprintln(os.Stdout, "[countCall]", c))
+		return s.mockClient.principal.Call(ctx, sessionID, method, params)
 	})
 }
 
 // when call the cdp.Client.Call the nth time use fn instead
 func (s *S) at(n int, fn func([]byte, error) ([]byte, error)) (recover func()) {
-	count := 0
-	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		res, err := s.client.Call(ctx, sessionID, method, params)
-		count++
-		if count == n {
+	count := int64(0)
+	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		res, err := s.mockClient.principal.Call(ctx, sessionID, method, params)
+		c := atomic.AddInt64(&count, 1)
+		if c == int64(n) {
 			return fn(res, err)
 		}
 		return res, err
 	})
-	cancel := preventLeak()
 
-	return func() {
-		s.browser.CDPCall(nil)
-		cancel()
-	}
+	return s.mockClient.resetCall
 }
 
 // when call the cdp.Client.Call the nth time return error
 func (s *S) errorAt(n int, err error) (recover func()) {
 	if err == nil {
-		err = errors.New("")
+		err = errors.New("mock error")
 	}
-	count := 0
-	s.browser.CDPCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		count++
-		if count == n {
+	count := int64(0)
+	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+		c := atomic.AddInt64(&count, 1)
+		if c == int64(n) {
 			return nil, err
 		}
-		return s.client.Call(ctx, sessionID, method, params)
+		return s.mockClient.principal.Call(ctx, sessionID, method, params)
 	})
 
-	cancel := preventLeak()
-
-	return func() {
-		s.browser.CDPCall(nil)
-		cancel()
-	}
-}
-
-func preventLeak() func() {
-	ctx, cancel := context.WithCancel(context.Background())
-	go func() {
-		<-ctx.Done() // go.uber.org/goleak will report error if it's not released
-	}()
-	return cancel
+	return s.mockClient.resetCall
 }

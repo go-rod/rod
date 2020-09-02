@@ -20,7 +20,7 @@ func TestBasic(t *testing.T) {
 
 	url := launcher.New().MustLaunch()
 
-	client := cdp.New(url).Context(ctx, done).Websocket(nil).Header(http.Header{"test": {}}).MustConnect()
+	client := cdp.New(url).Websocket(nil).Header(http.Header{"test": {}}).MustConnect(ctx)
 
 	defer func() {
 		utils.E(client.Call(ctx, "", "Browser.close", nil))
@@ -119,18 +119,21 @@ func TestError(t *testing.T) {
 	assert.Equal(t, "{\"code\":10,\"message\":\"err\",\"data\":\"data\"}", cdpErr.Error())
 
 	assert.Panics(t, func() {
-		cdp.New("").MustConnect()
+		cdp.New("").MustConnect(context.Background())
 	})
 }
 
 func TestCrash(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 	l := launcher.New()
 
-	client := cdp.New(l.MustLaunch()).Debug(true).MustConnect()
+	client := cdp.New(l.MustLaunch()).Debug(true).MustConnect(ctx)
 
 	go func() {
-		for range client.Event() {
+		for e := range client.Event() {
+			if e.WebsocketErr() != nil {
+				cancel()
+			}
 		}
 	}()
 

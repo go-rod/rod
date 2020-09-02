@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"bytes"
 	"context"
 	"net/url"
 	"testing"
@@ -31,15 +32,14 @@ func TestUnzip(t *testing.T) {
 }
 
 func TestLaunchOptions(t *testing.T) {
-	oldShow := defaults.Show
-	oldIsInDocker := isInDocker
-	defer func() {
-		defaults.Show = oldShow
-		isInDocker = oldIsInDocker
-	}()
-
 	defaults.Show = true
 	isInDocker = true
+
+	// recover
+	defer func() {
+		defaults.ResetWithEnv()
+		isInDocker = utils.FileExists("/.dockerenv")
+	}()
 
 	l := New()
 
@@ -72,17 +72,15 @@ func TestGetURLErr(t *testing.T) {
 func TestRemoteLaunch(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
 	u, mux, close := utils.Serve("")
 	defer close()
 
-	proxy := NewProxy()
-	proxy.isWindows = true
-
-	mux.Handle("/", proxy)
+	mux.Handle("/", NewProxy())
 
 	l := NewRemote(u).KeepUserDataDir()
 	client := l.Delete("keep-user-data-dir").Client()
-	b := client.Context(ctx, cancel).MustConnect()
+	b := client.MustConnect(ctx)
 	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	_, _ = b.Call(ctx, "", "Browser.close", nil)
 	dir, _ := l.Get("user-data-dir")
@@ -98,4 +96,13 @@ func TestLaunchErr(t *testing.T) {
 	}()
 	_, err := l.Launch()
 	assert.Error(t, err)
+}
+
+func TestCancelRead(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	l := New()
+	l.log = nil
+	l.ctx = ctx
+	l.read(bytes.NewBufferString("test\ntest"))
 }

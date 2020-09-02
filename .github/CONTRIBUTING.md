@@ -31,14 +31,9 @@ The entry point of all tests is the `setup_test.go` file.
 
 ### To lint the project
 
-You can use [godev](https://github.com/ysmood/kit#godev) to lint the project on your local:
-
 ```bash
-godev lint # lint golang code
-go run ./lib/utils/lint # lint other languages such as js, html, markdown, etc
+go run ./lib/utils/lint
 ```
-
-We also use it in the CI to enforce the minimum test coverage.
 
 ### To inject cdp call in tests
 

@@ -99,6 +99,9 @@ func TestLaunchErr(t *testing.T) {
 	assert.Panics(t, func() {
 		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
+	assert.Panics(t, func() {
+		launcher.New().Client()
+	})
 }
 
 func killTree(pid int) {

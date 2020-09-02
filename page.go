@@ -24,8 +24,6 @@ var _ proto.Caller = &Page{}
 // Page represents the webpage
 // We try to hold as less states as possible
 type Page struct {
-	lock *sync.Mutex
-
 	// these are the handler for ctx
 	ctx           context.Context
 	ctxCancel     func()
@@ -45,6 +43,7 @@ type Page struct {
 	windowObjectID   proto.RuntimeRemoteObjectID // used as the thisObject when eval js
 	jsHelperObjectID proto.RuntimeRemoteObjectID
 	executionIDs     map[proto.PageFrameID]proto.RuntimeExecutionContextID
+	jsContextLock    *sync.Mutex
 
 	event *goob.Observable
 }
@@ -253,19 +252,14 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 		if err != nil {
 			return nil, err
 		}
-		defer func() {
+
+		defer func() { // try to recover the viewport
 			if !set {
-				e := proto.EmulationClearDeviceMetricsOverride{}.Call(p)
-				if err == nil {
-					err = e
-				}
+				_ = proto.EmulationClearDeviceMetricsOverride{}.Call(p)
 				return
 			}
 
-			e := p.Viewport(oldView)
-			if err == nil {
-				err = e
-			}
+			_ = p.Viewport(oldView)
 		}()
 	}
 
@@ -331,17 +325,6 @@ func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error,
 	}
 
 	return
-}
-
-// Pause doc is similar to the method MustPause
-func (p *Page) Pause() error {
-	wait := p.WaitEvent(&proto.DebuggerResumed{})
-	err := proto.DebuggerPause{}.Call(p)
-	if err != nil {
-		return err
-	}
-	wait()
-	return nil
 }
 
 // EachEvent of the specified event type, if the fn returns true the event loop will stop.
@@ -459,14 +442,15 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 		_ = proto.RuntimeRemoveBinding{Name: name}.Call(p)
 	}
 
-	go p.EachEvent(func(e *proto.RuntimeBindingCalled) {
+	go p.EachEvent(func(e *proto.RuntimeBindingCalled) bool {
 		if e.Name == name {
 			select {
 			case <-ctx.Done():
-				return
+				return true
 			case callback <- e.Payload:
 			}
 		}
+		return false
 	})()
 
 	return
@@ -542,17 +526,10 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 
 // Wait js function until it returns true
 func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
-	sleeper := p.sleeper()
-	if sleeper == nil {
-		sleeper = func(context.Context) error {
-			return newErr(ErrWaitJSTimeout, js, js)
-		}
-	}
-
 	removeTrace := func() {}
 	defer removeTrace()
 
-	return utils.Retry(p.ctx, sleeper, func() (bool, error) {
+	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
 		remove := p.tryTraceFn(fmt.Sprintf("wait(%s)", js), params)
 		removeTrace()
 		removeTrace = remove
@@ -672,8 +649,8 @@ func (p *Page) initJS(force bool) error {
 		return err
 	}
 
-	p.lock.Lock()
-	defer p.lock.Unlock()
+	p.jsContextLock.Lock()
+	defer p.jsContextLock.Unlock()
 
 	if !force && p.windowObjectID != "" {
 		return nil
@@ -712,8 +689,8 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 		return 0, err
 	}
 
-	p.lock.Lock()
-	defer p.lock.Unlock()
+	p.jsContextLock.Lock()
+	defer p.jsContextLock.Unlock()
 
 	if !force {
 		if ctxID, has := p.executionIDs[frameID]; has {
@@ -757,14 +734,14 @@ func (p *Page) frameID() (proto.PageFrameID, error) {
 }
 
 func (p *Page) getWindowObjectID() proto.RuntimeRemoteObjectID {
-	p.lock.Lock()
-	defer p.lock.Unlock()
+	p.jsContextLock.Lock()
+	defer p.jsContextLock.Unlock()
 	return p.windowObjectID
 }
 
 func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
-	p.lock.Lock()
-	defer p.lock.Unlock()
+	p.jsContextLock.Lock()
+	defer p.jsContextLock.Unlock()
 	return p.jsHelperObjectID
 }
 

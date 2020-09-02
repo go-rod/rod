@@ -78,6 +78,10 @@ func (s *S) TestNotClickable() {
 		defer s.errorAt(8, nil)()
 		el.MustClickable()
 	})
+	s.Panics(func() {
+		defer s.errorAt(13, nil)()
+		el.MustClick()
+	})
 }
 
 func (s *S) TestHover() {
@@ -392,6 +396,15 @@ func (s *S) TestWaitStable() {
 		cancel()
 	}()
 	s.Error(el.Context(ctx, cancel).WaitStable(time.Minute))
+
+	s.Panics(func() {
+		defer s.errorAt(2, nil)()
+		el.MustWaitStable()
+	})
+	s.Panics(func() {
+		defer s.errorAt(3, nil)()
+		el.MustWaitStable()
+	})
 }
 
 func (s *S) TestCanvasToImage() {
@@ -443,7 +456,6 @@ func (s *S) TestElementScreenshot() {
 		el.MustScreenshot()
 	})
 	s.Panics(func() {
-		s.countCall()
 		defer s.errorAt(2, nil)()
 		el.MustScreenshot()
 	})
@@ -569,7 +581,6 @@ func (s *S) TestElementErrors() {
 	s.Error(err)
 
 	s.Panics(func() {
-		s.countCall()
 		defer s.errorAt(2, nil)()
 		el.MustNodeID()
 	})

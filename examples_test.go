@@ -128,10 +128,7 @@ func Example_headless_with_debug() {
 	img := page.MustElement(`[alt="Hot Dry Noodles.jpg"]`).MustResource()
 	fmt.Println(len(img)) // print the size of the image
 
-	// Pause temporarily halts JavaScript execution on the website.
-	// You can resume execution in the devtools window by clicking the resume
-	// button in the "source" tab.
-	page.MustPause()
+	utils.Pause() // pause goroutine
 
 	// Skip
 	// Output: 热干面
