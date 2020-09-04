@@ -66,13 +66,10 @@ func NewBrowser() *Browser {
 				"google-chrome",
 				"/usr/bin/google-chrome",
 			},
-			"windows": {
-				"chrome",
-				`C:\Program Files\Google\Chrome\Application\chrome.exe`,
-				`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
-				`C:\Program Files\Microsoft\Edge\Application\msedge.exe`,
-				`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`,
-			},
+			"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
+				`Google\Chrome\Application\chrome.exe`,
+				`Microsoft\Edge\Application\msedge.exe`,
+			)...),
 		},
 	}
 }
@@ -190,4 +187,18 @@ func (lc *Browser) Open(url string) {
 	p := exec.Command(bin, url)
 	utils.E(p.Start())
 	utils.E(p.Process.Release())
+}
+
+func expandWindowsExePaths(list ...string) []string {
+	newList := []string{}
+	for _, p := range list {
+		newList = append(
+			newList,
+			filepath.Join(os.Getenv("ProgramFiles"), p),
+			filepath.Join(os.Getenv("ProgramFiles(x86)"), p),
+			filepath.Join(os.Getenv("LocalAppData"), p),
+		)
+	}
+
+	return newList
 }
