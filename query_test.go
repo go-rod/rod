@@ -19,7 +19,7 @@ func (s *S) TestPageElements() {
 }
 
 func (s *S) TestPages() {
-	s.page.MustNavigate(srcFile("fixtures/click.html"))
+	s.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
 
 	s.True(s.browser.MustPages().MustFind("button").MustHas("button"))
 	s.True(s.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
@@ -28,11 +28,11 @@ func (s *S) TestPages() {
 	s.Nil(s.browser.MustPages().MustFindByURL("____"))
 
 	s.Panics(func() {
-		defer s.errorAt(2, nil)()
+		s.errorAt(1, proto.RuntimeCallFunctionOn{})
 		s.browser.MustPages().MustFind("button")
 	})
 	s.Panics(func() {
-		defer s.errorAt(2, nil)()
+		s.errorAt(1, proto.RuntimeCallFunctionOn{})
 		s.browser.MustPages().MustFindByURL("____")
 	})
 }
@@ -75,33 +75,33 @@ func (s *S) TestSearch() {
 	s.True(errors.Is(err, rod.ErrElementNotFound))
 
 	// when search result is not ready
-	func() {
-		defer s.at(3, func([]byte, error) ([]byte, error) {
+	{
+		s.at(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
 			return nil, &cdp.Error{Code: -32000}
-		})()
+		})
 		p.MustSearch("click me")
-	}()
+	}
 
 	// when node id is zero
-	func() {
-		defer s.at(3, func([]byte, error) ([]byte, error) {
+	{
+		s.at(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
 			return utils.MustToJSONBytes(proto.DOMGetSearchResultsResult{
 				NodeIds: []proto.DOMNodeID{0},
 			}), nil
-		})()
+		})
 		p.MustSearch("click me")
-	}()
+	}
 
 	s.Panics(func() {
-		defer s.errorAt(2, nil)()
+		s.errorAt(1, proto.DOMPerformSearch{})
 		p.MustSearch("click me")
 	})
 	s.Panics(func() {
-		defer s.errorAt(3, nil)()
+		s.errorAt(1, proto.DOMGetSearchResults{})
 		p.MustSearch("click me")
 	})
 	s.Panics(func() {
-		defer s.errorAt(7, nil)()
+		s.errorAt(2, proto.RuntimeCallFunctionOn{})
 		p.MustSearch("click me")
 	})
 }
@@ -115,7 +115,7 @@ func (s *S) TestSearchIframes() {
 
 func (s *S) TestSearchIframesAfterReload() {
 	p := s.page.MustNavigate(srcFile("fixtures/click-iframes.html"))
-	frame := p.MustElement("iframe").Frame().MustElement("iframe").Frame()
+	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
 	frame.MustEval(`location.reload()`)
 	frame.MustWaitLoad()
 	el := p.MustSearch("button[onclick]")
@@ -224,11 +224,9 @@ func (s *S) TestPageElementsByJS_Err() {
 	_, err = p.ElementsByJS(rod.NewEvalOptions(`foo()`, nil))
 	s.Error(err)
 
-	func() {
-		defer s.errorAt(2, nil)()
-		_, err := p.ElementsByJS(rod.NewEvalOptions(`[document.body]`, nil))
-		s.Error(err)
-	}()
+	s.errorAt(1, proto.RuntimeGetProperties{})
+	_, err = p.ElementsByJS(rod.NewEvalOptions(`[document.body]`, nil))
+	s.Error(err)
 }
 
 func (s *S) TestElementsOthers() {

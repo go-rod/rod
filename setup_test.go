@@ -186,49 +186,55 @@ func (c *MockClient) resetCall() {
 // Use it to find out which cdp call to intercept. Put a special like log.Println("*****") after the cdp call you want to intercept.
 // The output of the test should has something like:
 //
-//     [countCall] 1
-//     [countCall] 2
-//     [countCall] 3
+//     [countCall] 1, proto.DOMResolveNode{}
+//     [countCall] 1, proto.RuntimeCallFunctionOn{}
+//     [countCall] 2, proto.RuntimeCallFunctionOn{}
 //     01:49:43 *****
 //
-// So the 3rd call is the one we want to intercept, then you can use the 3 with s.at or s.errorAt.
+// So the 3rd call is the one we want to intercept, then you can use the output with s.at or s.errorAt.
 func (s *S) countCall() {
-	count := int64(0)
+	l := sync.Mutex{}
+	mCount := map[string]int{}
+
 	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		c := atomic.AddInt64(&count, 1)
-		utils.E(fmt.Fprintln(os.Stdout, "[countCall]", c))
+		l.Lock()
+		mCount[method]++
+		m := fmt.Sprintf("%d, proto.%s{}", mCount[method], proto.GetType(method).Name())
+		utils.E(fmt.Fprintln(os.Stdout, "[countCall]", m))
+		l.Unlock()
+
 		return s.mockClient.principal.Call(ctx, sessionID, method, params)
 	})
 }
 
-// when call the cdp.Client.Call the nth time use fn instead
-func (s *S) at(n int, fn func([]byte, error) ([]byte, error)) (recover func()) {
-	count := int64(0)
-	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		res, err := s.mockClient.principal.Call(ctx, sessionID, method, params)
-		c := atomic.AddInt64(&count, 1)
-		if c == int64(n) {
-			return fn(res, err)
-		}
-		return res, err
-	})
-
-	return s.mockClient.resetCall
-}
-
-// when call the cdp.Client.Call the nth time return error
-func (s *S) errorAt(n int, err error) (recover func()) {
-	if err == nil {
-		err = errors.New("mock error")
+// When call the cdp.Client.Call the nth time use fn instead.
+// Use p to filter method.
+func (s *S) at(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
+	if p == nil {
+		s.T().Fatal("p must be specified")
 	}
+
 	count := int64(0)
+
 	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		c := atomic.AddInt64(&count, 1)
-		if c == int64(n) {
-			return nil, err
+		if method == p.MethodName() {
+			c := atomic.AddInt64(&count, 1)
+			if c == int64(nth) {
+
+				s.mockClient.resetCall()
+				return fn(func() ([]byte, error) {
+					return s.mockClient.principal.Call(ctx, sessionID, method, params)
+				})
+			}
 		}
 		return s.mockClient.principal.Call(ctx, sessionID, method, params)
 	})
+}
 
-	return s.mockClient.resetCall
+// When call the cdp.Client.Call the nth time return error.
+// Use p to filter method.
+func (s *S) errorAt(nth int, p proto.Payload) {
+	s.at(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
+		return nil, errors.New("mock error")
+	})
 }

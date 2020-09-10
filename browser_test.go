@@ -32,11 +32,18 @@ func (s *S) TestIncognito() {
 	s.EqualValues(1, page.MustEval(`k => localStorage[k]`, k).Int())
 }
 
+func (s *S) TestPageErr() {
+	s.Panics(func() {
+		s.errorAt(1, proto.TargetAttachToTarget{})
+		s.browser.MustPage("")
+	})
+}
+
 func (s *S) TestPageFromTarget() {
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
 		utils.E(err)
-		defer s.errorAt(4, nil)()
+		s.errorAt(1, proto.EmulationSetDeviceMetricsOverride{})
 		s.browser.MustPageFromTargetID(res.TargetID)
 	})
 }
@@ -53,20 +60,19 @@ func (s *S) TestBrowserPages() {
 	} else {
 		s.Len(pages, 3)
 
-		func() {
-			defer s.at(1, func(d []byte, err error) ([]byte, error) {
-				return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
-			})()
-			pages := s.browser.MustPages()
-			s.Len(pages, 2)
-		}()
+		s.at(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
+			d, _ := send()
+			return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
+		})
+		pages := s.browser.MustPages()
+		s.Len(pages, 2)
 	}
 	s.Panics(func() {
-		defer s.errorAt(1, nil)()
+		s.errorAt(1, proto.TargetCreateTarget{})
 		s.browser.MustPage("")
 	})
 	s.Panics(func() {
-		defer s.errorAt(1, nil)()
+		s.errorAt(1, proto.TargetGetTargets{})
 		s.browser.MustPages()
 	})
 	s.Panics(func() {
@@ -75,7 +81,7 @@ func (s *S) TestBrowserPages() {
 		defer func() {
 			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
-		defer s.errorAt(2, nil)()
+		s.errorAt(1, proto.TargetAttachToTarget{})
 		s.browser.MustPages()
 	})
 }
@@ -196,10 +202,8 @@ func (s *S) TestTrace() {
 	el.Context(ctx).Trace("ok")
 	s.Error(errs[1])
 
-	func() {
-		defer s.errorAt(2, nil)()
-		_ = p.Mouse.Move(10, 10, 1)
-	}()
+	s.errorAt(1, proto.RuntimeCallFunctionOn{})
+	_ = p.Mouse.Move(10, 10, 1)
 }
 
 func (s *S) TestTraceLogs() {
@@ -212,10 +216,8 @@ func (s *S) TestTraceLogs() {
 	el := p.MustElement("button")
 	el.MustClick()
 
-	func() {
-		defer s.errorAt(1, nil)()
-		p.Overlay(0, 0, 100, 30, "")
-	}()
+	s.errorAt(1, proto.RuntimeCallFunctionOn{})
+	p.Overlay(0, 0, 100, 30, "")
 }
 
 func (s *S) TestConcurrentOperations() {

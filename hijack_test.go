@@ -69,7 +69,7 @@ func (s *S) TestHijack() {
 
 		// override response body
 		ctx.Response.SetBody([]byte("test"))
-		ctx.Response.SetBody(123)
+		ctx.Response.SetBody("test")
 		ctx.Response.SetBody(map[string]string{
 			"text": "test",
 		})
@@ -120,7 +120,7 @@ func (s *S) TestHijackContinue() {
 	func() { // test error log
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		defer s.errorAt(3, nil)()
+		s.errorAt(1, proto.FetchContinueRequest{})
 		go func() {
 			_ = s.page.Context(ctx).Navigate(url)
 		}()
@@ -156,11 +156,11 @@ func (s *S) TestHijackFailRequest() {
 
 	s.Equal("Failed to fetch", s.page.MustElement("body").MustText())
 
-	func() { // test error log
-		defer s.errorAt(3, nil)()
+	{ // test error log
+		s.errorAt(1, proto.FetchFailRequest{})
 		s.page.MustNavigate(url)
 		s.Error(<-err)
-	}()
+	}
 }
 
 func (s *S) TestHijackLoadResponseErr() {
@@ -218,13 +218,7 @@ func (s *S) TestHijackResponseErr() {
 		}
 
 		ctx.MustLoadResponse()
-		s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-			if method == (proto.FetchFulfillRequest{}).MethodName() {
-				return nil, errors.New("err")
-			}
-			return s.mockClient.principal.Call(ctx, sessionID, method, params)
-		})
-
+		s.errorAt(1, proto.FetchFulfillRequest{})
 	})
 
 	go router.Run()
@@ -232,7 +226,6 @@ func (s *S) TestHijackResponseErr() {
 	go func() { _ = p.Navigate(url) }()
 
 	wg.Wait()
-	s.mockClient.resetCall()
 }
 
 func (s *S) TestHandleAuth() {
@@ -259,20 +252,11 @@ func (s *S) TestHandleAuth() {
 	defer page.MustClose()
 	page.MustElementMatches("p", "ok")
 
-	func() {
-		wait := s.browser.HandleAuth("a", "b")
-		go func() { _, _ = s.browser.Page(url) }()
-
-		s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-			if method == (proto.FetchContinueRequest{}).MethodName() {
-				return nil, errors.New("err")
-			}
-			return s.mockClient.principal.Call(ctx, sessionID, method, params)
-		})
-		defer s.mockClient.resetCall()
-
-		s.Error(wait())
-	}()
+	wait := s.browser.HandleAuth("a", "b")
+	go func() { _, _ = s.browser.Page(url) }()
+	utils.Sleep(0.1)
+	s.errorAt(1, proto.FetchContinueRequest{})
+	s.Error(wait())
 }
 
 func (s *S) TestGetDownloadFile() {
@@ -298,11 +282,11 @@ func (s *S) TestGetDownloadFile() {
 		Transport: &MockRoundTripper{err: errors.New("err")},
 	})
 	page.MustElement("a").MustClick()
-	func() {
-		defer s.errorAt(1, nil)()
+	{
+		s.errorAt(1, proto.FetchEnable{})
 		_, _, err := waitErr()
 		s.Error(err)
-	}()
+	}
 	_, _, err := waitErr()
 	s.Error(err)
 }
@@ -339,7 +323,7 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 	s.Panics(func() {
 		wait = page.MustGetDownloadFile("data:*")
 		page.MustElement("#b").MustClick()
-		defer s.errorAt(2, nil)()
+		s.errorAt(1, proto.RuntimeCallFunctionOn{})
 		data = wait()
 	})
 }
