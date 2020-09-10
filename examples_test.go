@@ -70,6 +70,28 @@ func Example_basic() {
 	// after 0.5 seconds, the element is still not rendered
 }
 
+// Usage of timeout context
+func Example_timeout() {
+	page := rod.New().MustConnect().MustPage("https://github.com")
+
+	page.
+		// Set a 5-second timeout for all chained actions
+		Timeout(5 * time.Second).
+
+		// The total time for MustWaitLoad and MustElement must be less than 5 seconds
+		MustWaitLoad().
+		MustElement("title").
+
+		// Actions after CancelTimeout won't be affected by the 5-second timeout
+		CancelTimeout().
+
+		// Set a 10-second timeout for all chained actions
+		Timeout(10 * time.Second).
+
+		// Panics if it takes more than 10 seconds
+		MustText()
+}
+
 // Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
 // It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
 func Example_search() {
