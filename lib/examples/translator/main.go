@@ -13,13 +13,13 @@ func main() {
 
 	browser := rod.New().MustConnect()
 
-	page := browser.MustPage("https://www.bing.com/translator")
+	page := browser.MustPage("https://translate.google.com")
 
 	wait := page.MustWaitRequestIdle()
-	page.MustElement("#tta_input_ta").MustClick().MustInput(source)
+	page.MustElement("#source").MustInput(source)
 	wait()
 
-	result := page.MustElement("#tta_output_ta").MustText()
+	result := page.MustElement(".tlid-translation").MustText()
 
 	fmt.Println(result)
 }
