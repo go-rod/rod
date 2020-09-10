@@ -526,6 +526,13 @@ func (el *Element) MustShadowRoot() *Element {
 	return node
 }
 
+// MustFrame creates a page instance that represents the iframe
+func (el *Element) MustFrame() *Page {
+	p, err := el.Frame()
+	utils.E(err)
+	return p
+}
+
 // MustFocus sets focus on the specified element
 func (el *Element) MustFocus() *Element {
 	utils.E(el.Focus())

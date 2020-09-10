@@ -317,12 +317,18 @@ func (el *Element) ShadowRoot() (*Element, error) {
 }
 
 // Frame creates a page instance that represents the iframe
-func (el *Element) Frame() *Page {
+func (el *Element) Frame() (*Page, error) {
+	node, err := el.Describe(1, false)
+	if err != nil {
+		return nil, err
+	}
+
 	newPage := *el.page
+	newPage.FrameID = node.FrameID
 	newPage.element = el
 	newPage.jsHelperObjectID = ""
 	newPage.windowObjectID = ""
-	return &newPage
+	return &newPage, nil
 }
 
 // ContainsElement check if the target is equal or inside the element.
@@ -452,13 +458,8 @@ func (el *Element) Resource() ([]byte, error) {
 
 	defer el.page.EnableDomain(&proto.PageEnable{})()
 
-	frameID, err := el.page.frameID()
-	if err != nil {
-		return nil, err
-	}
-
 	res, err := proto.PageGetResourceContent{
-		FrameID: frameID,
+		FrameID: el.page.FrameID,
 		URL:     src.Value.String(),
 	}.Call(el)
 	if err != nil {
@@ -547,7 +548,10 @@ func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeR
 		}
 
 		for _, f := range list {
-			p := f.Frame()
+			p, err := f.Frame()
+			if err != nil {
+				return err
+			}
 
 			objID, err := p.resolveNode(nodeID)
 			if err != nil {

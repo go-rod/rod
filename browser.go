@@ -194,22 +194,25 @@ func (b *Browser) Close() error {
 // Page doc is similar to the method MustPage
 // If url is empty, the default target will be "about:blank".
 func (b *Browser) Page(url string) (*Page, error) {
-	if url == "" {
-		url = "about:blank"
-	}
-
-	req := proto.TargetCreateTarget{
-		URL: url,
-	}
-
-	req.BrowserContextID = b.BrowserContextID
-
-	target, err := req.Call(b)
+	target, err := proto.TargetCreateTarget{
+		URL:              "about:blank",
+		BrowserContextID: b.BrowserContextID,
+	}.Call(b)
 	if err != nil {
 		return nil, err
 	}
 
-	return b.PageFromTarget(target.TargetID)
+	p, err := b.PageFromTarget(target.TargetID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.Navigate(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }
 
 // Pages doc is similar to the method MustPages

@@ -32,6 +32,7 @@ type Page struct {
 
 	TargetID  proto.TargetTargetID
 	SessionID proto.TargetSessionID
+	FrameID   proto.PageFrameID
 
 	// devices
 	Mouse    *Mouse
@@ -127,6 +128,7 @@ func (p *Page) Navigate(url string) error {
 	if err != nil {
 		return err
 	}
+
 	res, err := proto.PageNavigate{URL: url}.Call(p)
 	if err != nil {
 		return err
@@ -134,6 +136,9 @@ func (p *Page) Navigate(url string) error {
 	if res.ErrorText != "" {
 		return newErr(ErrNavigation, res.ErrorText, res.ErrorText)
 	}
+
+	p.FrameID = res.FrameID
+
 	return nil
 }
 
@@ -681,16 +686,11 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 		return 0, nil
 	}
 
-	frameID, err := p.frameID()
-	if err != nil {
-		return 0, err
-	}
-
 	p.jsContextLock.Lock()
 	defer p.jsContextLock.Unlock()
 
 	if !force {
-		if ctxID, has := p.executionIDs[frameID]; has {
+		if ctxID, has := p.executionIDs[p.FrameID]; has {
 			_, err := proto.RuntimeEvaluate{ContextID: ctxID, Expression: `0`}.Call(p)
 			if err == nil {
 				return ctxID, nil
@@ -701,33 +701,16 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 	}
 
 	world, err := proto.PageCreateIsolatedWorld{
-		FrameID:   frameID,
+		FrameID:   p.FrameID,
 		WorldName: "rod_iframe_world",
 	}.Call(p)
 	if err != nil {
 		return 0, err
 	}
 
-	p.executionIDs[frameID] = world.ExecutionContextID
+	p.executionIDs[p.FrameID] = world.ExecutionContextID
 
 	return world.ExecutionContextID, nil
-}
-
-func (p *Page) frameID() (proto.PageFrameID, error) {
-	// this is the only way we can get the window object from the iframe
-	if p.IsIframe() {
-		node, err := p.element.Describe(1, false)
-		if err != nil {
-			return "", err
-		}
-		return node.FrameID, nil
-	}
-
-	res, err := proto.PageGetFrameTree{}.Call(p)
-	if err != nil {
-		return "", err
-	}
-	return res.FrameTree.Frame.ID, nil
 }
 
 func (p *Page) getWindowObjectID() proto.RuntimeRemoteObjectID {
