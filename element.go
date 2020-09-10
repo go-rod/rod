@@ -18,10 +18,8 @@ import (
 
 // Element represents the DOM element
 type Element struct {
-	ctx           context.Context
-	ctxCancel     func()
-	timeoutCancel func()
-	sleeper       func() utils.Sleeper
+	ctx     context.Context
+	sleeper func() utils.Sleeper
 
 	page *Page
 
@@ -513,13 +511,7 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 
 // Release doc is similar to the method MustRelease
 func (el *Element) Release() error {
-	err := el.page.Context(el.ctx, el.ctxCancel).Release(el.ObjectID)
-	if err != nil {
-		return err
-	}
-
-	el.ctxCancel()
-	return nil
+	return el.page.Context(el.ctx).Release(el.ObjectID)
 }
 
 // CallContext parameters for proto
@@ -534,7 +526,7 @@ func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteO
 
 // EvalWithOptions of Eval
 func (el *Element) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
-	return el.page.Context(el.ctx, el.ctxCancel).EvalWithOptions(opts.This(el.ObjectID))
+	return el.page.Context(el.ctx).EvalWithOptions(opts.This(el.ObjectID))
 }
 
 func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeRemoteObjectID) error {

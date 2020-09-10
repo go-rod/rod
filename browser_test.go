@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -82,8 +83,8 @@ func (s *S) TestBrowserPages() {
 func (s *S) TestBrowserClearStates() {
 	utils.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
 
-	defer s.browser.EnableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: true})()
-	s.browser.DisableDomain(s.browser.GetContext(), "", &proto.TargetSetDiscoverTargets{Discover: false})()
+	defer s.browser.EnableDomain("", &proto.TargetSetDiscoverTargets{Discover: true})()
+	s.browser.DisableDomain("", &proto.TargetSetDiscoverTargets{Discover: false})()
 }
 
 func (s *S) TestBrowserWaitEvent() {
@@ -95,20 +96,25 @@ func (s *S) TestBrowserWaitEvent() {
 }
 
 func (s *S) TestBrowserCrash() {
-	browser := rod.New().Timeout(1 * time.Minute).MustConnect()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	browser := rod.New().Context(ctx).MustConnect()
 	page := browser.MustPage("")
 
-	wait := browser.WaitEvent(&proto.PageFrameNavigated{})
 	go func() {
-		utils.Sleep(0.3)
-		_ = proto.BrowserCrash{}.Call(browser)
+		for e := range browser.Event().Subscribe(ctx) {
+			if e.(*cdp.Event).WebsocketErr() != nil {
+				cancel()
+			}
+		}
 	}()
+
+	_ = proto.BrowserCrash{}.Call(browser)
 
 	s.Panics(func() {
 		page.MustEval(`new Promise(() => {})`)
 	})
-
-	wait()
 }
 
 func (s *S) TestBrowserCall() {
@@ -151,8 +157,7 @@ func (s *S) TestRemoteLaunch() {
 	proxy := launcher.NewProxy()
 	mux.Handle("/", proxy)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	b := rod.New().Context(ctx, cancel).MustConnect()
+	b := rod.New().MustConnect()
 	defer b.MustClose()
 
 	p := b.MustPage(srcFile("fixtures/click.html"))
@@ -185,10 +190,10 @@ func (s *S) TestTrace() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	p.Context(ctx, cancel).Overlay(0, 0, 100, 100, "msg")
+	p.Context(ctx).Overlay(0, 0, 100, 100, "msg")
 	s.Error(errs[0])
 
-	el.Context(ctx, cancel).Trace("ok")
+	el.Context(ctx).Trace("ok")
 	s.Error(errs[1])
 
 	func() {
@@ -333,13 +338,13 @@ func (s *S) TestTry() {
 }
 
 func (s *S) TestBrowserOthers() {
-	s.browser.Timeout(time.Minute).CancelTimeout()
+	s.browser.Timeout(time.Hour).CancelTimeout().MustPages()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	s.Panics(func() {
-		s.browser.Context(ctx, cancel).MustIncognito()
+		s.browser.Context(ctx).MustIncognito()
 	})
 }
 
@@ -374,7 +379,7 @@ func (s *S) TestBrowserConnectErr() {
 
 	s.Panics(func() {
 		cancel()
-		rod.New().Context(ctx, cancel).MustConnect()
+		rod.New().Context(ctx).MustConnect()
 	})
 }
 

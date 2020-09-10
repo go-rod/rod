@@ -371,7 +371,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 
 	ctx, cancel := context.WithCancel(p.ctx)
 	downloading := &proto.PageDownloadWillBegin{}
-	waitDownload := p.Context(ctx, cancel).WaitEvent(downloading)
+	waitDownload := p.Context(ctx).WaitEvent(downloading)
 
 	return func() (http.Header, []byte, error) {
 		defer enable()
@@ -448,8 +448,8 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 // It will prevent the popup that requires user to input user name and password.
 // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 func (b *Browser) HandleAuth(username, password string) func() error {
-	enable := b.DisableDomain(b.ctx, "", &proto.FetchEnable{})
-	disable := b.EnableDomain(b.ctx, "", &proto.FetchEnable{
+	enable := b.DisableDomain("", &proto.FetchEnable{})
+	disable := b.EnableDomain("", &proto.FetchEnable{
 		HandleAuthRequests: true,
 	})
 

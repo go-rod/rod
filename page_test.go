@@ -119,8 +119,7 @@ func (s *S) TestLoadState() {
 }
 
 func (s *S) TestPageContext() {
-	p := s.page.Timeout(time.Minute).CancelTimeout()
-	s.Panics(func() { p.MustEval(`() => {}`) })
+	s.page.Timeout(time.Hour).CancelTimeout().MustEval(`1`)
 }
 
 func (s *S) TestRelease() {
@@ -364,7 +363,7 @@ func (s *S) TestPageWaitRequestIdle() {
 	defer close()
 
 	sleep := time.Second
-	timeout, cancel := context.WithTimeout(s.browser.GetContext(), sleep)
+	timeout, cancel := context.WithTimeout(context.Background(), sleep)
 	defer cancel()
 
 	mux.HandleFunc("/r1", func(w http.ResponseWriter, r *http.Request) {})
@@ -647,8 +646,6 @@ func (s *S) TestPageConsoleLog() {
 
 func (s *S) TestPageOthers() {
 	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
-
-	s.IsType(s.browser.GetContext(), p.GetContext())
 
 	s.Equal("body", p.MustElementByJS(`document.body`).MustDescribe().LocalName)
 	s.Len(p.MustElementsByJS(`document.querySelectorAll('input')`), 5)

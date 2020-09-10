@@ -118,11 +118,11 @@ func (s *S) TestHijackContinue() {
 	s.Equal("ok", s.page.MustElement("body").MustText())
 
 	func() { // test error log
-		ctx, cancel := context.WithCancel(s.browser.GetContext())
+		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 		defer s.errorAt(3, nil)()
 		go func() {
-			_ = s.page.Context(ctx, cancel).Navigate(url)
+			_ = s.page.Context(ctx).Navigate(url)
 		}()
 		wg.Wait()
 	}()
@@ -164,9 +164,9 @@ func (s *S) TestHijackFailRequest() {
 }
 
 func (s *S) TestHijackLoadResponseErr() {
-	ctx, cancel := context.WithCancel(s.browser.GetContext())
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	p := s.page.Context(ctx, cancel)
+	p := s.page.Context(ctx)
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -202,9 +202,9 @@ func (s *S) TestHijackResponseErr() {
 	// to simulate a backend server
 	mux.HandleFunc("/", httpHTML(`ok`))
 
-	ctx, cancel := context.WithCancel(s.browser.GetContext())
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	p := s.page.Context(ctx, cancel)
+	p := s.page.Context(ctx)
 	router := p.HijackRequests()
 	defer router.MustStop()
 

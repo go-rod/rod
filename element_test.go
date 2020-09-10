@@ -94,8 +94,8 @@ func (s *S) TestHover() {
 
 func (s *S) TestElementContext() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	el := p.MustElement("button").Timeout(time.Minute).CancelTimeout()
-	s.Error(el.Sleeper(rod.DefaultSleeper).Click(proto.InputMouseButtonLeft))
+	el := p.MustElement("button").Timeout(time.Hour).CancelTimeout()
+	el.Sleeper(rod.DefaultSleeper).MustClick()
 }
 
 func (s *S) TestIframes() {
@@ -395,7 +395,7 @@ func (s *S) TestWaitStable() {
 		utils.Sleep(0.2)
 		cancel()
 	}()
-	s.Error(el.Context(ctx, cancel).WaitStable(time.Minute))
+	s.Error(el.Context(ctx).WaitStable(time.Minute))
 
 	s.Panics(func() {
 		defer s.errorAt(2, nil)()
@@ -469,7 +469,7 @@ func (s *S) TestUseReleasedElement() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 	btn.MustRelease()
-	s.EqualError(btn.Click("left"), "context canceled")
+	s.Error(btn.Click("left"))
 
 	btn = p.MustElement("button")
 	utils.E(proto.RuntimeReleaseObject{ObjectID: btn.ObjectID}.Call(p))
@@ -520,7 +520,6 @@ func (s *S) TestElementEWithDepth() {
 func (s *S) TestElementOthers() {
 	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
-	s.IsType(p.GetContext(), el.GetContext())
 	el.MustFocus()
 	el.MustScrollIntoView()
 	s.EqualValues(784, el.MustBox().Width)
@@ -538,46 +537,46 @@ func (s *S) TestElementErrors() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
-	_, err := el.Context(ctx, cancel).Describe(-1, true)
+	_, err := el.Context(ctx).Describe(-1, true)
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Focus()
+	err = el.Context(ctx).Focus()
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Press('a')
+	err = el.Context(ctx).Press('a')
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Input("a")
+	err = el.Context(ctx).Input("a")
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Select([]string{"a"})
+	err = el.Context(ctx).Select([]string{"a"})
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).WaitStable(0)
+	err = el.Context(ctx).WaitStable(0)
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).Box()
+	_, err = el.Context(ctx).Box()
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).Resource()
+	_, err = el.Context(ctx).Resource()
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Input("a")
+	err = el.Context(ctx).Input("a")
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Input("a")
+	err = el.Context(ctx).Input("a")
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).HTML()
+	_, err = el.Context(ctx).HTML()
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).Visible()
+	_, err = el.Context(ctx).Visible()
 	s.Error(err)
 
-	_, err = el.Context(ctx, cancel).CanvasToImage("", 0)
+	_, err = el.Context(ctx).CanvasToImage("", 0)
 	s.Error(err)
 
-	err = el.Context(ctx, cancel).Release()
+	err = el.Context(ctx).Release()
 	s.Error(err)
 
 	s.Panics(func() {

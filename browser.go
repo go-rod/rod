@@ -31,10 +31,9 @@ var _ proto.Caller = &Browser{}
 // https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 type Browser struct {
 	// these are the handler for ctx
-	ctx           context.Context
-	ctxCancel     func()
-	timeoutCancel func()
-	sleeper       func() utils.Sleeper
+	ctx     context.Context
+	close   func()
+	sleeper func() utils.Sleeper
 
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
@@ -60,7 +59,11 @@ type Browser struct {
 
 // New creates a controller
 func New() *Browser {
-	b := &Browser{
+	ctx, cancel := context.WithCancel(context.Background())
+
+	return &Browser{
+		ctx:         ctx,
+		close:       cancel,
 		sleeper:     DefaultSleeper,
 		slowmotion:  defaults.Slow,
 		quiet:       defaults.Quiet,
@@ -77,9 +80,6 @@ func New() *Browser {
 		targetsLock: &sync.Mutex{},
 		states:      &sync.Map{},
 	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	return b.Context(ctx, cancel)
 }
 
 // Incognito creates a new incognito browser
@@ -187,7 +187,7 @@ func (b *Browser) Connect() (err error) {
 
 // Close doc is similar to the method MustClose
 func (b *Browser) Close() error {
-	defer b.ctxCancel()
+	defer b.close()
 	return proto.BrowserClose{}.Call(b)
 }
 
@@ -281,7 +281,7 @@ func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID
 		} else {
 			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Payload)
 		}
-		info.recover = b.EnableDomain(ctx, sessionID, enable)
+		info.recover = b.Context(ctx).EnableDomain(sessionID, enable)
 
 		argInfos = append(argInfos, info)
 	}
@@ -371,7 +371,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		browser:       b,
 		TargetID:      targetID,
 		executionIDs:  map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
-	}).Context(context.WithCancel(b.ctx))
+	}).Context(b.ctx)
 
 	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: utils.RandString(8)}
 	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
@@ -402,11 +402,6 @@ func (b *Browser) initEvents() {
 			case <-b.ctx.Done():
 				return
 			case msg := <-b.client.Event():
-				if msg.WebsocketErr() != nil {
-					b.ctxCancel()
-					return
-				}
-
 				b.event.Publish(msg)
 			}
 		}

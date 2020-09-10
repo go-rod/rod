@@ -25,10 +25,8 @@ var _ proto.Caller = &Page{}
 // We try to hold as less states as possible
 type Page struct {
 	// these are the handler for ctx
-	ctx           context.Context
-	ctxCancel     func()
-	timeoutCancel func()
-	sleeper       func() utils.Sleeper
+	ctx     context.Context
+	sleeper func() utils.Sleeper
 
 	browser *Browser
 
@@ -212,7 +210,6 @@ func (p *Page) Close() error {
 
 	p.cleanupStates()
 
-	p.ctxCancel()
 	return nil
 }
 
@@ -281,7 +278,7 @@ func (p *Page) PDF(req *proto.PagePrintToPDF) ([]byte, error) {
 
 // WaitOpen doc is similar to the method MustWaitPage
 func (p *Page) WaitOpen() func() (*Page, error) {
-	b := p.browser.Context(p.ctx, p.ctxCancel)
+	b := p.browser.Context(p.ctx)
 	var targetID proto.TargetTargetID
 
 	wait := b.EachEvent(func(e *proto.TargetTargetCreated) bool {
@@ -308,7 +305,7 @@ func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error,
 		AutoAttach:             true,
 		WaitForDebuggerOnStart: true,
 		Flatten:                true,
-	}.Call(p.browser.Context(p.ctx, p.ctxCancel))
+	}.Call(p.browser.Context(p.ctx))
 	if err != nil {
 		return
 	}
@@ -316,7 +313,7 @@ func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error,
 	resume = func() error {
 		err = proto.TargetSetAutoAttach{
 			Flatten: true,
-		}.Call(p.browser.Context(p.ctx, p.ctxCancel))
+		}.Call(p.browser.Context(p.ctx))
 		if err != nil {
 			return err
 		}
@@ -566,7 +563,7 @@ func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
 		sleeper:  p.sleeper,
 		page:     p,
 		ObjectID: id,
-	}).Context(context.WithCancel(p.ctx))
+	}).Context(p.ctx)
 }
 
 // ElementFromNode creates an Element from the node id

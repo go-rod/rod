@@ -7,30 +7,30 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Context creates a clone with a context that inherits the previous one
-func (b *Browser) Context(ctx context.Context, cancel func()) *Browser {
-	newObj := *b
-	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
-	return &newObj
+type timeoutContextKey struct{}
+type timeoutContextVal struct {
+	parent context.Context
+	cancel context.CancelFunc
 }
 
-// GetContext returns the current context
-func (b *Browser) GetContext() context.Context {
-	return b.ctx
+// Context creates a clone with a context that inherits the previous one
+func (b *Browser) Context(ctx context.Context) *Browser {
+	newObj := *b
+	newObj.ctx = ctx
+	return &newObj
 }
 
 // Timeout for chained sub-operations
 func (b *Browser) Timeout(d time.Duration) *Browser {
 	ctx, cancel := context.WithTimeout(b.ctx, d)
-	b.timeoutCancel = cancel
-	return b.Context(ctx, cancel)
+	return b.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{b.ctx, cancel}))
 }
 
-// CancelTimeout context
+// CancelTimeout context and reset the context to previous one
 func (b *Browser) CancelTimeout() *Browser {
-	b.timeoutCancel()
-	return b
+	val := b.ctx.Value(timeoutContextKey{}).(*timeoutContextVal)
+	val.cancel()
+	return b.Context(val.parent)
 }
 
 // Sleeper for chained sub-operations
@@ -41,29 +41,23 @@ func (b *Browser) Sleeper(sleeper func() utils.Sleeper) *Browser {
 }
 
 // Context creates a clone with a context that inherits the previous one
-func (p *Page) Context(ctx context.Context, cancel func()) *Page {
+func (p *Page) Context(ctx context.Context) *Page {
 	newObj := *p
 	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
 	return &newObj
-}
-
-// GetContext returns the current context
-func (p *Page) GetContext() context.Context {
-	return p.ctx
 }
 
 // Timeout for chained sub-operations
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
-	p.timeoutCancel = cancel
-	return p.Context(ctx, cancel)
+	return p.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{p.ctx, cancel}))
 }
 
-// CancelTimeout context
+// CancelTimeout context and reset the context to previous one
 func (p *Page) CancelTimeout() *Page {
-	p.timeoutCancel()
-	return p
+	val := p.ctx.Value(timeoutContextKey{}).(*timeoutContextVal)
+	val.cancel()
+	return p.Context(val.parent)
 }
 
 // Sleeper for chained sub-operations
@@ -74,29 +68,23 @@ func (p *Page) Sleeper(sleeper func() utils.Sleeper) *Page {
 }
 
 // Context creates a clone with a context that inherits the previous one
-func (el *Element) Context(ctx context.Context, cancel func()) *Element {
+func (el *Element) Context(ctx context.Context) *Element {
 	newObj := *el
 	newObj.ctx = ctx
-	newObj.ctxCancel = cancel
 	return &newObj
-}
-
-// GetContext returns the current context
-func (el *Element) GetContext() context.Context {
-	return el.ctx
 }
 
 // Timeout for chained sub-operations
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
-	el.timeoutCancel = cancel
-	return el.Context(ctx, cancel)
+	return el.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{el.ctx, cancel}))
 }
 
-// CancelTimeout context
+// CancelTimeout context and reset the context to previous one
 func (el *Element) CancelTimeout() *Element {
-	el.timeoutCancel()
-	return el
+	val := el.ctx.Value(timeoutContextKey{}).(*timeoutContextVal)
+	val.cancel()
+	return el.Context(val.parent)
 }
 
 // Sleeper for chained sub-operations

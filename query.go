@@ -382,5 +382,5 @@ func (el *Element) ElementsX(xpath string) (Elements, error) {
 
 // ElementsByJS doc is similar to the method MustElementsByJS
 func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
-	return el.page.Context(el.ctx, el.ctxCancel).Sleeper(nil).ElementsByJS(opts.This(el.ObjectID))
+	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.ObjectID))
 }
