@@ -172,7 +172,10 @@ func (l *Launcher) Bin(path string) *Launcher {
 	return l
 }
 
-// Headless switch
+// Headless switch. When disabled leakless will be disabled.
+// Because on head mode you usually can see the browser icon on the OS's taskbar,
+// we don't need leakless to kill browser on exit, it won't cause hidden leak.
+// The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Headless(enable bool) *Launcher {
 	if enable {
 		l.Set("headless")
