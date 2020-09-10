@@ -25,7 +25,7 @@ jobs:
       - name: test
         run: |
           go generate
-          godev -m 95
+          godev -m 100
 
       - uses: codecov/codecov-action@v1
 

@@ -113,6 +113,23 @@ func serveStatic() (string, func()) {
 	return u + "/", close
 }
 
+type MockRoundTripper struct {
+	res *http.Response
+	err error
+}
+
+func (mrt *MockRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
+	return mrt.res, mrt.err
+}
+
+type MockReader struct {
+	err error
+}
+
+func (mr *MockReader) Read(p []byte) (n int, err error) {
+	return 0, mr.err
+}
+
 type Call func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 
 var _ rod.Client = &MockClient{}

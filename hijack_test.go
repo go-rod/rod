@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -40,7 +41,12 @@ func (s *S) TestHijack() {
 		r := ctx.Request
 		r.Req().URL = r.Req().URL            // override request url
 		r.Req().Header.Set("Test", "header") // override request header
+		r.SetBody([]byte("test"))            // override request body
+		r.SetBody(123)                       // override request body
 		r.SetBody(r.Body())                  // override request body
+
+		s.Equal(http.MethodPost, r.Method())
+		s.Equal(url+"/a", r.URL().String())
 
 		s.Equal(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		s.Contains(ctx.Request.Header("Origin"), url)
@@ -62,9 +68,11 @@ func (s *S) TestHijack() {
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
 
 		// override response body
-		ctx.Response.SetBody(utils.MustToJSON(map[string]string{
-			"text": ctx.Response.Body(),
-		}))
+		ctx.Response.SetBody([]byte("test"))
+		ctx.Response.SetBody(123)
+		ctx.Response.SetBody(map[string]string{
+			"text": "test",
+		})
 
 		s.Equal("{\"text\":\"test\"}", ctx.Response.Body())
 	})
@@ -155,6 +163,78 @@ func (s *S) TestHijackFailRequest() {
 	}()
 }
 
+func (s *S) TestHijackLoadResponseErr() {
+	ctx, cancel := context.WithCancel(s.browser.GetContext())
+	defer cancel()
+	p := s.page.Context(ctx, cancel)
+	router := p.HijackRequests()
+	defer router.MustStop()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		s.Error(ctx.LoadResponse(&http.Client{
+			Transport: &MockRoundTripper{err: errors.New("err")},
+		}, true))
+
+		s.Error(ctx.LoadResponse(&http.Client{
+			Transport: &MockRoundTripper{res: &http.Response{
+				StatusCode: 200,
+				Body:       ioutil.NopCloser(&MockReader{err: errors.New("err")}),
+			}},
+		}, true))
+
+		wg.Done()
+	})
+
+	go router.Run()
+
+	go func() { _ = p.Navigate(srcFile("./fixtures/click.html")) }()
+
+	wg.Wait()
+}
+
+func (s *S) TestHijackResponseErr() {
+	url, mux, close := utils.Serve("")
+	defer close()
+
+	// to simulate a backend server
+	mux.HandleFunc("/", httpHTML(`ok`))
+
+	ctx, cancel := context.WithCancel(s.browser.GetContext())
+	defer cancel()
+	p := s.page.Context(ctx, cancel)
+	router := p.HijackRequests()
+	defer router.MustStop()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		ctx.OnError = func(err error) {
+			s.Error(err)
+			wg.Done()
+		}
+
+		ctx.MustLoadResponse()
+		s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+			if method == (proto.FetchFulfillRequest{}).MethodName() {
+				return nil, errors.New("err")
+			}
+			return s.mockClient.principal.Call(ctx, sessionID, method, params)
+		})
+
+	})
+
+	go router.Run()
+
+	go func() { _ = p.Navigate(url) }()
+
+	wg.Wait()
+	s.mockClient.resetCall()
+}
+
 func (s *S) TestHandleAuth() {
 	url, mux, close := utils.Serve("")
 	defer close()
@@ -178,6 +258,21 @@ func (s *S) TestHandleAuth() {
 	page := s.browser.MustPage(url)
 	defer page.MustClose()
 	page.MustElementMatches("p", "ok")
+
+	func() {
+		wait := s.browser.HandleAuth("a", "b")
+		go func() { _, _ = s.browser.Page(url) }()
+
+		s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+			if method == (proto.FetchContinueRequest{}).MethodName() {
+				return nil, errors.New("err")
+			}
+			return s.mockClient.principal.Call(ctx, sessionID, method, params)
+		})
+		defer s.mockClient.resetCall()
+
+		s.Error(wait())
+	}()
 }
 
 func (s *S) TestGetDownloadFile() {
@@ -198,6 +293,18 @@ func (s *S) TestGetDownloadFile() {
 	data := wait()
 
 	s.Equal(content, string(data))
+
+	waitErr := page.GetDownloadFile(url+"/d", "", &http.Client{
+		Transport: &MockRoundTripper{err: errors.New("err")},
+	})
+	page.MustElement("a").MustClick()
+	func() {
+		defer s.errorAt(1, nil)()
+		_, _, err := waitErr()
+		s.Error(err)
+	}()
+	_, _, err := waitErr()
+	s.Error(err)
 }
 
 func (s *S) TestGetDownloadFileFromDataURI() {
@@ -228,6 +335,13 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 	page.MustElement("#b").MustClick()
 	data = wait()
 	s.Equal("test blob", string(data))
+
+	s.Panics(func() {
+		wait = page.MustGetDownloadFile("data:*")
+		page.MustElement("#b").MustClick()
+		defer s.errorAt(2, nil)()
+		data = wait()
+	})
 }
 
 func (s *S) TestGetDownloadFileWithHijack() {

@@ -395,10 +395,6 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 
 			ctx.Skip = true
 
-			ctx.OnError = func(e error) {
-				err = e
-			}
-
 			err = ctx.LoadResponse(client, true)
 			if err != nil {
 				return
