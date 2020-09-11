@@ -456,8 +456,6 @@ func (el *Element) Resource() ([]byte, error) {
 		return nil, err
 	}
 
-	defer el.page.EnableDomain(&proto.PageEnable{})()
-
 	res, err := proto.PageGetResourceContent{
 		FrameID: el.page.FrameID,
 		URL:     src.Value.String(),
