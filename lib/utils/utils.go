@@ -18,6 +18,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -46,11 +47,11 @@ func SDump(v interface{}) string {
 
 // Dump values to logger
 func Dump(list ...interface{}) {
-	out := ""
+	out := []string{}
 	for _, v := range list {
-		out += SDump(v)
+		out = append(out, SDump(v))
 	}
-	log.Println(out)
+	log.Println(strings.Join(out, " "))
 }
 
 // S Template render, the params is key-value pairs
