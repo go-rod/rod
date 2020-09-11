@@ -11,7 +11,7 @@ import (
 func main() {
 	// Launch browser remotely
 	// docker run -p 9222:9222 rodorg/rod
-	l := launcher.NewRemote("ws://digto.org:9222")
+	l := launcher.NewRemote("ws://localhost:9222")
 
 	// Manipulate flags like the example in examples_test.go
 	l.Set("window-size", "1920,1080").Delete("any-flag")
