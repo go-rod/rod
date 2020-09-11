@@ -33,6 +33,13 @@ func NewRemote(remoteURL string) *Launcher {
 	return l
 }
 
+// KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
+func (l *Launcher) KeepUserDataDir() *Launcher {
+	l.mustRemote()
+	l.Set("keep-user-data-dir")
+	return l
+}
+
 // JSON serialization
 func (l *Launcher) JSON() []byte {
 	return utils.MustToJSONBytes(l)
@@ -97,7 +104,9 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		l.kill()
 
-		l.Cleanup()
+		if _, has := l.Get("keep-user-data-dir"); !has {
+			l.Cleanup()
+		}
 	}()
 
 	parsedURL, err := url.Parse(u)
