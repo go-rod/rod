@@ -108,18 +108,18 @@ func Example_search() {
 	// Output: CodeMirror cm-s-default CodeMirror-wrap
 }
 
-// Example_headless_with_debug shows how we can start a browser with debug
-// information and headless mode disabled to show the browser in the foreground.
-// Rod provides a lot of debug options, you can use the Set method to enable
-// them or use environment variables. (Default environment variables can be
-// found in "lib/defaults").
-func Example_headless_with_debug() {
+// Shows how we can start a browser with debug information and headless mode disabled to develop.
+// Rod provides a lot of debug options, you can set them with setter methods or use environment variables.
+// Doc for environment variables: https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
+func Example_disable_headless_to_debug() {
 	// Headless runs the browser on foreground, you can also use env "rod=show"
 	// Devtools opens the tab in each new tab opened automatically
 	l := launcher.New().
 		Headless(false).
 		Devtools(true)
+
 	defer l.Cleanup()
+
 	url := l.MustLaunch()
 
 	// Trace shows verbose debug information for each action executed
