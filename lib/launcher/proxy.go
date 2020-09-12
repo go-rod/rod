@@ -3,6 +3,8 @@ package launcher
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -13,6 +15,8 @@ import (
 
 // HeaderName for remote launch
 const HeaderName = "Rod-Launcher"
+
+const flagKeepUserDataDir = "rod-keep-user-data-dir"
 
 // NewRemote create a Launcher instance from remote defaults. You must use it with launch.NewProxy or
 // use the docker image mentioned from here: https://github.com/go-rod/rod/blob/master/lib/examples/remote-launch
@@ -36,7 +40,7 @@ func NewRemote(remoteURL string) *Launcher {
 // KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
 func (l *Launcher) KeepUserDataDir() *Launcher {
 	l.mustRemote()
-	l.Set("keep-user-data-dir")
+	l.Set(flagKeepUserDataDir)
 	return l
 }
 
@@ -65,7 +69,7 @@ func (l *Launcher) mustRemote() {
 // The websocket header "Rod-Launcher" holds the options to launch browser.
 // If the websocket is closed, the browser will be killed.
 type Proxy struct {
-	Log func(string)
+	Logger io.Writer
 }
 
 var _ http.Handler = &Proxy{}
@@ -73,7 +77,7 @@ var _ http.Handler = &Proxy{}
 // NewProxy instance
 func NewProxy() *Proxy {
 	return &Proxy{
-		Log: func(s string) {},
+		Logger: ioutil.Discard,
 	}
 }
 
@@ -92,7 +96,7 @@ func (p *Proxy) defaults(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
-	l := New().Log(p.Log)
+	l := New()
 
 	options := r.Header.Get(HeaderName)
 	if options != "" {
@@ -104,16 +108,18 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		l.kill()
 
-		if _, has := l.Get("keep-user-data-dir"); !has {
+		if _, has := l.Get(flagKeepUserDataDir); !has {
 			l.Cleanup()
+			dir, _ := l.Get("user-data-dir")
+			_, _ = fmt.Fprintln(p.Logger, "Removed", dir)
 		}
 	}()
 
 	parsedURL, err := url.Parse(u)
 	utils.E(err)
 
-	p.Log(fmt.Sprintln("Launch", u, l.FormatArgs()))
-	defer func() { p.Log(fmt.Sprintln("Close", u)) }()
+	_, _ = fmt.Fprintln(p.Logger, "Launch", u, l.FormatArgs())
+	defer func() { _, _ = fmt.Fprintln(p.Logger, "Close", u) }()
 
 	parsedWS, err := url.Parse(u)
 	utils.E(err)

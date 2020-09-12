@@ -2,24 +2,45 @@ package launcher_test
 
 import (
 	"context"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
-	"syscall"
 	"testing"
 
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/goleak"
 )
 
+func TestMain(m *testing.M) {
+	// to prevent false positive of goleak
+	http.DefaultClient = &http.Client{
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+		},
+	}
+
+	goleak.VerifyTestMain(
+		m,
+		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.sigChildHandler"),
+		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.reapChildren"),
+	)
+}
+
 func TestDownload(t *testing.T) {
+	skipDownload(t)
+
 	c := launcher.NewBrowser()
 	utils.E(c.Download())
 	assert.FileExists(t, c.ExecPath())
 }
 
 func TestDownloadWithMirror(t *testing.T) {
+	skipDownload(t)
+
 	c := launcher.NewBrowser()
 	c.Hosts = []string{"https://github.com", launcher.HostTaobao}
 	c.Dir = filepath.Join("tmp", "browser-from-mirror", utils.RandString(8))
@@ -40,16 +61,16 @@ func TestDownloadWithMirror(t *testing.T) {
 
 func TestLaunch(t *testing.T) {
 	l := launcher.New()
-	defer func() { killTree(l.PID()) }()
+	defer func() { kill(l.PID()) }()
 
 	url := l.MustLaunch()
 
-	assert.NotEmpty(t, url)
+	assert.Regexp(t, `\Aws://.+\z`, url)
 }
 
 func TestLaunchUserMode(t *testing.T) {
 	l := launcher.NewUserMode()
-	defer func() { killTree(l.PID()) }()
+	defer func() { kill(l.PID()) }()
 
 	_, has := l.Get("not-exists")
 	assert.False(t, has)
@@ -63,7 +84,7 @@ func TestLaunchUserMode(t *testing.T) {
 	port := 58472
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
-		Log(func(s string) { utils.E(os.Stdout.WriteString(s)) }).
+		Logger(ioutil.Discard).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).
@@ -106,8 +127,16 @@ func TestLaunchErr(t *testing.T) {
 	})
 }
 
-func killTree(pid int) {
-	group, _ := os.FindProcess(-1 * pid)
+func skipDownload(t *testing.T) {
+	_, skipDownload := os.LookupEnv("skip_download")
 
-	_ = group.Signal(syscall.SIGTERM)
+	if skipDownload {
+		t.SkipNow()
+	}
+}
+
+func kill(pid int) {
+	ps, err := os.FindProcess(pid)
+	utils.E(err)
+	utils.E(ps.Kill())
 }

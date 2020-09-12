@@ -200,7 +200,7 @@ func (s *S) stubCounter() {
 		l.Lock()
 		mCount[method]++
 		m := fmt.Sprintf("%d, proto.%s{}", mCount[method], proto.GetType(method).Name())
-		utils.E(fmt.Fprintln(os.Stdout, "[stubCounter]", m))
+		_, _ = fmt.Fprintln(os.Stdout, "[stubCounter]", m)
 		l.Unlock()
 
 		return s.mockClient.principal.Call(ctx, sessionID, method, params)

@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -16,28 +15,37 @@ import (
 var isInDocker = utils.FileExists("/.dockerenv")
 
 type progresser struct {
-	size  int
-	count int
-	r     io.Reader
-	log   func(string)
-	last  time.Time
+	size   int
+	count  int
+	r      io.Reader
+	logger io.Writer
+	last   time.Time
 }
 
 func (p *progresser) Read(buf []byte) (n int, err error) {
 	n, err = p.r.Read(buf)
-	if err == io.EOF {
-		p.log("\r\n")
-		return
+	if err != nil {
+		return 0, err
+	}
+
+	if p.count == 0 {
+		_, _ = fmt.Fprint(p.logger, "[rod/lib/launcher] Progress:")
 	}
 
 	p.count += n
+
+	if p.count == p.size {
+		_, _ = fmt.Fprintln(p.logger, " 100%")
+		return
+	}
 
 	if time.Since(p.last) < time.Second {
 		return
 	}
 
 	p.last = time.Now()
-	p.log(fmt.Sprintf("%02d%% ", p.count*100/p.size))
+	_, _ = fmt.Fprintf(p.logger, " %02d%%", p.count*100/p.size)
+
 	return
 }
 
@@ -61,18 +69,28 @@ func toWS(u url.URL) *url.URL {
 	return &newURL
 }
 
-func unzip(from, to string) (err error) {
+func unzip(logger io.Writer, from, to string) (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = e.(error)
 		}
 	}()
 
+	_, _ = fmt.Fprintln(logger, "[rod/lib/launcher] Unzip to:", to)
+	defer func() { _, _ = fmt.Fprintln(logger) }()
+
 	zr, err := zip.OpenReader(from)
 	utils.E(err)
 
 	err = utils.Mkdir(to, nil)
 	utils.E(err)
+
+	size := 0
+	for _, f := range zr.File {
+		size += int(f.FileInfo().Size())
+	}
+
+	progress := &progresser{size: size, logger: logger}
 
 	for _, f := range zr.File {
 		p := filepath.Join(to, f.Name)
@@ -86,13 +104,12 @@ func unzip(from, to string) (err error) {
 		r, err := f.Open()
 		utils.E(err)
 
-		data, err := ioutil.ReadAll(r)
-		utils.E(err)
+		progress.r = r
 
 		dst, err := os.OpenFile(p, os.O_CREATE|os.O_RDWR, f.Mode())
 		utils.E(err)
 
-		_, err = dst.Write(data)
+		_, err = io.Copy(dst, progress)
 		utils.E(err)
 
 		err = dst.Close()

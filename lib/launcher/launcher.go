@@ -1,17 +1,13 @@
 package launcher
 
 import (
-	"bufio"
 	"context"
 	"errors"
-	"fmt"
 	"io"
-	"net/http"
-	"net/url"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -20,17 +16,21 @@ import (
 	"github.com/ysmood/leakless"
 )
 
+const (
+	flagWorkingDir = "rod-working-dir"
+	flagEnv        = "rod-env"
+)
+
 // Launcher is a helper to launch browser binary smartly
 type Launcher struct {
+	logger    io.Writer
 	ctx       context.Context
 	ctxCancel func()
+	browser   *Browser
 	bin       string
-	dir       string
-	env       []string
 	url       string
-	log       func(string)
+	parser    *URLParser
 	Flags     map[string][]string `json:"flags"`
-	output    chan string
 	pid       int
 	exit      chan struct{}
 	remote    bool // remote mode or not
@@ -95,11 +95,12 @@ func New() *Launcher {
 		ctx:       ctx,
 		ctxCancel: cancel,
 		Flags:     defaultFlags,
-		output:    make(chan string),
 		exit:      make(chan struct{}),
+		browser:   NewBrowser(),
 		bin:       defaults.Bin,
-		env:       os.Environ(),
+		parser:    NewURLParser(),
 		reap:      true,
+		logger:    ioutil.Discard,
 	}
 }
 
@@ -115,8 +116,10 @@ func NewUserMode() *Launcher {
 			"remote-debugging-port":  {"37712"},
 			"disable-blink-features": {"AutomationControlled"},
 		},
-		output: make(chan string),
-		exit:   make(chan struct{}),
+		exit:    make(chan struct{}),
+		browser: NewBrowser(),
+		parser:  NewURLParser(),
+		logger:  ioutil.Discard,
 	}
 }
 
@@ -159,8 +162,7 @@ func (l *Launcher) Append(name string, values ...string) *Launcher {
 	if !has {
 		flags = []string{}
 	}
-	l.Set(name, append(flags, values...)...)
-	return l
+	return l.Set(name, append(flags, values...)...)
 }
 
 // Delete flag
@@ -181,21 +183,17 @@ func (l *Launcher) Bin(path string) *Launcher {
 // The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Headless(enable bool) *Launcher {
 	if enable {
-		l.Set("headless")
-	} else {
-		l.Delete("headless")
+		return l.Set("headless")
 	}
-	return l
+	return l.Delete("headless")
 }
 
 // Devtools switch to auto open devtools for each tab
 func (l *Launcher) Devtools(autoOpenForTabs bool) *Launcher {
 	if autoOpenForTabs {
-		l.Set("auto-open-devtools-for-tabs")
-	} else {
-		l.Delete("auto-open-devtools-for-tabs")
+		return l.Set("auto-open-devtools-for-tabs")
 	}
-	return l
+	return l.Delete("auto-open-devtools-for-tabs")
 }
 
 // UserDataDir is where the browser will look for all of its state, such as cookie and cache.
@@ -211,22 +209,19 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 
 // RemoteDebuggingPort arg
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
-	l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
-	return l
+	return l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
 }
 
 // WorkingDir to launch the browser process.
 func (l *Launcher) WorkingDir(path string) *Launcher {
-	l.dir = path
-	return l
+	return l.Set(flagWorkingDir, path)
 }
 
 // Env to launch the browser process. The default value is os.Environ().
 // Usually you use it to set the timezone env. Such as Env("TZ=America/New_York").
 // Timezone list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 func (l *Launcher) Env(env ...string) *Launcher {
-	l.env = env
-	return l
+	return l.Set(flagEnv, env...)
 }
 
 // FormatArgs returns the formated arg list for cli
@@ -234,6 +229,10 @@ func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
 	for k, v := range l.Flags {
 		if k == "" {
+			continue
+		}
+
+		if strings.HasPrefix(k, "rod-") {
 			continue
 		}
 
@@ -253,9 +252,9 @@ func (l *Launcher) FormatArgs() []string {
 	return append(execArgs, l.Flags[""]...)
 }
 
-// Log function to handle stdout and stderr from browser
-func (l *Launcher) Log(log func(string)) *Launcher {
-	l.log = log
+// Logger to handle stdout and stderr from browser
+func (l *Launcher) Logger(w io.Writer) *Launcher {
+	l.logger = w
 	return l
 }
 
@@ -275,26 +274,16 @@ func (l *Launcher) MustLaunch() string {
 }
 
 // Launch doc is similar to the method MustLaunch
-func (l *Launcher) Launch() (wsURL string, err error) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = e.(error)
-		}
-	}()
-
+func (l *Launcher) Launch() (string, error) {
 	if l.reap {
 		runReaper()
 	}
 
 	defer l.ctxCancel()
 
-	bin := l.bin
-	if bin == "" {
-		var err error
-		b := NewBrowser()
-		b.Context = l.ctx
-		bin, err = b.Get()
-		utils.E(err)
+	bin, err := l.getBin()
+	if err != nil {
+		return "", err
 	}
 
 	var ll *leakless.Launcher
@@ -314,42 +303,21 @@ func (l *Launcher) Launch() (wsURL string, err error) {
 		cmd = exec.Command(bin, l.FormatArgs()...)
 	}
 
-	stdout, err := cmd.StdoutPipe()
-	utils.E(err)
-	defer func() {
-		if l.log == nil {
-			_ = stdout.Close()
-		}
-	}()
-
-	stderr, err := cmd.StderrPipe()
-	utils.E(err)
-	defer func() {
-		if l.log == nil {
-			_ = stderr.Close()
-		}
-	}()
-
-	cmd.Dir = l.dir
-	cmd.Env = l.env
+	l.setupCmd(cmd)
 
 	err = cmd.Start()
-	utils.E(err)
+	if err != nil {
+		return "", err
+	}
 
 	if headless {
-		select {
-		case pid := <-ll.Pid():
-			l.pid = pid
-			if ll.Err() != "" {
-				return "", errors.New(ll.Err())
-			}
+		l.pid = <-ll.Pid()
+		if ll.Err() != "" {
+			return "", errors.New(ll.Err())
 		}
 	} else {
 		l.pid = cmd.Process.Pid
 	}
-
-	go l.read(stdout)
-	go l.read(stderr)
 
 	go func() {
 		_ = cmd.Wait()
@@ -365,6 +333,42 @@ func (l *Launcher) Launch() (wsURL string, err error) {
 	return GetWebSocketDebuggerURL(u)
 }
 
+func (l *Launcher) setupCmd(cmd *exec.Cmd) {
+	dir, _ := l.Get(flagWorkingDir)
+	env, _ := l.GetFlags(flagEnv)
+	cmd.Dir = dir
+	cmd.Env = env
+
+	r, w := io.Pipe()
+	cmd.Stdout = w
+	cmd.Stderr = w
+	go func() { _, _ = io.Copy(io.MultiWriter(l.logger, l.parser), r) }()
+	go func() {
+		<-l.ctx.Done()
+		_ = r.CloseWithError(io.EOF)
+		_ = w.CloseWithError(io.EOF)
+	}()
+}
+
+func (l *Launcher) getBin() (string, error) {
+	if l.bin == "" {
+		l.browser.Context = l.ctx
+		return l.browser.Get()
+	}
+	return l.bin, nil
+}
+
+func (l *Launcher) getURL() (u string, err error) {
+	select {
+	case <-l.ctx.Done():
+		err = l.ctx.Err()
+	case u = <-l.parser.URL:
+	case <-l.exit:
+		err = errors.New("[launcher] Failed to get the debug url")
+	}
+	return
+}
+
 // PID returns the browser process pid
 func (l *Launcher) PID() int {
 	return l.pid
@@ -375,10 +379,6 @@ func (l *Launcher) Cleanup() {
 	<-l.exit
 
 	dir, _ := l.Get("user-data-dir")
-	if l.log != nil {
-		l.log(fmt.Sprintln("Remove", dir))
-	}
-
 	_ = os.RemoveAll(dir)
 }
 
@@ -387,71 +387,4 @@ func (l *Launcher) kill() {
 	if err == nil {
 		_ = p.Kill()
 	}
-}
-
-func (l *Launcher) read(reader io.Reader) {
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		if l.log != nil {
-			l.log(scanner.Text() + "\n")
-		}
-		select {
-		case <-l.ctx.Done():
-			if l.log == nil {
-				return
-			}
-		case l.output <- scanner.Text() + "\n":
-		}
-	}
-}
-
-// ReadURL from browser stderr
-func (l *Launcher) getURL() (u string, err error) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = e.(error)
-		}
-	}()
-
-	out := ""
-
-	for {
-		select {
-		case <-l.ctx.Done():
-			utils.E(l.ctx.Err())
-		case e := <-l.output:
-			out += e
-
-			if strings.Contains(out, "Opening in existing browser session") {
-				utils.E(errors.New("[launcher] Quit the current running browser first"))
-			}
-
-			str := regexp.MustCompile(`ws://.+/`).FindString(out)
-			if str != "" {
-				u, err := url.Parse(strings.TrimSpace(str))
-				utils.E(err)
-				return "http://" + u.Host, nil
-			}
-		case <-l.exit:
-			utils.E(errors.New("[launcher] Failed to get the debug url: " + out))
-		}
-	}
-}
-
-// GetWebSocketDebuggerURL from browser remote url
-func GetWebSocketDebuggerURL(u string) (string, error) {
-	parsed, err := url.Parse(u)
-	if err != nil {
-		return "", err
-	}
-
-	parsed = toHTTP(*parsed)
-	parsed.Path = "/json/version"
-
-	res, err := http.Get(parsed.String())
-	if err != nil {
-		return "", err
-	}
-
-	return utils.ReadJSONPathAsString(res.Body, "webSocketDebuggerUrl")
 }

@@ -40,7 +40,7 @@ type Browser struct {
 	Dir string
 
 	// Log to print output
-	Log func(string)
+	Logger io.Writer
 
 	ExecSearchMap map[string][]string
 }
@@ -52,9 +52,7 @@ func NewBrowser() *Browser {
 		Revision: DefaultRevision,
 		Hosts:    []string{HostGoogle, HostTaobao},
 		Dir:      filepath.Join(os.TempDir(), "rod"),
-		Log: func(str string) {
-			fmt.Print(str)
-		},
+		Logger:   os.Stdout,
 		ExecSearchMap: map[string][]string{
 			"darwin": {
 				"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -100,7 +98,7 @@ func (lc *Browser) Download() error {
 		u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, lc.Revision, conf.zipName)
 		err := lc.download(u)
 		if err != nil {
-			lc.Log("[rod/lib/launcher] " + err.Error())
+			_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher]", err.Error())
 			continue
 		}
 		return nil
@@ -115,7 +113,7 @@ func (lc *Browser) download(u string) (err error) {
 		}
 	}()
 
-	lc.Log("[rod/lib/launcher] Download chromium from: " + u + "\n[rod/lib/launcher] ")
+	_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher] Download:", u)
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
@@ -129,34 +127,34 @@ func (lc *Browser) download(u string) (err error) {
 	utils.E(err)
 
 	res, err := (&http.Client{
-		Transport: &http.Transport{IdleConnTimeout: 30 * time.Second},
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+			IdleConnTimeout:   30 * time.Second,
+		},
 	}).Do(q)
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 
 	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
 	utils.E(err)
 
 	progress := &progresser{
-		size: int(size),
-		r:    res.Body,
-		log:  lc.Log,
+		size:   int(size),
+		r:      res.Body,
+		logger: lc.Logger,
 	}
 
 	_, err = io.Copy(zipFile, progress)
 	utils.E(err)
 
-	lc.Log("[rod/lib/launcher] Download chromium complete: " + zipPath + "\n")
+	_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher] Downloaded:", zipPath)
 
 	err = zipFile.Close()
 	utils.E(err)
 
 	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
 	_ = os.RemoveAll(unzipPath)
-	err = unzip(zipPath, unzipPath)
-	utils.E(err)
-
-	lc.Log("[rod/lib/launcher] Unzipped chromium bin to: " + lc.ExecPath() + "\n")
-	return nil
+	return unzip(lc.Logger, zipPath, unzipPath)
 }
 
 // Get is a smart helper to get the browser executable binary.

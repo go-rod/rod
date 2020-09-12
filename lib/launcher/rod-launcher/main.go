@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
@@ -25,10 +26,8 @@ func main() {
 	}
 
 	proxy := launcher.NewProxy()
-	proxy.Log = func(s string) {
-		if !*quiet {
-			fmt.Print(s)
-		}
+	if !*quiet {
+		proxy.Logger = os.Stdout
 	}
 
 	l, err := net.Listen("tcp", *addr)

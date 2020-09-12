@@ -1,10 +1,12 @@
 package launcher
 
 import (
-	"bytes"
 	"context"
+	"io/ioutil"
 	"net/url"
+	"os"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
@@ -28,7 +30,7 @@ func TestToWS(t *testing.T) {
 }
 
 func TestUnzip(t *testing.T) {
-	assert.Error(t, unzip("", ""))
+	assert.Error(t, unzip(ioutil.Discard, "", ""))
 }
 
 func TestLaunchOptions(t *testing.T) {
@@ -53,14 +55,8 @@ func TestLaunchOptions(t *testing.T) {
 func TestGetURLErr(t *testing.T) {
 	l := New()
 
-	go func() {
-		l.output <- "Opening in existing browser session"
-	}()
-	_, err := l.getURL()
-	assert.Error(t, err)
-
 	l.ctxCancel()
-	_, err = l.getURL()
+	_, err := l.getURL()
 	assert.Error(t, err)
 
 	l = New()
@@ -70,7 +66,7 @@ func TestGetURLErr(t *testing.T) {
 }
 
 func TestRemoteLaunch(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	u, mux, close := utils.Serve("")
@@ -78,31 +74,36 @@ func TestRemoteLaunch(t *testing.T) {
 
 	mux.Handle("/", NewProxy())
 
-	l := NewRemote(u).KeepUserDataDir()
-	client := l.Delete("keep-user-data-dir").Client()
+	l := NewRemote(u).KeepUserDataDir().Delete(flagKeepUserDataDir)
+	client := l.Client()
 	b := client.MustConnect(ctx)
 	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))
-	_, _ = b.Call(ctx, "", "Browser.close", nil)
+	utils.Sleep(1)
+	_, _ = b.Call(ctx, "", "Browser.crash", nil)
 	dir, _ := l.Get("user-data-dir")
 
-	utils.Sleep(1)
+	for ctx.Err() == nil {
+		utils.Sleep(0.1)
+		_, err := os.Stat(dir)
+		if err != nil {
+			break
+		}
+	}
 	assert.NoDirExists(t, dir)
 }
 
-func TestLaunchErr(t *testing.T) {
+func TestLaunchErrs(t *testing.T) {
 	l := New().Bin("echo")
 	go func() {
 		l.exit <- struct{}{}
 	}()
 	_, err := l.Launch()
 	assert.Error(t, err)
-}
 
-func TestCancelRead(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-	l := New()
-	l.log = nil
-	l.ctx = ctx
-	l.read(bytes.NewBufferString("test\ntest"))
+	l = New()
+	l.browser.Dir = utils.RandString(8)
+	l.browser.ExecSearchMap = nil
+	l.browser.Hosts = []string{}
+	_, err = l.Launch()
+	assert.Error(t, err)
 }
