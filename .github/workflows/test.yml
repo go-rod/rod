@@ -27,6 +27,11 @@ jobs:
           go generate
           godev -m 100
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage.txt
+
       - uses: codecov/codecov-action@v1
 
   others:
