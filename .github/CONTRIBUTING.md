@@ -35,14 +35,18 @@ The entry point of all tests is the `setup_test.go` file.
 go run ./lib/utils/lint
 ```
 
-### To inject cdp call in tests
+### Code Coverage
 
-To cover the error branch of the code, we have to be able to intercept cdp calls.
-There are several helper functions in the [setup_test.go](../setup_test.go) we can use:
+If the code coverage is less than 100%, the CI will fail.
 
-- countCall
-- at
-- errorAt
+Learn the [basics](https://blog.golang.org/cover) first.
+
+To cover the error branch of the code you can intercept cdp calls.
+There are several helper functions in the [setup_test.go](../setup_test.go) for it:
+
+- stubCounter
+- stub
+- stubErr
 
 ### To run inside docker
 
