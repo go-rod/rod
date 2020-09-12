@@ -37,6 +37,10 @@ func (s *S) TestPageErr() {
 		s.stubErr(1, proto.TargetAttachToTarget{})
 		s.browser.MustPage("")
 	})
+	s.Panics(func() {
+		s.stubErr(1, proto.PageStopLoading{})
+		s.browser.MustPage("")
+	})
 }
 
 func (s *S) TestPageFromTarget() {

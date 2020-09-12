@@ -204,11 +204,13 @@ func (b *Browser) Page(url string) (*Page, error) {
 
 	p, err := b.PageFromTarget(target.TargetID)
 	if err != nil {
+		_ = p.Close()
 		return nil, err
 	}
 
 	err = p.Navigate(url)
 	if err != nil {
+		_ = p.Close()
 		return nil, err
 	}
 
