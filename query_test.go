@@ -28,11 +28,11 @@ func (s *S) TestPages() {
 	s.Nil(s.browser.MustPages().MustFindByURL("____"))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		s.browser.MustPages().MustFind("button")
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		s.browser.MustPages().MustFindByURL("____")
 	})
 }
@@ -76,7 +76,7 @@ func (s *S) TestSearch() {
 
 	// when search result is not ready
 	{
-		s.at(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
+		s.stub(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
 			return nil, &cdp.Error{Code: -32000}
 		})
 		p.MustSearch("click me")
@@ -84,7 +84,7 @@ func (s *S) TestSearch() {
 
 	// when node id is zero
 	{
-		s.at(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
+		s.stub(1, proto.DOMGetSearchResults{}, func(func() ([]byte, error)) ([]byte, error) {
 			return utils.MustToJSONBytes(proto.DOMGetSearchResultsResult{
 				NodeIds: []proto.DOMNodeID{0},
 			}), nil
@@ -93,15 +93,15 @@ func (s *S) TestSearch() {
 	}
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMPerformSearch{})
+		s.stubErr(1, proto.DOMPerformSearch{})
 		p.MustSearch("click me")
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMGetSearchResults{})
+		s.stubErr(1, proto.DOMGetSearchResults{})
 		p.MustSearch("click me")
 	})
 	s.Panics(func() {
-		s.errorAt(2, proto.RuntimeCallFunctionOn{})
+		s.stubErr(2, proto.RuntimeCallFunctionOn{})
 		p.MustSearch("click me")
 	})
 }
@@ -224,7 +224,7 @@ func (s *S) TestPageElementsByJS_Err() {
 	_, err = p.ElementsByJS(rod.NewEvalOptions(`foo()`, nil))
 	s.Error(err)
 
-	s.errorAt(1, proto.RuntimeGetProperties{})
+	s.stubErr(1, proto.RuntimeGetProperties{})
 	_, err = p.ElementsByJS(rod.NewEvalOptions(`[document.body]`, nil))
 	s.Error(err)
 }

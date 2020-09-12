@@ -186,13 +186,13 @@ func (c *MockClient) resetCall() {
 // Use it to find out which cdp call to intercept. Put a special like log.Println("*****") after the cdp call you want to intercept.
 // The output of the test should has something like:
 //
-//     [countCall] 1, proto.DOMResolveNode{}
-//     [countCall] 1, proto.RuntimeCallFunctionOn{}
-//     [countCall] 2, proto.RuntimeCallFunctionOn{}
+//     [stubCounter] 1, proto.DOMResolveNode{}
+//     [stubCounter] 1, proto.RuntimeCallFunctionOn{}
+//     [stubCounter] 2, proto.RuntimeCallFunctionOn{}
 //     01:49:43 *****
 //
 // So the 3rd call is the one we want to intercept, then you can use the output with s.at or s.errorAt.
-func (s *S) countCall() {
+func (s *S) stubCounter() {
 	l := sync.Mutex{}
 	mCount := map[string]int{}
 
@@ -200,7 +200,7 @@ func (s *S) countCall() {
 		l.Lock()
 		mCount[method]++
 		m := fmt.Sprintf("%d, proto.%s{}", mCount[method], proto.GetType(method).Name())
-		utils.E(fmt.Fprintln(os.Stdout, "[countCall]", m))
+		utils.E(fmt.Fprintln(os.Stdout, "[stubCounter]", m))
 		l.Unlock()
 
 		return s.mockClient.principal.Call(ctx, sessionID, method, params)
@@ -209,7 +209,7 @@ func (s *S) countCall() {
 
 // When call the cdp.Client.Call the nth time use fn instead.
 // Use p to filter method.
-func (s *S) at(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
+func (s *S) stub(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
 	if p == nil {
 		s.T().Fatal("p must be specified")
 	}
@@ -233,8 +233,8 @@ func (s *S) at(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([
 
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
-func (s *S) errorAt(nth int, p proto.Payload) {
-	s.at(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
+func (s *S) stubErr(nth int, p proto.Payload) {
+	s.stub(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
 		return nil, errors.New("mock error")
 	})
 }

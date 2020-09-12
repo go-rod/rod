@@ -26,23 +26,23 @@ func (s *S) TestClick() {
 	s.True(p.MustHas("[a=ok]"))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustClick()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMGetBoxModel{})
+		s.stubErr(1, proto.DOMGetBoxModel{})
 		el.MustClick()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.InputDispatchMouseEvent{})
+		s.stubErr(1, proto.InputDispatchMouseEvent{})
 		el.MustClick()
 	})
 	s.Panics(func() {
-		s.errorAt(2, proto.DOMGetBoxModel{})
+		s.stubErr(2, proto.DOMGetBoxModel{})
 		el.MustClick()
 	})
 }
@@ -67,19 +67,19 @@ func (s *S) TestNotClickable() {
 	})
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustClickable()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMGetNodeForLocation{})
+		s.stubErr(1, proto.DOMGetNodeForLocation{})
 		el.MustClickable()
 	})
 	s.Panics(func() {
-		s.errorAt(3, proto.RuntimeCallFunctionOn{})
+		s.stubErr(3, proto.RuntimeCallFunctionOn{})
 		el.MustClickable()
 	})
 	s.Panics(func() {
-		s.errorAt(5, proto.RuntimeCallFunctionOn{})
+		s.stubErr(5, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 }
@@ -107,31 +107,31 @@ func (s *S) TestIframes() {
 
 	id := el.MustNodeID()
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		p.MustElementFromNode(id)
 	})
 
 	s.Panics(func() {
-		s.at(1, proto.RuntimeGetProperties{}, func(send func() ([]byte, error)) ([]byte, error) {
+		s.stub(1, proto.RuntimeGetProperties{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
 			return sjson.SetBytes(d, "result", rod.Array{})
 		})
 		p.MustElementFromNode(id).MustText()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMDescribeNode{})
+		s.stubErr(1, proto.DOMDescribeNode{})
 		p.MustElementFromNode(id)
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeEvaluate{})
+		s.stubErr(1, proto.RuntimeEvaluate{})
 		p.MustElementFromNode(id)
 	})
 	s.Panics(func() {
-		s.errorAt(4, proto.RuntimeCallFunctionOn{})
+		s.stubErr(4, proto.RuntimeCallFunctionOn{})
 		p.MustElementFromNode(id)
 	})
 	s.Panics(func() {
-		s.errorAt(4, proto.RuntimeEvaluate{})
+		s.stubErr(4, proto.RuntimeEvaluate{})
 		p.MustElementFromNode(id)
 	})
 }
@@ -148,7 +148,7 @@ func (s *S) TestContains() {
 	s.True(a.MustContainsElement(c))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		a.MustContainsElement(b)
 	})
 }
@@ -159,11 +159,11 @@ func (s *S) TestShadowDOM() {
 	s.Equal("inside", el.MustShadowRoot().MustElement("p").MustText())
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMDescribeNode{})
+		s.stubErr(1, proto.DOMDescribeNode{})
 		el.MustShadowRoot()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMResolveNode{})
+		s.stubErr(1, proto.DOMResolveNode{})
 		el.MustShadowRoot()
 	})
 }
@@ -178,11 +178,11 @@ func (s *S) TestPress() {
 	s.Equal("A b", el.MustText())
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustPress(' ')
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectAllText()
 	})
 }
@@ -214,7 +214,7 @@ func (s *S) TestText() {
 	s.True(p.MustHas("[event=textarea-change]"))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustText()
 	})
 }
@@ -239,20 +239,20 @@ func (s *S) TestSelectText() {
 	s.Equal("t__t", el.MustText())
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectText("")
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectAllText()
 	})
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustInput("")
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.InputInsertText{})
+		s.stubErr(1, proto.InputInsertText{})
 		el.MustInput("")
 	})
 }
@@ -279,7 +279,7 @@ func (s *S) TestMatches() {
 	s.True(el.MustMatches(`[cols="30"]`))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustMatches("")
 	})
 }
@@ -300,7 +300,7 @@ func (s *S) TestAttribute() {
 	s.Nil(el.MustAttribute("b"))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustAttribute("")
 	})
 }
@@ -322,7 +322,7 @@ func (s *S) TestProperty() {
 	s.Equal(gjson.Null, el.MustProperty("test").Type)
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustProperty("")
 	})
 }
@@ -404,11 +404,11 @@ func (s *S) TestWaitStable() {
 	s.Error(el.Context(ctx).WaitStable(time.Minute))
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMGetBoxModel{})
+		s.stubErr(1, proto.DOMGetBoxModel{})
 		el.MustWaitStable()
 	})
 	s.Panics(func() {
-		s.errorAt(2, proto.DOMGetBoxModel{})
+		s.stubErr(2, proto.DOMGetBoxModel{})
 		el.MustWaitStable()
 	})
 }
@@ -425,7 +425,7 @@ func (s *S) TestResource() {
 	el := p.MustElement("img").MustWaitLoad()
 	s.Equal(15456, len(el.MustResource()))
 
-	s.at(1, proto.PageGetResourceContent{}, func(send func() ([]byte, error)) ([]byte, error) {
+	s.stub(1, proto.PageGetResourceContent{}, func(send func() ([]byte, error)) ([]byte, error) {
 		return utils.MustToJSONBytes(proto.PageGetResourceContentResult{
 			Content:       "ok",
 			Base64Encoded: false,
@@ -434,11 +434,11 @@ func (s *S) TestResource() {
 	s.Equal([]byte("ok"), el.MustResource())
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustResource()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.PageGetResourceContent{})
+		s.stubErr(1, proto.PageGetResourceContent{})
 		el.MustResource()
 	})
 }
@@ -456,15 +456,15 @@ func (s *S) TestElementScreenshot() {
 	s.FileExists(f)
 
 	s.Panics(func() {
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMScrollIntoViewIfNeeded{})
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustScreenshot()
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMGetBoxModel{})
+		s.stubErr(1, proto.DOMGetBoxModel{})
 		el.MustScreenshot()
 	})
 }
@@ -587,7 +587,7 @@ func (s *S) TestElementErrors() {
 	s.Error(err)
 
 	s.Panics(func() {
-		s.errorAt(1, proto.DOMRequestNode{})
+		s.stubErr(1, proto.DOMRequestNode{})
 		el.MustNodeID()
 	})
 }

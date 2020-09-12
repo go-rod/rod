@@ -34,7 +34,7 @@ func (s *S) TestIncognito() {
 
 func (s *S) TestPageErr() {
 	s.Panics(func() {
-		s.errorAt(1, proto.TargetAttachToTarget{})
+		s.stubErr(1, proto.TargetAttachToTarget{})
 		s.browser.MustPage("")
 	})
 }
@@ -43,7 +43,7 @@ func (s *S) TestPageFromTarget() {
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
 		utils.E(err)
-		s.errorAt(1, proto.EmulationSetDeviceMetricsOverride{})
+		s.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
 		s.browser.MustPageFromTargetID(res.TargetID)
 	})
 }
@@ -60,7 +60,7 @@ func (s *S) TestBrowserPages() {
 	} else {
 		s.Len(pages, 3)
 
-		s.at(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
+		s.stub(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
 			return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
 		})
@@ -68,11 +68,11 @@ func (s *S) TestBrowserPages() {
 		s.Len(pages, 2)
 	}
 	s.Panics(func() {
-		s.errorAt(1, proto.TargetCreateTarget{})
+		s.stubErr(1, proto.TargetCreateTarget{})
 		s.browser.MustPage("")
 	})
 	s.Panics(func() {
-		s.errorAt(1, proto.TargetGetTargets{})
+		s.stubErr(1, proto.TargetGetTargets{})
 		s.browser.MustPages()
 	})
 	s.Panics(func() {
@@ -81,7 +81,7 @@ func (s *S) TestBrowserPages() {
 		defer func() {
 			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
-		s.errorAt(1, proto.TargetAttachToTarget{})
+		s.stubErr(1, proto.TargetAttachToTarget{})
 		s.browser.MustPages()
 	})
 }
@@ -202,7 +202,7 @@ func (s *S) TestTrace() {
 	el.Context(ctx).Trace("ok")
 	s.Error(errs[1])
 
-	s.errorAt(1, proto.RuntimeCallFunctionOn{})
+	s.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)
 }
 
@@ -216,7 +216,7 @@ func (s *S) TestTraceLogs() {
 	el := p.MustElement("button")
 	el.MustClick()
 
-	s.errorAt(1, proto.RuntimeCallFunctionOn{})
+	s.stubErr(1, proto.RuntimeCallFunctionOn{})
 	p.Overlay(0, 0, 100, 30, "")
 }
 

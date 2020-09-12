@@ -120,7 +120,7 @@ func (s *S) TestHijackContinue() {
 	func() { // test error log
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		s.errorAt(1, proto.FetchContinueRequest{})
+		s.stubErr(1, proto.FetchContinueRequest{})
 		go func() {
 			_ = s.page.Context(ctx).Navigate(url)
 		}()
@@ -157,7 +157,7 @@ func (s *S) TestHijackFailRequest() {
 	s.Equal("Failed to fetch", s.page.MustElement("body").MustText())
 
 	{ // test error log
-		s.errorAt(1, proto.FetchFailRequest{})
+		s.stubErr(1, proto.FetchFailRequest{})
 		s.page.MustNavigate(url)
 		s.Error(<-err)
 	}
@@ -218,7 +218,7 @@ func (s *S) TestHijackResponseErr() {
 		}
 
 		ctx.MustLoadResponse()
-		s.errorAt(1, proto.FetchFulfillRequest{})
+		s.stubErr(1, proto.FetchFulfillRequest{})
 	})
 
 	go router.Run()
@@ -255,7 +255,7 @@ func (s *S) TestHandleAuth() {
 	wait := s.browser.HandleAuth("a", "b")
 	go func() { _, _ = s.browser.Page(url) }()
 	utils.Sleep(0.1)
-	s.errorAt(1, proto.FetchContinueRequest{})
+	s.stubErr(1, proto.FetchContinueRequest{})
 	s.Error(wait())
 }
 
@@ -283,7 +283,7 @@ func (s *S) TestGetDownloadFile() {
 	})
 	page.MustElement("a").MustClick()
 	{
-		s.errorAt(1, proto.FetchEnable{})
+		s.stubErr(1, proto.FetchEnable{})
 		_, _, err := waitErr()
 		s.Error(err)
 	}
@@ -323,7 +323,7 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 	s.Panics(func() {
 		wait = page.MustGetDownloadFile("data:*")
 		page.MustElement("#b").MustClick()
-		s.errorAt(1, proto.RuntimeCallFunctionOn{})
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
 		data = wait()
 	})
 }
