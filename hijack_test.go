@@ -245,6 +245,7 @@ func (s *S) TestHandleAuth() {
 		s.Equal("b", p)
 		httpHTML(`<p>ok</p>`)(w, r)
 	})
+	mux.HandleFunc("/err", httpHTML("err page"))
 
 	s.browser.MustHandleAuth("a", "b")
 
@@ -253,8 +254,7 @@ func (s *S) TestHandleAuth() {
 	page.MustElementMatches("p", "ok")
 
 	wait := s.browser.HandleAuth("a", "b")
-	go func() { _, _ = s.browser.Page(url) }()
-	utils.Sleep(0.1)
+	go func() { _, _ = s.browser.Page(url + "/err") }()
 	s.stubErr(1, proto.FetchContinueRequest{})
 	s.Error(wait())
 }
