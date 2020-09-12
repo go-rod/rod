@@ -25,6 +25,8 @@ type Launcher struct {
 	ctx       context.Context
 	ctxCancel func()
 	bin       string
+	dir       string
+	env       []string
 	url       string
 	log       func(string)
 	Flags     map[string][]string `json:"flags"`
@@ -96,6 +98,7 @@ func New() *Launcher {
 		output:    make(chan string),
 		exit:      make(chan struct{}),
 		bin:       defaults.Bin,
+		env:       os.Environ(),
 		reap:      true,
 	}
 }
@@ -212,6 +215,20 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l
 }
 
+// WorkingDir to launch the browser process.
+func (l *Launcher) WorkingDir(path string) *Launcher {
+	l.dir = path
+	return l
+}
+
+// Env to launch the browser process. The default value is os.Environ().
+// Usually you use it to set the timezone env. Such as Env("TZ=America/New_York").
+// Timezone list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+func (l *Launcher) Env(env ...string) *Launcher {
+	l.env = env
+	return l
+}
+
 // FormatArgs returns the formated arg list for cli
 func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
@@ -312,6 +329,9 @@ func (l *Launcher) Launch() (wsURL string, err error) {
 			_ = stderr.Close()
 		}
 	}()
+
+	cmd.Dir = l.dir
+	cmd.Env = l.env
 
 	err = cmd.Start()
 	utils.E(err)

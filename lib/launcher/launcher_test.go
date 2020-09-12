@@ -67,6 +67,8 @@ func TestLaunchUserMode(t *testing.T) {
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).
+		WorkingDir("").
+		Env("TZ=Asia/Tokyo").
 		MustLaunch()
 
 	assert.Equal(t,
