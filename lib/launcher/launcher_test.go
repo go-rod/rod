@@ -3,7 +3,6 @@ package launcher_test
 import (
 	"context"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -12,23 +11,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/goleak"
 )
-
-func TestMain(m *testing.M) {
-	// to prevent false positive of goleak
-	http.DefaultClient = &http.Client{
-		Transport: &http.Transport{
-			DisableKeepAlives: true,
-		},
-	}
-
-	goleak.VerifyTestMain(
-		m,
-		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.sigChildHandler"),
-		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.reapChildren"),
-	)
-}
 
 func TestDownload(t *testing.T) {
 	skipDownload(t)
