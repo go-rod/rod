@@ -13,8 +13,8 @@ func Example_custom_launch() {
 	bin, err := launcher.NewBrowser().Get()
 	utils.E(err)
 
-	// use the helper to set flags, this line it's optional, you can construct the args manually
-	args := launcher.New().Headless(false).FormatArgs()
+	// use the helper to construct args, this line is optional, you can construct the args manually
+	args := launcher.New().Headless(false).Env("TZ=Asia/Tokyo").FormatArgs()
 
 	parser := launcher.NewURLParser()
 
