@@ -153,13 +153,7 @@ func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverr
 }
 
 // Connect doc is similar to the method MustConnect
-func (b *Browser) Connect() (err error) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = e.(error)
-		}
-	}()
-
+func (b *Browser) Connect() error {
 	if b.client == nil {
 		u := defaults.URL
 		if defaults.Remote {
@@ -175,8 +169,10 @@ func (b *Browser) Connect() (err error) {
 		}
 	}
 
-	err = b.client.Connect(b.ctx)
-	utils.E(err)
+	err := b.client.Connect(b.ctx)
+	if err != nil {
+		return err
+	}
 
 	b.ServeMonitor(defaults.Monitor, !defaults.Blind)
 

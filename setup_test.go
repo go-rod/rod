@@ -136,9 +136,10 @@ var _ rod.Client = &MockClient{}
 
 type MockClient struct {
 	sync.RWMutex
-	suit      *S
-	principal *cdp.Client
-	call      Call
+	suit       *S
+	principal  *cdp.Client
+	call       Call
+	connectErr error
 }
 
 func newMockClient(s *S, c *cdp.Client) *MockClient {
@@ -146,6 +147,9 @@ func newMockClient(s *S, c *cdp.Client) *MockClient {
 }
 
 func (c *MockClient) Connect(ctx context.Context) error {
+	if c.connectErr != nil {
+		return c.connectErr
+	}
 	return c.principal.Connect(ctx)
 }
 
