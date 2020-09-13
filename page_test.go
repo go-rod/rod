@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
@@ -270,6 +271,16 @@ func (s *S) TestPageEval() {
 	s.NotEqualValues(1, page.MustEval(`a = () => 1`).Int())
 	s.NotEqualValues(1, page.MustEval(`a = function() { return 1 }`))
 	s.NotEqualValues(1, page.MustEval(`/* ) */`))
+}
+
+func (s *S) TestPageEvalNilContext() {
+	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
+
+	s.stub(1, proto.RuntimeEvaluate{}, func(func() ([]byte, error)) ([]byte, error) {
+		return nil, &cdp.Error{Code: -32000}
+	})
+	s.EqualValues(1, page.MustEval(`1`).Int())
 }
 
 func (s *S) TestPageExposeJSHelper() {
