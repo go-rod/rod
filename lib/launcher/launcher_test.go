@@ -68,6 +68,7 @@ func TestLaunchUserMode(t *testing.T) {
 
 	url := l.Context(context.Background()).Delete("test").Bin("").
 		Logger(ioutil.Discard).
+		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
 		UserDataDir("test").UserDataDir(dir).

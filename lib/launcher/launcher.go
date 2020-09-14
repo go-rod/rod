@@ -35,10 +35,12 @@ type Launcher struct {
 	exit      chan struct{}
 	remote    bool // remote mode or not
 	reap      bool
+	leakless  bool
 }
 
 // New returns the default arguments to start browser.
 // "--" is optional, with or without it won't affect the result.
+// Leakless will be enabled by default.
 // List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
 	dir := ""
@@ -100,6 +102,7 @@ func New() *Launcher {
 		bin:       defaults.Bin,
 		parser:    NewURLParser(),
 		reap:      true,
+		leakless:  true,
 		logger:    ioutil.Discard,
 	}
 }
@@ -178,14 +181,18 @@ func (l *Launcher) Bin(path string) *Launcher {
 }
 
 // Headless switch. When disabled leakless will be disabled.
-// Because on head mode you usually can see the browser icon on the OS's taskbar,
-// we don't need leakless to kill browser on exit, it won't cause hidden leak.
-// The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Headless(enable bool) *Launcher {
 	if enable {
 		return l.Set("headless")
 	}
 	return l.Delete("headless")
+}
+
+// Leakless switch.
+// The doc of leakless: https://github.com/ysmood/leakless.
+func (l *Launcher) Leakless(enable bool) *Launcher {
+	l.leakless = enable
+	return l
 }
 
 // Devtools switch to auto open devtools for each tab
@@ -289,9 +296,7 @@ func (l *Launcher) Launch() (string, error) {
 	var ll *leakless.Launcher
 	var cmd *exec.Cmd
 
-	_, headless := l.Get("headless")
-
-	if headless && leakless.Support() {
+	if l.leakless && leakless.Support() {
 		ll = leakless.New()
 		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
@@ -310,13 +315,13 @@ func (l *Launcher) Launch() (string, error) {
 		return "", err
 	}
 
-	if headless {
+	if ll == nil {
+		l.pid = cmd.Process.Pid
+	} else {
 		l.pid = <-ll.Pid()
 		if ll.Err() != "" {
 			return "", errors.New(ll.Err())
 		}
-	} else {
-		l.pid = cmd.Process.Pid
 	}
 
 	go func() {
