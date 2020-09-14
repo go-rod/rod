@@ -42,7 +42,7 @@ type Browser struct {
 	quiet       bool          // see defaults.Quiet
 	trace       bool          // see defaults.Trace
 	traceLogAct func(string)
-	traceLogJS  func(string, Array)
+	traceLogJS  func(string, JSArgs)
 	traceLogErr func(error)
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
@@ -114,7 +114,7 @@ func (b *Browser) Trace(enable bool) *Browser {
 }
 
 // TraceLog overrides the default log functions for trace
-func (b *Browser) TraceLog(msg func(string), js func(string, Array), err func(error)) *Browser {
+func (b *Browser) TraceLog(msg func(string), js func(string, JSArgs), err func(error)) *Browser {
 	if msg == nil {
 		b.traceLogAct = defaultTraceLogAct
 	} else {

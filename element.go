@@ -162,7 +162,7 @@ func (el *Element) SelectText(regex string) error {
 	defer el.tryTrace("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.SelectText, Array{regex}))
+	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}))
 	return err
 }
 
@@ -221,7 +221,7 @@ func (el *Element) Select(selectors []string) error {
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.Select, Array{selectors}))
+	_, err = el.EvalWithOptions(jsHelper(js.Select, JSArgs{selectors}))
 	return err
 }
 
@@ -333,7 +333,7 @@ func (el *Element) Frame() (*Page, error) {
 
 // ContainsElement check if the target is equal or inside the element.
 func (el *Element) ContainsElement(target *Element) (bool, error) {
-	res, err := el.EvalWithOptions(jsHelper(js.ContainsElement, Array{target.ObjectID}))
+	res, err := el.EvalWithOptions(jsHelper(js.ContainsElement, JSArgs{target.ObjectID}))
 	if err != nil {
 		return false, err
 	}

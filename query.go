@@ -119,17 +119,17 @@ func (p *Page) HasMatches(pairs ...string) (bool, error) {
 
 // Element finds element by css selector
 func (p *Page) Element(selectors ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.Element, ArrayFromList(selectors)))
+	return p.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
 
 // ElementMatches doc is similar to the method MustElementMatches
 func (p *Page) ElementMatches(pairs ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementMatches, ArrayFromList(pairs)))
+	return p.ElementByJS(jsHelper(js.ElementMatches, JSArgsFromString(pairs)))
 }
 
 // ElementX finds elements by XPath
 func (p *Page) ElementX(xPaths ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementX, ArrayFromList(xPaths)))
+	return p.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
 }
 
 // ElementByJS returns the element from the return value of the js function.
@@ -179,12 +179,12 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 
 // Elements doc is similar to the method MustElements
 func (p *Page) Elements(selector string) (Elements, error) {
-	return p.ElementsByJS(jsHelper(js.Elements, Array{selector}))
+	return p.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
 }
 
 // ElementsX doc is similar to the method MustElementsX
 func (p *Page) ElementsX(xpath string) (Elements, error) {
-	return p.ElementsByJS(jsHelper(js.ElementsX, Array{xpath}))
+	return p.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
 }
 
 // ElementsByJS is different from ElementByJSE, it doesn't do retry
@@ -332,12 +332,12 @@ func (el *Element) HasMatches(selector, regex string) (bool, error) {
 
 // Element doc is similar to the method MustElement
 func (el *Element) Element(selectors ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.Element, ArrayFromList(selectors)))
+	return el.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
 
 // ElementX doc is similar to the method MustElementX
 func (el *Element) ElementX(xPaths ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementX, ArrayFromList(xPaths)))
+	return el.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
 }
 
 // ElementByJS doc is similar to the method MustElementByJS
@@ -352,7 +352,7 @@ func (el *Element) Parent() (*Element, error) {
 
 // Parents that match the selector
 func (el *Element) Parents(selector string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.Parents, Array{selector}))
+	return el.ElementsByJS(jsHelper(js.Parents, JSArgs{selector}))
 }
 
 // Next doc is similar to the method MustNext
@@ -367,17 +367,17 @@ func (el *Element) Previous() (*Element, error) {
 
 // ElementMatches doc is similar to the method MustElementMatches
 func (el *Element) ElementMatches(pairs ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementMatches, ArrayFromList(pairs)))
+	return el.ElementByJS(jsHelper(js.ElementMatches, JSArgsFromString(pairs)))
 }
 
 // Elements doc is similar to the method MustElements
 func (el *Element) Elements(selector string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.Elements, Array{selector}))
+	return el.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
 }
 
 // ElementsX doc is similar to the method MustElementsX
 func (el *Element) ElementsX(xpath string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.ElementsX, Array{xpath}))
+	return el.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
 }
 
 // ElementsByJS doc is similar to the method MustElementsByJS

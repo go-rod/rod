@@ -182,7 +182,7 @@ func (s *S) TestTrace() {
 		func(s string) {
 			msg = s
 		},
-		func(string, rod.Array) {},
+		func(string, rod.JSArgs) {},
 		func(e error) {
 			errs = append(errs, e)
 		},

@@ -393,7 +393,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle doc is similar to the method MustWaitIdle
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.EvalWithOptions(jsHelper(js.WaitIdle, Array{timeout.Seconds()}))
+	_, err = p.EvalWithOptions(jsHelper(js.WaitIdle, JSArgs{timeout.Seconds()}))
 	return err
 }
 
@@ -407,7 +407,7 @@ func (p *Page) WaitLoad() error {
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalWithOptions(jsHelper(js.AddScriptTag, Array{id, url, content}))
+	_, err := p.EvalWithOptions(jsHelper(js.AddScriptTag, JSArgs{id, url, content}))
 	return err
 }
 
@@ -415,7 +415,7 @@ func (p *Page) AddScriptTag(url, content string) error {
 func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalWithOptions(jsHelper(js.AddStyleTag, Array{id, url, content}))
+	_, err := p.EvalWithOptions(jsHelper(js.AddStyleTag, JSArgs{id, url, content}))
 	return err
 }
 
@@ -527,7 +527,7 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 }
 
 // Wait js function until it returns true
-func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params Array) error {
+func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params JSArgs) error {
 	removeTrace := func() {}
 	defer removeTrace()
 

@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"time"
 
@@ -39,15 +38,14 @@ func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
 	return gen
 }
 
-// Array of any type
-type Array []interface{}
+// JSArgs for eval
+type JSArgs []interface{}
 
-// ArrayFromList converts a random list into Array type
-func ArrayFromList(list interface{}) Array {
-	arr := Array{}
-	val := reflect.ValueOf(list)
-	for i := 0; i < val.Len(); i++ {
-		arr = append(arr, val.Index(i).Interface())
+// JSArgsFromString converts a string list into Array type
+func JSArgsFromString(list []string) JSArgs {
+	arr := JSArgs{}
+	for _, s := range list {
+		arr = append(arr, s)
 	}
 	return arr
 }
@@ -65,7 +63,7 @@ type EvalOptions struct {
 	JS string
 
 	// JSArgs of the js function
-	JSArgs Array
+	JSArgs JSArgs
 }
 
 // This set the ThisID
@@ -81,16 +79,16 @@ func (e *EvalOptions) ByObject() *EvalOptions {
 }
 
 // NewEvalOptions creates a new EvalPayload
-func NewEvalOptions(js string, jsArgs Array) *EvalOptions {
-	return &EvalOptions{true, "", js, jsArgs}
+func NewEvalOptions(js string, args JSArgs) *EvalOptions {
+	return &EvalOptions{true, "", js, args}
 }
 
 const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
 
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func jsHelper(name js.Name, args Array) *EvalOptions {
+func jsHelper(name js.Name, args JSArgs) *EvalOptions {
 	return &EvalOptions{
-		JSArgs: append(Array{jsHelperID}, args...),
+		JSArgs: append(JSArgs{jsHelperID}, args...),
 		JS:     fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
 	}
 }

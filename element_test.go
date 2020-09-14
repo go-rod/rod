@@ -114,7 +114,7 @@ func (s *S) TestIframes() {
 	s.Panics(func() {
 		s.stub(1, proto.RuntimeGetProperties{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
-			return sjson.SetBytes(d, "result", rod.Array{})
+			return sjson.SetBytes(d, "result", rod.JSArgs{})
 		})
 		p.MustElementFromNode(id).MustText()
 	})
