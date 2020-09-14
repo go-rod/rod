@@ -450,6 +450,41 @@ func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
+// MustElement the doc is similar with MustElement but has a callback when a match is found
+func (rc *RaceContext) MustElement(selector string, callback func(*Element)) *RaceContext {
+	return rc.Element(selector, func(el *Element) error {
+		callback(el)
+		return nil
+	})
+}
+
+// MustElementX the doc is similar with MustElement but has a callback when a match is found
+func (rc *RaceContext) MustElementX(selector string, callback func(*Element)) *RaceContext {
+	return rc.ElementX(selector, func(el *Element) error {
+		callback(el)
+		return nil
+	})
+}
+
+// MustElementMatches the doc is similar with MustElement but has a callback when a match is found
+func (rc *RaceContext) MustElementMatches(selector, regex string, callback func(*Element)) *RaceContext {
+	return rc.ElementMatches(selector, regex, func(el *Element) error {
+		callback(el)
+		return nil
+	})
+}
+
+// MustElementByJS the doc is similar with MustElementByJS but has a callback when a match is found
+func (rc *RaceContext) MustElementByJS(js string, params JSArgs, callback func(*Element) error) *RaceContext {
+	return rc.ElementByJS(NewEvalOptions(js, params), callback)
+}
+
+// MustDo the race
+func (rc *RaceContext) MustDo() *Page {
+	utils.E(rc.Do())
+	return rc.page
+}
+
 // MustMove to the absolute position
 func (m *Mouse) MustMove(x, y float64) *Mouse {
 	utils.E(m.Move(x, y, 0))

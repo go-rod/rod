@@ -34,7 +34,6 @@ func Example_basic() {
 	page.MustElement("input").MustInput("git").MustPress(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
-	// You can also pass multiple selectors to race the result, useful when dealing with multiple possible results.
 	text := page.MustElement(".codesearch-results p").MustText()
 
 	fmt.Println(text)
@@ -108,6 +107,29 @@ func Example_search() {
 	// Output: CodeMirror cm-s-default CodeMirror-wrap
 }
 
+// Show how to handle multiple results of an action.
+// Such as when you login a page, the result can be success or wrong password.
+func Example_race_selectors() {
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
+
+	page := browser.MustPage("http://testing-ground.scraping.pro/login")
+
+	page.MustElement("#usr").MustInput("admin")
+	page.MustElement("#pwd").MustInput("12345").MustPress(input.Enter)
+
+	// It will keep retrying until one selector has found a match
+	page.Race().MustElement("h3.success", func(el *rod.Element) {
+		// when successful login
+		fmt.Println(el.MustText())
+	}).MustElement("h3.error", func(el *rod.Element) {
+		// when wrong username or password
+		fmt.Println(el.MustText())
+	}).MustDo()
+
+	// Output: WELCOME :)
+}
+
 // Shows how we can start a browser with debug information and headless mode disabled to develop.
 // Rod provides a lot of debug options, you can set them with setter methods or use environment variables.
 // Doc for environment variables: https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
@@ -151,9 +173,6 @@ func Example_disable_headless_to_debug() {
 	fmt.Println(len(img)) // print the size of the image
 
 	utils.Pause() // pause goroutine
-
-	// Skip
-	// Output: 热干面
 }
 
 // Example_wait_for_animation is an example to simulate humans more accurately.
@@ -261,9 +280,6 @@ func Example_customize_browser_launch() {
 	// mitmproxy needs a cert config to support https. We use http here instead,
 	// for example
 	fmt.Println(browser.MustPage("http://example.com/").MustElement("title").MustText())
-
-	// Skip
-	// Output: Example Domain
 }
 
 // Example_direct_cdp shows how we can use Rod when it doesn't have a function

@@ -48,12 +48,6 @@ func (s *S) TestPageHas() {
 	s.False(s.page.MustHasMatches("button", "11"))
 }
 
-func (s *S) TestPageRaceElement() {
-	s.page.MustNavigate(srcFile("fixtures/selector.html"))
-	el := s.page.MustElement("p", "button")
-	s.Equal("01", el.MustText())
-}
-
 func (s *S) TestElementHas() {
 	s.page.MustNavigate(srcFile("fixtures/selector.html"))
 	b := s.page.MustElement("body")
@@ -121,6 +115,38 @@ func (s *S) TestSearchIframesAfterReload() {
 	el := p.MustSearch("button[onclick]")
 	s.Equal("click me", el.MustText())
 	s.True(el.MustClick().MustMatches("[a=ok]"))
+}
+
+func (s *S) TestPageElementWithSelectors() {
+	s.page.MustNavigate(srcFile("fixtures/selector.html"))
+	el := s.page.MustElement("p", "button")
+	s.Equal("01", el.MustText())
+}
+
+func (s *S) TestPageRace() {
+	p := s.page.MustNavigate(srcFile("fixtures/selector.html"))
+
+	p.Race().MustElement("button", func(el *rod.Element) {
+		s.Equal("01", el.MustText())
+	}).MustDo()
+
+	p.Race().MustElementX("//button", func(el *rod.Element) {
+		s.Equal("01", el.MustText())
+	}).MustDo()
+
+	p.Race().MustElementR("button", "02", func(el *rod.Element) {
+		s.Equal("02", el.MustText())
+	}).MustDo()
+
+	err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
+		MustElement("not-exists", func(el *rod.Element) {}).
+		MustElementX("//not-exists", func(el *rod.Element) {}).
+		MustElementMatches("not-exists", "test", func(el *rod.Element) {}).
+		Do()
+	s.Error(err)
+
+	err = p.Race().MustElementByJS(`notExists()`, nil, nil).Do()
+	s.Error(err)
 }
 
 func (s *S) TestPageElementX() {

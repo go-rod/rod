@@ -303,6 +303,74 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 	return list, nil
 }
 
+type raceBranch struct {
+	condition func() (*Element, error)
+	callback  func(*Element) error
+}
+
+// RaceContext ...
+type RaceContext struct {
+	page        *Page
+	noSleepPage *Page
+	branches    []*raceBranch
+}
+
+// Race ...
+func (p *Page) Race() *RaceContext {
+	return &RaceContext{page: p, noSleepPage: p.Sleeper(nil)}
+}
+
+// Element the doc is similar with MustElement but has a callback when a match is found
+func (rc *RaceContext) Element(selector string, callback func(*Element) error) *RaceContext {
+	rc.branches = append(rc.branches, &raceBranch{
+		func() (*Element, error) { return rc.noSleepPage.Element(selector) },
+		callback,
+	})
+	return rc
+}
+
+// ElementX the doc is similar with ElementX but has a callback when a match is found
+func (rc *RaceContext) ElementX(selector string, callback func(*Element) error) *RaceContext {
+	rc.branches = append(rc.branches, &raceBranch{
+		func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
+		callback,
+	})
+	return rc
+}
+
+// ElementMatches the doc is similar with ElementMatches but has a callback when a match is found
+func (rc *RaceContext) ElementMatches(selector, regex string, callback func(*Element) error) *RaceContext {
+	rc.branches = append(rc.branches, &raceBranch{
+		func() (*Element, error) { return rc.noSleepPage.ElementMatches(selector, regex) },
+		callback,
+	})
+	return rc
+}
+
+// ElementByJS the doc is similar with MustElementByJS but has a callback when a match is found
+func (rc *RaceContext) ElementByJS(opts *EvalOptions, callback func(*Element) error) *RaceContext {
+	rc.branches = append(rc.branches, &raceBranch{
+		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
+		callback,
+	})
+	return rc
+}
+
+// Do the race
+func (rc *RaceContext) Do() error {
+	return utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
+		for _, branch := range rc.branches {
+			el, err := branch.condition()
+			if err == nil {
+				return true, branch.callback(el)
+			} else if !errors.Is(err, ErrElementNotFound) {
+				return true, err
+			}
+		}
+		return
+	})
+}
+
 // Has doc is similar to the method MustHas
 func (el *Element) Has(selector string) (bool, *Element, error) {
 	el, err := el.Element(selector)
