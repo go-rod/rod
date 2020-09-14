@@ -219,6 +219,11 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
 }
 
+// Proxy switch. When disabled leakless will be disabled.
+func (l *Launcher) Proxy(host string) *Launcher {
+	return l.Set("proxy-server", host)
+}
+
 // WorkingDir to launch the browser process.
 func (l *Launcher) WorkingDir(path string) *Launcher {
 	return l.Set(flagWorkingDir, path)

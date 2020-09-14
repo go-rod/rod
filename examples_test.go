@@ -265,7 +265,7 @@ func Example_customize_browser_launch() {
 	// https://peter.sh/experiments/chromium-command-line-switches/.
 	url := launcher.New().
 		// Set a flag- Adding the HTTP proxy server.
-		Set("proxy-server", "127.0.0.1:8080").
+		Proxy("127.0.0.1:8080").
 		// Delete a flag- remove the mock-keychain flag
 		Delete("use-mock-keychain").
 		MustLaunch()
@@ -273,13 +273,15 @@ func Example_customize_browser_launch() {
 	browser := rod.New().ControlURL(url).MustConnect()
 	defer browser.MustClose()
 
+	utils.E(proto.SecuritySetIgnoreCertificateErrors{Ignore: true}.Call(browser))
+
 	// Adding authentication to the proxy, for the next auth request.
 	// We use CLI tool "mitmproxy --proxyauth user:pass" as an example.
 	browser.MustHandleAuth("user", "pass")
 
 	// mitmproxy needs a cert config to support https. We use http here instead,
 	// for example
-	fmt.Println(browser.MustPage("http://example.com/").MustElement("title").MustText())
+	fmt.Println(browser.MustPage("https://example.com/").MustElement("title").MustText())
 }
 
 // Example_direct_cdp shows how we can use Rod when it doesn't have a function

@@ -71,6 +71,7 @@ func TestLaunchUserMode(t *testing.T) {
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).Reap(true).
+		Proxy("test.com").
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").
 		Env("TZ=Asia/Tokyo").
