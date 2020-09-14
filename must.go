@@ -371,21 +371,21 @@ func (p *Page) MustRelease(objectID proto.RuntimeRemoteObjectID) *Page {
 
 // MustHas an element that matches the css selector
 func (p *Page) MustHas(selector string) bool {
-	has, err := p.Has(selector)
+	has, _, err := p.Has(selector)
 	utils.E(err)
 	return has
 }
 
 // MustHasX an element that matches the XPath selector
 func (p *Page) MustHasX(selector string) bool {
-	has, err := p.HasX(selector)
+	has, _, err := p.HasX(selector)
 	utils.E(err)
 	return has
 }
 
 // MustHasMatches an element that matches the css selector and its text matches the regex.
 func (p *Page) MustHasMatches(selector, regex string) bool {
-	has, err := p.HasMatches(selector, regex)
+	has, _, err := p.HasMatches(selector, regex)
 	utils.E(err)
 	return has
 }
@@ -740,21 +740,21 @@ func (el *Element) MustEval(js string, params ...interface{}) proto.JSON {
 
 // MustHas an element that matches the css selector
 func (el *Element) MustHas(selector string) bool {
-	has, err := el.Has(selector)
+	has, _, err := el.Has(selector)
 	utils.E(err)
 	return has
 }
 
 // MustHasX an element that matches the XPath selector
 func (el *Element) MustHasX(selector string) bool {
-	has, err := el.HasX(selector)
+	has, _, err := el.HasX(selector)
 	utils.E(err)
 	return has
 }
 
 // MustHasMatches an element that matches the css selector and its text matches the regex.
 func (el *Element) MustHasMatches(selector, regex string) bool {
-	has, err := el.HasMatches(selector, regex)
+	has, _, err := el.HasMatches(selector, regex)
 	utils.E(err)
 	return has
 }

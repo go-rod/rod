@@ -64,7 +64,7 @@ func (ps Pages) Empty() bool {
 // Find the page that has the specified element with the css selector
 func (ps Pages) Find(selector string) (*Page, error) {
 	for _, page := range ps {
-		has, err := page.Has(selector)
+		has, _, err := page.Has(selector)
 		if err != nil {
 			return nil, err
 		}
@@ -91,30 +91,30 @@ func (ps Pages) FindByURL(regex string) (*Page, error) {
 }
 
 // Has doc is similar to the method MustHas
-func (p *Page) Has(selectors ...string) (bool, error) {
-	_, err := p.Sleeper(nil).Element(selectors...)
+func (p *Page) Has(selectors ...string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).Element(selectors...)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // HasX doc is similar to the method MustHasX
-func (p *Page) HasX(selectors ...string) (bool, error) {
-	_, err := p.Sleeper(nil).ElementX(selectors...)
+func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).ElementX(selectors...)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // HasMatches doc is similar to the method MustHasMatches
-func (p *Page) HasMatches(pairs ...string) (bool, error) {
-	_, err := p.Sleeper(nil).ElementMatches(pairs...)
+func (p *Page) HasMatches(pairs ...string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).ElementMatches(pairs...)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // Element doc is similar to the method MustElement
@@ -304,30 +304,30 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 }
 
 // Has doc is similar to the method MustHas
-func (el *Element) Has(selector string) (bool, error) {
-	_, err := el.Element(selector)
+func (el *Element) Has(selector string) (bool, *Element, error) {
+	el, err := el.Element(selector)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // HasX doc is similar to the method MustHasX
-func (el *Element) HasX(selector string) (bool, error) {
-	_, err := el.ElementX(selector)
+func (el *Element) HasX(selector string) (bool, *Element, error) {
+	el, err := el.ElementX(selector)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // HasMatches doc is similar to the method MustHasMatches
-func (el *Element) HasMatches(selector, regex string) (bool, error) {
-	_, err := el.ElementMatches(selector, regex)
+func (el *Element) HasMatches(selector, regex string) (bool, *Element, error) {
+	el, err := el.ElementMatches(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
-		return false, nil
+		return false, nil, nil
 	}
-	return err == nil, err
+	return err == nil, el, err
 }
 
 // Element doc is similar to the method MustElement
