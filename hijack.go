@@ -282,6 +282,12 @@ func (ctx *HijackRequest) Req() *http.Request {
 	return ctx.req
 }
 
+// SetContext of the underlaying http.Request instance
+func (ctx *HijackRequest) SetContext(c context.Context) *HijackRequest {
+	ctx.req = ctx.req.WithContext(c)
+	return ctx
+}
+
 // SetBody of the request, if obj is []byte or string, raw body will be used, else it will be encoded as json.
 func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 	var b []byte

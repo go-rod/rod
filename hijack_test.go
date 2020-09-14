@@ -38,7 +38,7 @@ func (s *S) TestHijack() {
 	defer router.MustStop()
 
 	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
-		r := ctx.Request
+		r := ctx.Request.SetContext(context.Background())
 		r.Req().URL = r.Req().URL            // override request url
 		r.Req().Header.Set("Test", "header") // override request header
 		r.SetBody([]byte("test"))            // override request body
