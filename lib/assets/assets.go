@@ -587,7 +587,7 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(iPhone5-landscape.svg)",
+              "image": "@url(optimized/iPhone5-landscape.avif)",
               "insets": {
                 "left": 115,
                 "top": 25,
@@ -601,7 +601,7 @@ const DeviceList = `[
           "device-pixel-ratio": 2,
           "vertical": {
             "outline": {
-              "image": "@url(iPhone5-portrait.svg)",
+              "image": "@url(optimized/iPhone5-portrait.avif)",
               "insets": {
                 "left": 29,
                 "top": 105,
@@ -630,7 +630,7 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(iPhone6-landscape.svg)",
+              "image": "@url(optimized/iPhone6-landscape.avif)",
               "insets": {
                 "left": 106,
                 "top": 28,
@@ -644,7 +644,7 @@ const DeviceList = `[
           "device-pixel-ratio": 2,
           "vertical": {
             "outline": {
-              "image": "@url(iPhone6-portrait.svg)",
+              "image": "@url(optimized/iPhone6-portrait.avif)",
               "insets": {
                 "left": 28,
                 "top": 105,
@@ -673,7 +673,7 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(iPhone6Plus-landscape.svg)",
+              "image": "@url(optimized/iPhone6Plus-landscape.avif)",
               "insets": {
                 "left": 109,
                 "top": 29,
@@ -687,7 +687,7 @@ const DeviceList = `[
           "device-pixel-ratio": 3,
           "vertical": {
             "outline": {
-              "image": "@url(iPhone6Plus-portrait.svg)",
+              "image": "@url(optimized/iPhone6Plus-portrait.avif)",
               "insets": {
                 "left": 26,
                 "top": 107,
@@ -826,7 +826,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 48
             },
-            "image": "@url(google-nexus-5-vertical-default-1x.png) 1x, @url(google-nexus-5-vertical-default-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x"
           },
           {
             "title": "navigation bar",
@@ -837,7 +837,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 48
             },
-            "image": "@url(google-nexus-5-vertical-navigation-1x.png) 1x, @url(google-nexus-5-vertical-navigation-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x"
           },
           {
             "title": "keyboard",
@@ -848,7 +848,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 312
             },
-            "image": "@url(google-nexus-5-vertical-keyboard-1x.png) 1x, @url(google-nexus-5-vertical-keyboard-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x"
           },
           {
             "title": "default",
@@ -859,7 +859,7 @@ const DeviceList = `[
               "right": 42,
               "bottom": 0
             },
-            "image": "@url(google-nexus-5-horizontal-default-1x.png) 1x, @url(google-nexus-5-horizontal-default-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x"
           },
           {
             "title": "navigation bar",
@@ -870,7 +870,7 @@ const DeviceList = `[
               "right": 42,
               "bottom": 0
             },
-            "image": "@url(google-nexus-5-horizontal-navigation-1x.png) 1x, @url(google-nexus-5-horizontal-navigation-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x"
           },
           {
             "title": "keyboard",
@@ -881,7 +881,7 @@ const DeviceList = `[
               "right": 42,
               "bottom": 202
             },
-            "image": "@url(google-nexus-5-horizontal-keyboard-1x.png) 1x, @url(google-nexus-5-horizontal-keyboard-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x"
           }
         ]
       }
@@ -908,7 +908,7 @@ const DeviceList = `[
           "device-pixel-ratio": 2.625,
           "vertical": {
             "outline": {
-              "image": "@url(Nexus5X-portrait.svg)",
+              "image": "@url(optimized/Nexus5X-portrait.avif)",
               "insets": {
                 "left": 18,
                 "top": 88,
@@ -921,7 +921,7 @@ const DeviceList = `[
           },
           "horizontal": {
             "outline": {
-              "image": "@url(Nexus5X-landscape.svg)",
+              "image": "@url(optimized/Nexus5X-landscape.avif)",
               "insets": {
                 "left": 88,
                 "top": 21,
@@ -943,7 +943,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 48
             },
-            "image": "@url(google-nexus-5x-vertical-default-1x.png) 1x, @url(google-nexus-5x-vertical-default-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x"
           },
           {
             "title": "navigation bar",
@@ -954,7 +954,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 48
             },
-            "image": "@url(google-nexus-5x-vertical-navigation-1x.png) 1x, @url(google-nexus-5x-vertical-navigation-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x"
           },
           {
             "title": "keyboard",
@@ -965,7 +965,7 @@ const DeviceList = `[
               "right": 0,
               "bottom": 342
             },
-            "image": "@url(google-nexus-5x-vertical-keyboard-1x.png) 1x, @url(google-nexus-5x-vertical-keyboard-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x"
           },
           {
             "title": "default",
@@ -976,7 +976,7 @@ const DeviceList = `[
               "right": 48,
               "bottom": 0
             },
-            "image": "@url(google-nexus-5x-horizontal-default-1x.png) 1x, @url(google-nexus-5x-horizontal-default-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x"
           },
           {
             "title": "navigation bar",
@@ -987,7 +987,7 @@ const DeviceList = `[
               "right": 48,
               "bottom": 0
             },
-            "image": "@url(google-nexus-5x-horizontal-navigation-1x.png) 1x, @url(google-nexus-5x-horizontal-navigation-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x"
           },
           {
             "title": "keyboard",
@@ -998,7 +998,7 @@ const DeviceList = `[
               "right": 48,
               "bottom": 222
             },
-            "image": "@url(google-nexus-5x-horizontal-keyboard-1x.png) 1x, @url(google-nexus-5x-horizontal-keyboard-2x.png) 2x"
+            "image": "@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x"
           }
         ]
       }
@@ -1042,7 +1042,7 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(Nexus6P-landscape.svg)",
+              "image": "@url(optimized/Nexus6P-landscape.avif)",
               "insets": {
                 "left": 94,
                 "top": 17,
@@ -1056,7 +1056,7 @@ const DeviceList = `[
           "device-pixel-ratio": 3.5,
           "vertical": {
             "outline": {
-              "image": "@url(Nexus6P-portrait.svg)",
+              "image": "@url(optimized/Nexus6P-portrait.avif)",
               "insets": {
                 "left": 16,
                 "top": 94,
@@ -1419,7 +1419,7 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(iPad-landscape.svg)",
+              "image": "@url(optimized/iPad-landscape.avif)",
               "insets": {
                 "left": 112,
                 "top": 56,
@@ -1433,7 +1433,7 @@ const DeviceList = `[
           "device-pixel-ratio": 2,
           "vertical": {
             "outline": {
-              "image": "@url(iPad-portrait.svg)",
+              "image": "@url(optimized/iPad-portrait.avif)",
               "insets": {
                 "left": 52,
                 "top": 114,
@@ -1717,12 +1717,12 @@ const DeviceList = `[
         "screen": {
           "horizontal": {
             "outline": {
-              "image": "@url(MotoG4-landscape.svg)",
+              "image": "@url(optimized/MotoG4-landscape.avif)",
               "insets": {
                 "left": 91,
-                "top": 80,
+                "top": 30,
                 "right": 74,
-                "bottom": 80
+                "bottom": 30
               }
             },
             "width": 640,
@@ -1731,11 +1731,11 @@ const DeviceList = `[
           "device-pixel-ratio": 3,
           "vertical": {
             "outline": {
-              "image": "@url(MotoG4-portrait.svg)",
+              "image": "@url(optimized/MotoG4-portrait.avif)",
               "insets": {
-                "left": 80,
+                "left": 30,
                 "top": 91,
-                "right": 80,
+                "right": 30,
                 "bottom": 74
               }
             },
