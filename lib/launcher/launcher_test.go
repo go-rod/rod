@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
@@ -43,6 +44,9 @@ func TestDownloadWithMirror(t *testing.T) {
 }
 
 func TestLaunch(t *testing.T) {
+	defaults.Proxy = "test.com"
+	defer func() { defaults.ResetWithEnv() }()
+
 	l := launcher.New()
 	defer func() { kill(l.PID()) }()
 

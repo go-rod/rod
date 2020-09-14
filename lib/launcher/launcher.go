@@ -92,6 +92,10 @@ func New() *Launcher {
 		defaultFlags["no-sandbox"] = nil
 	}
 
+	if defaults.Proxy != "" {
+		defaultFlags["proxy-server"] = []string{defaults.Proxy}
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	return &Launcher{
 		ctx:       ctx,

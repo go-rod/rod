@@ -20,7 +20,10 @@ func TestBasic(t *testing.T) {
 	assert.Equal(t, "", URL)
 	assert.False(t, Remote)
 
-	parse("show,trace,slow=2s,port=8080,remote,dir=tmp,url=http://test.com,cdp,monitor,blind,quiet,bin=/path/to/chrome")
+	parse("show,trace,slow=2s,port=8080,remote,dir=tmp," +
+		"url=http://test.com,cdp,monitor,blind,quiet,bin=/path/to/chrome," +
+		"proxy=localhost:8080",
+	)
 
 	assert.True(t, Show)
 	assert.True(t, Trace)
@@ -34,6 +37,7 @@ func TestBasic(t *testing.T) {
 	assert.True(t, CDP)
 	assert.Equal(t, ":9273", Monitor)
 	assert.Equal(t, true, Blind)
+	assert.Equal(t, "localhost:8080", Proxy)
 
 	parse("monitor=:1234")
 	assert.Equal(t, ":1234", Monitor)

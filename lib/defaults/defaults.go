@@ -53,6 +53,9 @@ var Monitor string
 // Blind is only useful when Monitor is enabled, it decides whether to open a browser to watch the screenshots or not
 var Blind bool
 
+// Proxy for the browser
+var Proxy string
+
 // Parse the flags
 func init() {
 	ResetWithEnv()
@@ -72,6 +75,7 @@ func Reset() {
 	CDP = false
 	Monitor = ""
 	Blind = false
+	Proxy = ""
 }
 
 // ResetWithEnv all flags by the value of the rod env var.
@@ -87,43 +91,58 @@ func parse(options string) {
 	}
 
 	for _, f := range strings.Split(options, ",") {
-		set(f)
+		kv := strings.Split(f, "=")
+		if len(kv) == 2 {
+			rules[kv[0]](kv[1])
+		} else {
+			rules[kv[0]]("")
+		}
 	}
 }
 
-func set(f string) {
-	kv := strings.Split(f, "=")
-	switch kv[0] {
-	case "show":
+var rules = map[string]func(string){
+	"show": func(string) {
 		Show = true
-	case "trace":
+	},
+	"trace": func(string) {
 		Trace = true
-	case "quiet":
+	},
+	"quiet": func(string) {
 		Quiet = true
-	case "slow":
+	},
+	"slow": func(v string) {
 		var err error
-		Slow, err = time.ParseDuration(kv[1])
+		Slow, err = time.ParseDuration(v)
 		utils.E(err)
-	case "bin":
-		Bin = kv[1]
-	case "dir":
-		Dir = kv[1]
-	case "port":
-		Port = kv[1]
-	case "url":
-		URL = kv[1]
-	case "remote":
+	},
+	"bin": func(v string) {
+		Bin = v
+	},
+	"dir": func(v string) {
+		Dir = v
+	},
+	"port": func(v string) {
+		Port = v
+	},
+	"url": func(v string) {
+		URL = v
+	},
+	"remote": func(v string) {
 		Remote = true
-	case "cdp":
+	},
+	"cdp": func(v string) {
 		CDP = true
-	case "monitor":
+	},
+	"monitor": func(v string) {
 		Monitor = ":9273"
-		if len(kv) == 2 {
-			Monitor = kv[1]
+		if v != "" {
+			Monitor = v
 		}
-	case "blind":
+	},
+	"blind": func(v string) {
 		Blind = true
-	default:
-		panic("no such rod option: " + kv[0])
-	}
+	},
+	"proxy": func(v string) {
+		Proxy = v
+	},
 }
