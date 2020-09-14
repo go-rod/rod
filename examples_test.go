@@ -237,7 +237,7 @@ func Example_customize_retry_strategy() {
 	// Output: q
 }
 
-// Example_customize_browser_launch will show how we can further customise the
+// Example_customize_browser_launch will show how we can further customize the
 // browser with the launcher library. The launcher lib comes with many default
 // flags (switches), this example adds and removes a few.
 func Example_customize_browser_launch() {
@@ -395,20 +395,19 @@ func Example_hijack_requests() {
 }
 
 // Example_states allows us to update the state of the current page.
-// In this example we enable network access.
+// In this example we enable the network domain.
 func Example_states() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("")
 
-	// LoadState detects whether the  network is enabled or not.
+	// LoadState detects whether the network domain is enabled or not.
 	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
 
 	_ = proto.NetworkEnable{}.Call(page)
 
-	// Now that we called the request on the page, we check see if the state
-	// result updates to true.
+	// Check if the network domain is successfully enabled.
 	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
 
 	// Output:

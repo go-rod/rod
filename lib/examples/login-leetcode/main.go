@@ -21,11 +21,9 @@ func main() {
 	cookies := login()
 
 	reuse(cookies)
-
 }
 
 func login() string {
-
 	// Launch a new browser with default options, and connect to it.
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
@@ -53,11 +51,9 @@ func login() string {
 	}
 
 	return string(b)
-
 }
 
 func reuse(cookies string) {
-
 	var c []*proto.NetworkCookieParam
 	err := json.Unmarshal([]byte(cookies), &c)
 	if err != nil {
@@ -74,5 +70,4 @@ func reuse(cookies string) {
 
 	// print user name
 	fmt.Println(*el.MustAttribute("title"))
-
 }

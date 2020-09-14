@@ -117,7 +117,7 @@ func (p *Page) HasMatches(pairs ...string) (bool, error) {
 	return err == nil, err
 }
 
-// Element finds element by css selector
+// Element doc is similar to the method MustElement
 func (p *Page) Element(selectors ...string) (*Element, error) {
 	return p.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
