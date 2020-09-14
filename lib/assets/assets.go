@@ -52,7 +52,7 @@ const Helper = `() => {
       return list
     },
 
-    elementMatches(...pairs) {
+    elementR(...pairs) {
       for (let i = 0; i < pairs.length - 1; i += 2) {
         const selector = pairs[i]
         const pattern = pairs[i + 1]

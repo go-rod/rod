@@ -110,7 +110,7 @@ func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 
 // HasMatches doc is similar to the method MustHasMatches
 func (p *Page) HasMatches(pairs ...string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementMatches(pairs...)
+	el, err := p.Sleeper(nil).ElementR(pairs...)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil, nil
 	}
@@ -122,9 +122,9 @@ func (p *Page) Element(selectors ...string) (*Element, error) {
 	return p.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
 
-// ElementMatches doc is similar to the method MustElementMatches
-func (p *Page) ElementMatches(pairs ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementMatches, JSArgsFromString(pairs)))
+// ElementR doc is similar to the method MustElementR
+func (p *Page) ElementR(pairs ...string) (*Element, error) {
+	return p.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
 }
 
 // ElementX finds elements by XPath
@@ -338,10 +338,10 @@ func (rc *RaceContext) ElementX(selector string, callback func(*Element) error) 
 	return rc
 }
 
-// ElementMatches the doc is similar with ElementMatches but has a callback when a match is found
-func (rc *RaceContext) ElementMatches(selector, regex string, callback func(*Element) error) *RaceContext {
+// ElementR the doc is similar with ElementR but has a callback when a match is found
+func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		func() (*Element, error) { return rc.noSleepPage.ElementMatches(selector, regex) },
+		func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
 		callback,
 	})
 	return rc
@@ -391,7 +391,7 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 
 // HasMatches doc is similar to the method MustHasMatches
 func (el *Element) HasMatches(selector, regex string) (bool, *Element, error) {
-	el, err := el.ElementMatches(selector, regex)
+	el, err := el.ElementR(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil, nil
 	}
@@ -433,9 +433,9 @@ func (el *Element) Previous() (*Element, error) {
 	return el.ElementByJS(NewEvalOptions(`this.previousElementSibling`, nil))
 }
 
-// ElementMatches doc is similar to the method MustElementMatches
-func (el *Element) ElementMatches(pairs ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementMatches, JSArgsFromString(pairs)))
+// ElementR doc is similar to the method MustElementR
+func (el *Element) ElementR(pairs ...string) (*Element, error) {
+	return el.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
 }
 
 // Elements doc is similar to the method MustElements

@@ -12,7 +12,7 @@ import (
 func main() {
 	page := rod.New().MustConnect().Timeout(time.Second * 15).MustPage("https://github.com/avelino/awesome-go")
 
-	section := page.MustElementMatches("p", "Selenium and browser control tools").MustNext()
+	section := page.MustElementR("p", "Selenium and browser control tools").MustNext()
 
 	// query children elements of an element
 	projects := section.MustElements("li")

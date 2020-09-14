@@ -251,7 +251,7 @@ func (s *S) TestHandleAuth() {
 
 	page := s.browser.MustPage(url)
 	defer page.MustClose()
-	page.MustElementMatches("p", "ok")
+	page.MustElementR("p", "ok")
 
 	wait := s.browser.HandleAuth("a", "b")
 	go func() { _, _ = s.browser.Page(url + "/err") }()

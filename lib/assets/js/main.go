@@ -14,8 +14,8 @@ const (
 	ElementX NameType = "elementX"
 	//ElementsX NameType function name
 	ElementsX NameType = "elementsX"
-	//ElementMatches NameType function name
-	ElementMatches NameType = "elementMatches"
+	//ElementR NameType function name
+	ElementR NameType = "elementR"
 	//Parents NameType function name
 	Parents NameType = "parents"
 	//ContainsElement NameType function name

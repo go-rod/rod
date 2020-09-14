@@ -406,11 +406,11 @@ func (p *Page) MustElement(selectors ...string) *Element {
 	return el
 }
 
-// MustElementMatches retries until an element in the page that matches one of the pairs.
-// Each pairs is a css selector and a regex. A sample call will look like page.MustElementMatches("div", "click me").
+// MustElementR retries until an element in the page that matches one of the pairs.
+// Each pairs is a css selector and a regex. A sample call will look like page.MustElementR("div", "click me").
 // The regex is the js regex, not golang's.
-func (p *Page) MustElementMatches(pairs ...string) *Element {
-	el, err := p.ElementMatches(pairs...)
+func (p *Page) MustElementR(pairs ...string) *Element {
+	el, err := p.ElementR(pairs...)
 	utils.E(err)
 	return el
 }
@@ -466,9 +466,9 @@ func (rc *RaceContext) MustElementX(selector string, callback func(*Element)) *R
 	})
 }
 
-// MustElementMatches the doc is similar with MustElement but has a callback when a match is found
-func (rc *RaceContext) MustElementMatches(selector, regex string, callback func(*Element)) *RaceContext {
-	return rc.ElementMatches(selector, regex, func(el *Element) error {
+// MustElementR the doc is similar with MustElement but has a callback when a match is found
+func (rc *RaceContext) MustElementR(selector, regex string, callback func(*Element)) *RaceContext {
+	return rc.ElementR(selector, regex, func(el *Element) error {
 		callback(el)
 		return nil
 	})
@@ -843,10 +843,10 @@ func (el *Element) MustPrevious() *Element {
 	return parent
 }
 
-// MustElementMatches returns the first element in the page that matches the CSS selector and its text matches the regex.
+// MustElementR returns the first element in the page that matches the CSS selector and its text matches the regex.
 // The regex is the js regex, not golang's.
-func (el *Element) MustElementMatches(selector, regex string) *Element {
-	el, err := el.ElementMatches(selector, regex)
+func (el *Element) MustElementR(selector, regex string) *Element {
+	el, err := el.ElementR(selector, regex)
 	utils.E(err)
 	return el
 }

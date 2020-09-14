@@ -188,7 +188,7 @@ func Example_wait_for_animation() {
 
 	page.MustWaitLoad().MustElement("[data-target='#exampleModalLive']").MustClick()
 
-	saveBtn := page.MustElementMatches("#exampleModalLive button", "Close")
+	saveBtn := page.MustElementR("#exampleModalLive button", "Close")
 
 	// Here, WaitStable will wait until the save button's position becomes
 	// stable. The timeout is 5 seconds, after which it times out (or after 1

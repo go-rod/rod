@@ -141,7 +141,7 @@ func (s *S) TestPageRace() {
 	err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
 		MustElement("not-exists", func(el *rod.Element) {}).
 		MustElementX("//not-exists", func(el *rod.Element) {}).
-		MustElementMatches("not-exists", "test", func(el *rod.Element) {}).
+		MustElementR("not-exists", "test", func(el *rod.Element) {}).
 		Do()
 	s.Error(err)
 
@@ -163,16 +163,16 @@ func (s *S) TestPageElementsX() {
 	s.Len(list, 5)
 }
 
-func (s *S) TestElementMatches() {
+func (s *S) TestElementR() {
 	p := s.page.MustNavigate(srcFile("fixtures/selector.html"))
-	el := p.MustElementMatches("button", `\d1`)
+	el := p.MustElementR("button", `\d1`)
 	s.Equal("01", el.MustText())
 
-	el = p.MustElement("div").MustElementMatches("button", `03`)
+	el = p.MustElement("div").MustElementR("button", `03`)
 	s.Equal("03", el.MustText())
 
 	p = s.page.MustNavigate(srcFile("fixtures/input.html"))
-	el = p.MustElementMatches("input", `submit`)
+	el = p.MustElementR("input", `submit`)
 	s.Equal("submit", el.MustText())
 }
 
