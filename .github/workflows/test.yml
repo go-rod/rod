@@ -58,3 +58,8 @@ jobs:
           docker build -t rodorg/rod -f lib/docker/Dockerfile .
           docker build -t test -f lib/docker/test.Dockerfile .
           docker run -v $(pwd):/t -w /t test
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: review-fonts
+          path: tmp/fonts.pdf
