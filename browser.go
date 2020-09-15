@@ -25,7 +25,7 @@ import (
 // Browser implements the proto.Caller interface
 var _ proto.Caller = &Browser{}
 
-// Browser represents the browser
+// Browser represents the browser.
 // It doesn't depends on file system, it should work with remote browser seamlessly.
 // To check the env var you can use to quickly enable options from CLI, check here:
 // https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
@@ -265,15 +265,22 @@ func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID
 
 	ctx, cancel := context.WithCancel(ctx)
 
-	fnType := reflect.TypeOf(fn)
+	// fn can be two types, the bool return value is optional:
+	//
+	// func(events ...proto.Payload) bool
+	// func(events ...proto.Payload)
 	fnVal := reflect.ValueOf(fn)
+	fnType := fnVal.Type()
+
 	argInfos := []argInfo{}
 	for i := 0; i < fnType.NumIn(); i++ {
 		info := argInfo{
 			argType: fnType.In(i),
 		}
 
-		// handle enable and recover domain
+		// Only enabled domains will emit events to cdp client.
+		// We enable the domains for the event types if it's not enabled.
+		// We recover the domains to their previous states after the listeners stop.
 		arg := reflect.New(info.argType.Elem()).Interface().(proto.Payload)
 		domain, _ := proto.ParseMethodName(arg.MethodName())
 		var enable proto.Payload
@@ -305,6 +312,10 @@ func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID
 			panic("can't use wait function twice")
 		}
 
+		// Check each event, if an event matches the the type of the arg call the fn with the even.
+		// For example, if suppose the type of fn is:
+		//   fn(e1 E1, e2 E2, e3 E3)
+		// If the e is E2, then we call fn like fn(nil, e, nil)
 		goob.Each(s, func(e *cdp.Event) bool {
 			args := []reflect.Value{}
 			has := false
@@ -330,12 +341,21 @@ func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID
 
 // waits for the next event for one time. It will also load the data into the event object.
 func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID, e proto.Payload) (wait func()) {
-	val := reflect.ValueOf(e)
-	fnType := reflect.FuncOf([]reflect.Type{val.Type()}, []reflect.Type{reflect.TypeOf(true)}, false)
+	valE := reflect.ValueOf(e)
+	valTrue := reflect.ValueOf(true)
+
+	// dynamically creates a function on runtime:
+	//
+	// func(ee proto.Payload) bool {
+	//   *e = *ee
+	//   return true
+	// }
+	fnType := reflect.FuncOf([]reflect.Type{valE.Type()}, []reflect.Type{valTrue.Type()}, false)
 	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
-		val.Elem().Set(args[0].Elem())
-		return []reflect.Value{reflect.ValueOf(true)}
+		valE.Elem().Set(args[0].Elem())
+		return []reflect.Value{valTrue}
 	})
+
 	return b.eachEvent(ctx, sessionID, fnVal.Interface())
 }
 

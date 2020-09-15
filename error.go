@@ -23,7 +23,7 @@ var (
 	ErrNotClickable = errors.New("element is not clickable")
 )
 
-// Error ...
+// Error type for rod
 type Error struct {
 	Code    error
 	Details interface{}
@@ -33,12 +33,12 @@ func newErr(code error, details interface{}, msg string) error {
 	return errors.WithStack(errors.WithMessage(&Error{code, details}, msg))
 }
 
-// Error ...
+// Error interface
 func (e *Error) Error() string {
 	return e.Code.Error()
 }
 
-// Unwrap ...
+// Unwrap interface
 func (e *Error) Unwrap() error {
 	return e.Code
 }

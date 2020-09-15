@@ -32,6 +32,7 @@ The entry point of all tests is the `setup_test.go` file.
 ### To lint the project
 
 ```bash
+go generate # only required for first time
 go run ./lib/utils/lint
 ```
 

@@ -472,7 +472,8 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 	var err error
 	var res *proto.RuntimeCallFunctionOnResult
 
-	// js context will be invalid if a frame is reloaded
+	// js context will be invalid if a frame is reloaded or not ready, then the isNilContextErr
+	// will be true, then we retry the eval again.
 	err = utils.Retry(p.ctx, backoff, func() (bool, error) {
 		if p.getWindowObjectID() == "" || opts.ThisID == "" {
 			err := p.initJS(false)
@@ -487,14 +488,15 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 			objectID = p.getWindowObjectID()
 		}
 
+		// construct arguments
 		args := []*proto.RuntimeCallArgument{}
 		for _, arg := range opts.JSArgs {
-			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok {
-				if id == jsHelperID {
+			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok { // remote object
+				if id == jsHelperID { // if it's a rod js helper object
 					id = p.getJSHelperObjectID()
 				}
 				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(nil), ObjectID: id})
-			} else {
+			} else { // plain json data
 				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
 			}
 		}

@@ -40,6 +40,7 @@ type Launcher struct {
 
 // New returns the default arguments to start browser.
 // "--" is optional, with or without it won't affect the result.
+// Headless will be enabled by default.
 // Leakless will be enabled by default.
 // List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
@@ -153,13 +154,13 @@ func (l *Launcher) Get(name string) (string, bool) {
 
 // GetFlags from settings
 func (l *Launcher) GetFlags(name string) ([]string, bool) {
-	flag, has := l.Flags[name]
+	flag, has := l.Flags[l.normalizeFlag(name)]
 	return flag, has
 }
 
-// Set flag
+// Set a flag
 func (l *Launcher) Set(name string, values ...string) *Launcher {
-	l.Flags[strings.TrimLeft(name, "-")] = values
+	l.Flags[l.normalizeFlag(name)] = values
 	return l
 }
 
@@ -172,19 +173,19 @@ func (l *Launcher) Append(name string, values ...string) *Launcher {
 	return l.Set(name, append(flags, values...)...)
 }
 
-// Delete flag
+// Delete a flag
 func (l *Launcher) Delete(name string) *Launcher {
-	delete(l.Flags, strings.TrimLeft(name, "-"))
+	delete(l.Flags, l.normalizeFlag(name))
 	return l
 }
 
-// Bin set browser executable file path
+// Bin set browser executable file path. If it's empty, launcher will automatically search or download the bin.
 func (l *Launcher) Bin(path string) *Launcher {
 	l.bin = path
 	return l
 }
 
-// Headless switch. When disabled leakless will be disabled.
+// Headless switch. Whether to run browser in headless mode. A mode without visible UI.
 func (l *Launcher) Headless(enable bool) *Launcher {
 	if enable {
 		return l.Set("headless")
@@ -218,7 +219,7 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 	return l
 }
 
-// RemoteDebuggingPort arg
+// RemoteDebuggingPort to launch the browser. Zero for a random port. Zero is the default value.
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
 }
@@ -401,4 +402,8 @@ func (l *Launcher) kill() {
 	if err == nil {
 		_ = p.Kill()
 	}
+}
+
+func (l *Launcher) normalizeFlag(name string) string {
+	return strings.TrimLeft(name, "-")
 }

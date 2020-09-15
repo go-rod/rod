@@ -308,14 +308,14 @@ type raceBranch struct {
 	callback  func(*Element) error
 }
 
-// RaceContext ...
+// RaceContext stores the branches to race
 type RaceContext struct {
 	page        *Page
 	noSleepPage *Page
 	branches    []*raceBranch
 }
 
-// Race ...
+// Race creates a context to race selectors
 func (p *Page) Race() *RaceContext {
 	return &RaceContext{page: p, noSleepPage: p.Sleeper(nil)}
 }
