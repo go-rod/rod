@@ -85,39 +85,16 @@ func RandString(len int) string {
 	return hex.EncodeToString(b)
 }
 
-// OutputFileOptions ...
-type OutputFileOptions struct {
-	DirPerm    os.FileMode
-	FilePerm   os.FileMode
-	JSONPrefix string
-	JSONIndent string
-}
-
-// MkdirOptions ...
-type MkdirOptions struct {
-	Perm os.FileMode
-}
-
 // Mkdir makes dir recursively
-func Mkdir(path string, options *MkdirOptions) error {
-	if options == nil {
-		options = &MkdirOptions{
-			Perm: 0775,
-		}
-	}
-
-	return os.MkdirAll(path, options.Perm)
+func Mkdir(path string) error {
+	return os.MkdirAll(path, 0775)
 }
 
 // OutputFile auto creates file if not exists, it will try to detect the data type and
 // auto output binary, string or json
-func OutputFile(p string, data interface{}, options *OutputFileOptions) error {
-	if options == nil {
-		options = &OutputFileOptions{0775, 0664, "", "    "}
-	}
-
+func OutputFile(p string, data interface{}) error {
 	dir := filepath.Dir(p)
-	_ = Mkdir(dir, &MkdirOptions{Perm: options.DirPerm})
+	_ = Mkdir(dir)
 
 	var bin []byte
 
@@ -127,15 +104,10 @@ func OutputFile(p string, data interface{}, options *OutputFileOptions) error {
 	case string:
 		bin = []byte(t)
 	default:
-		var err error
-		bin, err = json.MarshalIndent(data, options.JSONPrefix, options.JSONIndent)
-
-		if err != nil {
-			return err
-		}
+		bin = MustToJSONBytes(data)
 	}
 
-	return ioutil.WriteFile(p, bin, options.FilePerm)
+	return ioutil.WriteFile(p, bin, 0664)
 }
 
 // ReadString reads file as string
@@ -171,9 +143,6 @@ func Sleep(seconds float64) {
 // Sleeper sleeps for sometime, returns the reason to wake, if ctx is done release resource
 type Sleeper func(context.Context) error
 
-// ErrMaxSleepCount ...
-var ErrMaxSleepCount = errors.New("max sleep count")
-
 // CountSleeper wake when counts to max and return
 func CountSleeper(max int) Sleeper {
 	count := 0
@@ -183,7 +152,7 @@ func CountSleeper(max int) Sleeper {
 		}
 
 		if count == max {
-			return ErrMaxSleepCount
+			return errors.New("max sleep count")
 		}
 		count++
 		return nil
@@ -340,7 +309,7 @@ func ReadJSON(r io.Reader) (gjson.Result, error) {
 	return gjson.ParseBytes(b), nil
 }
 
-// ReadJSONPathAsString ...
+// ReadJSONPathAsString from reader
 func ReadJSONPathAsString(r io.Reader, path string) (string, error) {
 	obj, err := ReadJSON(r)
 	if err != nil {

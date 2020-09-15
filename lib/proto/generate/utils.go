@@ -33,7 +33,7 @@ func getSchema() gjson.Result {
 	utils.E(err)
 	data := utils.MustReadString(res.Body)
 
-	utils.E(utils.OutputFile("tmp/proto.json", data, nil))
+	utils.E(utils.OutputFile("tmp/proto.json", data))
 
 	return gjson.Parse(data)
 }

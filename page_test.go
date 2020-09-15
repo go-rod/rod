@@ -677,7 +677,7 @@ func (s *S) TestFonts() {
 
 	p := s.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
 
-	utils.E(utils.OutputFile("tmp/fonts.pdf", p.MustPDF(), nil))
+	utils.E(utils.OutputFile("tmp/fonts.pdf", p.MustPDF()))
 }
 
 func (s *S) TestPagePDFErr() {

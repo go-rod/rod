@@ -30,7 +30,7 @@ func main() {
 	`, "code", code)
 
 	path := "./lib/devices/types.go"
-	utils.E(utils.OutputFile(path, code, nil))
+	utils.E(utils.OutputFile(path, code))
 
 	utils.Exec("gofmt", "-s", "-w", path)
 	utils.Exec("goimports", "-w", path)

@@ -117,7 +117,7 @@ func (lc *Browser) download(u string) (err error) {
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
-	err = utils.Mkdir(lc.Dir, nil)
+	err = utils.Mkdir(lc.Dir)
 	utils.E(err)
 
 	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)

@@ -41,9 +41,9 @@ const DeviceList = {{.deviceList}}
 		"deviceList", getDeviceList(),
 	)
 
-	utils.E(utils.OutputFile(slash("lib/assets/assets.go"), build, nil))
+	utils.E(utils.OutputFile(slash("lib/assets/assets.go"), build))
 
-	utils.E(utils.OutputFile(slash("lib/assets/js/main.go"), genHelperList(helper), nil))
+	utils.E(utils.OutputFile(slash("lib/assets/js/main.go"), genHelperList(helper)))
 }
 
 func get(path string) string {

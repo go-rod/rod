@@ -157,7 +157,7 @@ func saveScreenshot(bin []byte, toFile []string) error {
 	if toFile[0] == "" {
 		toFile = []string{"tmp", "screenshots", fmt.Sprintf("%d", time.Now().UnixNano()) + ".png"}
 	}
-	return utils.OutputFile(filepath.Join(toFile...), bin, nil)
+	return utils.OutputFile(filepath.Join(toFile...), bin)
 }
 
 func httHTML(w http.ResponseWriter, body string) {

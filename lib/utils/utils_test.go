@@ -54,13 +54,13 @@ func TestGenerateRandomString(t *T) {
 
 func TestMkdir(t *testing.T) {
 	p := filepath.Join(t.TempDir(), "t")
-	utils.E(utils.Mkdir(p, nil))
+	utils.E(utils.Mkdir(p))
 }
 
 func TestOutputString(t *testing.T) {
 	p := "tmp/" + utils.RandString(10)
 
-	_ = utils.OutputFile(p, p, nil)
+	_ = utils.OutputFile(p, p)
 
 	c, err := utils.ReadString(p)
 
@@ -74,7 +74,7 @@ func TestOutputString(t *testing.T) {
 func TestOutputBytes(t *testing.T) {
 	p := "tmp/" + utils.RandString(10)
 
-	_ = utils.OutputFile(p, []byte("test"), nil)
+	_ = utils.OutputFile(p, []byte("test"))
 
 	c, err := utils.ReadString(p)
 
@@ -88,9 +88,9 @@ func TestOutputBytes(t *testing.T) {
 func TestOutputJSONErr(t *testing.T) {
 	p := "tmp/" + utils.RandString(10)
 
-	err := utils.OutputFile(p, make(chan struct{}), nil)
-
-	assert.EqualError(t, err, "json: unsupported type: chan struct {}")
+	assert.Panics(t, func() {
+		_ = utils.OutputFile(p, make(chan struct{}))
+	})
 }
 
 func TestSleep(t *T) {
@@ -146,7 +146,7 @@ func TestCountSleeperErr(t *T) {
 	for i := 0; i < 5; i++ {
 		_ = s(ctx)
 	}
-	assert.Errorf(t, s(ctx), utils.ErrMaxSleepCount.Error())
+	assert.Errorf(t, s(ctx), "max sleep count")
 }
 
 func TestCountSleeperCancel(t *T) {

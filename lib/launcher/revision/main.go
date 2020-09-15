@@ -44,6 +44,6 @@ const DefaultRevision = {{.revision}}
 		"revision", revision,
 	)
 
-	utils.E(utils.OutputFile(slash("lib/launcher/revision.go"), build, nil))
+	utils.E(utils.OutputFile(slash("lib/launcher/revision.go"), build))
 
 }

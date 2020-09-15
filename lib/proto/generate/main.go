@@ -60,8 +60,8 @@ func main() {
 		}
 	`
 
-	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init, nil))
-	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode, nil))
+	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init))
+	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode))
 
 	utils.Exec("gofmt", "-s", "-w", "./lib/proto")
 	utils.Exec("goimports", "-w", "./lib/proto")      // golang.org/x/tools/cmd/goimports

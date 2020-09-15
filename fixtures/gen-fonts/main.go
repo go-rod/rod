@@ -58,5 +58,5 @@ func main() {
 		html,
 	)
 
-	utils.E(utils.OutputFile("fixtures/fonts.html", html, nil))
+	utils.E(utils.OutputFile("fixtures/fonts.html", html))
 }

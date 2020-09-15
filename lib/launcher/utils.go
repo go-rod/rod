@@ -82,7 +82,7 @@ func unzip(logger io.Writer, from, to string) (err error) {
 	zr, err := zip.OpenReader(from)
 	utils.E(err)
 
-	err = utils.Mkdir(to, nil)
+	err = utils.Mkdir(to)
 	utils.E(err)
 
 	size := 0
