@@ -329,11 +329,9 @@ func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error,
 	return
 }
 
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-// The fn can accpet multiple events, such as EachEvent(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
-// only one argument will be non-null, others will null.
-func (p *Page) EachEvent(fn interface{}) (wait func()) {
-	return p.browser.eachEvent(p.ctx, p.SessionID, fn)
+// EachEvent of the specified event type, if any callback returns true the event loop will stop.
+func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
+	return p.browser.eachEvent(p.ctx, p.SessionID, callbacks...)
 }
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
@@ -363,23 +361,17 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 		cancel()
 	}()
 
-	wait := p.browser.eachEvent(ctx, p.SessionID, func(
-		sent *proto.NetworkRequestWillBeSent,
-		finished *proto.NetworkLoadingFinished, // not use responseReceived because https://crbug.com/883475
-		failed *proto.NetworkLoadingFailed,
-	) {
-		if sent != nil {
-			timeout.Stop()
-			url := sent.Request.URL
-			id := sent.RequestID
-			if matchWithFilter(url, includes, excludes) {
-				reqList[id] = struct{}{}
-			}
-		} else if finished != nil {
-			reset(finished.RequestID)
-		} else if failed != nil {
-			reset(failed.RequestID)
+	wait := p.browser.eachEvent(ctx, p.SessionID, func(sent *proto.NetworkRequestWillBeSent) {
+		timeout.Stop()
+		url := sent.Request.URL
+		id := sent.RequestID
+		if matchWithFilter(url, includes, excludes) {
+			reqList[id] = struct{}{}
 		}
+	}, func(finished *proto.NetworkLoadingFinished) { // not use responseReceived because https://crbug.com/883475
+		reset(finished.RequestID)
+	}, func(failed *proto.NetworkLoadingFailed) {
+		reset(failed.RequestID)
 	})
 
 	return func() {

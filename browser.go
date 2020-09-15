@@ -241,11 +241,9 @@ func (b *Browser) Event() *goob.Observable {
 	return b.event
 }
 
-// EachEvent of the specified event type, if the fn returns true the event loop will stop.
-// The fn can accpet multiple events, such as EachEvent(func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
-// only one argument will be non-null, others will null.
-func (b *Browser) EachEvent(fn interface{}) (wait func()) {
-	return b.eachEvent(b.ctx, "", fn)
+// EachEvent of the specified event type, if any callback returns true the event loop will stop.
+func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
+	return b.eachEvent(b.ctx, "", callbacks...)
 }
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
@@ -253,85 +251,64 @@ func (b *Browser) WaitEvent(e proto.Payload) (wait func()) {
 	return b.waitEvent(b.ctx, "", e)
 }
 
-// If the fn returns true the event loop will stop.
-// The fn can accpet multiple events, such as EachEvent("", func(e1 *proto.PageLoadEventFired, e2 *proto.PageLifecycleEvent) {}),
-// only one argument will be non-null, others will null.
+// If the any callback returns true the event loop will stop.
 // It will enable the related domains if not enabled, and recover them after wait ends.
-func (b *Browser) eachEvent(ctx context.Context, sessionID proto.TargetSessionID, fn interface{}) (wait func()) {
-	type argInfo struct {
-		argType reflect.Type
-		recover func()
-	}
+func (b *Browser) eachEvent(
+	ctx context.Context,
+	sessionID proto.TargetSessionID,
+	callbacks ...interface{},
+) (wait func()) {
+	cbValues := make([]reflect.Value, len(callbacks))
+	eventTypes := make([]reflect.Type, len(callbacks))
+	recovers := make([]func(), len(callbacks))
 
-	ctx, cancel := context.WithCancel(ctx)
-
-	// fn can be two types, the bool return value is optional:
-	//
-	// func(events ...proto.Payload) bool
-	// func(events ...proto.Payload)
-	fnVal := reflect.ValueOf(fn)
-	fnType := fnVal.Type()
-
-	argInfos := []argInfo{}
-	for i := 0; i < fnType.NumIn(); i++ {
-		info := argInfo{
-			argType: fnType.In(i),
-		}
+	for i, cb := range callbacks {
+		cbValues[i] = reflect.ValueOf(cb)
+		eType := cbValues[i].Type().In(0).Elem()
+		eventTypes[i] = eType
 
 		// Only enabled domains will emit events to cdp client.
 		// We enable the domains for the event types if it's not enabled.
-		// We recover the domains to their previous states after the listeners stop.
-		arg := reflect.New(info.argType.Elem()).Interface().(proto.Payload)
-		domain, _ := proto.ParseMethodName(arg.MethodName())
+		// We recover the domains to their previous states after the wait ends.
+		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Payload).MethodName())
 		var enable proto.Payload
 		if domain == "Target" { // only Target domain is special
 			enable = proto.TargetSetDiscoverTargets{Discover: true}
 		} else {
 			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Payload)
 		}
-		info.recover = b.Context(ctx).EnableDomain(sessionID, enable)
-
-		argInfos = append(argInfos, info)
+		recovers[i] = b.Context(ctx).EnableDomain(sessionID, enable)
 	}
 
-	s := b.event.Subscribe(ctx)
+	ctx, cancel := context.WithCancel(ctx)
+	stream := b.event.Subscribe(ctx)
 
 	return func() {
 		defer func() {
-			for _, state := range argInfos {
-				if state.recover != nil {
-					state.recover()
-				}
-			}
-
 			cancel()
-			s = nil
+			stream = nil
+			for _, recover := range recovers {
+				recover()
+			}
 		}()
 
-		if s == nil {
+		if stream == nil {
 			panic("can't use wait function twice")
 		}
 
 		// Check each event, if an event matches the the type of the arg call the fn with the even.
-		// For example, if suppose the type of fn is:
-		//   fn(e1 E1, e2 E2, e3 E3)
-		// If the e is E2, then we call fn like fn(nil, e, nil)
-		goob.Each(s, func(e *cdp.Event) bool {
-			args := []reflect.Value{}
-			has := false
-			for _, info := range argInfos {
-				event := reflect.New(info.argType.Elem())
-				if Event(e, event.Interface().(proto.Payload)) {
-					has = true
-				} else {
-					event = reflect.Zero(info.argType)
-				}
-				args = append(args, event)
-			}
-			if has {
-				ret := fnVal.Call(args)
-				if len(ret) > 0 {
-					return ret[0].Bool()
+		goob.Each(stream, func(e *cdp.Event) bool {
+			for i, eType := range eventTypes {
+				eVal := reflect.New(eType)
+				if Event(e, eVal.Interface().(proto.Payload)) {
+					// The type of callback can be one of:
+					//   func(e proto.Payload) bool
+					//   func(e proto.Payload)
+					res := cbValues[i].Call([]reflect.Value{eVal})
+					if len(res) > 0 {
+						return res[0].Bool()
+					}
+					break
 				}
 			}
 			return false
