@@ -220,7 +220,7 @@ func (p *Page) MustHandleDialog(accept bool, promptText string) (wait func()) {
 func (p *Page) MustScreenshot(toFile ...string) []byte {
 	bin, err := p.Screenshot(false, &proto.PageCaptureScreenshot{})
 	utils.E(err)
-	utils.E(saveScreenshot(bin, toFile))
+	utils.E(saveFile(saveFileTypeScreenshot, bin, toFile))
 	return bin
 }
 
@@ -228,15 +228,16 @@ func (p *Page) MustScreenshot(toFile ...string) []byte {
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	bin, err := p.Screenshot(true, &proto.PageCaptureScreenshot{})
 	utils.E(err)
-	utils.E(saveScreenshot(bin, toFile))
+	utils.E(saveFile(saveFileTypeScreenshot, bin, toFile))
 	return bin
 }
 
 // MustPDF prints page as MustPDF
-func (p *Page) MustPDF() []byte {
-	pdf, err := p.PDF(&proto.PagePrintToPDF{})
+func (p *Page) MustPDF(toFile ...string) []byte {
+	bin, err := p.PDF(&proto.PagePrintToPDF{})
 	utils.E(err)
-	return pdf
+	utils.E(saveFile(saveFileTypePDF, bin, toFile))
+	return bin
 }
 
 // MustGetDownloadFile of the next download url that matches the pattern, returns the file content.
@@ -756,7 +757,7 @@ func (el *Element) MustResource() []byte {
 func (el *Element) MustScreenshot(toFile ...string) []byte {
 	bin, err := el.Screenshot(proto.PageCaptureScreenshotFormatPng, 0)
 	utils.E(err)
-	utils.E(saveScreenshot(bin, toFile))
+	utils.E(saveFile(saveFileTypeScreenshot, bin, toFile))
 	return bin
 }
 

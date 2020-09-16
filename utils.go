@@ -150,12 +150,25 @@ end:
 	return false
 }
 
-func saveScreenshot(bin []byte, toFile []string) error {
+type saveFileType int
+
+const (
+	saveFileTypeScreenshot saveFileType = iota
+	saveFileTypePDF
+)
+
+func saveFile(fileType saveFileType, bin []byte, toFile []string) error {
 	if len(toFile) == 0 {
 		return nil
 	}
 	if toFile[0] == "" {
-		toFile = []string{"tmp", "screenshots", fmt.Sprintf("%d", time.Now().UnixNano()) + ".png"}
+		stamp := fmt.Sprintf("%d", time.Now().UnixNano())
+		switch fileType {
+		case saveFileTypeScreenshot:
+			toFile = []string{"tmp", "screenshots", stamp + ".png"}
+		case saveFileTypePDF:
+			toFile = []string{"tmp", "pdf", stamp + ".pdf"}
+		}
 	}
 	return utils.OutputFile(filepath.Join(toFile...), bin)
 }

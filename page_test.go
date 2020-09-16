@@ -528,7 +528,7 @@ func (s *S) TestNativeDrag() {
 }
 
 func (s *S) TestPageScreenshot() {
-	f := filepath.Join("tmp", utils.RandString(8)+".png")
+	f := filepath.Join("tmp", "screenshots", utils.RandString(8)+".png")
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	p.MustElement("button")
 	p.MustScreenshot()
@@ -677,7 +677,7 @@ func (s *S) TestFonts() {
 
 	p := s.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
 
-	utils.E(utils.OutputFile("tmp/fonts.pdf", p.MustPDF()))
+	p.MustPDF("tmp", "fonts.pdf")
 }
 
 func (s *S) TestPagePDFErr() {

@@ -444,7 +444,7 @@ func (s *S) TestResource() {
 }
 
 func (s *S) TestElementScreenshot() {
-	f := filepath.Join("tmp", utils.RandString(8)+".png")
+	f := filepath.Join("tmp", "screenshots", utils.RandString(8)+".png")
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("h4")
 
