@@ -19,7 +19,7 @@ func main() {
 	browser := rod.New().Client(l.Client()).MustConnect()
 
 	// You may want to start a server to watch the screenshots inside the docker
-	browser.ServeMonitor(":7777", true)
+	launcher.NewBrowser().Open(browser.ServeMonitor(""))
 
 	fmt.Println(
 		browser.MustPage("https://github.com").MustEval("() => document.title"),

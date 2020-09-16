@@ -128,7 +128,7 @@ func (s *S) TestMonitor() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	host := b.Context(ctx).ServeMonitor("127.0.0.1:0", true)
+	host := b.Context(ctx).ServeMonitor("")
 
 	page := s.page.MustNavigate(host)
 	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
@@ -144,6 +144,17 @@ func (s *S) TestMonitor() {
 	utils.E(err)
 	s.Equal(400, res.StatusCode)
 	s.EqualValues(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
+}
+
+func (s *S) TestMonitorEnv() {
+	defaults.Monitor = ":0"
+	defer defaults.ResetWithEnv()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	b := rod.New().Context(ctx).MustConnect()
+	defer b.MustClose()
 }
 
 func (s *S) TestRemoteLaunch() {

@@ -170,9 +170,11 @@ func (b *Browser) Connect() error {
 		return err
 	}
 
-	b.ServeMonitor(defaults.Monitor, !defaults.Blind)
-
 	b.initEvents()
+
+	if defaults.Monitor != "" {
+		launcher.NewBrowser().Open(b.ServeMonitor(defaults.Monitor))
+	}
 
 	return nil
 }

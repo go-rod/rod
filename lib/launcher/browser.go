@@ -161,6 +161,15 @@ func (lc *Browser) download(u string) (err error) {
 // It will first try to find the browser from local disk, if not exists
 // it will try to download the chromium to Dir.
 func (lc *Browser) Get() (string, error) {
+	p, found := lc.lookPath()
+	if found {
+		return p, nil
+	}
+
+	return p, lc.Download()
+}
+
+func (lc *Browser) lookPath() (string, bool) {
 	execPath := lc.ExecPath()
 
 	list := append(lc.ExecSearchMap[runtime.GOOS], execPath)
@@ -168,11 +177,11 @@ func (lc *Browser) Get() (string, error) {
 	for _, path := range list {
 		found, err := exec.LookPath(path)
 		if err == nil {
-			return found, nil
+			return found, true
 		}
 	}
 
-	return execPath, lc.Download()
+	return execPath, false
 }
 
 // Open url via a browser
@@ -180,8 +189,7 @@ func (lc *Browser) Open(url string) {
 	// Windows doesn't support format [::]
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
-	bin, err := lc.Get()
-	utils.E(err)
+	bin, _ := lc.lookPath()
 	p := exec.Command(bin, url)
 	utils.E(p.Start())
 	utils.E(p.Process.Release())

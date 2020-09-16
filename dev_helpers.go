@@ -16,20 +16,18 @@ import (
 
 	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/assets/js"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
 
 // ServeMonitor starts the monitor server.
-// If openBrowser is true, it will try to launcher a browser to play the screenshots.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
-func (b *Browser) ServeMonitor(host string, openBrowser bool) string {
-	if host == "" {
-		return ""
-	}
-
+func (b *Browser) ServeMonitor(host string) string {
 	u, mux, close := utils.Serve(host)
+	go func() {
+		<-b.ctx.Done()
+		close()
+	}()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httHTML(w, assets.Monitor)
@@ -58,15 +56,6 @@ func (b *Browser) ServeMonitor(host string, openBrowser bool) string {
 		w.Header().Add("Content-Type", "image/png;")
 		utils.E(w.Write(p.MustScreenshot()))
 	})
-
-	go func() {
-		<-b.ctx.Done()
-		close()
-	}()
-
-	if openBrowser {
-		launcher.NewBrowser().Open(u)
-	}
 
 	return u
 }

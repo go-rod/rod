@@ -47,11 +47,8 @@ var Remote bool
 // CDP enables cdp log
 var CDP bool
 
-// Monitor enables the monitor server that plays the screenshots of each tab, default value is 0.0.0.0:9273
+// Monitor enables the monitor server that plays the screenshots of each tab
 var Monitor string
-
-// Blind is only useful when Monitor is enabled, it decides whether to open a browser to watch the screenshots or not
-var Blind bool
 
 // Proxy for the browser
 var Proxy string
@@ -74,7 +71,6 @@ func Reset() {
 	Remote = false
 	CDP = false
 	Monitor = ""
-	Blind = false
 	Proxy = ""
 }
 
@@ -134,13 +130,10 @@ var rules = map[string]func(string){
 		CDP = true
 	},
 	"monitor": func(v string) {
-		Monitor = ":9273"
+		Monitor = ":0"
 		if v != "" {
 			Monitor = v
 		}
-	},
-	"blind": func(v string) {
-		Blind = true
 	},
 	"proxy": func(v string) {
 		Proxy = v
