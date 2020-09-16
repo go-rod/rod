@@ -12747,6 +12747,41 @@ func (evt PageJavascriptDialogOpening) MethodName() string {
 	return "Page.javascriptDialogOpening"
 }
 
+// PageLifecycleEventName enum
+type PageLifecycleEventName string
+
+const (
+	// PageLifecycleEventNameInit enum const
+	PageLifecycleEventNameInit PageLifecycleEventName = "init"
+
+	// PageLifecycleEventNameFirstPaint enum const
+	PageLifecycleEventNameFirstPaint PageLifecycleEventName = "firstPaint"
+
+	// PageLifecycleEventNameFirstContentfulPaint enum const
+	PageLifecycleEventNameFirstContentfulPaint PageLifecycleEventName = "firstContentfulPaint"
+
+	// PageLifecycleEventNameFirstImagePaint enum const
+	PageLifecycleEventNameFirstImagePaint PageLifecycleEventName = "firstImagePaint"
+
+	// PageLifecycleEventNameFirstMeaningfulPaintCandidate enum const
+	PageLifecycleEventNameFirstMeaningfulPaintCandidate PageLifecycleEventName = "firstMeaningfulPaintCandidate"
+
+	// PageLifecycleEventNameDOMContentLoaded enum const
+	PageLifecycleEventNameDOMContentLoaded PageLifecycleEventName = "DOMContentLoaded"
+
+	// PageLifecycleEventNameLoad enum const
+	PageLifecycleEventNameLoad PageLifecycleEventName = "load"
+
+	// PageLifecycleEventNameNetworkAlmostIdle enum const
+	PageLifecycleEventNameNetworkAlmostIdle PageLifecycleEventName = "networkAlmostIdle"
+
+	// PageLifecycleEventNameFirstMeaningfulPaint enum const
+	PageLifecycleEventNameFirstMeaningfulPaint PageLifecycleEventName = "firstMeaningfulPaint"
+
+	// PageLifecycleEventNameNetworkIdle enum const
+	PageLifecycleEventNameNetworkIdle PageLifecycleEventName = "networkIdle"
+)
+
 // PageLifecycleEvent Fired for top level page lifecycle events such as navigation, load, paint, etc.
 type PageLifecycleEvent struct {
 
@@ -12757,7 +12792,7 @@ type PageLifecycleEvent struct {
 	LoaderID NetworkLoaderID `json:"loaderId"`
 
 	// Name ...
-	Name string `json:"name"`
+	Name PageLifecycleEventName `json:"name"`
 
 	// Timestamp ...
 	Timestamp *MonotonicTime `json:"timestamp"`

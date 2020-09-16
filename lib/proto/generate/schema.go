@@ -200,8 +200,15 @@ func optimize(json *string) {
 		utils.E(err)
 	}
 
+	// TargetTargetInfoType
 	set("domains.32.types.2.properties.1.enum", []string{
 		"page", "background_page", "service_worker", "shared_worker", "browser", "other",
+	})
+
+	// PageLifecycleEventName
+	set("domains.26.events.17.parameters.2.enum", []string{
+		"init", "firstPaint", "firstContentfulPaint", "firstImagePaint", "firstMeaningfulPaintCandidate",
+		"DOMContentLoaded", "load", "networkAlmostIdle", "firstMeaningfulPaint", "networkIdle",
 	})
 
 	// replace these with better type definition
