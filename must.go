@@ -276,7 +276,7 @@ func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
 // MustWaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to exclude the requests by their url.
 func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
-	return p.WaitRequestIdle(300*time.Millisecond, []string{""}, excludes)
+	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes)
 }
 
 // MustWaitIdle wait until the next window.requestIdleCallback is called.

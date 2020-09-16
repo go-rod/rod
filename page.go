@@ -341,6 +341,10 @@ func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
 // Use the includes and excludes regexp list to filter the requests by their url.
 // Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) func() {
+	if len(includes) == 0 {
+		includes = []string{""}
+	}
+
 	ctx, cancel := context.WithCancel(p.ctx)
 
 	reqList := map[proto.NetworkRequestID]struct{}{}

@@ -408,10 +408,6 @@ func (s *S) TestPageWaitRequestIdle() {
 	s.Panics(func() {
 		wait()
 	})
-
-	wait = page.WaitRequestIdle(100*time.Millisecond, []string{}, []string{})
-	page.MustElement("button").MustClick()
-	wait()
 }
 
 func (s *S) TestPageWaitIdle() {
