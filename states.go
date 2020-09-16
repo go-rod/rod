@@ -61,7 +61,8 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, method proto.Pay
 	_, enabled := b.states.Load(b.key(sessionID, method.MethodName()))
 
 	if !enabled {
-		payload, _ := proto.Normalize(method)
+		payload, err := proto.Normalize(method)
+		utils.E(err)
 		_, _ = b.Call(b.ctx, string(sessionID), method.MethodName(), payload)
 	}
 
@@ -93,7 +94,8 @@ func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, method proto.Pa
 
 	return func() {
 		if enabled {
-			payload, _ := proto.Normalize(method)
+			payload, err := proto.Normalize(method)
+			utils.E(err)
 			_, _ = b.Call(b.ctx, string(sessionID), method.MethodName(), payload)
 		}
 	}
