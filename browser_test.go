@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -108,14 +107,6 @@ func (s *S) TestBrowserCrash() {
 	browser := rod.New().Context(ctx).MustConnect()
 	page := browser.MustPage("")
 
-	go func() {
-		for e := range browser.Event().Subscribe(ctx) {
-			if e.(*cdp.Event).WebsocketErr() != nil {
-				cancel()
-			}
-		}
-	}()
-
 	_ = proto.BrowserCrash{}.Call(browser)
 
 	s.Panics(func() {
@@ -134,7 +125,10 @@ func (s *S) TestMonitor() {
 	b := rod.New().Timeout(1 * time.Minute).MustConnect()
 	defer b.MustClose()
 	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
-	host := b.ServeMonitor("127.0.0.1:0", true)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	host := b.Context(ctx).ServeMonitor("127.0.0.1:0", true)
 
 	page := s.page.MustNavigate(host)
 	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))

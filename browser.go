@@ -32,7 +32,6 @@ var _ proto.Caller = &Browser{}
 type Browser struct {
 	// these are the handler for ctx
 	ctx     context.Context
-	close   func()
 	sleeper func() utils.Sleeper
 
 	// BrowserContextID is the id for incognito window
@@ -59,11 +58,8 @@ type Browser struct {
 
 // New creates a controller
 func New() *Browser {
-	ctx, cancel := context.WithCancel(context.Background())
-
 	return &Browser{
-		ctx:         ctx,
-		close:       cancel,
+		ctx:         context.Background(),
 		sleeper:     DefaultSleeper,
 		slowmotion:  defaults.Slow,
 		quiet:       defaults.Quiet,
@@ -183,7 +179,6 @@ func (b *Browser) Connect() error {
 
 // Close doc is similar to the method MustClose
 func (b *Browser) Close() error {
-	defer b.close()
 	return proto.BrowserClose{}.Call(b)
 }
 
@@ -394,13 +389,8 @@ func (b *Browser) initEvents() {
 	b.event = goob.New()
 
 	go func() {
-		for {
-			select {
-			case <-b.ctx.Done():
-				return
-			case msg := <-b.client.Event():
-				b.event.Publish(msg)
-			}
+		for msg := range b.client.Event() {
+			b.event.Publish(msg)
 		}
 	}()
 }

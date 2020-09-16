@@ -38,18 +38,12 @@ func TestReqErr(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
+	cdp.close = cancel
 	cdp.wsConn = &wsMockConn{
 		send: func([]byte) error { return errors.New("err") },
 	}
 
 	go cdp.consumeMsg()
-	go func() {
-		for e := range cdp.Event() {
-			if e.WebsocketErr() != nil {
-				cancel()
-			}
-		}
-	}()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.Error(t, err)
@@ -144,12 +138,4 @@ func TestCancelOnReadEvent(t *testing.T) {
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
 	assert.Error(t, err)
-}
-
-func TestCancelClose(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-	cdp := New("")
-	cdp.ctx = ctx
-	cdp.wsClose(errors.New("err"))
 }

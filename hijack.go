@@ -462,12 +462,14 @@ func (b *Browser) HandleAuth(username, password string) func() error {
 	paused := &proto.FetchRequestPaused{}
 	auth := &proto.FetchAuthRequired{}
 
-	waitPaused := b.WaitEvent(paused)
-	waitAuth := b.WaitEvent(auth)
+	ctx, cancel := context.WithCancel(b.ctx)
+	waitPaused := b.Context(ctx).WaitEvent(paused)
+	waitAuth := b.Context(ctx).WaitEvent(auth)
 
 	return func() (err error) {
 		defer enable()
 		defer disable()
+		defer cancel()
 
 		waitPaused()
 

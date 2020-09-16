@@ -340,7 +340,10 @@ func Example_handle_events() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
 
-	page := browser.MustPage("")
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	page := browser.Context(ctx).MustPage("")
 
 	done := make(chan int)
 

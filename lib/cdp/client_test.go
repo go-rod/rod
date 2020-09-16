@@ -124,16 +124,13 @@ func TestError(t *testing.T) {
 }
 
 func TestCrash(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := context.Background()
 	l := launcher.New()
 
 	client := cdp.New(l.MustLaunch()).Debug(true).MustConnect(ctx)
 
 	go func() {
-		for e := range client.Event() {
-			if e.WebsocketErr() != nil {
-				cancel()
-			}
+		for range client.Event() {
 		}
 	}()
 

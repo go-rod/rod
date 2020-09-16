@@ -26,16 +26,15 @@ var slash = filepath.FromSlash
 // S test suite
 type S struct {
 	suite.Suite
-	mockClient *MockClient
-	browser    *rod.Browser
-	page       *rod.Page
-}
-
-func init() {
-	log.SetFlags(log.Ltime)
+	mockClient   *MockClient
+	browser      *rod.Browser
+	page         *rod.Page
+	goleakIgnore goleak.Option
 }
 
 func TestMain(m *testing.M) {
+	log.SetFlags(log.Ltime)
+
 	// to prevent false positive of goleak
 	http.DefaultClient = &http.Client{
 		Transport: &http.Transport{
@@ -43,11 +42,7 @@ func TestMain(m *testing.M) {
 		},
 	}
 
-	goleak.VerifyTestMain(
-		m,
-		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.sigChildHandler"),
-		goleak.IgnoreTopFunction("github.com/ramr/go-reaper.reapChildren"),
-	)
+	goleak.VerifyTestMain(m)
 }
 
 func Test(t *testing.T) {
@@ -72,7 +67,16 @@ func Test(t *testing.T) {
 
 	s.page = s.browser.MustPage("")
 
+	s.goleakIgnore = goleak.IgnoreCurrent()
+
 	suite.Run(t, s)
+}
+
+func (s *S) TearDownTest() {
+	goleak.VerifyNone(
+		s.T(),
+		s.goleakIgnore,
+	)
 }
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"

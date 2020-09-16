@@ -3,7 +3,6 @@ package cdp
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"sync"
 	"sync/atomic"
@@ -15,7 +14,8 @@ import (
 
 // Client is a devtools protocol connection instance.
 type Client struct {
-	ctx context.Context
+	ctx   context.Context
+	close func()
 
 	wsURL  string
 	header http.Header
@@ -47,16 +47,6 @@ type Event struct {
 	SessionID string          `json:"sessionId,omitempty"`
 	Method    string          `json:"method"`
 	Params    json.RawMessage `json:"params,omitempty"`
-}
-
-// WebsocketErr returns error if the event is an websocket error event
-func (e *Event) WebsocketErr() error {
-	if e.Method == "Websocketable.error" {
-		var s string
-		_ = json.Unmarshal(e.Params, &s)
-		return errors.New(s)
-	}
-	return nil
 }
 
 // Error of the Response
@@ -135,7 +125,10 @@ func (cdp *Client) Connect(ctx context.Context) error {
 		return err
 	}
 
+	ctx, cancel := context.WithCancel(ctx)
+
 	cdp.ctx = ctx
+	cdp.close = cancel
 	cdp.wsConn = conn
 
 	go cdp.consumeMsg()
@@ -199,7 +192,6 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 }
 
 // Event returns a channel that will emit browser devtools protocol events. Must be consumed or will block producer.
-// When the Event.Method is Websocketable.error the websocket closes with error.
 func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
@@ -244,7 +236,9 @@ type Response struct {
 }
 
 func (cdp *Client) readMsgFromBrowser() {
-	for cdp.ctx.Err() == nil {
+	defer close(cdp.chEvent)
+
+	for {
 		data, err := cdp.wsConn.Read()
 		if err != nil {
 			cdp.wsClose(err)
@@ -284,13 +278,5 @@ func (cdp *Client) wsClose(err error) {
 		cdp.debugLog(err)
 	}
 
-	msg := &Event{
-		Method: "Websocketable.error",
-		Params: json.RawMessage(utils.MustToJSONBytes(err.Error())),
-	}
-
-	select {
-	case <-cdp.ctx.Done():
-	case cdp.chEvent <- msg:
-	}
+	cdp.close()
 }

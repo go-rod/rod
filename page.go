@@ -286,7 +286,8 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 	b := p.browser.Context(p.ctx)
 	var targetID proto.TargetTargetID
 
-	wait := b.EachEvent(func(e *proto.TargetTargetCreated) bool {
+	ctx, cancel := context.WithCancel(p.ctx)
+	wait := b.Context(ctx).EachEvent(func(e *proto.TargetTargetCreated) bool {
 		if e.TargetInfo.OpenerID == p.TargetID {
 			targetID = e.TargetInfo.TargetID
 			return true
@@ -295,6 +296,7 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 	})
 
 	return func() (*Page, error) {
+		defer cancel()
 		wait()
 		return b.PageFromTarget(targetID)
 	}
@@ -302,20 +304,18 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 
 // WaitPauseOpen waits for a page opened by the current page, before opening pause the js execution.
 // Because the js will be paused, you should put the code that triggers it in a goroutine.
-func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error, err error) {
-	wait = p.WaitOpen()
-
+func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
 	// TODO: we have to use the browser to call, seems like a chrome bug
-	err = proto.TargetSetAutoAttach{
+	err := proto.TargetSetAutoAttach{
 		AutoAttach:             true,
 		WaitForDebuggerOnStart: true,
 		Flatten:                true,
 	}.Call(p.browser.Context(p.ctx))
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 
-	resume = func() error {
+	return p.WaitOpen(), func() error {
 		err = proto.TargetSetAutoAttach{
 			Flatten: true,
 		}.Call(p.browser.Context(p.ctx))
@@ -324,9 +324,7 @@ func (p *Page) WaitPauseOpen() (wait func() (*Page, error), resume func() error,
 		}
 
 		return proto.RuntimeRunIfWaitingForDebugger{}.Call(p)
-	}
-
-	return
+	}, nil
 }
 
 // EachEvent of the specified event type, if any callback returns true the event loop will stop.

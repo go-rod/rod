@@ -341,13 +341,15 @@ func (s *S) TestPageWaitPauseOpen() {
 		p.MustWaitPauseOpen()
 	})
 	s.Panics(func() {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
 		defer func() {
 			_ = proto.TargetSetAutoAttach{
 				Flatten: true,
 			}.Call(s.browser)
 		}()
 
-		p := s.browser.MustPage("")
+		p := s.browser.Context(ctx).MustPage("")
 		defer p.MustClose()
 		s.stubErr(2, proto.TargetSetAutoAttach{})
 		_, r := p.MustWaitPauseOpen()
