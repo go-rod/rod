@@ -74,7 +74,7 @@ func TestLaunchUserMode(t *testing.T) {
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
-		Devtools(true).Devtools(false).Reap(true).
+		Devtools(true).Devtools(false).
 		Proxy("test.com").
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").

@@ -1,5 +1,5 @@
 .*
-/lib/js/node_modules
-tmp/
+**/node_modules/
+**/tmp/
 coverage.txt
 Dockerfile

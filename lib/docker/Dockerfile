@@ -40,6 +40,10 @@ COPY lib/docker/fonts-local.conf /etc/fonts/local.conf
 # timezone support
 RUN apk add tzdata
 
+# processs reaper
+RUN apk add dumb-init
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
 COPY --from=go /rod/rod-launcher /usr/bin/
 
 CMD rod-launcher

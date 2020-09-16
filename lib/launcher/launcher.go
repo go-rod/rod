@@ -34,7 +34,6 @@ type Launcher struct {
 	pid       int
 	exit      chan struct{}
 	remote    bool // remote mode or not
-	reap      bool
 	leakless  bool
 }
 
@@ -106,7 +105,6 @@ func New() *Launcher {
 		browser:   NewBrowser(),
 		bin:       defaults.Bin,
 		parser:    NewURLParser(),
-		reap:      true,
 		leakless:  true,
 		logger:    ioutil.Discard,
 	}
@@ -275,12 +273,6 @@ func (l *Launcher) Logger(w io.Writer) *Launcher {
 	return l
 }
 
-// Reap enable/disable a guard to cleanup zombie processes
-func (l *Launcher) Reap(enable bool) *Launcher {
-	l.reap = enable
-	return l
-}
-
 // MustLaunch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
@@ -292,10 +284,6 @@ func (l *Launcher) MustLaunch() string {
 
 // Launch doc is similar to the method MustLaunch
 func (l *Launcher) Launch() (string, error) {
-	if l.reap {
-		runReaper()
-	}
-
 	defer l.ctxCancel()
 
 	bin, err := l.getBin()
