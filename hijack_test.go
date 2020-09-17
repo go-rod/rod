@@ -254,9 +254,10 @@ func (s *S) TestHandleAuth() {
 	page.MustElementR("p", "ok")
 
 	wait := s.browser.HandleAuth("a", "b")
-	go func() { _, _ = s.browser.Page(url + "/err") }()
+	wait2 := utils.All(func() { _, _ = s.browser.Page(url + "/err") })
 	s.stubErr(1, proto.FetchContinueRequest{})
 	s.Error(wait())
+	wait2()
 }
 
 func (s *S) TestGetDownloadFile() {
