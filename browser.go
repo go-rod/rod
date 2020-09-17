@@ -37,12 +37,10 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
-	slowmotion  time.Duration // see defaults.slow
-	quiet       bool          // see defaults.Quiet
-	trace       bool          // see defaults.Trace
-	traceLogAct func(string)
-	traceLogJS  func(string, JSArgs)
-	traceLogErr func(error)
+	slowmotion time.Duration // see defaults.slow
+	quiet      bool          // see defaults.Quiet
+	trace      bool          // see defaults.Trace
+	traceLog   TraceLog
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
 
@@ -59,14 +57,12 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:         context.Background(),
-		sleeper:     DefaultSleeper,
-		slowmotion:  defaults.Slow,
-		quiet:       defaults.Quiet,
-		trace:       defaults.Trace,
-		traceLogAct: defaultTraceLogAct,
-		traceLogJS:  defaultTraceLogJS,
-		traceLogErr: defaultTraceLogErr,
+		ctx:        context.Background(),
+		sleeper:    DefaultSleeper,
+		slowmotion: defaults.Slow,
+		quiet:      defaults.Quiet,
+		trace:      defaults.Trace,
+		traceLog:   defaultTraceLog,
 		defaultViewport: &proto.EmulationSetDeviceMetricsOverride{
 			Width: 1200, Height: 900, DeviceScaleFactor: 1, Mobile: false,
 			ScreenOrientation: &proto.EmulationScreenOrientation{
@@ -109,22 +105,12 @@ func (b *Browser) Trace(enable bool) *Browser {
 	return b
 }
 
-// TraceLog overrides the default log functions for trace
-func (b *Browser) TraceLog(msg func(string), js func(string, JSArgs), err func(error)) *Browser {
-	if msg == nil {
-		b.traceLogAct = defaultTraceLogAct
+// TraceLog overrides the default log functions for tracing
+func (b *Browser) TraceLog(l TraceLog) *Browser {
+	if l == nil {
+		b.traceLog = defaultTraceLog
 	} else {
-		b.traceLogAct = msg
-	}
-	if js == nil {
-		b.traceLogJS = defaultTraceLogJS
-	} else {
-		b.traceLogJS = js
-	}
-	if err == nil {
-		b.traceLogErr = defaultTraceLogErr
-	} else {
-		b.traceLogErr = err
+		b.traceLog = l
 	}
 	return b
 }

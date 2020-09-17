@@ -39,7 +39,7 @@ func (el *Element) Focus() error {
 
 // ScrollIntoView doc is similar to the method MustScrollIntoViewIfNeeded
 func (el *Element) ScrollIntoView() error {
-	defer el.tryTrace("scroll into view")()
+	defer el.traceAction("scroll into view")()
 	el.page.browser.trySlowmotion()
 
 	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
@@ -89,7 +89,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		return newErr(ErrNotClickable, s, "such as covered by a modal")
 	}
 
-	defer el.tryTrace(string(button) + " click")()
+	defer el.traceAction(string(button) + " click")()
 
 	return el.page.Mouse.Click(button)
 }
@@ -147,7 +147,7 @@ func (el *Element) Press(key rune) error {
 		return err
 	}
 
-	defer el.tryTrace("press " + string(key))()
+	defer el.traceAction("press " + string(key))()
 
 	return el.page.Keyboard.Press(key)
 }
@@ -159,7 +159,7 @@ func (el *Element) SelectText(regex string) error {
 		return err
 	}
 
-	defer el.tryTrace("select text: " + regex)()
+	defer el.traceAction("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}))
@@ -173,7 +173,7 @@ func (el *Element) SelectAllText() error {
 		return err
 	}
 
-	defer el.tryTrace("select all text")()
+	defer el.traceAction("select all text")()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil))
@@ -192,7 +192,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	defer el.tryTrace("input " + text)()
+	defer el.traceAction("input " + text)()
 
 	err = el.page.Keyboard.InsertText(text)
 	if err != nil {
@@ -216,7 +216,7 @@ func (el *Element) Select(selectors []string) error {
 		return err
 	}
 
-	defer el.tryTrace(fmt.Sprintf(
+	defer el.traceAction(fmt.Sprintf(
 		`select "%s"`,
 		strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
@@ -267,7 +267,7 @@ func (el *Element) SetFiles(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	defer el.tryTrace(fmt.Sprintf("set files: %v", absPaths))
+	defer el.traceAction(fmt.Sprintf("set files: %v", absPaths))
 	el.page.browser.trySlowmotion()
 
 	err := proto.DOMSetFileInputFiles{

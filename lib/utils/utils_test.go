@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -158,6 +159,18 @@ func TestCountSleeperCancel(t *T) {
 
 func TestMustToJSON(t *T) {
 	assert.Equal(t, `{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
+}
+
+func TestIsSyncMapEmpty(t *testing.T) {
+	m := &sync.Map{}
+	m.Store("a", 1)
+	assert.False(t, utils.IsSyncMapEmpty(m))
+}
+
+func TestSyncMapToMap(t *testing.T) {
+	m := &sync.Map{}
+	m.Store("a", 1)
+	assert.Equal(t, `{"a":1}`, utils.MustToJSON(utils.SyncMapToMap(m)))
 }
 
 func TestFileExists(t *T) {

@@ -177,35 +177,18 @@ func (s *S) TestRemoteLaunch() {
 }
 
 func (s *S) TestTrace() {
-	msg := ""
-	var errs []error
-	s.browser.TraceLog(
-		func(s string) {
-			msg = s
-		},
-		func(string, rod.JSArgs) {},
-		func(e error) {
-			errs = append(errs, e)
-		},
-	)
+	var msg *rod.TraceMsg
+	s.browser.TraceLog(func(m *rod.TraceMsg) { msg = m })
 	s.browser.Trace(true).Slowmotion(time.Microsecond)
 	defer func() {
-		s.browser.TraceLog(nil, nil, nil)
+		s.browser.TraceLog(nil)
 		s.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
 	}()
 
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
-	s.Equal("left click", msg)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-	p.Context(ctx).Overlay(0, 0, 100, 100, "msg")
-	s.Error(errs[0])
-
-	el.Context(ctx).Trace("ok")
-	s.Error(errs[1])
+	s.Equal("left click", msg.Details)
 
 	s.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)

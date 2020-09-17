@@ -222,6 +222,26 @@ func Pause() {
 	<-chPause
 }
 
+// IsSyncMapEmpty helper
+func IsSyncMapEmpty(s *sync.Map) bool {
+	isEmpty := true
+	s.Range(func(key, value interface{}) bool {
+		isEmpty = false
+		return false
+	})
+	return isEmpty
+}
+
+// SyncMapToMap convertor
+func SyncMapToMap(s *sync.Map) map[string]interface{} {
+	m := map[string]interface{}{}
+	s.Range(func(key, value interface{}) bool {
+		m[fmt.Sprintf("%v", key)] = value
+		return false
+	})
+	return m
+}
+
 // MustToJSONBytes encode data to json bytes
 func MustToJSONBytes(data interface{}) []byte {
 	bytes, err := json.Marshal(data)

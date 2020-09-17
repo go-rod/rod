@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
@@ -60,12 +61,45 @@ func (b *Browser) ServeMonitor(host string) string {
 	return u
 }
 
+// TraceType for logger
+type TraceType string
+
+const (
+	// TraceTypeWaitRequestsIdle type
+	TraceTypeWaitRequestsIdle TraceType = "wait requests idle"
+
+	// TraceTypeWaitRequests type
+	TraceTypeWaitRequests TraceType = "wait requests"
+
+	// TraceTypeJS type
+	TraceTypeJS TraceType = "js"
+
+	// TraceTypeAction type
+	TraceTypeAction TraceType = "act"
+)
+
+// TraceMsg for logger
+type TraceMsg struct {
+	// Type of the message
+	Type TraceType
+
+	// Details is a json object
+	Details interface{}
+}
+
+func (msg *TraceMsg) String() string {
+	return utils.MustToJSON(msg)
+}
+
+// TraceLog handler
+type TraceLog func(*TraceMsg)
+
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	root := p.Root()
 	id := utils.RandString(8)
 
-	_, err := root.EvalWithOptions(jsHelper(js.Overlay, JSArgs{
+	_, _ = root.EvalWithOptions(jsHelper(js.Overlay, JSArgs{
 		id,
 		left,
 		top,
@@ -73,9 +107,6 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		height,
 		msg,
 	}))
-	if err != nil {
-		p.browser.traceLogErr(err)
-	}
 
 	remove = func() {
 		_, _ = root.EvalWithOptions(jsHelper(js.RemoveOverlay, JSArgs{id}))
@@ -95,13 +126,10 @@ func (p *Page) ExposeJSHelper() *Page {
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
 
-	_, err := el.EvalWithOptions(jsHelper(js.ElementOverlay, JSArgs{
+	_, _ = el.EvalWithOptions(jsHelper(js.ElementOverlay, JSArgs{
 		id,
 		msg,
 	}))
-	if err != nil {
-		el.page.browser.traceLogErr(err)
-	}
 
 	removeOverlay = func() {
 		_, _ = el.EvalWithOptions(jsHelper(js.RemoveOverlay, JSArgs{id}))
@@ -119,16 +147,18 @@ func (b *Browser) trySlowmotion() {
 	time.Sleep(b.slowmotion)
 }
 
-func (el *Element) tryTrace(msg string) func() {
+func (el *Element) traceAction(details string) func() {
 	if !el.page.browser.trace {
 		return func() {}
 	}
 
+	msg := &TraceMsg{TraceTypeAction, details}
+
 	if !el.page.browser.quiet {
-		el.page.browser.traceLogAct(msg)
+		el.page.browser.traceLog(msg)
 	}
 
-	return el.Trace(msg)
+	return el.Trace(msg.String())
 }
 
 var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
@@ -146,24 +176,30 @@ func (p *Page) tryTraceFn(js string, params JSArgs) func() {
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
 	if !p.browser.quiet {
-		p.browser.traceLogJS(js, params)
+		p.browser.traceLog(&TraceMsg{
+			TraceTypeJS,
+			map[string]interface{}{
+				"js":     js,
+				"params": params,
+			},
+		})
 	}
 
 	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
-func (p *Page) traceReq(ctx context.Context, reqList map[proto.NetworkRequestID]string, includes, excludes []string) {
+func (p *Page) traceReq(ctx context.Context, reqList *sync.Map, includes, excludes []string) {
 	if !p.browser.trace {
 		return
 	}
 
-	msg := fmt.Sprintf("wait for request idle, includes %s, excludes %s",
-		utils.MustToJSON(includes),
-		utils.MustToJSON(excludes),
-	)
-	p.browser.traceLogAct(msg)
-	cleanup := p.Overlay(0, 0, 300, 0, msg)
+	msg := &TraceMsg{TraceTypeWaitRequestsIdle, map[string][]string{
+		"includes": includes,
+		"excludes": excludes,
+	}}
+	p.browser.traceLog(msg)
+	cleanup := p.Overlay(0, 0, 300, 0, msg.String())
 
 	go func() {
 		t := time.NewTicker(time.Second)
@@ -174,29 +210,17 @@ func (p *Page) traceReq(ctx context.Context, reqList map[proto.NetworkRequestID]
 				cleanup()
 				return
 			case <-t.C:
-				p.browser.traceLogAct("wait requests " + utils.MustToJSON(reqList))
+				p.browser.traceLog(&TraceMsg{
+					TraceTypeWaitRequests,
+					utils.SyncMapToMap(reqList),
+				})
 			}
 		}
 	}()
 }
 
-func defaultTraceLogAct(msg string) {
-	log.Println("act", msg)
-}
-
-func defaultTraceLogJS(js string, params JSArgs) {
-	paramsStr := ""
-	if len(params) > 0 {
-		paramsStr = strings.Trim(mustToJSONForDev(params), "[]\r\n")
-	}
-	msg := fmt.Sprintf("%s(%s)", js, paramsStr)
-	log.Println("js", msg)
-}
-
-func defaultTraceLogErr(err error) {
-	if err != context.Canceled && err != context.DeadlineExceeded {
-		log.Println("[rod trace err]", err)
-	}
+func defaultTraceLog(msg *TraceMsg) {
+	log.Println(msg)
 }
 
 func (m *Mouse) initMouseTracer() {
