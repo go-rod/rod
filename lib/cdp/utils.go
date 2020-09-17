@@ -3,7 +3,6 @@ package cdp
 import (
 	"encoding/json"
 	"log"
-	"runtime/debug"
 
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -48,6 +47,6 @@ func defaultDebugLog(obj interface{}) {
 		)
 
 	default:
-		log.Println(utils.SDump(obj), "\n"+string(debug.Stack()))
+		log.Println(utils.SDump(obj))
 	}
 }
