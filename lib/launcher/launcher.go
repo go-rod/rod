@@ -267,7 +267,8 @@ func (l *Launcher) FormatArgs() []string {
 	return append(execArgs, l.Flags[""]...)
 }
 
-// Logger to handle stdout and stderr from browser
+// Logger to handle stdout and stderr from browser.
+// For example, pipe all browser output to stdout: launcher.New().Logger(os.Stdout)
 func (l *Launcher) Logger(w io.Writer) *Launcher {
 	l.logger = w
 	return l
@@ -342,15 +343,8 @@ func (l *Launcher) setupCmd(cmd *exec.Cmd) {
 	cmd.Dir = dir
 	cmd.Env = env
 
-	r, w := io.Pipe()
-	cmd.Stdout = w
-	cmd.Stderr = w
-	go func() { _, _ = io.Copy(io.MultiWriter(l.logger, l.parser), r) }()
-	go func() {
-		<-l.ctx.Done()
-		_ = r.CloseWithError(io.EOF)
-		_ = w.CloseWithError(io.EOF)
-	}()
+	cmd.Stdout = io.MultiWriter(l.logger, l.parser)
+	cmd.Stderr = io.MultiWriter(l.logger, l.parser)
 }
 
 func (l *Launcher) getBin() (string, error) {
