@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 
@@ -338,8 +337,9 @@ func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
 }
 
 // WaitRequestIdle returns a wait function that waits until no request for d duration.
+// Be careful, d is not the max wait timeout, it's the least idle time.
+// If you want to set a timeout you can use the "Page.Timeout" function.
 // Use the includes and excludes regexp list to filter the requests by their url.
-// Such as set n to 1 if there's a polling request.
 func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) func() {
 	if len(includes) == 0 {
 		includes = []string{""}
@@ -347,11 +347,17 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 	ctx, cancel := context.WithCancel(p.ctx)
 
-	reqList := map[proto.NetworkRequestID]struct{}{}
+	filter := genRegFilter(includes, excludes)
+	reqList := map[proto.NetworkRequestID]string{}
 	timeout := time.NewTimer(d)
 	timeout.Stop()
 
 	reset := func(id proto.NetworkRequestID) {
+		_, has := reqList[id]
+		if !has {
+			return
+		}
+
 		delete(reqList, id)
 		if len(reqList) == 0 {
 			timeout.Reset(d)
@@ -364,12 +370,11 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	}()
 
 	wait := p.browser.eachEvent(ctx, p.SessionID, func(sent *proto.NetworkRequestWillBeSent) {
-		timeout.Stop()
-		url := sent.Request.URL
-		id := sent.RequestID
-		if matchWithFilter(url, includes, excludes) {
-			reqList[id] = struct{}{}
+		if !filter(sent.Request.URL) {
+			return
 		}
+		timeout.Stop()
+		reqList[sent.RequestID] = sent.Request.URL
 	}, func(finished *proto.NetworkLoadingFinished) { // not use responseReceived because https://crbug.com/883475
 		reset(finished.RequestID)
 	}, func(failed *proto.NetworkLoadingFailed) {
@@ -377,9 +382,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	})
 
 	return func() {
-		if p.browser.trace {
-			defer p.Overlay(0, 0, 300, 0, "waiting for request idle "+strings.Join(includes, " "))()
-		}
+		p.traceReq(ctx, reqList, includes, excludes)
 		timeout.Reset(d)
 		wait()
 	}

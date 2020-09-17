@@ -135,19 +135,31 @@ func isNilContextErr(err error) bool {
 	return ok && cdpErr.Code == -32000 && cdpErr.Message != "Argument should belong to the same JavaScript world as target object"
 }
 
-func matchWithFilter(s string, includes, excludes []string) bool {
-	for _, include := range includes {
-		if regexp.MustCompile(include).MatchString(s) {
-			for _, exclude := range excludes {
-				if regexp.MustCompile(exclude).MatchString(s) {
-					goto end
-				}
-			}
-			return true
-		}
+func genRegFilter(includes, excludes []string) func(string) bool {
+	regIncludes := make([]*regexp.Regexp, len(includes))
+	for i, p := range includes {
+		regIncludes[i] = regexp.MustCompile(p)
 	}
-end:
-	return false
+
+	regExcludes := make([]*regexp.Regexp, len(excludes))
+	for i, p := range excludes {
+		regExcludes[i] = regexp.MustCompile(p)
+	}
+
+	return func(s string) bool {
+		for _, include := range regIncludes {
+			if include.MatchString(s) {
+				for _, exclude := range regExcludes {
+					if exclude.MatchString(s) {
+						goto end
+					}
+				}
+				return true
+			}
+		}
+	end:
+		return false
+	}
 }
 
 type saveFileType int

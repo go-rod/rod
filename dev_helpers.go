@@ -153,6 +153,33 @@ func (p *Page) tryTraceFn(js string, params JSArgs) func() {
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
+func (p *Page) traceReq(ctx context.Context, reqList map[proto.NetworkRequestID]string, includes, excludes []string) {
+	if !p.browser.trace {
+		return
+	}
+
+	msg := fmt.Sprintf("wait for request idle, includes %s, excludes %s",
+		utils.MustToJSON(includes),
+		utils.MustToJSON(excludes),
+	)
+	p.browser.traceLogAct(msg)
+	cleanup := p.Overlay(0, 0, 300, 0, msg)
+
+	go func() {
+		t := time.NewTicker(time.Second)
+		for {
+			select {
+			case <-ctx.Done():
+				t.Stop()
+				cleanup()
+				return
+			case <-t.C:
+				p.browser.traceLogAct("wait requests " + utils.MustToJSON(reqList))
+			}
+		}
+	}()
+}
+
 func defaultTraceLogAct(msg string) {
 	log.Println("act", msg)
 }
