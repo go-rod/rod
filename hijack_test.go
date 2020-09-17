@@ -105,7 +105,7 @@ func (s *S) TestHijackContinue() {
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(1)
 	router.MustAdd("*", func(ctx *rod.Hijack) {
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 		wg.Done()
@@ -116,16 +116,39 @@ func (s *S) TestHijackContinue() {
 	s.page.MustNavigate(url)
 
 	s.Equal("ok", s.page.MustElement("body").MustText())
+	wg.Wait()
+}
 
-	func() { // test error log
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		s.stubErr(1, proto.FetchContinueRequest{})
-		go func() {
-			_ = s.page.Context(ctx).Navigate(url)
-		}()
-		wg.Wait()
+func (s *S) TestHijackOnErrorLog() {
+	url, mux, close := utils.Serve("")
+	defer close()
+
+	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
+
+	router := s.page.HijackRequests()
+	defer router.MustStop()
+
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		ctx.ContinueRequest(&proto.FetchContinueRequest{})
+	})
+
+	go router.Run()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	s.stub(1, proto.FetchContinueRequest{}, func(send func() ([]byte, error)) ([]byte, error) {
+		wg.Done()
+		return nil, errors.New("err")
+	})
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() {
+		_ = s.page.Context(ctx).Navigate(url)
 	}()
+	wg.Wait()
 }
 
 func (s *S) TestHijackFailRequest() {
