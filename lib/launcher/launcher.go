@@ -330,7 +330,7 @@ func (l *Launcher) Launch() (string, error) {
 
 	u, err := l.getURL()
 	if err != nil {
-		go l.kill()
+		l.Kill()
 		return "", err
 	}
 
@@ -371,19 +371,20 @@ func (l *Launcher) PID() int {
 	return l.pid
 }
 
+// Kill the browser process
+func (l *Launcher) Kill() {
+	p, err := os.FindProcess(l.PID())
+	if err == nil {
+		_ = p.Kill()
+	}
+}
+
 // Cleanup wait until the Browser exits and release related resources
 func (l *Launcher) Cleanup() {
 	<-l.exit
 
 	dir, _ := l.Get("user-data-dir")
 	_ = os.RemoveAll(dir)
-}
-
-func (l *Launcher) kill() {
-	p, err := os.FindProcess(l.pid)
-	if err == nil {
-		_ = p.Kill()
-	}
 }
 
 func (l *Launcher) normalizeFlag(name string) string {

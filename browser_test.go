@@ -146,15 +146,20 @@ func (s *S) TestMonitor() {
 	s.EqualValues(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
 }
 
-func (s *S) TestMonitorEnv() {
-	defaults.Monitor = ":0"
+func (s *S) TestMonitorErr() {
+	defaults.Monitor = "abc"
 	defer defaults.ResetWithEnv()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	l := launcher.New()
+	u := l.MustLaunch()
+	defer func() {
+		utils.Sleep(1) // if kill too fast, the parent process of the browser may not be ready
+		l.Kill()
+	}()
 
-	b := rod.New().Context(ctx).MustConnect()
-	defer b.MustClose()
+	s.Panics(func() {
+		rod.New().ControlURL(u).MustConnect()
+	})
 }
 
 func (s *S) TestRemoteLaunch() {

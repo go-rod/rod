@@ -106,7 +106,7 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 
 	u := l.MustLaunch()
 	defer func() {
-		l.kill()
+		l.Kill()
 
 		if _, has := l.Get(flagKeepUserDataDir); !has {
 			l.Cleanup()

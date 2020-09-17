@@ -48,7 +48,10 @@ func TestLaunch(t *testing.T) {
 	defer func() { defaults.ResetWithEnv() }()
 
 	l := launcher.New()
-	defer func() { kill(l.PID()) }()
+	defer func() {
+		utils.Sleep(1)
+		l.Kill()
+	}()
 
 	url := l.MustLaunch()
 
@@ -57,7 +60,10 @@ func TestLaunch(t *testing.T) {
 
 func TestLaunchUserMode(t *testing.T) {
 	l := launcher.NewUserMode()
-	defer func() { kill(l.PID()) }()
+	defer func() {
+		utils.Sleep(1)
+		l.Kill()
+	}()
 
 	_, has := l.Get("not-exists")
 	assert.False(t, has)
@@ -122,10 +128,4 @@ func skipDownload(t *testing.T) {
 	if skipDownload {
 		t.SkipNow()
 	}
-}
-
-func kill(pid int) {
-	ps, err := os.FindProcess(pid)
-	utils.E(err)
-	utils.E(ps.Kill())
 }
