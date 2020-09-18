@@ -36,8 +36,7 @@ func ExampleClient() {
 	fmt.Println(len(gjson.ParseBytes(res).Get("targetId").Str))
 
 	// close browser
-	_, err = client.Call(ctx, "", "Browser.close", nil)
-	utils.E(err)
+	_, _ = client.Call(ctx, "", "Browser.close", nil)
 
 	// Output: 32
 }
