@@ -7,23 +7,16 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 )
 
 var addr = flag.String("address", ":9222", "the address to listen to")
 var quiet = flag.Bool("quiet", false, "silent the log")
-var ver = flag.Bool("version", false, "display version")
 
 // a cli tool to launch browser remotely
 func main() {
 	flag.Parse()
-
-	if *ver {
-		fmt.Println(defaults.Version)
-		return
-	}
 
 	proxy := launcher.NewProxy()
 	if !*quiet {
