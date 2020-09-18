@@ -40,9 +40,12 @@ func E(args ...interface{}) []interface{} {
 
 // SDump a value
 func SDump(v interface{}) string {
-	d, err := json.MarshalIndent(v, "", "  ")
-	E(err)
-	return string(d)
+	buf := bytes.NewBuffer(nil)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	E(enc.Encode(v))
+	return strings.TrimRight(string(buf.Bytes()), "\n")
 }
 
 // Dump values to logger

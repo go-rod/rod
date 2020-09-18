@@ -29,7 +29,7 @@ func TestErr(t *T) {
 }
 
 func TestDump(t *T) {
-	assert.Equal(t, "{\n  \"a\": \"b\"\n}", utils.SDump(map[string]string{"a": "b"}))
+	assert.Equal(t, "{\n  \"a\": \"<b>\"\n}", utils.SDump(map[string]string{"a": "<b>"}))
 	assert.Equal(t, "10", utils.SDump(json.RawMessage("10")))
 	utils.Dump("")
 }
