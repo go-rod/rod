@@ -501,6 +501,7 @@ func (s *S) TestFnErr() {
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.True(errors.Is(err, rod.ErrEval))
+	s.Equal(proto.RuntimeRemoteObjectSubtypeError, rod.AsError(err).Details.(*proto.RuntimeRemoteObject).Subtype)
 
 	_, err = el.ElementByJS(rod.NewEvalOptions("foo()", nil))
 	s.Error(err)

@@ -33,6 +33,12 @@ func newErr(code error, details interface{}, msg string) error {
 	return errors.WithStack(errors.WithMessage(&Error{code, details}, msg))
 }
 
+// AsError of *rod.Error
+func AsError(err error) (e *Error) {
+	errors.As(err, &e)
+	return
+}
+
 // Error interface
 func (e *Error) Error() string {
 	return e.Code.Error()
