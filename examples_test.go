@@ -40,97 +40,25 @@ func Example_basic() {
 
 	// Get all input elements. Rod supports query elements by css selector, xpath, and regex.
 	// For more detailed usage, check the query_test.go file.
-	fmt.Println(len(page.MustElements("input")))
+	fmt.Println("Found", len(page.MustElements("input")), "input elements")
 
 	// Eval js on the page
 	page.MustEval(`console.log("hello world")`)
 
 	// Pass parameters as json objects to the js function. This one will return 3
-	fmt.Println(page.MustEval(`(a, b) => a + b`, 1, 2).Int())
+	fmt.Println("1 + 2 =", page.MustEval(`(a, b) => a + b`, 1, 2).Int())
 
 	// When eval on an element, you can use "this" to access the DOM element.
 	fmt.Println(page.MustElement("title").MustEval(`this.innerText`).String())
 
-	// To handle errors in rod, you can use rod.Try or E suffixed function family like "page.ElementE"
-	// https://github.com/go-rod/rod#q-why-functions-dont-return-error-values
-	err := rod.Try(func() {
-		// Here we will catch timeout or query error
-		page.Timeout(time.Second / 2).MustElement("element-not-exists")
-	})
-	if errors.Is(err, context.DeadlineExceeded) {
-		fmt.Println("after 0.5 seconds, the element is still not rendered")
-	}
-
 	// Output:
 	// Git is the most widely used version control system.
-	// 5
-	// 3
+	// Found 5 input elements
+	// 1 + 2 = 3
 	// Search · git · GitHub
-	// after 0.5 seconds, the element is still not rendered
 }
 
-// Usage of timeout context
-func Example_timeout() {
-	page := rod.New().MustConnect().MustPage("https://github.com")
-
-	page.
-		// Set a 5-second timeout for all chained actions
-		Timeout(5 * time.Second).
-
-		// The total time for MustWaitLoad and MustElement must be less than 5 seconds
-		MustWaitLoad().
-		MustElement("title").
-
-		// Actions after CancelTimeout won't be affected by the 5-second timeout
-		CancelTimeout().
-
-		// Set a 10-second timeout for all chained actions
-		Timeout(10 * time.Second).
-
-		// Panics if it takes more than 10 seconds
-		MustText()
-}
-
-// Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
-// It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
-func Example_search() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
-	defer browser.MustClose()
-
-	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
-
-	// get the code mirror editor inside the iframe
-	el := page.MustSearch(".CodeMirror")
-
-	fmt.Println(*el.MustAttribute("class"))
-
-	// Output: CodeMirror cm-s-default CodeMirror-wrap
-}
-
-// Show how to handle multiple results of an action.
-// Such as when you login a page, the result can be success or wrong password.
-func Example_race_selectors() {
-	browser := rod.New().MustConnect()
-	defer browser.MustClose()
-
-	page := browser.MustPage("http://testing-ground.scraping.pro/login")
-
-	page.MustElement("#usr").MustInput("admin")
-	page.MustElement("#pwd").MustInput("12345").MustPress(input.Enter)
-
-	// It will keep retrying until one selector has found a match
-	page.Race().MustElement("h3.success", func(el *rod.Element) {
-		// when successful login
-		fmt.Println(el.MustText())
-	}).MustElement("h3.error", func(el *rod.Element) {
-		// when wrong username or password
-		fmt.Println(el.MustText())
-	}).MustDo()
-
-	// Output: WELCOME :)
-}
-
-// Shows how we can start a browser with debug information and headless mode disabled to develop.
+// Shows how to disable headless mode and debug.
 // Rod provides a lot of debug options, you can set them with setter methods or use environment variables.
 // Doc for environment variables: https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 func Example_disable_headless_to_debug() {
@@ -174,6 +102,118 @@ func Example_disable_headless_to_debug() {
 	fmt.Println(len(img)) // print the size of the image
 
 	utils.Pause() // pause goroutine
+}
+
+// Usage of timeout context
+func Example_timeout() {
+	page := rod.New().MustConnect().MustPage("https://github.com")
+
+	page.
+		// Set a 5-second timeout for all chained actions
+		Timeout(5 * time.Second).
+
+		// The total time for MustWaitLoad and MustElement must be less than 5 seconds
+		MustWaitLoad().
+		MustElement("title").
+
+		// Actions after CancelTimeout won't be affected by the 5-second timeout
+		CancelTimeout().
+
+		// Set a 10-second timeout for all chained actions
+		Timeout(10 * time.Second).
+
+		// Panics if it takes more than 10 seconds
+		MustText()
+}
+
+// We use "Must" prefixed functions to write example code. But in production you may want to use
+// the no-prefix version of them.
+// About why we use "Must" as the prefix, it's similar with https://golang.org/pkg/regexp/#MustCompile
+func Example_error_handling() {
+	page := rod.New().MustConnect().MustPage("https://example.com")
+
+	// The two code blocks below are almost funcionally identical.
+
+	// The block below is better for production code. It follows the standards of golang error handling.
+	// Usually, this style will make error handling more consistent and precisely.
+	{
+		el, err := page.Element("a")
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+		html, err := el.HTML()
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+		fmt.Println(html)
+	}
+
+	// The block below is better for example code or quick scripting. We use panic to short-circuit logics.
+	// So that we can code in fluent style: https://en.wikipedia.org/wiki/Fluent_interface
+	// It will reduce the code to type, but it may also catch extra errors (less consistent and precisely).
+	{
+		err := rod.Try(func() {
+			fmt.Println(page.MustElement("a").MustHTML())
+		})
+		fmt.Print(err)
+	}
+
+	// Catch specified error types
+	{
+		_, err := page.Timeout(3 * time.Second).Eval(`foo()`)
+		if errors.Is(err, context.DeadlineExceeded) { // timeout error
+			fmt.Println("timeout err")
+		} else if errors.Is(err, rod.ErrEval) { // eval error
+			// print the stack trace
+			fmt.Printf("%+v\n", err)
+
+			// print more details
+			utils.Dump(rod.AsError(err).Details)
+		} else if err != nil {
+			panic(err)
+		}
+	}
+}
+
+// Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
+// It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
+func Example_search() {
+	browser := rod.New().Timeout(time.Minute).MustConnect()
+	defer browser.MustClose()
+
+	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+
+	// get the code mirror editor inside the iframe
+	el := page.MustSearch(".CodeMirror")
+
+	fmt.Println(*el.MustAttribute("class"))
+
+	// Output: CodeMirror cm-s-default CodeMirror-wrap
+}
+
+// Show how to handle multiple results of an action.
+// Such as when you login a page, the result can be success or wrong password.
+func Example_race_selectors() {
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
+
+	page := browser.MustPage("http://testing-ground.scraping.pro/login")
+
+	page.MustElement("#usr").MustInput("admin")
+	page.MustElement("#pwd").MustInput("12345").MustPress(input.Enter)
+
+	// It will keep retrying until one selector has found a match
+	page.Race().MustElement("h3.success", func(el *rod.Element) {
+		// when successful login
+		fmt.Println(el.MustText())
+	}).MustElement("h3.error", func(el *rod.Element) {
+		// when wrong username or password
+		fmt.Println(el.MustText())
+	}).MustDo()
+
+	// Output: WELCOME :)
 }
 
 // Example_wait_for_animation is an example to simulate humans more accurately.
@@ -381,8 +421,8 @@ func Example_handle_events() {
 // Example_hijack_requests shows how we can intercept requests and modify
 // both the request and the response.
 // The entire process of hijacking one request:
-//    browser -req-> rod --> server --> rod -res-> browser
-// The -req-> and -res-> are the parts that can be modified.
+//    browser --req-> rod ---> server ---> rod --res-> browser
+// The --req-> and --res-> are the parts that can be modified.
 func Example_hijack_requests() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
@@ -399,7 +439,7 @@ func Example_hijack_requests() {
 		// LoadResponse runs the default request to the destination of the request.
 		// Not calling this will require you to mock the entire response.
 		// This can be done with the SetXxx (Status, Header, Body) functions on the
-		// response struct.
+		// ctx.Response struct.
 		ctx.MustLoadResponse()
 
 		// Here we append some code to every js file.

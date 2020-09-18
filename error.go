@@ -25,7 +25,10 @@ var (
 
 // Error type for rod
 type Error struct {
-	Code    error
+	// Code is used to tell error types
+	Code error
+
+	// Details is a JSON object
 	Details interface{}
 }
 
