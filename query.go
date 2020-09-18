@@ -108,9 +108,9 @@ func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasMatches doc is similar to the method MustHasMatches
-func (p *Page) HasMatches(pairs ...string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementR(pairs...)
+// HasR doc is similar to the method MustHasMatches
+func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).ElementR(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil, nil
 	}
@@ -389,8 +389,8 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasMatches doc is similar to the method MustHasMatches
-func (el *Element) HasMatches(selector, regex string) (bool, *Element, error) {
+// HasR doc is similar to the method MustHasMatches
+func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 	el, err := el.ElementR(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
 		return false, nil, nil

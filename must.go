@@ -384,9 +384,9 @@ func (p *Page) MustHasX(selector string) bool {
 	return has
 }
 
-// MustHasMatches an element that matches the css selector and its text matches the regex.
-func (p *Page) MustHasMatches(selector, regex string) bool {
-	has, _, err := p.HasMatches(selector, regex)
+// MustHasR an element that matches the css selector and its text matches the regex.
+func (p *Page) MustHasR(selector, regex string) bool {
+	has, _, err := p.HasR(selector, regex)
 	utils.E(err)
 	return has
 }
@@ -788,9 +788,9 @@ func (el *Element) MustHasX(selector string) bool {
 	return has
 }
 
-// MustHasMatches an element that matches the css selector and its text matches the regex.
-func (el *Element) MustHasMatches(selector, regex string) bool {
-	has, _, err := el.HasMatches(selector, regex)
+// MustHasR an element that matches the css selector and its text matches the regex.
+func (el *Element) MustHasR(selector, regex string) bool {
+	has, _, err := el.HasR(selector, regex)
 	utils.E(err)
 	return has
 }

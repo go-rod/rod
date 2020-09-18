@@ -44,8 +44,8 @@ func (s *S) TestPageHas() {
 	s.False(s.page.MustHas("a"))
 	s.True(s.page.MustHasX("//span"))
 	s.False(s.page.MustHasX("//a"))
-	s.True(s.page.MustHasMatches("button", "03"))
-	s.False(s.page.MustHasMatches("button", "11"))
+	s.True(s.page.MustHasR("button", "03"))
+	s.False(s.page.MustHasR("button", "11"))
 }
 
 func (s *S) TestElementHas() {
@@ -55,8 +55,8 @@ func (s *S) TestElementHas() {
 	s.False(b.MustHas("a"))
 	s.True(b.MustHasX("//span"))
 	s.False(b.MustHasX("//a"))
-	s.True(b.MustHasMatches("button", "03"))
-	s.False(b.MustHasMatches("button", "11"))
+	s.True(b.MustHasR("button", "03"))
+	s.False(b.MustHasR("button", "11"))
 }
 
 func (s *S) TestSearch() {
