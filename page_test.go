@@ -678,10 +678,13 @@ func (s *S) TestFonts() {
 	p.MustPDF("tmp", "fonts.pdf")
 }
 
-func (s *S) TestPagePDFErr() {
+func (s *S) TestPagePDF() {
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p.MustPDF("")
+
 	s.Panics(func() {
 		s.stubErr(1, proto.PagePrintToPDF{})
-		s.page.MustPDF()
+		p.MustPDF()
 	})
 }
 

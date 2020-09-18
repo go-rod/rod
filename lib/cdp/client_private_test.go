@@ -72,9 +72,20 @@ func TestCancelOnReq(t *testing.T) {
 }
 
 func TestCancelBeforeSend(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
-	cdp.ctx = ctx
+	cdp.ctx = context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	_, err := cdp.Call(ctx, "", "", nil)
+	assert.EqualError(t, err, "context canceled")
+}
+
+func TestCancelBeforeCallback(t *testing.T) {
+	cdp := New("")
+	cdp.ctx = context.Background()
+
+	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
 		<-cdp.chReq
