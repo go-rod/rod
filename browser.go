@@ -353,8 +353,9 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		executionIDs:  map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
 	}).Context(b.ctx)
 
-	page.Mouse = &Mouse{lock: &sync.Mutex{}, page: page, id: utils.RandString(8)}
-	page.Keyboard = &Keyboard{lock: &sync.Mutex{}, page: page}
+	page.Mouse = &Mouse{page: page, id: utils.RandString(8)}
+	page.Keyboard = &Keyboard{page: page}
+	page.Touch = &Touch{page: page}
 
 	err := page.initSession()
 	if err != nil {

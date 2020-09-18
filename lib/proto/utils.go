@@ -205,3 +205,9 @@ func (rect *DOMRect) CenterX() float64 {
 func (rect *DOMRect) CenterY() float64 {
 	return rect.Y + rect.Height/2
 }
+
+// MoveTo X and Y to x and y
+func (p *InputTouchPoint) MoveTo(x, y float64) {
+	p.X = x
+	p.Y = y
+}

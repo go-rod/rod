@@ -16,10 +16,10 @@ var ErrDeviceNotExists = errors.New("device not exists")
 
 var list = gjson.Parse(assets.DeviceList).Array()
 
-// GetViewport of the device
-func GetViewport(device DeviceType, landscape bool) *proto.EmulationSetDeviceMetricsOverride {
+// Get the config of the device
+func Get(device DeviceType, landscape bool) (*proto.EmulationSetDeviceMetricsOverride, *proto.EmulationSetTouchEmulationEnabled) {
 	if device == "" {
-		return nil
+		return nil, nil
 	}
 
 	d := find(device)
@@ -41,12 +41,15 @@ func GetViewport(device DeviceType, landscape bool) *proto.EmulationSetDeviceMet
 	}
 
 	return &proto.EmulationSetDeviceMetricsOverride{
-		Width:             screen.Get("width").Int(),
-		Height:            screen.Get("height").Int(),
-		DeviceScaleFactor: d.Get("screen.device-pixel-ratio").Float(),
-		ScreenOrientation: orientation,
-		Mobile:            d.Get("type").String() == "phone",
-	}
+			Width:             screen.Get("width").Int(),
+			Height:            screen.Get("height").Int(),
+			DeviceScaleFactor: d.Get("screen.device-pixel-ratio").Float(),
+			ScreenOrientation: orientation,
+			Mobile:            has(d.Get("capabilities"), "mobile"),
+		}, &proto.EmulationSetTouchEmulationEnabled{
+			Enabled:        has(d.Get("capabilities"), "touch"),
+			MaxTouchPoints: 5,
+		}
 }
 
 // GetUserAgent of the device
@@ -67,4 +70,13 @@ func find(name DeviceType) gjson.Result {
 		}
 	}
 	panic(ErrDeviceNotExists)
+}
+
+func has(arr gjson.Result, str string) bool {
+	for _, item := range arr.Array() {
+		if item.Str == str {
+			return true
+		}
+	}
+	return false
 }

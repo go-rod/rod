@@ -540,6 +540,37 @@ func (k *Keyboard) MustInsertText(text string) *Keyboard {
 	return k
 }
 
+// MustStart a touch action
+func (t *Touch) MustStart(points ...*proto.InputTouchPoint) *Touch {
+	utils.E(t.Start(points...))
+	return t
+}
+
+// MustMove touch points. Use the InputTouchPoint.ID (Touch.identifier) to track points.
+// Doc: https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+func (t *Touch) MustMove(points ...*proto.InputTouchPoint) *Touch {
+	utils.E(t.Move(points...))
+	return t
+}
+
+// MustEnd touch action
+func (t *Touch) MustEnd() *Touch {
+	utils.E(t.End())
+	return t
+}
+
+// MustCancel touch action
+func (t *Touch) MustCancel() *Touch {
+	utils.E(t.Cancel())
+	return t
+}
+
+// MustTap dispatches a touchstart and touchend event.
+func (t *Touch) MustTap(x, y float64) *Touch {
+	utils.E(t.Tap(x, y))
+	return t
+}
+
 // MustDescribe returns the element info
 // Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 func (el *Element) MustDescribe() *proto.DOMNode {

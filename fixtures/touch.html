@@ -1,0 +1,33 @@
+<html>
+  <style>
+    body {
+      width: 200px;
+      height: 200px;
+      margin: 0;
+    }
+  </style>
+
+  <body></body>
+
+  <script>
+    const body = document.body
+
+    body.ontouchstart = (e) => {
+      const t = e.touches[0]
+      console.log('start', t.clientX | 0, t.clientY | 0)
+    }
+
+    body.ontouchmove = (e) => {
+      const t = e.touches[0]
+      console.log('move', t.clientX | 0, t.clientY | 0)
+    }
+
+    body.ontouchend = (e) => {
+      console.log('end')
+    }
+
+    body.ontouchcancel = (e) => {
+      console.log('cancel')
+    }
+  </script>
+</html>

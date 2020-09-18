@@ -131,3 +131,11 @@ func TestRect(t *testing.T) {
 	assert.Equal(t, 348.5, rect.CenterX())
 	assert.Equal(t, 397.0, rect.CenterY())
 }
+
+func TestInputTouchPointMoveTo(t *testing.T) {
+	p := &proto.InputTouchPoint{}
+	p.MoveTo(1, 2)
+
+	assert.EqualValues(t, 1, p.X)
+	assert.EqualValues(t, 2, p.Y)
+}

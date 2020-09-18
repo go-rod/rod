@@ -194,7 +194,11 @@ func (s *S) TestEmulateDevice() {
 	)
 	s.Panics(func() {
 		s.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
-		page.MustEmulate(devices.IPhone6or7or8Plus)
+		page.MustEmulate(devices.IPad)
+	})
+	s.Panics(func() {
+		s.stubErr(1, proto.EmulationSetTouchEmulationEnabled{})
+		page.MustEmulate(devices.IPad)
 	})
 }
 
@@ -523,6 +527,47 @@ func (s *S) TestNativeDrag() {
 	mouse.MustUp("left")
 
 	page.MustElement(".dropzone:nth-child(2) #draggable")
+}
+
+func (s *S) TestTouch() {
+	page := s.browser.MustPage("")
+	defer page.MustClose()
+
+	page.MustEmulate(devices.IPad).
+		MustNavigate(srcFile("fixtures/touch.html")).
+		MustWaitLoad()
+
+	wait := make(chan struct{})
+	logs := []string{}
+	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
+		log := page.MustObjectsToJSON(e.Args).Join(" ")
+		logs = append(logs, log)
+		if strings.HasPrefix(log, `cancel`) {
+			close(wait)
+			return true
+		}
+		return false
+	})()
+
+	touch := page.Touch
+
+	touch.MustTap(10, 20)
+
+	p := &proto.InputTouchPoint{X: 30, Y: 40}
+
+	touch.MustStart(p).MustEnd()
+	touch.MustStart(p)
+	p.MoveTo(50, 60)
+	touch.MustMove(p).MustCancel()
+
+	<-wait
+
+	s.Equal([]string{"start 10 20", "end", "start 30 40", "end", "start 30 40", "move 50 60", "cancel"}, logs)
+
+	s.Panics(func() {
+		s.stubErr(1, proto.InputDispatchTouchEvent{})
+		touch.MustTap(1, 2)
+	})
 }
 
 func (s *S) TestPageScreenshot() {

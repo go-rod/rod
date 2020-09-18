@@ -36,6 +36,7 @@ type Page struct {
 	// devices
 	Mouse    *Mouse
 	Keyboard *Keyboard
+	Touch    *Touch
 
 	element          *Element                    // iframe only
 	windowObjectID   proto.RuntimeRemoteObjectID // used as the thisObject when eval js
@@ -185,10 +186,15 @@ func (p *Page) Viewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 
 // Emulate the device, such as iPhone9. If device is empty, it will clear the override.
 func (p *Page) Emulate(device devices.DeviceType, landscape bool) error {
-	v := devices.GetViewport(device, landscape)
+	v, t := devices.Get(device, landscape)
 	u := devices.GetUserAgent(device)
 
 	err := p.Viewport(v)
+	if err != nil {
+		return err
+	}
+
+	err = t.Call(p)
 	if err != nil {
 		return err
 	}

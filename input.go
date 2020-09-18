@@ -10,7 +10,7 @@ import (
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
 type Keyboard struct {
-	lock *sync.Mutex
+	sync.Mutex
 
 	page *Page
 
@@ -18,10 +18,17 @@ type Keyboard struct {
 	modifiers int64
 }
 
+func (k *Keyboard) getModifiers() int64 {
+	k.Lock()
+	defer k.Unlock()
+
+	return k.modifiers
+}
+
 // Down doc is similar to the method MustDown
 func (k *Keyboard) Down(key rune) error {
-	k.lock.Lock()
-	defer k.lock.Unlock()
+	k.Lock()
+	defer k.Unlock()
 
 	actions := input.Encode(key)
 
@@ -35,8 +42,8 @@ func (k *Keyboard) Down(key rune) error {
 
 // Up doc is similar to the method MustUp
 func (k *Keyboard) Up(key rune) error {
-	k.lock.Lock()
-	defer k.lock.Unlock()
+	k.Lock()
+	defer k.Unlock()
 
 	actions := input.Encode(key)
 
@@ -50,8 +57,8 @@ func (k *Keyboard) Up(key rune) error {
 
 // Press doc is similar to the method MustPress
 func (k *Keyboard) Press(key rune) error {
-	k.lock.Lock()
-	defer k.lock.Unlock()
+	k.Lock()
+	defer k.Unlock()
 
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
@@ -74,8 +81,8 @@ func (k *Keyboard) Press(key rune) error {
 
 // InsertText doc is similar to the method MustInsertText
 func (k *Keyboard) InsertText(text string) error {
-	k.lock.Lock()
-	defer k.lock.Unlock()
+	k.Lock()
+	defer k.Unlock()
 
 	if k.page.browser.trace {
 		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()
@@ -88,7 +95,7 @@ func (k *Keyboard) InsertText(text string) error {
 
 // Mouse represents the mouse on a page, it's always related the main frame
 type Mouse struct {
-	lock *sync.Mutex
+	sync.Mutex
 
 	page *Page
 
@@ -103,8 +110,8 @@ type Mouse struct {
 
 // Move to the absolute position with specified steps
 func (m *Mouse) Move(x, y float64, steps int) error {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.Lock()
+	defer m.Unlock()
 
 	if steps < 1 {
 		steps = 1
@@ -127,7 +134,7 @@ func (m *Mouse) Move(x, y float64, steps int) error {
 			Y:         toY,
 			Button:    button,
 			Buttons:   buttons,
-			Modifiers: m.page.Keyboard.modifiers,
+			Modifiers: m.page.Keyboard.getModifiers(),
 		}.Call(m.page)
 		if err != nil {
 			return err
@@ -150,8 +157,8 @@ func (m *Mouse) Move(x, y float64, steps int) error {
 
 // Scroll the relative offset with specified steps
 func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.Lock()
+	defer m.Unlock()
 
 	if m.page.browser.trace {
 		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
@@ -174,7 +181,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 			Y:         m.y,
 			Button:    button,
 			Buttons:   buttons,
-			Modifiers: m.page.Keyboard.modifiers,
+			Modifiers: m.page.Keyboard.getModifiers(),
 			DeltaX:    stepX,
 			DeltaY:    stepY,
 		}.Call(m.page)
@@ -188,8 +195,8 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 
 // Down doc is similar to the method MustDown
 func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.Lock()
+	defer m.Unlock()
 
 	toButtons := append(m.buttons, button)
 
@@ -200,7 +207,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 		Button:     button,
 		Buttons:    buttons,
 		ClickCount: clicks,
-		Modifiers:  m.page.Keyboard.modifiers,
+		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,
 		Y:          m.y,
 	}.Call(m.page)
@@ -213,8 +220,8 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 
 // Up doc is similar to the method MustUp
 func (m *Mouse) Up(button proto.InputMouseButton, clicks int64) error {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.Lock()
+	defer m.Unlock()
 
 	toButtons := []proto.InputMouseButton{}
 	for _, btn := range m.buttons {
@@ -254,4 +261,62 @@ func (m *Mouse) Click(button proto.InputMouseButton) error {
 	}
 
 	return m.Up(button, 1)
+}
+
+// Touch presents a touch device, such as a hand with fingers, each finger is a proto.InputTouchPoint.
+// Touch events is stateless, we use the struct here only as a namespace to make the API style unified.
+type Touch struct {
+	page *Page
+}
+
+// Start a touch action
+func (t *Touch) Start(points ...*proto.InputTouchPoint) error {
+	// TODO: https://crbug.com/613219
+	_, _ = t.page.Eval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
+
+	return proto.InputDispatchTouchEvent{
+		Type:        proto.InputDispatchTouchEventTypeTouchStart,
+		TouchPoints: points,
+		Modifiers:   t.page.Keyboard.getModifiers(),
+	}.Call(t.page)
+}
+
+// Move touch points. Use the InputTouchPoint.ID (Touch.identifier) to track points.
+// Doc: https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+func (t *Touch) Move(points ...*proto.InputTouchPoint) error {
+	return proto.InputDispatchTouchEvent{
+		Type:        proto.InputDispatchTouchEventTypeTouchMove,
+		TouchPoints: points,
+		Modifiers:   t.page.Keyboard.getModifiers(),
+	}.Call(t.page)
+}
+
+// End touch action
+func (t *Touch) End() error {
+	return proto.InputDispatchTouchEvent{
+		Type:        proto.InputDispatchTouchEventTypeTouchEnd,
+		TouchPoints: []*proto.InputTouchPoint{},
+		Modifiers:   t.page.Keyboard.getModifiers(),
+	}.Call(t.page)
+}
+
+// Cancel touch action
+func (t *Touch) Cancel() error {
+	return proto.InputDispatchTouchEvent{
+		Type:        proto.InputDispatchTouchEventTypeTouchCancel,
+		TouchPoints: []*proto.InputTouchPoint{},
+		Modifiers:   t.page.Keyboard.getModifiers(),
+	}.Call(t.page)
+}
+
+// Tap dispatches a touchstart and touchend event.
+func (t *Touch) Tap(x, y float64) error {
+	p := &proto.InputTouchPoint{X: x, Y: y}
+
+	err := t.Start(p)
+	if err != nil {
+		return err
+	}
+
+	return t.End()
 }
