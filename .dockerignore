@@ -1,4 +1,5 @@
 .*
+!.git/
 **/node_modules/
 **/tmp/
 coverage.txt

@@ -10,11 +10,18 @@
 FROM golang:alpine AS go
 
 ARG goproxy=""
+ARG alpine_mirror="dl-cdn.alpinelinux.org"
+ARG pkg="github.com/go-rod/rod"
 
 COPY . /rod
 WORKDIR /rod
+RUN sed -i "s/dl-cdn.alpinelinux.org/$alpine_mirror/g" /etc/apk/repositories
+RUN apk update
+RUN apk add git
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
-RUN go build ./lib/launcher/rod-launcher
+RUN git fetch --tags && \
+    version=$(git describe --match 'v[0-9]*' --always --tags) && \
+    go build -ldflags "-X $pkg/lib/defaults.Version=$version" ./lib/launcher/rod-launcher
 
 # use alpine to build the image
 FROM alpine:latest

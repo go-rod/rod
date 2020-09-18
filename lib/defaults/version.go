@@ -1,4 +1,4 @@
 package defaults
 
 // Version of Rod
-const Version = "v0.48.2"
+var Version = "v0.48.2"
