@@ -649,6 +649,12 @@ func (el *Element) MustClick() *Element {
 	return el
 }
 
+// MustTap the element
+func (el *Element) MustTap() *Element {
+	utils.E(el.Tap())
+	return el
+}
+
 // MustClickable checks if the element is behind another element, such as when covered by a modal.
 func (el *Element) MustClickable() bool {
 	clickable, err := el.Clickable()

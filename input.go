@@ -271,9 +271,6 @@ type Touch struct {
 
 // Start a touch action
 func (t *Touch) Start(points ...*proto.InputTouchPoint) error {
-	// TODO: https://crbug.com/613219
-	_ = t.page.WaitLoad()
-
 	return proto.InputDispatchTouchEvent{
 		Type:        proto.InputDispatchTouchEventTypeTouchStart,
 		TouchPoints: points,
@@ -311,6 +308,11 @@ func (t *Touch) Cancel() error {
 
 // Tap dispatches a touchstart and touchend event.
 func (t *Touch) Tap(x, y float64) error {
+	if t.page.browser.trace {
+		defer t.page.Overlay(0, 0, 200, 0, "touch")()
+	}
+	t.page.browser.trySlowmotion()
+
 	p := &proto.InputTouchPoint{X: x, Y: y}
 
 	err := t.Start(p)

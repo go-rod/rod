@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -44,6 +45,39 @@ func (s *S) TestClick() {
 	s.Panics(func() {
 		s.stubErr(2, proto.DOMGetBoxModel{})
 		el.MustClick()
+	})
+}
+
+func (s *S) TestTap() {
+	page := s.browser.MustPage("")
+	defer page.MustClose()
+
+	page.MustEmulate(devices.IPad).
+		MustNavigate(srcFile("fixtures/touch.html")).
+		MustWaitLoad()
+	el := page.MustElement("button")
+
+	s.browser.Trace(true)
+	el.MustTap()
+	s.browser.Trace(false)
+
+	s.True(page.MustHas("[tapped=true]"))
+
+	s.Panics(func() {
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustTap()
+	})
+	s.Panics(func() {
+		s.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+		el.MustTap()
+	})
+	s.Panics(func() {
+		s.stubErr(1, proto.DOMGetBoxModel{})
+		el.MustTap()
+	})
+	s.Panics(func() {
+		s.stubErr(2, proto.DOMGetBoxModel{})
+		el.MustTap()
 	})
 }
 

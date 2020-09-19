@@ -77,6 +77,44 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		return err
 	}
 
+	err = el.checkClickable()
+	if err != nil {
+		return err
+	}
+
+	defer el.traceAction(string(button) + " click")()
+
+	return el.page.Mouse.Click(button)
+}
+
+// Tap the button just like a human.
+func (el *Element) Tap() error {
+	err := el.WaitVisible()
+	if err != nil {
+		return err
+	}
+
+	err = el.ScrollIntoView()
+	if err != nil {
+		return err
+	}
+
+	err = el.checkClickable()
+	if err != nil {
+		return err
+	}
+
+	box, err := el.Box()
+	if err != nil {
+		return err
+	}
+
+	defer el.traceAction("tap")()
+
+	return el.page.Touch.Tap(box.CenterX(), box.CenterY())
+}
+
+func (el *Element) checkClickable() error {
 	clickable, err := el.Clickable()
 	if err != nil {
 		return err
@@ -88,10 +126,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		}
 		return newErr(ErrNotClickable, s, "such as covered by a modal")
 	}
-
-	defer el.traceAction(string(button) + " click")()
-
-	return el.page.Mouse.Click(button)
+	return nil
 }
 
 // Clickable checks if the element is behind another element, such as when invisible or covered by a modal.
