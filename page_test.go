@@ -667,21 +667,16 @@ func (s *S) TestPageInput() {
 }
 
 func (s *S) TestPageScroll() {
-	utils.E(utils.Retry(context.Background(), utils.CountSleeper(10), func() (bool, error) {
-		p := s.browser.MustPage(srcFile("fixtures/scroll.html")).MustWaitLoad()
-		defer p.MustClose()
+	p := s.page.MustNavigate(srcFile("fixtures/scroll.html")).MustWaitLoad()
 
-		p.Mouse.MustScroll(0, 10)
-		p.Mouse.MustScroll(100, 190)
-		utils.E(p.Mouse.Scroll(200, 300, 5))
-		p.MustElement("button").MustWaitStable()
-		offset := p.MustEval("({x: window.pageXOffset, y: window.pageYOffset})")
-		if offset.Get("x").Int() == 300 {
-			s.GreaterOrEqual(int64(10), 500-offset.Get("y").Int())
-			return true, nil
-		}
-		return false, nil
-	}))
+	p.MustEval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
+
+	p.Mouse.MustScroll(0, 10)
+	p.Mouse.MustScroll(100, 190)
+	utils.E(p.Mouse.Scroll(200, 300, 5))
+	p.MustElement("button").MustWaitStable()
+	offset := p.MustEval("({x: window.pageXOffset, y: window.pageYOffset})")
+	s.Less(int64(300), offset.Get("y").Int())
 }
 
 func (s *S) TestPageConsoleLog() {
