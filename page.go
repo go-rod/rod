@@ -427,6 +427,12 @@ func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 // WaitLoad doc is similar to the method MustWaitLoad
 func (p *Page) WaitLoad() error {
 	_, err := p.EvalWithOptions(jsHelper(js.WaitLoad, nil))
+	if err != nil {
+		return err
+	}
+
+	// TODO: https://crbug.com/613219
+	_, err = p.Root().Eval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
 	return err
 }
 

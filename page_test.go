@@ -669,8 +669,6 @@ func (s *S) TestPageInput() {
 func (s *S) TestPageScroll() {
 	p := s.page.MustNavigate(srcFile("fixtures/scroll.html")).MustWaitLoad()
 
-	p.MustEval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
-
 	p.Mouse.MustScroll(0, 10)
 	p.Mouse.MustScroll(100, 190)
 	utils.E(p.Mouse.Scroll(200, 300, 5))
@@ -787,17 +785,15 @@ func (s *S) TestPageNavigateErr() {
 	})
 }
 
-func (s *S) TestPageReload() {
-	p := s.page.MustReload()
-
+func (s *S) TestPageWaitLoadErr() {
 	s.Panics(func() {
-		s.stubErr(1, proto.PageStopLoading{})
-		p.MustReload()
+		s.stubErr(1, proto.RuntimeCallFunctionOn{})
+		s.page.MustWaitLoad()
 	})
 }
 
 func (s *S) TestPageGoBackGoForward() {
-	p := s.browser.MustPage("")
+	p := s.browser.MustPage("").MustReload()
 	defer p.MustClose()
 
 	p.
