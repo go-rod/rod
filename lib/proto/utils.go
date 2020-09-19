@@ -108,6 +108,9 @@ func (j *JSON) UnmarshalJSON(b []byte) error {
 
 // MarshalJSON interface
 func (j JSON) MarshalJSON() ([]byte, error) {
+	if len(j.raw) == 0 {
+		return []byte("null"), nil
+	}
 	return []byte(j.raw), nil
 }
 

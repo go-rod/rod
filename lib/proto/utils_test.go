@@ -73,6 +73,7 @@ func TestJSON(t *testing.T) {
 	utils.E(json.Unmarshal([]byte("10"), &j))
 	assert.EqualValues(t, 10, j.Int())
 
+	assert.Equal(t, "null", utils.MustToJSON(proto.JSON{}))
 	assert.Equal(t, "true", utils.MustToJSON(proto.NewJSON(true)))
 
 	assert.Equal(t, "1 2 3", proto.NewJSON([]int{1, 2, 3}).Join(" "))
