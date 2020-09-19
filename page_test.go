@@ -757,7 +757,7 @@ func (s *S) TestPageObjectErr() {
 	})
 }
 
-func (s *S) TestNavigateErr() {
+func (s *S) TestPageNavigateErr() {
 	// dns error
 	s.Panics(func() {
 		s.page.MustNavigate("http://" + utils.RandString(8))
@@ -785,6 +785,30 @@ func (s *S) TestNavigateErr() {
 		s.stubErr(1, proto.PageNavigate{})
 		s.page.MustNavigate(srcFile("fixtures/click.html"))
 	})
+}
+
+func (s *S) TestPageReload() {
+	p := s.page.MustReload()
+
+	s.Panics(func() {
+		s.stubErr(1, proto.PageStopLoading{})
+		p.MustReload()
+	})
+}
+
+func (s *S) TestPageGoBackGoForward() {
+	p := s.browser.MustPage("")
+	defer p.MustClose()
+
+	p.
+		MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad().
+		MustNavigate(srcFile("fixtures/selector.html")).MustWaitLoad()
+
+	p.MustNavigateBack().MustWaitLoad()
+	s.Regexp("fixtures/click.html$", p.MustInfo().URL)
+
+	p.MustNavigateForward().MustWaitLoad()
+	s.Regexp("fixtures/selector.html$", p.MustInfo().URL)
 }
 
 func (s *S) TestPageInitJSErr() {

@@ -132,6 +132,24 @@ func (p *Page) MustNavigate(url string) *Page {
 	return p
 }
 
+// MustReload page.
+func (p *Page) MustReload() *Page {
+	utils.E(p.Reload())
+	return p
+}
+
+// MustNavigateBack history
+func (p *Page) MustNavigateBack() *Page {
+	utils.E(p.NavigateBack())
+	return p
+}
+
+// MustNavigateForward history
+func (p *Page) MustNavigateForward() *Page {
+	utils.E(p.NavigateForward())
+	return p
+}
+
 // MustGetWindow get window bounds
 func (p *Page) MustGetWindow() *proto.BrowserBounds {
 	bounds, err := p.GetWindow()

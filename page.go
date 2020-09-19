@@ -142,6 +142,27 @@ func (p *Page) Navigate(url string) error {
 	return nil
 }
 
+// NavigateBack history.
+func (p *Page) NavigateBack() error {
+	// Not using cdp API because it doesn't work for iframe
+	_, err := p.Eval(`history.back()`)
+	return err
+}
+
+// NavigateForward history.
+func (p *Page) NavigateForward() error {
+	// Not using cdp API because it doesn't work for iframe
+	_, err := p.Eval(`history.forward()`)
+	return err
+}
+
+// Reload page.
+func (p *Page) Reload() error {
+	// Not using cdp API because it doesn't work for iframe
+	_, err := p.Eval(`location.reload()`)
+	return err
+}
+
 func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	res, err := proto.BrowserGetWindowForTarget{TargetID: p.TargetID}.Call(p)
 	if err != nil {
