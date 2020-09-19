@@ -14,8 +14,8 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Example_basic is a simple test that opens https://github.com/, searches for
-// "git", and then gets the header element which gives the description for Git.
+// This example opens https://github.com/, searches for "git",
+// and then gets the header element which gives the description for Git.
 func Example_basic() {
 	// Launch a new browser with default options, and connect to it.
 	browser := rod.New().MustConnect()
@@ -105,7 +105,7 @@ func Example_disable_headless_to_debug() {
 }
 
 // Usage of timeout context
-func Example_timeout() {
+func Example_timeout_handling() {
 	page := rod.New().MustConnect().MustPage("https://github.com")
 
 	page.
@@ -124,6 +124,17 @@ func Example_timeout() {
 
 		// Panics if it takes more than 10 seconds
 		MustText()
+
+	// The two code blocks below are basically the same:
+	{
+		page.Timeout(5 * time.Second).MustElement("a").CancelTimeout()
+	}
+	{
+		// Use this way you can customize your own way to cancel long-running task
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		page.Context(ctx).MustElement("a")
+		cancel()
+	}
 }
 
 // We use "Must" prefixed functions to write example code. But in production you may want to use
@@ -132,7 +143,7 @@ func Example_timeout() {
 func Example_error_handling() {
 	page := rod.New().MustConnect().MustPage("https://example.com")
 
-	// The two code blocks below are almost funcionally identical.
+	// The two code blocks below are basically the same:
 
 	// The block below is better for production code. It follows the standards of golang error handling.
 	// Usually, this style will make error handling more consistent and precisely.
@@ -242,20 +253,20 @@ func Example_wait_for_animation() {
 	// Output: done
 }
 
-// Example_wait_for_request shows an example where Rod will wait for all
-// requests on the page to complete (such as network request) before interacting
-// with the page.
+// When you want to wait for an ajax request to complete, this example will be useful.
 func Example_wait_for_request() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://duckduckgo.com/")
 
-	// WaitRequestIdle will wait for all possible ajax calls to complete before
-	// continuing on with further execution calls.
+	// Start to analyze request events
 	wait := page.MustWaitRequestIdle()
+
+	// This will trigger the search ajax request
 	page.MustElement("#search_form_input_homepage").MustClick().MustInput("test")
-	time.Sleep(300 * time.Millisecond) // Wait for js debounce.
+
+	// Wait until there's no active requests
 	wait()
 
 	// We want to make sure that after waiting, there are some autocomplete
@@ -265,9 +276,8 @@ func Example_wait_for_request() {
 	// Output: true
 }
 
-// Example_customize_retry_strategy allows us to change the retry/polling
-// options that is used to query elements. This is useful when you want to
-// customize the element query retry logic.
+// Shows how to change the retry/polling options that is used to query elements.
+// This is useful when you want to customize the element query retry logic.
 func Example_customize_retry_strategy() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
@@ -297,24 +307,20 @@ func Example_customize_retry_strategy() {
 	// Output: q
 }
 
-// Example_customize_browser_launch will show how we can further customize the
-// browser with the launcher library. The launcher lib comes with many default
-// flags (switches), this example adds and removes a few.
+// Shows how we can further customize the browser with the launcher library.
+// Usually you use launcher lib to set the browser's command line flags (switches).
+// Doc for flags: https://peter.sh/experiments/chromium-command-line-switches
 func Example_customize_browser_launch() {
-	// Documentation for default switches can be found at the source of the
-	// launcher.New function, as well as at
-	// https://peter.sh/experiments/chromium-command-line-switches/.
 	url := launcher.New().
-		// Set a flag- Adding the HTTP proxy server.
-		Proxy("127.0.0.1:8080").
-		// Delete a flag- remove the mock-keychain flag
-		Delete("use-mock-keychain").
+		Proxy("127.0.0.1:8080").     // set flag "--proxy-server=127.0.0.1:8080"
+		Delete("use-mock-keychain"). // delete flag "--use-mock-keychain"
 		MustLaunch()
 
 	browser := rod.New().ControlURL(url).MustConnect()
 	defer browser.MustClose()
 
-	utils.E(proto.SecuritySetIgnoreCertificateErrors{Ignore: true}.Call(browser))
+	// So that we don't have to self issue certs for MITM
+	browser.MustIgnoreCertErrors(true)
 
 	// Adding authentication to the proxy, for the next auth request.
 	// We use CLI tool "mitmproxy --proxyauth user:pass" as an example.
@@ -325,58 +331,27 @@ func Example_customize_browser_launch() {
 	fmt.Println(browser.MustPage("https://example.com/").MustElement("title").MustText())
 }
 
-// Example_direct_cdp shows how we can use Rod when it doesn't have a function
-// or a feature that you would like to use. You can easily call the cdp
-// interface.
+// When rod doesn't have a feature that you need. You can easily call the cdp to achieve it.
+// List of cdp API: https://chromedevtools.github.io/devtools-protocol
 func Example_direct_cdp() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
-	defer browser.MustClose()
+	page := rod.New().MustConnect().MustPage("")
 
-	// The code here shows how SetCookies works.
-	// Normally, you use something like
-	// browser.Page("").SetCookies(...).Navigate(url).
-
-	page := browser.MustPage("")
-
-	// Call the cdp interface directly.
-	// We set the cookie before we visit the website.
-	// The "proto" lib contains every JSON schema you may need to communicate
-	// with browser
-	res, err := proto.NetworkSetCookie{
-		Name:  "rod",
-		Value: "test",
-		URL:   "https://example.com",
+	// Rod doesn't have a method to enable AD blocking,
+	// but you can call cdp interface directly to achieve it.
+	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-setAdBlockingEnabled
+	_ = proto.PageSetAdBlockingEnabled{
+		Enabled: true,
 	}.Call(page)
-	if err != nil {
-		panic(err)
-	}
 
-	fmt.Println(res.Success)
-
-	page.MustNavigate("https://example.com")
-
-	// Eval injects a script into the page. We use this to return the cookies
-	// that JS detects to validate our cdp call.
-	cookie := page.MustEval(`document.cookie`).String()
-
-	fmt.Println(cookie)
-
-	// You can also use your own raw JSON to send a json request.
-	params, _ := json.Marshal(map[string]string{
-		"name":  "rod",
-		"value": "test",
-		"url":   "https://example.com",
+	// You can even use JSON directly to do the same thing above.
+	params, _ := json.Marshal(map[string]bool{
+		"enabled": true,
 	})
-	ctx, client, sessionID := page.CallContext()
-	_, _ = client.Call(ctx, sessionID, "Network.SetCookie", params)
-
-	// Output:
-	// true
-	// rod=test
+	ctx, client, id := page.CallContext()
+	_, _ = client.Call(ctx, id, "Page.setAdBlockingEnabled", params)
 }
 
-// Example_handle_events is an example showing how we can use Rod to subscribe
-// to events.
+// Shows how to listen for events.
 func Example_handle_events() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
 	defer browser.MustClose()
@@ -388,7 +363,7 @@ func Example_handle_events() {
 
 	done := make(chan int)
 
-	// Listen to all events of console output.
+	// Listen for all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
 		log := page.MustObjectsToJSON(e.Args).Join(" ")
 		fmt.Println(log)
@@ -418,7 +393,7 @@ func Example_handle_events() {
 	// hello world
 }
 
-// Example_hijack_requests shows how we can intercept requests and modify
+// Shows how to intercept requests and modify
 // both the request and the response.
 // The entire process of hijacking one request:
 //    browser --req-> rod ---> server ---> rod --res-> browser
@@ -456,7 +431,7 @@ func Example_hijack_requests() {
 	// Output: done
 }
 
-// Example_states allows us to update the state of the current page.
+// Shows how to update the state of the current page.
 // In this example we enable the network domain.
 func Example_states() {
 	browser := rod.New().Timeout(time.Minute).MustConnect()
