@@ -65,6 +65,8 @@ func Test(t *testing.T) {
 
 	defer s.browser.MustClose()
 
+	s.browser.MustIgnoreCertErrors(false)
+
 	s.page = s.browser.MustPage("")
 
 	s.goleakIgnore = goleak.IgnoreCurrent()

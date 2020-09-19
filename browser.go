@@ -384,11 +384,15 @@ func (b *Browser) initEvents() {
 	}()
 }
 
-// InfoE of the page
 func (b *Browser) pageInfo(id proto.TargetTargetID) (*proto.TargetTargetInfo, error) {
 	res, err := proto.TargetGetTargetInfo{TargetID: id}.Call(b)
 	if err != nil {
 		return nil, err
 	}
 	return res.TargetInfo, nil
+}
+
+// IgnoreCertErrors switch. If enabled, all certificate errors will be ignored.
+func (b *Browser) IgnoreCertErrors(enable bool) error {
+	return proto.SecuritySetIgnoreCertificateErrors{Ignore: enable}.Call(b)
 }

@@ -68,6 +68,12 @@ func (b *Browser) MustHandleAuth(username, password string) {
 	go func() { utils.E(wait()) }()
 }
 
+// MustIgnoreCertErrors switch. If enabled, all certificate errors will be ignored.
+func (b *Browser) MustIgnoreCertErrors(enable bool) *Browser {
+	utils.E(b.IgnoreCertErrors(enable))
+	return b
+}
+
 // MustFind the page that has the specified element with the css selector
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
