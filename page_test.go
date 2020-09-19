@@ -703,19 +703,9 @@ func (s *S) TestPageOthers() {
 }
 
 func (s *S) TestFonts() {
-	/*
-		I don't want to include a large OCR lib just for this test
-		So this one should be checked manually:
-
-		GOOS=linux go test -c
-		docker run --rm -itv $(pwd):/t -w /t rodorg/rod sh
-		./rod.test -test.v -test.run Test/TestFonts
-		open tmp/fonts.pdf
-	*/
-
 	p := s.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
 
-	p.MustPDF("tmp", "fonts.pdf")
+	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts
 }
 
 func (s *S) TestPagePDF() {

@@ -4,4 +4,6 @@ FROM rodorg/rod
 
 RUN apk add git go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
 
+WORKDIR /t
+
 CMD go test -v -run Test

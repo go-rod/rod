@@ -46,15 +46,11 @@ There are several helper functions in the [setup_test.go](../setup_test.go) for 
 
 ### To run inside docker
 
-1. `docker build -t rod -f lib/docker/Dockerfile .`
+1. `docker build -t rod -f lib/docker/test.Dockerfile .`
 
-2. `docker run --name rod -itp 9273:9273 -v $(pwd):/t -w /t rod sh`
+1. `docker volume create rod`
 
-3. `rod=monitor,blind go test -v -run Test/Click`
-
-4. visit `http://[::]:9273` to monitor the tests
-
-After you exit the container, you can reuse it with `docker start -i rod`.
+1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run Test/Click`
 
 ### Convention of the git commit message
 
