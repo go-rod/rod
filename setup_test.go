@@ -11,6 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -42,7 +43,7 @@ func TestMain(m *testing.M) {
 		},
 	}
 
-	goleak.VerifyTestMain(m)
+	goleak.VerifyTestMain(m, goleak.MaxRetry(3*time.Second))
 }
 
 func Test(t *testing.T) {
@@ -77,6 +78,7 @@ func Test(t *testing.T) {
 func (s *S) TearDownTest() {
 	goleak.VerifyNone(
 		s.T(),
+		goleak.MaxRetry(3*time.Second),
 		s.goleakIgnore,
 	)
 }

@@ -12,3 +12,5 @@ require (
 	github.com/ysmood/leakless v0.5.7
 	go.uber.org/goleak v1.1.10
 )
+
+replace go.uber.org/goleak => github.com/ysmood/goleak v1.2.0
