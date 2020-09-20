@@ -154,9 +154,7 @@ func (el *Element) traceAction(details string) func() {
 
 	msg := &TraceMsg{TraceTypeAction, details}
 
-	if !el.page.browser.quiet {
-		el.page.browser.traceLog(msg)
-	}
+	el.page.browser.traceLog(msg)
 
 	return el.Trace(msg.String())
 }
@@ -175,15 +173,13 @@ func (p *Page) tryTraceFn(js string, params JSArgs) func() {
 	}
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
-	if !p.browser.quiet {
-		p.browser.traceLog(&TraceMsg{
-			TraceTypeJS,
-			map[string]interface{}{
-				"js":     js,
-				"params": params,
-			},
-		})
-	}
+	p.browser.traceLog(&TraceMsg{
+		TraceTypeJS,
+		map[string]interface{}{
+			"js":     js,
+			"params": params,
+		},
+	})
 
 	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)

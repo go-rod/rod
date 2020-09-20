@@ -39,7 +39,6 @@ type Browser struct {
 	BrowserContextID proto.BrowserBrowserContextID
 
 	slowmotion time.Duration // see defaults.slow
-	quiet      bool          // see defaults.Quiet
 	trace      bool          // see defaults.Trace
 	traceLog   TraceLog
 
@@ -61,7 +60,6 @@ func New() *Browser {
 		ctx:             context.Background(),
 		sleeper:         DefaultSleeper,
 		slowmotion:      defaults.Slow,
-		quiet:           defaults.Quiet,
 		trace:           defaults.Trace,
 		traceLog:        defaultTraceLog,
 		defaultViewport: devices.LaptopWithMDPIScreen.Metrics(true),
@@ -108,12 +106,6 @@ func (b *Browser) TraceLog(l TraceLog) *Browser {
 	} else {
 		b.traceLog = l
 	}
-	return b
-}
-
-// Quiet enables/disables log of the. Only useful when Trace is set to true.
-func (b *Browser) Quiet(quiet bool) *Browser {
-	b.quiet = quiet
 	return b
 }
 

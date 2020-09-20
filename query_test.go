@@ -225,9 +225,9 @@ func (s *S) TestElementsFromElementsX() {
 }
 
 func (s *S) TestElementTracing() {
-	s.browser.Trace(true).Quiet(true)
+	s.browser.Trace(true)
 	defer func() {
-		s.browser.Trace(defaults.Trace).Quiet(defaults.Quiet)
+		s.browser.Trace(defaults.Trace)
 	}()
 
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
