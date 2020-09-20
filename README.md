@@ -51,6 +51,10 @@ Object model:
 
 ![object model](fixtures/object-model.svg)
 
+## API Documentation
+
+We use the standard way to doc the project: [Go Doc](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
+
 ## FAQ
 
 ### TOC
