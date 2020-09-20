@@ -16,6 +16,7 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -57,20 +58,15 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:        context.Background(),
-		sleeper:    DefaultSleeper,
-		slowmotion: defaults.Slow,
-		quiet:      defaults.Quiet,
-		trace:      defaults.Trace,
-		traceLog:   defaultTraceLog,
-		defaultViewport: &proto.EmulationSetDeviceMetricsOverride{
-			Width: 1200, Height: 900, DeviceScaleFactor: 1, Mobile: false,
-			ScreenOrientation: &proto.EmulationScreenOrientation{
-				Type: proto.EmulationScreenOrientationTypeLandscapePrimary,
-			},
-		},
-		targetsLock: &sync.Mutex{},
-		states:      &sync.Map{},
+		ctx:             context.Background(),
+		sleeper:         DefaultSleeper,
+		slowmotion:      defaults.Slow,
+		quiet:           defaults.Quiet,
+		trace:           defaults.Trace,
+		traceLog:        defaultTraceLog,
+		defaultViewport: devices.LaptopWithMDPIScreen.Metrics(true),
+		targetsLock:     &sync.Mutex{},
+		states:          &sync.Map{},
 	}
 }
 

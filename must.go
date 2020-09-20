@@ -213,7 +213,7 @@ func (p *Page) MustViewport(width, height int64, deviceScaleFactor float64, mobi
 }
 
 // MustEmulate the device, such as iPhone9. If device is empty, it will clear the override.
-func (p *Page) MustEmulate(device devices.DeviceType) *Page {
+func (p *Page) MustEmulate(device devices.Device) *Page {
 	utils.E(p.Emulate(device, false))
 	return p
 }

@@ -27,9 +27,6 @@ func Example_basic() {
 	// The code will panic out if any chained call is used after the timeout.
 	page := browser.Timeout(time.Minute).MustPage("https://github.com")
 
-	// Make sure viewport is always consistent.
-	page.MustViewport(1200, 600, 1, false)
-
 	// We use css selector to get the search input element and input "git"
 	page.MustElement("input").MustInput("git").MustPress(input.Enter)
 

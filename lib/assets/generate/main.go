@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -30,15 +29,11 @@ const Monitor = {{.monitor}}
 
 // MonitorPage for rod
 const MonitorPage = {{.monitorPage}}
-
-// DeviceList for rod
-const DeviceList = {{.deviceList}}
 `,
-		"helper", helper,
+		"helper", strings.Replace(helper, "// eslint-disable-next-line no-unused-expressions\n;", "", 1),
 		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
 		"monitor", get("monitor.html"),
 		"monitorPage", get("monitor-page.html"),
-		"deviceList", getDeviceList(),
 	)
 
 	utils.E(utils.OutputFile(slash("lib/assets/assets.go"), build))
@@ -49,23 +44,7 @@ const DeviceList = {{.deviceList}}
 func get(path string) string {
 	code, err := utils.ReadString(slash("lib/assets/" + path))
 	utils.E(err)
-	return encode(code)
-}
-
-// not using encoding like base64 or gzip because of they will make git diff every large for small change
-func encode(s string) string {
-	s = strings.Replace(s, "// eslint-disable-next-line no-unused-expressions\n;", "", 1)
-	return "`" + strings.ReplaceAll(s, "`", "` + \"`\" + `") + "`"
-}
-
-func getDeviceList() string {
-	// we use the list from the web UI of devtools
-	res, err := http.Get(
-		"https://raw.githubusercontent.com/ChromeDevTools/devtools-frontend/master/front_end/emulated_devices/module.json",
-	)
-	utils.E(err)
-
-	return encode(utils.MustReadJSON(res.Body).Get("extensions").Raw)
+	return utils.EscapeGoString(code)
 }
 
 func genHelperList(helper string) string {

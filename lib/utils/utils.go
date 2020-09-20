@@ -360,3 +360,8 @@ func MustReadBytes(r io.Reader) []byte {
 func MustReadString(r io.Reader) string {
 	return string(MustReadBytes(r))
 }
+
+// EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change
+func EscapeGoString(s string) string {
+	return "`" + strings.ReplaceAll(s, "`", "` + \"`\" + `") + "`"
+}

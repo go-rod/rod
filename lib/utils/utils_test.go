@@ -219,3 +219,7 @@ func TestReader(t *T) {
 	_, err = utils.ReadJSONPathAsString(&errReader{err: errors.New("err")}, "")
 	assert.Error(t, err)
 }
+
+func TestEscapeGoString(t *testing.T) {
+	assert.Equal(t, "`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
+}
