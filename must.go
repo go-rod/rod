@@ -159,7 +159,7 @@ func (p *Page) MustGetWindow() *proto.BrowserBounds {
 
 // MustWindow set the window location and size
 func (p *Page) MustWindow(left, top, width, height int64) *Page {
-	utils.E(p.Window(&proto.BrowserBounds{
+	utils.E(p.SetWindow(&proto.BrowserBounds{
 		Left:        left,
 		Top:         top,
 		Width:       width,
@@ -171,7 +171,7 @@ func (p *Page) MustWindow(left, top, width, height int64) *Page {
 
 // MustWindowMinimize the window
 func (p *Page) MustWindowMinimize() *Page {
-	utils.E(p.Window(&proto.BrowserBounds{
+	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateMinimized,
 	}))
 	return p
@@ -179,7 +179,7 @@ func (p *Page) MustWindowMinimize() *Page {
 
 // MustWindowMaximize the window
 func (p *Page) MustWindowMaximize() *Page {
-	utils.E(p.Window(&proto.BrowserBounds{
+	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateMaximized,
 	}))
 	return p
@@ -187,7 +187,7 @@ func (p *Page) MustWindowMaximize() *Page {
 
 // MustWindowFullscreen the window
 func (p *Page) MustWindowFullscreen() *Page {
-	utils.E(p.Window(&proto.BrowserBounds{
+	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateFullscreen,
 	}))
 	return p
@@ -195,7 +195,7 @@ func (p *Page) MustWindowFullscreen() *Page {
 
 // MustWindowNormal the window size
 func (p *Page) MustWindowNormal() *Page {
-	utils.E(p.Window(&proto.BrowserBounds{
+	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateNormal,
 	}))
 	return p
@@ -203,7 +203,7 @@ func (p *Page) MustWindowNormal() *Page {
 
 // MustViewport overrides the values of device screen dimensions.
 func (p *Page) MustViewport(width, height int64, deviceScaleFactor float64, mobile bool) *Page {
-	utils.E(p.Viewport(&proto.EmulationSetDeviceMetricsOverride{
+	utils.E(p.SetViewport(&proto.EmulationSetDeviceMetricsOverride{
 		Width:             width,
 		Height:            height,
 		DeviceScaleFactor: deviceScaleFactor,

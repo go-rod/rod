@@ -133,7 +133,7 @@ func (s *S) TestWindow() {
 	page := s.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
-	utils.E(page.Viewport(nil))
+	utils.E(page.SetViewport(nil))
 
 	bounds := page.MustGetWindow()
 	defer page.MustWindow(
@@ -618,7 +618,7 @@ func (s *S) TestScreenshotFullPage() {
 	s.Len(list, 1)
 
 	noEmulation := s.browser.MustPage(srcFile("fixtures/click.html"))
-	utils.E(noEmulation.Viewport(nil))
+	utils.E(noEmulation.SetViewport(nil))
 	noEmulation.MustScreenshotFullPage()
 
 	s.Panics(func() {

@@ -359,7 +359,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	if b.defaultViewport != nil {
-		err = page.Viewport(b.defaultViewport)
+		err = page.SetViewport(b.defaultViewport)
 		if err != nil {
 			return nil, err
 		}

@@ -186,8 +186,8 @@ func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	return res.Bounds, nil
 }
 
-// Window https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
-func (p *Page) Window(bounds *proto.BrowserBounds) error {
+// SetWindow https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
+func (p *Page) SetWindow(bounds *proto.BrowserBounds) error {
 	id, err := p.getWindowID()
 	if err != nil {
 		return err
@@ -197,8 +197,8 @@ func (p *Page) Window(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// Viewport doc is similar to the method MustViewport. If params is nil, it will clear the override.
-func (p *Page) Viewport(params *proto.EmulationSetDeviceMetricsOverride) error {
+// SetViewport doc is similar to the method MustViewport. If params is nil, it will clear the override.
+func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 	if params == nil {
 		return proto.EmulationClearDeviceMetricsOverride{}.Call(p)
 	}
@@ -207,7 +207,7 @@ func (p *Page) Viewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 
 // Emulate the device, such as iPhone9. If device is devices.Clear, it will clear the override.
 func (p *Page) Emulate(device devices.Device, landscape bool) error {
-	err := p.Viewport(device.Metrics(landscape))
+	err := p.SetViewport(device.Metrics(landscape))
 	if err != nil {
 		return err
 	}
@@ -274,7 +274,7 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 		view.Width = int64(metrics.ContentSize.Width)
 		view.Height = int64(metrics.ContentSize.Height)
 
-		err = p.Viewport(&view)
+		err = p.SetViewport(&view)
 		if err != nil {
 			return nil, err
 		}
@@ -285,7 +285,7 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 				return
 			}
 
-			_ = p.Viewport(oldView)
+			_ = p.SetViewport(oldView)
 		}()
 	}
 
