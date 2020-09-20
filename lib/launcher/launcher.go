@@ -43,8 +43,8 @@ type Launcher struct {
 // Leakless will be enabled by default.
 // List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
-	dir := ""
-	if defaults.Dir == "" {
+	dir := defaults.Dir
+	if dir == "" {
 		dir = filepath.Join(os.TempDir(), "rod", "user-data", utils.RandString(8))
 	}
 
