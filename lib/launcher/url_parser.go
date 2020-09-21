@@ -14,10 +14,10 @@ var _ io.Writer = &URLParser{}
 
 // URLParser to get control url from stderr
 type URLParser struct {
-	URL chan string
+	URL    chan string
+	Buffer string // buffer for the browser stdout
 
 	done bool
-	buf  string
 }
 
 // NewURLParser instance
@@ -32,16 +32,16 @@ var regWS = regexp.MustCompile(`ws://.+/`)
 // Write interface
 func (r *URLParser) Write(p []byte) (n int, err error) {
 	if !r.done {
-		r.buf += string(p)
+		r.Buffer += string(p)
 
-		str := regWS.FindString(r.buf)
+		str := regWS.FindString(r.Buffer)
 		if str != "" {
 			u, err := url.Parse(strings.TrimSpace(str))
 			utils.E(err)
 
 			r.URL <- "http://" + u.Host
 			r.done = true
-			r.buf = ""
+			r.Buffer = ""
 		}
 	}
 

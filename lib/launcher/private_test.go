@@ -60,9 +60,10 @@ func TestGetURLErr(t *testing.T) {
 	assert.Error(t, err)
 
 	l = New()
+	l.parser.Buffer = "err"
 	close(l.exit)
 	_, err = l.getURL()
-	assert.Error(t, err)
+	assert.Equal(t, "[launcher] Failed to get the debug url err", err.Error())
 }
 
 func TestRemoteLaunch(t *testing.T) {
