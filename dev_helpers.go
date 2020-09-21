@@ -36,8 +36,16 @@ func (b *Browser) ServeMonitor(host string) string {
 	mux.HandleFunc("/api/pages", func(w http.ResponseWriter, r *http.Request) {
 		res, err := proto.TargetGetTargets{}.Call(b)
 		utils.E(err)
+
+		list := []*proto.TargetTargetInfo{}
+		for _, info := range res.TargetInfos {
+			if info.Type == proto.TargetTargetInfoTypePage {
+				list = append(list, info)
+			}
+		}
+
 		w.WriteHeader(http.StatusOK)
-		utils.E(w.Write(utils.MustToJSONBytes(res.TargetInfos)))
+		utils.E(w.Write(utils.MustToJSONBytes(list)))
 	})
 	mux.HandleFunc("/page/", func(w http.ResponseWriter, r *http.Request) {
 		httHTML(w, assets.MonitorPage)
