@@ -68,7 +68,7 @@ func Test(t *testing.T) {
 
 	s.browser.MustIgnoreCertErrors(false)
 
-	s.page = s.browser.MustPage("")
+	s.page = s.browser.MustPages().First()
 
 	s.goleakIgnore = goleak.IgnoreCurrent()
 
@@ -76,6 +76,12 @@ func Test(t *testing.T) {
 }
 
 func (s *S) TearDownTest() {
+	for _, p := range s.browser.MustPages() {
+		if p.TargetID != s.page.TargetID {
+			s.T().Fatal("leaking page: " + p.MustInfo().URL)
+		}
+	}
+
 	goleak.VerifyNone(
 		s.T(),
 		goleak.MaxRetry(3*time.Second),
