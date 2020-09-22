@@ -384,6 +384,32 @@ func (s *S) TestBrowserConnectErr() {
 	})
 }
 
+func (s *S) TestStreamReader() {
+	r := rod.NewStreamReader(s.page, "")
+
+	s.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
+		return utils.MustToJSONBytes(proto.IOReadResult{
+			Data: "test",
+		}), nil
+	})
+	b := make([]byte, 4)
+	_, _ = r.Read(b)
+	s.Equal("test", string(b))
+
+	s.stubErr(1, proto.IORead{})
+	_, err := r.Read(nil)
+	s.Error(err)
+
+	s.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
+		return utils.MustToJSONBytes(proto.IOReadResult{
+			Base64Encoded: true,
+			Data:          "@",
+		}), nil
+	})
+	_, err = r.Read(nil)
+	s.Error(err)
+}
+
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {

@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -99,6 +100,52 @@ func SprintFnThis(js string) string {
 		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 	}
 	return fmt.Sprintf(`function() { return %s }`, js)
+}
+
+var _ io.Reader = &StreamReader{}
+
+// StreamReader for browser data stream
+type StreamReader struct {
+	Offset int64
+
+	c      proto.Caller
+	handle proto.IOStreamHandle
+	buf    *bytes.Buffer
+}
+
+// NewStreamReader instance
+func NewStreamReader(c proto.Caller, h proto.IOStreamHandle) *StreamReader {
+	return &StreamReader{
+		c:      c,
+		handle: h,
+		buf:    &bytes.Buffer{},
+	}
+}
+
+func (sr *StreamReader) Read(p []byte) (n int, err error) {
+	res, err := proto.IORead{
+		Handle: sr.handle,
+		Offset: sr.Offset,
+	}.Call(sr.c)
+	if err != nil {
+		return 0, err
+	}
+
+	if !res.EOF {
+		var bin []byte
+		if res.Base64Encoded {
+			bin, err = base64.StdEncoding.DecodeString(res.Data)
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			bin = []byte(res.Data)
+		}
+
+		_, _ = sr.buf.Write(bin)
+	}
+
+	return sr.buf.Read(p)
 }
 
 // Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails

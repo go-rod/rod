@@ -297,12 +297,14 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 }
 
 // PDF prints page as PDF
-func (p *Page) PDF(req *proto.PagePrintToPDF) ([]byte, error) {
+func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
+	req.TransferMode = proto.PagePrintToPDFTransferModeReturnAsStream
 	res, err := req.Call(p)
 	if err != nil {
 		return nil, err
 	}
-	return res.Data, nil
+
+	return NewStreamReader(p, res.Stream), nil
 }
 
 // WaitOpen doc is similar to the method MustWaitPage

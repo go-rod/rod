@@ -9,6 +9,7 @@
 package rod
 
 import (
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -258,8 +259,11 @@ func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 
 // MustPDF prints page as MustPDF
 func (p *Page) MustPDF(toFile ...string) []byte {
-	bin, err := p.PDF(&proto.PagePrintToPDF{})
+	r, err := p.PDF(&proto.PagePrintToPDF{})
 	utils.E(err)
+	bin, err := ioutil.ReadAll(r)
+	utils.E(err)
+
 	utils.E(saveFile(saveFileTypePDF, bin, toFile))
 	return bin
 }
