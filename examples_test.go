@@ -16,7 +16,7 @@ import (
 
 // This example opens https://github.com/, searches for "git",
 // and then gets the header element which gives the description for Git.
-func Example_basic() {
+func Example() {
 	// Launch a new browser with default options, and connect to it.
 	browser := rod.New().MustConnect()
 
@@ -199,6 +199,63 @@ func Example_search() {
 	fmt.Println(*el.MustAttribute("class"))
 
 	// Output: CodeMirror cm-s-default CodeMirror-wrap
+}
+
+func Example_page_screenshot() {
+	page := rod.New().MustConnect().MustPage("")
+
+	wait := page.MustWaitRequestIdle()
+	page.MustNavigate("https://github.com")
+	wait() // usually, you want to wait until the page is idle
+
+	// simple version
+	page.MustScreenshot("my.png")
+
+	// customization version
+	img, _ := page.Screenshot(true, &proto.PageCaptureScreenshot{
+		Format:  proto.PageCaptureScreenshotFormatJpeg,
+		Quality: 90,
+		Clip: &proto.PageViewport{
+			X:      0,
+			Y:      0,
+			Width:  300,
+			Height: 200,
+			Scale:  1,
+		},
+		FromSurface: true,
+	})
+	_ = utils.OutputFile("my.png", img)
+}
+
+func Example_page_pdf() {
+	page := rod.New().MustConnect().MustPage("")
+
+	wait := page.MustWaitRequestIdle()
+	page.MustNavigate("https://github.com")
+	wait() // usually, you want to wait until the page is idle
+
+	// simple version
+	page.MustPDF("my.pdf")
+
+	// customization version
+	pdf, _ := page.PDF(&proto.PagePrintToPDF{
+		Landscape:               false,
+		DisplayHeaderFooter:     true,
+		PrintBackground:         true,
+		Scale:                   1,
+		PaperWidth:              8.5,
+		PaperHeight:             11,
+		MarginTop:               1,
+		MarginBottom:            1,
+		MarginLeft:              1,
+		MarginRight:             1,
+		PageRanges:              "1-3",
+		IgnoreInvalidPageRanges: false,
+		HeaderTemplate:          "<span class=title></span>",
+		FooterTemplate:          "<span class=date></span>",
+		PreferCSSPageSize:       false,
+	})
+	_ = utils.OutputFile("my.pdf", pdf)
 }
 
 // Show how to handle multiple results of an action.
