@@ -225,18 +225,39 @@ func (p *Page) StopLoading() error {
 	return proto.PageStopLoading{}.Call(p)
 }
 
-// Close page
+// Close tries to close page, running its beforeunload hooks, if any.
 func (p *Page) Close() error {
+	p.browser.targetsLock.Lock()
+	defer p.browser.targetsLock.Unlock()
+
 	err := p.StopLoading()
 	if err != nil {
 		return err
 	}
+
+	success := true
+	ctx, cancel := context.WithCancel(p.ctx)
+	defer cancel()
+
+	wait := p.Context(ctx).EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
+		return e.TargetID == e.TargetID
+	}, func(e *proto.PageJavascriptDialogClosed) bool {
+		success = e.Result
+		return !p.browser.headless && !success
+	})
+
 	err = proto.PageClose{}.Call(p)
 	if err != nil {
 		return err
 	}
 
-	p.cleanupStates()
+	wait()
+
+	if success {
+		p.cleanupStates()
+	} else {
+		return ErrPageCloseCanceled
+	}
 
 	return nil
 }

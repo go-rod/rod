@@ -19,6 +19,8 @@ var (
 	ErrEval = errors.New("eval error")
 	// ErrNavigation error
 	ErrNavigation = errors.New("navigation failed")
+	// ErrPageCloseCanceled error
+	ErrPageCloseCanceled = errors.New("page close canceled")
 	// ErrNotClickable error
 	ErrNotClickable = errors.New("element is not clickable")
 )

@@ -41,6 +41,7 @@ type Browser struct {
 	slowmotion time.Duration // see defaults.slow
 	trace      bool          // see defaults.Trace
 	traceLog   TraceLog
+	headless   bool
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
 
@@ -150,7 +151,7 @@ func (b *Browser) Connect() error {
 		launcher.NewBrowser().Open(b.ServeMonitor(defaults.Monitor))
 	}
 
-	return nil
+	return b.setHeadless()
 }
 
 // Close doc is similar to the method MustClose
@@ -383,4 +384,23 @@ func (b *Browser) pageInfo(id proto.TargetTargetID) (*proto.TargetTargetInfo, er
 // IgnoreCertErrors switch. If enabled, all certificate errors will be ignored.
 func (b *Browser) IgnoreCertErrors(enable bool) error {
 	return proto.SecuritySetIgnoreCertificateErrors{Ignore: enable}.Call(b)
+}
+
+// Headless mode or not
+func (b *Browser) Headless() bool {
+	return b.headless
+}
+
+func (b *Browser) setHeadless() error {
+	res, err := proto.BrowserGetBrowserCommandLine{}.Call(b)
+	if err != nil {
+		return err
+	}
+
+	for _, arg := range res.Arguments {
+		if arg == "--headless" {
+			b.headless = true
+		}
+	}
+	return nil
 }

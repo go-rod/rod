@@ -109,10 +109,18 @@ func (s *S) TestSetUserAgent() {
 	s.Equal("en", lang)
 }
 
-func (s *S) TestClosePage() {
-	page := s.browser.MustPage(srcFile("fixtures/click.html"))
-	defer page.MustClose()
-	page.MustElement("button")
+func (s *S) TestPageCloseCancel() {
+	page := s.browser.MustPage(srcFile("fixtures/prevent-close.html"))
+	page.MustElement("body").MustClick() // only focused page will handle beforeunload event
+
+	go page.MustHandleDialog(false, "")()
+	s.Equal(rod.ErrPageCloseCanceled, page.Close())
+
+	// TODO: this is a bug of chrome, it should not kill the target only in headless mode
+	if !s.browser.Headless() {
+		go page.MustHandleDialog(true, "")()
+		page.MustClose()
+	}
 }
 
 func (s *S) TestLoadState() {

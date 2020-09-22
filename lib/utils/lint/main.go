@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	log.Println("npx eslint --ext .js,.html .")
-	utils.Exec("npx", "eslint", "--ext", ".js,.html", ".")
+	log.Println("npx eslint --ext .js,.html --fix .")
+	utils.Exec("npx", "eslint", "--ext", ".js,.html", "--fix", ".")
 
 	log.Println("npx prettier --loglevel error --write .")
 	utils.Exec("npx", "prettier", "--loglevel", "error", "--write", ".")

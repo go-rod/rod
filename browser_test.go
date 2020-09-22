@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -382,7 +383,18 @@ func (s *S) TestBrowserConnectErr() {
 
 	s.Panics(func() {
 		c := newMockClient(s, nil)
-		c.connectErr = errors.New("err")
+		c.connect = func() error { return errors.New("err") }
+		rod.New().Client(c).MustConnect()
+	})
+
+	s.Panics(func() {
+		ch := make(chan *cdp.Event)
+		defer close(ch)
+
+		c := newMockClient(s, nil)
+		c.connect = func() error { return nil }
+		c.event = ch
+		c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
 		rod.New().Client(c).MustConnect()
 	})
 }
