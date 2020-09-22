@@ -147,10 +147,10 @@ func Sleep(seconds float64) {
 	time.Sleep(d)
 }
 
-// Sleeper sleeps for sometime, returns the reason to wake, if ctx is done release resource
+// Sleeper sleeps the current gouroutine for sometime, returns the reason to wake, if ctx is done release resource
 type Sleeper func(context.Context) error
 
-// CountSleeper wake when counts to max and return
+// CountSleeper wake immediately. When counts to the max returns errors.New("max sleep count")
 func CountSleeper(max int) Sleeper {
 	count := 0
 	return func(ctx context.Context) error {
@@ -174,8 +174,8 @@ func DefaultBackoff(interval time.Duration) time.Duration {
 
 // BackoffSleeper returns a sleeper that sleeps in a backoff manner every time get called.
 // If algorithm is nil, DefaultBackoff will be used.
-// Set interval and maxInterval to the same value to make it a constant interval sleeper.
-// If maxInterval is not greater than 0, it will wake immediately.
+// Set interval and maxInterval to the same value to make it a constant sleeper.
+// If maxInterval is not greater than 0, the sleeper will wake immediately.
 func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duration) time.Duration) Sleeper {
 	if algorithm == nil {
 		algorithm = DefaultBackoff
