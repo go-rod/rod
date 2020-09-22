@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"sync"
 	"time"
 
@@ -406,7 +405,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	})
 
 	return func() {
-		p.traceReq(ctx, reqList, includes, excludes)
+		p.tryTraceReq(ctx, reqList, includes, excludes)
 		timeout = time.NewTimer(d)
 
 		go func() {
@@ -567,7 +566,7 @@ func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params JSArgs
 	defer removeTrace()
 
 	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
-		remove := p.tryTraceFn(fmt.Sprintf("wait(%s)", js), params)
+		remove := p.tryTraceEval(js, params)
 		removeTrace()
 		removeTrace = remove
 

@@ -150,7 +150,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 
 	removeTrace := func() {}
 	err = utils.Retry(p.ctx, sleeper, func() (bool, error) {
-		remove := p.tryTraceFn(opts.JS, opts.JSArgs)
+		remove := p.tryTraceEval(opts.JS, opts.JSArgs)
 		removeTrace()
 		removeTrace = remove
 

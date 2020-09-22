@@ -79,11 +79,14 @@ const (
 	// TraceTypeWaitRequests type
 	TraceTypeWaitRequests TraceType = "wait requests"
 
-	// TraceTypeJS type
-	TraceTypeJS TraceType = "js"
+	// TraceTypeEval type
+	TraceTypeEval TraceType = "eval"
 
 	// TraceTypeAction type
 	TraceTypeAction TraceType = "act"
+
+	// TraceTypeInput type
+	TraceTypeInput TraceType = "input"
 )
 
 // TraceMsg for logger
@@ -96,7 +99,7 @@ type TraceMsg struct {
 }
 
 func (msg *TraceMsg) String() string {
-	return utils.MustToJSON(msg)
+	return fmt.Sprintf("[%s] %v", msg.Type, utils.MustToJSON(msg.Details))
 }
 
 // TraceLog handler
@@ -155,21 +158,21 @@ func (b *Browser) trySlowmotion() {
 	time.Sleep(b.slowmotion)
 }
 
-func (el *Element) traceAction(details string) func() {
+func (el *Element) tryTraceInput(details string) func() {
 	if !el.page.browser.trace {
 		return func() {}
 	}
 
-	msg := &TraceMsg{TraceTypeAction, details}
+	msg := &TraceMsg{TraceTypeInput, details}
 
 	el.page.browser.traceLog(msg)
 
-	return el.Trace(msg.String())
+	return el.Trace(details)
 }
 
 var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
 
-func (p *Page) tryTraceFn(js string, params JSArgs) func() {
+func (p *Page) tryTraceEval(js string, params JSArgs) func() {
 	if !p.browser.trace {
 		return func() {}
 	}
@@ -182,7 +185,7 @@ func (p *Page) tryTraceFn(js string, params JSArgs) func() {
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
 	p.browser.traceLog(&TraceMsg{
-		TraceTypeJS,
+		TraceTypeEval,
 		map[string]interface{}{
 			"js":     js,
 			"params": params,
@@ -193,7 +196,7 @@ func (p *Page) tryTraceFn(js string, params JSArgs) func() {
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
-func (p *Page) traceReq(ctx context.Context, reqList *sync.Map, includes, excludes []string) {
+func (p *Page) tryTraceReq(ctx context.Context, reqList *sync.Map, includes, excludes []string) {
 	if !p.browser.trace {
 		return
 	}

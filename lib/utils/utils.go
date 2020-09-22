@@ -45,7 +45,8 @@ func SDump(v interface{}) string {
 	enc.SetEscapeHTML(false)
 	enc.SetIndent("", "  ")
 	E(enc.Encode(v))
-	return strings.TrimRight(string(buf.Bytes()), "\n")
+	data := buf.Bytes()
+	return string(data[:len(data)-1])
 }
 
 // Dump values to logger
@@ -251,9 +252,12 @@ func SyncMapToMap(s *sync.Map) map[string]interface{} {
 
 // MustToJSONBytes encode data to json bytes
 func MustToJSONBytes(data interface{}) []byte {
-	bytes, err := json.Marshal(data)
-	E(err)
-	return bytes
+	buf := bytes.NewBuffer(nil)
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	E(enc.Encode(data))
+	b := buf.Bytes()
+	return b[:len(b)-1]
 }
 
 // MustToJSON encode data to json string

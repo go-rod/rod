@@ -12,6 +12,7 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/go-rod/rod/lib/assets/js"
+	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -39,7 +40,7 @@ func (el *Element) Focus() error {
 
 // ScrollIntoView doc is similar to the method MustScrollIntoViewIfNeeded
 func (el *Element) ScrollIntoView() error {
-	defer el.traceAction("scroll into view")()
+	defer el.tryTraceInput("scroll into view")()
 	el.page.browser.trySlowmotion()
 
 	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
@@ -82,7 +83,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		return err
 	}
 
-	defer el.traceAction(string(button) + " click")()
+	defer el.tryTraceInput(string(button) + " click")()
 
 	return el.page.Mouse.Click(button)
 }
@@ -109,7 +110,7 @@ func (el *Element) Tap() error {
 		return err
 	}
 
-	defer el.traceAction("tap")()
+	defer el.tryTraceInput("tap")()
 
 	return el.page.Touch.Tap(box.CenterX(), box.CenterY())
 }
@@ -182,7 +183,7 @@ func (el *Element) Press(key rune) error {
 		return err
 	}
 
-	defer el.traceAction("press " + string(key))()
+	defer el.tryTraceInput("press " + input.Keys[key].Key)()
 
 	return el.page.Keyboard.Press(key)
 }
@@ -194,7 +195,7 @@ func (el *Element) SelectText(regex string) error {
 		return err
 	}
 
-	defer el.traceAction("select text: " + regex)()
+	defer el.tryTraceInput("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}))
@@ -208,7 +209,7 @@ func (el *Element) SelectAllText() error {
 		return err
 	}
 
-	defer el.traceAction("select all text")()
+	defer el.tryTraceInput("select all text")()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil))
@@ -227,7 +228,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	defer el.traceAction("input " + text)()
+	defer el.tryTraceInput("input " + text)()
 
 	err = el.page.Keyboard.InsertText(text)
 	if err != nil {
@@ -251,9 +252,7 @@ func (el *Element) Select(selectors []string) error {
 		return err
 	}
 
-	defer el.traceAction(fmt.Sprintf(
-		`select "%s"`,
-		strings.Join(selectors, "; ")))()
+	defer el.tryTraceInput(fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.EvalWithOptions(jsHelper(js.Select, JSArgs{selectors}))
@@ -302,7 +301,7 @@ func (el *Element) SetFiles(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	defer el.traceAction(fmt.Sprintf("set files: %v", absPaths))
+	defer el.tryTraceInput(fmt.Sprintf("set files: %v", absPaths))()
 	el.page.browser.trySlowmotion()
 
 	err := proto.DOMSetFileInputFiles{

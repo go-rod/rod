@@ -193,7 +193,10 @@ func (s *S) TestTrace() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
+
+	s.Equal(rod.TraceTypeInput, msg.Type)
 	s.Equal("left click", msg.Details)
+	s.Equal(`[input] "left click"`, msg.String())
 
 	s.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)
