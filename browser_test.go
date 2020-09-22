@@ -26,6 +26,7 @@ func (s *S) TestIncognito() {
 
 	b := s.browser.MustIncognito()
 	page := b.MustPage(file)
+	defer page.MustClose()
 	page.MustEval(`k => localStorage[k] = 1`, k)
 
 	s.Nil(s.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
@@ -43,6 +44,10 @@ func (s *S) TestPageFromTarget() {
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
 		utils.E(err)
+		defer func() {
+			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
+		}()
+
 		s.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
 		s.browser.MustPageFromTargetID(res.TargetID)
 	})
@@ -54,19 +59,17 @@ func (s *S) TestBrowserPages() {
 
 	pages := s.browser.MustPages()
 
-	// TODO: I don't know why sometimes windows can miss one
-	if runtime.GOOS == "windows" {
-		s.GreaterOrEqual(len(pages), 2)
-	} else {
-		s.Len(pages, 3)
+	s.Len(pages, 2)
 
+	{
 		s.mc.stub(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
 			return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
 		})
 		pages := s.browser.MustPages()
-		s.Len(pages, 2)
+		s.Len(pages, 1)
 	}
+
 	s.Panics(func() {
 		s.mc.stubErr(1, proto.TargetCreateTarget{})
 		s.browser.MustPage("")

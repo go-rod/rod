@@ -212,6 +212,7 @@ func (s *S) TestEmulateDevice() {
 
 func (s *S) TestPageCloseErr() {
 	page := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer page.MustClose()
 	s.Panics(func() {
 		s.mc.stubErr(1, proto.PageStopLoading{})
 		page.MustClose()
@@ -309,8 +310,6 @@ func (s *S) TestPageWaitOpen() {
 	defer page.CancelTimeout()
 
 	wait := page.MustWaitOpen()
-
-	s.browser.MustPage("").MustClose()
 
 	page.MustElement("a").MustClick()
 
@@ -626,6 +625,7 @@ func (s *S) TestScreenshotFullPage() {
 	s.Len(list, 1)
 
 	noEmulation := s.browser.MustPage(srcFile("fixtures/click.html"))
+	defer noEmulation.MustClose()
 	utils.E(noEmulation.SetViewport(nil))
 	noEmulation.MustScreenshotFullPage()
 

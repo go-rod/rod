@@ -334,11 +334,8 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 
 	ctx, cancel := context.WithCancel(p.ctx)
 	wait := b.Context(ctx).EachEvent(func(e *proto.TargetTargetCreated) bool {
-		if e.TargetInfo.OpenerID == p.TargetID {
-			targetID = e.TargetInfo.TargetID
-			return true
-		}
-		return false
+		targetID = e.TargetInfo.TargetID
+		return e.TargetInfo.OpenerID == p.TargetID
 	})
 
 	return func() (*Page, error) {

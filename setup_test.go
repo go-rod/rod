@@ -68,7 +68,10 @@ func Test(t *testing.T) {
 
 	s.browser.MustIgnoreCertErrors(false)
 
-	s.page = s.browser.MustPages().First()
+	// the page may still under creation
+	for s.page = s.browser.MustPages().First(); s.page == nil; {
+		utils.Sleep(0.1)
+	}
 
 	s.goleakIgnore = goleak.IgnoreCurrent()
 
