@@ -86,6 +86,21 @@ func TestOutputBytes(t *testing.T) {
 	assert.Equal(t, c, "test")
 }
 
+func TestOutputStream(t *testing.T) {
+	p := "tmp/" + utils.RandString(10)
+	b := bytes.NewBufferString("test")
+
+	_ = utils.OutputFile(p, b)
+
+	c, err := utils.ReadString(p)
+
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t, "test", c)
+}
+
 func TestOutputJSONErr(t *testing.T) {
 	p := "tmp/" + utils.RandString(10)
 

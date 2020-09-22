@@ -106,6 +106,10 @@ func OutputFile(p string, data interface{}) error {
 		bin = t
 	case string:
 		bin = []byte(t)
+	case io.Reader:
+		f, _ := os.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0664)
+		_, err := io.Copy(f, t)
+		return err
 	default:
 		bin = MustToJSONBytes(data)
 	}
