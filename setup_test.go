@@ -27,7 +27,7 @@ var slash = filepath.FromSlash
 // S test suite
 type S struct {
 	suite.Suite
-	mockClient   *MockClient
+	mc           *MockClient
 	browser      *rod.Browser
 	page         *rod.Page
 	goleakIgnore goleak.Option
@@ -56,9 +56,9 @@ func Test(t *testing.T) {
 		MustLaunch()
 
 	s := new(S)
-	s.mockClient = newMockClient(s, cdp.New(u))
+	s.mc = newMockClient(s, cdp.New(u))
 	s.browser = rod.New().ControlURL("").
-		Client(s.mockClient).
+		Client(s.mc).
 		MustConnect().
 		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
 			Width: 800, Height: 600, DeviceScaleFactor: 1,
@@ -150,55 +150,59 @@ var _ rod.Client = &MockClient{}
 
 type MockClient struct {
 	sync.RWMutex
-	suit       *S
-	principal  *cdp.Client
-	call       Call
-	connectErr error
+	suit      *S
+	principal *cdp.Client
+	call      Call
+	connect   func() error
+	event     <-chan *cdp.Event
 }
 
 func newMockClient(s *S, c *cdp.Client) *MockClient {
 	return &MockClient{suit: s, principal: c}
 }
 
-func (c *MockClient) Connect(ctx context.Context) error {
-	if c.connectErr != nil {
-		return c.connectErr
+func (mc *MockClient) Connect(ctx context.Context) error {
+	if mc.connect != nil {
+		return mc.connect()
 	}
-	return c.principal.Connect(ctx)
+	return mc.principal.Connect(ctx)
 }
 
-func (c *MockClient) Event() <-chan *cdp.Event {
-	return c.principal.Event()
-}
-
-func (c *MockClient) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-	return c.getCall()(ctx, sessionID, method, params)
-}
-
-func (c *MockClient) getCall() Call {
-	c.RLock()
-	defer c.RUnlock()
-
-	if c.call == nil {
-		return c.principal.Call
+func (mc *MockClient) Event() <-chan *cdp.Event {
+	if mc.event != nil {
+		return mc.event
 	}
-	return c.call
+	return mc.principal.Event()
 }
 
-func (c *MockClient) setCall(fn Call) {
-	c.Lock()
-	defer c.Unlock()
+func (mc *MockClient) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+	return mc.getCall()(ctx, sessionID, method, params)
+}
 
-	if c.call != nil {
-		c.suit.T().Fatal("forget to call the cleanup function of previous mock")
+func (mc *MockClient) getCall() Call {
+	mc.RLock()
+	defer mc.RUnlock()
+
+	if mc.call == nil {
+		return mc.principal.Call
 	}
-	c.call = fn
+	return mc.call
 }
 
-func (c *MockClient) resetCall() {
-	c.Lock()
-	defer c.Unlock()
-	c.call = nil
+func (mc *MockClient) setCall(fn Call) {
+	mc.Lock()
+	defer mc.Unlock()
+
+	if mc.call != nil {
+		mc.suit.T().Fatal("forget to call the cleanup function of previous mock")
+	}
+	mc.call = fn
+}
+
+func (mc *MockClient) resetCall() {
+	mc.Lock()
+	defer mc.Unlock()
+	mc.call = nil
 }
 
 // Use it to find out which cdp call to intercept. Put a special like log.Println("*****") after the cdp call you want to intercept.
@@ -210,49 +214,49 @@ func (c *MockClient) resetCall() {
 //     01:49:43 *****
 //
 // So the 3rd call is the one we want to intercept, then you can use the output with s.at or s.errorAt.
-func (s *S) stubCounter() {
+func (mc *MockClient) stubCounter() {
 	l := sync.Mutex{}
 	mCount := map[string]int{}
 
-	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 		l.Lock()
 		mCount[method]++
 		m := fmt.Sprintf("%d, proto.%s{}", mCount[method], proto.GetType(method).Name())
 		_, _ = fmt.Fprintln(os.Stdout, "[stubCounter]", m)
 		l.Unlock()
 
-		return s.mockClient.principal.Call(ctx, sessionID, method, params)
+		return mc.principal.Call(ctx, sessionID, method, params)
 	})
 }
 
 // When call the cdp.Client.Call the nth time use fn instead.
 // Use p to filter method.
-func (s *S) stub(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
+func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
 	if p == nil {
-		s.T().Fatal("p must be specified")
+		mc.suit.T().Fatal("p must be specified")
 	}
 
 	count := int64(0)
 
-	s.mockClient.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 		if method == p.MethodName() {
 			c := atomic.AddInt64(&count, 1)
 			if c == int64(nth) {
 
-				s.mockClient.resetCall()
+				mc.resetCall()
 				return fn(func() ([]byte, error) {
-					return s.mockClient.principal.Call(ctx, sessionID, method, params)
+					return mc.principal.Call(ctx, sessionID, method, params)
 				})
 			}
 		}
-		return s.mockClient.principal.Call(ctx, sessionID, method, params)
+		return mc.principal.Call(ctx, sessionID, method, params)
 	})
 }
 
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
-func (s *S) stubErr(nth int, p proto.Payload) {
-	s.stub(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
+func (mc *MockClient) stubErr(nth int, p proto.Payload) {
+	mc.stub(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
 		return nil, errors.New("mock error")
 	})
 }

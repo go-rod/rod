@@ -51,11 +51,11 @@ func (s *S) TestSetCookies() {
 	s.Equal("2", cookies[1].Value)
 
 	s.Panics(func() {
-		s.stubErr(1, proto.TargetGetTargetInfo{})
+		s.mc.stubErr(1, proto.TargetGetTargetInfo{})
 		page.MustCookies()
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.NetworkGetCookies{})
+		s.mc.stubErr(1, proto.NetworkGetCookies{})
 		page.MustCookies()
 	})
 }
@@ -154,15 +154,15 @@ func (s *S) TestWindow() {
 	s.EqualValues(611, page.MustEval(`window.innerHeight`).Int())
 
 	s.Panics(func() {
-		s.stubErr(1, proto.BrowserGetWindowForTarget{})
+		s.mc.stubErr(1, proto.BrowserGetWindowForTarget{})
 		page.MustGetWindow()
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.BrowserGetWindowBounds{})
+		s.mc.stubErr(1, proto.BrowserGetWindowBounds{})
 		page.MustGetWindow()
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.BrowserGetWindowForTarget{})
+		s.mc.stubErr(1, proto.BrowserGetWindowForTarget{})
 		page.MustWindow(0, 0, 1000, 1000)
 	})
 }
@@ -193,11 +193,11 @@ func (s *S) TestEmulateDevice() {
 		res.Get("2").String(),
 	)
 	s.Panics(func() {
-		s.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		s.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
 		page.MustEmulate(devices.IPad)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.EmulationSetTouchEmulationEnabled{})
+		s.mc.stubErr(1, proto.EmulationSetTouchEmulationEnabled{})
 		page.MustEmulate(devices.IPad)
 	})
 }
@@ -205,11 +205,11 @@ func (s *S) TestEmulateDevice() {
 func (s *S) TestPageCloseErr() {
 	page := s.browser.MustPage(srcFile("fixtures/click.html"))
 	s.Panics(func() {
-		s.stubErr(1, proto.PageStopLoading{})
+		s.mc.stubErr(1, proto.PageStopLoading{})
 		page.MustClose()
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.PageClose{})
+		s.mc.stubErr(1, proto.PageClose{})
 		page.MustClose()
 	})
 }
@@ -258,7 +258,7 @@ func (s *S) TestPageEvalOnNewDocument() {
 	s.Equal("rod", p.MustEval("navigator.rod").String())
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+		s.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
 		p.MustEvalOnNewDocument(`1`)
 	})
 }
@@ -281,7 +281,7 @@ func (s *S) TestPageEvalNilContext() {
 	page := s.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
-	s.stub(1, proto.RuntimeEvaluate{}, func(func() ([]byte, error)) ([]byte, error) {
+	s.mc.stub(1, proto.RuntimeEvaluate{}, func(func() ([]byte, error)) ([]byte, error) {
 		return nil, &cdp.Error{Code: -32000}
 	})
 	s.EqualValues(1, page.MustEval(`1`).Int())
@@ -341,7 +341,7 @@ func (s *S) TestPageWaitPauseOpen() {
 
 		p := s.browser.MustPage("")
 		defer p.MustClose()
-		s.stubErr(1, proto.TargetSetAutoAttach{})
+		s.mc.stubErr(1, proto.TargetSetAutoAttach{})
 		p.MustWaitPauseOpen()
 	})
 	s.Panics(func() {
@@ -355,7 +355,7 @@ func (s *S) TestPageWaitPauseOpen() {
 
 		p := s.browser.Context(ctx).MustPage("")
 		defer p.MustClose()
-		s.stubErr(2, proto.TargetSetAutoAttach{})
+		s.mc.stubErr(2, proto.TargetSetAutoAttach{})
 		_, r := p.MustWaitPauseOpen()
 		r()
 	})
@@ -366,7 +366,7 @@ func (s *S) TestPageWait() {
 	page.MustWait(`document.querySelector('button') !== null`)
 
 	s.Panics(func() {
-		s.stubErr(1, proto.RuntimeCallFunctionOn{})
+		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		page.MustWait(``)
 	})
 }
@@ -450,19 +450,19 @@ func (s *S) TestMouse() {
 	s.True(page.MustHas("[a=ok]"))
 
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchMouseEvent{})
+		s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
 		mouse.MustScroll(0, 10)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchMouseEvent{})
+		s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
 		mouse.MustDown(proto.InputMouseButtonLeft)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchMouseEvent{})
+		s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
 		mouse.MustUp(proto.InputMouseButtonLeft)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchMouseEvent{})
+		s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
 		mouse.MustClick(proto.InputMouseButtonLeft)
 	})
 }
@@ -565,7 +565,7 @@ func (s *S) TestTouch() {
 	s.Equal([]string{"start 10 20", "end", "start 30 40", "end", "start 30 40", "move 50 60", "cancel"}, logs)
 
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchTouchEvent{})
+		s.mc.stubErr(1, proto.InputDispatchTouchEvent{})
 		touch.MustTap(1, 2)
 	})
 }
@@ -590,7 +590,7 @@ func (s *S) TestPageScreenshot() {
 	s.Len(list, 1)
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PageCaptureScreenshot{})
+		s.mc.stubErr(1, proto.PageCaptureScreenshot{})
 		p.MustScreenshot()
 	})
 }
@@ -622,11 +622,11 @@ func (s *S) TestScreenshotFullPage() {
 	noEmulation.MustScreenshotFullPage()
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PageGetLayoutMetrics{})
+		s.mc.stubErr(1, proto.PageGetLayoutMetrics{})
 		p.MustScreenshotFullPage()
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		s.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
 		p.MustScreenshotFullPage()
 	})
 }
@@ -653,15 +653,15 @@ func (s *S) TestPageInput() {
 	s.Equal("A Test", el.MustText())
 
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchKeyEvent{})
+		s.mc.stubErr(1, proto.InputDispatchKeyEvent{})
 		p.Keyboard.MustDown('a')
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.InputDispatchKeyEvent{})
+		s.mc.stubErr(1, proto.InputDispatchKeyEvent{})
 		p.Keyboard.MustUp('a')
 	})
 	s.Panics(func() {
-		s.stubErr(3, proto.InputDispatchKeyEvent{})
+		s.mc.stubErr(3, proto.InputDispatchKeyEvent{})
 		p.Keyboard.MustPress('a')
 	})
 }
@@ -711,7 +711,7 @@ func (s *S) TestPagePDF() {
 	p.MustPDF("")
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PagePrintToPDF{})
+		s.mc.stubErr(1, proto.PagePrintToPDF{})
 		p.MustPDF()
 	})
 }
@@ -729,7 +729,7 @@ func (s *S) TestPageExpose() {
 	})
 
 	s.Panics(func() {
-		s.stubErr(1, proto.RuntimeAddBinding{})
+		s.mc.stubErr(1, proto.RuntimeAddBinding{})
 		page.MustExpose("exposedFunc")
 	})
 }
@@ -745,12 +745,12 @@ func (s *S) TestPageObjectErr() {
 	})
 	s.Panics(func() {
 		id := s.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
-		s.stubErr(1, proto.DOMResolveNode{})
+		s.mc.stubErr(1, proto.DOMResolveNode{})
 		s.page.MustElementFromNode(id)
 	})
 	s.Panics(func() {
 		id := s.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
-		s.stubErr(1, proto.DOMDescribeNode{})
+		s.mc.stubErr(1, proto.DOMDescribeNode{})
 		s.page.MustElementFromNode(id)
 	})
 }
@@ -776,18 +776,18 @@ func (s *S) TestPageNavigateErr() {
 	s.page.MustNavigate(url + "/500")
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PageStopLoading{})
+		s.mc.stubErr(1, proto.PageStopLoading{})
 		s.page.MustNavigate(srcFile("fixtures/click.html"))
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.PageNavigate{})
+		s.mc.stubErr(1, proto.PageNavigate{})
 		s.page.MustNavigate(srcFile("fixtures/click.html"))
 	})
 }
 
 func (s *S) TestPageWaitLoadErr() {
 	s.Panics(func() {
-		s.stubErr(1, proto.RuntimeCallFunctionOn{})
+		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		s.page.MustWaitLoad()
 	})
 }
@@ -812,15 +812,15 @@ func (s *S) TestPageInitJSErr() {
 	defer p.MustClose()
 
 	s.Panics(func() {
-		s.stubErr(1, proto.PageCreateIsolatedWorld{})
+		s.mc.stubErr(1, proto.PageCreateIsolatedWorld{})
 		p.MustEval(`1`)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.RuntimeEvaluate{})
+		s.mc.stubErr(1, proto.RuntimeEvaluate{})
 		p.MustEval(`1`)
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.RuntimeCallFunctionOn{})
+		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		p.MustEval(`1`)
 	})
 }

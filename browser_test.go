@@ -33,7 +33,7 @@ func (s *S) TestIncognito() {
 
 func (s *S) TestPageErr() {
 	s.Panics(func() {
-		s.stubErr(1, proto.TargetAttachToTarget{})
+		s.mc.stubErr(1, proto.TargetAttachToTarget{})
 		s.browser.MustPage("")
 	})
 }
@@ -42,7 +42,7 @@ func (s *S) TestPageFromTarget() {
 	s.Panics(func() {
 		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
 		utils.E(err)
-		s.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		s.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
 		s.browser.MustPageFromTargetID(res.TargetID)
 	})
 }
@@ -59,7 +59,7 @@ func (s *S) TestBrowserPages() {
 	} else {
 		s.Len(pages, 3)
 
-		s.stub(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
+		s.mc.stub(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
 			return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
 		})
@@ -67,11 +67,11 @@ func (s *S) TestBrowserPages() {
 		s.Len(pages, 2)
 	}
 	s.Panics(func() {
-		s.stubErr(1, proto.TargetCreateTarget{})
+		s.mc.stubErr(1, proto.TargetCreateTarget{})
 		s.browser.MustPage("")
 	})
 	s.Panics(func() {
-		s.stubErr(1, proto.TargetGetTargets{})
+		s.mc.stubErr(1, proto.TargetGetTargets{})
 		s.browser.MustPages()
 	})
 	s.Panics(func() {
@@ -80,7 +80,7 @@ func (s *S) TestBrowserPages() {
 		defer func() {
 			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
-		s.stubErr(1, proto.TargetAttachToTarget{})
+		s.mc.stubErr(1, proto.TargetAttachToTarget{})
 		s.browser.MustPages()
 	})
 }
@@ -198,7 +198,7 @@ func (s *S) TestTrace() {
 	s.Equal("left click", msg.Details)
 	s.Equal(`[input] "left click"`, msg.String())
 
-	s.stubErr(1, proto.RuntimeCallFunctionOn{})
+	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)
 }
 
@@ -212,7 +212,7 @@ func (s *S) TestTraceLogs() {
 	el := p.MustElement("button")
 	el.MustClick()
 
-	s.stubErr(1, proto.RuntimeCallFunctionOn{})
+	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	p.Overlay(0, 0, 100, 30, "")
 }
 
@@ -390,7 +390,7 @@ func (s *S) TestBrowserConnectErr() {
 func (s *S) TestStreamReader() {
 	r := rod.NewStreamReader(s.page, "")
 
-	s.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
+	s.mc.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
 		return utils.MustToJSONBytes(proto.IOReadResult{
 			Data: "test",
 		}), nil
@@ -399,11 +399,11 @@ func (s *S) TestStreamReader() {
 	_, _ = r.Read(b)
 	s.Equal("test", string(b))
 
-	s.stubErr(1, proto.IORead{})
+	s.mc.stubErr(1, proto.IORead{})
 	_, err := r.Read(nil)
 	s.Error(err)
 
-	s.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
+	s.mc.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
 		return utils.MustToJSONBytes(proto.IOReadResult{
 			Base64Encoded: true,
 			Data:          "@",
