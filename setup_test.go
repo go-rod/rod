@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -67,11 +68,7 @@ func Test(t *testing.T) {
 	defer s.browser.MustClose()
 
 	s.browser.MustIgnoreCertErrors(false)
-
-	// the page may still under creation
-	for s.page = s.browser.MustPages().First(); s.page == nil; {
-		utils.Sleep(0.1)
-	}
+	s.page = getOnePage(s.browser)
 
 	s.goleakIgnore = goleak.IgnoreCurrent()
 
@@ -90,6 +87,23 @@ func (s *S) TearDownTest() {
 		goleak.MaxRetry(3*time.Second),
 		s.goleakIgnore,
 	)
+}
+
+func getOnePage(b *rod.Browser) (page *rod.Page) {
+	for i := 0; i < 50; i++ {
+		page = b.MustPages().First()
+		if page != nil {
+			return
+		}
+		utils.Sleep(0.1)
+	}
+
+	// TODO: I don't know why sometimes windows don't have the init page
+	if runtime.GOOS == "windows" {
+		page = b.MustPage("")
+	}
+
+	return
 }
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
