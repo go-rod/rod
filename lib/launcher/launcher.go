@@ -191,7 +191,7 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l.Delete("headless")
 }
 
-// Leakless switch.
+// Leakless switch. If enabled, the browser will be force killed after the Go process exits.
 // The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Leakless(enable bool) *Launcher {
 	l.leakless = enable
@@ -218,6 +218,9 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 }
 
 // RemoteDebuggingPort to launch the browser. Zero for a random port. Zero is the default value.
+// If it's not zero, the launcher will try to connect to it before starting a new browser process.
+// For example, to reuse the same browser process for between 2 runs of a Go program, you can
+// do something like launcher.New().RemoteDebuggingPort(9222).MustLaunch()
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
 }
