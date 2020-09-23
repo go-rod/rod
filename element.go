@@ -34,7 +34,7 @@ func (el *Element) Focus() error {
 		return err
 	}
 
-	_, err = el.Eval(`this.focus()`)
+	_, err = el.EvalWithOptions(NewEvalOptions(`this.focus()`, nil).ByUser())
 	return err
 }
 
@@ -198,7 +198,7 @@ func (el *Element) SelectText(regex string) error {
 	defer el.tryTraceInput("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}))
+	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}).ByUser())
 	return err
 }
 
@@ -212,7 +212,7 @@ func (el *Element) SelectAllText() error {
 	defer el.tryTraceInput("select all text")()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil))
+	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil).ByUser())
 	return err
 }
 
@@ -235,13 +235,13 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	_, err = el.EvalWithOptions(jsHelper(js.InputEvent, nil))
+	_, err = el.EvalWithOptions(jsHelper(js.InputEvent, nil).ByUser())
 	return err
 }
 
 // Blur is similar to the method Blur
 func (el *Element) Blur() error {
-	_, err := el.Eval("this.blur()")
+	_, err := el.EvalWithOptions(NewEvalOptions("this.blur()", nil).ByUser())
 	return err
 }
 
@@ -255,7 +255,7 @@ func (el *Element) Select(selectors []string) error {
 	defer el.tryTraceInput(fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.Select, JSArgs{selectors}))
+	_, err = el.EvalWithOptions(jsHelper(js.Select, JSArgs{selectors}).ByUser())
 	return err
 }
 

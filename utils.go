@@ -65,6 +65,9 @@ type EvalOptions struct {
 
 	// JSArgs of the js function
 	JSArgs JSArgs
+
+	// Whether execution should be treated as initiated by user in the UI.
+	UserGesture bool
 }
 
 // This set the ThisID
@@ -79,9 +82,15 @@ func (e *EvalOptions) ByObject() *EvalOptions {
 	return e
 }
 
-// NewEvalOptions creates a new EvalPayload
+// ByUser enables UserGesture.
+func (e *EvalOptions) ByUser() *EvalOptions {
+	e.UserGesture = true
+	return e
+}
+
+// NewEvalOptions instance. ByValue will be set to true.
 func NewEvalOptions(js string, args JSArgs) *EvalOptions {
-	return &EvalOptions{true, "", js, args}
+	return &EvalOptions{true, "", js, args, false}
 }
 
 const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")

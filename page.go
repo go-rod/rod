@@ -570,6 +570,7 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 			ObjectID:            objectID,
 			AwaitPromise:        true,
 			ReturnByValue:       opts.ByValue,
+			UserGesture:         opts.UserGesture,
 			FunctionDeclaration: SprintFnThis(opts.JS),
 			Arguments:           args,
 		}.Call(p)
