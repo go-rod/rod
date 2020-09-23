@@ -104,9 +104,10 @@ func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
 		utils.E(json.Unmarshal([]byte(options), l))
 	}
 
-	u := l.MustLaunch()
+	u := l.Leakless(false).MustLaunch()
 	defer func() {
 		l.Kill()
+		_, _ = fmt.Fprintln(p.Logger, "Killed PID:", l.PID())
 
 		if _, has := l.Get(flagKeepUserDataDir); !has {
 			l.Cleanup()
