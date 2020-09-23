@@ -24,19 +24,19 @@
       const t = e.touches[0]
       console.log('move', t.clientX | 0, t.clientY | 0)
     }
-    body.ontouchend = (e) => {
+    body.ontouchend = () => {
       console.log('end')
     }
-    body.ontouchcancel = (e) => {
+    body.ontouchcancel = () => {
       console.log('cancel')
     }
 
     const btn = document.getElementById('btn')
     let start = false
-    btn.ontouchstart = (e) => {
+    btn.ontouchstart = () => {
       start = true
     }
-    btn.ontouchend = (e) => {
+    btn.ontouchend = () => {
       if (start) {
         btn.setAttribute('tapped', true)
       }

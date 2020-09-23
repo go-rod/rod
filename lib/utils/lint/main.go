@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-	log.Println("npx eslint --ext .js,.html --fix .")
-	utils.Exec("npx", "eslint", "--ext", ".js,.html", "--fix", ".")
+	log.Println("npx eslint --ext .js,.html --fix --ignore-path .gitignore .")
+	utils.Exec("npx", "eslint", "--ext", ".js,.html", "--fix", "--ignore-path", ".gitignore", ".")
 
-	log.Println("npx prettier --loglevel error --write .")
-	utils.Exec("npx", "prettier", "--loglevel", "error", "--write", ".")
+	log.Println("npx prettier --loglevel error --write --ignore-path .gitignore .")
+	utils.Exec("npx", "prettier", "--loglevel", "error", "--write", "--ignore-path", ".gitignore", ".")
 
 	log.Println("godev lint")
 	utils.Exec("godev", "lint")

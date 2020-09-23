@@ -1,7 +1,7 @@
 <html>
   <body></body>
   <script>
-    ;(async () => {
+    const main = async () => {
       let res = await fetch('/a', {
         method: 'post',
         body: 'a'
@@ -18,6 +18,7 @@
       div.innerText = data
       div.id = 'b'
       document.body.appendChild(div)
-    })()
+    }
+    main()
   </script>
 </html>
