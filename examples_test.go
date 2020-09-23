@@ -204,9 +204,9 @@ func Example_search() {
 func Example_page_screenshot() {
 	page := rod.New().MustConnect().MustPage("")
 
-	wait := page.MustWaitRequestIdle()
+	wait := page.MustWaitNavigation()
 	page.MustNavigate("https://github.com")
-	wait() // usually, you want to wait until the page is idle
+	wait() // until the navigation to settle down
 
 	// simple version
 	page.MustScreenshot("my.png")
@@ -224,36 +224,26 @@ func Example_page_screenshot() {
 		},
 		FromSurface: true,
 	})
-	_ = utils.OutputFile("my.png", img)
+	_ = utils.OutputFile("my.jpg", img)
 }
 
 func Example_page_pdf() {
 	page := rod.New().MustConnect().MustPage("")
 
-	wait := page.MustWaitRequestIdle()
+	wait := page.MustWaitNavigation()
 	page.MustNavigate("https://github.com")
-	wait() // usually, you want to wait until the page is idle
+	wait() // until the navigation to settle down
 
 	// simple version
 	page.MustPDF("my.pdf")
 
 	// customization version
 	pdf, _ := page.PDF(&proto.PagePrintToPDF{
-		Landscape:               false,
-		DisplayHeaderFooter:     true,
-		PrintBackground:         true,
-		Scale:                   1,
 		PaperWidth:              8.5,
 		PaperHeight:             11,
-		MarginTop:               1,
-		MarginBottom:            1,
-		MarginLeft:              1,
-		MarginRight:             1,
 		PageRanges:              "1-3",
 		IgnoreInvalidPageRanges: false,
-		HeaderTemplate:          "<span class=title></span>",
-		FooterTemplate:          "<span class=date></span>",
-		PreferCSSPageSize:       false,
+		DisplayHeaderFooter:     true,
 	})
 	_ = utils.OutputFile("my.pdf", pdf)
 }
