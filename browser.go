@@ -1,4 +1,4 @@
-//go:generate go run ./lib/utils/install-deps
+//go:generate go run ./lib/utils/setup
 //go:generate go run ./lib/utils/lint
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/assets/generate

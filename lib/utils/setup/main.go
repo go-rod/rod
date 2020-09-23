@@ -9,10 +9,12 @@ import (
 )
 
 func main() {
-	log.Println("install dependencies...")
+	log.Println("setup project...")
 
 	nodejsDeps()
 	golangDeps()
+
+	genDockerIgnore()
 }
 
 func nodejsDeps() {
@@ -32,4 +34,10 @@ func golangDeps() {
 	cmd.Dir = homeDir
 	utils.SetCmdStdPipe(cmd)
 	utils.E(cmd.Run())
+}
+
+func genDockerIgnore() {
+	s, err := utils.ReadString(".gitignore")
+	utils.E(err)
+	utils.E(utils.OutputFile(".dockerignore", s))
 }

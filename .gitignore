@@ -1,5 +1,8 @@
 node_modules/
 tmp/
+
+.git
+.dockerignore
 coverage.txt
-/rod.test
+rod.test
 package-lock.json
