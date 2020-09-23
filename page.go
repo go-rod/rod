@@ -380,6 +380,21 @@ func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
 	return p.browser.waitEvent(p.ctx, p.SessionID, e)
 }
 
+// WaitNavigation wait for a page lifecycle event when navigating.
+// Usually you will wait for proto.PageLifecycleEventNameNetworkAlmostIdle
+func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
+	_ = proto.PageSetLifecycleEventsEnabled{Enabled: true}.Call(p)
+
+	wait := p.EachEvent(func(e *proto.PageLifecycleEvent) bool {
+		return e.Name == name
+	})
+
+	return func() {
+		wait()
+		_ = proto.PageSetLifecycleEventsEnabled{Enabled: false}.Call(p)
+	}
+}
+
 // WaitRequestIdle returns a wait function that waits until no request for d duration.
 // Be careful, d is not the max wait timeout, it's the least idle time.
 // If you want to set a timeout you can use the "Page.Timeout" function.

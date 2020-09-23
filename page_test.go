@@ -377,6 +377,16 @@ func (s *S) TestPageWait() {
 		page.MustWait(``)
 	})
 }
+func (s *S) TestPageWaitNavigation() {
+	url, mux, close := utils.Serve("")
+	defer close()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
+
+	wait := s.page.MustWaitNavigation()
+	s.page.MustNavigate(url)
+	wait()
+}
 
 func (s *S) TestPageWaitRequestIdle() {
 	url, mux, close := utils.Serve("")

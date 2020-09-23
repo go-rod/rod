@@ -301,6 +301,11 @@ func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
 	}, func() { utils.E(r()) }
 }
 
+// MustWaitNavigation wait for lifecycle event "networkAlmostIdle" when navigating.
+func (p *Page) MustWaitNavigation() func() {
+	return p.WaitNavigation(proto.PageLifecycleEventNameNetworkAlmostIdle)
+}
+
 // MustWaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
 // You can pass regular expressions to exclude the requests by their url.
 func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
