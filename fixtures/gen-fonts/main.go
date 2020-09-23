@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -39,10 +38,6 @@ func main() {
 		wait()
 		name := lang.MustText()
 		result := p.MustElement(".tlid-translation").MustText()
-		for strings.Contains(result, "...") {
-			utils.Sleep(0.1)
-			result = p.MustElement(".tlid-translation").MustText()
-		}
 		log.Println(name, result)
 		html += fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>\n", name, result)
 	}
