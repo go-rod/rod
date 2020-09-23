@@ -4,27 +4,27 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 	"io/ioutil"
+	"time"
 )
 func main() {
-	// print webpage to pdf
+	// save webpage to pdf
 	//
 	browser := rod.New().MustConnect()
 	page := browser.MustPage("")
-	var e proto.NetworkResponseReceived
-
-	wait := page.WaitEvent(&e)
-	err := page.Navigate("https://www.google.com")
+	err := page.Navigate("https://news.ycombinator.com")
 	if err != nil{
 		panic(err)
 	}
-	wait() //waitting load complete
-	//entire browser viewport
-	page.MustElement("html")
+	include :=[]string{"ycombinator"} //regular expressions that match the waitting url. 
+	exclude :=[]string{"none"} // reg that filter noise.
+	wait := page.WaitRequestIdle(1*time.Second,include,exclude)
+	wait()
+
 	//parameters details https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 	parameters  :=proto.PagePrintToPDF{Scale:1}
 	pdf,_:= page.PDF(&parameters)
 
-	err = ioutil.WriteFile("google.pdf",pdf,0666)
+	err = ioutil.WriteFile("hn.pdf",pdf,0666)
 	if err != nil{
 		panic(err)
 	}
