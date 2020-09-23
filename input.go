@@ -25,7 +25,7 @@ func (k *Keyboard) getModifiers() int64 {
 	return k.modifiers
 }
 
-// Down doc is similar to the method MustDown
+// Down holds the key down
 func (k *Keyboard) Down(key rune) error {
 	k.Lock()
 	defer k.Unlock()
@@ -40,7 +40,7 @@ func (k *Keyboard) Down(key rune) error {
 	return nil
 }
 
-// Up doc is similar to the method MustUp
+// Up releases the key
 func (k *Keyboard) Up(key rune) error {
 	k.Lock()
 	defer k.Unlock()
@@ -55,7 +55,7 @@ func (k *Keyboard) Up(key rune) error {
 	return nil
 }
 
-// Press doc is similar to the method MustPress
+// Press a key. It's a combination of Keyboard.Down and Keyboard.Up
 func (k *Keyboard) Press(key rune) error {
 	k.Lock()
 	defer k.Unlock()
@@ -79,7 +79,7 @@ func (k *Keyboard) Press(key rune) error {
 	return nil
 }
 
-// InsertText doc is similar to the method MustInsertText
+// InsertText is like pasting text into the page
 func (k *Keyboard) InsertText(text string) error {
 	k.Lock()
 	defer k.Unlock()
@@ -193,7 +193,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	return nil
 }
 
-// Down doc is similar to the method MustDown
+// Down holds the button down
 func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
@@ -218,7 +218,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// Up doc is similar to the method MustUp
+// Up releases the button
 func (m *Mouse) Up(button proto.InputMouseButton, clicks int64) error {
 	m.Lock()
 	defer m.Unlock()
@@ -248,7 +248,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int64) error {
 	return nil
 }
 
-// Click doc is similar to the method MustClick
+// Click the button. It's the combination of Mouse.Down and Mouse.Up
 func (m *Mouse) Click(button proto.InputMouseButton) error {
 	if m.page.browser.trace {
 		defer m.page.Overlay(0, 0, 200, 0, "click "+string(button))()

@@ -144,7 +144,7 @@ func (s *S) TestWindow() {
 	utils.E(page.SetViewport(nil))
 
 	bounds := page.MustGetWindow()
-	defer page.MustWindow(
+	defer page.MustSetWindow(
 		bounds.Left,
 		bounds.Top,
 		bounds.Width,
@@ -157,7 +157,7 @@ func (s *S) TestWindow() {
 	page.MustWindowNormal()
 	page.MustWindowMinimize()
 	page.MustWindowNormal()
-	page.MustWindow(0, 0, 1211, 611)
+	page.MustSetWindow(0, 0, 1211, 611)
 	s.EqualValues(1211, page.MustEval(`window.innerWidth`).Int())
 	s.EqualValues(611, page.MustEval(`window.innerHeight`).Int())
 
@@ -171,14 +171,14 @@ func (s *S) TestWindow() {
 	})
 	s.Panics(func() {
 		s.mc.stubErr(1, proto.BrowserGetWindowForTarget{})
-		page.MustWindow(0, 0, 1000, 1000)
+		page.MustSetWindow(0, 0, 1000, 1000)
 	})
 }
 
 func (s *S) TestSetViewport() {
 	page := s.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page.MustClose()
-	page.MustViewport(317, 419, 0, false)
+	page.MustSetViewport(317, 419, 0, false)
 	res := page.MustEval(`[window.innerWidth, window.innerHeight]`)
 	s.EqualValues(317, res.Get("0").Int())
 	s.EqualValues(419, res.Get("1").Int())

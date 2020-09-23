@@ -20,7 +20,7 @@ func main() {
 	// reset
 	page.MustEmulate(devices.Clear)
 
-	page.MustViewport(1920, 2000, 1, false)
+	page.MustSetViewport(1920, 2000, 1, false)
 	page.MustNavigate("https://www.whatsmyua.info/?a")
 	page.MustScreenshot("screenshot2.png")
 }

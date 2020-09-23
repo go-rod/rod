@@ -123,7 +123,8 @@ func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverr
 	return b
 }
 
-// Connect doc is similar to the method MustConnect
+// Connect to the browser and start to control it.
+// If fails to connect, try to launch a local browser, if local browser not found try to download one.
 func (b *Browser) Connect() error {
 	if b.client == nil {
 		u := defaults.URL
@@ -154,13 +155,12 @@ func (b *Browser) Connect() error {
 	return b.setHeadless()
 }
 
-// Close doc is similar to the method MustClose
+// Close the browser
 func (b *Browser) Close() error {
 	return proto.BrowserClose{}.Call(b)
 }
 
-// Page doc is similar to the method MustPage
-// If url is empty, the default target will be "about:blank".
+// Page creates a new browser tab. If url is empty, the default target will be "about:blank".
 func (b *Browser) Page(url string) (p *Page, err error) {
 	target, err := proto.TargetCreateTarget{
 		URL:              "about:blank",
@@ -184,7 +184,7 @@ func (b *Browser) Page(url string) (p *Page, err error) {
 	return
 }
 
-// Pages doc is similar to the method MustPages
+// Pages retrieves all visible pages
 func (b *Browser) Pages() (Pages, error) {
 	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {

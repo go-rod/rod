@@ -86,7 +86,6 @@ func (p *Page) Cookies(urls []string) ([]*proto.NetworkCookie, error) {
 }
 
 // SetCookies of the page.
-// Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
 func (p *Page) SetCookies(cookies []*proto.NetworkCookieParam) error {
 	err := proto.NetworkSetCookies{Cookies: cookies}.Call(p)
 	return err
@@ -103,8 +102,8 @@ func (p *Page) SetExtraHeaders(dict []string) (func(), error) {
 	return p.EnableDomain(&proto.NetworkEnable{}), proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
 }
 
-// SetUserAgent Allows overriding user agent with the given string.
-// If req is nil, the default user agent will be the same as a mac chrome.
+// SetUserAgent (browser brand, accept-language, etc) of the page.
+// If req is nil, a default user agent will be used, a typical mac chrome.
 func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	if req == nil {
 		req = &proto.NetworkSetUserAgentOverride{
@@ -116,8 +115,8 @@ func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	return req.Call(p)
 }
 
-// Navigate doc is similar to the method MustNavigate
-// If url is empty, it will navigate to "about:blank".
+// Navigate to the url. If the url is empty, "about:blank" will be used.
+// It will return immediately after the server responds the http header.
 func (p *Page) Navigate(url string) error {
 	if url == "" {
 		url = "about:blank"
@@ -170,7 +169,7 @@ func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	return res.WindowID, err
 }
 
-// GetWindow doc is similar to the method MustGetWindow
+// GetWindow position and size info
 func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -185,7 +184,7 @@ func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	return res.Bounds, nil
 }
 
-// SetWindow https://chromedevtools.github.io/devtools-protocol/tot/Browser#type-Bounds
+// SetWindow location and size
 func (p *Page) SetWindow(bounds *proto.BrowserBounds) error {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -196,7 +195,7 @@ func (p *Page) SetWindow(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// SetViewport doc is similar to the method MustViewport. If params is nil, it will clear the override.
+// SetViewport overrides the values of device screen dimensions
 func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 	if params == nil {
 		return proto.EmulationClearDeviceMetricsOverride{}.Call(p)
@@ -262,8 +261,8 @@ func (p *Page) Close() error {
 	return nil
 }
 
-// HandleDialog doc is similar to the method MustHandleDialog.
-// Because the js will be paused, you should put the code that triggers in a goroutine.
+// HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
+// Because alert will block js, usually you have to run the wait function in another goroutine.
 func (p *Page) HandleDialog(accept bool, promptText string) func() error {
 	recover := p.EnableDomain(&proto.PageEnable{})
 
@@ -327,7 +326,7 @@ func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 	return NewStreamReader(p, res.Stream), nil
 }
 
-// WaitOpen doc is similar to the method MustWaitPage
+// WaitOpen waits for the next new page opened by the current one
 func (p *Page) WaitOpen() func() (*Page, error) {
 	b := p.browser.Context(p.ctx)
 	var targetID proto.TargetTargetID
@@ -450,13 +449,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	}
 }
 
-// WaitIdle doc is similar to the method MustWaitIdle
+// WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 	_, err = p.EvalWithOptions(jsHelper(js.WaitIdle, JSArgs{timeout.Seconds()}))
 	return err
 }
 
-// WaitLoad doc is similar to the method MustWaitLoad
+// WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
 	_, err := p.EvalWithOptions(jsHelper(js.WaitLoad, nil))
 	if err != nil {
@@ -523,14 +522,12 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 	return
 }
 
-// Eval evalutes javascript on the page.
+// Eval js on the page. It's just a shortcut for Page.EvalWithOptions.
 func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
 	return p.EvalWithOptions(NewEvalOptions(js, jsArgs))
 }
 
-// EvalWithOptions thisID is the remote objectID that will be the this of the js function, if it's empty "window" will be used.
-// Set the byValue to true to reduce memory occupation.
-// If the item in jsArgs is proto.RuntimeRemoteObjectID, the remote object will be used, else the item will be treated as JSON value.
+// EvalWithOptions evaluates js on the page.
 func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	backoff := utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 	objectID := opts.ThisID
@@ -681,7 +678,7 @@ func (p *Page) ElementFromPoint(x, y int64) (*Element, error) {
 	return p.ElementFromNode(node.NodeID)
 }
 
-// Release doc is similar to the method MustRelease
+// Release the remote object
 func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) error {
 	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)
 	return err

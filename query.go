@@ -75,7 +75,7 @@ func (ps Pages) Find(selector string) (*Page, error) {
 	return nil, nil
 }
 
-// FindByURL returns the page that has the url that matches the regex
+// FindByURL returns the page that has the url that matches the js regex
 func (ps Pages) FindByURL(regex string) (*Page, error) {
 	for _, page := range ps {
 		res, err := page.Eval(`location.href`)
@@ -90,7 +90,7 @@ func (ps Pages) FindByURL(regex string) (*Page, error) {
 	return nil, nil
 }
 
-// Has doc is similar to the method MustHas
+// Has an element that matches the css selector
 func (p *Page) Has(selectors ...string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).Element(selectors...)
 	if errors.Is(err, ErrElementNotFound) {
@@ -99,7 +99,7 @@ func (p *Page) Has(selectors ...string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasX doc is similar to the method MustHasX
+// HasX an element that matches the XPath selector
 func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).ElementX(selectors...)
 	if errors.Is(err, ErrElementNotFound) {
@@ -108,7 +108,7 @@ func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasR doc is similar to the method MustHasMatches
+// HasR an element that matches the css selector and its display text matches the js regex.
 func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).ElementR(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
@@ -117,17 +117,22 @@ func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// Element doc is similar to the method MustElement
+// Element retries until an element in the page that matches one of the CSS selectors, then returns
+// the matched element.
 func (p *Page) Element(selectors ...string) (*Element, error) {
 	return p.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
 
-// ElementR doc is similar to the method MustElementR
+// ElementR retries until an element in the page that matches one of the pairs, then returns
+// the matched element.
+// Each pairs is a css selector and a regex. A sample call will look like page.MustElementR("div", "click me").
+// The regex is the js regex, not golang's.
 func (p *Page) ElementR(pairs ...string) (*Element, error) {
 	return p.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
 }
 
-// ElementX finds elements by XPath
+// ElementX retries until an element in the page that matches one of the XPath selectors, then returns
+// the matched element.
 func (p *Page) ElementX(xPaths ...string) (*Element, error) {
 	return p.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
 }
@@ -177,17 +182,17 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	return p.ElementFromObject(res.ObjectID), nil
 }
 
-// Elements doc is similar to the method MustElements
+// Elements returns all elements that match the css selector
 func (p *Page) Elements(selector string) (Elements, error) {
 	return p.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
 }
 
-// ElementsX doc is similar to the method MustElementsX
+// ElementsX returns all elements that match the XPath selector
 func (p *Page) ElementsX(xpath string) (Elements, error) {
 	return p.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
 }
 
-// ElementsByJS is different from ElementByJSE, it doesn't do retry
+// ElementsByJS returns the elements from the return value of the js
 func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	res, err := p.EvalWithOptions(opts.ByObject())
 	if err != nil {
@@ -371,7 +376,7 @@ func (rc *RaceContext) Do() error {
 	})
 }
 
-// Has doc is similar to the method MustHas
+// Has an element that matches the css selector
 func (el *Element) Has(selector string) (bool, *Element, error) {
 	el, err := el.Element(selector)
 	if errors.Is(err, ErrElementNotFound) {
@@ -380,7 +385,7 @@ func (el *Element) Has(selector string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasX doc is similar to the method MustHasX
+// HasX an element that matches the XPath selector
 func (el *Element) HasX(selector string) (bool, *Element, error) {
 	el, err := el.ElementX(selector)
 	if errors.Is(err, ErrElementNotFound) {
@@ -389,7 +394,7 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasR doc is similar to the method MustHasMatches
+// HasR an element that matches the css selector and its text matches the js regex.
 func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 	el, err := el.ElementR(selector, regex)
 	if errors.Is(err, ErrElementNotFound) {
@@ -398,22 +403,22 @@ func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// Element doc is similar to the method MustElement
+// Element returns the first child that matches the css selector
 func (el *Element) Element(selectors ...string) (*Element, error) {
 	return el.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
 }
 
-// ElementX doc is similar to the method MustElementX
+// ElementX returns the first child that matches the XPath selector
 func (el *Element) ElementX(xPaths ...string) (*Element, error) {
 	return el.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
 }
 
-// ElementByJS doc is similar to the method MustElementByJS
+// ElementByJS returns the element from the return value of the js
 func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
 	return el.page.Sleeper(nil).ElementByJS(opts.This(el.ObjectID))
 }
 
-// Parent doc is similar to the method MustParent
+// Parent returns the parent element in the DOM tree
 func (el *Element) Parent() (*Element, error) {
 	return el.ElementByJS(NewEvalOptions(`this.parentElement`, nil))
 }
@@ -423,32 +428,32 @@ func (el *Element) Parents(selector string) (Elements, error) {
 	return el.ElementsByJS(jsHelper(js.Parents, JSArgs{selector}))
 }
 
-// Next doc is similar to the method MustNext
+// Next returns the next sibling element in the DOM tree
 func (el *Element) Next() (*Element, error) {
 	return el.ElementByJS(NewEvalOptions(`this.nextElementSibling`, nil))
 }
 
-// Previous doc is similar to the method MustPrevious
+// Previous returns the previous sibling element in the DOM tree
 func (el *Element) Previous() (*Element, error) {
 	return el.ElementByJS(NewEvalOptions(`this.previousElementSibling`, nil))
 }
 
-// ElementR doc is similar to the method MustElementR
+// ElementR returns the first element in the page that matches the CSS selector and its text matches the js regex.
 func (el *Element) ElementR(pairs ...string) (*Element, error) {
 	return el.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
 }
 
-// Elements doc is similar to the method MustElements
+// Elements returns all elements that match the css selector
 func (el *Element) Elements(selector string) (Elements, error) {
 	return el.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
 }
 
-// ElementsX doc is similar to the method MustElementsX
+// ElementsX returns all elements that match the XPath selector
 func (el *Element) ElementsX(xpath string) (Elements, error) {
 	return el.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
 }
 
-// ElementsByJS doc is similar to the method MustElementsByJS
+// ElementsByJS returns the elements from the return value of the js
 func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.ObjectID))
 }

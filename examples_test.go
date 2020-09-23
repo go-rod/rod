@@ -42,10 +42,10 @@ func Example() {
 	// Eval js on the page
 	page.MustEval(`console.log("hello world")`)
 
-	// Pass parameters as json objects to the js function. This one will return 3
+	// Pass parameters as json objects to the js function. This MustEval will result 3
 	fmt.Println("1 + 2 =", page.MustEval(`(a, b) => a + b`, 1, 2).Int())
 
-	// When eval on an element, you can use "this" to access the DOM element.
+	// When eval on an element, "this" in the js is the current DOM element.
 	fmt.Println(page.MustElement("title").MustEval(`this.innerText`).String())
 
 	// Output:
@@ -473,6 +473,24 @@ func Example_hijack_requests() {
 	fmt.Println("done")
 
 	// Output: done
+}
+
+// Shows how to share a remote object reference between two Eval
+func Example_reuse_remote_object() {
+	page := rod.New().MustConnect().MustPage("")
+
+	fn, _ := page.EvalWithOptions(&rod.EvalOptions{JS: `Math.random`})
+
+	res, _ := page.EvalWithOptions(&rod.EvalOptions{
+		ByValue: true,
+		JSArgs: rod.JSArgs{
+			fn.ObjectID, // use remote function as the js argument x
+		},
+		JS: `x => x()`,
+	})
+
+	// print a random number
+	fmt.Println(res.Value.Num)
 }
 
 // Shows how to update the state of the current page.

@@ -138,7 +138,7 @@ func (cdp *Client) Connect(ctx context.Context) error {
 	return nil
 }
 
-// MustConnect to browser
+// MustConnect is similar to Connect
 func (cdp *Client) MustConnect(ctx context.Context) *Client {
 	utils.E(cdp.Connect(ctx))
 	return cdp

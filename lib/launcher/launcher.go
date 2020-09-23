@@ -277,16 +277,16 @@ func (l *Launcher) Logger(w io.Writer) *Launcher {
 	return l
 }
 
-// MustLaunch a standalone temp browser instance and returns the debug url.
-// bin and profileDir are optional, set them to empty to use the default values.
-// If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
+// MustLaunch is similar to Launch
 func (l *Launcher) MustLaunch() string {
 	u, err := l.Launch()
 	utils.E(err)
 	return u
 }
 
-// Launch doc is similar to the method MustLaunch
+// Launch a standalone temp browser instance and returns the debug url.
+// bin and profileDir are optional, set them to empty to use the default values.
+// If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
 func (l *Launcher) Launch() (string, error) {
 	defer l.ctxCancel()
 

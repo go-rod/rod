@@ -27,7 +27,7 @@ type Element struct {
 	ObjectID proto.RuntimeRemoteObjectID
 }
 
-// Focus doc is similar to the method MustFocus
+// Focus sets focus on the specified element
 func (el *Element) Focus() error {
 	err := el.ScrollIntoView()
 	if err != nil {
@@ -38,7 +38,8 @@ func (el *Element) Focus() error {
 	return err
 }
 
-// ScrollIntoView doc is similar to the method MustScrollIntoViewIfNeeded
+// ScrollIntoView scrolls the current element into the visible area of the browser
+// window if it's not already within the visible area.
 func (el *Element) ScrollIntoView() error {
 	defer el.tryTraceInput("scroll into view")()
 	el.page.browser.trySlowmotion()
@@ -171,7 +172,7 @@ func (el *Element) Box() (*proto.DOMRect, error) {
 	return res.Model.Rect(), nil
 }
 
-// Press doc is similar to the method MustPress
+// Press a key
 func (el *Element) Press(key rune) error {
 	err := el.WaitVisible()
 	if err != nil {
@@ -188,7 +189,7 @@ func (el *Element) Press(key rune) error {
 	return el.page.Keyboard.Press(key)
 }
 
-// SelectText doc is similar to the method MustSelectText
+// SelectText selects the text that matches the regular expression
 func (el *Element) SelectText(regex string) error {
 	err := el.Focus()
 	if err != nil {
@@ -202,7 +203,7 @@ func (el *Element) SelectText(regex string) error {
 	return err
 }
 
-// SelectAllText doc is similar to the method MustSelectAllText
+// SelectAllText selects all text
 func (el *Element) SelectAllText() error {
 	err := el.Focus()
 	if err != nil {
@@ -216,7 +217,8 @@ func (el *Element) SelectAllText() error {
 	return err
 }
 
-// Input doc is similar to the method MustInput
+// Input focus the element and input text to it.
+// To empty the input you can use something like el.SelectAllText().MustInput("")
 func (el *Element) Input(text string) error {
 	err := el.WaitVisible()
 	if err != nil {
@@ -245,7 +247,7 @@ func (el *Element) Blur() error {
 	return err
 }
 
-// Select doc is similar to the method MustSelect
+// Select the children option elements that match the selectors, the selector can be text content or css selector
 func (el *Element) Select(selectors []string) error {
 	err := el.WaitVisible()
 	if err != nil {
@@ -292,7 +294,7 @@ func (el *Element) Property(name string) (proto.JSON, error) {
 	return prop.Value, nil
 }
 
-// SetFiles doc is similar to the method MustSetFiles
+// SetFiles of the current file input element
 func (el *Element) SetFiles(paths []string) error {
 	absPaths := []string{}
 	for _, p := range paths {
@@ -312,8 +314,7 @@ func (el *Element) SetFiles(paths []string) error {
 	return err
 }
 
-// Describe doc is similar to the method MustDescribe
-// please see https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-describeNode
+// Describe the current element
 func (el *Element) Describe(depth int, pierce bool) (*proto.DOMNode, error) {
 	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID, Depth: int64(depth), Pierce: pierce}.Call(el)
 	if err != nil {
@@ -374,7 +375,7 @@ func (el *Element) ContainsElement(target *Element) (bool, error) {
 	return res.Value.Bool(), nil
 }
 
-// Text doc is similar to the method MustText
+// Text that the element displays
 func (el *Element) Text() (string, error) {
 	str, err := el.EvalWithOptions(jsHelper(js.Text, nil))
 	if err != nil {
@@ -383,7 +384,7 @@ func (el *Element) Text() (string, error) {
 	return str.Value.String(), nil
 }
 
-// HTML doc is similar to the method MustHTML
+// HTML of the element
 func (el *Element) HTML() (string, error) {
 	str, err := el.Eval(`this.outerHTML`)
 	if err != nil {
@@ -392,7 +393,7 @@ func (el *Element) HTML() (string, error) {
 	return str.Value.String(), nil
 }
 
-// Visible doc is similar to the method MustVisible
+// Visible returns true if the element is visible on the page
 func (el *Element) Visible() (bool, error) {
 	res, err := el.EvalWithOptions(jsHelper(js.Visible, nil))
 	if err != nil {
@@ -401,7 +402,7 @@ func (el *Element) Visible() (bool, error) {
 	return res.Value.Bool(), nil
 }
 
-// WaitLoad for element like <img />
+// WaitLoad for element like <img>
 func (el *Element) WaitLoad() error {
 	_, err := el.EvalWithOptions(jsHelper(js.WaitLoad, nil))
 	return err
@@ -441,7 +442,7 @@ func (el *Element) WaitStable(interval time.Duration) error {
 	return nil
 }
 
-// Wait doc is similar to the method MustWait
+// Wait until the js returns true
 func (el *Element) Wait(js string, params ...interface{}) error {
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
 		res, err := el.Eval(js, params...)
@@ -457,13 +458,13 @@ func (el *Element) Wait(js string, params ...interface{}) error {
 	})
 }
 
-// WaitVisible doc is similar to the method MustWaitVisible
+// WaitVisible until the element is visible
 func (el *Element) WaitVisible() error {
 	opts := jsHelper(js.Visible, nil)
 	return el.Wait(opts.JS, opts.JSArgs...)
 }
 
-// WaitInvisible doc is similar to the method MustWaitInvisible
+// WaitInvisible until the element invisible
 func (el *Element) WaitInvisible() error {
 	opts := jsHelper(js.Invisible, nil)
 	return el.Wait(opts.JS, opts.JSArgs...)
@@ -483,7 +484,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 	return bin, nil
 }
 
-// Resource doc is similar to the method MustResource
+// Resource returns the "src" content of current element. Such as the jpg of <img src="a.jpg">
 func (el *Element) Resource() ([]byte, error) {
 	src, err := el.EvalWithOptions(jsHelper(js.Resource, nil))
 	if err != nil {
@@ -542,7 +543,7 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	return el.page.Root().Screenshot(false, opts)
 }
 
-// Release doc is similar to the method MustRelease
+// Release the remote object reference
 func (el *Element) Release() error {
 	return el.page.Context(el.ctx).Release(el.ObjectID)
 }
@@ -552,12 +553,12 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 	return el.ctx, el.page.browser, string(el.page.SessionID)
 }
 
-// Eval doc is similar to the method MustEval
+// Eval js on the page. For more info check the Element.EvalWithOptions
 func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
 	return el.EvalWithOptions(NewEvalOptions(js, params))
 }
 
-// EvalWithOptions of Eval
+// EvalWithOptions is just a shortcut of Page.EvalWithOptions with ThisID set to current element.
 func (el *Element) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx).EvalWithOptions(opts.This(el.ObjectID))
 }

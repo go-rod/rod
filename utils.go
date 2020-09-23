@@ -51,19 +51,21 @@ func JSArgsFromString(list []string) JSArgs {
 	return arr
 }
 
-// EvalOptions object
+// EvalOptions for EvalWithOptions
 type EvalOptions struct {
-	// If enabled the eval will return an reference id for the
-	// remote object. If disabled the remote object will be return as json.
+	// If enabled the eval result will be a JSON value.
+	// If disabled the eval result will be a RuntimeRemoteObjectID.
 	ByValue bool
 
-	// ThisID is the this object when eval the js
+	// ThisID represents the "this" object in the JS
 	ThisID proto.RuntimeRemoteObjectID
 
-	// JS function code to eval
+	// JS code to eval
 	JS string
 
-	// JSArgs of the js function
+	// JSArgs represents the arguments in the JS if the JS is a function definition.
+	// If an argument is proto.RuntimeRemoteObjectID type, the corresponding remote object will be used.
+	// Or it will be passed as a JSON value.
 	JSArgs JSArgs
 
 	// Whether execution should be treated as initiated by user in the UI.

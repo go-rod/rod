@@ -20,146 +20,137 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-// MustConnect to the browser and start to control it.
-// If fails to connect, try to run a local browser, if local browser not found try to download one.
+// MustConnect is similar to Connect
 func (b *Browser) MustConnect() *Browser {
 	utils.E(b.Connect())
 	return b
 }
 
-// MustClose the browser and release related resources
+// MustClose is similar to Close
 func (b *Browser) MustClose() {
 	_ = b.Close()
 }
 
-// MustIncognito creates a new incognito browser
+// MustIncognito is similar to Incognito
 func (b *Browser) MustIncognito() *Browser {
 	b, err := b.Incognito()
 	utils.E(err)
 	return b
 }
 
-// MustPage creates a new tab
-// If url is empty, the default target will be "about:blank".
+// MustPage is similar to Page
 func (b *Browser) MustPage(url string) *Page {
 	p, err := b.Page(url)
 	utils.E(err)
 	return p
 }
 
-// MustPages returns all visible pages
+// MustPages is similar to Pages
 func (b *Browser) MustPages() Pages {
 	list, err := b.Pages()
 	utils.E(err)
 	return list
 }
 
-// MustPageFromTargetID creates a Page instance from a targetID
+// MustPageFromTargetID is similar to PageFromTargetID
 func (b *Browser) MustPageFromTargetID(targetID proto.TargetTargetID) *Page {
 	p, err := b.PageFromTarget(targetID)
 	utils.E(err)
 	return p
 }
 
-// MustHandleAuth for the next basic HTTP authentication.
-// It will prevent the popup that requires user to input user name and password.
-// Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
+// MustHandleAuth is similar to HandleAuth
 func (b *Browser) MustHandleAuth(username, password string) {
 	wait := b.HandleAuth(username, password)
 	go func() { utils.E(wait()) }()
 }
 
-// MustIgnoreCertErrors switch. If enabled, all certificate errors will be ignored.
+// MustIgnoreCertErrors is similar to IgnoreCertErrors
 func (b *Browser) MustIgnoreCertErrors(enable bool) *Browser {
 	utils.E(b.IgnoreCertErrors(enable))
 	return b
 }
 
-// MustFind the page that has the specified element with the css selector
+// MustFind is similar to Find
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
 	utils.E(err)
 	return p
 }
 
-// MustFindByURL returns the page that has the url that matches the regex
+// MustFindByURL is similar to FindByURL
 func (ps Pages) MustFindByURL(regex string) *Page {
 	p, err := ps.FindByURL(regex)
 	utils.E(err)
 	return p
 }
 
-// MustInfo of the page, such as the URL or title of the page
+// MustInfo is similar to Info
 func (p *Page) MustInfo() *proto.TargetTargetInfo {
 	info, err := p.Info()
 	utils.E(err)
 	return info
 }
 
-// MustCookies returns the page cookies. By default it will return the cookies for current page.
-// The urls is the list of URLs for which applicable cookies will be fetched.
+// MustCookies is similar to Cookies
 func (p *Page) MustCookies(urls ...string) []*proto.NetworkCookie {
 	cookies, err := p.Cookies(urls)
 	utils.E(err)
 	return cookies
 }
 
-// MustSetCookies of the page.
-// Cookie format: https://chromedevtools.github.io/devtools-protocol/tot/Network#method-setCookie
+// MustSetCookies is similar to SetCookies
 func (p *Page) MustSetCookies(cookies ...*proto.NetworkCookieParam) *Page {
 	utils.E(p.SetCookies(cookies))
 	return p
 }
 
-// MustSetExtraHeaders whether to always send extra HTTP headers with the requests from this page.
-// The arguments are key-value pairs, you can set multiple key-value pairs at the same time.
+// MustSetExtraHeaders is similar to SetExtraHeaders
 func (p *Page) MustSetExtraHeaders(dict ...string) (cleanup func()) {
 	cleanup, err := p.SetExtraHeaders(dict)
 	utils.E(err)
 	return
 }
 
-// MustSetUserAgent Allows overriding user agent with the given string.
-// If req is nil, the default user agent will be the same as a mac chrome.
+// MustSetUserAgent is similar to SetUserAgent
 func (p *Page) MustSetUserAgent(req *proto.NetworkSetUserAgentOverride) *Page {
 	utils.E(p.SetUserAgent(req))
 	return p
 }
 
-// MustNavigate to url
-// If url is empty, it will navigate to "about:blank".
+// MustNavigate is similar to Navigate
 func (p *Page) MustNavigate(url string) *Page {
 	utils.E(p.Navigate(url))
 	return p
 }
 
-// MustReload page.
+// MustReload is similar to Reload
 func (p *Page) MustReload() *Page {
 	utils.E(p.Reload())
 	return p
 }
 
-// MustNavigateBack history
+// MustNavigateBack is similar to NavigateBack
 func (p *Page) MustNavigateBack() *Page {
 	utils.E(p.NavigateBack())
 	return p
 }
 
-// MustNavigateForward history
+// MustNavigateForward is similar to NavigateForward
 func (p *Page) MustNavigateForward() *Page {
 	utils.E(p.NavigateForward())
 	return p
 }
 
-// MustGetWindow get window bounds
+// MustGetWindow is similar to GetWindow
 func (p *Page) MustGetWindow() *proto.BrowserBounds {
 	bounds, err := p.GetWindow()
 	utils.E(err)
 	return bounds
 }
 
-// MustWindow set the window location and size
-func (p *Page) MustWindow(left, top, width, height int64) *Page {
+// MustSetWindow is similar to SetWindow
+func (p *Page) MustSetWindow(left, top, width, height int64) *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		Left:        left,
 		Top:         top,
@@ -170,7 +161,7 @@ func (p *Page) MustWindow(left, top, width, height int64) *Page {
 	return p
 }
 
-// MustWindowMinimize the window
+// MustWindowMinimize is similar to WindowMinimize
 func (p *Page) MustWindowMinimize() *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateMinimized,
@@ -178,7 +169,7 @@ func (p *Page) MustWindowMinimize() *Page {
 	return p
 }
 
-// MustWindowMaximize the window
+// MustWindowMaximize is similar to WindowMaximize
 func (p *Page) MustWindowMaximize() *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateMaximized,
@@ -186,7 +177,7 @@ func (p *Page) MustWindowMaximize() *Page {
 	return p
 }
 
-// MustWindowFullscreen the window
+// MustWindowFullscreen is similar to WindowFullscreen
 func (p *Page) MustWindowFullscreen() *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateFullscreen,
@@ -194,7 +185,7 @@ func (p *Page) MustWindowFullscreen() *Page {
 	return p
 }
 
-// MustWindowNormal the window size
+// MustWindowNormal is similar to WindowNormal
 func (p *Page) MustWindowNormal() *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		WindowState: proto.BrowserWindowStateNormal,
@@ -202,8 +193,8 @@ func (p *Page) MustWindowNormal() *Page {
 	return p
 }
 
-// MustViewport overrides the values of device screen dimensions.
-func (p *Page) MustViewport(width, height int64, deviceScaleFactor float64, mobile bool) *Page {
+// MustSetViewport is similar to SetViewport
+func (p *Page) MustSetViewport(width, height int64, deviceScaleFactor float64, mobile bool) *Page {
 	utils.E(p.SetViewport(&proto.EmulationSetDeviceMetricsOverride{
 		Width:             width,
 		Height:            height,
@@ -213,26 +204,24 @@ func (p *Page) MustViewport(width, height int64, deviceScaleFactor float64, mobi
 	return p
 }
 
-// MustEmulate the device, such as iPhone9. If device is empty, it will clear the override.
+// MustEmulate is similar to Emulate
 func (p *Page) MustEmulate(device devices.Device) *Page {
 	utils.E(p.Emulate(device, false))
 	return p
 }
 
-// MustStopLoading forces the page stop all navigations and pending resource fetches.
+// MustStopLoading is similar to StopLoading
 func (p *Page) MustStopLoading() *Page {
 	utils.E(p.StopLoading())
 	return p
 }
 
-// MustClose page
+// MustClose is similar to Close
 func (p *Page) MustClose() {
 	utils.E(p.Close())
 }
 
-// MustHandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)
-// Because alert will block js, usually you have to run the wait function inside a goroutine. Check the unit test
-// for it for more information.
+// MustHandleDialog is similar to HandleDialog
 func (p *Page) MustHandleDialog(accept bool, promptText string) (wait func()) {
 	w := p.HandleDialog(accept, promptText)
 	return func() {
@@ -240,8 +229,7 @@ func (p *Page) MustHandleDialog(accept bool, promptText string) (wait func()) {
 	}
 }
 
-// MustScreenshot the page and returns the binary of the image
-// If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
+// MustScreenshot is similar to Screenshot
 func (p *Page) MustScreenshot(toFile ...string) []byte {
 	bin, err := p.Screenshot(false, &proto.PageCaptureScreenshot{})
 	utils.E(err)
@@ -249,7 +237,7 @@ func (p *Page) MustScreenshot(toFile ...string) []byte {
 	return bin
 }
 
-// MustScreenshotFullPage including all scrollable content and returns the binary of the image.
+// MustScreenshotFullPage is similar to ScreenshotFullPage
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	bin, err := p.Screenshot(true, &proto.PageCaptureScreenshot{})
 	utils.E(err)
@@ -257,7 +245,7 @@ func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	return bin
 }
 
-// MustPDF prints page as MustPDF
+// MustPDF is similar to PDF
 func (p *Page) MustPDF(toFile ...string) []byte {
 	r, err := p.PDF(&proto.PagePrintToPDF{})
 	utils.E(err)
@@ -268,7 +256,7 @@ func (p *Page) MustPDF(toFile ...string) []byte {
 	return bin
 }
 
-// MustGetDownloadFile of the next download url that matches the pattern, returns the file content.
+// MustGetDownloadFile is similar to GetDownloadFile
 func (p *Page) MustGetDownloadFile(pattern string) func() []byte {
 	wait := p.GetDownloadFile(pattern, "", http.DefaultClient)
 	return func() []byte {
@@ -278,7 +266,7 @@ func (p *Page) MustGetDownloadFile(pattern string) func() []byte {
 	}
 }
 
-// MustWaitOpen waits for a new page opened by the current one
+// MustWaitOpen is similar to WaitOpen
 func (p *Page) MustWaitOpen() (wait func() (newPage *Page)) {
 	w := p.WaitOpen()
 	return func() *Page {
@@ -288,8 +276,7 @@ func (p *Page) MustWaitOpen() (wait func() (newPage *Page)) {
 	}
 }
 
-// MustWaitPauseOpen waits for a page opened by the current page, before opening pause the js execution.
-// Because the js will be paused, you should put the code that triggers it in a goroutine, such as the click.
+// MustWaitPauseOpen is similar to WaitPauseOpen
 func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
 	newPage, r, err := p.WaitPauseOpen()
 	utils.E(err)
@@ -301,76 +288,73 @@ func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
 	}, func() { utils.E(r()) }
 }
 
-// MustWaitNavigation wait for lifecycle event "networkAlmostIdle" when navigating.
+// MustWaitNavigation is similar to WaitNavigation
 func (p *Page) MustWaitNavigation() func() {
 	return p.WaitNavigation(proto.PageLifecycleEventNameNetworkAlmostIdle)
 }
 
-// MustWaitRequestIdle returns a wait function that waits until the page doesn't send request for 300ms.
-// You can pass regular expressions to exclude the requests by their url.
+// MustWaitRequestIdle is similar to WaitRequestIdle
 func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
 	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes)
 }
 
-// MustWaitIdle wait until the next window.requestIdleCallback is called.
+// MustWaitIdle is similar to WaitIdle
 func (p *Page) MustWaitIdle() *Page {
 	utils.E(p.WaitIdle(time.Minute))
 	return p
 }
 
-// MustWaitLoad wait until the `window.onload` is complete, resolve immediately if already fired.
+// MustWaitLoad is similar to WaitLoad
 func (p *Page) MustWaitLoad() *Page {
 	utils.E(p.WaitLoad())
 	return p
 }
 
-// MustAddScriptTag to page. If url is empty, content will be used.
+// MustAddScriptTag is similar to AddScriptTag
 func (p *Page) MustAddScriptTag(url string) *Page {
 	utils.E(p.AddScriptTag(url, ""))
 	return p
 }
 
-// MustAddStyleTag to page. If url is empty, content will be used.
+// MustAddStyleTag is similar to AddStyleTag
 func (p *Page) MustAddStyleTag(url string) *Page {
 	utils.E(p.AddStyleTag(url, ""))
 	return p
 }
 
-// MustEvalOnNewDocument Evaluates given script in every frame upon creation (before loading frame's scripts).
+// MustEvalOnNewDocument is similar to EvalOnNewDocument
 func (p *Page) MustEvalOnNewDocument(js string) {
 	_, err := p.EvalOnNewDocument(js)
 	utils.E(err)
 }
 
-// MustExpose function to the page's window object. Must bind before navigate to the page. Bindings survive reloads.
-// Binding function takes exactly one argument, this argument should be string.
+// MustExpose is similar to Expose
 func (p *Page) MustExpose(name string) (callback chan string, stop func()) {
 	c, s, err := p.Expose(name)
 	utils.E(err)
 	return c, s
 }
 
-// MustEval js on the page. The first param must be a js function definition.
-// For example page.MustEval(`n => n + 1`, 1) will return 2
+// MustEval is similar to Eval
 func (p *Page) MustEval(js string, params ...interface{}) proto.JSON {
 	res, err := p.Eval(js, params...)
 	utils.E(err)
 	return res.Value
 }
 
-// MustWait js function until it returns true
+// MustWait is similar to Wait
 func (p *Page) MustWait(js string, params ...interface{}) {
 	utils.E(p.Wait("", js, params))
 }
 
-// MustObjectToJSON by remote object
+// MustObjectToJSON is similar to ObjectToJSON
 func (p *Page) MustObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
 	j, err := p.ObjectToJSON(obj)
 	utils.E(err)
 	return j
 }
 
-// MustObjectsToJSON by remote objects
+// MustObjectsToJSON is similar to ObjectsToJSON
 func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
 	result := "[]"
 	for _, obj := range list {
@@ -382,109 +366,104 @@ func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
 	return proto.JSON{Result: gjson.Parse(result)}
 }
 
-// MustElementFromNode creates an Element from the node id
+// MustElementFromNode is similar to ElementFromNode
 func (p *Page) MustElementFromNode(id proto.DOMNodeID) *Element {
 	el, err := p.ElementFromNode(id)
 	utils.E(err)
 	return el
 }
 
-// MustElementFromPoint creates an Element from the absolute point on the page.
-// The point should include the window scroll offset.
+// MustElementFromPoint is similar to ElementFromPoint
 func (p *Page) MustElementFromPoint(left, top int) *Element {
 	el, err := p.ElementFromPoint(int64(left), int64(top))
 	utils.E(err)
 	return el
 }
 
-// MustRelease remote object
+// MustRelease is similar to Release
 func (p *Page) MustRelease(objectID proto.RuntimeRemoteObjectID) *Page {
 	utils.E(p.Release(objectID))
 	return p
 }
 
-// MustHas an element that matches the css selector
+// MustHas is similar to Has
 func (p *Page) MustHas(selector string) bool {
 	has, _, err := p.Has(selector)
 	utils.E(err)
 	return has
 }
 
-// MustHasX an element that matches the XPath selector
+// MustHasX is similar to HasX
 func (p *Page) MustHasX(selector string) bool {
 	has, _, err := p.HasX(selector)
 	utils.E(err)
 	return has
 }
 
-// MustHasR an element that matches the css selector and its text matches the regex.
+// MustHasR is similar to HasR
 func (p *Page) MustHasR(selector, regex string) bool {
 	has, _, err := p.HasR(selector, regex)
 	utils.E(err)
 	return has
 }
 
-// MustSearch for each given query in the DOM tree until find one, before that it will keep retrying.
-// The query can be plain text or css selector or xpath.
-// It will search nested iframes and shadow doms too.
+// MustSearch is similar to Search
 func (p *Page) MustSearch(queries ...string) *Element {
 	list, err := p.Search(0, 1, queries...)
 	utils.E(err)
 	return list.First()
 }
 
-// MustElement retries until an element in the page that matches one of the CSS selectors
+// MustElement is similar to Element
 func (p *Page) MustElement(selectors ...string) *Element {
 	el, err := p.Element(selectors...)
 	utils.E(err)
 	return el
 }
 
-// MustElementR retries until an element in the page that matches one of the pairs.
-// Each pairs is a css selector and a regex. A sample call will look like page.MustElementR("div", "click me").
-// The regex is the js regex, not golang's.
+// MustElementR is similar to ElementR
 func (p *Page) MustElementR(pairs ...string) *Element {
 	el, err := p.ElementR(pairs...)
 	utils.E(err)
 	return el
 }
 
-// MustElementByJS retries until returns the element from the return value of the js function
-func (p *Page) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJS(NewEvalOptions(js, params))
-	utils.E(err)
-	return el
-}
-
-// MustElements returns all elements that match the css selector
-func (p *Page) MustElements(selector string) Elements {
-	list, err := p.Elements(selector)
-	utils.E(err)
-	return list
-}
-
-// MustElementsX returns all elements that match the XPath selector
-func (p *Page) MustElementsX(xpath string) Elements {
-	list, err := p.ElementsX(xpath)
-	utils.E(err)
-	return list
-}
-
-// MustElementX retries until an element in the page that matches one of the XPath selectors
+// MustElementX is similar to ElementX
 func (p *Page) MustElementX(xPaths ...string) *Element {
 	el, err := p.ElementX(xPaths...)
 	utils.E(err)
 	return el
 }
 
-// MustElementsByJS returns the elements from the return value of the js
+// MustElementByJS is similar to ElementByJS
+func (p *Page) MustElementByJS(js string, params ...interface{}) *Element {
+	el, err := p.ElementByJS(NewEvalOptions(js, params))
+	utils.E(err)
+	return el
+}
+
+// MustElements is similar to Elements
+func (p *Page) MustElements(selector string) Elements {
+	list, err := p.Elements(selector)
+	utils.E(err)
+	return list
+}
+
+// MustElementsX is similar to ElementsX
+func (p *Page) MustElementsX(xpath string) Elements {
+	list, err := p.ElementsX(xpath)
+	utils.E(err)
+	return list
+}
+
+// MustElementsByJS is similar to ElementsByJS
 func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 	list, err := p.ElementsByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return list
 }
 
-// MustElement the doc is similar with MustElement but has a callback when a match is found
+// MustElement is similar to Element
 func (rc *RaceContext) MustElement(selector string, callback func(*Element)) *RaceContext {
 	return rc.Element(selector, func(el *Element) error {
 		callback(el)
@@ -492,7 +471,7 @@ func (rc *RaceContext) MustElement(selector string, callback func(*Element)) *Ra
 	})
 }
 
-// MustElementX the doc is similar with MustElement but has a callback when a match is found
+// MustElementX is similar to ElementX
 func (rc *RaceContext) MustElementX(selector string, callback func(*Element)) *RaceContext {
 	return rc.ElementX(selector, func(el *Element) error {
 		callback(el)
@@ -500,7 +479,7 @@ func (rc *RaceContext) MustElementX(selector string, callback func(*Element)) *R
 	})
 }
 
-// MustElementR the doc is similar with MustElement but has a callback when a match is found
+// MustElementR is similar to ElementR
 func (rc *RaceContext) MustElementR(selector, regex string, callback func(*Element)) *RaceContext {
 	return rc.ElementR(selector, regex, func(el *Element) error {
 		callback(el)
@@ -508,322 +487,309 @@ func (rc *RaceContext) MustElementR(selector, regex string, callback func(*Eleme
 	})
 }
 
-// MustElementByJS the doc is similar with MustElementByJS but has a callback when a match is found
+// MustElementByJS is similar to ElementByJS
 func (rc *RaceContext) MustElementByJS(js string, params JSArgs, callback func(*Element) error) *RaceContext {
 	return rc.ElementByJS(NewEvalOptions(js, params), callback)
 }
 
-// MustDo the race
+// MustDo is similar to Do
 func (rc *RaceContext) MustDo() *Page {
 	utils.E(rc.Do())
 	return rc.page
 }
 
-// MustMove to the absolute position
+// MustMove is similar to Move
 func (m *Mouse) MustMove(x, y float64) *Mouse {
 	utils.E(m.Move(x, y, 0))
 	return m
 }
 
-// MustScroll with the relative offset
+// MustScroll is similar to Scroll
 func (m *Mouse) MustScroll(x, y float64) *Mouse {
 	utils.E(m.Scroll(x, y, 0))
 	return m
 }
 
-// MustDown holds the button down
+// MustDown is similar to Down
 func (m *Mouse) MustDown(button proto.InputMouseButton) *Mouse {
 	utils.E(m.Down(button, 1))
 	return m
 }
 
-// MustUp release the button
+// MustUp is similar to Up
 func (m *Mouse) MustUp(button proto.InputMouseButton) *Mouse {
 	utils.E(m.Up(button, 1))
 	return m
 }
 
-// MustClick will press then release the button
+// MustClick is similar to Click
 func (m *Mouse) MustClick(button proto.InputMouseButton) *Mouse {
 	utils.E(m.Click(button))
 	return m
 }
 
-// MustDown holds key down
+// MustDown is similar to Down
 func (k *Keyboard) MustDown(key rune) *Keyboard {
 	utils.E(k.Down(key))
 	return k
 }
 
-// MustUp releases the key
+// MustUp is similar to Up
 func (k *Keyboard) MustUp(key rune) *Keyboard {
 	utils.E(k.Up(key))
 	return k
 }
 
-// MustPress a key
+// MustPress is similar to Press
 func (k *Keyboard) MustPress(key rune) *Keyboard {
 	utils.E(k.Press(key))
 	return k
 }
 
-// MustInsertText like paste text into the page
+// MustInsertText is similar to InsertText
 func (k *Keyboard) MustInsertText(text string) *Keyboard {
 	utils.E(k.InsertText(text))
 	return k
 }
 
-// MustStart a touch action
+// MustStart is similar to Start
 func (t *Touch) MustStart(points ...*proto.InputTouchPoint) *Touch {
 	utils.E(t.Start(points...))
 	return t
 }
 
-// MustMove touch points. Use the InputTouchPoint.ID (Touch.identifier) to track points.
-// Doc: https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+// MustMove is similar to Move
 func (t *Touch) MustMove(points ...*proto.InputTouchPoint) *Touch {
 	utils.E(t.Move(points...))
 	return t
 }
 
-// MustEnd touch action
+// MustEnd is similar to End
 func (t *Touch) MustEnd() *Touch {
 	utils.E(t.End())
 	return t
 }
 
-// MustCancel touch action
+// MustCancel is similar to Cancel
 func (t *Touch) MustCancel() *Touch {
 	utils.E(t.Cancel())
 	return t
 }
 
-// MustTap dispatches a touchstart and touchend event.
+// MustTap is similar to Tap
 func (t *Touch) MustTap(x, y float64) *Touch {
 	utils.E(t.Tap(x, y))
 	return t
 }
 
-// MustDescribe returns the element info
-// Returned json: https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
+// MustDescribe is similar to Describe
 func (el *Element) MustDescribe() *proto.DOMNode {
 	node, err := el.Describe(1, false)
 	utils.E(err)
 	return node
 }
 
-// MustNodeID of the node
+// MustNodeID is similar to NodeID
 func (el *Element) MustNodeID() proto.DOMNodeID {
 	id, err := el.NodeID()
 	utils.E(err)
 	return id
 }
 
-// MustShadowRoot returns the shadow root of this element
+// MustShadowRoot is similar to ShadowRoot
 func (el *Element) MustShadowRoot() *Element {
 	node, err := el.ShadowRoot()
 	utils.E(err)
 	return node
 }
 
-// MustFrame creates a page instance that represents the iframe
+// MustFrame is similar to Frame
 func (el *Element) MustFrame() *Page {
 	p, err := el.Frame()
 	utils.E(err)
 	return p
 }
 
-// MustFocus sets focus on the specified element
+// MustFocus is similar to Focus
 func (el *Element) MustFocus() *Element {
 	utils.E(el.Focus())
 	return el
 }
 
-// MustScrollIntoView scrolls the current element into the visible area of the browser
-// window if it's not already within the visible area.
+// MustScrollIntoView is similar to ScrollIntoView
 func (el *Element) MustScrollIntoView() *Element {
 	utils.E(el.ScrollIntoView())
 	return el
 }
 
-// MustHover the mouse over the center of the element.
+// MustHover is similar to Hover
 func (el *Element) MustHover() *Element {
 	utils.E(el.Hover())
 	return el
 }
 
-// MustClick the element
+// MustClick is similar to Click
 func (el *Element) MustClick() *Element {
 	utils.E(el.Click(proto.InputMouseButtonLeft))
 	return el
 }
 
-// MustTap the element
+// MustTap is similar to Tap
 func (el *Element) MustTap() *Element {
 	utils.E(el.Tap())
 	return el
 }
 
-// MustClickable checks if the element is behind another element, such as when covered by a modal.
+// MustClickable is similar to Clickable
 func (el *Element) MustClickable() bool {
 	clickable, err := el.Clickable()
 	utils.E(err)
 	return clickable
 }
 
-// MustPress a key
+// MustPress is similar to Press
 func (el *Element) MustPress(key rune) *Element {
 	utils.E(el.Press(key))
 	return el
 }
 
-// MustSelectText selects the text that matches the regular expression
+// MustSelectText is similar to SelectText
 func (el *Element) MustSelectText(regex string) *Element {
 	utils.E(el.SelectText(regex))
 	return el
 }
 
-// MustSelectAllText selects all text
+// MustSelectAllText is similar to SelectAllText
 func (el *Element) MustSelectAllText() *Element {
 	utils.E(el.SelectAllText())
 	return el
 }
 
-// MustInput wll click the element and input the text.
-// To empty the input you can use something like el.SelectAllText().MustInput("")
+// MustInput is similar to Input
 func (el *Element) MustInput(text string) *Element {
 	utils.E(el.Input(text))
 	return el
 }
 
-// MustBlur will call the blur function on the element.
-// On inputs, this will deselect the element.
+// MustBlur is similar to Blur
 func (el *Element) MustBlur() *Element {
 	utils.E(el.Blur())
 	return el
 }
 
-// MustSelect the option elements that match the selectors, the selector can be text content or css selector
+// MustSelect is similar to Select
 func (el *Element) MustSelect(selectors ...string) *Element {
 	utils.E(el.Select(selectors))
 	return el
 }
 
-// MustMatches checks if the element can be selected by the css selector
+// MustMatches is similar to Matches
 func (el *Element) MustMatches(selector string) bool {
 	res, err := el.Matches(selector)
 	utils.E(err)
 	return res
 }
 
-// MustAttribute returns the value of a specified attribute on the element.
-// Please check the Property function before you use it, usually you don't want to use MustAttribute.
-// https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
+// MustAttribute is similar to Attribute
 func (el *Element) MustAttribute(name string) *string {
 	attr, err := el.Attribute(name)
 	utils.E(err)
 	return attr
 }
 
-// MustProperty returns the value of a specified property on the element.
-// It's similar to Attribute but attributes can only be string, properties can be types like bool, float, etc.
-// https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
+// MustProperty is similar to Property
 func (el *Element) MustProperty(name string) proto.JSON {
 	prop, err := el.Property(name)
 	utils.E(err)
 	return prop
 }
 
-// MustContainsElement check if the target is equal or inside the element.
+// MustContainsElement is similar to ContainsElement
 func (el *Element) MustContainsElement(target *Element) bool {
 	contains, err := el.ContainsElement(target)
 	utils.E(err)
 	return contains
 }
 
-// MustSetFiles sets files for the given file input element
+// MustSetFiles is similar to SetFiles
 func (el *Element) MustSetFiles(paths ...string) *Element {
 	utils.E(el.SetFiles(paths))
 	return el
 }
 
-// MustText gets the innerText of the element
+// MustText is similar to Text
 func (el *Element) MustText() string {
 	s, err := el.Text()
 	utils.E(err)
 	return s
 }
 
-// MustHTML gets the outerHTML of the element
+// MustHTML is similar to HTML
 func (el *Element) MustHTML() string {
 	s, err := el.HTML()
 	utils.E(err)
 	return s
 }
 
-// MustVisible returns true if the element is visible on the page
+// MustVisible is similar to Visible
 func (el *Element) MustVisible() bool {
 	v, err := el.Visible()
 	utils.E(err)
 	return v
 }
 
-// MustWaitLoad for element like <img />
+// MustWaitLoad is similar to WaitLoad
 func (el *Element) MustWaitLoad() *Element {
 	utils.E(el.WaitLoad())
 	return el
 }
 
-// MustWaitStable waits until the size and position are stable. Useful when waiting for the animation of modal
-// or button to complete so that we can simulate the mouse to move to it and click on it.
+// MustWaitStable is similar to WaitStable
 func (el *Element) MustWaitStable() *Element {
 	utils.E(el.WaitStable(100 * time.Millisecond))
 	return el
 }
 
-// MustWait until the js returns true
+// MustWait is similar to Wait
 func (el *Element) MustWait(js string, params ...interface{}) *Element {
 	utils.E(el.Wait(js, params))
 	return el
 }
 
-// MustWaitVisible until the element is visible
+// MustWaitVisible is similar to WaitVisible
 func (el *Element) MustWaitVisible() *Element {
 	utils.E(el.WaitVisible())
 	return el
 }
 
-// MustWaitInvisible until the element is not visible or removed
+// MustWaitInvisible is similar to WaitInvisible
 func (el *Element) MustWaitInvisible() *Element {
 	utils.E(el.WaitInvisible())
 	return el
 }
 
-// MustBox returns the size of an element and its position relative to the main frame.
+// MustBox is similar to Box
 func (el *Element) MustBox() *proto.DOMRect {
 	box, err := el.Box()
 	utils.E(err)
 	return box
 }
 
-// MustCanvasToImage get image data of a canvas.
-// The default format is image/png.
-// The default quality is 0.92.
-// doc: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+// MustCanvasToImage is similar to CanvasToImage
 func (el *Element) MustCanvasToImage(format string, quality float64) []byte {
 	bin, err := el.CanvasToImage(format, quality)
 	utils.E(err)
 	return bin
 }
 
-// MustResource returns the binary of the "src" properly, such as the image or audio file.
+// MustResource is similar to Resource
 func (el *Element) MustResource() []byte {
 	bin, err := el.Resource()
 	utils.E(err)
 	return bin
 }
 
-// MustScreenshot of the area of the element
+// MustScreenshot is similar to Screenshot
 func (el *Element) MustScreenshot(toFile ...string) []byte {
 	bin, err := el.Screenshot(proto.PageCaptureScreenshotFormatPng, 0)
 	utils.E(err)
@@ -831,137 +797,134 @@ func (el *Element) MustScreenshot(toFile ...string) []byte {
 	return bin
 }
 
-// MustRelease remote object on browser
+// MustRelease is similar to Release
 func (el *Element) MustRelease() {
 	utils.E(el.Release())
 }
 
-// MustEval evaluates js function on the element, the first param must be a js function definition
-// For example: el.MustEval(`name => this.getAttribute(name)`, "value")
+// MustEval is similar to Eval
 func (el *Element) MustEval(js string, params ...interface{}) proto.JSON {
 	res, err := el.Eval(js, params...)
 	utils.E(err)
 	return res.Value
 }
 
-// MustHas an element that matches the css selector
+// MustHas is similar to Has
 func (el *Element) MustHas(selector string) bool {
 	has, _, err := el.Has(selector)
 	utils.E(err)
 	return has
 }
 
-// MustHasX an element that matches the XPath selector
+// MustHasX is similar to HasX
 func (el *Element) MustHasX(selector string) bool {
 	has, _, err := el.HasX(selector)
 	utils.E(err)
 	return has
 }
 
-// MustHasR an element that matches the css selector and its text matches the regex.
+// MustHasR is similar to HasR
 func (el *Element) MustHasR(selector, regex string) bool {
 	has, _, err := el.HasR(selector, regex)
 	utils.E(err)
 	return has
 }
 
-// MustElement returns the first child that matches the css selector
+// MustElement is similar to Element
 func (el *Element) MustElement(selector string) *Element {
 	el, err := el.Element(selector)
 	utils.E(err)
 	return el
 }
 
-// MustElementX returns the first child that matches the XPath selector
+// MustElementX is similar to ElementX
 func (el *Element) MustElementX(xpath string) *Element {
 	el, err := el.ElementX(xpath)
 	utils.E(err)
 	return el
 }
 
-// MustElementByJS returns the element from the return value of the js
+// MustElementByJS is similar to ElementByJS
 func (el *Element) MustElementByJS(js string, params ...interface{}) *Element {
 	el, err := el.ElementByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return el
 }
 
-// MustParent returns the parent element
+// MustParent is similar to Parent
 func (el *Element) MustParent() *Element {
 	parent, err := el.Parent()
 	utils.E(err)
 	return parent
 }
 
-// MustParents that match the selector
+// MustParents is similar to Parents
 func (el *Element) MustParents(selector string) Elements {
 	list, err := el.Parents(selector)
 	utils.E(err)
 	return list
 }
 
-// MustNext returns the next sibling element
+// MustNext is similar to Next
 func (el *Element) MustNext() *Element {
 	parent, err := el.Next()
 	utils.E(err)
 	return parent
 }
 
-// MustPrevious returns the previous sibling element
+// MustPrevious is similar to Previous
 func (el *Element) MustPrevious() *Element {
 	parent, err := el.Previous()
 	utils.E(err)
 	return parent
 }
 
-// MustElementR returns the first element in the page that matches the CSS selector and its text matches the regex.
-// The regex is the js regex, not golang's.
+// MustElementR is similar to ElementR
 func (el *Element) MustElementR(selector, regex string) *Element {
 	el, err := el.ElementR(selector, regex)
 	utils.E(err)
 	return el
 }
 
-// MustElements returns all elements that match the css selector
+// MustElements is similar to Elements
 func (el *Element) MustElements(selector string) Elements {
 	list, err := el.Elements(selector)
 	utils.E(err)
 	return list
 }
 
-// MustElementsX returns all elements that match the XPath selector
+// MustElementsX is similar to ElementsX
 func (el *Element) MustElementsX(xpath string) Elements {
 	list, err := el.ElementsX(xpath)
 	utils.E(err)
 	return list
 }
 
-// MustElementsByJS returns the elements from the return value of the js
+// MustElementsByJS is similar to ElementsByJS
 func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
 	list, err := el.ElementsByJS(NewEvalOptions(js, params))
 	utils.E(err)
 	return list
 }
 
-// MustAdd a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
-// You can add new handler even after the "Run" is called.
+// MustAdd is similar to Add
 func (r *HijackRouter) MustAdd(pattern string, handler func(*Hijack)) *HijackRouter {
 	utils.E(r.Add(pattern, "", handler))
 	return r
 }
 
-// MustRemove handler via the pattern
+// MustRemove is similar to Remove
 func (r *HijackRouter) MustRemove(pattern string) *HijackRouter {
 	utils.E(r.Remove(pattern))
 	return r
 }
 
-// MustStop the router
+// MustStop is similar to Stop
 func (r *HijackRouter) MustStop() {
 	utils.E(r.Stop())
 }
 
-// MustLoadResponse will send request to the real destination and load the response as default response to override.
+// MustLoadResponse is similar to LoadResponse
 func (h *Hijack) MustLoadResponse() {
 	utils.E(h.LoadResponse(http.DefaultClient, true))
 }
