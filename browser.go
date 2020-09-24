@@ -128,17 +128,10 @@ func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverr
 func (b *Browser) Connect() error {
 	if b.client == nil {
 		u := defaults.URL
-		if defaults.Remote {
-			if u == "" {
-				u = "ws://127.0.0.1:9222"
-			}
-			b.client = launcher.MustNewRemote(u).Client()
-		} else {
-			if u == "" {
-				u = launcher.New().Context(b.ctx).MustLaunch()
-			}
-			b.client = cdp.New(u)
+		if u == "" {
+			u = launcher.New().Context(b.ctx).MustLaunch()
 		}
+		b.client = cdp.New(u)
 	}
 
 	err := b.client.Connect(b.ctx)

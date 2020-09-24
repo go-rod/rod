@@ -17,41 +17,35 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Show disables headless mode
-var Show bool
-
-// Trace enables tracing
+// Trace is the default of rod.Browser.Trace
 var Trace bool
 
-// Quiet is only useful when Trace is enabled. It decides whether to log tracing message or not.
-var Quiet bool
-
-// Slow enables slowmotion mode if not zero
+// Slow is the default of rod.Browser.Slowmotion
 var Slow time.Duration
 
-// Dir to store browser profile, such as cookies
-var Dir string
-
-// Port of the remote debugging port
-var Port string
-
-// Bin path of chrome executable file
-var Bin string
-
-// URL of the remote debugging address
-var URL string
-
-// Remote enables to launch browser remotely
-var Remote bool
-
-// CDP enables cdp log
-var CDP bool
-
-// Monitor enables the monitor server that plays the screenshots of each tab
+// Monitor is the default of rod.Browser.ServeMonitor
 var Monitor string
 
-// Proxy for the browser
+// Show is the default of launcher.Launcher.Headless
+var Show bool
+
+// Dir is the default of launcher.Launcher.UserDataDir
+var Dir string
+
+// Port is the default of launcher.Launcher.RemoteDebuggingPort
+var Port string
+
+// Bin is the default of launcher.Launcher.Bin
+var Bin string
+
+// Proxy is the default of launcher.Launcher.Proxy
 var Proxy string
+
+// URL is the default of cdp.Client.New
+var URL string
+
+// CDP is the default of cdp.Client.Debug
+var CDP bool
 
 // Parse the flags
 func init() {
@@ -62,13 +56,11 @@ func init() {
 func Reset() {
 	Show = false
 	Trace = false
-	Quiet = false
 	Slow = 0
 	Dir = ""
 	Port = "0"
 	Bin = ""
 	URL = ""
-	Remote = false
 	CDP = false
 	Monitor = ""
 	Proxy = ""
@@ -103,9 +95,6 @@ var rules = map[string]func(string){
 	"trace": func(string) {
 		Trace = true
 	},
-	"quiet": func(string) {
-		Quiet = true
-	},
 	"slow": func(v string) {
 		var err error
 		Slow, err = time.ParseDuration(v)
@@ -122,9 +111,6 @@ var rules = map[string]func(string){
 	},
 	"url": func(v string) {
 		URL = v
-	},
-	"remote": func(v string) {
-		Remote = true
 	},
 	"cdp": func(v string) {
 		CDP = true

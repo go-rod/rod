@@ -354,15 +354,6 @@ func (s *S) TestBinarySize() {
 
 func (s *S) TestBrowserConnectErr() {
 	s.Panics(func() {
-		ctx, cancel := context.WithCancel(context.Background())
-		defaults.Remote = true
-		defer defaults.ResetWithEnv()
-
-		cancel()
-		rod.New().Context(ctx).MustConnect()
-	})
-
-	s.Panics(func() {
 		c := newMockClient(s, nil)
 		c.connect = func() error { return errors.New("err") }
 		rod.New().Client(c).MustConnect()

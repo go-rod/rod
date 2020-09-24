@@ -11,26 +11,22 @@ func TestBasic(t *testing.T) {
 	Show = true
 	URL = "test"
 	Monitor = "test"
-	Remote = true
 
 	ResetWithEnv()
 	parse("")
 	assert.False(t, Show)
 	assert.Equal(t, "", Monitor)
 	assert.Equal(t, "", URL)
-	assert.False(t, Remote)
 
-	parse("show,trace,slow=2s,port=8080,remote,dir=tmp," +
-		"url=http://test.com,cdp,monitor,quiet,bin=/path/to/chrome," +
+	parse("show,trace,slow=2s,port=8080,dir=tmp," +
+		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +
 		"proxy=localhost:8080",
 	)
 
 	assert.True(t, Show)
 	assert.True(t, Trace)
-	assert.True(t, Quiet)
 	assert.Equal(t, 2*time.Second, Slow)
 	assert.Equal(t, "8080", Port)
-	assert.Equal(t, true, Remote)
 	assert.Equal(t, "/path/to/chrome", Bin)
 	assert.Equal(t, "tmp", Dir)
 	assert.Equal(t, "http://test.com", URL)
