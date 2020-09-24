@@ -143,21 +143,21 @@ func (p *Page) Navigate(url string) error {
 // NavigateBack history.
 func (p *Page) NavigateBack() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Eval(`history.back()`)
+	_, err := p.EvalWithOptions(NewEvalOptions(`history.back()`, nil).ByUser())
 	return err
 }
 
 // NavigateForward history.
 func (p *Page) NavigateForward() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Eval(`history.forward()`)
+	_, err := p.EvalWithOptions(NewEvalOptions(`history.forward()`, nil).ByUser())
 	return err
 }
 
 // Reload page.
 func (p *Page) Reload() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Eval(`location.reload()`)
+	_, err := p.EvalWithOptions(NewEvalOptions(`location.reload()`, nil).ByUser())
 	return err
 }
 
