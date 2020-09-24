@@ -80,12 +80,6 @@ can dynamically launch a browser for each remote driver with customizable browse
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
 
-You can also use it to launch a browser manually:
-
-```bash
-docker run -p 9222:9222 rodorg/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0
-```
-
 ### Q: Why there is always an "about:blank" page
 
 It's an issue of the browser itself. If we enable the `--no-first-run` flag and we don't create a blank page, it will create a hello page which will consume more power.

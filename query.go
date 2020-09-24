@@ -325,7 +325,7 @@ func (p *Page) Race() *RaceContext {
 	return &RaceContext{page: p, noSleepPage: p.Sleeper(nil)}
 }
 
-// Element the doc is similar with MustElement but has a callback when a match is found
+// Element the doc is similar to MustElement but has a callback when a match is found
 func (rc *RaceContext) Element(selector string, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.Element(selector) },
@@ -334,7 +334,7 @@ func (rc *RaceContext) Element(selector string, callback func(*Element) error) *
 	return rc
 }
 
-// ElementX the doc is similar with ElementX but has a callback when a match is found
+// ElementX the doc is similar to ElementX but has a callback when a match is found
 func (rc *RaceContext) ElementX(selector string, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
@@ -343,7 +343,7 @@ func (rc *RaceContext) ElementX(selector string, callback func(*Element) error) 
 	return rc
 }
 
-// ElementR the doc is similar with ElementR but has a callback when a match is found
+// ElementR the doc is similar to ElementR but has a callback when a match is found
 func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
@@ -352,7 +352,7 @@ func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) 
 	return rc
 }
 
-// ElementByJS the doc is similar with MustElementByJS but has a callback when a match is found
+// ElementByJS the doc is similar to MustElementByJS but has a callback when a match is found
 func (rc *RaceContext) ElementByJS(opts *EvalOptions, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },

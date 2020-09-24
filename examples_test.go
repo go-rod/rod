@@ -136,14 +136,14 @@ func Example_timeout_handling() {
 
 // We use "Must" prefixed functions to write example code. But in production you may want to use
 // the no-prefix version of them.
-// About why we use "Must" as the prefix, it's similar with https://golang.org/pkg/regexp/#MustCompile
+// About why we use "Must" as the prefix, it's similar to https://golang.org/pkg/regexp/#MustCompile
 func Example_error_handling() {
 	page := rod.New().MustConnect().MustPage("https://example.com")
 
 	// The two code blocks below are basically the same:
 
-	// The block below is better for production code. It follows the standards of golang error handling.
-	// Usually, this style will make error handling more consistent and precisely.
+	// The block below is better for production code. It's the standard error handling.
+	// Usually, this style is more consistent and precisely.
 	{
 		el, err := page.Element("a")
 		if err != nil {
@@ -158,9 +158,10 @@ func Example_error_handling() {
 		fmt.Println(html)
 	}
 
-	// The block below is better for example code or quick scripting. We use panic to short-circuit logics.
-	// So that we can code in fluent style: https://en.wikipedia.org/wiki/Fluent_interface
-	// It will reduce the code to type, but it may also catch extra errors (less consistent and precisely).
+	// The block below is better for debugging or quick scripting. We use panic to short-circuit logics.
+	// So that we can take advantage of fluent interface (https://en.wikipedia.org/wiki/Fluent_interface)
+	// and fail-fast (https://en.wikipedia.org/wiki/Fail-fast).
+	// This style will reduce code, but it may also catch extra errors (less consistent and precisely).
 	{
 		err := rod.Try(func() {
 			fmt.Println(page.MustElement("a").MustHTML())

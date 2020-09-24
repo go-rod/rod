@@ -1,3 +1,4 @@
+// Package cdp for application layer communication with browser.
 package cdp
 
 import (
