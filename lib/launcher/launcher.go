@@ -119,8 +119,8 @@ func NewUserMode() *Launcher {
 		ctx:       ctx,
 		ctxCancel: cancel,
 		Flags: map[string][]string{
-			"remote-debugging-port":  {"37712"},
-			"disable-blink-features": {"AutomationControlled"},
+			"remote-debugging-port": {"37712"},
+			"enable-automation":     nil,
 		},
 		exit:    make(chan struct{}),
 		browser: NewBrowser(),
