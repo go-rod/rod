@@ -303,7 +303,7 @@ func (l *Launcher) Launch() (string, error) {
 		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
 		port, _ := l.Get("remote-debugging-port")
-		u, err := GetWebSocketDebuggerURL("http://127.0.0.1:" + port)
+		u, err := ResolveURL(port)
 		if err == nil {
 			return u, nil
 		}
@@ -337,7 +337,7 @@ func (l *Launcher) Launch() (string, error) {
 		return "", err
 	}
 
-	return GetWebSocketDebuggerURL(u)
+	return ResolveURL(u)
 }
 
 func (l *Launcher) setupCmd(cmd *exec.Cmd) {

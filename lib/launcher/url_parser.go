@@ -48,8 +48,28 @@ func (r *URLParser) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// GetWebSocketDebuggerURL from browser remote url
-func GetWebSocketDebuggerURL(u string) (string, error) {
+// MustResolveURL is similar to FetchURL
+func MustResolveURL(u string) string {
+	u, err := ResolveURL(u)
+	utils.E(err)
+	return u
+}
+
+var regPort = regexp.MustCompile(`^\:?(\d+)$`)
+var regProtocol = regexp.MustCompile(`^\w+://`)
+
+// ResolveURL by requesting the u, it will try best to normalize the u.
+// The format of u can be "9222", ":9222", "host:9222", "ws://host:9222", "wss://host:9222",
+// "https://host:9222" "http://host:9222". The return string will look like:
+// "ws://host:9222/devtools/browser/4371405f-84df-4ad6-9e0f-eab81f7521cc"
+func ResolveURL(u string) (string, error) {
+	u = strings.TrimSpace(u)
+	u = regPort.ReplaceAllString(u, "127.0.0.1:$1")
+
+	if !regProtocol.MatchString(u) {
+		u = "http://" + u
+	}
+
 	parsed, err := url.Parse(u)
 	if err != nil {
 		return "", err

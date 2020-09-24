@@ -3,6 +3,7 @@ package launcher_test
 import (
 	"context"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -50,9 +51,25 @@ func TestLaunch(t *testing.T) {
 	l := launcher.New()
 	defer l.Kill()
 
-	url := l.MustLaunch()
+	u := l.MustLaunch()
+	assert.Regexp(t, `\Aws://.+\z`, u)
 
-	assert.Regexp(t, `\Aws://.+\z`, url)
+	parsed, _ := url.Parse(u)
+
+	{ // test GetWebSocketDebuggerURL
+		for _, prefix := range []string{"", ":", "127.0.0.1:", "ws://127.0.0.1:"} {
+			u2 := launcher.MustResolveURL(prefix + parsed.Port())
+			assert.Regexp(t, u, u2)
+		}
+	}
+
+	{
+		_, err := launcher.NewRemote("1://")
+		assert.Error(t, err)
+
+		_, err = launcher.NewRemote("ws://not-exists")
+		assert.Error(t, err)
+	}
 }
 
 func TestLaunchUserMode(t *testing.T) {
@@ -100,7 +117,7 @@ func TestUserModeErr(t *testing.T) {
 }
 
 func TestGetWebSocketDebuggerURLErr(t *testing.T) {
-	_, err := launcher.GetWebSocketDebuggerURL("1://")
+	_, err := launcher.ResolveURL("1://")
 	assert.Error(t, err)
 }
 
