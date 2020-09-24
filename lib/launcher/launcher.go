@@ -376,6 +376,10 @@ func (l *Launcher) PID() int {
 
 // Kill the browser process
 func (l *Launcher) Kill() {
+	// TODO: If kill too fast, the browser's children processes may not be ready.
+	// Browser don't have an API to tell if the children processes are ready.
+	utils.Sleep(1)
+
 	p, err := os.FindProcess(l.PID())
 	if err == nil {
 		_ = p.Kill()

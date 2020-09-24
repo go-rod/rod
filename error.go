@@ -1,7 +1,7 @@
 package rod
 
 import (
-	errors "github.com/pkg/errors"
+	"github.com/pkg/errors"
 )
 
 var (

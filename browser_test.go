@@ -156,33 +156,11 @@ func (s *S) TestMonitorErr() {
 
 	l := launcher.New()
 	u := l.MustLaunch()
-	defer func() {
-		utils.Sleep(1) // if kill too fast, the parent process of the browser may not be ready
-		l.Kill()
-	}()
+	defer l.Kill()
 
 	s.Panics(func() {
 		rod.New().ControlURL(u).MustConnect()
 	})
-}
-
-func (s *S) TestRemoteLaunch() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	defaults.Remote = true
-	defaults.URL = url
-	defer defaults.ResetWithEnv()
-
-	proxy := launcher.NewProxy()
-	mux.Handle("/", proxy)
-
-	b := rod.New().MustConnect()
-	defer b.MustClose()
-
-	p := b.MustPage(srcFile("fixtures/click.html"))
-	p.MustElement("button").MustClick()
-	s.True(p.MustHas("[a=ok]"))
 }
 
 func (s *S) TestTrace() {

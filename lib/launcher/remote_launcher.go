@@ -18,11 +18,20 @@ const HeaderName = "Rod-Launcher"
 
 const flagKeepUserDataDir = "rod-keep-user-data-dir"
 
-// NewRemote create a Launcher instance from remote defaults. You must use it with launch.NewProxy or
-// use the docker image mentioned from here: https://github.com/go-rod/rod/blob/master/lib/examples/remote-launch
-func NewRemote(remoteURL string) *Launcher {
-	u, err := url.Parse(remoteURL)
+// MustNewRemote is similar to NewRemote
+func MustNewRemote(remoteURL string) *Launcher {
+	l, err := NewRemote(remoteURL)
 	utils.E(err)
+	return l
+}
+
+// NewRemote creates a Launcher instance from remote defaults.
+// For more info check the doc of RemoteLauncher.
+func NewRemote(remoteURL string) (*Launcher, error) {
+	u, err := url.Parse(remoteURL)
+	if err != nil {
+		return nil, err
+	}
 
 	l := New()
 	l.remote = true
@@ -30,11 +39,11 @@ func NewRemote(remoteURL string) *Launcher {
 	l.Flags = nil
 
 	res, err := http.Get(toHTTP(*u).String())
-	utils.E(err)
+	if err != nil {
+		return nil, err
+	}
 
-	utils.E(json.Unmarshal(utils.MustReadBytes(res.Body), l))
-
-	return l
+	return l, json.NewDecoder(res.Body).Decode(l)
 }
 
 // KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
@@ -63,25 +72,30 @@ func (l *Launcher) mustRemote() {
 	}
 }
 
-// Proxy to help launch browser remotely.
+var _ http.Handler = &RemoteLauncher{}
+
+// RemoteLauncher is used to launch browsers via http server on another machine.
+// For example, the work flow looks like:
+//
+// 	|     Machine A      |                           Machine B                                  |
+// 	 NewRemote("a.com") --> http.ListenAndServe("a.com", NewRemoteLauncher()) --> launch browser
+//
 // Any http request will return a default Launcher based on remote OS environment.
 // Any websocket request will start a new browser and the request will be proxied to the browser.
 // The websocket header "Rod-Launcher" holds the options to launch browser.
 // If the websocket is closed, the browser will be killed.
-type Proxy struct {
+type RemoteLauncher struct {
 	Logger io.Writer
 }
 
-var _ http.Handler = &Proxy{}
-
-// NewProxy instance
-func NewProxy() *Proxy {
-	return &Proxy{
+// NewRemoteLauncher instance
+func NewRemoteLauncher() *RemoteLauncher {
+	return &RemoteLauncher{
 		Logger: ioutil.Discard,
 	}
 }
 
-func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (p *RemoteLauncher) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Upgrade") == "websocket" {
 		p.launch(w, r)
 		return
@@ -90,12 +104,12 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	p.defaults(w, r)
 }
 
-func (p *Proxy) defaults(w http.ResponseWriter, _ *http.Request) {
+func (p *RemoteLauncher) defaults(w http.ResponseWriter, _ *http.Request) {
 	l := New()
 	utils.E(w.Write(l.JSON()))
 }
 
-func (p *Proxy) launch(w http.ResponseWriter, r *http.Request) {
+func (p *RemoteLauncher) launch(w http.ResponseWriter, r *http.Request) {
 	l := New()
 
 	options := r.Header.Get(HeaderName)

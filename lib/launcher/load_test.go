@@ -14,9 +14,9 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-func TestProxyUnderLoad(t *testing.T) {
-	if _, has := os.LookupEnv("proxyload"); !has {
-		t.Skip("use env to not skip")
+func TestRemoteLauncherUnderLoad(t *testing.T) {
+	if _, has := os.LookupEnv("loadtest"); !has {
+		t.Skip("use env loadtest to not skip")
 	}
 
 	const concurrent = 30 // how many browsers will run at the same time
@@ -57,7 +57,7 @@ func TestProxyUnderLoad(t *testing.T) {
 				}()
 			}()
 
-			l := launcher.NewRemote("http://127.0.0.1:9222")
+			l := launcher.MustNewRemote("http://127.0.0.1:9222")
 			client := l.Client()
 			browser := rod.New().Context(ctx).Client(client).MustConnect()
 			page := browser.MustPage("")

@@ -73,9 +73,9 @@ func TestRemoteLaunch(t *testing.T) {
 	u, mux, close := utils.Serve("")
 	defer close()
 
-	mux.Handle("/", NewProxy())
+	mux.Handle("/", NewRemoteLauncher())
 
-	l := NewRemote(u).KeepUserDataDir().Delete(flagKeepUserDataDir)
+	l := MustNewRemote(u).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
 	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))

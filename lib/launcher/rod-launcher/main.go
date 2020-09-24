@@ -18,9 +18,9 @@ var quiet = flag.Bool("quiet", false, "silent the log")
 func main() {
 	flag.Parse()
 
-	proxy := launcher.NewProxy()
+	rl := launcher.NewRemoteLauncher()
 	if !*quiet {
-		proxy.Logger = os.Stdout
+		rl.Logger = os.Stdout
 	}
 
 	l, err := net.Listen("tcp", *addr)
@@ -30,6 +30,6 @@ func main() {
 
 	fmt.Println("Remote control url is", "ws://"+l.Addr().String())
 
-	srv := &http.Server{Handler: proxy}
+	srv := &http.Server{Handler: rl}
 	utils.E(srv.Serve(l))
 }

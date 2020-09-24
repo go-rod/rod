@@ -132,7 +132,7 @@ func (b *Browser) Connect() error {
 			if u == "" {
 				u = "ws://127.0.0.1:9222"
 			}
-			b.client = launcher.NewRemote(u).Client()
+			b.client = launcher.MustNewRemote(u).Client()
 		} else {
 			if u == "" {
 				u = launcher.New().Context(b.ctx).MustLaunch()
