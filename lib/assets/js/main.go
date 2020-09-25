@@ -24,6 +24,8 @@ const (
 	InitMouseTracer NameType = "initMouseTracer"
 	//UpdateMouseTracer NameType function name
 	UpdateMouseTracer NameType = "updateMouseTracer"
+	//Rect NameType function name
+	Rect NameType = "rect"
 	//Overlay NameType function name
 	Overlay NameType = "overlay"
 	//ElementOverlay NameType function name

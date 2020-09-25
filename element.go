@@ -519,7 +519,8 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 		return nil, err
 	}
 
-	box, err := el.Box()
+	// so that it won't clip the css-transformed element
+	box, err := el.EvalWithOptions(jsHelper(js.Rect, nil))
 	if err != nil {
 		return nil, err
 	}
@@ -527,10 +528,10 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	opts := &proto.PageCaptureScreenshot{
 		Format: format,
 		Clip: &proto.PageViewport{
-			X:      box.X,
-			Y:      box.Y,
-			Width:  box.Width,
-			Height: box.Height,
+			X:      box.Value.Get("x").Num,
+			Y:      box.Value.Get("y").Num,
+			Width:  box.Value.Get("width").Num,
+			Height: box.Value.Get("height").Num,
 			Scale:  1,
 		},
 	}

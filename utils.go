@@ -100,8 +100,9 @@ const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
 func jsHelper(name js.Name, args JSArgs) *EvalOptions {
 	return &EvalOptions{
-		JSArgs: append(JSArgs{jsHelperID}, args...),
-		JS:     fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
+		ByValue: true,
+		JSArgs:  append(JSArgs{jsHelperID}, args...),
+		JS:      fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
 	}
 }
 

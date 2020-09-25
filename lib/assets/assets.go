@@ -118,6 +118,11 @@ const Helper = `() => {
     return true
   },
 
+  rect() {
+    const b = ensureElement(this).getBoundingClientRect()
+		return {x: b.x, y: b.y, width: b.width, height: b.height}
+  },
+
   async overlay(id, left, top, width, height, msg) {
     await rod.waitLoad()
 

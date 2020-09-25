@@ -503,7 +503,7 @@ func (s *S) TestElementScreenshot() {
 		el.MustScreenshot()
 	})
 	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMGetBoxModel{})
+		s.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
 }
