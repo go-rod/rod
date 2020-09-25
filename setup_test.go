@@ -87,6 +87,8 @@ func (s *S) TearDownTest() {
 		goleak.MaxRetry(3*time.Second),
 		s.goleakIgnore,
 	)
+
+	s.mc.setCall(nil) // panic if setCall leaks
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
@@ -142,6 +144,11 @@ func serveStatic() (string, func()) {
 	mux.Handle("/fixtures", http.FileServer(http.Dir("fixtures")))
 
 	return u + "/", close
+}
+
+// return last value as error
+func lastE(list ...interface{}) error {
+	return list[len(list)-1].(error)
 }
 
 type MockRoundTripper struct {
@@ -211,7 +218,7 @@ func (mc *MockClient) setCall(fn Call) {
 	defer mc.Unlock()
 
 	if mc.call != nil {
-		mc.suit.T().Fatal("forget to call the cleanup function of previous mock")
+		mc.suit.T().Fatal("leaking MockClient.stub")
 	}
 	mc.call = fn
 }
