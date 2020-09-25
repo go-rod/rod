@@ -9,6 +9,7 @@
 package rod
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -640,11 +641,14 @@ func (el *Element) MustTap() *Element {
 	return el
 }
 
-// MustClickable is similar to Clickable
-func (el *Element) MustClickable() bool {
-	clickable, err := el.Clickable()
+// MustInteractable is similar to Interactable
+func (el *Element) MustInteractable() bool {
+	_, err := el.Interactable()
+	if errors.Is(err, ErrNotInteractable) {
+		return false
+	}
 	utils.E(err)
-	return clickable
+	return true
 }
 
 // MustPress is similar to Press
@@ -769,10 +773,17 @@ func (el *Element) MustWaitInvisible() *Element {
 }
 
 // MustBox is similar to Box
-func (el *Element) MustBox() *proto.DOMRect {
+func (el *Element) MustBox() *proto.DOMBoxModel {
 	box, err := el.Box()
 	utils.E(err)
 	return box
+}
+
+// MustShape is similar to Shape
+func (el *Element) MustShape() *proto.DOMGetContentQuadsResult {
+	shape, err := el.Shape()
+	utils.E(err)
+	return shape
 }
 
 // MustCanvasToImage is similar to CanvasToImage

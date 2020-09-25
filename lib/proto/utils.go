@@ -189,24 +189,60 @@ func PatternToReg(pattern string) string {
 	return `\A` + strings.TrimSpace(pattern) + `\z`
 }
 
-// Rect of the box model
-func (box *DOMBoxModel) Rect() *DOMRect {
-	return &DOMRect{
-		X:      box.Content[0],
-		Y:      box.Content[1],
-		Width:  box.Content[2] - box.Content[0],
-		Height: box.Content[7] - box.Content[1],
+// Point from the origin (0, 0)
+type Point struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+}
+
+// X when q is a rectangle
+func (q DOMQuad) X() float64 {
+	return q[0]
+}
+
+// Y when q is a rectangle
+func (q DOMQuad) Y() float64 {
+	return q[1]
+}
+
+// Width when q is a rectangle
+func (q DOMQuad) Width() float64 {
+	return q[2] - q[0]
+}
+
+// Height when q is a rectangle
+func (q DOMQuad) Height() float64 {
+	return q[7] - q[1]
+}
+
+// Each point
+func (q DOMQuad) Each(fn func(pt Point, i int)) {
+	l := len(q) / 2
+	for i := 0; i < l; i++ {
+		fn(Point{q[i*2], q[i*2+1]}, i)
 	}
 }
 
-// CenterX of the rectangle
-func (rect *DOMRect) CenterX() float64 {
-	return rect.X + rect.Width/2
+// Center of the polygon
+func (q DOMQuad) Center() Point {
+	var x, y float64
+	q.Each(func(pt Point, _ int) {
+		x += pt.X
+		y += pt.Y
+	})
+	l := len(q) / 2
+	return Point{x / float64(l), y / float64(l)}
 }
 
-// CenterY of the rectangle
-func (rect *DOMRect) CenterY() float64 {
-	return rect.Y + rect.Height/2
+// OnePointInside of the shape
+func (res *DOMGetContentQuadsResult) OnePointInside() *Point {
+	if len(res.Quads) == 0 {
+		return nil
+	}
+
+	center := res.Quads[0].Center()
+
+	return &center
 }
 
 // MoveTo X and Y to x and y

@@ -123,14 +123,24 @@ func TestPatternToReg(t *testing.T) {
 }
 
 func TestRect(t *testing.T) {
-	b := &proto.DOMBoxModel{Content: proto.DOMQuad{
+	rect := proto.DOMQuad{
 		336, 382, 361, 382, 361, 421, 336, 412,
-	}}
-	rect := b.Rect()
-	assert.Equal(t, proto.DOMRect{X: 336, Y: 382, Width: 25, Height: 30}, *rect)
+	}
 
-	assert.Equal(t, 348.5, rect.CenterX())
-	assert.Equal(t, 397.0, rect.CenterY())
+	assert.EqualValues(t, 336, rect.X())
+	assert.EqualValues(t, 382, rect.Y())
+	assert.EqualValues(t, 25, rect.Width())
+	assert.EqualValues(t, 30, rect.Height())
+	assert.EqualValues(t, 348.5, rect.Center().X)
+	assert.EqualValues(t, 399.25, rect.Center().Y)
+
+	res := &proto.DOMGetContentQuadsResult{}
+	assert.Nil(t, res.OnePointInside())
+
+	res = &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{rect}}
+	pt := res.OnePointInside()
+	assert.EqualValues(t, 348.5, pt.X)
+	assert.EqualValues(t, 399.25, pt.Y)
 }
 
 func TestInputTouchPointMoveTo(t *testing.T) {

@@ -1,0 +1,32 @@
+<html>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #container {
+      position: absolute;
+      left: 100px;
+      top: 100px;
+
+      width: 400px;
+      line-height: 150px;
+      overflow-wrap: break-word;
+      transform: rotate(-20deg) skew(20deg);
+    }
+    #target {
+      font-size: 30px;
+      padding: 20px;
+      margin: 20px;
+      border: 2px dashed black;
+    }
+  </style>
+  <body>
+    <div id="container">
+      <code id="target" onclick='this.setAttribute("a", "ok")'>
+        long-text-content-to-wrap
+      </code>
+    </div>
+  </body>
+</html>

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"time"
 
@@ -59,12 +60,12 @@ func (el *Element) Hover() error {
 		return err
 	}
 
-	box, err := el.Box()
+	pt, err := el.Interactable()
 	if err != nil {
 		return err
 	}
 
-	err = el.page.Mouse.Move(box.CenterX(), box.CenterY(), 1)
+	err = el.page.Mouse.Move(pt.X, pt.Y, 1)
 	if err != nil {
 		return err
 	}
@@ -75,11 +76,6 @@ func (el *Element) Hover() error {
 // Click will press then release the button just like a human.
 func (el *Element) Click(button proto.InputMouseButton) error {
 	err := el.Hover()
-	if err != nil {
-		return err
-	}
-
-	err = el.checkClickable()
 	if err != nil {
 		return err
 	}
@@ -101,75 +97,74 @@ func (el *Element) Tap() error {
 		return err
 	}
 
-	err = el.checkClickable()
-	if err != nil {
-		return err
-	}
-
-	box, err := el.Box()
+	pt, err := el.Interactable()
 	if err != nil {
 		return err
 	}
 
 	defer el.tryTraceInput("tap")()
 
-	return el.page.Touch.Tap(box.CenterX(), box.CenterY())
+	return el.page.Touch.Tap(pt.X, pt.Y)
 }
 
-func (el *Element) checkClickable() error {
-	clickable, err := el.Clickable()
+// Interactable checks if the element is interactable with cursor.
+// The cursor can be mouse, finger, stylus, etc. For example, when covered by a modal.
+// If not interactable err will be ErrNotInteractable.
+func (el *Element) Interactable() (pt *proto.Point, err error) {
+	shape, err := el.Shape()
 	if err != nil {
-		return err
+		return
 	}
-	if !clickable {
-		s, err := el.HTML()
-		if err != nil {
-			return err
-		}
-		return newErr(ErrNotClickable, s, "such as covered by a modal")
-	}
-	return nil
-}
 
-// Clickable checks if the element is behind another element, such as when invisible or covered by a modal.
-func (el *Element) Clickable() (bool, error) {
-	box, err := el.Box()
-	if err != nil {
-		return false, err
+	pt = shape.OnePointInside()
+	if pt == nil {
+		err = newErr(ErrNotInteractable, el, "element has no visible shape")
+		return
 	}
 
 	scroll, err := el.page.Root().Eval(`{ x: window.scrollX, y: window.scrollY }`)
 	if err != nil {
-		return false, err
+		return
 	}
 
 	elAtPoint, err := el.page.ElementFromPoint(
-		int64(box.CenterX())+scroll.Value.Get("x").Int(),
-		int64(box.CenterY())+scroll.Value.Get("y").Int(),
+		int64(pt.X)+scroll.Value.Get("x").Int(),
+		int64(pt.Y)+scroll.Value.Get("y").Int(),
 	)
 	if err != nil {
-		return false, err
+		return
 	}
 
-	contains, err := el.ContainsElement(elAtPoint)
+	yes, err := el.ContainsElement(elAtPoint)
 	if err != nil {
-		return false, err
+		return
 	}
 
-	if contains {
-		return true, nil
+	if !yes {
+		err = newErr(ErrNotInteractable, elAtPoint, "another element covers current one")
 	}
-
-	return false, nil
+	return
 }
 
-// Box returns the size of an element and its position relative to the main frame.
-func (el *Element) Box() (*proto.DOMRect, error) {
+// Shape of the DOM element content. The shape is a group of 4-sides polygons (4-gons).
+// A 4-gon is not necessary a rectangle. 4-gons can be apart from each other.
+// For example, we use 2 4-gons to describe the shape below:
+//
+//     ┌────────┐   ┌────────┐
+//     │    ┌───┘ = └────────┘ + ┌────┐
+//     └────┘                    └────┘
+//
+func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
+	return proto.DOMGetContentQuads{ObjectID: el.ObjectID}.Call(el)
+}
+
+// Box model of the DOM element.
+func (el *Element) Box() (*proto.DOMBoxModel, error) {
 	res, err := proto.DOMGetBoxModel{ObjectID: el.ObjectID}.Call(el)
 	if err != nil {
 		return nil, err
 	}
-	return res.Model.Rect(), nil
+	return res.Model, nil
 }
 
 // Press a key
@@ -416,7 +411,7 @@ func (el *Element) WaitStable(interval time.Duration) error {
 		return err
 	}
 
-	box, err := el.Box()
+	shape, err := el.Shape()
 	if err != nil {
 		return err
 	}
@@ -430,14 +425,14 @@ func (el *Element) WaitStable(interval time.Duration) error {
 		case <-el.ctx.Done():
 			return el.ctx.Err()
 		}
-		current, err := el.Box()
+		current, err := el.Shape()
 		if err != nil {
 			return err
 		}
-		if *box == *current {
+		if reflect.DeepEqual(shape, current) {
 			break
 		}
-		box = current
+		shape = current
 	}
 	return nil
 }

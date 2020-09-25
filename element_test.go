@@ -30,22 +30,17 @@ func (s *S) TestClick() {
 		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
-		el.MustClick()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMGetBoxModel{})
-		el.MustClick()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		el.MustClick()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(2, proto.DOMGetBoxModel{})
-		el.MustClick()
-	})
+}
+
+func (s *S) TestClickWrapped() {
+	p := s.page.MustNavigate(srcFile("fixtures/click-wrapped.html")).MustWaitLoad()
+	el := p.MustElement("#target")
+
+	shape := el.MustShape()
+	s.Len(shape.Quads, 2)
+
+	el.MustClick()
+	s.True(p.MustHas("[a=ok]"))
 }
 
 func (s *S) TestTap() {
@@ -72,21 +67,17 @@ func (s *S) TestTap() {
 		el.MustTap()
 	})
 	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMGetBoxModel{})
-		el.MustTap()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(2, proto.DOMGetBoxModel{})
+		s.mc.stubErr(1, proto.DOMGetContentQuads{})
 		el.MustTap()
 	})
 }
 
-func (s *S) TestClickable() {
+func (s *S) TestInteractable() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	s.True(p.MustElement("button").MustClickable())
+	s.True(p.MustElement("button").MustInteractable())
 }
 
-func (s *S) TestNotClickable() {
+func (s *S) TestNotInteractable() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
@@ -96,26 +87,30 @@ func (s *S) TestNotClickable() {
 		div.style = 'position: absolute; left: 0; top: 0; width: 500px; height: 500px;'
 		document.body.append(div)
 	}`)
-	s.Panics(func() {
-		el.MustClick()
-	})
+	s.ErrorIs(lastE(el.Interactable()), rod.ErrNotInteractable)
+	s.False(el.MustInteractable())
+	p.MustElement("div").MustRemove()
 
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		el.MustClickable()
+	s.mc.stubErr(1, proto.DOMGetContentQuads{})
+	_, err := el.Interactable()
+	s.Error(err)
+
+	s.mc.stub(1, proto.DOMGetContentQuads{}, func(send func() ([]byte, error)) ([]byte, error) {
+		res, _ := send()
+		res, _ = sjson.SetBytes(res, "quads", nil)
+		return res, nil
 	})
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMGetNodeForLocation{})
-		el.MustClickable()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
-		el.MustClickable()
-	})
-	s.Panics(func() {
-		s.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
-		el.MustClick()
-	})
+	_, err = el.Interactable()
+	s.Error(err)
+
+	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	s.Error(lastE(el.Interactable()))
+
+	s.mc.stubErr(1, proto.DOMDescribeNode{})
+	s.Error(lastE(el.Interactable()))
+
+	s.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+	s.Error(lastE(el.Interactable()))
 }
 
 func (s *S) TestHover() {
@@ -124,6 +119,21 @@ func (s *S) TestHover() {
 	el.MustEval(`this.onmouseenter = () => this.dataset['a'] = 1`)
 	el.MustHover()
 	s.Equal("1", el.MustEval(`this.dataset['a']`).String())
+
+	s.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	s.Error(el.Hover())
+
+	s.mc.stubErr(1, proto.DOMGetContentQuads{})
+	s.Error(el.Hover())
+
+	s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+	s.Error(el.Hover())
+}
+
+func (s *S) TestMouseMoveErr() {
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	s.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+	s.Error(p.Mouse.Move(10, 10, 1))
 }
 
 func (s *S) TestElementContext() {
@@ -177,14 +187,9 @@ func (s *S) TestContains() {
 	b := p.MustElementFromNode(a.MustNodeID())
 	s.True(a.MustContainsElement(b))
 
-	box := a.MustBox()
-	c := p.MustElementFromPoint(int(box.X)+3, int(box.Y)+3)
+	box := a.MustBox().Content
+	c := p.MustElementFromPoint(int(box.X())+3, int(box.Y())+3)
 	s.True(a.MustContainsElement(c))
-
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		a.MustContainsElement(b)
-	})
 }
 
 func (s *S) TestShadowDOM() {
@@ -438,11 +443,11 @@ func (s *S) TestWaitStable() {
 	s.Error(el.Context(ctx).WaitStable(time.Minute))
 
 	s.Panics(func() {
-		s.mc.stubErr(1, proto.DOMGetBoxModel{})
+		s.mc.stubErr(1, proto.DOMGetContentQuads{})
 		el.MustWaitStable()
 	})
 	s.Panics(func() {
-		s.mc.stubErr(2, proto.DOMGetBoxModel{})
+		s.mc.stubErr(2, proto.DOMGetContentQuads{})
 		el.MustWaitStable()
 	})
 }
@@ -514,6 +519,14 @@ func (s *S) TestUseReleasedElement() {
 	s.EqualError(btn.Click("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
 }
 
+func (s *S) TestElementRemove() {
+	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	btn := p.MustElement("button")
+
+	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	s.Error(btn.Remove())
+}
+
 func (s *S) TestElementMultipleTimes() {
 	// To see whether chrome will reuse the remote object ID or not.
 	// Seems like it will not.
@@ -567,6 +580,11 @@ func (s *S) TestElementOthers() {
 	el.MustWait(`true`)
 	s.Equal("form", el.MustElementByJS(`this`).MustDescribe().LocalName)
 	s.Len(el.MustElementsByJS(`[]`), 0)
+}
+
+func (s *S) TestElementFromPointErr() {
+	s.mc.stubErr(1, proto.DOMGetNodeForLocation{})
+	s.Error(lastE(s.page.ElementFromPoint(10, 10)))
 }
 
 func (s *S) TestElementErrors() {
