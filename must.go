@@ -802,6 +802,11 @@ func (el *Element) MustRelease() {
 	utils.E(el.Release())
 }
 
+// MustRemove the element from the page
+func (el *Element) MustRemove() {
+	utils.E(el.Remove())
+}
+
 // MustEval is similar to Eval
 func (el *Element) MustEval(js string, params ...interface{}) proto.JSON {
 	res, err := el.Eval(js, params...)

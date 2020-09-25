@@ -548,6 +548,15 @@ func (el *Element) Release() error {
 	return el.page.Context(el.ctx).Release(el.ObjectID)
 }
 
+// Remove the element from the page
+func (el *Element) Remove() error {
+	_, err := el.Eval(`this.remove()`)
+	if err != nil {
+		return err
+	}
+	return el.Release()
+}
+
 // CallContext parameters for proto
 func (el *Element) CallContext() (context.Context, proto.Client, string) {
 	return el.ctx, el.page.browser, string(el.page.SessionID)
