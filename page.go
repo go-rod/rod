@@ -568,7 +568,7 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 			AwaitPromise:        true,
 			ReturnByValue:       opts.ByValue,
 			UserGesture:         opts.UserGesture,
-			FunctionDeclaration: SprintFnThis(opts.JS),
+			FunctionDeclaration: formatToJSFunc(opts.JS),
 			Arguments:           args,
 		}.Call(p)
 		if opts.ThisID == "" && isNilContextErr(err) {

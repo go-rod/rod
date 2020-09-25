@@ -105,8 +105,7 @@ func jsHelper(name js.Name, args JSArgs) *EvalOptions {
 	}
 }
 
-// SprintFnThis wrap js with this, wrap function call if it's js expression
-func SprintFnThis(js string) string {
+func formatToJSFunc(js string) string {
 	if detectJSFunction(js) {
 		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 	}
