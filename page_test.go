@@ -392,7 +392,7 @@ func (s *S) TestPageWaitRequestIdle() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
-	sleep := time.Second
+	sleep := 2 * time.Second
 	timeout, cancel := context.WithTimeout(context.Background(), sleep)
 	defer cancel()
 
