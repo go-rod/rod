@@ -449,7 +449,7 @@ func (s *S) TestWaitStable() {
 
 func (s *S) TestCanvasToImage() {
 	p := s.page.MustNavigate(srcFile("fixtures/canvas.html"))
-	src, err := png.Decode(bytes.NewBuffer(p.MustElement("#canvas").MustCanvasToImage("", 1.0)))
+	src, err := png.Decode(bytes.NewBuffer(p.MustElement("#canvas").MustCanvasToImage()))
 	utils.E(err)
 	s.Equal(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }

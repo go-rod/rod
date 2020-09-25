@@ -776,8 +776,8 @@ func (el *Element) MustBox() *proto.DOMRect {
 }
 
 // MustCanvasToImage is similar to CanvasToImage
-func (el *Element) MustCanvasToImage(format string, quality float64) []byte {
-	bin, err := el.CanvasToImage(format, quality)
+func (el *Element) MustCanvasToImage() []byte {
+	bin, err := el.CanvasToImage("", -1)
 	utils.E(err)
 	return bin
 }
