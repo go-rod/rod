@@ -26,9 +26,6 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// Nil type
-type Nil struct{}
-
 // E if the last arg is error, panic it
 func E(args ...interface{}) []interface{} {
 	err, ok := args[len(args)-1].(error)
