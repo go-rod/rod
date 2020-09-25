@@ -1,7 +1,7 @@
 <html>
   <style>
     button {
-      animation: move 300ms forwards;
+      animation: move 1s forwards;
     }
 
     @keyframes move {
@@ -9,11 +9,11 @@
         margin: 0;
       }
       to {
-        margin: 500px 0 0 500px;
+        margin: 1000px 0 0 1000px;
       }
     }
   </style>
   <body>
-    <button>click me</button>
+    <button onclick='this.setAttribute("a", "ok")'>click</button>
   </body>
 </html>

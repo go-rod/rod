@@ -750,7 +750,7 @@ func (el *Element) MustWaitLoad() *Element {
 
 // MustWaitStable is similar to WaitStable
 func (el *Element) MustWaitStable() *Element {
-	utils.E(el.WaitStable(100 * time.Millisecond))
+	utils.E(el.WaitStable(300 * time.Millisecond))
 	return el
 }
 

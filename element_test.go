@@ -431,15 +431,18 @@ func (s *S) TestWaitInvisible() {
 func (s *S) TestWaitStable() {
 	p := s.page.MustNavigate(srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
-	el.MustWaitStable()
-	el.MustClick()
-	p.MustHas("[event=click]")
+	start := time.Now()
+	el.MustWaitStable().MustClick()
+	s.Greater(time.Since(start), time.Second)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	go func() {
-		utils.Sleep(0.2)
-		cancel()
-	}()
+	s.mc.stub(1, proto.DOMGetContentQuads{}, func(send func() ([]byte, error)) ([]byte, error) {
+		go func() {
+			utils.Sleep(0.1)
+			cancel()
+		}()
+		return send()
+	})
 	s.Error(el.Context(ctx).WaitStable(time.Minute))
 
 	s.Panics(func() {
