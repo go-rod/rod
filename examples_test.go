@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -428,6 +429,23 @@ func Example_handle_events() {
 		})
 		page.MustNavigate("https://example.com")
 		wait()
+	}
+
+	// Or the hardcore style to handle events
+	if false {
+		topic := browser.Event().Subscribe(ctx)
+
+		page.MustNavigate("https://example.com")
+
+		for raw := range topic {
+			cdpEvt := raw.(*cdp.Event)
+			if cdpEvt.SessionID == string(page.SessionID) {
+				var e proto.PageLoadEventFired
+				if rod.Event(cdpEvt, &e) {
+					break
+				}
+			}
+		}
 	}
 
 	page.MustEval(`console.log("hello", "world")`)
