@@ -234,7 +234,7 @@ func (q DOMQuad) Center() Point {
 	return Point{x / float64(l), y / float64(l)}
 }
 
-// OnePointInside of the shape
+// OnePointInside the shape
 func (res *DOMGetContentQuadsResult) OnePointInside() *Point {
 	if len(res.Quads) == 0 {
 		return nil

@@ -108,8 +108,8 @@ func (el *Element) Tap() error {
 }
 
 // Interactable checks if the element is interactable with cursor.
-// The cursor can be mouse, finger, stylus, etc. For example, when covered by a modal.
-// If not interactable err will be ErrNotInteractable.
+// The cursor can be mouse, finger, stylus, etc.
+// If not interactable err will be ErrNotInteractable, such as when covered by a modal,
 func (el *Element) Interactable() (pt *proto.Point, err error) {
 	shape, err := el.Shape()
 	if err != nil {
