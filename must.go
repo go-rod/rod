@@ -772,13 +772,6 @@ func (el *Element) MustWaitInvisible() *Element {
 	return el
 }
 
-// MustBox is similar to Box
-func (el *Element) MustBox() *proto.DOMBoxModel {
-	box, err := el.Box()
-	utils.E(err)
-	return box
-}
-
 // MustShape is similar to Shape
 func (el *Element) MustShape() *proto.DOMGetContentQuadsResult {
 	shape, err := el.Shape()

@@ -187,8 +187,8 @@ func (s *S) TestContains() {
 	b := p.MustElementFromNode(a.MustNodeID())
 	s.True(a.MustContainsElement(b))
 
-	box := a.MustBox().Content
-	c := p.MustElementFromPoint(int(box.X())+3, int(box.Y())+3)
+	pt := a.MustShape().OnePointInside()
+	c := p.MustElementFromPoint(int(pt.X), int(pt.Y))
 	s.True(a.MustContainsElement(c))
 }
 
@@ -577,7 +577,6 @@ func (s *S) TestElementOthers() {
 	el := p.MustElement("form")
 	el.MustFocus()
 	el.MustScrollIntoView()
-	s.EqualValues(784, el.MustBox().Width)
 	s.Equal("submit", el.MustElement("[type=submit]").MustText())
 	s.Equal("<input type=\"submit\" value=\"submit\">", el.MustElement("[type=submit]").MustHTML())
 	el.MustWait(`true`)
@@ -616,9 +615,6 @@ func (s *S) TestElementErrors() {
 	s.Error(err)
 
 	err = el.Context(ctx).WaitStable(0)
-	s.Error(err)
-
-	_, err = el.Context(ctx).Box()
 	s.Error(err)
 
 	_, err = el.Context(ctx).Resource()

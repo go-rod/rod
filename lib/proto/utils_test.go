@@ -127,10 +127,6 @@ func TestRect(t *testing.T) {
 		336, 382, 361, 382, 361, 421, 336, 412,
 	}
 
-	assert.EqualValues(t, 336, rect.X())
-	assert.EqualValues(t, 382, rect.Y())
-	assert.EqualValues(t, 25, rect.Width())
-	assert.EqualValues(t, 30, rect.Height())
 	assert.EqualValues(t, 348.5, rect.Center().X)
 	assert.EqualValues(t, 399.25, rect.Center().Y)
 

@@ -529,17 +529,15 @@ func (s *S) TestNativeDrag() {
 	page := s.page.MustNavigate(srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
-	box := page.MustElement("#draggable").MustBox()
-	x := box.Content.X() + 3
-	y := box.Content.Y() + 3
-	toY := page.MustElement(".dropzone:nth-child(2)").MustBox().Content.Y() + 3
+	pt := page.MustElement("#draggable").MustShape().OnePointInside()
+	toY := page.MustElement(".dropzone:nth-child(2)").MustShape().OnePointInside().Y
 
-	page.Overlay(x, y, 10, 10, "from")
-	page.Overlay(x, toY, 10, 10, "to")
+	page.Overlay(pt.X, pt.Y, 10, 10, "from")
+	page.Overlay(pt.X, toY, 10, 10, "to")
 
-	mouse.MustMove(x, y)
+	mouse.MustMove(pt.X, pt.Y)
 	mouse.MustDown("left")
-	utils.E(mouse.Move(x, toY, 5))
+	utils.E(mouse.Move(pt.X, toY, 5))
 	page.MustScreenshot("")
 	mouse.MustUp("left")
 

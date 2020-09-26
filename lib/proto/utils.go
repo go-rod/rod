@@ -195,30 +195,14 @@ type Point struct {
 	Y float64 `json:"y"`
 }
 
-// X when q is a rectangle
-func (q DOMQuad) X() float64 {
-	return q[0]
-}
-
-// Y when q is a rectangle
-func (q DOMQuad) Y() float64 {
-	return q[1]
-}
-
-// Width when q is a rectangle
-func (q DOMQuad) Width() float64 {
-	return q[2] - q[0]
-}
-
-// Height when q is a rectangle
-func (q DOMQuad) Height() float64 {
-	return q[7] - q[1]
+// Len is the number of vertices
+func (q DOMQuad) Len() int {
+	return len(q) / 2
 }
 
 // Each point
 func (q DOMQuad) Each(fn func(pt Point, i int)) {
-	l := len(q) / 2
-	for i := 0; i < l; i++ {
+	for i := 0; i < q.Len(); i++ {
 		fn(Point{q[i*2], q[i*2+1]}, i)
 	}
 }
@@ -230,8 +214,7 @@ func (q DOMQuad) Center() Point {
 		x += pt.X
 		y += pt.Y
 	})
-	l := len(q) / 2
-	return Point{x / float64(l), y / float64(l)}
+	return Point{x / float64(q.Len()), y / float64(q.Len())}
 }
 
 // OnePointInside the shape

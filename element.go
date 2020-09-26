@@ -158,15 +158,6 @@ func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.ObjectID}.Call(el)
 }
 
-// Box model of the DOM element.
-func (el *Element) Box() (*proto.DOMBoxModel, error) {
-	res, err := proto.DOMGetBoxModel{ObjectID: el.ObjectID}.Call(el)
-	if err != nil {
-		return nil, err
-	}
-	return res.Model, nil
-}
-
 // Press a key
 func (el *Element) Press(key rune) error {
 	err := el.WaitVisible()
