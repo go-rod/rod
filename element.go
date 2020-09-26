@@ -25,7 +25,7 @@ type Element struct {
 
 	page *Page
 
-	ObjectID proto.RuntimeRemoteObjectID
+	Object *proto.RuntimeRemoteObject
 }
 
 // Focus sets focus on the specified element
@@ -35,7 +35,7 @@ func (el *Element) Focus() error {
 		return err
 	}
 
-	_, err = el.EvalWithOptions(NewEvalOptions(`this.focus()`, nil).ByUser())
+	_, err = el.Evaluate(NewEval(`this.focus()`).ByUser())
 	return err
 }
 
@@ -45,7 +45,7 @@ func (el *Element) ScrollIntoView() error {
 	defer el.tryTraceInput("scroll into view")()
 	el.page.browser.trySlowmotion()
 
-	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.ObjectID}.Call(el)
+	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.id()}.Call(el)
 }
 
 // Hover the mouse over the center of the element.
@@ -155,7 +155,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 //     └────┘                    └────┘
 //
 func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
-	return proto.DOMGetContentQuads{ObjectID: el.ObjectID}.Call(el)
+	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
 
 // Press a key
@@ -185,7 +185,7 @@ func (el *Element) SelectText(regex string) error {
 	defer el.tryTraceInput("select text: " + regex)()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.SelectText, JSArgs{regex}).ByUser())
+	_, err = el.Evaluate(jsHelper(js.SelectText, regex).ByUser())
 	return err
 }
 
@@ -199,7 +199,7 @@ func (el *Element) SelectAllText() error {
 	defer el.tryTraceInput("select all text")()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.SelectAllText, nil).ByUser())
+	_, err = el.Evaluate(jsHelper(js.SelectAllText).ByUser())
 	return err
 }
 
@@ -223,13 +223,13 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	_, err = el.EvalWithOptions(jsHelper(js.InputEvent, nil).ByUser())
+	_, err = el.Evaluate(jsHelper(js.InputEvent).ByUser())
 	return err
 }
 
 // Blur is similar to the method Blur
 func (el *Element) Blur() error {
-	_, err := el.EvalWithOptions(NewEvalOptions("this.blur()", nil).ByUser())
+	_, err := el.Evaluate(NewEval("this.blur()").ByUser())
 	return err
 }
 
@@ -243,7 +243,7 @@ func (el *Element) Select(selectors []string) error {
 	defer el.tryTraceInput(fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.EvalWithOptions(jsHelper(js.Select, JSArgs{selectors}).ByUser())
+	_, err = el.Evaluate(jsHelper(js.Select, selectors).ByUser())
 	return err
 }
 
@@ -294,7 +294,7 @@ func (el *Element) SetFiles(paths []string) error {
 
 	err := proto.DOMSetFileInputFiles{
 		Files:    absPaths,
-		ObjectID: el.ObjectID,
+		ObjectID: el.id(),
 	}.Call(el)
 
 	return err
@@ -302,7 +302,7 @@ func (el *Element) SetFiles(paths []string) error {
 
 // Describe the current element
 func (el *Element) Describe(depth int, pierce bool) (*proto.DOMNode, error) {
-	val, err := proto.DOMDescribeNode{ObjectID: el.ObjectID, Depth: int64(depth), Pierce: pierce}.Call(el)
+	val, err := proto.DOMDescribeNode{ObjectID: el.id(), Depth: int64(depth), Pierce: pierce}.Call(el)
 	if err != nil {
 		return nil, err
 	}
@@ -312,7 +312,7 @@ func (el *Element) Describe(depth int, pierce bool) (*proto.DOMNode, error) {
 // NodeID of the node
 func (el *Element) NodeID() (proto.DOMNodeID, error) {
 	el.page.enableNodeQuery()
-	node, err := proto.DOMRequestNode{ObjectID: el.ObjectID}.Call(el)
+	node, err := proto.DOMRequestNode{ObjectID: el.id()}.Call(el)
 	if err != nil {
 		return 0, err
 	}
@@ -334,7 +334,7 @@ func (el *Element) ShadowRoot() (*Element, error) {
 		return nil, err
 	}
 
-	return el.page.ElementFromObject(shadowNode.Object.ObjectID), nil
+	return el.page.ElementFromObject(shadowNode.Object), nil
 }
 
 // Frame creates a page instance that represents the iframe
@@ -347,14 +347,14 @@ func (el *Element) Frame() (*Page, error) {
 	newPage := *el.page
 	newPage.FrameID = node.FrameID
 	newPage.element = el
-	newPage.jsHelperObjectID = ""
-	newPage.windowObjectID = ""
+	newPage.jsHelperObj = nil
+	newPage.windowObj = nil
 	return &newPage, nil
 }
 
 // ContainsElement check if the target is equal or inside the element.
 func (el *Element) ContainsElement(target *Element) (bool, error) {
-	res, err := el.EvalWithOptions(jsHelper(js.ContainsElement, JSArgs{target.ObjectID}))
+	res, err := el.Evaluate(jsHelper(js.ContainsElement, target.Object))
 	if err != nil {
 		return false, err
 	}
@@ -363,7 +363,7 @@ func (el *Element) ContainsElement(target *Element) (bool, error) {
 
 // Text that the element displays
 func (el *Element) Text() (string, error) {
-	str, err := el.EvalWithOptions(jsHelper(js.Text, nil))
+	str, err := el.Evaluate(jsHelper(js.Text))
 	if err != nil {
 		return "", err
 	}
@@ -381,7 +381,7 @@ func (el *Element) HTML() (string, error) {
 
 // Visible returns true if the element is visible on the page
 func (el *Element) Visible() (bool, error) {
-	res, err := el.EvalWithOptions(jsHelper(js.Visible, nil))
+	res, err := el.Evaluate(jsHelper(js.Visible))
 	if err != nil {
 		return false, err
 	}
@@ -390,7 +390,7 @@ func (el *Element) Visible() (bool, error) {
 
 // WaitLoad for element like <img>
 func (el *Element) WaitLoad() error {
-	_, err := el.EvalWithOptions(jsHelper(js.WaitLoad, nil))
+	_, err := el.Evaluate(jsHelper(js.WaitLoad))
 	return err
 }
 
@@ -429,9 +429,9 @@ func (el *Element) WaitStable(interval time.Duration) error {
 }
 
 // Wait until the js returns true
-func (el *Element) Wait(js string, params ...interface{}) error {
+func (el *Element) Wait(opts *Eval) error {
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
-		res, err := el.Eval(js, params...)
+		res, err := el.Evaluate(opts.This(el.Object))
 		if err != nil {
 			return true, err
 		}
@@ -446,14 +446,12 @@ func (el *Element) Wait(js string, params ...interface{}) error {
 
 // WaitVisible until the element is visible
 func (el *Element) WaitVisible() error {
-	opts := jsHelper(js.Visible, nil)
-	return el.Wait(opts.JS, opts.JSArgs...)
+	return el.Wait(jsHelper(js.Visible))
 }
 
 // WaitInvisible until the element invisible
 func (el *Element) WaitInvisible() error {
-	opts := jsHelper(js.Invisible, nil)
-	return el.Wait(opts.JS, opts.JSArgs...)
+	return el.Wait(jsHelper(js.Invisible))
 }
 
 // CanvasToImage get image data of a canvas.
@@ -472,7 +470,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 
 // Resource returns the "src" content of current element. Such as the jpg of <img src="a.jpg">
 func (el *Element) Resource() ([]byte, error) {
-	src, err := el.EvalWithOptions(jsHelper(js.Resource, nil))
+	src, err := el.Evaluate(jsHelper(js.Resource))
 	if err != nil {
 		return nil, err
 	}
@@ -511,7 +509,7 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	}
 
 	// so that it won't clip the css-transformed element
-	box, err := el.EvalWithOptions(jsHelper(js.Rect, nil))
+	box, err := el.Evaluate(jsHelper(js.Rect))
 	if err != nil {
 		return nil, err
 	}
@@ -530,9 +528,9 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	return el.page.Root().Screenshot(false, opts)
 }
 
-// Release the remote object reference
+// Release is a shortcut for Page.Release(el.Object)
 func (el *Element) Release() error {
-	return el.page.Context(el.ctx).Release(el.ObjectID)
+	return el.page.Context(el.ctx).Release(el.Object)
 }
 
 // Remove the element from the page
@@ -549,18 +547,22 @@ func (el *Element) CallContext() (context.Context, proto.Client, string) {
 	return el.ctx, el.page.browser, string(el.page.SessionID)
 }
 
-// Eval js on the page. For more info check the Element.EvalWithOptions
+// Eval js on the page. For more info check the Element.Evaluate
 func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return el.EvalWithOptions(NewEvalOptions(js, params))
+	return el.Evaluate(NewEval(js, params...))
 }
 
-// EvalWithOptions is just a shortcut of Page.EvalWithOptions with ThisID set to current element.
-func (el *Element) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
-	return el.page.Context(el.ctx).EvalWithOptions(opts.This(el.ObjectID))
+// Evaluate is just a shortcut of Page.Evaluate with This set to current element.
+func (el *Element) Evaluate(opts *Eval) (*proto.RuntimeRemoteObject, error) {
+	return el.page.Context(el.ctx).Evaluate(opts.This(el.Object))
 }
 
-func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeRemoteObjectID) error {
-	has, err := el.page.hasElement(objID)
+func (el *Element) id() proto.RuntimeRemoteObjectID {
+	return el.Object.ObjectID
+}
+
+func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, obj *proto.RuntimeRemoteObject) error {
+	has, err := el.page.hasElement(obj)
 	if err != nil {
 		return err
 	}
@@ -582,13 +584,13 @@ func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, objID proto.RuntimeR
 				return err
 			}
 
-			objID, err := p.resolveNode(nodeID)
+			obj, err := p.resolveNode(nodeID)
 			if err != nil {
 				return err
 			}
-			if objID != "" {
+			if obj.ObjectID != "" {
 				el.page = p
-				el.ObjectID = objID
+				el.Object = obj
 				return io.EOF
 			}
 

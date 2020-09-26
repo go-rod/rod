@@ -158,7 +158,7 @@ func (s *S) TestIframes() {
 	s.Panics(func() {
 		s.mc.stub(1, proto.RuntimeGetProperties{}, func(send func() ([]byte, error)) ([]byte, error) {
 			d, _ := send()
-			return sjson.SetBytes(d, "result", rod.JSArgs{})
+			return sjson.SetBytes(d, "result", []interface{}{})
 		})
 		p.MustElementFromNode(id).MustText()
 	})
@@ -518,7 +518,7 @@ func (s *S) TestUseReleasedElement() {
 	s.Error(btn.Click("left"))
 
 	btn = p.MustElement("button")
-	utils.E(proto.RuntimeReleaseObject{ObjectID: btn.ObjectID}.Call(p))
+	utils.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
 	s.EqualError(btn.Click("left"), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
 }
 
@@ -540,7 +540,7 @@ func (s *S) TestElementMultipleTimes() {
 	btn02 := page.MustElement("button")
 
 	s.Equal(btn01.MustText(), btn02.MustText())
-	s.NotEqual(btn01.ObjectID, btn02.ObjectID)
+	s.NotEqual(btn01.Object, btn02.Object)
 }
 
 func (s *S) TestFnErr() {
@@ -553,7 +553,7 @@ func (s *S) TestFnErr() {
 	s.True(errors.Is(err, rod.ErrEval))
 	s.Equal(proto.RuntimeRemoteObjectSubtypeError, rod.AsError(err).Details.(*proto.RuntimeRemoteObject).Subtype)
 
-	_, err = el.ElementByJS(rod.NewEvalOptions("foo()", nil))
+	_, err = el.ElementByJS(rod.NewEval("foo()"))
 	s.Error(err)
 	s.Contains(err.Error(), "ReferenceError: foo is not defined")
 	s.True(errors.Is(err, rod.ErrEval))

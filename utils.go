@@ -39,78 +39,97 @@ func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
 	return gen
 }
 
-// JSArgs for eval
-type JSArgs []interface{}
-
-// JSArgsFromString converts a string list into Array type
-func JSArgsFromString(list []string) JSArgs {
-	arr := JSArgs{}
-	for _, s := range list {
-		arr = append(arr, s)
-	}
-	return arr
-}
-
-// EvalOptions for EvalWithOptions
-type EvalOptions struct {
-	// If enabled the eval result will be a JSON value.
-	// If disabled the eval result will be a RuntimeRemoteObjectID.
+// Eval options for Page.Evaluate
+type Eval struct {
+	// If enabled the eval result will be a plain JSON value.
+	// If disabled the eval result will be a reference of a remote js object.
 	ByValue bool
 
-	// ThisID represents the "this" object in the JS
-	ThisID proto.RuntimeRemoteObjectID
+	// ThisObj represents the "this" object in the JS
+	ThisObj *proto.RuntimeRemoteObject
 
 	// JS code to eval
 	JS string
 
 	// JSArgs represents the arguments in the JS if the JS is a function definition.
-	// If an argument is proto.RuntimeRemoteObjectID type, the corresponding remote object will be used.
-	// Or it will be passed as a JSON value.
-	JSArgs JSArgs
+	// If an argument is *proto.RuntimeRemoteObject type, the corresponding remote object will be used.
+	// Or it will be passed as a plain JSON value.
+	JSArgs []interface{}
 
 	// Whether execution should be treated as initiated by user in the UI.
 	UserGesture bool
+
+	jsHelper bool
 }
 
-// This set the ThisID
-func (e *EvalOptions) This(id proto.RuntimeRemoteObjectID) *EvalOptions {
-	e.ThisID = id
+// NewEval options. ByValue will be set to true.
+func NewEval(js string, args ...interface{}) *Eval {
+	return &Eval{true, nil, js, args, false, false}
+}
+
+// This set the obj as ThisObj
+func (e *Eval) This(obj *proto.RuntimeRemoteObject) *Eval {
+	e.ThisObj = obj
 	return e
 }
 
 // ByObject disables ByValue.
-func (e *EvalOptions) ByObject() *EvalOptions {
+func (e *Eval) ByObject() *Eval {
 	e.ByValue = false
 	return e
 }
 
 // ByUser enables UserGesture.
-func (e *EvalOptions) ByUser() *EvalOptions {
+func (e *Eval) ByUser() *Eval {
 	e.UserGesture = true
 	return e
 }
 
-// NewEvalOptions instance. ByValue will be set to true.
-func NewEvalOptions(js string, args JSArgs) *EvalOptions {
-	return &EvalOptions{true, "", js, args, false}
+// Strings appends each string to JSArgs
+func (e *Eval) Strings(list ...string) *Eval {
+	for _, s := range list {
+		e.JSArgs = append(e.JSArgs, s)
+	}
+	return e
 }
 
-const jsHelperID = proto.RuntimeRemoteObjectID("rodJSHelper")
+func (e *Eval) formatToJSFunc() string {
+	if detectJSFunction(e.JS) {
+		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, e.JS)
+	}
+	return fmt.Sprintf(`function() { return %s }`, e.JS)
+}
+
+// We must pass the jsHelper right before we eval it, or the jsHelper may not be generated yet,
+// we only inject the js helper on the first Page.EvalWithOption .
+func (e *Eval) formatArgs(jsHelper *proto.RuntimeRemoteObject) []*proto.RuntimeCallArgument {
+	var jsArgs []interface{}
+
+	if e.jsHelper {
+		jsArgs = append([]interface{}{jsHelper}, e.JSArgs...)
+	} else {
+		jsArgs = e.JSArgs
+	}
+
+	formated := []*proto.RuntimeCallArgument{}
+	for _, arg := range jsArgs {
+		if obj, ok := arg.(*proto.RuntimeRemoteObject); ok { // remote object
+			formated = append(formated, &proto.RuntimeCallArgument{ObjectID: obj.ObjectID})
+		} else { // plain json data
+			formated = append(formated, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
+		}
+	}
+	return formated
+}
 
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func jsHelper(name js.Name, args JSArgs) *EvalOptions {
-	return &EvalOptions{
-		ByValue: true,
-		JSArgs:  append(JSArgs{jsHelperID}, args...),
-		JS:      fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
+func jsHelper(name js.Name, args ...interface{}) *Eval {
+	return &Eval{
+		ByValue:  true,
+		JS:       fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
+		JSArgs:   args,
+		jsHelper: true,
 	}
-}
-
-func formatToJSFunc(js string) string {
-	if detectJSFunction(js) {
-		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
-	}
-	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
 var _ io.Reader = &StreamReader{}

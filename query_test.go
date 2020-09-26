@@ -236,21 +236,21 @@ func (s *S) TestElementTracing() {
 
 func (s *S) TestPageElementByJS_Err() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	_, err := p.ElementByJS(rod.NewEvalOptions(`1`, nil))
+	_, err := p.ElementByJS(rod.NewEval(`1`))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
 func (s *S) TestPageElementsByJS_Err() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
-	_, err := p.ElementsByJS(rod.NewEvalOptions(`[1]`, nil))
+	_, err := p.ElementsByJS(rod.NewEval(`[1]`))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJS(rod.NewEvalOptions(`1`, nil))
+	_, err = p.ElementsByJS(rod.NewEval(`1`))
 	s.EqualError(err, `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
-	_, err = p.ElementsByJS(rod.NewEvalOptions(`foo()`, nil))
+	_, err = p.ElementsByJS(rod.NewEval(`foo()`))
 	s.Error(err)
 
 	s.mc.stubErr(1, proto.RuntimeGetProperties{})
-	_, err = p.ElementsByJS(rod.NewEvalOptions(`[document.body]`, nil))
+	_, err = p.ElementsByJS(rod.NewEval(`[document.body]`))
 	s.Error(err)
 }
 

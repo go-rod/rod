@@ -477,21 +477,15 @@ func Example_hijack_requests() {
 }
 
 // Shows how to share a remote object reference between two Eval
-func Example_reuse_remote_object() {
+func Example_eval_reuse_remote_object() {
 	page := rod.New().MustConnect().MustPage("")
 
-	fn, _ := page.EvalWithOptions(&rod.EvalOptions{JS: `Math.random`})
+	fn := page.MustEvaluate(rod.NewEval(`Math.random`).ByObject())
 
-	res, _ := page.EvalWithOptions(&rod.EvalOptions{
-		ByValue: true,
-		JSArgs: rod.JSArgs{
-			fn.ObjectID, // use remote function as the js argument x
-		},
-		JS: `x => x()`,
-	})
+	res := page.MustEval(`f => f()`, fn)
 
 	// print a random number
-	fmt.Println(res.Value.Num)
+	fmt.Println(res.Num)
 }
 
 // Shows how to update the state of the current page.

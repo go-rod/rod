@@ -132,9 +132,9 @@ func (s *S) TestPageContext() {
 }
 
 func (s *S) TestRelease() {
-	res, err := s.page.EvalWithOptions(rod.NewEvalOptions(`document`, nil).ByObject())
+	res, err := s.page.Evaluate(rod.NewEval(`document`).ByObject())
 	utils.E(err)
-	s.page.MustRelease(res.ObjectID)
+	s.page.MustRelease(res)
 }
 
 func (s *S) TestWindow() {
@@ -284,6 +284,10 @@ func (s *S) TestPageEval() {
 	s.NotEqualValues(1, page.MustEval(`a = () => 1`).Int())
 	s.NotEqualValues(1, page.MustEval(`a = function() { return 1 }`))
 	s.NotEqualValues(1, page.MustEval(`/* ) */`))
+
+	// reuse obj
+	obj := page.MustEvaluate(rod.NewEval(`() => () => 'ok'`).ByObject())
+	s.Equal("ok", page.MustEval(`f => f()`, obj).Str)
 }
 
 func (s *S) TestPageEvalNilContext() {

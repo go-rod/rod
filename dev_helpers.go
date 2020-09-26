@@ -110,17 +110,17 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	root := p.Root()
 	id := utils.RandString(8)
 
-	_, _ = root.EvalWithOptions(jsHelper(js.Overlay, JSArgs{
+	_, _ = root.Evaluate(jsHelper(js.Overlay,
 		id,
 		left,
 		top,
 		width,
 		height,
 		msg,
-	}))
+	))
 
 	remove = func() {
-		_, _ = root.EvalWithOptions(jsHelper(js.RemoveOverlay, JSArgs{id}))
+		_, _ = root.Evaluate(jsHelper(js.RemoveOverlay, id))
 	}
 
 	return
@@ -129,7 +129,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 // ExposeJSHelper to page's window object, so you can debug helper.js in the browser console.
 // Such as run `rod.elementR("div", "ok")` in the browser console to test the Page.ElementR.
 func (p *Page) ExposeJSHelper() *Page {
-	p.MustEval(`rod => window.rod = rod`, proto.RuntimeRemoteObjectID(""))
+	p.MustEval(`rod => window.rod = rod`, p.jsHelperObj)
 	return p
 }
 
@@ -137,13 +137,13 @@ func (p *Page) ExposeJSHelper() *Page {
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
 
-	_, _ = el.EvalWithOptions(jsHelper(js.ElementOverlay, JSArgs{
+	_, _ = el.Evaluate(jsHelper(js.ElementOverlay,
 		id,
 		msg,
-	}))
+	))
 
 	removeOverlay = func() {
-		_, _ = el.EvalWithOptions(jsHelper(js.RemoveOverlay, JSArgs{id}))
+		_, _ = el.Evaluate(jsHelper(js.RemoveOverlay, id))
 	}
 
 	return
@@ -172,7 +172,7 @@ func (el *Element) tryTraceInput(details string) func() {
 
 var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
 
-func (p *Page) tryTraceEval(js string, params JSArgs) func() {
+func (p *Page) tryTraceEval(js string, params []interface{}) func() {
 	if !p.browser.trace {
 		return func() {}
 	}
@@ -180,7 +180,6 @@ func (p *Page) tryTraceEval(js string, params JSArgs) func() {
 	matches := regHelperJS.FindStringSubmatch(js)
 	if matches != nil {
 		js = matches[1]
-		params = params[1:]
 	}
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
@@ -231,11 +230,11 @@ func defaultTraceLog(msg *TraceMsg) {
 }
 
 func (m *Mouse) initMouseTracer() {
-	_, _ = m.page.EvalWithOptions(jsHelper(js.InitMouseTracer, JSArgs{m.id, assets.MousePointer}))
+	_, _ = m.page.Evaluate(jsHelper(js.InitMouseTracer, m.id, assets.MousePointer))
 }
 
 func (m *Mouse) updateMouseTracer() bool {
-	res, err := m.page.EvalWithOptions(jsHelper(js.UpdateMouseTracer, JSArgs{m.id, m.x, m.y}))
+	res, err := m.page.Evaluate(jsHelper(js.UpdateMouseTracer, m.id, m.x, m.y))
 	if err != nil {
 		return true
 	}

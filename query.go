@@ -120,7 +120,7 @@ func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
 // Element retries until an element in the page that matches one of the CSS selectors, then returns
 // the matched element.
 func (p *Page) Element(selectors ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
+	return p.ElementByJS(jsHelper(js.Element).Strings(selectors...))
 }
 
 // ElementR retries until an element in the page that matches one of the pairs, then returns
@@ -128,21 +128,20 @@ func (p *Page) Element(selectors ...string) (*Element, error) {
 // Each pairs is a css selector and a regex. A sample call will look like page.MustElementR("div", "click me").
 // The regex is the js regex, not golang's.
 func (p *Page) ElementR(pairs ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
+	return p.ElementByJS(jsHelper(js.ElementR).Strings(pairs...))
 }
 
 // ElementX retries until an element in the page that matches one of the XPath selectors, then returns
 // the matched element.
 func (p *Page) ElementX(xPaths ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
+	return p.ElementByJS(jsHelper(js.ElementX).Strings(xPaths...))
 }
 
 // ElementByJS returns the element from the return value of the js function.
 // If sleeper is nil, no retry will be performed.
-// thisID is the this value of the js function, when thisID is "", the this context will be the "window".
-// If the js function returns "null", ElementByJS will retry, you can use custom sleeper to make it only
-// retry once.
-func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
+// By default, it will retry until the js function doesn't return null.
+// To customize the retry logic, check the examples of Page.Sleeper.
+func (p *Page) ElementByJS(opts *Eval) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
 
@@ -159,7 +158,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 		removeTrace()
 		removeTrace = remove
 
-		res, err = p.EvalWithOptions(opts.ByObject())
+		res, err = p.Evaluate(opts.ByObject())
 		if err != nil {
 			return true, err
 		}
@@ -179,22 +178,22 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 		return nil, newErr(ErrExpectElement, res, utils.MustToJSON(res))
 	}
 
-	return p.ElementFromObject(res.ObjectID), nil
+	return p.ElementFromObject(res), nil
 }
 
 // Elements returns all elements that match the css selector
 func (p *Page) Elements(selector string) (Elements, error) {
-	return p.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
+	return p.ElementsByJS(jsHelper(js.Elements, selector))
 }
 
 // ElementsX returns all elements that match the XPath selector
 func (p *Page) ElementsX(xpath string) (Elements, error) {
-	return p.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
+	return p.ElementsByJS(jsHelper(js.ElementsX, xpath))
 }
 
 // ElementsByJS returns the elements from the return value of the js
-func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
-	res, err := p.EvalWithOptions(opts.ByObject())
+func (p *Page) ElementsByJS(opts *Eval) (Elements, error) {
+	res, err := p.Evaluate(opts.ByObject())
 	if err != nil {
 		return nil, err
 	}
@@ -203,11 +202,10 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 		return nil, newErr(ErrExpectElements, res, utils.MustToJSON(res))
 	}
 
-	objectID := res.ObjectID
-	defer func() { err = p.Release(objectID) }()
+	defer func() { err = p.Release(res) }()
 
 	list, err := proto.RuntimeGetProperties{
-		ObjectID:      objectID,
+		ObjectID:      res.ObjectID,
 		OwnProperties: true,
 	}.Call(p)
 	if err != nil {
@@ -225,7 +223,7 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 			return nil, newErr(ErrExpectElements, val, utils.MustToJSON(val))
 		}
 
-		elemList = append(elemList, p.ElementFromObject(val.ObjectID))
+		elemList = append(elemList, p.ElementFromObject(val))
 	}
 
 	return elemList, err
@@ -353,7 +351,7 @@ func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) 
 }
 
 // ElementByJS the doc is similar to MustElementByJS but has a callback when a match is found
-func (rc *RaceContext) ElementByJS(opts *EvalOptions, callback func(*Element) error) *RaceContext {
+func (rc *RaceContext) ElementByJS(opts *Eval, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
 		callback,
@@ -405,55 +403,55 @@ func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 
 // Element returns the first child that matches the css selector
 func (el *Element) Element(selectors ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.Element, JSArgsFromString(selectors)))
+	return el.ElementByJS(jsHelper(js.Element).Strings(selectors...))
 }
 
 // ElementX returns the first child that matches the XPath selector
 func (el *Element) ElementX(xPaths ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementX, JSArgsFromString(xPaths)))
+	return el.ElementByJS(jsHelper(js.ElementX).Strings(xPaths...))
 }
 
 // ElementByJS returns the element from the return value of the js
-func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
-	return el.page.Sleeper(nil).ElementByJS(opts.This(el.ObjectID))
+func (el *Element) ElementByJS(opts *Eval) (*Element, error) {
+	return el.page.Sleeper(nil).ElementByJS(opts.This(el.Object))
 }
 
 // Parent returns the parent element in the DOM tree
 func (el *Element) Parent() (*Element, error) {
-	return el.ElementByJS(NewEvalOptions(`this.parentElement`, nil))
+	return el.ElementByJS(NewEval(`this.parentElement`))
 }
 
 // Parents that match the selector
 func (el *Element) Parents(selector string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.Parents, JSArgs{selector}))
+	return el.ElementsByJS(jsHelper(js.Parents, selector))
 }
 
 // Next returns the next sibling element in the DOM tree
 func (el *Element) Next() (*Element, error) {
-	return el.ElementByJS(NewEvalOptions(`this.nextElementSibling`, nil))
+	return el.ElementByJS(NewEval(`this.nextElementSibling`))
 }
 
 // Previous returns the previous sibling element in the DOM tree
 func (el *Element) Previous() (*Element, error) {
-	return el.ElementByJS(NewEvalOptions(`this.previousElementSibling`, nil))
+	return el.ElementByJS(NewEval(`this.previousElementSibling`))
 }
 
 // ElementR returns the first element in the page that matches the CSS selector and its text matches the js regex.
 func (el *Element) ElementR(pairs ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementR, JSArgsFromString(pairs)))
+	return el.ElementByJS(jsHelper(js.ElementR).Strings(pairs...))
 }
 
 // Elements returns all elements that match the css selector
 func (el *Element) Elements(selector string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.Elements, JSArgs{selector}))
+	return el.ElementsByJS(jsHelper(js.Elements, selector))
 }
 
 // ElementsX returns all elements that match the XPath selector
 func (el *Element) ElementsX(xpath string) (Elements, error) {
-	return el.ElementsByJS(jsHelper(js.ElementsX, JSArgs{xpath}))
+	return el.ElementsByJS(jsHelper(js.ElementsX, xpath))
 }
 
 // ElementsByJS returns the elements from the return value of the js
-func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
-	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.ObjectID))
+func (el *Element) ElementsByJS(opts *Eval) (Elements, error) {
+	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.Object))
 }

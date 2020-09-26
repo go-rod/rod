@@ -37,11 +37,11 @@ type Page struct {
 	Keyboard *Keyboard
 	Touch    *Touch
 
-	element          *Element                    // iframe only
-	windowObjectID   proto.RuntimeRemoteObjectID // used as the thisObject when eval js
-	jsHelperObjectID proto.RuntimeRemoteObjectID
-	executionIDs     map[proto.PageFrameID]proto.RuntimeExecutionContextID
-	jsContextLock    *sync.Mutex
+	element       *Element                   // iframe only
+	windowObj     *proto.RuntimeRemoteObject // used as the thisObject when eval js
+	jsHelperObj   *proto.RuntimeRemoteObject
+	executionIDs  map[proto.PageFrameID]proto.RuntimeExecutionContextID
+	jsContextLock *sync.Mutex
 
 	event *goob.Observable
 }
@@ -143,21 +143,21 @@ func (p *Page) Navigate(url string) error {
 // NavigateBack history.
 func (p *Page) NavigateBack() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.EvalWithOptions(NewEvalOptions(`history.back()`, nil).ByUser())
+	_, err := p.Evaluate(NewEval(`history.back()`).ByUser())
 	return err
 }
 
 // NavigateForward history.
 func (p *Page) NavigateForward() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.EvalWithOptions(NewEvalOptions(`history.forward()`, nil).ByUser())
+	_, err := p.Evaluate(NewEval(`history.forward()`).ByUser())
 	return err
 }
 
 // Reload page.
 func (p *Page) Reload() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.EvalWithOptions(NewEvalOptions(`location.reload()`, nil).ByUser())
+	_, err := p.Evaluate(NewEval(`location.reload()`).ByUser())
 	return err
 }
 
@@ -451,13 +451,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.EvalWithOptions(jsHelper(js.WaitIdle, JSArgs{timeout.Seconds()}))
+	_, err = p.Evaluate(jsHelper(js.WaitIdle, timeout.Seconds()))
 	return err
 }
 
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
-	_, err := p.EvalWithOptions(jsHelper(js.WaitLoad, nil))
+	_, err := p.Evaluate(jsHelper(js.WaitLoad))
 	if err != nil {
 		return err
 	}
@@ -471,7 +471,7 @@ func (p *Page) WaitLoad() error {
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalWithOptions(jsHelper(js.AddScriptTag, JSArgs{id, url, content}))
+	_, err := p.Evaluate(jsHelper(js.AddScriptTag, id, url, content))
 	return err
 }
 
@@ -479,7 +479,7 @@ func (p *Page) AddScriptTag(url, content string) error {
 func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.EvalWithOptions(jsHelper(js.AddStyleTag, JSArgs{id, url, content}))
+	_, err := p.Evaluate(jsHelper(js.AddStyleTag, id, url, content))
 	return err
 }
 
@@ -522,22 +522,22 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 	return
 }
 
-// Eval js on the page. It's just a shortcut for Page.EvalWithOptions.
+// Eval js on the page. It's just a shortcut for Page.Evaluate.
 func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return p.EvalWithOptions(NewEvalOptions(js, jsArgs))
+	return p.Evaluate(NewEval(js, jsArgs...))
 }
 
-// EvalWithOptions evaluates js on the page.
-func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
+// Evaluate js on the page.
+func (p *Page) Evaluate(opts *Eval) (*proto.RuntimeRemoteObject, error) {
 	backoff := utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-	objectID := opts.ThisID
+	this := opts.ThisObj
 	var err error
 	var res *proto.RuntimeCallFunctionOnResult
 
 	// js context will be invalid if a frame is reloaded or not ready, then the isNilContextErr
 	// will be true, then we retry the eval again.
 	err = utils.Retry(p.ctx, backoff, func() (bool, error) {
-		if p.getWindowObjectID() == "" || opts.ThisID == "" {
+		if p.getWindowObj() == nil || opts.ThisObj == nil {
 			err := p.initJS(false)
 			if err != nil {
 				if isNilContextErr(err) {
@@ -546,32 +546,19 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 				return true, err
 			}
 		}
-		if opts.ThisID == "" {
-			objectID = p.getWindowObjectID()
-		}
-
-		// construct arguments
-		args := []*proto.RuntimeCallArgument{}
-		for _, arg := range opts.JSArgs {
-			if id, ok := arg.(proto.RuntimeRemoteObjectID); ok { // remote object
-				if id == jsHelperID { // if it's a rod js helper object
-					id = p.getJSHelperObjectID()
-				}
-				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(nil), ObjectID: id})
-			} else { // plain json data
-				args = append(args, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
-			}
+		if opts.ThisObj == nil {
+			this = p.getWindowObj()
 		}
 
 		res, err = proto.RuntimeCallFunctionOn{
-			ObjectID:            objectID,
+			ObjectID:            this.ObjectID,
 			AwaitPromise:        true,
 			ReturnByValue:       opts.ByValue,
 			UserGesture:         opts.UserGesture,
-			FunctionDeclaration: formatToJSFunc(opts.JS),
-			Arguments:           args,
+			FunctionDeclaration: opts.formatToJSFunc(),
+			Arguments:           opts.formatArgs(p.getJSHelperObj()),
 		}.Call(p)
-		if opts.ThisID == "" && isNilContextErr(err) {
+		if opts.ThisObj == nil && isNilContextErr(err) {
 			_ = p.initJS(true)
 			return false, nil
 		}
@@ -592,7 +579,7 @@ func (p *Page) EvalWithOptions(opts *EvalOptions) (*proto.RuntimeRemoteObject, e
 }
 
 // Wait js function until it returns true
-func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params JSArgs) error {
+func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interface{}) error {
 	removeTrace := func() {}
 	defer removeTrace()
 
@@ -601,7 +588,7 @@ func (p *Page) Wait(thisID proto.RuntimeRemoteObjectID, js string, params JSArgs
 		removeTrace()
 		removeTrace = remove
 
-		res, err := p.EvalWithOptions(NewEvalOptions(js, params).This(thisID))
+		res, err := p.Evaluate(NewEval(js, params...).This(this))
 		if err != nil {
 			return true, err
 		}
@@ -628,24 +615,24 @@ func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (proto.JSON, error) 
 }
 
 // ElementFromObject creates an Element from the remote object id.
-func (p *Page) ElementFromObject(id proto.RuntimeRemoteObjectID) *Element {
+func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) *Element {
 	return (&Element{
-		sleeper:  p.sleeper,
-		page:     p,
-		ObjectID: id,
+		sleeper: p.sleeper,
+		page:    p,
+		Object:  obj,
 	}).Context(p.ctx)
 }
 
 // ElementFromNode creates an Element from the node id
 func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
-	objID, err := p.resolveNode(id)
+	obj, err := p.resolveNode(id)
 	if err != nil {
 		return nil, err
 	}
 
-	el := p.ElementFromObject(objID)
+	el := p.ElementFromObject(obj)
 
-	err = el.ensureParentPage(id, objID)
+	err = el.ensureParentPage(id, obj)
 	if err != nil {
 		return nil, err
 	}
@@ -678,9 +665,11 @@ func (p *Page) ElementFromPoint(x, y int64) (*Element, error) {
 	return p.ElementFromNode(node.NodeID)
 }
 
-// Release the remote object
-func (p *Page) Release(objectID proto.RuntimeRemoteObjectID) error {
-	err := proto.RuntimeReleaseObject{ObjectID: objectID}.Call(p)
+// Release the remote object. Usually, you don't need to call it.
+// When a page is closed or reloaded, all remote objects will be released automatically.
+// It's useful if the page never closes or reloads.
+func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
+	err := proto.RuntimeReleaseObject{ObjectID: obj.ObjectID}.Call(p)
 	return err
 }
 
@@ -719,7 +708,7 @@ func (p *Page) initJS(force bool) error {
 	p.jsContextLock.Lock()
 	defer p.jsContextLock.Unlock()
 
-	if !force && p.windowObjectID != "" {
+	if !force && p.windowObj != nil {
 		return nil
 	}
 
@@ -739,8 +728,8 @@ func (p *Page) initJS(force bool) error {
 		return err
 	}
 
-	p.windowObjectID = window.Result.ObjectID
-	p.jsHelperObjectID = helper.Result.ObjectID
+	p.windowObj = window.Result
+	p.jsHelperObj = helper.Result
 
 	return nil
 }
@@ -778,16 +767,16 @@ func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, erro
 	return world.ExecutionContextID, nil
 }
 
-func (p *Page) getWindowObjectID() proto.RuntimeRemoteObjectID {
+func (p *Page) getWindowObj() *proto.RuntimeRemoteObject {
 	p.jsContextLock.Lock()
 	defer p.jsContextLock.Unlock()
-	return p.windowObjectID
+	return p.windowObj
 }
 
-func (p *Page) getJSHelperObjectID() proto.RuntimeRemoteObjectID {
+func (p *Page) getJSHelperObj() *proto.RuntimeRemoteObject {
 	p.jsContextLock.Lock()
 	defer p.jsContextLock.Unlock()
-	return p.jsHelperObjectID
+	return p.jsHelperObj
 }
 
 func (p *Page) enableNodeQuery() {
@@ -796,10 +785,10 @@ func (p *Page) enableNodeQuery() {
 	_, _ = proto.DOMGetDocument{}.Call(p)
 }
 
-func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID, error) {
+func (p *Page) resolveNode(nodeID proto.DOMNodeID) (*proto.RuntimeRemoteObject, error) {
 	ctxID, err := p.getExecutionID(false)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	node, err := proto.DOMResolveNode{
@@ -807,16 +796,16 @@ func (p *Page) resolveNode(nodeID proto.DOMNodeID) (proto.RuntimeRemoteObjectID,
 		ExecutionContextID: ctxID,
 	}.Call(p)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return node.Object.ObjectID, nil
+	return node.Object, nil
 }
 
-func (p *Page) hasElement(id proto.RuntimeRemoteObjectID) (bool, error) {
+func (p *Page) hasElement(obj *proto.RuntimeRemoteObject) (bool, error) {
 	// We don't have a good way to detect if a node is inside an iframe.
 	// Currently this is most efficient way to do it.
-	_, err := p.Eval("() => {}", id)
+	_, err := p.Eval("() => {}", obj)
 	if err == nil {
 		return true, nil
 	}
