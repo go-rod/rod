@@ -6,8 +6,6 @@ labels: enhance
 assignees: ''
 ---
 
-**Is your feature request related to a problem? Please describe.**
-Description of what you want to solve.
+## Is your feature request related to a problem
 
-**Describe the solution you'd like**
-Description of what you want to happen.
+## Describe the solution you'd like
