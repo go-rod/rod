@@ -260,7 +260,6 @@ func (b *Browser) eachEvent(
 			panic("can't use wait function twice")
 		}
 
-		// Check each event, if an event matches the the type of the arg call the fn with the even.
 		goob.Each(stream, func(e *cdp.Event) bool {
 			for i, eType := range eventTypes {
 				eVal := reflect.New(eType)
