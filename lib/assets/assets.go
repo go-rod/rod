@@ -120,7 +120,7 @@ const Helper = `() => {
 
   rect() {
     const b = ensureElement(this).getBoundingClientRect()
-		return {x: b.x, y: b.y, width: b.width, height: b.height}
+    return { x: b.x, y: b.y, width: b.width, height: b.height }
   },
 
   async overlay(id, left, top, width, height, msg) {
@@ -241,19 +241,32 @@ const Helper = `() => {
     this.select()
   },
 
-  select(selectors) {
-    selectors.forEach((s) => {
-      Array.from(this.options).find((el) => {
-        try {
-          if (el.innerText.includes(s) || el.matches(s)) {
-            el.selected = true
-            return true
-          }
-        } catch (e) {
-          null
-        }
-      })
+  select(selectors, selected, type) {
+    let matchers
+    switch (type) {
+      case 'regex':
+        matchers = selectors.map((s) => {
+          const reg = new RegExp(s)
+          return (el) => reg.test(el.innerText)
+        })
+        break
+      case 'css-selector':
+        matchers = selectors.map((s) => (el) => el.matches(s))
+        break
+      default:
+        matchers = selectors.map((s) => (el) => el.innerText.includes(s))
+        break
+    }
+
+    const opts = Array.from(this.options)
+    matchers.forEach((s) => {
+      const el = opts.find(s)
+      if (el) {
+        el.selected = selected
+        return
+      }
     })
+
     this.dispatchEvent(new Event('input', { bubbles: true }))
     this.dispatchEvent(new Event('change', { bubbles: true }))
   },

@@ -690,7 +690,7 @@ func (el *Element) MustBlur() *Element {
 
 // MustSelect is similar to Select
 func (el *Element) MustSelect(selectors ...string) *Element {
-	utils.E(el.Select(selectors))
+	utils.E(el.Select(selectors, true, SelectorTypeText))
 	return el
 }
 

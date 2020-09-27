@@ -13,6 +13,18 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
+// SelectorType enum
+type SelectorType string
+
+const (
+	// SelectorTypeRegex type
+	SelectorTypeRegex SelectorType = "regex"
+	// SelectorTypeCSSSector type
+	SelectorTypeCSSSector SelectorType = "css-selector"
+	// SelectorTypeText type
+	SelectorTypeText SelectorType = "text"
+)
+
 // Elements provides some helpers to deal with element list
 type Elements []*Element
 

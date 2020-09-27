@@ -303,13 +303,39 @@ func (s *S) TestBlur() {
 	s.Equal("ok", *el.MustAttribute("a"))
 }
 
+func (s *S) TestSelectQuery() {
+	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
+	el := p.MustElement("select")
+	err := el.Select([]string{`[value="c"]`}, true, rod.SelectorTypeCSSSector)
+	utils.E(err)
+
+	s.EqualValues(2, el.MustEval("this.selectedIndex").Int())
+}
+
+func (s *S) TestSelectQueryNum() {
+	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
+	el := p.MustElement("select")
+	el.MustSelect("123")
+
+	s.EqualValues(-1, el.MustEval("this.selectedIndex").Int())
+}
+
 func (s *S) TestSelectOptions() {
 	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	el.MustSelect("B", "C")
-
 	s.Equal("B,C", el.MustText())
 	s.EqualValues(1, el.MustProperty("selectedIndex").Int())
+
+	// unselect with regex
+	err := el.Select([]string{`^B$`}, false, rod.SelectorTypeRegex)
+	utils.E(err)
+	s.Equal("C", el.MustText())
+
+	// unselect with css selector
+	err = el.Select([]string{`[value="c"]`}, false, rod.SelectorTypeCSSSector)
+	utils.E(err)
+	s.Equal("", el.MustText())
 }
 
 func (s *S) TestMatches() {
@@ -377,22 +403,6 @@ func (s *S) TestSetFiles() {
 	list := el.MustEval("Array.from(this.files).map(f => f.name)").Array()
 	s.Len(list, 2)
 	s.Equal("alert.html", list[1].String())
-}
-
-func (s *S) TestSelectQuery() {
-	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
-	el := p.MustElement("select")
-	el.MustSelect("[value=c]")
-
-	s.EqualValues(2, el.MustEval("this.selectedIndex").Int())
-}
-
-func (s *S) TestSelectQueryNum() {
-	p := s.page.MustNavigate(srcFile("fixtures/input.html"))
-	el := p.MustElement("select")
-	el.MustSelect("123")
-
-	s.EqualValues(-1, el.MustEval("this.selectedIndex").Int())
 }
 
 func (s *S) TestEnter() {
@@ -611,7 +621,7 @@ func (s *S) TestElementErrors() {
 	err = el.Context(ctx).Input("a")
 	s.Error(err)
 
-	err = el.Context(ctx).Select([]string{"a"})
+	err = el.Context(ctx).Select([]string{"a"}, true, rod.SelectorTypeText)
 	s.Error(err)
 
 	err = el.Context(ctx).WaitStable(0)

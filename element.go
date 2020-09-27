@@ -233,8 +233,8 @@ func (el *Element) Blur() error {
 	return err
 }
 
-// Select the children option elements that match the selectors, the selector can be text content or css selector
-func (el *Element) Select(selectors []string) error {
+// Select the children option elements that match the selectors.
+func (el *Element) Select(selectors []string, selected bool, t SelectorType) error {
 	err := el.WaitVisible()
 	if err != nil {
 		return err
@@ -243,7 +243,7 @@ func (el *Element) Select(selectors []string) error {
 	defer el.tryTraceInput(fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.Evaluate(jsHelper(js.Select, selectors).ByUser())
+	_, err = el.Evaluate(jsHelper(js.Select, selectors, selected, t).ByUser())
 	return err
 }
 
