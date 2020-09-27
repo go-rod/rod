@@ -130,9 +130,9 @@ func (s *S) TestMonitor() {
 	defer b.MustClose()
 	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	b, cancel := b.WithCancel()
 	defer cancel()
-	host := b.Context(ctx).ServeMonitor("")
+	host := b.ServeMonitor("")
 
 	page := s.page.MustNavigate(host)
 	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))

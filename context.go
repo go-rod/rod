@@ -33,6 +33,12 @@ func (b *Browser) CancelTimeout() *Browser {
 	return b.Context(val.parent)
 }
 
+// WithCancel returns a clone with a context cancel function
+func (b *Browser) WithCancel() (*Browser, func()) {
+	ctx, cancel := context.WithCancel(b.ctx)
+	return b.Context(ctx), cancel
+}
+
 // Sleeper for chained sub-operations
 func (b *Browser) Sleeper(sleeper func() utils.Sleeper) *Browser {
 	newObj := *b
@@ -60,6 +66,12 @@ func (p *Page) CancelTimeout() *Page {
 	return p.Context(val.parent)
 }
 
+// WithCancel returns a clone with a context cancel function
+func (p *Page) WithCancel() (*Page, func()) {
+	ctx, cancel := context.WithCancel(p.ctx)
+	return p.Context(ctx), cancel
+}
+
 // Sleeper for chained sub-operations
 func (p *Page) Sleeper(sleeper func() utils.Sleeper) *Page {
 	newObj := *p
@@ -85,6 +97,12 @@ func (el *Element) CancelTimeout() *Element {
 	val := el.ctx.Value(timeoutContextKey{}).(*timeoutContextVal)
 	val.cancel()
 	return el.Context(val.parent)
+}
+
+// WithCancel returns a clone with a context cancel function
+func (el *Element) WithCancel() (*Element, func()) {
+	ctx, cancel := context.WithCancel(el.ctx)
+	return el.Context(ctx), cancel
 }
 
 // Sleeper for chained sub-operations

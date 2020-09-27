@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -129,9 +130,12 @@ func Example_timeout_handling() {
 	}
 	{
 		// Use this way you can customize your own way to cancel long-running task
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		page.Context(ctx).MustElement("a")
-		cancel()
+		page, cancel := page.WithCancel()
+		go func() {
+			time.Sleep(time.Duration(rand.Int())) // cancel after randomly time
+			cancel()
+		}()
+		page.MustElement("a")
 	}
 }
 

@@ -235,10 +235,10 @@ func (p *Page) Close() error {
 	}
 
 	success := true
-	ctx, cancel := context.WithCancel(p.ctx)
+	p, cancel := p.WithCancel()
 	defer cancel()
 
-	wait := p.Context(ctx).EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
+	wait := p.EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
 		return e.TargetID == e.TargetID
 	}, func(e *proto.PageJavascriptDialogClosed) bool {
 		success = e.Result
@@ -328,17 +328,15 @@ func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 
 // WaitOpen waits for the next new page opened by the current one
 func (p *Page) WaitOpen() func() (*Page, error) {
-	b := p.browser.Context(p.ctx)
 	var targetID proto.TargetTargetID
 
-	ctx, cancel := context.WithCancel(p.ctx)
-	wait := b.Context(ctx).EachEvent(func(e *proto.TargetTargetCreated) bool {
+	b := p.browser.Context(p.ctx)
+	wait := b.EachEvent(func(e *proto.TargetTargetCreated) bool {
 		targetID = e.TargetInfo.TargetID
 		return e.TargetInfo.OpenerID == p.TargetID
 	})
 
 	return func() (*Page, error) {
-		defer cancel()
 		wait()
 		return b.PageFromTarget(targetID)
 	}
@@ -502,7 +500,7 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 	}
 
 	callback = make(chan string)
-	ctx, cancel := context.WithCancel(p.ctx)
+	p, cancel := p.WithCancel()
 	stop = func() {
 		cancel()
 		_ = proto.RuntimeRemoveBinding{Name: name}.Call(p)
@@ -511,7 +509,7 @@ func (p *Page) Expose(name string) (callback chan string, stop func(), err error
 	go p.EachEvent(func(e *proto.RuntimeBindingCalled) bool {
 		if e.Name == name {
 			select {
-			case <-ctx.Done():
+			case <-p.ctx.Done():
 				return true
 			case callback <- e.Payload:
 			}

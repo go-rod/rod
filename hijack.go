@@ -375,9 +375,9 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 
 	r := p.HijackRequests()
 
-	ctx, cancel := context.WithCancel(p.ctx)
+	p, cancel := p.WithCancel()
 	downloading := &proto.PageDownloadWillBegin{}
-	waitDownload := p.Context(ctx).WaitEvent(downloading)
+	waitDownload := p.WaitEvent(downloading)
 
 	return func() (http.Header, []byte, error) {
 		defer enable()

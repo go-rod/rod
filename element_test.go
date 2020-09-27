@@ -139,6 +139,8 @@ func (s *S) TestMouseMoveErr() {
 func (s *S) TestElementContext() {
 	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button").Timeout(time.Hour).CancelTimeout()
+	el, cancel := el.WithCancel()
+	defer cancel()
 	el.Sleeper(rod.DefaultSleeper).MustClick()
 }
 
