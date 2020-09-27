@@ -40,7 +40,7 @@ func TestLaunchOptions(t *testing.T) {
 
 	// recover
 	defer func() {
-		defaults.ResetWithEnv()
+		defaults.ResetWithEnv("")
 		isInDocker = utils.FileExists("/.dockerenv")
 	}()
 

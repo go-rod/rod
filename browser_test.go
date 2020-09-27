@@ -152,7 +152,7 @@ func (s *S) TestMonitor() {
 
 func (s *S) TestMonitorErr() {
 	defaults.Monitor = "abc"
-	defer defaults.ResetWithEnv()
+	defer defaults.ResetWithEnv("")
 
 	l := launcher.New()
 	u := l.MustLaunch()

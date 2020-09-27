@@ -13,7 +13,7 @@ func TestBasic(t *testing.T) {
 	URL = "test"
 	Monitor = "test"
 
-	ResetWithEnv()
+	ResetWithEnv("")
 	parse("")
 	assert.False(t, Show)
 	assert.False(t, Devtools)
@@ -43,4 +43,20 @@ func TestBasic(t *testing.T) {
 	assert.Panics(t, func() {
 		parse("a")
 	})
+}
+
+func TestDotFile(t *testing.T) {
+	ResetWithEnv("")
+	parse(`
+
+show
+
+ port=9999
+dir=path =to file
+
+	`)
+
+	assert.True(t, Show)
+	assert.Equal(t, "9999", Port)
+	assert.Equal(t, "path =to file", Dir)
 }

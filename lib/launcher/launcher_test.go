@@ -46,7 +46,7 @@ func TestDownloadWithMirror(t *testing.T) {
 
 func TestLaunch(t *testing.T) {
 	defaults.Proxy = "test.com"
-	defer func() { defaults.ResetWithEnv() }()
+	defer func() { defaults.ResetWithEnv("") }()
 
 	l := launcher.New()
 	defer l.Kill()

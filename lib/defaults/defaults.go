@@ -1,16 +1,11 @@
-// Package defaults holds some commonly used options parsed from env var "rod".
-// Set them will set the default value of options used by rod.
-// Each value is separated by a ",", key and value are separated by "=",
-// For example:
-//
-//    rod=show,trace,slow,monitor
-//
-//    rod=show,trace,slow=1s,port=9222,monitor=:9223
-//
+// Package defaults of commonly used options parsed from environment.
+// Check ResetWithEnv for details.
 package defaults
 
 import (
+	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -52,7 +47,7 @@ var CDP bool
 
 // Parse the flags
 func init() {
-	ResetWithEnv()
+	ResetWithEnv("")
 }
 
 // Reset all flags to their init values.
@@ -70,10 +65,36 @@ func Reset() {
 	Proxy = ""
 }
 
-// ResetWithEnv all flags by the value of the rod env var.
-func ResetWithEnv() {
+// ResetWithEnv set the default value of options used by rod.
+// It will be called in an init() , so you don't have to call it manually.
+// The followings will be parsed and merged, later overrides previous:
+//
+//     os.Open(".rod")
+//     os.Getenv("rod")
+//     env
+//
+// Each value is separated by a ",", key and value are separated by "=",
+// For example, on unix-like OS:
+//
+//    rod="show,trace,slow,monitor" go run main.go
+//
+//    rod="slow=1s,dir=path/has /space,monitor=:9223" go run main.go
+//
+// An example of ".rod" file content:
+//
+//    slow=1s
+//    dir=path/has /space
+//    monitor=:9223
+//
+func ResetWithEnv(env string) {
 	Reset()
+
+	b, _ := ioutil.ReadFile(".rod")
+	parse(string(b))
+
 	parse(os.Getenv("rod"))
+
+	parse(env)
 }
 
 // parse options and set them globally
@@ -82,13 +103,26 @@ func parse(options string) {
 		return
 	}
 
-	for _, f := range strings.Split(options, ",") {
-		kv := strings.Split(f, "=")
+	reg := regexp.MustCompile(`[,\r\n]`)
+
+	for _, str := range reg.Split(options, -1) {
+		kv := strings.SplitN(str, "=", 2)
+
+		v := ""
 		if len(kv) == 2 {
-			rules[kv[0]](kv[1])
-		} else {
-			rules[kv[0]]("")
+			v = kv[1]
 		}
+
+		n := strings.TrimSpace(kv[0])
+		if n == "" {
+			continue
+		}
+
+		f := rules[n]
+		if f == nil {
+			panic("unknown rod env option: " + n)
+		}
+		f(v)
 	}
 }
 
