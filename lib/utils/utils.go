@@ -206,6 +206,58 @@ func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duratio
 	}
 }
 
+// IdleCounter is similar to sync.WaitGroup but it only resolves if no jobs for specified duration.
+type IdleCounter struct {
+	sync.Mutex
+	job      int
+	duration time.Duration
+	tmr      *time.Timer
+}
+
+// NewIdleCounter ...
+func NewIdleCounter(d time.Duration) *IdleCounter {
+	tmr := time.NewTimer(time.Hour)
+	tmr.Stop()
+
+	return &IdleCounter{
+		duration: d,
+		tmr:      tmr,
+	}
+}
+
+// Add ...
+func (de *IdleCounter) Add() {
+	de.Lock()
+	defer de.Unlock()
+
+	de.tmr.Stop()
+	de.job++
+}
+
+// Done ...
+func (de *IdleCounter) Done() {
+	de.Lock()
+	defer de.Unlock()
+
+	de.job--
+	if de.job == 0 {
+		de.tmr.Reset(de.duration)
+	}
+	if de.job < 0 {
+		panic("all jobs are already done")
+	}
+}
+
+// Wait ...
+func (de *IdleCounter) Wait(ctx context.Context) {
+	de.tmr.Reset(de.duration)
+	select {
+	case <-ctx.Done():
+		de.tmr.Stop()
+	case <-de.tmr.C:
+	}
+}
+
 // Retry fn and sleeper until fn returns true or s returns error
 func Retry(ctx context.Context, s Sleeper, fn func() (stop bool, err error)) error {
 	for {
@@ -225,26 +277,6 @@ var chPause = make(chan struct{})
 // Pause the goroutine forever
 func Pause() {
 	<-chPause
-}
-
-// IsSyncMapEmpty helper
-func IsSyncMapEmpty(s *sync.Map) bool {
-	isEmpty := true
-	s.Range(func(key, value interface{}) bool {
-		isEmpty = false
-		return false
-	})
-	return isEmpty
-}
-
-// SyncMapToMap convertor
-func SyncMapToMap(s *sync.Map) map[string]interface{} {
-	m := map[string]interface{}{}
-	s.Range(func(key, value interface{}) bool {
-		m[fmt.Sprintf("%v", key)] = value
-		return false
-	})
-	return m
 }
 
 // MustToJSONBytes encode data to json bytes

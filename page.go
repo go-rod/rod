@@ -403,48 +403,37 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 		includes = []string{""}
 	}
 
-	ctx, cancel := context.WithCancel(p.ctx)
+	p, cancel := p.WithCancel()
+	match := genRegMatcher(includes, excludes)
+	waitlist := map[proto.NetworkRequestID]string{}
+	idleCounter := utils.NewIdleCounter(d)
+	update := p.tryTraceReq(includes, excludes)
 
-	filter := genRegFilter(includes, excludes)
-	reqList := &sync.Map{}
-
-	var timeout *time.Timer
-
-	reset := func(id proto.NetworkRequestID) {
-		_, has := reqList.Load(id)
-		if !has {
-			return
-		}
-
-		reqList.Delete(id)
-
-		// If there's no more on going requests, restart the stopped timer
-		if utils.IsSyncMapEmpty(reqList) {
-			timeout.Reset(d)
+	checkDone := func(id proto.NetworkRequestID) {
+		if _, has := waitlist[id]; has {
+			delete(waitlist, id)
+			update(waitlist)
+			idleCounter.Done()
 		}
 	}
 
-	wait := p.browser.eachEvent(ctx, p.SessionID, func(sent *proto.NetworkRequestWillBeSent) {
-		if !filter(sent.Request.URL) {
-			return
+	wait := p.EachEvent(func(sent *proto.NetworkRequestWillBeSent) {
+		if match(sent.Request.URL) {
+			waitlist[sent.RequestID] = sent.Request.URL
+			update(waitlist)
+			idleCounter.Add()
 		}
-		timeout.Stop()
-		reqList.Store(sent.RequestID, sent.Request.URL)
-	}, func(finished *proto.NetworkLoadingFinished) { // not use responseReceived because https://crbug.com/883475
-		reset(finished.RequestID)
-	}, func(failed *proto.NetworkLoadingFailed) {
-		reset(failed.RequestID)
+	}, func(e *proto.NetworkLoadingFinished) {
+		checkDone(e.RequestID)
+	}, func(e *proto.NetworkLoadingFailed) {
+		checkDone(e.RequestID)
 	})
 
 	return func() {
-		p.tryTraceReq(ctx, reqList, includes, excludes)
-		timeout = time.NewTimer(d)
-
 		go func() {
-			<-timeout.C
+			idleCounter.Wait(p.ctx)
 			cancel()
 		}()
-
 		wait()
 	}
 }

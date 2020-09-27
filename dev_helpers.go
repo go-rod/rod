@@ -5,14 +5,12 @@
 package rod
 
 import (
-	"context"
 	"fmt"
 	"html"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
@@ -195,9 +193,9 @@ func (p *Page) tryTraceEval(js string, params []interface{}) func() {
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
-func (p *Page) tryTraceReq(ctx context.Context, reqList *sync.Map, includes, excludes []string) {
+func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRequestID]string) {
 	if !p.browser.trace {
-		return
+		return func(map[proto.NetworkRequestID]string) {}
 	}
 
 	msg := &TraceMsg{TraceTypeWaitRequestsIdle, map[string][]string{
@@ -207,22 +205,35 @@ func (p *Page) tryTraceReq(ctx context.Context, reqList *sync.Map, includes, exc
 	p.browser.traceLog(msg)
 	cleanup := p.Overlay(0, 0, 300, 0, msg.String())
 
+	ch := make(chan map[string]string)
+	update := func(list map[proto.NetworkRequestID]string) {
+		clone := map[string]string{}
+		for k, v := range list {
+			clone[string(k)] = v
+		}
+		ch <- clone
+	}
+
 	go func() {
+		var waitlist map[string]string
 		t := time.NewTicker(time.Second)
 		for {
 			select {
-			case <-ctx.Done():
+			case <-p.ctx.Done():
 				t.Stop()
 				cleanup()
 				return
+			case waitlist = <-ch:
 			case <-t.C:
 				p.browser.traceLog(&TraceMsg{
 					TraceTypeWaitRequests,
-					utils.SyncMapToMap(reqList),
+					waitlist,
 				})
 			}
 		}
 	}()
+
+	return update
 }
 
 func defaultTraceLog(msg *TraceMsg) {

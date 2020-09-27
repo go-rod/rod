@@ -396,39 +396,55 @@ func (s *S) TestPageWaitRequestIdle() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
-	sleep := 2 * time.Second
-	timeout, cancel := context.WithTimeout(context.Background(), sleep)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+	sleep := 2 * time.Second
 
 	mux.HandleFunc("/r1", func(w http.ResponseWriter, r *http.Request) {})
 	mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) {
-		<-timeout.Done()
+		utils.E(w.Write([]byte("part")))
+		ctx, cancel := context.WithTimeout(ctx, sleep)
+		defer cancel()
+		<-ctx.Done()
 	})
-	mux.HandleFunc("/", httpHTML(`<html>
-		<button>click</button>
-		<script>
-			document.querySelector("button").onclick = () => {
-				fetch('/r2').then(r => r.text())
-				fetch('/r1')
+	mux.HandleFunc("/r3", func(w http.ResponseWriter, r *http.Request) {})
+	mux.HandleFunc("/", httpHTML(`<html></html>`))
+
+	page := s.browser.MustPage(url).MustWaitLoad()
+	defer page.MustClose()
+
+	code := ` () => {
+		fetch('/r2').then(r => r.text())
+		fetch('/r1')
+		fetch('/r3')
+	}`
+
+	waitReq := ""
+	s.browser.TraceLog(func(tm *rod.TraceMsg) {
+		if tm.Type == rod.TraceTypeWaitRequests {
+			list := tm.Details.(map[string]string)
+			for _, v := range list {
+				waitReq = v
+				break
 			}
-		</script>
-	</html>`))
+		}
+	})
+	defer s.browser.TraceLog(nil)
 
-	page := s.page.MustNavigate(url)
-
-	wait := page.MustWaitRequestIdle("/r1")
-	start := time.Now()
-	page.MustElement("button").MustClick()
 	s.browser.Trace(true)
-	wait()
+	wait := page.MustWaitRequestIdle("/r1")
 	s.browser.Trace(defaults.Trace)
+	page.MustEval(code)
+	start := time.Now()
+	wait()
 	s.Greater(time.Since(start), sleep)
+	s.Regexp("/r2$", waitReq)
 
 	wait = page.MustWaitRequestIdle("/r2")
-	page.MustElement("button").MustClick()
+	page.MustEval(code)
 	start = time.Now()
 	wait()
-	s.Less(time.Since(start), sleep)
+	s.Less(time.Since(start), time.Second)
 
 	s.Panics(func() {
 		wait()

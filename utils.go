@@ -212,7 +212,7 @@ func isNilContextErr(err error) bool {
 	return ok && cdpErr.Code == -32000 && cdpErr.Message != "Argument should belong to the same JavaScript world as target object"
 }
 
-func genRegFilter(includes, excludes []string) func(string) bool {
+func genRegMatcher(includes, excludes []string) func(string) bool {
 	regIncludes := make([]*regexp.Regexp, len(includes))
 	for i, p := range includes {
 		regIncludes[i] = regexp.MustCompile(p)

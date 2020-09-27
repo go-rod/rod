@@ -10,7 +10,6 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
-	"sync"
 	"testing"
 	"time"
 
@@ -176,18 +175,6 @@ func TestMustToJSON(t *T) {
 	assert.Equal(t, `{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
 }
 
-func TestIsSyncMapEmpty(t *testing.T) {
-	m := &sync.Map{}
-	m.Store("a", 1)
-	assert.False(t, utils.IsSyncMapEmpty(m))
-}
-
-func TestSyncMapToMap(t *testing.T) {
-	m := &sync.Map{}
-	m.Store("a", 1)
-	assert.Equal(t, `{"a":1}`, utils.MustToJSON(utils.SyncMapToMap(m)))
-}
-
 func TestFileExists(t *T) {
 	assert.Equal(t, false, utils.FileExists("."))
 	assert.Equal(t, true, utils.FileExists("utils.go"))
@@ -237,4 +224,41 @@ func TestReader(t *T) {
 
 func TestEscapeGoString(t *testing.T) {
 	assert.Equal(t, "`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
+}
+
+func TestIdleCounter(t *testing.T) {
+	utils.All(func() {
+		c := utils.NewIdleCounter(100 * time.Millisecond)
+
+		go func() {
+			c.Add()
+			time.Sleep(300 * time.Millisecond)
+			c.Done()
+		}()
+
+		ctx, cancel := context.WithCancel(context.Background())
+
+		start := time.Now()
+		c.Wait(ctx)
+		d := time.Since(start)
+		assert.Greater(t, d, 400*time.Millisecond)
+		assert.Less(t, d, 450*time.Millisecond)
+
+		assert.Panics(t, func() {
+			c.Done()
+		})
+
+		cancel()
+		c.Wait(ctx)
+	}, func() {
+		c := utils.NewIdleCounter(100 * time.Millisecond)
+		start := time.Now()
+		c.Wait(context.Background())
+		assert.Less(t, time.Since(start), 150*time.Millisecond)
+	}, func() {
+		c := utils.NewIdleCounter(0)
+		start := time.Now()
+		c.Wait(context.Background())
+		assert.Less(t, time.Since(start), 10*time.Millisecond)
+	})()
 }

@@ -22,10 +22,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: test
-        run: |
-          go generate
-          godev -m 100
+      - run: go generate
+
+      - run: godev -m 100
 
       - uses: codecov/codecov-action@v1
         if: ${{ always() }}
