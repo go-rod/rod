@@ -42,7 +42,7 @@ const MonitorPage = {{.monitorPage}}
 }
 
 func wrapHelperJS(js string) string {
-	return "`() => {\n` + " + js + " + `\nreturn rod }\n\n// # sourceURL=__rod_helper__\n`"
+	return "`() => {\n` + " + js + " + `\nreturn rod }\n\n//# sourceURL=__rod_helper__\n`"
 }
 
 func get(path string) string {
