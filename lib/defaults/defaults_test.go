@@ -9,21 +9,24 @@ import (
 
 func TestBasic(t *testing.T) {
 	Show = true
+	Devtools = true
 	URL = "test"
 	Monitor = "test"
 
 	ResetWithEnv()
 	parse("")
 	assert.False(t, Show)
+	assert.False(t, Devtools)
 	assert.Equal(t, "", Monitor)
 	assert.Equal(t, "", URL)
 
-	parse("show,trace,slow=2s,port=8080,dir=tmp," +
+	parse("show,devtools,trace,slow=2s,port=8080,dir=tmp," +
 		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +
 		"proxy=localhost:8080",
 	)
 
 	assert.True(t, Show)
+	assert.True(t, Devtools)
 	assert.True(t, Trace)
 	assert.Equal(t, 2*time.Second, Slow)
 	assert.Equal(t, "8080", Port)

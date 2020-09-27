@@ -29,6 +29,9 @@ var Monitor string
 // Show is the default of launcher.Launcher.Headless
 var Show bool
 
+// Devtools is the default of launcher.Launcher.Devtools
+var Devtools bool
+
 // Dir is the default of launcher.Launcher.UserDataDir
 var Dir string
 
@@ -55,6 +58,7 @@ func init() {
 // Reset all flags to their init values.
 func Reset() {
 	Show = false
+	Devtools = false
 	Trace = false
 	Slow = 0
 	Dir = ""
@@ -91,6 +95,9 @@ func parse(options string) {
 var rules = map[string]func(string){
 	"show": func(string) {
 		Show = true
+	},
+	"devtools": func(string) {
+		Devtools = true
 	},
 	"trace": func(string) {
 		Trace = true

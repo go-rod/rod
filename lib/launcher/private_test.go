@@ -35,6 +35,7 @@ func TestUnzip(t *testing.T) {
 
 func TestLaunchOptions(t *testing.T) {
 	defaults.Show = true
+	defaults.Devtools = true
 	isInDocker = true
 
 	// recover
@@ -49,6 +50,9 @@ func TestLaunchOptions(t *testing.T) {
 	assert.False(t, has)
 
 	_, has = l.Get("no-sandbox")
+	assert.True(t, has)
+
+	_, has = l.Get("auto-open-devtools-for-tabs")
 	assert.True(t, has)
 }
 

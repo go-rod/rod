@@ -88,11 +88,12 @@ func New() *Launcher {
 	if defaults.Show {
 		delete(defaultFlags, "headless")
 	}
-
+	if defaults.Devtools {
+		defaultFlags["auto-open-devtools-for-tabs"] = nil
+	}
 	if isInDocker {
 		defaultFlags["no-sandbox"] = nil
 	}
-
 	if defaults.Proxy != "" {
 		defaultFlags["proxy-server"] = []string{defaults.Proxy}
 	}
