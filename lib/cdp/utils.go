@@ -1,22 +1,10 @@
 package cdp
 
 import (
-	"encoding/json"
 	"log"
 
 	"github.com/go-rod/rod/lib/utils"
 )
-
-func prettyJSON(s interface{}) string {
-	raw, ok := s.(json.RawMessage)
-	if ok {
-		var val interface{}
-		_ = json.Unmarshal(raw, &val)
-		return utils.SDump(val)
-	}
-
-	return utils.SDump(s)
-}
 
 func defaultDebugLog(obj interface{}) {
 	switch val := obj.(type) {
@@ -27,14 +15,14 @@ func defaultDebugLog(obj interface{}) {
 			val.ID,
 			val.Method,
 			val.SessionID,
-			prettyJSON(val.Params),
+			utils.SDump(val.Params),
 		)
 	case *Response:
 		log.Printf(
 			"[rod/cdp] %s %d %s %s\n",
 			"<-",
 			val.ID,
-			prettyJSON(val.Result),
+			utils.SDump(val.Result),
 			utils.SDump(val.Error),
 		)
 	case *Event:
@@ -43,7 +31,7 @@ func defaultDebugLog(obj interface{}) {
 			"evt",
 			val.Method,
 			val.SessionID,
-			prettyJSON(val.Params),
+			utils.SDump(val.Params),
 		)
 
 	default:

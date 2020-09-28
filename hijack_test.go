@@ -13,7 +13,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-func (s *S) TestHijack() {
+func (c C) Hijack() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -24,17 +24,17 @@ func (s *S) TestHijack() {
 			panic("wrong http method")
 		}
 
-		s.Equal("header", r.Header.Get("Test"))
+		c.Eq("header", r.Header.Get("Test"))
 
 		b, err := ioutil.ReadAll(r.Body)
-		utils.E(err)
-		s.Equal("a", string(b))
+		c.E(err)
+		c.Eq("a", string(b))
 
 		httpString("test")(w, r)
 	})
 	mux.HandleFunc("/b", httpString("b"))
 
-	router := s.page.HijackRequests()
+	router := c.page.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
@@ -45,24 +45,24 @@ func (s *S) TestHijack() {
 		r.SetBody(123)                       // override request body
 		r.SetBody(r.Body())                  // override request body
 
-		s.Equal(http.MethodPost, r.Method())
-		s.Equal(url+"/a", r.URL().String())
+		c.Eq(http.MethodPost, r.Method())
+		c.Eq(url+"/a", r.URL().String())
 
-		s.Equal(proto.NetworkResourceTypeXHR, ctx.Request.Type())
-		s.Contains(ctx.Request.Header("Origin"), url)
-		s.Len(ctx.Request.Headers(), 5)
-		s.Equal("", ctx.Request.JSONBody().String())
+		c.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
+		c.Has(ctx.Request.Header("Origin"), url)
+		c.Len(ctx.Request.Headers(), 5)
+		c.Eq("", ctx.Request.JSONBody().String())
 
 		// send request load response from real destination as the default value to hijack
 		ctx.MustLoadResponse()
 
-		s.EqualValues(200, ctx.Response.Payload().ResponseCode)
+		c.Eq(200, ctx.Response.Payload().ResponseCode)
 
 		// override status code
 		ctx.Response.Payload().ResponseCode = http.StatusCreated
 
-		s.Equal("4", ctx.Response.Headers().Get("Content-Length"))
-		s.Equal("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
+		c.Eq("4", ctx.Response.Headers().Get("Content-Length"))
+		c.Eq("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
@@ -74,7 +74,7 @@ func (s *S) TestHijack() {
 			"text": "test",
 		})
 
-		s.Equal("{\"text\":\"test\"}", ctx.Response.Body())
+		c.Eq("{\"text\":\"test\"}", ctx.Response.Body())
 	})
 
 	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
@@ -89,19 +89,19 @@ func (s *S) TestHijack() {
 
 	go router.Run()
 
-	s.page.MustNavigate(url)
+	c.page.MustNavigate(url)
 
-	s.Equal("201 test key=val", s.page.MustElement("#a").MustText())
-	s.Equal("b", s.page.MustElement("#b").MustText())
+	c.Eq("201 test key=val", c.page.MustElement("#a").MustText())
+	c.Eq("b", c.page.MustElement("#b").MustText())
 }
 
-func (s *S) TestHijackContinue() {
+func (c C) HijackContinue() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
 	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
 
-	router := s.page.HijackRequests()
+	router := c.page.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
@@ -113,19 +113,19 @@ func (s *S) TestHijackContinue() {
 
 	go router.Run()
 
-	s.page.MustNavigate(url)
+	c.page.MustNavigate(url)
 
-	s.Equal("ok", s.page.MustElement("body").MustText())
+	c.Eq("ok", c.page.MustElement("body").MustText())
 	wg.Wait()
 }
 
-func (s *S) TestHijackOnErrorLog() {
+func (c C) HijackOnErrorLog() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
 	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
 
-	router := s.page.HijackRequests()
+	router := c.page.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd("*", func(ctx *rod.Hijack) {
@@ -137,21 +137,21 @@ func (s *S) TestHijackOnErrorLog() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	s.mc.stub(1, proto.FetchContinueRequest{}, func(send func() ([]byte, error)) ([]byte, error) {
+	c.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (proto.JSON, error) {
 		wg.Done()
-		return nil, errors.New("err")
+		return proto.JSON{}, errors.New("err")
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	go func() {
-		_ = s.page.Context(ctx).Navigate(url)
+		_ = c.page.Context(ctx).Navigate(url)
 	}()
 	wg.Wait()
 }
 
-func (s *S) TestHijackFailRequest() {
+func (c C) HijackFailRequest() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -164,7 +164,7 @@ func (s *S) TestHijackFailRequest() {
 		})
 	</script></html>`))
 
-	router := s.browser.HijackRequests()
+	router := c.browser.HijackRequests()
 	defer router.MustStop()
 
 	err := make(chan error)
@@ -175,21 +175,21 @@ func (s *S) TestHijackFailRequest() {
 
 	go router.Run()
 
-	s.page.MustNavigate(url)
+	c.page.MustNavigate(url)
 
-	s.Equal("Failed to fetch", s.page.MustElement("body").MustText())
+	c.Eq("Failed to fetch", c.page.MustElement("body").MustText())
 
 	{ // test error log
-		s.mc.stubErr(1, proto.FetchFailRequest{})
-		s.page.MustNavigate(url)
-		s.Error(<-err)
+		c.mc.stubErr(1, proto.FetchFailRequest{})
+		c.page.MustNavigate(url)
+		c.Err(<-err)
 	}
 }
 
-func (s *S) TestHijackLoadResponseErr() {
+func (c C) HijackLoadResponseErr() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	p := s.page.Context(ctx)
+	p := c.page.Context(ctx)
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -197,11 +197,11 @@ func (s *S) TestHijackLoadResponseErr() {
 	wg.Add(1)
 
 	router.MustAdd("*", func(ctx *rod.Hijack) {
-		s.Error(ctx.LoadResponse(&http.Client{
+		c.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{err: errors.New("err")},
 		}, true))
 
-		s.Error(ctx.LoadResponse(&http.Client{
+		c.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{res: &http.Response{
 				StatusCode: 200,
 				Body:       ioutil.NopCloser(&MockReader{err: errors.New("err")}),
@@ -218,7 +218,7 @@ func (s *S) TestHijackLoadResponseErr() {
 	wg.Wait()
 }
 
-func (s *S) TestHijackResponseErr() {
+func (c C) HijackResponseErr() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -227,7 +227,7 @@ func (s *S) TestHijackResponseErr() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	p := s.page.Context(ctx)
+	p := c.page.Context(ctx)
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -236,12 +236,12 @@ func (s *S) TestHijackResponseErr() {
 
 	router.MustAdd("*", func(ctx *rod.Hijack) {
 		ctx.OnError = func(err error) {
-			s.Error(err)
+			c.Err(err)
 			wg.Done()
 		}
 
 		ctx.MustLoadResponse()
-		s.mc.stubErr(1, proto.FetchFulfillRequest{})
+		c.mc.stubErr(1, proto.FetchFulfillRequest{})
 	})
 
 	go router.Run()
@@ -251,7 +251,7 @@ func (s *S) TestHijackResponseErr() {
 	wg.Wait()
 }
 
-func (s *S) TestHandleAuth() {
+func (c C) HandleAuth() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -264,62 +264,62 @@ func (s *S) TestHandleAuth() {
 			return
 		}
 
-		s.Equal("a", u)
-		s.Equal("b", p)
+		c.Eq("a", u)
+		c.Eq("b", p)
 		httpHTML(`<p>ok</p>`)(w, r)
 	})
 	mux.HandleFunc("/err", httpHTML("err page"))
 
-	s.browser.MustHandleAuth("a", "b")
+	c.browser.MustHandleAuth("a", "b")
 
-	page := s.browser.MustPage(url)
+	page := c.browser.MustPage(url)
 	defer page.MustClose()
 	page.MustElementR("p", "ok")
 
-	wait := s.browser.HandleAuth("a", "b")
+	wait := c.browser.HandleAuth("a", "b")
 	var page2 *rod.Page
 	wait2 := utils.All(func() {
-		page2, _ = s.browser.Page(url + "/err")
+		page2, _ = c.browser.Page(url + "/err")
 	})
-	s.mc.stubErr(1, proto.FetchContinueRequest{})
-	s.Error(wait())
+	c.mc.stubErr(1, proto.FetchContinueRequest{})
+	c.Err(wait())
 	wait2()
 	page2.MustClose()
 }
 
-func (s *S) TestGetDownloadFile() {
+func (c C) GetDownloadFile() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
 	content := "test content"
 
 	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
-		utils.E(w.Write([]byte(content)))
+		c.E(w.Write([]byte(content)))
 	})
 	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
-	page := s.page.MustNavigate(url)
+	page := c.page.MustNavigate(url)
 
 	wait := page.MustGetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
 	page.MustElement("a").MustClick()
 	data := wait()
 
-	s.Equal(content, string(data))
+	c.Eq(content, string(data))
 
 	waitErr := page.GetDownloadFile(url+"/d", "", &http.Client{
 		Transport: &MockRoundTripper{err: errors.New("err")},
 	})
 	page.MustElement("a").MustClick()
 	{
-		s.mc.stubErr(1, proto.FetchEnable{})
+		c.mc.stubErr(1, proto.FetchEnable{})
 		_, _, err := waitErr()
-		s.Error(err)
+		c.Err(err)
 	}
 	_, _, err := waitErr()
-	s.Error(err)
+	c.Err(err)
 }
 
-func (s *S) TestGetDownloadFileFromDataURI() {
+func (c C) GetDownloadFileFromDataURI() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -336,38 +336,38 @@ func (s *S) TestGetDownloadFileFromDataURI() {
 		</html>`,
 	))
 
-	page := s.page.MustNavigate(url)
+	page := c.page.MustNavigate(url)
 
 	wait := page.MustGetDownloadFile("data:*")
 	page.MustElement("#a").MustClick()
 	data := wait()
-	s.Equal("test data", string(data))
+	c.Eq("test data", string(data))
 
 	wait = page.MustGetDownloadFile("data:*")
 	page.MustElement("#b").MustClick()
 	data = wait()
-	s.Equal("test blob", string(data))
+	c.Eq("test blob", string(data))
 
-	s.Panics(func() {
+	c.Panic(func() {
 		wait = page.MustGetDownloadFile("data:*")
 		page.MustElement("#b").MustClick()
-		s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		data = wait()
 	})
 }
 
-func (s *S) TestGetDownloadFileWithHijack() {
+func (c C) GetDownloadFileWithHijack() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
 	content := "test content"
 
 	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
-		utils.E(w.Write([]byte(content)))
+		c.E(w.Write([]byte(content)))
 	})
 	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
 
-	page := s.page.MustNavigate(url)
+	page := c.page.MustNavigate(url)
 
 	r := page.HijackRequests()
 	r.MustAdd("*", func(ctx *rod.Hijack) {
@@ -381,5 +381,5 @@ func (s *S) TestGetDownloadFileWithHijack() {
 	page.MustElement("a").MustClick()
 	data := wait()
 
-	s.Equal(content, string(data))
+	c.Eq(content, string(data))
 }

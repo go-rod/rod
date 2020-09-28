@@ -85,7 +85,7 @@ func Normalize(m interface{}) (json.RawMessage, error) {
 	return json.Marshal(m)
 }
 
-// JSON value
+// JSON represent a JSON value
 type JSON struct {
 	gjson.Result
 	raw []byte
@@ -94,7 +94,11 @@ type JSON struct {
 // NewJSON json object
 func NewJSON(val interface{}) JSON {
 	j := JSON{}
-	j.raw = utils.MustToJSONBytes(val)
+	if b, ok := val.([]byte); ok {
+		j.raw = b
+	} else {
+		j.raw = utils.MustToJSONBytes(val)
+	}
 	j.Result = gjson.ParseBytes(j.raw)
 	return j
 }
@@ -111,7 +115,7 @@ func (j JSON) MarshalJSON() ([]byte, error) {
 	if len(j.raw) == 0 {
 		return []byte("null"), nil
 	}
-	return []byte(j.raw), nil
+	return j.raw, nil
 }
 
 // Join elements
@@ -123,6 +127,13 @@ func (j JSON) Join(sep string) string {
 	}
 
 	return strings.Join(list, sep)
+}
+
+// Set a json value for the specified path and return the new JSON.
+func (j JSON) Set(path string, value interface{}) (JSON, error) {
+	b, _ := j.MarshalJSON()
+	b, err := sjson.SetBytes(b, path, value)
+	return NewJSON(b), err
 }
 
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.

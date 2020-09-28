@@ -37,6 +37,13 @@ func E(args ...interface{}) []interface{} {
 
 // SDump a value
 func SDump(v interface{}) string {
+	raw, ok := v.(json.RawMessage)
+	if ok {
+		var val interface{}
+		_ = json.Unmarshal(raw, &val)
+		v = val
+	}
+
 	buf := bytes.NewBuffer(nil)
 	enc := json.NewEncoder(buf)
 	enc.SetEscapeHTML(false)

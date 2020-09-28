@@ -32,7 +32,7 @@ func main() {
 		import (
 			"testing"
 
-			"github.com/stretchr/testify/assert"
+			"github.com/ysmood/got"
 			"github.com/go-rod/rod/lib/proto"
 		)
 	`
@@ -175,25 +175,25 @@ func (d *definition) formatTests() (code string) {
 
 		if d.returnValue {
 			return utils.S(`
-				func Test{{.name}}(t *testing.T) {
+				func (t C) {{.name}}() {
 					c := &Client{}
 					_, err := proto.{{.name}}{}.Call(&Caller{c})
-					assert.Nil(t, err)
+					t.Nil(err)
 				}
 				`, "name", d.name)
 		}
 
 		return utils.S(`
-			func Test{{.name}}(t *testing.T) {
+			func (t C) {{.name}}() {
 				c := &Client{}
 				err := proto.{{.name}}{}.Call(&Caller{c})
-				assert.Nil(t, err)
+				t.Nil(err)
 			}
 			`, "name", d.name)
 
 	case cdpTypeEvents:
 		return utils.S(`
-		func Test{{.name}}(t *testing.T) {
+		func (t C) {{.name}}() {
 			e := proto.{{.name}}{}
 			e.MethodName()
 		}

@@ -9,8 +9,16 @@ import (
 
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
+
+type C struct {
+	got.Assertion
+}
+
+func Test(t *testing.T) {
+	got.Each(t, C{})
+}
 
 type Client struct {
 	sessionID  string
@@ -46,103 +54,109 @@ func (n normalizeErr) Normalize() (json.RawMessage, error) {
 	return nil, errors.New("err")
 }
 
-func TestCall(t *testing.T) {
+func (c C) Call() {
 	err := proto.Call("", normalizeErr{}, "", &Caller{&Client{}})
-	assert.Error(t, err)
+	c.Err(err)
 
 	err = proto.Call("", "", "", &Caller{&Client{err: errors.New("err")}})
-	assert.Error(t, err)
+	c.Err(err)
 
 	err = proto.Call("", "", func() {}, &Caller{&Client{}})
-	assert.Error(t, err)
+	c.Err(err)
 }
 
-func TestParseMethodName(t *testing.T) {
+func (c C) ParseMethodName() {
 	d, n := proto.ParseMethodName("Page.enable")
-	assert.Equal(t, "Page", d)
-	assert.Equal(t, "enable", n)
+	c.Eq("Page", d)
+	c.Eq("enable", n)
 }
 
-func TestGetType(t *testing.T) {
+func (c C) GetType() {
 	method := proto.GetType("Page.enable")
-	assert.Equal(t, reflect.TypeOf(proto.PageEnable{}), method)
+	c.Eq(reflect.TypeOf(proto.PageEnable{}), method)
 }
 
-func TestJSON(t *testing.T) {
+func (c C) JSON() {
 	var j proto.JSON
-	utils.E(json.Unmarshal([]byte("10"), &j))
-	assert.EqualValues(t, 10, j.Int())
+	c.E(json.Unmarshal([]byte("10"), &j))
+	c.Eq(10, j.Int())
 
-	assert.Equal(t, "null", utils.MustToJSON(proto.JSON{}))
-	assert.Equal(t, "true", utils.MustToJSON(proto.NewJSON(true)))
+	c.Eq("null", utils.MustToJSON(proto.JSON{}))
+	c.Eq("true", utils.MustToJSON(proto.NewJSON(true)))
 
-	assert.Equal(t, "1 2 3", proto.NewJSON([]int{1, 2, 3}).Join(" "))
+	c.Eq("1 2 3", proto.NewJSON([]int{1, 2, 3}).Join(" "))
+
+	j = proto.NewJSON([]byte("{}"))
+	j, err := j.Set("a", 1)
+	c.Nil(err)
+	c.Eq(j.Get("a").Num, 1)
+	c.Err(j.Set("", 1))
 }
 
-func TestTimeCodec(t *testing.T) {
+func (c C) TimeCodec() {
 	raw := []byte("123.123")
 	var duration proto.MonotonicTime
-	utils.E(json.Unmarshal(raw, &duration))
+	c.E(json.Unmarshal(raw, &duration))
 
-	assert.EqualValues(t, 123123, duration.Milliseconds())
+	c.Eq(123123, duration.Milliseconds())
 
 	data, err := json.Marshal(duration)
-	utils.E(err)
-	assert.Equal(t, raw, data)
+	c.E(err)
+	c.Eq(raw, data)
 
 	raw = []byte("123")
 	var datetime proto.TimeSinceEpoch
-	utils.E(json.Unmarshal(raw, &datetime))
+	c.E(json.Unmarshal(raw, &datetime))
 
-	assert.EqualValues(t, 123, datetime.Unix())
+	c.Eq(123, datetime.Unix())
 
 	data, err = json.Marshal(datetime)
-	utils.E(err)
-	assert.Equal(t, raw, data)
+	c.E(err)
+	c.Eq(raw, data)
 }
 
-func TestNormalizeInputDispatchMouseEvent(t *testing.T) {
+func (c C) NormalizeInputDispatchMouseEvent() {
 	e := proto.InputDispatchMouseEvent{
 		Type: proto.InputDispatchMouseEventTypeMouseWheel,
 	}
 
 	data, err := e.Normalize()
-	utils.E(err)
+	c.E(err)
 
-	assert.Equal(t, `{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
+	c.Eq(`{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
 }
 
-func TestPatternToReg(t *testing.T) {
-	assert.Equal(t, ``, proto.PatternToReg(""))
-	assert.Equal(t, `\A.*\z`, proto.PatternToReg("*"))
-	assert.Equal(t, `\A.\z`, proto.PatternToReg("?"))
-	assert.Equal(t, `\Aa\z`, proto.PatternToReg("a"))
-	assert.Equal(t, `\Aa.com/.*/test\z`, proto.PatternToReg("a.com/*/test"))
-	assert.Equal(t, `\A\?\*\z`, proto.PatternToReg(`\?\*`))
-	assert.Equal(t, `\Aa.com\?a=10&b=\*\z`, proto.PatternToReg(`a.com\?a=10&b=\*`))
+func (c C) PatternToReg() {
+	c.Eq(``, proto.PatternToReg(""))
+	c.Eq(`\A.*\z`, proto.PatternToReg("*"))
+	c.Eq(`\A.\z`, proto.PatternToReg("?"))
+	c.Eq(`\Aa\z`, proto.PatternToReg("a"))
+	c.Eq(`\Aa.com/.*/test\z`, proto.PatternToReg("a.com/*/test"))
+	c.Eq(`\A\?\*\z`, proto.PatternToReg(`\?\*`))
+	c.Eq(`\Aa.com\?a=10&b=\*\z`, proto.PatternToReg(`a.com\?a=10&b=\*`))
 }
 
-func TestRect(t *testing.T) {
+func (c C) Rect() {
 	rect := proto.DOMQuad{
 		336, 382, 361, 382, 361, 421, 336, 412,
 	}
 
-	assert.EqualValues(t, 348.5, rect.Center().X)
-	assert.EqualValues(t, 399.25, rect.Center().Y)
+	c.Eq(348.5, rect.Center().X)
+	c.Eq(399.25, rect.Center().Y)
 
 	res := &proto.DOMGetContentQuadsResult{}
-	assert.Nil(t, res.OnePointInside())
+	c.Nil(res.OnePointInside())
 
 	res = &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{rect}}
 	pt := res.OnePointInside()
-	assert.EqualValues(t, 348.5, pt.X)
-	assert.EqualValues(t, 399.25, pt.Y)
+	c.Eq(348.5, pt.X)
+	c.Eq(399.25, pt.Y)
 }
 
-func TestInputTouchPointMoveTo(t *testing.T) {
+func (c C) InputTouchPointMoveTo() {
 	p := &proto.InputTouchPoint{}
 	p.MoveTo(1, 2)
 
-	assert.EqualValues(t, 1, p.X)
-	assert.EqualValues(t, 2, p.Y)
+	c.Eq(1, p.X)
+	c.Eq(2, p.Y)
 }

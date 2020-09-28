@@ -4,10 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
 
 func TestBasic(t *testing.T) {
+	as := got.New(t)
+
 	Show = true
 	Devtools = true
 	URL = "test"
@@ -15,37 +17,39 @@ func TestBasic(t *testing.T) {
 
 	ResetWithEnv("")
 	parse("")
-	assert.False(t, Show)
-	assert.False(t, Devtools)
-	assert.Equal(t, "", Monitor)
-	assert.Equal(t, "", URL)
+	as.False(Show)
+	as.False(Devtools)
+	as.Eq("", Monitor)
+	as.Eq("", URL)
 
 	parse("show,devtools,trace,slow=2s,port=8080,dir=tmp," +
 		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +
 		"proxy=localhost:8080",
 	)
 
-	assert.True(t, Show)
-	assert.True(t, Devtools)
-	assert.True(t, Trace)
-	assert.Equal(t, 2*time.Second, Slow)
-	assert.Equal(t, "8080", Port)
-	assert.Equal(t, "/path/to/chrome", Bin)
-	assert.Equal(t, "tmp", Dir)
-	assert.Equal(t, "http://test.com", URL)
-	assert.True(t, CDP)
-	assert.Equal(t, ":0", Monitor)
-	assert.Equal(t, "localhost:8080", Proxy)
+	as.True(Show)
+	as.True(Devtools)
+	as.True(Trace)
+	as.Eq(2*time.Second, Slow)
+	as.Eq("8080", Port)
+	as.Eq("/path/to/chrome", Bin)
+	as.Eq("tmp", Dir)
+	as.Eq("http://test.com", URL)
+	as.True(CDP)
+	as.Eq(":0", Monitor)
+	as.Eq("localhost:8080", Proxy)
 
 	parse("monitor=:1234")
-	assert.Equal(t, ":1234", Monitor)
+	as.Eq(":1234", Monitor)
 
-	assert.Panics(t, func() {
+	as.Panic(func() {
 		parse("a")
 	})
 }
 
 func TestDotFile(t *testing.T) {
+	as := got.New(t)
+
 	ResetWithEnv("")
 	parse(`
 
@@ -56,7 +60,7 @@ dir=path =to file
 
 	`)
 
-	assert.True(t, Show)
-	assert.Equal(t, "9999", Port)
-	assert.Equal(t, "path =to file", Dir)
+	as.True(Show)
+	as.Eq("9999", Port)
+	as.Eq("path =to file", Dir)
 }

@@ -18,7 +18,6 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
 )
 
 // MustConnect is similar to Connect
@@ -364,14 +363,13 @@ func (p *Page) MustObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
 
 // MustObjectsToJSON is similar to ObjectsToJSON
 func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
-	result := "[]"
+	arr := []proto.JSON{}
 	for _, obj := range list {
 		j, err := p.ObjectToJSON(obj)
 		utils.E(err)
-		result, err = sjson.SetRaw(result, "-1", j.Raw)
-		utils.E(err)
+		arr = append(arr, j)
 	}
-	return proto.JSON{Result: gjson.Parse(result)}
+	return proto.NewJSON(arr)
 }
 
 // MustElementFromNode is similar to ElementFromNode

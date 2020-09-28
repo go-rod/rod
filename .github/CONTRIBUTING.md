@@ -18,7 +18,7 @@ The entry point of all tests is the [setup_test.go](../setup_test.go) file.
 
 `go test -v -run /Click`, `Click` is the pattern to match the test function name.
 
-Use regex to match and run a single test: `go test -v -run /^TestClick$`.
+Use regex to match and run a single test: `go test -v -run /^Click$`.
 
 ### To disable headless mode
 

@@ -17,94 +17,93 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/sjson"
 )
 
-func (s *S) TestIncognito() {
+func (c C) Incognito() {
 	file := srcFile("fixtures/click.html")
 	k := utils.RandString(8)
 
-	b := s.browser.MustIncognito()
+	b := c.browser.MustIncognito().Sleeper(rod.DefaultSleeper)
 	page := b.MustPage(file)
 	defer page.MustClose()
 	page.MustEval(`k => localStorage[k] = 1`, k)
 
-	s.Nil(s.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
-	s.EqualValues(1, page.MustEval(`k => localStorage[k]`, k).Int())
+	c.Nil(c.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
+	c.Eq(1, page.MustEval(`k => localStorage[k]`, k).Int())
 }
 
-func (s *S) TestPageErr() {
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.TargetAttachToTarget{})
-		s.browser.MustPage("")
+func (c C) PageErr() {
+	c.Panic(func() {
+		c.mc.stubErr(1, proto.TargetAttachToTarget{})
+		c.browser.MustPage("")
 	})
 }
 
-func (s *S) TestPageFromTarget() {
-	s.Panics(func() {
-		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
-		utils.E(err)
+func (c C) PageFromTarget() {
+	c.Panic(func() {
+		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(c.browser)
+		c.E(err)
 		defer func() {
-			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
+			c.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
 
-		s.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
-		s.browser.MustPageFromTargetID(res.TargetID)
+		c.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		c.browser.MustPageFromTargetID(res.TargetID)
 	})
 }
 
-func (s *S) TestBrowserPages() {
-	page := s.browser.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
+func (c C) BrowserPages() {
+	page := c.browser.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
 	defer page.MustClose()
 
-	pages := s.browser.MustPages()
+	pages := c.browser.MustPages()
 
-	s.Len(pages, 2)
+	c.Len(pages, 2)
 
 	{
-		s.mc.stub(1, proto.TargetGetTargets{}, func(send func() ([]byte, error)) ([]byte, error) {
+		c.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (proto.JSON, error) {
 			d, _ := send()
-			return sjson.SetBytes(d, "targetInfos.0.type", "iframe")
+			return d.Set("targetInfos.0.type", "iframe")
 		})
-		pages := s.browser.MustPages()
-		s.Len(pages, 1)
+		pages := c.browser.MustPages()
+		c.Len(pages, 1)
 	}
 
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.TargetCreateTarget{})
-		s.browser.MustPage("")
+	c.Panic(func() {
+		c.mc.stubErr(1, proto.TargetCreateTarget{})
+		c.browser.MustPage("")
 	})
-	s.Panics(func() {
-		s.mc.stubErr(1, proto.TargetGetTargets{})
-		s.browser.MustPages()
+	c.Panic(func() {
+		c.mc.stubErr(1, proto.TargetGetTargets{})
+		c.browser.MustPages()
 	})
-	s.Panics(func() {
-		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(s.browser)
-		utils.E(err)
+	c.Panic(func() {
+		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(c.browser)
+		c.E(err)
 		defer func() {
-			s.browser.MustPageFromTargetID(res.TargetID).MustClose()
+			c.browser.MustPageFromTargetID(res.TargetID).MustClose()
 		}()
-		s.mc.stubErr(1, proto.TargetAttachToTarget{})
-		s.browser.MustPages()
+		c.mc.stubErr(1, proto.TargetAttachToTarget{})
+		c.browser.MustPages()
 	})
 }
 
-func (s *S) TestBrowserClearStates() {
-	utils.E(proto.EmulationClearGeolocationOverride{}.Call(s.page))
+func (c C) BrowserClearStates() {
+	c.E(proto.EmulationClearGeolocationOverride{}.Call(c.page))
 
-	defer s.browser.EnableDomain("", &proto.TargetSetDiscoverTargets{Discover: true})()
-	s.browser.DisableDomain("", &proto.TargetSetDiscoverTargets{Discover: false})()
+	defer c.browser.EnableDomain("", &proto.TargetSetDiscoverTargets{Discover: true})()
+	c.browser.DisableDomain("", &proto.TargetSetDiscoverTargets{Discover: false})()
 }
 
-func (s *S) TestBrowserWaitEvent() {
-	s.NotNil(s.browser.Event())
+func (c C) BrowserWaitEvent() {
+	c.NotNil(c.browser.Event())
 
-	wait := s.page.WaitEvent(&proto.PageFrameNavigated{})
-	s.page.MustNavigate(srcFile("fixtures/click.html"))
+	wait := c.page.WaitEvent(&proto.PageFrameNavigated{})
+	c.page.MustNavigate(srcFile("fixtures/click.html"))
 	wait()
 }
 
-func (s *S) TestBrowserCrash() {
+func (c C) BrowserCrash() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -113,19 +112,19 @@ func (s *S) TestBrowserCrash() {
 
 	_ = proto.BrowserCrash{}.Call(browser)
 
-	s.Panics(func() {
+	c.Panic(func() {
 		page.MustEval(`new Promise(() => {})`)
 	})
 }
 
-func (s *S) TestBrowserCall() {
-	v, err := proto.BrowserGetVersion{}.Call(s.browser)
-	utils.E(err)
+func (c C) BrowserCall() {
+	v, err := proto.BrowserGetVersion{}.Call(c.browser)
+	c.E(err)
 
-	s.Regexp("1.3", v.ProtocolVersion)
+	c.Regex("1.3", v.ProtocolVersion)
 }
 
-func (s *S) TestMonitor() {
+func (c C) Monitor() {
 	b := rod.New().Timeout(1 * time.Minute).MustConnect()
 	defer b.MustClose()
 	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
@@ -134,23 +133,23 @@ func (s *S) TestMonitor() {
 	defer cancel()
 	host := b.ServeMonitor("")
 
-	page := s.page.MustNavigate(host)
-	s.Contains(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
+	page := c.page.MustNavigate(host)
+	c.Has(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
 
 	page.MustNavigate(host + "/page/" + string(p.TargetID))
 	page.MustWait(`(id) => document.title.includes(id)`, p.TargetID)
 
 	res, err := http.Get(host + "/screenshot")
-	utils.E(err)
-	s.Greater(len(utils.MustReadBytes(res.Body)), 10)
+	c.E(err)
+	c.Gt(len(utils.MustReadBytes(res.Body)), 10)
 
 	res, err = http.Get(host + "/api/page/test")
-	utils.E(err)
-	s.Equal(400, res.StatusCode)
-	s.EqualValues(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
+	c.E(err)
+	c.Eq(400, res.StatusCode)
+	c.Eq(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
 }
 
-func (s *S) TestMonitorErr() {
+func (c C) MonitorErr() {
 	defaults.Monitor = "abc"
 	defer defaults.ResetWithEnv("")
 
@@ -158,48 +157,48 @@ func (s *S) TestMonitorErr() {
 	u := l.MustLaunch()
 	defer l.Kill()
 
-	s.Panics(func() {
+	c.Panic(func() {
 		rod.New().ControlURL(u).MustConnect()
 	})
 }
 
-func (s *S) TestTrace() {
+func (c C) Trace() {
 	var msg *rod.TraceMsg
-	s.browser.TraceLog(func(m *rod.TraceMsg) { msg = m })
-	s.browser.Trace(true).Slowmotion(time.Microsecond)
+	c.browser.TraceLog(func(m *rod.TraceMsg) { msg = m })
+	c.browser.Trace(true).Slowmotion(time.Microsecond)
 	defer func() {
-		s.browser.TraceLog(nil)
-		s.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
+		c.browser.TraceLog(nil)
+		c.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
 	}()
 
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
-	s.Equal(rod.TraceTypeInput, msg.Type)
-	s.Equal("left click", msg.Details)
-	s.Equal(`[input] "left click"`, msg.String())
+	c.Eq(rod.TraceTypeInput, msg.Type)
+	c.Eq("left click", msg.Details)
+	c.Eq(`[input] "left click"`, msg.String())
 
-	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)
 }
 
-func (s *S) TestTraceLogs() {
-	s.browser.Trace(true)
+func (c C) TraceLogs() {
+	c.browser.Trace(true)
 	defer func() {
-		s.browser.Trace(defaults.Trace)
+		c.browser.Trace(defaults.Trace)
 	}()
 
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
-	s.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	p.Overlay(0, 0, 100, 30, "")
 }
 
-func (s *S) TestConcurrentOperations() {
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+func (c C) ConcurrentOperations() {
+	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
 	list := []int64{}
 	lock := sync.Mutex{}
 	add := func(item int64) {
@@ -214,10 +213,10 @@ func (s *S) TestConcurrentOperations() {
 		add(p.MustEval(`1`).Int())
 	})()
 
-	s.Equal([]int64{1, 2}, list)
+	c.Eq([]int64{1, 2}, list)
 }
 
-func (s *S) TestPromiseLeak() {
+func (c C) PromiseLeak() {
 	/*
 		Perform a slow action then navigate the page to another url,
 		we can see the slow operation will still be executed.
@@ -225,7 +224,7 @@ func (s *S) TestPromiseLeak() {
 		The unexpected part is that the promise will resolve to the next page's url.
 	*/
 
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
 	var out string
 
 	utils.All(func() {
@@ -235,24 +234,24 @@ func (s *S) TestPromiseLeak() {
 		p.MustNavigate(srcFile("fixtures/input.html"))
 	})()
 
-	s.Contains(out, "input.html")
+	c.Has(out, "input.html")
 }
 
-func (s *S) TestObjectLeak() {
+func (c C) ObjectLeak() {
 	/*
 		Seems like it won't leak
 	*/
 
-	p := s.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
 
 	el := p.MustElement("button")
 	p.MustNavigate(srcFile("fixtures/input.html")).MustWaitLoad()
-	s.Panics(func() {
+	c.Panic(func() {
 		el.MustDescribe()
 	})
 }
 
-func (s *S) TestBlockingNavigation() {
+func (c C) BlockingNavigation() {
 	/*
 		Navigate can take forever if a page doesn't response.
 		If one page is blocked, other pages should still work.
@@ -268,22 +267,22 @@ func (s *S) TestBlockingNavigation() {
 	})
 	mux.HandleFunc("/b", httpHTML(`<html>ok</html>`))
 
-	blocked := s.browser.MustPage("")
+	blocked := c.browser.MustPage("")
 	defer blocked.MustClose()
 
 	go func() {
-		s.Panics(func() {
+		c.Panic(func() {
 			blocked.MustNavigate(url + "/a")
 		})
 	}()
 
 	utils.Sleep(0.3)
 
-	p := s.browser.MustPage(url + "/b")
+	p := c.browser.MustPage(url + "/b")
 	defer p.MustClose()
 }
 
-func (s *S) TestResolveBlocking() {
+func (c C) ResolveBlocking() {
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -294,7 +293,7 @@ func (s *S) TestResolveBlocking() {
 		<-pause.Done()
 	})
 
-	p := s.browser.MustPage("")
+	p := c.browser.MustPage("")
 	defer p.MustClose()
 
 	go func() {
@@ -302,35 +301,35 @@ func (s *S) TestResolveBlocking() {
 		p.MustStopLoading()
 	}()
 
-	s.Panics(func() {
+	c.Panic(func() {
 		p.MustNavigate(url)
 	})
 }
 
-func (s *S) TestTry() {
-	s.Nil(rod.Try(func() {}))
+func (c C) Try() {
+	c.Nil(rod.Try(func() {}))
 
 	err := rod.Try(func() { panic(1) })
 	var errVal *rod.Error
 	ok := errors.As(err, &errVal)
-	s.True(ok)
-	s.Equal(1, errVal.Details)
+	c.True(ok)
+	c.Eq(1, errVal.Details)
 }
 
-func (s *S) TestBrowserOthers() {
-	s.browser.Timeout(time.Hour).CancelTimeout().MustPages()
+func (c C) BrowserOthers() {
+	c.browser.Timeout(time.Hour).CancelTimeout().MustPages()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
-	s.Panics(func() {
-		s.browser.Context(ctx).MustIncognito()
+	c.Panic(func() {
+		c.browser.Context(ctx).MustIncognito()
 	})
 }
 
-func (s *S) TestBinarySize() {
+func (c C) BinarySize() {
 	if runtime.GOOS == "windows" {
-		s.T().SkipNow()
+		c.Testable.(*testing.T).SkipNow()
 	}
 
 	cmd := exec.Command("go", "build",
@@ -343,27 +342,27 @@ func (s *S) TestBinarySize() {
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		s.T().Skip(err, string(out))
+		c.Testable.(*testing.T).Skip(err, string(out))
 	}
 
 	stat, err := os.Stat("tmp/translator")
-	utils.E(err)
+	c.E(err)
 
-	s.Less(float64(stat.Size())/1024/1024, 8.65) // mb
+	c.Lt(float64(stat.Size())/1024/1024, 8.65) // mb
 }
 
-func (s *S) TestBrowserConnectErr() {
-	s.Panics(func() {
-		c := newMockClient(s, nil)
+func (c C) BrowserConnectErr() {
+	c.Panic(func() {
+		c := newMockClient(c.Testable.(*testing.T), nil)
 		c.connect = func() error { return errors.New("err") }
 		rod.New().Client(c).MustConnect()
 	})
 
-	s.Panics(func() {
+	c.Panic(func() {
 		ch := make(chan *cdp.Event)
 		defer close(ch)
 
-		c := newMockClient(s, nil)
+		c := newMockClient(c.Testable.(*testing.T), nil)
 		c.connect = func() error { return nil }
 		c.event = ch
 		c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
@@ -371,30 +370,30 @@ func (s *S) TestBrowserConnectErr() {
 	})
 }
 
-func (s *S) TestStreamReader() {
-	r := rod.NewStreamReader(s.page, "")
+func (c C) StreamReader() {
+	r := rod.NewStreamReader(c.page, "")
 
-	s.mc.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
-		return utils.MustToJSONBytes(proto.IOReadResult{
+	c.mc.stub(1, proto.IORead{}, func(send StubSend) (proto.JSON, error) {
+		return proto.NewJSON(proto.IOReadResult{
 			Data: "test",
 		}), nil
 	})
 	b := make([]byte, 4)
 	_, _ = r.Read(b)
-	s.Equal("test", string(b))
+	c.Eq("test", string(b))
 
-	s.mc.stubErr(1, proto.IORead{})
+	c.mc.stubErr(1, proto.IORead{})
 	_, err := r.Read(nil)
-	s.Error(err)
+	c.Err(err)
 
-	s.mc.stub(1, proto.IORead{}, func(send func() ([]byte, error)) ([]byte, error) {
-		return utils.MustToJSONBytes(proto.IOReadResult{
+	c.mc.stub(1, proto.IORead{}, func(send StubSend) (proto.JSON, error) {
+		return proto.NewJSON(proto.IOReadResult{
 			Base64Encoded: true,
 			Data:          "@",
 		}), nil
 	})
 	_, err = r.Read(nil)
-	s.Error(err)
+	c.Err(err)
 }
 
 // It's obvious that, the v8 will take more time to parse long function.

@@ -14,26 +14,32 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
 
-type T = testing.T
+type C struct {
+	got.Assertion
+}
 
-func TestErr(t *T) {
+func Test(t *testing.T) {
+	got.Each(t, C{})
+}
+
+func (c C) TestE() {
 	utils.E(nil)
 
-	assert.Panics(t, func() {
+	c.Panic(func() {
 		utils.E(errors.New("err"))
 	})
 }
 
-func TestDump(t *T) {
-	assert.Equal(t, "{\n  \"a\": \"<b>\"\n}", utils.SDump(map[string]string{"a": "<b>"}))
-	assert.Equal(t, "10", utils.SDump(json.RawMessage("10")))
+func (c C) Dump() {
+	c.Eq("{\n  \"a\": \"<b>\"\n}", utils.SDump(map[string]string{"a": "<b>"}))
+	c.Eq("10", utils.SDump(json.RawMessage("10")))
 	utils.Dump("")
 }
 
-func TestSTemplate(t *T) {
+func (c C) STemplate() {
 	out := utils.S(
 		"{{.a}} {{.b}} {{.c.A}} {{d}}",
 		"a", "<value>",
@@ -43,76 +49,76 @@ func TestSTemplate(t *T) {
 			return "ok"
 		},
 	)
-	assert.Equal(t, "<value> 10 ok ok", out)
+	c.Eq("<value> 10 ok ok", out)
 }
 
-func TestGenerateRandomString(t *T) {
+func (c C) GenerateRandomString() {
 	v := utils.RandString(10)
 	raw, _ := hex.DecodeString(v)
-	assert.Len(t, raw, 10)
+	c.Len(raw, 10)
 }
 
-func TestMkdir(t *testing.T) {
-	p := filepath.Join(t.TempDir(), "t")
-	utils.E(utils.Mkdir(p))
+func (c C) Mkdir() {
+	p := filepath.Join(c.Testable.(*testing.T).TempDir(), "t")
+	c.E(utils.Mkdir(p))
 }
 
-func TestOutputString(t *testing.T) {
+func (c C) OutputString() {
 	p := "tmp/" + utils.RandString(10)
 
 	_ = utils.OutputFile(p, p)
 
-	c, err := utils.ReadString(p)
+	s, err := utils.ReadString(p)
 
 	if err != nil {
 		panic(err)
 	}
 
-	assert.Equal(t, c, p)
+	c.Eq(s, p)
 }
 
-func TestOutputBytes(t *testing.T) {
+func (c C) OutputBytes() {
 	p := "tmp/" + utils.RandString(10)
 
 	_ = utils.OutputFile(p, []byte("test"))
 
-	c, err := utils.ReadString(p)
+	s, err := utils.ReadString(p)
 
 	if err != nil {
 		panic(err)
 	}
 
-	assert.Equal(t, c, "test")
+	c.Eq(s, "test")
 }
 
-func TestOutputStream(t *testing.T) {
+func (c C) OutputStream() {
 	p := "tmp/" + utils.RandString(10)
 	b := bytes.NewBufferString("test")
 
 	_ = utils.OutputFile(p, b)
 
-	c, err := utils.ReadString(p)
+	s, err := utils.ReadString(p)
 
 	if err != nil {
 		panic(err)
 	}
 
-	assert.Equal(t, "test", c)
+	c.Eq("test", s)
 }
 
-func TestOutputJSONErr(t *testing.T) {
+func (c C) OutputJSONErr() {
 	p := "tmp/" + utils.RandString(10)
 
-	assert.Panics(t, func() {
+	c.Panic(func() {
 		_ = utils.OutputFile(p, make(chan struct{}))
 	})
 }
 
-func TestSleep(t *T) {
+func (c C) Sleep() {
 	utils.Sleep(0.01)
 }
 
-func TestAll(t *T) {
+func (c C) All() {
 	utils.All(func() {
 		fmt.Println("one")
 	}, func() {
@@ -120,15 +126,15 @@ func TestAll(t *T) {
 	})()
 }
 
-func TestPause(t *T) {
+func (c C) Pause() {
 	go utils.Pause()
 }
 
-func TestBackoffSleeperWakeNow(t *T) {
-	utils.E(utils.BackoffSleeper(0, 0, nil)(context.Background()))
+func (c C) BackoffSleeperWakeNow() {
+	c.E(utils.BackoffSleeper(0, 0, nil)(context.Background()))
 }
 
-func TestRetry(t *T) {
+func (c C) Retry() {
 	count := 0
 	s1 := utils.BackoffSleeper(1, 5, nil)
 
@@ -140,10 +146,10 @@ func TestRetry(t *T) {
 		return false, nil
 	})
 
-	assert.EqualError(t, err, io.EOF.Error())
+	c.Eq(err.Error(), io.EOF.Error())
 }
 
-func TestRetryCancel(t *T) {
+func (c C) RetryCancel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go cancel()
 	s := utils.BackoffSleeper(time.Second, time.Second, nil)
@@ -152,40 +158,40 @@ func TestRetryCancel(t *T) {
 		return false, nil
 	})
 
-	assert.EqualError(t, err, context.Canceled.Error())
+	c.Eq(err.Error(), context.Canceled.Error())
 }
 
-func TestCountSleeperErr(t *T) {
+func (c C) CountSleeperErr() {
 	ctx := context.Background()
 	s := utils.CountSleeper(5)
 	for i := 0; i < 5; i++ {
 		_ = s(ctx)
 	}
-	assert.Errorf(t, s(ctx), "max sleep count")
+	c.Err(s(ctx))
 }
 
-func TestCountSleeperCancel(t *T) {
+func (c C) CountSleeperCancel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	s := utils.CountSleeper(5)
-	assert.Errorf(t, s(ctx), context.Canceled.Error())
+	c.Eq(s(ctx).Error(), context.Canceled.Error())
 }
 
-func TestMustToJSON(t *T) {
-	assert.Equal(t, `{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
+func (c C) MustToJSON() {
+	c.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
 }
 
-func TestFileExists(t *T) {
-	assert.Equal(t, false, utils.FileExists("."))
-	assert.Equal(t, true, utils.FileExists("utils.go"))
-	assert.Equal(t, false, utils.FileExists(utils.RandString(8)))
+func (c C) FileExists() {
+	c.Eq(false, utils.FileExists("."))
+	c.Eq(true, utils.FileExists("utils.go"))
+	c.Eq(false, utils.FileExists(utils.RandString(8)))
 }
 
-func TestExec(t *T) {
+func (c C) Exec() {
 	utils.Exec("echo")
 }
 
-func TestServe(t *T) {
+func (c C) Serve() {
 	u, mux, close := utils.Serve("")
 	defer close()
 
@@ -194,9 +200,9 @@ func TestServe(t *T) {
 	})
 
 	res, err := http.Get(u)
-	utils.E(err)
+	c.E(err)
 
-	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
+	c.Eq(http.StatusBadRequest, res.StatusCode)
 }
 
 type errReader struct {
@@ -207,58 +213,58 @@ func (r *errReader) Read(p []byte) (n int, err error) {
 	return 0, r.err
 }
 
-func TestReader(t *T) {
+func (c C) Reader() {
 	utils.MustReadJSON(bytes.NewBufferString(""))
 
 	_, err := utils.ReadJSON(&errReader{err: errors.New("err")})
-	assert.Error(t, err)
+	c.Err(err)
 
 	utils.MustReadString(bytes.NewBufferString(""))
 
 	_, err = utils.ReadJSONPathAsString(bytes.NewBufferString("{}"), "")
-	assert.Nil(t, err)
+	c.Nil(err)
 
 	_, err = utils.ReadJSONPathAsString(&errReader{err: errors.New("err")}, "")
-	assert.Error(t, err)
+	c.Err(err)
 }
 
-func TestEscapeGoString(t *testing.T) {
-	assert.Equal(t, "`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
+func (c C) EscapeGoString() {
+	c.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
 }
 
-func TestIdleCounter(t *testing.T) {
+func (c C) IdleCounter() {
 	utils.All(func() {
-		c := utils.NewIdleCounter(100 * time.Millisecond)
+		ct := utils.NewIdleCounter(100 * time.Millisecond)
 
 		go func() {
-			c.Add()
+			ct.Add()
 			time.Sleep(300 * time.Millisecond)
-			c.Done()
+			ct.Done()
 		}()
 
 		ctx, cancel := context.WithCancel(context.Background())
 
 		start := time.Now()
-		c.Wait(ctx)
+		ct.Wait(ctx)
 		d := time.Since(start)
-		assert.Greater(t, d, 400*time.Millisecond)
-		assert.Less(t, d, 450*time.Millisecond)
+		c.Gt(d, 400*time.Millisecond)
+		c.Lt(d, 450*time.Millisecond)
 
-		assert.Panics(t, func() {
-			c.Done()
+		c.Panic(func() {
+			ct.Done()
 		})
 
 		cancel()
-		c.Wait(ctx)
+		ct.Wait(ctx)
 	}, func() {
-		c := utils.NewIdleCounter(100 * time.Millisecond)
+		ct := utils.NewIdleCounter(100 * time.Millisecond)
 		start := time.Now()
-		c.Wait(context.Background())
-		assert.Less(t, time.Since(start), 150*time.Millisecond)
+		ct.Wait(context.Background())
+		c.Lt(time.Since(start), 150*time.Millisecond)
 	}, func() {
-		c := utils.NewIdleCounter(0)
+		ct := utils.NewIdleCounter(0)
 		start := time.Now()
-		c.Wait(context.Background())
-		assert.Less(t, time.Since(start), 10*time.Millisecond)
+		ct.Wait(context.Background())
+		c.Lt(time.Since(start), 10*time.Millisecond)
 	})()
 }

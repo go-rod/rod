@@ -3,3647 +3,3644 @@
 package proto_test
 
 import (
-	"testing"
-
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestAccessibilityDisable(t *testing.T) {
+func (t C) AccessibilityDisable() {
 	c := &Client{}
 	err := proto.AccessibilityDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAccessibilityEnable(t *testing.T) {
+func (t C) AccessibilityEnable() {
 	c := &Client{}
 	err := proto.AccessibilityEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAccessibilityGetPartialAXTree(t *testing.T) {
+func (t C) AccessibilityGetPartialAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityGetPartialAXTree{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAccessibilityGetFullAXTree(t *testing.T) {
+func (t C) AccessibilityGetFullAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityGetFullAXTree{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationDisable(t *testing.T) {
+func (t C) AnimationDisable() {
 	c := &Client{}
 	err := proto.AnimationDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationEnable(t *testing.T) {
+func (t C) AnimationEnable() {
 	c := &Client{}
 	err := proto.AnimationEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationGetCurrentTime(t *testing.T) {
+func (t C) AnimationGetCurrentTime() {
 	c := &Client{}
 	_, err := proto.AnimationGetCurrentTime{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationGetPlaybackRate(t *testing.T) {
+func (t C) AnimationGetPlaybackRate() {
 	c := &Client{}
 	_, err := proto.AnimationGetPlaybackRate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationReleaseAnimations(t *testing.T) {
+func (t C) AnimationReleaseAnimations() {
 	c := &Client{}
 	err := proto.AnimationReleaseAnimations{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationResolveAnimation(t *testing.T) {
+func (t C) AnimationResolveAnimation() {
 	c := &Client{}
 	_, err := proto.AnimationResolveAnimation{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationSeekAnimations(t *testing.T) {
+func (t C) AnimationSeekAnimations() {
 	c := &Client{}
 	err := proto.AnimationSeekAnimations{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationSetPaused(t *testing.T) {
+func (t C) AnimationSetPaused() {
 	c := &Client{}
 	err := proto.AnimationSetPaused{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationSetPlaybackRate(t *testing.T) {
+func (t C) AnimationSetPlaybackRate() {
 	c := &Client{}
 	err := proto.AnimationSetPlaybackRate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationSetTiming(t *testing.T) {
+func (t C) AnimationSetTiming() {
 	c := &Client{}
 	err := proto.AnimationSetTiming{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAnimationAnimationCanceled(t *testing.T) {
+func (t C) AnimationAnimationCanceled() {
 	e := proto.AnimationAnimationCanceled{}
 	e.MethodName()
 }
 
-func TestAnimationAnimationCreated(t *testing.T) {
+func (t C) AnimationAnimationCreated() {
 	e := proto.AnimationAnimationCreated{}
 	e.MethodName()
 }
 
-func TestAnimationAnimationStarted(t *testing.T) {
+func (t C) AnimationAnimationStarted() {
 	e := proto.AnimationAnimationStarted{}
 	e.MethodName()
 }
 
-func TestApplicationCacheEnable(t *testing.T) {
+func (t C) ApplicationCacheEnable() {
 	c := &Client{}
 	err := proto.ApplicationCacheEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestApplicationCacheGetApplicationCacheForFrame(t *testing.T) {
+func (t C) ApplicationCacheGetApplicationCacheForFrame() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestApplicationCacheGetFramesWithManifests(t *testing.T) {
+func (t C) ApplicationCacheGetFramesWithManifests() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetFramesWithManifests{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestApplicationCacheGetManifestForFrame(t *testing.T) {
+func (t C) ApplicationCacheGetManifestForFrame() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetManifestForFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestApplicationCacheApplicationCacheStatusUpdated(t *testing.T) {
+func (t C) ApplicationCacheApplicationCacheStatusUpdated() {
 	e := proto.ApplicationCacheApplicationCacheStatusUpdated{}
 	e.MethodName()
 }
 
-func TestApplicationCacheNetworkStateUpdated(t *testing.T) {
+func (t C) ApplicationCacheNetworkStateUpdated() {
 	e := proto.ApplicationCacheNetworkStateUpdated{}
 	e.MethodName()
 }
 
-func TestAuditsGetEncodedResponse(t *testing.T) {
+func (t C) AuditsGetEncodedResponse() {
 	c := &Client{}
 	_, err := proto.AuditsGetEncodedResponse{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAuditsDisable(t *testing.T) {
+func (t C) AuditsDisable() {
 	c := &Client{}
 	err := proto.AuditsDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAuditsEnable(t *testing.T) {
+func (t C) AuditsEnable() {
 	c := &Client{}
 	err := proto.AuditsEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestAuditsIssueAdded(t *testing.T) {
+func (t C) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
 	e.MethodName()
 }
 
-func TestBackgroundServiceStartObserving(t *testing.T) {
+func (t C) BackgroundServiceStartObserving() {
 	c := &Client{}
 	err := proto.BackgroundServiceStartObserving{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBackgroundServiceStopObserving(t *testing.T) {
+func (t C) BackgroundServiceStopObserving() {
 	c := &Client{}
 	err := proto.BackgroundServiceStopObserving{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBackgroundServiceSetRecording(t *testing.T) {
+func (t C) BackgroundServiceSetRecording() {
 	c := &Client{}
 	err := proto.BackgroundServiceSetRecording{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBackgroundServiceClearEvents(t *testing.T) {
+func (t C) BackgroundServiceClearEvents() {
 	c := &Client{}
 	err := proto.BackgroundServiceClearEvents{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBackgroundServiceRecordingStateChanged(t *testing.T) {
+func (t C) BackgroundServiceRecordingStateChanged() {
 	e := proto.BackgroundServiceRecordingStateChanged{}
 	e.MethodName()
 }
 
-func TestBackgroundServiceBackgroundServiceEventReceived(t *testing.T) {
+func (t C) BackgroundServiceBackgroundServiceEventReceived() {
 	e := proto.BackgroundServiceBackgroundServiceEventReceived{}
 	e.MethodName()
 }
 
-func TestBrowserSetPermission(t *testing.T) {
+func (t C) BrowserSetPermission() {
 	c := &Client{}
 	err := proto.BrowserSetPermission{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGrantPermissions(t *testing.T) {
+func (t C) BrowserGrantPermissions() {
 	c := &Client{}
 	err := proto.BrowserGrantPermissions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserResetPermissions(t *testing.T) {
+func (t C) BrowserResetPermissions() {
 	c := &Client{}
 	err := proto.BrowserResetPermissions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserSetDownloadBehavior(t *testing.T) {
+func (t C) BrowserSetDownloadBehavior() {
 	c := &Client{}
 	err := proto.BrowserSetDownloadBehavior{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserClose(t *testing.T) {
+func (t C) BrowserClose() {
 	c := &Client{}
 	err := proto.BrowserClose{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserCrash(t *testing.T) {
+func (t C) BrowserCrash() {
 	c := &Client{}
 	err := proto.BrowserCrash{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserCrashGpuProcess(t *testing.T) {
+func (t C) BrowserCrashGpuProcess() {
 	c := &Client{}
 	err := proto.BrowserCrashGpuProcess{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetVersion(t *testing.T) {
+func (t C) BrowserGetVersion() {
 	c := &Client{}
 	_, err := proto.BrowserGetVersion{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetBrowserCommandLine(t *testing.T) {
+func (t C) BrowserGetBrowserCommandLine() {
 	c := &Client{}
 	_, err := proto.BrowserGetBrowserCommandLine{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetHistograms(t *testing.T) {
+func (t C) BrowserGetHistograms() {
 	c := &Client{}
 	_, err := proto.BrowserGetHistograms{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetHistogram(t *testing.T) {
+func (t C) BrowserGetHistogram() {
 	c := &Client{}
 	_, err := proto.BrowserGetHistogram{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetWindowBounds(t *testing.T) {
+func (t C) BrowserGetWindowBounds() {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowBounds{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserGetWindowForTarget(t *testing.T) {
+func (t C) BrowserGetWindowForTarget() {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowForTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserSetWindowBounds(t *testing.T) {
+func (t C) BrowserSetWindowBounds() {
 	c := &Client{}
 	err := proto.BrowserSetWindowBounds{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestBrowserSetDockTile(t *testing.T) {
+func (t C) BrowserSetDockTile() {
 	c := &Client{}
 	err := proto.BrowserSetDockTile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSAddRule(t *testing.T) {
+func (t C) CSSAddRule() {
 	c := &Client{}
 	_, err := proto.CSSAddRule{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSCollectClassNames(t *testing.T) {
+func (t C) CSSCollectClassNames() {
 	c := &Client{}
 	_, err := proto.CSSCollectClassNames{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSCreateStyleSheet(t *testing.T) {
+func (t C) CSSCreateStyleSheet() {
 	c := &Client{}
 	_, err := proto.CSSCreateStyleSheet{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSDisable(t *testing.T) {
+func (t C) CSSDisable() {
 	c := &Client{}
 	err := proto.CSSDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSEnable(t *testing.T) {
+func (t C) CSSEnable() {
 	c := &Client{}
 	err := proto.CSSEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSForcePseudoState(t *testing.T) {
+func (t C) CSSForcePseudoState() {
 	c := &Client{}
 	err := proto.CSSForcePseudoState{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetBackgroundColors(t *testing.T) {
+func (t C) CSSGetBackgroundColors() {
 	c := &Client{}
 	_, err := proto.CSSGetBackgroundColors{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetComputedStyleForNode(t *testing.T) {
+func (t C) CSSGetComputedStyleForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetComputedStyleForNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetInlineStylesForNode(t *testing.T) {
+func (t C) CSSGetInlineStylesForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetInlineStylesForNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetMatchedStylesForNode(t *testing.T) {
+func (t C) CSSGetMatchedStylesForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetMatchedStylesForNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetMediaQueries(t *testing.T) {
+func (t C) CSSGetMediaQueries() {
 	c := &Client{}
 	_, err := proto.CSSGetMediaQueries{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetPlatformFontsForNode(t *testing.T) {
+func (t C) CSSGetPlatformFontsForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetPlatformFontsForNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSGetStyleSheetText(t *testing.T) {
+func (t C) CSSGetStyleSheetText() {
 	c := &Client{}
 	_, err := proto.CSSGetStyleSheetText{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetEffectivePropertyValueForNode(t *testing.T) {
+func (t C) CSSSetEffectivePropertyValueForNode() {
 	c := &Client{}
 	err := proto.CSSSetEffectivePropertyValueForNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetKeyframeKey(t *testing.T) {
+func (t C) CSSSetKeyframeKey() {
 	c := &Client{}
 	_, err := proto.CSSSetKeyframeKey{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetMediaText(t *testing.T) {
+func (t C) CSSSetMediaText() {
 	c := &Client{}
 	_, err := proto.CSSSetMediaText{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetRuleSelector(t *testing.T) {
+func (t C) CSSSetRuleSelector() {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetStyleSheetText(t *testing.T) {
+func (t C) CSSSetStyleSheetText() {
 	c := &Client{}
 	_, err := proto.CSSSetStyleSheetText{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSSetStyleTexts(t *testing.T) {
+func (t C) CSSSetStyleTexts() {
 	c := &Client{}
 	_, err := proto.CSSSetStyleTexts{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSStartRuleUsageTracking(t *testing.T) {
+func (t C) CSSStartRuleUsageTracking() {
 	c := &Client{}
 	err := proto.CSSStartRuleUsageTracking{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSStopRuleUsageTracking(t *testing.T) {
+func (t C) CSSStopRuleUsageTracking() {
 	c := &Client{}
 	_, err := proto.CSSStopRuleUsageTracking{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSTakeCoverageDelta(t *testing.T) {
+func (t C) CSSTakeCoverageDelta() {
 	c := &Client{}
 	_, err := proto.CSSTakeCoverageDelta{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCSSFontsUpdated(t *testing.T) {
+func (t C) CSSFontsUpdated() {
 	e := proto.CSSFontsUpdated{}
 	e.MethodName()
 }
 
-func TestCSSMediaQueryResultChanged(t *testing.T) {
+func (t C) CSSMediaQueryResultChanged() {
 	e := proto.CSSMediaQueryResultChanged{}
 	e.MethodName()
 }
 
-func TestCSSStyleSheetAdded(t *testing.T) {
+func (t C) CSSStyleSheetAdded() {
 	e := proto.CSSStyleSheetAdded{}
 	e.MethodName()
 }
 
-func TestCSSStyleSheetChanged(t *testing.T) {
+func (t C) CSSStyleSheetChanged() {
 	e := proto.CSSStyleSheetChanged{}
 	e.MethodName()
 }
 
-func TestCSSStyleSheetRemoved(t *testing.T) {
+func (t C) CSSStyleSheetRemoved() {
 	e := proto.CSSStyleSheetRemoved{}
 	e.MethodName()
 }
 
-func TestCacheStorageDeleteCache(t *testing.T) {
+func (t C) CacheStorageDeleteCache() {
 	c := &Client{}
 	err := proto.CacheStorageDeleteCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCacheStorageDeleteEntry(t *testing.T) {
+func (t C) CacheStorageDeleteEntry() {
 	c := &Client{}
 	err := proto.CacheStorageDeleteEntry{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCacheStorageRequestCacheNames(t *testing.T) {
+func (t C) CacheStorageRequestCacheNames() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCacheNames{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCacheStorageRequestCachedResponse(t *testing.T) {
+func (t C) CacheStorageRequestCachedResponse() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCachedResponse{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCacheStorageRequestEntries(t *testing.T) {
+func (t C) CacheStorageRequestEntries() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestEntries{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastEnable(t *testing.T) {
+func (t C) CastEnable() {
 	c := &Client{}
 	err := proto.CastEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastDisable(t *testing.T) {
+func (t C) CastDisable() {
 	c := &Client{}
 	err := proto.CastDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastSetSinkToUse(t *testing.T) {
+func (t C) CastSetSinkToUse() {
 	c := &Client{}
 	err := proto.CastSetSinkToUse{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastStartTabMirroring(t *testing.T) {
+func (t C) CastStartTabMirroring() {
 	c := &Client{}
 	err := proto.CastStartTabMirroring{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastStopCasting(t *testing.T) {
+func (t C) CastStopCasting() {
 	c := &Client{}
 	err := proto.CastStopCasting{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestCastSinksUpdated(t *testing.T) {
+func (t C) CastSinksUpdated() {
 	e := proto.CastSinksUpdated{}
 	e.MethodName()
 }
 
-func TestCastIssueUpdated(t *testing.T) {
+func (t C) CastIssueUpdated() {
 	e := proto.CastIssueUpdated{}
 	e.MethodName()
 }
 
-func TestDOMCollectClassNamesFromSubtree(t *testing.T) {
+func (t C) DOMCollectClassNamesFromSubtree() {
 	c := &Client{}
 	_, err := proto.DOMCollectClassNamesFromSubtree{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMCopyTo(t *testing.T) {
+func (t C) DOMCopyTo() {
 	c := &Client{}
 	_, err := proto.DOMCopyTo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDescribeNode(t *testing.T) {
+func (t C) DOMDescribeNode() {
 	c := &Client{}
 	_, err := proto.DOMDescribeNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMScrollIntoViewIfNeeded(t *testing.T) {
+func (t C) DOMScrollIntoViewIfNeeded() {
 	c := &Client{}
 	err := proto.DOMScrollIntoViewIfNeeded{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDisable(t *testing.T) {
+func (t C) DOMDisable() {
 	c := &Client{}
 	err := proto.DOMDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDiscardSearchResults(t *testing.T) {
+func (t C) DOMDiscardSearchResults() {
 	c := &Client{}
 	err := proto.DOMDiscardSearchResults{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMEnable(t *testing.T) {
+func (t C) DOMEnable() {
 	c := &Client{}
 	err := proto.DOMEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMFocus(t *testing.T) {
+func (t C) DOMFocus() {
 	c := &Client{}
 	err := proto.DOMFocus{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetAttributes(t *testing.T) {
+func (t C) DOMGetAttributes() {
 	c := &Client{}
 	_, err := proto.DOMGetAttributes{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetBoxModel(t *testing.T) {
+func (t C) DOMGetBoxModel() {
 	c := &Client{}
 	_, err := proto.DOMGetBoxModel{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetContentQuads(t *testing.T) {
+func (t C) DOMGetContentQuads() {
 	c := &Client{}
 	_, err := proto.DOMGetContentQuads{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetDocument(t *testing.T) {
+func (t C) DOMGetDocument() {
 	c := &Client{}
 	_, err := proto.DOMGetDocument{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetFlattenedDocument(t *testing.T) {
+func (t C) DOMGetFlattenedDocument() {
 	c := &Client{}
 	_, err := proto.DOMGetFlattenedDocument{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetNodeForLocation(t *testing.T) {
+func (t C) DOMGetNodeForLocation() {
 	c := &Client{}
 	_, err := proto.DOMGetNodeForLocation{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetOuterHTML(t *testing.T) {
+func (t C) DOMGetOuterHTML() {
 	c := &Client{}
 	_, err := proto.DOMGetOuterHTML{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetRelayoutBoundary(t *testing.T) {
+func (t C) DOMGetRelayoutBoundary() {
 	c := &Client{}
 	_, err := proto.DOMGetRelayoutBoundary{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetSearchResults(t *testing.T) {
+func (t C) DOMGetSearchResults() {
 	c := &Client{}
 	_, err := proto.DOMGetSearchResults{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMHideHighlight(t *testing.T) {
+func (t C) DOMHideHighlight() {
 	c := &Client{}
 	err := proto.DOMHideHighlight{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMHighlightNode(t *testing.T) {
+func (t C) DOMHighlightNode() {
 	c := &Client{}
 	err := proto.DOMHighlightNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMHighlightRect(t *testing.T) {
+func (t C) DOMHighlightRect() {
 	c := &Client{}
 	err := proto.DOMHighlightRect{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMMarkUndoableState(t *testing.T) {
+func (t C) DOMMarkUndoableState() {
 	c := &Client{}
 	err := proto.DOMMarkUndoableState{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMMoveTo(t *testing.T) {
+func (t C) DOMMoveTo() {
 	c := &Client{}
 	_, err := proto.DOMMoveTo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMPerformSearch(t *testing.T) {
+func (t C) DOMPerformSearch() {
 	c := &Client{}
 	_, err := proto.DOMPerformSearch{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMPushNodeByPathToFrontend(t *testing.T) {
+func (t C) DOMPushNodeByPathToFrontend() {
 	c := &Client{}
 	_, err := proto.DOMPushNodeByPathToFrontend{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMPushNodesByBackendIdsToFrontend(t *testing.T) {
+func (t C) DOMPushNodesByBackendIdsToFrontend() {
 	c := &Client{}
 	_, err := proto.DOMPushNodesByBackendIdsToFrontend{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMQuerySelector(t *testing.T) {
+func (t C) DOMQuerySelector() {
 	c := &Client{}
 	_, err := proto.DOMQuerySelector{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMQuerySelectorAll(t *testing.T) {
+func (t C) DOMQuerySelectorAll() {
 	c := &Client{}
 	_, err := proto.DOMQuerySelectorAll{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMRedo(t *testing.T) {
+func (t C) DOMRedo() {
 	c := &Client{}
 	err := proto.DOMRedo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMRemoveAttribute(t *testing.T) {
+func (t C) DOMRemoveAttribute() {
 	c := &Client{}
 	err := proto.DOMRemoveAttribute{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMRemoveNode(t *testing.T) {
+func (t C) DOMRemoveNode() {
 	c := &Client{}
 	err := proto.DOMRemoveNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMRequestChildNodes(t *testing.T) {
+func (t C) DOMRequestChildNodes() {
 	c := &Client{}
 	err := proto.DOMRequestChildNodes{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMRequestNode(t *testing.T) {
+func (t C) DOMRequestNode() {
 	c := &Client{}
 	_, err := proto.DOMRequestNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMResolveNode(t *testing.T) {
+func (t C) DOMResolveNode() {
 	c := &Client{}
 	_, err := proto.DOMResolveNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetAttributeValue(t *testing.T) {
+func (t C) DOMSetAttributeValue() {
 	c := &Client{}
 	err := proto.DOMSetAttributeValue{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetAttributesAsText(t *testing.T) {
+func (t C) DOMSetAttributesAsText() {
 	c := &Client{}
 	err := proto.DOMSetAttributesAsText{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetFileInputFiles(t *testing.T) {
+func (t C) DOMSetFileInputFiles() {
 	c := &Client{}
 	err := proto.DOMSetFileInputFiles{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetNodeStackTracesEnabled(t *testing.T) {
+func (t C) DOMSetNodeStackTracesEnabled() {
 	c := &Client{}
 	err := proto.DOMSetNodeStackTracesEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetNodeStackTraces(t *testing.T) {
+func (t C) DOMGetNodeStackTraces() {
 	c := &Client{}
 	_, err := proto.DOMGetNodeStackTraces{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetFileInfo(t *testing.T) {
+func (t C) DOMGetFileInfo() {
 	c := &Client{}
 	_, err := proto.DOMGetFileInfo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetInspectedNode(t *testing.T) {
+func (t C) DOMSetInspectedNode() {
 	c := &Client{}
 	err := proto.DOMSetInspectedNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetNodeName(t *testing.T) {
+func (t C) DOMSetNodeName() {
 	c := &Client{}
 	_, err := proto.DOMSetNodeName{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetNodeValue(t *testing.T) {
+func (t C) DOMSetNodeValue() {
 	c := &Client{}
 	err := proto.DOMSetNodeValue{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSetOuterHTML(t *testing.T) {
+func (t C) DOMSetOuterHTML() {
 	c := &Client{}
 	err := proto.DOMSetOuterHTML{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMUndo(t *testing.T) {
+func (t C) DOMUndo() {
 	c := &Client{}
 	err := proto.DOMUndo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMGetFrameOwner(t *testing.T) {
+func (t C) DOMGetFrameOwner() {
 	c := &Client{}
 	_, err := proto.DOMGetFrameOwner{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMAttributeModified(t *testing.T) {
+func (t C) DOMAttributeModified() {
 	e := proto.DOMAttributeModified{}
 	e.MethodName()
 }
 
-func TestDOMAttributeRemoved(t *testing.T) {
+func (t C) DOMAttributeRemoved() {
 	e := proto.DOMAttributeRemoved{}
 	e.MethodName()
 }
 
-func TestDOMCharacterDataModified(t *testing.T) {
+func (t C) DOMCharacterDataModified() {
 	e := proto.DOMCharacterDataModified{}
 	e.MethodName()
 }
 
-func TestDOMChildNodeCountUpdated(t *testing.T) {
+func (t C) DOMChildNodeCountUpdated() {
 	e := proto.DOMChildNodeCountUpdated{}
 	e.MethodName()
 }
 
-func TestDOMChildNodeInserted(t *testing.T) {
+func (t C) DOMChildNodeInserted() {
 	e := proto.DOMChildNodeInserted{}
 	e.MethodName()
 }
 
-func TestDOMChildNodeRemoved(t *testing.T) {
+func (t C) DOMChildNodeRemoved() {
 	e := proto.DOMChildNodeRemoved{}
 	e.MethodName()
 }
 
-func TestDOMDistributedNodesUpdated(t *testing.T) {
+func (t C) DOMDistributedNodesUpdated() {
 	e := proto.DOMDistributedNodesUpdated{}
 	e.MethodName()
 }
 
-func TestDOMDocumentUpdated(t *testing.T) {
+func (t C) DOMDocumentUpdated() {
 	e := proto.DOMDocumentUpdated{}
 	e.MethodName()
 }
 
-func TestDOMInlineStyleInvalidated(t *testing.T) {
+func (t C) DOMInlineStyleInvalidated() {
 	e := proto.DOMInlineStyleInvalidated{}
 	e.MethodName()
 }
 
-func TestDOMPseudoElementAdded(t *testing.T) {
+func (t C) DOMPseudoElementAdded() {
 	e := proto.DOMPseudoElementAdded{}
 	e.MethodName()
 }
 
-func TestDOMPseudoElementRemoved(t *testing.T) {
+func (t C) DOMPseudoElementRemoved() {
 	e := proto.DOMPseudoElementRemoved{}
 	e.MethodName()
 }
 
-func TestDOMSetChildNodes(t *testing.T) {
+func (t C) DOMSetChildNodes() {
 	e := proto.DOMSetChildNodes{}
 	e.MethodName()
 }
 
-func TestDOMShadowRootPopped(t *testing.T) {
+func (t C) DOMShadowRootPopped() {
 	e := proto.DOMShadowRootPopped{}
 	e.MethodName()
 }
 
-func TestDOMShadowRootPushed(t *testing.T) {
+func (t C) DOMShadowRootPushed() {
 	e := proto.DOMShadowRootPushed{}
 	e.MethodName()
 }
 
-func TestDOMDebuggerGetEventListeners(t *testing.T) {
+func (t C) DOMDebuggerGetEventListeners() {
 	c := &Client{}
 	_, err := proto.DOMDebuggerGetEventListeners{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerRemoveDOMBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerRemoveDOMBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveDOMBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerRemoveEventListenerBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerRemoveEventListenerBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveEventListenerBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerRemoveInstrumentationBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerRemoveInstrumentationBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerRemoveXHRBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerRemoveXHRBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveXHRBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerSetDOMBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerSetDOMBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetDOMBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerSetEventListenerBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerSetEventListenerBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetEventListenerBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerSetInstrumentationBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerSetInstrumentationBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMDebuggerSetXHRBreakpoint(t *testing.T) {
+func (t C) DOMDebuggerSetXHRBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetXHRBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSnapshotDisable(t *testing.T) {
+func (t C) DOMSnapshotDisable() {
 	c := &Client{}
 	err := proto.DOMSnapshotDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSnapshotEnable(t *testing.T) {
+func (t C) DOMSnapshotEnable() {
 	c := &Client{}
 	err := proto.DOMSnapshotEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSnapshotGetSnapshot(t *testing.T) {
+func (t C) DOMSnapshotGetSnapshot() {
 	c := &Client{}
 	_, err := proto.DOMSnapshotGetSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMSnapshotCaptureSnapshot(t *testing.T) {
+func (t C) DOMSnapshotCaptureSnapshot() {
 	c := &Client{}
 	_, err := proto.DOMSnapshotCaptureSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageClear(t *testing.T) {
+func (t C) DOMStorageClear() {
 	c := &Client{}
 	err := proto.DOMStorageClear{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageDisable(t *testing.T) {
+func (t C) DOMStorageDisable() {
 	c := &Client{}
 	err := proto.DOMStorageDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageEnable(t *testing.T) {
+func (t C) DOMStorageEnable() {
 	c := &Client{}
 	err := proto.DOMStorageEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageGetDOMStorageItems(t *testing.T) {
+func (t C) DOMStorageGetDOMStorageItems() {
 	c := &Client{}
 	_, err := proto.DOMStorageGetDOMStorageItems{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageRemoveDOMStorageItem(t *testing.T) {
+func (t C) DOMStorageRemoveDOMStorageItem() {
 	c := &Client{}
 	err := proto.DOMStorageRemoveDOMStorageItem{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageSetDOMStorageItem(t *testing.T) {
+func (t C) DOMStorageSetDOMStorageItem() {
 	c := &Client{}
 	err := proto.DOMStorageSetDOMStorageItem{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDOMStorageDomStorageItemAdded(t *testing.T) {
+func (t C) DOMStorageDomStorageItemAdded() {
 	e := proto.DOMStorageDomStorageItemAdded{}
 	e.MethodName()
 }
 
-func TestDOMStorageDomStorageItemRemoved(t *testing.T) {
+func (t C) DOMStorageDomStorageItemRemoved() {
 	e := proto.DOMStorageDomStorageItemRemoved{}
 	e.MethodName()
 }
 
-func TestDOMStorageDomStorageItemUpdated(t *testing.T) {
+func (t C) DOMStorageDomStorageItemUpdated() {
 	e := proto.DOMStorageDomStorageItemUpdated{}
 	e.MethodName()
 }
 
-func TestDOMStorageDomStorageItemsCleared(t *testing.T) {
+func (t C) DOMStorageDomStorageItemsCleared() {
 	e := proto.DOMStorageDomStorageItemsCleared{}
 	e.MethodName()
 }
 
-func TestDatabaseDisable(t *testing.T) {
+func (t C) DatabaseDisable() {
 	c := &Client{}
 	err := proto.DatabaseDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDatabaseEnable(t *testing.T) {
+func (t C) DatabaseEnable() {
 	c := &Client{}
 	err := proto.DatabaseEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDatabaseExecuteSQL(t *testing.T) {
+func (t C) DatabaseExecuteSQL() {
 	c := &Client{}
 	_, err := proto.DatabaseExecuteSQL{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDatabaseGetDatabaseTableNames(t *testing.T) {
+func (t C) DatabaseGetDatabaseTableNames() {
 	c := &Client{}
 	_, err := proto.DatabaseGetDatabaseTableNames{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDatabaseAddDatabase(t *testing.T) {
+func (t C) DatabaseAddDatabase() {
 	e := proto.DatabaseAddDatabase{}
 	e.MethodName()
 }
 
-func TestDeviceOrientationClearDeviceOrientationOverride(t *testing.T) {
+func (t C) DeviceOrientationClearDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.DeviceOrientationClearDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDeviceOrientationSetDeviceOrientationOverride(t *testing.T) {
+func (t C) DeviceOrientationSetDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.DeviceOrientationSetDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationCanEmulate(t *testing.T) {
+func (t C) EmulationCanEmulate() {
 	c := &Client{}
 	_, err := proto.EmulationCanEmulate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationClearDeviceMetricsOverride(t *testing.T) {
+func (t C) EmulationClearDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.EmulationClearDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationClearGeolocationOverride(t *testing.T) {
+func (t C) EmulationClearGeolocationOverride() {
 	c := &Client{}
 	err := proto.EmulationClearGeolocationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationResetPageScaleFactor(t *testing.T) {
+func (t C) EmulationResetPageScaleFactor() {
 	c := &Client{}
 	err := proto.EmulationResetPageScaleFactor{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetFocusEmulationEnabled(t *testing.T) {
+func (t C) EmulationSetFocusEmulationEnabled() {
 	c := &Client{}
 	err := proto.EmulationSetFocusEmulationEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetCPUThrottlingRate(t *testing.T) {
+func (t C) EmulationSetCPUThrottlingRate() {
 	c := &Client{}
 	err := proto.EmulationSetCPUThrottlingRate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetDefaultBackgroundColorOverride(t *testing.T) {
+func (t C) EmulationSetDefaultBackgroundColorOverride() {
 	c := &Client{}
 	err := proto.EmulationSetDefaultBackgroundColorOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetDeviceMetricsOverride(t *testing.T) {
+func (t C) EmulationSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.EmulationSetDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetScrollbarsHidden(t *testing.T) {
+func (t C) EmulationSetScrollbarsHidden() {
 	c := &Client{}
 	err := proto.EmulationSetScrollbarsHidden{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetDocumentCookieDisabled(t *testing.T) {
+func (t C) EmulationSetDocumentCookieDisabled() {
 	c := &Client{}
 	err := proto.EmulationSetDocumentCookieDisabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetEmitTouchEventsForMouse(t *testing.T) {
+func (t C) EmulationSetEmitTouchEventsForMouse() {
 	c := &Client{}
 	err := proto.EmulationSetEmitTouchEventsForMouse{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetEmulatedMedia(t *testing.T) {
+func (t C) EmulationSetEmulatedMedia() {
 	c := &Client{}
 	err := proto.EmulationSetEmulatedMedia{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetEmulatedVisionDeficiency(t *testing.T) {
+func (t C) EmulationSetEmulatedVisionDeficiency() {
 	c := &Client{}
 	err := proto.EmulationSetEmulatedVisionDeficiency{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetGeolocationOverride(t *testing.T) {
+func (t C) EmulationSetGeolocationOverride() {
 	c := &Client{}
 	err := proto.EmulationSetGeolocationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetNavigatorOverrides(t *testing.T) {
+func (t C) EmulationSetNavigatorOverrides() {
 	c := &Client{}
 	err := proto.EmulationSetNavigatorOverrides{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetPageScaleFactor(t *testing.T) {
+func (t C) EmulationSetPageScaleFactor() {
 	c := &Client{}
 	err := proto.EmulationSetPageScaleFactor{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetScriptExecutionDisabled(t *testing.T) {
+func (t C) EmulationSetScriptExecutionDisabled() {
 	c := &Client{}
 	err := proto.EmulationSetScriptExecutionDisabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetTouchEmulationEnabled(t *testing.T) {
+func (t C) EmulationSetTouchEmulationEnabled() {
 	c := &Client{}
 	err := proto.EmulationSetTouchEmulationEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetVirtualTimePolicy(t *testing.T) {
+func (t C) EmulationSetVirtualTimePolicy() {
 	c := &Client{}
 	_, err := proto.EmulationSetVirtualTimePolicy{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetLocaleOverride(t *testing.T) {
+func (t C) EmulationSetLocaleOverride() {
 	c := &Client{}
 	err := proto.EmulationSetLocaleOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetTimezoneOverride(t *testing.T) {
+func (t C) EmulationSetTimezoneOverride() {
 	c := &Client{}
 	err := proto.EmulationSetTimezoneOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetVisibleSize(t *testing.T) {
+func (t C) EmulationSetVisibleSize() {
 	c := &Client{}
 	err := proto.EmulationSetVisibleSize{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationSetUserAgentOverride(t *testing.T) {
+func (t C) EmulationSetUserAgentOverride() {
 	c := &Client{}
 	err := proto.EmulationSetUserAgentOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestEmulationVirtualTimeBudgetExpired(t *testing.T) {
+func (t C) EmulationVirtualTimeBudgetExpired() {
 	e := proto.EmulationVirtualTimeBudgetExpired{}
 	e.MethodName()
 }
 
-func TestHeadlessExperimentalBeginFrame(t *testing.T) {
+func (t C) HeadlessExperimentalBeginFrame() {
 	c := &Client{}
 	_, err := proto.HeadlessExperimentalBeginFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeadlessExperimentalDisable(t *testing.T) {
+func (t C) HeadlessExperimentalDisable() {
 	c := &Client{}
 	err := proto.HeadlessExperimentalDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeadlessExperimentalEnable(t *testing.T) {
+func (t C) HeadlessExperimentalEnable() {
 	c := &Client{}
 	err := proto.HeadlessExperimentalEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeadlessExperimentalNeedsBeginFramesChanged(t *testing.T) {
+func (t C) HeadlessExperimentalNeedsBeginFramesChanged() {
 	e := proto.HeadlessExperimentalNeedsBeginFramesChanged{}
 	e.MethodName()
 }
 
-func TestIOClose(t *testing.T) {
+func (t C) IOClose() {
 	c := &Client{}
 	err := proto.IOClose{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIORead(t *testing.T) {
+func (t C) IORead() {
 	c := &Client{}
 	_, err := proto.IORead{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIOResolveBlob(t *testing.T) {
+func (t C) IOResolveBlob() {
 	c := &Client{}
 	_, err := proto.IOResolveBlob{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBClearObjectStore(t *testing.T) {
+func (t C) IndexedDBClearObjectStore() {
 	c := &Client{}
 	err := proto.IndexedDBClearObjectStore{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBDeleteDatabase(t *testing.T) {
+func (t C) IndexedDBDeleteDatabase() {
 	c := &Client{}
 	err := proto.IndexedDBDeleteDatabase{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBDeleteObjectStoreEntries(t *testing.T) {
+func (t C) IndexedDBDeleteObjectStoreEntries() {
 	c := &Client{}
 	err := proto.IndexedDBDeleteObjectStoreEntries{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBDisable(t *testing.T) {
+func (t C) IndexedDBDisable() {
 	c := &Client{}
 	err := proto.IndexedDBDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBEnable(t *testing.T) {
+func (t C) IndexedDBEnable() {
 	c := &Client{}
 	err := proto.IndexedDBEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBRequestData(t *testing.T) {
+func (t C) IndexedDBRequestData() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestData{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBGetMetadata(t *testing.T) {
+func (t C) IndexedDBGetMetadata() {
 	c := &Client{}
 	_, err := proto.IndexedDBGetMetadata{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBRequestDatabase(t *testing.T) {
+func (t C) IndexedDBRequestDatabase() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabase{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestIndexedDBRequestDatabaseNames(t *testing.T) {
+func (t C) IndexedDBRequestDatabaseNames() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabaseNames{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputDispatchKeyEvent(t *testing.T) {
+func (t C) InputDispatchKeyEvent() {
 	c := &Client{}
 	err := proto.InputDispatchKeyEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputInsertText(t *testing.T) {
+func (t C) InputInsertText() {
 	c := &Client{}
 	err := proto.InputInsertText{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputDispatchMouseEvent(t *testing.T) {
+func (t C) InputDispatchMouseEvent() {
 	c := &Client{}
 	err := proto.InputDispatchMouseEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputDispatchTouchEvent(t *testing.T) {
+func (t C) InputDispatchTouchEvent() {
 	c := &Client{}
 	err := proto.InputDispatchTouchEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputEmulateTouchFromMouseEvent(t *testing.T) {
+func (t C) InputEmulateTouchFromMouseEvent() {
 	c := &Client{}
 	err := proto.InputEmulateTouchFromMouseEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputSetIgnoreInputEvents(t *testing.T) {
+func (t C) InputSetIgnoreInputEvents() {
 	c := &Client{}
 	err := proto.InputSetIgnoreInputEvents{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputSynthesizePinchGesture(t *testing.T) {
+func (t C) InputSynthesizePinchGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizePinchGesture{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputSynthesizeScrollGesture(t *testing.T) {
+func (t C) InputSynthesizeScrollGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizeScrollGesture{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInputSynthesizeTapGesture(t *testing.T) {
+func (t C) InputSynthesizeTapGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizeTapGesture{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInspectorDisable(t *testing.T) {
+func (t C) InspectorDisable() {
 	c := &Client{}
 	err := proto.InspectorDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInspectorEnable(t *testing.T) {
+func (t C) InspectorEnable() {
 	c := &Client{}
 	err := proto.InspectorEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestInspectorDetached(t *testing.T) {
+func (t C) InspectorDetached() {
 	e := proto.InspectorDetached{}
 	e.MethodName()
 }
 
-func TestInspectorTargetCrashed(t *testing.T) {
+func (t C) InspectorTargetCrashed() {
 	e := proto.InspectorTargetCrashed{}
 	e.MethodName()
 }
 
-func TestInspectorTargetReloadedAfterCrash(t *testing.T) {
+func (t C) InspectorTargetReloadedAfterCrash() {
 	e := proto.InspectorTargetReloadedAfterCrash{}
 	e.MethodName()
 }
 
-func TestLayerTreeCompositingReasons(t *testing.T) {
+func (t C) LayerTreeCompositingReasons() {
 	c := &Client{}
 	_, err := proto.LayerTreeCompositingReasons{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeDisable(t *testing.T) {
+func (t C) LayerTreeDisable() {
 	c := &Client{}
 	err := proto.LayerTreeDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeEnable(t *testing.T) {
+func (t C) LayerTreeEnable() {
 	c := &Client{}
 	err := proto.LayerTreeEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeLoadSnapshot(t *testing.T) {
+func (t C) LayerTreeLoadSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeLoadSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeMakeSnapshot(t *testing.T) {
+func (t C) LayerTreeMakeSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeMakeSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeProfileSnapshot(t *testing.T) {
+func (t C) LayerTreeProfileSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeProfileSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeReleaseSnapshot(t *testing.T) {
+func (t C) LayerTreeReleaseSnapshot() {
 	c := &Client{}
 	err := proto.LayerTreeReleaseSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeReplaySnapshot(t *testing.T) {
+func (t C) LayerTreeReplaySnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeReplaySnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeSnapshotCommandLog(t *testing.T) {
+func (t C) LayerTreeSnapshotCommandLog() {
 	c := &Client{}
 	_, err := proto.LayerTreeSnapshotCommandLog{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLayerTreeLayerPainted(t *testing.T) {
+func (t C) LayerTreeLayerPainted() {
 	e := proto.LayerTreeLayerPainted{}
 	e.MethodName()
 }
 
-func TestLayerTreeLayerTreeDidChange(t *testing.T) {
+func (t C) LayerTreeLayerTreeDidChange() {
 	e := proto.LayerTreeLayerTreeDidChange{}
 	e.MethodName()
 }
 
-func TestLogClear(t *testing.T) {
+func (t C) LogClear() {
 	c := &Client{}
 	err := proto.LogClear{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLogDisable(t *testing.T) {
+func (t C) LogDisable() {
 	c := &Client{}
 	err := proto.LogDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLogEnable(t *testing.T) {
+func (t C) LogEnable() {
 	c := &Client{}
 	err := proto.LogEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLogStartViolationsReport(t *testing.T) {
+func (t C) LogStartViolationsReport() {
 	c := &Client{}
 	err := proto.LogStartViolationsReport{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLogStopViolationsReport(t *testing.T) {
+func (t C) LogStopViolationsReport() {
 	c := &Client{}
 	err := proto.LogStopViolationsReport{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestLogEntryAdded(t *testing.T) {
+func (t C) LogEntryAdded() {
 	e := proto.LogEntryAdded{}
 	e.MethodName()
 }
 
-func TestMemoryGetDOMCounters(t *testing.T) {
+func (t C) MemoryGetDOMCounters() {
 	c := &Client{}
 	_, err := proto.MemoryGetDOMCounters{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryPrepareForLeakDetection(t *testing.T) {
+func (t C) MemoryPrepareForLeakDetection() {
 	c := &Client{}
 	err := proto.MemoryPrepareForLeakDetection{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryForciblyPurgeJavaScriptMemory(t *testing.T) {
+func (t C) MemoryForciblyPurgeJavaScriptMemory() {
 	c := &Client{}
 	err := proto.MemoryForciblyPurgeJavaScriptMemory{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemorySetPressureNotificationsSuppressed(t *testing.T) {
+func (t C) MemorySetPressureNotificationsSuppressed() {
 	c := &Client{}
 	err := proto.MemorySetPressureNotificationsSuppressed{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemorySimulatePressureNotification(t *testing.T) {
+func (t C) MemorySimulatePressureNotification() {
 	c := &Client{}
 	err := proto.MemorySimulatePressureNotification{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryStartSampling(t *testing.T) {
+func (t C) MemoryStartSampling() {
 	c := &Client{}
 	err := proto.MemoryStartSampling{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryStopSampling(t *testing.T) {
+func (t C) MemoryStopSampling() {
 	c := &Client{}
 	err := proto.MemoryStopSampling{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryGetAllTimeSamplingProfile(t *testing.T) {
+func (t C) MemoryGetAllTimeSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetAllTimeSamplingProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryGetBrowserSamplingProfile(t *testing.T) {
+func (t C) MemoryGetBrowserSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetBrowserSamplingProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMemoryGetSamplingProfile(t *testing.T) {
+func (t C) MemoryGetSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetSamplingProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkCanClearBrowserCache(t *testing.T) {
+func (t C) NetworkCanClearBrowserCache() {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkCanClearBrowserCookies(t *testing.T) {
+func (t C) NetworkCanClearBrowserCookies() {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkCanEmulateNetworkConditions(t *testing.T) {
+func (t C) NetworkCanEmulateNetworkConditions() {
 	c := &Client{}
 	_, err := proto.NetworkCanEmulateNetworkConditions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkClearBrowserCache(t *testing.T) {
+func (t C) NetworkClearBrowserCache() {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkClearBrowserCookies(t *testing.T) {
+func (t C) NetworkClearBrowserCookies() {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkContinueInterceptedRequest(t *testing.T) {
+func (t C) NetworkContinueInterceptedRequest() {
 	c := &Client{}
 	err := proto.NetworkContinueInterceptedRequest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkDeleteCookies(t *testing.T) {
+func (t C) NetworkDeleteCookies() {
 	c := &Client{}
 	err := proto.NetworkDeleteCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkDisable(t *testing.T) {
+func (t C) NetworkDisable() {
 	c := &Client{}
 	err := proto.NetworkDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkEmulateNetworkConditions(t *testing.T) {
+func (t C) NetworkEmulateNetworkConditions() {
 	c := &Client{}
 	err := proto.NetworkEmulateNetworkConditions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkEnable(t *testing.T) {
+func (t C) NetworkEnable() {
 	c := &Client{}
 	err := proto.NetworkEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetAllCookies(t *testing.T) {
+func (t C) NetworkGetAllCookies() {
 	c := &Client{}
 	_, err := proto.NetworkGetAllCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetCertificate(t *testing.T) {
+func (t C) NetworkGetCertificate() {
 	c := &Client{}
 	_, err := proto.NetworkGetCertificate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetCookies(t *testing.T) {
+func (t C) NetworkGetCookies() {
 	c := &Client{}
 	_, err := proto.NetworkGetCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetResponseBody(t *testing.T) {
+func (t C) NetworkGetResponseBody() {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBody{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetRequestPostData(t *testing.T) {
+func (t C) NetworkGetRequestPostData() {
 	c := &Client{}
 	_, err := proto.NetworkGetRequestPostData{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkGetResponseBodyForInterception(t *testing.T) {
+func (t C) NetworkGetResponseBodyForInterception() {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBodyForInterception{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkTakeResponseBodyForInterceptionAsStream(t *testing.T) {
+func (t C) NetworkTakeResponseBodyForInterceptionAsStream() {
 	c := &Client{}
 	_, err := proto.NetworkTakeResponseBodyForInterceptionAsStream{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkReplayXHR(t *testing.T) {
+func (t C) NetworkReplayXHR() {
 	c := &Client{}
 	err := proto.NetworkReplayXHR{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSearchInResponseBody(t *testing.T) {
+func (t C) NetworkSearchInResponseBody() {
 	c := &Client{}
 	_, err := proto.NetworkSearchInResponseBody{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetBlockedURLs(t *testing.T) {
+func (t C) NetworkSetBlockedURLs() {
 	c := &Client{}
 	err := proto.NetworkSetBlockedURLs{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetBypassServiceWorker(t *testing.T) {
+func (t C) NetworkSetBypassServiceWorker() {
 	c := &Client{}
 	err := proto.NetworkSetBypassServiceWorker{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetCacheDisabled(t *testing.T) {
+func (t C) NetworkSetCacheDisabled() {
 	c := &Client{}
 	err := proto.NetworkSetCacheDisabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetCookie(t *testing.T) {
+func (t C) NetworkSetCookie() {
 	c := &Client{}
 	_, err := proto.NetworkSetCookie{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetCookies(t *testing.T) {
+func (t C) NetworkSetCookies() {
 	c := &Client{}
 	err := proto.NetworkSetCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetDataSizeLimitsForTest(t *testing.T) {
+func (t C) NetworkSetDataSizeLimitsForTest() {
 	c := &Client{}
 	err := proto.NetworkSetDataSizeLimitsForTest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetExtraHTTPHeaders(t *testing.T) {
+func (t C) NetworkSetExtraHTTPHeaders() {
 	c := &Client{}
 	err := proto.NetworkSetExtraHTTPHeaders{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetRequestInterception(t *testing.T) {
+func (t C) NetworkSetRequestInterception() {
 	c := &Client{}
 	err := proto.NetworkSetRequestInterception{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkSetUserAgentOverride(t *testing.T) {
+func (t C) NetworkSetUserAgentOverride() {
 	c := &Client{}
 	err := proto.NetworkSetUserAgentOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestNetworkDataReceived(t *testing.T) {
+func (t C) NetworkDataReceived() {
 	e := proto.NetworkDataReceived{}
 	e.MethodName()
 }
 
-func TestNetworkEventSourceMessageReceived(t *testing.T) {
+func (t C) NetworkEventSourceMessageReceived() {
 	e := proto.NetworkEventSourceMessageReceived{}
 	e.MethodName()
 }
 
-func TestNetworkLoadingFailed(t *testing.T) {
+func (t C) NetworkLoadingFailed() {
 	e := proto.NetworkLoadingFailed{}
 	e.MethodName()
 }
 
-func TestNetworkLoadingFinished(t *testing.T) {
+func (t C) NetworkLoadingFinished() {
 	e := proto.NetworkLoadingFinished{}
 	e.MethodName()
 }
 
-func TestNetworkRequestIntercepted(t *testing.T) {
+func (t C) NetworkRequestIntercepted() {
 	e := proto.NetworkRequestIntercepted{}
 	e.MethodName()
 }
 
-func TestNetworkRequestServedFromCache(t *testing.T) {
+func (t C) NetworkRequestServedFromCache() {
 	e := proto.NetworkRequestServedFromCache{}
 	e.MethodName()
 }
 
-func TestNetworkRequestWillBeSent(t *testing.T) {
+func (t C) NetworkRequestWillBeSent() {
 	e := proto.NetworkRequestWillBeSent{}
 	e.MethodName()
 }
 
-func TestNetworkResourceChangedPriority(t *testing.T) {
+func (t C) NetworkResourceChangedPriority() {
 	e := proto.NetworkResourceChangedPriority{}
 	e.MethodName()
 }
 
-func TestNetworkSignedExchangeReceived(t *testing.T) {
+func (t C) NetworkSignedExchangeReceived() {
 	e := proto.NetworkSignedExchangeReceived{}
 	e.MethodName()
 }
 
-func TestNetworkResponseReceived(t *testing.T) {
+func (t C) NetworkResponseReceived() {
 	e := proto.NetworkResponseReceived{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketClosed(t *testing.T) {
+func (t C) NetworkWebSocketClosed() {
 	e := proto.NetworkWebSocketClosed{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketCreated(t *testing.T) {
+func (t C) NetworkWebSocketCreated() {
 	e := proto.NetworkWebSocketCreated{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketFrameError(t *testing.T) {
+func (t C) NetworkWebSocketFrameError() {
 	e := proto.NetworkWebSocketFrameError{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketFrameReceived(t *testing.T) {
+func (t C) NetworkWebSocketFrameReceived() {
 	e := proto.NetworkWebSocketFrameReceived{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketFrameSent(t *testing.T) {
+func (t C) NetworkWebSocketFrameSent() {
 	e := proto.NetworkWebSocketFrameSent{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketHandshakeResponseReceived(t *testing.T) {
+func (t C) NetworkWebSocketHandshakeResponseReceived() {
 	e := proto.NetworkWebSocketHandshakeResponseReceived{}
 	e.MethodName()
 }
 
-func TestNetworkWebSocketWillSendHandshakeRequest(t *testing.T) {
+func (t C) NetworkWebSocketWillSendHandshakeRequest() {
 	e := proto.NetworkWebSocketWillSendHandshakeRequest{}
 	e.MethodName()
 }
 
-func TestNetworkRequestWillBeSentExtraInfo(t *testing.T) {
+func (t C) NetworkRequestWillBeSentExtraInfo() {
 	e := proto.NetworkRequestWillBeSentExtraInfo{}
 	e.MethodName()
 }
 
-func TestNetworkResponseReceivedExtraInfo(t *testing.T) {
+func (t C) NetworkResponseReceivedExtraInfo() {
 	e := proto.NetworkResponseReceivedExtraInfo{}
 	e.MethodName()
 }
 
-func TestOverlayDisable(t *testing.T) {
+func (t C) OverlayDisable() {
 	c := &Client{}
 	err := proto.OverlayDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayEnable(t *testing.T) {
+func (t C) OverlayEnable() {
 	c := &Client{}
 	err := proto.OverlayEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayGetHighlightObjectForTest(t *testing.T) {
+func (t C) OverlayGetHighlightObjectForTest() {
 	c := &Client{}
 	_, err := proto.OverlayGetHighlightObjectForTest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayHideHighlight(t *testing.T) {
+func (t C) OverlayHideHighlight() {
 	c := &Client{}
 	err := proto.OverlayHideHighlight{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayHighlightFrame(t *testing.T) {
+func (t C) OverlayHighlightFrame() {
 	c := &Client{}
 	err := proto.OverlayHighlightFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayHighlightNode(t *testing.T) {
+func (t C) OverlayHighlightNode() {
 	c := &Client{}
 	err := proto.OverlayHighlightNode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayHighlightQuad(t *testing.T) {
+func (t C) OverlayHighlightQuad() {
 	c := &Client{}
 	err := proto.OverlayHighlightQuad{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayHighlightRect(t *testing.T) {
+func (t C) OverlayHighlightRect() {
 	c := &Client{}
 	err := proto.OverlayHighlightRect{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetInspectMode(t *testing.T) {
+func (t C) OverlaySetInspectMode() {
 	c := &Client{}
 	err := proto.OverlaySetInspectMode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowAdHighlights(t *testing.T) {
+func (t C) OverlaySetShowAdHighlights() {
 	c := &Client{}
 	err := proto.OverlaySetShowAdHighlights{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetPausedInDebuggerMessage(t *testing.T) {
+func (t C) OverlaySetPausedInDebuggerMessage() {
 	c := &Client{}
 	err := proto.OverlaySetPausedInDebuggerMessage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowDebugBorders(t *testing.T) {
+func (t C) OverlaySetShowDebugBorders() {
 	c := &Client{}
 	err := proto.OverlaySetShowDebugBorders{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowFPSCounter(t *testing.T) {
+func (t C) OverlaySetShowFPSCounter() {
 	c := &Client{}
 	err := proto.OverlaySetShowFPSCounter{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowPaintRects(t *testing.T) {
+func (t C) OverlaySetShowPaintRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowPaintRects{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowLayoutShiftRegions(t *testing.T) {
+func (t C) OverlaySetShowLayoutShiftRegions() {
 	c := &Client{}
 	err := proto.OverlaySetShowLayoutShiftRegions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowScrollBottleneckRects(t *testing.T) {
+func (t C) OverlaySetShowScrollBottleneckRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowScrollBottleneckRects{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowHitTestBorders(t *testing.T) {
+func (t C) OverlaySetShowHitTestBorders() {
 	c := &Client{}
 	err := proto.OverlaySetShowHitTestBorders{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowViewportSizeOnResize(t *testing.T) {
+func (t C) OverlaySetShowViewportSizeOnResize() {
 	c := &Client{}
 	err := proto.OverlaySetShowViewportSizeOnResize{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlaySetShowHinge(t *testing.T) {
+func (t C) OverlaySetShowHinge() {
 	c := &Client{}
 	err := proto.OverlaySetShowHinge{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestOverlayInspectNodeRequested(t *testing.T) {
+func (t C) OverlayInspectNodeRequested() {
 	e := proto.OverlayInspectNodeRequested{}
 	e.MethodName()
 }
 
-func TestOverlayNodeHighlightRequested(t *testing.T) {
+func (t C) OverlayNodeHighlightRequested() {
 	e := proto.OverlayNodeHighlightRequested{}
 	e.MethodName()
 }
 
-func TestOverlayScreenshotRequested(t *testing.T) {
+func (t C) OverlayScreenshotRequested() {
 	e := proto.OverlayScreenshotRequested{}
 	e.MethodName()
 }
 
-func TestOverlayInspectModeCanceled(t *testing.T) {
+func (t C) OverlayInspectModeCanceled() {
 	e := proto.OverlayInspectModeCanceled{}
 	e.MethodName()
 }
 
-func TestPageAddScriptToEvaluateOnLoad(t *testing.T) {
+func (t C) PageAddScriptToEvaluateOnLoad() {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnLoad{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageAddScriptToEvaluateOnNewDocument(t *testing.T) {
+func (t C) PageAddScriptToEvaluateOnNewDocument() {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageBringToFront(t *testing.T) {
+func (t C) PageBringToFront() {
 	c := &Client{}
 	err := proto.PageBringToFront{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageCaptureScreenshot(t *testing.T) {
+func (t C) PageCaptureScreenshot() {
 	c := &Client{}
 	_, err := proto.PageCaptureScreenshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageCaptureSnapshot(t *testing.T) {
+func (t C) PageCaptureSnapshot() {
 	c := &Client{}
 	_, err := proto.PageCaptureSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageClearDeviceMetricsOverride(t *testing.T) {
+func (t C) PageClearDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.PageClearDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageClearDeviceOrientationOverride(t *testing.T) {
+func (t C) PageClearDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.PageClearDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageClearGeolocationOverride(t *testing.T) {
+func (t C) PageClearGeolocationOverride() {
 	c := &Client{}
 	err := proto.PageClearGeolocationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageCreateIsolatedWorld(t *testing.T) {
+func (t C) PageCreateIsolatedWorld() {
 	c := &Client{}
 	_, err := proto.PageCreateIsolatedWorld{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageDeleteCookie(t *testing.T) {
+func (t C) PageDeleteCookie() {
 	c := &Client{}
 	err := proto.PageDeleteCookie{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageDisable(t *testing.T) {
+func (t C) PageDisable() {
 	c := &Client{}
 	err := proto.PageDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageEnable(t *testing.T) {
+func (t C) PageEnable() {
 	c := &Client{}
 	err := proto.PageEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetAppManifest(t *testing.T) {
+func (t C) PageGetAppManifest() {
 	c := &Client{}
 	_, err := proto.PageGetAppManifest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetInstallabilityErrors(t *testing.T) {
+func (t C) PageGetInstallabilityErrors() {
 	c := &Client{}
 	_, err := proto.PageGetInstallabilityErrors{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetManifestIcons(t *testing.T) {
+func (t C) PageGetManifestIcons() {
 	c := &Client{}
 	_, err := proto.PageGetManifestIcons{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetCookies(t *testing.T) {
+func (t C) PageGetCookies() {
 	c := &Client{}
 	_, err := proto.PageGetCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetFrameTree(t *testing.T) {
+func (t C) PageGetFrameTree() {
 	c := &Client{}
 	_, err := proto.PageGetFrameTree{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetLayoutMetrics(t *testing.T) {
+func (t C) PageGetLayoutMetrics() {
 	c := &Client{}
 	_, err := proto.PageGetLayoutMetrics{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetNavigationHistory(t *testing.T) {
+func (t C) PageGetNavigationHistory() {
 	c := &Client{}
 	_, err := proto.PageGetNavigationHistory{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageResetNavigationHistory(t *testing.T) {
+func (t C) PageResetNavigationHistory() {
 	c := &Client{}
 	err := proto.PageResetNavigationHistory{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetResourceContent(t *testing.T) {
+func (t C) PageGetResourceContent() {
 	c := &Client{}
 	_, err := proto.PageGetResourceContent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGetResourceTree(t *testing.T) {
+func (t C) PageGetResourceTree() {
 	c := &Client{}
 	_, err := proto.PageGetResourceTree{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageHandleJavaScriptDialog(t *testing.T) {
+func (t C) PageHandleJavaScriptDialog() {
 	c := &Client{}
 	err := proto.PageHandleJavaScriptDialog{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageNavigate(t *testing.T) {
+func (t C) PageNavigate() {
 	c := &Client{}
 	_, err := proto.PageNavigate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageNavigateToHistoryEntry(t *testing.T) {
+func (t C) PageNavigateToHistoryEntry() {
 	c := &Client{}
 	err := proto.PageNavigateToHistoryEntry{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPagePrintToPDF(t *testing.T) {
+func (t C) PagePrintToPDF() {
 	c := &Client{}
 	_, err := proto.PagePrintToPDF{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageReload(t *testing.T) {
+func (t C) PageReload() {
 	c := &Client{}
 	err := proto.PageReload{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageRemoveScriptToEvaluateOnLoad(t *testing.T) {
+func (t C) PageRemoveScriptToEvaluateOnLoad() {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnLoad{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageRemoveScriptToEvaluateOnNewDocument(t *testing.T) {
+func (t C) PageRemoveScriptToEvaluateOnNewDocument() {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnNewDocument{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageScreencastFrameAck(t *testing.T) {
+func (t C) PageScreencastFrameAck() {
 	c := &Client{}
 	err := proto.PageScreencastFrameAck{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSearchInResource(t *testing.T) {
+func (t C) PageSearchInResource() {
 	c := &Client{}
 	_, err := proto.PageSearchInResource{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetAdBlockingEnabled(t *testing.T) {
+func (t C) PageSetAdBlockingEnabled() {
 	c := &Client{}
 	err := proto.PageSetAdBlockingEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetBypassCSP(t *testing.T) {
+func (t C) PageSetBypassCSP() {
 	c := &Client{}
 	err := proto.PageSetBypassCSP{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetDeviceMetricsOverride(t *testing.T) {
+func (t C) PageSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.PageSetDeviceMetricsOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetDeviceOrientationOverride(t *testing.T) {
+func (t C) PageSetDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.PageSetDeviceOrientationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetFontFamilies(t *testing.T) {
+func (t C) PageSetFontFamilies() {
 	c := &Client{}
 	err := proto.PageSetFontFamilies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetFontSizes(t *testing.T) {
+func (t C) PageSetFontSizes() {
 	c := &Client{}
 	err := proto.PageSetFontSizes{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetDocumentContent(t *testing.T) {
+func (t C) PageSetDocumentContent() {
 	c := &Client{}
 	err := proto.PageSetDocumentContent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetDownloadBehavior(t *testing.T) {
+func (t C) PageSetDownloadBehavior() {
 	c := &Client{}
 	err := proto.PageSetDownloadBehavior{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetGeolocationOverride(t *testing.T) {
+func (t C) PageSetGeolocationOverride() {
 	c := &Client{}
 	err := proto.PageSetGeolocationOverride{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetLifecycleEventsEnabled(t *testing.T) {
+func (t C) PageSetLifecycleEventsEnabled() {
 	c := &Client{}
 	err := proto.PageSetLifecycleEventsEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetTouchEmulationEnabled(t *testing.T) {
+func (t C) PageSetTouchEmulationEnabled() {
 	c := &Client{}
 	err := proto.PageSetTouchEmulationEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageStartScreencast(t *testing.T) {
+func (t C) PageStartScreencast() {
 	c := &Client{}
 	err := proto.PageStartScreencast{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageStopLoading(t *testing.T) {
+func (t C) PageStopLoading() {
 	c := &Client{}
 	err := proto.PageStopLoading{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageCrash(t *testing.T) {
+func (t C) PageCrash() {
 	c := &Client{}
 	err := proto.PageCrash{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageClose(t *testing.T) {
+func (t C) PageClose() {
 	c := &Client{}
 	err := proto.PageClose{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetWebLifecycleState(t *testing.T) {
+func (t C) PageSetWebLifecycleState() {
 	c := &Client{}
 	err := proto.PageSetWebLifecycleState{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageStopScreencast(t *testing.T) {
+func (t C) PageStopScreencast() {
 	c := &Client{}
 	err := proto.PageStopScreencast{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetProduceCompilationCache(t *testing.T) {
+func (t C) PageSetProduceCompilationCache() {
 	c := &Client{}
 	err := proto.PageSetProduceCompilationCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageAddCompilationCache(t *testing.T) {
+func (t C) PageAddCompilationCache() {
 	c := &Client{}
 	err := proto.PageAddCompilationCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageClearCompilationCache(t *testing.T) {
+func (t C) PageClearCompilationCache() {
 	c := &Client{}
 	err := proto.PageClearCompilationCache{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageGenerateTestReport(t *testing.T) {
+func (t C) PageGenerateTestReport() {
 	c := &Client{}
 	err := proto.PageGenerateTestReport{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageWaitForDebugger(t *testing.T) {
+func (t C) PageWaitForDebugger() {
 	c := &Client{}
 	err := proto.PageWaitForDebugger{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageSetInterceptFileChooserDialog(t *testing.T) {
+func (t C) PageSetInterceptFileChooserDialog() {
 	c := &Client{}
 	err := proto.PageSetInterceptFileChooserDialog{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPageDomContentEventFired(t *testing.T) {
+func (t C) PageDomContentEventFired() {
 	e := proto.PageDomContentEventFired{}
 	e.MethodName()
 }
 
-func TestPageFileChooserOpened(t *testing.T) {
+func (t C) PageFileChooserOpened() {
 	e := proto.PageFileChooserOpened{}
 	e.MethodName()
 }
 
-func TestPageFrameAttached(t *testing.T) {
+func (t C) PageFrameAttached() {
 	e := proto.PageFrameAttached{}
 	e.MethodName()
 }
 
-func TestPageFrameClearedScheduledNavigation(t *testing.T) {
+func (t C) PageFrameClearedScheduledNavigation() {
 	e := proto.PageFrameClearedScheduledNavigation{}
 	e.MethodName()
 }
 
-func TestPageFrameDetached(t *testing.T) {
+func (t C) PageFrameDetached() {
 	e := proto.PageFrameDetached{}
 	e.MethodName()
 }
 
-func TestPageFrameNavigated(t *testing.T) {
+func (t C) PageFrameNavigated() {
 	e := proto.PageFrameNavigated{}
 	e.MethodName()
 }
 
-func TestPageFrameResized(t *testing.T) {
+func (t C) PageFrameResized() {
 	e := proto.PageFrameResized{}
 	e.MethodName()
 }
 
-func TestPageFrameRequestedNavigation(t *testing.T) {
+func (t C) PageFrameRequestedNavigation() {
 	e := proto.PageFrameRequestedNavigation{}
 	e.MethodName()
 }
 
-func TestPageFrameScheduledNavigation(t *testing.T) {
+func (t C) PageFrameScheduledNavigation() {
 	e := proto.PageFrameScheduledNavigation{}
 	e.MethodName()
 }
 
-func TestPageFrameStartedLoading(t *testing.T) {
+func (t C) PageFrameStartedLoading() {
 	e := proto.PageFrameStartedLoading{}
 	e.MethodName()
 }
 
-func TestPageFrameStoppedLoading(t *testing.T) {
+func (t C) PageFrameStoppedLoading() {
 	e := proto.PageFrameStoppedLoading{}
 	e.MethodName()
 }
 
-func TestPageDownloadWillBegin(t *testing.T) {
+func (t C) PageDownloadWillBegin() {
 	e := proto.PageDownloadWillBegin{}
 	e.MethodName()
 }
 
-func TestPageDownloadProgress(t *testing.T) {
+func (t C) PageDownloadProgress() {
 	e := proto.PageDownloadProgress{}
 	e.MethodName()
 }
 
-func TestPageInterstitialHidden(t *testing.T) {
+func (t C) PageInterstitialHidden() {
 	e := proto.PageInterstitialHidden{}
 	e.MethodName()
 }
 
-func TestPageInterstitialShown(t *testing.T) {
+func (t C) PageInterstitialShown() {
 	e := proto.PageInterstitialShown{}
 	e.MethodName()
 }
 
-func TestPageJavascriptDialogClosed(t *testing.T) {
+func (t C) PageJavascriptDialogClosed() {
 	e := proto.PageJavascriptDialogClosed{}
 	e.MethodName()
 }
 
-func TestPageJavascriptDialogOpening(t *testing.T) {
+func (t C) PageJavascriptDialogOpening() {
 	e := proto.PageJavascriptDialogOpening{}
 	e.MethodName()
 }
 
-func TestPageLifecycleEvent(t *testing.T) {
+func (t C) PageLifecycleEvent() {
 	e := proto.PageLifecycleEvent{}
 	e.MethodName()
 }
 
-func TestPageLoadEventFired(t *testing.T) {
+func (t C) PageLoadEventFired() {
 	e := proto.PageLoadEventFired{}
 	e.MethodName()
 }
 
-func TestPageNavigatedWithinDocument(t *testing.T) {
+func (t C) PageNavigatedWithinDocument() {
 	e := proto.PageNavigatedWithinDocument{}
 	e.MethodName()
 }
 
-func TestPageScreencastFrame(t *testing.T) {
+func (t C) PageScreencastFrame() {
 	e := proto.PageScreencastFrame{}
 	e.MethodName()
 }
 
-func TestPageScreencastVisibilityChanged(t *testing.T) {
+func (t C) PageScreencastVisibilityChanged() {
 	e := proto.PageScreencastVisibilityChanged{}
 	e.MethodName()
 }
 
-func TestPageWindowOpen(t *testing.T) {
+func (t C) PageWindowOpen() {
 	e := proto.PageWindowOpen{}
 	e.MethodName()
 }
 
-func TestPageCompilationCacheProduced(t *testing.T) {
+func (t C) PageCompilationCacheProduced() {
 	e := proto.PageCompilationCacheProduced{}
 	e.MethodName()
 }
 
-func TestPerformanceDisable(t *testing.T) {
+func (t C) PerformanceDisable() {
 	c := &Client{}
 	err := proto.PerformanceDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPerformanceEnable(t *testing.T) {
+func (t C) PerformanceEnable() {
 	c := &Client{}
 	err := proto.PerformanceEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPerformanceSetTimeDomain(t *testing.T) {
+func (t C) PerformanceSetTimeDomain() {
 	c := &Client{}
 	err := proto.PerformanceSetTimeDomain{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPerformanceGetMetrics(t *testing.T) {
+func (t C) PerformanceGetMetrics() {
 	c := &Client{}
 	_, err := proto.PerformanceGetMetrics{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestPerformanceMetrics(t *testing.T) {
+func (t C) PerformanceMetrics() {
 	e := proto.PerformanceMetrics{}
 	e.MethodName()
 }
 
-func TestSecurityDisable(t *testing.T) {
+func (t C) SecurityDisable() {
 	c := &Client{}
 	err := proto.SecurityDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSecurityEnable(t *testing.T) {
+func (t C) SecurityEnable() {
 	c := &Client{}
 	err := proto.SecurityEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSecuritySetIgnoreCertificateErrors(t *testing.T) {
+func (t C) SecuritySetIgnoreCertificateErrors() {
 	c := &Client{}
 	err := proto.SecuritySetIgnoreCertificateErrors{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSecurityHandleCertificateError(t *testing.T) {
+func (t C) SecurityHandleCertificateError() {
 	c := &Client{}
 	err := proto.SecurityHandleCertificateError{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSecuritySetOverrideCertificateErrors(t *testing.T) {
+func (t C) SecuritySetOverrideCertificateErrors() {
 	c := &Client{}
 	err := proto.SecuritySetOverrideCertificateErrors{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSecurityCertificateError(t *testing.T) {
+func (t C) SecurityCertificateError() {
 	e := proto.SecurityCertificateError{}
 	e.MethodName()
 }
 
-func TestSecurityVisibleSecurityStateChanged(t *testing.T) {
+func (t C) SecurityVisibleSecurityStateChanged() {
 	e := proto.SecurityVisibleSecurityStateChanged{}
 	e.MethodName()
 }
 
-func TestSecuritySecurityStateChanged(t *testing.T) {
+func (t C) SecuritySecurityStateChanged() {
 	e := proto.SecuritySecurityStateChanged{}
 	e.MethodName()
 }
 
-func TestServiceWorkerDeliverPushMessage(t *testing.T) {
+func (t C) ServiceWorkerDeliverPushMessage() {
 	c := &Client{}
 	err := proto.ServiceWorkerDeliverPushMessage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerDisable(t *testing.T) {
+func (t C) ServiceWorkerDisable() {
 	c := &Client{}
 	err := proto.ServiceWorkerDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerDispatchSyncEvent(t *testing.T) {
+func (t C) ServiceWorkerDispatchSyncEvent() {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchSyncEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerDispatchPeriodicSyncEvent(t *testing.T) {
+func (t C) ServiceWorkerDispatchPeriodicSyncEvent() {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchPeriodicSyncEvent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerEnable(t *testing.T) {
+func (t C) ServiceWorkerEnable() {
 	c := &Client{}
 	err := proto.ServiceWorkerEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerInspectWorker(t *testing.T) {
+func (t C) ServiceWorkerInspectWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerInspectWorker{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerSetForceUpdateOnPageLoad(t *testing.T) {
+func (t C) ServiceWorkerSetForceUpdateOnPageLoad() {
 	c := &Client{}
 	err := proto.ServiceWorkerSetForceUpdateOnPageLoad{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerSkipWaiting(t *testing.T) {
+func (t C) ServiceWorkerSkipWaiting() {
 	c := &Client{}
 	err := proto.ServiceWorkerSkipWaiting{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerStartWorker(t *testing.T) {
+func (t C) ServiceWorkerStartWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerStartWorker{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerStopAllWorkers(t *testing.T) {
+func (t C) ServiceWorkerStopAllWorkers() {
 	c := &Client{}
 	err := proto.ServiceWorkerStopAllWorkers{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerStopWorker(t *testing.T) {
+func (t C) ServiceWorkerStopWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerStopWorker{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerUnregister(t *testing.T) {
+func (t C) ServiceWorkerUnregister() {
 	c := &Client{}
 	err := proto.ServiceWorkerUnregister{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerUpdateRegistration(t *testing.T) {
+func (t C) ServiceWorkerUpdateRegistration() {
 	c := &Client{}
 	err := proto.ServiceWorkerUpdateRegistration{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestServiceWorkerWorkerErrorReported(t *testing.T) {
+func (t C) ServiceWorkerWorkerErrorReported() {
 	e := proto.ServiceWorkerWorkerErrorReported{}
 	e.MethodName()
 }
 
-func TestServiceWorkerWorkerRegistrationUpdated(t *testing.T) {
+func (t C) ServiceWorkerWorkerRegistrationUpdated() {
 	e := proto.ServiceWorkerWorkerRegistrationUpdated{}
 	e.MethodName()
 }
 
-func TestServiceWorkerWorkerVersionUpdated(t *testing.T) {
+func (t C) ServiceWorkerWorkerVersionUpdated() {
 	e := proto.ServiceWorkerWorkerVersionUpdated{}
 	e.MethodName()
 }
 
-func TestStorageClearDataForOrigin(t *testing.T) {
+func (t C) StorageClearDataForOrigin() {
 	c := &Client{}
 	err := proto.StorageClearDataForOrigin{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageGetCookies(t *testing.T) {
+func (t C) StorageGetCookies() {
 	c := &Client{}
 	_, err := proto.StorageGetCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageSetCookies(t *testing.T) {
+func (t C) StorageSetCookies() {
 	c := &Client{}
 	err := proto.StorageSetCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageClearCookies(t *testing.T) {
+func (t C) StorageClearCookies() {
 	c := &Client{}
 	err := proto.StorageClearCookies{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageGetUsageAndQuota(t *testing.T) {
+func (t C) StorageGetUsageAndQuota() {
 	c := &Client{}
 	_, err := proto.StorageGetUsageAndQuota{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageTrackCacheStorageForOrigin(t *testing.T) {
+func (t C) StorageTrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackCacheStorageForOrigin{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageTrackIndexedDBForOrigin(t *testing.T) {
+func (t C) StorageTrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackIndexedDBForOrigin{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageUntrackCacheStorageForOrigin(t *testing.T) {
+func (t C) StorageUntrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackCacheStorageForOrigin{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageUntrackIndexedDBForOrigin(t *testing.T) {
+func (t C) StorageUntrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackIndexedDBForOrigin{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestStorageCacheStorageContentUpdated(t *testing.T) {
+func (t C) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	e.MethodName()
 }
 
-func TestStorageCacheStorageListUpdated(t *testing.T) {
+func (t C) StorageCacheStorageListUpdated() {
 	e := proto.StorageCacheStorageListUpdated{}
 	e.MethodName()
 }
 
-func TestStorageIndexedDBContentUpdated(t *testing.T) {
+func (t C) StorageIndexedDBContentUpdated() {
 	e := proto.StorageIndexedDBContentUpdated{}
 	e.MethodName()
 }
 
-func TestStorageIndexedDBListUpdated(t *testing.T) {
+func (t C) StorageIndexedDBListUpdated() {
 	e := proto.StorageIndexedDBListUpdated{}
 	e.MethodName()
 }
 
-func TestSystemInfoGetInfo(t *testing.T) {
+func (t C) SystemInfoGetInfo() {
 	c := &Client{}
 	_, err := proto.SystemInfoGetInfo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestSystemInfoGetProcessInfo(t *testing.T) {
+func (t C) SystemInfoGetProcessInfo() {
 	c := &Client{}
 	_, err := proto.SystemInfoGetProcessInfo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetActivateTarget(t *testing.T) {
+func (t C) TargetActivateTarget() {
 	c := &Client{}
 	err := proto.TargetActivateTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetAttachToTarget(t *testing.T) {
+func (t C) TargetAttachToTarget() {
 	c := &Client{}
 	_, err := proto.TargetAttachToTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetAttachToBrowserTarget(t *testing.T) {
+func (t C) TargetAttachToBrowserTarget() {
 	c := &Client{}
 	_, err := proto.TargetAttachToBrowserTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetCloseTarget(t *testing.T) {
+func (t C) TargetCloseTarget() {
 	c := &Client{}
 	_, err := proto.TargetCloseTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetExposeDevToolsProtocol(t *testing.T) {
+func (t C) TargetExposeDevToolsProtocol() {
 	c := &Client{}
 	err := proto.TargetExposeDevToolsProtocol{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetCreateBrowserContext(t *testing.T) {
+func (t C) TargetCreateBrowserContext() {
 	c := &Client{}
 	_, err := proto.TargetCreateBrowserContext{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetGetBrowserContexts(t *testing.T) {
+func (t C) TargetGetBrowserContexts() {
 	c := &Client{}
 	_, err := proto.TargetGetBrowserContexts{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetCreateTarget(t *testing.T) {
+func (t C) TargetCreateTarget() {
 	c := &Client{}
 	_, err := proto.TargetCreateTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetDetachFromTarget(t *testing.T) {
+func (t C) TargetDetachFromTarget() {
 	c := &Client{}
 	err := proto.TargetDetachFromTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetDisposeBrowserContext(t *testing.T) {
+func (t C) TargetDisposeBrowserContext() {
 	c := &Client{}
 	err := proto.TargetDisposeBrowserContext{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetGetTargetInfo(t *testing.T) {
+func (t C) TargetGetTargetInfo() {
 	c := &Client{}
 	_, err := proto.TargetGetTargetInfo{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetGetTargets(t *testing.T) {
+func (t C) TargetGetTargets() {
 	c := &Client{}
 	_, err := proto.TargetGetTargets{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetSendMessageToTarget(t *testing.T) {
+func (t C) TargetSendMessageToTarget() {
 	c := &Client{}
 	err := proto.TargetSendMessageToTarget{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetSetAutoAttach(t *testing.T) {
+func (t C) TargetSetAutoAttach() {
 	c := &Client{}
 	err := proto.TargetSetAutoAttach{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetSetDiscoverTargets(t *testing.T) {
+func (t C) TargetSetDiscoverTargets() {
 	c := &Client{}
 	err := proto.TargetSetDiscoverTargets{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetSetRemoteLocations(t *testing.T) {
+func (t C) TargetSetRemoteLocations() {
 	c := &Client{}
 	err := proto.TargetSetRemoteLocations{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTargetAttachedToTarget(t *testing.T) {
+func (t C) TargetAttachedToTarget() {
 	e := proto.TargetAttachedToTarget{}
 	e.MethodName()
 }
 
-func TestTargetDetachedFromTarget(t *testing.T) {
+func (t C) TargetDetachedFromTarget() {
 	e := proto.TargetDetachedFromTarget{}
 	e.MethodName()
 }
 
-func TestTargetReceivedMessageFromTarget(t *testing.T) {
+func (t C) TargetReceivedMessageFromTarget() {
 	e := proto.TargetReceivedMessageFromTarget{}
 	e.MethodName()
 }
 
-func TestTargetTargetCreated(t *testing.T) {
+func (t C) TargetTargetCreated() {
 	e := proto.TargetTargetCreated{}
 	e.MethodName()
 }
 
-func TestTargetTargetDestroyed(t *testing.T) {
+func (t C) TargetTargetDestroyed() {
 	e := proto.TargetTargetDestroyed{}
 	e.MethodName()
 }
 
-func TestTargetTargetCrashed(t *testing.T) {
+func (t C) TargetTargetCrashed() {
 	e := proto.TargetTargetCrashed{}
 	e.MethodName()
 }
 
-func TestTargetTargetInfoChanged(t *testing.T) {
+func (t C) TargetTargetInfoChanged() {
 	e := proto.TargetTargetInfoChanged{}
 	e.MethodName()
 }
 
-func TestTetheringBind(t *testing.T) {
+func (t C) TetheringBind() {
 	c := &Client{}
 	err := proto.TetheringBind{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTetheringUnbind(t *testing.T) {
+func (t C) TetheringUnbind() {
 	c := &Client{}
 	err := proto.TetheringUnbind{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTetheringAccepted(t *testing.T) {
+func (t C) TetheringAccepted() {
 	e := proto.TetheringAccepted{}
 	e.MethodName()
 }
 
-func TestTracingEnd(t *testing.T) {
+func (t C) TracingEnd() {
 	c := &Client{}
 	err := proto.TracingEnd{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTracingGetCategories(t *testing.T) {
+func (t C) TracingGetCategories() {
 	c := &Client{}
 	_, err := proto.TracingGetCategories{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTracingRecordClockSyncMarker(t *testing.T) {
+func (t C) TracingRecordClockSyncMarker() {
 	c := &Client{}
 	err := proto.TracingRecordClockSyncMarker{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTracingRequestMemoryDump(t *testing.T) {
+func (t C) TracingRequestMemoryDump() {
 	c := &Client{}
 	_, err := proto.TracingRequestMemoryDump{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTracingStart(t *testing.T) {
+func (t C) TracingStart() {
 	c := &Client{}
 	err := proto.TracingStart{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestTracingBufferUsage(t *testing.T) {
+func (t C) TracingBufferUsage() {
 	e := proto.TracingBufferUsage{}
 	e.MethodName()
 }
 
-func TestTracingDataCollected(t *testing.T) {
+func (t C) TracingDataCollected() {
 	e := proto.TracingDataCollected{}
 	e.MethodName()
 }
 
-func TestTracingTracingComplete(t *testing.T) {
+func (t C) TracingTracingComplete() {
 	e := proto.TracingTracingComplete{}
 	e.MethodName()
 }
 
-func TestFetchDisable(t *testing.T) {
+func (t C) FetchDisable() {
 	c := &Client{}
 	err := proto.FetchDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchEnable(t *testing.T) {
+func (t C) FetchEnable() {
 	c := &Client{}
 	err := proto.FetchEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchFailRequest(t *testing.T) {
+func (t C) FetchFailRequest() {
 	c := &Client{}
 	err := proto.FetchFailRequest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchFulfillRequest(t *testing.T) {
+func (t C) FetchFulfillRequest() {
 	c := &Client{}
 	err := proto.FetchFulfillRequest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchContinueRequest(t *testing.T) {
+func (t C) FetchContinueRequest() {
 	c := &Client{}
 	err := proto.FetchContinueRequest{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchContinueWithAuth(t *testing.T) {
+func (t C) FetchContinueWithAuth() {
 	c := &Client{}
 	err := proto.FetchContinueWithAuth{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchGetResponseBody(t *testing.T) {
+func (t C) FetchGetResponseBody() {
 	c := &Client{}
 	_, err := proto.FetchGetResponseBody{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchTakeResponseBodyAsStream(t *testing.T) {
+func (t C) FetchTakeResponseBodyAsStream() {
 	c := &Client{}
 	_, err := proto.FetchTakeResponseBodyAsStream{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestFetchRequestPaused(t *testing.T) {
+func (t C) FetchRequestPaused() {
 	e := proto.FetchRequestPaused{}
 	e.MethodName()
 }
 
-func TestFetchAuthRequired(t *testing.T) {
+func (t C) FetchAuthRequired() {
 	e := proto.FetchAuthRequired{}
 	e.MethodName()
 }
 
-func TestWebAudioEnable(t *testing.T) {
+func (t C) WebAudioEnable() {
 	c := &Client{}
 	err := proto.WebAudioEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAudioDisable(t *testing.T) {
+func (t C) WebAudioDisable() {
 	c := &Client{}
 	err := proto.WebAudioDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAudioGetRealtimeData(t *testing.T) {
+func (t C) WebAudioGetRealtimeData() {
 	c := &Client{}
 	_, err := proto.WebAudioGetRealtimeData{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAudioContextCreated(t *testing.T) {
+func (t C) WebAudioContextCreated() {
 	e := proto.WebAudioContextCreated{}
 	e.MethodName()
 }
 
-func TestWebAudioContextWillBeDestroyed(t *testing.T) {
+func (t C) WebAudioContextWillBeDestroyed() {
 	e := proto.WebAudioContextWillBeDestroyed{}
 	e.MethodName()
 }
 
-func TestWebAudioContextChanged(t *testing.T) {
+func (t C) WebAudioContextChanged() {
 	e := proto.WebAudioContextChanged{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioListenerCreated(t *testing.T) {
+func (t C) WebAudioAudioListenerCreated() {
 	e := proto.WebAudioAudioListenerCreated{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioListenerWillBeDestroyed(t *testing.T) {
+func (t C) WebAudioAudioListenerWillBeDestroyed() {
 	e := proto.WebAudioAudioListenerWillBeDestroyed{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioNodeCreated(t *testing.T) {
+func (t C) WebAudioAudioNodeCreated() {
 	e := proto.WebAudioAudioNodeCreated{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioNodeWillBeDestroyed(t *testing.T) {
+func (t C) WebAudioAudioNodeWillBeDestroyed() {
 	e := proto.WebAudioAudioNodeWillBeDestroyed{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioParamCreated(t *testing.T) {
+func (t C) WebAudioAudioParamCreated() {
 	e := proto.WebAudioAudioParamCreated{}
 	e.MethodName()
 }
 
-func TestWebAudioAudioParamWillBeDestroyed(t *testing.T) {
+func (t C) WebAudioAudioParamWillBeDestroyed() {
 	e := proto.WebAudioAudioParamWillBeDestroyed{}
 	e.MethodName()
 }
 
-func TestWebAudioNodesConnected(t *testing.T) {
+func (t C) WebAudioNodesConnected() {
 	e := proto.WebAudioNodesConnected{}
 	e.MethodName()
 }
 
-func TestWebAudioNodesDisconnected(t *testing.T) {
+func (t C) WebAudioNodesDisconnected() {
 	e := proto.WebAudioNodesDisconnected{}
 	e.MethodName()
 }
 
-func TestWebAudioNodeParamConnected(t *testing.T) {
+func (t C) WebAudioNodeParamConnected() {
 	e := proto.WebAudioNodeParamConnected{}
 	e.MethodName()
 }
 
-func TestWebAudioNodeParamDisconnected(t *testing.T) {
+func (t C) WebAudioNodeParamDisconnected() {
 	e := proto.WebAudioNodeParamDisconnected{}
 	e.MethodName()
 }
 
-func TestWebAuthnEnable(t *testing.T) {
+func (t C) WebAuthnEnable() {
 	c := &Client{}
 	err := proto.WebAuthnEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnDisable(t *testing.T) {
+func (t C) WebAuthnDisable() {
 	c := &Client{}
 	err := proto.WebAuthnDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnAddVirtualAuthenticator(t *testing.T) {
+func (t C) WebAuthnAddVirtualAuthenticator() {
 	c := &Client{}
 	_, err := proto.WebAuthnAddVirtualAuthenticator{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnRemoveVirtualAuthenticator(t *testing.T) {
+func (t C) WebAuthnRemoveVirtualAuthenticator() {
 	c := &Client{}
 	err := proto.WebAuthnRemoveVirtualAuthenticator{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnAddCredential(t *testing.T) {
+func (t C) WebAuthnAddCredential() {
 	c := &Client{}
 	err := proto.WebAuthnAddCredential{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnGetCredential(t *testing.T) {
+func (t C) WebAuthnGetCredential() {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredential{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnGetCredentials(t *testing.T) {
+func (t C) WebAuthnGetCredentials() {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredentials{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnRemoveCredential(t *testing.T) {
+func (t C) WebAuthnRemoveCredential() {
 	c := &Client{}
 	err := proto.WebAuthnRemoveCredential{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnClearCredentials(t *testing.T) {
+func (t C) WebAuthnClearCredentials() {
 	c := &Client{}
 	err := proto.WebAuthnClearCredentials{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestWebAuthnSetUserVerified(t *testing.T) {
+func (t C) WebAuthnSetUserVerified() {
 	c := &Client{}
 	err := proto.WebAuthnSetUserVerified{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMediaEnable(t *testing.T) {
+func (t C) MediaEnable() {
 	c := &Client{}
 	err := proto.MediaEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMediaDisable(t *testing.T) {
+func (t C) MediaDisable() {
 	c := &Client{}
 	err := proto.MediaDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestMediaPlayerPropertiesChanged(t *testing.T) {
+func (t C) MediaPlayerPropertiesChanged() {
 	e := proto.MediaPlayerPropertiesChanged{}
 	e.MethodName()
 }
 
-func TestMediaPlayerEventsAdded(t *testing.T) {
+func (t C) MediaPlayerEventsAdded() {
 	e := proto.MediaPlayerEventsAdded{}
 	e.MethodName()
 }
 
-func TestMediaPlayerMessagesLogged(t *testing.T) {
+func (t C) MediaPlayerMessagesLogged() {
 	e := proto.MediaPlayerMessagesLogged{}
 	e.MethodName()
 }
 
-func TestMediaPlayerErrorsRaised(t *testing.T) {
+func (t C) MediaPlayerErrorsRaised() {
 	e := proto.MediaPlayerErrorsRaised{}
 	e.MethodName()
 }
 
-func TestMediaPlayersCreated(t *testing.T) {
+func (t C) MediaPlayersCreated() {
 	e := proto.MediaPlayersCreated{}
 	e.MethodName()
 }
 
-func TestConsoleClearMessages(t *testing.T) {
+func (t C) ConsoleClearMessages() {
 	c := &Client{}
 	err := proto.ConsoleClearMessages{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestConsoleDisable(t *testing.T) {
+func (t C) ConsoleDisable() {
 	c := &Client{}
 	err := proto.ConsoleDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestConsoleEnable(t *testing.T) {
+func (t C) ConsoleEnable() {
 	c := &Client{}
 	err := proto.ConsoleEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestConsoleMessageAdded(t *testing.T) {
+func (t C) ConsoleMessageAdded() {
 	e := proto.ConsoleMessageAdded{}
 	e.MethodName()
 }
 
-func TestDebuggerContinueToLocation(t *testing.T) {
+func (t C) DebuggerContinueToLocation() {
 	c := &Client{}
 	err := proto.DebuggerContinueToLocation{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerDisable(t *testing.T) {
+func (t C) DebuggerDisable() {
 	c := &Client{}
 	err := proto.DebuggerDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerEnable(t *testing.T) {
+func (t C) DebuggerEnable() {
 	c := &Client{}
 	_, err := proto.DebuggerEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerEvaluateOnCallFrame(t *testing.T) {
+func (t C) DebuggerEvaluateOnCallFrame() {
 	c := &Client{}
 	_, err := proto.DebuggerEvaluateOnCallFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerExecuteWasmEvaluator(t *testing.T) {
+func (t C) DebuggerExecuteWasmEvaluator() {
 	c := &Client{}
 	_, err := proto.DebuggerExecuteWasmEvaluator{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerGetPossibleBreakpoints(t *testing.T) {
+func (t C) DebuggerGetPossibleBreakpoints() {
 	c := &Client{}
 	_, err := proto.DebuggerGetPossibleBreakpoints{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerGetScriptSource(t *testing.T) {
+func (t C) DebuggerGetScriptSource() {
 	c := &Client{}
 	_, err := proto.DebuggerGetScriptSource{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerGetWasmBytecode(t *testing.T) {
+func (t C) DebuggerGetWasmBytecode() {
 	c := &Client{}
 	_, err := proto.DebuggerGetWasmBytecode{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerGetStackTrace(t *testing.T) {
+func (t C) DebuggerGetStackTrace() {
 	c := &Client{}
 	_, err := proto.DebuggerGetStackTrace{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerPause(t *testing.T) {
+func (t C) DebuggerPause() {
 	c := &Client{}
 	err := proto.DebuggerPause{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerPauseOnAsyncCall(t *testing.T) {
+func (t C) DebuggerPauseOnAsyncCall() {
 	c := &Client{}
 	err := proto.DebuggerPauseOnAsyncCall{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerRemoveBreakpoint(t *testing.T) {
+func (t C) DebuggerRemoveBreakpoint() {
 	c := &Client{}
 	err := proto.DebuggerRemoveBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerRestartFrame(t *testing.T) {
+func (t C) DebuggerRestartFrame() {
 	c := &Client{}
 	_, err := proto.DebuggerRestartFrame{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerResume(t *testing.T) {
+func (t C) DebuggerResume() {
 	c := &Client{}
 	err := proto.DebuggerResume{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSearchInContent(t *testing.T) {
+func (t C) DebuggerSearchInContent() {
 	c := &Client{}
 	_, err := proto.DebuggerSearchInContent{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetAsyncCallStackDepth(t *testing.T) {
+func (t C) DebuggerSetAsyncCallStackDepth() {
 	c := &Client{}
 	err := proto.DebuggerSetAsyncCallStackDepth{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBlackboxPatterns(t *testing.T) {
+func (t C) DebuggerSetBlackboxPatterns() {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxPatterns{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBlackboxedRanges(t *testing.T) {
+func (t C) DebuggerSetBlackboxedRanges() {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxedRanges{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBreakpoint(t *testing.T) {
+func (t C) DebuggerSetBreakpoint() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetInstrumentationBreakpoint(t *testing.T) {
+func (t C) DebuggerSetInstrumentationBreakpoint() {
 	c := &Client{}
 	_, err := proto.DebuggerSetInstrumentationBreakpoint{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBreakpointByURL(t *testing.T) {
+func (t C) DebuggerSetBreakpointByURL() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointByURL{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBreakpointOnFunctionCall(t *testing.T) {
+func (t C) DebuggerSetBreakpointOnFunctionCall() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointOnFunctionCall{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetBreakpointsActive(t *testing.T) {
+func (t C) DebuggerSetBreakpointsActive() {
 	c := &Client{}
 	err := proto.DebuggerSetBreakpointsActive{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetPauseOnExceptions(t *testing.T) {
+func (t C) DebuggerSetPauseOnExceptions() {
 	c := &Client{}
 	err := proto.DebuggerSetPauseOnExceptions{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetReturnValue(t *testing.T) {
+func (t C) DebuggerSetReturnValue() {
 	c := &Client{}
 	err := proto.DebuggerSetReturnValue{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetScriptSource(t *testing.T) {
+func (t C) DebuggerSetScriptSource() {
 	c := &Client{}
 	_, err := proto.DebuggerSetScriptSource{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetSkipAllPauses(t *testing.T) {
+func (t C) DebuggerSetSkipAllPauses() {
 	c := &Client{}
 	err := proto.DebuggerSetSkipAllPauses{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerSetVariableValue(t *testing.T) {
+func (t C) DebuggerSetVariableValue() {
 	c := &Client{}
 	err := proto.DebuggerSetVariableValue{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerStepInto(t *testing.T) {
+func (t C) DebuggerStepInto() {
 	c := &Client{}
 	err := proto.DebuggerStepInto{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerStepOut(t *testing.T) {
+func (t C) DebuggerStepOut() {
 	c := &Client{}
 	err := proto.DebuggerStepOut{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerStepOver(t *testing.T) {
+func (t C) DebuggerStepOver() {
 	c := &Client{}
 	err := proto.DebuggerStepOver{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestDebuggerBreakpointResolved(t *testing.T) {
+func (t C) DebuggerBreakpointResolved() {
 	e := proto.DebuggerBreakpointResolved{}
 	e.MethodName()
 }
 
-func TestDebuggerPaused(t *testing.T) {
+func (t C) DebuggerPaused() {
 	e := proto.DebuggerPaused{}
 	e.MethodName()
 }
 
-func TestDebuggerResumed(t *testing.T) {
+func (t C) DebuggerResumed() {
 	e := proto.DebuggerResumed{}
 	e.MethodName()
 }
 
-func TestDebuggerScriptFailedToParse(t *testing.T) {
+func (t C) DebuggerScriptFailedToParse() {
 	e := proto.DebuggerScriptFailedToParse{}
 	e.MethodName()
 }
 
-func TestDebuggerScriptParsed(t *testing.T) {
+func (t C) DebuggerScriptParsed() {
 	e := proto.DebuggerScriptParsed{}
 	e.MethodName()
 }
 
-func TestHeapProfilerAddInspectedHeapObject(t *testing.T) {
+func (t C) HeapProfilerAddInspectedHeapObject() {
 	c := &Client{}
 	err := proto.HeapProfilerAddInspectedHeapObject{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerCollectGarbage(t *testing.T) {
+func (t C) HeapProfilerCollectGarbage() {
 	c := &Client{}
 	err := proto.HeapProfilerCollectGarbage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerDisable(t *testing.T) {
+func (t C) HeapProfilerDisable() {
 	c := &Client{}
 	err := proto.HeapProfilerDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerEnable(t *testing.T) {
+func (t C) HeapProfilerEnable() {
 	c := &Client{}
 	err := proto.HeapProfilerEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerGetHeapObjectID(t *testing.T) {
+func (t C) HeapProfilerGetHeapObjectID() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetHeapObjectID{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerGetObjectByHeapObjectID(t *testing.T) {
+func (t C) HeapProfilerGetObjectByHeapObjectID() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetObjectByHeapObjectID{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerGetSamplingProfile(t *testing.T) {
+func (t C) HeapProfilerGetSamplingProfile() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetSamplingProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerStartSampling(t *testing.T) {
+func (t C) HeapProfilerStartSampling() {
 	c := &Client{}
 	err := proto.HeapProfilerStartSampling{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerStartTrackingHeapObjects(t *testing.T) {
+func (t C) HeapProfilerStartTrackingHeapObjects() {
 	c := &Client{}
 	err := proto.HeapProfilerStartTrackingHeapObjects{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerStopSampling(t *testing.T) {
+func (t C) HeapProfilerStopSampling() {
 	c := &Client{}
 	_, err := proto.HeapProfilerStopSampling{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerStopTrackingHeapObjects(t *testing.T) {
+func (t C) HeapProfilerStopTrackingHeapObjects() {
 	c := &Client{}
 	err := proto.HeapProfilerStopTrackingHeapObjects{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerTakeHeapSnapshot(t *testing.T) {
+func (t C) HeapProfilerTakeHeapSnapshot() {
 	c := &Client{}
 	err := proto.HeapProfilerTakeHeapSnapshot{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestHeapProfilerAddHeapSnapshotChunk(t *testing.T) {
+func (t C) HeapProfilerAddHeapSnapshotChunk() {
 	e := proto.HeapProfilerAddHeapSnapshotChunk{}
 	e.MethodName()
 }
 
-func TestHeapProfilerHeapStatsUpdate(t *testing.T) {
+func (t C) HeapProfilerHeapStatsUpdate() {
 	e := proto.HeapProfilerHeapStatsUpdate{}
 	e.MethodName()
 }
 
-func TestHeapProfilerLastSeenObjectID(t *testing.T) {
+func (t C) HeapProfilerLastSeenObjectID() {
 	e := proto.HeapProfilerLastSeenObjectID{}
 	e.MethodName()
 }
 
-func TestHeapProfilerReportHeapSnapshotProgress(t *testing.T) {
+func (t C) HeapProfilerReportHeapSnapshotProgress() {
 	e := proto.HeapProfilerReportHeapSnapshotProgress{}
 	e.MethodName()
 }
 
-func TestHeapProfilerResetProfiles(t *testing.T) {
+func (t C) HeapProfilerResetProfiles() {
 	e := proto.HeapProfilerResetProfiles{}
 	e.MethodName()
 }
 
-func TestProfilerDisable(t *testing.T) {
+func (t C) ProfilerDisable() {
 	c := &Client{}
 	err := proto.ProfilerDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerEnable(t *testing.T) {
+func (t C) ProfilerEnable() {
 	c := &Client{}
 	err := proto.ProfilerEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerGetBestEffortCoverage(t *testing.T) {
+func (t C) ProfilerGetBestEffortCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerGetBestEffortCoverage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerSetSamplingInterval(t *testing.T) {
+func (t C) ProfilerSetSamplingInterval() {
 	c := &Client{}
 	err := proto.ProfilerSetSamplingInterval{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStart(t *testing.T) {
+func (t C) ProfilerStart() {
 	c := &Client{}
 	err := proto.ProfilerStart{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStartPreciseCoverage(t *testing.T) {
+func (t C) ProfilerStartPreciseCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerStartPreciseCoverage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStartTypeProfile(t *testing.T) {
+func (t C) ProfilerStartTypeProfile() {
 	c := &Client{}
 	err := proto.ProfilerStartTypeProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStop(t *testing.T) {
+func (t C) ProfilerStop() {
 	c := &Client{}
 	_, err := proto.ProfilerStop{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStopPreciseCoverage(t *testing.T) {
+func (t C) ProfilerStopPreciseCoverage() {
 	c := &Client{}
 	err := proto.ProfilerStopPreciseCoverage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerStopTypeProfile(t *testing.T) {
+func (t C) ProfilerStopTypeProfile() {
 	c := &Client{}
 	err := proto.ProfilerStopTypeProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerTakePreciseCoverage(t *testing.T) {
+func (t C) ProfilerTakePreciseCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerTakePreciseCoverage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerTakeTypeProfile(t *testing.T) {
+func (t C) ProfilerTakeTypeProfile() {
 	c := &Client{}
 	_, err := proto.ProfilerTakeTypeProfile{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerEnableRuntimeCallStats(t *testing.T) {
+func (t C) ProfilerEnableRuntimeCallStats() {
 	c := &Client{}
 	err := proto.ProfilerEnableRuntimeCallStats{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerDisableRuntimeCallStats(t *testing.T) {
+func (t C) ProfilerDisableRuntimeCallStats() {
 	c := &Client{}
 	err := proto.ProfilerDisableRuntimeCallStats{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerGetRuntimeCallStats(t *testing.T) {
+func (t C) ProfilerGetRuntimeCallStats() {
 	c := &Client{}
 	_, err := proto.ProfilerGetRuntimeCallStats{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestProfilerConsoleProfileFinished(t *testing.T) {
+func (t C) ProfilerConsoleProfileFinished() {
 	e := proto.ProfilerConsoleProfileFinished{}
 	e.MethodName()
 }
 
-func TestProfilerConsoleProfileStarted(t *testing.T) {
+func (t C) ProfilerConsoleProfileStarted() {
 	e := proto.ProfilerConsoleProfileStarted{}
 	e.MethodName()
 }
 
-func TestProfilerPreciseCoverageDeltaUpdate(t *testing.T) {
+func (t C) ProfilerPreciseCoverageDeltaUpdate() {
 	e := proto.ProfilerPreciseCoverageDeltaUpdate{}
 	e.MethodName()
 }
 
-func TestRuntimeAwaitPromise(t *testing.T) {
+func (t C) RuntimeAwaitPromise() {
 	c := &Client{}
 	_, err := proto.RuntimeAwaitPromise{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeCallFunctionOn(t *testing.T) {
+func (t C) RuntimeCallFunctionOn() {
 	c := &Client{}
 	_, err := proto.RuntimeCallFunctionOn{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeCompileScript(t *testing.T) {
+func (t C) RuntimeCompileScript() {
 	c := &Client{}
 	_, err := proto.RuntimeCompileScript{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeDisable(t *testing.T) {
+func (t C) RuntimeDisable() {
 	c := &Client{}
 	err := proto.RuntimeDisable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeDiscardConsoleEntries(t *testing.T) {
+func (t C) RuntimeDiscardConsoleEntries() {
 	c := &Client{}
 	err := proto.RuntimeDiscardConsoleEntries{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeEnable(t *testing.T) {
+func (t C) RuntimeEnable() {
 	c := &Client{}
 	err := proto.RuntimeEnable{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeEvaluate(t *testing.T) {
+func (t C) RuntimeEvaluate() {
 	c := &Client{}
 	_, err := proto.RuntimeEvaluate{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeGetIsolateID(t *testing.T) {
+func (t C) RuntimeGetIsolateID() {
 	c := &Client{}
 	_, err := proto.RuntimeGetIsolateID{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeGetHeapUsage(t *testing.T) {
+func (t C) RuntimeGetHeapUsage() {
 	c := &Client{}
 	_, err := proto.RuntimeGetHeapUsage{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeGetProperties(t *testing.T) {
+func (t C) RuntimeGetProperties() {
 	c := &Client{}
 	_, err := proto.RuntimeGetProperties{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeGlobalLexicalScopeNames(t *testing.T) {
+func (t C) RuntimeGlobalLexicalScopeNames() {
 	c := &Client{}
 	_, err := proto.RuntimeGlobalLexicalScopeNames{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeQueryObjects(t *testing.T) {
+func (t C) RuntimeQueryObjects() {
 	c := &Client{}
 	_, err := proto.RuntimeQueryObjects{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeReleaseObject(t *testing.T) {
+func (t C) RuntimeReleaseObject() {
 	c := &Client{}
 	err := proto.RuntimeReleaseObject{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeReleaseObjectGroup(t *testing.T) {
+func (t C) RuntimeReleaseObjectGroup() {
 	c := &Client{}
 	err := proto.RuntimeReleaseObjectGroup{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeRunIfWaitingForDebugger(t *testing.T) {
+func (t C) RuntimeRunIfWaitingForDebugger() {
 	c := &Client{}
 	err := proto.RuntimeRunIfWaitingForDebugger{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeRunScript(t *testing.T) {
+func (t C) RuntimeRunScript() {
 	c := &Client{}
 	_, err := proto.RuntimeRunScript{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeSetAsyncCallStackDepth(t *testing.T) {
+func (t C) RuntimeSetAsyncCallStackDepth() {
 	c := &Client{}
 	err := proto.RuntimeSetAsyncCallStackDepth{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeSetCustomObjectFormatterEnabled(t *testing.T) {
+func (t C) RuntimeSetCustomObjectFormatterEnabled() {
 	c := &Client{}
 	err := proto.RuntimeSetCustomObjectFormatterEnabled{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeSetMaxCallStackSizeToCapture(t *testing.T) {
+func (t C) RuntimeSetMaxCallStackSizeToCapture() {
 	c := &Client{}
 	err := proto.RuntimeSetMaxCallStackSizeToCapture{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeTerminateExecution(t *testing.T) {
+func (t C) RuntimeTerminateExecution() {
 	c := &Client{}
 	err := proto.RuntimeTerminateExecution{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeAddBinding(t *testing.T) {
+func (t C) RuntimeAddBinding() {
 	c := &Client{}
 	err := proto.RuntimeAddBinding{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeRemoveBinding(t *testing.T) {
+func (t C) RuntimeRemoveBinding() {
 	c := &Client{}
 	err := proto.RuntimeRemoveBinding{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }
 
-func TestRuntimeBindingCalled(t *testing.T) {
+func (t C) RuntimeBindingCalled() {
 	e := proto.RuntimeBindingCalled{}
 	e.MethodName()
 }
 
-func TestRuntimeConsoleAPICalled(t *testing.T) {
+func (t C) RuntimeConsoleAPICalled() {
 	e := proto.RuntimeConsoleAPICalled{}
 	e.MethodName()
 }
 
-func TestRuntimeExceptionRevoked(t *testing.T) {
+func (t C) RuntimeExceptionRevoked() {
 	e := proto.RuntimeExceptionRevoked{}
 	e.MethodName()
 }
 
-func TestRuntimeExceptionThrown(t *testing.T) {
+func (t C) RuntimeExceptionThrown() {
 	e := proto.RuntimeExceptionThrown{}
 	e.MethodName()
 }
 
-func TestRuntimeExecutionContextCreated(t *testing.T) {
+func (t C) RuntimeExecutionContextCreated() {
 	e := proto.RuntimeExecutionContextCreated{}
 	e.MethodName()
 }
 
-func TestRuntimeExecutionContextDestroyed(t *testing.T) {
+func (t C) RuntimeExecutionContextDestroyed() {
 	e := proto.RuntimeExecutionContextDestroyed{}
 	e.MethodName()
 }
 
-func TestRuntimeExecutionContextsCleared(t *testing.T) {
+func (t C) RuntimeExecutionContextsCleared() {
 	e := proto.RuntimeExecutionContextsCleared{}
 	e.MethodName()
 }
 
-func TestRuntimeInspectRequested(t *testing.T) {
+func (t C) RuntimeInspectRequested() {
 	e := proto.RuntimeInspectRequested{}
 	e.MethodName()
 }
 
-func TestSchemaGetDomains(t *testing.T) {
+func (t C) SchemaGetDomains() {
 	c := &Client{}
 	_, err := proto.SchemaGetDomains{}.Call(&Caller{c})
-	assert.Nil(t, err)
+	t.Nil(err)
 }

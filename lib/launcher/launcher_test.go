@@ -8,43 +8,48 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
 
 func TestDownload(t *testing.T) {
-	skipDownload(t)
+	as := got.New(t)
 
-	c := launcher.NewBrowser()
-	utils.E(c.Download())
-	assert.FileExists(t, c.ExecPath())
+	b, cancel := newBrowser()
+	defer cancel()
+	as.E(b.Download())
+	as.Nil(os.Stat(b.ExecPath()))
 }
 
 func TestDownloadWithMirror(t *testing.T) {
-	skipDownload(t)
+	as := got.New(t)
 
-	c := launcher.NewBrowser()
-	c.Hosts = []string{"https://github.com", launcher.HostTaobao}
-	c.Dir = filepath.Join("tmp", "browser-from-mirror", utils.RandString(8))
-	utils.E(c.Download())
-	assert.FileExists(t, c.ExecPath())
+	b, cancel := newBrowser()
+	defer cancel()
+	b.Hosts = []string{"https://github.com", launcher.HostTaobao}
+	b.Dir = filepath.Join("tmp", "browser-from-mirror", utils.RandString(8))
+	as.E(b.Download())
+	as.Nil(os.Stat(b.ExecPath()))
 
-	c.Hosts = []string{}
-	assert.Error(t, c.Download())
+	b.Hosts = []string{}
+	as.Err(b.Download())
 
-	c.Hosts = []string{"not-exists"}
-	assert.Error(t, c.Download())
+	b.Hosts = []string{"not-exists"}
+	as.Err(b.Download())
 
-	c.Dir = ""
-	c.ExecSearchMap = map[string][]string{runtime.GOOS: {}}
-	_, err := c.Get()
-	assert.Error(t, err)
+	b.Dir = ""
+	b.ExecSearchMap = map[string][]string{runtime.GOOS: {}}
+	_, err := b.Get()
+	as.Err(err)
 }
 
 func TestLaunch(t *testing.T) {
+	as := got.New(t)
+
 	defaults.Proxy = "test.com"
 	defer func() { defaults.ResetWithEnv("") }()
 
@@ -52,37 +57,39 @@ func TestLaunch(t *testing.T) {
 	defer l.Kill()
 
 	u := l.MustLaunch()
-	assert.Regexp(t, `\Aws://.+\z`, u)
+	as.Regex(`\Aws://.+\z`, u)
 
 	parsed, _ := url.Parse(u)
 
 	{ // test GetWebSocketDebuggerURL
 		for _, prefix := range []string{"", ":", "127.0.0.1:", "ws://127.0.0.1:"} {
 			u2 := launcher.MustResolveURL(prefix + parsed.Port())
-			assert.Regexp(t, u, u2)
+			as.Regex(u, u2)
 		}
 	}
 
 	{
 		_, err := launcher.NewRemote("1://")
-		assert.Error(t, err)
+		as.Err(err)
 
 		_, err = launcher.NewRemote("ws://not-exists")
-		assert.Error(t, err)
+		as.Err(err)
 	}
 }
 
 func TestLaunchUserMode(t *testing.T) {
+	as := got.New(t)
+
 	l := launcher.NewUserMode()
 	defer l.Kill()
 
 	_, has := l.Get("not-exists")
-	assert.False(t, has)
+	as.False(has)
 
 	l.Append("test-append", "a")
 	f, has := l.Get("test-append")
-	assert.True(t, has)
-	assert.Equal(t, "a", f)
+	as.True(has)
+	as.Eq("a", f)
 
 	dir, _ := l.Get("user-data-dir")
 	port := 58472
@@ -98,10 +105,7 @@ func TestLaunchUserMode(t *testing.T) {
 		Env("TZ=Asia/Tokyo").
 		MustLaunch()
 
-	assert.Equal(t,
-		url,
-		launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch(),
-	)
+	as.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
 }
 
 func TestOpen(t *testing.T) {
@@ -109,34 +113,39 @@ func TestOpen(t *testing.T) {
 }
 
 func TestUserModeErr(t *testing.T) {
+	as := got.New(t)
+
 	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").Launch()
-	assert.Error(t, err)
+	as.Err(err)
 
 	_, err = launcher.NewUserMode().RemoteDebuggingPort(58217).Bin("echo").Launch()
-	assert.Error(t, err)
+	as.Err(err)
 }
 
 func TestGetWebSocketDebuggerURLErr(t *testing.T) {
+	as := got.New(t)
+
 	_, err := launcher.ResolveURL("1://")
-	assert.Error(t, err)
+	as.Err(err)
 }
 
 func TestLaunchErr(t *testing.T) {
-	assert.Panics(t, func() {
+	as := got.New(t)
+
+	as.Panic(func() {
 		launcher.New().Bin("not-exists").MustLaunch()
 	})
-	assert.Panics(t, func() {
+	as.Panic(func() {
 		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
-	assert.Panics(t, func() {
+	as.Panic(func() {
 		launcher.New().Client()
 	})
 }
 
-func skipDownload(t *testing.T) {
-	_, skipDownload := os.LookupEnv("skip_download")
-
-	if skipDownload {
-		t.SkipNow()
-	}
+func newBrowser() (*launcher.Browser, func()) {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	b := launcher.NewBrowser()
+	b.Context = ctx
+	return b, cancel
 }

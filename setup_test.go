@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,69 +17,56 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/suite"
-	"github.com/ysmood/got/pkg/testleak"
+	"github.com/ysmood/got"
+	"github.com/ysmood/gotrace/pkg/testleak"
 )
 
 var slash = filepath.FromSlash
 
-// S test suite
-type S struct {
-	suite.Suite
+type C struct {
+	got.Assertion
+
 	mc      *MockClient
 	browser *rod.Browser
 	page    *rod.Page
 }
 
-func init() {
-	log.SetFlags(log.Ltime)
-
-	// to prevent false positive of goroutine leak
-	http.DefaultClient = &http.Client{
-		Transport: &http.Transport{
-			DisableKeepAlives: true,
-		},
-	}
-}
-
 func Test(t *testing.T) {
 	testleak.Check(t, 0)
 
-	extPath, err := filepath.Abs("fixtures/chrome-extension")
-	utils.E(err)
+	u := launcher.New().MustLaunch()
 
-	u := launcher.New().
-		Delete("disable-extensions").
-		Set("load-extension", extPath).
-		MustLaunch()
+	mc := newMockClient(t, cdp.New(u))
 
-	s := new(S)
-	s.mc = newMockClient(s, cdp.New(u))
-	s.browser = rod.New().ControlURL("").
-		Client(s.mc).
-		MustConnect().
+	browser := rod.New().ControlURL("").Client(mc).MustConnect().
+		MustIgnoreCertErrors(false).
 		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
 			Width: 800, Height: 600, DeviceScaleFactor: 1,
-		}).Sleeper(rod.DefaultSleeper)
+		})
+	defer browser.MustClose()
 
-	defer s.browser.MustClose()
+	page := getOnePage(browser)
 
-	s.browser.MustIgnoreCertErrors(false)
-	s.page = getOnePage(s.browser)
+	got.Each(t, func(t *testing.T) C {
+		testleak.Check(t, 0)
 
-	suite.Run(t, s)
-}
+		t.Cleanup(func() {
+			for _, p := range browser.MustPages() {
+				if p.TargetID != page.TargetID {
+					t.Fatal("leaking page: " + p.MustInfo().URL)
+				}
+			}
 
-func (s *S) TearDownTest() {
-	for _, p := range s.browser.MustPages() {
-		if p.TargetID != s.page.TargetID {
-			s.T().Fatal("leaking page: " + p.MustInfo().URL)
+			mc.setCall(nil) // panic if setCall leaks
+		})
+
+		return C{
+			Assertion: got.New(t),
+			mc:        mc,
+			browser:   browser,
+			page:      page,
 		}
-	}
-
-	testleak.Check(s.T(), 0)
-
-	s.mc.setCall(nil) // panic if setCall leaks
+	})
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
@@ -138,11 +124,6 @@ func serveStatic() (string, func()) {
 	return u + "/", close
 }
 
-// return last value as error
-func lastE(list ...interface{}) error {
-	return list[len(list)-1].(error)
-}
-
 type MockRoundTripper struct {
 	res *http.Response
 	err error
@@ -166,15 +147,15 @@ var _ rod.Client = &MockClient{}
 
 type MockClient struct {
 	sync.RWMutex
-	suit      *S
+	t         *testing.T
 	principal *cdp.Client
 	call      Call
 	connect   func() error
 	event     <-chan *cdp.Event
 }
 
-func newMockClient(s *S, c *cdp.Client) *MockClient {
-	return &MockClient{suit: s, principal: c}
+func newMockClient(t *testing.T, c *cdp.Client) *MockClient {
+	return &MockClient{t: t, principal: c}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
@@ -210,7 +191,7 @@ func (mc *MockClient) setCall(fn Call) {
 	defer mc.Unlock()
 
 	if mc.call != nil {
-		mc.suit.T().Fatal("leaking MockClient.stub")
+		mc.t.Fatal("leaking MockClient.stub")
 	}
 	mc.call = fn
 }
@@ -245,11 +226,13 @@ func (mc *MockClient) stubCounter() {
 	})
 }
 
+type StubSend func() (proto.JSON, error)
+
 // When call the cdp.Client.Call the nth time use fn instead.
 // Use p to filter method.
-func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send func() ([]byte, error)) ([]byte, error)) {
+func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (proto.JSON, error)) {
 	if p == nil {
-		mc.suit.T().Fatal("p must be specified")
+		mc.t.Fatal("p must be specified")
 	}
 
 	count := int64(0)
@@ -258,11 +241,15 @@ func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send func() ([]byte
 		if method == p.MethodName() {
 			c := atomic.AddInt64(&count, 1)
 			if c == int64(nth) {
-
 				mc.resetCall()
-				return fn(func() ([]byte, error) {
-					return mc.principal.Call(ctx, sessionID, method, params)
+				j, err := fn(func() (proto.JSON, error) {
+					b, err := mc.principal.Call(ctx, sessionID, method, params)
+					return proto.NewJSON(b), err
 				})
+				if err != nil {
+					return nil, err
+				}
+				return j.MarshalJSON()
 			}
 		}
 		return mc.principal.Call(ctx, sessionID, method, params)
@@ -272,7 +259,7 @@ func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send func() ([]byte
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
 func (mc *MockClient) stubErr(nth int, p proto.Payload) {
-	mc.stub(nth, p, func(send func() ([]byte, error)) ([]byte, error) {
-		return nil, errors.New("mock error")
+	mc.stub(nth, p, func(send StubSend) (proto.JSON, error) {
+		return proto.JSON{}, errors.New("mock error")
 	})
 }

@@ -10,30 +10,34 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
 
 func TestToHTTP(t *testing.T) {
+	as := got.New(t)
 	u, _ := url.Parse("wss://a.com")
-	assert.Equal(t, "https", toHTTP(*u).Scheme)
+	as.Eq("https", toHTTP(*u).Scheme)
 
 	u, _ = url.Parse("ws://a.com")
-	assert.Equal(t, "http", toHTTP(*u).Scheme)
+	as.Eq("http", toHTTP(*u).Scheme)
 }
 
 func TestToWS(t *testing.T) {
+	as := got.New(t)
 	u, _ := url.Parse("https://a.com")
-	assert.Equal(t, "wss", toWS(*u).Scheme)
+	as.Eq("wss", toWS(*u).Scheme)
 
 	u, _ = url.Parse("http://a.com")
-	assert.Equal(t, "ws", toWS(*u).Scheme)
+	as.Eq("ws", toWS(*u).Scheme)
 }
 
 func TestUnzip(t *testing.T) {
-	assert.Error(t, unzip(ioutil.Discard, "", ""))
+	as := got.New(t)
+	as.Err(unzip(ioutil.Discard, "", ""))
 }
 
 func TestLaunchOptions(t *testing.T) {
+	as := got.New(t)
 	defaults.Show = true
 	defaults.Devtools = true
 	isInDocker = true
@@ -47,30 +51,32 @@ func TestLaunchOptions(t *testing.T) {
 	l := New()
 
 	_, has := l.Get("headless")
-	assert.False(t, has)
+	as.False(has)
 
 	_, has = l.Get("no-sandbox")
-	assert.True(t, has)
+	as.True(has)
 
 	_, has = l.Get("auto-open-devtools-for-tabs")
-	assert.True(t, has)
+	as.True(has)
 }
 
 func TestGetURLErr(t *testing.T) {
+	as := got.New(t)
 	l := New()
 
 	l.ctxCancel()
 	_, err := l.getURL()
-	assert.Error(t, err)
+	as.Err(err)
 
 	l = New()
 	l.parser.Buffer = "err"
 	close(l.exit)
 	_, err = l.getURL()
-	assert.Equal(t, "[launcher] Failed to get the debug url err", err.Error())
+	as.Eq("[launcher] Failed to get the debug url err", err.Error())
 }
 
 func TestRemoteLaunch(t *testing.T) {
+	as := got.New(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -82,7 +88,7 @@ func TestRemoteLaunch(t *testing.T) {
 	l := MustNewRemote(u).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
-	utils.E(b.Call(ctx, "", "Browser.getVersion", nil))
+	as.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	utils.Sleep(1)
 	_, _ = b.Call(ctx, "", "Browser.crash", nil)
 	dir, _ := l.Get("user-data-dir")
@@ -94,21 +100,22 @@ func TestRemoteLaunch(t *testing.T) {
 			break
 		}
 	}
-	assert.NoDirExists(t, dir)
+	as.Err(os.Stat(dir))
 }
 
 func TestLaunchErrs(t *testing.T) {
+	as := got.New(t)
 	l := New().Bin("echo")
 	go func() {
 		l.exit <- struct{}{}
 	}()
 	_, err := l.Launch()
-	assert.Error(t, err)
+	as.Err(err)
 
 	l = New()
 	l.browser.Dir = utils.RandString(8)
 	l.browser.ExecSearchMap = nil
 	l.browser.Hosts = []string{}
 	_, err = l.Launch()
-	assert.Error(t, err)
+	as.Err(err)
 }

@@ -6,8 +6,16 @@ import (
 	"testing"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/ysmood/got"
 )
+
+func Test(t *testing.T) {
+	got.Each(t, C{})
+}
+
+type C struct {
+	got.Assertion
+}
 
 type wsMockConn struct {
 	send func([]byte) error
@@ -22,7 +30,7 @@ func (c *wsMockConn) Read() ([]byte, error) {
 	return c.read()
 }
 
-func TestCancelCall(t *testing.T) {
+func (c C) CancelCall() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	cdp := New("")
@@ -31,10 +39,10 @@ func TestCancelCall(t *testing.T) {
 	}()
 	cdp.ctx = context.Background()
 	_, err := cdp.Call(ctx, "", "", nil)
-	assert.Error(t, err)
+	c.Err(err)
 }
 
-func TestReqErr(t *testing.T) {
+func (c C) ReqErr() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -46,10 +54,10 @@ func TestReqErr(t *testing.T) {
 	go cdp.consumeMsg()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	assert.Error(t, err)
+	c.Err(err)
 }
 
-func TestCancelOnReq(t *testing.T) {
+func (c C) CancelOnReq() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -60,7 +68,7 @@ func TestCancelOnReq(t *testing.T) {
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	assert.EqualError(t, err, "context canceled")
+	c.Eq(err.Error(), "context canceled")
 
 	go func() {
 		utils.Sleep(0.1)
@@ -68,20 +76,20 @@ func TestCancelOnReq(t *testing.T) {
 	}()
 
 	_, err = cdp.Call(context.Background(), "", "", nil)
-	assert.EqualError(t, err, "context canceled")
+	c.Eq(err.Error(), "context canceled")
 }
 
-func TestCancelBeforeSend(t *testing.T) {
+func (c C) CancelBeforeSend() {
 	cdp := New("")
 	cdp.ctx = context.Background()
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	assert.EqualError(t, err, "context canceled")
+	c.Eq(err.Error(), "context canceled")
 }
 
-func TestCancelBeforeCallback(t *testing.T) {
+func (c C) CancelBeforeCallback() {
 	cdp := New("")
 	cdp.ctx = context.Background()
 
@@ -93,10 +101,10 @@ func TestCancelBeforeCallback(t *testing.T) {
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	assert.EqualError(t, err, "context canceled")
+	c.Eq(err.Error(), "context canceled")
 }
 
-func TestCancelOnCallback(t *testing.T) {
+func (c C) CancelOnCallback() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -113,7 +121,7 @@ func TestCancelOnCallback(t *testing.T) {
 	cancel()
 }
 
-func TestCancelOnReadRes(t *testing.T) {
+func (c C) CancelOnReadRes() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -131,10 +139,10 @@ func TestCancelOnReadRes(t *testing.T) {
 	go cdp.readMsgFromBrowser()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	assert.Error(t, err)
+	c.Err(err)
 }
 
-func TestCancelOnReadEvent(t *testing.T) {
+func (c C) CancelOnReadEvent() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -148,5 +156,5 @@ func TestCancelOnReadEvent(t *testing.T) {
 	go cdp.readMsgFromBrowser()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	assert.Error(t, err)
+	c.Err(err)
 }

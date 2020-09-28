@@ -4,7 +4,6 @@ import (
 	"context"
 	"math/rand"
 	"net/http"
-	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -14,11 +13,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-func TestRemoteLauncherUnderLoad(t *testing.T) {
-	if _, has := os.LookupEnv("loadtest"); !has {
-		t.Skip("use env loadtest to not skip")
-	}
-
+func BenchmarkRemoteLauncher(b *testing.B) {
 	const concurrent = 30 // how many browsers will run at the same time
 	const num = 300       // how many browsers we will launch
 
