@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
@@ -530,62 +529,6 @@ func (p *Page) Expose(name string) (callback chan []gjson.Result, stop func() er
 	return
 }
 
-// Eval js on the page. It's just a shortcut for Page.Evaluate.
-func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return p.Evaluate(NewEval(js, jsArgs...))
-}
-
-// Evaluate js on the page.
-func (p *Page) Evaluate(opts *Eval) (*proto.RuntimeRemoteObject, error) {
-	backoff := utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
-	this := opts.ThisObj
-	var err error
-	var res *proto.RuntimeCallFunctionOnResult
-
-	// js context will be invalid if a frame is reloaded or not ready, then the isNilContextErr
-	// will be true, then we retry the eval again.
-	err = utils.Retry(p.ctx, backoff, func() (bool, error) {
-		if p.getWindowObj() == nil || opts.ThisObj == nil {
-			err := p.initJS(false)
-			if err != nil {
-				if isNilContextErr(err) {
-					return false, nil
-				}
-				return true, err
-			}
-		}
-		if opts.ThisObj == nil {
-			this = p.getWindowObj()
-		}
-
-		res, err = proto.RuntimeCallFunctionOn{
-			ObjectID:            this.ObjectID,
-			AwaitPromise:        true,
-			ReturnByValue:       opts.ByValue,
-			UserGesture:         opts.UserGesture,
-			FunctionDeclaration: opts.formatToJSFunc(),
-			Arguments:           opts.formatArgs(p.getJSHelperObj()),
-		}.Call(p)
-		if opts.ThisObj == nil && isNilContextErr(err) {
-			_ = p.initJS(true)
-			return false, nil
-		}
-
-		return true, err
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	if res.ExceptionDetails != nil {
-		exp := res.ExceptionDetails.Exception
-		return nil, newErr(ErrEval, exp, exp.Description+" "+exp.Value.String())
-	}
-
-	return res.Result, nil
-}
-
 // Wait js function until it returns true
 func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interface{}) error {
 	removeTrace := func() {}
@@ -684,107 +627,6 @@ func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
 // CallContext parameters for proto
 func (p *Page) CallContext() (context.Context, proto.Client, string) {
 	return p.ctx, p.browser, string(p.SessionID)
-}
-
-func (p *Page) initSession() error {
-	obj, err := proto.TargetAttachToTarget{
-		TargetID: p.TargetID,
-		Flatten:  true, // if it's not set no response will return
-	}.Call(p)
-	if err != nil {
-		return err
-	}
-	p.SessionID = obj.SessionID
-
-	// If we don't enable it, it will cause a lot of unexpected browser behavior.
-	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
-	p.EnableDomain(&proto.PageEnable{})
-
-	// If we don't enable it, it will remove remote node id whenever we disable the domain
-	// even after we re-enable it again we can't query the ids any more.
-	p.EnableDomain(&proto.DOMEnable{})
-
-	return nil
-}
-
-func (p *Page) initJS(force bool) error {
-	contextID, err := p.getExecutionID(force)
-	if err != nil {
-		return err
-	}
-
-	p.jsContextLock.Lock()
-	defer p.jsContextLock.Unlock()
-
-	if !force && p.windowObj != nil {
-		return nil
-	}
-
-	window, err := proto.RuntimeEvaluate{
-		Expression: "window",
-		ContextID:  contextID,
-	}.Call(p)
-	if err != nil {
-		return err
-	}
-
-	helper, err := proto.RuntimeCallFunctionOn{
-		ObjectID:            window.Result.ObjectID,
-		FunctionDeclaration: assets.Helper,
-	}.Call(p)
-	if err != nil {
-		return err
-	}
-
-	p.windowObj = window.Result
-	p.jsHelperObj = helper.Result
-
-	return nil
-}
-
-// We use this function to make sure every frame(page, iframe) will only have one IsolatedWorld.
-func (p *Page) getExecutionID(force bool) (proto.RuntimeExecutionContextID, error) {
-	if !p.IsIframe() {
-		return 0, nil
-	}
-
-	p.jsContextLock.Lock()
-	defer p.jsContextLock.Unlock()
-
-	if !force {
-		if ctxID, has := p.executionIDs[p.FrameID]; has {
-			_, err := proto.RuntimeEvaluate{ContextID: ctxID, Expression: `0`}.Call(p)
-			if err == nil {
-				return ctxID, nil
-			} else if !isNilContextErr(err) {
-				return 0, err
-			}
-		}
-	}
-
-	world, err := proto.PageCreateIsolatedWorld{
-		FrameID:   p.FrameID,
-		WorldName: "rod_iframe_world",
-	}.Call(p)
-	if err != nil {
-		return 0, err
-	}
-
-	p.executionIDs[p.FrameID] = world.ExecutionContextID
-
-	return world.ExecutionContextID, nil
-}
-
-func (p *Page) getWindowObj() *proto.RuntimeRemoteObject {
-	p.jsContextLock.Lock()
-	defer p.jsContextLock.Unlock()
-	return p.windowObj
-}
-
-func (p *Page) getJSHelperObj() *proto.RuntimeRemoteObject {
-	p.jsContextLock.Lock()
-	defer p.jsContextLock.Unlock()
-	return p.jsHelperObj
 }
 
 func (p *Page) enableNodeQuery() {

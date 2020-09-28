@@ -13,7 +13,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -37,99 +36,6 @@ func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
 		return func() utils.Sleeper { return nil }
 	}
 	return gen
-}
-
-// Eval options for Page.Evaluate
-type Eval struct {
-	// If enabled the eval result will be a plain JSON value.
-	// If disabled the eval result will be a reference of a remote js object.
-	ByValue bool
-
-	// ThisObj represents the "this" object in the JS
-	ThisObj *proto.RuntimeRemoteObject
-
-	// JS code to eval
-	JS string
-
-	// JSArgs represents the arguments in the JS if the JS is a function definition.
-	// If an argument is *proto.RuntimeRemoteObject type, the corresponding remote object will be used.
-	// Or it will be passed as a plain JSON value.
-	JSArgs []interface{}
-
-	// Whether execution should be treated as initiated by user in the UI.
-	UserGesture bool
-
-	jsHelper bool
-}
-
-// NewEval options. ByValue will be set to true.
-func NewEval(js string, args ...interface{}) *Eval {
-	return &Eval{true, nil, js, args, false, false}
-}
-
-// This set the obj as ThisObj
-func (e *Eval) This(obj *proto.RuntimeRemoteObject) *Eval {
-	e.ThisObj = obj
-	return e
-}
-
-// ByObject disables ByValue.
-func (e *Eval) ByObject() *Eval {
-	e.ByValue = false
-	return e
-}
-
-// ByUser enables UserGesture.
-func (e *Eval) ByUser() *Eval {
-	e.UserGesture = true
-	return e
-}
-
-// Strings appends each string to JSArgs
-func (e *Eval) Strings(list ...string) *Eval {
-	for _, s := range list {
-		e.JSArgs = append(e.JSArgs, s)
-	}
-	return e
-}
-
-func (e *Eval) formatToJSFunc() string {
-	if detectJSFunction(e.JS) {
-		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, e.JS)
-	}
-	return fmt.Sprintf(`function() { return %s }`, e.JS)
-}
-
-// We must pass the jsHelper right before we eval it, or the jsHelper may not be generated yet,
-// we only inject the js helper on the first Page.EvalWithOption .
-func (e *Eval) formatArgs(jsHelper *proto.RuntimeRemoteObject) []*proto.RuntimeCallArgument {
-	var jsArgs []interface{}
-
-	if e.jsHelper {
-		jsArgs = append([]interface{}{jsHelper}, e.JSArgs...)
-	} else {
-		jsArgs = e.JSArgs
-	}
-
-	formated := []*proto.RuntimeCallArgument{}
-	for _, arg := range jsArgs {
-		if obj, ok := arg.(*proto.RuntimeRemoteObject); ok { // remote object
-			formated = append(formated, &proto.RuntimeCallArgument{ObjectID: obj.ObjectID})
-		} else { // plain json data
-			formated = append(formated, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
-		}
-	}
-	return formated
-}
-
-// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func jsHelper(name js.Name, args ...interface{}) *Eval {
-	return &Eval{
-		ByValue:  true,
-		JS:       fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
-		JSArgs:   args,
-		jsHelper: true,
-	}
 }
 
 var _ io.Reader = &StreamReader{}
