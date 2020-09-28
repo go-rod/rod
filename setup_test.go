@@ -12,7 +12,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
-	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -20,7 +19,7 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/suite"
-	"go.uber.org/goleak"
+	"github.com/ysmood/got/pkg/testleak"
 )
 
 var slash = filepath.FromSlash
@@ -28,26 +27,25 @@ var slash = filepath.FromSlash
 // S test suite
 type S struct {
 	suite.Suite
-	mc           *MockClient
-	browser      *rod.Browser
-	page         *rod.Page
-	goleakIgnore goleak.Option
+	mc      *MockClient
+	browser *rod.Browser
+	page    *rod.Page
 }
 
-func TestMain(m *testing.M) {
+func init() {
 	log.SetFlags(log.Ltime)
 
-	// to prevent false positive of goleak
+	// to prevent false positive of goroutine leak
 	http.DefaultClient = &http.Client{
 		Transport: &http.Transport{
 			DisableKeepAlives: true,
 		},
 	}
-
-	goleak.VerifyTestMain(m, goleak.MaxRetry(3*time.Second))
 }
 
 func Test(t *testing.T) {
+	testleak.Check(t, 0)
+
 	extPath, err := filepath.Abs("fixtures/chrome-extension")
 	utils.E(err)
 
@@ -70,8 +68,6 @@ func Test(t *testing.T) {
 	s.browser.MustIgnoreCertErrors(false)
 	s.page = getOnePage(s.browser)
 
-	s.goleakIgnore = goleak.IgnoreCurrent()
-
 	suite.Run(t, s)
 }
 
@@ -82,11 +78,7 @@ func (s *S) TearDownTest() {
 		}
 	}
 
-	goleak.VerifyNone(
-		s.T(),
-		goleak.MaxRetry(3*time.Second),
-		s.goleakIgnore,
-	)
+	testleak.Check(s.T(), 0)
 
 	s.mc.setCall(nil) // panic if setCall leaks
 }
