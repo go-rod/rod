@@ -738,19 +738,28 @@ func (s *S) TestPagePDF() {
 
 func (s *S) TestPageExpose() {
 	cb, stop := s.page.MustExpose("exposedFunc")
-	page := s.page.MustNavigate(srcFile("fixtures/click.html"))
-	page.MustEval(`exposedFunc('ok')`)
-	s.Equal("ok", <-cb)
-	page.MustEval(`exposedFunc('ok')`)
+
+	s.page.MustNavigate(srcFile("fixtures/click.html"))
+
+	s.page.MustEval(`exposedFunc({a: 'ok'})`)
+	s.Equal("ok", (<-cb)[0].Get("a").Str)
+
+	s.page.MustEval(`exposedFunc('ok')`)
 	stop()
-	s.Panics(func() {
-		page := s.page.MustNavigate(srcFile("fixtures/click.html"))
-		page.MustEval(`exposedFunc('')`)
-	})
 
 	s.Panics(func() {
+		stop()
+	})
+	s.Panics(func() {
+		s.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
+	})
+	s.Panics(func() {
+		s.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+		s.page.MustExpose("exposedFunc")
+	})
+	s.Panics(func() {
 		s.mc.stubErr(1, proto.RuntimeAddBinding{})
-		page.MustExpose("exposedFunc")
+		s.page.MustExpose("exposedFunc2")
 	})
 }
 

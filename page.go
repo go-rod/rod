@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"sync"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/tidwall/gjson"
 	"github.com/ysmood/goob"
 )
 
@@ -482,40 +484,59 @@ func (p *Page) AddStyleTag(url, content string) error {
 }
 
 // EvalOnNewDocument Evaluates given script in every frame upon creation (before loading frame's scripts).
-func (p *Page) EvalOnNewDocument(js string) (proto.PageScriptIdentifier, error) {
+func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 	res, err := proto.PageAddScriptToEvaluateOnNewDocument{Source: js}.Call(p)
-	if err != nil {
-		return "", err
-	}
-
-	return res.Identifier, nil
-}
-
-// Expose function to the page's window object. Must bind before navigate to the page. Bindings survive reloads.
-// Binding function takes exactly one argument, this argument should be string.
-func (p *Page) Expose(name string) (callback chan string, stop func(), err error) {
-	err = proto.RuntimeAddBinding{Name: name}.Call(p)
 	if err != nil {
 		return
 	}
 
-	callback = make(chan string)
-	p, cancel := p.WithCancel()
-	stop = func() {
-		cancel()
-		_ = proto.RuntimeRemoveBinding{Name: name}.Call(p)
+	remove = func() error {
+		return proto.PageRemoveScriptToEvaluateOnNewDocument{
+			Identifier: res.Identifier,
+		}.Call(p)
 	}
 
-	go p.EachEvent(func(e *proto.RuntimeBindingCalled) bool {
-		if e.Name == name {
-			select {
-			case <-p.ctx.Done():
-				return true
-			case callback <- e.Payload:
-			}
+	return
+}
+
+// Expose function to the page's window object. Must bind before navigation. Bindings survive reloads.
+func (p *Page) Expose(name string) (callback chan []gjson.Result, stop func() error, err error) {
+	fn := "__" + name
+
+	remove, err := p.EvalOnNewDocument(fmt.Sprintf(
+		`function %s(...args) { %s(JSON.stringify(args)) }`, name, fn,
+	))
+	if err != nil {
+		return
+	}
+
+	err = proto.RuntimeAddBinding{Name: fn}.Call(p)
+	if err != nil {
+		return
+	}
+
+	callback = make(chan []gjson.Result)
+	p, cancel := p.WithCancel()
+
+	stop = func() error {
+		defer cancel()
+		err := remove()
+		if err != nil {
+			return err
 		}
-		return false
-	})()
+		return proto.RuntimeRemoveBinding{Name: fn}.Call(p)
+	}
+
+	go func() {
+		p.EachEvent(func(e *proto.RuntimeBindingCalled) {
+			if e.Name == fn {
+				select {
+				case <-p.ctx.Done():
+				case callback <- gjson.Parse(e.Payload).Array():
+				}
+			}
+		})()
+	}()
 
 	return
 }
