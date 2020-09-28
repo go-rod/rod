@@ -16,13 +16,13 @@ The entry point of all tests is the [setup_test.go](../setup_test.go) file.
 
 ### Example to run a single test
 
-`go test -v -run Test/Click`, `Click` is the pattern to match the test function name.
+`go test -v -run /Click`, `Click` is the pattern to match the test function name.
 
-Use regex to match and run a single test: `go test -v -run Test/^TestClick$`.
+Use regex to match and run a single test: `go test -v -run /^TestClick$`.
 
 ### To disable headless mode
 
-`rod=show go test -v -run Test/Click`.
+`rod=show go test -v -run /Click`.
 
 ### To lint the project
 
@@ -50,7 +50,7 @@ There are several helper functions in the [setup_test.go](../setup_test.go) for 
 
 1. `docker volume create rod`
 
-1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run Test/Click`
+1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run /Click`
 
 ### Convention of the git commit message
 
