@@ -42,7 +42,6 @@ type Launcher struct {
 // "--" is optional, with or without it won't affect the result.
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
-// List of switches: https://peter.sh/experiments/chromium-command-line-switches/
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
@@ -158,7 +157,8 @@ func (l *Launcher) GetFlags(name string) ([]string, bool) {
 	return flag, has
 }
 
-// Set a flag
+// Set a command line argument to launch the browser. People also call it command line flag or switch.
+// List of available flags: https://peter.sh/experiments/chromium-command-line-switches/
 func (l *Launcher) Set(name string, values ...string) *Launcher {
 	l.Flags[l.normalizeFlag(name)] = values
 	return l
