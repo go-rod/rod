@@ -1,7 +1,9 @@
 package rod
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
+	"errors"
 )
 
 var (
@@ -43,7 +45,7 @@ type Error struct {
 }
 
 func newErr(code error, details interface{}, msg string) error {
-	return errors.WithStack(errors.WithMessage(&Error{code, details}, msg))
+	return fmt.Errorf("%s: %w", msg, &Error{code, details})
 }
 
 // AsError of *rod.Error

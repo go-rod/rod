@@ -180,9 +180,6 @@ func Example_error_handling() {
 		if errors.Is(err, context.DeadlineExceeded) { // timeout error
 			fmt.Println("timeout err")
 		} else if errors.Is(err, rod.ErrEval) { // eval error
-			// print the stack trace
-			fmt.Printf("%+v\n", err)
-
 			// print more details
 			utils.Dump(rod.AsError(err).Details)
 		} else if err != nil {
