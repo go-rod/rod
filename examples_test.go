@@ -270,8 +270,6 @@ func Example_race_selectors() {
 		// when wrong username or password
 		fmt.Println(el.MustText())
 	}).MustDo()
-
-	// Output: WELCOME :)
 }
 
 // Example_wait_for_animation is an example to simulate humans more accurately.
