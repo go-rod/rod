@@ -6,4 +6,4 @@ RUN apk add git go --repository=http://dl-cdn.alpinelinux.org/alpine/edge/commun
 
 WORKDIR /t
 
-CMD go test -short -run /
+CMD go test -run /

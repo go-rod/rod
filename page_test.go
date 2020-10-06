@@ -403,8 +403,6 @@ func (c C) PageWaitNavigation() {
 }
 
 func (c C) PageWaitRequestIdle() {
-	utils.Sleep(1) // make sure browser is not too busy
-
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -530,31 +528,27 @@ func (c C) MouseClick() {
 }
 
 func (c C) MouseDrag() {
-	utils.Sleep(1) // make sure browser is not too busy
-
 	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
-	page := c.page.MustNavigate(srcFile("fixtures/drag.html"))
+	page := c.page.MustNavigate(srcFile("fixtures/drag.html")).MustWaitLoad()
 	wait()
 	mouse := page.Mouse
 
-	waitUp := make(chan struct{})
 	logs := []string{}
-	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
+	wait = page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
 		log := page.MustObjectsToJSON(e.Args).Join(" ")
 		logs = append(logs, log)
 		if strings.HasPrefix(log, `up`) {
-			close(waitUp)
 			return true
 		}
 		return false
-	})()
+	})
 
 	mouse.MustMove(3, 3)
 	mouse.MustDown("left")
 	c.E(mouse.Move(60, 80, 3))
 	mouse.MustUp("left")
 
-	<-waitUp
+	wait()
 
 	c.Eq([]string{"move 3 3", "down 3 3", "move 22 28", "move 41 54", "move 60 80", "up 60 80"}, logs)
 }
@@ -721,7 +715,7 @@ func (c C) PageScroll() {
 }
 
 func (c C) PageConsoleLog() {
-	p := c.page.MustNavigate("")
+	p := c.page.MustNavigate("").MustWaitLoad()
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
@@ -762,7 +756,7 @@ func (c C) PagePDF() {
 func (c C) PageExpose() {
 	cb, stop := c.page.MustExpose("exposedFunc")
 
-	c.page.MustNavigate(srcFile("fixtures/click.html"))
+	c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
 
 	c.page.MustEval(`exposedFunc({a: 'ok'})`)
 	c.Eq("ok", (<-cb)[0].Get("a").Str())

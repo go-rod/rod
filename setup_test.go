@@ -221,8 +221,8 @@ type MockClient struct {
 	event     <-chan *cdp.Event
 }
 
-func newMockClient(c *cdp.Client) *MockClient {
-	return &MockClient{principal: c}
+func newMockClient(client *cdp.Client) *MockClient {
+	return &MockClient{principal: client}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
@@ -308,8 +308,7 @@ func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (gso
 
 	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 		if method == p.ProtoName() {
-			c := atomic.AddInt64(&count, 1)
-			if int(c) == nth {
+			if int(atomic.AddInt64(&count, 1)) == nth {
 				mc.resetCall()
 				j, err := fn(func() (gson.JSON, error) {
 					b, err := mc.principal.Call(ctx, sessionID, method, params)

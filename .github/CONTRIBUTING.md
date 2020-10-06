@@ -2,29 +2,36 @@
 
 Your help is more than welcome! Even just open an issue to ask a question may greatly help others.
 
-We use [Github Projects](https://github.com/orgs/go-rod/projects/1) to manage tasks. You can see the priority and progress of the issues there.
+We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/orgs/go-rod/projects/1).
 
-It's better to learn the basics of [Go Testing](https://golang.org/pkg/testing), [Sub-tests](https://golang.org/pkg/testing), and [Test Suite](https://github.com/stretchr/testify#suite-package) first.
+## Terminology
 
-You can get started by reading the unit tests by their nature hierarchy: `Browser -> Page -> Element`.
+When we talk about type in the doc we use [gopls](https://github.com/golang/tools/tree/master/gopls) symbol query syntax. For example, when we say `rod.Page.PDF`, you can run:
 
-So the reading order may like [browser_test.go](../browser_test.go) -> [page_test.go](../page_test.go) -> [element_test.go](../element_test.go).
+```bash
+gopls workspace_symbol -matcher=fuzzy rod.Page.PDF$
+```
+
+to locate the file and line of it.
 
 ## Run tests
 
-The entry point of all tests is the [setup_test.go](../setup_test.go) file.
+No magic, just `go test`.
 
-### Example to run a single test
-
-`go test -v -run /Click`, `Click` is the pattern to match the test function name.
+We use type `rod_test.C` to hold all the tests.
+For more details check doc [here](https://github.com/ysmood/got).
 
 Use regex to match and run a single test: `go test -v -run /^Click$`.
 
-### To disable headless mode
+### Disable headless mode
 
-`rod=show go test -v -run /Click`.
+```bash
+rod=show,trace,slow=2s go test -v -run /Click
+```
 
-### To lint the project
+Check type `defaults.ResetWithEnv` for how it works.
+
+### Lint project
 
 ```bash
 go generate # only required for first time
@@ -37,12 +44,12 @@ If the code coverage is less than 100%, the CI will fail.
 
 Learn the [basics](https://blog.golang.org/cover) first.
 
-To cover the error branch of the code you can intercept cdp calls.
-There are several helper functions in the [setup_test.go](../setup_test.go) for it:
+To cover the error branch of the code we usually intercept cdp calls.
+There are several helper functions for it:
 
-- stubCounter
-- stub
-- stubErr
+- `rod_test.MockClient.stubCounter`
+- `rod_test.MockClient.stub`
+- `rod_test.MockClient.stubErr`
 
 ### To run inside docker
 
