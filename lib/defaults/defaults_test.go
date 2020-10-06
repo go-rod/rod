@@ -35,7 +35,7 @@ func TestBasic(t *testing.T) {
 	as.Eq("/path/to/chrome", Bin)
 	as.Eq("tmp", Dir)
 	as.Eq("http://test.com", URL)
-	as.True(CDP)
+	as.NotNil(CDP.Println)
 	as.Eq(":0", Monitor)
 	as.Eq("localhost:8080", Proxy)
 

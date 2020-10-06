@@ -7,10 +7,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	mr "math/rand"
 	"net"
 	"net/http"
@@ -23,8 +21,30 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
+
+// Logger interface
+type Logger interface {
+	// Same as fmt.Printf
+	Println(...interface{})
+}
+
+// Log self
+type Log func(msg ...interface{})
+
+// Println interface
+func (l Log) Println(msg ...interface{}) {
+	l(msg...)
+}
+
+// LoggerQuiet does nothing
+var LoggerQuiet Logger = loggerQuiet{}
+
+type loggerQuiet struct{}
+
+// Println interface
+func (l loggerQuiet) Println(...interface{}) {}
 
 // E if the last arg is error, panic it
 func E(args ...interface{}) []interface{} {
@@ -33,33 +53,6 @@ func E(args ...interface{}) []interface{} {
 		panic(err)
 	}
 	return args
-}
-
-// SDump a value
-func SDump(v interface{}) string {
-	raw, ok := v.(json.RawMessage)
-	if ok {
-		var val interface{}
-		_ = json.Unmarshal(raw, &val)
-		v = val
-	}
-
-	buf := bytes.NewBuffer(nil)
-	enc := json.NewEncoder(buf)
-	enc.SetEscapeHTML(false)
-	enc.SetIndent("", "  ")
-	E(enc.Encode(v))
-	data := buf.Bytes()
-	return string(data[:len(data)-1])
-}
-
-// Dump values to logger
-func Dump(list ...interface{}) {
-	out := []string{}
-	for _, v := range list {
-		out = append(out, SDump(v))
-	}
-	log.Println(strings.Join(out, " "))
 }
 
 // S Template render, the params is key-value pairs
@@ -286,6 +279,15 @@ func Pause() {
 	<-chPause
 }
 
+// Dump values for debugging
+func Dump(list ...interface{}) string {
+	out := []string{}
+	for _, el := range list {
+		out = append(out, gson.New(el).JSON("", "  "))
+	}
+	return strings.Join(out, " ")
+}
+
 // MustToJSONBytes encode data to json bytes
 func MustToJSONBytes(data interface{}) []byte {
 	buf := bytes.NewBuffer(nil)
@@ -339,7 +341,7 @@ func (h *errMuxWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if err := recover(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			E(w.Write([]byte(fmt.Sprint(err))))
+			E(json.NewEncoder(w).Encode(err))
 		}
 	}()
 
@@ -365,44 +367,6 @@ func Serve(host string) (string, *http.ServeMux, func()) {
 	return url, mux, func() {
 		E(srv.Close())
 	}
-}
-
-// ReadJSON from reader
-func ReadJSON(r io.Reader) (gjson.Result, error) {
-	b, err := ioutil.ReadAll(r)
-	if err != nil {
-		return gjson.Result{}, err
-	}
-	return gjson.ParseBytes(b), nil
-}
-
-// ReadJSONPathAsString from reader
-func ReadJSONPathAsString(r io.Reader, path string) (string, error) {
-	obj, err := ReadJSON(r)
-	if err != nil {
-		return "", err
-	}
-
-	return obj.Get(path).String(), nil
-}
-
-// MustReadJSON from reader
-func MustReadJSON(r io.Reader) gjson.Result {
-	j, err := ReadJSON(r)
-	E(err)
-	return j
-}
-
-// MustReadBytes from reader
-func MustReadBytes(r io.Reader) []byte {
-	b, err := ioutil.ReadAll(r)
-	E(err)
-	return b
-}
-
-// MustReadString from reader
-func MustReadString(r io.Reader) string {
-	return string(MustReadBytes(r))
 }
 
 // EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change

@@ -2,9 +2,6 @@ package launcher
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -85,13 +82,13 @@ var _ http.Handler = &RemoteLauncher{}
 // The websocket header "Rod-Launcher" holds the options to launch browser.
 // If the websocket is closed, the browser will be killed.
 type RemoteLauncher struct {
-	Logger io.Writer
+	Logger utils.Logger
 }
 
 // NewRemoteLauncher instance
 func NewRemoteLauncher() *RemoteLauncher {
 	return &RemoteLauncher{
-		Logger: ioutil.Discard,
+		Logger: utils.LoggerQuiet,
 	}
 }
 
@@ -121,20 +118,20 @@ func (p *RemoteLauncher) launch(w http.ResponseWriter, r *http.Request) {
 	u := l.Leakless(false).MustLaunch()
 	defer func() {
 		l.Kill()
-		_, _ = fmt.Fprintln(p.Logger, "Killed PID:", l.PID())
+		p.Logger.Println("Killed PID:", l.PID())
 
 		if _, has := l.Get(flagKeepUserDataDir); !has {
 			l.Cleanup()
 			dir, _ := l.Get("user-data-dir")
-			_, _ = fmt.Fprintln(p.Logger, "Removed", dir)
+			p.Logger.Println("Removed", dir)
 		}
 	}()
 
 	parsedURL, err := url.Parse(u)
 	utils.E(err)
 
-	_, _ = fmt.Fprintln(p.Logger, "Launch", u, l.FormatArgs())
-	defer func() { _, _ = fmt.Fprintln(p.Logger, "Close", u) }()
+	p.Logger.Println("Launch", u, l.FormatArgs())
+	defer p.Logger.Println("Close", u)
 
 	parsedWS, err := url.Parse(u)
 	utils.E(err)

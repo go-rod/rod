@@ -4,13 +4,13 @@ package cdp
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sync"
 	"sync/atomic"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
 )
 
 // Client is a devtools protocol connection instance.
@@ -31,16 +31,22 @@ type Client struct {
 
 	count uint64
 
-	debug    bool
-	debugLog func(interface{})
+	logger utils.Logger
 }
 
 // Request to send to browser
 type Request struct {
-	ID        uint64      `json:"id"`
+	ID        int         `json:"id"`
 	SessionID string      `json:"sessionId,omitempty"`
 	Method    string      `json:"method"`
 	Params    interface{} `json:"params,omitempty"`
+}
+
+// Response from browser
+type Response struct {
+	ID     int             `json:"id"`
+	Result json.RawMessage `json:"result,omitempty"`
+	Error  *Error          `json:"error,omitempty"`
 }
 
 // Event from browser
@@ -52,7 +58,7 @@ type Event struct {
 
 // Error of the Response
 type Error struct {
-	Code    int64  `json:"code"`
+	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    string `json:"data"`
 }
@@ -74,21 +80,19 @@ type WebsocketableConn interface {
 
 // Error interface
 func (e *Error) Error() string {
-	return utils.MustToJSON(e)
+	return fmt.Sprintf("%v", *e)
 }
 
 // New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
 func New(websocketURL string) *Client {
-	cdp := &Client{
+	return &Client{
 		callbacks: &sync.Map{},
 		chReq:     make(chan []byte),
 		chRes:     make(chan *Response),
 		chEvent:   make(chan *Event),
 		wsURL:     websocketURL,
-		debug:     defaults.CDP,
+		logger:    defaults.CDP,
 	}
-
-	return cdp.DebugLog(defaultDebugLog)
 }
 
 // Header set the header of the remote control websocket request
@@ -103,15 +107,9 @@ func (cdp *Client) Websocket(ws Websocketable) *Client {
 	return cdp
 }
 
-// Debug is the flag to enable debug log to stdout.
-func (cdp *Client) Debug(enable bool) *Client {
-	cdp.debug = enable
-	return cdp
-}
-
-// DebugLog override the defaultDebugLog function
-func (cdp *Client) DebugLog(fn func(interface{})) *Client {
-	cdp.debugLog = fn
+// Logger override for debugging
+func (cdp *Client) Logger(l utils.Logger) *Client {
+	cdp.logger = l
 	return cdp
 }
 
@@ -148,15 +146,13 @@ func (cdp *Client) MustConnect(ctx context.Context) *Client {
 // Call a method and get its response, if ctx is nil context.Background() will be used
 func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 	req := &Request{
-		ID:        atomic.AddUint64(&cdp.count, 1),
+		ID:        int(atomic.AddUint64(&cdp.count, 1)),
 		SessionID: sessionID,
 		Method:    method,
 		Params:    params,
 	}
 
-	if cdp.debug {
-		cdp.debugLog(req)
-	}
+	cdp.logger.Println(req)
 
 	data, err := json.Marshal(req)
 	utils.E(err)
@@ -229,13 +225,6 @@ func (cdp *Client) consumeMsg() {
 	}
 }
 
-// Response from browser
-type Response struct {
-	ID     uint64          `json:"id"`
-	Result json.RawMessage `json:"result,omitempty"`
-	Error  *Error          `json:"error,omitempty"`
-}
-
 func (cdp *Client) readMsgFromBrowser() {
 	defer close(cdp.chEvent)
 
@@ -246,13 +235,17 @@ func (cdp *Client) readMsgFromBrowser() {
 			return
 		}
 
-		if gjson.ParseBytes(data).Get("id").Exists() {
+		var id struct {
+			ID int `json:"id"`
+		}
+		err = json.Unmarshal(data, &id)
+		utils.E(err)
+
+		if id.ID != 0 {
 			var res Response
 			err := json.Unmarshal(data, &res)
 			utils.E(err)
-			if cdp.debug {
-				cdp.debugLog(&res)
-			}
+			cdp.logger.Println(&res)
 			select {
 			case <-cdp.ctx.Done():
 				return
@@ -262,9 +255,7 @@ func (cdp *Client) readMsgFromBrowser() {
 			var evt Event
 			err := json.Unmarshal(data, &evt)
 			utils.E(err)
-			if cdp.debug {
-				cdp.debugLog(&evt)
-			}
+			cdp.logger.Println(&evt)
 			select {
 			case <-cdp.ctx.Done():
 				return
@@ -275,9 +266,6 @@ func (cdp *Client) readMsgFromBrowser() {
 }
 
 func (cdp *Client) wsClose(err error) {
-	if cdp.debug {
-		cdp.debugLog(err)
-	}
-
+	cdp.logger.Println(err)
 	cdp.close()
 }

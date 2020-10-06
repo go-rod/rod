@@ -27,7 +27,7 @@ func main() {
 	val1 := page.MustElement("#input1").MustText()
 	val2 := page.MustElement("#textarea1").MustInput("\\b\\b\\n\\naoeu\\n\\ntest1\\n\\nblah2\\n\\n\\t\\t\\t\\b\\bother box!\\t\\ntest4").MustText()
 	val3 := page.MustElement("#input2").MustInput("test3").MustText()
-	val4 := page.MustElement("#select1").MustPress(input.ArrowDown).MustPress(input.ArrowDown).MustEval("() => this.value").Raw
+	val4 := page.MustElement("#select1").MustPress(input.ArrowDown).MustPress(input.ArrowDown).MustEval("() => this.value")
 
 	log.Printf("#input1 value: %s", val1)
 	log.Printf("#textarea1 value: %s", val2)

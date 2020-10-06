@@ -10,13 +10,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
+
+// Element implements these interfaces
+var _ proto.Client = &Element{}
+var _ proto.Contextable = &Element{}
+var _ proto.TargetSessionable = &Element{}
 
 // Element represents the DOM element
 type Element struct {
@@ -26,6 +31,11 @@ type Element struct {
 	page *Page
 
 	Object *proto.RuntimeRemoteObject
+}
+
+// GetTargetSessionID interface
+func (el *Element) GetTargetSessionID() proto.TargetSessionID {
+	return el.page.SessionID
 }
 
 // Focus sets focus on the specified element
@@ -128,8 +138,8 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 	}
 
 	elAtPoint, err := el.page.ElementFromPoint(
-		int64(pt.X)+scroll.Value.Get("x").Int(),
-		int64(pt.Y)+scroll.Value.Get("y").Int(),
+		int(pt.X)+scroll.Value.Get("x").Int(),
+		int(pt.Y)+scroll.Value.Get("y").Int(),
 	)
 	if err != nil {
 		return
@@ -263,18 +273,19 @@ func (el *Element) Attribute(name string) (*string, error) {
 		return nil, err
 	}
 
-	if attr.Value.Type == gjson.Null {
+	if attr.Value.Nil() {
 		return nil, nil
 	}
 
-	return &attr.Value.Str, nil
+	s := attr.Value.Str()
+	return &s, nil
 }
 
 // Property is similar to the method Property
-func (el *Element) Property(name string) (proto.JSON, error) {
+func (el *Element) Property(name string) (gson.JSON, error) {
 	prop, err := el.Eval("(n) => this[n]", name)
 	if err != nil {
-		return proto.JSON{}, err
+		return gson.New(nil), err
 	}
 
 	return prop.Value, nil
@@ -302,7 +313,7 @@ func (el *Element) SetFiles(paths []string) error {
 
 // Describe the current element
 func (el *Element) Describe(depth int, pierce bool) (*proto.DOMNode, error) {
-	val, err := proto.DOMDescribeNode{ObjectID: el.id(), Depth: int64(depth), Pierce: pierce}.Call(el)
+	val, err := proto.DOMDescribeNode{ObjectID: el.id(), Depth: int(depth), Pierce: pierce}.Call(el)
 	if err != nil {
 		return nil, err
 	}
@@ -464,7 +475,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 		return nil, err
 	}
 
-	_, bin := parseDataURI(res.Value.Str)
+	_, bin := parseDataURI(res.Value.Str())
 	return bin, nil
 }
 
@@ -517,10 +528,10 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	opts := &proto.PageCaptureScreenshot{
 		Format: format,
 		Clip: &proto.PageViewport{
-			X:      box.Value.Get("x").Num,
-			Y:      box.Value.Get("y").Num,
-			Width:  box.Value.Get("width").Num,
-			Height: box.Value.Get("height").Num,
+			X:      box.Value.Get("x").Num(),
+			Y:      box.Value.Get("y").Num(),
+			Width:  box.Value.Get("width").Num(),
+			Height: box.Value.Get("height").Num(),
 			Scale:  1,
 		},
 	}
@@ -542,9 +553,9 @@ func (el *Element) Remove() error {
 	return el.Release()
 }
 
-// CallContext parameters for proto
-func (el *Element) CallContext() (context.Context, proto.Client, string) {
-	return el.ctx, el.page.browser, string(el.page.SessionID)
+// Call implements the proto.Client
+func (el *Element) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
+	return el.page.Call(ctx, sessionID, methodName, params)
 }
 
 // Eval js on the page. For more info check the Element.Evaluate

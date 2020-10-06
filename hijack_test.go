@@ -11,6 +11,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func (c C) Hijack() {
@@ -50,8 +51,8 @@ func (c C) Hijack() {
 
 		c.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		c.Has(ctx.Request.Header("Origin"), url)
-		c.Len(ctx.Request.Headers(), 5)
-		c.Eq("", ctx.Request.JSONBody().String())
+		c.Len(ctx.Request.Headers(), 5).Msg("%s", utils.Dump(ctx.Request.Headers()))
+		c.True(ctx.Request.JSONBody().Nil())
 
 		// send request load response from real destination as the default value to hijack
 		ctx.MustLoadResponse()
@@ -128,18 +129,22 @@ func (c C) HijackOnErrorLog() {
 	router := c.page.HijackRequests()
 	defer router.MustStop()
 
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	var err error
+
 	router.MustAdd("*", func(ctx *rod.Hijack) {
+		ctx.OnError = func(e error) {
+			err = e
+			wg.Done()
+		}
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 	})
 
 	go router.Run()
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	c.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (proto.JSON, error) {
-		wg.Done()
-		return proto.JSON{}, errors.New("err")
+	c.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(nil), errors.New("err")
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -149,6 +154,8 @@ func (c C) HijackOnErrorLog() {
 		_ = c.page.Context(ctx).Navigate(url)
 	}()
 	wg.Wait()
+
+	c.Eq(err.Error(), "err")
 }
 
 func (c C) HijackFailRequest() {
@@ -160,7 +167,7 @@ func (c C) HijackFailRequest() {
 	<body></body>
 	<script>
 		fetch('/a').catch(async (err) => {
-			document.body.innerText = err.message
+			document.title = err.message
 		})
 	</script></html>`))
 
@@ -175,9 +182,9 @@ func (c C) HijackFailRequest() {
 
 	go router.Run()
 
-	c.page.MustNavigate(url)
+	c.page.MustNavigate(url).MustWaitLoad()
 
-	c.Eq("Failed to fetch", c.page.MustElement("body").MustText())
+	c.page.MustWait(`document.title == 'Failed to fetch'`)
 
 	{ // test error log
 		c.mc.stubErr(1, proto.FetchFailRequest{})

@@ -103,7 +103,7 @@ func (lc *Browser) Download() error {
 		}
 		return nil
 	}
-	return errors.New("[rod/lib/launcher] failed to download chrome")
+	return errors.New("failed to download chrome")
 }
 
 func (lc *Browser) download(u string) (err error) {
@@ -113,7 +113,7 @@ func (lc *Browser) download(u string) (err error) {
 		}
 	}()
 
-	_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher] Download:", u)
+	_, _ = fmt.Fprintln(lc.Logger, "Download:", u)
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
@@ -147,7 +147,7 @@ func (lc *Browser) download(u string) (err error) {
 	_, err = io.Copy(zipFile, progress)
 	utils.E(err)
 
-	_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher] Downloaded:", zipPath)
+	_, _ = fmt.Fprintln(lc.Logger, "Downloaded:", zipPath)
 
 	err = zipFile.Close()
 	utils.E(err)

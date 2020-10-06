@@ -29,7 +29,7 @@ func (p *progresser) Read(buf []byte) (n int, err error) {
 	}
 
 	if p.count == 0 {
-		_, _ = fmt.Fprint(p.logger, "[rod/lib/launcher] Progress:")
+		_, _ = fmt.Fprint(p.logger, "Progress:")
 	}
 
 	p.count += n
@@ -76,7 +76,7 @@ func unzip(logger io.Writer, from, to string) (err error) {
 		}
 	}()
 
-	_, _ = fmt.Fprintln(logger, "[rod/lib/launcher] Unzip to:", to)
+	_, _ = fmt.Fprintln(logger, "Unzip to:", to)
 	defer func() { _, _ = fmt.Fprintln(logger) }()
 
 	zr, err := zip.OpenReader(from)

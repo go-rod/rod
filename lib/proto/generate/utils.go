@@ -10,10 +10,10 @@ import (
 
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
-func getSchema() gjson.Result {
+func getSchema() gson.JSON {
 	l := launcher.New()
 
 	defer func() {
@@ -31,43 +31,47 @@ func getSchema() gjson.Result {
 
 	res, err := http.Get(parsed.String())
 	utils.E(err)
-	data := utils.MustReadString(res.Body)
 
-	utils.E(utils.OutputFile("tmp/proto.json", data))
+	obj := gson.New(res.Body)
 
-	return gjson.Parse(data)
+	utils.E(utils.OutputFile("tmp/proto.json", obj.JSON("", "  ")))
+
+	return obj
 }
 
 func mapType(n string) string {
 	return map[string]string{
 		"boolean": "bool",
 		"number":  "float64",
-		"integer": "int64",
+		"integer": "int",
 		"string":  "string",
 		"binary":  "[]byte",
-		"object":  "map[string]JSON",
-		"any":     "JSON",
+		"object":  "map[string]gson.JSON",
+		"any":     "gson.JSON",
 	}[n]
 }
 
-func typeName(domain *domain, schema gjson.Result) string {
-	typeName := schema.Get("type").String()
+func typeName(domain *domain, schema gson.JSON) string {
+	typeName := ""
+	if schema.Has("type") {
+		typeName = schema.Get("type").Str()
+	}
 
 	if typeName == "array" {
 		item := schema.Get("items")
 
-		if item.Get("type").Exists() {
-			typeName = "[]" + mapType(item.Get("type").String())
+		if item.Has("type") {
+			typeName = "[]" + mapType(item.Get("type").Str())
 		} else {
-			ref := item.Get("$ref").String()
+			ref := item.Get("$ref").Str()
 			if domain.ref(ref) {
 				typeName = "[]*" + refName(domain.name, ref)
 			} else {
 				typeName = "[]" + refName(domain.name, ref)
 			}
 		}
-	} else if schema.Get("$ref").Exists() {
-		ref := schema.Get("$ref").String()
+	} else if schema.Has("$ref") {
+		ref := schema.Get("$ref").Str()
 		if domain.ref(ref) {
 			typeName += "*"
 		}
@@ -86,15 +90,15 @@ func typeName(domain *domain, schema gjson.Result) string {
 	return typeName
 }
 
-func enumList(schema gjson.Result) []string {
+func enumList(schema gson.JSON) []string {
 	var enum []string
-	if schema.Get("enum").Exists() {
+	if schema.Has("enum") {
 		enum = []string{}
-		for _, v := range schema.Get("enum").Array() {
-			if v.Type != gjson.String {
+		for _, v := range schema.Get("enum").Arr() {
+			if _, ok := v.Val().(string); !ok {
 				panic("enum type error")
 			}
-			enum = append(enum, v.String())
+			enum = append(enum, v.Str())
 		}
 	}
 

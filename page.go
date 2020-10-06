@@ -13,12 +13,14 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
 	"github.com/ysmood/goob"
+	"github.com/ysmood/gson"
 )
 
-// Page implements the proto.Caller interface
-var _ proto.Caller = &Page{}
+// Page implements these interfaces
+var _ proto.Client = &Page{}
+var _ proto.Contextable = &Page{}
+var _ proto.TargetSessionable = &Page{}
 
 // Page represents the webpage
 // We try to hold as less states as possible
@@ -63,6 +65,11 @@ func (p *Page) Root() *Page {
 	return f
 }
 
+// GetTargetSessionID interface
+func (p *Page) GetTargetSessionID() proto.TargetSessionID {
+	return p.SessionID
+}
+
 // Info of the page, such as the URL or title of the page
 func (p *Page) Info() (*proto.TargetTargetInfo, error) {
 	return p.browser.pageInfo(p.TargetID)
@@ -97,7 +104,7 @@ func (p *Page) SetExtraHeaders(dict []string) (func(), error) {
 	headers := proto.NetworkHeaders{}
 
 	for i := 0; i < len(dict); i += 2 {
-		headers[dict[i]] = proto.NewJSON(dict[i+1])
+		headers[dict[i]] = gson.New(dict[i+1])
 	}
 
 	return p.EnableDomain(&proto.NetworkEnable{}), proto.NetworkSetExtraHTTPHeaders{Headers: headers}.Call(p)
@@ -288,11 +295,11 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 			return nil, err
 		}
 
-		oldView := &proto.EmulationSetDeviceMetricsOverride{}
-		set := p.LoadState(oldView)
-		view := *oldView
-		view.Width = int64(metrics.ContentSize.Width)
-		view.Height = int64(metrics.ContentSize.Height)
+		oldView := proto.EmulationSetDeviceMetricsOverride{}
+		set := p.LoadState(&oldView)
+		view := oldView
+		view.Width = int(metrics.ContentSize.Width)
+		view.Height = int(metrics.ContentSize.Height)
 
 		err = p.SetViewport(&view)
 		if err != nil {
@@ -305,7 +312,7 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 				return
 			}
 
-			_ = p.SetViewport(oldView)
+			_ = p.SetViewport(&oldView)
 		}()
 	}
 
@@ -488,7 +495,7 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 }
 
 // Expose function to the page's window object. Must bind before navigation. Bindings survive reloads.
-func (p *Page) Expose(name string) (callback chan []gjson.Result, stop func() error, err error) {
+func (p *Page) Expose(name string) (callback chan []gson.JSON, stop func() error, err error) {
 	fn := "__" + name
 
 	remove, err := p.EvalOnNewDocument(fmt.Sprintf(
@@ -503,7 +510,7 @@ func (p *Page) Expose(name string) (callback chan []gjson.Result, stop func() er
 		return
 	}
 
-	callback = make(chan []gjson.Result)
+	callback = make(chan []gson.JSON)
 	p, cancel := p.WithCancel()
 
 	stop = func() error {
@@ -520,7 +527,7 @@ func (p *Page) Expose(name string) (callback chan []gjson.Result, stop func() er
 			if e.Name == fn {
 				select {
 				case <-p.ctx.Done():
-				case callback <- gjson.Parse(e.Payload).Array():
+				case callback <- gson.NewFrom(e.Payload).Arr():
 				}
 			}
 		})()
@@ -549,7 +556,7 @@ func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interfa
 }
 
 // ObjectToJSON by object id
-func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (proto.JSON, error) {
+func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 	if obj.ObjectID == "" {
 		return obj.Value, nil
 	}
@@ -560,7 +567,7 @@ func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (proto.JSON, error) 
 		ReturnByValue:       true,
 	}.Call(p)
 	if err != nil {
-		return proto.JSON{}, err
+		return gson.New(nil), err
 	}
 	return res.Result.Value, nil
 }
@@ -605,7 +612,7 @@ func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
 
 // ElementFromPoint creates an Element from the absolute point on the page.
 // The point should include the window scroll offset.
-func (p *Page) ElementFromPoint(x, y int64) (*Element, error) {
+func (p *Page) ElementFromPoint(x, y int) (*Element, error) {
 	p.enableNodeQuery()
 
 	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
@@ -624,9 +631,9 @@ func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
 	return err
 }
 
-// CallContext parameters for proto
-func (p *Page) CallContext() (context.Context, proto.Client, string) {
-	return p.ctx, p.browser, string(p.SessionID)
+// Call implements the proto.Client
+func (p *Page) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
+	return p.browser.Call(ctx, sessionID, methodName, params)
 }
 
 func (p *Page) enableNodeQuery() {

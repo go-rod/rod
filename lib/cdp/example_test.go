@@ -6,8 +6,9 @@ import (
 
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 func ExampleClient() {
@@ -33,10 +34,10 @@ func ExampleClient() {
 	})
 	utils.E(err)
 
-	fmt.Println(len(gjson.ParseBytes(res).Get("targetId").Str))
+	fmt.Println(len(gson.New(res).Get("targetId").Str()))
 
-	// close browser
-	_, _ = client.Call(ctx, "", "Browser.close", nil)
+	// close browser by using the proto lib to encode json
+	_ = proto.BrowserClose{}.Call(client)
 
 	// Output: 32
 }

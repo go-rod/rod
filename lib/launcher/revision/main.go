@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -22,7 +23,10 @@ func main() {
 	res, err := http.Get(MirrorChromium)
 	utils.E(err)
 
-	matchs := MirrorChromiumRegExp.FindAllStringSubmatch(utils.MustReadString(res.Body), -1)
+	str, err := ioutil.ReadAll(res.Body)
+	utils.E(err)
+
+	matchs := MirrorChromiumRegExp.FindAllStringSubmatch(string(str), -1)
 	if len(matchs) <= 0 {
 		utils.E(fmt.Errorf("cannot match version of the latest chromium from %s", MirrorChromium))
 	}

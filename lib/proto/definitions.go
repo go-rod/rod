@@ -2,7 +2,11 @@
 
 package proto
 
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/ysmood/gson"
+)
 
 // Version of cdp protocol
 const Version = "v1.3"
@@ -179,7 +183,7 @@ type AccessibilityAXValue struct {
 	Type AccessibilityAXValueType `json:"type"`
 
 	// Value (optional) The computed value of this property.
-	Value JSON `json:"value,omitempty"`
+	Value gson.JSON `json:"value,omitempty"`
 
 	// RelatedNodes (optional) One or more related nodes, if applicable.
 	RelatedNodes []*AccessibilityAXRelatedNode `json:"relatedNodes,omitempty"`
@@ -353,12 +357,12 @@ type AccessibilityAXNode struct {
 type AccessibilityDisable struct {
 }
 
-// MethodName of the command
-func (m AccessibilityDisable) MethodName() string { return "Accessibility.disable" }
+// ProtoName of the command
+func (m AccessibilityDisable) ProtoName() string { return "Accessibility.disable" }
 
 // Call of the command, sessionID is optional.
-func (m AccessibilityDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AccessibilityDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AccessibilityEnable Enables the accessibility domain which causes `AXNodeId`s to remain consistent between method calls.
@@ -366,12 +370,12 @@ func (m AccessibilityDisable) Call(caller Caller) error {
 type AccessibilityEnable struct {
 }
 
-// MethodName of the command
-func (m AccessibilityEnable) MethodName() string { return "Accessibility.enable" }
+// ProtoName of the command
+func (m AccessibilityEnable) ProtoName() string { return "Accessibility.enable" }
 
 // Call of the command, sessionID is optional.
-func (m AccessibilityEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AccessibilityEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AccessibilityGetPartialAXTree (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -390,13 +394,13 @@ type AccessibilityGetPartialAXTree struct {
 	FetchRelatives bool `json:"fetchRelatives,omitempty"`
 }
 
-// MethodName of the command
-func (m AccessibilityGetPartialAXTree) MethodName() string { return "Accessibility.getPartialAXTree" }
+// ProtoName of the command
+func (m AccessibilityGetPartialAXTree) ProtoName() string { return "Accessibility.getPartialAXTree" }
 
 // Call of the command, sessionID is optional.
-func (m AccessibilityGetPartialAXTree) Call(caller Caller) (*AccessibilityGetPartialAXTreeResult, error) {
+func (m AccessibilityGetPartialAXTree) Call(c Client) (*AccessibilityGetPartialAXTreeResult, error) {
 	var res AccessibilityGetPartialAXTreeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AccessibilityGetPartialAXTreeResult (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
@@ -411,13 +415,13 @@ type AccessibilityGetPartialAXTreeResult struct {
 type AccessibilityGetFullAXTree struct {
 }
 
-// MethodName of the command
-func (m AccessibilityGetFullAXTree) MethodName() string { return "Accessibility.getFullAXTree" }
+// ProtoName of the command
+func (m AccessibilityGetFullAXTree) ProtoName() string { return "Accessibility.getFullAXTree" }
 
 // Call of the command, sessionID is optional.
-func (m AccessibilityGetFullAXTree) Call(caller Caller) (*AccessibilityGetFullAXTreeResult, error) {
+func (m AccessibilityGetFullAXTree) Call(c Client) (*AccessibilityGetFullAXTreeResult, error) {
 	var res AccessibilityGetFullAXTreeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree
@@ -534,24 +538,24 @@ type AnimationKeyframeStyle struct {
 type AnimationDisable struct {
 }
 
-// MethodName of the command
-func (m AnimationDisable) MethodName() string { return "Animation.disable" }
+// ProtoName of the command
+func (m AnimationDisable) ProtoName() string { return "Animation.disable" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationEnable Enables animation domain notifications.
 type AnimationEnable struct {
 }
 
-// MethodName of the command
-func (m AnimationEnable) MethodName() string { return "Animation.enable" }
+// ProtoName of the command
+func (m AnimationEnable) ProtoName() string { return "Animation.enable" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationGetCurrentTime Returns the current time of the an animation.
@@ -561,13 +565,13 @@ type AnimationGetCurrentTime struct {
 	ID string `json:"id"`
 }
 
-// MethodName of the command
-func (m AnimationGetCurrentTime) MethodName() string { return "Animation.getCurrentTime" }
+// ProtoName of the command
+func (m AnimationGetCurrentTime) ProtoName() string { return "Animation.getCurrentTime" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationGetCurrentTime) Call(caller Caller) (*AnimationGetCurrentTimeResult, error) {
+func (m AnimationGetCurrentTime) Call(c Client) (*AnimationGetCurrentTimeResult, error) {
 	var res AnimationGetCurrentTimeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AnimationGetCurrentTimeResult Returns the current time of the an animation.
@@ -581,13 +585,13 @@ type AnimationGetCurrentTimeResult struct {
 type AnimationGetPlaybackRate struct {
 }
 
-// MethodName of the command
-func (m AnimationGetPlaybackRate) MethodName() string { return "Animation.getPlaybackRate" }
+// ProtoName of the command
+func (m AnimationGetPlaybackRate) ProtoName() string { return "Animation.getPlaybackRate" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationGetPlaybackRate) Call(caller Caller) (*AnimationGetPlaybackRateResult, error) {
+func (m AnimationGetPlaybackRate) Call(c Client) (*AnimationGetPlaybackRateResult, error) {
 	var res AnimationGetPlaybackRateResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AnimationGetPlaybackRateResult Gets the playback rate of the document timeline.
@@ -604,12 +608,12 @@ type AnimationReleaseAnimations struct {
 	Animations []string `json:"animations"`
 }
 
-// MethodName of the command
-func (m AnimationReleaseAnimations) MethodName() string { return "Animation.releaseAnimations" }
+// ProtoName of the command
+func (m AnimationReleaseAnimations) ProtoName() string { return "Animation.releaseAnimations" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationReleaseAnimations) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationReleaseAnimations) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationResolveAnimation Gets the remote object of the Animation.
@@ -619,13 +623,13 @@ type AnimationResolveAnimation struct {
 	AnimationID string `json:"animationId"`
 }
 
-// MethodName of the command
-func (m AnimationResolveAnimation) MethodName() string { return "Animation.resolveAnimation" }
+// ProtoName of the command
+func (m AnimationResolveAnimation) ProtoName() string { return "Animation.resolveAnimation" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationResolveAnimation) Call(caller Caller) (*AnimationResolveAnimationResult, error) {
+func (m AnimationResolveAnimation) Call(c Client) (*AnimationResolveAnimationResult, error) {
 	var res AnimationResolveAnimationResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AnimationResolveAnimationResult Gets the remote object of the Animation.
@@ -645,12 +649,12 @@ type AnimationSeekAnimations struct {
 	CurrentTime float64 `json:"currentTime"`
 }
 
-// MethodName of the command
-func (m AnimationSeekAnimations) MethodName() string { return "Animation.seekAnimations" }
+// ProtoName of the command
+func (m AnimationSeekAnimations) ProtoName() string { return "Animation.seekAnimations" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationSeekAnimations) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationSeekAnimations) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationSetPaused Sets the paused state of a set of animations.
@@ -663,12 +667,12 @@ type AnimationSetPaused struct {
 	Paused bool `json:"paused"`
 }
 
-// MethodName of the command
-func (m AnimationSetPaused) MethodName() string { return "Animation.setPaused" }
+// ProtoName of the command
+func (m AnimationSetPaused) ProtoName() string { return "Animation.setPaused" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationSetPaused) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationSetPaused) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationSetPlaybackRate Sets the playback rate of the document timeline.
@@ -678,12 +682,12 @@ type AnimationSetPlaybackRate struct {
 	PlaybackRate float64 `json:"playbackRate"`
 }
 
-// MethodName of the command
-func (m AnimationSetPlaybackRate) MethodName() string { return "Animation.setPlaybackRate" }
+// ProtoName of the command
+func (m AnimationSetPlaybackRate) ProtoName() string { return "Animation.setPlaybackRate" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationSetPlaybackRate) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationSetPlaybackRate) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationSetTiming Sets the timing of an animation node.
@@ -699,12 +703,12 @@ type AnimationSetTiming struct {
 	Delay float64 `json:"delay"`
 }
 
-// MethodName of the command
-func (m AnimationSetTiming) MethodName() string { return "Animation.setTiming" }
+// ProtoName of the command
+func (m AnimationSetTiming) ProtoName() string { return "Animation.setTiming" }
 
 // Call of the command, sessionID is optional.
-func (m AnimationSetTiming) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AnimationSetTiming) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AnimationAnimationCanceled Event for when an animation has been cancelled.
@@ -714,8 +718,8 @@ type AnimationAnimationCanceled struct {
 	ID string `json:"id"`
 }
 
-// MethodName interface
-func (evt AnimationAnimationCanceled) MethodName() string {
+// ProtoName interface
+func (evt AnimationAnimationCanceled) ProtoName() string {
 	return "Animation.animationCanceled"
 }
 
@@ -726,8 +730,8 @@ type AnimationAnimationCreated struct {
 	ID string `json:"id"`
 }
 
-// MethodName interface
-func (evt AnimationAnimationCreated) MethodName() string {
+// ProtoName interface
+func (evt AnimationAnimationCreated) ProtoName() string {
 	return "Animation.animationCreated"
 }
 
@@ -738,8 +742,8 @@ type AnimationAnimationStarted struct {
 	Animation *AnimationAnimation `json:"animation"`
 }
 
-// MethodName interface
-func (evt AnimationAnimationStarted) MethodName() string {
+// ProtoName interface
+func (evt AnimationAnimationStarted) ProtoName() string {
 	return "Animation.animationStarted"
 }
 
@@ -750,7 +754,7 @@ type ApplicationCacheApplicationCacheResource struct {
 	URL string `json:"url"`
 
 	// Size Resource size.
-	Size int64 `json:"size"`
+	Size int `json:"size"`
 
 	// Type Resource type.
 	Type string `json:"type"`
@@ -785,19 +789,19 @@ type ApplicationCacheFrameWithManifest struct {
 	ManifestURL string `json:"manifestURL"`
 
 	// Status Application cache status.
-	Status int64 `json:"status"`
+	Status int `json:"status"`
 }
 
 // ApplicationCacheEnable Enables application cache domain notifications.
 type ApplicationCacheEnable struct {
 }
 
-// MethodName of the command
-func (m ApplicationCacheEnable) MethodName() string { return "ApplicationCache.enable" }
+// ProtoName of the command
+func (m ApplicationCacheEnable) ProtoName() string { return "ApplicationCache.enable" }
 
 // Call of the command, sessionID is optional.
-func (m ApplicationCacheEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ApplicationCacheEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ApplicationCacheGetApplicationCacheForFrame Returns relevant application cache data for the document in given frame.
@@ -807,15 +811,15 @@ type ApplicationCacheGetApplicationCacheForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName of the command
-func (m ApplicationCacheGetApplicationCacheForFrame) MethodName() string {
+// ProtoName of the command
+func (m ApplicationCacheGetApplicationCacheForFrame) ProtoName() string {
 	return "ApplicationCache.getApplicationCacheForFrame"
 }
 
 // Call of the command, sessionID is optional.
-func (m ApplicationCacheGetApplicationCacheForFrame) Call(caller Caller) (*ApplicationCacheGetApplicationCacheForFrameResult, error) {
+func (m ApplicationCacheGetApplicationCacheForFrame) Call(c Client) (*ApplicationCacheGetApplicationCacheForFrameResult, error) {
 	var res ApplicationCacheGetApplicationCacheForFrameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ApplicationCacheGetApplicationCacheForFrameResult Returns relevant application cache data for the document in given frame.
@@ -830,15 +834,15 @@ type ApplicationCacheGetApplicationCacheForFrameResult struct {
 type ApplicationCacheGetFramesWithManifests struct {
 }
 
-// MethodName of the command
-func (m ApplicationCacheGetFramesWithManifests) MethodName() string {
+// ProtoName of the command
+func (m ApplicationCacheGetFramesWithManifests) ProtoName() string {
 	return "ApplicationCache.getFramesWithManifests"
 }
 
 // Call of the command, sessionID is optional.
-func (m ApplicationCacheGetFramesWithManifests) Call(caller Caller) (*ApplicationCacheGetFramesWithManifestsResult, error) {
+func (m ApplicationCacheGetFramesWithManifests) Call(c Client) (*ApplicationCacheGetFramesWithManifestsResult, error) {
 	var res ApplicationCacheGetFramesWithManifestsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ApplicationCacheGetFramesWithManifestsResult Returns array of frame identifiers with manifest urls for each frame containing a document
@@ -857,15 +861,15 @@ type ApplicationCacheGetManifestForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName of the command
-func (m ApplicationCacheGetManifestForFrame) MethodName() string {
+// ProtoName of the command
+func (m ApplicationCacheGetManifestForFrame) ProtoName() string {
 	return "ApplicationCache.getManifestForFrame"
 }
 
 // Call of the command, sessionID is optional.
-func (m ApplicationCacheGetManifestForFrame) Call(caller Caller) (*ApplicationCacheGetManifestForFrameResult, error) {
+func (m ApplicationCacheGetManifestForFrame) Call(c Client) (*ApplicationCacheGetManifestForFrameResult, error) {
 	var res ApplicationCacheGetManifestForFrameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ApplicationCacheGetManifestForFrameResult Returns manifest URL for document in the given frame.
@@ -885,11 +889,11 @@ type ApplicationCacheApplicationCacheStatusUpdated struct {
 	ManifestURL string `json:"manifestURL"`
 
 	// Status Updated application cache status.
-	Status int64 `json:"status"`
+	Status int `json:"status"`
 }
 
-// MethodName interface
-func (evt ApplicationCacheApplicationCacheStatusUpdated) MethodName() string {
+// ProtoName interface
+func (evt ApplicationCacheApplicationCacheStatusUpdated) ProtoName() string {
 	return "ApplicationCache.applicationCacheStatusUpdated"
 }
 
@@ -900,8 +904,8 @@ type ApplicationCacheNetworkStateUpdated struct {
 	IsNowOnline bool `json:"isNowOnline"`
 }
 
-// MethodName interface
-func (evt ApplicationCacheNetworkStateUpdated) MethodName() string {
+// ProtoName interface
+func (evt ApplicationCacheNetworkStateUpdated) ProtoName() string {
 	return "ApplicationCache.networkStateUpdated"
 }
 
@@ -1289,13 +1293,13 @@ type AuditsGetEncodedResponse struct {
 	SizeOnly bool `json:"sizeOnly,omitempty"`
 }
 
-// MethodName of the command
-func (m AuditsGetEncodedResponse) MethodName() string { return "Audits.getEncodedResponse" }
+// ProtoName of the command
+func (m AuditsGetEncodedResponse) ProtoName() string { return "Audits.getEncodedResponse" }
 
 // Call of the command, sessionID is optional.
-func (m AuditsGetEncodedResponse) Call(caller Caller) (*AuditsGetEncodedResponseResult, error) {
+func (m AuditsGetEncodedResponse) Call(c Client) (*AuditsGetEncodedResponseResult, error) {
 	var res AuditsGetEncodedResponseResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // AuditsGetEncodedResponseResult Returns the response body and size if it were re-encoded with the specified settings. Only
@@ -1306,22 +1310,22 @@ type AuditsGetEncodedResponseResult struct {
 	Body []byte `json:"body,omitempty"`
 
 	// OriginalSize Size before re-encoding.
-	OriginalSize int64 `json:"originalSize"`
+	OriginalSize int `json:"originalSize"`
 
 	// EncodedSize Size after re-encoding.
-	EncodedSize int64 `json:"encodedSize"`
+	EncodedSize int `json:"encodedSize"`
 }
 
 // AuditsDisable Disables issues domain, prevents further issues from being reported to the client.
 type AuditsDisable struct {
 }
 
-// MethodName of the command
-func (m AuditsDisable) MethodName() string { return "Audits.disable" }
+// ProtoName of the command
+func (m AuditsDisable) ProtoName() string { return "Audits.disable" }
 
 // Call of the command, sessionID is optional.
-func (m AuditsDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AuditsDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AuditsEnable Enables issues domain, sends the issues collected so far to the client by means of the
@@ -1329,12 +1333,12 @@ func (m AuditsDisable) Call(caller Caller) error {
 type AuditsEnable struct {
 }
 
-// MethodName of the command
-func (m AuditsEnable) MethodName() string { return "Audits.enable" }
+// ProtoName of the command
+func (m AuditsEnable) ProtoName() string { return "Audits.enable" }
 
 // Call of the command, sessionID is optional.
-func (m AuditsEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m AuditsEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // AuditsIssueAdded ...
@@ -1344,8 +1348,8 @@ type AuditsIssueAdded struct {
 	Issue *AuditsInspectorIssue `json:"issue"`
 }
 
-// MethodName interface
-func (evt AuditsIssueAdded) MethodName() string {
+// ProtoName interface
+func (evt AuditsIssueAdded) ProtoName() string {
 	return "Audits.issueAdded"
 }
 
@@ -1416,14 +1420,14 @@ type BackgroundServiceStartObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// MethodName of the command
-func (m BackgroundServiceStartObserving) MethodName() string {
+// ProtoName of the command
+func (m BackgroundServiceStartObserving) ProtoName() string {
 	return "BackgroundService.startObserving"
 }
 
 // Call of the command, sessionID is optional.
-func (m BackgroundServiceStartObserving) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BackgroundServiceStartObserving) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BackgroundServiceStopObserving Disables event updates for the service.
@@ -1433,12 +1437,12 @@ type BackgroundServiceStopObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// MethodName of the command
-func (m BackgroundServiceStopObserving) MethodName() string { return "BackgroundService.stopObserving" }
+// ProtoName of the command
+func (m BackgroundServiceStopObserving) ProtoName() string { return "BackgroundService.stopObserving" }
 
 // Call of the command, sessionID is optional.
-func (m BackgroundServiceStopObserving) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BackgroundServiceStopObserving) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BackgroundServiceSetRecording Set the recording state for the service.
@@ -1451,12 +1455,12 @@ type BackgroundServiceSetRecording struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// MethodName of the command
-func (m BackgroundServiceSetRecording) MethodName() string { return "BackgroundService.setRecording" }
+// ProtoName of the command
+func (m BackgroundServiceSetRecording) ProtoName() string { return "BackgroundService.setRecording" }
 
 // Call of the command, sessionID is optional.
-func (m BackgroundServiceSetRecording) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BackgroundServiceSetRecording) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BackgroundServiceClearEvents Clears all stored data for the service.
@@ -1466,12 +1470,12 @@ type BackgroundServiceClearEvents struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// MethodName of the command
-func (m BackgroundServiceClearEvents) MethodName() string { return "BackgroundService.clearEvents" }
+// ProtoName of the command
+func (m BackgroundServiceClearEvents) ProtoName() string { return "BackgroundService.clearEvents" }
 
 // Call of the command, sessionID is optional.
-func (m BackgroundServiceClearEvents) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BackgroundServiceClearEvents) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BackgroundServiceRecordingStateChanged Called when the recording state for the service has been updated.
@@ -1484,8 +1488,8 @@ type BackgroundServiceRecordingStateChanged struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// MethodName interface
-func (evt BackgroundServiceRecordingStateChanged) MethodName() string {
+// ProtoName interface
+func (evt BackgroundServiceRecordingStateChanged) ProtoName() string {
 	return "BackgroundService.recordingStateChanged"
 }
 
@@ -1497,8 +1501,8 @@ type BackgroundServiceBackgroundServiceEventReceived struct {
 	BackgroundServiceEvent *BackgroundServiceBackgroundServiceEvent `json:"backgroundServiceEvent"`
 }
 
-// MethodName interface
-func (evt BackgroundServiceBackgroundServiceEventReceived) MethodName() string {
+// ProtoName interface
+func (evt BackgroundServiceBackgroundServiceEventReceived) ProtoName() string {
 	return "BackgroundService.backgroundServiceEventReceived"
 }
 
@@ -1506,7 +1510,7 @@ func (evt BackgroundServiceBackgroundServiceEventReceived) MethodName() string {
 type BrowserBrowserContextID string
 
 // BrowserWindowID (experimental) ...
-type BrowserWindowID int64
+type BrowserWindowID int
 
 // BrowserWindowState (experimental) The state of the browser window.
 type BrowserWindowState string
@@ -1529,16 +1533,16 @@ const (
 type BrowserBounds struct {
 
 	// Left (optional) The offset from the left edge of the screen to the window in pixels.
-	Left int64 `json:"left,omitempty"`
+	Left int `json:"left,omitempty"`
 
 	// Top (optional) The offset from the top edge of the screen to the window in pixels.
-	Top int64 `json:"top,omitempty"`
+	Top int `json:"top,omitempty"`
 
 	// Width (optional) The window width in pixels.
-	Width int64 `json:"width,omitempty"`
+	Width int `json:"width,omitempty"`
 
 	// Height (optional) The window height in pixels.
-	Height int64 `json:"height,omitempty"`
+	Height int `json:"height,omitempty"`
 
 	// WindowState (optional) The window state. Default to normal.
 	WindowState BrowserWindowState `json:"windowState,omitempty"`
@@ -1652,13 +1656,13 @@ type BrowserPermissionDescriptor struct {
 type BrowserBucket struct {
 
 	// Low Minimum value (inclusive).
-	Low int64 `json:"low"`
+	Low int `json:"low"`
 
 	// High Maximum value (exclusive).
-	High int64 `json:"high"`
+	High int `json:"high"`
 
 	// Count Number of samples.
-	Count int64 `json:"count"`
+	Count int `json:"count"`
 }
 
 // BrowserHistogram (experimental) Chrome histogram.
@@ -1668,10 +1672,10 @@ type BrowserHistogram struct {
 	Name string `json:"name"`
 
 	// Sum Sum of sample values.
-	Sum int64 `json:"sum"`
+	Sum int `json:"sum"`
 
 	// Count Total number of samples.
-	Count int64 `json:"count"`
+	Count int `json:"count"`
 
 	// Buckets Buckets.
 	Buckets []*BrowserBucket `json:"buckets"`
@@ -1693,12 +1697,12 @@ type BrowserSetPermission struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserSetPermission) MethodName() string { return "Browser.setPermission" }
+// ProtoName of the command
+func (m BrowserSetPermission) ProtoName() string { return "Browser.setPermission" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserSetPermission) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserSetPermission) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserGrantPermissions (experimental) Grant specific permissions to the given origin and reject all others.
@@ -1714,12 +1718,12 @@ type BrowserGrantPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserGrantPermissions) MethodName() string { return "Browser.grantPermissions" }
+// ProtoName of the command
+func (m BrowserGrantPermissions) ProtoName() string { return "Browser.grantPermissions" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGrantPermissions) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserGrantPermissions) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserResetPermissions (experimental) Reset all permission management for all origins.
@@ -1729,12 +1733,12 @@ type BrowserResetPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserResetPermissions) MethodName() string { return "Browser.resetPermissions" }
+// ProtoName of the command
+func (m BrowserResetPermissions) ProtoName() string { return "Browser.resetPermissions" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserResetPermissions) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserResetPermissions) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserSetDownloadBehaviorBehavior enum
@@ -1770,61 +1774,61 @@ type BrowserSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserSetDownloadBehavior) MethodName() string { return "Browser.setDownloadBehavior" }
+// ProtoName of the command
+func (m BrowserSetDownloadBehavior) ProtoName() string { return "Browser.setDownloadBehavior" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserSetDownloadBehavior) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserSetDownloadBehavior) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserClose Close browser gracefully.
 type BrowserClose struct {
 }
 
-// MethodName of the command
-func (m BrowserClose) MethodName() string { return "Browser.close" }
+// ProtoName of the command
+func (m BrowserClose) ProtoName() string { return "Browser.close" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserClose) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserClose) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserCrash (experimental) Crashes browser on the main thread.
 type BrowserCrash struct {
 }
 
-// MethodName of the command
-func (m BrowserCrash) MethodName() string { return "Browser.crash" }
+// ProtoName of the command
+func (m BrowserCrash) ProtoName() string { return "Browser.crash" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserCrash) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserCrash) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserCrashGpuProcess (experimental) Crashes GPU process.
 type BrowserCrashGpuProcess struct {
 }
 
-// MethodName of the command
-func (m BrowserCrashGpuProcess) MethodName() string { return "Browser.crashGpuProcess" }
+// ProtoName of the command
+func (m BrowserCrashGpuProcess) ProtoName() string { return "Browser.crashGpuProcess" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserCrashGpuProcess) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserCrashGpuProcess) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserGetVersion Returns version information.
 type BrowserGetVersion struct {
 }
 
-// MethodName of the command
-func (m BrowserGetVersion) MethodName() string { return "Browser.getVersion" }
+// ProtoName of the command
+func (m BrowserGetVersion) ProtoName() string { return "Browser.getVersion" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetVersion) Call(caller Caller) (*BrowserGetVersionResult, error) {
+func (m BrowserGetVersion) Call(c Client) (*BrowserGetVersionResult, error) {
 	var res BrowserGetVersionResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetVersionResult Returns version information.
@@ -1851,13 +1855,13 @@ type BrowserGetVersionResult struct {
 type BrowserGetBrowserCommandLine struct {
 }
 
-// MethodName of the command
-func (m BrowserGetBrowserCommandLine) MethodName() string { return "Browser.getBrowserCommandLine" }
+// ProtoName of the command
+func (m BrowserGetBrowserCommandLine) ProtoName() string { return "Browser.getBrowserCommandLine" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetBrowserCommandLine) Call(caller Caller) (*BrowserGetBrowserCommandLineResult, error) {
+func (m BrowserGetBrowserCommandLine) Call(c Client) (*BrowserGetBrowserCommandLineResult, error) {
 	var res BrowserGetBrowserCommandLineResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetBrowserCommandLineResult (experimental) Returns the command line switches for the browser process if, and only if
@@ -1880,13 +1884,13 @@ type BrowserGetHistograms struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserGetHistograms) MethodName() string { return "Browser.getHistograms" }
+// ProtoName of the command
+func (m BrowserGetHistograms) ProtoName() string { return "Browser.getHistograms" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetHistograms) Call(caller Caller) (*BrowserGetHistogramsResult, error) {
+func (m BrowserGetHistograms) Call(c Client) (*BrowserGetHistogramsResult, error) {
 	var res BrowserGetHistogramsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetHistogramsResult (experimental) Get Chrome histograms.
@@ -1906,13 +1910,13 @@ type BrowserGetHistogram struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserGetHistogram) MethodName() string { return "Browser.getHistogram" }
+// ProtoName of the command
+func (m BrowserGetHistogram) ProtoName() string { return "Browser.getHistogram" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetHistogram) Call(caller Caller) (*BrowserGetHistogramResult, error) {
+func (m BrowserGetHistogram) Call(c Client) (*BrowserGetHistogramResult, error) {
 	var res BrowserGetHistogramResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetHistogramResult (experimental) Get a Chrome histogram by name.
@@ -1929,13 +1933,13 @@ type BrowserGetWindowBounds struct {
 	WindowID BrowserWindowID `json:"windowId"`
 }
 
-// MethodName of the command
-func (m BrowserGetWindowBounds) MethodName() string { return "Browser.getWindowBounds" }
+// ProtoName of the command
+func (m BrowserGetWindowBounds) ProtoName() string { return "Browser.getWindowBounds" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetWindowBounds) Call(caller Caller) (*BrowserGetWindowBoundsResult, error) {
+func (m BrowserGetWindowBounds) Call(c Client) (*BrowserGetWindowBoundsResult, error) {
 	var res BrowserGetWindowBoundsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetWindowBoundsResult (experimental) Get position and size of the browser window.
@@ -1953,13 +1957,13 @@ type BrowserGetWindowForTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserGetWindowForTarget) MethodName() string { return "Browser.getWindowForTarget" }
+// ProtoName of the command
+func (m BrowserGetWindowForTarget) ProtoName() string { return "Browser.getWindowForTarget" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserGetWindowForTarget) Call(caller Caller) (*BrowserGetWindowForTargetResult, error) {
+func (m BrowserGetWindowForTarget) Call(c Client) (*BrowserGetWindowForTargetResult, error) {
 	var res BrowserGetWindowForTargetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // BrowserGetWindowForTargetResult (experimental) Get the browser window that contains the devtools target.
@@ -1984,12 +1988,12 @@ type BrowserSetWindowBounds struct {
 	Bounds *BrowserBounds `json:"bounds"`
 }
 
-// MethodName of the command
-func (m BrowserSetWindowBounds) MethodName() string { return "Browser.setWindowBounds" }
+// ProtoName of the command
+func (m BrowserSetWindowBounds) ProtoName() string { return "Browser.setWindowBounds" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserSetWindowBounds) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserSetWindowBounds) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // BrowserSetDockTile (experimental) Set dock tile details, platform-specific.
@@ -2002,12 +2006,12 @@ type BrowserSetDockTile struct {
 	Image []byte `json:"image,omitempty"`
 }
 
-// MethodName of the command
-func (m BrowserSetDockTile) MethodName() string { return "Browser.setDockTile" }
+// ProtoName of the command
+func (m BrowserSetDockTile) ProtoName() string { return "Browser.setDockTile" }
 
 // Call of the command, sessionID is optional.
-func (m BrowserSetDockTile) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m BrowserSetDockTile) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSStyleSheetID ...
@@ -2059,7 +2063,7 @@ type CSSRuleMatch struct {
 	Rule *CSSCSSRule `json:"rule"`
 
 	// MatchingSelectors Matching selector indices in the rule's selectorList selectors (0-based).
-	MatchingSelectors []int64 `json:"matchingSelectors"`
+	MatchingSelectors []int `json:"matchingSelectors"`
 }
 
 // CSSValue Data for a simple selector (these are delimited by commas in a selector list).
@@ -2180,16 +2184,16 @@ type CSSRuleUsage struct {
 type CSSSourceRange struct {
 
 	// StartLine Start line of range.
-	StartLine int64 `json:"startLine"`
+	StartLine int `json:"startLine"`
 
 	// StartColumn Start column of range (inclusive).
-	StartColumn int64 `json:"startColumn"`
+	StartColumn int `json:"startColumn"`
 
 	// EndLine End line of range
-	EndLine int64 `json:"endLine"`
+	EndLine int `json:"endLine"`
 
 	// EndColumn End column of range (exclusive).
-	EndColumn int64 `json:"endColumn"`
+	EndColumn int `json:"endColumn"`
 }
 
 // CSSShorthandEntry ...
@@ -2430,13 +2434,13 @@ type CSSAddRule struct {
 	Location *CSSSourceRange `json:"location"`
 }
 
-// MethodName of the command
-func (m CSSAddRule) MethodName() string { return "CSS.addRule" }
+// ProtoName of the command
+func (m CSSAddRule) ProtoName() string { return "CSS.addRule" }
 
 // Call of the command, sessionID is optional.
-func (m CSSAddRule) Call(caller Caller) (*CSSAddRuleResult, error) {
+func (m CSSAddRule) Call(c Client) (*CSSAddRuleResult, error) {
 	var res CSSAddRuleResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSAddRuleResult Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
@@ -2454,13 +2458,13 @@ type CSSCollectClassNames struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// MethodName of the command
-func (m CSSCollectClassNames) MethodName() string { return "CSS.collectClassNames" }
+// ProtoName of the command
+func (m CSSCollectClassNames) ProtoName() string { return "CSS.collectClassNames" }
 
 // Call of the command, sessionID is optional.
-func (m CSSCollectClassNames) Call(caller Caller) (*CSSCollectClassNamesResult, error) {
+func (m CSSCollectClassNames) Call(c Client) (*CSSCollectClassNamesResult, error) {
 	var res CSSCollectClassNamesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSCollectClassNamesResult Returns all class names from specified stylesheet.
@@ -2477,13 +2481,13 @@ type CSSCreateStyleSheet struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName of the command
-func (m CSSCreateStyleSheet) MethodName() string { return "CSS.createStyleSheet" }
+// ProtoName of the command
+func (m CSSCreateStyleSheet) ProtoName() string { return "CSS.createStyleSheet" }
 
 // Call of the command, sessionID is optional.
-func (m CSSCreateStyleSheet) Call(caller Caller) (*CSSCreateStyleSheetResult, error) {
+func (m CSSCreateStyleSheet) Call(c Client) (*CSSCreateStyleSheetResult, error) {
 	var res CSSCreateStyleSheetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSCreateStyleSheetResult Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
@@ -2497,12 +2501,12 @@ type CSSCreateStyleSheetResult struct {
 type CSSDisable struct {
 }
 
-// MethodName of the command
-func (m CSSDisable) MethodName() string { return "CSS.disable" }
+// ProtoName of the command
+func (m CSSDisable) ProtoName() string { return "CSS.disable" }
 
 // Call of the command, sessionID is optional.
-func (m CSSDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CSSDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSEnable Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been
@@ -2510,12 +2514,12 @@ func (m CSSDisable) Call(caller Caller) error {
 type CSSEnable struct {
 }
 
-// MethodName of the command
-func (m CSSEnable) MethodName() string { return "CSS.enable" }
+// ProtoName of the command
+func (m CSSEnable) ProtoName() string { return "CSS.enable" }
 
 // Call of the command, sessionID is optional.
-func (m CSSEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CSSEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSForcePseudoState Ensures that the given node will have specified pseudo-classes whenever its style is computed by
@@ -2529,12 +2533,12 @@ type CSSForcePseudoState struct {
 	ForcedPseudoClasses []string `json:"forcedPseudoClasses"`
 }
 
-// MethodName of the command
-func (m CSSForcePseudoState) MethodName() string { return "CSS.forcePseudoState" }
+// ProtoName of the command
+func (m CSSForcePseudoState) ProtoName() string { return "CSS.forcePseudoState" }
 
 // Call of the command, sessionID is optional.
-func (m CSSForcePseudoState) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CSSForcePseudoState) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSGetBackgroundColors ...
@@ -2544,13 +2548,13 @@ type CSSGetBackgroundColors struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m CSSGetBackgroundColors) MethodName() string { return "CSS.getBackgroundColors" }
+// ProtoName of the command
+func (m CSSGetBackgroundColors) ProtoName() string { return "CSS.getBackgroundColors" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetBackgroundColors) Call(caller Caller) (*CSSGetBackgroundColorsResult, error) {
+func (m CSSGetBackgroundColors) Call(c Client) (*CSSGetBackgroundColorsResult, error) {
 	var res CSSGetBackgroundColorsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetBackgroundColorsResult ...
@@ -2578,13 +2582,13 @@ type CSSGetComputedStyleForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m CSSGetComputedStyleForNode) MethodName() string { return "CSS.getComputedStyleForNode" }
+// ProtoName of the command
+func (m CSSGetComputedStyleForNode) ProtoName() string { return "CSS.getComputedStyleForNode" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetComputedStyleForNode) Call(caller Caller) (*CSSGetComputedStyleForNodeResult, error) {
+func (m CSSGetComputedStyleForNode) Call(c Client) (*CSSGetComputedStyleForNodeResult, error) {
 	var res CSSGetComputedStyleForNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetComputedStyleForNodeResult Returns the computed style for a DOM node identified by `nodeId`.
@@ -2602,13 +2606,13 @@ type CSSGetInlineStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m CSSGetInlineStylesForNode) MethodName() string { return "CSS.getInlineStylesForNode" }
+// ProtoName of the command
+func (m CSSGetInlineStylesForNode) ProtoName() string { return "CSS.getInlineStylesForNode" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetInlineStylesForNode) Call(caller Caller) (*CSSGetInlineStylesForNodeResult, error) {
+func (m CSSGetInlineStylesForNode) Call(c Client) (*CSSGetInlineStylesForNodeResult, error) {
 	var res CSSGetInlineStylesForNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetInlineStylesForNodeResult Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
@@ -2629,13 +2633,13 @@ type CSSGetMatchedStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m CSSGetMatchedStylesForNode) MethodName() string { return "CSS.getMatchedStylesForNode" }
+// ProtoName of the command
+func (m CSSGetMatchedStylesForNode) ProtoName() string { return "CSS.getMatchedStylesForNode" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetMatchedStylesForNode) Call(caller Caller) (*CSSGetMatchedStylesForNodeResult, error) {
+func (m CSSGetMatchedStylesForNode) Call(c Client) (*CSSGetMatchedStylesForNodeResult, error) {
 	var res CSSGetMatchedStylesForNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetMatchedStylesForNodeResult Returns requested styles for a DOM node identified by `nodeId`.
@@ -2664,13 +2668,13 @@ type CSSGetMatchedStylesForNodeResult struct {
 type CSSGetMediaQueries struct {
 }
 
-// MethodName of the command
-func (m CSSGetMediaQueries) MethodName() string { return "CSS.getMediaQueries" }
+// ProtoName of the command
+func (m CSSGetMediaQueries) ProtoName() string { return "CSS.getMediaQueries" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetMediaQueries) Call(caller Caller) (*CSSGetMediaQueriesResult, error) {
+func (m CSSGetMediaQueries) Call(c Client) (*CSSGetMediaQueriesResult, error) {
 	var res CSSGetMediaQueriesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetMediaQueriesResult Returns all media queries parsed by the rendering engine.
@@ -2688,13 +2692,13 @@ type CSSGetPlatformFontsForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m CSSGetPlatformFontsForNode) MethodName() string { return "CSS.getPlatformFontsForNode" }
+// ProtoName of the command
+func (m CSSGetPlatformFontsForNode) ProtoName() string { return "CSS.getPlatformFontsForNode" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetPlatformFontsForNode) Call(caller Caller) (*CSSGetPlatformFontsForNodeResult, error) {
+func (m CSSGetPlatformFontsForNode) Call(c Client) (*CSSGetPlatformFontsForNodeResult, error) {
 	var res CSSGetPlatformFontsForNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetPlatformFontsForNodeResult Requests information about platform fonts which we used to render child TextNodes in the given
@@ -2712,13 +2716,13 @@ type CSSGetStyleSheetText struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// MethodName of the command
-func (m CSSGetStyleSheetText) MethodName() string { return "CSS.getStyleSheetText" }
+// ProtoName of the command
+func (m CSSGetStyleSheetText) ProtoName() string { return "CSS.getStyleSheetText" }
 
 // Call of the command, sessionID is optional.
-func (m CSSGetStyleSheetText) Call(caller Caller) (*CSSGetStyleSheetTextResult, error) {
+func (m CSSGetStyleSheetText) Call(c Client) (*CSSGetStyleSheetTextResult, error) {
 	var res CSSGetStyleSheetTextResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSGetStyleSheetTextResult Returns the current textual content for a stylesheet.
@@ -2742,14 +2746,14 @@ type CSSSetEffectivePropertyValueForNode struct {
 	Value string `json:"value"`
 }
 
-// MethodName of the command
-func (m CSSSetEffectivePropertyValueForNode) MethodName() string {
+// ProtoName of the command
+func (m CSSSetEffectivePropertyValueForNode) ProtoName() string {
 	return "CSS.setEffectivePropertyValueForNode"
 }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetEffectivePropertyValueForNode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CSSSetEffectivePropertyValueForNode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSSetKeyframeKey Modifies the keyframe rule key text.
@@ -2765,13 +2769,13 @@ type CSSSetKeyframeKey struct {
 	KeyText string `json:"keyText"`
 }
 
-// MethodName of the command
-func (m CSSSetKeyframeKey) MethodName() string { return "CSS.setKeyframeKey" }
+// ProtoName of the command
+func (m CSSSetKeyframeKey) ProtoName() string { return "CSS.setKeyframeKey" }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetKeyframeKey) Call(caller Caller) (*CSSSetKeyframeKeyResult, error) {
+func (m CSSSetKeyframeKey) Call(c Client) (*CSSSetKeyframeKeyResult, error) {
 	var res CSSSetKeyframeKeyResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSSetKeyframeKeyResult Modifies the keyframe rule key text.
@@ -2794,13 +2798,13 @@ type CSSSetMediaText struct {
 	Text string `json:"text"`
 }
 
-// MethodName of the command
-func (m CSSSetMediaText) MethodName() string { return "CSS.setMediaText" }
+// ProtoName of the command
+func (m CSSSetMediaText) ProtoName() string { return "CSS.setMediaText" }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetMediaText) Call(caller Caller) (*CSSSetMediaTextResult, error) {
+func (m CSSSetMediaText) Call(c Client) (*CSSSetMediaTextResult, error) {
 	var res CSSSetMediaTextResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSSetMediaTextResult Modifies the rule selector.
@@ -2823,13 +2827,13 @@ type CSSSetRuleSelector struct {
 	Selector string `json:"selector"`
 }
 
-// MethodName of the command
-func (m CSSSetRuleSelector) MethodName() string { return "CSS.setRuleSelector" }
+// ProtoName of the command
+func (m CSSSetRuleSelector) ProtoName() string { return "CSS.setRuleSelector" }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetRuleSelector) Call(caller Caller) (*CSSSetRuleSelectorResult, error) {
+func (m CSSSetRuleSelector) Call(c Client) (*CSSSetRuleSelectorResult, error) {
 	var res CSSSetRuleSelectorResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSSetRuleSelectorResult Modifies the rule selector.
@@ -2849,13 +2853,13 @@ type CSSSetStyleSheetText struct {
 	Text string `json:"text"`
 }
 
-// MethodName of the command
-func (m CSSSetStyleSheetText) MethodName() string { return "CSS.setStyleSheetText" }
+// ProtoName of the command
+func (m CSSSetStyleSheetText) ProtoName() string { return "CSS.setStyleSheetText" }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetStyleSheetText) Call(caller Caller) (*CSSSetStyleSheetTextResult, error) {
+func (m CSSSetStyleSheetText) Call(c Client) (*CSSSetStyleSheetTextResult, error) {
 	var res CSSSetStyleSheetTextResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSSetStyleSheetTextResult Sets the new stylesheet text.
@@ -2872,13 +2876,13 @@ type CSSSetStyleTexts struct {
 	Edits []*CSSStyleDeclarationEdit `json:"edits"`
 }
 
-// MethodName of the command
-func (m CSSSetStyleTexts) MethodName() string { return "CSS.setStyleTexts" }
+// ProtoName of the command
+func (m CSSSetStyleTexts) ProtoName() string { return "CSS.setStyleTexts" }
 
 // Call of the command, sessionID is optional.
-func (m CSSSetStyleTexts) Call(caller Caller) (*CSSSetStyleTextsResult, error) {
+func (m CSSSetStyleTexts) Call(c Client) (*CSSSetStyleTextsResult, error) {
 	var res CSSSetStyleTextsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSSetStyleTextsResult Applies specified style edits one after another in the given order.
@@ -2892,12 +2896,12 @@ type CSSSetStyleTextsResult struct {
 type CSSStartRuleUsageTracking struct {
 }
 
-// MethodName of the command
-func (m CSSStartRuleUsageTracking) MethodName() string { return "CSS.startRuleUsageTracking" }
+// ProtoName of the command
+func (m CSSStartRuleUsageTracking) ProtoName() string { return "CSS.startRuleUsageTracking" }
 
 // Call of the command, sessionID is optional.
-func (m CSSStartRuleUsageTracking) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CSSStartRuleUsageTracking) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CSSStopRuleUsageTracking Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2905,13 +2909,13 @@ func (m CSSStartRuleUsageTracking) Call(caller Caller) error {
 type CSSStopRuleUsageTracking struct {
 }
 
-// MethodName of the command
-func (m CSSStopRuleUsageTracking) MethodName() string { return "CSS.stopRuleUsageTracking" }
+// ProtoName of the command
+func (m CSSStopRuleUsageTracking) ProtoName() string { return "CSS.stopRuleUsageTracking" }
 
 // Call of the command, sessionID is optional.
-func (m CSSStopRuleUsageTracking) Call(caller Caller) (*CSSStopRuleUsageTrackingResult, error) {
+func (m CSSStopRuleUsageTracking) Call(c Client) (*CSSStopRuleUsageTrackingResult, error) {
 	var res CSSStopRuleUsageTrackingResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSStopRuleUsageTrackingResult Stop tracking rule usage and return the list of rules that were used since last call to
@@ -2927,13 +2931,13 @@ type CSSStopRuleUsageTrackingResult struct {
 type CSSTakeCoverageDelta struct {
 }
 
-// MethodName of the command
-func (m CSSTakeCoverageDelta) MethodName() string { return "CSS.takeCoverageDelta" }
+// ProtoName of the command
+func (m CSSTakeCoverageDelta) ProtoName() string { return "CSS.takeCoverageDelta" }
 
 // Call of the command, sessionID is optional.
-func (m CSSTakeCoverageDelta) Call(caller Caller) (*CSSTakeCoverageDeltaResult, error) {
+func (m CSSTakeCoverageDelta) Call(c Client) (*CSSTakeCoverageDeltaResult, error) {
 	var res CSSTakeCoverageDeltaResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CSSTakeCoverageDeltaResult Obtain list of rules that became used since last call to this method (or since start of coverage
@@ -2955,8 +2959,8 @@ type CSSFontsUpdated struct {
 	Font *CSSFontFace `json:"font,omitempty"`
 }
 
-// MethodName interface
-func (evt CSSFontsUpdated) MethodName() string {
+// ProtoName interface
+func (evt CSSFontsUpdated) ProtoName() string {
 	return "CSS.fontsUpdated"
 }
 
@@ -2965,8 +2969,8 @@ func (evt CSSFontsUpdated) MethodName() string {
 type CSSMediaQueryResultChanged struct {
 }
 
-// MethodName interface
-func (evt CSSMediaQueryResultChanged) MethodName() string {
+// ProtoName interface
+func (evt CSSMediaQueryResultChanged) ProtoName() string {
 	return "CSS.mediaQueryResultChanged"
 }
 
@@ -2977,8 +2981,8 @@ type CSSStyleSheetAdded struct {
 	Header *CSSCSSStyleSheetHeader `json:"header"`
 }
 
-// MethodName interface
-func (evt CSSStyleSheetAdded) MethodName() string {
+// ProtoName interface
+func (evt CSSStyleSheetAdded) ProtoName() string {
 	return "CSS.styleSheetAdded"
 }
 
@@ -2989,8 +2993,8 @@ type CSSStyleSheetChanged struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// MethodName interface
-func (evt CSSStyleSheetChanged) MethodName() string {
+// ProtoName interface
+func (evt CSSStyleSheetChanged) ProtoName() string {
 	return "CSS.styleSheetChanged"
 }
 
@@ -3001,8 +3005,8 @@ type CSSStyleSheetRemoved struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// MethodName interface
-func (evt CSSStyleSheetRemoved) MethodName() string {
+// ProtoName interface
+func (evt CSSStyleSheetRemoved) ProtoName() string {
 	return "CSS.styleSheetRemoved"
 }
 
@@ -3048,7 +3052,7 @@ type CacheStorageDataEntry struct {
 	ResponseTime float64 `json:"responseTime"`
 
 	// ResponseStatus HTTP response status code.
-	ResponseStatus int64 `json:"responseStatus"`
+	ResponseStatus int `json:"responseStatus"`
 
 	// ResponseStatusText HTTP response status text.
 	ResponseStatusText string `json:"responseStatusText"`
@@ -3097,12 +3101,12 @@ type CacheStorageDeleteCache struct {
 	CacheID CacheStorageCacheID `json:"cacheId"`
 }
 
-// MethodName of the command
-func (m CacheStorageDeleteCache) MethodName() string { return "CacheStorage.deleteCache" }
+// ProtoName of the command
+func (m CacheStorageDeleteCache) ProtoName() string { return "CacheStorage.deleteCache" }
 
 // Call of the command, sessionID is optional.
-func (m CacheStorageDeleteCache) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CacheStorageDeleteCache) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CacheStorageDeleteEntry Deletes a cache entry.
@@ -3115,12 +3119,12 @@ type CacheStorageDeleteEntry struct {
 	Request string `json:"request"`
 }
 
-// MethodName of the command
-func (m CacheStorageDeleteEntry) MethodName() string { return "CacheStorage.deleteEntry" }
+// ProtoName of the command
+func (m CacheStorageDeleteEntry) ProtoName() string { return "CacheStorage.deleteEntry" }
 
 // Call of the command, sessionID is optional.
-func (m CacheStorageDeleteEntry) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CacheStorageDeleteEntry) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CacheStorageRequestCacheNames Requests cache names.
@@ -3130,13 +3134,13 @@ type CacheStorageRequestCacheNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
-// MethodName of the command
-func (m CacheStorageRequestCacheNames) MethodName() string { return "CacheStorage.requestCacheNames" }
+// ProtoName of the command
+func (m CacheStorageRequestCacheNames) ProtoName() string { return "CacheStorage.requestCacheNames" }
 
 // Call of the command, sessionID is optional.
-func (m CacheStorageRequestCacheNames) Call(caller Caller) (*CacheStorageRequestCacheNamesResult, error) {
+func (m CacheStorageRequestCacheNames) Call(c Client) (*CacheStorageRequestCacheNamesResult, error) {
 	var res CacheStorageRequestCacheNamesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CacheStorageRequestCacheNamesResult Requests cache names.
@@ -3159,15 +3163,15 @@ type CacheStorageRequestCachedResponse struct {
 	RequestHeaders []*CacheStorageHeader `json:"requestHeaders"`
 }
 
-// MethodName of the command
-func (m CacheStorageRequestCachedResponse) MethodName() string {
+// ProtoName of the command
+func (m CacheStorageRequestCachedResponse) ProtoName() string {
 	return "CacheStorage.requestCachedResponse"
 }
 
 // Call of the command, sessionID is optional.
-func (m CacheStorageRequestCachedResponse) Call(caller Caller) (*CacheStorageRequestCachedResponseResult, error) {
+func (m CacheStorageRequestCachedResponse) Call(c Client) (*CacheStorageRequestCachedResponseResult, error) {
 	var res CacheStorageRequestCachedResponseResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CacheStorageRequestCachedResponseResult Fetches cache entry.
@@ -3184,22 +3188,22 @@ type CacheStorageRequestEntries struct {
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
 	// SkipCount (optional) Number of records to skip.
-	SkipCount int64 `json:"skipCount,omitempty"`
+	SkipCount int `json:"skipCount,omitempty"`
 
 	// PageSize (optional) Number of records to fetch.
-	PageSize int64 `json:"pageSize,omitempty"`
+	PageSize int `json:"pageSize,omitempty"`
 
 	// PathFilter (optional) If present, only return the entries containing this substring in the path
 	PathFilter string `json:"pathFilter,omitempty"`
 }
 
-// MethodName of the command
-func (m CacheStorageRequestEntries) MethodName() string { return "CacheStorage.requestEntries" }
+// ProtoName of the command
+func (m CacheStorageRequestEntries) ProtoName() string { return "CacheStorage.requestEntries" }
 
 // Call of the command, sessionID is optional.
-func (m CacheStorageRequestEntries) Call(caller Caller) (*CacheStorageRequestEntriesResult, error) {
+func (m CacheStorageRequestEntries) Call(c Client) (*CacheStorageRequestEntriesResult, error) {
 	var res CacheStorageRequestEntriesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // CacheStorageRequestEntriesResult Requests data from cache.
@@ -3238,24 +3242,24 @@ type CastEnable struct {
 	PresentationURL string `json:"presentationUrl,omitempty"`
 }
 
-// MethodName of the command
-func (m CastEnable) MethodName() string { return "Cast.enable" }
+// ProtoName of the command
+func (m CastEnable) ProtoName() string { return "Cast.enable" }
 
 // Call of the command, sessionID is optional.
-func (m CastEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CastEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CastDisable Stops observing for sinks and issues.
 type CastDisable struct {
 }
 
-// MethodName of the command
-func (m CastDisable) MethodName() string { return "Cast.disable" }
+// ProtoName of the command
+func (m CastDisable) ProtoName() string { return "Cast.disable" }
 
 // Call of the command, sessionID is optional.
-func (m CastDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CastDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CastSetSinkToUse Sets a sink to be used when the web page requests the browser to choose a
@@ -3266,12 +3270,12 @@ type CastSetSinkToUse struct {
 	SinkName string `json:"sinkName"`
 }
 
-// MethodName of the command
-func (m CastSetSinkToUse) MethodName() string { return "Cast.setSinkToUse" }
+// ProtoName of the command
+func (m CastSetSinkToUse) ProtoName() string { return "Cast.setSinkToUse" }
 
 // Call of the command, sessionID is optional.
-func (m CastSetSinkToUse) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CastSetSinkToUse) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CastStartTabMirroring Starts mirroring the tab to the sink.
@@ -3281,12 +3285,12 @@ type CastStartTabMirroring struct {
 	SinkName string `json:"sinkName"`
 }
 
-// MethodName of the command
-func (m CastStartTabMirroring) MethodName() string { return "Cast.startTabMirroring" }
+// ProtoName of the command
+func (m CastStartTabMirroring) ProtoName() string { return "Cast.startTabMirroring" }
 
 // Call of the command, sessionID is optional.
-func (m CastStartTabMirroring) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CastStartTabMirroring) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CastStopCasting Stops the active Cast session on the sink.
@@ -3296,12 +3300,12 @@ type CastStopCasting struct {
 	SinkName string `json:"sinkName"`
 }
 
-// MethodName of the command
-func (m CastStopCasting) MethodName() string { return "Cast.stopCasting" }
+// ProtoName of the command
+func (m CastStopCasting) ProtoName() string { return "Cast.stopCasting" }
 
 // Call of the command, sessionID is optional.
-func (m CastStopCasting) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m CastStopCasting) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // CastSinksUpdated This is fired whenever the list of available sinks changes. A sink is a
@@ -3312,8 +3316,8 @@ type CastSinksUpdated struct {
 	Sinks []*CastSink `json:"sinks"`
 }
 
-// MethodName interface
-func (evt CastSinksUpdated) MethodName() string {
+// ProtoName interface
+func (evt CastSinksUpdated) ProtoName() string {
 	return "Cast.sinksUpdated"
 }
 
@@ -3325,23 +3329,23 @@ type CastIssueUpdated struct {
 	IssueMessage string `json:"issueMessage"`
 }
 
-// MethodName interface
-func (evt CastIssueUpdated) MethodName() string {
+// ProtoName interface
+func (evt CastIssueUpdated) ProtoName() string {
 	return "Cast.issueUpdated"
 }
 
 // DOMNodeID Unique DOM node identifier.
-type DOMNodeID int64
+type DOMNodeID int
 
 // DOMBackendNodeID Unique DOM node identifier used to reference a node that may not have been pushed to the
 // front-end.
-type DOMBackendNodeID int64
+type DOMBackendNodeID int
 
 // DOMBackendNode Backend node with a friendly name.
 type DOMBackendNode struct {
 
 	// NodeType `Node`'s nodeType.
-	NodeType int64 `json:"nodeType"`
+	NodeType int `json:"nodeType"`
 
 	// NodeName `Node`'s nodeName.
 	NodeName string `json:"nodeName"`
@@ -3433,7 +3437,7 @@ type DOMNode struct {
 	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
 
 	// NodeType `Node`'s nodeType.
-	NodeType int64 `json:"nodeType"`
+	NodeType int `json:"nodeType"`
 
 	// NodeName `Node`'s nodeName.
 	NodeName string `json:"nodeName"`
@@ -3445,7 +3449,7 @@ type DOMNode struct {
 	NodeValue string `json:"nodeValue"`
 
 	// ChildNodeCount (optional) Child count for `Container` nodes.
-	ChildNodeCount int64 `json:"childNodeCount,omitempty"`
+	ChildNodeCount int `json:"childNodeCount,omitempty"`
 
 	// Children (optional) Child nodes of this node when requested with children.
 	Children []*DOMNode `json:"children,omitempty"`
@@ -3512,13 +3516,13 @@ type DOMNode struct {
 type DOMRGBA struct {
 
 	// R The red component, in the [0-255] range.
-	R int64 `json:"r"`
+	R int `json:"r"`
 
 	// G The green component, in the [0-255] range.
-	G int64 `json:"g"`
+	G int `json:"g"`
 
 	// B The blue component, in the [0-255] range.
-	B int64 `json:"b"`
+	B int `json:"b"`
 
 	// A (optional) The alpha component, in the [0-1] range (default: 1).
 	A float64 `json:"a,omitempty"`
@@ -3543,10 +3547,10 @@ type DOMBoxModel struct {
 	Margin DOMQuad `json:"margin"`
 
 	// Width Node width
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Node height
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 
 	// ShapeOutside (optional) Shape outside coordinates
 	ShapeOutside *DOMShapeOutsideInfo `json:"shapeOutside,omitempty"`
@@ -3559,10 +3563,10 @@ type DOMShapeOutsideInfo struct {
 	Bounds DOMQuad `json:"bounds"`
 
 	// Shape Shape coordinate details
-	Shape []JSON `json:"shape"`
+	Shape []gson.JSON `json:"shape"`
 
 	// MarginShape Margin shape bounds
-	MarginShape []JSON `json:"marginShape"`
+	MarginShape []gson.JSON `json:"marginShape"`
 }
 
 // DOMRect Rectangle.
@@ -3588,15 +3592,15 @@ type DOMCollectClassNamesFromSubtree struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMCollectClassNamesFromSubtree) MethodName() string {
+// ProtoName of the command
+func (m DOMCollectClassNamesFromSubtree) ProtoName() string {
 	return "DOM.collectClassNamesFromSubtree"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMCollectClassNamesFromSubtree) Call(caller Caller) (*DOMCollectClassNamesFromSubtreeResult, error) {
+func (m DOMCollectClassNamesFromSubtree) Call(c Client) (*DOMCollectClassNamesFromSubtreeResult, error) {
 	var res DOMCollectClassNamesFromSubtreeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMCollectClassNamesFromSubtreeResult (experimental) Collects class names for the node with given id and all of it's child nodes.
@@ -3621,13 +3625,13 @@ type DOMCopyTo struct {
 	InsertBeforeNodeID DOMNodeID `json:"insertBeforeNodeId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMCopyTo) MethodName() string { return "DOM.copyTo" }
+// ProtoName of the command
+func (m DOMCopyTo) ProtoName() string { return "DOM.copyTo" }
 
 // Call of the command, sessionID is optional.
-func (m DOMCopyTo) Call(caller Caller) (*DOMCopyToResult, error) {
+func (m DOMCopyTo) Call(c Client) (*DOMCopyToResult, error) {
 	var res DOMCopyToResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMCopyToResult (experimental) Creates a deep copy of the specified node and places it into the target container before the
@@ -3653,20 +3657,20 @@ type DOMDescribeNode struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int64 `json:"depth,omitempty"`
+	Depth int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
 	Pierce bool `json:"pierce,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMDescribeNode) MethodName() string { return "DOM.describeNode" }
+// ProtoName of the command
+func (m DOMDescribeNode) ProtoName() string { return "DOM.describeNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDescribeNode) Call(caller Caller) (*DOMDescribeNodeResult, error) {
+func (m DOMDescribeNode) Call(c Client) (*DOMDescribeNodeResult, error) {
 	var res DOMDescribeNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMDescribeNodeResult Describes node given its id, does not require domain to be enabled. Does not start tracking any
@@ -3696,24 +3700,24 @@ type DOMScrollIntoViewIfNeeded struct {
 	Rect *DOMRect `json:"rect,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMScrollIntoViewIfNeeded) MethodName() string { return "DOM.scrollIntoViewIfNeeded" }
+// ProtoName of the command
+func (m DOMScrollIntoViewIfNeeded) ProtoName() string { return "DOM.scrollIntoViewIfNeeded" }
 
 // Call of the command, sessionID is optional.
-func (m DOMScrollIntoViewIfNeeded) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMScrollIntoViewIfNeeded) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDisable Disables DOM agent for the given page.
 type DOMDisable struct {
 }
 
-// MethodName of the command
-func (m DOMDisable) MethodName() string { return "DOM.disable" }
+// ProtoName of the command
+func (m DOMDisable) ProtoName() string { return "DOM.disable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDiscardSearchResults (experimental) Discards search results from the session with the given id. `getSearchResults` should no longer
@@ -3724,24 +3728,24 @@ type DOMDiscardSearchResults struct {
 	SearchID string `json:"searchId"`
 }
 
-// MethodName of the command
-func (m DOMDiscardSearchResults) MethodName() string { return "DOM.discardSearchResults" }
+// ProtoName of the command
+func (m DOMDiscardSearchResults) ProtoName() string { return "DOM.discardSearchResults" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDiscardSearchResults) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDiscardSearchResults) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMEnable Enables DOM agent for the given page.
 type DOMEnable struct {
 }
 
-// MethodName of the command
-func (m DOMEnable) MethodName() string { return "DOM.enable" }
+// ProtoName of the command
+func (m DOMEnable) ProtoName() string { return "DOM.enable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMFocus Focuses the given element.
@@ -3757,12 +3761,12 @@ type DOMFocus struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMFocus) MethodName() string { return "DOM.focus" }
+// ProtoName of the command
+func (m DOMFocus) ProtoName() string { return "DOM.focus" }
 
 // Call of the command, sessionID is optional.
-func (m DOMFocus) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMFocus) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMGetAttributes Returns attributes for the specified node.
@@ -3772,13 +3776,13 @@ type DOMGetAttributes struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMGetAttributes) MethodName() string { return "DOM.getAttributes" }
+// ProtoName of the command
+func (m DOMGetAttributes) ProtoName() string { return "DOM.getAttributes" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetAttributes) Call(caller Caller) (*DOMGetAttributesResult, error) {
+func (m DOMGetAttributes) Call(c Client) (*DOMGetAttributesResult, error) {
 	var res DOMGetAttributesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetAttributesResult Returns attributes for the specified node.
@@ -3801,13 +3805,13 @@ type DOMGetBoxModel struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetBoxModel) MethodName() string { return "DOM.getBoxModel" }
+// ProtoName of the command
+func (m DOMGetBoxModel) ProtoName() string { return "DOM.getBoxModel" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetBoxModel) Call(caller Caller) (*DOMGetBoxModelResult, error) {
+func (m DOMGetBoxModel) Call(c Client) (*DOMGetBoxModelResult, error) {
 	var res DOMGetBoxModelResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetBoxModelResult Returns boxes for the given node.
@@ -3831,13 +3835,13 @@ type DOMGetContentQuads struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetContentQuads) MethodName() string { return "DOM.getContentQuads" }
+// ProtoName of the command
+func (m DOMGetContentQuads) ProtoName() string { return "DOM.getContentQuads" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetContentQuads) Call(caller Caller) (*DOMGetContentQuadsResult, error) {
+func (m DOMGetContentQuads) Call(c Client) (*DOMGetContentQuadsResult, error) {
 	var res DOMGetContentQuadsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetContentQuadsResult (experimental) Returns quads that describe node position on the page. This method
@@ -3853,20 +3857,20 @@ type DOMGetDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int64 `json:"depth,omitempty"`
+	Depth int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
 	Pierce bool `json:"pierce,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetDocument) MethodName() string { return "DOM.getDocument" }
+// ProtoName of the command
+func (m DOMGetDocument) ProtoName() string { return "DOM.getDocument" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetDocument) Call(caller Caller) (*DOMGetDocumentResult, error) {
+func (m DOMGetDocument) Call(c Client) (*DOMGetDocumentResult, error) {
 	var res DOMGetDocumentResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3881,20 +3885,20 @@ type DOMGetFlattenedDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int64 `json:"depth,omitempty"`
+	Depth int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
 	Pierce bool `json:"pierce,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetFlattenedDocument) MethodName() string { return "DOM.getFlattenedDocument" }
+// ProtoName of the command
+func (m DOMGetFlattenedDocument) ProtoName() string { return "DOM.getFlattenedDocument" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetFlattenedDocument) Call(caller Caller) (*DOMGetFlattenedDocumentResult, error) {
+func (m DOMGetFlattenedDocument) Call(c Client) (*DOMGetFlattenedDocumentResult, error) {
 	var res DOMGetFlattenedDocumentResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetFlattenedDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
@@ -3909,10 +3913,10 @@ type DOMGetFlattenedDocumentResult struct {
 type DOMGetNodeForLocation struct {
 
 	// X X coordinate.
-	X int64 `json:"x"`
+	X int `json:"x"`
 
 	// Y Y coordinate.
-	Y int64 `json:"y"`
+	Y int `json:"y"`
 
 	// IncludeUserAgentShadowDOM (optional) False to skip to the nearest non-UA shadow root ancestor (default: false).
 	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
@@ -3921,13 +3925,13 @@ type DOMGetNodeForLocation struct {
 	IgnorePointerEventsNone bool `json:"ignorePointerEventsNone,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetNodeForLocation) MethodName() string { return "DOM.getNodeForLocation" }
+// ProtoName of the command
+func (m DOMGetNodeForLocation) ProtoName() string { return "DOM.getNodeForLocation" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetNodeForLocation) Call(caller Caller) (*DOMGetNodeForLocationResult, error) {
+func (m DOMGetNodeForLocation) Call(c Client) (*DOMGetNodeForLocationResult, error) {
 	var res DOMGetNodeForLocationResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetNodeForLocationResult Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
@@ -3957,13 +3961,13 @@ type DOMGetOuterHTML struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMGetOuterHTML) MethodName() string { return "DOM.getOuterHTML" }
+// ProtoName of the command
+func (m DOMGetOuterHTML) ProtoName() string { return "DOM.getOuterHTML" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetOuterHTML) Call(caller Caller) (*DOMGetOuterHTMLResult, error) {
+func (m DOMGetOuterHTML) Call(c Client) (*DOMGetOuterHTMLResult, error) {
 	var res DOMGetOuterHTMLResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetOuterHTMLResult Returns node's HTML markup.
@@ -3980,13 +3984,13 @@ type DOMGetRelayoutBoundary struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMGetRelayoutBoundary) MethodName() string { return "DOM.getRelayoutBoundary" }
+// ProtoName of the command
+func (m DOMGetRelayoutBoundary) ProtoName() string { return "DOM.getRelayoutBoundary" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetRelayoutBoundary) Call(caller Caller) (*DOMGetRelayoutBoundaryResult, error) {
+func (m DOMGetRelayoutBoundary) Call(c Client) (*DOMGetRelayoutBoundaryResult, error) {
 	var res DOMGetRelayoutBoundaryResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetRelayoutBoundaryResult (experimental) Returns the id of the nearest ancestor that is a relayout boundary.
@@ -4004,19 +4008,19 @@ type DOMGetSearchResults struct {
 	SearchID string `json:"searchId"`
 
 	// FromIndex Start index of the search result to be returned.
-	FromIndex int64 `json:"fromIndex"`
+	FromIndex int `json:"fromIndex"`
 
 	// ToIndex End index of the search result to be returned.
-	ToIndex int64 `json:"toIndex"`
+	ToIndex int `json:"toIndex"`
 }
 
-// MethodName of the command
-func (m DOMGetSearchResults) MethodName() string { return "DOM.getSearchResults" }
+// ProtoName of the command
+func (m DOMGetSearchResults) ProtoName() string { return "DOM.getSearchResults" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetSearchResults) Call(caller Caller) (*DOMGetSearchResultsResult, error) {
+func (m DOMGetSearchResults) Call(c Client) (*DOMGetSearchResultsResult, error) {
 	var res DOMGetSearchResultsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetSearchResultsResult (experimental) Returns search results from given `fromIndex` to given `toIndex` from the search with the given
@@ -4031,48 +4035,48 @@ type DOMGetSearchResultsResult struct {
 type DOMHideHighlight struct {
 }
 
-// MethodName of the command
-func (m DOMHideHighlight) MethodName() string { return "DOM.hideHighlight" }
+// ProtoName of the command
+func (m DOMHideHighlight) ProtoName() string { return "DOM.hideHighlight" }
 
 // Call of the command, sessionID is optional.
-func (m DOMHideHighlight) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMHideHighlight) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMHighlightNode Highlights DOM node.
 type DOMHighlightNode struct {
 }
 
-// MethodName of the command
-func (m DOMHighlightNode) MethodName() string { return "DOM.highlightNode" }
+// ProtoName of the command
+func (m DOMHighlightNode) ProtoName() string { return "DOM.highlightNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMHighlightNode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMHighlightNode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMHighlightRect Highlights given rectangle.
 type DOMHighlightRect struct {
 }
 
-// MethodName of the command
-func (m DOMHighlightRect) MethodName() string { return "DOM.highlightRect" }
+// ProtoName of the command
+func (m DOMHighlightRect) ProtoName() string { return "DOM.highlightRect" }
 
 // Call of the command, sessionID is optional.
-func (m DOMHighlightRect) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMHighlightRect) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMMarkUndoableState (experimental) Marks last undoable state.
 type DOMMarkUndoableState struct {
 }
 
-// MethodName of the command
-func (m DOMMarkUndoableState) MethodName() string { return "DOM.markUndoableState" }
+// ProtoName of the command
+func (m DOMMarkUndoableState) ProtoName() string { return "DOM.markUndoableState" }
 
 // Call of the command, sessionID is optional.
-func (m DOMMarkUndoableState) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMMarkUndoableState) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMMoveTo Moves node into the new container, places it before the given anchor.
@@ -4089,13 +4093,13 @@ type DOMMoveTo struct {
 	InsertBeforeNodeID DOMNodeID `json:"insertBeforeNodeId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMMoveTo) MethodName() string { return "DOM.moveTo" }
+// ProtoName of the command
+func (m DOMMoveTo) ProtoName() string { return "DOM.moveTo" }
 
 // Call of the command, sessionID is optional.
-func (m DOMMoveTo) Call(caller Caller) (*DOMMoveToResult, error) {
+func (m DOMMoveTo) Call(c Client) (*DOMMoveToResult, error) {
 	var res DOMMoveToResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMMoveToResult Moves node into the new container, places it before the given anchor.
@@ -4116,13 +4120,13 @@ type DOMPerformSearch struct {
 	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMPerformSearch) MethodName() string { return "DOM.performSearch" }
+// ProtoName of the command
+func (m DOMPerformSearch) ProtoName() string { return "DOM.performSearch" }
 
 // Call of the command, sessionID is optional.
-func (m DOMPerformSearch) Call(caller Caller) (*DOMPerformSearchResult, error) {
+func (m DOMPerformSearch) Call(c Client) (*DOMPerformSearchResult, error) {
 	var res DOMPerformSearchResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMPerformSearchResult (experimental) Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
@@ -4133,7 +4137,7 @@ type DOMPerformSearchResult struct {
 	SearchID string `json:"searchId"`
 
 	// ResultCount Number of search results.
-	ResultCount int64 `json:"resultCount"`
+	ResultCount int `json:"resultCount"`
 }
 
 // DOMPushNodeByPathToFrontend (experimental) Requests that the node is sent to the caller given its path. // FIXME, use XPath
@@ -4143,13 +4147,13 @@ type DOMPushNodeByPathToFrontend struct {
 	Path string `json:"path"`
 }
 
-// MethodName of the command
-func (m DOMPushNodeByPathToFrontend) MethodName() string { return "DOM.pushNodeByPathToFrontend" }
+// ProtoName of the command
+func (m DOMPushNodeByPathToFrontend) ProtoName() string { return "DOM.pushNodeByPathToFrontend" }
 
 // Call of the command, sessionID is optional.
-func (m DOMPushNodeByPathToFrontend) Call(caller Caller) (*DOMPushNodeByPathToFrontendResult, error) {
+func (m DOMPushNodeByPathToFrontend) Call(c Client) (*DOMPushNodeByPathToFrontendResult, error) {
 	var res DOMPushNodeByPathToFrontendResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMPushNodeByPathToFrontendResult (experimental) Requests that the node is sent to the caller given its path. // FIXME, use XPath
@@ -4166,15 +4170,15 @@ type DOMPushNodesByBackendIdsToFrontend struct {
 	BackendNodeIds []DOMBackendNodeID `json:"backendNodeIds"`
 }
 
-// MethodName of the command
-func (m DOMPushNodesByBackendIdsToFrontend) MethodName() string {
+// ProtoName of the command
+func (m DOMPushNodesByBackendIdsToFrontend) ProtoName() string {
 	return "DOM.pushNodesByBackendIdsToFrontend"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMPushNodesByBackendIdsToFrontend) Call(caller Caller) (*DOMPushNodesByBackendIdsToFrontendResult, error) {
+func (m DOMPushNodesByBackendIdsToFrontend) Call(c Client) (*DOMPushNodesByBackendIdsToFrontendResult, error) {
 	var res DOMPushNodesByBackendIdsToFrontendResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMPushNodesByBackendIdsToFrontendResult (experimental) Requests that a batch of nodes is sent to the caller given their backend node ids.
@@ -4195,13 +4199,13 @@ type DOMQuerySelector struct {
 	Selector string `json:"selector"`
 }
 
-// MethodName of the command
-func (m DOMQuerySelector) MethodName() string { return "DOM.querySelector" }
+// ProtoName of the command
+func (m DOMQuerySelector) ProtoName() string { return "DOM.querySelector" }
 
 // Call of the command, sessionID is optional.
-func (m DOMQuerySelector) Call(caller Caller) (*DOMQuerySelectorResult, error) {
+func (m DOMQuerySelector) Call(c Client) (*DOMQuerySelectorResult, error) {
 	var res DOMQuerySelectorResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMQuerySelectorResult Executes `querySelector` on a given node.
@@ -4221,13 +4225,13 @@ type DOMQuerySelectorAll struct {
 	Selector string `json:"selector"`
 }
 
-// MethodName of the command
-func (m DOMQuerySelectorAll) MethodName() string { return "DOM.querySelectorAll" }
+// ProtoName of the command
+func (m DOMQuerySelectorAll) ProtoName() string { return "DOM.querySelectorAll" }
 
 // Call of the command, sessionID is optional.
-func (m DOMQuerySelectorAll) Call(caller Caller) (*DOMQuerySelectorAllResult, error) {
+func (m DOMQuerySelectorAll) Call(c Client) (*DOMQuerySelectorAllResult, error) {
 	var res DOMQuerySelectorAllResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMQuerySelectorAllResult Executes `querySelectorAll` on a given node.
@@ -4241,12 +4245,12 @@ type DOMQuerySelectorAllResult struct {
 type DOMRedo struct {
 }
 
-// MethodName of the command
-func (m DOMRedo) MethodName() string { return "DOM.redo" }
+// ProtoName of the command
+func (m DOMRedo) ProtoName() string { return "DOM.redo" }
 
 // Call of the command, sessionID is optional.
-func (m DOMRedo) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMRedo) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMRemoveAttribute Removes attribute with given name from an element with given id.
@@ -4259,12 +4263,12 @@ type DOMRemoveAttribute struct {
 	Name string `json:"name"`
 }
 
-// MethodName of the command
-func (m DOMRemoveAttribute) MethodName() string { return "DOM.removeAttribute" }
+// ProtoName of the command
+func (m DOMRemoveAttribute) ProtoName() string { return "DOM.removeAttribute" }
 
 // Call of the command, sessionID is optional.
-func (m DOMRemoveAttribute) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMRemoveAttribute) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMRemoveNode Removes node with given id.
@@ -4274,12 +4278,12 @@ type DOMRemoveNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMRemoveNode) MethodName() string { return "DOM.removeNode" }
+// ProtoName of the command
+func (m DOMRemoveNode) ProtoName() string { return "DOM.removeNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMRemoveNode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMRemoveNode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMRequestChildNodes Requests that children of the node with given id are returned to the caller in form of
@@ -4292,19 +4296,19 @@ type DOMRequestChildNodes struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int64 `json:"depth,omitempty"`
+	Depth int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the sub-tree
 	// (default is false).
 	Pierce bool `json:"pierce,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMRequestChildNodes) MethodName() string { return "DOM.requestChildNodes" }
+// ProtoName of the command
+func (m DOMRequestChildNodes) ProtoName() string { return "DOM.requestChildNodes" }
 
 // Call of the command, sessionID is optional.
-func (m DOMRequestChildNodes) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMRequestChildNodes) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMRequestNode Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -4316,13 +4320,13 @@ type DOMRequestNode struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// MethodName of the command
-func (m DOMRequestNode) MethodName() string { return "DOM.requestNode" }
+// ProtoName of the command
+func (m DOMRequestNode) ProtoName() string { return "DOM.requestNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMRequestNode) Call(caller Caller) (*DOMRequestNodeResult, error) {
+func (m DOMRequestNode) Call(c Client) (*DOMRequestNodeResult, error) {
 	var res DOMRequestNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMRequestNodeResult Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -4350,13 +4354,13 @@ type DOMResolveNode struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMResolveNode) MethodName() string { return "DOM.resolveNode" }
+// ProtoName of the command
+func (m DOMResolveNode) ProtoName() string { return "DOM.resolveNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMResolveNode) Call(caller Caller) (*DOMResolveNodeResult, error) {
+func (m DOMResolveNode) Call(c Client) (*DOMResolveNodeResult, error) {
 	var res DOMResolveNodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMResolveNodeResult Resolves the JavaScript node object for a given NodeId or BackendNodeId.
@@ -4379,12 +4383,12 @@ type DOMSetAttributeValue struct {
 	Value string `json:"value"`
 }
 
-// MethodName of the command
-func (m DOMSetAttributeValue) MethodName() string { return "DOM.setAttributeValue" }
+// ProtoName of the command
+func (m DOMSetAttributeValue) ProtoName() string { return "DOM.setAttributeValue" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetAttributeValue) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetAttributeValue) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSetAttributesAsText Sets attributes on element with given id. This method is useful when user edits some existing
@@ -4402,12 +4406,12 @@ type DOMSetAttributesAsText struct {
 	Name string `json:"name,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMSetAttributesAsText) MethodName() string { return "DOM.setAttributesAsText" }
+// ProtoName of the command
+func (m DOMSetAttributesAsText) ProtoName() string { return "DOM.setAttributesAsText" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetAttributesAsText) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetAttributesAsText) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSetFileInputFiles Sets files for the given file input element.
@@ -4426,12 +4430,12 @@ type DOMSetFileInputFiles struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMSetFileInputFiles) MethodName() string { return "DOM.setFileInputFiles" }
+// ProtoName of the command
+func (m DOMSetFileInputFiles) ProtoName() string { return "DOM.setFileInputFiles" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetFileInputFiles) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetFileInputFiles) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSetNodeStackTracesEnabled (experimental) Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled.
@@ -4441,12 +4445,12 @@ type DOMSetNodeStackTracesEnabled struct {
 	Enable bool `json:"enable"`
 }
 
-// MethodName of the command
-func (m DOMSetNodeStackTracesEnabled) MethodName() string { return "DOM.setNodeStackTracesEnabled" }
+// ProtoName of the command
+func (m DOMSetNodeStackTracesEnabled) ProtoName() string { return "DOM.setNodeStackTracesEnabled" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetNodeStackTracesEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetNodeStackTracesEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMGetNodeStackTraces (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -4456,13 +4460,13 @@ type DOMGetNodeStackTraces struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMGetNodeStackTraces) MethodName() string { return "DOM.getNodeStackTraces" }
+// ProtoName of the command
+func (m DOMGetNodeStackTraces) ProtoName() string { return "DOM.getNodeStackTraces" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetNodeStackTraces) Call(caller Caller) (*DOMGetNodeStackTracesResult, error) {
+func (m DOMGetNodeStackTraces) Call(c Client) (*DOMGetNodeStackTracesResult, error) {
 	var res DOMGetNodeStackTracesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetNodeStackTracesResult (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
@@ -4480,13 +4484,13 @@ type DOMGetFileInfo struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// MethodName of the command
-func (m DOMGetFileInfo) MethodName() string { return "DOM.getFileInfo" }
+// ProtoName of the command
+func (m DOMGetFileInfo) ProtoName() string { return "DOM.getFileInfo" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetFileInfo) Call(caller Caller) (*DOMGetFileInfoResult, error) {
+func (m DOMGetFileInfo) Call(c Client) (*DOMGetFileInfoResult, error) {
 	var res DOMGetFileInfoResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetFileInfoResult (experimental) Returns file information for the given
@@ -4505,12 +4509,12 @@ type DOMSetInspectedNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName of the command
-func (m DOMSetInspectedNode) MethodName() string { return "DOM.setInspectedNode" }
+// ProtoName of the command
+func (m DOMSetInspectedNode) ProtoName() string { return "DOM.setInspectedNode" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetInspectedNode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetInspectedNode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSetNodeName Sets node name for a node with given id.
@@ -4523,13 +4527,13 @@ type DOMSetNodeName struct {
 	Name string `json:"name"`
 }
 
-// MethodName of the command
-func (m DOMSetNodeName) MethodName() string { return "DOM.setNodeName" }
+// ProtoName of the command
+func (m DOMSetNodeName) ProtoName() string { return "DOM.setNodeName" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetNodeName) Call(caller Caller) (*DOMSetNodeNameResult, error) {
+func (m DOMSetNodeName) Call(c Client) (*DOMSetNodeNameResult, error) {
 	var res DOMSetNodeNameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMSetNodeNameResult Sets node name for a node with given id.
@@ -4549,12 +4553,12 @@ type DOMSetNodeValue struct {
 	Value string `json:"value"`
 }
 
-// MethodName of the command
-func (m DOMSetNodeValue) MethodName() string { return "DOM.setNodeValue" }
+// ProtoName of the command
+func (m DOMSetNodeValue) ProtoName() string { return "DOM.setNodeValue" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetNodeValue) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetNodeValue) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSetOuterHTML Sets node HTML markup, returns new node id.
@@ -4567,24 +4571,24 @@ type DOMSetOuterHTML struct {
 	OuterHTML string `json:"outerHTML"`
 }
 
-// MethodName of the command
-func (m DOMSetOuterHTML) MethodName() string { return "DOM.setOuterHTML" }
+// ProtoName of the command
+func (m DOMSetOuterHTML) ProtoName() string { return "DOM.setOuterHTML" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSetOuterHTML) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSetOuterHTML) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMUndo (experimental) Undoes the last performed action.
 type DOMUndo struct {
 }
 
-// MethodName of the command
-func (m DOMUndo) MethodName() string { return "DOM.undo" }
+// ProtoName of the command
+func (m DOMUndo) ProtoName() string { return "DOM.undo" }
 
 // Call of the command, sessionID is optional.
-func (m DOMUndo) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMUndo) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMGetFrameOwner (experimental) Returns iframe node that owns iframe with the given domain.
@@ -4594,13 +4598,13 @@ type DOMGetFrameOwner struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName of the command
-func (m DOMGetFrameOwner) MethodName() string { return "DOM.getFrameOwner" }
+// ProtoName of the command
+func (m DOMGetFrameOwner) ProtoName() string { return "DOM.getFrameOwner" }
 
 // Call of the command, sessionID is optional.
-func (m DOMGetFrameOwner) Call(caller Caller) (*DOMGetFrameOwnerResult, error) {
+func (m DOMGetFrameOwner) Call(c Client) (*DOMGetFrameOwnerResult, error) {
 	var res DOMGetFrameOwnerResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMGetFrameOwnerResult (experimental) Returns iframe node that owns iframe with the given domain.
@@ -4626,8 +4630,8 @@ type DOMAttributeModified struct {
 	Value string `json:"value"`
 }
 
-// MethodName interface
-func (evt DOMAttributeModified) MethodName() string {
+// ProtoName interface
+func (evt DOMAttributeModified) ProtoName() string {
 	return "DOM.attributeModified"
 }
 
@@ -4641,8 +4645,8 @@ type DOMAttributeRemoved struct {
 	Name string `json:"name"`
 }
 
-// MethodName interface
-func (evt DOMAttributeRemoved) MethodName() string {
+// ProtoName interface
+func (evt DOMAttributeRemoved) ProtoName() string {
 	return "DOM.attributeRemoved"
 }
 
@@ -4656,8 +4660,8 @@ type DOMCharacterDataModified struct {
 	CharacterData string `json:"characterData"`
 }
 
-// MethodName interface
-func (evt DOMCharacterDataModified) MethodName() string {
+// ProtoName interface
+func (evt DOMCharacterDataModified) ProtoName() string {
 	return "DOM.characterDataModified"
 }
 
@@ -4668,11 +4672,11 @@ type DOMChildNodeCountUpdated struct {
 	NodeID DOMNodeID `json:"nodeId"`
 
 	// ChildNodeCount New node count.
-	ChildNodeCount int64 `json:"childNodeCount"`
+	ChildNodeCount int `json:"childNodeCount"`
 }
 
-// MethodName interface
-func (evt DOMChildNodeCountUpdated) MethodName() string {
+// ProtoName interface
+func (evt DOMChildNodeCountUpdated) ProtoName() string {
 	return "DOM.childNodeCountUpdated"
 }
 
@@ -4689,8 +4693,8 @@ type DOMChildNodeInserted struct {
 	Node *DOMNode `json:"node"`
 }
 
-// MethodName interface
-func (evt DOMChildNodeInserted) MethodName() string {
+// ProtoName interface
+func (evt DOMChildNodeInserted) ProtoName() string {
 	return "DOM.childNodeInserted"
 }
 
@@ -4704,8 +4708,8 @@ type DOMChildNodeRemoved struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName interface
-func (evt DOMChildNodeRemoved) MethodName() string {
+// ProtoName interface
+func (evt DOMChildNodeRemoved) ProtoName() string {
 	return "DOM.childNodeRemoved"
 }
 
@@ -4719,8 +4723,8 @@ type DOMDistributedNodesUpdated struct {
 	DistributedNodes []*DOMBackendNode `json:"distributedNodes"`
 }
 
-// MethodName interface
-func (evt DOMDistributedNodesUpdated) MethodName() string {
+// ProtoName interface
+func (evt DOMDistributedNodesUpdated) ProtoName() string {
 	return "DOM.distributedNodesUpdated"
 }
 
@@ -4728,8 +4732,8 @@ func (evt DOMDistributedNodesUpdated) MethodName() string {
 type DOMDocumentUpdated struct {
 }
 
-// MethodName interface
-func (evt DOMDocumentUpdated) MethodName() string {
+// ProtoName interface
+func (evt DOMDocumentUpdated) ProtoName() string {
 	return "DOM.documentUpdated"
 }
 
@@ -4740,8 +4744,8 @@ type DOMInlineStyleInvalidated struct {
 	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
-// MethodName interface
-func (evt DOMInlineStyleInvalidated) MethodName() string {
+// ProtoName interface
+func (evt DOMInlineStyleInvalidated) ProtoName() string {
 	return "DOM.inlineStyleInvalidated"
 }
 
@@ -4755,8 +4759,8 @@ type DOMPseudoElementAdded struct {
 	PseudoElement *DOMNode `json:"pseudoElement"`
 }
 
-// MethodName interface
-func (evt DOMPseudoElementAdded) MethodName() string {
+// ProtoName interface
+func (evt DOMPseudoElementAdded) ProtoName() string {
 	return "DOM.pseudoElementAdded"
 }
 
@@ -4770,8 +4774,8 @@ type DOMPseudoElementRemoved struct {
 	PseudoElementID DOMNodeID `json:"pseudoElementId"`
 }
 
-// MethodName interface
-func (evt DOMPseudoElementRemoved) MethodName() string {
+// ProtoName interface
+func (evt DOMPseudoElementRemoved) ProtoName() string {
 	return "DOM.pseudoElementRemoved"
 }
 
@@ -4786,8 +4790,8 @@ type DOMSetChildNodes struct {
 	Nodes []*DOMNode `json:"nodes"`
 }
 
-// MethodName interface
-func (evt DOMSetChildNodes) MethodName() string {
+// ProtoName interface
+func (evt DOMSetChildNodes) ProtoName() string {
 	return "DOM.setChildNodes"
 }
 
@@ -4801,8 +4805,8 @@ type DOMShadowRootPopped struct {
 	RootID DOMNodeID `json:"rootId"`
 }
 
-// MethodName interface
-func (evt DOMShadowRootPopped) MethodName() string {
+// ProtoName interface
+func (evt DOMShadowRootPopped) ProtoName() string {
 	return "DOM.shadowRootPopped"
 }
 
@@ -4816,8 +4820,8 @@ type DOMShadowRootPushed struct {
 	Root *DOMNode `json:"root"`
 }
 
-// MethodName interface
-func (evt DOMShadowRootPushed) MethodName() string {
+// ProtoName interface
+func (evt DOMShadowRootPushed) ProtoName() string {
 	return "DOM.shadowRootPushed"
 }
 
@@ -4854,10 +4858,10 @@ type DOMDebuggerEventListener struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
 	// LineNumber Line number in the script (0-based).
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber Column number in the script (0-based).
-	ColumnNumber int64 `json:"columnNumber"`
+	ColumnNumber int `json:"columnNumber"`
 
 	// Handler (optional) Event handler function value.
 	Handler *RuntimeRemoteObject `json:"handler,omitempty"`
@@ -4877,20 +4881,20 @@ type DOMDebuggerGetEventListeners struct {
 
 	// Depth (optional) The maximum depth at which Node children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int64 `json:"depth,omitempty"`
+	Depth int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false). Reports listeners for all contexts if pierce is enabled.
 	Pierce bool `json:"pierce,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerGetEventListeners) MethodName() string { return "DOMDebugger.getEventListeners" }
+// ProtoName of the command
+func (m DOMDebuggerGetEventListeners) ProtoName() string { return "DOMDebugger.getEventListeners" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerGetEventListeners) Call(caller Caller) (*DOMDebuggerGetEventListenersResult, error) {
+func (m DOMDebuggerGetEventListeners) Call(c Client) (*DOMDebuggerGetEventListenersResult, error) {
 	var res DOMDebuggerGetEventListenersResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMDebuggerGetEventListenersResult Returns event listeners of the given object.
@@ -4910,12 +4914,12 @@ type DOMDebuggerRemoveDOMBreakpoint struct {
 	Type DOMDebuggerDOMBreakpointType `json:"type"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerRemoveDOMBreakpoint) MethodName() string { return "DOMDebugger.removeDOMBreakpoint" }
+// ProtoName of the command
+func (m DOMDebuggerRemoveDOMBreakpoint) ProtoName() string { return "DOMDebugger.removeDOMBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerRemoveDOMBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerRemoveDOMBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerRemoveEventListenerBreakpoint Removes breakpoint on particular DOM event.
@@ -4928,14 +4932,14 @@ type DOMDebuggerRemoveEventListenerBreakpoint struct {
 	TargetName string `json:"targetName,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerRemoveEventListenerBreakpoint) MethodName() string {
+// ProtoName of the command
+func (m DOMDebuggerRemoveEventListenerBreakpoint) ProtoName() string {
 	return "DOMDebugger.removeEventListenerBreakpoint"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerRemoveInstrumentationBreakpoint (experimental) Removes breakpoint on particular native event.
@@ -4945,14 +4949,14 @@ type DOMDebuggerRemoveInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerRemoveInstrumentationBreakpoint) MethodName() string {
+// ProtoName of the command
+func (m DOMDebuggerRemoveInstrumentationBreakpoint) ProtoName() string {
 	return "DOMDebugger.removeInstrumentationBreakpoint"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerRemoveInstrumentationBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerRemoveInstrumentationBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerRemoveXHRBreakpoint Removes breakpoint from XMLHttpRequest.
@@ -4962,12 +4966,12 @@ type DOMDebuggerRemoveXHRBreakpoint struct {
 	URL string `json:"url"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerRemoveXHRBreakpoint) MethodName() string { return "DOMDebugger.removeXHRBreakpoint" }
+// ProtoName of the command
+func (m DOMDebuggerRemoveXHRBreakpoint) ProtoName() string { return "DOMDebugger.removeXHRBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerRemoveXHRBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerRemoveXHRBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerSetDOMBreakpoint Sets breakpoint on particular operation with DOM.
@@ -4980,12 +4984,12 @@ type DOMDebuggerSetDOMBreakpoint struct {
 	Type DOMDebuggerDOMBreakpointType `json:"type"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerSetDOMBreakpoint) MethodName() string { return "DOMDebugger.setDOMBreakpoint" }
+// ProtoName of the command
+func (m DOMDebuggerSetDOMBreakpoint) ProtoName() string { return "DOMDebugger.setDOMBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerSetDOMBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerSetDOMBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerSetEventListenerBreakpoint Sets breakpoint on particular DOM event.
@@ -4999,14 +5003,14 @@ type DOMDebuggerSetEventListenerBreakpoint struct {
 	TargetName string `json:"targetName,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerSetEventListenerBreakpoint) MethodName() string {
+// ProtoName of the command
+func (m DOMDebuggerSetEventListenerBreakpoint) ProtoName() string {
 	return "DOMDebugger.setEventListenerBreakpoint"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerSetEventListenerBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerSetEventListenerBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerSetInstrumentationBreakpoint (experimental) Sets breakpoint on particular native event.
@@ -5016,14 +5020,14 @@ type DOMDebuggerSetInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerSetInstrumentationBreakpoint) MethodName() string {
+// ProtoName of the command
+func (m DOMDebuggerSetInstrumentationBreakpoint) ProtoName() string {
 	return "DOMDebugger.setInstrumentationBreakpoint"
 }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerSetInstrumentationBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerSetInstrumentationBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMDebuggerSetXHRBreakpoint Sets breakpoint on XMLHttpRequest.
@@ -5033,19 +5037,19 @@ type DOMDebuggerSetXHRBreakpoint struct {
 	URL string `json:"url"`
 }
 
-// MethodName of the command
-func (m DOMDebuggerSetXHRBreakpoint) MethodName() string { return "DOMDebugger.setXHRBreakpoint" }
+// ProtoName of the command
+func (m DOMDebuggerSetXHRBreakpoint) ProtoName() string { return "DOMDebugger.setXHRBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DOMDebuggerSetXHRBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMDebuggerSetXHRBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSnapshotDOMNode A Node in the DOM tree.
 type DOMSnapshotDOMNode struct {
 
 	// NodeType `Node`'s nodeType.
-	NodeType int64 `json:"nodeType"`
+	NodeType int `json:"nodeType"`
 
 	// NodeName `Node`'s nodeName.
 	NodeName string `json:"nodeName"`
@@ -5070,18 +5074,18 @@ type DOMSnapshotDOMNode struct {
 
 	// ChildNodeIndexes (optional) The indexes of the node's child nodes in the `domNodes` array returned by `getSnapshot`, if
 	// any.
-	ChildNodeIndexes []int64 `json:"childNodeIndexes,omitempty"`
+	ChildNodeIndexes []int `json:"childNodeIndexes,omitempty"`
 
 	// Attributes (optional) Attributes of an `Element` node.
 	Attributes []*DOMSnapshotNameValue `json:"attributes,omitempty"`
 
 	// PseudoElementIndexes (optional) Indexes of pseudo elements associated with this node in the `domNodes` array returned by
 	// `getSnapshot`, if any.
-	PseudoElementIndexes []int64 `json:"pseudoElementIndexes,omitempty"`
+	PseudoElementIndexes []int `json:"pseudoElementIndexes,omitempty"`
 
 	// LayoutNodeIndex (optional) The index of the node's related layout tree node in the `layoutTreeNodes` array returned by
 	// `getSnapshot`, if any.
-	LayoutNodeIndex int64 `json:"layoutNodeIndex,omitempty"`
+	LayoutNodeIndex int `json:"layoutNodeIndex,omitempty"`
 
 	// DocumentURL (optional) Document URL that `Document` or `FrameOwner` node points to.
 	DocumentURL string `json:"documentURL,omitempty"`
@@ -5106,7 +5110,7 @@ type DOMSnapshotDOMNode struct {
 
 	// ContentDocumentIndex (optional) The index of a frame owner element's content document in the `domNodes` array returned by
 	// `getSnapshot`, if any.
-	ContentDocumentIndex int64 `json:"contentDocumentIndex,omitempty"`
+	ContentDocumentIndex int `json:"contentDocumentIndex,omitempty"`
 
 	// PseudoType (optional) Type of a pseudo element node.
 	PseudoType DOMPseudoType `json:"pseudoType,omitempty"`
@@ -5144,18 +5148,18 @@ type DOMSnapshotInlineTextBox struct {
 
 	// StartCharacterIndex The starting index in characters, for this post layout textbox substring. Characters that
 	// would be represented as a surrogate pair in UTF-16 have length 2.
-	StartCharacterIndex int64 `json:"startCharacterIndex"`
+	StartCharacterIndex int `json:"startCharacterIndex"`
 
 	// NumCharacters The number of characters in this post layout textbox substring. Characters that would be
 	// represented as a surrogate pair in UTF-16 have length 2.
-	NumCharacters int64 `json:"numCharacters"`
+	NumCharacters int `json:"numCharacters"`
 }
 
 // DOMSnapshotLayoutTreeNode Details of an element in the DOM tree with a LayoutObject.
 type DOMSnapshotLayoutTreeNode struct {
 
 	// DomNodeIndex The index of the related DOM node in the `domNodes` array returned by `getSnapshot`.
-	DomNodeIndex int64 `json:"domNodeIndex"`
+	DomNodeIndex int `json:"domNodeIndex"`
 
 	// BoundingBox The bounding box in document coordinates. Note that scroll offset of the document is ignored.
 	BoundingBox *DOMRect `json:"boundingBox"`
@@ -5167,12 +5171,12 @@ type DOMSnapshotLayoutTreeNode struct {
 	InlineTextNodes []*DOMSnapshotInlineTextBox `json:"inlineTextNodes,omitempty"`
 
 	// StyleIndex (optional) Index into the `computedStyles` array returned by `getSnapshot`.
-	StyleIndex int64 `json:"styleIndex,omitempty"`
+	StyleIndex int `json:"styleIndex,omitempty"`
 
 	// PaintOrder (optional) Global paint order index, which is determined by the stacking order of the nodes. Nodes
 	// that are painted together will have the same index. Only provided if includePaintOrder in
 	// getSnapshot was true.
-	PaintOrder int64 `json:"paintOrder,omitempty"`
+	PaintOrder int `json:"paintOrder,omitempty"`
 
 	// IsStackingContext (optional) Set to true to indicate the element begins a new stacking context.
 	IsStackingContext bool `json:"isStackingContext,omitempty"`
@@ -5196,7 +5200,7 @@ type DOMSnapshotNameValue struct {
 }
 
 // DOMSnapshotStringIndex Index of the string in the strings table.
-type DOMSnapshotStringIndex int64
+type DOMSnapshotStringIndex int
 
 // DOMSnapshotArrayOfStrings Index of the string in the strings table.
 type DOMSnapshotArrayOfStrings []DOMSnapshotStringIndex
@@ -5205,7 +5209,7 @@ type DOMSnapshotArrayOfStrings []DOMSnapshotStringIndex
 type DOMSnapshotRareStringData struct {
 
 	// Index ...
-	Index []int64 `json:"index"`
+	Index []int `json:"index"`
 
 	// Value ...
 	Value []DOMSnapshotStringIndex `json:"value"`
@@ -5215,17 +5219,17 @@ type DOMSnapshotRareStringData struct {
 type DOMSnapshotRareBooleanData struct {
 
 	// Index ...
-	Index []int64 `json:"index"`
+	Index []int `json:"index"`
 }
 
 // DOMSnapshotRareIntegerData ...
 type DOMSnapshotRareIntegerData struct {
 
 	// Index ...
-	Index []int64 `json:"index"`
+	Index []int `json:"index"`
 
 	// Value ...
-	Value []int64 `json:"value"`
+	Value []int `json:"value"`
 }
 
 // DOMSnapshotRectangle ...
@@ -5284,10 +5288,10 @@ type DOMSnapshotDocumentSnapshot struct {
 type DOMSnapshotNodeTreeSnapshot struct {
 
 	// ParentIndex (optional) Parent node index.
-	ParentIndex []int64 `json:"parentIndex,omitempty"`
+	ParentIndex []int `json:"parentIndex,omitempty"`
 
 	// NodeType (optional) `Node`'s nodeType.
-	NodeType []int64 `json:"nodeType,omitempty"`
+	NodeType []int `json:"nodeType,omitempty"`
 
 	// NodeName (optional) `Node`'s nodeName.
 	NodeName []DOMSnapshotStringIndex `json:"nodeName,omitempty"`
@@ -5335,7 +5339,7 @@ type DOMSnapshotNodeTreeSnapshot struct {
 type DOMSnapshotLayoutTreeSnapshot struct {
 
 	// NodeIndex Index of the corresponding node in the `NodeTreeSnapshot` array returned by `captureSnapshot`.
-	NodeIndex []int64 `json:"nodeIndex"`
+	NodeIndex []int `json:"nodeIndex"`
 
 	// Styles Array of indexes specifying computed style strings, filtered according to the `computedStyles` parameter passed to `captureSnapshot`.
 	Styles []DOMSnapshotArrayOfStrings `json:"styles"`
@@ -5352,7 +5356,7 @@ type DOMSnapshotLayoutTreeSnapshot struct {
 	// PaintOrders (optional) Global paint order index, which is determined by the stacking order of the nodes. Nodes
 	// that are painted together will have the same index. Only provided if includePaintOrder in
 	// captureSnapshot was true.
-	PaintOrders []int64 `json:"paintOrders,omitempty"`
+	PaintOrders []int `json:"paintOrders,omitempty"`
 
 	// OffsetRects (optional) The offset rect of nodes. Only available when includeDOMRects is set to true
 	OffsetRects []DOMSnapshotRectangle `json:"offsetRects,omitempty"`
@@ -5369,42 +5373,42 @@ type DOMSnapshotLayoutTreeSnapshot struct {
 type DOMSnapshotTextBoxSnapshot struct {
 
 	// LayoutIndex Index of the layout tree node that owns this box collection.
-	LayoutIndex []int64 `json:"layoutIndex"`
+	LayoutIndex []int `json:"layoutIndex"`
 
 	// Bounds The absolute position bounding box.
 	Bounds []DOMSnapshotRectangle `json:"bounds"`
 
 	// Start The starting index in characters, for this post layout textbox substring. Characters that
 	// would be represented as a surrogate pair in UTF-16 have length 2.
-	Start []int64 `json:"start"`
+	Start []int `json:"start"`
 
 	// Length The number of characters in this post layout textbox substring. Characters that would be
 	// represented as a surrogate pair in UTF-16 have length 2.
-	Length []int64 `json:"length"`
+	Length []int `json:"length"`
 }
 
 // DOMSnapshotDisable Disables DOM snapshot agent for the given page.
 type DOMSnapshotDisable struct {
 }
 
-// MethodName of the command
-func (m DOMSnapshotDisable) MethodName() string { return "DOMSnapshot.disable" }
+// ProtoName of the command
+func (m DOMSnapshotDisable) ProtoName() string { return "DOMSnapshot.disable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSnapshotDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSnapshotDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSnapshotEnable Enables DOM snapshot agent for the given page.
 type DOMSnapshotEnable struct {
 }
 
-// MethodName of the command
-func (m DOMSnapshotEnable) MethodName() string { return "DOMSnapshot.enable" }
+// ProtoName of the command
+func (m DOMSnapshotEnable) ProtoName() string { return "DOMSnapshot.enable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSnapshotEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMSnapshotEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMSnapshotGetSnapshot (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5426,13 +5430,13 @@ type DOMSnapshotGetSnapshot struct {
 	IncludeUserAgentShadowTree bool `json:"includeUserAgentShadowTree,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMSnapshotGetSnapshot) MethodName() string { return "DOMSnapshot.getSnapshot" }
+// ProtoName of the command
+func (m DOMSnapshotGetSnapshot) ProtoName() string { return "DOMSnapshot.getSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSnapshotGetSnapshot) Call(caller Caller) (*DOMSnapshotGetSnapshotResult, error) {
+func (m DOMSnapshotGetSnapshot) Call(c Client) (*DOMSnapshotGetSnapshotResult, error) {
 	var res DOMSnapshotGetSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMSnapshotGetSnapshotResult (deprecated) Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5467,13 +5471,13 @@ type DOMSnapshotCaptureSnapshot struct {
 	IncludeDOMRects bool `json:"includeDOMRects,omitempty"`
 }
 
-// MethodName of the command
-func (m DOMSnapshotCaptureSnapshot) MethodName() string { return "DOMSnapshot.captureSnapshot" }
+// ProtoName of the command
+func (m DOMSnapshotCaptureSnapshot) ProtoName() string { return "DOMSnapshot.captureSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m DOMSnapshotCaptureSnapshot) Call(caller Caller) (*DOMSnapshotCaptureSnapshotResult, error) {
+func (m DOMSnapshotCaptureSnapshot) Call(c Client) (*DOMSnapshotCaptureSnapshotResult, error) {
 	var res DOMSnapshotCaptureSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMSnapshotCaptureSnapshotResult Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -5509,36 +5513,36 @@ type DOMStorageClear struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// MethodName of the command
-func (m DOMStorageClear) MethodName() string { return "DOMStorage.clear" }
+// ProtoName of the command
+func (m DOMStorageClear) ProtoName() string { return "DOMStorage.clear" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageClear) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMStorageClear) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMStorageDisable Disables storage tracking, prevents storage events from being sent to the client.
 type DOMStorageDisable struct {
 }
 
-// MethodName of the command
-func (m DOMStorageDisable) MethodName() string { return "DOMStorage.disable" }
+// ProtoName of the command
+func (m DOMStorageDisable) ProtoName() string { return "DOMStorage.disable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMStorageDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMStorageEnable Enables storage tracking, storage events will now be delivered to the client.
 type DOMStorageEnable struct {
 }
 
-// MethodName of the command
-func (m DOMStorageEnable) MethodName() string { return "DOMStorage.enable" }
+// ProtoName of the command
+func (m DOMStorageEnable) ProtoName() string { return "DOMStorage.enable" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMStorageEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMStorageGetDOMStorageItems ...
@@ -5548,13 +5552,13 @@ type DOMStorageGetDOMStorageItems struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// MethodName of the command
-func (m DOMStorageGetDOMStorageItems) MethodName() string { return "DOMStorage.getDOMStorageItems" }
+// ProtoName of the command
+func (m DOMStorageGetDOMStorageItems) ProtoName() string { return "DOMStorage.getDOMStorageItems" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageGetDOMStorageItems) Call(caller Caller) (*DOMStorageGetDOMStorageItemsResult, error) {
+func (m DOMStorageGetDOMStorageItems) Call(c Client) (*DOMStorageGetDOMStorageItemsResult, error) {
 	var res DOMStorageGetDOMStorageItemsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DOMStorageGetDOMStorageItemsResult ...
@@ -5574,12 +5578,12 @@ type DOMStorageRemoveDOMStorageItem struct {
 	Key string `json:"key"`
 }
 
-// MethodName of the command
-func (m DOMStorageRemoveDOMStorageItem) MethodName() string { return "DOMStorage.removeDOMStorageItem" }
+// ProtoName of the command
+func (m DOMStorageRemoveDOMStorageItem) ProtoName() string { return "DOMStorage.removeDOMStorageItem" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageRemoveDOMStorageItem) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMStorageRemoveDOMStorageItem) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMStorageSetDOMStorageItem ...
@@ -5595,12 +5599,12 @@ type DOMStorageSetDOMStorageItem struct {
 	Value string `json:"value"`
 }
 
-// MethodName of the command
-func (m DOMStorageSetDOMStorageItem) MethodName() string { return "DOMStorage.setDOMStorageItem" }
+// ProtoName of the command
+func (m DOMStorageSetDOMStorageItem) ProtoName() string { return "DOMStorage.setDOMStorageItem" }
 
 // Call of the command, sessionID is optional.
-func (m DOMStorageSetDOMStorageItem) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DOMStorageSetDOMStorageItem) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DOMStorageDomStorageItemAdded ...
@@ -5616,8 +5620,8 @@ type DOMStorageDomStorageItemAdded struct {
 	NewValue string `json:"newValue"`
 }
 
-// MethodName interface
-func (evt DOMStorageDomStorageItemAdded) MethodName() string {
+// ProtoName interface
+func (evt DOMStorageDomStorageItemAdded) ProtoName() string {
 	return "DOMStorage.domStorageItemAdded"
 }
 
@@ -5631,8 +5635,8 @@ type DOMStorageDomStorageItemRemoved struct {
 	Key string `json:"key"`
 }
 
-// MethodName interface
-func (evt DOMStorageDomStorageItemRemoved) MethodName() string {
+// ProtoName interface
+func (evt DOMStorageDomStorageItemRemoved) ProtoName() string {
 	return "DOMStorage.domStorageItemRemoved"
 }
 
@@ -5652,8 +5656,8 @@ type DOMStorageDomStorageItemUpdated struct {
 	NewValue string `json:"newValue"`
 }
 
-// MethodName interface
-func (evt DOMStorageDomStorageItemUpdated) MethodName() string {
+// ProtoName interface
+func (evt DOMStorageDomStorageItemUpdated) ProtoName() string {
 	return "DOMStorage.domStorageItemUpdated"
 }
 
@@ -5664,8 +5668,8 @@ type DOMStorageDomStorageItemsCleared struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// MethodName interface
-func (evt DOMStorageDomStorageItemsCleared) MethodName() string {
+// ProtoName interface
+func (evt DOMStorageDomStorageItemsCleared) ProtoName() string {
 	return "DOMStorage.domStorageItemsCleared"
 }
 
@@ -5695,31 +5699,31 @@ type DatabaseError struct {
 	Message string `json:"message"`
 
 	// Code Error code.
-	Code int64 `json:"code"`
+	Code int `json:"code"`
 }
 
 // DatabaseDisable Disables database tracking, prevents database events from being sent to the client.
 type DatabaseDisable struct {
 }
 
-// MethodName of the command
-func (m DatabaseDisable) MethodName() string { return "Database.disable" }
+// ProtoName of the command
+func (m DatabaseDisable) ProtoName() string { return "Database.disable" }
 
 // Call of the command, sessionID is optional.
-func (m DatabaseDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DatabaseDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DatabaseEnable Enables database tracking, database events will now be delivered to the client.
 type DatabaseEnable struct {
 }
 
-// MethodName of the command
-func (m DatabaseEnable) MethodName() string { return "Database.enable" }
+// ProtoName of the command
+func (m DatabaseEnable) ProtoName() string { return "Database.enable" }
 
 // Call of the command, sessionID is optional.
-func (m DatabaseEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DatabaseEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DatabaseExecuteSQL ...
@@ -5732,13 +5736,13 @@ type DatabaseExecuteSQL struct {
 	Query string `json:"query"`
 }
 
-// MethodName of the command
-func (m DatabaseExecuteSQL) MethodName() string { return "Database.executeSQL" }
+// ProtoName of the command
+func (m DatabaseExecuteSQL) ProtoName() string { return "Database.executeSQL" }
 
 // Call of the command, sessionID is optional.
-func (m DatabaseExecuteSQL) Call(caller Caller) (*DatabaseExecuteSQLResult, error) {
+func (m DatabaseExecuteSQL) Call(c Client) (*DatabaseExecuteSQLResult, error) {
 	var res DatabaseExecuteSQLResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DatabaseExecuteSQLResult ...
@@ -5748,7 +5752,7 @@ type DatabaseExecuteSQLResult struct {
 	ColumnNames []string `json:"columnNames,omitempty"`
 
 	// Values (optional) ...
-	Values []JSON `json:"values,omitempty"`
+	Values []gson.JSON `json:"values,omitempty"`
 
 	// SQLError (optional) ...
 	SQLError *DatabaseError `json:"sqlError,omitempty"`
@@ -5761,13 +5765,13 @@ type DatabaseGetDatabaseTableNames struct {
 	DatabaseID DatabaseDatabaseID `json:"databaseId"`
 }
 
-// MethodName of the command
-func (m DatabaseGetDatabaseTableNames) MethodName() string { return "Database.getDatabaseTableNames" }
+// ProtoName of the command
+func (m DatabaseGetDatabaseTableNames) ProtoName() string { return "Database.getDatabaseTableNames" }
 
 // Call of the command, sessionID is optional.
-func (m DatabaseGetDatabaseTableNames) Call(caller Caller) (*DatabaseGetDatabaseTableNamesResult, error) {
+func (m DatabaseGetDatabaseTableNames) Call(c Client) (*DatabaseGetDatabaseTableNamesResult, error) {
 	var res DatabaseGetDatabaseTableNamesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DatabaseGetDatabaseTableNamesResult ...
@@ -5784,8 +5788,8 @@ type DatabaseAddDatabase struct {
 	Database *DatabaseDatabase `json:"database"`
 }
 
-// MethodName interface
-func (evt DatabaseAddDatabase) MethodName() string {
+// ProtoName interface
+func (evt DatabaseAddDatabase) ProtoName() string {
 	return "Database.addDatabase"
 }
 
@@ -5793,14 +5797,14 @@ func (evt DatabaseAddDatabase) MethodName() string {
 type DeviceOrientationClearDeviceOrientationOverride struct {
 }
 
-// MethodName of the command
-func (m DeviceOrientationClearDeviceOrientationOverride) MethodName() string {
+// ProtoName of the command
+func (m DeviceOrientationClearDeviceOrientationOverride) ProtoName() string {
 	return "DeviceOrientation.clearDeviceOrientationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m DeviceOrientationClearDeviceOrientationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DeviceOrientationClearDeviceOrientationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DeviceOrientationSetDeviceOrientationOverride Overrides the Device Orientation.
@@ -5816,14 +5820,14 @@ type DeviceOrientationSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
-// MethodName of the command
-func (m DeviceOrientationSetDeviceOrientationOverride) MethodName() string {
+// ProtoName of the command
+func (m DeviceOrientationSetDeviceOrientationOverride) ProtoName() string {
 	return "DeviceOrientation.setDeviceOrientationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m DeviceOrientationSetDeviceOrientationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DeviceOrientationSetDeviceOrientationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationScreenOrientationType enum
@@ -5850,7 +5854,7 @@ type EmulationScreenOrientation struct {
 	Type EmulationScreenOrientationType `json:"type"`
 
 	// Angle Orientation angle.
-	Angle int64 `json:"angle"`
+	Angle int `json:"angle"`
 }
 
 // EmulationMediaFeature ...
@@ -5919,13 +5923,13 @@ type EmulationUserAgentMetadata struct {
 type EmulationCanEmulate struct {
 }
 
-// MethodName of the command
-func (m EmulationCanEmulate) MethodName() string { return "Emulation.canEmulate" }
+// ProtoName of the command
+func (m EmulationCanEmulate) ProtoName() string { return "Emulation.canEmulate" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationCanEmulate) Call(caller Caller) (*EmulationCanEmulateResult, error) {
+func (m EmulationCanEmulate) Call(c Client) (*EmulationCanEmulateResult, error) {
 	var res EmulationCanEmulateResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // EmulationCanEmulateResult Tells whether emulation is supported.
@@ -5939,40 +5943,40 @@ type EmulationCanEmulateResult struct {
 type EmulationClearDeviceMetricsOverride struct {
 }
 
-// MethodName of the command
-func (m EmulationClearDeviceMetricsOverride) MethodName() string {
+// ProtoName of the command
+func (m EmulationClearDeviceMetricsOverride) ProtoName() string {
 	return "Emulation.clearDeviceMetricsOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationClearDeviceMetricsOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationClearDeviceMetricsOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationClearGeolocationOverride Clears the overridden Geolocation Position and Error.
 type EmulationClearGeolocationOverride struct {
 }
 
-// MethodName of the command
-func (m EmulationClearGeolocationOverride) MethodName() string {
+// ProtoName of the command
+func (m EmulationClearGeolocationOverride) ProtoName() string {
 	return "Emulation.clearGeolocationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationClearGeolocationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationClearGeolocationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationResetPageScaleFactor (experimental) Requests that page scale factor is reset to initial values.
 type EmulationResetPageScaleFactor struct {
 }
 
-// MethodName of the command
-func (m EmulationResetPageScaleFactor) MethodName() string { return "Emulation.resetPageScaleFactor" }
+// ProtoName of the command
+func (m EmulationResetPageScaleFactor) ProtoName() string { return "Emulation.resetPageScaleFactor" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationResetPageScaleFactor) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationResetPageScaleFactor) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetFocusEmulationEnabled (experimental) Enables or disables simulating a focused and active page.
@@ -5982,14 +5986,14 @@ type EmulationSetFocusEmulationEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m EmulationSetFocusEmulationEnabled) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetFocusEmulationEnabled) ProtoName() string {
 	return "Emulation.setFocusEmulationEnabled"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetFocusEmulationEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetFocusEmulationEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
@@ -5999,12 +6003,12 @@ type EmulationSetCPUThrottlingRate struct {
 	Rate float64 `json:"rate"`
 }
 
-// MethodName of the command
-func (m EmulationSetCPUThrottlingRate) MethodName() string { return "Emulation.setCPUThrottlingRate" }
+// ProtoName of the command
+func (m EmulationSetCPUThrottlingRate) ProtoName() string { return "Emulation.setCPUThrottlingRate" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetCPUThrottlingRate) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetCPUThrottlingRate) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetDefaultBackgroundColorOverride Sets or clears an override of the default background color of the frame. This override is used
@@ -6016,14 +6020,14 @@ type EmulationSetDefaultBackgroundColorOverride struct {
 	Color *DOMRGBA `json:"color,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetDefaultBackgroundColorOverride) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetDefaultBackgroundColorOverride) ProtoName() string {
 	return "Emulation.setDefaultBackgroundColorOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetDefaultBackgroundColorOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetDefaultBackgroundColorOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetDeviceMetricsOverride Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -6032,10 +6036,10 @@ func (m EmulationSetDefaultBackgroundColorOverride) Call(caller Caller) error {
 type EmulationSetDeviceMetricsOverride struct {
 
 	// Width Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 
 	// DeviceScaleFactor Overriding device scale factor value. 0 disables the override.
 	DeviceScaleFactor float64 `json:"deviceScaleFactor"`
@@ -6048,16 +6052,16 @@ type EmulationSetDeviceMetricsOverride struct {
 	Scale float64 `json:"scale,omitempty"`
 
 	// ScreenWidth (experimental) (optional) Overriding screen width value in pixels (minimum 0, maximum 10000000).
-	ScreenWidth int64 `json:"screenWidth,omitempty"`
+	ScreenWidth int `json:"screenWidth,omitempty"`
 
 	// ScreenHeight (experimental) (optional) Overriding screen height value in pixels (minimum 0, maximum 10000000).
-	ScreenHeight int64 `json:"screenHeight,omitempty"`
+	ScreenHeight int `json:"screenHeight,omitempty"`
 
 	// PositionX (experimental) (optional) Overriding view X position on screen in pixels (minimum 0, maximum 10000000).
-	PositionX int64 `json:"positionX,omitempty"`
+	PositionX int `json:"positionX,omitempty"`
 
 	// PositionY (experimental) (optional) Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).
-	PositionY int64 `json:"positionY,omitempty"`
+	PositionY int `json:"positionY,omitempty"`
 
 	// DontSetVisibleSize (experimental) (optional) Do not set visible view size, rely upon explicit setVisibleSize call.
 	DontSetVisibleSize bool `json:"dontSetVisibleSize,omitempty"`
@@ -6070,14 +6074,14 @@ type EmulationSetDeviceMetricsOverride struct {
 	Viewport *PageViewport `json:"viewport,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetDeviceMetricsOverride) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetDeviceMetricsOverride) ProtoName() string {
 	return "Emulation.setDeviceMetricsOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetDeviceMetricsOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetDeviceMetricsOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetScrollbarsHidden (experimental) ...
@@ -6087,12 +6091,12 @@ type EmulationSetScrollbarsHidden struct {
 	Hidden bool `json:"hidden"`
 }
 
-// MethodName of the command
-func (m EmulationSetScrollbarsHidden) MethodName() string { return "Emulation.setScrollbarsHidden" }
+// ProtoName of the command
+func (m EmulationSetScrollbarsHidden) ProtoName() string { return "Emulation.setScrollbarsHidden" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetScrollbarsHidden) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetScrollbarsHidden) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetDocumentCookieDisabled (experimental) ...
@@ -6102,14 +6106,14 @@ type EmulationSetDocumentCookieDisabled struct {
 	Disabled bool `json:"disabled"`
 }
 
-// MethodName of the command
-func (m EmulationSetDocumentCookieDisabled) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetDocumentCookieDisabled) ProtoName() string {
 	return "Emulation.setDocumentCookieDisabled"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetDocumentCookieDisabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetDocumentCookieDisabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetEmitTouchEventsForMouseConfiguration enum
@@ -6133,14 +6137,14 @@ type EmulationSetEmitTouchEventsForMouse struct {
 	Configuration EmulationSetEmitTouchEventsForMouseConfiguration `json:"configuration,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetEmitTouchEventsForMouse) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetEmitTouchEventsForMouse) ProtoName() string {
 	return "Emulation.setEmitTouchEventsForMouse"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetEmitTouchEventsForMouse) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetEmitTouchEventsForMouse) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetEmulatedMedia Emulates the given media type or media feature for CSS media queries.
@@ -6153,12 +6157,12 @@ type EmulationSetEmulatedMedia struct {
 	Features []*EmulationMediaFeature `json:"features,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetEmulatedMedia) MethodName() string { return "Emulation.setEmulatedMedia" }
+// ProtoName of the command
+func (m EmulationSetEmulatedMedia) ProtoName() string { return "Emulation.setEmulatedMedia" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetEmulatedMedia) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetEmulatedMedia) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetEmulatedVisionDeficiencyType enum
@@ -6191,14 +6195,14 @@ type EmulationSetEmulatedVisionDeficiency struct {
 	Type EmulationSetEmulatedVisionDeficiencyType `json:"type"`
 }
 
-// MethodName of the command
-func (m EmulationSetEmulatedVisionDeficiency) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetEmulatedVisionDeficiency) ProtoName() string {
 	return "Emulation.setEmulatedVisionDeficiency"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetEmulatedVisionDeficiency) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetEmulatedVisionDeficiency) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetGeolocationOverride Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -6215,14 +6219,14 @@ type EmulationSetGeolocationOverride struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetGeolocationOverride) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetGeolocationOverride) ProtoName() string {
 	return "Emulation.setGeolocationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetGeolocationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetGeolocationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetNavigatorOverrides (deprecated) (experimental) Overrides value returned by the javascript navigator object.
@@ -6232,12 +6236,12 @@ type EmulationSetNavigatorOverrides struct {
 	Platform string `json:"platform"`
 }
 
-// MethodName of the command
-func (m EmulationSetNavigatorOverrides) MethodName() string { return "Emulation.setNavigatorOverrides" }
+// ProtoName of the command
+func (m EmulationSetNavigatorOverrides) ProtoName() string { return "Emulation.setNavigatorOverrides" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetNavigatorOverrides) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetNavigatorOverrides) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetPageScaleFactor (experimental) Sets a specified page scale factor.
@@ -6247,12 +6251,12 @@ type EmulationSetPageScaleFactor struct {
 	PageScaleFactor float64 `json:"pageScaleFactor"`
 }
 
-// MethodName of the command
-func (m EmulationSetPageScaleFactor) MethodName() string { return "Emulation.setPageScaleFactor" }
+// ProtoName of the command
+func (m EmulationSetPageScaleFactor) ProtoName() string { return "Emulation.setPageScaleFactor" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetPageScaleFactor) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetPageScaleFactor) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetScriptExecutionDisabled Switches script execution in the page.
@@ -6262,14 +6266,14 @@ type EmulationSetScriptExecutionDisabled struct {
 	Value bool `json:"value"`
 }
 
-// MethodName of the command
-func (m EmulationSetScriptExecutionDisabled) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetScriptExecutionDisabled) ProtoName() string {
 	return "Emulation.setScriptExecutionDisabled"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetScriptExecutionDisabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetScriptExecutionDisabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetTouchEmulationEnabled Enables touch on platforms which do not support them.
@@ -6279,17 +6283,17 @@ type EmulationSetTouchEmulationEnabled struct {
 	Enabled bool `json:"enabled"`
 
 	// MaxTouchPoints (optional) Maximum touch points supported. Defaults to one.
-	MaxTouchPoints int64 `json:"maxTouchPoints,omitempty"`
+	MaxTouchPoints int `json:"maxTouchPoints,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetTouchEmulationEnabled) MethodName() string {
+// ProtoName of the command
+func (m EmulationSetTouchEmulationEnabled) ProtoName() string {
 	return "Emulation.setTouchEmulationEnabled"
 }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetTouchEmulationEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetTouchEmulationEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetVirtualTimePolicy (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -6305,7 +6309,7 @@ type EmulationSetVirtualTimePolicy struct {
 
 	// MaxVirtualTimeTaskStarvationCount (optional) If set this specifies the maximum number of tasks that can be run before virtual is forced
 	// forwards to prevent deadlock.
-	MaxVirtualTimeTaskStarvationCount int64 `json:"maxVirtualTimeTaskStarvationCount,omitempty"`
+	MaxVirtualTimeTaskStarvationCount int `json:"maxVirtualTimeTaskStarvationCount,omitempty"`
 
 	// WaitForNavigation (optional) If set the virtual time policy change should be deferred until any frame starts navigating.
 	// Note any previous deferred policy change is superseded.
@@ -6315,13 +6319,13 @@ type EmulationSetVirtualTimePolicy struct {
 	InitialVirtualTime *TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetVirtualTimePolicy) MethodName() string { return "Emulation.setVirtualTimePolicy" }
+// ProtoName of the command
+func (m EmulationSetVirtualTimePolicy) ProtoName() string { return "Emulation.setVirtualTimePolicy" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetVirtualTimePolicy) Call(caller Caller) (*EmulationSetVirtualTimePolicyResult, error) {
+func (m EmulationSetVirtualTimePolicy) Call(c Client) (*EmulationSetVirtualTimePolicyResult, error) {
 	var res EmulationSetVirtualTimePolicyResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // EmulationSetVirtualTimePolicyResult (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
@@ -6340,12 +6344,12 @@ type EmulationSetLocaleOverride struct {
 	Locale string `json:"locale,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetLocaleOverride) MethodName() string { return "Emulation.setLocaleOverride" }
+// ProtoName of the command
+func (m EmulationSetLocaleOverride) ProtoName() string { return "Emulation.setLocaleOverride" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetLocaleOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetLocaleOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetTimezoneOverride (experimental) Overrides default host system timezone with the specified one.
@@ -6356,12 +6360,12 @@ type EmulationSetTimezoneOverride struct {
 	TimezoneID string `json:"timezoneId"`
 }
 
-// MethodName of the command
-func (m EmulationSetTimezoneOverride) MethodName() string { return "Emulation.setTimezoneOverride" }
+// ProtoName of the command
+func (m EmulationSetTimezoneOverride) ProtoName() string { return "Emulation.setTimezoneOverride" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetTimezoneOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetTimezoneOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetVisibleSize (deprecated) (experimental) Resizes the frame/viewport of the page. Note that this does not affect the frame's container
@@ -6370,18 +6374,18 @@ func (m EmulationSetTimezoneOverride) Call(caller Caller) error {
 type EmulationSetVisibleSize struct {
 
 	// Width Frame width (DIP).
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Frame height (DIP).
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 }
 
-// MethodName of the command
-func (m EmulationSetVisibleSize) MethodName() string { return "Emulation.setVisibleSize" }
+// ProtoName of the command
+func (m EmulationSetVisibleSize) ProtoName() string { return "Emulation.setVisibleSize" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetVisibleSize) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetVisibleSize) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
@@ -6400,20 +6404,20 @@ type EmulationSetUserAgentOverride struct {
 	UserAgentMetadata *EmulationUserAgentMetadata `json:"userAgentMetadata,omitempty"`
 }
 
-// MethodName of the command
-func (m EmulationSetUserAgentOverride) MethodName() string { return "Emulation.setUserAgentOverride" }
+// ProtoName of the command
+func (m EmulationSetUserAgentOverride) ProtoName() string { return "Emulation.setUserAgentOverride" }
 
 // Call of the command, sessionID is optional.
-func (m EmulationSetUserAgentOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m EmulationSetUserAgentOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // EmulationVirtualTimeBudgetExpired (experimental) Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
 type EmulationVirtualTimeBudgetExpired struct {
 }
 
-// MethodName interface
-func (evt EmulationVirtualTimeBudgetExpired) MethodName() string {
+// ProtoName interface
+func (evt EmulationVirtualTimeBudgetExpired) ProtoName() string {
 	return "Emulation.virtualTimeBudgetExpired"
 }
 
@@ -6435,7 +6439,7 @@ type HeadlessExperimentalScreenshotParams struct {
 	Format HeadlessExperimentalScreenshotParamsFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100] (jpeg only).
-	Quality int64 `json:"quality,omitempty"`
+	Quality int `json:"quality,omitempty"`
 }
 
 // HeadlessExperimentalBeginFrame Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
@@ -6463,13 +6467,13 @@ type HeadlessExperimentalBeginFrame struct {
 	Screenshot *HeadlessExperimentalScreenshotParams `json:"screenshot,omitempty"`
 }
 
-// MethodName of the command
-func (m HeadlessExperimentalBeginFrame) MethodName() string { return "HeadlessExperimental.beginFrame" }
+// ProtoName of the command
+func (m HeadlessExperimentalBeginFrame) ProtoName() string { return "HeadlessExperimental.beginFrame" }
 
 // Call of the command, sessionID is optional.
-func (m HeadlessExperimentalBeginFrame) Call(caller Caller) (*HeadlessExperimentalBeginFrameResult, error) {
+func (m HeadlessExperimentalBeginFrame) Call(c Client) (*HeadlessExperimentalBeginFrameResult, error) {
 	var res HeadlessExperimentalBeginFrameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // HeadlessExperimentalBeginFrameResult Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
@@ -6490,24 +6494,24 @@ type HeadlessExperimentalBeginFrameResult struct {
 type HeadlessExperimentalDisable struct {
 }
 
-// MethodName of the command
-func (m HeadlessExperimentalDisable) MethodName() string { return "HeadlessExperimental.disable" }
+// ProtoName of the command
+func (m HeadlessExperimentalDisable) ProtoName() string { return "HeadlessExperimental.disable" }
 
 // Call of the command, sessionID is optional.
-func (m HeadlessExperimentalDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeadlessExperimentalDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeadlessExperimentalEnable Enables headless events for the target.
 type HeadlessExperimentalEnable struct {
 }
 
-// MethodName of the command
-func (m HeadlessExperimentalEnable) MethodName() string { return "HeadlessExperimental.enable" }
+// ProtoName of the command
+func (m HeadlessExperimentalEnable) ProtoName() string { return "HeadlessExperimental.enable" }
 
 // Call of the command, sessionID is optional.
-func (m HeadlessExperimentalEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeadlessExperimentalEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeadlessExperimentalNeedsBeginFramesChanged (deprecated) Issued when the target starts or stops needing BeginFrames.
@@ -6519,8 +6523,8 @@ type HeadlessExperimentalNeedsBeginFramesChanged struct {
 	NeedsBeginFrames bool `json:"needsBeginFrames"`
 }
 
-// MethodName interface
-func (evt HeadlessExperimentalNeedsBeginFramesChanged) MethodName() string {
+// ProtoName interface
+func (evt HeadlessExperimentalNeedsBeginFramesChanged) ProtoName() string {
 	return "HeadlessExperimental.needsBeginFramesChanged"
 }
 
@@ -6535,12 +6539,12 @@ type IOClose struct {
 	Handle IOStreamHandle `json:"handle"`
 }
 
-// MethodName of the command
-func (m IOClose) MethodName() string { return "IO.close" }
+// ProtoName of the command
+func (m IOClose) ProtoName() string { return "IO.close" }
 
 // Call of the command, sessionID is optional.
-func (m IOClose) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IOClose) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IORead Read a chunk of the stream
@@ -6551,19 +6555,19 @@ type IORead struct {
 
 	// Offset (optional) Seek to the specified offset before reading (if not specificed, proceed with offset
 	// following the last read). Some types of streams may only support sequential reads.
-	Offset int64 `json:"offset,omitempty"`
+	Offset int `json:"offset,omitempty"`
 
 	// Size (optional) Maximum number of bytes to read (left upon the agent discretion if not specified).
-	Size int64 `json:"size,omitempty"`
+	Size int `json:"size,omitempty"`
 }
 
-// MethodName of the command
-func (m IORead) MethodName() string { return "IO.read" }
+// ProtoName of the command
+func (m IORead) ProtoName() string { return "IO.read" }
 
 // Call of the command, sessionID is optional.
-func (m IORead) Call(caller Caller) (*IOReadResult, error) {
+func (m IORead) Call(c Client) (*IOReadResult, error) {
 	var res IOReadResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IOReadResult Read a chunk of the stream
@@ -6586,13 +6590,13 @@ type IOResolveBlob struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// MethodName of the command
-func (m IOResolveBlob) MethodName() string { return "IO.resolveBlob" }
+// ProtoName of the command
+func (m IOResolveBlob) ProtoName() string { return "IO.resolveBlob" }
 
 // Call of the command, sessionID is optional.
-func (m IOResolveBlob) Call(caller Caller) (*IOResolveBlobResult, error) {
+func (m IOResolveBlob) Call(c Client) (*IOResolveBlobResult, error) {
 	var res IOResolveBlobResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IOResolveBlobResult Return UUID of Blob object specified by a remote object id.
@@ -6753,12 +6757,12 @@ type IndexedDBClearObjectStore struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// MethodName of the command
-func (m IndexedDBClearObjectStore) MethodName() string { return "IndexedDB.clearObjectStore" }
+// ProtoName of the command
+func (m IndexedDBClearObjectStore) ProtoName() string { return "IndexedDB.clearObjectStore" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBClearObjectStore) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IndexedDBClearObjectStore) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IndexedDBDeleteDatabase Deletes a database.
@@ -6771,12 +6775,12 @@ type IndexedDBDeleteDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
-// MethodName of the command
-func (m IndexedDBDeleteDatabase) MethodName() string { return "IndexedDB.deleteDatabase" }
+// ProtoName of the command
+func (m IndexedDBDeleteDatabase) ProtoName() string { return "IndexedDB.deleteDatabase" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBDeleteDatabase) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IndexedDBDeleteDatabase) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store
@@ -6795,38 +6799,38 @@ type IndexedDBDeleteObjectStoreEntries struct {
 	KeyRange *IndexedDBKeyRange `json:"keyRange"`
 }
 
-// MethodName of the command
-func (m IndexedDBDeleteObjectStoreEntries) MethodName() string {
+// ProtoName of the command
+func (m IndexedDBDeleteObjectStoreEntries) ProtoName() string {
 	return "IndexedDB.deleteObjectStoreEntries"
 }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBDeleteObjectStoreEntries) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IndexedDBDeleteObjectStoreEntries) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IndexedDBDisable Disables events from backend.
 type IndexedDBDisable struct {
 }
 
-// MethodName of the command
-func (m IndexedDBDisable) MethodName() string { return "IndexedDB.disable" }
+// ProtoName of the command
+func (m IndexedDBDisable) ProtoName() string { return "IndexedDB.disable" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IndexedDBDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IndexedDBEnable Enables events from backend.
 type IndexedDBEnable struct {
 }
 
-// MethodName of the command
-func (m IndexedDBEnable) MethodName() string { return "IndexedDB.enable" }
+// ProtoName of the command
+func (m IndexedDBEnable) ProtoName() string { return "IndexedDB.enable" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m IndexedDBEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // IndexedDBRequestData Requests data from object store or index.
@@ -6845,22 +6849,22 @@ type IndexedDBRequestData struct {
 	IndexName string `json:"indexName"`
 
 	// SkipCount Number of records to skip.
-	SkipCount int64 `json:"skipCount"`
+	SkipCount int `json:"skipCount"`
 
 	// PageSize Number of records to fetch.
-	PageSize int64 `json:"pageSize"`
+	PageSize int `json:"pageSize"`
 
 	// KeyRange (optional) Key range.
 	KeyRange *IndexedDBKeyRange `json:"keyRange,omitempty"`
 }
 
-// MethodName of the command
-func (m IndexedDBRequestData) MethodName() string { return "IndexedDB.requestData" }
+// ProtoName of the command
+func (m IndexedDBRequestData) ProtoName() string { return "IndexedDB.requestData" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBRequestData) Call(caller Caller) (*IndexedDBRequestDataResult, error) {
+func (m IndexedDBRequestData) Call(c Client) (*IndexedDBRequestDataResult, error) {
 	var res IndexedDBRequestDataResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IndexedDBRequestDataResult Requests data from object store or index.
@@ -6886,13 +6890,13 @@ type IndexedDBGetMetadata struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// MethodName of the command
-func (m IndexedDBGetMetadata) MethodName() string { return "IndexedDB.getMetadata" }
+// ProtoName of the command
+func (m IndexedDBGetMetadata) ProtoName() string { return "IndexedDB.getMetadata" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBGetMetadata) Call(caller Caller) (*IndexedDBGetMetadataResult, error) {
+func (m IndexedDBGetMetadata) Call(c Client) (*IndexedDBGetMetadataResult, error) {
 	var res IndexedDBGetMetadataResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IndexedDBGetMetadataResult Gets metadata of an object store
@@ -6917,13 +6921,13 @@ type IndexedDBRequestDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
-// MethodName of the command
-func (m IndexedDBRequestDatabase) MethodName() string { return "IndexedDB.requestDatabase" }
+// ProtoName of the command
+func (m IndexedDBRequestDatabase) ProtoName() string { return "IndexedDB.requestDatabase" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBRequestDatabase) Call(caller Caller) (*IndexedDBRequestDatabaseResult, error) {
+func (m IndexedDBRequestDatabase) Call(c Client) (*IndexedDBRequestDatabaseResult, error) {
 	var res IndexedDBRequestDatabaseResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IndexedDBRequestDatabaseResult Requests database with given name in given frame.
@@ -6940,13 +6944,13 @@ type IndexedDBRequestDatabaseNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
-// MethodName of the command
-func (m IndexedDBRequestDatabaseNames) MethodName() string { return "IndexedDB.requestDatabaseNames" }
+// ProtoName of the command
+func (m IndexedDBRequestDatabaseNames) ProtoName() string { return "IndexedDB.requestDatabaseNames" }
 
 // Call of the command, sessionID is optional.
-func (m IndexedDBRequestDatabaseNames) Call(caller Caller) (*IndexedDBRequestDatabaseNamesResult, error) {
+func (m IndexedDBRequestDatabaseNames) Call(c Client) (*IndexedDBRequestDatabaseNamesResult, error) {
 	var res IndexedDBRequestDatabaseNamesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // IndexedDBRequestDatabaseNamesResult Requests database names for given security origin.
@@ -7044,7 +7048,7 @@ type InputDispatchKeyEvent struct {
 
 	// Modifiers (optional) Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
 	// (default: 0).
-	Modifiers int64 `json:"modifiers,omitempty"`
+	Modifiers int `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
 	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
@@ -7068,10 +7072,10 @@ type InputDispatchKeyEvent struct {
 	Key string `json:"key,omitempty"`
 
 	// WindowsVirtualKeyCode (optional) Windows virtual key code (default: 0).
-	WindowsVirtualKeyCode int64 `json:"windowsVirtualKeyCode,omitempty"`
+	WindowsVirtualKeyCode int `json:"windowsVirtualKeyCode,omitempty"`
 
 	// NativeVirtualKeyCode (optional) Native virtual key code (default: 0).
-	NativeVirtualKeyCode int64 `json:"nativeVirtualKeyCode,omitempty"`
+	NativeVirtualKeyCode int `json:"nativeVirtualKeyCode,omitempty"`
 
 	// AutoRepeat (optional) Whether the event was generated from auto repeat (default: false).
 	AutoRepeat bool `json:"autoRepeat,omitempty"`
@@ -7084,7 +7088,7 @@ type InputDispatchKeyEvent struct {
 
 	// Location (optional) Whether the event was from the left or right side of the keyboard. 1=Left, 2=Right (default:
 	// 0).
-	Location int64 `json:"location,omitempty"`
+	Location int `json:"location,omitempty"`
 
 	// Commands (experimental) (optional) Editing commands to send with the key event (e.g., 'selectAll') (default: []).
 	// These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
@@ -7092,12 +7096,12 @@ type InputDispatchKeyEvent struct {
 	Commands []string `json:"commands,omitempty"`
 }
 
-// MethodName of the command
-func (m InputDispatchKeyEvent) MethodName() string { return "Input.dispatchKeyEvent" }
+// ProtoName of the command
+func (m InputDispatchKeyEvent) ProtoName() string { return "Input.dispatchKeyEvent" }
 
 // Call of the command, sessionID is optional.
-func (m InputDispatchKeyEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputDispatchKeyEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputInsertText (experimental) This method emulates inserting text that doesn't come from a key press,
@@ -7108,12 +7112,12 @@ type InputInsertText struct {
 	Text string `json:"text"`
 }
 
-// MethodName of the command
-func (m InputInsertText) MethodName() string { return "Input.insertText" }
+// ProtoName of the command
+func (m InputInsertText) ProtoName() string { return "Input.insertText" }
 
 // Call of the command, sessionID is optional.
-func (m InputInsertText) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputInsertText) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputDispatchMouseEventType enum
@@ -7159,7 +7163,7 @@ type InputDispatchMouseEvent struct {
 
 	// Modifiers (optional) Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
 	// (default: 0).
-	Modifiers int64 `json:"modifiers,omitempty"`
+	Modifiers int `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
 	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
@@ -7169,10 +7173,10 @@ type InputDispatchMouseEvent struct {
 
 	// Buttons (optional) A number indicating which buttons are pressed on the mouse when a mouse event is triggered.
 	// Left=1, Right=2, Middle=4, Back=8, Forward=16, None=0.
-	Buttons int64 `json:"buttons,omitempty"`
+	Buttons int `json:"buttons,omitempty"`
 
 	// ClickCount (optional) Number of times the mouse button was clicked (default: 0).
-	ClickCount int64 `json:"clickCount,omitempty"`
+	ClickCount int `json:"clickCount,omitempty"`
 
 	// DeltaX (optional) X delta in CSS pixels for mouse wheel event (default: 0).
 	DeltaX float64 `json:"deltaX,omitempty"`
@@ -7184,12 +7188,12 @@ type InputDispatchMouseEvent struct {
 	PointerType InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
 }
 
-// MethodName of the command
-func (m InputDispatchMouseEvent) MethodName() string { return "Input.dispatchMouseEvent" }
+// ProtoName of the command
+func (m InputDispatchMouseEvent) ProtoName() string { return "Input.dispatchMouseEvent" }
 
 // Call of the command, sessionID is optional.
-func (m InputDispatchMouseEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputDispatchMouseEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputDispatchTouchEventType enum
@@ -7223,18 +7227,18 @@ type InputDispatchTouchEvent struct {
 
 	// Modifiers (optional) Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
 	// (default: 0).
-	Modifiers int64 `json:"modifiers,omitempty"`
+	Modifiers int `json:"modifiers,omitempty"`
 
 	// Timestamp (optional) Time at which the event occurred.
 	Timestamp *TimeSinceEpoch `json:"timestamp,omitempty"`
 }
 
-// MethodName of the command
-func (m InputDispatchTouchEvent) MethodName() string { return "Input.dispatchTouchEvent" }
+// ProtoName of the command
+func (m InputDispatchTouchEvent) ProtoName() string { return "Input.dispatchTouchEvent" }
 
 // Call of the command, sessionID is optional.
-func (m InputDispatchTouchEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputDispatchTouchEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputEmulateTouchFromMouseEventType enum
@@ -7261,10 +7265,10 @@ type InputEmulateTouchFromMouseEvent struct {
 	Type InputEmulateTouchFromMouseEventType `json:"type"`
 
 	// X X coordinate of the mouse pointer in DIP.
-	X int64 `json:"x"`
+	X int `json:"x"`
 
 	// Y Y coordinate of the mouse pointer in DIP.
-	Y int64 `json:"y"`
+	Y int `json:"y"`
 
 	// Button Mouse button. Only "none", "left", "right" are supported.
 	Button InputMouseButton `json:"button"`
@@ -7280,20 +7284,20 @@ type InputEmulateTouchFromMouseEvent struct {
 
 	// Modifiers (optional) Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8
 	// (default: 0).
-	Modifiers int64 `json:"modifiers,omitempty"`
+	Modifiers int `json:"modifiers,omitempty"`
 
 	// ClickCount (optional) Number of times the mouse button was clicked (default: 0).
-	ClickCount int64 `json:"clickCount,omitempty"`
+	ClickCount int `json:"clickCount,omitempty"`
 }
 
-// MethodName of the command
-func (m InputEmulateTouchFromMouseEvent) MethodName() string {
+// ProtoName of the command
+func (m InputEmulateTouchFromMouseEvent) ProtoName() string {
 	return "Input.emulateTouchFromMouseEvent"
 }
 
 // Call of the command, sessionID is optional.
-func (m InputEmulateTouchFromMouseEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputEmulateTouchFromMouseEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputSetIgnoreInputEvents Ignores input events (useful while auditing page).
@@ -7303,12 +7307,12 @@ type InputSetIgnoreInputEvents struct {
 	Ignore bool `json:"ignore"`
 }
 
-// MethodName of the command
-func (m InputSetIgnoreInputEvents) MethodName() string { return "Input.setIgnoreInputEvents" }
+// ProtoName of the command
+func (m InputSetIgnoreInputEvents) ProtoName() string { return "Input.setIgnoreInputEvents" }
 
 // Call of the command, sessionID is optional.
-func (m InputSetIgnoreInputEvents) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputSetIgnoreInputEvents) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputSynthesizePinchGesture (experimental) Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
@@ -7324,19 +7328,19 @@ type InputSynthesizePinchGesture struct {
 	ScaleFactor float64 `json:"scaleFactor"`
 
 	// RelativeSpeed (optional) Relative pointer speed in pixels per second (default: 800).
-	RelativeSpeed int64 `json:"relativeSpeed,omitempty"`
+	RelativeSpeed int `json:"relativeSpeed,omitempty"`
 
 	// GestureSourceType (optional) Which type of input events to be generated (default: 'default', which queries the platform
 	// for the preferred input type).
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
-// MethodName of the command
-func (m InputSynthesizePinchGesture) MethodName() string { return "Input.synthesizePinchGesture" }
+// ProtoName of the command
+func (m InputSynthesizePinchGesture) ProtoName() string { return "Input.synthesizePinchGesture" }
 
 // Call of the command, sessionID is optional.
-func (m InputSynthesizePinchGesture) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputSynthesizePinchGesture) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputSynthesizeScrollGesture (experimental) Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
@@ -7366,28 +7370,28 @@ type InputSynthesizeScrollGesture struct {
 	PreventFling bool `json:"preventFling,omitempty"`
 
 	// Speed (optional) Swipe speed in pixels per second (default: 800).
-	Speed int64 `json:"speed,omitempty"`
+	Speed int `json:"speed,omitempty"`
 
 	// GestureSourceType (optional) Which type of input events to be generated (default: 'default', which queries the platform
 	// for the preferred input type).
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 
 	// RepeatCount (optional) The number of times to repeat the gesture (default: 0).
-	RepeatCount int64 `json:"repeatCount,omitempty"`
+	RepeatCount int `json:"repeatCount,omitempty"`
 
 	// RepeatDelayMs (optional) The number of milliseconds delay between each repeat. (default: 250).
-	RepeatDelayMs int64 `json:"repeatDelayMs,omitempty"`
+	RepeatDelayMs int `json:"repeatDelayMs,omitempty"`
 
 	// InteractionMarkerName (optional) The name of the interaction markers to generate, if not empty (default: "").
 	InteractionMarkerName string `json:"interactionMarkerName,omitempty"`
 }
 
-// MethodName of the command
-func (m InputSynthesizeScrollGesture) MethodName() string { return "Input.synthesizeScrollGesture" }
+// ProtoName of the command
+func (m InputSynthesizeScrollGesture) ProtoName() string { return "Input.synthesizeScrollGesture" }
 
 // Call of the command, sessionID is optional.
-func (m InputSynthesizeScrollGesture) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputSynthesizeScrollGesture) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InputSynthesizeTapGesture (experimental) Synthesizes a tap gesture over a time period by issuing appropriate touch events.
@@ -7400,46 +7404,46 @@ type InputSynthesizeTapGesture struct {
 	Y float64 `json:"y"`
 
 	// Duration (optional) Duration between touchdown and touchup events in ms (default: 50).
-	Duration int64 `json:"duration,omitempty"`
+	Duration int `json:"duration,omitempty"`
 
 	// TapCount (optional) Number of times to perform the tap (e.g. 2 for double tap, default: 1).
-	TapCount int64 `json:"tapCount,omitempty"`
+	TapCount int `json:"tapCount,omitempty"`
 
 	// GestureSourceType (optional) Which type of input events to be generated (default: 'default', which queries the platform
 	// for the preferred input type).
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
-// MethodName of the command
-func (m InputSynthesizeTapGesture) MethodName() string { return "Input.synthesizeTapGesture" }
+// ProtoName of the command
+func (m InputSynthesizeTapGesture) ProtoName() string { return "Input.synthesizeTapGesture" }
 
 // Call of the command, sessionID is optional.
-func (m InputSynthesizeTapGesture) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InputSynthesizeTapGesture) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InspectorDisable Disables inspector domain notifications.
 type InspectorDisable struct {
 }
 
-// MethodName of the command
-func (m InspectorDisable) MethodName() string { return "Inspector.disable" }
+// ProtoName of the command
+func (m InspectorDisable) ProtoName() string { return "Inspector.disable" }
 
 // Call of the command, sessionID is optional.
-func (m InspectorDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InspectorDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InspectorEnable Enables inspector domain notifications.
 type InspectorEnable struct {
 }
 
-// MethodName of the command
-func (m InspectorEnable) MethodName() string { return "Inspector.enable" }
+// ProtoName of the command
+func (m InspectorEnable) ProtoName() string { return "Inspector.enable" }
 
 // Call of the command, sessionID is optional.
-func (m InspectorEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m InspectorEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // InspectorDetached Fired when remote debugging connection is about to be terminated. Contains detach reason.
@@ -7449,8 +7453,8 @@ type InspectorDetached struct {
 	Reason string `json:"reason"`
 }
 
-// MethodName interface
-func (evt InspectorDetached) MethodName() string {
+// ProtoName interface
+func (evt InspectorDetached) ProtoName() string {
 	return "Inspector.detached"
 }
 
@@ -7458,8 +7462,8 @@ func (evt InspectorDetached) MethodName() string {
 type InspectorTargetCrashed struct {
 }
 
-// MethodName interface
-func (evt InspectorTargetCrashed) MethodName() string {
+// ProtoName interface
+func (evt InspectorTargetCrashed) ProtoName() string {
 	return "Inspector.targetCrashed"
 }
 
@@ -7467,8 +7471,8 @@ func (evt InspectorTargetCrashed) MethodName() string {
 type InspectorTargetReloadedAfterCrash struct {
 }
 
-// MethodName interface
-func (evt InspectorTargetReloadedAfterCrash) MethodName() string {
+// ProtoName interface
+func (evt InspectorTargetReloadedAfterCrash) ProtoName() string {
 	return "Inspector.targetReloadedAfterCrash"
 }
 
@@ -7568,7 +7572,7 @@ type LayerTreeLayer struct {
 	AnchorZ float64 `json:"anchorZ,omitempty"`
 
 	// PaintCount Indicates how many time this layer has painted.
-	PaintCount int64 `json:"paintCount"`
+	PaintCount int `json:"paintCount"`
 
 	// DrawsContent Indicates whether this layer hosts any content, rather than being used for
 	// transform/scrolling purposes only.
@@ -7594,13 +7598,13 @@ type LayerTreeCompositingReasons struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
-// MethodName of the command
-func (m LayerTreeCompositingReasons) MethodName() string { return "LayerTree.compositingReasons" }
+// ProtoName of the command
+func (m LayerTreeCompositingReasons) ProtoName() string { return "LayerTree.compositingReasons" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeCompositingReasons) Call(caller Caller) (*LayerTreeCompositingReasonsResult, error) {
+func (m LayerTreeCompositingReasons) Call(c Client) (*LayerTreeCompositingReasonsResult, error) {
 	var res LayerTreeCompositingReasonsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeCompositingReasonsResult Provides the reasons why the given layer was composited.
@@ -7617,24 +7621,24 @@ type LayerTreeCompositingReasonsResult struct {
 type LayerTreeDisable struct {
 }
 
-// MethodName of the command
-func (m LayerTreeDisable) MethodName() string { return "LayerTree.disable" }
+// ProtoName of the command
+func (m LayerTreeDisable) ProtoName() string { return "LayerTree.disable" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LayerTreeDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LayerTreeEnable Enables compositing tree inspection.
 type LayerTreeEnable struct {
 }
 
-// MethodName of the command
-func (m LayerTreeEnable) MethodName() string { return "LayerTree.enable" }
+// ProtoName of the command
+func (m LayerTreeEnable) ProtoName() string { return "LayerTree.enable" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LayerTreeEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LayerTreeLoadSnapshot Returns the snapshot identifier.
@@ -7644,13 +7648,13 @@ type LayerTreeLoadSnapshot struct {
 	Tiles []*LayerTreePictureTile `json:"tiles"`
 }
 
-// MethodName of the command
-func (m LayerTreeLoadSnapshot) MethodName() string { return "LayerTree.loadSnapshot" }
+// ProtoName of the command
+func (m LayerTreeLoadSnapshot) ProtoName() string { return "LayerTree.loadSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeLoadSnapshot) Call(caller Caller) (*LayerTreeLoadSnapshotResult, error) {
+func (m LayerTreeLoadSnapshot) Call(c Client) (*LayerTreeLoadSnapshotResult, error) {
 	var res LayerTreeLoadSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeLoadSnapshotResult Returns the snapshot identifier.
@@ -7667,13 +7671,13 @@ type LayerTreeMakeSnapshot struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
-// MethodName of the command
-func (m LayerTreeMakeSnapshot) MethodName() string { return "LayerTree.makeSnapshot" }
+// ProtoName of the command
+func (m LayerTreeMakeSnapshot) ProtoName() string { return "LayerTree.makeSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeMakeSnapshot) Call(caller Caller) (*LayerTreeMakeSnapshotResult, error) {
+func (m LayerTreeMakeSnapshot) Call(c Client) (*LayerTreeMakeSnapshotResult, error) {
 	var res LayerTreeMakeSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeMakeSnapshotResult Returns the layer snapshot identifier.
@@ -7690,7 +7694,7 @@ type LayerTreeProfileSnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 
 	// MinRepeatCount (optional) The maximum number of times to replay the snapshot (1, if not specified).
-	MinRepeatCount int64 `json:"minRepeatCount,omitempty"`
+	MinRepeatCount int `json:"minRepeatCount,omitempty"`
 
 	// MinDuration (optional) The minimum duration (in seconds) to replay the snapshot.
 	MinDuration float64 `json:"minDuration,omitempty"`
@@ -7699,13 +7703,13 @@ type LayerTreeProfileSnapshot struct {
 	ClipRect *DOMRect `json:"clipRect,omitempty"`
 }
 
-// MethodName of the command
-func (m LayerTreeProfileSnapshot) MethodName() string { return "LayerTree.profileSnapshot" }
+// ProtoName of the command
+func (m LayerTreeProfileSnapshot) ProtoName() string { return "LayerTree.profileSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeProfileSnapshot) Call(caller Caller) (*LayerTreeProfileSnapshotResult, error) {
+func (m LayerTreeProfileSnapshot) Call(c Client) (*LayerTreeProfileSnapshotResult, error) {
 	var res LayerTreeProfileSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeProfileSnapshotResult ...
@@ -7722,12 +7726,12 @@ type LayerTreeReleaseSnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
-// MethodName of the command
-func (m LayerTreeReleaseSnapshot) MethodName() string { return "LayerTree.releaseSnapshot" }
+// ProtoName of the command
+func (m LayerTreeReleaseSnapshot) ProtoName() string { return "LayerTree.releaseSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeReleaseSnapshot) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LayerTreeReleaseSnapshot) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LayerTreeReplaySnapshot Replays the layer snapshot and returns the resulting bitmap.
@@ -7737,22 +7741,22 @@ type LayerTreeReplaySnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 
 	// FromStep (optional) The first step to replay from (replay from the very start if not specified).
-	FromStep int64 `json:"fromStep,omitempty"`
+	FromStep int `json:"fromStep,omitempty"`
 
 	// ToStep (optional) The last step to replay to (replay till the end if not specified).
-	ToStep int64 `json:"toStep,omitempty"`
+	ToStep int `json:"toStep,omitempty"`
 
 	// Scale (optional) The scale to apply while replaying (defaults to 1).
 	Scale float64 `json:"scale,omitempty"`
 }
 
-// MethodName of the command
-func (m LayerTreeReplaySnapshot) MethodName() string { return "LayerTree.replaySnapshot" }
+// ProtoName of the command
+func (m LayerTreeReplaySnapshot) ProtoName() string { return "LayerTree.replaySnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeReplaySnapshot) Call(caller Caller) (*LayerTreeReplaySnapshotResult, error) {
+func (m LayerTreeReplaySnapshot) Call(c Client) (*LayerTreeReplaySnapshotResult, error) {
 	var res LayerTreeReplaySnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeReplaySnapshotResult Replays the layer snapshot and returns the resulting bitmap.
@@ -7769,20 +7773,20 @@ type LayerTreeSnapshotCommandLog struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
-// MethodName of the command
-func (m LayerTreeSnapshotCommandLog) MethodName() string { return "LayerTree.snapshotCommandLog" }
+// ProtoName of the command
+func (m LayerTreeSnapshotCommandLog) ProtoName() string { return "LayerTree.snapshotCommandLog" }
 
 // Call of the command, sessionID is optional.
-func (m LayerTreeSnapshotCommandLog) Call(caller Caller) (*LayerTreeSnapshotCommandLogResult, error) {
+func (m LayerTreeSnapshotCommandLog) Call(c Client) (*LayerTreeSnapshotCommandLogResult, error) {
 	var res LayerTreeSnapshotCommandLogResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // LayerTreeSnapshotCommandLogResult Replays the layer snapshot and returns canvas log.
 type LayerTreeSnapshotCommandLogResult struct {
 
 	// CommandLog The array of canvas function calls.
-	CommandLog []map[string]JSON `json:"commandLog"`
+	CommandLog []map[string]gson.JSON `json:"commandLog"`
 }
 
 // LayerTreeLayerPainted ...
@@ -7795,8 +7799,8 @@ type LayerTreeLayerPainted struct {
 	Clip *DOMRect `json:"clip"`
 }
 
-// MethodName interface
-func (evt LayerTreeLayerPainted) MethodName() string {
+// ProtoName interface
+func (evt LayerTreeLayerPainted) ProtoName() string {
 	return "LayerTree.layerPainted"
 }
 
@@ -7807,8 +7811,8 @@ type LayerTreeLayerTreeDidChange struct {
 	Layers []*LayerTreeLayer `json:"layers,omitempty"`
 }
 
-// MethodName interface
-func (evt LayerTreeLayerTreeDidChange) MethodName() string {
+// ProtoName interface
+func (evt LayerTreeLayerTreeDidChange) ProtoName() string {
 	return "LayerTree.layerTreeDidChange"
 }
 
@@ -7892,7 +7896,7 @@ type LogLogEntry struct {
 	URL string `json:"url,omitempty"`
 
 	// LineNumber (optional) Line number in the resource.
-	LineNumber int64 `json:"lineNumber,omitempty"`
+	LineNumber int `json:"lineNumber,omitempty"`
 
 	// StackTrace (optional) JavaScript stack trace.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
@@ -7947,24 +7951,24 @@ type LogViolationSetting struct {
 type LogClear struct {
 }
 
-// MethodName of the command
-func (m LogClear) MethodName() string { return "Log.clear" }
+// ProtoName of the command
+func (m LogClear) ProtoName() string { return "Log.clear" }
 
 // Call of the command, sessionID is optional.
-func (m LogClear) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LogClear) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LogDisable Disables log domain, prevents further log entries from being reported to the client.
 type LogDisable struct {
 }
 
-// MethodName of the command
-func (m LogDisable) MethodName() string { return "Log.disable" }
+// ProtoName of the command
+func (m LogDisable) ProtoName() string { return "Log.disable" }
 
 // Call of the command, sessionID is optional.
-func (m LogDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LogDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LogEnable Enables log domain, sends the entries collected so far to the client by means of the
@@ -7972,12 +7976,12 @@ func (m LogDisable) Call(caller Caller) error {
 type LogEnable struct {
 }
 
-// MethodName of the command
-func (m LogEnable) MethodName() string { return "Log.enable" }
+// ProtoName of the command
+func (m LogEnable) ProtoName() string { return "Log.enable" }
 
 // Call of the command, sessionID is optional.
-func (m LogEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LogEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LogStartViolationsReport start violation reporting.
@@ -7987,24 +7991,24 @@ type LogStartViolationsReport struct {
 	Config []*LogViolationSetting `json:"config"`
 }
 
-// MethodName of the command
-func (m LogStartViolationsReport) MethodName() string { return "Log.startViolationsReport" }
+// ProtoName of the command
+func (m LogStartViolationsReport) ProtoName() string { return "Log.startViolationsReport" }
 
 // Call of the command, sessionID is optional.
-func (m LogStartViolationsReport) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LogStartViolationsReport) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LogStopViolationsReport Stop violation reporting.
 type LogStopViolationsReport struct {
 }
 
-// MethodName of the command
-func (m LogStopViolationsReport) MethodName() string { return "Log.stopViolationsReport" }
+// ProtoName of the command
+func (m LogStopViolationsReport) ProtoName() string { return "Log.stopViolationsReport" }
 
 // Call of the command, sessionID is optional.
-func (m LogStopViolationsReport) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m LogStopViolationsReport) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // LogEntryAdded Issued when new message was logged.
@@ -8014,8 +8018,8 @@ type LogEntryAdded struct {
 	Entry *LogLogEntry `json:"entry"`
 }
 
-// MethodName interface
-func (evt LogEntryAdded) MethodName() string {
+// ProtoName interface
+func (evt LogEntryAdded) ProtoName() string {
 	return "Log.entryAdded"
 }
 
@@ -8074,52 +8078,52 @@ type MemoryModule struct {
 type MemoryGetDOMCounters struct {
 }
 
-// MethodName of the command
-func (m MemoryGetDOMCounters) MethodName() string { return "Memory.getDOMCounters" }
+// ProtoName of the command
+func (m MemoryGetDOMCounters) ProtoName() string { return "Memory.getDOMCounters" }
 
 // Call of the command, sessionID is optional.
-func (m MemoryGetDOMCounters) Call(caller Caller) (*MemoryGetDOMCountersResult, error) {
+func (m MemoryGetDOMCounters) Call(c Client) (*MemoryGetDOMCountersResult, error) {
 	var res MemoryGetDOMCountersResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // MemoryGetDOMCountersResult ...
 type MemoryGetDOMCountersResult struct {
 
 	// Documents ...
-	Documents int64 `json:"documents"`
+	Documents int `json:"documents"`
 
 	// Nodes ...
-	Nodes int64 `json:"nodes"`
+	Nodes int `json:"nodes"`
 
 	// JsEventListeners ...
-	JsEventListeners int64 `json:"jsEventListeners"`
+	JsEventListeners int `json:"jsEventListeners"`
 }
 
 // MemoryPrepareForLeakDetection ...
 type MemoryPrepareForLeakDetection struct {
 }
 
-// MethodName of the command
-func (m MemoryPrepareForLeakDetection) MethodName() string { return "Memory.prepareForLeakDetection" }
+// ProtoName of the command
+func (m MemoryPrepareForLeakDetection) ProtoName() string { return "Memory.prepareForLeakDetection" }
 
 // Call of the command, sessionID is optional.
-func (m MemoryPrepareForLeakDetection) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemoryPrepareForLeakDetection) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemoryForciblyPurgeJavaScriptMemory Simulate OomIntervention by purging V8 memory.
 type MemoryForciblyPurgeJavaScriptMemory struct {
 }
 
-// MethodName of the command
-func (m MemoryForciblyPurgeJavaScriptMemory) MethodName() string {
+// ProtoName of the command
+func (m MemoryForciblyPurgeJavaScriptMemory) ProtoName() string {
 	return "Memory.forciblyPurgeJavaScriptMemory"
 }
 
 // Call of the command, sessionID is optional.
-func (m MemoryForciblyPurgeJavaScriptMemory) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemoryForciblyPurgeJavaScriptMemory) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemorySetPressureNotificationsSuppressed Enable/disable suppressing memory pressure notifications in all processes.
@@ -8129,14 +8133,14 @@ type MemorySetPressureNotificationsSuppressed struct {
 	Suppressed bool `json:"suppressed"`
 }
 
-// MethodName of the command
-func (m MemorySetPressureNotificationsSuppressed) MethodName() string {
+// ProtoName of the command
+func (m MemorySetPressureNotificationsSuppressed) ProtoName() string {
 	return "Memory.setPressureNotificationsSuppressed"
 }
 
 // Call of the command, sessionID is optional.
-func (m MemorySetPressureNotificationsSuppressed) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemorySetPressureNotificationsSuppressed) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemorySimulatePressureNotification Simulate a memory pressure notification in all processes.
@@ -8146,44 +8150,44 @@ type MemorySimulatePressureNotification struct {
 	Level MemoryPressureLevel `json:"level"`
 }
 
-// MethodName of the command
-func (m MemorySimulatePressureNotification) MethodName() string {
+// ProtoName of the command
+func (m MemorySimulatePressureNotification) ProtoName() string {
 	return "Memory.simulatePressureNotification"
 }
 
 // Call of the command, sessionID is optional.
-func (m MemorySimulatePressureNotification) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemorySimulatePressureNotification) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemoryStartSampling Start collecting native memory profile.
 type MemoryStartSampling struct {
 
 	// SamplingInterval (optional) Average number of bytes between samples.
-	SamplingInterval int64 `json:"samplingInterval,omitempty"`
+	SamplingInterval int `json:"samplingInterval,omitempty"`
 
 	// SuppressRandomness (optional) Do not randomize intervals between samples.
 	SuppressRandomness bool `json:"suppressRandomness,omitempty"`
 }
 
-// MethodName of the command
-func (m MemoryStartSampling) MethodName() string { return "Memory.startSampling" }
+// ProtoName of the command
+func (m MemoryStartSampling) ProtoName() string { return "Memory.startSampling" }
 
 // Call of the command, sessionID is optional.
-func (m MemoryStartSampling) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemoryStartSampling) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemoryStopSampling Stop collecting native memory profile.
 type MemoryStopSampling struct {
 }
 
-// MethodName of the command
-func (m MemoryStopSampling) MethodName() string { return "Memory.stopSampling" }
+// ProtoName of the command
+func (m MemoryStopSampling) ProtoName() string { return "Memory.stopSampling" }
 
 // Call of the command, sessionID is optional.
-func (m MemoryStopSampling) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MemoryStopSampling) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MemoryGetAllTimeSamplingProfile Retrieve native memory allocations profile
@@ -8191,15 +8195,15 @@ func (m MemoryStopSampling) Call(caller Caller) error {
 type MemoryGetAllTimeSamplingProfile struct {
 }
 
-// MethodName of the command
-func (m MemoryGetAllTimeSamplingProfile) MethodName() string {
+// ProtoName of the command
+func (m MemoryGetAllTimeSamplingProfile) ProtoName() string {
 	return "Memory.getAllTimeSamplingProfile"
 }
 
 // Call of the command, sessionID is optional.
-func (m MemoryGetAllTimeSamplingProfile) Call(caller Caller) (*MemoryGetAllTimeSamplingProfileResult, error) {
+func (m MemoryGetAllTimeSamplingProfile) Call(c Client) (*MemoryGetAllTimeSamplingProfileResult, error) {
 	var res MemoryGetAllTimeSamplingProfileResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // MemoryGetAllTimeSamplingProfileResult Retrieve native memory allocations profile
@@ -8215,15 +8219,15 @@ type MemoryGetAllTimeSamplingProfileResult struct {
 type MemoryGetBrowserSamplingProfile struct {
 }
 
-// MethodName of the command
-func (m MemoryGetBrowserSamplingProfile) MethodName() string {
+// ProtoName of the command
+func (m MemoryGetBrowserSamplingProfile) ProtoName() string {
 	return "Memory.getBrowserSamplingProfile"
 }
 
 // Call of the command, sessionID is optional.
-func (m MemoryGetBrowserSamplingProfile) Call(caller Caller) (*MemoryGetBrowserSamplingProfileResult, error) {
+func (m MemoryGetBrowserSamplingProfile) Call(c Client) (*MemoryGetBrowserSamplingProfileResult, error) {
 	var res MemoryGetBrowserSamplingProfileResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // MemoryGetBrowserSamplingProfileResult Retrieve native memory allocations profile
@@ -8239,13 +8243,13 @@ type MemoryGetBrowserSamplingProfileResult struct {
 type MemoryGetSamplingProfile struct {
 }
 
-// MethodName of the command
-func (m MemoryGetSamplingProfile) MethodName() string { return "Memory.getSamplingProfile" }
+// ProtoName of the command
+func (m MemoryGetSamplingProfile) ProtoName() string { return "Memory.getSamplingProfile" }
 
 // Call of the command, sessionID is optional.
-func (m MemoryGetSamplingProfile) Call(caller Caller) (*MemoryGetSamplingProfileResult, error) {
+func (m MemoryGetSamplingProfile) Call(c Client) (*MemoryGetSamplingProfileResult, error) {
 	var res MemoryGetSamplingProfileResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // MemoryGetSamplingProfileResult Retrieve native memory allocations profile collected since last
@@ -8366,7 +8370,7 @@ const (
 )
 
 // NetworkHeaders Request / response headers as keys / values of JSON object.
-type NetworkHeaders map[string]JSON
+type NetworkHeaders map[string]gson.JSON
 
 // NetworkConnectionType The underlying connection technology that the browser is supposedly using.
 type NetworkConnectionType string
@@ -8725,7 +8729,7 @@ type NetworkResponse struct {
 	URL string `json:"url"`
 
 	// Status HTTP response status code.
-	Status int64 `json:"status"`
+	Status int `json:"status"`
 
 	// StatusText HTTP response status text.
 	StatusText string `json:"statusText"`
@@ -8755,7 +8759,7 @@ type NetworkResponse struct {
 	RemoteIPAddress string `json:"remoteIPAddress,omitempty"`
 
 	// RemotePort (optional) Remote port.
-	RemotePort int64 `json:"remotePort,omitempty"`
+	RemotePort int `json:"remotePort,omitempty"`
 
 	// FromDiskCache (optional) Specifies that the request was served from the disk cache.
 	FromDiskCache bool `json:"fromDiskCache,omitempty"`
@@ -8802,7 +8806,7 @@ type NetworkWebSocketRequest struct {
 type NetworkWebSocketResponse struct {
 
 	// Status HTTP response status code.
-	Status int64 `json:"status"`
+	Status int `json:"status"`
 
 	// StatusText HTTP response status text.
 	StatusText string `json:"statusText"`
@@ -8907,7 +8911,7 @@ type NetworkCookie struct {
 	Expires float64 `json:"expires"`
 
 	// Size Cookie size.
-	Size int64 `json:"size"`
+	Size int `json:"size"`
 
 	// HTTPOnly True if cookie is http-only.
 	HTTPOnly bool `json:"httpOnly"`
@@ -9166,10 +9170,10 @@ type NetworkSignedExchangeSignature struct {
 	ValidityURL string `json:"validityUrl"`
 
 	// Date Signed exchange signature date.
-	Date int64 `json:"date"`
+	Date int `json:"date"`
 
 	// Expires Signed exchange signature expires.
-	Expires int64 `json:"expires"`
+	Expires int `json:"expires"`
 
 	// Certificates (optional) The encoded certificates.
 	Certificates []string `json:"certificates,omitempty"`
@@ -9183,7 +9187,7 @@ type NetworkSignedExchangeHeader struct {
 	RequestURL string `json:"requestUrl"`
 
 	// ResponseCode Signed exchange response code.
-	ResponseCode int64 `json:"responseCode"`
+	ResponseCode int `json:"responseCode"`
 
 	// ResponseHeaders Signed exchange response headers.
 	ResponseHeaders NetworkHeaders `json:"responseHeaders"`
@@ -9225,7 +9229,7 @@ type NetworkSignedExchangeError struct {
 	Message string `json:"message"`
 
 	// SignatureIndex (optional) The index of the signature which caused the error.
-	SignatureIndex int64 `json:"signatureIndex,omitempty"`
+	SignatureIndex int `json:"signatureIndex,omitempty"`
 
 	// ErrorField (optional) The field which caused the error.
 	ErrorField NetworkSignedExchangeErrorField `json:"errorField,omitempty"`
@@ -9251,13 +9255,13 @@ type NetworkSignedExchangeInfo struct {
 type NetworkCanClearBrowserCache struct {
 }
 
-// MethodName of the command
-func (m NetworkCanClearBrowserCache) MethodName() string { return "Network.canClearBrowserCache" }
+// ProtoName of the command
+func (m NetworkCanClearBrowserCache) ProtoName() string { return "Network.canClearBrowserCache" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkCanClearBrowserCache) Call(caller Caller) (*NetworkCanClearBrowserCacheResult, error) {
+func (m NetworkCanClearBrowserCache) Call(c Client) (*NetworkCanClearBrowserCacheResult, error) {
 	var res NetworkCanClearBrowserCacheResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkCanClearBrowserCacheResult (deprecated) Tells whether clearing browser cache is supported.
@@ -9271,13 +9275,13 @@ type NetworkCanClearBrowserCacheResult struct {
 type NetworkCanClearBrowserCookies struct {
 }
 
-// MethodName of the command
-func (m NetworkCanClearBrowserCookies) MethodName() string { return "Network.canClearBrowserCookies" }
+// ProtoName of the command
+func (m NetworkCanClearBrowserCookies) ProtoName() string { return "Network.canClearBrowserCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkCanClearBrowserCookies) Call(caller Caller) (*NetworkCanClearBrowserCookiesResult, error) {
+func (m NetworkCanClearBrowserCookies) Call(c Client) (*NetworkCanClearBrowserCookiesResult, error) {
 	var res NetworkCanClearBrowserCookiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkCanClearBrowserCookiesResult (deprecated) Tells whether clearing browser cookies is supported.
@@ -9291,15 +9295,15 @@ type NetworkCanClearBrowserCookiesResult struct {
 type NetworkCanEmulateNetworkConditions struct {
 }
 
-// MethodName of the command
-func (m NetworkCanEmulateNetworkConditions) MethodName() string {
+// ProtoName of the command
+func (m NetworkCanEmulateNetworkConditions) ProtoName() string {
 	return "Network.canEmulateNetworkConditions"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkCanEmulateNetworkConditions) Call(caller Caller) (*NetworkCanEmulateNetworkConditionsResult, error) {
+func (m NetworkCanEmulateNetworkConditions) Call(c Client) (*NetworkCanEmulateNetworkConditionsResult, error) {
 	var res NetworkCanEmulateNetworkConditionsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkCanEmulateNetworkConditionsResult (deprecated) Tells whether emulation of network conditions is supported.
@@ -9313,24 +9317,24 @@ type NetworkCanEmulateNetworkConditionsResult struct {
 type NetworkClearBrowserCache struct {
 }
 
-// MethodName of the command
-func (m NetworkClearBrowserCache) MethodName() string { return "Network.clearBrowserCache" }
+// ProtoName of the command
+func (m NetworkClearBrowserCache) ProtoName() string { return "Network.clearBrowserCache" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkClearBrowserCache) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkClearBrowserCache) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkClearBrowserCookies Clears browser cookies.
 type NetworkClearBrowserCookies struct {
 }
 
-// MethodName of the command
-func (m NetworkClearBrowserCookies) MethodName() string { return "Network.clearBrowserCookies" }
+// ProtoName of the command
+func (m NetworkClearBrowserCookies) ProtoName() string { return "Network.clearBrowserCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkClearBrowserCookies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkClearBrowserCookies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkContinueInterceptedRequest (deprecated) (experimental) Response to Network.requestIntercepted which either modifies the request to continue with any
@@ -9371,14 +9375,14 @@ type NetworkContinueInterceptedRequest struct {
 	AuthChallengeResponse *NetworkAuthChallengeResponse `json:"authChallengeResponse,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkContinueInterceptedRequest) MethodName() string {
+// ProtoName of the command
+func (m NetworkContinueInterceptedRequest) ProtoName() string {
 	return "Network.continueInterceptedRequest"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkContinueInterceptedRequest) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkContinueInterceptedRequest) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkDeleteCookies Deletes browser cookies with matching name and url or domain/path pair.
@@ -9398,24 +9402,24 @@ type NetworkDeleteCookies struct {
 	Path string `json:"path,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkDeleteCookies) MethodName() string { return "Network.deleteCookies" }
+// ProtoName of the command
+func (m NetworkDeleteCookies) ProtoName() string { return "Network.deleteCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkDeleteCookies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkDeleteCookies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkDisable Disables network tracking, prevents network events from being sent to the client.
 type NetworkDisable struct {
 }
 
-// MethodName of the command
-func (m NetworkDisable) MethodName() string { return "Network.disable" }
+// ProtoName of the command
+func (m NetworkDisable) ProtoName() string { return "Network.disable" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkEmulateNetworkConditions Activates emulation of network conditions.
@@ -9437,35 +9441,35 @@ type NetworkEmulateNetworkConditions struct {
 	ConnectionType NetworkConnectionType `json:"connectionType,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkEmulateNetworkConditions) MethodName() string {
+// ProtoName of the command
+func (m NetworkEmulateNetworkConditions) ProtoName() string {
 	return "Network.emulateNetworkConditions"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkEmulateNetworkConditions) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkEmulateNetworkConditions) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkEnable Enables network tracking, network events will now be delivered to the client.
 type NetworkEnable struct {
 
 	// MaxTotalBufferSize (experimental) (optional) Buffer size in bytes to use when preserving network payloads (XHRs, etc).
-	MaxTotalBufferSize int64 `json:"maxTotalBufferSize,omitempty"`
+	MaxTotalBufferSize int `json:"maxTotalBufferSize,omitempty"`
 
 	// MaxResourceBufferSize (experimental) (optional) Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
-	MaxResourceBufferSize int64 `json:"maxResourceBufferSize,omitempty"`
+	MaxResourceBufferSize int `json:"maxResourceBufferSize,omitempty"`
 
 	// MaxPostDataSize (optional) Longest post body size (in bytes) that would be included in requestWillBeSent notification
-	MaxPostDataSize int64 `json:"maxPostDataSize,omitempty"`
+	MaxPostDataSize int `json:"maxPostDataSize,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkEnable) MethodName() string { return "Network.enable" }
+// ProtoName of the command
+func (m NetworkEnable) ProtoName() string { return "Network.enable" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkGetAllCookies Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -9473,13 +9477,13 @@ func (m NetworkEnable) Call(caller Caller) error {
 type NetworkGetAllCookies struct {
 }
 
-// MethodName of the command
-func (m NetworkGetAllCookies) MethodName() string { return "Network.getAllCookies" }
+// ProtoName of the command
+func (m NetworkGetAllCookies) ProtoName() string { return "Network.getAllCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetAllCookies) Call(caller Caller) (*NetworkGetAllCookiesResult, error) {
+func (m NetworkGetAllCookies) Call(c Client) (*NetworkGetAllCookiesResult, error) {
 	var res NetworkGetAllCookiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetAllCookiesResult Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -9497,13 +9501,13 @@ type NetworkGetCertificate struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m NetworkGetCertificate) MethodName() string { return "Network.getCertificate" }
+// ProtoName of the command
+func (m NetworkGetCertificate) ProtoName() string { return "Network.getCertificate" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetCertificate) Call(caller Caller) (*NetworkGetCertificateResult, error) {
+func (m NetworkGetCertificate) Call(c Client) (*NetworkGetCertificateResult, error) {
 	var res NetworkGetCertificateResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetCertificateResult (experimental) Returns the DER-encoded certificate.
@@ -9521,13 +9525,13 @@ type NetworkGetCookies struct {
 	Urls []string `json:"urls,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkGetCookies) MethodName() string { return "Network.getCookies" }
+// ProtoName of the command
+func (m NetworkGetCookies) ProtoName() string { return "Network.getCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetCookies) Call(caller Caller) (*NetworkGetCookiesResult, error) {
+func (m NetworkGetCookies) Call(c Client) (*NetworkGetCookiesResult, error) {
 	var res NetworkGetCookiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetCookiesResult Returns all browser cookies for the current URL. Depending on the backend support, will return
@@ -9545,13 +9549,13 @@ type NetworkGetResponseBody struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// MethodName of the command
-func (m NetworkGetResponseBody) MethodName() string { return "Network.getResponseBody" }
+// ProtoName of the command
+func (m NetworkGetResponseBody) ProtoName() string { return "Network.getResponseBody" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetResponseBody) Call(caller Caller) (*NetworkGetResponseBodyResult, error) {
+func (m NetworkGetResponseBody) Call(c Client) (*NetworkGetResponseBodyResult, error) {
 	var res NetworkGetResponseBodyResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetResponseBodyResult Returns content served for the given request.
@@ -9571,13 +9575,13 @@ type NetworkGetRequestPostData struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// MethodName of the command
-func (m NetworkGetRequestPostData) MethodName() string { return "Network.getRequestPostData" }
+// ProtoName of the command
+func (m NetworkGetRequestPostData) ProtoName() string { return "Network.getRequestPostData" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetRequestPostData) Call(caller Caller) (*NetworkGetRequestPostDataResult, error) {
+func (m NetworkGetRequestPostData) Call(c Client) (*NetworkGetRequestPostDataResult, error) {
 	var res NetworkGetRequestPostDataResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetRequestPostDataResult Returns post data sent with the request. Returns an error when no data was sent with the request.
@@ -9594,15 +9598,15 @@ type NetworkGetResponseBodyForInterception struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
-// MethodName of the command
-func (m NetworkGetResponseBodyForInterception) MethodName() string {
+// ProtoName of the command
+func (m NetworkGetResponseBodyForInterception) ProtoName() string {
 	return "Network.getResponseBodyForInterception"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkGetResponseBodyForInterception) Call(caller Caller) (*NetworkGetResponseBodyForInterceptionResult, error) {
+func (m NetworkGetResponseBodyForInterception) Call(c Client) (*NetworkGetResponseBodyForInterceptionResult, error) {
 	var res NetworkGetResponseBodyForInterceptionResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkGetResponseBodyForInterceptionResult (experimental) Returns content served for the given currently intercepted request.
@@ -9625,15 +9629,15 @@ type NetworkTakeResponseBodyForInterceptionAsStream struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
-// MethodName of the command
-func (m NetworkTakeResponseBodyForInterceptionAsStream) MethodName() string {
+// ProtoName of the command
+func (m NetworkTakeResponseBodyForInterceptionAsStream) ProtoName() string {
 	return "Network.takeResponseBodyForInterceptionAsStream"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(caller Caller) (*NetworkTakeResponseBodyForInterceptionAsStreamResult, error) {
+func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(c Client) (*NetworkTakeResponseBodyForInterceptionAsStreamResult, error) {
 	var res NetworkTakeResponseBodyForInterceptionAsStreamResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkTakeResponseBodyForInterceptionAsStreamResult (experimental) Returns a handle to the stream representing the response body. Note that after this command,
@@ -9655,12 +9659,12 @@ type NetworkReplayXHR struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// MethodName of the command
-func (m NetworkReplayXHR) MethodName() string { return "Network.replayXHR" }
+// ProtoName of the command
+func (m NetworkReplayXHR) ProtoName() string { return "Network.replayXHR" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkReplayXHR) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkReplayXHR) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSearchInResponseBody (experimental) Searches for given string in response content.
@@ -9679,13 +9683,13 @@ type NetworkSearchInResponseBody struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkSearchInResponseBody) MethodName() string { return "Network.searchInResponseBody" }
+// ProtoName of the command
+func (m NetworkSearchInResponseBody) ProtoName() string { return "Network.searchInResponseBody" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSearchInResponseBody) Call(caller Caller) (*NetworkSearchInResponseBodyResult, error) {
+func (m NetworkSearchInResponseBody) Call(c Client) (*NetworkSearchInResponseBodyResult, error) {
 	var res NetworkSearchInResponseBodyResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkSearchInResponseBodyResult (experimental) Searches for given string in response content.
@@ -9702,12 +9706,12 @@ type NetworkSetBlockedURLs struct {
 	Urls []string `json:"urls"`
 }
 
-// MethodName of the command
-func (m NetworkSetBlockedURLs) MethodName() string { return "Network.setBlockedURLs" }
+// ProtoName of the command
+func (m NetworkSetBlockedURLs) ProtoName() string { return "Network.setBlockedURLs" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetBlockedURLs) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetBlockedURLs) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetBypassServiceWorker (experimental) Toggles ignoring of service worker for each request.
@@ -9717,12 +9721,12 @@ type NetworkSetBypassServiceWorker struct {
 	Bypass bool `json:"bypass"`
 }
 
-// MethodName of the command
-func (m NetworkSetBypassServiceWorker) MethodName() string { return "Network.setBypassServiceWorker" }
+// ProtoName of the command
+func (m NetworkSetBypassServiceWorker) ProtoName() string { return "Network.setBypassServiceWorker" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetBypassServiceWorker) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetBypassServiceWorker) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetCacheDisabled Toggles ignoring cache for each request. If `true`, cache will not be used.
@@ -9732,12 +9736,12 @@ type NetworkSetCacheDisabled struct {
 	CacheDisabled bool `json:"cacheDisabled"`
 }
 
-// MethodName of the command
-func (m NetworkSetCacheDisabled) MethodName() string { return "Network.setCacheDisabled" }
+// ProtoName of the command
+func (m NetworkSetCacheDisabled) ProtoName() string { return "Network.setCacheDisabled" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetCacheDisabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetCacheDisabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetCookie Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -9775,13 +9779,13 @@ type NetworkSetCookie struct {
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkSetCookie) MethodName() string { return "Network.setCookie" }
+// ProtoName of the command
+func (m NetworkSetCookie) ProtoName() string { return "Network.setCookie" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetCookie) Call(caller Caller) (*NetworkSetCookieResult, error) {
+func (m NetworkSetCookie) Call(c Client) (*NetworkSetCookieResult, error) {
 	var res NetworkSetCookieResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // NetworkSetCookieResult Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -9798,32 +9802,32 @@ type NetworkSetCookies struct {
 	Cookies []*NetworkCookieParam `json:"cookies"`
 }
 
-// MethodName of the command
-func (m NetworkSetCookies) MethodName() string { return "Network.setCookies" }
+// ProtoName of the command
+func (m NetworkSetCookies) ProtoName() string { return "Network.setCookies" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetCookies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetCookies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetDataSizeLimitsForTest (experimental) For testing.
 type NetworkSetDataSizeLimitsForTest struct {
 
 	// MaxTotalSize Maximum total buffer size.
-	MaxTotalSize int64 `json:"maxTotalSize"`
+	MaxTotalSize int `json:"maxTotalSize"`
 
 	// MaxResourceSize Maximum per-resource size.
-	MaxResourceSize int64 `json:"maxResourceSize"`
+	MaxResourceSize int `json:"maxResourceSize"`
 }
 
-// MethodName of the command
-func (m NetworkSetDataSizeLimitsForTest) MethodName() string {
+// ProtoName of the command
+func (m NetworkSetDataSizeLimitsForTest) ProtoName() string {
 	return "Network.setDataSizeLimitsForTest"
 }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetDataSizeLimitsForTest) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetDataSizeLimitsForTest) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetExtraHTTPHeaders Specifies whether to always send extra HTTP headers with the requests from this page.
@@ -9833,12 +9837,12 @@ type NetworkSetExtraHTTPHeaders struct {
 	Headers NetworkHeaders `json:"headers"`
 }
 
-// MethodName of the command
-func (m NetworkSetExtraHTTPHeaders) MethodName() string { return "Network.setExtraHTTPHeaders" }
+// ProtoName of the command
+func (m NetworkSetExtraHTTPHeaders) ProtoName() string { return "Network.setExtraHTTPHeaders" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetExtraHTTPHeaders) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetExtraHTTPHeaders) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetRequestInterception (deprecated) (experimental) Sets the requests to intercept that match the provided patterns and optionally resource types.
@@ -9850,12 +9854,12 @@ type NetworkSetRequestInterception struct {
 	Patterns []*NetworkRequestPattern `json:"patterns"`
 }
 
-// MethodName of the command
-func (m NetworkSetRequestInterception) MethodName() string { return "Network.setRequestInterception" }
+// ProtoName of the command
+func (m NetworkSetRequestInterception) ProtoName() string { return "Network.setRequestInterception" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetRequestInterception) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetRequestInterception) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkSetUserAgentOverride Allows overriding user agent with the given string.
@@ -9874,12 +9878,12 @@ type NetworkSetUserAgentOverride struct {
 	UserAgentMetadata *EmulationUserAgentMetadata `json:"userAgentMetadata,omitempty"`
 }
 
-// MethodName of the command
-func (m NetworkSetUserAgentOverride) MethodName() string { return "Network.setUserAgentOverride" }
+// ProtoName of the command
+func (m NetworkSetUserAgentOverride) ProtoName() string { return "Network.setUserAgentOverride" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetUserAgentOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m NetworkSetUserAgentOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // NetworkDataReceived Fired when data chunk was received over the network.
@@ -9892,14 +9896,14 @@ type NetworkDataReceived struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 
 	// DataLength Data chunk length.
-	DataLength int64 `json:"dataLength"`
+	DataLength int `json:"dataLength"`
 
 	// EncodedDataLength Actual bytes received (might be less than dataLength for compressed encodings).
-	EncodedDataLength int64 `json:"encodedDataLength"`
+	EncodedDataLength int `json:"encodedDataLength"`
 }
 
-// MethodName interface
-func (evt NetworkDataReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkDataReceived) ProtoName() string {
 	return "Network.dataReceived"
 }
 
@@ -9922,8 +9926,8 @@ type NetworkEventSourceMessageReceived struct {
 	Data string `json:"data"`
 }
 
-// MethodName interface
-func (evt NetworkEventSourceMessageReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkEventSourceMessageReceived) ProtoName() string {
 	return "Network.eventSourceMessageReceived"
 }
 
@@ -9949,8 +9953,8 @@ type NetworkLoadingFailed struct {
 	BlockedReason NetworkBlockedReason `json:"blockedReason,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkLoadingFailed) MethodName() string {
+// ProtoName interface
+func (evt NetworkLoadingFailed) ProtoName() string {
 	return "Network.loadingFailed"
 }
 
@@ -9971,8 +9975,8 @@ type NetworkLoadingFinished struct {
 	ShouldReportCorbBlocking bool `json:"shouldReportCorbBlocking,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkLoadingFinished) MethodName() string {
+// ProtoName interface
+func (evt NetworkLoadingFinished) ProtoName() string {
 	return "Network.loadingFinished"
 }
 
@@ -10015,7 +10019,7 @@ type NetworkRequestIntercepted struct {
 
 	// ResponseStatusCode (optional) Response code if intercepted at response stage or if redirect occurred while intercepting
 	// request or auth retry occurred.
-	ResponseStatusCode int64 `json:"responseStatusCode,omitempty"`
+	ResponseStatusCode int `json:"responseStatusCode,omitempty"`
 
 	// ResponseHeaders (optional) Response headers if intercepted at the response stage or if redirect occurred while
 	// intercepting request or auth retry occurred.
@@ -10026,8 +10030,8 @@ type NetworkRequestIntercepted struct {
 	RequestID NetworkRequestID `json:"requestId,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkRequestIntercepted) MethodName() string {
+// ProtoName interface
+func (evt NetworkRequestIntercepted) ProtoName() string {
 	return "Network.requestIntercepted"
 }
 
@@ -10038,8 +10042,8 @@ type NetworkRequestServedFromCache struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// MethodName interface
-func (evt NetworkRequestServedFromCache) MethodName() string {
+// ProtoName interface
+func (evt NetworkRequestServedFromCache) ProtoName() string {
 	return "Network.requestServedFromCache"
 }
 
@@ -10080,8 +10084,8 @@ type NetworkRequestWillBeSent struct {
 	HasUserGesture bool `json:"hasUserGesture,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkRequestWillBeSent) MethodName() string {
+// ProtoName interface
+func (evt NetworkRequestWillBeSent) ProtoName() string {
 	return "Network.requestWillBeSent"
 }
 
@@ -10098,8 +10102,8 @@ type NetworkResourceChangedPriority struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt NetworkResourceChangedPriority) MethodName() string {
+// ProtoName interface
+func (evt NetworkResourceChangedPriority) ProtoName() string {
 	return "Network.resourceChangedPriority"
 }
 
@@ -10113,8 +10117,8 @@ type NetworkSignedExchangeReceived struct {
 	Info *NetworkSignedExchangeInfo `json:"info"`
 }
 
-// MethodName interface
-func (evt NetworkSignedExchangeReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkSignedExchangeReceived) ProtoName() string {
 	return "Network.signedExchangeReceived"
 }
 
@@ -10140,8 +10144,8 @@ type NetworkResponseReceived struct {
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkResponseReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkResponseReceived) ProtoName() string {
 	return "Network.responseReceived"
 }
 
@@ -10155,8 +10159,8 @@ type NetworkWebSocketClosed struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketClosed) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketClosed) ProtoName() string {
 	return "Network.webSocketClosed"
 }
 
@@ -10173,8 +10177,8 @@ type NetworkWebSocketCreated struct {
 	Initiator *NetworkInitiator `json:"initiator,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketCreated) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketCreated) ProtoName() string {
 	return "Network.webSocketCreated"
 }
 
@@ -10191,8 +10195,8 @@ type NetworkWebSocketFrameError struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketFrameError) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketFrameError) ProtoName() string {
 	return "Network.webSocketFrameError"
 }
 
@@ -10209,8 +10213,8 @@ type NetworkWebSocketFrameReceived struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketFrameReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketFrameReceived) ProtoName() string {
 	return "Network.webSocketFrameReceived"
 }
 
@@ -10227,8 +10231,8 @@ type NetworkWebSocketFrameSent struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketFrameSent) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketFrameSent) ProtoName() string {
 	return "Network.webSocketFrameSent"
 }
 
@@ -10245,8 +10249,8 @@ type NetworkWebSocketHandshakeResponseReceived struct {
 	Response *NetworkWebSocketResponse `json:"response"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketHandshakeResponseReceived) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketHandshakeResponseReceived) ProtoName() string {
 	return "Network.webSocketHandshakeResponseReceived"
 }
 
@@ -10266,8 +10270,8 @@ type NetworkWebSocketWillSendHandshakeRequest struct {
 	Request *NetworkWebSocketRequest `json:"request"`
 }
 
-// MethodName interface
-func (evt NetworkWebSocketWillSendHandshakeRequest) MethodName() string {
+// ProtoName interface
+func (evt NetworkWebSocketWillSendHandshakeRequest) ProtoName() string {
 	return "Network.webSocketWillSendHandshakeRequest"
 }
 
@@ -10288,8 +10292,8 @@ type NetworkRequestWillBeSentExtraInfo struct {
 	Headers NetworkHeaders `json:"headers"`
 }
 
-// MethodName interface
-func (evt NetworkRequestWillBeSentExtraInfo) MethodName() string {
+// ProtoName interface
+func (evt NetworkRequestWillBeSentExtraInfo) ProtoName() string {
 	return "Network.requestWillBeSentExtraInfo"
 }
 
@@ -10314,8 +10318,8 @@ type NetworkResponseReceivedExtraInfo struct {
 	HeadersText string `json:"headersText,omitempty"`
 }
 
-// MethodName interface
-func (evt NetworkResponseReceivedExtraInfo) MethodName() string {
+// ProtoName interface
+func (evt NetworkResponseReceivedExtraInfo) ProtoName() string {
 	return "Network.responseReceivedExtraInfo"
 }
 
@@ -10456,24 +10460,24 @@ const (
 type OverlayDisable struct {
 }
 
-// MethodName of the command
-func (m OverlayDisable) MethodName() string { return "Overlay.disable" }
+// ProtoName of the command
+func (m OverlayDisable) ProtoName() string { return "Overlay.disable" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayEnable Enables domain notifications.
 type OverlayEnable struct {
 }
 
-// MethodName of the command
-func (m OverlayEnable) MethodName() string { return "Overlay.enable" }
+// ProtoName of the command
+func (m OverlayEnable) ProtoName() string { return "Overlay.enable" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayGetHighlightObjectForTest For testing.
@@ -10495,34 +10499,34 @@ type OverlayGetHighlightObjectForTest struct {
 	ShowAccessibilityInfo bool `json:"showAccessibilityInfo,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlayGetHighlightObjectForTest) MethodName() string {
+// ProtoName of the command
+func (m OverlayGetHighlightObjectForTest) ProtoName() string {
 	return "Overlay.getHighlightObjectForTest"
 }
 
 // Call of the command, sessionID is optional.
-func (m OverlayGetHighlightObjectForTest) Call(caller Caller) (*OverlayGetHighlightObjectForTestResult, error) {
+func (m OverlayGetHighlightObjectForTest) Call(c Client) (*OverlayGetHighlightObjectForTestResult, error) {
 	var res OverlayGetHighlightObjectForTestResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // OverlayGetHighlightObjectForTestResult For testing.
 type OverlayGetHighlightObjectForTestResult struct {
 
 	// Highlight Highlight data for the node.
-	Highlight map[string]JSON `json:"highlight"`
+	Highlight map[string]gson.JSON `json:"highlight"`
 }
 
 // OverlayHideHighlight Hides any highlight.
 type OverlayHideHighlight struct {
 }
 
-// MethodName of the command
-func (m OverlayHideHighlight) MethodName() string { return "Overlay.hideHighlight" }
+// ProtoName of the command
+func (m OverlayHideHighlight) ProtoName() string { return "Overlay.hideHighlight" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayHideHighlight) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayHideHighlight) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayHighlightFrame Highlights owner element of the frame with given id.
@@ -10538,12 +10542,12 @@ type OverlayHighlightFrame struct {
 	ContentOutlineColor *DOMRGBA `json:"contentOutlineColor,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlayHighlightFrame) MethodName() string { return "Overlay.highlightFrame" }
+// ProtoName of the command
+func (m OverlayHighlightFrame) ProtoName() string { return "Overlay.highlightFrame" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayHighlightFrame) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayHighlightFrame) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayHighlightNode Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
@@ -10566,12 +10570,12 @@ type OverlayHighlightNode struct {
 	Selector string `json:"selector,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlayHighlightNode) MethodName() string { return "Overlay.highlightNode" }
+// ProtoName of the command
+func (m OverlayHighlightNode) ProtoName() string { return "Overlay.highlightNode" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayHighlightNode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayHighlightNode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayHighlightQuad Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
@@ -10587,28 +10591,28 @@ type OverlayHighlightQuad struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlayHighlightQuad) MethodName() string { return "Overlay.highlightQuad" }
+// ProtoName of the command
+func (m OverlayHighlightQuad) ProtoName() string { return "Overlay.highlightQuad" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayHighlightQuad) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayHighlightQuad) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayHighlightRect Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 type OverlayHighlightRect struct {
 
 	// X X coordinate
-	X int64 `json:"x"`
+	X int `json:"x"`
 
 	// Y Y coordinate
-	Y int64 `json:"y"`
+	Y int `json:"y"`
 
 	// Width Rectangle width
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Rectangle height
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 
 	// Color (optional) The highlight fill color (default: transparent).
 	Color *DOMRGBA `json:"color,omitempty"`
@@ -10617,12 +10621,12 @@ type OverlayHighlightRect struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlayHighlightRect) MethodName() string { return "Overlay.highlightRect" }
+// ProtoName of the command
+func (m OverlayHighlightRect) ProtoName() string { return "Overlay.highlightRect" }
 
 // Call of the command, sessionID is optional.
-func (m OverlayHighlightRect) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlayHighlightRect) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetInspectMode Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
@@ -10637,12 +10641,12 @@ type OverlaySetInspectMode struct {
 	HighlightConfig *OverlayHighlightConfig `json:"highlightConfig,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlaySetInspectMode) MethodName() string { return "Overlay.setInspectMode" }
+// ProtoName of the command
+func (m OverlaySetInspectMode) ProtoName() string { return "Overlay.setInspectMode" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetInspectMode) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetInspectMode) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowAdHighlights Highlights owner element of all frames detected to be ads.
@@ -10652,12 +10656,12 @@ type OverlaySetShowAdHighlights struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowAdHighlights) MethodName() string { return "Overlay.setShowAdHighlights" }
+// ProtoName of the command
+func (m OverlaySetShowAdHighlights) ProtoName() string { return "Overlay.setShowAdHighlights" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowAdHighlights) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowAdHighlights) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetPausedInDebuggerMessage ...
@@ -10667,14 +10671,14 @@ type OverlaySetPausedInDebuggerMessage struct {
 	Message string `json:"message,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlaySetPausedInDebuggerMessage) MethodName() string {
+// ProtoName of the command
+func (m OverlaySetPausedInDebuggerMessage) ProtoName() string {
 	return "Overlay.setPausedInDebuggerMessage"
 }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetPausedInDebuggerMessage) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetPausedInDebuggerMessage) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowDebugBorders Requests that backend shows debug borders on layers
@@ -10684,12 +10688,12 @@ type OverlaySetShowDebugBorders struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowDebugBorders) MethodName() string { return "Overlay.setShowDebugBorders" }
+// ProtoName of the command
+func (m OverlaySetShowDebugBorders) ProtoName() string { return "Overlay.setShowDebugBorders" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowDebugBorders) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowDebugBorders) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowFPSCounter Requests that backend shows the FPS counter
@@ -10699,12 +10703,12 @@ type OverlaySetShowFPSCounter struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowFPSCounter) MethodName() string { return "Overlay.setShowFPSCounter" }
+// ProtoName of the command
+func (m OverlaySetShowFPSCounter) ProtoName() string { return "Overlay.setShowFPSCounter" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowFPSCounter) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowFPSCounter) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowPaintRects Requests that backend shows paint rectangles
@@ -10714,12 +10718,12 @@ type OverlaySetShowPaintRects struct {
 	Result bool `json:"result"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowPaintRects) MethodName() string { return "Overlay.setShowPaintRects" }
+// ProtoName of the command
+func (m OverlaySetShowPaintRects) ProtoName() string { return "Overlay.setShowPaintRects" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowPaintRects) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowPaintRects) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowLayoutShiftRegions Requests that backend shows layout shift regions
@@ -10729,14 +10733,14 @@ type OverlaySetShowLayoutShiftRegions struct {
 	Result bool `json:"result"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowLayoutShiftRegions) MethodName() string {
+// ProtoName of the command
+func (m OverlaySetShowLayoutShiftRegions) ProtoName() string {
 	return "Overlay.setShowLayoutShiftRegions"
 }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowLayoutShiftRegions) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowLayoutShiftRegions) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowScrollBottleneckRects Requests that backend shows scroll bottleneck rects
@@ -10746,14 +10750,14 @@ type OverlaySetShowScrollBottleneckRects struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowScrollBottleneckRects) MethodName() string {
+// ProtoName of the command
+func (m OverlaySetShowScrollBottleneckRects) ProtoName() string {
 	return "Overlay.setShowScrollBottleneckRects"
 }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowScrollBottleneckRects) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowScrollBottleneckRects) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowHitTestBorders Requests that backend shows hit-test borders on layers
@@ -10763,12 +10767,12 @@ type OverlaySetShowHitTestBorders struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowHitTestBorders) MethodName() string { return "Overlay.setShowHitTestBorders" }
+// ProtoName of the command
+func (m OverlaySetShowHitTestBorders) ProtoName() string { return "Overlay.setShowHitTestBorders" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowHitTestBorders) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowHitTestBorders) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowViewportSizeOnResize Paints viewport size upon main frame resize.
@@ -10778,14 +10782,14 @@ type OverlaySetShowViewportSizeOnResize struct {
 	Show bool `json:"show"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowViewportSizeOnResize) MethodName() string {
+// ProtoName of the command
+func (m OverlaySetShowViewportSizeOnResize) ProtoName() string {
 	return "Overlay.setShowViewportSizeOnResize"
 }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowViewportSizeOnResize) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowViewportSizeOnResize) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlaySetShowHinge Add a dual screen device hinge
@@ -10795,12 +10799,12 @@ type OverlaySetShowHinge struct {
 	HingeConfig *OverlayHingeConfig `json:"hingeConfig,omitempty"`
 }
 
-// MethodName of the command
-func (m OverlaySetShowHinge) MethodName() string { return "Overlay.setShowHinge" }
+// ProtoName of the command
+func (m OverlaySetShowHinge) ProtoName() string { return "Overlay.setShowHinge" }
 
 // Call of the command, sessionID is optional.
-func (m OverlaySetShowHinge) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m OverlaySetShowHinge) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // OverlayInspectNodeRequested Fired when the node should be inspected. This happens after call to `setInspectMode` or when
@@ -10811,8 +10815,8 @@ type OverlayInspectNodeRequested struct {
 	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
 }
 
-// MethodName interface
-func (evt OverlayInspectNodeRequested) MethodName() string {
+// ProtoName interface
+func (evt OverlayInspectNodeRequested) ProtoName() string {
 	return "Overlay.inspectNodeRequested"
 }
 
@@ -10823,8 +10827,8 @@ type OverlayNodeHighlightRequested struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// MethodName interface
-func (evt OverlayNodeHighlightRequested) MethodName() string {
+// ProtoName interface
+func (evt OverlayNodeHighlightRequested) ProtoName() string {
 	return "Overlay.nodeHighlightRequested"
 }
 
@@ -10835,8 +10839,8 @@ type OverlayScreenshotRequested struct {
 	Viewport *PageViewport `json:"viewport"`
 }
 
-// MethodName interface
-func (evt OverlayScreenshotRequested) MethodName() string {
+// ProtoName interface
+func (evt OverlayScreenshotRequested) ProtoName() string {
 	return "Overlay.screenshotRequested"
 }
 
@@ -10844,8 +10848,8 @@ func (evt OverlayScreenshotRequested) MethodName() string {
 type OverlayInspectModeCanceled struct {
 }
 
-// MethodName interface
-func (evt OverlayInspectModeCanceled) MethodName() string {
+// ProtoName interface
+func (evt OverlayInspectModeCanceled) ProtoName() string {
 	return "Overlay.inspectModeCanceled"
 }
 
@@ -10982,7 +10986,7 @@ const (
 type PageNavigationEntry struct {
 
 	// ID Unique id of the navigation history entry.
-	ID int64 `json:"id"`
+	ID int `json:"id"`
 
 	// URL URL of the navigation history entry.
 	URL string `json:"url"`
@@ -11046,13 +11050,13 @@ type PageAppManifestError struct {
 	Message string `json:"message"`
 
 	// Critical If criticial, this is a non-recoverable parse error.
-	Critical int64 `json:"critical"`
+	Critical int `json:"critical"`
 
 	// Line Error line.
-	Line int64 `json:"line"`
+	Line int `json:"line"`
 
 	// Column Error column.
-	Column int64 `json:"column"`
+	Column int `json:"column"`
 }
 
 // PageAppManifestParsedProperties (experimental) Parsed app manifest properties.
@@ -11066,16 +11070,16 @@ type PageAppManifestParsedProperties struct {
 type PageLayoutViewport struct {
 
 	// PageX Horizontal offset relative to the document (CSS pixels).
-	PageX int64 `json:"pageX"`
+	PageX int `json:"pageX"`
 
 	// PageY Vertical offset relative to the document (CSS pixels).
-	PageY int64 `json:"pageY"`
+	PageY int `json:"pageY"`
 
 	// ClientWidth Width (CSS pixels), excludes scrollbar if present.
-	ClientWidth int64 `json:"clientWidth"`
+	ClientWidth int `json:"clientWidth"`
 
 	// ClientHeight Height (CSS pixels), excludes scrollbar if present.
-	ClientHeight int64 `json:"clientHeight"`
+	ClientHeight int `json:"clientHeight"`
 }
 
 // PageVisualViewport Visual viewport position, dimensions, and scale.
@@ -11154,10 +11158,10 @@ type PageFontFamilies struct {
 type PageFontSizes struct {
 
 	// Standard (optional) Default standard font size.
-	Standard int64 `json:"standard,omitempty"`
+	Standard int `json:"standard,omitempty"`
 
 	// Fixed (optional) Default fixed font size.
-	Fixed int64 `json:"fixed,omitempty"`
+	Fixed int `json:"fixed,omitempty"`
 }
 
 // PageClientNavigationReason (experimental) ...
@@ -11262,13 +11266,13 @@ type PageAddScriptToEvaluateOnLoad struct {
 	ScriptSource string `json:"scriptSource"`
 }
 
-// MethodName of the command
-func (m PageAddScriptToEvaluateOnLoad) MethodName() string { return "Page.addScriptToEvaluateOnLoad" }
+// ProtoName of the command
+func (m PageAddScriptToEvaluateOnLoad) ProtoName() string { return "Page.addScriptToEvaluateOnLoad" }
 
 // Call of the command, sessionID is optional.
-func (m PageAddScriptToEvaluateOnLoad) Call(caller Caller) (*PageAddScriptToEvaluateOnLoadResult, error) {
+func (m PageAddScriptToEvaluateOnLoad) Call(c Client) (*PageAddScriptToEvaluateOnLoadResult, error) {
 	var res PageAddScriptToEvaluateOnLoadResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -11290,15 +11294,15 @@ type PageAddScriptToEvaluateOnNewDocument struct {
 	WorldName string `json:"worldName,omitempty"`
 }
 
-// MethodName of the command
-func (m PageAddScriptToEvaluateOnNewDocument) MethodName() string {
+// ProtoName of the command
+func (m PageAddScriptToEvaluateOnNewDocument) ProtoName() string {
 	return "Page.addScriptToEvaluateOnNewDocument"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageAddScriptToEvaluateOnNewDocument) Call(caller Caller) (*PageAddScriptToEvaluateOnNewDocumentResult, error) {
+func (m PageAddScriptToEvaluateOnNewDocument) Call(c Client) (*PageAddScriptToEvaluateOnNewDocumentResult, error) {
 	var res PageAddScriptToEvaluateOnNewDocumentResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageAddScriptToEvaluateOnNewDocumentResult Evaluates given script in every frame upon creation (before loading frame's scripts).
@@ -11312,12 +11316,12 @@ type PageAddScriptToEvaluateOnNewDocumentResult struct {
 type PageBringToFront struct {
 }
 
-// MethodName of the command
-func (m PageBringToFront) MethodName() string { return "Page.bringToFront" }
+// ProtoName of the command
+func (m PageBringToFront) ProtoName() string { return "Page.bringToFront" }
 
 // Call of the command, sessionID is optional.
-func (m PageBringToFront) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageBringToFront) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageCaptureScreenshotFormat enum
@@ -11338,7 +11342,7 @@ type PageCaptureScreenshot struct {
 	Format PageCaptureScreenshotFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100] (jpeg only).
-	Quality int64 `json:"quality,omitempty"`
+	Quality int `json:"quality,omitempty"`
 
 	// Clip (optional) Capture the screenshot of a given region only.
 	Clip *PageViewport `json:"clip,omitempty"`
@@ -11347,13 +11351,13 @@ type PageCaptureScreenshot struct {
 	FromSurface bool `json:"fromSurface,omitempty"`
 }
 
-// MethodName of the command
-func (m PageCaptureScreenshot) MethodName() string { return "Page.captureScreenshot" }
+// ProtoName of the command
+func (m PageCaptureScreenshot) ProtoName() string { return "Page.captureScreenshot" }
 
 // Call of the command, sessionID is optional.
-func (m PageCaptureScreenshot) Call(caller Caller) (*PageCaptureScreenshotResult, error) {
+func (m PageCaptureScreenshot) Call(c Client) (*PageCaptureScreenshotResult, error) {
 	var res PageCaptureScreenshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageCaptureScreenshotResult Capture page screenshot.
@@ -11379,13 +11383,13 @@ type PageCaptureSnapshot struct {
 	Format PageCaptureSnapshotFormat `json:"format,omitempty"`
 }
 
-// MethodName of the command
-func (m PageCaptureSnapshot) MethodName() string { return "Page.captureSnapshot" }
+// ProtoName of the command
+func (m PageCaptureSnapshot) ProtoName() string { return "Page.captureSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m PageCaptureSnapshot) Call(caller Caller) (*PageCaptureSnapshotResult, error) {
+func (m PageCaptureSnapshot) Call(c Client) (*PageCaptureSnapshotResult, error) {
 	var res PageCaptureSnapshotResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageCaptureSnapshotResult (experimental) Returns a snapshot of the page as a string. For MHTML format, the serialization includes
@@ -11400,38 +11404,38 @@ type PageCaptureSnapshotResult struct {
 type PageClearDeviceMetricsOverride struct {
 }
 
-// MethodName of the command
-func (m PageClearDeviceMetricsOverride) MethodName() string { return "Page.clearDeviceMetricsOverride" }
+// ProtoName of the command
+func (m PageClearDeviceMetricsOverride) ProtoName() string { return "Page.clearDeviceMetricsOverride" }
 
 // Call of the command, sessionID is optional.
-func (m PageClearDeviceMetricsOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageClearDeviceMetricsOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageClearDeviceOrientationOverride (deprecated) (experimental) Clears the overridden Device Orientation.
 type PageClearDeviceOrientationOverride struct {
 }
 
-// MethodName of the command
-func (m PageClearDeviceOrientationOverride) MethodName() string {
+// ProtoName of the command
+func (m PageClearDeviceOrientationOverride) ProtoName() string {
 	return "Page.clearDeviceOrientationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageClearDeviceOrientationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageClearDeviceOrientationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageClearGeolocationOverride (deprecated) Clears the overridden Geolocation Position and Error.
 type PageClearGeolocationOverride struct {
 }
 
-// MethodName of the command
-func (m PageClearGeolocationOverride) MethodName() string { return "Page.clearGeolocationOverride" }
+// ProtoName of the command
+func (m PageClearGeolocationOverride) ProtoName() string { return "Page.clearGeolocationOverride" }
 
 // Call of the command, sessionID is optional.
-func (m PageClearGeolocationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageClearGeolocationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageCreateIsolatedWorld Creates an isolated world for the given frame.
@@ -11448,13 +11452,13 @@ type PageCreateIsolatedWorld struct {
 	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
 }
 
-// MethodName of the command
-func (m PageCreateIsolatedWorld) MethodName() string { return "Page.createIsolatedWorld" }
+// ProtoName of the command
+func (m PageCreateIsolatedWorld) ProtoName() string { return "Page.createIsolatedWorld" }
 
 // Call of the command, sessionID is optional.
-func (m PageCreateIsolatedWorld) Call(caller Caller) (*PageCreateIsolatedWorldResult, error) {
+func (m PageCreateIsolatedWorld) Call(c Client) (*PageCreateIsolatedWorldResult, error) {
 	var res PageCreateIsolatedWorldResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageCreateIsolatedWorldResult Creates an isolated world for the given frame.
@@ -11474,49 +11478,49 @@ type PageDeleteCookie struct {
 	URL string `json:"url"`
 }
 
-// MethodName of the command
-func (m PageDeleteCookie) MethodName() string { return "Page.deleteCookie" }
+// ProtoName of the command
+func (m PageDeleteCookie) ProtoName() string { return "Page.deleteCookie" }
 
 // Call of the command, sessionID is optional.
-func (m PageDeleteCookie) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageDeleteCookie) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageDisable Disables page domain notifications.
 type PageDisable struct {
 }
 
-// MethodName of the command
-func (m PageDisable) MethodName() string { return "Page.disable" }
+// ProtoName of the command
+func (m PageDisable) ProtoName() string { return "Page.disable" }
 
 // Call of the command, sessionID is optional.
-func (m PageDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageEnable Enables page domain notifications.
 type PageEnable struct {
 }
 
-// MethodName of the command
-func (m PageEnable) MethodName() string { return "Page.enable" }
+// ProtoName of the command
+func (m PageEnable) ProtoName() string { return "Page.enable" }
 
 // Call of the command, sessionID is optional.
-func (m PageEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageGetAppManifest ...
 type PageGetAppManifest struct {
 }
 
-// MethodName of the command
-func (m PageGetAppManifest) MethodName() string { return "Page.getAppManifest" }
+// ProtoName of the command
+func (m PageGetAppManifest) ProtoName() string { return "Page.getAppManifest" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetAppManifest) Call(caller Caller) (*PageGetAppManifestResult, error) {
+func (m PageGetAppManifest) Call(c Client) (*PageGetAppManifestResult, error) {
 	var res PageGetAppManifestResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetAppManifestResult ...
@@ -11539,13 +11543,13 @@ type PageGetAppManifestResult struct {
 type PageGetInstallabilityErrors struct {
 }
 
-// MethodName of the command
-func (m PageGetInstallabilityErrors) MethodName() string { return "Page.getInstallabilityErrors" }
+// ProtoName of the command
+func (m PageGetInstallabilityErrors) ProtoName() string { return "Page.getInstallabilityErrors" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetInstallabilityErrors) Call(caller Caller) (*PageGetInstallabilityErrorsResult, error) {
+func (m PageGetInstallabilityErrors) Call(c Client) (*PageGetInstallabilityErrorsResult, error) {
 	var res PageGetInstallabilityErrorsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetInstallabilityErrorsResult (experimental) ...
@@ -11559,13 +11563,13 @@ type PageGetInstallabilityErrorsResult struct {
 type PageGetManifestIcons struct {
 }
 
-// MethodName of the command
-func (m PageGetManifestIcons) MethodName() string { return "Page.getManifestIcons" }
+// ProtoName of the command
+func (m PageGetManifestIcons) ProtoName() string { return "Page.getManifestIcons" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetManifestIcons) Call(caller Caller) (*PageGetManifestIconsResult, error) {
+func (m PageGetManifestIcons) Call(c Client) (*PageGetManifestIconsResult, error) {
 	var res PageGetManifestIconsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetManifestIconsResult (experimental) ...
@@ -11580,13 +11584,13 @@ type PageGetManifestIconsResult struct {
 type PageGetCookies struct {
 }
 
-// MethodName of the command
-func (m PageGetCookies) MethodName() string { return "Page.getCookies" }
+// ProtoName of the command
+func (m PageGetCookies) ProtoName() string { return "Page.getCookies" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetCookies) Call(caller Caller) (*PageGetCookiesResult, error) {
+func (m PageGetCookies) Call(c Client) (*PageGetCookiesResult, error) {
 	var res PageGetCookiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetCookiesResult (deprecated) (experimental) Returns all browser cookies. Depending on the backend support, will return detailed cookie
@@ -11601,13 +11605,13 @@ type PageGetCookiesResult struct {
 type PageGetFrameTree struct {
 }
 
-// MethodName of the command
-func (m PageGetFrameTree) MethodName() string { return "Page.getFrameTree" }
+// ProtoName of the command
+func (m PageGetFrameTree) ProtoName() string { return "Page.getFrameTree" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetFrameTree) Call(caller Caller) (*PageGetFrameTreeResult, error) {
+func (m PageGetFrameTree) Call(c Client) (*PageGetFrameTreeResult, error) {
 	var res PageGetFrameTreeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetFrameTreeResult Returns present frame tree structure.
@@ -11621,13 +11625,13 @@ type PageGetFrameTreeResult struct {
 type PageGetLayoutMetrics struct {
 }
 
-// MethodName of the command
-func (m PageGetLayoutMetrics) MethodName() string { return "Page.getLayoutMetrics" }
+// ProtoName of the command
+func (m PageGetLayoutMetrics) ProtoName() string { return "Page.getLayoutMetrics" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetLayoutMetrics) Call(caller Caller) (*PageGetLayoutMetricsResult, error) {
+func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error) {
 	var res PageGetLayoutMetricsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
@@ -11647,20 +11651,20 @@ type PageGetLayoutMetricsResult struct {
 type PageGetNavigationHistory struct {
 }
 
-// MethodName of the command
-func (m PageGetNavigationHistory) MethodName() string { return "Page.getNavigationHistory" }
+// ProtoName of the command
+func (m PageGetNavigationHistory) ProtoName() string { return "Page.getNavigationHistory" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetNavigationHistory) Call(caller Caller) (*PageGetNavigationHistoryResult, error) {
+func (m PageGetNavigationHistory) Call(c Client) (*PageGetNavigationHistoryResult, error) {
 	var res PageGetNavigationHistoryResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetNavigationHistoryResult Returns navigation history for the current page.
 type PageGetNavigationHistoryResult struct {
 
 	// CurrentIndex Index of the current navigation history entry.
-	CurrentIndex int64 `json:"currentIndex"`
+	CurrentIndex int `json:"currentIndex"`
 
 	// Entries Array of navigation history entries.
 	Entries []*PageNavigationEntry `json:"entries"`
@@ -11670,12 +11674,12 @@ type PageGetNavigationHistoryResult struct {
 type PageResetNavigationHistory struct {
 }
 
-// MethodName of the command
-func (m PageResetNavigationHistory) MethodName() string { return "Page.resetNavigationHistory" }
+// ProtoName of the command
+func (m PageResetNavigationHistory) ProtoName() string { return "Page.resetNavigationHistory" }
 
 // Call of the command, sessionID is optional.
-func (m PageResetNavigationHistory) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageResetNavigationHistory) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageGetResourceContent (experimental) Returns content of the given resource.
@@ -11688,13 +11692,13 @@ type PageGetResourceContent struct {
 	URL string `json:"url"`
 }
 
-// MethodName of the command
-func (m PageGetResourceContent) MethodName() string { return "Page.getResourceContent" }
+// ProtoName of the command
+func (m PageGetResourceContent) ProtoName() string { return "Page.getResourceContent" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetResourceContent) Call(caller Caller) (*PageGetResourceContentResult, error) {
+func (m PageGetResourceContent) Call(c Client) (*PageGetResourceContentResult, error) {
 	var res PageGetResourceContentResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetResourceContentResult (experimental) Returns content of the given resource.
@@ -11711,13 +11715,13 @@ type PageGetResourceContentResult struct {
 type PageGetResourceTree struct {
 }
 
-// MethodName of the command
-func (m PageGetResourceTree) MethodName() string { return "Page.getResourceTree" }
+// ProtoName of the command
+func (m PageGetResourceTree) ProtoName() string { return "Page.getResourceTree" }
 
 // Call of the command, sessionID is optional.
-func (m PageGetResourceTree) Call(caller Caller) (*PageGetResourceTreeResult, error) {
+func (m PageGetResourceTree) Call(c Client) (*PageGetResourceTreeResult, error) {
 	var res PageGetResourceTreeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageGetResourceTreeResult (experimental) Returns present frame / resource tree structure.
@@ -11738,12 +11742,12 @@ type PageHandleJavaScriptDialog struct {
 	PromptText string `json:"promptText,omitempty"`
 }
 
-// MethodName of the command
-func (m PageHandleJavaScriptDialog) MethodName() string { return "Page.handleJavaScriptDialog" }
+// ProtoName of the command
+func (m PageHandleJavaScriptDialog) ProtoName() string { return "Page.handleJavaScriptDialog" }
 
 // Call of the command, sessionID is optional.
-func (m PageHandleJavaScriptDialog) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageHandleJavaScriptDialog) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageNavigate Navigates current page to the given URL.
@@ -11765,13 +11769,13 @@ type PageNavigate struct {
 	ReferrerPolicy PageReferrerPolicy `json:"referrerPolicy,omitempty"`
 }
 
-// MethodName of the command
-func (m PageNavigate) MethodName() string { return "Page.navigate" }
+// ProtoName of the command
+func (m PageNavigate) ProtoName() string { return "Page.navigate" }
 
 // Call of the command, sessionID is optional.
-func (m PageNavigate) Call(caller Caller) (*PageNavigateResult, error) {
+func (m PageNavigate) Call(c Client) (*PageNavigateResult, error) {
 	var res PageNavigateResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageNavigateResult Navigates current page to the given URL.
@@ -11791,15 +11795,15 @@ type PageNavigateResult struct {
 type PageNavigateToHistoryEntry struct {
 
 	// EntryID Unique id of the entry to navigate to.
-	EntryID int64 `json:"entryId"`
+	EntryID int `json:"entryId"`
 }
 
-// MethodName of the command
-func (m PageNavigateToHistoryEntry) MethodName() string { return "Page.navigateToHistoryEntry" }
+// ProtoName of the command
+func (m PageNavigateToHistoryEntry) ProtoName() string { return "Page.navigateToHistoryEntry" }
 
 // Call of the command, sessionID is optional.
-func (m PageNavigateToHistoryEntry) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageNavigateToHistoryEntry) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PagePrintToPDFTransferMode enum
@@ -11876,13 +11880,13 @@ type PagePrintToPDF struct {
 	TransferMode PagePrintToPDFTransferMode `json:"transferMode,omitempty"`
 }
 
-// MethodName of the command
-func (m PagePrintToPDF) MethodName() string { return "Page.printToPDF" }
+// ProtoName of the command
+func (m PagePrintToPDF) ProtoName() string { return "Page.printToPDF" }
 
 // Call of the command, sessionID is optional.
-func (m PagePrintToPDF) Call(caller Caller) (*PagePrintToPDFResult, error) {
+func (m PagePrintToPDF) Call(c Client) (*PagePrintToPDFResult, error) {
 	var res PagePrintToPDFResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PagePrintToPDFResult Print page as PDF.
@@ -11906,12 +11910,12 @@ type PageReload struct {
 	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
 }
 
-// MethodName of the command
-func (m PageReload) MethodName() string { return "Page.reload" }
+// ProtoName of the command
+func (m PageReload) ProtoName() string { return "Page.reload" }
 
 // Call of the command, sessionID is optional.
-func (m PageReload) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageReload) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageRemoveScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
@@ -11921,14 +11925,14 @@ type PageRemoveScriptToEvaluateOnLoad struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
-// MethodName of the command
-func (m PageRemoveScriptToEvaluateOnLoad) MethodName() string {
+// ProtoName of the command
+func (m PageRemoveScriptToEvaluateOnLoad) ProtoName() string {
 	return "Page.removeScriptToEvaluateOnLoad"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageRemoveScriptToEvaluateOnLoad) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageRemoveScriptToEvaluateOnLoad) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageRemoveScriptToEvaluateOnNewDocument Removes given script from the list.
@@ -11938,29 +11942,29 @@ type PageRemoveScriptToEvaluateOnNewDocument struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
-// MethodName of the command
-func (m PageRemoveScriptToEvaluateOnNewDocument) MethodName() string {
+// ProtoName of the command
+func (m PageRemoveScriptToEvaluateOnNewDocument) ProtoName() string {
 	return "Page.removeScriptToEvaluateOnNewDocument"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageRemoveScriptToEvaluateOnNewDocument) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageRemoveScriptToEvaluateOnNewDocument) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageScreencastFrameAck (experimental) Acknowledges that a screencast frame has been received by the frontend.
 type PageScreencastFrameAck struct {
 
 	// SessionID Frame number.
-	SessionID int64 `json:"sessionId"`
+	SessionID int `json:"sessionId"`
 }
 
-// MethodName of the command
-func (m PageScreencastFrameAck) MethodName() string { return "Page.screencastFrameAck" }
+// ProtoName of the command
+func (m PageScreencastFrameAck) ProtoName() string { return "Page.screencastFrameAck" }
 
 // Call of the command, sessionID is optional.
-func (m PageScreencastFrameAck) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageScreencastFrameAck) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSearchInResource (experimental) Searches for given string in resource content.
@@ -11982,13 +11986,13 @@ type PageSearchInResource struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// MethodName of the command
-func (m PageSearchInResource) MethodName() string { return "Page.searchInResource" }
+// ProtoName of the command
+func (m PageSearchInResource) ProtoName() string { return "Page.searchInResource" }
 
 // Call of the command, sessionID is optional.
-func (m PageSearchInResource) Call(caller Caller) (*PageSearchInResourceResult, error) {
+func (m PageSearchInResource) Call(c Client) (*PageSearchInResourceResult, error) {
 	var res PageSearchInResourceResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PageSearchInResourceResult (experimental) Searches for given string in resource content.
@@ -12005,12 +12009,12 @@ type PageSetAdBlockingEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m PageSetAdBlockingEnabled) MethodName() string { return "Page.setAdBlockingEnabled" }
+// ProtoName of the command
+func (m PageSetAdBlockingEnabled) ProtoName() string { return "Page.setAdBlockingEnabled" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetAdBlockingEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetAdBlockingEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetBypassCSP (experimental) Enable page Content Security Policy by-passing.
@@ -12020,12 +12024,12 @@ type PageSetBypassCSP struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m PageSetBypassCSP) MethodName() string { return "Page.setBypassCSP" }
+// ProtoName of the command
+func (m PageSetBypassCSP) ProtoName() string { return "Page.setBypassCSP" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetBypassCSP) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetBypassCSP) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetDeviceMetricsOverride (deprecated) (experimental) Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -12034,10 +12038,10 @@ func (m PageSetBypassCSP) Call(caller Caller) error {
 type PageSetDeviceMetricsOverride struct {
 
 	// Width Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 
 	// DeviceScaleFactor Overriding device scale factor value. 0 disables the override.
 	DeviceScaleFactor float64 `json:"deviceScaleFactor"`
@@ -12050,16 +12054,16 @@ type PageSetDeviceMetricsOverride struct {
 	Scale float64 `json:"scale,omitempty"`
 
 	// ScreenWidth (optional) Overriding screen width value in pixels (minimum 0, maximum 10000000).
-	ScreenWidth int64 `json:"screenWidth,omitempty"`
+	ScreenWidth int `json:"screenWidth,omitempty"`
 
 	// ScreenHeight (optional) Overriding screen height value in pixels (minimum 0, maximum 10000000).
-	ScreenHeight int64 `json:"screenHeight,omitempty"`
+	ScreenHeight int `json:"screenHeight,omitempty"`
 
 	// PositionX (optional) Overriding view X position on screen in pixels (minimum 0, maximum 10000000).
-	PositionX int64 `json:"positionX,omitempty"`
+	PositionX int `json:"positionX,omitempty"`
 
 	// PositionY (optional) Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).
-	PositionY int64 `json:"positionY,omitempty"`
+	PositionY int `json:"positionY,omitempty"`
 
 	// DontSetVisibleSize (optional) Do not set visible view size, rely upon explicit setVisibleSize call.
 	DontSetVisibleSize bool `json:"dontSetVisibleSize,omitempty"`
@@ -12071,12 +12075,12 @@ type PageSetDeviceMetricsOverride struct {
 	Viewport *PageViewport `json:"viewport,omitempty"`
 }
 
-// MethodName of the command
-func (m PageSetDeviceMetricsOverride) MethodName() string { return "Page.setDeviceMetricsOverride" }
+// ProtoName of the command
+func (m PageSetDeviceMetricsOverride) ProtoName() string { return "Page.setDeviceMetricsOverride" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetDeviceMetricsOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetDeviceMetricsOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetDeviceOrientationOverride (deprecated) (experimental) Overrides the Device Orientation.
@@ -12092,14 +12096,14 @@ type PageSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
-// MethodName of the command
-func (m PageSetDeviceOrientationOverride) MethodName() string {
+// ProtoName of the command
+func (m PageSetDeviceOrientationOverride) ProtoName() string {
 	return "Page.setDeviceOrientationOverride"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageSetDeviceOrientationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetDeviceOrientationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetFontFamilies (experimental) Set generic font families.
@@ -12109,12 +12113,12 @@ type PageSetFontFamilies struct {
 	FontFamilies *PageFontFamilies `json:"fontFamilies"`
 }
 
-// MethodName of the command
-func (m PageSetFontFamilies) MethodName() string { return "Page.setFontFamilies" }
+// ProtoName of the command
+func (m PageSetFontFamilies) ProtoName() string { return "Page.setFontFamilies" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetFontFamilies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetFontFamilies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetFontSizes (experimental) Set default font sizes.
@@ -12124,12 +12128,12 @@ type PageSetFontSizes struct {
 	FontSizes *PageFontSizes `json:"fontSizes"`
 }
 
-// MethodName of the command
-func (m PageSetFontSizes) MethodName() string { return "Page.setFontSizes" }
+// ProtoName of the command
+func (m PageSetFontSizes) ProtoName() string { return "Page.setFontSizes" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetFontSizes) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetFontSizes) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetDocumentContent Sets given markup as the document's HTML.
@@ -12142,12 +12146,12 @@ type PageSetDocumentContent struct {
 	HTML string `json:"html"`
 }
 
-// MethodName of the command
-func (m PageSetDocumentContent) MethodName() string { return "Page.setDocumentContent" }
+// ProtoName of the command
+func (m PageSetDocumentContent) ProtoName() string { return "Page.setDocumentContent" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetDocumentContent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetDocumentContent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetDownloadBehaviorBehavior enum
@@ -12175,12 +12179,12 @@ type PageSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
-// MethodName of the command
-func (m PageSetDownloadBehavior) MethodName() string { return "Page.setDownloadBehavior" }
+// ProtoName of the command
+func (m PageSetDownloadBehavior) ProtoName() string { return "Page.setDownloadBehavior" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetDownloadBehavior) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetDownloadBehavior) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetGeolocationOverride (deprecated) Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
@@ -12197,12 +12201,12 @@ type PageSetGeolocationOverride struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
-// MethodName of the command
-func (m PageSetGeolocationOverride) MethodName() string { return "Page.setGeolocationOverride" }
+// ProtoName of the command
+func (m PageSetGeolocationOverride) ProtoName() string { return "Page.setGeolocationOverride" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetGeolocationOverride) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetGeolocationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetLifecycleEventsEnabled (experimental) Controls whether page will emit lifecycle events.
@@ -12212,12 +12216,12 @@ type PageSetLifecycleEventsEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m PageSetLifecycleEventsEnabled) MethodName() string { return "Page.setLifecycleEventsEnabled" }
+// ProtoName of the command
+func (m PageSetLifecycleEventsEnabled) ProtoName() string { return "Page.setLifecycleEventsEnabled" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetLifecycleEventsEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetLifecycleEventsEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetTouchEmulationEnabledConfiguration enum
@@ -12241,12 +12245,12 @@ type PageSetTouchEmulationEnabled struct {
 	Configuration PageSetTouchEmulationEnabledConfiguration `json:"configuration,omitempty"`
 }
 
-// MethodName of the command
-func (m PageSetTouchEmulationEnabled) MethodName() string { return "Page.setTouchEmulationEnabled" }
+// ProtoName of the command
+func (m PageSetTouchEmulationEnabled) ProtoName() string { return "Page.setTouchEmulationEnabled" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetTouchEmulationEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetTouchEmulationEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageStartScreencastFormat enum
@@ -12267,60 +12271,60 @@ type PageStartScreencast struct {
 	Format PageStartScreencastFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100].
-	Quality int64 `json:"quality,omitempty"`
+	Quality int `json:"quality,omitempty"`
 
 	// MaxWidth (optional) Maximum screenshot width.
-	MaxWidth int64 `json:"maxWidth,omitempty"`
+	MaxWidth int `json:"maxWidth,omitempty"`
 
 	// MaxHeight (optional) Maximum screenshot height.
-	MaxHeight int64 `json:"maxHeight,omitempty"`
+	MaxHeight int `json:"maxHeight,omitempty"`
 
 	// EveryNthFrame (optional) Send every n-th frame.
-	EveryNthFrame int64 `json:"everyNthFrame,omitempty"`
+	EveryNthFrame int `json:"everyNthFrame,omitempty"`
 }
 
-// MethodName of the command
-func (m PageStartScreencast) MethodName() string { return "Page.startScreencast" }
+// ProtoName of the command
+func (m PageStartScreencast) ProtoName() string { return "Page.startScreencast" }
 
 // Call of the command, sessionID is optional.
-func (m PageStartScreencast) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageStartScreencast) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageStopLoading Force the page stop all navigations and pending resource fetches.
 type PageStopLoading struct {
 }
 
-// MethodName of the command
-func (m PageStopLoading) MethodName() string { return "Page.stopLoading" }
+// ProtoName of the command
+func (m PageStopLoading) ProtoName() string { return "Page.stopLoading" }
 
 // Call of the command, sessionID is optional.
-func (m PageStopLoading) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageStopLoading) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageCrash (experimental) Crashes renderer on the IO thread, generates minidumps.
 type PageCrash struct {
 }
 
-// MethodName of the command
-func (m PageCrash) MethodName() string { return "Page.crash" }
+// ProtoName of the command
+func (m PageCrash) ProtoName() string { return "Page.crash" }
 
 // Call of the command, sessionID is optional.
-func (m PageCrash) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageCrash) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageClose (experimental) Tries to close page, running its beforeunload hooks, if any.
 type PageClose struct {
 }
 
-// MethodName of the command
-func (m PageClose) MethodName() string { return "Page.close" }
+// ProtoName of the command
+func (m PageClose) ProtoName() string { return "Page.close" }
 
 // Call of the command, sessionID is optional.
-func (m PageClose) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageClose) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetWebLifecycleStateState enum
@@ -12343,24 +12347,24 @@ type PageSetWebLifecycleState struct {
 	State PageSetWebLifecycleStateState `json:"state"`
 }
 
-// MethodName of the command
-func (m PageSetWebLifecycleState) MethodName() string { return "Page.setWebLifecycleState" }
+// ProtoName of the command
+func (m PageSetWebLifecycleState) ProtoName() string { return "Page.setWebLifecycleState" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetWebLifecycleState) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetWebLifecycleState) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageStopScreencast (experimental) Stops sending each frame in the `screencastFrame`.
 type PageStopScreencast struct {
 }
 
-// MethodName of the command
-func (m PageStopScreencast) MethodName() string { return "Page.stopScreencast" }
+// ProtoName of the command
+func (m PageStopScreencast) ProtoName() string { return "Page.stopScreencast" }
 
 // Call of the command, sessionID is optional.
-func (m PageStopScreencast) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageStopScreencast) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetProduceCompilationCache (experimental) Forces compilation cache to be generated for every subresource script.
@@ -12370,12 +12374,12 @@ type PageSetProduceCompilationCache struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m PageSetProduceCompilationCache) MethodName() string { return "Page.setProduceCompilationCache" }
+// ProtoName of the command
+func (m PageSetProduceCompilationCache) ProtoName() string { return "Page.setProduceCompilationCache" }
 
 // Call of the command, sessionID is optional.
-func (m PageSetProduceCompilationCache) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetProduceCompilationCache) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageAddCompilationCache (experimental) Seeds compilation cache for given url. Compilation cache does not survive
@@ -12389,24 +12393,24 @@ type PageAddCompilationCache struct {
 	Data []byte `json:"data"`
 }
 
-// MethodName of the command
-func (m PageAddCompilationCache) MethodName() string { return "Page.addCompilationCache" }
+// ProtoName of the command
+func (m PageAddCompilationCache) ProtoName() string { return "Page.addCompilationCache" }
 
 // Call of the command, sessionID is optional.
-func (m PageAddCompilationCache) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageAddCompilationCache) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageClearCompilationCache (experimental) Clears seeded compilation cache.
 type PageClearCompilationCache struct {
 }
 
-// MethodName of the command
-func (m PageClearCompilationCache) MethodName() string { return "Page.clearCompilationCache" }
+// ProtoName of the command
+func (m PageClearCompilationCache) ProtoName() string { return "Page.clearCompilationCache" }
 
 // Call of the command, sessionID is optional.
-func (m PageClearCompilationCache) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageClearCompilationCache) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageGenerateTestReport (experimental) Generates a report for testing.
@@ -12419,24 +12423,24 @@ type PageGenerateTestReport struct {
 	Group string `json:"group,omitempty"`
 }
 
-// MethodName of the command
-func (m PageGenerateTestReport) MethodName() string { return "Page.generateTestReport" }
+// ProtoName of the command
+func (m PageGenerateTestReport) ProtoName() string { return "Page.generateTestReport" }
 
 // Call of the command, sessionID is optional.
-func (m PageGenerateTestReport) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageGenerateTestReport) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageWaitForDebugger (experimental) Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
 type PageWaitForDebugger struct {
 }
 
-// MethodName of the command
-func (m PageWaitForDebugger) MethodName() string { return "Page.waitForDebugger" }
+// ProtoName of the command
+func (m PageWaitForDebugger) ProtoName() string { return "Page.waitForDebugger" }
 
 // Call of the command, sessionID is optional.
-func (m PageWaitForDebugger) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageWaitForDebugger) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageSetInterceptFileChooserDialog (experimental) Intercept file chooser requests and transfer control to protocol clients.
@@ -12448,14 +12452,14 @@ type PageSetInterceptFileChooserDialog struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m PageSetInterceptFileChooserDialog) MethodName() string {
+// ProtoName of the command
+func (m PageSetInterceptFileChooserDialog) ProtoName() string {
 	return "Page.setInterceptFileChooserDialog"
 }
 
 // Call of the command, sessionID is optional.
-func (m PageSetInterceptFileChooserDialog) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PageSetInterceptFileChooserDialog) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PageDomContentEventFired ...
@@ -12465,8 +12469,8 @@ type PageDomContentEventFired struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt PageDomContentEventFired) MethodName() string {
+// ProtoName interface
+func (evt PageDomContentEventFired) ProtoName() string {
 	return "Page.domContentEventFired"
 }
 
@@ -12494,8 +12498,8 @@ type PageFileChooserOpened struct {
 	Mode PageFileChooserOpenedMode `json:"mode"`
 }
 
-// MethodName interface
-func (evt PageFileChooserOpened) MethodName() string {
+// ProtoName interface
+func (evt PageFileChooserOpened) ProtoName() string {
 	return "Page.fileChooserOpened"
 }
 
@@ -12512,8 +12516,8 @@ type PageFrameAttached struct {
 	Stack *RuntimeStackTrace `json:"stack,omitempty"`
 }
 
-// MethodName interface
-func (evt PageFrameAttached) MethodName() string {
+// ProtoName interface
+func (evt PageFrameAttached) ProtoName() string {
 	return "Page.frameAttached"
 }
 
@@ -12524,8 +12528,8 @@ type PageFrameClearedScheduledNavigation struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName interface
-func (evt PageFrameClearedScheduledNavigation) MethodName() string {
+// ProtoName interface
+func (evt PageFrameClearedScheduledNavigation) ProtoName() string {
 	return "Page.frameClearedScheduledNavigation"
 }
 
@@ -12536,8 +12540,8 @@ type PageFrameDetached struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName interface
-func (evt PageFrameDetached) MethodName() string {
+// ProtoName interface
+func (evt PageFrameDetached) ProtoName() string {
 	return "Page.frameDetached"
 }
 
@@ -12548,8 +12552,8 @@ type PageFrameNavigated struct {
 	Frame *PageFrame `json:"frame"`
 }
 
-// MethodName interface
-func (evt PageFrameNavigated) MethodName() string {
+// ProtoName interface
+func (evt PageFrameNavigated) ProtoName() string {
 	return "Page.frameNavigated"
 }
 
@@ -12557,8 +12561,8 @@ func (evt PageFrameNavigated) MethodName() string {
 type PageFrameResized struct {
 }
 
-// MethodName interface
-func (evt PageFrameResized) MethodName() string {
+// ProtoName interface
+func (evt PageFrameResized) ProtoName() string {
 	return "Page.frameResized"
 }
 
@@ -12579,8 +12583,8 @@ type PageFrameRequestedNavigation struct {
 	Disposition PageClientNavigationDisposition `json:"disposition"`
 }
 
-// MethodName interface
-func (evt PageFrameRequestedNavigation) MethodName() string {
+// ProtoName interface
+func (evt PageFrameRequestedNavigation) ProtoName() string {
 	return "Page.frameRequestedNavigation"
 }
 
@@ -12601,8 +12605,8 @@ type PageFrameScheduledNavigation struct {
 	URL string `json:"url"`
 }
 
-// MethodName interface
-func (evt PageFrameScheduledNavigation) MethodName() string {
+// ProtoName interface
+func (evt PageFrameScheduledNavigation) ProtoName() string {
 	return "Page.frameScheduledNavigation"
 }
 
@@ -12613,8 +12617,8 @@ type PageFrameStartedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName interface
-func (evt PageFrameStartedLoading) MethodName() string {
+// ProtoName interface
+func (evt PageFrameStartedLoading) ProtoName() string {
 	return "Page.frameStartedLoading"
 }
 
@@ -12625,8 +12629,8 @@ type PageFrameStoppedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// MethodName interface
-func (evt PageFrameStoppedLoading) MethodName() string {
+// ProtoName interface
+func (evt PageFrameStoppedLoading) ProtoName() string {
 	return "Page.frameStoppedLoading"
 }
 
@@ -12646,8 +12650,8 @@ type PageDownloadWillBegin struct {
 	SuggestedFilename string `json:"suggestedFilename"`
 }
 
-// MethodName interface
-func (evt PageDownloadWillBegin) MethodName() string {
+// ProtoName interface
+func (evt PageDownloadWillBegin) ProtoName() string {
 	return "Page.downloadWillBegin"
 }
 
@@ -12681,8 +12685,8 @@ type PageDownloadProgress struct {
 	State PageDownloadProgressState `json:"state"`
 }
 
-// MethodName interface
-func (evt PageDownloadProgress) MethodName() string {
+// ProtoName interface
+func (evt PageDownloadProgress) ProtoName() string {
 	return "Page.downloadProgress"
 }
 
@@ -12690,8 +12694,8 @@ func (evt PageDownloadProgress) MethodName() string {
 type PageInterstitialHidden struct {
 }
 
-// MethodName interface
-func (evt PageInterstitialHidden) MethodName() string {
+// ProtoName interface
+func (evt PageInterstitialHidden) ProtoName() string {
 	return "Page.interstitialHidden"
 }
 
@@ -12699,8 +12703,8 @@ func (evt PageInterstitialHidden) MethodName() string {
 type PageInterstitialShown struct {
 }
 
-// MethodName interface
-func (evt PageInterstitialShown) MethodName() string {
+// ProtoName interface
+func (evt PageInterstitialShown) ProtoName() string {
 	return "Page.interstitialShown"
 }
 
@@ -12715,8 +12719,8 @@ type PageJavascriptDialogClosed struct {
 	UserInput string `json:"userInput"`
 }
 
-// MethodName interface
-func (evt PageJavascriptDialogClosed) MethodName() string {
+// ProtoName interface
+func (evt PageJavascriptDialogClosed) ProtoName() string {
 	return "Page.javascriptDialogClosed"
 }
 
@@ -12742,8 +12746,8 @@ type PageJavascriptDialogOpening struct {
 	DefaultPrompt string `json:"defaultPrompt,omitempty"`
 }
 
-// MethodName interface
-func (evt PageJavascriptDialogOpening) MethodName() string {
+// ProtoName interface
+func (evt PageJavascriptDialogOpening) ProtoName() string {
 	return "Page.javascriptDialogOpening"
 }
 
@@ -12798,8 +12802,8 @@ type PageLifecycleEvent struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt PageLifecycleEvent) MethodName() string {
+// ProtoName interface
+func (evt PageLifecycleEvent) ProtoName() string {
 	return "Page.lifecycleEvent"
 }
 
@@ -12810,8 +12814,8 @@ type PageLoadEventFired struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt PageLoadEventFired) MethodName() string {
+// ProtoName interface
+func (evt PageLoadEventFired) ProtoName() string {
 	return "Page.loadEventFired"
 }
 
@@ -12825,8 +12829,8 @@ type PageNavigatedWithinDocument struct {
 	URL string `json:"url"`
 }
 
-// MethodName interface
-func (evt PageNavigatedWithinDocument) MethodName() string {
+// ProtoName interface
+func (evt PageNavigatedWithinDocument) ProtoName() string {
 	return "Page.navigatedWithinDocument"
 }
 
@@ -12840,11 +12844,11 @@ type PageScreencastFrame struct {
 	Metadata *PageScreencastFrameMetadata `json:"metadata"`
 
 	// SessionID Frame number.
-	SessionID int64 `json:"sessionId"`
+	SessionID int `json:"sessionId"`
 }
 
-// MethodName interface
-func (evt PageScreencastFrame) MethodName() string {
+// ProtoName interface
+func (evt PageScreencastFrame) ProtoName() string {
 	return "Page.screencastFrame"
 }
 
@@ -12855,8 +12859,8 @@ type PageScreencastVisibilityChanged struct {
 	Visible bool `json:"visible"`
 }
 
-// MethodName interface
-func (evt PageScreencastVisibilityChanged) MethodName() string {
+// ProtoName interface
+func (evt PageScreencastVisibilityChanged) ProtoName() string {
 	return "Page.screencastVisibilityChanged"
 }
 
@@ -12877,8 +12881,8 @@ type PageWindowOpen struct {
 	UserGesture bool `json:"userGesture"`
 }
 
-// MethodName interface
-func (evt PageWindowOpen) MethodName() string {
+// ProtoName interface
+func (evt PageWindowOpen) ProtoName() string {
 	return "Page.windowOpen"
 }
 
@@ -12893,8 +12897,8 @@ type PageCompilationCacheProduced struct {
 	Data []byte `json:"data"`
 }
 
-// MethodName interface
-func (evt PageCompilationCacheProduced) MethodName() string {
+// ProtoName interface
+func (evt PageCompilationCacheProduced) ProtoName() string {
 	return "Page.compilationCacheProduced"
 }
 
@@ -12912,12 +12916,12 @@ type PerformanceMetric struct {
 type PerformanceDisable struct {
 }
 
-// MethodName of the command
-func (m PerformanceDisable) MethodName() string { return "Performance.disable" }
+// ProtoName of the command
+func (m PerformanceDisable) ProtoName() string { return "Performance.disable" }
 
 // Call of the command, sessionID is optional.
-func (m PerformanceDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PerformanceDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PerformanceEnableTimeDomain enum
@@ -12938,12 +12942,12 @@ type PerformanceEnable struct {
 	TimeDomain PerformanceEnableTimeDomain `json:"timeDomain,omitempty"`
 }
 
-// MethodName of the command
-func (m PerformanceEnable) MethodName() string { return "Performance.enable" }
+// ProtoName of the command
+func (m PerformanceEnable) ProtoName() string { return "Performance.enable" }
 
 // Call of the command, sessionID is optional.
-func (m PerformanceEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PerformanceEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PerformanceSetTimeDomainTimeDomain enum
@@ -12966,25 +12970,25 @@ type PerformanceSetTimeDomain struct {
 	TimeDomain PerformanceSetTimeDomainTimeDomain `json:"timeDomain"`
 }
 
-// MethodName of the command
-func (m PerformanceSetTimeDomain) MethodName() string { return "Performance.setTimeDomain" }
+// ProtoName of the command
+func (m PerformanceSetTimeDomain) ProtoName() string { return "Performance.setTimeDomain" }
 
 // Call of the command, sessionID is optional.
-func (m PerformanceSetTimeDomain) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m PerformanceSetTimeDomain) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // PerformanceGetMetrics Retrieve current values of run-time metrics.
 type PerformanceGetMetrics struct {
 }
 
-// MethodName of the command
-func (m PerformanceGetMetrics) MethodName() string { return "Performance.getMetrics" }
+// ProtoName of the command
+func (m PerformanceGetMetrics) ProtoName() string { return "Performance.getMetrics" }
 
 // Call of the command, sessionID is optional.
-func (m PerformanceGetMetrics) Call(caller Caller) (*PerformanceGetMetricsResult, error) {
+func (m PerformanceGetMetrics) Call(c Client) (*PerformanceGetMetricsResult, error) {
 	var res PerformanceGetMetricsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // PerformanceGetMetricsResult Retrieve current values of run-time metrics.
@@ -13004,13 +13008,13 @@ type PerformanceMetrics struct {
 	Title string `json:"title"`
 }
 
-// MethodName interface
-func (evt PerformanceMetrics) MethodName() string {
+// ProtoName interface
+func (evt PerformanceMetrics) ProtoName() string {
 	return "Performance.metrics"
 }
 
 // SecurityCertificateID An internal certificate ID value.
-type SecurityCertificateID int64
+type SecurityCertificateID int
 
 // SecurityMixedContentType A description of mixed content (HTTP resources on HTTPS pages), as defined by
 // https://www.w3.org/TR/mixed-content/#categories
@@ -13211,24 +13215,24 @@ const (
 type SecurityDisable struct {
 }
 
-// MethodName of the command
-func (m SecurityDisable) MethodName() string { return "Security.disable" }
+// ProtoName of the command
+func (m SecurityDisable) ProtoName() string { return "Security.disable" }
 
 // Call of the command, sessionID is optional.
-func (m SecurityDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m SecurityDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // SecurityEnable Enables tracking security state changes.
 type SecurityEnable struct {
 }
 
-// MethodName of the command
-func (m SecurityEnable) MethodName() string { return "Security.enable" }
+// ProtoName of the command
+func (m SecurityEnable) ProtoName() string { return "Security.enable" }
 
 // Call of the command, sessionID is optional.
-func (m SecurityEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m SecurityEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // SecuritySetIgnoreCertificateErrors (experimental) Enable/disable whether all certificate errors should be ignored.
@@ -13238,32 +13242,32 @@ type SecuritySetIgnoreCertificateErrors struct {
 	Ignore bool `json:"ignore"`
 }
 
-// MethodName of the command
-func (m SecuritySetIgnoreCertificateErrors) MethodName() string {
+// ProtoName of the command
+func (m SecuritySetIgnoreCertificateErrors) ProtoName() string {
 	return "Security.setIgnoreCertificateErrors"
 }
 
 // Call of the command, sessionID is optional.
-func (m SecuritySetIgnoreCertificateErrors) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m SecuritySetIgnoreCertificateErrors) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // SecurityHandleCertificateError (deprecated) Handles a certificate error that fired a certificateError event.
 type SecurityHandleCertificateError struct {
 
 	// EventID The ID of the event.
-	EventID int64 `json:"eventId"`
+	EventID int `json:"eventId"`
 
 	// Action The action to take on the certificate error.
 	Action SecurityCertificateErrorAction `json:"action"`
 }
 
-// MethodName of the command
-func (m SecurityHandleCertificateError) MethodName() string { return "Security.handleCertificateError" }
+// ProtoName of the command
+func (m SecurityHandleCertificateError) ProtoName() string { return "Security.handleCertificateError" }
 
 // Call of the command, sessionID is optional.
-func (m SecurityHandleCertificateError) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m SecurityHandleCertificateError) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // SecuritySetOverrideCertificateErrors (deprecated) Enable/disable overriding certificate errors. If enabled, all certificate error events need to
@@ -13274,14 +13278,14 @@ type SecuritySetOverrideCertificateErrors struct {
 	Override bool `json:"override"`
 }
 
-// MethodName of the command
-func (m SecuritySetOverrideCertificateErrors) MethodName() string {
+// ProtoName of the command
+func (m SecuritySetOverrideCertificateErrors) ProtoName() string {
 	return "Security.setOverrideCertificateErrors"
 }
 
 // Call of the command, sessionID is optional.
-func (m SecuritySetOverrideCertificateErrors) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m SecuritySetOverrideCertificateErrors) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // SecurityCertificateError (deprecated) There is a certificate error. If overriding certificate errors is enabled, then it should be
@@ -13291,7 +13295,7 @@ func (m SecuritySetOverrideCertificateErrors) Call(caller Caller) error {
 type SecurityCertificateError struct {
 
 	// EventID The ID of the event.
-	EventID int64 `json:"eventId"`
+	EventID int `json:"eventId"`
 
 	// ErrorType The type of the error.
 	ErrorType string `json:"errorType"`
@@ -13300,8 +13304,8 @@ type SecurityCertificateError struct {
 	RequestURL string `json:"requestURL"`
 }
 
-// MethodName interface
-func (evt SecurityCertificateError) MethodName() string {
+// ProtoName interface
+func (evt SecurityCertificateError) ProtoName() string {
 	return "Security.certificateError"
 }
 
@@ -13312,8 +13316,8 @@ type SecurityVisibleSecurityStateChanged struct {
 	VisibleSecurityState *SecurityVisibleSecurityState `json:"visibleSecurityState"`
 }
 
-// MethodName interface
-func (evt SecurityVisibleSecurityStateChanged) MethodName() string {
+// ProtoName interface
+func (evt SecurityVisibleSecurityStateChanged) ProtoName() string {
 	return "Security.visibleSecurityStateChanged"
 }
 
@@ -13337,8 +13341,8 @@ type SecuritySecurityStateChanged struct {
 	Summary string `json:"summary,omitempty"`
 }
 
-// MethodName interface
-func (evt SecuritySecurityStateChanged) MethodName() string {
+// ProtoName interface
+func (evt SecuritySecurityStateChanged) ProtoName() string {
 	return "Security.securityStateChanged"
 }
 
@@ -13446,10 +13450,10 @@ type ServiceWorkerServiceWorkerErrorMessage struct {
 	SourceURL string `json:"sourceURL"`
 
 	// LineNumber ...
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber ...
-	ColumnNumber int64 `json:"columnNumber"`
+	ColumnNumber int `json:"columnNumber"`
 }
 
 // ServiceWorkerDeliverPushMessage ...
@@ -13465,26 +13469,26 @@ type ServiceWorkerDeliverPushMessage struct {
 	Data string `json:"data"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerDeliverPushMessage) MethodName() string {
+// ProtoName of the command
+func (m ServiceWorkerDeliverPushMessage) ProtoName() string {
 	return "ServiceWorker.deliverPushMessage"
 }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerDeliverPushMessage) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerDeliverPushMessage) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerDisable ...
 type ServiceWorkerDisable struct {
 }
 
-// MethodName of the command
-func (m ServiceWorkerDisable) MethodName() string { return "ServiceWorker.disable" }
+// ProtoName of the command
+func (m ServiceWorkerDisable) ProtoName() string { return "ServiceWorker.disable" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerDispatchSyncEvent ...
@@ -13503,12 +13507,12 @@ type ServiceWorkerDispatchSyncEvent struct {
 	LastChance bool `json:"lastChance"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerDispatchSyncEvent) MethodName() string { return "ServiceWorker.dispatchSyncEvent" }
+// ProtoName of the command
+func (m ServiceWorkerDispatchSyncEvent) ProtoName() string { return "ServiceWorker.dispatchSyncEvent" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerDispatchSyncEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerDispatchSyncEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerDispatchPeriodicSyncEvent ...
@@ -13524,26 +13528,26 @@ type ServiceWorkerDispatchPeriodicSyncEvent struct {
 	Tag string `json:"tag"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerDispatchPeriodicSyncEvent) MethodName() string {
+// ProtoName of the command
+func (m ServiceWorkerDispatchPeriodicSyncEvent) ProtoName() string {
 	return "ServiceWorker.dispatchPeriodicSyncEvent"
 }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerEnable ...
 type ServiceWorkerEnable struct {
 }
 
-// MethodName of the command
-func (m ServiceWorkerEnable) MethodName() string { return "ServiceWorker.enable" }
+// ProtoName of the command
+func (m ServiceWorkerEnable) ProtoName() string { return "ServiceWorker.enable" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerInspectWorker ...
@@ -13553,12 +13557,12 @@ type ServiceWorkerInspectWorker struct {
 	VersionID string `json:"versionId"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerInspectWorker) MethodName() string { return "ServiceWorker.inspectWorker" }
+// ProtoName of the command
+func (m ServiceWorkerInspectWorker) ProtoName() string { return "ServiceWorker.inspectWorker" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerInspectWorker) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerInspectWorker) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerSetForceUpdateOnPageLoad ...
@@ -13568,14 +13572,14 @@ type ServiceWorkerSetForceUpdateOnPageLoad struct {
 	ForceUpdateOnPageLoad bool `json:"forceUpdateOnPageLoad"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerSetForceUpdateOnPageLoad) MethodName() string {
+// ProtoName of the command
+func (m ServiceWorkerSetForceUpdateOnPageLoad) ProtoName() string {
 	return "ServiceWorker.setForceUpdateOnPageLoad"
 }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerSkipWaiting ...
@@ -13585,12 +13589,12 @@ type ServiceWorkerSkipWaiting struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerSkipWaiting) MethodName() string { return "ServiceWorker.skipWaiting" }
+// ProtoName of the command
+func (m ServiceWorkerSkipWaiting) ProtoName() string { return "ServiceWorker.skipWaiting" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerSkipWaiting) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerSkipWaiting) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerStartWorker ...
@@ -13600,24 +13604,24 @@ type ServiceWorkerStartWorker struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerStartWorker) MethodName() string { return "ServiceWorker.startWorker" }
+// ProtoName of the command
+func (m ServiceWorkerStartWorker) ProtoName() string { return "ServiceWorker.startWorker" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerStartWorker) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerStartWorker) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerStopAllWorkers ...
 type ServiceWorkerStopAllWorkers struct {
 }
 
-// MethodName of the command
-func (m ServiceWorkerStopAllWorkers) MethodName() string { return "ServiceWorker.stopAllWorkers" }
+// ProtoName of the command
+func (m ServiceWorkerStopAllWorkers) ProtoName() string { return "ServiceWorker.stopAllWorkers" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerStopAllWorkers) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerStopAllWorkers) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerStopWorker ...
@@ -13627,12 +13631,12 @@ type ServiceWorkerStopWorker struct {
 	VersionID string `json:"versionId"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerStopWorker) MethodName() string { return "ServiceWorker.stopWorker" }
+// ProtoName of the command
+func (m ServiceWorkerStopWorker) ProtoName() string { return "ServiceWorker.stopWorker" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerStopWorker) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerStopWorker) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerUnregister ...
@@ -13642,12 +13646,12 @@ type ServiceWorkerUnregister struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerUnregister) MethodName() string { return "ServiceWorker.unregister" }
+// ProtoName of the command
+func (m ServiceWorkerUnregister) ProtoName() string { return "ServiceWorker.unregister" }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerUnregister) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerUnregister) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerUpdateRegistration ...
@@ -13657,14 +13661,14 @@ type ServiceWorkerUpdateRegistration struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// MethodName of the command
-func (m ServiceWorkerUpdateRegistration) MethodName() string {
+// ProtoName of the command
+func (m ServiceWorkerUpdateRegistration) ProtoName() string {
 	return "ServiceWorker.updateRegistration"
 }
 
 // Call of the command, sessionID is optional.
-func (m ServiceWorkerUpdateRegistration) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ServiceWorkerUpdateRegistration) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ServiceWorkerWorkerErrorReported ...
@@ -13674,8 +13678,8 @@ type ServiceWorkerWorkerErrorReported struct {
 	ErrorMessage *ServiceWorkerServiceWorkerErrorMessage `json:"errorMessage"`
 }
 
-// MethodName interface
-func (evt ServiceWorkerWorkerErrorReported) MethodName() string {
+// ProtoName interface
+func (evt ServiceWorkerWorkerErrorReported) ProtoName() string {
 	return "ServiceWorker.workerErrorReported"
 }
 
@@ -13686,8 +13690,8 @@ type ServiceWorkerWorkerRegistrationUpdated struct {
 	Registrations []*ServiceWorkerServiceWorkerRegistration `json:"registrations"`
 }
 
-// MethodName interface
-func (evt ServiceWorkerWorkerRegistrationUpdated) MethodName() string {
+// ProtoName interface
+func (evt ServiceWorkerWorkerRegistrationUpdated) ProtoName() string {
 	return "ServiceWorker.workerRegistrationUpdated"
 }
 
@@ -13698,8 +13702,8 @@ type ServiceWorkerWorkerVersionUpdated struct {
 	Versions []*ServiceWorkerServiceWorkerVersion `json:"versions"`
 }
 
-// MethodName interface
-func (evt ServiceWorkerWorkerVersionUpdated) MethodName() string {
+// ProtoName interface
+func (evt ServiceWorkerWorkerVersionUpdated) ProtoName() string {
 	return "ServiceWorker.workerVersionUpdated"
 }
 
@@ -13761,12 +13765,12 @@ type StorageClearDataForOrigin struct {
 	StorageTypes string `json:"storageTypes"`
 }
 
-// MethodName of the command
-func (m StorageClearDataForOrigin) MethodName() string { return "Storage.clearDataForOrigin" }
+// ProtoName of the command
+func (m StorageClearDataForOrigin) ProtoName() string { return "Storage.clearDataForOrigin" }
 
 // Call of the command, sessionID is optional.
-func (m StorageClearDataForOrigin) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageClearDataForOrigin) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageGetCookies Returns all browser cookies.
@@ -13776,13 +13780,13 @@ type StorageGetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m StorageGetCookies) MethodName() string { return "Storage.getCookies" }
+// ProtoName of the command
+func (m StorageGetCookies) ProtoName() string { return "Storage.getCookies" }
 
 // Call of the command, sessionID is optional.
-func (m StorageGetCookies) Call(caller Caller) (*StorageGetCookiesResult, error) {
+func (m StorageGetCookies) Call(c Client) (*StorageGetCookiesResult, error) {
 	var res StorageGetCookiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // StorageGetCookiesResult Returns all browser cookies.
@@ -13802,12 +13806,12 @@ type StorageSetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m StorageSetCookies) MethodName() string { return "Storage.setCookies" }
+// ProtoName of the command
+func (m StorageSetCookies) ProtoName() string { return "Storage.setCookies" }
 
 // Call of the command, sessionID is optional.
-func (m StorageSetCookies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageSetCookies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageClearCookies Clears cookies.
@@ -13817,12 +13821,12 @@ type StorageClearCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m StorageClearCookies) MethodName() string { return "Storage.clearCookies" }
+// ProtoName of the command
+func (m StorageClearCookies) ProtoName() string { return "Storage.clearCookies" }
 
 // Call of the command, sessionID is optional.
-func (m StorageClearCookies) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageClearCookies) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageGetUsageAndQuota Returns usage and quota in bytes.
@@ -13832,13 +13836,13 @@ type StorageGetUsageAndQuota struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m StorageGetUsageAndQuota) MethodName() string { return "Storage.getUsageAndQuota" }
+// ProtoName of the command
+func (m StorageGetUsageAndQuota) ProtoName() string { return "Storage.getUsageAndQuota" }
 
 // Call of the command, sessionID is optional.
-func (m StorageGetUsageAndQuota) Call(caller Caller) (*StorageGetUsageAndQuotaResult, error) {
+func (m StorageGetUsageAndQuota) Call(c Client) (*StorageGetUsageAndQuotaResult, error) {
 	var res StorageGetUsageAndQuotaResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // StorageGetUsageAndQuotaResult Returns usage and quota in bytes.
@@ -13861,14 +13865,14 @@ type StorageTrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m StorageTrackCacheStorageForOrigin) MethodName() string {
+// ProtoName of the command
+func (m StorageTrackCacheStorageForOrigin) ProtoName() string {
 	return "Storage.trackCacheStorageForOrigin"
 }
 
 // Call of the command, sessionID is optional.
-func (m StorageTrackCacheStorageForOrigin) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageTrackCacheStorageForOrigin) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageTrackIndexedDBForOrigin Registers origin to be notified when an update occurs to its IndexedDB.
@@ -13878,12 +13882,12 @@ type StorageTrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m StorageTrackIndexedDBForOrigin) MethodName() string { return "Storage.trackIndexedDBForOrigin" }
+// ProtoName of the command
+func (m StorageTrackIndexedDBForOrigin) ProtoName() string { return "Storage.trackIndexedDBForOrigin" }
 
 // Call of the command, sessionID is optional.
-func (m StorageTrackIndexedDBForOrigin) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageTrackIndexedDBForOrigin) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageUntrackCacheStorageForOrigin Unregisters origin from receiving notifications for cache storage.
@@ -13893,14 +13897,14 @@ type StorageUntrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m StorageUntrackCacheStorageForOrigin) MethodName() string {
+// ProtoName of the command
+func (m StorageUntrackCacheStorageForOrigin) ProtoName() string {
 	return "Storage.untrackCacheStorageForOrigin"
 }
 
 // Call of the command, sessionID is optional.
-func (m StorageUntrackCacheStorageForOrigin) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageUntrackCacheStorageForOrigin) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageUntrackIndexedDBForOrigin Unregisters origin from receiving notifications for IndexedDB.
@@ -13910,14 +13914,14 @@ type StorageUntrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName of the command
-func (m StorageUntrackIndexedDBForOrigin) MethodName() string {
+// ProtoName of the command
+func (m StorageUntrackIndexedDBForOrigin) ProtoName() string {
 	return "Storage.untrackIndexedDBForOrigin"
 }
 
 // Call of the command, sessionID is optional.
-func (m StorageUntrackIndexedDBForOrigin) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
@@ -13930,8 +13934,8 @@ type StorageCacheStorageContentUpdated struct {
 	CacheName string `json:"cacheName"`
 }
 
-// MethodName interface
-func (evt StorageCacheStorageContentUpdated) MethodName() string {
+// ProtoName interface
+func (evt StorageCacheStorageContentUpdated) ProtoName() string {
 	return "Storage.cacheStorageContentUpdated"
 }
 
@@ -13942,8 +13946,8 @@ type StorageCacheStorageListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName interface
-func (evt StorageCacheStorageListUpdated) MethodName() string {
+// ProtoName interface
+func (evt StorageCacheStorageListUpdated) ProtoName() string {
 	return "Storage.cacheStorageListUpdated"
 }
 
@@ -13960,8 +13964,8 @@ type StorageIndexedDBContentUpdated struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// MethodName interface
-func (evt StorageIndexedDBContentUpdated) MethodName() string {
+// ProtoName interface
+func (evt StorageIndexedDBContentUpdated) ProtoName() string {
 	return "Storage.indexedDBContentUpdated"
 }
 
@@ -13972,8 +13976,8 @@ type StorageIndexedDBListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// MethodName interface
-func (evt StorageIndexedDBListUpdated) MethodName() string {
+// ProtoName interface
+func (evt StorageIndexedDBListUpdated) ProtoName() string {
 	return "Storage.indexedDBListUpdated"
 }
 
@@ -14009,10 +14013,10 @@ type SystemInfoGPUDevice struct {
 type SystemInfoSize struct {
 
 	// Width Width in pixels.
-	Width int64 `json:"width"`
+	Width int `json:"width"`
 
 	// Height Height in pixels.
-	Height int64 `json:"height"`
+	Height int `json:"height"`
 }
 
 // SystemInfoVideoDecodeAcceleratorCapability Describes a supported video decoding profile with its associated minimum and
@@ -14042,10 +14046,10 @@ type SystemInfoVideoEncodeAcceleratorCapability struct {
 	// MaxFramerateNumerator Maximum encoding framerate in frames per second supported for this
 	// |profile|, as fraction's numerator and denominator, e.g. 24/1 fps,
 	// 24000/1001 fps, etc.
-	MaxFramerateNumerator int64 `json:"maxFramerateNumerator"`
+	MaxFramerateNumerator int `json:"maxFramerateNumerator"`
 
 	// MaxFramerateDenominator ...
-	MaxFramerateDenominator int64 `json:"maxFramerateDenominator"`
+	MaxFramerateDenominator int `json:"maxFramerateDenominator"`
 }
 
 // SystemInfoSubsamplingFormat YUV subsampling type of the pixels of a given image.
@@ -14100,10 +14104,10 @@ type SystemInfoGPUInfo struct {
 	Devices []*SystemInfoGPUDevice `json:"devices"`
 
 	// AuxAttributes (optional) An optional dictionary of additional GPU related attributes.
-	AuxAttributes map[string]JSON `json:"auxAttributes,omitempty"`
+	AuxAttributes map[string]gson.JSON `json:"auxAttributes,omitempty"`
 
 	// FeatureStatus (optional) An optional dictionary of graphics features and their status.
-	FeatureStatus map[string]JSON `json:"featureStatus,omitempty"`
+	FeatureStatus map[string]gson.JSON `json:"featureStatus,omitempty"`
 
 	// DriverBugWorkarounds An optional array of GPU driver bug workarounds.
 	DriverBugWorkarounds []string `json:"driverBugWorkarounds"`
@@ -14125,7 +14129,7 @@ type SystemInfoProcessInfo struct {
 	Type string `json:"type"`
 
 	// ID Specifies process id.
-	ID int64 `json:"id"`
+	ID int `json:"id"`
 
 	// CPUTime Specifies cumulative CPU usage in seconds across all threads of the
 	// process since the process start.
@@ -14136,13 +14140,13 @@ type SystemInfoProcessInfo struct {
 type SystemInfoGetInfo struct {
 }
 
-// MethodName of the command
-func (m SystemInfoGetInfo) MethodName() string { return "SystemInfo.getInfo" }
+// ProtoName of the command
+func (m SystemInfoGetInfo) ProtoName() string { return "SystemInfo.getInfo" }
 
 // Call of the command, sessionID is optional.
-func (m SystemInfoGetInfo) Call(caller Caller) (*SystemInfoGetInfoResult, error) {
+func (m SystemInfoGetInfo) Call(c Client) (*SystemInfoGetInfoResult, error) {
 	var res SystemInfoGetInfoResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // SystemInfoGetInfoResult Returns information about the system.
@@ -14168,13 +14172,13 @@ type SystemInfoGetInfoResult struct {
 type SystemInfoGetProcessInfo struct {
 }
 
-// MethodName of the command
-func (m SystemInfoGetProcessInfo) MethodName() string { return "SystemInfo.getProcessInfo" }
+// ProtoName of the command
+func (m SystemInfoGetProcessInfo) ProtoName() string { return "SystemInfo.getProcessInfo" }
 
 // Call of the command, sessionID is optional.
-func (m SystemInfoGetProcessInfo) Call(caller Caller) (*SystemInfoGetProcessInfoResult, error) {
+func (m SystemInfoGetProcessInfo) Call(c Client) (*SystemInfoGetProcessInfoResult, error) {
 	var res SystemInfoGetProcessInfoResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // SystemInfoGetProcessInfoResult Returns information about all running processes.
@@ -14245,7 +14249,7 @@ type TargetRemoteLocation struct {
 	Host string `json:"host"`
 
 	// Port ...
-	Port int64 `json:"port"`
+	Port int `json:"port"`
 }
 
 // TargetActivateTarget Activates (focuses) the target.
@@ -14255,12 +14259,12 @@ type TargetActivateTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// MethodName of the command
-func (m TargetActivateTarget) MethodName() string { return "Target.activateTarget" }
+// ProtoName of the command
+func (m TargetActivateTarget) ProtoName() string { return "Target.activateTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetActivateTarget) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetActivateTarget) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetAttachToTarget Attaches to the target with given id.
@@ -14275,13 +14279,13 @@ type TargetAttachToTarget struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetAttachToTarget) MethodName() string { return "Target.attachToTarget" }
+// ProtoName of the command
+func (m TargetAttachToTarget) ProtoName() string { return "Target.attachToTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetAttachToTarget) Call(caller Caller) (*TargetAttachToTargetResult, error) {
+func (m TargetAttachToTarget) Call(c Client) (*TargetAttachToTargetResult, error) {
 	var res TargetAttachToTargetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetAttachToTargetResult Attaches to the target with given id.
@@ -14295,13 +14299,13 @@ type TargetAttachToTargetResult struct {
 type TargetAttachToBrowserTarget struct {
 }
 
-// MethodName of the command
-func (m TargetAttachToBrowserTarget) MethodName() string { return "Target.attachToBrowserTarget" }
+// ProtoName of the command
+func (m TargetAttachToBrowserTarget) ProtoName() string { return "Target.attachToBrowserTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetAttachToBrowserTarget) Call(caller Caller) (*TargetAttachToBrowserTargetResult, error) {
+func (m TargetAttachToBrowserTarget) Call(c Client) (*TargetAttachToBrowserTargetResult, error) {
 	var res TargetAttachToBrowserTargetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetAttachToBrowserTargetResult (experimental) Attaches to the browser target, only uses flat sessionId mode.
@@ -14318,13 +14322,13 @@ type TargetCloseTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// MethodName of the command
-func (m TargetCloseTarget) MethodName() string { return "Target.closeTarget" }
+// ProtoName of the command
+func (m TargetCloseTarget) ProtoName() string { return "Target.closeTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetCloseTarget) Call(caller Caller) (*TargetCloseTargetResult, error) {
+func (m TargetCloseTarget) Call(c Client) (*TargetCloseTargetResult, error) {
 	var res TargetCloseTargetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetCloseTargetResult Closes the target. If the target is a page that gets closed too.
@@ -14351,12 +14355,12 @@ type TargetExposeDevToolsProtocol struct {
 	BindingName string `json:"bindingName,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetExposeDevToolsProtocol) MethodName() string { return "Target.exposeDevToolsProtocol" }
+// ProtoName of the command
+func (m TargetExposeDevToolsProtocol) ProtoName() string { return "Target.exposeDevToolsProtocol" }
 
 // Call of the command, sessionID is optional.
-func (m TargetExposeDevToolsProtocol) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetExposeDevToolsProtocol) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetCreateBrowserContext (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
@@ -14373,13 +14377,13 @@ type TargetCreateBrowserContext struct {
 	ProxyBypassList string `json:"proxyBypassList,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetCreateBrowserContext) MethodName() string { return "Target.createBrowserContext" }
+// ProtoName of the command
+func (m TargetCreateBrowserContext) ProtoName() string { return "Target.createBrowserContext" }
 
 // Call of the command, sessionID is optional.
-func (m TargetCreateBrowserContext) Call(caller Caller) (*TargetCreateBrowserContextResult, error) {
+func (m TargetCreateBrowserContext) Call(c Client) (*TargetCreateBrowserContextResult, error) {
 	var res TargetCreateBrowserContextResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetCreateBrowserContextResult (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
@@ -14394,13 +14398,13 @@ type TargetCreateBrowserContextResult struct {
 type TargetGetBrowserContexts struct {
 }
 
-// MethodName of the command
-func (m TargetGetBrowserContexts) MethodName() string { return "Target.getBrowserContexts" }
+// ProtoName of the command
+func (m TargetGetBrowserContexts) ProtoName() string { return "Target.getBrowserContexts" }
 
 // Call of the command, sessionID is optional.
-func (m TargetGetBrowserContexts) Call(caller Caller) (*TargetGetBrowserContextsResult, error) {
+func (m TargetGetBrowserContexts) Call(c Client) (*TargetGetBrowserContextsResult, error) {
 	var res TargetGetBrowserContextsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetGetBrowserContextsResult (experimental) Returns all browser contexts created with `Target.createBrowserContext` method.
@@ -14417,10 +14421,10 @@ type TargetCreateTarget struct {
 	URL string `json:"url"`
 
 	// Width (optional) Frame width in DIP (headless chrome only).
-	Width int64 `json:"width,omitempty"`
+	Width int `json:"width,omitempty"`
 
 	// Height (optional) Frame height in DIP (headless chrome only).
-	Height int64 `json:"height,omitempty"`
+	Height int `json:"height,omitempty"`
 
 	// BrowserContextID (optional) The browser context to create the page in.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -14437,13 +14441,13 @@ type TargetCreateTarget struct {
 	Background bool `json:"background,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetCreateTarget) MethodName() string { return "Target.createTarget" }
+// ProtoName of the command
+func (m TargetCreateTarget) ProtoName() string { return "Target.createTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetCreateTarget) Call(caller Caller) (*TargetCreateTargetResult, error) {
+func (m TargetCreateTarget) Call(c Client) (*TargetCreateTargetResult, error) {
 	var res TargetCreateTargetResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetCreateTargetResult Creates a new page.
@@ -14463,12 +14467,12 @@ type TargetDetachFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetDetachFromTarget) MethodName() string { return "Target.detachFromTarget" }
+// ProtoName of the command
+func (m TargetDetachFromTarget) ProtoName() string { return "Target.detachFromTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetDetachFromTarget) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetDetachFromTarget) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetDisposeBrowserContext (experimental) Deletes a BrowserContext. All the belonging pages will be closed without calling their
@@ -14479,12 +14483,12 @@ type TargetDisposeBrowserContext struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId"`
 }
 
-// MethodName of the command
-func (m TargetDisposeBrowserContext) MethodName() string { return "Target.disposeBrowserContext" }
+// ProtoName of the command
+func (m TargetDisposeBrowserContext) ProtoName() string { return "Target.disposeBrowserContext" }
 
 // Call of the command, sessionID is optional.
-func (m TargetDisposeBrowserContext) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetDisposeBrowserContext) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetGetTargetInfo (experimental) Returns information about a target.
@@ -14494,13 +14498,13 @@ type TargetGetTargetInfo struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetGetTargetInfo) MethodName() string { return "Target.getTargetInfo" }
+// ProtoName of the command
+func (m TargetGetTargetInfo) ProtoName() string { return "Target.getTargetInfo" }
 
 // Call of the command, sessionID is optional.
-func (m TargetGetTargetInfo) Call(caller Caller) (*TargetGetTargetInfoResult, error) {
+func (m TargetGetTargetInfo) Call(c Client) (*TargetGetTargetInfoResult, error) {
 	var res TargetGetTargetInfoResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetGetTargetInfoResult (experimental) Returns information about a target.
@@ -14514,13 +14518,13 @@ type TargetGetTargetInfoResult struct {
 type TargetGetTargets struct {
 }
 
-// MethodName of the command
-func (m TargetGetTargets) MethodName() string { return "Target.getTargets" }
+// ProtoName of the command
+func (m TargetGetTargets) ProtoName() string { return "Target.getTargets" }
 
 // Call of the command, sessionID is optional.
-func (m TargetGetTargets) Call(caller Caller) (*TargetGetTargetsResult, error) {
+func (m TargetGetTargets) Call(c Client) (*TargetGetTargetsResult, error) {
 	var res TargetGetTargetsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TargetGetTargetsResult Retrieves a list of available targets.
@@ -14545,12 +14549,12 @@ type TargetSendMessageToTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetSendMessageToTarget) MethodName() string { return "Target.sendMessageToTarget" }
+// ProtoName of the command
+func (m TargetSendMessageToTarget) ProtoName() string { return "Target.sendMessageToTarget" }
 
 // Call of the command, sessionID is optional.
-func (m TargetSendMessageToTarget) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetSendMessageToTarget) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetSetAutoAttach (experimental) Controls whether to automatically attach to new targets which are considered to be related to
@@ -14571,12 +14575,12 @@ type TargetSetAutoAttach struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
-// MethodName of the command
-func (m TargetSetAutoAttach) MethodName() string { return "Target.setAutoAttach" }
+// ProtoName of the command
+func (m TargetSetAutoAttach) ProtoName() string { return "Target.setAutoAttach" }
 
 // Call of the command, sessionID is optional.
-func (m TargetSetAutoAttach) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetSetAutoAttach) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetSetDiscoverTargets Controls whether to discover available targets and notify via
@@ -14587,12 +14591,12 @@ type TargetSetDiscoverTargets struct {
 	Discover bool `json:"discover"`
 }
 
-// MethodName of the command
-func (m TargetSetDiscoverTargets) MethodName() string { return "Target.setDiscoverTargets" }
+// ProtoName of the command
+func (m TargetSetDiscoverTargets) ProtoName() string { return "Target.setDiscoverTargets" }
 
 // Call of the command, sessionID is optional.
-func (m TargetSetDiscoverTargets) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetSetDiscoverTargets) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetSetRemoteLocations (experimental) Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
@@ -14603,12 +14607,12 @@ type TargetSetRemoteLocations struct {
 	Locations []*TargetRemoteLocation `json:"locations"`
 }
 
-// MethodName of the command
-func (m TargetSetRemoteLocations) MethodName() string { return "Target.setRemoteLocations" }
+// ProtoName of the command
+func (m TargetSetRemoteLocations) ProtoName() string { return "Target.setRemoteLocations" }
 
 // Call of the command, sessionID is optional.
-func (m TargetSetRemoteLocations) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TargetSetRemoteLocations) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TargetAttachedToTarget (experimental) Issued when attached to target because of auto-attach or `attachToTarget` command.
@@ -14624,8 +14628,8 @@ type TargetAttachedToTarget struct {
 	WaitingForDebugger bool `json:"waitingForDebugger"`
 }
 
-// MethodName interface
-func (evt TargetAttachedToTarget) MethodName() string {
+// ProtoName interface
+func (evt TargetAttachedToTarget) ProtoName() string {
 	return "Target.attachedToTarget"
 }
 
@@ -14640,8 +14644,8 @@ type TargetDetachedFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName interface
-func (evt TargetDetachedFromTarget) MethodName() string {
+// ProtoName interface
+func (evt TargetDetachedFromTarget) ProtoName() string {
 	return "Target.detachedFromTarget"
 }
 
@@ -14659,8 +14663,8 @@ type TargetReceivedMessageFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// MethodName interface
-func (evt TargetReceivedMessageFromTarget) MethodName() string {
+// ProtoName interface
+func (evt TargetReceivedMessageFromTarget) ProtoName() string {
 	return "Target.receivedMessageFromTarget"
 }
 
@@ -14671,8 +14675,8 @@ type TargetTargetCreated struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// MethodName interface
-func (evt TargetTargetCreated) MethodName() string {
+// ProtoName interface
+func (evt TargetTargetCreated) ProtoName() string {
 	return "Target.targetCreated"
 }
 
@@ -14683,8 +14687,8 @@ type TargetTargetDestroyed struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// MethodName interface
-func (evt TargetTargetDestroyed) MethodName() string {
+// ProtoName interface
+func (evt TargetTargetDestroyed) ProtoName() string {
 	return "Target.targetDestroyed"
 }
 
@@ -14698,11 +14702,11 @@ type TargetTargetCrashed struct {
 	Status string `json:"status"`
 
 	// ErrorCode Termination error code.
-	ErrorCode int64 `json:"errorCode"`
+	ErrorCode int `json:"errorCode"`
 }
 
-// MethodName interface
-func (evt TargetTargetCrashed) MethodName() string {
+// ProtoName interface
+func (evt TargetTargetCrashed) ProtoName() string {
 	return "Target.targetCrashed"
 }
 
@@ -14714,8 +14718,8 @@ type TargetTargetInfoChanged struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// MethodName interface
-func (evt TargetTargetInfoChanged) MethodName() string {
+// ProtoName interface
+func (evt TargetTargetInfoChanged) ProtoName() string {
 	return "Target.targetInfoChanged"
 }
 
@@ -14723,49 +14727,49 @@ func (evt TargetTargetInfoChanged) MethodName() string {
 type TetheringBind struct {
 
 	// Port Port number to bind.
-	Port int64 `json:"port"`
+	Port int `json:"port"`
 }
 
-// MethodName of the command
-func (m TetheringBind) MethodName() string { return "Tethering.bind" }
+// ProtoName of the command
+func (m TetheringBind) ProtoName() string { return "Tethering.bind" }
 
 // Call of the command, sessionID is optional.
-func (m TetheringBind) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TetheringBind) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TetheringUnbind Request browser port unbinding.
 type TetheringUnbind struct {
 
 	// Port Port number to unbind.
-	Port int64 `json:"port"`
+	Port int `json:"port"`
 }
 
-// MethodName of the command
-func (m TetheringUnbind) MethodName() string { return "Tethering.unbind" }
+// ProtoName of the command
+func (m TetheringUnbind) ProtoName() string { return "Tethering.unbind" }
 
 // Call of the command, sessionID is optional.
-func (m TetheringUnbind) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TetheringUnbind) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TetheringAccepted Informs that port was successfully bound and got a specified connection id.
 type TetheringAccepted struct {
 
 	// Port Port number that was successfully bound.
-	Port int64 `json:"port"`
+	Port int `json:"port"`
 
 	// ConnectionID Connection id to be used.
 	ConnectionID string `json:"connectionId"`
 }
 
-// MethodName interface
-func (evt TetheringAccepted) MethodName() string {
+// ProtoName interface
+func (evt TetheringAccepted) ProtoName() string {
 	return "Tethering.accepted"
 }
 
 // TracingMemoryDumpConfig Configuration for memory dump. Used only when "memory-infra" category is enabled.
-type TracingMemoryDumpConfig map[string]JSON
+type TracingMemoryDumpConfig map[string]gson.JSON
 
 // TracingTraceConfigRecordMode enum
 type TracingTraceConfigRecordMode string
@@ -14839,25 +14843,25 @@ const (
 type TracingEnd struct {
 }
 
-// MethodName of the command
-func (m TracingEnd) MethodName() string { return "Tracing.end" }
+// ProtoName of the command
+func (m TracingEnd) ProtoName() string { return "Tracing.end" }
 
 // Call of the command, sessionID is optional.
-func (m TracingEnd) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TracingEnd) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TracingGetCategories Gets supported tracing categories.
 type TracingGetCategories struct {
 }
 
-// MethodName of the command
-func (m TracingGetCategories) MethodName() string { return "Tracing.getCategories" }
+// ProtoName of the command
+func (m TracingGetCategories) ProtoName() string { return "Tracing.getCategories" }
 
 // Call of the command, sessionID is optional.
-func (m TracingGetCategories) Call(caller Caller) (*TracingGetCategoriesResult, error) {
+func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error) {
 	var res TracingGetCategoriesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TracingGetCategoriesResult Gets supported tracing categories.
@@ -14874,12 +14878,12 @@ type TracingRecordClockSyncMarker struct {
 	SyncID string `json:"syncId"`
 }
 
-// MethodName of the command
-func (m TracingRecordClockSyncMarker) MethodName() string { return "Tracing.recordClockSyncMarker" }
+// ProtoName of the command
+func (m TracingRecordClockSyncMarker) ProtoName() string { return "Tracing.recordClockSyncMarker" }
 
 // Call of the command, sessionID is optional.
-func (m TracingRecordClockSyncMarker) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TracingRecordClockSyncMarker) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TracingRequestMemoryDump Request a global memory dump.
@@ -14889,13 +14893,13 @@ type TracingRequestMemoryDump struct {
 	Deterministic bool `json:"deterministic,omitempty"`
 }
 
-// MethodName of the command
-func (m TracingRequestMemoryDump) MethodName() string { return "Tracing.requestMemoryDump" }
+// ProtoName of the command
+func (m TracingRequestMemoryDump) ProtoName() string { return "Tracing.requestMemoryDump" }
 
 // Call of the command, sessionID is optional.
-func (m TracingRequestMemoryDump) Call(caller Caller) (*TracingRequestMemoryDumpResult, error) {
+func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResult, error) {
 	var res TracingRequestMemoryDumpResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // TracingRequestMemoryDumpResult Request a global memory dump.
@@ -14947,12 +14951,12 @@ type TracingStart struct {
 	TraceConfig *TracingTraceConfig `json:"traceConfig,omitempty"`
 }
 
-// MethodName of the command
-func (m TracingStart) MethodName() string { return "Tracing.start" }
+// ProtoName of the command
+func (m TracingStart) ProtoName() string { return "Tracing.start" }
 
 // Call of the command, sessionID is optional.
-func (m TracingStart) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m TracingStart) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // TracingBufferUsage ...
@@ -14970,8 +14974,8 @@ type TracingBufferUsage struct {
 	Value float64 `json:"value,omitempty"`
 }
 
-// MethodName interface
-func (evt TracingBufferUsage) MethodName() string {
+// ProtoName interface
+func (evt TracingBufferUsage) ProtoName() string {
 	return "Tracing.bufferUsage"
 }
 
@@ -14980,11 +14984,11 @@ func (evt TracingBufferUsage) MethodName() string {
 type TracingDataCollected struct {
 
 	// Value ...
-	Value []map[string]JSON `json:"value"`
+	Value []map[string]gson.JSON `json:"value"`
 }
 
-// MethodName interface
-func (evt TracingDataCollected) MethodName() string {
+// ProtoName interface
+func (evt TracingDataCollected) ProtoName() string {
 	return "Tracing.dataCollected"
 }
 
@@ -15006,8 +15010,8 @@ type TracingTracingComplete struct {
 	StreamCompression TracingStreamCompression `json:"streamCompression,omitempty"`
 }
 
-// MethodName interface
-func (evt TracingTracingComplete) MethodName() string {
+// ProtoName interface
+func (evt TracingTracingComplete) ProtoName() string {
 	return "Tracing.tracingComplete"
 }
 
@@ -15113,12 +15117,12 @@ type FetchAuthChallengeResponse struct {
 type FetchDisable struct {
 }
 
-// MethodName of the command
-func (m FetchDisable) MethodName() string { return "Fetch.disable" }
+// ProtoName of the command
+func (m FetchDisable) ProtoName() string { return "Fetch.disable" }
 
 // Call of the command, sessionID is optional.
-func (m FetchDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchEnable Enables issuing of requestPaused events. A request will be paused until client
@@ -15135,12 +15139,12 @@ type FetchEnable struct {
 	HandleAuthRequests bool `json:"handleAuthRequests,omitempty"`
 }
 
-// MethodName of the command
-func (m FetchEnable) MethodName() string { return "Fetch.enable" }
+// ProtoName of the command
+func (m FetchEnable) ProtoName() string { return "Fetch.enable" }
 
 // Call of the command, sessionID is optional.
-func (m FetchEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchFailRequest Causes the request to fail with specified reason.
@@ -15153,12 +15157,12 @@ type FetchFailRequest struct {
 	ErrorReason NetworkErrorReason `json:"errorReason"`
 }
 
-// MethodName of the command
-func (m FetchFailRequest) MethodName() string { return "Fetch.failRequest" }
+// ProtoName of the command
+func (m FetchFailRequest) ProtoName() string { return "Fetch.failRequest" }
 
 // Call of the command, sessionID is optional.
-func (m FetchFailRequest) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchFailRequest) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchFulfillRequest Provides response to the request.
@@ -15168,7 +15172,7 @@ type FetchFulfillRequest struct {
 	RequestID FetchRequestID `json:"requestId"`
 
 	// ResponseCode An HTTP response code.
-	ResponseCode int64 `json:"responseCode"`
+	ResponseCode int `json:"responseCode"`
 
 	// ResponseHeaders (optional) Response headers.
 	ResponseHeaders []*FetchHeaderEntry `json:"responseHeaders,omitempty"`
@@ -15187,12 +15191,12 @@ type FetchFulfillRequest struct {
 	ResponsePhrase string `json:"responsePhrase,omitempty"`
 }
 
-// MethodName of the command
-func (m FetchFulfillRequest) MethodName() string { return "Fetch.fulfillRequest" }
+// ProtoName of the command
+func (m FetchFulfillRequest) ProtoName() string { return "Fetch.fulfillRequest" }
 
 // Call of the command, sessionID is optional.
-func (m FetchFulfillRequest) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchFulfillRequest) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchContinueRequest Continues the request, optionally modifying some of its parameters.
@@ -15214,12 +15218,12 @@ type FetchContinueRequest struct {
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
 }
 
-// MethodName of the command
-func (m FetchContinueRequest) MethodName() string { return "Fetch.continueRequest" }
+// ProtoName of the command
+func (m FetchContinueRequest) ProtoName() string { return "Fetch.continueRequest" }
 
 // Call of the command, sessionID is optional.
-func (m FetchContinueRequest) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchContinueRequest) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchContinueWithAuth Continues a request supplying authChallengeResponse following authRequired event.
@@ -15232,12 +15236,12 @@ type FetchContinueWithAuth struct {
 	AuthChallengeResponse *FetchAuthChallengeResponse `json:"authChallengeResponse"`
 }
 
-// MethodName of the command
-func (m FetchContinueWithAuth) MethodName() string { return "Fetch.continueWithAuth" }
+// ProtoName of the command
+func (m FetchContinueWithAuth) ProtoName() string { return "Fetch.continueWithAuth" }
 
 // Call of the command, sessionID is optional.
-func (m FetchContinueWithAuth) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m FetchContinueWithAuth) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // FetchGetResponseBody Causes the body of the response to be received from the server and
@@ -15252,13 +15256,13 @@ type FetchGetResponseBody struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// MethodName of the command
-func (m FetchGetResponseBody) MethodName() string { return "Fetch.getResponseBody" }
+// ProtoName of the command
+func (m FetchGetResponseBody) ProtoName() string { return "Fetch.getResponseBody" }
 
 // Call of the command, sessionID is optional.
-func (m FetchGetResponseBody) Call(caller Caller) (*FetchGetResponseBodyResult, error) {
+func (m FetchGetResponseBody) Call(c Client) (*FetchGetResponseBodyResult, error) {
 	var res FetchGetResponseBodyResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // FetchGetResponseBodyResult Causes the body of the response to be received from the server and
@@ -15292,13 +15296,13 @@ type FetchTakeResponseBodyAsStream struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// MethodName of the command
-func (m FetchTakeResponseBodyAsStream) MethodName() string { return "Fetch.takeResponseBodyAsStream" }
+// ProtoName of the command
+func (m FetchTakeResponseBodyAsStream) ProtoName() string { return "Fetch.takeResponseBodyAsStream" }
 
 // Call of the command, sessionID is optional.
-func (m FetchTakeResponseBodyAsStream) Call(caller Caller) (*FetchTakeResponseBodyAsStreamResult, error) {
+func (m FetchTakeResponseBodyAsStream) Call(c Client) (*FetchTakeResponseBodyAsStreamResult, error) {
 	var res FetchTakeResponseBodyAsStreamResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // FetchTakeResponseBodyAsStreamResult Returns a handle to the stream representing the response body.
@@ -15341,7 +15345,7 @@ type FetchRequestPaused struct {
 	ResponseErrorReason NetworkErrorReason `json:"responseErrorReason,omitempty"`
 
 	// ResponseStatusCode (optional) Response code if intercepted at response stage.
-	ResponseStatusCode int64 `json:"responseStatusCode,omitempty"`
+	ResponseStatusCode int `json:"responseStatusCode,omitempty"`
 
 	// ResponseHeaders (optional) Response headers if intercepted at the response stage.
 	ResponseHeaders []*FetchHeaderEntry `json:"responseHeaders,omitempty"`
@@ -15351,8 +15355,8 @@ type FetchRequestPaused struct {
 	NetworkID FetchRequestID `json:"networkId,omitempty"`
 }
 
-// MethodName interface
-func (evt FetchRequestPaused) MethodName() string {
+// ProtoName interface
+func (evt FetchRequestPaused) ProtoName() string {
 	return "Fetch.requestPaused"
 }
 
@@ -15378,8 +15382,8 @@ type FetchAuthRequired struct {
 	AuthChallenge *FetchAuthChallenge `json:"authChallenge"`
 }
 
-// MethodName interface
-func (evt FetchAuthRequired) MethodName() string {
+// ProtoName interface
+func (evt FetchAuthRequired) ProtoName() string {
 	return "Fetch.authRequired"
 }
 
@@ -15566,24 +15570,24 @@ type WebAudioAudioParam struct {
 type WebAudioEnable struct {
 }
 
-// MethodName of the command
-func (m WebAudioEnable) MethodName() string { return "WebAudio.enable" }
+// ProtoName of the command
+func (m WebAudioEnable) ProtoName() string { return "WebAudio.enable" }
 
 // Call of the command, sessionID is optional.
-func (m WebAudioEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAudioEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAudioDisable Disables the WebAudio domain.
 type WebAudioDisable struct {
 }
 
-// MethodName of the command
-func (m WebAudioDisable) MethodName() string { return "WebAudio.disable" }
+// ProtoName of the command
+func (m WebAudioDisable) ProtoName() string { return "WebAudio.disable" }
 
 // Call of the command, sessionID is optional.
-func (m WebAudioDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAudioDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAudioGetRealtimeData Fetch the realtime data from the registered contexts.
@@ -15593,13 +15597,13 @@ type WebAudioGetRealtimeData struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
-// MethodName of the command
-func (m WebAudioGetRealtimeData) MethodName() string { return "WebAudio.getRealtimeData" }
+// ProtoName of the command
+func (m WebAudioGetRealtimeData) ProtoName() string { return "WebAudio.getRealtimeData" }
 
 // Call of the command, sessionID is optional.
-func (m WebAudioGetRealtimeData) Call(caller Caller) (*WebAudioGetRealtimeDataResult, error) {
+func (m WebAudioGetRealtimeData) Call(c Client) (*WebAudioGetRealtimeDataResult, error) {
 	var res WebAudioGetRealtimeDataResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // WebAudioGetRealtimeDataResult Fetch the realtime data from the registered contexts.
@@ -15616,8 +15620,8 @@ type WebAudioContextCreated struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// MethodName interface
-func (evt WebAudioContextCreated) MethodName() string {
+// ProtoName interface
+func (evt WebAudioContextCreated) ProtoName() string {
 	return "WebAudio.contextCreated"
 }
 
@@ -15628,8 +15632,8 @@ type WebAudioContextWillBeDestroyed struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
-// MethodName interface
-func (evt WebAudioContextWillBeDestroyed) MethodName() string {
+// ProtoName interface
+func (evt WebAudioContextWillBeDestroyed) ProtoName() string {
 	return "WebAudio.contextWillBeDestroyed"
 }
 
@@ -15640,8 +15644,8 @@ type WebAudioContextChanged struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// MethodName interface
-func (evt WebAudioContextChanged) MethodName() string {
+// ProtoName interface
+func (evt WebAudioContextChanged) ProtoName() string {
 	return "WebAudio.contextChanged"
 }
 
@@ -15652,8 +15656,8 @@ type WebAudioAudioListenerCreated struct {
 	Listener *WebAudioAudioListener `json:"listener"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioListenerCreated) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioListenerCreated) ProtoName() string {
 	return "WebAudio.audioListenerCreated"
 }
 
@@ -15667,8 +15671,8 @@ type WebAudioAudioListenerWillBeDestroyed struct {
 	ListenerID WebAudioGraphObjectID `json:"listenerId"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioListenerWillBeDestroyed) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioListenerWillBeDestroyed) ProtoName() string {
 	return "WebAudio.audioListenerWillBeDestroyed"
 }
 
@@ -15679,8 +15683,8 @@ type WebAudioAudioNodeCreated struct {
 	Node *WebAudioAudioNode `json:"node"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioNodeCreated) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioNodeCreated) ProtoName() string {
 	return "WebAudio.audioNodeCreated"
 }
 
@@ -15694,8 +15698,8 @@ type WebAudioAudioNodeWillBeDestroyed struct {
 	NodeID WebAudioGraphObjectID `json:"nodeId"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioNodeWillBeDestroyed) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioNodeWillBeDestroyed) ProtoName() string {
 	return "WebAudio.audioNodeWillBeDestroyed"
 }
 
@@ -15706,8 +15710,8 @@ type WebAudioAudioParamCreated struct {
 	Param *WebAudioAudioParam `json:"param"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioParamCreated) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioParamCreated) ProtoName() string {
 	return "WebAudio.audioParamCreated"
 }
 
@@ -15724,8 +15728,8 @@ type WebAudioAudioParamWillBeDestroyed struct {
 	ParamID WebAudioGraphObjectID `json:"paramId"`
 }
 
-// MethodName interface
-func (evt WebAudioAudioParamWillBeDestroyed) MethodName() string {
+// ProtoName interface
+func (evt WebAudioAudioParamWillBeDestroyed) ProtoName() string {
 	return "WebAudio.audioParamWillBeDestroyed"
 }
 
@@ -15748,8 +15752,8 @@ type WebAudioNodesConnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// MethodName interface
-func (evt WebAudioNodesConnected) MethodName() string {
+// ProtoName interface
+func (evt WebAudioNodesConnected) ProtoName() string {
 	return "WebAudio.nodesConnected"
 }
 
@@ -15772,8 +15776,8 @@ type WebAudioNodesDisconnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// MethodName interface
-func (evt WebAudioNodesDisconnected) MethodName() string {
+// ProtoName interface
+func (evt WebAudioNodesDisconnected) ProtoName() string {
 	return "WebAudio.nodesDisconnected"
 }
 
@@ -15793,8 +15797,8 @@ type WebAudioNodeParamConnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// MethodName interface
-func (evt WebAudioNodeParamConnected) MethodName() string {
+// ProtoName interface
+func (evt WebAudioNodeParamConnected) ProtoName() string {
 	return "WebAudio.nodeParamConnected"
 }
 
@@ -15814,8 +15818,8 @@ type WebAudioNodeParamDisconnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// MethodName interface
-func (evt WebAudioNodeParamDisconnected) MethodName() string {
+// ProtoName interface
+func (evt WebAudioNodeParamDisconnected) ProtoName() string {
 	return "WebAudio.nodeParamDisconnected"
 }
 
@@ -15900,7 +15904,7 @@ type WebAuthnCredential struct {
 	// SignCount Signature counter. This is incremented by one for each successful
 	// assertion.
 	// See https://w3c.github.io/webauthn/#signature-counter
-	SignCount int64 `json:"signCount"`
+	SignCount int `json:"signCount"`
 }
 
 // WebAuthnEnable Enable the WebAuthn domain and start intercepting credential storage and
@@ -15908,24 +15912,24 @@ type WebAuthnCredential struct {
 type WebAuthnEnable struct {
 }
 
-// MethodName of the command
-func (m WebAuthnEnable) MethodName() string { return "WebAuthn.enable" }
+// ProtoName of the command
+func (m WebAuthnEnable) ProtoName() string { return "WebAuthn.enable" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnDisable Disable the WebAuthn domain.
 type WebAuthnDisable struct {
 }
 
-// MethodName of the command
-func (m WebAuthnDisable) MethodName() string { return "WebAuthn.disable" }
+// ProtoName of the command
+func (m WebAuthnDisable) ProtoName() string { return "WebAuthn.disable" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnAddVirtualAuthenticator Creates and adds a virtual authenticator.
@@ -15935,15 +15939,15 @@ type WebAuthnAddVirtualAuthenticator struct {
 	Options *WebAuthnVirtualAuthenticatorOptions `json:"options"`
 }
 
-// MethodName of the command
-func (m WebAuthnAddVirtualAuthenticator) MethodName() string {
+// ProtoName of the command
+func (m WebAuthnAddVirtualAuthenticator) ProtoName() string {
 	return "WebAuthn.addVirtualAuthenticator"
 }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnAddVirtualAuthenticator) Call(caller Caller) (*WebAuthnAddVirtualAuthenticatorResult, error) {
+func (m WebAuthnAddVirtualAuthenticator) Call(c Client) (*WebAuthnAddVirtualAuthenticatorResult, error) {
 	var res WebAuthnAddVirtualAuthenticatorResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // WebAuthnAddVirtualAuthenticatorResult Creates and adds a virtual authenticator.
@@ -15960,14 +15964,14 @@ type WebAuthnRemoveVirtualAuthenticator struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// MethodName of the command
-func (m WebAuthnRemoveVirtualAuthenticator) MethodName() string {
+// ProtoName of the command
+func (m WebAuthnRemoveVirtualAuthenticator) ProtoName() string {
 	return "WebAuthn.removeVirtualAuthenticator"
 }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnRemoveVirtualAuthenticator) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnRemoveVirtualAuthenticator) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnAddCredential Adds the credential to the specified authenticator.
@@ -15980,12 +15984,12 @@ type WebAuthnAddCredential struct {
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
-// MethodName of the command
-func (m WebAuthnAddCredential) MethodName() string { return "WebAuthn.addCredential" }
+// ProtoName of the command
+func (m WebAuthnAddCredential) ProtoName() string { return "WebAuthn.addCredential" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnAddCredential) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnAddCredential) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnGetCredential Returns a single credential stored in the given virtual authenticator that
@@ -15999,13 +16003,13 @@ type WebAuthnGetCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
-// MethodName of the command
-func (m WebAuthnGetCredential) MethodName() string { return "WebAuthn.getCredential" }
+// ProtoName of the command
+func (m WebAuthnGetCredential) ProtoName() string { return "WebAuthn.getCredential" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnGetCredential) Call(caller Caller) (*WebAuthnGetCredentialResult, error) {
+func (m WebAuthnGetCredential) Call(c Client) (*WebAuthnGetCredentialResult, error) {
 	var res WebAuthnGetCredentialResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // WebAuthnGetCredentialResult Returns a single credential stored in the given virtual authenticator that
@@ -16023,13 +16027,13 @@ type WebAuthnGetCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// MethodName of the command
-func (m WebAuthnGetCredentials) MethodName() string { return "WebAuthn.getCredentials" }
+// ProtoName of the command
+func (m WebAuthnGetCredentials) ProtoName() string { return "WebAuthn.getCredentials" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnGetCredentials) Call(caller Caller) (*WebAuthnGetCredentialsResult, error) {
+func (m WebAuthnGetCredentials) Call(c Client) (*WebAuthnGetCredentialsResult, error) {
 	var res WebAuthnGetCredentialsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // WebAuthnGetCredentialsResult Returns all the credentials stored in the given virtual authenticator.
@@ -16049,12 +16053,12 @@ type WebAuthnRemoveCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
-// MethodName of the command
-func (m WebAuthnRemoveCredential) MethodName() string { return "WebAuthn.removeCredential" }
+// ProtoName of the command
+func (m WebAuthnRemoveCredential) ProtoName() string { return "WebAuthn.removeCredential" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnRemoveCredential) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnRemoveCredential) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnClearCredentials Clears all the credentials from the specified device.
@@ -16064,12 +16068,12 @@ type WebAuthnClearCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// MethodName of the command
-func (m WebAuthnClearCredentials) MethodName() string { return "WebAuthn.clearCredentials" }
+// ProtoName of the command
+func (m WebAuthnClearCredentials) ProtoName() string { return "WebAuthn.clearCredentials" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnClearCredentials) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnClearCredentials) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // WebAuthnSetUserVerified Sets whether User Verification succeeds or fails for an authenticator.
@@ -16083,12 +16087,12 @@ type WebAuthnSetUserVerified struct {
 	IsUserVerified bool `json:"isUserVerified"`
 }
 
-// MethodName of the command
-func (m WebAuthnSetUserVerified) MethodName() string { return "WebAuthn.setUserVerified" }
+// ProtoName of the command
+func (m WebAuthnSetUserVerified) ProtoName() string { return "WebAuthn.setUserVerified" }
 
 // Call of the command, sessionID is optional.
-func (m WebAuthnSetUserVerified) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m WebAuthnSetUserVerified) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MediaPlayerID Players will get an ID that is unique within the agent context.
@@ -16182,24 +16186,24 @@ type MediaPlayerError struct {
 type MediaEnable struct {
 }
 
-// MethodName of the command
-func (m MediaEnable) MethodName() string { return "Media.enable" }
+// ProtoName of the command
+func (m MediaEnable) ProtoName() string { return "Media.enable" }
 
 // Call of the command, sessionID is optional.
-func (m MediaEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MediaEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MediaDisable Disables the Media domain.
 type MediaDisable struct {
 }
 
-// MethodName of the command
-func (m MediaDisable) MethodName() string { return "Media.disable" }
+// ProtoName of the command
+func (m MediaDisable) ProtoName() string { return "Media.disable" }
 
 // Call of the command, sessionID is optional.
-func (m MediaDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m MediaDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // MediaPlayerPropertiesChanged This can be called multiple times, and can be used to set / override /
@@ -16213,8 +16217,8 @@ type MediaPlayerPropertiesChanged struct {
 	Properties []*MediaPlayerProperty `json:"properties"`
 }
 
-// MethodName interface
-func (evt MediaPlayerPropertiesChanged) MethodName() string {
+// ProtoName interface
+func (evt MediaPlayerPropertiesChanged) ProtoName() string {
 	return "Media.playerPropertiesChanged"
 }
 
@@ -16229,8 +16233,8 @@ type MediaPlayerEventsAdded struct {
 	Events []*MediaPlayerEvent `json:"events"`
 }
 
-// MethodName interface
-func (evt MediaPlayerEventsAdded) MethodName() string {
+// ProtoName interface
+func (evt MediaPlayerEventsAdded) ProtoName() string {
 	return "Media.playerEventsAdded"
 }
 
@@ -16244,8 +16248,8 @@ type MediaPlayerMessagesLogged struct {
 	Messages []*MediaPlayerMessage `json:"messages"`
 }
 
-// MethodName interface
-func (evt MediaPlayerMessagesLogged) MethodName() string {
+// ProtoName interface
+func (evt MediaPlayerMessagesLogged) ProtoName() string {
 	return "Media.playerMessagesLogged"
 }
 
@@ -16259,8 +16263,8 @@ type MediaPlayerErrorsRaised struct {
 	Errors []*MediaPlayerError `json:"errors"`
 }
 
-// MethodName interface
-func (evt MediaPlayerErrorsRaised) MethodName() string {
+// ProtoName interface
+func (evt MediaPlayerErrorsRaised) ProtoName() string {
 	return "Media.playerErrorsRaised"
 }
 
@@ -16273,8 +16277,8 @@ type MediaPlayersCreated struct {
 	Players []MediaPlayerID `json:"players"`
 }
 
-// MethodName interface
-func (evt MediaPlayersCreated) MethodName() string {
+// ProtoName interface
+func (evt MediaPlayersCreated) ProtoName() string {
 	return "Media.playersCreated"
 }
 
@@ -16352,34 +16356,34 @@ type ConsoleConsoleMessage struct {
 	URL string `json:"url,omitempty"`
 
 	// Line (optional) Line number in the resource that generated this message (1-based).
-	Line int64 `json:"line,omitempty"`
+	Line int `json:"line,omitempty"`
 
 	// Column (optional) Column number in the resource that generated this message (1-based).
-	Column int64 `json:"column,omitempty"`
+	Column int `json:"column,omitempty"`
 }
 
 // ConsoleClearMessages Does nothing.
 type ConsoleClearMessages struct {
 }
 
-// MethodName of the command
-func (m ConsoleClearMessages) MethodName() string { return "Console.clearMessages" }
+// ProtoName of the command
+func (m ConsoleClearMessages) ProtoName() string { return "Console.clearMessages" }
 
 // Call of the command, sessionID is optional.
-func (m ConsoleClearMessages) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ConsoleClearMessages) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ConsoleDisable Disables console domain, prevents further console messages from being reported to the client.
 type ConsoleDisable struct {
 }
 
-// MethodName of the command
-func (m ConsoleDisable) MethodName() string { return "Console.disable" }
+// ProtoName of the command
+func (m ConsoleDisable) ProtoName() string { return "Console.disable" }
 
 // Call of the command, sessionID is optional.
-func (m ConsoleDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ConsoleDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ConsoleEnable Enables console domain, sends the messages collected so far to the client by means of the
@@ -16387,12 +16391,12 @@ func (m ConsoleDisable) Call(caller Caller) error {
 type ConsoleEnable struct {
 }
 
-// MethodName of the command
-func (m ConsoleEnable) MethodName() string { return "Console.enable" }
+// ProtoName of the command
+func (m ConsoleEnable) ProtoName() string { return "Console.enable" }
 
 // Call of the command, sessionID is optional.
-func (m ConsoleEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ConsoleEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ConsoleMessageAdded Issued when new console message is added.
@@ -16402,8 +16406,8 @@ type ConsoleMessageAdded struct {
 	Message *ConsoleConsoleMessage `json:"message"`
 }
 
-// MethodName interface
-func (evt ConsoleMessageAdded) MethodName() string {
+// ProtoName interface
+func (evt ConsoleMessageAdded) ProtoName() string {
 	return "Console.messageAdded"
 }
 
@@ -16420,20 +16424,20 @@ type DebuggerLocation struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
 	// LineNumber Line number in the script (0-based).
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber (optional) Column number in the script (0-based).
-	ColumnNumber int64 `json:"columnNumber,omitempty"`
+	ColumnNumber int `json:"columnNumber,omitempty"`
 }
 
 // DebuggerScriptPosition (experimental) Location in the source code.
 type DebuggerScriptPosition struct {
 
 	// LineNumber ...
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber ...
-	ColumnNumber int64 `json:"columnNumber"`
+	ColumnNumber int `json:"columnNumber"`
 }
 
 // DebuggerCallFrame JavaScript call frame. Array of call frames form the call stack.
@@ -16551,10 +16555,10 @@ type DebuggerBreakLocation struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
 	// LineNumber Line number in the script (0-based).
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber (optional) Column number in the script (0-based).
-	ColumnNumber int64 `json:"columnNumber,omitempty"`
+	ColumnNumber int `json:"columnNumber,omitempty"`
 
 	// Type (optional) ...
 	Type DebuggerBreakLocationType `json:"type,omitempty"`
@@ -16619,24 +16623,24 @@ type DebuggerContinueToLocation struct {
 	TargetCallFrames DebuggerContinueToLocationTargetCallFrames `json:"targetCallFrames,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerContinueToLocation) MethodName() string { return "Debugger.continueToLocation" }
+// ProtoName of the command
+func (m DebuggerContinueToLocation) ProtoName() string { return "Debugger.continueToLocation" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerContinueToLocation) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerContinueToLocation) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerDisable Disables debugger for given page.
 type DebuggerDisable struct {
 }
 
-// MethodName of the command
-func (m DebuggerDisable) MethodName() string { return "Debugger.disable" }
+// ProtoName of the command
+func (m DebuggerDisable) ProtoName() string { return "Debugger.disable" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerEnable Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -16648,13 +16652,13 @@ type DebuggerEnable struct {
 	MaxScriptsCacheSize float64 `json:"maxScriptsCacheSize,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerEnable) MethodName() string { return "Debugger.enable" }
+// ProtoName of the command
+func (m DebuggerEnable) ProtoName() string { return "Debugger.enable" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerEnable) Call(caller Caller) (*DebuggerEnableResult, error) {
+func (m DebuggerEnable) Call(c Client) (*DebuggerEnableResult, error) {
 	var res DebuggerEnableResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerEnableResult Enables debugger for the given page. Clients should not assume that the debugging has been
@@ -16699,13 +16703,13 @@ type DebuggerEvaluateOnCallFrame struct {
 	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerEvaluateOnCallFrame) MethodName() string { return "Debugger.evaluateOnCallFrame" }
+// ProtoName of the command
+func (m DebuggerEvaluateOnCallFrame) ProtoName() string { return "Debugger.evaluateOnCallFrame" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerEvaluateOnCallFrame) Call(caller Caller) (*DebuggerEvaluateOnCallFrameResult, error) {
+func (m DebuggerEvaluateOnCallFrame) Call(c Client) (*DebuggerEvaluateOnCallFrameResult, error) {
 	var res DebuggerEvaluateOnCallFrameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerEvaluateOnCallFrameResult Evaluates expression on a given call frame.
@@ -16731,13 +16735,13 @@ type DebuggerExecuteWasmEvaluator struct {
 	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerExecuteWasmEvaluator) MethodName() string { return "Debugger.executeWasmEvaluator" }
+// ProtoName of the command
+func (m DebuggerExecuteWasmEvaluator) ProtoName() string { return "Debugger.executeWasmEvaluator" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerExecuteWasmEvaluator) Call(caller Caller) (*DebuggerExecuteWasmEvaluatorResult, error) {
+func (m DebuggerExecuteWasmEvaluator) Call(c Client) (*DebuggerExecuteWasmEvaluatorResult, error) {
 	var res DebuggerExecuteWasmEvaluatorResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerExecuteWasmEvaluatorResult (experimental) Execute a Wasm Evaluator module on a given call frame.
@@ -16765,13 +16769,13 @@ type DebuggerGetPossibleBreakpoints struct {
 	RestrictToFunction bool `json:"restrictToFunction,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerGetPossibleBreakpoints) MethodName() string { return "Debugger.getPossibleBreakpoints" }
+// ProtoName of the command
+func (m DebuggerGetPossibleBreakpoints) ProtoName() string { return "Debugger.getPossibleBreakpoints" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerGetPossibleBreakpoints) Call(caller Caller) (*DebuggerGetPossibleBreakpointsResult, error) {
+func (m DebuggerGetPossibleBreakpoints) Call(c Client) (*DebuggerGetPossibleBreakpointsResult, error) {
 	var res DebuggerGetPossibleBreakpointsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerGetPossibleBreakpointsResult Returns possible locations for breakpoint. scriptId in start and end range locations should be
@@ -16789,13 +16793,13 @@ type DebuggerGetScriptSource struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
-// MethodName of the command
-func (m DebuggerGetScriptSource) MethodName() string { return "Debugger.getScriptSource" }
+// ProtoName of the command
+func (m DebuggerGetScriptSource) ProtoName() string { return "Debugger.getScriptSource" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerGetScriptSource) Call(caller Caller) (*DebuggerGetScriptSourceResult, error) {
+func (m DebuggerGetScriptSource) Call(c Client) (*DebuggerGetScriptSourceResult, error) {
 	var res DebuggerGetScriptSourceResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerGetScriptSourceResult Returns source for the script with given id.
@@ -16815,13 +16819,13 @@ type DebuggerGetWasmBytecode struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
-// MethodName of the command
-func (m DebuggerGetWasmBytecode) MethodName() string { return "Debugger.getWasmBytecode" }
+// ProtoName of the command
+func (m DebuggerGetWasmBytecode) ProtoName() string { return "Debugger.getWasmBytecode" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerGetWasmBytecode) Call(caller Caller) (*DebuggerGetWasmBytecodeResult, error) {
+func (m DebuggerGetWasmBytecode) Call(c Client) (*DebuggerGetWasmBytecodeResult, error) {
 	var res DebuggerGetWasmBytecodeResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerGetWasmBytecodeResult (deprecated) This command is deprecated. Use getScriptSource instead.
@@ -16838,13 +16842,13 @@ type DebuggerGetStackTrace struct {
 	StackTraceID *RuntimeStackTraceID `json:"stackTraceId"`
 }
 
-// MethodName of the command
-func (m DebuggerGetStackTrace) MethodName() string { return "Debugger.getStackTrace" }
+// ProtoName of the command
+func (m DebuggerGetStackTrace) ProtoName() string { return "Debugger.getStackTrace" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerGetStackTrace) Call(caller Caller) (*DebuggerGetStackTraceResult, error) {
+func (m DebuggerGetStackTrace) Call(c Client) (*DebuggerGetStackTraceResult, error) {
 	var res DebuggerGetStackTraceResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerGetStackTraceResult (experimental) Returns stack trace with given `stackTraceId`.
@@ -16858,12 +16862,12 @@ type DebuggerGetStackTraceResult struct {
 type DebuggerPause struct {
 }
 
-// MethodName of the command
-func (m DebuggerPause) MethodName() string { return "Debugger.pause" }
+// ProtoName of the command
+func (m DebuggerPause) ProtoName() string { return "Debugger.pause" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerPause) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerPause) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerPauseOnAsyncCall (deprecated) (experimental) ...
@@ -16873,12 +16877,12 @@ type DebuggerPauseOnAsyncCall struct {
 	ParentStackTraceID *RuntimeStackTraceID `json:"parentStackTraceId"`
 }
 
-// MethodName of the command
-func (m DebuggerPauseOnAsyncCall) MethodName() string { return "Debugger.pauseOnAsyncCall" }
+// ProtoName of the command
+func (m DebuggerPauseOnAsyncCall) ProtoName() string { return "Debugger.pauseOnAsyncCall" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerPauseOnAsyncCall) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerPauseOnAsyncCall) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerRemoveBreakpoint Removes JavaScript breakpoint.
@@ -16888,12 +16892,12 @@ type DebuggerRemoveBreakpoint struct {
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
 
-// MethodName of the command
-func (m DebuggerRemoveBreakpoint) MethodName() string { return "Debugger.removeBreakpoint" }
+// ProtoName of the command
+func (m DebuggerRemoveBreakpoint) ProtoName() string { return "Debugger.removeBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerRemoveBreakpoint) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerRemoveBreakpoint) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerRestartFrame Restarts particular call frame from the beginning.
@@ -16903,13 +16907,13 @@ type DebuggerRestartFrame struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
-// MethodName of the command
-func (m DebuggerRestartFrame) MethodName() string { return "Debugger.restartFrame" }
+// ProtoName of the command
+func (m DebuggerRestartFrame) ProtoName() string { return "Debugger.restartFrame" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerRestartFrame) Call(caller Caller) (*DebuggerRestartFrameResult, error) {
+func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error) {
 	var res DebuggerRestartFrameResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerRestartFrameResult Restarts particular call frame from the beginning.
@@ -16936,12 +16940,12 @@ type DebuggerResume struct {
 	TerminateOnResume bool `json:"terminateOnResume,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerResume) MethodName() string { return "Debugger.resume" }
+// ProtoName of the command
+func (m DebuggerResume) ProtoName() string { return "Debugger.resume" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerResume) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerResume) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSearchInContent Searches for given string in script content.
@@ -16960,13 +16964,13 @@ type DebuggerSearchInContent struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerSearchInContent) MethodName() string { return "Debugger.searchInContent" }
+// ProtoName of the command
+func (m DebuggerSearchInContent) ProtoName() string { return "Debugger.searchInContent" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSearchInContent) Call(caller Caller) (*DebuggerSearchInContentResult, error) {
+func (m DebuggerSearchInContent) Call(c Client) (*DebuggerSearchInContentResult, error) {
 	var res DebuggerSearchInContentResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSearchInContentResult Searches for given string in script content.
@@ -16981,15 +16985,15 @@ type DebuggerSetAsyncCallStackDepth struct {
 
 	// MaxDepth Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
 	// call stacks (default).
-	MaxDepth int64 `json:"maxDepth"`
+	MaxDepth int `json:"maxDepth"`
 }
 
-// MethodName of the command
-func (m DebuggerSetAsyncCallStackDepth) MethodName() string { return "Debugger.setAsyncCallStackDepth" }
+// ProtoName of the command
+func (m DebuggerSetAsyncCallStackDepth) ProtoName() string { return "Debugger.setAsyncCallStackDepth" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetAsyncCallStackDepth) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetAsyncCallStackDepth) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetBlackboxPatterns (experimental) Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
@@ -17001,12 +17005,12 @@ type DebuggerSetBlackboxPatterns struct {
 	Patterns []string `json:"patterns"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBlackboxPatterns) MethodName() string { return "Debugger.setBlackboxPatterns" }
+// ProtoName of the command
+func (m DebuggerSetBlackboxPatterns) ProtoName() string { return "Debugger.setBlackboxPatterns" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBlackboxPatterns) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetBlackboxPatterns) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetBlackboxedRanges (experimental) Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
@@ -17022,12 +17026,12 @@ type DebuggerSetBlackboxedRanges struct {
 	Positions []*DebuggerScriptPosition `json:"positions"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBlackboxedRanges) MethodName() string { return "Debugger.setBlackboxedRanges" }
+// ProtoName of the command
+func (m DebuggerSetBlackboxedRanges) ProtoName() string { return "Debugger.setBlackboxedRanges" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBlackboxedRanges) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetBlackboxedRanges) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetBreakpoint Sets JavaScript breakpoint at a given location.
@@ -17041,13 +17045,13 @@ type DebuggerSetBreakpoint struct {
 	Condition string `json:"condition,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBreakpoint) MethodName() string { return "Debugger.setBreakpoint" }
+// ProtoName of the command
+func (m DebuggerSetBreakpoint) ProtoName() string { return "Debugger.setBreakpoint" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBreakpoint) Call(caller Caller) (*DebuggerSetBreakpointResult, error) {
+func (m DebuggerSetBreakpoint) Call(c Client) (*DebuggerSetBreakpointResult, error) {
 	var res DebuggerSetBreakpointResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSetBreakpointResult Sets JavaScript breakpoint at a given location.
@@ -17078,15 +17082,15 @@ type DebuggerSetInstrumentationBreakpoint struct {
 	Instrumentation DebuggerSetInstrumentationBreakpointInstrumentation `json:"instrumentation"`
 }
 
-// MethodName of the command
-func (m DebuggerSetInstrumentationBreakpoint) MethodName() string {
+// ProtoName of the command
+func (m DebuggerSetInstrumentationBreakpoint) ProtoName() string {
 	return "Debugger.setInstrumentationBreakpoint"
 }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetInstrumentationBreakpoint) Call(caller Caller) (*DebuggerSetInstrumentationBreakpointResult, error) {
+func (m DebuggerSetInstrumentationBreakpoint) Call(c Client) (*DebuggerSetInstrumentationBreakpointResult, error) {
 	var res DebuggerSetInstrumentationBreakpointResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSetInstrumentationBreakpointResult Sets instrumentation breakpoint.
@@ -17103,7 +17107,7 @@ type DebuggerSetInstrumentationBreakpointResult struct {
 type DebuggerSetBreakpointByURL struct {
 
 	// LineNumber Line number to set breakpoint at.
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// URL (optional) URL of the resources to set breakpoint on.
 	URL string `json:"url,omitempty"`
@@ -17116,20 +17120,20 @@ type DebuggerSetBreakpointByURL struct {
 	ScriptHash string `json:"scriptHash,omitempty"`
 
 	// ColumnNumber (optional) Offset in the line to set breakpoint at.
-	ColumnNumber int64 `json:"columnNumber,omitempty"`
+	ColumnNumber int `json:"columnNumber,omitempty"`
 
 	// Condition (optional) Expression to use as a breakpoint condition. When specified, debugger will only stop on the
 	// breakpoint if this expression evaluates to true.
 	Condition string `json:"condition,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBreakpointByURL) MethodName() string { return "Debugger.setBreakpointByUrl" }
+// ProtoName of the command
+func (m DebuggerSetBreakpointByURL) ProtoName() string { return "Debugger.setBreakpointByUrl" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBreakpointByURL) Call(caller Caller) (*DebuggerSetBreakpointByURLResult, error) {
+func (m DebuggerSetBreakpointByURL) Call(c Client) (*DebuggerSetBreakpointByURLResult, error) {
 	var res DebuggerSetBreakpointByURLResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSetBreakpointByURLResult Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
@@ -17158,15 +17162,15 @@ type DebuggerSetBreakpointOnFunctionCall struct {
 	Condition string `json:"condition,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBreakpointOnFunctionCall) MethodName() string {
+// ProtoName of the command
+func (m DebuggerSetBreakpointOnFunctionCall) ProtoName() string {
 	return "Debugger.setBreakpointOnFunctionCall"
 }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBreakpointOnFunctionCall) Call(caller Caller) (*DebuggerSetBreakpointOnFunctionCallResult, error) {
+func (m DebuggerSetBreakpointOnFunctionCall) Call(c Client) (*DebuggerSetBreakpointOnFunctionCallResult, error) {
 	var res DebuggerSetBreakpointOnFunctionCallResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSetBreakpointOnFunctionCallResult (experimental) Sets JavaScript breakpoint before each call to the given function.
@@ -17185,12 +17189,12 @@ type DebuggerSetBreakpointsActive struct {
 	Active bool `json:"active"`
 }
 
-// MethodName of the command
-func (m DebuggerSetBreakpointsActive) MethodName() string { return "Debugger.setBreakpointsActive" }
+// ProtoName of the command
+func (m DebuggerSetBreakpointsActive) ProtoName() string { return "Debugger.setBreakpointsActive" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetBreakpointsActive) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetBreakpointsActive) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetPauseOnExceptionsState enum
@@ -17215,12 +17219,12 @@ type DebuggerSetPauseOnExceptions struct {
 	State DebuggerSetPauseOnExceptionsState `json:"state"`
 }
 
-// MethodName of the command
-func (m DebuggerSetPauseOnExceptions) MethodName() string { return "Debugger.setPauseOnExceptions" }
+// ProtoName of the command
+func (m DebuggerSetPauseOnExceptions) ProtoName() string { return "Debugger.setPauseOnExceptions" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetPauseOnExceptions) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetPauseOnExceptions) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetReturnValue (experimental) Changes return value in top frame. Available only at return break position.
@@ -17230,12 +17234,12 @@ type DebuggerSetReturnValue struct {
 	NewValue *RuntimeCallArgument `json:"newValue"`
 }
 
-// MethodName of the command
-func (m DebuggerSetReturnValue) MethodName() string { return "Debugger.setReturnValue" }
+// ProtoName of the command
+func (m DebuggerSetReturnValue) ProtoName() string { return "Debugger.setReturnValue" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetReturnValue) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetReturnValue) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetScriptSource Edits JavaScript source live.
@@ -17252,13 +17256,13 @@ type DebuggerSetScriptSource struct {
 	DryRun bool `json:"dryRun,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerSetScriptSource) MethodName() string { return "Debugger.setScriptSource" }
+// ProtoName of the command
+func (m DebuggerSetScriptSource) ProtoName() string { return "Debugger.setScriptSource" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetScriptSource) Call(caller Caller) (*DebuggerSetScriptSourceResult, error) {
+func (m DebuggerSetScriptSource) Call(c Client) (*DebuggerSetScriptSourceResult, error) {
 	var res DebuggerSetScriptSourceResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // DebuggerSetScriptSourceResult Edits JavaScript source live.
@@ -17287,12 +17291,12 @@ type DebuggerSetSkipAllPauses struct {
 	Skip bool `json:"skip"`
 }
 
-// MethodName of the command
-func (m DebuggerSetSkipAllPauses) MethodName() string { return "Debugger.setSkipAllPauses" }
+// ProtoName of the command
+func (m DebuggerSetSkipAllPauses) ProtoName() string { return "Debugger.setSkipAllPauses" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetSkipAllPauses) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetSkipAllPauses) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerSetVariableValue Changes value of variable in a callframe. Object-based scopes are not supported and must be
@@ -17301,7 +17305,7 @@ type DebuggerSetVariableValue struct {
 
 	// ScopeNumber 0-based number of scope as was listed in scope chain. Only 'local', 'closure' and 'catch'
 	// scope types are allowed. Other scopes could be manipulated manually.
-	ScopeNumber int64 `json:"scopeNumber"`
+	ScopeNumber int `json:"scopeNumber"`
 
 	// VariableName Variable name.
 	VariableName string `json:"variableName"`
@@ -17313,12 +17317,12 @@ type DebuggerSetVariableValue struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
-// MethodName of the command
-func (m DebuggerSetVariableValue) MethodName() string { return "Debugger.setVariableValue" }
+// ProtoName of the command
+func (m DebuggerSetVariableValue) ProtoName() string { return "Debugger.setVariableValue" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerSetVariableValue) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerSetVariableValue) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerStepInto Steps into the function call.
@@ -17329,36 +17333,36 @@ type DebuggerStepInto struct {
 	BreakOnAsyncCall bool `json:"breakOnAsyncCall,omitempty"`
 }
 
-// MethodName of the command
-func (m DebuggerStepInto) MethodName() string { return "Debugger.stepInto" }
+// ProtoName of the command
+func (m DebuggerStepInto) ProtoName() string { return "Debugger.stepInto" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerStepInto) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerStepInto) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerStepOut Steps out of the function call.
 type DebuggerStepOut struct {
 }
 
-// MethodName of the command
-func (m DebuggerStepOut) MethodName() string { return "Debugger.stepOut" }
+// ProtoName of the command
+func (m DebuggerStepOut) ProtoName() string { return "Debugger.stepOut" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerStepOut) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerStepOut) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerStepOver Steps over the statement.
 type DebuggerStepOver struct {
 }
 
-// MethodName of the command
-func (m DebuggerStepOver) MethodName() string { return "Debugger.stepOver" }
+// ProtoName of the command
+func (m DebuggerStepOver) ProtoName() string { return "Debugger.stepOver" }
 
 // Call of the command, sessionID is optional.
-func (m DebuggerStepOver) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m DebuggerStepOver) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // DebuggerBreakpointResolved Fired when breakpoint is resolved to an actual script and location.
@@ -17371,8 +17375,8 @@ type DebuggerBreakpointResolved struct {
 	Location *DebuggerLocation `json:"location"`
 }
 
-// MethodName interface
-func (evt DebuggerBreakpointResolved) MethodName() string {
+// ProtoName interface
+func (evt DebuggerBreakpointResolved) ProtoName() string {
 	return "Debugger.breakpointResolved"
 }
 
@@ -17424,7 +17428,7 @@ type DebuggerPaused struct {
 	Reason DebuggerPausedReason `json:"reason"`
 
 	// Data (optional) Object containing break-specific auxiliary properties.
-	Data map[string]JSON `json:"data,omitempty"`
+	Data map[string]gson.JSON `json:"data,omitempty"`
 
 	// HitBreakpoints (optional) Hit breakpoints IDs
 	HitBreakpoints []string `json:"hitBreakpoints,omitempty"`
@@ -17439,8 +17443,8 @@ type DebuggerPaused struct {
 	AsyncCallStackTraceID *RuntimeStackTraceID `json:"asyncCallStackTraceId,omitempty"`
 }
 
-// MethodName interface
-func (evt DebuggerPaused) MethodName() string {
+// ProtoName interface
+func (evt DebuggerPaused) ProtoName() string {
 	return "Debugger.paused"
 }
 
@@ -17448,8 +17452,8 @@ func (evt DebuggerPaused) MethodName() string {
 type DebuggerResumed struct {
 }
 
-// MethodName interface
-func (evt DebuggerResumed) MethodName() string {
+// ProtoName interface
+func (evt DebuggerResumed) ProtoName() string {
 	return "Debugger.resumed"
 }
 
@@ -17463,16 +17467,16 @@ type DebuggerScriptFailedToParse struct {
 	URL string `json:"url"`
 
 	// StartLine Line offset of the script within the resource with given URL (for script tags).
-	StartLine int64 `json:"startLine"`
+	StartLine int `json:"startLine"`
 
 	// StartColumn Column offset of the script within the resource with given URL.
-	StartColumn int64 `json:"startColumn"`
+	StartColumn int `json:"startColumn"`
 
 	// EndLine Last line of the script.
-	EndLine int64 `json:"endLine"`
+	EndLine int `json:"endLine"`
 
 	// EndColumn Length of the last line of the script.
-	EndColumn int64 `json:"endColumn"`
+	EndColumn int `json:"endColumn"`
 
 	// ExecutionContextID Specifies script creation context.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
@@ -17481,7 +17485,7 @@ type DebuggerScriptFailedToParse struct {
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
-	ExecutionContextAuxData map[string]JSON `json:"executionContextAuxData,omitempty"`
+	ExecutionContextAuxData map[string]gson.JSON `json:"executionContextAuxData,omitempty"`
 
 	// SourceMapURL (optional) URL of source map associated with script (if any).
 	SourceMapURL string `json:"sourceMapURL,omitempty"`
@@ -17493,20 +17497,20 @@ type DebuggerScriptFailedToParse struct {
 	IsModule bool `json:"isModule,omitempty"`
 
 	// Length (optional) This script length.
-	Length int64 `json:"length,omitempty"`
+	Length int `json:"length,omitempty"`
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
 
 	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
-	CodeOffset int64 `json:"codeOffset,omitempty"`
+	CodeOffset int `json:"codeOffset,omitempty"`
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
 }
 
-// MethodName interface
-func (evt DebuggerScriptFailedToParse) MethodName() string {
+// ProtoName interface
+func (evt DebuggerScriptFailedToParse) ProtoName() string {
 	return "Debugger.scriptFailedToParse"
 }
 
@@ -17521,16 +17525,16 @@ type DebuggerScriptParsed struct {
 	URL string `json:"url"`
 
 	// StartLine Line offset of the script within the resource with given URL (for script tags).
-	StartLine int64 `json:"startLine"`
+	StartLine int `json:"startLine"`
 
 	// StartColumn Column offset of the script within the resource with given URL.
-	StartColumn int64 `json:"startColumn"`
+	StartColumn int `json:"startColumn"`
 
 	// EndLine Last line of the script.
-	EndLine int64 `json:"endLine"`
+	EndLine int `json:"endLine"`
 
 	// EndColumn Length of the last line of the script.
-	EndColumn int64 `json:"endColumn"`
+	EndColumn int `json:"endColumn"`
 
 	// ExecutionContextID Specifies script creation context.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
@@ -17539,7 +17543,7 @@ type DebuggerScriptParsed struct {
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
-	ExecutionContextAuxData map[string]JSON `json:"executionContextAuxData,omitempty"`
+	ExecutionContextAuxData map[string]gson.JSON `json:"executionContextAuxData,omitempty"`
 
 	// IsLiveEdit (experimental) (optional) True, if this script is generated as a result of the live edit operation.
 	IsLiveEdit bool `json:"isLiveEdit,omitempty"`
@@ -17554,13 +17558,13 @@ type DebuggerScriptParsed struct {
 	IsModule bool `json:"isModule,omitempty"`
 
 	// Length (optional) This script length.
-	Length int64 `json:"length,omitempty"`
+	Length int `json:"length,omitempty"`
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
 
 	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
-	CodeOffset int64 `json:"codeOffset,omitempty"`
+	CodeOffset int `json:"codeOffset,omitempty"`
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
@@ -17569,8 +17573,8 @@ type DebuggerScriptParsed struct {
 	DebugSymbols *DebuggerDebugSymbols `json:"debugSymbols,omitempty"`
 }
 
-// MethodName interface
-func (evt DebuggerScriptParsed) MethodName() string {
+// ProtoName interface
+func (evt DebuggerScriptParsed) ProtoName() string {
 	return "Debugger.scriptParsed"
 }
 
@@ -17587,7 +17591,7 @@ type HeapProfilerSamplingHeapProfileNode struct {
 	SelfSize float64 `json:"selfSize"`
 
 	// ID Node id. Ids are unique across all profiles collected between startSampling and stopSampling.
-	ID int64 `json:"id"`
+	ID int `json:"id"`
 
 	// Children Child nodes.
 	Children []*HeapProfilerSamplingHeapProfileNode `json:"children"`
@@ -17600,7 +17604,7 @@ type HeapProfilerSamplingHeapProfileSample struct {
 	Size float64 `json:"size"`
 
 	// NodeID Id of the corresponding profile tree node.
-	NodeID int64 `json:"nodeId"`
+	NodeID int `json:"nodeId"`
 
 	// Ordinal Time-ordered sample ordinal number. It is unique across all profiles retrieved
 	// between startSampling and stopSampling.
@@ -17625,50 +17629,50 @@ type HeapProfilerAddInspectedHeapObject struct {
 	HeapObjectID HeapProfilerHeapSnapshotObjectID `json:"heapObjectId"`
 }
 
-// MethodName of the command
-func (m HeapProfilerAddInspectedHeapObject) MethodName() string {
+// ProtoName of the command
+func (m HeapProfilerAddInspectedHeapObject) ProtoName() string {
 	return "HeapProfiler.addInspectedHeapObject"
 }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerAddInspectedHeapObject) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerAddInspectedHeapObject) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerCollectGarbage ...
 type HeapProfilerCollectGarbage struct {
 }
 
-// MethodName of the command
-func (m HeapProfilerCollectGarbage) MethodName() string { return "HeapProfiler.collectGarbage" }
+// ProtoName of the command
+func (m HeapProfilerCollectGarbage) ProtoName() string { return "HeapProfiler.collectGarbage" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerCollectGarbage) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerCollectGarbage) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerDisable ...
 type HeapProfilerDisable struct {
 }
 
-// MethodName of the command
-func (m HeapProfilerDisable) MethodName() string { return "HeapProfiler.disable" }
+// ProtoName of the command
+func (m HeapProfilerDisable) ProtoName() string { return "HeapProfiler.disable" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerEnable ...
 type HeapProfilerEnable struct {
 }
 
-// MethodName of the command
-func (m HeapProfilerEnable) MethodName() string { return "HeapProfiler.enable" }
+// ProtoName of the command
+func (m HeapProfilerEnable) ProtoName() string { return "HeapProfiler.enable" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerGetHeapObjectID ...
@@ -17678,13 +17682,13 @@ type HeapProfilerGetHeapObjectID struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// MethodName of the command
-func (m HeapProfilerGetHeapObjectID) MethodName() string { return "HeapProfiler.getHeapObjectId" }
+// ProtoName of the command
+func (m HeapProfilerGetHeapObjectID) ProtoName() string { return "HeapProfiler.getHeapObjectId" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerGetHeapObjectID) Call(caller Caller) (*HeapProfilerGetHeapObjectIDResult, error) {
+func (m HeapProfilerGetHeapObjectID) Call(c Client) (*HeapProfilerGetHeapObjectIDResult, error) {
 	var res HeapProfilerGetHeapObjectIDResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // HeapProfilerGetHeapObjectIDResult ...
@@ -17704,15 +17708,15 @@ type HeapProfilerGetObjectByHeapObjectID struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// MethodName of the command
-func (m HeapProfilerGetObjectByHeapObjectID) MethodName() string {
+// ProtoName of the command
+func (m HeapProfilerGetObjectByHeapObjectID) ProtoName() string {
 	return "HeapProfiler.getObjectByHeapObjectId"
 }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerGetObjectByHeapObjectID) Call(caller Caller) (*HeapProfilerGetObjectByHeapObjectIDResult, error) {
+func (m HeapProfilerGetObjectByHeapObjectID) Call(c Client) (*HeapProfilerGetObjectByHeapObjectIDResult, error) {
 	var res HeapProfilerGetObjectByHeapObjectIDResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // HeapProfilerGetObjectByHeapObjectIDResult ...
@@ -17726,13 +17730,13 @@ type HeapProfilerGetObjectByHeapObjectIDResult struct {
 type HeapProfilerGetSamplingProfile struct {
 }
 
-// MethodName of the command
-func (m HeapProfilerGetSamplingProfile) MethodName() string { return "HeapProfiler.getSamplingProfile" }
+// ProtoName of the command
+func (m HeapProfilerGetSamplingProfile) ProtoName() string { return "HeapProfiler.getSamplingProfile" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerGetSamplingProfile) Call(caller Caller) (*HeapProfilerGetSamplingProfileResult, error) {
+func (m HeapProfilerGetSamplingProfile) Call(c Client) (*HeapProfilerGetSamplingProfileResult, error) {
 	var res HeapProfilerGetSamplingProfileResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // HeapProfilerGetSamplingProfileResult ...
@@ -17750,12 +17754,12 @@ type HeapProfilerStartSampling struct {
 	SamplingInterval float64 `json:"samplingInterval,omitempty"`
 }
 
-// MethodName of the command
-func (m HeapProfilerStartSampling) MethodName() string { return "HeapProfiler.startSampling" }
+// ProtoName of the command
+func (m HeapProfilerStartSampling) ProtoName() string { return "HeapProfiler.startSampling" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerStartSampling) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerStartSampling) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerStartTrackingHeapObjects ...
@@ -17765,27 +17769,27 @@ type HeapProfilerStartTrackingHeapObjects struct {
 	TrackAllocations bool `json:"trackAllocations,omitempty"`
 }
 
-// MethodName of the command
-func (m HeapProfilerStartTrackingHeapObjects) MethodName() string {
+// ProtoName of the command
+func (m HeapProfilerStartTrackingHeapObjects) ProtoName() string {
 	return "HeapProfiler.startTrackingHeapObjects"
 }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerStartTrackingHeapObjects) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerStartTrackingHeapObjects) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerStopSampling ...
 type HeapProfilerStopSampling struct {
 }
 
-// MethodName of the command
-func (m HeapProfilerStopSampling) MethodName() string { return "HeapProfiler.stopSampling" }
+// ProtoName of the command
+func (m HeapProfilerStopSampling) ProtoName() string { return "HeapProfiler.stopSampling" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerStopSampling) Call(caller Caller) (*HeapProfilerStopSamplingResult, error) {
+func (m HeapProfilerStopSampling) Call(c Client) (*HeapProfilerStopSamplingResult, error) {
 	var res HeapProfilerStopSamplingResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // HeapProfilerStopSamplingResult ...
@@ -17806,14 +17810,14 @@ type HeapProfilerStopTrackingHeapObjects struct {
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 }
 
-// MethodName of the command
-func (m HeapProfilerStopTrackingHeapObjects) MethodName() string {
+// ProtoName of the command
+func (m HeapProfilerStopTrackingHeapObjects) ProtoName() string {
 	return "HeapProfiler.stopTrackingHeapObjects"
 }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerStopTrackingHeapObjects) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerStopTrackingHeapObjects) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerTakeHeapSnapshot ...
@@ -17826,12 +17830,12 @@ type HeapProfilerTakeHeapSnapshot struct {
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 }
 
-// MethodName of the command
-func (m HeapProfilerTakeHeapSnapshot) MethodName() string { return "HeapProfiler.takeHeapSnapshot" }
+// ProtoName of the command
+func (m HeapProfilerTakeHeapSnapshot) ProtoName() string { return "HeapProfiler.takeHeapSnapshot" }
 
 // Call of the command, sessionID is optional.
-func (m HeapProfilerTakeHeapSnapshot) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m HeapProfilerTakeHeapSnapshot) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // HeapProfilerAddHeapSnapshotChunk ...
@@ -17841,8 +17845,8 @@ type HeapProfilerAddHeapSnapshotChunk struct {
 	Chunk string `json:"chunk"`
 }
 
-// MethodName interface
-func (evt HeapProfilerAddHeapSnapshotChunk) MethodName() string {
+// ProtoName interface
+func (evt HeapProfilerAddHeapSnapshotChunk) ProtoName() string {
 	return "HeapProfiler.addHeapSnapshotChunk"
 }
 
@@ -17852,11 +17856,11 @@ type HeapProfilerHeapStatsUpdate struct {
 	// StatsUpdate An array of triplets. Each triplet describes a fragment. The first integer is the fragment
 	// index, the second integer is a total count of objects for the fragment, the third integer is
 	// a total size of the objects for the fragment.
-	StatsUpdate []int64 `json:"statsUpdate"`
+	StatsUpdate []int `json:"statsUpdate"`
 }
 
-// MethodName interface
-func (evt HeapProfilerHeapStatsUpdate) MethodName() string {
+// ProtoName interface
+func (evt HeapProfilerHeapStatsUpdate) ProtoName() string {
 	return "HeapProfiler.heapStatsUpdate"
 }
 
@@ -17866,14 +17870,14 @@ func (evt HeapProfilerHeapStatsUpdate) MethodName() string {
 type HeapProfilerLastSeenObjectID struct {
 
 	// LastSeenObjectID ...
-	LastSeenObjectID int64 `json:"lastSeenObjectId"`
+	LastSeenObjectID int `json:"lastSeenObjectId"`
 
 	// Timestamp ...
 	Timestamp float64 `json:"timestamp"`
 }
 
-// MethodName interface
-func (evt HeapProfilerLastSeenObjectID) MethodName() string {
+// ProtoName interface
+func (evt HeapProfilerLastSeenObjectID) ProtoName() string {
 	return "HeapProfiler.lastSeenObjectId"
 }
 
@@ -17881,17 +17885,17 @@ func (evt HeapProfilerLastSeenObjectID) MethodName() string {
 type HeapProfilerReportHeapSnapshotProgress struct {
 
 	// Done ...
-	Done int64 `json:"done"`
+	Done int `json:"done"`
 
 	// Total ...
-	Total int64 `json:"total"`
+	Total int `json:"total"`
 
 	// Finished (optional) ...
 	Finished bool `json:"finished,omitempty"`
 }
 
-// MethodName interface
-func (evt HeapProfilerReportHeapSnapshotProgress) MethodName() string {
+// ProtoName interface
+func (evt HeapProfilerReportHeapSnapshotProgress) ProtoName() string {
 	return "HeapProfiler.reportHeapSnapshotProgress"
 }
 
@@ -17899,8 +17903,8 @@ func (evt HeapProfilerReportHeapSnapshotProgress) MethodName() string {
 type HeapProfilerResetProfiles struct {
 }
 
-// MethodName interface
-func (evt HeapProfilerResetProfiles) MethodName() string {
+// ProtoName interface
+func (evt HeapProfilerResetProfiles) ProtoName() string {
 	return "HeapProfiler.resetProfiles"
 }
 
@@ -17908,16 +17912,16 @@ func (evt HeapProfilerResetProfiles) MethodName() string {
 type ProfilerProfileNode struct {
 
 	// ID Unique id of the node.
-	ID int64 `json:"id"`
+	ID int `json:"id"`
 
 	// CallFrame Function location.
 	CallFrame *RuntimeCallFrame `json:"callFrame"`
 
 	// HitCount (optional) Number of samples where this node was on top of the call stack.
-	HitCount int64 `json:"hitCount,omitempty"`
+	HitCount int `json:"hitCount,omitempty"`
 
 	// Children (optional) Child node ids.
-	Children []int64 `json:"children,omitempty"`
+	Children []int `json:"children,omitempty"`
 
 	// DeoptReason (optional) The reason of being not optimized. The function may be deoptimized or marked as don't
 	// optimize.
@@ -17940,34 +17944,34 @@ type ProfilerProfile struct {
 	EndTime float64 `json:"endTime"`
 
 	// Samples (optional) Ids of samples top nodes.
-	Samples []int64 `json:"samples,omitempty"`
+	Samples []int `json:"samples,omitempty"`
 
 	// TimeDeltas (optional) Time intervals between adjacent samples in microseconds. The first delta is relative to the
 	// profile startTime.
-	TimeDeltas []int64 `json:"timeDeltas,omitempty"`
+	TimeDeltas []int `json:"timeDeltas,omitempty"`
 }
 
 // ProfilerPositionTickInfo Specifies a number of samples attributed to a certain source position.
 type ProfilerPositionTickInfo struct {
 
 	// Line Source line number (1-based).
-	Line int64 `json:"line"`
+	Line int `json:"line"`
 
 	// Ticks Number of samples attributed to the source line.
-	Ticks int64 `json:"ticks"`
+	Ticks int `json:"ticks"`
 }
 
 // ProfilerCoverageRange Coverage data for a source range.
 type ProfilerCoverageRange struct {
 
 	// StartOffset JavaScript script source offset for the range start.
-	StartOffset int64 `json:"startOffset"`
+	StartOffset int `json:"startOffset"`
 
 	// EndOffset JavaScript script source offset for the range end.
-	EndOffset int64 `json:"endOffset"`
+	EndOffset int `json:"endOffset"`
 
 	// Count Collected execution count of the source range.
-	Count int64 `json:"count"`
+	Count int `json:"count"`
 }
 
 // ProfilerFunctionCoverage Coverage data for a JavaScript function.
@@ -18007,7 +18011,7 @@ type ProfilerTypeObject struct {
 type ProfilerTypeProfileEntry struct {
 
 	// Offset Source offset of the parameter or end of function for return values.
-	Offset int64 `json:"offset"`
+	Offset int `json:"offset"`
 
 	// Types The types for this parameter or return value.
 	Types []*ProfilerTypeObject `json:"types"`
@@ -18033,31 +18037,31 @@ type ProfilerCounterInfo struct {
 	Name string `json:"name"`
 
 	// Value Counter value.
-	Value int64 `json:"value"`
+	Value int `json:"value"`
 }
 
 // ProfilerDisable ...
 type ProfilerDisable struct {
 }
 
-// MethodName of the command
-func (m ProfilerDisable) MethodName() string { return "Profiler.disable" }
+// ProtoName of the command
+func (m ProfilerDisable) ProtoName() string { return "Profiler.disable" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerEnable ...
 type ProfilerEnable struct {
 }
 
-// MethodName of the command
-func (m ProfilerEnable) MethodName() string { return "Profiler.enable" }
+// ProtoName of the command
+func (m ProfilerEnable) ProtoName() string { return "Profiler.enable" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerGetBestEffortCoverage Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -18065,13 +18069,13 @@ func (m ProfilerEnable) Call(caller Caller) error {
 type ProfilerGetBestEffortCoverage struct {
 }
 
-// MethodName of the command
-func (m ProfilerGetBestEffortCoverage) MethodName() string { return "Profiler.getBestEffortCoverage" }
+// ProtoName of the command
+func (m ProfilerGetBestEffortCoverage) ProtoName() string { return "Profiler.getBestEffortCoverage" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerGetBestEffortCoverage) Call(caller Caller) (*ProfilerGetBestEffortCoverageResult, error) {
+func (m ProfilerGetBestEffortCoverage) Call(c Client) (*ProfilerGetBestEffortCoverageResult, error) {
 	var res ProfilerGetBestEffortCoverageResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerGetBestEffortCoverageResult Collect coverage data for the current isolate. The coverage data may be incomplete due to
@@ -18086,27 +18090,27 @@ type ProfilerGetBestEffortCoverageResult struct {
 type ProfilerSetSamplingInterval struct {
 
 	// Interval New sampling interval in microseconds.
-	Interval int64 `json:"interval"`
+	Interval int `json:"interval"`
 }
 
-// MethodName of the command
-func (m ProfilerSetSamplingInterval) MethodName() string { return "Profiler.setSamplingInterval" }
+// ProtoName of the command
+func (m ProfilerSetSamplingInterval) ProtoName() string { return "Profiler.setSamplingInterval" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerSetSamplingInterval) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerSetSamplingInterval) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerStart ...
 type ProfilerStart struct {
 }
 
-// MethodName of the command
-func (m ProfilerStart) MethodName() string { return "Profiler.start" }
+// ProtoName of the command
+func (m ProfilerStart) ProtoName() string { return "Profiler.start" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStart) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerStart) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerStartPreciseCoverage Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -18124,13 +18128,13 @@ type ProfilerStartPreciseCoverage struct {
 	AllowTriggeredUpdates bool `json:"allowTriggeredUpdates,omitempty"`
 }
 
-// MethodName of the command
-func (m ProfilerStartPreciseCoverage) MethodName() string { return "Profiler.startPreciseCoverage" }
+// ProtoName of the command
+func (m ProfilerStartPreciseCoverage) ProtoName() string { return "Profiler.startPreciseCoverage" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStartPreciseCoverage) Call(caller Caller) (*ProfilerStartPreciseCoverageResult, error) {
+func (m ProfilerStartPreciseCoverage) Call(c Client) (*ProfilerStartPreciseCoverageResult, error) {
 	var res ProfilerStartPreciseCoverageResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerStartPreciseCoverageResult Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
@@ -18146,25 +18150,25 @@ type ProfilerStartPreciseCoverageResult struct {
 type ProfilerStartTypeProfile struct {
 }
 
-// MethodName of the command
-func (m ProfilerStartTypeProfile) MethodName() string { return "Profiler.startTypeProfile" }
+// ProtoName of the command
+func (m ProfilerStartTypeProfile) ProtoName() string { return "Profiler.startTypeProfile" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStartTypeProfile) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerStartTypeProfile) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerStop ...
 type ProfilerStop struct {
 }
 
-// MethodName of the command
-func (m ProfilerStop) MethodName() string { return "Profiler.stop" }
+// ProtoName of the command
+func (m ProfilerStop) ProtoName() string { return "Profiler.stop" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStop) Call(caller Caller) (*ProfilerStopResult, error) {
+func (m ProfilerStop) Call(c Client) (*ProfilerStopResult, error) {
 	var res ProfilerStopResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerStopResult ...
@@ -18179,24 +18183,24 @@ type ProfilerStopResult struct {
 type ProfilerStopPreciseCoverage struct {
 }
 
-// MethodName of the command
-func (m ProfilerStopPreciseCoverage) MethodName() string { return "Profiler.stopPreciseCoverage" }
+// ProtoName of the command
+func (m ProfilerStopPreciseCoverage) ProtoName() string { return "Profiler.stopPreciseCoverage" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStopPreciseCoverage) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerStopPreciseCoverage) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerStopTypeProfile (experimental) Disable type profile. Disabling releases type profile data collected so far.
 type ProfilerStopTypeProfile struct {
 }
 
-// MethodName of the command
-func (m ProfilerStopTypeProfile) MethodName() string { return "Profiler.stopTypeProfile" }
+// ProtoName of the command
+func (m ProfilerStopTypeProfile) ProtoName() string { return "Profiler.stopTypeProfile" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerStopTypeProfile) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerStopTypeProfile) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerTakePreciseCoverage Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -18204,13 +18208,13 @@ func (m ProfilerStopTypeProfile) Call(caller Caller) error {
 type ProfilerTakePreciseCoverage struct {
 }
 
-// MethodName of the command
-func (m ProfilerTakePreciseCoverage) MethodName() string { return "Profiler.takePreciseCoverage" }
+// ProtoName of the command
+func (m ProfilerTakePreciseCoverage) ProtoName() string { return "Profiler.takePreciseCoverage" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerTakePreciseCoverage) Call(caller Caller) (*ProfilerTakePreciseCoverageResult, error) {
+func (m ProfilerTakePreciseCoverage) Call(c Client) (*ProfilerTakePreciseCoverageResult, error) {
 	var res ProfilerTakePreciseCoverageResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerTakePreciseCoverageResult Collect coverage data for the current isolate, and resets execution counters. Precise code
@@ -18228,13 +18232,13 @@ type ProfilerTakePreciseCoverageResult struct {
 type ProfilerTakeTypeProfile struct {
 }
 
-// MethodName of the command
-func (m ProfilerTakeTypeProfile) MethodName() string { return "Profiler.takeTypeProfile" }
+// ProtoName of the command
+func (m ProfilerTakeTypeProfile) ProtoName() string { return "Profiler.takeTypeProfile" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerTakeTypeProfile) Call(caller Caller) (*ProfilerTakeTypeProfileResult, error) {
+func (m ProfilerTakeTypeProfile) Call(c Client) (*ProfilerTakeTypeProfileResult, error) {
 	var res ProfilerTakeTypeProfileResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerTakeTypeProfileResult (experimental) Collect type profile.
@@ -18248,39 +18252,39 @@ type ProfilerTakeTypeProfileResult struct {
 type ProfilerEnableRuntimeCallStats struct {
 }
 
-// MethodName of the command
-func (m ProfilerEnableRuntimeCallStats) MethodName() string { return "Profiler.enableRuntimeCallStats" }
+// ProtoName of the command
+func (m ProfilerEnableRuntimeCallStats) ProtoName() string { return "Profiler.enableRuntimeCallStats" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerEnableRuntimeCallStats) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerEnableRuntimeCallStats) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerDisableRuntimeCallStats (experimental) Disable run time call stats collection.
 type ProfilerDisableRuntimeCallStats struct {
 }
 
-// MethodName of the command
-func (m ProfilerDisableRuntimeCallStats) MethodName() string {
+// ProtoName of the command
+func (m ProfilerDisableRuntimeCallStats) ProtoName() string {
 	return "Profiler.disableRuntimeCallStats"
 }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerDisableRuntimeCallStats) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m ProfilerDisableRuntimeCallStats) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // ProfilerGetRuntimeCallStats (experimental) Retrieve run time call stats.
 type ProfilerGetRuntimeCallStats struct {
 }
 
-// MethodName of the command
-func (m ProfilerGetRuntimeCallStats) MethodName() string { return "Profiler.getRuntimeCallStats" }
+// ProtoName of the command
+func (m ProfilerGetRuntimeCallStats) ProtoName() string { return "Profiler.getRuntimeCallStats" }
 
 // Call of the command, sessionID is optional.
-func (m ProfilerGetRuntimeCallStats) Call(caller Caller) (*ProfilerGetRuntimeCallStatsResult, error) {
+func (m ProfilerGetRuntimeCallStats) Call(c Client) (*ProfilerGetRuntimeCallStatsResult, error) {
 	var res ProfilerGetRuntimeCallStatsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // ProfilerGetRuntimeCallStatsResult (experimental) Retrieve run time call stats.
@@ -18306,8 +18310,8 @@ type ProfilerConsoleProfileFinished struct {
 	Title string `json:"title,omitempty"`
 }
 
-// MethodName interface
-func (evt ProfilerConsoleProfileFinished) MethodName() string {
+// ProtoName interface
+func (evt ProfilerConsoleProfileFinished) ProtoName() string {
 	return "Profiler.consoleProfileFinished"
 }
 
@@ -18324,8 +18328,8 @@ type ProfilerConsoleProfileStarted struct {
 	Title string `json:"title,omitempty"`
 }
 
-// MethodName interface
-func (evt ProfilerConsoleProfileStarted) MethodName() string {
+// ProtoName interface
+func (evt ProfilerConsoleProfileStarted) ProtoName() string {
 	return "Profiler.consoleProfileStarted"
 }
 
@@ -18345,8 +18349,8 @@ type ProfilerPreciseCoverageDeltaUpdate struct {
 	Result []*ProfilerScriptCoverage `json:"result"`
 }
 
-// MethodName interface
-func (evt ProfilerPreciseCoverageDeltaUpdate) MethodName() string {
+// ProtoName interface
+func (evt ProfilerPreciseCoverageDeltaUpdate) ProtoName() string {
 	return "Profiler.preciseCoverageDeltaUpdate"
 }
 
@@ -18479,7 +18483,7 @@ type RuntimeRemoteObject struct {
 	ClassName string `json:"className,omitempty"`
 
 	// Value (optional) Remote object value in case of primitive values or JSON values (if it was requested).
-	Value JSON `json:"value,omitempty"`
+	Value gson.JSON `json:"value,omitempty"`
 
 	// UnserializableValue (optional) Primitive value which can not be JSON-stringified does not have `value`, but gets this
 	// property.
@@ -18776,7 +18780,7 @@ type RuntimePrivatePropertyDescriptor struct {
 type RuntimeCallArgument struct {
 
 	// Value (optional) Primitive value or serializable javascript object.
-	Value JSON `json:"value,omitempty"`
+	Value gson.JSON `json:"value,omitempty"`
 
 	// UnserializableValue (optional) Primitive value which can not be JSON-stringified.
 	UnserializableValue RuntimeUnserializableValue `json:"unserializableValue,omitempty"`
@@ -18786,7 +18790,7 @@ type RuntimeCallArgument struct {
 }
 
 // RuntimeExecutionContextID Id of an execution context.
-type RuntimeExecutionContextID int64
+type RuntimeExecutionContextID int
 
 // RuntimeExecutionContextDescription Description of an isolated world.
 type RuntimeExecutionContextDescription struct {
@@ -18802,7 +18806,7 @@ type RuntimeExecutionContextDescription struct {
 	Name string `json:"name"`
 
 	// AuxData (optional) Embedder-specific auxiliary data.
-	AuxData map[string]JSON `json:"auxData,omitempty"`
+	AuxData map[string]gson.JSON `json:"auxData,omitempty"`
 }
 
 // RuntimeExceptionDetails Detailed information about exception (or error) that was thrown during script compilation or
@@ -18810,16 +18814,16 @@ type RuntimeExecutionContextDescription struct {
 type RuntimeExceptionDetails struct {
 
 	// ExceptionID Exception id.
-	ExceptionID int64 `json:"exceptionId"`
+	ExceptionID int `json:"exceptionId"`
 
 	// Text Exception text, which should be used together with exception object when available.
 	Text string `json:"text"`
 
 	// LineNumber Line number of the exception location (0-based).
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber Column number of the exception location (0-based).
-	ColumnNumber int64 `json:"columnNumber"`
+	ColumnNumber int `json:"columnNumber"`
 
 	// ScriptID (optional) Script ID of the exception location.
 	ScriptID RuntimeScriptID `json:"scriptId,omitempty"`
@@ -18856,10 +18860,10 @@ type RuntimeCallFrame struct {
 	URL string `json:"url"`
 
 	// LineNumber JavaScript script line number (0-based).
-	LineNumber int64 `json:"lineNumber"`
+	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber JavaScript script column number (0-based).
-	ColumnNumber int64 `json:"columnNumber"`
+	ColumnNumber int `json:"columnNumber"`
 }
 
 // RuntimeStackTrace Call frames for assertions or error messages.
@@ -18906,13 +18910,13 @@ type RuntimeAwaitPromise struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeAwaitPromise) MethodName() string { return "Runtime.awaitPromise" }
+// ProtoName of the command
+func (m RuntimeAwaitPromise) ProtoName() string { return "Runtime.awaitPromise" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeAwaitPromise) Call(caller Caller) (*RuntimeAwaitPromiseResult, error) {
+func (m RuntimeAwaitPromise) Call(c Client) (*RuntimeAwaitPromiseResult, error) {
 	var res RuntimeAwaitPromiseResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeAwaitPromiseResult Add handler to promise with given promise object id.
@@ -18966,13 +18970,13 @@ type RuntimeCallFunctionOn struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeCallFunctionOn) MethodName() string { return "Runtime.callFunctionOn" }
+// ProtoName of the command
+func (m RuntimeCallFunctionOn) ProtoName() string { return "Runtime.callFunctionOn" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeCallFunctionOn) Call(caller Caller) (*RuntimeCallFunctionOnResult, error) {
+func (m RuntimeCallFunctionOn) Call(c Client) (*RuntimeCallFunctionOnResult, error) {
 	var res RuntimeCallFunctionOnResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeCallFunctionOnResult Calls function with given declaration on the given object. Object group of the result is
@@ -19003,13 +19007,13 @@ type RuntimeCompileScript struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeCompileScript) MethodName() string { return "Runtime.compileScript" }
+// ProtoName of the command
+func (m RuntimeCompileScript) ProtoName() string { return "Runtime.compileScript" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeCompileScript) Call(caller Caller) (*RuntimeCompileScriptResult, error) {
+func (m RuntimeCompileScript) Call(c Client) (*RuntimeCompileScriptResult, error) {
 	var res RuntimeCompileScriptResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeCompileScriptResult Compiles expression.
@@ -19026,24 +19030,24 @@ type RuntimeCompileScriptResult struct {
 type RuntimeDisable struct {
 }
 
-// MethodName of the command
-func (m RuntimeDisable) MethodName() string { return "Runtime.disable" }
+// ProtoName of the command
+func (m RuntimeDisable) ProtoName() string { return "Runtime.disable" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeDisable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeDisable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeDiscardConsoleEntries Discards collected exceptions and console API calls.
 type RuntimeDiscardConsoleEntries struct {
 }
 
-// MethodName of the command
-func (m RuntimeDiscardConsoleEntries) MethodName() string { return "Runtime.discardConsoleEntries" }
+// ProtoName of the command
+func (m RuntimeDiscardConsoleEntries) ProtoName() string { return "Runtime.discardConsoleEntries" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeDiscardConsoleEntries) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeEnable Enables reporting of execution contexts creation by means of `executionContextCreated` event.
@@ -19052,12 +19056,12 @@ func (m RuntimeDiscardConsoleEntries) Call(caller Caller) error {
 type RuntimeEnable struct {
 }
 
-// MethodName of the command
-func (m RuntimeEnable) MethodName() string { return "Runtime.enable" }
+// ProtoName of the command
+func (m RuntimeEnable) ProtoName() string { return "Runtime.enable" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeEnable) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeEnable) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeEvaluate Evaluates expression on global object.
@@ -19115,13 +19119,13 @@ type RuntimeEvaluate struct {
 	AllowUnsafeEvalBlockedByCSP bool `json:"allowUnsafeEvalBlockedByCSP,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeEvaluate) MethodName() string { return "Runtime.evaluate" }
+// ProtoName of the command
+func (m RuntimeEvaluate) ProtoName() string { return "Runtime.evaluate" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeEvaluate) Call(caller Caller) (*RuntimeEvaluateResult, error) {
+func (m RuntimeEvaluate) Call(c Client) (*RuntimeEvaluateResult, error) {
 	var res RuntimeEvaluateResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeEvaluateResult Evaluates expression on global object.
@@ -19138,13 +19142,13 @@ type RuntimeEvaluateResult struct {
 type RuntimeGetIsolateID struct {
 }
 
-// MethodName of the command
-func (m RuntimeGetIsolateID) MethodName() string { return "Runtime.getIsolateId" }
+// ProtoName of the command
+func (m RuntimeGetIsolateID) ProtoName() string { return "Runtime.getIsolateId" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeGetIsolateID) Call(caller Caller) (*RuntimeGetIsolateIDResult, error) {
+func (m RuntimeGetIsolateID) Call(c Client) (*RuntimeGetIsolateIDResult, error) {
 	var res RuntimeGetIsolateIDResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeGetIsolateIDResult (experimental) Returns the isolate id.
@@ -19159,13 +19163,13 @@ type RuntimeGetIsolateIDResult struct {
 type RuntimeGetHeapUsage struct {
 }
 
-// MethodName of the command
-func (m RuntimeGetHeapUsage) MethodName() string { return "Runtime.getHeapUsage" }
+// ProtoName of the command
+func (m RuntimeGetHeapUsage) ProtoName() string { return "Runtime.getHeapUsage" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeGetHeapUsage) Call(caller Caller) (*RuntimeGetHeapUsageResult, error) {
+func (m RuntimeGetHeapUsage) Call(c Client) (*RuntimeGetHeapUsageResult, error) {
 	var res RuntimeGetHeapUsageResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeGetHeapUsageResult (experimental) Returns the JavaScript heap usage.
@@ -19198,13 +19202,13 @@ type RuntimeGetProperties struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeGetProperties) MethodName() string { return "Runtime.getProperties" }
+// ProtoName of the command
+func (m RuntimeGetProperties) ProtoName() string { return "Runtime.getProperties" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeGetProperties) Call(caller Caller) (*RuntimeGetPropertiesResult, error) {
+func (m RuntimeGetProperties) Call(c Client) (*RuntimeGetPropertiesResult, error) {
 	var res RuntimeGetPropertiesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeGetPropertiesResult Returns properties of a given object. Object group of the result is inherited from the target
@@ -19231,13 +19235,13 @@ type RuntimeGlobalLexicalScopeNames struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeGlobalLexicalScopeNames) MethodName() string { return "Runtime.globalLexicalScopeNames" }
+// ProtoName of the command
+func (m RuntimeGlobalLexicalScopeNames) ProtoName() string { return "Runtime.globalLexicalScopeNames" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeGlobalLexicalScopeNames) Call(caller Caller) (*RuntimeGlobalLexicalScopeNamesResult, error) {
+func (m RuntimeGlobalLexicalScopeNames) Call(c Client) (*RuntimeGlobalLexicalScopeNamesResult, error) {
 	var res RuntimeGlobalLexicalScopeNamesResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeGlobalLexicalScopeNamesResult Returns all let, const and class variables from global scope.
@@ -19257,13 +19261,13 @@ type RuntimeQueryObjects struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeQueryObjects) MethodName() string { return "Runtime.queryObjects" }
+// ProtoName of the command
+func (m RuntimeQueryObjects) ProtoName() string { return "Runtime.queryObjects" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeQueryObjects) Call(caller Caller) (*RuntimeQueryObjectsResult, error) {
+func (m RuntimeQueryObjects) Call(c Client) (*RuntimeQueryObjectsResult, error) {
 	var res RuntimeQueryObjectsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeQueryObjectsResult ...
@@ -19280,12 +19284,12 @@ type RuntimeReleaseObject struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// MethodName of the command
-func (m RuntimeReleaseObject) MethodName() string { return "Runtime.releaseObject" }
+// ProtoName of the command
+func (m RuntimeReleaseObject) ProtoName() string { return "Runtime.releaseObject" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeReleaseObject) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeReleaseObject) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeReleaseObjectGroup Releases all remote objects that belong to a given group.
@@ -19295,24 +19299,24 @@ type RuntimeReleaseObjectGroup struct {
 	ObjectGroup string `json:"objectGroup"`
 }
 
-// MethodName of the command
-func (m RuntimeReleaseObjectGroup) MethodName() string { return "Runtime.releaseObjectGroup" }
+// ProtoName of the command
+func (m RuntimeReleaseObjectGroup) ProtoName() string { return "Runtime.releaseObjectGroup" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeReleaseObjectGroup) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeReleaseObjectGroup) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeRunIfWaitingForDebugger Tells inspected instance to run if it was waiting for debugger to attach.
 type RuntimeRunIfWaitingForDebugger struct {
 }
 
-// MethodName of the command
-func (m RuntimeRunIfWaitingForDebugger) MethodName() string { return "Runtime.runIfWaitingForDebugger" }
+// ProtoName of the command
+func (m RuntimeRunIfWaitingForDebugger) ProtoName() string { return "Runtime.runIfWaitingForDebugger" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeRunIfWaitingForDebugger) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeRunIfWaitingForDebugger) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeRunScript Runs script with given id in a given context.
@@ -19346,13 +19350,13 @@ type RuntimeRunScript struct {
 	AwaitPromise bool `json:"awaitPromise,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeRunScript) MethodName() string { return "Runtime.runScript" }
+// ProtoName of the command
+func (m RuntimeRunScript) ProtoName() string { return "Runtime.runScript" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeRunScript) Call(caller Caller) (*RuntimeRunScriptResult, error) {
+func (m RuntimeRunScript) Call(c Client) (*RuntimeRunScriptResult, error) {
 	var res RuntimeRunScriptResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // RuntimeRunScriptResult Runs script with given id in a given context.
@@ -19370,15 +19374,15 @@ type RuntimeSetAsyncCallStackDepth struct {
 
 	// MaxDepth Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
 	// call stacks (default).
-	MaxDepth int64 `json:"maxDepth"`
+	MaxDepth int `json:"maxDepth"`
 }
 
-// MethodName of the command
-func (m RuntimeSetAsyncCallStackDepth) MethodName() string { return "Runtime.setAsyncCallStackDepth" }
+// ProtoName of the command
+func (m RuntimeSetAsyncCallStackDepth) ProtoName() string { return "Runtime.setAsyncCallStackDepth" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeSetAsyncCallStackDepth) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeSetAsyncCallStackDepth) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeSetCustomObjectFormatterEnabled (experimental) ...
@@ -19388,31 +19392,31 @@ type RuntimeSetCustomObjectFormatterEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// MethodName of the command
-func (m RuntimeSetCustomObjectFormatterEnabled) MethodName() string {
+// ProtoName of the command
+func (m RuntimeSetCustomObjectFormatterEnabled) ProtoName() string {
 	return "Runtime.setCustomObjectFormatterEnabled"
 }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeSetCustomObjectFormatterEnabled) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeSetCustomObjectFormatterEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeSetMaxCallStackSizeToCapture (experimental) ...
 type RuntimeSetMaxCallStackSizeToCapture struct {
 
 	// Size ...
-	Size int64 `json:"size"`
+	Size int `json:"size"`
 }
 
-// MethodName of the command
-func (m RuntimeSetMaxCallStackSizeToCapture) MethodName() string {
+// ProtoName of the command
+func (m RuntimeSetMaxCallStackSizeToCapture) ProtoName() string {
 	return "Runtime.setMaxCallStackSizeToCapture"
 }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeSetMaxCallStackSizeToCapture) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeTerminateExecution (experimental) Terminate current or next JavaScript execution.
@@ -19420,12 +19424,12 @@ func (m RuntimeSetMaxCallStackSizeToCapture) Call(caller Caller) error {
 type RuntimeTerminateExecution struct {
 }
 
-// MethodName of the command
-func (m RuntimeTerminateExecution) MethodName() string { return "Runtime.terminateExecution" }
+// ProtoName of the command
+func (m RuntimeTerminateExecution) ProtoName() string { return "Runtime.terminateExecution" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeTerminateExecution) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeTerminateExecution) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeAddBinding (experimental) If executionContextId is empty, adds binding with the given name on the
@@ -19445,12 +19449,12 @@ type RuntimeAddBinding struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// MethodName of the command
-func (m RuntimeAddBinding) MethodName() string { return "Runtime.addBinding" }
+// ProtoName of the command
+func (m RuntimeAddBinding) ProtoName() string { return "Runtime.addBinding" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeAddBinding) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeAddBinding) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeRemoveBinding (experimental) This method does not remove binding function from global object but
@@ -19461,12 +19465,12 @@ type RuntimeRemoveBinding struct {
 	Name string `json:"name"`
 }
 
-// MethodName of the command
-func (m RuntimeRemoveBinding) MethodName() string { return "Runtime.removeBinding" }
+// ProtoName of the command
+func (m RuntimeRemoveBinding) ProtoName() string { return "Runtime.removeBinding" }
 
 // Call of the command, sessionID is optional.
-func (m RuntimeRemoveBinding) Call(caller Caller) error {
-	return Call(m.MethodName(), m, nil, caller)
+func (m RuntimeRemoveBinding) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
 }
 
 // RuntimeBindingCalled (experimental) Notification is issued every time when binding is called.
@@ -19482,8 +19486,8 @@ type RuntimeBindingCalled struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// MethodName interface
-func (evt RuntimeBindingCalled) MethodName() string {
+// ProtoName interface
+func (evt RuntimeBindingCalled) ProtoName() string {
 	return "Runtime.bindingCalled"
 }
 
@@ -19572,8 +19576,8 @@ type RuntimeConsoleAPICalled struct {
 	Context string `json:"context,omitempty"`
 }
 
-// MethodName interface
-func (evt RuntimeConsoleAPICalled) MethodName() string {
+// ProtoName interface
+func (evt RuntimeConsoleAPICalled) ProtoName() string {
 	return "Runtime.consoleAPICalled"
 }
 
@@ -19584,11 +19588,11 @@ type RuntimeExceptionRevoked struct {
 	Reason string `json:"reason"`
 
 	// ExceptionID The id of revoked exception, as reported in `exceptionThrown`.
-	ExceptionID int64 `json:"exceptionId"`
+	ExceptionID int `json:"exceptionId"`
 }
 
-// MethodName interface
-func (evt RuntimeExceptionRevoked) MethodName() string {
+// ProtoName interface
+func (evt RuntimeExceptionRevoked) ProtoName() string {
 	return "Runtime.exceptionRevoked"
 }
 
@@ -19602,8 +19606,8 @@ type RuntimeExceptionThrown struct {
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails"`
 }
 
-// MethodName interface
-func (evt RuntimeExceptionThrown) MethodName() string {
+// ProtoName interface
+func (evt RuntimeExceptionThrown) ProtoName() string {
 	return "Runtime.exceptionThrown"
 }
 
@@ -19614,8 +19618,8 @@ type RuntimeExecutionContextCreated struct {
 	Context *RuntimeExecutionContextDescription `json:"context"`
 }
 
-// MethodName interface
-func (evt RuntimeExecutionContextCreated) MethodName() string {
+// ProtoName interface
+func (evt RuntimeExecutionContextCreated) ProtoName() string {
 	return "Runtime.executionContextCreated"
 }
 
@@ -19626,8 +19630,8 @@ type RuntimeExecutionContextDestroyed struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// MethodName interface
-func (evt RuntimeExecutionContextDestroyed) MethodName() string {
+// ProtoName interface
+func (evt RuntimeExecutionContextDestroyed) ProtoName() string {
 	return "Runtime.executionContextDestroyed"
 }
 
@@ -19635,8 +19639,8 @@ func (evt RuntimeExecutionContextDestroyed) MethodName() string {
 type RuntimeExecutionContextsCleared struct {
 }
 
-// MethodName interface
-func (evt RuntimeExecutionContextsCleared) MethodName() string {
+// ProtoName interface
+func (evt RuntimeExecutionContextsCleared) ProtoName() string {
 	return "Runtime.executionContextsCleared"
 }
 
@@ -19648,11 +19652,11 @@ type RuntimeInspectRequested struct {
 	Object *RuntimeRemoteObject `json:"object"`
 
 	// Hints ...
-	Hints map[string]JSON `json:"hints"`
+	Hints map[string]gson.JSON `json:"hints"`
 }
 
-// MethodName interface
-func (evt RuntimeInspectRequested) MethodName() string {
+// ProtoName interface
+func (evt RuntimeInspectRequested) ProtoName() string {
 	return "Runtime.inspectRequested"
 }
 
@@ -19670,13 +19674,13 @@ type SchemaDomain struct {
 type SchemaGetDomains struct {
 }
 
-// MethodName of the command
-func (m SchemaGetDomains) MethodName() string { return "Schema.getDomains" }
+// ProtoName of the command
+func (m SchemaGetDomains) ProtoName() string { return "Schema.getDomains" }
 
 // Call of the command, sessionID is optional.
-func (m SchemaGetDomains) Call(caller Caller) (*SchemaGetDomainsResult, error) {
+func (m SchemaGetDomains) Call(c Client) (*SchemaGetDomainsResult, error) {
 	var res SchemaGetDomainsResult
-	return &res, Call(m.MethodName(), m, &res, caller)
+	return &res, call(m.ProtoName(), m, &res, c)
 }
 
 // SchemaGetDomainsResult Returns supported domains.

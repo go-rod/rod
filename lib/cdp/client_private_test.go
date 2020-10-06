@@ -111,7 +111,7 @@ func (c C) CancelOnCallback() {
 
 	go cdp.consumeMsg()
 
-	cdp.callbacks.Store(uint64(1), make(chan *Response))
+	cdp.callbacks.Store(1, make(chan *Response))
 	cdp.chRes <- &Response{
 		ID:     1,
 		Result: nil,

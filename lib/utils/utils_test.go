@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -25,18 +24,17 @@ func Test(t *testing.T) {
 	got.Each(t, C{})
 }
 
+func (c C) TestLog() {
+	utils.Log(func(msg ...interface{}) {}).Println()
+	utils.LoggerQuiet.Println()
+}
+
 func (c C) TestE() {
 	utils.E(nil)
 
 	c.Panic(func() {
 		utils.E(errors.New("err"))
 	})
-}
-
-func (c C) Dump() {
-	c.Eq("{\n  \"a\": \"<b>\"\n}", utils.SDump(map[string]string{"a": "<b>"}))
-	c.Eq("10", utils.SDump(json.RawMessage("10")))
-	utils.Dump("")
 }
 
 func (c C) STemplate() {
@@ -178,6 +176,7 @@ func (c C) CountSleeperCancel() {
 }
 
 func (c C) MustToJSON() {
+	c.Eq(utils.Dump("a", 10), `"a" 10`)
 	c.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
 }
 
@@ -211,21 +210,6 @@ type errReader struct {
 
 func (r *errReader) Read(p []byte) (n int, err error) {
 	return 0, r.err
-}
-
-func (c C) Reader() {
-	utils.MustReadJSON(bytes.NewBufferString(""))
-
-	_, err := utils.ReadJSON(&errReader{err: errors.New("err")})
-	c.Err(err)
-
-	utils.MustReadString(bytes.NewBufferString(""))
-
-	_, err = utils.ReadJSONPathAsString(bytes.NewBufferString("{}"), "")
-	c.Nil(err)
-
-	_, err = utils.ReadJSONPathAsString(&errReader{err: errors.New("err")}, "")
-	c.Err(err)
 }
 
 func (c C) EscapeGoString() {

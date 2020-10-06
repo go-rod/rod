@@ -4,6 +4,7 @@ package defaults
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -42,8 +43,8 @@ var Proxy string
 // URL is the default of cdp.Client.New
 var URL string
 
-// CDP is the default of cdp.Client.Debug
-var CDP bool
+// CDP is the default of cdp.Client.Logger
+var CDP utils.Logger
 
 // Parse the flags
 func init() {
@@ -60,7 +61,7 @@ func Reset() {
 	Port = "0"
 	Bin = ""
 	URL = ""
-	CDP = false
+	CDP = utils.LoggerQuiet
 	Monitor = ""
 	Proxy = ""
 }
@@ -154,7 +155,7 @@ var rules = map[string]func(string){
 		URL = v
 	},
 	"cdp": func(v string) {
-		CDP = true
+		CDP = log.New(log.Writer(), "[cdp] ", 0)
 	},
 	"monitor": func(v string) {
 		Monitor = ":0"

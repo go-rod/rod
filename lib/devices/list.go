@@ -2,1299 +2,1339 @@
 
 package devices
 
-import "github.com/tidwall/gjson"
+import "github.com/ysmood/gson"
 
 var (
 
 	// IPhone4 device
-	IPhone4 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "iPhone 4",
-        "screen": {
-          "horizontal": {
-            "width": 480,
-            "height": 320
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 320,
-            "height": 480
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
-        "type": "phone"
-      }`)}
+	IPhone4 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 320,
+	      "width": 480
+	    },
+	    "vertical": {
+	      "height": 480,
+	      "width": 320
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "iPhone 4",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53"
+	}`)}
 
 	// IPhone5orSE device
-	IPhone5orSE = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPhone 5/SE",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/iPhone5-landscape.avif)",
-              "insets": {
-                "left": 115,
-                "top": 25,
-                "right": 115,
-                "bottom": 28
-              }
-            },
-            "width": 568,
-            "height": 320
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/iPhone5-portrait.avif)",
-              "insets": {
-                "left": 29,
-                "top": 105,
-                "right": 25,
-                "bottom": 111
-              }
-            },
-            "width": 320,
-            "height": 568
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1",
-        "type": "phone"
-      }`)}
+	IPhone5orSE = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 320,
+	      "outline": {
+	        "image": "@url(optimized/iPhone5-landscape.avif)",
+	        "insets": {
+	          "bottom": 28,
+	          "left": 115,
+	          "right": 115,
+	          "top": 25
+	        }
+	      },
+	      "width": 568
+	    },
+	    "vertical": {
+	      "height": 568,
+	      "outline": {
+	        "image": "@url(optimized/iPhone5-portrait.avif)",
+	        "insets": {
+	          "bottom": 111,
+	          "left": 29,
+	          "right": 25,
+	          "top": 105
+	        }
+	      },
+	      "width": 320
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPhone 5/SE",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
+	}`)}
 
 	// IPhone6or7or8 device
-	IPhone6or7or8 = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPhone 6/7/8",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/iPhone6-landscape.avif)",
-              "insets": {
-                "left": 106,
-                "top": 28,
-                "right": 106,
-                "bottom": 28
-              }
-            },
-            "width": 667,
-            "height": 375
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/iPhone6-portrait.avif)",
-              "insets": {
-                "left": 28,
-                "top": 105,
-                "right": 28,
-                "bottom": 105
-              }
-            },
-            "width": 375,
-            "height": 667
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
-        "type": "phone"
-      }`)}
+	IPhone6or7or8 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 375,
+	      "outline": {
+	        "image": "@url(optimized/iPhone6-landscape.avif)",
+	        "insets": {
+	          "bottom": 28,
+	          "left": 106,
+	          "right": 106,
+	          "top": 28
+	        }
+	      },
+	      "width": 667
+	    },
+	    "vertical": {
+	      "height": 667,
+	      "outline": {
+	        "image": "@url(optimized/iPhone6-portrait.avif)",
+	        "insets": {
+	          "bottom": 105,
+	          "left": 28,
+	          "right": 28,
+	          "top": 105
+	        }
+	      },
+	      "width": 375
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPhone 6/7/8",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+	}`)}
 
 	// IPhone6or7or8Plus device
-	IPhone6or7or8Plus = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPhone 6/7/8 Plus",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/iPhone6Plus-landscape.avif)",
-              "insets": {
-                "left": 109,
-                "top": 29,
-                "right": 109,
-                "bottom": 27
-              }
-            },
-            "width": 736,
-            "height": 414
-          },
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/iPhone6Plus-portrait.avif)",
-              "insets": {
-                "left": 26,
-                "top": 107,
-                "right": 30,
-                "bottom": 111
-              }
-            },
-            "width": 414,
-            "height": 736
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
-        "type": "phone"
-      }`)}
+	IPhone6or7or8Plus = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 414,
+	      "outline": {
+	        "image": "@url(optimized/iPhone6Plus-landscape.avif)",
+	        "insets": {
+	          "bottom": 27,
+	          "left": 109,
+	          "right": 109,
+	          "top": 29
+	        }
+	      },
+	      "width": 736
+	    },
+	    "vertical": {
+	      "height": 736,
+	      "outline": {
+	        "image": "@url(optimized/iPhone6Plus-portrait.avif)",
+	        "insets": {
+	          "bottom": 111,
+	          "left": 26,
+	          "right": 30,
+	          "top": 107
+	        }
+	      },
+	      "width": 414
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPhone 6/7/8 Plus",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+	}`)}
 
 	// IPhoneX device
-	IPhoneX = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPhone X",
-        "screen": {
-          "horizontal": {
-            "width": 812,
-            "height": 375
-          },
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "width": 375,
-            "height": 812
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
-        "type": "phone"
-      }`)}
+	IPhoneX = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 375,
+	      "width": 812
+	    },
+	    "vertical": {
+	      "height": 812,
+	      "width": 375
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPhone X",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+	}`)}
 
 	// BlackBerryZ30 device
-	BlackBerryZ30 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "BlackBerry Z30",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+",
-        "type": "phone"
-      }`)}
+	BlackBerryZ30 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "BlackBerry Z30",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+"
+	}`)}
 
 	// Nexus4 device
-	Nexus4 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nexus 4",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 384
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 384,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "4.4.2",
-          "architecture": "",
-          "model": "Nexus 4",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	Nexus4 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 384,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 384
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 4",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Nexus 4",
+	    "platform": "Android",
+	    "platformVersion": "4.4.2"
+	  }
+	}`)}
 
 	// Nexus5 device
-	Nexus5 = Device{gjson.Parse(`{
-        "title": "Nexus 5",
-        "type": "phone",
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "6.0",
-          "architecture": "",
-          "model": "Nexus 5",
-          "mobile": true
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "show-by-default": false,
-        "screen": {
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          },
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          }
-        },
-        "modes": [
-          {
-            "title": "default",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 25,
-              "right": 0,
-              "bottom": 48
-            },
-            "image": "@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x"
-          },
-          {
-            "title": "navigation bar",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 0,
-              "bottom": 48
-            },
-            "image": "@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x"
-          },
-          {
-            "title": "keyboard",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 0,
-              "bottom": 312
-            },
-            "image": "@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x"
-          },
-          {
-            "title": "default",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 25,
-              "right": 42,
-              "bottom": 0
-            },
-            "image": "@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x"
-          },
-          {
-            "title": "navigation bar",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 42,
-              "bottom": 0
-            },
-            "image": "@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x"
-          },
-          {
-            "title": "keyboard",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 42,
-              "bottom": 202
-            },
-            "image": "@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x"
-          }
-        ]
-      }`)}
+	Nexus5 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "modes": [
+	    {
+	      "image": "@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 48,
+	        "left": 0,
+	        "right": 0,
+	        "top": 25
+	      },
+	      "orientation": "vertical",
+	      "title": "default"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 48,
+	        "left": 0,
+	        "right": 0,
+	        "top": 80
+	      },
+	      "orientation": "vertical",
+	      "title": "navigation bar"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 312,
+	        "left": 0,
+	        "right": 0,
+	        "top": 80
+	      },
+	      "orientation": "vertical",
+	      "title": "keyboard"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 42,
+	        "top": 25
+	      },
+	      "orientation": "horizontal",
+	      "title": "default"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 42,
+	        "top": 80
+	      },
+	      "orientation": "horizontal",
+	      "title": "navigation bar"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 202,
+	        "left": 0,
+	        "right": 42,
+	        "top": 80
+	      },
+	      "orientation": "horizontal",
+	      "title": "keyboard"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 5",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Nexus 5",
+	    "platform": "Android",
+	    "platformVersion": "6.0"
+	  }
+	}`)}
 
 	// Nexus5X device
-	Nexus5X = Device{gjson.Parse(`{
-        "title": "Nexus 5X",
-        "type": "phone",
-        "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "8.0.0",
-          "architecture": "",
-          "model": "Nexus 5X",
-          "mobile": true
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "show-by-default": false,
-        "screen": {
-          "device-pixel-ratio": 2.625,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/Nexus5X-portrait.avif)",
-              "insets": {
-                "left": 18,
-                "top": 88,
-                "right": 22,
-                "bottom": 98
-              }
-            },
-            "width": 412,
-            "height": 732
-          },
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/Nexus5X-landscape.avif)",
-              "insets": {
-                "left": 88,
-                "top": 21,
-                "right": 98,
-                "bottom": 19
-              }
-            },
-            "width": 732,
-            "height": 412
-          }
-        },
-        "modes": [
-          {
-            "title": "default",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 24,
-              "right": 0,
-              "bottom": 48
-            },
-            "image": "@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x"
-          },
-          {
-            "title": "navigation bar",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 0,
-              "bottom": 48
-            },
-            "image": "@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x"
-          },
-          {
-            "title": "keyboard",
-            "orientation": "vertical",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 0,
-              "bottom": 342
-            },
-            "image": "@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x"
-          },
-          {
-            "title": "default",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 24,
-              "right": 48,
-              "bottom": 0
-            },
-            "image": "@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x"
-          },
-          {
-            "title": "navigation bar",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 48,
-              "bottom": 0
-            },
-            "image": "@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x"
-          },
-          {
-            "title": "keyboard",
-            "orientation": "horizontal",
-            "insets": {
-              "left": 0,
-              "top": 80,
-              "right": 48,
-              "bottom": 222
-            },
-            "image": "@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x"
-          }
-        ]
-      }`)}
+	Nexus5X = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "modes": [
+	    {
+	      "image": "@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 48,
+	        "left": 0,
+	        "right": 0,
+	        "top": 24
+	      },
+	      "orientation": "vertical",
+	      "title": "default"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 48,
+	        "left": 0,
+	        "right": 0,
+	        "top": 80
+	      },
+	      "orientation": "vertical",
+	      "title": "navigation bar"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 342,
+	        "left": 0,
+	        "right": 0,
+	        "top": 80
+	      },
+	      "orientation": "vertical",
+	      "title": "keyboard"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 48,
+	        "top": 24
+	      },
+	      "orientation": "horizontal",
+	      "title": "default"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 48,
+	        "top": 80
+	      },
+	      "orientation": "horizontal",
+	      "title": "navigation bar"
+	    },
+	    {
+	      "image": "@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x",
+	      "insets": {
+	        "bottom": 222,
+	        "left": 0,
+	        "right": 48,
+	        "top": 80
+	      },
+	      "orientation": "horizontal",
+	      "title": "keyboard"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2.625,
+	    "horizontal": {
+	      "height": 412,
+	      "outline": {
+	        "image": "@url(optimized/Nexus5X-landscape.avif)",
+	        "insets": {
+	          "bottom": 19,
+	          "left": 88,
+	          "right": 98,
+	          "top": 21
+	        }
+	      },
+	      "width": 732
+	    },
+	    "vertical": {
+	      "height": 732,
+	      "outline": {
+	        "image": "@url(optimized/Nexus5X-portrait.avif)",
+	        "insets": {
+	          "bottom": 98,
+	          "left": 18,
+	          "right": 22,
+	          "top": 88
+	        }
+	      },
+	      "width": 412
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 5X",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Nexus 5X",
+	    "platform": "Android",
+	    "platformVersion": "8.0.0"
+	  }
+	}`)}
 
 	// Nexus6 device
-	Nexus6 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nexus 6",
-        "screen": {
-          "horizontal": {
-            "width": 732,
-            "height": 412
-          },
-          "device-pixel-ratio": 3.5,
-          "vertical": {
-            "width": 412,
-            "height": 732
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "7.1.1",
-          "architecture": "",
-          "model": "Nexus 6",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	Nexus6 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3.5,
+	    "horizontal": {
+	      "height": 412,
+	      "width": 732
+	    },
+	    "vertical": {
+	      "height": 732,
+	      "width": 412
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 6",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Nexus 6",
+	    "platform": "Android",
+	    "platformVersion": "7.1.1"
+	  }
+	}`)}
 
 	// Nexus6P device
-	Nexus6P = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nexus 6P",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/Nexus6P-landscape.avif)",
-              "insets": {
-                "left": 94,
-                "top": 17,
-                "right": 88,
-                "bottom": 17
-              }
-            },
-            "width": 732,
-            "height": 412
-          },
-          "device-pixel-ratio": 3.5,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/Nexus6P-portrait.avif)",
-              "insets": {
-                "left": 16,
-                "top": 94,
-                "right": 16,
-                "bottom": 88
-              }
-            },
-            "width": 412,
-            "height": 732
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "8.0.0",
-          "architecture": "",
-          "model": "Nexus 6P",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	Nexus6P = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3.5,
+	    "horizontal": {
+	      "height": 412,
+	      "outline": {
+	        "image": "@url(optimized/Nexus6P-landscape.avif)",
+	        "insets": {
+	          "bottom": 17,
+	          "left": 94,
+	          "right": 88,
+	          "top": 17
+	        }
+	      },
+	      "width": 732
+	    },
+	    "vertical": {
+	      "height": 732,
+	      "outline": {
+	        "image": "@url(optimized/Nexus6P-portrait.avif)",
+	        "insets": {
+	          "bottom": 88,
+	          "left": 16,
+	          "right": 16,
+	          "top": 94
+	        }
+	      },
+	      "width": 412
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 6P",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Nexus 6P",
+	    "platform": "Android",
+	    "platformVersion": "8.0.0"
+	  }
+	}`)}
 
 	// Pixel2 device
-	Pixel2 = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "Pixel 2",
-        "screen": {
-          "horizontal": {
-            "width": 731,
-            "height": 411
-          },
-          "device-pixel-ratio": 2.625,
-          "vertical": {
-            "width": 411,
-            "height": 731
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "8.0",
-          "architecture": "",
-          "model": "Pixel 2",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	Pixel2 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2.625,
+	    "horizontal": {
+	      "height": 411,
+	      "width": 731
+	    },
+	    "vertical": {
+	      "height": 731,
+	      "width": 411
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Pixel 2",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Pixel 2",
+	    "platform": "Android",
+	    "platformVersion": "8.0"
+	  }
+	}`)}
 
 	// Pixel2XL device
-	Pixel2XL = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "Pixel 2 XL",
-        "screen": {
-          "horizontal": {
-            "width": 823,
-            "height": 411
-          },
-          "device-pixel-ratio": 3.5,
-          "vertical": {
-            "width": 411,
-            "height": 823
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "8.0.0",
-          "architecture": "",
-          "model": "Pixel 2 XL",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	Pixel2XL = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3.5,
+	    "horizontal": {
+	      "height": 411,
+	      "width": 823
+	    },
+	    "vertical": {
+	      "height": 823,
+	      "width": 411
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Pixel 2 XL",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Pixel 2 XL",
+	    "platform": "Android",
+	    "platformVersion": "8.0.0"
+	  }
+	}`)}
 
 	// LGOptimusL70 device
-	LGOptimusL70 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "LG Optimus L70",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 384
-          },
-          "device-pixel-ratio": 1.25,
-          "vertical": {
-            "width": 384,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "4.4.2",
-          "architecture": "",
-          "model": "LGMS323",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	LGOptimusL70 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1.25,
+	    "horizontal": {
+	      "height": 384,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 384
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "LG Optimus L70",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "LGMS323",
+	    "platform": "Android",
+	    "platformVersion": "4.4.2"
+	  }
+	}`)}
 
 	// NokiaN9 device
-	NokiaN9 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nokia N9",
-        "screen": {
-          "horizontal": {
-            "width": 854,
-            "height": 480
-          },
-          "device-pixel-ratio": 1,
-          "vertical": {
-            "width": 480,
-            "height": 854
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
-        "type": "phone"
-      }`)}
+	NokiaN9 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1,
+	    "horizontal": {
+	      "height": 480,
+	      "width": 854
+	    },
+	    "vertical": {
+	      "height": 854,
+	      "width": 480
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nokia N9",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13"
+	}`)}
 
 	// NokiaLumia520 device
-	NokiaLumia520 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nokia Lumia 520",
-        "screen": {
-          "horizontal": {
-            "width": 533,
-            "height": 320
-          },
-          "device-pixel-ratio": 1.5,
-          "vertical": {
-            "width": 320,
-            "height": 533
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
-        "type": "phone"
-      }`)}
+	NokiaLumia520 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1.5,
+	    "horizontal": {
+	      "height": 320,
+	      "width": 533
+	    },
+	    "vertical": {
+	      "height": 533,
+	      "width": 320
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nokia Lumia 520",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)"
+	}`)}
 
 	// MicrosoftLumia550 device
-	MicrosoftLumia550 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Microsoft Lumia 550",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 640,
-            "height": 360
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
-        "type": "phone"
-      }`)}
+	MicrosoftLumia550 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 360,
+	      "width": 640
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Microsoft Lumia 550",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
+	}`)}
 
 	// MicrosoftLumia950 device
-	MicrosoftLumia950 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Microsoft Lumia 950",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 4,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
-        "type": "phone"
-      }`)}
+	MicrosoftLumia950 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 4,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Microsoft Lumia 950",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
+	}`)}
 
 	// GalaxySIII device
-	GalaxySIII = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Galaxy S III",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "4.0",
-          "architecture": "",
-          "model": "GT-I9300",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	GalaxySIII = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Galaxy S III",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "GT-I9300",
+	    "platform": "Android",
+	    "platformVersion": "4.0"
+	  }
+	}`)}
 
 	// GalaxyS5 device
-	GalaxyS5 = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "Galaxy S5",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "5.0",
-          "architecture": "",
-          "model": "SM-G900P",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	GalaxyS5 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Galaxy S5",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "SM-G900P",
+	    "platform": "Android",
+	    "platformVersion": "5.0"
+	  }
+	}`)}
 
 	// JioPhone2 device
-	JioPhone2 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "JioPhone 2",
-        "screen": {
-          "horizontal": {
-            "width": 320,
-            "height": 240
-          },
-          "device-pixel-ratio": 1,
-          "vertical": {
-            "width": 240,
-            "height": 320
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
-        "type": "phone"
-      }`)}
+	JioPhone2 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1,
+	    "horizontal": {
+	      "height": 240,
+	      "width": 320
+	    },
+	    "vertical": {
+	      "height": 320,
+	      "width": 240
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "JioPhone 2",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5"
+	}`)}
 
 	// KindleFireHDX device
-	KindleFireHDX = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Kindle Fire HDX",
-        "screen": {
-          "horizontal": {
-            "width": 1280,
-            "height": 800
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 800,
-            "height": 1280
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
-        "type": "tablet"
-      }`)}
+	KindleFireHDX = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 800,
+	      "width": 1280
+	    },
+	    "vertical": {
+	      "height": 1280,
+	      "width": 800
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Kindle Fire HDX",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true"
+	}`)}
 
 	// IPadMini device
-	IPadMini = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "iPad Mini",
-        "screen": {
-          "horizontal": {
-            "width": 1024,
-            "height": 768
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 768,
-            "height": 1024
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
-        "type": "tablet"
-      }`)}
+	IPadMini = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 768,
+	      "width": 1024
+	    },
+	    "vertical": {
+	      "height": 1024,
+	      "width": 768
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "iPad Mini",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
+	}`)}
 
 	// IPad device
-	IPad = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPad",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/iPad-landscape.avif)",
-              "insets": {
-                "left": 112,
-                "top": 56,
-                "right": 116,
-                "bottom": 52
-              }
-            },
-            "width": 1024,
-            "height": 768
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/iPad-portrait.avif)",
-              "insets": {
-                "left": 52,
-                "top": 114,
-                "right": 55,
-                "bottom": 114
-              }
-            },
-            "width": 768,
-            "height": 1024
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
-        "type": "tablet"
-      }`)}
+	IPad = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 768,
+	      "outline": {
+	        "image": "@url(optimized/iPad-landscape.avif)",
+	        "insets": {
+	          "bottom": 52,
+	          "left": 112,
+	          "right": 116,
+	          "top": 56
+	        }
+	      },
+	      "width": 1024
+	    },
+	    "vertical": {
+	      "height": 1024,
+	      "outline": {
+	        "image": "@url(optimized/iPad-portrait.avif)",
+	        "insets": {
+	          "bottom": 114,
+	          "left": 52,
+	          "right": 55,
+	          "top": 114
+	        }
+	      },
+	      "width": 768
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPad",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
+	}`)}
 
 	// IPadPro device
-	IPadPro = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "iPad Pro",
-        "screen": {
-          "horizontal": {
-            "width": 1366,
-            "height": 1024
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 1024,
-            "height": 1366
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
-        "type": "tablet"
-      }`)}
+	IPadPro = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 1024,
+	      "width": 1366
+	    },
+	    "vertical": {
+	      "height": 1366,
+	      "width": 1024
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "iPad Pro",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
+	}`)}
 
 	// BlackberryPlayBook device
-	BlackberryPlayBook = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Blackberry PlayBook",
-        "screen": {
-          "horizontal": {
-            "width": 1024,
-            "height": 600
-          },
-          "device-pixel-ratio": 1,
-          "vertical": {
-            "width": 600,
-            "height": 1024
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
-        "type": "tablet"
-      }`)}
+	BlackberryPlayBook = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1,
+	    "horizontal": {
+	      "height": 600,
+	      "width": 1024
+	    },
+	    "vertical": {
+	      "height": 1024,
+	      "width": 600
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Blackberry PlayBook",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+"
+	}`)}
 
 	// Nexus10 device
-	Nexus10 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nexus 10",
-        "screen": {
-          "horizontal": {
-            "width": 1280,
-            "height": 800
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 800,
-            "height": 1280
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "6.0.1",
-          "architecture": "",
-          "model": "Nexus 10",
-          "mobile": false
-        },
-        "type": "tablet"
-      }`)}
+	Nexus10 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 800,
+	      "width": 1280
+	    },
+	    "vertical": {
+	      "height": 1280,
+	      "width": 800
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 10",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": false,
+	    "model": "Nexus 10",
+	    "platform": "Android",
+	    "platformVersion": "6.0.1"
+	  }
+	}`)}
 
 	// Nexus7 device
-	Nexus7 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Nexus 7",
-        "screen": {
-          "horizontal": {
-            "width": 960,
-            "height": 600
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 600,
-            "height": 960
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "6.0.1",
-          "architecture": "",
-          "model": "Nexus 7",
-          "mobile": false
-        },
-        "type": "tablet"
-      }`)}
+	Nexus7 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 600,
+	      "width": 960
+	    },
+	    "vertical": {
+	      "height": 960,
+	      "width": 600
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Nexus 7",
+	  "type": "tablet",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": false,
+	    "model": "Nexus 7",
+	    "platform": "Android",
+	    "platformVersion": "6.0.1"
+	  }
+	}`)}
 
 	// GalaxyNote3 device
-	GalaxyNote3 = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Galaxy Note 3",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-        "user-agent-metadata": {
-            "platform": "Android",
-            "platformVersion": "4.3",
-            "architecture": "",
-            "model": "SM-N900T",
-            "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	GalaxyNote3 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Galaxy Note 3",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "SM-N900T",
+	    "platform": "Android",
+	    "platformVersion": "4.3"
+	  }
+	}`)}
 
 	// GalaxyNoteII device
-	GalaxyNoteII = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Galaxy Note II",
-        "screen": {
-          "horizontal": {
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "4.1",
-          "architecture": "",
-          "model": "GT-N7100",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	GalaxyNoteII = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 360,
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Galaxy Note II",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "GT-N7100",
+	    "platform": "Android",
+	    "platformVersion": "4.1"
+	  }
+	}`)}
 
 	// LaptopWithTouch device
-	LaptopWithTouch = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Laptop with touch",
-        "screen": {
-          "horizontal": {
-            "width": 1280,
-            "height": 950
-          },
-          "device-pixel-ratio": 1,
-          "vertical": {
-            "width": 950,
-            "height": 1280
-          }
-        },
-        "capabilities": [
-          "touch"
-        ],
-        "user-agent": "",
-        "type": "notebook",
-        "modes": [
-          {
-            "title": "default",
-            "orientation": "horizontal"
-          }
-        ]
-      }`)}
+	LaptopWithTouch = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch"
+	  ],
+	  "modes": [
+	    {
+	      "orientation": "horizontal",
+	      "title": "default"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1,
+	    "horizontal": {
+	      "height": 950,
+	      "width": 1280
+	    },
+	    "vertical": {
+	      "height": 1280,
+	      "width": 950
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Laptop with touch",
+	  "type": "notebook",
+	  "user-agent": ""
+	}`)}
 
 	// LaptopWithHiDPIScreen device
-	LaptopWithHiDPIScreen = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Laptop with HiDPI screen",
-        "screen": {
-          "horizontal": {
-            "width": 1440,
-            "height": 900
-          },
-          "device-pixel-ratio": 2,
-          "vertical": {
-            "width": 900,
-            "height": 1440
-          }
-        },
-        "capabilities": [],
-        "user-agent": "",
-        "type": "notebook",
-        "modes": [
-          {
-            "title": "default",
-            "orientation": "horizontal"
-          }
-        ]
-      }`)}
+	LaptopWithHiDPIScreen = Device{gson.NewFrom(`{
+	  "capabilities": [],
+	  "modes": [
+	    {
+	      "orientation": "horizontal",
+	      "title": "default"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2,
+	    "horizontal": {
+	      "height": 900,
+	      "width": 1440
+	    },
+	    "vertical": {
+	      "height": 1440,
+	      "width": 900
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Laptop with HiDPI screen",
+	  "type": "notebook",
+	  "user-agent": ""
+	}`)}
 
 	// LaptopWithMDPIScreen device
-	LaptopWithMDPIScreen = Device{gjson.Parse(`{
-        "show-by-default": false,
-        "title": "Laptop with MDPI screen",
-        "screen": {
-          "horizontal": {
-            "width": 1280,
-            "height": 800
-          },
-          "device-pixel-ratio": 1,
-          "vertical": {
-            "width": 800,
-            "height": 1280
-          }
-        },
-        "capabilities": [],
-        "user-agent": "",
-        "type": "notebook",
-        "modes": [
-          {
-            "title": "default",
-            "orientation": "horizontal"
-          }
-        ]
-      }`)}
+	LaptopWithMDPIScreen = Device{gson.NewFrom(`{
+	  "capabilities": [],
+	  "modes": [
+	    {
+	      "orientation": "horizontal",
+	      "title": "default"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 1,
+	    "horizontal": {
+	      "height": 800,
+	      "width": 1280
+	    },
+	    "vertical": {
+	      "height": 1280,
+	      "width": 800
+	    }
+	  },
+	  "show-by-default": false,
+	  "title": "Laptop with MDPI screen",
+	  "type": "notebook",
+	  "user-agent": ""
+	}`)}
 
 	// MotoG4 device
-	MotoG4 = Device{gjson.Parse(`{
-        "show-by-default": true,
-        "title": "Moto G4",
-        "screen": {
-          "horizontal": {
-            "outline": {
-              "image": "@url(optimized/MotoG4-landscape.avif)",
-              "insets": {
-                "left": 91,
-                "top": 30,
-                "right": 74,
-                "bottom": 30
-              }
-            },
-            "width": 640,
-            "height": 360
-          },
-          "device-pixel-ratio": 3,
-          "vertical": {
-            "outline": {
-              "image": "@url(optimized/MotoG4-portrait.avif)",
-              "insets": {
-                "left": 30,
-                "top": 91,
-                "right": 30,
-                "bottom": 74
-              }
-            },
-            "width": 360,
-            "height": 640
-          }
-        },
-        "capabilities": [
-          "touch",
-          "mobile"
-        ],
-        "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-        "user-agent-metadata": {
-          "platform": "Android",
-          "platformVersion": "6.0.1",
-          "architecture": "",
-          "model": "Moto G (4)",
-          "mobile": true
-        },
-        "type": "phone"
-      }`)}
+	MotoG4 = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 360,
+	      "outline": {
+	        "image": "@url(optimized/MotoG4-landscape.avif)",
+	        "insets": {
+	          "bottom": 30,
+	          "left": 91,
+	          "right": 74,
+	          "top": 30
+	        }
+	      },
+	      "width": 640
+	    },
+	    "vertical": {
+	      "height": 640,
+	      "outline": {
+	        "image": "@url(optimized/MotoG4-portrait.avif)",
+	        "insets": {
+	          "bottom": 74,
+	          "left": 30,
+	          "right": 30,
+	          "top": 91
+	        }
+	      },
+	      "width": 360
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Moto G4",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+	  "user-agent-metadata": {
+	    "architecture": "",
+	    "mobile": true,
+	    "model": "Moto G (4)",
+	    "platform": "Android",
+	    "platformVersion": "6.0.1"
+	  }
+	}`)}
 
 	// SurfaceDuo device
-	SurfaceDuo = Device{gjson.Parse(`{
-          "show-by-default": true,
-          "dual-screen": true,
-          "title": "Surface Duo",
-          "screen": {
-              "horizontal": {
-                  "width": 720,
-                  "height": 540
-              },
-              "device-pixel-ratio": 2.5,
-              "vertical": {
-                  "width": 540,
-                  "height": 720
-              },
-              "vertical-spanned": {
-                  "width": 1114,
-                  "height": 720,
-                  "hinge": {
-                      "width": 34,
-                      "height": 720,
-                      "x": 540,
-                      "y": 0,
-                      "contentColor": {
-                          "r": 38,
-                          "g": 38,
-                          "b": 38,
-                          "a": 1
-                      }
-                  }
-              },
-              "horizontal-spanned": {
-                  "width": 720,
-                  "height": 1114,
-                  "hinge": {
-                      "width": 720,
-                      "height": 34,
-                      "x": 0,
-                      "y": 540,
-                      "contentColor": {
-                        "r": 38,
-                        "g": 38,
-                        "b": 38,
-                        "a": 1
-                      }
-                  }
-              }
-          },
-          "capabilities": [
-              "touch",
-              "mobile"
-          ],
-          "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-          "type": "phone",
-          "modes": [
-              {
-                  "title": "default",
-                  "orientation": "vertical",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "default",
-                  "orientation": "horizontal",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "spanned",
-                  "orientation": "vertical-spanned",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "spanned",
-                  "orientation": "horizontal-spanned",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              }
-          ]
-      }`)}
+	SurfaceDuo = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "dual-screen": true,
+	  "modes": [
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "vertical",
+	      "title": "default"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "horizontal",
+	      "title": "default"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "vertical-spanned",
+	      "title": "spanned"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "horizontal-spanned",
+	      "title": "spanned"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 2.5,
+	    "horizontal": {
+	      "height": 540,
+	      "width": 720
+	    },
+	    "horizontal-spanned": {
+	      "height": 1114,
+	      "hinge": {
+	        "contentColor": {
+	          "a": 1,
+	          "b": 38,
+	          "g": 38,
+	          "r": 38
+	        },
+	        "height": 34,
+	        "width": 720,
+	        "x": 0,
+	        "y": 540
+	      },
+	      "width": 720
+	    },
+	    "vertical": {
+	      "height": 720,
+	      "width": 540
+	    },
+	    "vertical-spanned": {
+	      "height": 720,
+	      "hinge": {
+	        "contentColor": {
+	          "a": 1,
+	          "b": 38,
+	          "g": 38,
+	          "r": 38
+	        },
+	        "height": 720,
+	        "width": 34,
+	        "x": 540,
+	        "y": 0
+	      },
+	      "width": 1114
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Surface Duo",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
+	}`)}
 
 	// GalaxyFold device
-	GalaxyFold = Device{gjson.Parse(`{
-          "show-by-default": true,
-          "dual-screen": true,
-          "title": "Galaxy Fold",
-          "screen": {
-              "horizontal": {
-                  "width": 653,
-                  "height": 280
-              },
-              "device-pixel-ratio": 3,
-              "vertical": {
-                  "width": 280,
-                  "height": 653
-              },
-              "vertical-spanned": {
-                  "width": 717,
-                  "height": 512
-              },
-              "horizontal-spanned": {
-                  "width": 512,
-                  "height": 717
-              }
-          },
-          "capabilities": [
-              "touch",
-              "mobile"
-          ],
-          "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-          "type": "phone",
-          "modes": [
-              {
-                  "title": "default",
-                  "orientation": "vertical",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "default",
-                  "orientation": "horizontal",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "spanned",
-                  "orientation": "vertical-spanned",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              },
-              {
-                  "title": "spanned",
-                  "orientation": "horizontal-spanned",
-                  "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
-              }
-          ]
-      }`)}
+	GalaxyFold = Device{gson.NewFrom(`{
+	  "capabilities": [
+	    "touch",
+	    "mobile"
+	  ],
+	  "dual-screen": true,
+	  "modes": [
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "vertical",
+	      "title": "default"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "horizontal",
+	      "title": "default"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "vertical-spanned",
+	      "title": "spanned"
+	    },
+	    {
+	      "insets": {
+	        "bottom": 0,
+	        "left": 0,
+	        "right": 0,
+	        "top": 0
+	      },
+	      "orientation": "horizontal-spanned",
+	      "title": "spanned"
+	    }
+	  ],
+	  "screen": {
+	    "device-pixel-ratio": 3,
+	    "horizontal": {
+	      "height": 280,
+	      "width": 653
+	    },
+	    "horizontal-spanned": {
+	      "height": 717,
+	      "width": 512
+	    },
+	    "vertical": {
+	      "height": 653,
+	      "width": 280
+	    },
+	    "vertical-spanned": {
+	      "height": 512,
+	      "width": 717
+	    }
+	  },
+	  "show-by-default": true,
+	  "title": "Galaxy Fold",
+	  "type": "phone",
+	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
+	}`)}
 )

@@ -1,15 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 
 	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
 	log.Println("setup project...")
+
+	fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 
 	nodejsDeps()
 	golangDeps()

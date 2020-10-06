@@ -16,11 +16,14 @@ func main() {
 
 		package proto
 
-		import "reflect"
+		import (
+			"reflect"
+			"github.com/ysmood/gson"
+		)
 
 		// Version of cdp protocol
 		const Version = "v{{.major}}.{{.minor}}"
-	`, "major", schema.Get("version.major").String(), "minor", schema.Get("version.minor").String())
+	`, "major", schema.Get("version.major").Str(), "minor", schema.Get("version.minor").Str())
 
 	init := `
 		var types = map[string]reflect.Type{`
@@ -30,9 +33,6 @@ func main() {
 		package proto_test
 
 		import (
-			"testing"
-
-			"github.com/ysmood/got"
 			"github.com/go-rod/rod/lib/proto"
 		)
 	`
@@ -71,7 +71,7 @@ func main() {
 func (d *definition) comment() string {
 	comment := d.description
 
-	if comment == "" {
+	if comment == "<nil>" {
 		comment = "..."
 	}
 
@@ -131,23 +131,23 @@ func (d *definition) format() (code string) {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
 				code += utils.S(`
-				// MethodName of the command
-				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+				// ProtoName of the command
+				func (m {{.name}}) ProtoName() string { return "{{.method}}" }
 
 				// Call of the command, sessionID is optional.
-				func (m {{.name}}) Call(caller Caller) (*{{.name}}Result, error) {
+				func (m {{.name}}) Call(c Client) (*{{.name}}Result, error) {
 					var res {{.name}}Result
-					return &res, Call(m.MethodName(), m, &res, caller)
+					return &res, call(m.ProtoName(), m, &res, c)
 				}
 				`, "name", d.name, "method", method)
 			} else {
 				code += utils.S(`
-				// MethodName of the command
-				func (m {{.name}}) MethodName() string { return "{{.method}}" }
+				// ProtoName of the command
+				func (m {{.name}}) ProtoName() string { return "{{.method}}" }
 
 				// Call of the command, sessionID is optional.
-				func (m {{.name}}) Call(caller Caller) error {
-					return Call(m.MethodName(), m, nil, caller)
+				func (m {{.name}}) Call(c Client) error {
+					return call(m.ProtoName(), m, nil, c)
 				}
 				`, "name", d.name, "method", method)
 			}
@@ -155,8 +155,8 @@ func (d *definition) format() (code string) {
 
 		if d.cdpType == cdpTypeEvents {
 			code += utils.S(`
-				// MethodName interface
-				func (evt {{.name}}) MethodName() string {
+				// ProtoName interface
+				func (evt {{.name}}) ProtoName() string {
 					return "{{.event}}"
 				}
 			`, "name", d.name, "event", d.domain.name+"."+d.originName)
@@ -177,7 +177,7 @@ func (d *definition) formatTests() (code string) {
 			return utils.S(`
 				func (t C) {{.name}}() {
 					c := &Client{}
-					_, err := proto.{{.name}}{}.Call(&Caller{c})
+					_, err := proto.{{.name}}{}.Call(c)
 					t.Nil(err)
 				}
 				`, "name", d.name)
@@ -186,7 +186,7 @@ func (d *definition) formatTests() (code string) {
 		return utils.S(`
 			func (t C) {{.name}}() {
 				c := &Client{}
-				err := proto.{{.name}}{}.Call(&Caller{c})
+				err := proto.{{.name}}{}.Call(c)
 				t.Nil(err)
 			}
 			`, "name", d.name)
@@ -195,7 +195,7 @@ func (d *definition) formatTests() (code string) {
 		return utils.S(`
 		func (t C) {{.name}}() {
 			e := proto.{{.name}}{}
-			e.MethodName()
+			e.ProtoName()
 		}
 		`, "name", d.name)
 	}

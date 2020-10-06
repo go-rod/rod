@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,6 +12,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -19,10 +21,22 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
 	"github.com/ysmood/gotrace/pkg/testleak"
+	"github.com/ysmood/gson"
+	"github.com/ysmood/leakless"
 )
 
-var slash = filepath.FromSlash
+// entry point for all tests
+func Test(t *testing.T) {
+	testleak.Check(t, 0)
 
+	// make sure executables are ready
+	leakless.GetLeaklessBin()
+	utils.E(launcher.NewBrowser().Get())
+
+	got.Each(t, newCasePool(t).get)
+}
+
+// context of a test case
 type C struct {
 	got.Assertion
 
@@ -31,42 +45,95 @@ type C struct {
 	page    *rod.Page
 }
 
-func Test(t *testing.T) {
-	testleak.Check(t, 0)
+// context pool for tests
+type ContextPool struct {
+	list   chan C
+	logger *log.Logger
+}
 
+func newCasePool(t *testing.T) ContextPool {
+	parallel := 1
+	if testing.Short() {
+		parallel = runtime.GOMAXPROCS(0)
+		fmt.Println("parallel test:", parallel)
+	}
+
+	logName := fmt.Sprintf("[%s]test_cdp.log", time.Now().Local().Format("01-02_15:04:05"))
+	lf, _ := os.Create(filepath.Join("tmp", logName))
+
+	cp := ContextPool{
+		list:   make(chan C, parallel),
+		logger: log.New(lf, "", log.Ltime),
+	}
+
+	t.Cleanup(func() {
+		go func() {
+			for i := 0; i < parallel; i++ {
+				(<-cp.list).browser.MustClose()
+			}
+		}()
+	})
+
+	wg := &sync.WaitGroup{}
+	wg.Add(parallel)
+	for i := 0; i < parallel; i++ {
+		go func() {
+			cp.list <- cp.new()
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+
+	return cp
+}
+
+func (cp ContextPool) new() C {
 	u := launcher.New().MustLaunch()
 
-	mc := newMockClient(t, cdp.New(u))
+	mc := newMockClient(cdp.New(u).Logger(cp.logger))
 
 	browser := rod.New().ControlURL("").Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
 		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
 			Width: 800, Height: 600, DeviceScaleFactor: 1,
 		})
-	defer browser.MustClose()
 
 	page := getOnePage(browser)
 
-	got.Each(t, func(t *testing.T) C {
+	return C{
+		mc:      mc,
+		browser: browser,
+		page:    page,
+	}
+}
+
+// get a test context
+func (cp ContextPool) get(t *testing.T) C {
+	if testing.Short() {
+		t.Parallel()
+	}
+
+	c := <-cp.list
+	t.Cleanup(func() { cp.list <- c })
+
+	if !testing.Short() {
 		testleak.Check(t, 0)
+	}
 
-		t.Cleanup(func() {
-			for _, p := range browser.MustPages() {
-				if p.TargetID != page.TargetID {
-					t.Fatal("leaking page: " + p.MustInfo().URL)
-				}
+	t.Cleanup(func() {
+		for _, p := range c.browser.MustPages() {
+			if p.TargetID != c.page.TargetID {
+				t.Fatal("leaking page: " + p.MustInfo().URL)
 			}
-
-			mc.setCall(nil) // panic if setCall leaks
-		})
-
-		return C{
-			Assertion: got.New(t),
-			mc:        mc,
-			browser:   browser,
-			page:      page,
 		}
+
+		c.mc.setCall(nil)
 	})
+
+	c.mc.t = t
+	c.Assertion = got.New(t)
+
+	return c
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
@@ -143,19 +210,19 @@ func (mr *MockReader) Read(p []byte) (n int, err error) {
 
 type Call func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 
-var _ rod.Client = &MockClient{}
+var _ rod.CDPClient = &MockClient{}
 
 type MockClient struct {
 	sync.RWMutex
-	t         *testing.T
+	t         got.Testable
 	principal *cdp.Client
 	call      Call
 	connect   func() error
 	event     <-chan *cdp.Event
 }
 
-func newMockClient(t *testing.T, c *cdp.Client) *MockClient {
-	return &MockClient{t: t, principal: c}
+func newMockClient(c *cdp.Client) *MockClient {
+	return &MockClient{principal: c}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
@@ -191,7 +258,8 @@ func (mc *MockClient) setCall(fn Call) {
 	defer mc.Unlock()
 
 	if mc.call != nil {
-		mc.t.Fatal("leaking MockClient.stub")
+		mc.t.Logf("leaking MockClient.stub")
+		mc.t.FailNow()
 	}
 	mc.call = fn
 }
@@ -226,25 +294,26 @@ func (mc *MockClient) stubCounter() {
 	})
 }
 
-type StubSend func() (proto.JSON, error)
+type StubSend func() (gson.JSON, error)
 
 // When call the cdp.Client.Call the nth time use fn instead.
 // Use p to filter method.
-func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (proto.JSON, error)) {
+func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (gson.JSON, error)) {
 	if p == nil {
-		mc.t.Fatal("p must be specified")
+		mc.t.Logf("p must be specified")
+		mc.t.FailNow()
 	}
 
 	count := int64(0)
 
 	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		if method == p.MethodName() {
+		if method == p.ProtoName() {
 			c := atomic.AddInt64(&count, 1)
-			if c == int64(nth) {
+			if int(c) == nth {
 				mc.resetCall()
-				j, err := fn(func() (proto.JSON, error) {
+				j, err := fn(func() (gson.JSON, error) {
 					b, err := mc.principal.Call(ctx, sessionID, method, params)
-					return proto.NewJSON(b), err
+					return gson.New(b), err
 				})
 				if err != nil {
 					return nil, err
@@ -259,7 +328,9 @@ func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (pro
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
 func (mc *MockClient) stubErr(nth int, p proto.Payload) {
-	mc.stub(nth, p, func(send StubSend) (proto.JSON, error) {
-		return proto.JSON{}, errors.New("mock error")
+	mc.stub(nth, p, func(send StubSend) (gson.JSON, error) {
+		return gson.New(nil), errors.New("mock error")
 	})
 }
+
+var slash = filepath.FromSlash

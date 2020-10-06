@@ -52,7 +52,14 @@ There are several helper functions in the [setup_test.go](../setup_test.go) for 
 
 1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run /Click`
 
-### Convention of the git commit message
+### Parallel execution of tests
+
+Because we check goroutine leak on each test, parallel execution will pollution the global goroutine stack.
+You can't have your cake and eat it. By default, we trade speed for safety.
+
+To enable parallel execution, you can use the `-short` flag, for example: `go test -short`. When it's enabled, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well.
+
+## Convention of the git commit message
 
 The commit message follows the rules [here](https://github.com/torvalds/subsurface-for-dirk/blame/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88). We don't use rules like [Conventional Commits](https://www.conventionalcommits.org/) because it's hard for beginners to write correct commit messages. It will encourage reviewers to spend more time on high-level problems, not the details. We also want to reduce the overhead when reading the git-blame, for example, `fix: correct minor typos in code` is the same as `fix minor typos in code`, there's no need to repeat content in the title line.
 

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -14,7 +13,7 @@ import (
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 // HijackRequests creates a new router instance for requests hijacking.
@@ -31,29 +30,38 @@ func (p *Page) HijackRequests() *HijackRouter {
 
 // HijackRouter context
 type HijackRouter struct {
-	run        func()
-	stopEvents func()
-	handlers   []*hijackHandler
-	enable     *proto.FetchEnable
-	caller     proto.Caller
-	browser    *Browser
+	run      func()
+	stop     func()
+	handlers []*hijackHandler
+	enable   *proto.FetchEnable
+	client   proto.Client
+	browser  *Browser
 }
 
-func newHijackRouter(browser *Browser, caller proto.Caller) *HijackRouter {
+func newHijackRouter(browser *Browser, client proto.Client) *HijackRouter {
 	return &HijackRouter{
 		enable:   &proto.FetchEnable{},
 		browser:  browser,
-		caller:   caller,
+		client:   client,
 		handlers: []*hijackHandler{},
 	}
 }
 
 func (r *HijackRouter) initEvents() *HijackRouter {
-	ctx, _, sessionID := r.caller.CallContext()
-	eventCtx, cancel := context.WithCancel(ctx)
-	r.stopEvents = cancel
+	ctx := r.browser.ctx
+	if cta, ok := r.client.(proto.Contextable); ok {
+		ctx = cta.GetContext()
+	}
 
-	_ = r.enable.Call(r.caller)
+	var sessionID proto.TargetSessionID
+	if tsa, ok := r.client.(proto.TargetSessionable); ok {
+		sessionID = tsa.GetTargetSessionID()
+	}
+
+	eventCtx, cancel := context.WithCancel(ctx)
+	r.stop = cancel
+
+	_ = r.enable.Call(r.client)
 
 	r.run = r.browser.eachEvent(eventCtx, proto.TargetSessionID(sessionID), func(e *proto.FetchRequestPaused) bool {
 		go func() {
@@ -64,7 +72,7 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 					if ctx.continueRequest != nil {
 						ctx.continueRequest.RequestID = e.RequestID
-						err := ctx.continueRequest.Call(r.caller)
+						err := ctx.continueRequest.Call(r.client)
 						if err != nil {
 							ctx.OnError(err)
 						}
@@ -76,14 +84,14 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 					}
 
 					if ctx.Response.fail.ErrorReason != "" {
-						err := ctx.Response.fail.Call(r.caller)
+						err := ctx.Response.fail.Call(r.client)
 						if err != nil {
 							ctx.OnError(err)
 						}
 						return
 					}
 
-					err := ctx.Response.payload.Call(r.caller)
+					err := ctx.Response.payload.Call(r.client)
 					if err != nil {
 						ctx.OnError(err)
 						return
@@ -113,7 +121,7 @@ func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceTyp
 		handler: handler,
 	})
 
-	return r.enable.Call(r.caller)
+	return r.enable.Call(r.client)
 }
 
 // Remove handler via the pattern
@@ -129,7 +137,7 @@ func (r *HijackRouter) Remove(pattern string) error {
 	r.enable.Patterns = patterns
 	r.handlers = handlers
 
-	return r.enable.Call(r.caller)
+	return r.enable.Call(r.client)
 }
 
 // new context
@@ -162,11 +170,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 				RequestID: e.RequestID,
 			},
 		},
-		OnError: func(err error) {
-			if err != context.Canceled {
-				log.Println("[rod hijack err]", err)
-			}
-		},
+		OnError: func(err error) {},
 	}
 }
 
@@ -177,8 +181,8 @@ func (r *HijackRouter) Run() {
 
 // Stop the router
 func (r *HijackRouter) Stop() error {
-	r.stopEvents()
-	return proto.FetchDisable{}.Call(r.caller)
+	r.stop()
+	return proto.FetchDisable{}.Call(r.client)
 }
 
 // hijackHandler to handle each request that match the regexp
@@ -214,7 +218,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 
 	defer func() { _ = res.Body.Close() }()
 
-	h.Response.payload.ResponseCode = int64(res.StatusCode)
+	h.Response.payload.ResponseCode = int(res.StatusCode)
 
 	list := []string{}
 	for k, vs := range res.Header {
@@ -273,8 +277,8 @@ func (ctx *HijackRequest) Body() string {
 }
 
 // JSONBody of the request
-func (ctx *HijackRequest) JSONBody() gjson.Result {
-	return gjson.Parse(ctx.Body())
+func (ctx *HijackRequest) JSONBody() gson.JSON {
+	return gson.NewFrom(ctx.Body())
 }
 
 // Req returns the underlaying http.Request instance that will be used to send the request.
@@ -387,7 +391,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 			_ = proto.BrowserSetDownloadBehavior{
 				Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
 				BrowserContextID: r.browser.BrowserContextID,
-			}.Call(r.caller)
+			}.Call(r.client)
 		}()
 
 		var body []byte
@@ -425,7 +429,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 					wg.Done()
 					return
 				}
-				u = res.Value.Str
+				u = res.Value.Str()
 			}
 
 			if strings.HasPrefix(u, "data:") {

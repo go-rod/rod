@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"image/png"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,6 +20,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func (c C) GetPageURL() {
@@ -33,11 +33,11 @@ func (c C) SetCookies() {
 	defer close()
 
 	page := c.page.MustSetCookies(&proto.NetworkCookieParam{
-		Name:  "a",
+		Name:  "cookie-a",
 		Value: "1",
 		URL:   url,
 	}, &proto.NetworkCookieParam{
-		Name:  "b",
+		Name:  "cookie-b",
 		Value: "2",
 		URL:   url,
 	}).MustNavigate(url)
@@ -50,6 +50,11 @@ func (c C) SetCookies() {
 
 	c.Eq("1", cookies[0].Value)
 	c.Eq("2", cookies[1].Value)
+
+	c.E(proto.NetworkClearBrowserCookies{}.Call(page))
+
+	cookies = page.MustCookies()
+	c.Len(cookies, 0)
 
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.TargetGetTargetInfo{})
@@ -64,26 +69,30 @@ func (c C) SetCookies() {
 func (c C) SetExtraHeaders() {
 	url, mux, close := utils.Serve("")
 	defer close()
-
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-
-	var out1, out2 string
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		out1 = r.Header.Get("a")
-		out2 = r.Header.Get("b")
-		wg.Done()
-	})
+	mux.HandleFunc("/", httpHTML("ok"))
 
 	page := c.browser.MustPage("")
 	defer page.MustClose()
 
-	defer page.MustSetExtraHeaders("a", "1", "b", "2")()
-	page.MustNavigate(url)
-	wg.Wait()
+	cleanup := page.MustSetExtraHeaders("a", "1", "b", "2")
 
-	c.Eq("1", out1)
-	c.Eq("2", out2)
+	var e proto.NetworkResponseReceived
+	wait := page.WaitEvent(&e)
+	page.MustNavigate(url)
+	wait()
+
+	c.Eq("1", e.Response.RequestHeaders["a"].Str())
+	c.Eq("2", e.Response.RequestHeaders["b"].Str())
+
+	cleanup()
+
+	e = proto.NetworkResponseReceived{}
+	wait = page.WaitEvent(&e)
+	page.MustNavigate(url)
+	wait()
+
+	c.Nil(e.Response.RequestHeaders["a"].Val())
+	c.Nil(e.Response.RequestHeaders["b"].Val())
 }
 
 func (c C) SetUserAgent() {
@@ -187,7 +196,7 @@ func (c C) SetViewport() {
 	page2 := c.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page2.MustClose()
 	res = page2.MustEval(`[window.innerWidth, window.innerHeight]`)
-	c.Neq(int64(317), res.Get("0").Int())
+	c.Neq(int(317), res.Get("0").Int())
 }
 
 func (c C) EmulateDevice() {
@@ -288,15 +297,15 @@ func (c C) PageEval() {
 
 	// reuse obj
 	obj := page.MustEvaluate(rod.NewEval(`() => () => 'ok'`).ByObject())
-	c.Eq("ok", page.MustEval(`f => f()`, obj).Str)
+	c.Eq("ok", page.MustEval(`f => f()`, obj).Str())
 }
 
 func (c C) PageEvalNilContext() {
 	page := c.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
-	c.mc.stub(1, proto.RuntimeEvaluate{}, func(send StubSend) (proto.JSON, error) {
-		return proto.JSON{}, &cdp.Error{Code: -32000}
+	c.mc.stub(1, proto.RuntimeEvaluate{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(nil), &cdp.Error{Code: -32000}
 	})
 	c.Eq(1, page.MustEval(`1`).Int())
 }
@@ -305,9 +314,9 @@ func (c C) PageExposeJSHelper() {
 	page := c.browser.MustPage(srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
-	c.Eq("undefined", page.MustEval("typeof(rod)").Str)
+	c.Eq("undefined", page.MustEval("typeof(rod)").Str())
 	page.ExposeJSHelper()
-	c.Eq("object", page.MustEval("typeof(rod)").Str)
+	c.Eq("object", page.MustEval("typeof(rod)").Str())
 }
 
 func (c C) PageWaitOpen() {
@@ -394,6 +403,8 @@ func (c C) PageWaitNavigation() {
 }
 
 func (c C) PageWaitRequestIdle() {
+	utils.Sleep(1) // make sure browser is not too busy
+
 	url, mux, close := utils.Serve("")
 	defer close()
 
@@ -421,7 +432,8 @@ func (c C) PageWaitRequestIdle() {
 	}`
 
 	waitReq := ""
-	c.browser.TraceLog(func(tm *rod.TraceMsg) {
+	c.browser.Logger(utils.Log(func(msg ...interface{}) {
+		tm := msg[0].(*rod.TraceMsg)
 		if tm.Type == rod.TraceTypeWaitRequests {
 			list := tm.Details.(map[string]string)
 			for _, v := range list {
@@ -429,8 +441,8 @@ func (c C) PageWaitRequestIdle() {
 				break
 			}
 		}
-	})
-	defer c.browser.TraceLog(nil)
+	}))
+	defer c.browser.Logger(rod.DefaultLogger)
 
 	c.browser.Trace(true)
 	wait := page.MustWaitRequestIdle("/r1")
@@ -518,16 +530,20 @@ func (c C) MouseClick() {
 }
 
 func (c C) MouseDrag() {
-	page := c.page.MustNavigate(srcFile("fixtures/drag.html")).MustWaitLoad()
+	utils.Sleep(1) // make sure browser is not too busy
+
+	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
+	page := c.page.MustNavigate(srcFile("fixtures/drag.html"))
+	wait()
 	mouse := page.Mouse
 
-	wait := make(chan struct{})
+	waitUp := make(chan struct{})
 	logs := []string{}
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) bool {
 		log := page.MustObjectsToJSON(e.Args).Join(" ")
 		logs = append(logs, log)
 		if strings.HasPrefix(log, `up`) {
-			close(wait)
+			close(waitUp)
 			return true
 		}
 		return false
@@ -538,7 +554,7 @@ func (c C) MouseDrag() {
 	c.E(mouse.Move(60, 80, 3))
 	mouse.MustUp("left")
 
-	<-wait
+	<-waitUp
 
 	c.Eq([]string{"move 3 3", "down 3 3", "move 22 28", "move 41 54", "move 60 80", "up 60 80"}, logs)
 }
@@ -618,12 +634,7 @@ func (c C) PageScreenshot() {
 	c.Eq(600, img.Bounds().Dy())
 	c.Nil(os.Stat(f))
 
-	c.E(os.RemoveAll(slash("tmp/screenshots")))
 	p.MustScreenshot("")
-
-	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
-	c.E(err)
-	c.Len(list, 1)
 
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.PageCaptureScreenshot{})
@@ -646,12 +657,7 @@ func (c C) ScreenshotFullPage() {
 	c.Eq(800, res.Get("w").Int())
 	c.Eq(600, res.Get("h").Int())
 
-	c.E(os.RemoveAll(slash("tmp/screenshots")))
 	p.MustScreenshotFullPage("")
-
-	list, err := ioutil.ReadDir(slash("tmp/screenshots"))
-	c.E(err)
-	c.Len(list, 1)
 
 	noEmulation := c.browser.MustPage(srcFile("fixtures/click.html"))
 	defer noEmulation.MustClose()
@@ -711,7 +717,7 @@ func (c C) PageScroll() {
 	c.E(p.Mouse.Scroll(200, 300, 5))
 	p.MustElement("button").MustWaitStable()
 	offset := p.MustEval("({x: window.pageXOffset, y: window.pageYOffset})")
-	c.Lt(int64(300), offset.Get("y").Int())
+	c.Lt(int(300), offset.Get("y").Int())
 }
 
 func (c C) PageConsoleLog() {
@@ -721,7 +727,7 @@ func (c C) PageConsoleLog() {
 	p.MustEval(`console.log(1, {b: ['test']})`)
 	wait()
 	c.Eq("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
-	c.Eq(`1 {"b":["test"]}`, p.MustObjectsToJSON(e.Args).Join(" "))
+	c.Eq(`1 map[b:[test]]`, p.MustObjectsToJSON(e.Args).Join(" "))
 }
 
 func (c C) PageOthers() {
@@ -759,7 +765,7 @@ func (c C) PageExpose() {
 	c.page.MustNavigate(srcFile("fixtures/click.html"))
 
 	c.page.MustEval(`exposedFunc({a: 'ok'})`)
-	c.Eq("ok", (<-cb)[0].Get("a").Str)
+	c.Eq("ok", (<-cb)[0].Get("a").Str())
 
 	c.page.MustEval(`exposedFunc('ok')`)
 	stop()

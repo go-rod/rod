@@ -15,7 +15,7 @@ import (
 	"regexp"
 
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 var token = os.Getenv("GH_ROBOT_TOKEN")
@@ -31,12 +31,10 @@ func main() {
 	data, err := utils.ReadString(issuePath)
 	utils.E(err)
 
-	issue := gjson.Parse(data).Get("issue")
+	issue := gson.New(data).Get("issue")
 
-	labels := issue.Get("labels").Array()
-
-	for _, l := range labels {
-		name := l.Get("name").Str
+	for _, l := range issue.Get("labels").Arr() {
+		name := l.Get("name").Str()
 		if name != "question" && name != "bug" {
 			log.Println("skip", name)
 			return
@@ -44,7 +42,7 @@ func main() {
 	}
 
 	num := issue.Get("number").Int()
-	body := issue.Get("body").Str
+	body := issue.Get("body").Str()
 
 	log.Println("check issue", num)
 
@@ -67,7 +65,9 @@ func main() {
 		log.Println(res.Status)
 
 		if res.StatusCode >= 400 {
-			log.Fatal(utils.MustReadString(res.Body))
+			str, err := ioutil.ReadAll(res.Body)
+			utils.E(err)
+			log.Fatal(string(str))
 		}
 	}
 }
@@ -77,7 +77,7 @@ func currentVer() string {
 	res, err := http.DefaultClient.Do(q)
 	utils.E(err)
 
-	currentVer := utils.MustReadJSON(res.Body).Get("0.tag_name").Str
+	currentVer := gson.New(res.Body).Get("0.tag_name").Str()
 
 	return currentVer
 }

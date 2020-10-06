@@ -1,10 +1,9 @@
 package rod
 
 import (
-	"encoding/json"
+	"reflect"
 
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/go-rod/rod/lib/utils"
 )
 
 type stateKey struct {
@@ -21,21 +20,20 @@ func (b *Browser) key(sessionID proto.TargetSessionID, methodName string) stateK
 	}
 }
 
-func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params json.RawMessage) {
+func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params interface{}) {
 	b.states.Store(b.key(sessionID, methodName), params)
 
 	key := ""
 	switch methodName {
-	case (proto.TargetSetDiscoverTargets{}).MethodName(): // only Target domain is special
-		method := &proto.TargetSetDiscoverTargets{}
-		utils.E(json.Unmarshal(params, method))
+	case (proto.TargetSetDiscoverTargets{}).ProtoName(): // only Target domain is special
+		method := reflect.Indirect(reflect.ValueOf(params)).Interface().(proto.TargetSetDiscoverTargets)
 		if !method.Discover {
-			key = (proto.TargetSetDiscoverTargets{}).MethodName()
+			key = (proto.TargetSetDiscoverTargets{}).ProtoName()
 		}
-	case (proto.EmulationClearDeviceMetricsOverride{}).MethodName():
-		key = (proto.EmulationSetDeviceMetricsOverride{}).MethodName()
-	case (proto.EmulationClearGeolocationOverride{}).MethodName():
-		key = (proto.EmulationSetGeolocationOverride{}).MethodName()
+	case (proto.EmulationClearDeviceMetricsOverride{}).ProtoName():
+		key = (proto.EmulationSetDeviceMetricsOverride{}).ProtoName()
+	case (proto.EmulationClearGeolocationOverride{}).ProtoName():
+		key = (proto.EmulationSetGeolocationOverride{}).ProtoName()
 	default:
 		domain, name := proto.ParseMethodName(methodName)
 		if name == "disable" {
@@ -49,43 +47,43 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 
 // LoadState into the method, seesionID can be empty.
 func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Payload) (has bool) {
-	data, has := b.states.Load(b.key(sessionID, method.MethodName()))
+	data, has := b.states.Load(b.key(sessionID, method.ProtoName()))
 	if has {
-		utils.E(json.Unmarshal(data.(json.RawMessage), method))
+		reflect.Indirect(reflect.ValueOf(method)).Set(
+			reflect.Indirect(reflect.ValueOf(data)),
+		)
 	}
 	return
 }
 
 // EnableDomain and returns a recover function to restore previous state
-func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, method proto.Payload) (recover func()) {
-	_, enabled := b.states.Load(b.key(sessionID, method.MethodName()))
+func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Payload) (recover func()) {
+	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
 
 	if !enabled {
-		payload, err := proto.Normalize(method)
-		utils.E(err)
-		_, _ = b.Call(b.ctx, string(sessionID), method.MethodName(), payload)
+		_, _ = b.Call(b.ctx, string(sessionID), req.ProtoName(), req)
 	}
 
 	return func() {
 		if !enabled {
-			if method.MethodName() == (proto.TargetSetDiscoverTargets{}).MethodName() { // only Target domain is special
+			if req.ProtoName() == (proto.TargetSetDiscoverTargets{}).ProtoName() { // only Target domain is special
 				_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
 				return
 			}
 
-			domain, _ := proto.ParseMethodName(method.MethodName())
+			domain, _ := proto.ParseMethodName(req.ProtoName())
 			_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
 		}
 	}
 }
 
 // DisableDomain and returns a recover function to restore previous state
-func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, method proto.Payload) (recover func()) {
-	_, enabled := b.states.Load(b.key(sessionID, method.MethodName()))
-	domain, _ := proto.ParseMethodName(method.MethodName())
+func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Payload) (recover func()) {
+	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
+	domain, _ := proto.ParseMethodName(req.ProtoName())
 
 	if enabled {
-		if method.MethodName() == (proto.TargetSetDiscoverTargets{}).MethodName() { // only Target domain is special
+		if req.ProtoName() == (proto.TargetSetDiscoverTargets{}).ProtoName() { // only Target domain is special
 			_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
 		} else {
 			_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
@@ -94,9 +92,7 @@ func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, method proto.Pa
 
 	return func() {
 		if enabled {
-			payload, err := proto.Normalize(method)
-			utils.E(err)
-			_, _ = b.Call(b.ctx, string(sessionID), method.MethodName(), payload)
+			_, _ = b.Call(b.ctx, string(sessionID), req.ProtoName(), req)
 		}
 	}
 }

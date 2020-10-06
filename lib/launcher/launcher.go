@@ -4,12 +4,12 @@ package launcher
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/go-rod/rod/lib/defaults"
@@ -224,7 +224,7 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 // For example, to reuse the same browser process for between 2 runs of a Go program, you can
 // do something like launcher.New().RemoteDebuggingPort(9222).MustLaunch()
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
-	return l.Set("remote-debugging-port", strconv.FormatInt(int64(port), 10))
+	return l.Set("remote-debugging-port", fmt.Sprintf("%d", port))
 }
 
 // Proxy switch. When disabled leakless will be disabled.

@@ -9,7 +9,6 @@ package rod
 
 import (
 	"context"
-	"encoding/json"
 	"reflect"
 	"sync"
 	"time"
@@ -23,8 +22,9 @@ import (
 	"github.com/ysmood/goob"
 )
 
-// Browser implements the proto.Caller interface
-var _ proto.Caller = &Browser{}
+// Browser implements these interfaces
+var _ proto.Client = &Browser{}
+var _ proto.Contextable = &Browser{}
 
 // Browser represents the browser.
 // It doesn't depends on file system, it should work with remote browser seamlessly.
@@ -38,14 +38,16 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
+	logger utils.Logger
+
 	slowmotion time.Duration // see defaults.slow
 	trace      bool          // see defaults.Trace
-	traceLog   TraceLog
 	headless   bool
+	monitor    string
 
 	defaultViewport *proto.EmulationSetDeviceMetricsOverride
 
-	client      Client
+	client      CDPClient
 	event       *goob.Observable // all the browser events from cdp client
 	targetsLock *sync.Mutex
 
@@ -62,7 +64,8 @@ func New() *Browser {
 		sleeper:         DefaultSleeper,
 		slowmotion:      defaults.Slow,
 		trace:           defaults.Trace,
-		traceLog:        defaultTraceLog,
+		monitor:         defaults.Monitor,
+		logger:          DefaultLogger,
 		defaultViewport: devices.LaptopWithMDPIScreen.Metrics(true),
 		targetsLock:     &sync.Mutex{},
 		states:          &sync.Map{},
@@ -100,18 +103,20 @@ func (b *Browser) Trace(enable bool) *Browser {
 	return b
 }
 
-// TraceLog overrides the default log functions for tracing
-func (b *Browser) TraceLog(l TraceLog) *Browser {
-	if l == nil {
-		b.traceLog = defaultTraceLog
-	} else {
-		b.traceLog = l
-	}
+// Monitor address to listen if not empty. Shortcut for Browser.ServeMonitor
+func (b *Browser) Monitor(url string) *Browser {
+	b.monitor = url
+	return b
+}
+
+// Logger overrides the default log functions for tracing
+func (b *Browser) Logger(l utils.Logger) *Browser {
+	b.logger = l
 	return b
 }
 
 // Client set the cdp client
-func (b *Browser) Client(c Client) *Browser {
+func (b *Browser) Client(c CDPClient) *Browser {
 	b.client = c
 	return b
 }
@@ -141,8 +146,8 @@ func (b *Browser) Connect() error {
 
 	b.initEvents()
 
-	if defaults.Monitor != "" {
-		launcher.NewBrowser().Open(b.ServeMonitor(defaults.Monitor))
+	if b.monitor != "" {
+		launcher.NewBrowser().Open(b.ServeMonitor(b.monitor))
 	}
 
 	return b.setHeadless()
@@ -234,7 +239,7 @@ func (b *Browser) eachEvent(
 		// Only enabled domains will emit events to cdp client.
 		// We enable the domains for the event types if it's not enabled.
 		// We recover the domains to their previous states after the wait ends.
-		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Payload).MethodName())
+		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Payload).ProtoName())
 		var enable proto.Payload
 		if domain == "Target" { // only Target domain is special
 			enable = proto.TargetSetDiscoverTargets{Discover: true}
@@ -300,20 +305,14 @@ func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID
 }
 
 // Call raw cdp interface directly
-func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params json.RawMessage) (res []byte, err error) {
+func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	res, err = b.client.Call(ctx, sessionID, methodName, params)
 	if err != nil {
 		return nil, err
 	}
 
 	b.set(proto.TargetSessionID(sessionID), methodName, params)
-
 	return
-}
-
-// CallContext parameters for proto
-func (b *Browser) CallContext() (context.Context, proto.Client, string) {
-	return b.ctx, b, ""
 }
 
 // PageFromTarget creates a Page instance from a targetID

@@ -3,6 +3,7 @@ package rod_test
 import (
 	"context"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -17,6 +18,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func (c C) Incognito() {
@@ -28,8 +30,8 @@ func (c C) Incognito() {
 	defer page.MustClose()
 	page.MustEval(`k => localStorage[k] = 1`, k)
 
-	c.Nil(c.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Value())
-	c.Eq(1, page.MustEval(`k => localStorage[k]`, k).Int())
+	c.True(c.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Nil())
+	c.Eq(page.MustEval(`k => localStorage[k]`, k).Str(), "1") // localStorage can only store string
 }
 
 func (c C) PageErr() {
@@ -61,9 +63,9 @@ func (c C) BrowserPages() {
 	c.Len(pages, 2)
 
 	{
-		c.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (proto.JSON, error) {
+		c.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
 			d, _ := send()
-			return d.Set("targetInfos.0.type", "iframe")
+			return *d.Set("targetInfos.0.type", "iframe"), nil
 		})
 		pages := c.browser.MustPages()
 		c.Len(pages, 1)
@@ -141,33 +143,32 @@ func (c C) Monitor() {
 
 	res, err := http.Get(host + "/screenshot")
 	c.E(err)
-	c.Gt(len(utils.MustReadBytes(res.Body)), 10)
+	img, err := ioutil.ReadAll(res.Body)
+	c.E(err)
+	c.Gt(len(img), 10)
 
 	res, err = http.Get(host + "/api/page/test")
 	c.E(err)
 	c.Eq(400, res.StatusCode)
-	c.Eq(-32602, utils.MustReadJSON(res.Body).Get("code").Int())
+	c.Eq(-32602, gson.New(res.Body).Get("code").Int())
 }
 
 func (c C) MonitorErr() {
-	defaults.Monitor = "abc"
-	defer defaults.ResetWithEnv("")
-
 	l := launcher.New()
 	u := l.MustLaunch()
 	defer l.Kill()
 
 	c.Panic(func() {
-		rod.New().ControlURL(u).MustConnect()
+		rod.New().Monitor("abc").ControlURL(u).MustConnect()
 	})
 }
 
 func (c C) Trace() {
 	var msg *rod.TraceMsg
-	c.browser.TraceLog(func(m *rod.TraceMsg) { msg = m })
+	c.browser.Logger(utils.Log(func(list ...interface{}) { msg = list[0].(*rod.TraceMsg) }))
 	c.browser.Trace(true).Slowmotion(time.Microsecond)
 	defer func() {
-		c.browser.TraceLog(nil)
+		c.browser.Logger(rod.DefaultLogger)
 		c.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
 	}()
 
@@ -184,8 +185,10 @@ func (c C) Trace() {
 }
 
 func (c C) TraceLogs() {
+	c.browser.Logger(utils.LoggerQuiet)
 	c.browser.Trace(true)
 	defer func() {
+		c.browser.Logger(rod.DefaultLogger)
 		c.browser.Trace(defaults.Trace)
 	}()
 
@@ -199,9 +202,9 @@ func (c C) TraceLogs() {
 
 func (c C) ConcurrentOperations() {
 	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
-	list := []int64{}
+	list := []int{}
 	lock := sync.Mutex{}
-	add := func(item int64) {
+	add := func(item int) {
 		lock.Lock()
 		defer lock.Unlock()
 		list = append(list, item)
@@ -213,7 +216,7 @@ func (c C) ConcurrentOperations() {
 		add(p.MustEval(`1`).Int())
 	})()
 
-	c.Eq([]int64{1, 2}, list)
+	c.Eq([]int{1, 2}, list)
 }
 
 func (c C) PromiseLeak() {
@@ -348,12 +351,12 @@ func (c C) BinarySize() {
 	stat, err := os.Stat("tmp/translator")
 	c.E(err)
 
-	c.Lt(float64(stat.Size())/1024/1024, 8.65) // mb
+	c.Lte(float64(stat.Size())/1024/1024, 8.23) // mb
 }
 
 func (c C) BrowserConnectErr() {
 	c.Panic(func() {
-		c := newMockClient(c.Testable.(*testing.T), nil)
+		c := newMockClient(nil)
 		c.connect = func() error { return errors.New("err") }
 		rod.New().Client(c).MustConnect()
 	})
@@ -362,7 +365,7 @@ func (c C) BrowserConnectErr() {
 		ch := make(chan *cdp.Event)
 		defer close(ch)
 
-		c := newMockClient(c.Testable.(*testing.T), nil)
+		c := newMockClient(nil)
 		c.connect = func() error { return nil }
 		c.event = ch
 		c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
@@ -373,8 +376,8 @@ func (c C) BrowserConnectErr() {
 func (c C) StreamReader() {
 	r := rod.NewStreamReader(c.page, "")
 
-	c.mc.stub(1, proto.IORead{}, func(send StubSend) (proto.JSON, error) {
-		return proto.NewJSON(proto.IOReadResult{
+	c.mc.stub(1, proto.IORead{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(proto.IOReadResult{
 			Data: "test",
 		}), nil
 	})
@@ -386,8 +389,8 @@ func (c C) StreamReader() {
 	_, err := r.Read(nil)
 	c.Err(err)
 
-	c.mc.stub(1, proto.IORead{}, func(send StubSend) (proto.JSON, error) {
-		return proto.NewJSON(proto.IOReadResult{
+	c.mc.stub(1, proto.IORead{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(proto.IOReadResult{
 			Base64Encoded: true,
 			Data:          "@",
 		}), nil

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -20,7 +21,7 @@ func main() {
 
 	rl := launcher.NewRemoteLauncher()
 	if !*quiet {
-		rl.Logger = os.Stdout
+		rl.Logger = log.New(os.Stdout, "", 0)
 	}
 
 	l, err := net.Listen("tcp", *addr)

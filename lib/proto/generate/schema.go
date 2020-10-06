@@ -3,9 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
+	"github.com/ysmood/gson"
 )
 
 type objType int
@@ -27,20 +25,20 @@ type domain struct {
 	name         string
 	experimental bool
 	definitions  []*definition
-	global       gjson.Result
+	global       gson.JSON
 }
 
-func (schema *domain) find(id string) gjson.Result {
+func (schema *domain) find(id string) gson.JSON {
 	domain := schema.name
 	list := strings.Split(id, ".")
 	if len(list) == 2 {
 		domain, id = list[0], list[1]
 	}
 
-	for _, schema := range schema.global.Get("domains").Array() {
-		if schema.Get("domain").String() == domain {
-			for _, s := range schema.Get("types").Array() {
-				if s.Get("id").String() == id {
+	for _, schema := range schema.global.Get("domains").Arr() {
+		if schema.Get("domain").Str() == domain {
+			for _, s := range schema.Get("types").Arr() {
+				if s.Get("id").Str() == id {
 					return s
 				}
 			}
@@ -50,7 +48,7 @@ func (schema *domain) find(id string) gjson.Result {
 }
 
 func (schema *domain) ref(id string) bool {
-	return schema.find(id).Get("properties").Exists()
+	return schema.find(id).Has("properties")
 }
 
 type definition struct {
@@ -71,28 +69,28 @@ type definition struct {
 	skip         bool
 }
 
-func parse(schema gjson.Result) []*domain {
-	optimize(&schema.Raw)
+func parse(schema gson.JSON) []*domain {
+	optimize(&schema)
 
 	list := []*domain{}
 
-	for _, domainSchema := range schema.Get("domains").Array() {
+	for _, domainSchema := range schema.Get("domains").Arr() {
 		list = append(list, parseDomain(schema, domainSchema))
 	}
 
 	return list
 }
 
-func parseDomain(global, schema gjson.Result) *domain {
+func parseDomain(global, schema gson.JSON) *domain {
 	domain := &domain{
-		name:         schema.Get("domain").String(),
+		name:         schema.Get("domain").Str(),
 		experimental: schema.Get("experimental").Bool(),
 		definitions:  []*definition{},
 		global:       global,
 	}
 
 	for _, cdpType := range []cdpType{cdpTypeTypes, cdpTypeCommands, cdpTypeEvents} {
-		for _, typeSchame := range schema.Get(string(cdpType)).Array() {
+		for _, typeSchame := range schema.Get(string(cdpType)).Arr() {
 			domain.definitions = append(domain.definitions, parseDef(domain, cdpType, typeSchame)...)
 		}
 	}
@@ -100,19 +98,19 @@ func parseDomain(global, schema gjson.Result) *domain {
 	return domain
 }
 
-func parseDef(domain *domain, cdpType cdpType, schema gjson.Result) []*definition {
+func parseDef(domain *domain, cdpType cdpType, schema gson.JSON) []*definition {
 	list := []*definition{}
 
 	switch cdpType {
 	case cdpTypeTypes:
-		if schema.Get("properties").Exists() {
-			list = append(list, parseStruct(domain, cdpType, schema.Get("id").String(), false, schema, "properties")...)
+		if schema.Has("properties") {
+			list = append(list, parseStruct(domain, cdpType, schema.Get("id").Str(), false, schema, "properties")...)
 		} else {
 			list = append(list, &definition{
 				domain:       domain,
 				typeName:     typeName(domain, schema),
-				name:         domain.name + symbol(schema.Get("id").String()),
-				description:  schema.Get("description").String(),
+				name:         domain.name + symbol(schema.Get("id").Str()),
+				description:  schema.Get("description").Str(),
 				deprecated:   schema.Get("deprecated").Bool(),
 				experimental: schema.Get("experimental").Bool(),
 				objType:      objTypePrimitive,
@@ -121,34 +119,34 @@ func parseDef(domain *domain, cdpType cdpType, schema gjson.Result) []*definitio
 			})
 		}
 	case cdpTypeCommands:
-		list = append(list, parseStruct(domain, cdpType, schema.Get("name").String(), true, schema, "parameters")...)
-		if schema.Get("returns").Exists() {
-			list = append(list, parseStruct(domain, cdpType, schema.Get("name").String()+"Result", false, schema, "returns")...)
+		list = append(list, parseStruct(domain, cdpType, schema.Get("name").Str(), true, schema, "parameters")...)
+		if schema.Has("returns") {
+			list = append(list, parseStruct(domain, cdpType, schema.Get("name").Str()+"Result", false, schema, "returns")...)
 		}
 
 	case cdpTypeEvents:
-		list = append(list, parseStruct(domain, cdpType, schema.Get("name").String(), false, schema, "parameters")...)
+		list = append(list, parseStruct(domain, cdpType, schema.Get("name").Str(), false, schema, "parameters")...)
 
 	default:
-		panic("type error: " + schema.Raw)
+		panic("type error: " + schema.Str())
 
 	}
 
 	return list
 }
 
-func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, schema gjson.Result, propsPath string) []*definition {
+func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, schema gson.JSON, propsPath string) []*definition {
 	list := []*definition{}
 
 	props := []*definition{}
-	for _, propSchema := range schema.Get(propsPath).Array() {
+	for _, propSchema := range schema.Get(propsPath).Arr() {
 		typeName := typeName(domain, propSchema)
 
 		prop := &definition{
 			objType:      objTypePrimitive,
-			name:         symbol(propSchema.Get("name").String()),
-			originName:   propSchema.Get("name").String(),
-			description:  propSchema.Get("description").String(),
+			name:         symbol(propSchema.Get("name").Str()),
+			originName:   propSchema.Get("name").Str(),
+			description:  propSchema.Get("description").Str(),
 			optional:     propSchema.Get("optional").Bool(),
 			deprecated:   propSchema.Get("deprecated").Bool(),
 			experimental: propSchema.Get("experimental").Bool(),
@@ -157,10 +155,10 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 
 		props = append(props, prop)
 
-		if propSchema.Get("enum").Exists() {
+		if propSchema.Has("enum") {
 			enum := &definition{
 				domain:      domain,
-				name:        domain.name + symbol(name) + symbol(propSchema.Get("name").String()),
+				name:        domain.name + symbol(name) + symbol(propSchema.Get("name").Str()),
 				objType:     objTypePrimitive,
 				description: "enum",
 				enum:        enumList(propSchema),
@@ -179,40 +177,33 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 		typeName:     typeName(domain, schema),
 		name:         domain.name + symbol(name),
 		originName:   name,
-		description:  schema.Get("description").String(),
+		description:  schema.Get("description").Str(),
 		optional:     schema.Get("optional").Bool(),
 		deprecated:   schema.Get("deprecated").Bool(),
 		experimental: schema.Get("experimental").Bool(),
 		props:        props,
 		command:      isCommand,
-		returnValue:  schema.Get("returns").Exists(),
+		returnValue:  schema.Has("returns"),
 		skip:         schema.Get("skip").Bool(),
 	})
 
 	return list
 }
 
-func optimize(json *string) {
-	var err error
-
-	set := func(path string, value interface{}) {
-		*json, err = sjson.Set(*json, path, value)
-		utils.E(err)
-	}
-
+func optimize(json *gson.JSON) {
 	// TargetTargetInfoType
-	set("domains.32.types.2.properties.1.enum", []string{
+	json.Set("domains.32.types.2.properties.1.enum", []string{
 		"page", "background_page", "service_worker", "shared_worker", "browser", "other",
 	})
 
 	// PageLifecycleEventName
-	set("domains.26.events.17.parameters.2.enum", []string{
+	json.Set("domains.26.events.17.parameters.2.enum", []string{
 		"init", "firstPaint", "firstContentfulPaint", "firstImagePaint", "firstMeaningfulPaintCandidate",
 		"DOMContentLoaded", "load", "networkAlmostIdle", "firstMeaningfulPaint", "networkIdle",
 	})
 
 	// replace these with better type definition
-	set("domains.19.types.3.skip", true) // Input.TimeSinceEpoch
-	set("domains.24.types.5.skip", true) // Network.TimeSinceEpoch
-	set("domains.24.types.6.skip", true) // Network.MonotonicTime
+	json.Set("domains.19.types.3.skip", true) // Input.TimeSinceEpoch
+	json.Set("domains.24.types.5.skip", true) // Network.TimeSinceEpoch
+	json.Set("domains.24.types.6.skip", true) // Network.MonotonicTime
 }

@@ -7,7 +7,6 @@ package rod
 import (
 	"fmt"
 	"html"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -100,9 +99,6 @@ func (msg *TraceMsg) String() string {
 	return fmt.Sprintf("[%s] %v", msg.Type, utils.MustToJSON(msg.Details))
 }
 
-// TraceLog handler
-type TraceLog func(*TraceMsg)
-
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	root := p.Root()
@@ -163,7 +159,7 @@ func (el *Element) tryTraceInput(details string) func() {
 
 	msg := &TraceMsg{TraceTypeInput, details}
 
-	el.page.browser.traceLog(msg)
+	el.page.browser.logger.Println(msg)
 
 	return el.Trace(details)
 }
@@ -181,7 +177,7 @@ func (p *Page) tryTraceEval(js string, params []interface{}) func() {
 	}
 	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
 
-	p.browser.traceLog(&TraceMsg{
+	p.browser.logger.Println(&TraceMsg{
 		TraceTypeEval,
 		map[string]interface{}{
 			"js":     js,
@@ -202,7 +198,7 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 		"includes": includes,
 		"excludes": excludes,
 	}}
-	p.browser.traceLog(msg)
+	p.browser.logger.Println(msg)
 	cleanup := p.Overlay(0, 0, 300, 0, msg.String())
 
 	ch := make(chan map[string]string)
@@ -225,7 +221,7 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 				return
 			case waitlist = <-ch:
 			case <-t.C:
-				p.browser.traceLog(&TraceMsg{
+				p.browser.logger.Println(&TraceMsg{
 					TraceTypeWaitRequests,
 					waitlist,
 				})
@@ -234,10 +230,6 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 	}()
 
 	return update
-}
-
-func defaultTraceLog(msg *TraceMsg) {
-	log.Println(msg)
 }
 
 func (m *Mouse) initMouseTracer() {

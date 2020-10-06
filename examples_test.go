@@ -2,7 +2,6 @@ package rod_test
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -181,7 +180,7 @@ func Example_error_handling() {
 			fmt.Println("timeout err")
 		} else if errors.Is(err, rod.ErrEval) { // eval error
 			// print more details
-			utils.Dump(rod.AsError(err).Details)
+			fmt.Println(rod.AsError(err).Details)
 		} else if err != nil {
 			panic(err)
 		}
@@ -254,21 +253,23 @@ func Example_page_pdf() {
 // Show how to handle multiple results of an action.
 // Such as when you login a page, the result can be success or wrong password.
 func Example_race_selectors() {
+	const username = ""
+	const password = ""
+
 	browser := rod.New().MustConnect()
-	defer browser.MustClose()
 
-	page := browser.MustPage("http://testing-ground.scraping.pro/login")
+	page := browser.MustPage("https://leetcode.com/accounts/login/")
 
-	page.MustElement("#usr").MustInput("admin")
-	page.MustElement("#pwd").MustInput("12345").MustPress(input.Enter)
+	page.MustElement("#id_login").MustInput(username)
+	page.MustElement("#id_password").MustInput(password).MustPress(input.Enter)
 
 	// It will keep retrying until one selector has found a match
-	page.Race().MustElement("h3.success", func(el *rod.Element) {
-		// when successful login
-		fmt.Println(el.MustText())
-	}).MustElement("h3.error", func(el *rod.Element) {
+	page.Race().MustElement(".nav-user-icon-base", func(el *rod.Element) {
+		// print the username after successful login
+		fmt.Println(*el.MustAttribute("title"))
+	}).MustElement("[data-cy=sign-in-error]", func(el *rod.Element) {
 		// when wrong username or password
-		fmt.Println(el.MustText())
+		panic(el.MustText())
 	}).MustDo()
 }
 
@@ -384,16 +385,21 @@ func Example_direct_cdp() {
 	// Rod doesn't have a method to enable AD blocking,
 	// but you can call cdp interface directly to achieve it.
 	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-setAdBlockingEnabled
-	_ = proto.PageSetAdBlockingEnabled{
-		Enabled: true,
-	}.Call(page)
 
-	// You can even use JSON directly to do the same thing above.
-	params, _ := json.Marshal(map[string]bool{
-		"enabled": true,
-	})
-	ctx, client, id := page.CallContext()
-	_, _ = client.Call(ctx, id, "Page.setAdBlockingEnabled", params)
+	// The two code blocks below are equal to enable AD blocking
+
+	{
+		_ = proto.PageSetAdBlockingEnabled{
+			Enabled: true,
+		}.Call(page)
+	}
+
+	{
+		// Interact with the cdp JSON API directly
+		_, _ = page.Call(nil, "", "Page.setAdBlockingEnabled", map[string]bool{
+			"enabled": true,
+		})
+	}
 }
 
 // Shows how to listen for events.
@@ -502,7 +508,7 @@ func Example_eval_reuse_remote_object() {
 	res := page.MustEval(`f => f()`, fn)
 
 	// print a random number
-	fmt.Println(res.Num)
+	fmt.Println(res.Num())
 }
 
 // Shows how to update the state of the current page.

@@ -273,8 +273,8 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 
 		result, err := proto.DOMGetSearchResults{
 			SearchID:  search.SearchID,
-			FromIndex: int64(from),
-			ToIndex:   int64(to),
+			FromIndex: int(from),
+			ToIndex:   int(to),
 		}.Call(p)
 		if err != nil {
 			// when the page is still loading the search result is not ready

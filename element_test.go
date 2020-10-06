@@ -16,7 +16,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 func (c C) Click() {
@@ -44,6 +44,11 @@ func (c C) ClickWrapped() {
 }
 
 func (c C) Tap() {
+	c.browser.Logger(utils.LoggerQuiet)
+	defer func() {
+		c.browser.Logger(rod.DefaultLogger)
+	}()
+
 	page := c.browser.MustPage("")
 	defer page.MustClose()
 
@@ -96,9 +101,9 @@ func (c C) NotInteractable() {
 	_, err := el.Interactable()
 	c.Err(err)
 
-	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (proto.JSON, error) {
+	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
 		res, _ := send()
-		return res.Set("quads", nil)
+		return *res.Set("quads", nil), nil
 	})
 	_, err = el.Interactable()
 	c.Err(err)
@@ -158,9 +163,9 @@ func (c C) Iframes() {
 	})
 
 	c.Panic(func() {
-		c.mc.stub(1, proto.RuntimeGetProperties{}, func(send StubSend) (proto.JSON, error) {
+		c.mc.stub(1, proto.RuntimeGetProperties{}, func(send StubSend) (gson.JSON, error) {
 			d, _ := send()
-			return d.Set("result", []interface{}{})
+			return *d.Set("result", []interface{}{}), nil
 		})
 		p.MustElementFromNode(id).MustText()
 	})
@@ -378,15 +383,15 @@ func (c C) Property() {
 	cols := el.MustProperty("cols")
 	rows := el.MustProperty("rows")
 
-	c.Eq(float64(30), cols.Num)
-	c.Eq(float64(10), rows.Num)
+	c.Eq(float64(30), cols.Num())
+	c.Eq(float64(10), rows.Num())
 
 	p = c.page.MustNavigate(srcFile("fixtures/open-page.html"))
 	el = p.MustElement("a")
 
-	c.Eq("link", el.MustProperty("id").Str)
-	c.Eq("_blank", el.MustProperty("target").Str)
-	c.Eq(gjson.Null, el.MustProperty("test").Type)
+	c.Eq("link", el.MustProperty("id").Str())
+	c.Eq("_blank", el.MustProperty("target").Str())
+	c.True(el.MustProperty("test").Nil())
 
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
@@ -402,7 +407,7 @@ func (c C) SetFiles() {
 		slash("fixtures/alert.html"),
 	)
 
-	list := el.MustEval("Array.from(this.files).map(f => f.name)").Array()
+	list := el.MustEval("Array.from(this.files).map(f => f.name)").Arr()
 	c.Len(list, 2)
 	c.Eq("alert.html", list[1].String())
 }
@@ -448,7 +453,7 @@ func (c C) WaitStable() {
 	c.Gt(time.Since(start), time.Second)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (proto.JSON, error) {
+	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
 		go func() {
 			utils.Sleep(0.1)
 			cancel()
@@ -479,8 +484,8 @@ func (c C) Resource() {
 	el := p.MustElement("img").MustWaitLoad()
 	c.Eq(15456, len(el.MustResource()))
 
-	c.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (proto.JSON, error) {
-		return proto.NewJSON(proto.PageGetResourceContentResult{
+	c.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(proto.PageGetResourceContentResult{
 			Content:       "ok",
 			Base64Encoded: false,
 		}), nil
@@ -531,7 +536,7 @@ func (c C) UseReleasedElement() {
 
 	btn = p.MustElement("button")
 	c.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
-	c.Eq(btn.Click("left").Error(), "{\"code\":-32000,\"message\":\"Could not find object with given id\",\"data\":\"\"}")
+	c.Eq(btn.Click("left").Error(), "{-32000 Could not find object with given id }")
 }
 
 func (c C) ElementRemove() {

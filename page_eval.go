@@ -8,6 +8,7 @@ import (
 	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 // Eval options for Page.Evaluate
@@ -87,7 +88,7 @@ func (e *Eval) formatArgs(jsHelper *proto.RuntimeRemoteObject) []*proto.RuntimeC
 		if obj, ok := arg.(*proto.RuntimeRemoteObject); ok { // remote object
 			formated = append(formated, &proto.RuntimeCallArgument{ObjectID: obj.ObjectID})
 		} else { // plain json data
-			formated = append(formated, &proto.RuntimeCallArgument{Value: proto.NewJSON(arg)})
+			formated = append(formated, &proto.RuntimeCallArgument{Value: gson.New(arg)})
 		}
 	}
 	return formated

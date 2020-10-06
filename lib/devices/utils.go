@@ -2,12 +2,12 @@ package devices
 
 import (
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 // Device for devices
 type Device struct {
-	json gjson.Result
+	gson.JSON
 }
 
 // Clear is used to clear overrides
@@ -19,16 +19,16 @@ func (device Device) Metrics(landscape bool) *proto.EmulationSetDeviceMetricsOve
 		return nil
 	}
 
-	var screen gjson.Result
+	var screen gson.JSON
 	var orientation *proto.EmulationScreenOrientation
 	if landscape {
-		screen = device.json.Get("screen.horizontal")
+		screen = device.Get("screen.horizontal")
 		orientation = &proto.EmulationScreenOrientation{
 			Angle: 90,
 			Type:  proto.EmulationScreenOrientationTypeLandscapePrimary,
 		}
 	} else {
-		screen = device.json.Get("screen.vertical")
+		screen = device.Get("screen.vertical")
 		orientation = &proto.EmulationScreenOrientation{
 			Angle: 0,
 			Type:  proto.EmulationScreenOrientationTypePortraitPrimary,
@@ -38,9 +38,9 @@ func (device Device) Metrics(landscape bool) *proto.EmulationSetDeviceMetricsOve
 	return &proto.EmulationSetDeviceMetricsOverride{
 		Width:             screen.Get("width").Int(),
 		Height:            screen.Get("height").Int(),
-		DeviceScaleFactor: device.json.Get("screen.device-pixel-ratio").Float(),
+		DeviceScaleFactor: device.Get("screen.device-pixel-ratio").Num(),
 		ScreenOrientation: orientation,
-		Mobile:            has(device.json.Get("capabilities"), "mobile"),
+		Mobile:            has(device.Get("capabilities"), "mobile"),
 	}
 }
 
@@ -53,7 +53,7 @@ func (device Device) Touch() *proto.EmulationSetTouchEmulationEnabled {
 	}
 
 	return &proto.EmulationSetTouchEmulationEnabled{
-		Enabled:        has(device.json.Get("capabilities"), "touch"),
+		Enabled:        has(device.Get("capabilities"), "touch"),
 		MaxTouchPoints: 5,
 	}
 }
@@ -65,13 +65,13 @@ func (device Device) UserAgent() *proto.NetworkSetUserAgentOverride {
 	}
 
 	return &proto.NetworkSetUserAgentOverride{
-		UserAgent: device.json.Get("user-agent").String(),
+		UserAgent: device.Get("user-agent").String(),
 	}
 }
 
-func has(arr gjson.Result, str string) bool {
-	for _, item := range arr.Array() {
-		if item.Str == str {
+func has(arr gson.JSON, str string) bool {
+	for _, item := range arr.Arr() {
+		if item.Str() == str {
 			return true
 		}
 	}

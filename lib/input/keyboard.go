@@ -31,11 +31,11 @@ type Key struct {
 
 	// Native is the native scan code.
 	// 								0x13  0x13  | 0xbc  0xbc  | 0x61  0x41 | 0x00ae
-	Native int64
+	Native int
 
 	// Windows is the windows scan code.
 	// 								0x13  0x13  | 0xbc  0xbc  | 0x61  0x41 | 0xe024
-	Windows int64
+	Windows int
 
 	// Shift indicates whether or not the Shift modifier should be sent.
 	// 								false false | false true  | false true | false
@@ -87,8 +87,8 @@ func Encode(r rune) []*proto.InputDispatchKeyEvent {
 		//
 		// specifically, it always sends the ascii value as the scan code,
 		// which is available as the rune.
-		keyChar.NativeVirtualKeyCode = int64(r)
-		keyChar.WindowsVirtualKeyCode = int64(r)
+		keyChar.NativeVirtualKeyCode = int(r)
+		keyChar.WindowsVirtualKeyCode = int(r)
 
 		return []*proto.InputDispatchKeyEvent{&keyDown, &keyChar, &keyUp}
 	}

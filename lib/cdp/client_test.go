@@ -2,6 +2,10 @@ package cdp_test
 
 import (
 	"context"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"path/filepath"
 	"testing"
@@ -10,11 +14,17 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
 	"github.com/ysmood/got"
+	"github.com/ysmood/gson"
 )
 
+var loud = flag.Bool("loud", false, "log everything")
+
 func Test(t *testing.T) {
+	if !*loud {
+		log.SetOutput(ioutil.Discard)
+	}
+
 	got.Each(t, C{})
 }
 
@@ -28,7 +38,9 @@ func (c C) Basic() {
 
 	url := launcher.New().MustLaunch()
 
-	client := cdp.New(url).Websocket(nil).Header(http.Header{"test": {}}).MustConnect(ctx)
+	client := cdp.New(url).Websocket(nil).
+		Logger(utils.Log(func(msg ...interface{}) { fmt.Sprintln(msg...) })).
+		Header(http.Header{"test": {}}).MustConnect(ctx)
 
 	defer func() {
 		c.E(client.Call(ctx, "", "Browser.close", nil))
@@ -47,7 +59,7 @@ func (c C) Basic() {
 	})
 	c.E(err)
 
-	targetID := gjson.ParseBytes(res).Get("targetId").String()
+	targetID := gson.New(res).Get("targetId").String()
 
 	res, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
 		"targetId": targetID,
@@ -55,7 +67,7 @@ func (c C) Basic() {
 	})
 	c.E(err)
 
-	sessionID := gjson.ParseBytes(res).Get("sessionId").String()
+	sessionID := gson.New(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
 	c.E(err)
@@ -85,15 +97,15 @@ func (c C) Basic() {
 			"expression": `document.querySelector('iframe')`,
 		})
 
-		return err == nil && gjson.ParseBytes(res).Get("result.subtype").String() != "null", nil
+		return err == nil && gson.New(res).Get("result.subtype").String() != "null", nil
 	}))
 
 	res, err = client.Call(ctx, sessionID, "DOM.describeNode", map[string]interface{}{
-		"objectId": gjson.ParseBytes(res).Get("result.objectId").String(),
+		"objectId": gson.New(res).Get("result.objectId").String(),
 	})
 	c.E(err)
 
-	frameId := gjson.ParseBytes(res).Get("node.frameId").String()
+	frameId := gson.New(res).Get("node.frameId").String()
 
 	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -107,24 +119,31 @@ func (c C) Basic() {
 		c.E(err)
 
 		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
-			"contextId":  gjson.ParseBytes(res).Get("executionContextId").Int(),
+			"contextId":  gson.New(res).Get("executionContextId").Int(),
 			"expression": `document.querySelector('h4')`,
 		})
 
-		return err == nil && gjson.ParseBytes(res).Get("result.subtype").String() != "null", nil
+		return err == nil && gson.New(res).Get("result.subtype").String() != "null", nil
 	}))
 
 	res, err = client.Call(ctx, sessionID, "DOM.getOuterHTML", map[string]interface{}{
-		"objectId": gjson.ParseBytes(res).Get("result.objectId").String(),
+		"objectId": gson.New(res).Get("result.objectId").String(),
 	})
 	c.E(err)
 
-	c.Eq("<h4>it works</h4>", gjson.ParseBytes(res).Get("outerHTML").String())
+	c.Eq("<h4>it works</h4>", gson.New(res).Get("outerHTML").String())
 }
 
 func (c C) Error() {
 	cdpErr := cdp.Error{10, "err", "data"}
-	c.Eq("{\"code\":10,\"message\":\"err\",\"data\":\"data\"}", cdpErr.Error())
+	c.Eq(cdpErr.Error(), "{10 err data}")
+
+	c.Panic(func() {
+		cdp.New("").MustConnect(context.Background())
+	})
+}
+
+func (c C) NewWithLogger() {
 
 	c.Panic(func() {
 		cdp.New("").MustConnect(context.Background())
@@ -135,7 +154,7 @@ func (c C) Crash() {
 	ctx := context.Background()
 	l := launcher.New()
 
-	client := cdp.New(l.MustLaunch()).Debug(true).MustConnect(ctx)
+	client := cdp.New(l.MustLaunch()).Logger(utils.LoggerQuiet).MustConnect(ctx)
 
 	go func() {
 		for range client.Event() {
@@ -150,7 +169,7 @@ func (c C) Crash() {
 	})
 	c.E(err)
 
-	targetID := gjson.ParseBytes(res).Get("targetId").String()
+	targetID := gson.New(res).Get("targetId").String()
 
 	res, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
 		"targetId": targetID,
@@ -158,7 +177,7 @@ func (c C) Crash() {
 	})
 	c.E(err)
 
-	sessionID := gjson.ParseBytes(res).Get("sessionId").String()
+	sessionID := gson.New(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
 	c.E(err)

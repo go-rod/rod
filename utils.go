@@ -7,8 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"regexp"
 	"time"
@@ -18,12 +20,15 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Client interface
-type Client interface {
+// CDPClient is usually used to make rod side-effect free. Such as proxy all IO of rod.
+type CDPClient interface {
 	Connect(ctx context.Context) error
 	Event() <-chan *cdp.Event
 	Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 }
+
+// DefaultLogger for rod
+var DefaultLogger = log.New(os.Stdout, "[rod] ", log.LstdFlags)
 
 // DefaultSleeper generates the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like: A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
@@ -42,15 +47,15 @@ var _ io.Reader = &StreamReader{}
 
 // StreamReader for browser data stream
 type StreamReader struct {
-	Offset int64
+	Offset int
 
-	c      proto.Caller
+	c      proto.Client
 	handle proto.IOStreamHandle
 	buf    *bytes.Buffer
 }
 
 // NewStreamReader instance
-func NewStreamReader(c proto.Caller, h proto.IOStreamHandle) *StreamReader {
+func NewStreamReader(c proto.Client, h proto.IOStreamHandle) *StreamReader {
 	return &StreamReader{
 		c:      c,
 		handle: h,
@@ -86,7 +91,7 @@ func (sr *StreamReader) Read(p []byte) (n int, err error) {
 
 // Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
 func Event(msg *cdp.Event, evt proto.Payload) bool {
-	if msg.Method == evt.MethodName() {
+	if msg.Method == evt.ProtoName() {
 		err := json.Unmarshal(msg.Params, evt)
 		return err == nil
 	}

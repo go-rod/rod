@@ -20,6 +20,11 @@ func (b *Browser) Context(ctx context.Context) *Browser {
 	return &newObj
 }
 
+// GetContext interface
+func (b *Browser) GetContext() context.Context {
+	return b.ctx
+}
+
 // Timeout for chained sub-operations
 func (b *Browser) Timeout(d time.Duration) *Browser {
 	ctx, cancel := context.WithTimeout(b.ctx, d)
@@ -53,6 +58,11 @@ func (p *Page) Context(ctx context.Context) *Page {
 	return &newObj
 }
 
+// GetContext interface
+func (p *Page) GetContext() context.Context {
+	return p.ctx
+}
+
 // Timeout for chained sub-operations
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
@@ -84,6 +94,11 @@ func (el *Element) Context(ctx context.Context) *Element {
 	newObj := *el
 	newObj.ctx = ctx
 	return &newObj
+}
+
+// GetContext interface
+func (el *Element) GetContext() context.Context {
+	return el.ctx
 }
 
 // Timeout for chained sub-operations

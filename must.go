@@ -17,7 +17,7 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/tidwall/gjson"
+	"github.com/ysmood/gson"
 )
 
 // MustConnect is similar to Connect
@@ -150,7 +150,7 @@ func (p *Page) MustGetWindow() *proto.BrowserBounds {
 }
 
 // MustSetWindow is similar to SetWindow
-func (p *Page) MustSetWindow(left, top, width, height int64) *Page {
+func (p *Page) MustSetWindow(left, top, width, height int) *Page {
 	utils.E(p.SetWindow(&proto.BrowserBounds{
 		Left:        left,
 		Top:         top,
@@ -194,7 +194,7 @@ func (p *Page) MustWindowNormal() *Page {
 }
 
 // MustSetViewport is similar to SetViewport
-func (p *Page) MustSetViewport(width, height int64, deviceScaleFactor float64, mobile bool) *Page {
+func (p *Page) MustSetViewport(width, height int, deviceScaleFactor float64, mobile bool) *Page {
 	utils.E(p.SetViewport(&proto.EmulationSetDeviceMetricsOverride{
 		Width:             width,
 		Height:            height,
@@ -329,14 +329,14 @@ func (p *Page) MustEvalOnNewDocument(js string) {
 }
 
 // MustExpose is similar to Expose
-func (p *Page) MustExpose(name string) (chan []gjson.Result, func()) {
+func (p *Page) MustExpose(name string) (chan []gson.JSON, func()) {
 	c, s, err := p.Expose(name)
 	utils.E(err)
 	return c, func() { utils.E(s()) }
 }
 
 // MustEval is similar to Eval
-func (p *Page) MustEval(js string, params ...interface{}) proto.JSON {
+func (p *Page) MustEval(js string, params ...interface{}) gson.JSON {
 	res, err := p.Eval(js, params...)
 	utils.E(err)
 	return res.Value
@@ -355,21 +355,21 @@ func (p *Page) MustWait(js string, params ...interface{}) {
 }
 
 // MustObjectToJSON is similar to ObjectToJSON
-func (p *Page) MustObjectToJSON(obj *proto.RuntimeRemoteObject) proto.JSON {
+func (p *Page) MustObjectToJSON(obj *proto.RuntimeRemoteObject) gson.JSON {
 	j, err := p.ObjectToJSON(obj)
 	utils.E(err)
 	return j
 }
 
 // MustObjectsToJSON is similar to ObjectsToJSON
-func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) proto.JSON {
-	arr := []proto.JSON{}
+func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) gson.JSON {
+	arr := []interface{}{}
 	for _, obj := range list {
 		j, err := p.ObjectToJSON(obj)
 		utils.E(err)
-		arr = append(arr, j)
+		arr = append(arr, j.Val())
 	}
-	return proto.NewJSON(arr)
+	return gson.New(arr)
 }
 
 // MustElementFromNode is similar to ElementFromNode
@@ -381,7 +381,7 @@ func (p *Page) MustElementFromNode(id proto.DOMNodeID) *Element {
 
 // MustElementFromPoint is similar to ElementFromPoint
 func (p *Page) MustElementFromPoint(left, top int) *Element {
-	el, err := p.ElementFromPoint(int64(left), int64(top))
+	el, err := p.ElementFromPoint(int(left), int(top))
 	utils.E(err)
 	return el
 }
@@ -707,7 +707,7 @@ func (el *Element) MustAttribute(name string) *string {
 }
 
 // MustProperty is similar to Property
-func (el *Element) MustProperty(name string) proto.JSON {
+func (el *Element) MustProperty(name string) gson.JSON {
 	prop, err := el.Property(name)
 	utils.E(err)
 	return prop
@@ -817,7 +817,7 @@ func (el *Element) MustRemove() {
 }
 
 // MustEval is similar to Eval
-func (el *Element) MustEval(js string, params ...interface{}) proto.JSON {
+func (el *Element) MustEval(js string, params ...interface{}) gson.JSON {
 	res, err := el.Eval(js, params...)
 	utils.E(err)
 	return res.Value

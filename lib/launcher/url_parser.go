@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 var _ io.Writer = &URLParser{}
@@ -83,5 +84,5 @@ func ResolveURL(u string) (string, error) {
 		return "", err
 	}
 
-	return utils.ReadJSONPathAsString(res.Body, "webSocketDebuggerUrl")
+	return gson.New(res.Body).Get("webSocketDebuggerUrl").Str(), nil
 }

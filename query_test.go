@@ -8,6 +8,7 @@ import (
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func (c C) PageElements() {
@@ -60,7 +61,10 @@ func (c C) ElementHas() {
 }
 
 func (c C) Search() {
+	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
 	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	wait()
+
 	el := p.MustSearch("click me")
 	c.Eq("click me", el.MustText())
 	c.True(el.MustClick().MustMatches("[a=ok]"))
@@ -70,16 +74,16 @@ func (c C) Search() {
 
 	// when search result is not ready
 	{
-		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (proto.JSON, error) {
-			return proto.JSON{}, &cdp.Error{Code: -32000}
+		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(nil), &cdp.Error{Code: -32000}
 		})
 		p.MustSearch("click me")
 	}
 
 	// when node id is zero
 	{
-		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (proto.JSON, error) {
-			return proto.NewJSON(proto.DOMGetSearchResultsResult{
+		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.DOMGetSearchResultsResult{
 				NodeIds: []proto.DOMNodeID{0},
 			}), nil
 		})
@@ -226,8 +230,10 @@ func (c C) ElementsFromElementsX() {
 
 func (c C) ElementTracing() {
 	c.browser.Trace(true)
+	c.browser.Logger(utils.LoggerQuiet)
 	defer func() {
 		c.browser.Trace(defaults.Trace)
+		c.browser.Logger(rod.DefaultLogger)
 	}()
 
 	p := c.page.MustNavigate(srcFile("fixtures/click.html"))

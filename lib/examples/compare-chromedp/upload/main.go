@@ -33,12 +33,12 @@ func main() {
 }
 
 // get some info about the file
-func size(file string) int64 {
+func size(file string) int {
 	fi, err := os.Stat(file)
 	if err != nil {
 		panic(err)
 	}
-	return fi.Size()
+	return int(fi.Size())
 }
 
 func uploadServer(addr string) {

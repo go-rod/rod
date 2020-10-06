@@ -15,10 +15,10 @@ type Keyboard struct {
 	page *Page
 
 	// modifiers are currently beening pressed
-	modifiers int64
+	modifiers int
 }
 
-func (k *Keyboard) getModifiers() int64 {
+func (k *Keyboard) getModifiers() int {
 	k.Lock()
 	defer k.Unlock()
 
@@ -194,7 +194,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 }
 
 // Down holds the button down
-func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
+func (m *Mouse) Down(button proto.InputMouseButton, clicks int) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -219,7 +219,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int64) error {
 }
 
 // Up releases the button
-func (m *Mouse) Up(button proto.InputMouseButton, clicks int64) error {
+func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 	m.Lock()
 	defer m.Unlock()
 
