@@ -12,7 +12,7 @@ import (
 )
 
 func (c C) PageElements() {
-	c.page.MustNavigate(srcFile("fixtures/input.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	c.page.MustElement("input")
 	list := c.page.MustElements("input")
 	c.Eq("input", list.First().MustDescribe().LocalName)
@@ -20,7 +20,7 @@ func (c C) PageElements() {
 }
 
 func (c C) Pages() {
-	c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
+	c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	c.True(c.browser.MustPages().MustFind("button").MustHas("button"))
 	c.True(c.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
@@ -39,7 +39,7 @@ func (c C) Pages() {
 }
 
 func (c C) PageHas() {
-	c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	c.page.MustElement("body")
 	c.True(c.page.MustHas("span"))
 	c.False(c.page.MustHas("a"))
@@ -50,7 +50,7 @@ func (c C) PageHas() {
 }
 
 func (c C) ElementHas() {
-	c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	b := c.page.MustElement("body")
 	c.True(b.MustHas("span"))
 	c.False(b.MustHas("a"))
@@ -62,7 +62,7 @@ func (c C) ElementHas() {
 
 func (c C) Search() {
 	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	wait()
 
 	el := p.MustSearch("click me")
@@ -105,14 +105,14 @@ func (c C) Search() {
 }
 
 func (c C) SearchIframes() {
-	p := c.page.MustNavigate(srcFile("fixtures/click-iframes.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
 	el := p.MustSearch("button[onclick]")
 	c.Eq("click me", el.MustText())
 	c.True(el.MustClick().MustMatches("[a=ok]"))
 }
 
 func (c C) SearchIframesAfterReload() {
-	p := c.page.MustNavigate(srcFile("fixtures/click-iframes.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
 	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
 	frame.MustReload().MustWaitLoad()
 	el := p.MustSearch("button[onclick]")
@@ -121,13 +121,13 @@ func (c C) SearchIframesAfterReload() {
 }
 
 func (c C) PageElementWithSelectors() {
-	c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	el := c.page.MustElement("p", "button")
 	c.Eq("01", el.MustText())
 }
 
 func (c C) PageRace() {
-	p := c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 
 	p.Race().MustElement("button", func(el *rod.Element) {
 		c.Eq("01", el.MustText())
@@ -153,40 +153,40 @@ func (c C) PageRace() {
 }
 
 func (c C) PageElementX() {
-	c.page.MustNavigate(srcFile("fixtures/click.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	c.page.MustElement("body")
 	name := c.page.MustElementX("//*[contains(text(), 'click')]").MustDescribe().LocalName
 	c.Eq("button", name)
 }
 
 func (c C) PageElementsX() {
-	c.page.MustNavigate(srcFile("fixtures/input.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	c.page.MustElement("body")
 	list := c.page.MustElementsX("//input")
 	c.Len(list, 5)
 }
 
 func (c C) ElementR() {
-	p := c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	el := p.MustElementR("button", `\d1`)
 	c.Eq("01", el.MustText())
 
 	el = p.MustElement("div").MustElementR("button", `03`)
 	c.Eq("03", el.MustText())
 
-	p = c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p = c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el = p.MustElementR("input", `submit`)
 	c.Eq("submit", el.MustText())
 }
 
 func (c C) ElementFromElement() {
-	p := c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	el := p.MustElement("div").MustElement("button")
 	c.Eq("02", el.MustText())
 }
 
 func (c C) ElementsFromElement() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	p.MustElement("form")
 	list := p.MustElement("form").MustElements("option")
 
@@ -195,19 +195,19 @@ func (c C) ElementsFromElement() {
 }
 
 func (c C) ElementParent() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("input").MustParent()
 	c.Eq("FORM", el.MustEval(`this.tagName`).String())
 }
 
 func (c C) ElementParents() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	c.Len(p.MustElement("option").MustParents("*"), 4)
 	c.Len(p.MustElement("option").MustParents("form"), 1)
 }
 
 func (c C) ElementSiblings() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("hr")
 	a := el.MustPrevious()
 	b := el.MustNext()
@@ -217,13 +217,13 @@ func (c C) ElementSiblings() {
 }
 
 func (c C) ElementFromElementX() {
-	p := c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	el := p.MustElement("div").MustElementX("./button")
 	c.Eq("02", el.MustText())
 }
 
 func (c C) ElementsFromElementsX() {
-	p := c.page.MustNavigate(srcFile("fixtures/selector.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
 	list := p.MustElement("div").MustElementsX("./button")
 	c.Len(list, 2)
 }
@@ -236,18 +236,18 @@ func (c C) ElementTracing() {
 		c.browser.Logger(rod.DefaultLogger)
 	}()
 
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	c.Eq(`rod.element("code")`, p.MustElement("code").MustText())
 }
 
 func (c C) PageElementByJS_Err() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	_, err := p.ElementByJS(rod.NewEval(`1`))
 	c.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
 func (c C) PageElementsByJS_Err() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
 	_, err := p.ElementsByJS(rod.NewEval(`[1]`))
 	c.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJS(rod.NewEval(`1`))

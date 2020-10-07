@@ -10,8 +10,6 @@ import (
 	"io"
 	"io/ioutil"
 	mr "math/rand"
-	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -335,43 +333,6 @@ func SetCmdStdPipe(cmd *exec.Cmd) {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-}
-
-type errMuxWrapper struct {
-	mux *http.ServeMux
-}
-
-// ServeHTTP interface
-func (h *errMuxWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	defer func() {
-		if err := recover(); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			E(json.NewEncoder(w).Encode(err))
-		}
-	}()
-
-	h.mux.ServeHTTP(w, r)
-}
-
-// Serve a port, if host is empty a random port will be used.
-func Serve(host string) (string, *http.ServeMux, func()) {
-	if host == "" {
-		host = "127.0.0.1:0"
-	}
-
-	mux := http.NewServeMux()
-	srv := &http.Server{Handler: &errMuxWrapper{mux}}
-
-	l, err := net.Listen("tcp", host)
-	E(err)
-
-	go func() { _ = srv.Serve(l) }()
-
-	url := "http://" + l.Addr().String()
-
-	return url, mux, func() {
-		E(srv.Close())
-	}
 }
 
 // EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change

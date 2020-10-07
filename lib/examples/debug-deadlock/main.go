@@ -1,53 +1,43 @@
 package main
 
 import (
-	"os"
-	"os/signal"
-	"runtime/debug"
+	"fmt"
 
 	"github.com/go-rod/rod"
+	"github.com/ysmood/gotrace"
 )
 
 // This example shows how to detect the hanging points of golang code.
 // It's actually a general way to debug any golang project.
 func main() {
-	debug.SetTraceback("all")
+	defer checkLock()()
 
-	go func() {
-		wait()
-		panic("exit")
-	}()
-
-	yourCodeHere()
+	go yourCodeHere()
 }
 
 // Put your code here, press Ctrl+C when you feel the program is hanging.
 // Read each goroutine's stack that is related to your own code logic.
 func yourCodeHere() {
-	rod.New().MustConnect().MustPage("http://example.com").MustElement("not-exists")
+	page := rod.New().MustConnect().MustPage("http://example.com")
+	go page.MustElement("not-exists")
 }
 
 // For this example you will find something like this below:
 
 /*
-goroutine 1 [select]:
-github.com/go-rod/rod.(*Page).Element(0xc000434000, 0xc000098d10, 0x1, 0x1, 0xc000000300)
-	rod/sugar.go:363 +0x8e
-main.yourCodeHere()
-	rod/lib/examples/debug-deadlock/main.go:26 +0xa4
-main.main()
-	rod/lib/examples/debug-deadlock/main.go:20 +0x53
+goroutine 7 [select]:
+github.com/go-rod/rod.(*Page).MustElement(0xc00037e000, 0xc00063a0f0, 0x1, 0x1, 0x0)
+	rod/must.go:425 +0x4d
+created by main.yourCodeHere
+	rod/lib/examples/debug-deadlock/main.go:22 +0xb8
 */
 
-// Now you know the line 26's Element is blocking the code.
+// From it we know the line 22 is blocking the code.
 
-func wait(signals ...os.Signal) {
-	c := make(chan os.Signal, 1)
-	if len(signals) == 0 {
-		signals = append(signals, os.Interrupt)
+func checkLock() func() {
+	ctx := gotrace.Signal()
+	ignored := gotrace.IgnoreCurrent()
+	return func() {
+		fmt.Println(gotrace.Wait(ctx, ignored))
 	}
-	signal.Notify(c, signals...)
-	<-c
-	signal.Stop(c)
-	close(c)
 }

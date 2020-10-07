@@ -5,8 +5,10 @@
 package rod
 
 import (
+	"encoding/json"
 	"fmt"
 	"html"
+	"net"
 	"net/http"
 	"regexp"
 	"strings"
@@ -21,10 +23,10 @@ import (
 // ServeMonitor starts the monitor server.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
 func (b *Browser) ServeMonitor(host string) string {
-	u, mux, close := utils.Serve(host)
+	url, mux, close := serve(host)
 	go func() {
 		<-b.ctx.Done()
-		close()
+		utils.E(close())
 	}()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +65,7 @@ func (b *Browser) ServeMonitor(host string) string {
 		utils.E(w.Write(p.MustScreenshot()))
 	})
 
-	return u
+	return url
 }
 
 // TraceType for logger
@@ -242,4 +244,32 @@ func (m *Mouse) updateMouseTracer() bool {
 		return true
 	}
 	return res.Value.Bool()
+}
+
+// Serve a port, if host is empty a random port will be used.
+func serve(host string) (string, *http.ServeMux, func() error) {
+	if host == "" {
+		host = "127.0.0.1:0"
+	}
+
+	mux := http.NewServeMux()
+	srv := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				utils.E(json.NewEncoder(w).Encode(err))
+			}
+		}()
+
+		mux.ServeHTTP(w, r)
+	})}
+
+	l, err := net.Listen("tcp", host)
+	utils.E(err)
+
+	go func() { _ = srv.Serve(l) }()
+
+	url := "http://" + l.Addr().String()
+
+	return url, mux, srv.Close
 }

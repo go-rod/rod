@@ -29,7 +29,7 @@ func Test(t *testing.T) {
 }
 
 type C struct {
-	got.Assertion
+	got.G
 }
 
 func (c C) Basic() {

@@ -38,7 +38,7 @@ func Test(t *testing.T) {
 
 // context of a test case
 type C struct {
-	got.Assertion
+	got.G
 
 	mc      *MockClient
 	browser *rod.Browser
@@ -131,7 +131,7 @@ func (cp ContextPool) get(t *testing.T) C {
 	})
 
 	c.mc.t = t
-	c.Assertion = got.New(t)
+	c.G = got.New(t)
 
 	return c
 }
@@ -154,41 +154,10 @@ func getOnePage(b *rod.Browser) (page *rod.Page) {
 }
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
-func srcFile(path string) string {
-	return "file://" + file(path)
-}
-
-// get abs file path from fixtures folder, return sample "/a/b/click.html"
-func file(path string) string {
+func (c C) srcFile(path string) string {
 	f, err := filepath.Abs(slash(path))
-	utils.E(err)
-	return f
-}
-
-func httpHTML(body string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "text/html; charset=utf-8")
-		utils.E(w.Write([]byte(body)))
-	}
-}
-
-func httpString(body string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		utils.E(w.Write([]byte(body)))
-	}
-}
-
-func httpHTMLFile(path string) http.HandlerFunc {
-	body, err := utils.ReadString(path)
-	utils.E(err)
-	return httpHTML(body)
-}
-
-func serveStatic() (string, func()) {
-	u, mux, close := utils.Serve("")
-	mux.Handle("/fixtures", http.FileServer(http.Dir("fixtures")))
-
-	return u + "/", close
+	c.E(err)
+	return "file://" + f
 }
 
 type MockRoundTripper struct {

@@ -15,12 +15,11 @@ import (
 )
 
 func (c C) Hijack() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	// to simulate a backend server
-	mux.HandleFunc("/", httpHTMLFile("fixtures/fetch.html"))
-	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+	s.Route("/", slash("fixtures/fetch.html"))
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			panic("wrong http method")
 		}
@@ -31,14 +30,14 @@ func (c C) Hijack() {
 		c.E(err)
 		c.Eq("a", string(b))
 
-		httpString("test")(w, r)
+		c.HandleHTTP(".html", "test")(w, r)
 	})
-	mux.HandleFunc("/b", httpString("b"))
+	s.Route("/b", "", "b")
 
 	router := c.page.HijackRequests()
 	defer router.MustStop()
 
-	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
 		r := ctx.Request.SetContext(context.Background())
 		r.Req().URL = r.Req().URL            // override request url
 		r.Req().Header.Set("Test", "header") // override request header
@@ -47,10 +46,10 @@ func (c C) Hijack() {
 		r.SetBody(r.Body())                  // override request body
 
 		c.Eq(http.MethodPost, r.Method())
-		c.Eq(url+"/a", r.URL().String())
+		c.Eq(s.URL("/a"), r.URL().String())
 
 		c.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
-		c.Has(ctx.Request.Header("Origin"), url)
+		c.Has(ctx.Request.Header("Origin"), s.URL())
 		c.Len(ctx.Request.Headers(), 5).Msg("%s", utils.Dump(ctx.Request.Headers()))
 		c.True(ctx.Request.JSONBody().Nil())
 
@@ -63,7 +62,7 @@ func (c C) Hijack() {
 		ctx.Response.Payload().ResponseCode = http.StatusCreated
 
 		c.Eq("4", ctx.Response.Headers().Get("Content-Length"))
-		c.Eq("text/plain; charset=utf-8", ctx.Response.Headers().Get("Content-Type"))
+		c.Has(ctx.Response.Headers().Get("Content-Type"), "text/html; charset=utf-8")
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
@@ -78,29 +77,26 @@ func (c C) Hijack() {
 		c.Eq("{\"text\":\"test\"}", ctx.Response.Body())
 	})
 
-	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/b"), func(ctx *rod.Hijack) {
 		panic("should not come to here")
 	})
-	router.MustRemove(url + "/b")
+	router.MustRemove(s.URL("/b"))
 
-	router.MustAdd(url+"/b", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/b"), func(ctx *rod.Hijack) {
 		// transparent proxy
 		ctx.MustLoadResponse()
 	})
 
 	go router.Run()
 
-	c.page.MustNavigate(url)
+	c.page.MustNavigate(s.URL())
 
 	c.Eq("201 test key=val", c.page.MustElement("#a").MustText())
 	c.Eq("b", c.page.MustElement("#b").MustText())
 }
 
 func (c C) HijackContinue() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
+	s := c.Serve().Route("/", ".html", `<body>ok</body>`)
 
 	router := c.page.HijackRequests()
 	defer router.MustStop()
@@ -114,17 +110,14 @@ func (c C) HijackContinue() {
 
 	go router.Run()
 
-	c.page.MustNavigate(url)
+	c.page.MustNavigate(s.URL())
 
 	c.Eq("ok", c.page.MustElement("body").MustText())
 	wg.Wait()
 }
 
 func (c C) HijackOnErrorLog() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	mux.HandleFunc("/", httpHTML(`<body>ok</body>`))
+	s := c.Serve().Route("/", ".html", `<body>ok</body>`)
 
 	router := c.page.HijackRequests()
 	defer router.MustStop()
@@ -151,7 +144,7 @@ func (c C) HijackOnErrorLog() {
 	defer cancel()
 
 	go func() {
-		_ = c.page.Context(ctx).Navigate(url)
+		_ = c.page.Context(ctx).Navigate(s.URL())
 	}()
 	wg.Wait()
 
@@ -159,36 +152,32 @@ func (c C) HijackOnErrorLog() {
 }
 
 func (c C) HijackFailRequest() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	// to simulate a backend server
-	mux.HandleFunc("/", httpHTML(`<html>
+	s := c.Serve().Route("/", ".html", `<html>
 	<body></body>
 	<script>
 		fetch('/a').catch(async (err) => {
 			document.title = err.message
 		})
-	</script></html>`))
+	</script></html>`)
 
 	router := c.browser.HijackRequests()
 	defer router.MustStop()
 
 	err := make(chan error)
-	router.MustAdd(url+"/a", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
 		ctx.OnError = func(e error) { err <- e }
 		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
 	})
 
 	go router.Run()
 
-	c.page.MustNavigate(url).MustWaitLoad()
+	c.page.MustNavigate(s.URL()).MustWaitLoad()
 
 	c.page.MustWait(`document.title == 'Failed to fetch'`)
 
 	{ // test error log
 		c.mc.stubErr(1, proto.FetchFailRequest{})
-		c.page.MustNavigate(url)
+		c.page.MustNavigate(s.URL())
 		c.Err(<-err)
 	}
 }
@@ -220,17 +209,13 @@ func (c C) HijackLoadResponseErr() {
 
 	go router.Run()
 
-	go func() { _ = p.Navigate(srcFile("./fixtures/click.html")) }()
+	go func() { _ = p.Navigate(c.srcFile("./fixtures/click.html")) }()
 
 	wg.Wait()
 }
 
 func (c C) HijackResponseErr() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	// to simulate a backend server
-	mux.HandleFunc("/", httpHTML(`ok`))
+	s := c.Serve().Route("/", ".html", `ok`)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -253,17 +238,16 @@ func (c C) HijackResponseErr() {
 
 	go router.Run()
 
-	go func() { _ = p.Navigate(url) }()
+	go func() { _ = p.Navigate(s.URL()) }()
 
 	wg.Wait()
 }
 
 func (c C) HandleAuth() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	// mock the server
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		u, p, ok := r.BasicAuth()
 		if !ok {
 			w.Header().Add("WWW-Authenticate", `Basic realm="web"`)
@@ -273,20 +257,20 @@ func (c C) HandleAuth() {
 
 		c.Eq("a", u)
 		c.Eq("b", p)
-		httpHTML(`<p>ok</p>`)(w, r)
+		c.HandleHTTP(".html", `<p>ok</p>`)(w, r)
 	})
-	mux.HandleFunc("/err", httpHTML("err page"))
+	s.Route("/err", ".html", "err page")
 
 	c.browser.MustHandleAuth("a", "b")
 
-	page := c.browser.MustPage(url)
+	page := c.browser.MustPage(s.URL())
 	defer page.MustClose()
 	page.MustElementR("p", "ok")
 
 	wait := c.browser.HandleAuth("a", "b")
 	var page2 *rod.Page
 	wait2 := utils.All(func() {
-		page2, _ = c.browser.Page(url + "/err")
+		page2, _ = c.browser.Page(s.URL("/err"))
 	})
 	c.mc.stubErr(1, proto.FetchContinueRequest{})
 	c.Err(wait())
@@ -295,25 +279,21 @@ func (c C) HandleAuth() {
 }
 
 func (c C) GetDownloadFile() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
+	s := c.Serve()
 	content := "test content"
 
-	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
-		c.E(w.Write([]byte(content)))
-	})
-	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
+	s.Route("/d", ".bin", []byte(content))
+	s.Route("/", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
 
-	page := c.page.MustNavigate(url)
+	page := c.page.MustNavigate(s.URL())
 
-	wait := page.MustGetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
+	wait := page.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
 	page.MustElement("a").MustClick()
 	data := wait()
 
 	c.Eq(content, string(data))
 
-	waitErr := page.GetDownloadFile(url+"/d", "", &http.Client{
+	waitErr := page.GetDownloadFile(s.URL("/d"), "", &http.Client{
 		Transport: &MockRoundTripper{err: errors.New("err")},
 	})
 	page.MustElement("a").MustClick()
@@ -327,10 +307,9 @@ func (c C) GetDownloadFile() {
 }
 
 func (c C) GetDownloadFileFromDataURI() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
-	mux.HandleFunc("/", httpHTML(
+	s.Route("/", ".html",
 		`<html>
 			<a id="a" href="data:text/plain;,test%20data" download>click</a>
 			<a id="b" download>click</a>
@@ -341,9 +320,9 @@ func (c C) GetDownloadFileFromDataURI() {
 				}))
 			</script>
 		</html>`,
-	))
+	)
 
-	page := c.page.MustNavigate(url)
+	page := c.page.MustNavigate(s.URL())
 
 	wait := page.MustGetDownloadFile("data:*")
 	page.MustElement("#a").MustClick()
@@ -364,17 +343,13 @@ func (c C) GetDownloadFileFromDataURI() {
 }
 
 func (c C) GetDownloadFileWithHijack() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
+	s := c.Serve()
 	content := "test content"
 
-	mux.HandleFunc("/d", func(w http.ResponseWriter, r *http.Request) {
-		c.E(w.Write([]byte(content)))
-	})
-	mux.HandleFunc("/", httpHTML(fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, url)))
+	s.Route("/d", ".bin", []byte(content))
+	s.Route("/", ".html", fmt.Sprintf(`<html><a href="%s" download>click</a></html>`, s.URL("/d")))
 
-	page := c.page.MustNavigate(url)
+	page := c.page.MustNavigate(s.URL())
 
 	r := page.HijackRequests()
 	r.MustAdd("*", func(ctx *rod.Hijack) {
@@ -384,7 +359,7 @@ func (c C) GetDownloadFileWithHijack() {
 	go r.Run()
 	defer r.MustStop()
 
-	wait := page.MustGetDownloadFile(url + "/d") // the pattern is used to prevent favicon request
+	wait := page.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
 	page.MustElement("a").MustClick()
 	data := wait()
 

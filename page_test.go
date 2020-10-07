@@ -24,23 +24,22 @@ import (
 )
 
 func (c C) GetPageURL() {
-	c.page.MustNavigate(srcFile("fixtures/click-iframe.html")).MustWaitLoad()
+	c.page.MustNavigate(c.srcFile("fixtures/click-iframe.html")).MustWaitLoad()
 	c.Regex(`/fixtures/click-iframe.html\z`, c.page.MustInfo().URL)
 }
 
 func (c C) SetCookies() {
-	url, _, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	page := c.page.MustSetCookies(&proto.NetworkCookieParam{
 		Name:  "cookie-a",
 		Value: "1",
-		URL:   url,
+		URL:   s.URL(),
 	}, &proto.NetworkCookieParam{
 		Name:  "cookie-b",
 		Value: "2",
-		URL:   url,
-	}).MustNavigate(url)
+		URL:   s.URL(),
+	}).MustNavigate(s.URL())
 
 	cookies := page.MustCookies()
 
@@ -67,9 +66,8 @@ func (c C) SetCookies() {
 }
 
 func (c C) SetExtraHeaders() {
-	url, mux, close := utils.Serve("")
-	defer close()
-	mux.HandleFunc("/", httpHTML("ok"))
+	s := c.Serve()
+	s.Route("/", ".html", `ok`)
 
 	page := c.browser.MustPage("")
 	defer page.MustClose()
@@ -78,7 +76,7 @@ func (c C) SetExtraHeaders() {
 
 	var e proto.NetworkResponseReceived
 	wait := page.WaitEvent(&e)
-	page.MustNavigate(url)
+	page.MustNavigate(s.URL())
 	wait()
 
 	c.Eq("1", e.Response.RequestHeaders["a"].Str())
@@ -88,7 +86,7 @@ func (c C) SetExtraHeaders() {
 
 	e = proto.NetworkResponseReceived{}
 	wait = page.WaitEvent(&e)
-	page.MustNavigate(url)
+	page.MustNavigate(s.URL())
 	wait()
 
 	c.Nil(e.Response.RequestHeaders["a"].Val())
@@ -96,8 +94,7 @@ func (c C) SetExtraHeaders() {
 }
 
 func (c C) SetUserAgent() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	ua := ""
 	lang := ""
@@ -105,13 +102,13 @@ func (c C) SetUserAgent() {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ua = r.Header.Get("User-Agent")
 		lang = r.Header.Get("Accept-Language")
 		wg.Done()
 	})
 
-	p := c.browser.MustPage("").MustSetUserAgent(nil).MustNavigate(url)
+	p := c.browser.MustPage("").MustSetUserAgent(nil).MustNavigate(s.URL())
 	defer p.MustClose()
 	wg.Wait()
 
@@ -120,7 +117,7 @@ func (c C) SetUserAgent() {
 }
 
 func (c C) PageCloseCancel() {
-	page := c.browser.MustPage(srcFile("fixtures/prevent-close.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/prevent-close.html"))
 	page.MustElement("body").MustClick() // only focused page will handle beforeunload event
 
 	go page.MustHandleDialog(false, "")()
@@ -148,7 +145,7 @@ func (c C) Release() {
 }
 
 func (c C) Window() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
 	c.E(page.SetViewport(nil))
@@ -186,21 +183,21 @@ func (c C) Window() {
 }
 
 func (c C) SetViewport() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 	page.MustSetViewport(317, 419, 0, false)
 	res := page.MustEval(`[window.innerWidth, window.innerHeight]`)
 	c.Eq(317, res.Get("0").Int())
 	c.Eq(419, res.Get("1").Int())
 
-	page2 := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page2 := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page2.MustClose()
 	res = page2.MustEval(`[window.innerWidth, window.innerHeight]`)
 	c.Neq(int(317), res.Get("0").Int())
 }
 
 func (c C) EmulateDevice() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 	page.MustEmulate(devices.IPhone6or7or8Plus)
 	res := page.MustEval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
@@ -221,7 +218,7 @@ func (c C) EmulateDevice() {
 }
 
 func (c C) PageCloseErr() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.PageStopLoading{})
@@ -234,12 +231,12 @@ func (c C) PageCloseErr() {
 }
 
 func (c C) PageAddScriptTag() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
 
-	res := p.MustAddScriptTag(srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
+	res := p.MustAddScriptTag(c.srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
 	c.Eq(0, res.Int())
 
-	res = p.MustAddScriptTag(srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
+	res = p.MustAddScriptTag(c.srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
 	c.Eq(1, res.Int())
 
 	c.E(p.AddScriptTag("", `let ok = 'yes'`))
@@ -248,13 +245,13 @@ func (c C) PageAddScriptTag() {
 }
 
 func (c C) PageAddStyleTag() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
 
-	res := p.MustAddStyleTag(srcFile("fixtures/add-style-tag.css")).
+	res := p.MustAddStyleTag(c.srcFile("fixtures/add-style-tag.css")).
 		MustElement("h4").MustEval(`getComputedStyle(this).color`)
 	c.Eq("rgb(255, 0, 0)", res.String())
 
-	p.MustAddStyleTag(srcFile("fixtures/add-style-tag.css"))
+	p.MustAddStyleTag(c.srcFile("fixtures/add-style-tag.css"))
 	c.Len(p.MustElements("link"), 1)
 
 	c.E(p.AddStyleTag("", "h4 { color: green; }"))
@@ -283,7 +280,7 @@ func (c C) PageEvalOnNewDocument() {
 }
 
 func (c C) PageEval() {
-	page := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 
 	c.Eq(3, page.MustEval(`
 		(a, b) => a + b
@@ -301,7 +298,7 @@ func (c C) PageEval() {
 }
 
 func (c C) PageEvalNilContext() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
 	c.mc.stub(1, proto.RuntimeEvaluate{}, func(send StubSend) (gson.JSON, error) {
@@ -311,7 +308,7 @@ func (c C) PageEvalNilContext() {
 }
 
 func (c C) PageExposeJSHelper() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html"))
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer page.MustClose()
 
 	c.Eq("undefined", page.MustEval("typeof(rod)").Str())
@@ -320,7 +317,7 @@ func (c C) PageExposeJSHelper() {
 }
 
 func (c C) PageWaitOpen() {
-	page := c.page.Timeout(3 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
+	page := c.page.Timeout(3 * time.Second).MustNavigate(c.srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
 	wait := page.MustWaitOpen()
@@ -334,7 +331,7 @@ func (c C) PageWaitOpen() {
 }
 
 func (c C) PageWaitPauseOpen() {
-	page := c.page.Timeout(5 * time.Second).MustNavigate(srcFile("fixtures/open-page.html"))
+	page := c.page.Timeout(5 * time.Second).MustNavigate(c.srcFile("fixtures/open-page.html"))
 	defer page.CancelTimeout()
 
 	wait, resume := page.MustWaitPauseOpen()
@@ -383,7 +380,7 @@ func (c C) PageWaitPauseOpen() {
 }
 
 func (c C) PageWait() {
-	page := c.page.Timeout(5 * time.Second).MustNavigate(srcFile("fixtures/click.html"))
+	page := c.page.Timeout(5 * time.Second).MustNavigate(c.srcFile("fixtures/click.html"))
 	page.MustWait(`document.querySelector('button') !== null`)
 
 	c.Panic(func() {
@@ -392,35 +389,30 @@ func (c C) PageWait() {
 	})
 }
 func (c C) PageWaitNavigation() {
-	url, mux, close := utils.Serve("")
-	defer close()
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
-
+	s := c.Serve().Route("/", "")
 	wait := c.page.MustWaitNavigation()
-	c.page.MustNavigate(url)
+	c.page.MustNavigate(s.URL())
 	wait()
 }
 
 func (c C) PageWaitRequestIdle() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	sleep := 2 * time.Second
 
-	mux.HandleFunc("/r1", func(w http.ResponseWriter, r *http.Request) {})
-	mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) {
+	s.Route("/r1", "")
+	s.Mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) {
 		c.E(w.Write([]byte("part")))
 		ctx, cancel := context.WithTimeout(ctx, sleep)
 		defer cancel()
 		<-ctx.Done()
 	})
-	mux.HandleFunc("/r3", func(w http.ResponseWriter, r *http.Request) {})
-	mux.HandleFunc("/", httpHTML(`<html></html>`))
+	s.Route("/r3", "")
+	s.Route("/", ".html", `<html></html>`)
 
-	page := c.browser.MustPage(url).MustWaitLoad()
+	page := c.browser.MustPage(s.URL()).MustWaitLoad()
 	defer page.MustClose()
 
 	code := ` () => {
@@ -463,7 +455,7 @@ func (c C) PageWaitRequestIdle() {
 }
 
 func (c C) PageWaitIdle() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	p.MustElement("button").MustClick()
 	p.MustWaitIdle()
 
@@ -472,19 +464,19 @@ func (c C) PageWaitIdle() {
 
 func (c C) PageWaitEvent() {
 	wait := c.page.WaitEvent(&proto.PageFrameNavigated{})
-	c.page.MustNavigate(srcFile("fixtures/click.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	wait()
 }
 
 func (c C) Alert() {
-	page := c.page.MustNavigate(srcFile("fixtures/alert.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/alert.html"))
 
 	go page.MustHandleDialog(true, "")()
 	page.MustElement("button").MustClick()
 }
 
 func (c C) Mouse() {
-	page := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	page.MustElement("button")
 	mouse := page.Mouse
 
@@ -519,7 +511,7 @@ func (c C) MouseClick() {
 	c.browser.Slowmotion(1)
 	defer func() { c.browser.Slowmotion(0) }()
 
-	page := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	page.MustElement("button")
 	mouse := page.Mouse
 	mouse.MustMove(140, 160)
@@ -529,7 +521,7 @@ func (c C) MouseClick() {
 
 func (c C) MouseDrag() {
 	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
-	page := c.page.MustNavigate(srcFile("fixtures/drag.html")).MustWaitLoad()
+	page := c.page.MustNavigate(c.srcFile("fixtures/drag.html")).MustWaitLoad()
 	wait()
 	mouse := page.Mouse
 
@@ -557,7 +549,7 @@ func (c C) NativeDrag() {
 	// devtools doesn't support to use mouse event to simulate it for now
 	c.Testable.(*testing.T).SkipNow()
 
-	page := c.page.MustNavigate(srcFile("fixtures/drag.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 
 	pt := page.MustElement("#draggable").MustShape().OnePointInside()
@@ -580,7 +572,7 @@ func (c C) Touch() {
 	defer page.MustClose()
 
 	page.MustEmulate(devices.IPad).
-		MustNavigate(srcFile("fixtures/touch.html")).
+		MustNavigate(c.srcFile("fixtures/touch.html")).
 		MustWaitLoad()
 
 	wait := make(chan struct{})
@@ -617,8 +609,8 @@ func (c C) Touch() {
 }
 
 func (c C) PageScreenshot() {
-	f := filepath.Join("tmp", "screenshots", utils.RandString(8)+".png")
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	f := filepath.Join("tmp", "screenshots", c.Srand(16)+".png")
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	p.MustElement("button")
 	p.MustScreenshot()
 	data := p.MustScreenshot(f)
@@ -637,7 +629,7 @@ func (c C) PageScreenshot() {
 }
 
 func (c C) ScreenshotFullPage() {
-	p := c.page.MustNavigate(srcFile("fixtures/scroll.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/scroll.html"))
 	p.MustElement("button")
 	data := p.MustScreenshotFullPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
@@ -653,7 +645,7 @@ func (c C) ScreenshotFullPage() {
 
 	p.MustScreenshotFullPage("")
 
-	noEmulation := c.browser.MustPage(srcFile("fixtures/click.html"))
+	noEmulation := c.browser.MustPage(c.srcFile("fixtures/click.html"))
 	defer noEmulation.MustClose()
 	c.E(noEmulation.SetViewport(nil))
 	noEmulation.MustScreenshotFullPage()
@@ -669,7 +661,7 @@ func (c C) ScreenshotFullPage() {
 }
 
 func (c C) ScreenshotFullPageInit() {
-	p := c.browser.MustPage(srcFile("fixtures/scroll.html"))
+	p := c.browser.MustPage(c.srcFile("fixtures/scroll.html"))
 	defer p.MustClose()
 
 	// should not panic
@@ -677,7 +669,7 @@ func (c C) ScreenshotFullPageInit() {
 }
 
 func (c C) PageInput() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 
 	el := p.MustElement("input")
 	el.MustFocus()
@@ -704,7 +696,7 @@ func (c C) PageInput() {
 }
 
 func (c C) PageScroll() {
-	p := c.page.MustNavigate(srcFile("fixtures/scroll.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/scroll.html")).MustWaitLoad()
 
 	p.Mouse.MustScroll(0, 10)
 	p.Mouse.MustScroll(100, 190)
@@ -725,7 +717,7 @@ func (c C) PageConsoleLog() {
 }
 
 func (c C) PageOthers() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 
 	c.Eq("body", p.MustElementByJS(`document.body`).MustDescribe().LocalName)
 	c.Len(p.MustElementsByJS(`document.querySelectorAll('input')`), 5)
@@ -738,13 +730,13 @@ func (c C) PageOthers() {
 }
 
 func (c C) Fonts() {
-	p := c.page.MustNavigate(srcFile("fixtures/fonts.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
 	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts
 }
 
 func (c C) PagePDF() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	p.MustPDF("")
 
 	c.Panic(func() {
@@ -756,7 +748,7 @@ func (c C) PagePDF() {
 func (c C) PageExpose() {
 	cb, stop := c.page.MustExpose("exposedFunc")
 
-	c.page.MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad()
+	c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	c.page.MustEval(`exposedFunc({a: 'ok'})`)
 	c.Eq("ok", (<-cb)[0].Get("a").Str())
@@ -790,12 +782,12 @@ func (c C) PageObjectErr() {
 		c.page.MustElementFromNode(-1)
 	})
 	c.Panic(func() {
-		id := c.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		id := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
 		c.mc.stubErr(1, proto.DOMResolveNode{})
 		c.page.MustElementFromNode(id)
 	})
 	c.Panic(func() {
-		id := c.page.MustNavigate(srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		id := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
 		c.mc.stubErr(1, proto.DOMDescribeNode{})
 		c.page.MustElementFromNode(id)
 	})
@@ -804,30 +796,29 @@ func (c C) PageObjectErr() {
 func (c C) PageNavigateErr() {
 	// dns error
 	c.Panic(func() {
-		c.page.MustNavigate("http://" + utils.RandString(8))
+		c.page.MustNavigate("http://" + c.Srand(16))
 	})
 
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
-	mux.HandleFunc("/404", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/404", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 	})
-	mux.HandleFunc("/500", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/500", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	})
 
 	// will not panic
-	c.page.MustNavigate(url + "/404")
-	c.page.MustNavigate(url + "/500")
+	c.page.MustNavigate(s.URL("/404"))
+	c.page.MustNavigate(s.URL("/500"))
 
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.PageStopLoading{})
-		c.page.MustNavigate(srcFile("fixtures/click.html"))
+		c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	})
 	c.Panic(func() {
 		c.mc.stubErr(1, proto.PageNavigate{})
-		c.page.MustNavigate(srcFile("fixtures/click.html"))
+		c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	})
 }
 
@@ -843,8 +834,8 @@ func (c C) PageGoBackGoForward() {
 	defer p.MustClose()
 
 	p.
-		MustNavigate(srcFile("fixtures/click.html")).MustWaitLoad().
-		MustNavigate(srcFile("fixtures/selector.html")).MustWaitLoad()
+		MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad().
+		MustNavigate(c.srcFile("fixtures/selector.html")).MustWaitLoad()
 
 	p.MustNavigateBack().MustWaitLoad()
 	c.Regex("fixtures/click.html$", p.MustInfo().URL)
@@ -854,7 +845,7 @@ func (c C) PageGoBackGoForward() {
 }
 
 func (c C) PageInitJSErr() {
-	p := c.browser.MustPage(srcFile("fixtures/click-iframe.html")).MustElement("iframe").MustFrame()
+	p := c.browser.MustPage(c.srcFile("fixtures/click-iframe.html")).MustElement("iframe").MustFrame()
 	defer p.MustClose()
 
 	c.Panic(func() {

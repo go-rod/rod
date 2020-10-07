@@ -80,12 +80,10 @@ func TestRemoteLaunch(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	u, mux, close := utils.Serve("")
-	defer close()
+	s := got.New(t).Serve()
+	s.Mux.Handle("/", NewRemoteLauncher())
 
-	mux.Handle("/", NewRemoteLauncher())
-
-	l := MustNewRemote(u).KeepUserDataDir().Delete(flagKeepUserDataDir)
+	l := MustNewRemote(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
 	as.E(b.Call(ctx, "", "Browser.getVersion", nil))
@@ -113,7 +111,7 @@ func TestLaunchErrs(t *testing.T) {
 	as.Err(err)
 
 	l = New()
-	l.browser.Dir = utils.RandString(8)
+	l.browser.Dir = as.Srand(16)
 	l.browser.ExecSearchMap = nil
 	l.browser.Hosts = []string{}
 	_, err = l.Launch()

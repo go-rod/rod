@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"path/filepath"
 	"testing"
 	"time"
@@ -17,7 +16,7 @@ import (
 )
 
 type C struct {
-	got.Assertion
+	got.G
 }
 
 func Test(t *testing.T) {
@@ -62,7 +61,7 @@ func (c C) Mkdir() {
 }
 
 func (c C) OutputString() {
-	p := "tmp/" + utils.RandString(10)
+	p := "tmp/" + c.Srand(16)
 
 	_ = utils.OutputFile(p, p)
 
@@ -76,7 +75,7 @@ func (c C) OutputString() {
 }
 
 func (c C) OutputBytes() {
-	p := "tmp/" + utils.RandString(10)
+	p := "tmp/" + c.Srand(16)
 
 	_ = utils.OutputFile(p, []byte("test"))
 
@@ -90,7 +89,7 @@ func (c C) OutputBytes() {
 }
 
 func (c C) OutputStream() {
-	p := "tmp/" + utils.RandString(10)
+	p := "tmp/" + c.Srand(16)
 	b := bytes.NewBufferString("test")
 
 	_ = utils.OutputFile(p, b)
@@ -105,7 +104,7 @@ func (c C) OutputStream() {
 }
 
 func (c C) OutputJSONErr() {
-	p := "tmp/" + utils.RandString(10)
+	p := "tmp/" + c.Srand(16)
 
 	c.Panic(func() {
 		_ = utils.OutputFile(p, make(chan struct{}))
@@ -183,25 +182,11 @@ func (c C) MustToJSON() {
 func (c C) FileExists() {
 	c.Eq(false, utils.FileExists("."))
 	c.Eq(true, utils.FileExists("utils.go"))
-	c.Eq(false, utils.FileExists(utils.RandString(8)))
+	c.Eq(false, utils.FileExists(c.Srand(16)))
 }
 
 func (c C) Exec() {
 	utils.Exec("echo")
-}
-
-func (c C) Serve() {
-	u, mux, close := utils.Serve("")
-	defer close()
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		panic("err")
-	})
-
-	res, err := http.Get(u)
-	c.E(err)
-
-	c.Eq(http.StatusBadRequest, res.StatusCode)
 }
 
 type errReader struct {

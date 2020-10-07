@@ -3,7 +3,6 @@ package rod_test
 import (
 	"context"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -18,12 +17,13 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/got"
 	"github.com/ysmood/gson"
 )
 
 func (c C) Incognito() {
-	file := srcFile("fixtures/click.html")
-	k := utils.RandString(8)
+	file := c.srcFile("fixtures/click.html")
+	k := c.Srand(16)
 
 	b := c.browser.MustIncognito().Sleeper(rod.DefaultSleeper)
 	page := b.MustPage(file)
@@ -55,7 +55,7 @@ func (c C) PageFromTarget() {
 }
 
 func (c C) BrowserPages() {
-	page := c.browser.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
+	page := c.browser.MustPage(c.srcFile("fixtures/click.html")).MustWaitLoad()
 	defer page.MustClose()
 
 	pages := c.browser.MustPages()
@@ -101,7 +101,7 @@ func (c C) BrowserWaitEvent() {
 	c.NotNil(c.browser.Event())
 
 	wait := c.page.WaitEvent(&proto.PageFrameNavigated{})
-	c.page.MustNavigate(srcFile("fixtures/click.html"))
+	c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	wait()
 }
 
@@ -129,7 +129,7 @@ func (c C) BrowserCall() {
 func (c C) Monitor() {
 	b := rod.New().Timeout(1 * time.Minute).MustConnect()
 	defer b.MustClose()
-	p := b.MustPage(srcFile("fixtures/click.html")).MustWaitLoad()
+	p := b.MustPage(c.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	b, cancel := b.WithCancel()
 	defer cancel()
@@ -141,14 +141,10 @@ func (c C) Monitor() {
 	page.MustNavigate(host + "/page/" + string(p.TargetID))
 	page.MustWait(`(id) => document.title.includes(id)`, p.TargetID)
 
-	res, err := http.Get(host + "/screenshot")
-	c.E(err)
-	img, err := ioutil.ReadAll(res.Body)
-	c.E(err)
+	img := c.Req("", host+"/screenshot").Bytes()
 	c.Gt(len(img), 10)
 
-	res, err = http.Get(host + "/api/page/test")
-	c.E(err)
+	res := c.Req("", host+"/api/page/test")
 	c.Eq(400, res.StatusCode)
 	c.Eq(-32602, gson.New(res.Body).Get("code").Int())
 }
@@ -172,7 +168,7 @@ func (c C) Trace() {
 		c.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
 	}()
 
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
@@ -192,7 +188,7 @@ func (c C) TraceLogs() {
 		c.browser.Trace(defaults.Trace)
 	}()
 
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
@@ -201,7 +197,7 @@ func (c C) TraceLogs() {
 }
 
 func (c C) ConcurrentOperations() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	list := []int{}
 	lock := sync.Mutex{}
 	add := func(item int) {
@@ -227,14 +223,14 @@ func (c C) PromiseLeak() {
 		The unexpected part is that the promise will resolve to the next page's url.
 	*/
 
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	var out string
 
 	utils.All(func() {
 		out = p.MustEval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
 	}, func() {
 		utils.Sleep(0.1)
-		p.MustNavigate(srcFile("fixtures/input.html"))
+		p.MustNavigate(c.srcFile("fixtures/input.html"))
 	})()
 
 	c.Has(out, "input.html")
@@ -245,10 +241,10 @@ func (c C) ObjectLeak() {
 		Seems like it won't leak
 	*/
 
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 
 	el := p.MustElement("button")
-	p.MustNavigate(srcFile("fixtures/input.html")).MustWaitLoad()
+	p.MustNavigate(c.srcFile("fixtures/input.html")).MustWaitLoad()
 	c.Panic(func() {
 		el.MustDescribe()
 	})
@@ -260,39 +256,37 @@ func (c C) BlockingNavigation() {
 		If one page is blocked, other pages should still work.
 	*/
 
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 	pause, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
-	mux.HandleFunc("/b", httpHTML(`<html>ok</html>`))
+	s.Route("/b", ".html", `<html>ok</html>`)
 
 	blocked := c.browser.MustPage("")
 	defer blocked.MustClose()
 
 	go func() {
 		c.Panic(func() {
-			blocked.MustNavigate(url + "/a")
+			blocked.MustNavigate(s.URL("/a"))
 		})
 	}()
 
 	utils.Sleep(0.3)
 
-	p := c.browser.MustPage(url + "/b")
+	p := c.browser.MustPage(s.URL("/b"))
 	defer p.MustClose()
 }
 
 func (c C) ResolveBlocking() {
-	url, mux, close := utils.Serve("")
-	defer close()
+	s := c.Serve()
 
 	pause, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
 
@@ -305,7 +299,7 @@ func (c C) ResolveBlocking() {
 	}()
 
 	c.Panic(func() {
-		p.MustNavigate(url)
+		p.MustNavigate(s.URL())
 	})
 }
 
@@ -402,7 +396,9 @@ func (c C) StreamReader() {
 // It's obvious that, the v8 will take more time to parse long function.
 // For BenchmarkCache and BenchmarkNoCache, the difference is nearly 12% which is too much to ignore.
 func BenchmarkCacheOff(b *testing.B) {
-	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(srcFile("fixtures/click.html"))
+	c := C{G: got.New(b)}
+
+	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(c.srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 
@@ -440,7 +436,9 @@ func BenchmarkCacheOff(b *testing.B) {
 }
 
 func BenchmarkCache(b *testing.B) {
-	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(srcFile("fixtures/click.html"))
+	c := C{G: got.New(b)}
+
+	p := rod.New().Timeout(1 * time.Minute).MustConnect().MustPage(c.srcFile("fixtures/click.html"))
 
 	b.ResetTimer()
 

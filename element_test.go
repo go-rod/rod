@@ -20,7 +20,7 @@ import (
 )
 
 func (c C) Click() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
@@ -33,7 +33,7 @@ func (c C) Click() {
 }
 
 func (c C) ClickWrapped() {
-	p := c.page.MustNavigate(srcFile("fixtures/click-wrapped.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/click-wrapped.html")).MustWaitLoad()
 	el := p.MustElement("#target")
 
 	shape := el.MustShape()
@@ -53,7 +53,7 @@ func (c C) Tap() {
 	defer page.MustClose()
 
 	page.MustEmulate(devices.IPad).
-		MustNavigate(srcFile("fixtures/touch.html")).
+		MustNavigate(c.srcFile("fixtures/touch.html")).
 		MustWaitLoad()
 	el := page.MustElement("button")
 
@@ -78,12 +78,12 @@ func (c C) Tap() {
 }
 
 func (c C) Interactable() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	c.True(p.MustElement("button").MustInteractable())
 }
 
 func (c C) NotInteractable() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
 	// cover the button with a green div
@@ -119,7 +119,7 @@ func (c C) NotInteractable() {
 }
 
 func (c C) Hover() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustEval(`this.onmouseenter = () => this.dataset['a'] = 1`)
 	el.MustHover()
@@ -136,13 +136,13 @@ func (c C) Hover() {
 }
 
 func (c C) MouseMoveErr() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	c.mc.stubErr(1, proto.InputDispatchMouseEvent{})
 	c.Err(p.Mouse.Move(10, 10, 1))
 }
 
 func (c C) ElementContext() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button").Timeout(time.Hour).CancelTimeout()
 	el, cancel := el.WithCancel()
 	defer cancel()
@@ -150,7 +150,7 @@ func (c C) ElementContext() {
 }
 
 func (c C) Iframes() {
-	p := c.page.MustNavigate(srcFile("fixtures/click-iframes.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
 	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
 	el := frame.MustElement("button")
 	el.MustClick()
@@ -188,7 +188,7 @@ func (c C) Iframes() {
 }
 
 func (c C) Contains() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	a := p.MustElement("button")
 
 	b := p.MustElementFromNode(a.MustNodeID())
@@ -200,7 +200,7 @@ func (c C) Contains() {
 }
 
 func (c C) ShadowDOM() {
-	p := c.page.MustNavigate(srcFile("fixtures/shadow-dom.html")).MustWaitLoad()
+	p := c.page.MustNavigate(c.srcFile("fixtures/shadow-dom.html")).MustWaitLoad()
 	el := p.MustElement("#container")
 	c.Eq("inside", el.MustShadowRoot().MustElement("p").MustText())
 
@@ -215,7 +215,7 @@ func (c C) ShadowDOM() {
 }
 
 func (c C) Press() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=text]")
 	el.MustPress('A')
 	el.MustPress(' ')
@@ -234,7 +234,7 @@ func (c C) Press() {
 }
 
 func (c C) KeyDown() {
-	p := c.page.MustNavigate(srcFile("fixtures/keys.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/keys.html"))
 	p.MustElement("body")
 	p.Keyboard.MustDown('j')
 
@@ -242,7 +242,7 @@ func (c C) KeyDown() {
 }
 
 func (c C) KeyUp() {
-	p := c.page.MustNavigate(srcFile("fixtures/keys.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/keys.html"))
 	p.MustElement("body")
 	p.Keyboard.MustUp('x')
 
@@ -252,7 +252,7 @@ func (c C) KeyUp() {
 func (c C) Text() {
 	text := "雲の上は\nいつも晴れ"
 
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	el.MustInput(text)
 
@@ -266,13 +266,13 @@ func (c C) Text() {
 }
 
 func (c C) Checkbox() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=checkbox]")
 	c.True(el.MustClick().MustProperty("checked").Bool())
 }
 
 func (c C) SelectText() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	el.MustInput("test")
 	el.MustSelectAllText()
@@ -304,14 +304,14 @@ func (c C) SelectText() {
 }
 
 func (c C) Blur() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("#blur").MustInput("test").MustBlur()
 
 	c.Eq("ok", *el.MustAttribute("a"))
 }
 
 func (c C) SelectQuery() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	err := el.Select([]string{`[value="c"]`}, true, rod.SelectorTypeCSSSector)
 	c.E(err)
@@ -320,7 +320,7 @@ func (c C) SelectQuery() {
 }
 
 func (c C) SelectQueryNum() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	el.MustSelect("123")
 
@@ -328,7 +328,7 @@ func (c C) SelectQueryNum() {
 }
 
 func (c C) SelectOptions() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	el.MustSelect("B", "C")
 	c.Eq("B,C", el.MustText())
@@ -346,7 +346,7 @@ func (c C) SelectOptions() {
 }
 
 func (c C) Matches() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	c.True(el.MustMatches(`[cols="30"]`))
 
@@ -357,7 +357,7 @@ func (c C) Matches() {
 }
 
 func (c C) Attribute() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	cols := el.MustAttribute("cols")
 	rows := el.MustAttribute("rows")
@@ -365,7 +365,7 @@ func (c C) Attribute() {
 	c.Eq("30", *cols)
 	c.Eq("10", *rows)
 
-	p = c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p = c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el = p.MustElement("button").MustClick()
 
 	c.Eq("ok", *el.MustAttribute("a"))
@@ -378,7 +378,7 @@ func (c C) Attribute() {
 }
 
 func (c C) Property() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	cols := el.MustProperty("cols")
 	rows := el.MustProperty("rows")
@@ -386,7 +386,7 @@ func (c C) Property() {
 	c.Eq(float64(30), cols.Num())
 	c.Eq(float64(10), rows.Num())
 
-	p = c.page.MustNavigate(srcFile("fixtures/open-page.html"))
+	p = c.page.MustNavigate(c.srcFile("fixtures/open-page.html"))
 	el = p.MustElement("a")
 
 	c.Eq("link", el.MustProperty("id").Str())
@@ -400,7 +400,7 @@ func (c C) Property() {
 }
 
 func (c C) SetFiles() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement(`[type=file]`)
 	el.MustSetFiles(
 		slash("fixtures/click.html"),
@@ -413,7 +413,7 @@ func (c C) SetFiles() {
 }
 
 func (c C) Enter() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=submit]")
 	el.MustPress(input.Enter)
 
@@ -421,7 +421,7 @@ func (c C) Enter() {
 }
 
 func (c C) WaitInvisible() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	h4 := p.MustElement("h4")
 	btn := p.MustElement("button")
 	timeout := 3 * time.Second
@@ -446,7 +446,7 @@ func (c C) WaitInvisible() {
 }
 
 func (c C) WaitStable() {
-	p := c.page.MustNavigate(srcFile("fixtures/wait-stable.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
 	start := time.Now()
 	el.MustWaitStable().MustClick()
@@ -473,14 +473,14 @@ func (c C) WaitStable() {
 }
 
 func (c C) CanvasToImage() {
-	p := c.page.MustNavigate(srcFile("fixtures/canvas.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/canvas.html"))
 	src, err := png.Decode(bytes.NewBuffer(p.MustElement("#canvas").MustCanvasToImage()))
 	c.E(err)
 	c.Eq(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }
 
 func (c C) Resource() {
-	p := c.page.MustNavigate(srcFile("fixtures/resource.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/resource.html"))
 	el := p.MustElement("img").MustWaitLoad()
 	c.Eq(15456, len(el.MustResource()))
 
@@ -503,8 +503,8 @@ func (c C) Resource() {
 }
 
 func (c C) ElementScreenshot() {
-	f := filepath.Join("tmp", "screenshots", utils.RandString(8)+".png")
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	f := filepath.Join("tmp", "screenshots", c.Srand(16)+".png")
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("h4")
 
 	data := el.MustScreenshot(f)
@@ -529,7 +529,7 @@ func (c C) ElementScreenshot() {
 }
 
 func (c C) UseReleasedElement() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 	btn.MustRelease()
 	c.Err(btn.Click("left"))
@@ -540,7 +540,7 @@ func (c C) UseReleasedElement() {
 }
 
 func (c C) ElementRemove() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 
 	c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
@@ -551,7 +551,7 @@ func (c C) ElementMultipleTimes() {
 	// To see whether chrome will reuse the remote object ID or not.
 	// Seems like it will not.
 
-	page := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	page := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 
 	btn01 := page.MustElement("button")
 	btn02 := page.MustElement("button")
@@ -561,7 +561,7 @@ func (c C) ElementMultipleTimes() {
 }
 
 func (c C) FnErr() {
-	p := c.page.MustNavigate(srcFile("fixtures/click.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
 	_, err := el.Eval("foo()")
@@ -578,7 +578,7 @@ func (c C) FnErr() {
 
 func (c C) ElementEWithDepth() {
 	checkStr := `green tea`
-	p := c.page.MustNavigate(srcFile("fixtures/describe.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/describe.html"))
 
 	ulDOMNode, err := p.MustElement(`ul`).Describe(-1, true)
 	c.Nil(errors.Unwrap(err))
@@ -590,7 +590,7 @@ func (c C) ElementEWithDepth() {
 }
 
 func (c C) ElementOthers() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
 	el.MustFocus()
 	el.MustScrollIntoView()
@@ -607,7 +607,7 @@ func (c C) ElementFromPointErr() {
 }
 
 func (c C) ElementErrors() {
-	p := c.page.MustNavigate(srcFile("fixtures/input.html"))
+	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
 
 	ctx, cancel := context.WithCancel(context.Background())

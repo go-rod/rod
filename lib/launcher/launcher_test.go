@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
 )
 
@@ -31,7 +30,7 @@ func TestDownloadWithMirror(t *testing.T) {
 	b, cancel := newBrowser()
 	defer cancel()
 	b.Hosts = []string{"https://github.com", launcher.HostTaobao}
-	b.Dir = filepath.Join("tmp", "browser-from-mirror", utils.RandString(8))
+	b.Dir = filepath.Join("tmp", "browser-from-mirror", as.Srand(16))
 	as.E(b.Download())
 	as.Nil(os.Stat(b.ExecPath()))
 

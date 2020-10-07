@@ -3,14 +3,13 @@ package launcher_test
 import (
 	"context"
 	"math/rand"
-	"net/http"
-	"strings"
 	"sync"
 	"testing"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/got"
 )
 
 func BenchmarkRemoteLauncher(b *testing.B) {
@@ -19,22 +18,18 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 
 	limiter := make(chan int, concurrent)
 
-	u, mux, close := utils.Serve("")
-	defer close()
+	s := got.New(b).Serve()
 
 	// docker run --rm -p 9222:9222 rodorg/rod
-	u = strings.ReplaceAll(u, "127.0.0.1", "host.docker.internal")
+	s.HostURL.Host = "host.docker.internal"
 
-	mux.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		rw.Header().Add("Content-Type", "text/html; charset=utf-8")
-		utils.E(rw.Write([]byte(`<html><body>
-			ok
-		</body><script>
-			function wait() {
-				return new Promise(r => setTimeout(r, 1000 * Math.random()))
-			}
-		</script></html>`)))
-	})
+	s.Route("/", ".html", `<html><body>
+		ok
+	</body><script>
+		function wait() {
+			return new Promise(r => setTimeout(r, 1000 * Math.random()))
+		}
+	</script></html>`)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(num)
@@ -57,7 +52,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 			browser := rod.New().Context(ctx).Client(client).MustConnect()
 			page := browser.MustPage("")
 			wait := page.MustWaitNavigation()
-			page.MustNavigate(u)
+			page.MustNavigate(s.URL())
 			wait()
 			page.MustEval(`wait()`)
 

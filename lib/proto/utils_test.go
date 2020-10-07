@@ -8,7 +8,7 @@ import (
 )
 
 type C struct {
-	got.Assertion
+	got.G
 }
 
 func Test(t *testing.T) {
