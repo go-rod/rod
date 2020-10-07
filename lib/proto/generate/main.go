@@ -175,7 +175,7 @@ func (d *definition) formatTests() (code string) {
 
 		if d.returnValue {
 			return utils.S(`
-				func (t C) {{.name}}() {
+				func (t T) {{.name}}() {
 					c := &Client{}
 					_, err := proto.{{.name}}{}.Call(c)
 					t.Nil(err)
@@ -184,7 +184,7 @@ func (d *definition) formatTests() (code string) {
 		}
 
 		return utils.S(`
-			func (t C) {{.name}}() {
+			func (t T) {{.name}}() {
 				c := &Client{}
 				err := proto.{{.name}}{}.Call(c)
 				t.Nil(err)
@@ -193,7 +193,7 @@ func (d *definition) formatTests() (code string) {
 
 	case cdpTypeEvents:
 		return utils.S(`
-		func (t C) {{.name}}() {
+		func (t T) {{.name}}() {
 			e := proto.{{.name}}{}
 			e.ProtoName()
 		}

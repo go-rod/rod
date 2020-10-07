@@ -18,7 +18,7 @@ to locate the file and line of it.
 
 No magic, just `go test`.
 
-We use type `rod_test.C` to hold all the tests.
+We use type `rod_test.T` to hold all the tests.
 For more details check doc [here](https://github.com/ysmood/got).
 
 Use regex to match and run a single test: `go test -v -run /^Click$`.

@@ -10,10 +10,10 @@ import (
 )
 
 func Test(t *testing.T) {
-	got.Each(t, C{})
+	got.Each(t, T{})
 }
 
-type C struct {
+type T struct {
 	got.G
 }
 
@@ -30,7 +30,7 @@ func (c *wsMockConn) Read() ([]byte, error) {
 	return c.read()
 }
 
-func (c C) CancelCall() {
+func (t T) CancelCall() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	cdp := New("")
@@ -39,10 +39,10 @@ func (c C) CancelCall() {
 	}()
 	cdp.ctx = context.Background()
 	_, err := cdp.Call(ctx, "", "", nil)
-	c.Err(err)
+	t.Err(err)
 }
 
-func (c C) ReqErr() {
+func (t T) ReqErr() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -54,10 +54,10 @@ func (c C) ReqErr() {
 	go cdp.consumeMsg()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	c.Err(err)
+	t.Err(err)
 }
 
-func (c C) CancelOnReq() {
+func (t T) CancelOnReq() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -68,7 +68,7 @@ func (c C) CancelOnReq() {
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	c.Eq(err.Error(), "context canceled")
+	t.Eq(err.Error(), "context canceled")
 
 	go func() {
 		utils.Sleep(0.1)
@@ -76,20 +76,20 @@ func (c C) CancelOnReq() {
 	}()
 
 	_, err = cdp.Call(context.Background(), "", "", nil)
-	c.Eq(err.Error(), "context canceled")
+	t.Eq(err.Error(), "context canceled")
 }
 
-func (c C) CancelBeforeSend() {
+func (t T) CancelBeforeSend() {
 	cdp := New("")
 	cdp.ctx = context.Background()
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	c.Eq(err.Error(), "context canceled")
+	t.Eq(err.Error(), "context canceled")
 }
 
-func (c C) CancelBeforeCallback() {
+func (t T) CancelBeforeCallback() {
 	cdp := New("")
 	cdp.ctx = context.Background()
 
@@ -101,10 +101,10 @@ func (c C) CancelBeforeCallback() {
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	c.Eq(err.Error(), "context canceled")
+	t.Eq(err.Error(), "context canceled")
 }
 
-func (c C) CancelOnCallback() {
+func (t T) CancelOnCallback() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -121,7 +121,7 @@ func (c C) CancelOnCallback() {
 	cancel()
 }
 
-func (c C) CancelOnReadRes() {
+func (t T) CancelOnReadRes() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -139,10 +139,10 @@ func (c C) CancelOnReadRes() {
 	go cdp.readMsgFromBrowser()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	c.Err(err)
+	t.Err(err)
 }
 
-func (c C) CancelOnReadEvent() {
+func (t T) CancelOnReadEvent() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cdp := New("")
 	cdp.ctx = ctx
@@ -156,5 +156,5 @@ func (c C) CancelOnReadEvent() {
 	go cdp.readMsgFromBrowser()
 
 	_, err := cdp.Call(context.Background(), "", "", nil)
-	c.Err(err)
+	t.Err(err)
 }

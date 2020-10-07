@@ -7,20 +7,20 @@ import (
 	"github.com/ysmood/got"
 )
 
-type C struct {
+type T struct {
 	got.G
 }
 
 func Test(t *testing.T) {
-	got.Each(t, C{})
+	got.Each(t, T{})
 }
 
-func (c C) PatternToReg() {
-	c.Eq(``, proto.PatternToReg(""))
-	c.Eq(`\A.*\z`, proto.PatternToReg("*"))
-	c.Eq(`\A.\z`, proto.PatternToReg("?"))
-	c.Eq(`\Aa\z`, proto.PatternToReg("a"))
-	c.Eq(`\Aa.com/.*/test\z`, proto.PatternToReg("a.com/*/test"))
-	c.Eq(`\A\?\*\z`, proto.PatternToReg(`\?\*`))
-	c.Eq(`\Aa.com\?a=10&b=\*\z`, proto.PatternToReg(`a.com\?a=10&b=\*`))
+func (t T) PatternToReg() {
+	t.Eq(``, proto.PatternToReg(""))
+	t.Eq(`\A.*\z`, proto.PatternToReg("*"))
+	t.Eq(`\A.\z`, proto.PatternToReg("?"))
+	t.Eq(`\Aa\z`, proto.PatternToReg("a"))
+	t.Eq(`\Aa.com/.*/test\z`, proto.PatternToReg("a.com/*/test"))
+	t.Eq(`\A\?\*\z`, proto.PatternToReg(`\?\*`))
+	t.Eq(`\Aa.com\?a=10&b=\*\z`, proto.PatternToReg(`a.com\?a=10&b=\*`))
 }

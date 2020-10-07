@@ -19,71 +19,71 @@ import (
 	"github.com/ysmood/gson"
 )
 
-func (c C) Click() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) Click() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustClick()
 
-	c.True(p.MustHas("[a=ok]"))
+	t.True(p.MustHas("[a=ok]"))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 }
 
-func (c C) ClickWrapped() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click-wrapped.html")).MustWaitLoad()
+func (t T) ClickWrapped() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click-wrapped.html")).MustWaitLoad()
 	el := p.MustElement("#target")
 
 	shape := el.MustShape()
-	c.Len(shape.Quads, 2)
+	t.Len(shape.Quads, 2)
 
 	el.MustClick()
-	c.True(p.MustHas("[a=ok]"))
+	t.True(p.MustHas("[a=ok]"))
 }
 
-func (c C) Tap() {
-	c.browser.Logger(utils.LoggerQuiet)
+func (t T) Tap() {
+	t.browser.Logger(utils.LoggerQuiet)
 	defer func() {
-		c.browser.Logger(rod.DefaultLogger)
+		t.browser.Logger(rod.DefaultLogger)
 	}()
 
-	page := c.browser.MustPage("")
+	page := t.browser.MustPage("")
 	defer page.MustClose()
 
 	page.MustEmulate(devices.IPad).
-		MustNavigate(c.srcFile("fixtures/touch.html")).
+		MustNavigate(t.srcFile("fixtures/touch.html")).
 		MustWaitLoad()
 	el := page.MustElement("button")
 
-	c.browser.Trace(true)
+	t.browser.Trace(true)
 	el.MustTap()
-	c.browser.Trace(false)
+	t.browser.Trace(false)
 
-	c.True(page.MustHas("[tapped=true]"))
+	t.True(page.MustHas("[tapped=true]"))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustTap()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustTap()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMGetContentQuads{})
 		el.MustTap()
 	})
 }
 
-func (c C) Interactable() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
-	c.True(p.MustElement("button").MustInteractable())
+func (t T) Interactable() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.True(p.MustElement("button").MustInteractable())
 }
 
-func (c C) NotInteractable() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) NotInteractable() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
 	// cover the button with a green div
@@ -93,314 +93,314 @@ func (c C) NotInteractable() {
 		document.body.append(div)
 	}`)
 	ok, _ := el.Interactable()
-	c.Is(ok, rod.ErrNotInteractable)
-	c.False(el.MustInteractable())
+	t.Is(ok, rod.ErrNotInteractable)
+	t.False(el.MustInteractable())
 	p.MustElement("div").MustRemove()
 
-	c.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.mc.stubErr(1, proto.DOMGetContentQuads{})
 	_, err := el.Interactable()
-	c.Err(err)
+	t.Err(err)
 
-	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
+	t.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
 		res, _ := send()
 		return *res.Set("quads", nil), nil
 	})
 	_, err = el.Interactable()
-	c.Err(err)
+	t.Err(err)
 
-	c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-	c.Err(el.Interactable())
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(el.Interactable())
 
-	c.mc.stubErr(1, proto.DOMDescribeNode{})
-	c.Err(el.Interactable())
+	t.mc.stubErr(1, proto.DOMDescribeNode{})
+	t.Err(el.Interactable())
 
-	c.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
-	c.Err(el.Interactable())
+	t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+	t.Err(el.Interactable())
 }
 
-func (c C) Hover() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) Hover() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 	el.MustEval(`this.onmouseenter = () => this.dataset['a'] = 1`)
 	el.MustHover()
-	c.Eq("1", el.MustEval(`this.dataset['a']`).String())
+	t.Eq("1", el.MustEval(`this.dataset['a']`).String())
 
-	c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
-	c.Err(el.Hover())
+	t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Err(el.Hover())
 
-	c.mc.stubErr(1, proto.DOMGetContentQuads{})
-	c.Err(el.Hover())
+	t.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Err(el.Hover())
 
-	c.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-	c.Err(el.Hover())
+	t.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+	t.Err(el.Hover())
 }
 
-func (c C) MouseMoveErr() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
-	c.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-	c.Err(p.Mouse.Move(10, 10, 1))
+func (t T) MouseMoveErr() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+	t.Err(p.Mouse.Move(10, 10, 1))
 }
 
-func (c C) ElementContext() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) ElementContext() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button").Timeout(time.Hour).CancelTimeout()
 	el, cancel := el.WithCancel()
 	defer cancel()
 	el.Sleeper(rod.DefaultSleeper).MustClick()
 }
 
-func (c C) Iframes() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
+func (t T) Iframes() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
 	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
 	el := frame.MustElement("button")
 	el.MustClick()
-	c.True(frame.MustHas("[a=ok]"))
+	t.True(frame.MustHas("[a=ok]"))
 
 	id := el.MustNodeID()
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		p.MustElementFromNode(id)
 	})
 
-	c.Panic(func() {
-		c.mc.stub(1, proto.RuntimeGetProperties{}, func(send StubSend) (gson.JSON, error) {
+	t.Panic(func() {
+		t.mc.stub(1, proto.RuntimeGetProperties{}, func(send StubSend) (gson.JSON, error) {
 			d, _ := send()
 			return *d.Set("result", []interface{}{}), nil
 		})
 		p.MustElementFromNode(id).MustText()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMDescribeNode{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMDescribeNode{})
 		p.MustElementFromNode(id)
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeEvaluate{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeEvaluate{})
 		p.MustElementFromNode(id)
 	})
-	c.Panic(func() {
-		c.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
 		p.MustElementFromNode(id)
 	})
-	c.Panic(func() {
-		c.mc.stubErr(4, proto.RuntimeEvaluate{})
+	t.Panic(func() {
+		t.mc.stubErr(4, proto.RuntimeEvaluate{})
 		p.MustElementFromNode(id)
 	})
 }
 
-func (c C) Contains() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) Contains() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	a := p.MustElement("button")
 
 	b := p.MustElementFromNode(a.MustNodeID())
-	c.True(a.MustContainsElement(b))
+	t.True(a.MustContainsElement(b))
 
 	pt := a.MustShape().OnePointInside()
 	el := p.MustElementFromPoint(int(pt.X), int(pt.Y))
-	c.True(a.MustContainsElement(el))
+	t.True(a.MustContainsElement(el))
 }
 
-func (c C) ShadowDOM() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/shadow-dom.html")).MustWaitLoad()
+func (t T) ShadowDOM() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/shadow-dom.html")).MustWaitLoad()
 	el := p.MustElement("#container")
-	c.Eq("inside", el.MustShadowRoot().MustElement("p").MustText())
+	t.Eq("inside", el.MustShadowRoot().MustElement("p").MustText())
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMDescribeNode{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMDescribeNode{})
 		el.MustShadowRoot()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMResolveNode{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMResolveNode{})
 		el.MustShadowRoot()
 	})
 }
 
-func (c C) Press() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Press() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=text]")
 	el.MustPress('A')
 	el.MustPress(' ')
 	el.MustPress('b')
 
-	c.Eq("A b", el.MustText())
+	t.Eq("A b", el.MustText())
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustPress(' ')
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectAllText()
 	})
 }
 
-func (c C) KeyDown() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/keys.html"))
+func (t T) KeyDown() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/keys.html"))
 	p.MustElement("body")
 	p.Keyboard.MustDown('j')
 
-	c.True(p.MustHas("body[event=key-down-j]"))
+	t.True(p.MustHas("body[event=key-down-j]"))
 }
 
-func (c C) KeyUp() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/keys.html"))
+func (t T) KeyUp() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/keys.html"))
 	p.MustElement("body")
 	p.Keyboard.MustUp('x')
 
-	c.True(p.MustHas("body[event=key-up-x]"))
+	t.True(p.MustHas("body[event=key-up-x]"))
 }
 
-func (c C) Text() {
+func (t T) Text() {
 	text := "雲の上は\nいつも晴れ"
 
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	el.MustInput(text)
 
-	c.Eq(text, el.MustText())
-	c.True(p.MustHas("[event=textarea-change]"))
+	t.Eq(text, el.MustText())
+	t.True(p.MustHas("[event=textarea-change]"))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustText()
 	})
 }
 
-func (c C) Checkbox() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Checkbox() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=checkbox]")
-	c.True(el.MustClick().MustProperty("checked").Bool())
+	t.True(el.MustClick().MustProperty("checked").Bool())
 }
 
-func (c C) SelectText() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) SelectText() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	el.MustInput("test")
 	el.MustSelectAllText()
 	el.MustInput("test")
-	c.Eq("test", el.MustText())
+	t.Eq("test", el.MustText())
 
 	el.MustSelectText(`es`)
 	el.MustInput("__")
 
-	c.Eq("t__t", el.MustText())
+	t.Eq("t__t", el.MustText())
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectText("")
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustSelectAllText()
 	})
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustInput("")
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.InputInsertText{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.InputInsertText{})
 		el.MustInput("")
 	})
 }
 
-func (c C) Blur() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Blur() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("#blur").MustInput("test").MustBlur()
 
-	c.Eq("ok", *el.MustAttribute("a"))
+	t.Eq("ok", *el.MustAttribute("a"))
 }
 
-func (c C) SelectQuery() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) SelectQuery() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	err := el.Select([]string{`[value="c"]`}, true, rod.SelectorTypeCSSSector)
-	c.E(err)
+	t.E(err)
 
-	c.Eq(2, el.MustEval("this.selectedIndex").Int())
+	t.Eq(2, el.MustEval("this.selectedIndex").Int())
 }
 
-func (c C) SelectQueryNum() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) SelectQueryNum() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	el.MustSelect("123")
 
-	c.Eq(-1, el.MustEval("this.selectedIndex").Int())
+	t.Eq(-1, el.MustEval("this.selectedIndex").Int())
 }
 
-func (c C) SelectOptions() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) SelectOptions() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
 	el.MustSelect("B", "C")
-	c.Eq("B,C", el.MustText())
-	c.Eq(1, el.MustProperty("selectedIndex").Int())
+	t.Eq("B,C", el.MustText())
+	t.Eq(1, el.MustProperty("selectedIndex").Int())
 
 	// unselect with regex
 	err := el.Select([]string{`^B$`}, false, rod.SelectorTypeRegex)
-	c.E(err)
-	c.Eq("C", el.MustText())
+	t.E(err)
+	t.Eq("C", el.MustText())
 
 	// unselect with css selector
 	err = el.Select([]string{`[value="c"]`}, false, rod.SelectorTypeCSSSector)
-	c.E(err)
-	c.Eq("", el.MustText())
+	t.E(err)
+	t.Eq("", el.MustText())
 }
 
-func (c C) Matches() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Matches() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
-	c.True(el.MustMatches(`[cols="30"]`))
+	t.True(el.MustMatches(`[cols="30"]`))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustMatches("")
 	})
 }
 
-func (c C) Attribute() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Attribute() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	cols := el.MustAttribute("cols")
 	rows := el.MustAttribute("rows")
 
-	c.Eq("30", *cols)
-	c.Eq("10", *rows)
+	t.Eq("30", *cols)
+	t.Eq("10", *rows)
 
-	p = c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+	p = t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el = p.MustElement("button").MustClick()
 
-	c.Eq("ok", *el.MustAttribute("a"))
-	c.Nil(el.MustAttribute("b"))
+	t.Eq("ok", *el.MustAttribute("a"))
+	t.Nil(el.MustAttribute("b"))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustAttribute("")
 	})
 }
 
-func (c C) Property() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Property() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("textarea")
 	cols := el.MustProperty("cols")
 	rows := el.MustProperty("rows")
 
-	c.Eq(float64(30), cols.Num())
-	c.Eq(float64(10), rows.Num())
+	t.Eq(float64(30), cols.Num())
+	t.Eq(float64(10), rows.Num())
 
-	p = c.page.MustNavigate(c.srcFile("fixtures/open-page.html"))
+	p = t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
 	el = p.MustElement("a")
 
-	c.Eq("link", el.MustProperty("id").Str())
-	c.Eq("_blank", el.MustProperty("target").Str())
-	c.True(el.MustProperty("test").Nil())
+	t.Eq("link", el.MustProperty("id").Str())
+	t.Eq("_blank", el.MustProperty("target").Str())
+	t.True(el.MustProperty("test").Nil())
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustProperty("")
 	})
 }
 
-func (c C) SetFiles() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) SetFiles() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement(`[type=file]`)
 	el.MustSetFiles(
 		slash("fixtures/click.html"),
@@ -408,25 +408,25 @@ func (c C) SetFiles() {
 	)
 
 	list := el.MustEval("Array.from(this.files).map(f => f.name)").Arr()
-	c.Len(list, 2)
-	c.Eq("alert.html", list[1].String())
+	t.Len(list, 2)
+	t.Eq("alert.html", list[1].String())
 }
 
-func (c C) Enter() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) Enter() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=submit]")
 	el.MustPress(input.Enter)
 
-	c.True(p.MustHas("[event=submit]"))
+	t.True(p.MustHas("[event=submit]"))
 }
 
-func (c C) WaitInvisible() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) WaitInvisible() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	h4 := p.MustElement("h4")
 	btn := p.MustElement("button")
 	timeout := 3 * time.Second
 
-	c.True(h4.MustVisible())
+	t.True(h4.MustVisible())
 
 	h4t := h4.Timeout(timeout)
 	h4t.MustWaitVisible()
@@ -442,221 +442,221 @@ func (c C) WaitInvisible() {
 	h4.Timeout(timeout).MustWaitInvisible()
 	btn.Timeout(timeout).MustWaitInvisible()
 
-	c.False(p.MustHas("h4"))
+	t.False(p.MustHas("h4"))
 }
 
-func (c C) WaitStable() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/wait-stable.html"))
+func (t T) WaitStable() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
 	start := time.Now()
 	el.MustWaitStable().MustClick()
-	c.Gt(time.Since(start), time.Second)
+	t.Gt(time.Since(start), time.Second)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	c.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
+	t.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
 		go func() {
 			utils.Sleep(0.1)
 			cancel()
 		}()
 		return send()
 	})
-	c.Err(el.Context(ctx).WaitStable(time.Minute))
+	t.Err(el.Context(ctx).WaitStable(time.Minute))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMGetContentQuads{})
 		el.MustWaitStable()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(2, proto.DOMGetContentQuads{})
+	t.Panic(func() {
+		t.mc.stubErr(2, proto.DOMGetContentQuads{})
 		el.MustWaitStable()
 	})
 }
 
-func (c C) CanvasToImage() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/canvas.html"))
+func (t T) CanvasToImage() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/canvas.html"))
 	src, err := png.Decode(bytes.NewBuffer(p.MustElement("#canvas").MustCanvasToImage()))
-	c.E(err)
-	c.Eq(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
+	t.E(err)
+	t.Eq(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }
 
-func (c C) Resource() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/resource.html"))
+func (t T) Resource() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/resource.html"))
 	el := p.MustElement("img").MustWaitLoad()
-	c.Eq(15456, len(el.MustResource()))
+	t.Eq(15456, len(el.MustResource()))
 
-	c.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
+	t.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
 		return gson.New(proto.PageGetResourceContentResult{
 			Content:       "ok",
 			Base64Encoded: false,
 		}), nil
 	})
-	c.Eq([]byte("ok"), el.MustResource())
+	t.Eq([]byte("ok"), el.MustResource())
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustResource()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.PageGetResourceContent{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.PageGetResourceContent{})
 		el.MustResource()
 	})
 }
 
-func (c C) ElementScreenshot() {
-	f := filepath.Join("tmp", "screenshots", c.Srand(16)+".png")
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) ElementScreenshot() {
+	f := filepath.Join("tmp", "screenshots", t.Srand(16)+".png")
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("h4")
 
 	data := el.MustScreenshot(f)
 	img, err := png.Decode(bytes.NewBuffer(data))
-	c.E(err)
-	c.Eq(200, img.Bounds().Dx())
-	c.Eq(30, img.Bounds().Dy())
-	c.Nil(os.Stat(f))
+	t.E(err)
+	t.Eq(200, img.Bounds().Dx())
+	t.Eq(30, img.Bounds().Dy())
+	t.Nil(os.Stat(f))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustScreenshot()
 	})
-	c.Panic(func() {
-		c.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
 }
 
-func (c C) UseReleasedElement() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) UseReleasedElement() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 	btn.MustRelease()
-	c.Err(btn.Click("left"))
+	t.Err(btn.Click("left"))
 
 	btn = p.MustElement("button")
-	c.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
-	c.Eq(btn.Click("left").Error(), "{-32000 Could not find object with given id }")
+	t.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
+	t.Eq(btn.Click("left").Error(), "{-32000 Could not find object with given id }")
 }
 
-func (c C) ElementRemove() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) ElementRemove() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 
-	c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-	c.Err(btn.Remove())
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(btn.Remove())
 }
 
-func (c C) ElementMultipleTimes() {
+func (t T) ElementMultipleTimes() {
 	// To see whether chrome will reuse the remote object ID or not.
 	// Seems like it will not.
 
-	page := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 
 	btn01 := page.MustElement("button")
 	btn02 := page.MustElement("button")
 
-	c.Eq(btn01.MustText(), btn02.MustText())
-	c.Neq(btn01.Object, btn02.Object)
+	t.Eq(btn01.MustText(), btn02.MustText())
+	t.Neq(btn01.Object, btn02.Object)
 }
 
-func (c C) FnErr() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) FnErr() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
 	_, err := el.Eval("foo()")
-	c.Err(err)
-	c.Has(err.Error(), "ReferenceError: foo is not defined")
-	c.True(errors.Is(err, rod.ErrEval))
-	c.Eq(proto.RuntimeRemoteObjectSubtypeError, rod.AsError(err).Details.(*proto.RuntimeRemoteObject).Subtype)
+	t.Err(err)
+	t.Has(err.Error(), "ReferenceError: foo is not defined")
+	t.True(errors.Is(err, rod.ErrEval))
+	t.Eq(proto.RuntimeRemoteObjectSubtypeError, rod.AsError(err).Details.(*proto.RuntimeRemoteObject).Subtype)
 
 	_, err = el.ElementByJS(rod.NewEval("foo()"))
-	c.Err(err)
-	c.Has(err.Error(), "ReferenceError: foo is not defined")
-	c.True(errors.Is(err, rod.ErrEval))
+	t.Err(err)
+	t.Has(err.Error(), "ReferenceError: foo is not defined")
+	t.True(errors.Is(err, rod.ErrEval))
 }
 
-func (c C) ElementEWithDepth() {
+func (t T) ElementEWithDepth() {
 	checkStr := `green tea`
-	p := c.page.MustNavigate(c.srcFile("fixtures/describe.html"))
+	p := t.page.MustNavigate(t.srcFile("fixtures/describe.html"))
 
 	ulDOMNode, err := p.MustElement(`ul`).Describe(-1, true)
-	c.Nil(errors.Unwrap(err))
+	t.Nil(errors.Unwrap(err))
 
 	data, err := json.Marshal(ulDOMNode)
-	c.Nil(errors.Unwrap(err))
+	t.Nil(errors.Unwrap(err))
 	// The depth is -1, should contain checkStr
-	c.Has(string(data), checkStr)
+	t.Has(string(data), checkStr)
 }
 
-func (c C) ElementOthers() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) ElementOthers() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
 	el.MustFocus()
 	el.MustScrollIntoView()
-	c.Eq("submit", el.MustElement("[type=submit]").MustText())
-	c.Eq("<input type=\"submit\" value=\"submit\">", el.MustElement("[type=submit]").MustHTML())
+	t.Eq("submit", el.MustElement("[type=submit]").MustText())
+	t.Eq("<input type=\"submit\" value=\"submit\">", el.MustElement("[type=submit]").MustHTML())
 	el.MustWait(`true`)
-	c.Eq("form", el.MustElementByJS(`this`).MustDescribe().LocalName)
-	c.Len(el.MustElementsByJS(`[]`), 0)
+	t.Eq("form", el.MustElementByJS(`this`).MustDescribe().LocalName)
+	t.Len(el.MustElementsByJS(`[]`), 0)
 }
 
-func (c C) ElementFromPointErr() {
-	c.mc.stubErr(1, proto.DOMGetNodeForLocation{})
-	c.Err(c.page.ElementFromPoint(10, 10))
+func (t T) ElementFromPointErr() {
+	t.mc.stubErr(1, proto.DOMGetNodeForLocation{})
+	t.Err(t.page.ElementFromPoint(10, 10))
 }
 
-func (c C) ElementErrors() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) ElementErrors() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	_, err := el.Context(ctx).Describe(-1, true)
-	c.Err(err)
+	t.Err(err)
 
 	_, err = el.Context(ctx).Frame()
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Focus()
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Press('a')
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Input("a")
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Select([]string{"a"}, true, rod.SelectorTypeText)
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).WaitStable(0)
-	c.Err(err)
+	t.Err(err)
 
 	_, err = el.Context(ctx).Resource()
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Input("a")
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Input("a")
-	c.Err(err)
+	t.Err(err)
 
 	_, err = el.Context(ctx).HTML()
-	c.Err(err)
+	t.Err(err)
 
 	_, err = el.Context(ctx).Visible()
-	c.Err(err)
+	t.Err(err)
 
 	_, err = el.Context(ctx).CanvasToImage("", 0)
-	c.Err(err)
+	t.Err(err)
 
 	err = el.Context(ctx).Release()
-	c.Err(err)
+	t.Err(err)
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMRequestNode{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMRequestNode{})
 		el.MustNodeID()
 	})
 }

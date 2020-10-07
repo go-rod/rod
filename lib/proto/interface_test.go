@@ -31,85 +31,85 @@ func (c *Client) GetTargetSessionID() proto.TargetSessionID { return "" }
 
 func (c *Client) GetContext() context.Context { return nil }
 
-func (c C) CallErr() {
+func (t T) CallErr() {
 	client := &Client{err: errors.New("err")}
-	c.Eq(proto.PageEnable{}.Call(client).Error(), "err")
+	t.Eq(proto.PageEnable{}.Call(client).Error(), "err")
 }
 
-func (c C) ParseMethodName() {
+func (t T) ParseMethodName() {
 	d, n := proto.ParseMethodName("Page.enable")
-	c.Eq("Page", d)
-	c.Eq("enable", n)
+	t.Eq("Page", d)
+	t.Eq("enable", n)
 }
 
-func (c C) GetType() {
+func (t T) GetType() {
 	method := proto.GetType("Page.enable")
-	c.Eq(reflect.TypeOf(proto.PageEnable{}), method)
+	t.Eq(reflect.TypeOf(proto.PageEnable{}), method)
 }
 
-func (c C) TimeCodec() {
+func (t T) TimeCodec() {
 	raw := []byte("123.123")
 	var duration proto.MonotonicTime
-	c.E(json.Unmarshal(raw, &duration))
+	t.E(json.Unmarshal(raw, &duration))
 
-	c.Eq(123123, duration.Milliseconds())
+	t.Eq(123123, duration.Milliseconds())
 
 	data, err := json.Marshal(duration)
-	c.E(err)
-	c.Eq(raw, data)
+	t.E(err)
+	t.Eq(raw, data)
 
 	raw = []byte("123")
 	var datetime proto.TimeSinceEpoch
-	c.E(json.Unmarshal(raw, &datetime))
+	t.E(json.Unmarshal(raw, &datetime))
 
-	c.Eq(123, datetime.Unix())
+	t.Eq(123, datetime.Unix())
 
 	data, err = json.Marshal(datetime)
-	c.E(err)
-	c.Eq(raw, data)
+	t.E(err)
+	t.Eq(raw, data)
 }
 
-func (c C) NormalizeInputDispatchMouseEvent() {
+func (t T) NormalizeInputDispatchMouseEvent() {
 	e := proto.InputDispatchMouseEvent{
 		Type: proto.InputDispatchMouseEventTypeMouseWheel,
 	}
 
 	data, err := json.Marshal(e)
-	c.E(err)
+	t.E(err)
 
-	c.Eq(`{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
+	t.Eq(`{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
 
 	ee := proto.InputDispatchMouseEvent{
 		Type: proto.InputDispatchMouseEventTypeMouseMoved,
 	}
 
 	data, err = json.Marshal(ee)
-	c.E(err)
+	t.E(err)
 
-	c.Eq(`{"type":"mouseMoved","x":0,"y":0}`, string(data))
+	t.Eq(`{"type":"mouseMoved","x":0,"y":0}`, string(data))
 }
 
-func (c C) Rect() {
+func (t T) Rect() {
 	rect := proto.DOMQuad{
 		336, 382, 361, 382, 361, 421, 336, 412,
 	}
 
-	c.Eq(348.5, rect.Center().X)
-	c.Eq(399.25, rect.Center().Y)
+	t.Eq(348.5, rect.Center().X)
+	t.Eq(399.25, rect.Center().Y)
 
 	res := &proto.DOMGetContentQuadsResult{}
-	c.Nil(res.OnePointInside())
+	t.Nil(res.OnePointInside())
 
 	res = &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{rect}}
 	pt := res.OnePointInside()
-	c.Eq(348.5, pt.X)
-	c.Eq(399.25, pt.Y)
+	t.Eq(348.5, pt.X)
+	t.Eq(399.25, pt.Y)
 }
 
-func (c C) InputTouchPointMoveTo() {
+func (t T) InputTouchPointMoveTo() {
 	p := &proto.InputTouchPoint{}
 	p.MoveTo(1, 2)
 
-	c.Eq(1, p.X)
-	c.Eq(2, p.Y)
+	t.Eq(1, p.X)
+	t.Eq(2, p.Y)
 }

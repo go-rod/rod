@@ -11,70 +11,70 @@ import (
 	"github.com/ysmood/gson"
 )
 
-func (c C) PageElements() {
-	c.page.MustNavigate(c.srcFile("fixtures/input.html"))
-	c.page.MustElement("input")
-	list := c.page.MustElements("input")
-	c.Eq("input", list.First().MustDescribe().LocalName)
-	c.Eq("submit", list.Last().MustText())
+func (t T) PageElements() {
+	t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	t.page.MustElement("input")
+	list := t.page.MustElements("input")
+	t.Eq("input", list.First().MustDescribe().LocalName)
+	t.Eq("submit", list.Last().MustText())
 }
 
-func (c C) Pages() {
-	c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
+func (t T) Pages() {
+	t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
 
-	c.True(c.browser.MustPages().MustFind("button").MustHas("button"))
-	c.True(c.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
+	t.True(t.browser.MustPages().MustFind("button").MustHas("button"))
+	t.True(t.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
 
-	c.Nil(c.browser.MustPages().Find("____"))
-	c.Nil(c.browser.MustPages().MustFindByURL("____"))
+	t.Nil(t.browser.MustPages().Find("____"))
+	t.Nil(t.browser.MustPages().MustFindByURL("____"))
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		c.browser.MustPages().MustFind("button")
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		t.browser.MustPages().MustFind("button")
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		c.browser.MustPages().MustFindByURL("____")
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		t.browser.MustPages().MustFindByURL("____")
 	})
 }
 
-func (c C) PageHas() {
-	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
-	c.page.MustElement("body")
-	c.True(c.page.MustHas("span"))
-	c.False(c.page.MustHas("a"))
-	c.True(c.page.MustHasX("//span"))
-	c.False(c.page.MustHasX("//a"))
-	c.True(c.page.MustHasR("button", "03"))
-	c.False(c.page.MustHasR("button", "11"))
+func (t T) PageHas() {
+	t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+	t.page.MustElement("body")
+	t.True(t.page.MustHas("span"))
+	t.False(t.page.MustHas("a"))
+	t.True(t.page.MustHasX("//span"))
+	t.False(t.page.MustHasX("//a"))
+	t.True(t.page.MustHasR("button", "03"))
+	t.False(t.page.MustHasR("button", "11"))
 }
 
-func (c C) ElementHas() {
-	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
-	b := c.page.MustElement("body")
-	c.True(b.MustHas("span"))
-	c.False(b.MustHas("a"))
-	c.True(b.MustHasX("//span"))
-	c.False(b.MustHasX("//a"))
-	c.True(b.MustHasR("button", "03"))
-	c.False(b.MustHasR("button", "11"))
+func (t T) ElementHas() {
+	t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+	b := t.page.MustElement("body")
+	t.True(b.MustHas("span"))
+	t.False(b.MustHas("a"))
+	t.True(b.MustHasX("//span"))
+	t.False(b.MustHasX("//a"))
+	t.True(b.MustHasR("button", "03"))
+	t.False(b.MustHasR("button", "11"))
 }
 
-func (c C) Search() {
-	wait := c.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) Search() {
+	wait := t.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	wait()
 
 	el := p.MustSearch("click me")
-	c.Eq("click me", el.MustText())
-	c.True(el.MustClick().MustMatches("[a=ok]"))
+	t.Eq("click me", el.MustText())
+	t.True(el.MustClick().MustMatches("[a=ok]"))
 
 	_, err := p.Sleeper(nil).Search(0, 1, "not-exists")
-	c.True(errors.Is(err, rod.ErrElementNotFound))
+	t.True(errors.Is(err, rod.ErrElementNotFound))
 
 	// when search result is not ready
 	{
-		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+		t.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
 			return gson.New(nil), &cdp.Error{Code: -32000}
 		})
 		p.MustSearch("click me")
@@ -82,7 +82,7 @@ func (c C) Search() {
 
 	// when node id is zero
 	{
-		c.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+		t.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
 			return gson.New(proto.DOMGetSearchResultsResult{
 				NodeIds: []proto.DOMNodeID{0},
 			}), nil
@@ -90,55 +90,55 @@ func (c C) Search() {
 		p.MustSearch("click me")
 	}
 
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMPerformSearch{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMPerformSearch{})
 		p.MustSearch("click me")
 	})
-	c.Panic(func() {
-		c.mc.stubErr(1, proto.DOMGetSearchResults{})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMGetSearchResults{})
 		p.MustSearch("click me")
 	})
-	c.Panic(func() {
-		c.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+	t.Panic(func() {
+		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 		p.MustSearch("click me")
 	})
 }
 
-func (c C) SearchIframes() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
+func (t T) SearchIframes() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
 	el := p.MustSearch("button[onclick]")
-	c.Eq("click me", el.MustText())
-	c.True(el.MustClick().MustMatches("[a=ok]"))
+	t.Eq("click me", el.MustText())
+	t.True(el.MustClick().MustMatches("[a=ok]"))
 }
 
-func (c C) SearchIframesAfterReload() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click-iframes.html"))
+func (t T) SearchIframesAfterReload() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
 	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
 	frame.MustReload().MustWaitLoad()
 	el := p.MustSearch("button[onclick]")
-	c.Eq("click me", el.MustText())
-	c.True(el.MustClick().MustMatches("[a=ok]"))
+	t.Eq("click me", el.MustText())
+	t.True(el.MustClick().MustMatches("[a=ok]"))
 }
 
-func (c C) PageElementWithSelectors() {
-	c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
-	el := c.page.MustElement("p", "button")
-	c.Eq("01", el.MustText())
+func (t T) PageElementWithSelectors() {
+	t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+	el := t.page.MustElement("p", "button")
+	t.Eq("01", el.MustText())
 }
 
-func (c C) PageRace() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
+func (t T) PageRace() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 
 	p.Race().MustElement("button", func(el *rod.Element) {
-		c.Eq("01", el.MustText())
+		t.Eq("01", el.MustText())
 	}).MustDo()
 
 	p.Race().MustElementX("//button", func(el *rod.Element) {
-		c.Eq("01", el.MustText())
+		t.Eq("01", el.MustText())
 	}).MustDo()
 
 	p.Race().MustElementR("button", "02", func(el *rod.Element) {
-		c.Eq("02", el.MustText())
+		t.Eq("02", el.MustText())
 	}).MustDo()
 
 	err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
@@ -146,133 +146,133 @@ func (c C) PageRace() {
 		MustElementX("//not-exists", func(el *rod.Element) {}).
 		MustElementR("not-exists", "test", func(el *rod.Element) {}).
 		Do()
-	c.Err(err)
+	t.Err(err)
 
 	err = p.Race().MustElementByJS(`notExists()`, nil, nil).Do()
-	c.Err(err)
+	t.Err(err)
 }
 
-func (c C) PageElementX() {
-	c.page.MustNavigate(c.srcFile("fixtures/click.html"))
-	c.page.MustElement("body")
-	name := c.page.MustElementX("//*[contains(text(), 'click')]").MustDescribe().LocalName
-	c.Eq("button", name)
+func (t T) PageElementX() {
+	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.page.MustElement("body")
+	name := t.page.MustElementX("//*[contains(text(), 'click')]").MustDescribe().LocalName
+	t.Eq("button", name)
 }
 
-func (c C) PageElementsX() {
-	c.page.MustNavigate(c.srcFile("fixtures/input.html"))
-	c.page.MustElement("body")
-	list := c.page.MustElementsX("//input")
-	c.Len(list, 5)
+func (t T) PageElementsX() {
+	t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	t.page.MustElement("body")
+	list := t.page.MustElementsX("//input")
+	t.Len(list, 5)
 }
 
-func (c C) ElementR() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
+func (t T) ElementR() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 	el := p.MustElementR("button", `\d1`)
-	c.Eq("01", el.MustText())
+	t.Eq("01", el.MustText())
 
 	el = p.MustElement("div").MustElementR("button", `03`)
-	c.Eq("03", el.MustText())
+	t.Eq("03", el.MustText())
 
-	p = c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+	p = t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el = p.MustElementR("input", `submit`)
-	c.Eq("submit", el.MustText())
+	t.Eq("submit", el.MustText())
 }
 
-func (c C) ElementFromElement() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
+func (t T) ElementFromElement() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 	el := p.MustElement("div").MustElement("button")
-	c.Eq("02", el.MustText())
+	t.Eq("02", el.MustText())
 }
 
-func (c C) ElementsFromElement() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) ElementsFromElement() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	p.MustElement("form")
 	list := p.MustElement("form").MustElements("option")
 
-	c.Len(list, 4)
-	c.Eq("B", list[1].MustText())
+	t.Len(list, 4)
+	t.Eq("B", list[1].MustText())
 }
 
-func (c C) ElementParent() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) ElementParent() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("input").MustParent()
-	c.Eq("FORM", el.MustEval(`this.tagName`).String())
+	t.Eq("FORM", el.MustEval(`this.tagName`).String())
 }
 
-func (c C) ElementParents() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
-	c.Len(p.MustElement("option").MustParents("*"), 4)
-	c.Len(p.MustElement("option").MustParents("form"), 1)
+func (t T) ElementParents() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	t.Len(p.MustElement("option").MustParents("*"), 4)
+	t.Len(p.MustElement("option").MustParents("form"), 1)
 }
 
-func (c C) ElementSiblings() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/input.html"))
+func (t T) ElementSiblings() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("hr")
 	a := el.MustPrevious()
 	b := el.MustNext()
 
-	c.Eq("INPUT", a.MustEval(`this.tagName`).String())
-	c.Eq("SELECT", b.MustEval(`this.tagName`).String())
+	t.Eq("INPUT", a.MustEval(`this.tagName`).String())
+	t.Eq("SELECT", b.MustEval(`this.tagName`).String())
 }
 
-func (c C) ElementFromElementX() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
+func (t T) ElementFromElementX() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 	el := p.MustElement("div").MustElementX("./button")
-	c.Eq("02", el.MustText())
+	t.Eq("02", el.MustText())
 }
 
-func (c C) ElementsFromElementsX() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/selector.html"))
+func (t T) ElementsFromElementsX() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 	list := p.MustElement("div").MustElementsX("./button")
-	c.Len(list, 2)
+	t.Len(list, 2)
 }
 
-func (c C) ElementTracing() {
-	c.browser.Trace(true)
-	c.browser.Logger(utils.LoggerQuiet)
+func (t T) ElementTracing() {
+	t.browser.Trace(true)
+	t.browser.Logger(utils.LoggerQuiet)
 	defer func() {
-		c.browser.Trace(defaults.Trace)
-		c.browser.Logger(rod.DefaultLogger)
+		t.browser.Trace(defaults.Trace)
+		t.browser.Logger(rod.DefaultLogger)
 	}()
 
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
-	c.Eq(`rod.element("code")`, p.MustElement("code").MustText())
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.Eq(`rod.element("code")`, p.MustElement("code").MustText())
 }
 
-func (c C) PageElementByJS_Err() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html"))
+func (t T) PageElementByJS_Err() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	_, err := p.ElementByJS(rod.NewEval(`1`))
-	c.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
+	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
 }
 
-func (c C) PageElementsByJS_Err() {
-	p := c.page.MustNavigate(c.srcFile("fixtures/click.html")).MustWaitLoad()
+func (t T) PageElementsByJS_Err() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
 	_, err := p.ElementsByJS(rod.NewEval(`[1]`))
-	c.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
+	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJS(rod.NewEval(`1`))
-	c.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
+	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
 	_, err = p.ElementsByJS(rod.NewEval(`foo()`))
-	c.Err(err)
+	t.Err(err)
 
-	c.mc.stubErr(1, proto.RuntimeGetProperties{})
+	t.mc.stubErr(1, proto.RuntimeGetProperties{})
 	_, err = p.ElementsByJS(rod.NewEval(`[document.body]`))
-	c.Err(err)
+	t.Err(err)
 }
 
-func (c C) ElementsOthers() {
+func (t T) ElementsOthers() {
 	list := rod.Elements{}
-	c.Nil(list.First())
-	c.Nil(list.Last())
+	t.Nil(list.First())
+	t.Nil(list.Last())
 }
 
-func (c C) PagesOthers() {
+func (t T) PagesOthers() {
 	list := rod.Pages{}
-	c.Nil(list.First())
-	c.Nil(list.Last())
+	t.Nil(list.First())
+	t.Nil(list.Last())
 
 	list = append(list, &rod.Page{})
 
-	c.NotNil(list.First())
-	c.NotNil(list.Last())
+	t.NotNil(list.First())
+	t.NotNil(list.Last())
 }

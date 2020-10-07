@@ -15,28 +15,28 @@ import (
 	"github.com/ysmood/got"
 )
 
-type C struct {
+type T struct {
 	got.G
 }
 
 func Test(t *testing.T) {
-	got.Each(t, C{})
+	got.Each(t, T{})
 }
 
-func (c C) TestLog() {
+func (t T) TestLog() {
 	utils.Log(func(msg ...interface{}) {}).Println()
 	utils.LoggerQuiet.Println()
 }
 
-func (c C) TestE() {
+func (t T) TestE() {
 	utils.E(nil)
 
-	c.Panic(func() {
+	t.Panic(func() {
 		utils.E(errors.New("err"))
 	})
 }
 
-func (c C) STemplate() {
+func (t T) STemplate() {
 	out := utils.S(
 		"{{.a}} {{.b}} {{.c.A}} {{d}}",
 		"a", "<value>",
@@ -46,22 +46,22 @@ func (c C) STemplate() {
 			return "ok"
 		},
 	)
-	c.Eq("<value> 10 ok ok", out)
+	t.Eq("<value> 10 ok ok", out)
 }
 
-func (c C) GenerateRandomString() {
+func (t T) GenerateRandomString() {
 	v := utils.RandString(10)
 	raw, _ := hex.DecodeString(v)
-	c.Len(raw, 10)
+	t.Len(raw, 10)
 }
 
-func (c C) Mkdir() {
-	p := filepath.Join(c.Testable.(*testing.T).TempDir(), "t")
-	c.E(utils.Mkdir(p))
+func (t T) Mkdir() {
+	p := filepath.Join(t.Testable.(*testing.T).TempDir(), "t")
+	t.E(utils.Mkdir(p))
 }
 
-func (c C) OutputString() {
-	p := "tmp/" + c.Srand(16)
+func (t T) OutputString() {
+	p := "tmp/" + t.Srand(16)
 
 	_ = utils.OutputFile(p, p)
 
@@ -71,11 +71,11 @@ func (c C) OutputString() {
 		panic(err)
 	}
 
-	c.Eq(s, p)
+	t.Eq(s, p)
 }
 
-func (c C) OutputBytes() {
-	p := "tmp/" + c.Srand(16)
+func (t T) OutputBytes() {
+	p := "tmp/" + t.Srand(16)
 
 	_ = utils.OutputFile(p, []byte("test"))
 
@@ -85,11 +85,11 @@ func (c C) OutputBytes() {
 		panic(err)
 	}
 
-	c.Eq(s, "test")
+	t.Eq(s, "test")
 }
 
-func (c C) OutputStream() {
-	p := "tmp/" + c.Srand(16)
+func (t T) OutputStream() {
+	p := "tmp/" + t.Srand(16)
 	b := bytes.NewBufferString("test")
 
 	_ = utils.OutputFile(p, b)
@@ -100,22 +100,22 @@ func (c C) OutputStream() {
 		panic(err)
 	}
 
-	c.Eq("test", s)
+	t.Eq("test", s)
 }
 
-func (c C) OutputJSONErr() {
-	p := "tmp/" + c.Srand(16)
+func (t T) OutputJSONErr() {
+	p := "tmp/" + t.Srand(16)
 
-	c.Panic(func() {
+	t.Panic(func() {
 		_ = utils.OutputFile(p, make(chan struct{}))
 	})
 }
 
-func (c C) Sleep() {
+func (t T) Sleep() {
 	utils.Sleep(0.01)
 }
 
-func (c C) All() {
+func (t T) All() {
 	utils.All(func() {
 		fmt.Println("one")
 	}, func() {
@@ -123,15 +123,15 @@ func (c C) All() {
 	})()
 }
 
-func (c C) Pause() {
+func (t T) Pause() {
 	go utils.Pause()
 }
 
-func (c C) BackoffSleeperWakeNow() {
-	c.E(utils.BackoffSleeper(0, 0, nil)(context.Background()))
+func (t T) BackoffSleeperWakeNow() {
+	t.E(utils.BackoffSleeper(0, 0, nil)(context.Background()))
 }
 
-func (c C) Retry() {
+func (t T) Retry() {
 	count := 0
 	s1 := utils.BackoffSleeper(1, 5, nil)
 
@@ -143,10 +143,10 @@ func (c C) Retry() {
 		return false, nil
 	})
 
-	c.Eq(err.Error(), io.EOF.Error())
+	t.Eq(err.Error(), io.EOF.Error())
 }
 
-func (c C) RetryCancel() {
+func (t T) RetryCancel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go cancel()
 	s := utils.BackoffSleeper(time.Second, time.Second, nil)
@@ -155,37 +155,37 @@ func (c C) RetryCancel() {
 		return false, nil
 	})
 
-	c.Eq(err.Error(), context.Canceled.Error())
+	t.Eq(err.Error(), context.Canceled.Error())
 }
 
-func (c C) CountSleeperErr() {
+func (t T) CountSleeperErr() {
 	ctx := context.Background()
 	s := utils.CountSleeper(5)
 	for i := 0; i < 5; i++ {
 		_ = s(ctx)
 	}
-	c.Err(s(ctx))
+	t.Err(s(ctx))
 }
 
-func (c C) CountSleeperCancel() {
+func (t T) CountSleeperCancel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	s := utils.CountSleeper(5)
-	c.Eq(s(ctx).Error(), context.Canceled.Error())
+	t.Eq(s(ctx).Error(), context.Canceled.Error())
 }
 
-func (c C) MustToJSON() {
-	c.Eq(utils.Dump("a", 10), `"a" 10`)
-	c.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
+func (t T) MustToJSON() {
+	t.Eq(utils.Dump("a", 10), `"a" 10`)
+	t.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
 }
 
-func (c C) FileExists() {
-	c.Eq(false, utils.FileExists("."))
-	c.Eq(true, utils.FileExists("utils.go"))
-	c.Eq(false, utils.FileExists(c.Srand(16)))
+func (t T) FileExists() {
+	t.Eq(false, utils.FileExists("."))
+	t.Eq(true, utils.FileExists("utils.go"))
+	t.Eq(false, utils.FileExists(t.Srand(16)))
 }
 
-func (c C) Exec() {
+func (t T) Exec() {
 	utils.Exec("echo")
 }
 
@@ -197,11 +197,11 @@ func (r *errReader) Read(p []byte) (n int, err error) {
 	return 0, r.err
 }
 
-func (c C) EscapeGoString() {
-	c.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
+func (t T) EscapeGoString() {
+	t.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
 }
 
-func (c C) IdleCounter() {
+func (t T) IdleCounter() {
 	utils.All(func() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 
@@ -218,10 +218,10 @@ func (c C) IdleCounter() {
 		start := time.Now()
 		ct.Wait(ctx)
 		d := time.Since(start)
-		c.Gt(d, 400*time.Millisecond)
-		c.Lt(d, 450*time.Millisecond)
+		t.Gt(d, 400*time.Millisecond)
+		t.Lt(d, 450*time.Millisecond)
 
-		c.Panic(func() {
+		t.Panic(func() {
 			ct.Done()
 		})
 
@@ -231,11 +231,11 @@ func (c C) IdleCounter() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 		start := time.Now()
 		ct.Wait(context.Background())
-		c.Lt(time.Since(start), 150*time.Millisecond)
+		t.Lt(time.Since(start), 150*time.Millisecond)
 	}, func() {
 		ct := utils.NewIdleCounter(0)
 		start := time.Now()
 		ct.Wait(context.Background())
-		c.Lt(time.Since(start), 10*time.Millisecond)
+		t.Lt(time.Since(start), 10*time.Millisecond)
 	})()
 }

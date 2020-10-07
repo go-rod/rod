@@ -33,11 +33,13 @@ func Test(t *testing.T) {
 	leakless.GetLeaklessBin()
 	utils.E(launcher.NewBrowser().Get())
 
-	got.Each(t, newCasePool(t).get)
+	got.Each(t, newTesterPool(t).get)
 }
 
-// context of a test case
-type C struct {
+// T is a tester. Testers are thread-safe, they won't race each other.
+// Usually, we only have one tester for the whole test. But if testing.Short() is true,
+// we will create runtime.GOMAXPROCS(0) testers, each one holds a standalone browser.
+type T struct {
 	got.G
 
 	mc      *MockClient
@@ -45,13 +47,12 @@ type C struct {
 	page    *rod.Page
 }
 
-// context pool for tests
-type ContextPool struct {
-	list   chan C
+type TesterPool struct {
+	list   chan T
 	logger *log.Logger
 }
 
-func newCasePool(t *testing.T) ContextPool {
+func newTesterPool(t *testing.T) TesterPool {
 	parallel := 1
 	if testing.Short() {
 		parallel = runtime.GOMAXPROCS(0)
@@ -61,8 +62,8 @@ func newCasePool(t *testing.T) ContextPool {
 	logName := fmt.Sprintf("[%s]test_cdp.log", time.Now().Local().Format("01-02_15:04:05"))
 	lf, _ := os.Create(filepath.Join("tmp", logName))
 
-	cp := ContextPool{
-		list:   make(chan C, parallel),
+	cp := TesterPool{
+		list:   make(chan T, parallel),
 		logger: log.New(lf, "", log.Ltime),
 	}
 
@@ -87,7 +88,8 @@ func newCasePool(t *testing.T) ContextPool {
 	return cp
 }
 
-func (cp ContextPool) new() C {
+// new tester
+func (cp TesterPool) new() T {
 	u := launcher.New().MustLaunch()
 
 	mc := newMockClient(cdp.New(u).Logger(cp.logger))
@@ -100,40 +102,40 @@ func (cp ContextPool) new() C {
 
 	page := getOnePage(browser)
 
-	return C{
+	return T{
 		mc:      mc,
 		browser: browser,
 		page:    page,
 	}
 }
 
-// get a test context
-func (cp ContextPool) get(t *testing.T) C {
+// get a tester
+func (cp TesterPool) get(t *testing.T) T {
 	if testing.Short() {
 		t.Parallel()
 	}
 
-	c := <-cp.list
-	t.Cleanup(func() { cp.list <- c })
+	tester := <-cp.list
+	t.Cleanup(func() { cp.list <- tester })
 
 	if !testing.Short() {
 		testleak.Check(t, 0)
 	}
 
 	t.Cleanup(func() {
-		for _, p := range c.browser.MustPages() {
-			if p.TargetID != c.page.TargetID {
+		for _, p := range tester.browser.MustPages() {
+			if p.TargetID != tester.page.TargetID {
 				t.Fatal("leaking page: " + p.MustInfo().URL)
 			}
 		}
 
-		c.mc.setCall(nil)
+		tester.mc.setCall(nil)
 	})
 
-	c.mc.t = t
-	c.G = got.New(t)
+	tester.mc.t = t
+	tester.G = got.New(t)
 
-	return c
+	return tester
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
@@ -154,9 +156,9 @@ func getOnePage(b *rod.Browser) (page *rod.Page) {
 }
 
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
-func (c C) srcFile(path string) string {
+func (t T) srcFile(path string) string {
 	f, err := filepath.Abs(slash(path))
-	c.E(err)
+	t.E(err)
 	return "file://" + f
 }
 

@@ -6,3640 +6,3640 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-func (t C) AccessibilityDisable() {
+func (t T) AccessibilityDisable() {
 	c := &Client{}
 	err := proto.AccessibilityDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AccessibilityEnable() {
+func (t T) AccessibilityEnable() {
 	c := &Client{}
 	err := proto.AccessibilityEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AccessibilityGetPartialAXTree() {
+func (t T) AccessibilityGetPartialAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityGetPartialAXTree{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AccessibilityGetFullAXTree() {
+func (t T) AccessibilityGetFullAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityGetFullAXTree{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationDisable() {
+func (t T) AnimationDisable() {
 	c := &Client{}
 	err := proto.AnimationDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationEnable() {
+func (t T) AnimationEnable() {
 	c := &Client{}
 	err := proto.AnimationEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationGetCurrentTime() {
+func (t T) AnimationGetCurrentTime() {
 	c := &Client{}
 	_, err := proto.AnimationGetCurrentTime{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationGetPlaybackRate() {
+func (t T) AnimationGetPlaybackRate() {
 	c := &Client{}
 	_, err := proto.AnimationGetPlaybackRate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationReleaseAnimations() {
+func (t T) AnimationReleaseAnimations() {
 	c := &Client{}
 	err := proto.AnimationReleaseAnimations{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationResolveAnimation() {
+func (t T) AnimationResolveAnimation() {
 	c := &Client{}
 	_, err := proto.AnimationResolveAnimation{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationSeekAnimations() {
+func (t T) AnimationSeekAnimations() {
 	c := &Client{}
 	err := proto.AnimationSeekAnimations{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationSetPaused() {
+func (t T) AnimationSetPaused() {
 	c := &Client{}
 	err := proto.AnimationSetPaused{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationSetPlaybackRate() {
+func (t T) AnimationSetPlaybackRate() {
 	c := &Client{}
 	err := proto.AnimationSetPlaybackRate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationSetTiming() {
+func (t T) AnimationSetTiming() {
 	c := &Client{}
 	err := proto.AnimationSetTiming{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AnimationAnimationCanceled() {
+func (t T) AnimationAnimationCanceled() {
 	e := proto.AnimationAnimationCanceled{}
 	e.ProtoName()
 }
 
-func (t C) AnimationAnimationCreated() {
+func (t T) AnimationAnimationCreated() {
 	e := proto.AnimationAnimationCreated{}
 	e.ProtoName()
 }
 
-func (t C) AnimationAnimationStarted() {
+func (t T) AnimationAnimationStarted() {
 	e := proto.AnimationAnimationStarted{}
 	e.ProtoName()
 }
 
-func (t C) ApplicationCacheEnable() {
+func (t T) ApplicationCacheEnable() {
 	c := &Client{}
 	err := proto.ApplicationCacheEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ApplicationCacheGetApplicationCacheForFrame() {
+func (t T) ApplicationCacheGetApplicationCacheForFrame() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ApplicationCacheGetFramesWithManifests() {
+func (t T) ApplicationCacheGetFramesWithManifests() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetFramesWithManifests{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ApplicationCacheGetManifestForFrame() {
+func (t T) ApplicationCacheGetManifestForFrame() {
 	c := &Client{}
 	_, err := proto.ApplicationCacheGetManifestForFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ApplicationCacheApplicationCacheStatusUpdated() {
+func (t T) ApplicationCacheApplicationCacheStatusUpdated() {
 	e := proto.ApplicationCacheApplicationCacheStatusUpdated{}
 	e.ProtoName()
 }
 
-func (t C) ApplicationCacheNetworkStateUpdated() {
+func (t T) ApplicationCacheNetworkStateUpdated() {
 	e := proto.ApplicationCacheNetworkStateUpdated{}
 	e.ProtoName()
 }
 
-func (t C) AuditsGetEncodedResponse() {
+func (t T) AuditsGetEncodedResponse() {
 	c := &Client{}
 	_, err := proto.AuditsGetEncodedResponse{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AuditsDisable() {
+func (t T) AuditsDisable() {
 	c := &Client{}
 	err := proto.AuditsDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AuditsEnable() {
+func (t T) AuditsEnable() {
 	c := &Client{}
 	err := proto.AuditsEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) AuditsIssueAdded() {
+func (t T) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
 	e.ProtoName()
 }
 
-func (t C) BackgroundServiceStartObserving() {
+func (t T) BackgroundServiceStartObserving() {
 	c := &Client{}
 	err := proto.BackgroundServiceStartObserving{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BackgroundServiceStopObserving() {
+func (t T) BackgroundServiceStopObserving() {
 	c := &Client{}
 	err := proto.BackgroundServiceStopObserving{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BackgroundServiceSetRecording() {
+func (t T) BackgroundServiceSetRecording() {
 	c := &Client{}
 	err := proto.BackgroundServiceSetRecording{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BackgroundServiceClearEvents() {
+func (t T) BackgroundServiceClearEvents() {
 	c := &Client{}
 	err := proto.BackgroundServiceClearEvents{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BackgroundServiceRecordingStateChanged() {
+func (t T) BackgroundServiceRecordingStateChanged() {
 	e := proto.BackgroundServiceRecordingStateChanged{}
 	e.ProtoName()
 }
 
-func (t C) BackgroundServiceBackgroundServiceEventReceived() {
+func (t T) BackgroundServiceBackgroundServiceEventReceived() {
 	e := proto.BackgroundServiceBackgroundServiceEventReceived{}
 	e.ProtoName()
 }
 
-func (t C) BrowserSetPermission() {
+func (t T) BrowserSetPermission() {
 	c := &Client{}
 	err := proto.BrowserSetPermission{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGrantPermissions() {
+func (t T) BrowserGrantPermissions() {
 	c := &Client{}
 	err := proto.BrowserGrantPermissions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserResetPermissions() {
+func (t T) BrowserResetPermissions() {
 	c := &Client{}
 	err := proto.BrowserResetPermissions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserSetDownloadBehavior() {
+func (t T) BrowserSetDownloadBehavior() {
 	c := &Client{}
 	err := proto.BrowserSetDownloadBehavior{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserClose() {
+func (t T) BrowserClose() {
 	c := &Client{}
 	err := proto.BrowserClose{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserCrash() {
+func (t T) BrowserCrash() {
 	c := &Client{}
 	err := proto.BrowserCrash{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserCrashGpuProcess() {
+func (t T) BrowserCrashGpuProcess() {
 	c := &Client{}
 	err := proto.BrowserCrashGpuProcess{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetVersion() {
+func (t T) BrowserGetVersion() {
 	c := &Client{}
 	_, err := proto.BrowserGetVersion{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetBrowserCommandLine() {
+func (t T) BrowserGetBrowserCommandLine() {
 	c := &Client{}
 	_, err := proto.BrowserGetBrowserCommandLine{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetHistograms() {
+func (t T) BrowserGetHistograms() {
 	c := &Client{}
 	_, err := proto.BrowserGetHistograms{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetHistogram() {
+func (t T) BrowserGetHistogram() {
 	c := &Client{}
 	_, err := proto.BrowserGetHistogram{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetWindowBounds() {
+func (t T) BrowserGetWindowBounds() {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowBounds{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserGetWindowForTarget() {
+func (t T) BrowserGetWindowForTarget() {
 	c := &Client{}
 	_, err := proto.BrowserGetWindowForTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserSetWindowBounds() {
+func (t T) BrowserSetWindowBounds() {
 	c := &Client{}
 	err := proto.BrowserSetWindowBounds{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) BrowserSetDockTile() {
+func (t T) BrowserSetDockTile() {
 	c := &Client{}
 	err := proto.BrowserSetDockTile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSAddRule() {
+func (t T) CSSAddRule() {
 	c := &Client{}
 	_, err := proto.CSSAddRule{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSCollectClassNames() {
+func (t T) CSSCollectClassNames() {
 	c := &Client{}
 	_, err := proto.CSSCollectClassNames{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSCreateStyleSheet() {
+func (t T) CSSCreateStyleSheet() {
 	c := &Client{}
 	_, err := proto.CSSCreateStyleSheet{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSDisable() {
+func (t T) CSSDisable() {
 	c := &Client{}
 	err := proto.CSSDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSEnable() {
+func (t T) CSSEnable() {
 	c := &Client{}
 	err := proto.CSSEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSForcePseudoState() {
+func (t T) CSSForcePseudoState() {
 	c := &Client{}
 	err := proto.CSSForcePseudoState{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetBackgroundColors() {
+func (t T) CSSGetBackgroundColors() {
 	c := &Client{}
 	_, err := proto.CSSGetBackgroundColors{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetComputedStyleForNode() {
+func (t T) CSSGetComputedStyleForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetComputedStyleForNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetInlineStylesForNode() {
+func (t T) CSSGetInlineStylesForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetInlineStylesForNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetMatchedStylesForNode() {
+func (t T) CSSGetMatchedStylesForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetMatchedStylesForNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetMediaQueries() {
+func (t T) CSSGetMediaQueries() {
 	c := &Client{}
 	_, err := proto.CSSGetMediaQueries{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetPlatformFontsForNode() {
+func (t T) CSSGetPlatformFontsForNode() {
 	c := &Client{}
 	_, err := proto.CSSGetPlatformFontsForNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSGetStyleSheetText() {
+func (t T) CSSGetStyleSheetText() {
 	c := &Client{}
 	_, err := proto.CSSGetStyleSheetText{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetEffectivePropertyValueForNode() {
+func (t T) CSSSetEffectivePropertyValueForNode() {
 	c := &Client{}
 	err := proto.CSSSetEffectivePropertyValueForNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetKeyframeKey() {
+func (t T) CSSSetKeyframeKey() {
 	c := &Client{}
 	_, err := proto.CSSSetKeyframeKey{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetMediaText() {
+func (t T) CSSSetMediaText() {
 	c := &Client{}
 	_, err := proto.CSSSetMediaText{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetRuleSelector() {
+func (t T) CSSSetRuleSelector() {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetStyleSheetText() {
+func (t T) CSSSetStyleSheetText() {
 	c := &Client{}
 	_, err := proto.CSSSetStyleSheetText{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSSetStyleTexts() {
+func (t T) CSSSetStyleTexts() {
 	c := &Client{}
 	_, err := proto.CSSSetStyleTexts{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSStartRuleUsageTracking() {
+func (t T) CSSStartRuleUsageTracking() {
 	c := &Client{}
 	err := proto.CSSStartRuleUsageTracking{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSStopRuleUsageTracking() {
+func (t T) CSSStopRuleUsageTracking() {
 	c := &Client{}
 	_, err := proto.CSSStopRuleUsageTracking{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSTakeCoverageDelta() {
+func (t T) CSSTakeCoverageDelta() {
 	c := &Client{}
 	_, err := proto.CSSTakeCoverageDelta{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CSSFontsUpdated() {
+func (t T) CSSFontsUpdated() {
 	e := proto.CSSFontsUpdated{}
 	e.ProtoName()
 }
 
-func (t C) CSSMediaQueryResultChanged() {
+func (t T) CSSMediaQueryResultChanged() {
 	e := proto.CSSMediaQueryResultChanged{}
 	e.ProtoName()
 }
 
-func (t C) CSSStyleSheetAdded() {
+func (t T) CSSStyleSheetAdded() {
 	e := proto.CSSStyleSheetAdded{}
 	e.ProtoName()
 }
 
-func (t C) CSSStyleSheetChanged() {
+func (t T) CSSStyleSheetChanged() {
 	e := proto.CSSStyleSheetChanged{}
 	e.ProtoName()
 }
 
-func (t C) CSSStyleSheetRemoved() {
+func (t T) CSSStyleSheetRemoved() {
 	e := proto.CSSStyleSheetRemoved{}
 	e.ProtoName()
 }
 
-func (t C) CacheStorageDeleteCache() {
+func (t T) CacheStorageDeleteCache() {
 	c := &Client{}
 	err := proto.CacheStorageDeleteCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CacheStorageDeleteEntry() {
+func (t T) CacheStorageDeleteEntry() {
 	c := &Client{}
 	err := proto.CacheStorageDeleteEntry{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CacheStorageRequestCacheNames() {
+func (t T) CacheStorageRequestCacheNames() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCacheNames{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CacheStorageRequestCachedResponse() {
+func (t T) CacheStorageRequestCachedResponse() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestCachedResponse{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CacheStorageRequestEntries() {
+func (t T) CacheStorageRequestEntries() {
 	c := &Client{}
 	_, err := proto.CacheStorageRequestEntries{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastEnable() {
+func (t T) CastEnable() {
 	c := &Client{}
 	err := proto.CastEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastDisable() {
+func (t T) CastDisable() {
 	c := &Client{}
 	err := proto.CastDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastSetSinkToUse() {
+func (t T) CastSetSinkToUse() {
 	c := &Client{}
 	err := proto.CastSetSinkToUse{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastStartTabMirroring() {
+func (t T) CastStartTabMirroring() {
 	c := &Client{}
 	err := proto.CastStartTabMirroring{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastStopCasting() {
+func (t T) CastStopCasting() {
 	c := &Client{}
 	err := proto.CastStopCasting{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) CastSinksUpdated() {
+func (t T) CastSinksUpdated() {
 	e := proto.CastSinksUpdated{}
 	e.ProtoName()
 }
 
-func (t C) CastIssueUpdated() {
+func (t T) CastIssueUpdated() {
 	e := proto.CastIssueUpdated{}
 	e.ProtoName()
 }
 
-func (t C) DOMCollectClassNamesFromSubtree() {
+func (t T) DOMCollectClassNamesFromSubtree() {
 	c := &Client{}
 	_, err := proto.DOMCollectClassNamesFromSubtree{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMCopyTo() {
+func (t T) DOMCopyTo() {
 	c := &Client{}
 	_, err := proto.DOMCopyTo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDescribeNode() {
+func (t T) DOMDescribeNode() {
 	c := &Client{}
 	_, err := proto.DOMDescribeNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMScrollIntoViewIfNeeded() {
+func (t T) DOMScrollIntoViewIfNeeded() {
 	c := &Client{}
 	err := proto.DOMScrollIntoViewIfNeeded{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDisable() {
+func (t T) DOMDisable() {
 	c := &Client{}
 	err := proto.DOMDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDiscardSearchResults() {
+func (t T) DOMDiscardSearchResults() {
 	c := &Client{}
 	err := proto.DOMDiscardSearchResults{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMEnable() {
+func (t T) DOMEnable() {
 	c := &Client{}
 	err := proto.DOMEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMFocus() {
+func (t T) DOMFocus() {
 	c := &Client{}
 	err := proto.DOMFocus{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetAttributes() {
+func (t T) DOMGetAttributes() {
 	c := &Client{}
 	_, err := proto.DOMGetAttributes{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetBoxModel() {
+func (t T) DOMGetBoxModel() {
 	c := &Client{}
 	_, err := proto.DOMGetBoxModel{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetContentQuads() {
+func (t T) DOMGetContentQuads() {
 	c := &Client{}
 	_, err := proto.DOMGetContentQuads{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetDocument() {
+func (t T) DOMGetDocument() {
 	c := &Client{}
 	_, err := proto.DOMGetDocument{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetFlattenedDocument() {
+func (t T) DOMGetFlattenedDocument() {
 	c := &Client{}
 	_, err := proto.DOMGetFlattenedDocument{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetNodeForLocation() {
+func (t T) DOMGetNodeForLocation() {
 	c := &Client{}
 	_, err := proto.DOMGetNodeForLocation{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetOuterHTML() {
+func (t T) DOMGetOuterHTML() {
 	c := &Client{}
 	_, err := proto.DOMGetOuterHTML{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetRelayoutBoundary() {
+func (t T) DOMGetRelayoutBoundary() {
 	c := &Client{}
 	_, err := proto.DOMGetRelayoutBoundary{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetSearchResults() {
+func (t T) DOMGetSearchResults() {
 	c := &Client{}
 	_, err := proto.DOMGetSearchResults{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMHideHighlight() {
+func (t T) DOMHideHighlight() {
 	c := &Client{}
 	err := proto.DOMHideHighlight{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMHighlightNode() {
+func (t T) DOMHighlightNode() {
 	c := &Client{}
 	err := proto.DOMHighlightNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMHighlightRect() {
+func (t T) DOMHighlightRect() {
 	c := &Client{}
 	err := proto.DOMHighlightRect{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMMarkUndoableState() {
+func (t T) DOMMarkUndoableState() {
 	c := &Client{}
 	err := proto.DOMMarkUndoableState{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMMoveTo() {
+func (t T) DOMMoveTo() {
 	c := &Client{}
 	_, err := proto.DOMMoveTo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMPerformSearch() {
+func (t T) DOMPerformSearch() {
 	c := &Client{}
 	_, err := proto.DOMPerformSearch{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMPushNodeByPathToFrontend() {
+func (t T) DOMPushNodeByPathToFrontend() {
 	c := &Client{}
 	_, err := proto.DOMPushNodeByPathToFrontend{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMPushNodesByBackendIdsToFrontend() {
+func (t T) DOMPushNodesByBackendIdsToFrontend() {
 	c := &Client{}
 	_, err := proto.DOMPushNodesByBackendIdsToFrontend{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMQuerySelector() {
+func (t T) DOMQuerySelector() {
 	c := &Client{}
 	_, err := proto.DOMQuerySelector{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMQuerySelectorAll() {
+func (t T) DOMQuerySelectorAll() {
 	c := &Client{}
 	_, err := proto.DOMQuerySelectorAll{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMRedo() {
+func (t T) DOMRedo() {
 	c := &Client{}
 	err := proto.DOMRedo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMRemoveAttribute() {
+func (t T) DOMRemoveAttribute() {
 	c := &Client{}
 	err := proto.DOMRemoveAttribute{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMRemoveNode() {
+func (t T) DOMRemoveNode() {
 	c := &Client{}
 	err := proto.DOMRemoveNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMRequestChildNodes() {
+func (t T) DOMRequestChildNodes() {
 	c := &Client{}
 	err := proto.DOMRequestChildNodes{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMRequestNode() {
+func (t T) DOMRequestNode() {
 	c := &Client{}
 	_, err := proto.DOMRequestNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMResolveNode() {
+func (t T) DOMResolveNode() {
 	c := &Client{}
 	_, err := proto.DOMResolveNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetAttributeValue() {
+func (t T) DOMSetAttributeValue() {
 	c := &Client{}
 	err := proto.DOMSetAttributeValue{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetAttributesAsText() {
+func (t T) DOMSetAttributesAsText() {
 	c := &Client{}
 	err := proto.DOMSetAttributesAsText{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetFileInputFiles() {
+func (t T) DOMSetFileInputFiles() {
 	c := &Client{}
 	err := proto.DOMSetFileInputFiles{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetNodeStackTracesEnabled() {
+func (t T) DOMSetNodeStackTracesEnabled() {
 	c := &Client{}
 	err := proto.DOMSetNodeStackTracesEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetNodeStackTraces() {
+func (t T) DOMGetNodeStackTraces() {
 	c := &Client{}
 	_, err := proto.DOMGetNodeStackTraces{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetFileInfo() {
+func (t T) DOMGetFileInfo() {
 	c := &Client{}
 	_, err := proto.DOMGetFileInfo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetInspectedNode() {
+func (t T) DOMSetInspectedNode() {
 	c := &Client{}
 	err := proto.DOMSetInspectedNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetNodeName() {
+func (t T) DOMSetNodeName() {
 	c := &Client{}
 	_, err := proto.DOMSetNodeName{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetNodeValue() {
+func (t T) DOMSetNodeValue() {
 	c := &Client{}
 	err := proto.DOMSetNodeValue{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSetOuterHTML() {
+func (t T) DOMSetOuterHTML() {
 	c := &Client{}
 	err := proto.DOMSetOuterHTML{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMUndo() {
+func (t T) DOMUndo() {
 	c := &Client{}
 	err := proto.DOMUndo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMGetFrameOwner() {
+func (t T) DOMGetFrameOwner() {
 	c := &Client{}
 	_, err := proto.DOMGetFrameOwner{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMAttributeModified() {
+func (t T) DOMAttributeModified() {
 	e := proto.DOMAttributeModified{}
 	e.ProtoName()
 }
 
-func (t C) DOMAttributeRemoved() {
+func (t T) DOMAttributeRemoved() {
 	e := proto.DOMAttributeRemoved{}
 	e.ProtoName()
 }
 
-func (t C) DOMCharacterDataModified() {
+func (t T) DOMCharacterDataModified() {
 	e := proto.DOMCharacterDataModified{}
 	e.ProtoName()
 }
 
-func (t C) DOMChildNodeCountUpdated() {
+func (t T) DOMChildNodeCountUpdated() {
 	e := proto.DOMChildNodeCountUpdated{}
 	e.ProtoName()
 }
 
-func (t C) DOMChildNodeInserted() {
+func (t T) DOMChildNodeInserted() {
 	e := proto.DOMChildNodeInserted{}
 	e.ProtoName()
 }
 
-func (t C) DOMChildNodeRemoved() {
+func (t T) DOMChildNodeRemoved() {
 	e := proto.DOMChildNodeRemoved{}
 	e.ProtoName()
 }
 
-func (t C) DOMDistributedNodesUpdated() {
+func (t T) DOMDistributedNodesUpdated() {
 	e := proto.DOMDistributedNodesUpdated{}
 	e.ProtoName()
 }
 
-func (t C) DOMDocumentUpdated() {
+func (t T) DOMDocumentUpdated() {
 	e := proto.DOMDocumentUpdated{}
 	e.ProtoName()
 }
 
-func (t C) DOMInlineStyleInvalidated() {
+func (t T) DOMInlineStyleInvalidated() {
 	e := proto.DOMInlineStyleInvalidated{}
 	e.ProtoName()
 }
 
-func (t C) DOMPseudoElementAdded() {
+func (t T) DOMPseudoElementAdded() {
 	e := proto.DOMPseudoElementAdded{}
 	e.ProtoName()
 }
 
-func (t C) DOMPseudoElementRemoved() {
+func (t T) DOMPseudoElementRemoved() {
 	e := proto.DOMPseudoElementRemoved{}
 	e.ProtoName()
 }
 
-func (t C) DOMSetChildNodes() {
+func (t T) DOMSetChildNodes() {
 	e := proto.DOMSetChildNodes{}
 	e.ProtoName()
 }
 
-func (t C) DOMShadowRootPopped() {
+func (t T) DOMShadowRootPopped() {
 	e := proto.DOMShadowRootPopped{}
 	e.ProtoName()
 }
 
-func (t C) DOMShadowRootPushed() {
+func (t T) DOMShadowRootPushed() {
 	e := proto.DOMShadowRootPushed{}
 	e.ProtoName()
 }
 
-func (t C) DOMDebuggerGetEventListeners() {
+func (t T) DOMDebuggerGetEventListeners() {
 	c := &Client{}
 	_, err := proto.DOMDebuggerGetEventListeners{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerRemoveDOMBreakpoint() {
+func (t T) DOMDebuggerRemoveDOMBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveDOMBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerRemoveEventListenerBreakpoint() {
+func (t T) DOMDebuggerRemoveEventListenerBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveEventListenerBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerRemoveInstrumentationBreakpoint() {
+func (t T) DOMDebuggerRemoveInstrumentationBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveInstrumentationBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerRemoveXHRBreakpoint() {
+func (t T) DOMDebuggerRemoveXHRBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerRemoveXHRBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerSetDOMBreakpoint() {
+func (t T) DOMDebuggerSetDOMBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetDOMBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerSetEventListenerBreakpoint() {
+func (t T) DOMDebuggerSetEventListenerBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetEventListenerBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerSetInstrumentationBreakpoint() {
+func (t T) DOMDebuggerSetInstrumentationBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetInstrumentationBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMDebuggerSetXHRBreakpoint() {
+func (t T) DOMDebuggerSetXHRBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetXHRBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSnapshotDisable() {
+func (t T) DOMSnapshotDisable() {
 	c := &Client{}
 	err := proto.DOMSnapshotDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSnapshotEnable() {
+func (t T) DOMSnapshotEnable() {
 	c := &Client{}
 	err := proto.DOMSnapshotEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSnapshotGetSnapshot() {
+func (t T) DOMSnapshotGetSnapshot() {
 	c := &Client{}
 	_, err := proto.DOMSnapshotGetSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMSnapshotCaptureSnapshot() {
+func (t T) DOMSnapshotCaptureSnapshot() {
 	c := &Client{}
 	_, err := proto.DOMSnapshotCaptureSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageClear() {
+func (t T) DOMStorageClear() {
 	c := &Client{}
 	err := proto.DOMStorageClear{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageDisable() {
+func (t T) DOMStorageDisable() {
 	c := &Client{}
 	err := proto.DOMStorageDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageEnable() {
+func (t T) DOMStorageEnable() {
 	c := &Client{}
 	err := proto.DOMStorageEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageGetDOMStorageItems() {
+func (t T) DOMStorageGetDOMStorageItems() {
 	c := &Client{}
 	_, err := proto.DOMStorageGetDOMStorageItems{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageRemoveDOMStorageItem() {
+func (t T) DOMStorageRemoveDOMStorageItem() {
 	c := &Client{}
 	err := proto.DOMStorageRemoveDOMStorageItem{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageSetDOMStorageItem() {
+func (t T) DOMStorageSetDOMStorageItem() {
 	c := &Client{}
 	err := proto.DOMStorageSetDOMStorageItem{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DOMStorageDomStorageItemAdded() {
+func (t T) DOMStorageDomStorageItemAdded() {
 	e := proto.DOMStorageDomStorageItemAdded{}
 	e.ProtoName()
 }
 
-func (t C) DOMStorageDomStorageItemRemoved() {
+func (t T) DOMStorageDomStorageItemRemoved() {
 	e := proto.DOMStorageDomStorageItemRemoved{}
 	e.ProtoName()
 }
 
-func (t C) DOMStorageDomStorageItemUpdated() {
+func (t T) DOMStorageDomStorageItemUpdated() {
 	e := proto.DOMStorageDomStorageItemUpdated{}
 	e.ProtoName()
 }
 
-func (t C) DOMStorageDomStorageItemsCleared() {
+func (t T) DOMStorageDomStorageItemsCleared() {
 	e := proto.DOMStorageDomStorageItemsCleared{}
 	e.ProtoName()
 }
 
-func (t C) DatabaseDisable() {
+func (t T) DatabaseDisable() {
 	c := &Client{}
 	err := proto.DatabaseDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DatabaseEnable() {
+func (t T) DatabaseEnable() {
 	c := &Client{}
 	err := proto.DatabaseEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DatabaseExecuteSQL() {
+func (t T) DatabaseExecuteSQL() {
 	c := &Client{}
 	_, err := proto.DatabaseExecuteSQL{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DatabaseGetDatabaseTableNames() {
+func (t T) DatabaseGetDatabaseTableNames() {
 	c := &Client{}
 	_, err := proto.DatabaseGetDatabaseTableNames{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DatabaseAddDatabase() {
+func (t T) DatabaseAddDatabase() {
 	e := proto.DatabaseAddDatabase{}
 	e.ProtoName()
 }
 
-func (t C) DeviceOrientationClearDeviceOrientationOverride() {
+func (t T) DeviceOrientationClearDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.DeviceOrientationClearDeviceOrientationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DeviceOrientationSetDeviceOrientationOverride() {
+func (t T) DeviceOrientationSetDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.DeviceOrientationSetDeviceOrientationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationCanEmulate() {
+func (t T) EmulationCanEmulate() {
 	c := &Client{}
 	_, err := proto.EmulationCanEmulate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationClearDeviceMetricsOverride() {
+func (t T) EmulationClearDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.EmulationClearDeviceMetricsOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationClearGeolocationOverride() {
+func (t T) EmulationClearGeolocationOverride() {
 	c := &Client{}
 	err := proto.EmulationClearGeolocationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationResetPageScaleFactor() {
+func (t T) EmulationResetPageScaleFactor() {
 	c := &Client{}
 	err := proto.EmulationResetPageScaleFactor{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetFocusEmulationEnabled() {
+func (t T) EmulationSetFocusEmulationEnabled() {
 	c := &Client{}
 	err := proto.EmulationSetFocusEmulationEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetCPUThrottlingRate() {
+func (t T) EmulationSetCPUThrottlingRate() {
 	c := &Client{}
 	err := proto.EmulationSetCPUThrottlingRate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetDefaultBackgroundColorOverride() {
+func (t T) EmulationSetDefaultBackgroundColorOverride() {
 	c := &Client{}
 	err := proto.EmulationSetDefaultBackgroundColorOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetDeviceMetricsOverride() {
+func (t T) EmulationSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.EmulationSetDeviceMetricsOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetScrollbarsHidden() {
+func (t T) EmulationSetScrollbarsHidden() {
 	c := &Client{}
 	err := proto.EmulationSetScrollbarsHidden{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetDocumentCookieDisabled() {
+func (t T) EmulationSetDocumentCookieDisabled() {
 	c := &Client{}
 	err := proto.EmulationSetDocumentCookieDisabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetEmitTouchEventsForMouse() {
+func (t T) EmulationSetEmitTouchEventsForMouse() {
 	c := &Client{}
 	err := proto.EmulationSetEmitTouchEventsForMouse{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetEmulatedMedia() {
+func (t T) EmulationSetEmulatedMedia() {
 	c := &Client{}
 	err := proto.EmulationSetEmulatedMedia{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetEmulatedVisionDeficiency() {
+func (t T) EmulationSetEmulatedVisionDeficiency() {
 	c := &Client{}
 	err := proto.EmulationSetEmulatedVisionDeficiency{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetGeolocationOverride() {
+func (t T) EmulationSetGeolocationOverride() {
 	c := &Client{}
 	err := proto.EmulationSetGeolocationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetNavigatorOverrides() {
+func (t T) EmulationSetNavigatorOverrides() {
 	c := &Client{}
 	err := proto.EmulationSetNavigatorOverrides{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetPageScaleFactor() {
+func (t T) EmulationSetPageScaleFactor() {
 	c := &Client{}
 	err := proto.EmulationSetPageScaleFactor{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetScriptExecutionDisabled() {
+func (t T) EmulationSetScriptExecutionDisabled() {
 	c := &Client{}
 	err := proto.EmulationSetScriptExecutionDisabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetTouchEmulationEnabled() {
+func (t T) EmulationSetTouchEmulationEnabled() {
 	c := &Client{}
 	err := proto.EmulationSetTouchEmulationEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetVirtualTimePolicy() {
+func (t T) EmulationSetVirtualTimePolicy() {
 	c := &Client{}
 	_, err := proto.EmulationSetVirtualTimePolicy{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetLocaleOverride() {
+func (t T) EmulationSetLocaleOverride() {
 	c := &Client{}
 	err := proto.EmulationSetLocaleOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetTimezoneOverride() {
+func (t T) EmulationSetTimezoneOverride() {
 	c := &Client{}
 	err := proto.EmulationSetTimezoneOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetVisibleSize() {
+func (t T) EmulationSetVisibleSize() {
 	c := &Client{}
 	err := proto.EmulationSetVisibleSize{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationSetUserAgentOverride() {
+func (t T) EmulationSetUserAgentOverride() {
 	c := &Client{}
 	err := proto.EmulationSetUserAgentOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) EmulationVirtualTimeBudgetExpired() {
+func (t T) EmulationVirtualTimeBudgetExpired() {
 	e := proto.EmulationVirtualTimeBudgetExpired{}
 	e.ProtoName()
 }
 
-func (t C) HeadlessExperimentalBeginFrame() {
+func (t T) HeadlessExperimentalBeginFrame() {
 	c := &Client{}
 	_, err := proto.HeadlessExperimentalBeginFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeadlessExperimentalDisable() {
+func (t T) HeadlessExperimentalDisable() {
 	c := &Client{}
 	err := proto.HeadlessExperimentalDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeadlessExperimentalEnable() {
+func (t T) HeadlessExperimentalEnable() {
 	c := &Client{}
 	err := proto.HeadlessExperimentalEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeadlessExperimentalNeedsBeginFramesChanged() {
+func (t T) HeadlessExperimentalNeedsBeginFramesChanged() {
 	e := proto.HeadlessExperimentalNeedsBeginFramesChanged{}
 	e.ProtoName()
 }
 
-func (t C) IOClose() {
+func (t T) IOClose() {
 	c := &Client{}
 	err := proto.IOClose{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IORead() {
+func (t T) IORead() {
 	c := &Client{}
 	_, err := proto.IORead{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IOResolveBlob() {
+func (t T) IOResolveBlob() {
 	c := &Client{}
 	_, err := proto.IOResolveBlob{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBClearObjectStore() {
+func (t T) IndexedDBClearObjectStore() {
 	c := &Client{}
 	err := proto.IndexedDBClearObjectStore{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBDeleteDatabase() {
+func (t T) IndexedDBDeleteDatabase() {
 	c := &Client{}
 	err := proto.IndexedDBDeleteDatabase{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBDeleteObjectStoreEntries() {
+func (t T) IndexedDBDeleteObjectStoreEntries() {
 	c := &Client{}
 	err := proto.IndexedDBDeleteObjectStoreEntries{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBDisable() {
+func (t T) IndexedDBDisable() {
 	c := &Client{}
 	err := proto.IndexedDBDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBEnable() {
+func (t T) IndexedDBEnable() {
 	c := &Client{}
 	err := proto.IndexedDBEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBRequestData() {
+func (t T) IndexedDBRequestData() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestData{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBGetMetadata() {
+func (t T) IndexedDBGetMetadata() {
 	c := &Client{}
 	_, err := proto.IndexedDBGetMetadata{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBRequestDatabase() {
+func (t T) IndexedDBRequestDatabase() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabase{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) IndexedDBRequestDatabaseNames() {
+func (t T) IndexedDBRequestDatabaseNames() {
 	c := &Client{}
 	_, err := proto.IndexedDBRequestDatabaseNames{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputDispatchKeyEvent() {
+func (t T) InputDispatchKeyEvent() {
 	c := &Client{}
 	err := proto.InputDispatchKeyEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputInsertText() {
+func (t T) InputInsertText() {
 	c := &Client{}
 	err := proto.InputInsertText{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputDispatchMouseEvent() {
+func (t T) InputDispatchMouseEvent() {
 	c := &Client{}
 	err := proto.InputDispatchMouseEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputDispatchTouchEvent() {
+func (t T) InputDispatchTouchEvent() {
 	c := &Client{}
 	err := proto.InputDispatchTouchEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputEmulateTouchFromMouseEvent() {
+func (t T) InputEmulateTouchFromMouseEvent() {
 	c := &Client{}
 	err := proto.InputEmulateTouchFromMouseEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputSetIgnoreInputEvents() {
+func (t T) InputSetIgnoreInputEvents() {
 	c := &Client{}
 	err := proto.InputSetIgnoreInputEvents{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputSynthesizePinchGesture() {
+func (t T) InputSynthesizePinchGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizePinchGesture{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputSynthesizeScrollGesture() {
+func (t T) InputSynthesizeScrollGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizeScrollGesture{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InputSynthesizeTapGesture() {
+func (t T) InputSynthesizeTapGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizeTapGesture{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InspectorDisable() {
+func (t T) InspectorDisable() {
 	c := &Client{}
 	err := proto.InspectorDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InspectorEnable() {
+func (t T) InspectorEnable() {
 	c := &Client{}
 	err := proto.InspectorEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) InspectorDetached() {
+func (t T) InspectorDetached() {
 	e := proto.InspectorDetached{}
 	e.ProtoName()
 }
 
-func (t C) InspectorTargetCrashed() {
+func (t T) InspectorTargetCrashed() {
 	e := proto.InspectorTargetCrashed{}
 	e.ProtoName()
 }
 
-func (t C) InspectorTargetReloadedAfterCrash() {
+func (t T) InspectorTargetReloadedAfterCrash() {
 	e := proto.InspectorTargetReloadedAfterCrash{}
 	e.ProtoName()
 }
 
-func (t C) LayerTreeCompositingReasons() {
+func (t T) LayerTreeCompositingReasons() {
 	c := &Client{}
 	_, err := proto.LayerTreeCompositingReasons{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeDisable() {
+func (t T) LayerTreeDisable() {
 	c := &Client{}
 	err := proto.LayerTreeDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeEnable() {
+func (t T) LayerTreeEnable() {
 	c := &Client{}
 	err := proto.LayerTreeEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeLoadSnapshot() {
+func (t T) LayerTreeLoadSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeLoadSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeMakeSnapshot() {
+func (t T) LayerTreeMakeSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeMakeSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeProfileSnapshot() {
+func (t T) LayerTreeProfileSnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeProfileSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeReleaseSnapshot() {
+func (t T) LayerTreeReleaseSnapshot() {
 	c := &Client{}
 	err := proto.LayerTreeReleaseSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeReplaySnapshot() {
+func (t T) LayerTreeReplaySnapshot() {
 	c := &Client{}
 	_, err := proto.LayerTreeReplaySnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeSnapshotCommandLog() {
+func (t T) LayerTreeSnapshotCommandLog() {
 	c := &Client{}
 	_, err := proto.LayerTreeSnapshotCommandLog{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LayerTreeLayerPainted() {
+func (t T) LayerTreeLayerPainted() {
 	e := proto.LayerTreeLayerPainted{}
 	e.ProtoName()
 }
 
-func (t C) LayerTreeLayerTreeDidChange() {
+func (t T) LayerTreeLayerTreeDidChange() {
 	e := proto.LayerTreeLayerTreeDidChange{}
 	e.ProtoName()
 }
 
-func (t C) LogClear() {
+func (t T) LogClear() {
 	c := &Client{}
 	err := proto.LogClear{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LogDisable() {
+func (t T) LogDisable() {
 	c := &Client{}
 	err := proto.LogDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LogEnable() {
+func (t T) LogEnable() {
 	c := &Client{}
 	err := proto.LogEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LogStartViolationsReport() {
+func (t T) LogStartViolationsReport() {
 	c := &Client{}
 	err := proto.LogStartViolationsReport{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LogStopViolationsReport() {
+func (t T) LogStopViolationsReport() {
 	c := &Client{}
 	err := proto.LogStopViolationsReport{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) LogEntryAdded() {
+func (t T) LogEntryAdded() {
 	e := proto.LogEntryAdded{}
 	e.ProtoName()
 }
 
-func (t C) MemoryGetDOMCounters() {
+func (t T) MemoryGetDOMCounters() {
 	c := &Client{}
 	_, err := proto.MemoryGetDOMCounters{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryPrepareForLeakDetection() {
+func (t T) MemoryPrepareForLeakDetection() {
 	c := &Client{}
 	err := proto.MemoryPrepareForLeakDetection{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryForciblyPurgeJavaScriptMemory() {
+func (t T) MemoryForciblyPurgeJavaScriptMemory() {
 	c := &Client{}
 	err := proto.MemoryForciblyPurgeJavaScriptMemory{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemorySetPressureNotificationsSuppressed() {
+func (t T) MemorySetPressureNotificationsSuppressed() {
 	c := &Client{}
 	err := proto.MemorySetPressureNotificationsSuppressed{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemorySimulatePressureNotification() {
+func (t T) MemorySimulatePressureNotification() {
 	c := &Client{}
 	err := proto.MemorySimulatePressureNotification{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryStartSampling() {
+func (t T) MemoryStartSampling() {
 	c := &Client{}
 	err := proto.MemoryStartSampling{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryStopSampling() {
+func (t T) MemoryStopSampling() {
 	c := &Client{}
 	err := proto.MemoryStopSampling{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryGetAllTimeSamplingProfile() {
+func (t T) MemoryGetAllTimeSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetAllTimeSamplingProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryGetBrowserSamplingProfile() {
+func (t T) MemoryGetBrowserSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetBrowserSamplingProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MemoryGetSamplingProfile() {
+func (t T) MemoryGetSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetSamplingProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkCanClearBrowserCache() {
+func (t T) NetworkCanClearBrowserCache() {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkCanClearBrowserCookies() {
+func (t T) NetworkCanClearBrowserCookies() {
 	c := &Client{}
 	_, err := proto.NetworkCanClearBrowserCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkCanEmulateNetworkConditions() {
+func (t T) NetworkCanEmulateNetworkConditions() {
 	c := &Client{}
 	_, err := proto.NetworkCanEmulateNetworkConditions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkClearBrowserCache() {
+func (t T) NetworkClearBrowserCache() {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkClearBrowserCookies() {
+func (t T) NetworkClearBrowserCookies() {
 	c := &Client{}
 	err := proto.NetworkClearBrowserCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkContinueInterceptedRequest() {
+func (t T) NetworkContinueInterceptedRequest() {
 	c := &Client{}
 	err := proto.NetworkContinueInterceptedRequest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkDeleteCookies() {
+func (t T) NetworkDeleteCookies() {
 	c := &Client{}
 	err := proto.NetworkDeleteCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkDisable() {
+func (t T) NetworkDisable() {
 	c := &Client{}
 	err := proto.NetworkDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkEmulateNetworkConditions() {
+func (t T) NetworkEmulateNetworkConditions() {
 	c := &Client{}
 	err := proto.NetworkEmulateNetworkConditions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkEnable() {
+func (t T) NetworkEnable() {
 	c := &Client{}
 	err := proto.NetworkEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetAllCookies() {
+func (t T) NetworkGetAllCookies() {
 	c := &Client{}
 	_, err := proto.NetworkGetAllCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetCertificate() {
+func (t T) NetworkGetCertificate() {
 	c := &Client{}
 	_, err := proto.NetworkGetCertificate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetCookies() {
+func (t T) NetworkGetCookies() {
 	c := &Client{}
 	_, err := proto.NetworkGetCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetResponseBody() {
+func (t T) NetworkGetResponseBody() {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBody{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetRequestPostData() {
+func (t T) NetworkGetRequestPostData() {
 	c := &Client{}
 	_, err := proto.NetworkGetRequestPostData{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkGetResponseBodyForInterception() {
+func (t T) NetworkGetResponseBodyForInterception() {
 	c := &Client{}
 	_, err := proto.NetworkGetResponseBodyForInterception{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkTakeResponseBodyForInterceptionAsStream() {
+func (t T) NetworkTakeResponseBodyForInterceptionAsStream() {
 	c := &Client{}
 	_, err := proto.NetworkTakeResponseBodyForInterceptionAsStream{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkReplayXHR() {
+func (t T) NetworkReplayXHR() {
 	c := &Client{}
 	err := proto.NetworkReplayXHR{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSearchInResponseBody() {
+func (t T) NetworkSearchInResponseBody() {
 	c := &Client{}
 	_, err := proto.NetworkSearchInResponseBody{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetBlockedURLs() {
+func (t T) NetworkSetBlockedURLs() {
 	c := &Client{}
 	err := proto.NetworkSetBlockedURLs{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetBypassServiceWorker() {
+func (t T) NetworkSetBypassServiceWorker() {
 	c := &Client{}
 	err := proto.NetworkSetBypassServiceWorker{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetCacheDisabled() {
+func (t T) NetworkSetCacheDisabled() {
 	c := &Client{}
 	err := proto.NetworkSetCacheDisabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetCookie() {
+func (t T) NetworkSetCookie() {
 	c := &Client{}
 	_, err := proto.NetworkSetCookie{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetCookies() {
+func (t T) NetworkSetCookies() {
 	c := &Client{}
 	err := proto.NetworkSetCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetDataSizeLimitsForTest() {
+func (t T) NetworkSetDataSizeLimitsForTest() {
 	c := &Client{}
 	err := proto.NetworkSetDataSizeLimitsForTest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetExtraHTTPHeaders() {
+func (t T) NetworkSetExtraHTTPHeaders() {
 	c := &Client{}
 	err := proto.NetworkSetExtraHTTPHeaders{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetRequestInterception() {
+func (t T) NetworkSetRequestInterception() {
 	c := &Client{}
 	err := proto.NetworkSetRequestInterception{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkSetUserAgentOverride() {
+func (t T) NetworkSetUserAgentOverride() {
 	c := &Client{}
 	err := proto.NetworkSetUserAgentOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) NetworkDataReceived() {
+func (t T) NetworkDataReceived() {
 	e := proto.NetworkDataReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkEventSourceMessageReceived() {
+func (t T) NetworkEventSourceMessageReceived() {
 	e := proto.NetworkEventSourceMessageReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkLoadingFailed() {
+func (t T) NetworkLoadingFailed() {
 	e := proto.NetworkLoadingFailed{}
 	e.ProtoName()
 }
 
-func (t C) NetworkLoadingFinished() {
+func (t T) NetworkLoadingFinished() {
 	e := proto.NetworkLoadingFinished{}
 	e.ProtoName()
 }
 
-func (t C) NetworkRequestIntercepted() {
+func (t T) NetworkRequestIntercepted() {
 	e := proto.NetworkRequestIntercepted{}
 	e.ProtoName()
 }
 
-func (t C) NetworkRequestServedFromCache() {
+func (t T) NetworkRequestServedFromCache() {
 	e := proto.NetworkRequestServedFromCache{}
 	e.ProtoName()
 }
 
-func (t C) NetworkRequestWillBeSent() {
+func (t T) NetworkRequestWillBeSent() {
 	e := proto.NetworkRequestWillBeSent{}
 	e.ProtoName()
 }
 
-func (t C) NetworkResourceChangedPriority() {
+func (t T) NetworkResourceChangedPriority() {
 	e := proto.NetworkResourceChangedPriority{}
 	e.ProtoName()
 }
 
-func (t C) NetworkSignedExchangeReceived() {
+func (t T) NetworkSignedExchangeReceived() {
 	e := proto.NetworkSignedExchangeReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkResponseReceived() {
+func (t T) NetworkResponseReceived() {
 	e := proto.NetworkResponseReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketClosed() {
+func (t T) NetworkWebSocketClosed() {
 	e := proto.NetworkWebSocketClosed{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketCreated() {
+func (t T) NetworkWebSocketCreated() {
 	e := proto.NetworkWebSocketCreated{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketFrameError() {
+func (t T) NetworkWebSocketFrameError() {
 	e := proto.NetworkWebSocketFrameError{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketFrameReceived() {
+func (t T) NetworkWebSocketFrameReceived() {
 	e := proto.NetworkWebSocketFrameReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketFrameSent() {
+func (t T) NetworkWebSocketFrameSent() {
 	e := proto.NetworkWebSocketFrameSent{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketHandshakeResponseReceived() {
+func (t T) NetworkWebSocketHandshakeResponseReceived() {
 	e := proto.NetworkWebSocketHandshakeResponseReceived{}
 	e.ProtoName()
 }
 
-func (t C) NetworkWebSocketWillSendHandshakeRequest() {
+func (t T) NetworkWebSocketWillSendHandshakeRequest() {
 	e := proto.NetworkWebSocketWillSendHandshakeRequest{}
 	e.ProtoName()
 }
 
-func (t C) NetworkRequestWillBeSentExtraInfo() {
+func (t T) NetworkRequestWillBeSentExtraInfo() {
 	e := proto.NetworkRequestWillBeSentExtraInfo{}
 	e.ProtoName()
 }
 
-func (t C) NetworkResponseReceivedExtraInfo() {
+func (t T) NetworkResponseReceivedExtraInfo() {
 	e := proto.NetworkResponseReceivedExtraInfo{}
 	e.ProtoName()
 }
 
-func (t C) OverlayDisable() {
+func (t T) OverlayDisable() {
 	c := &Client{}
 	err := proto.OverlayDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayEnable() {
+func (t T) OverlayEnable() {
 	c := &Client{}
 	err := proto.OverlayEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayGetHighlightObjectForTest() {
+func (t T) OverlayGetHighlightObjectForTest() {
 	c := &Client{}
 	_, err := proto.OverlayGetHighlightObjectForTest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayHideHighlight() {
+func (t T) OverlayHideHighlight() {
 	c := &Client{}
 	err := proto.OverlayHideHighlight{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayHighlightFrame() {
+func (t T) OverlayHighlightFrame() {
 	c := &Client{}
 	err := proto.OverlayHighlightFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayHighlightNode() {
+func (t T) OverlayHighlightNode() {
 	c := &Client{}
 	err := proto.OverlayHighlightNode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayHighlightQuad() {
+func (t T) OverlayHighlightQuad() {
 	c := &Client{}
 	err := proto.OverlayHighlightQuad{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayHighlightRect() {
+func (t T) OverlayHighlightRect() {
 	c := &Client{}
 	err := proto.OverlayHighlightRect{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetInspectMode() {
+func (t T) OverlaySetInspectMode() {
 	c := &Client{}
 	err := proto.OverlaySetInspectMode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowAdHighlights() {
+func (t T) OverlaySetShowAdHighlights() {
 	c := &Client{}
 	err := proto.OverlaySetShowAdHighlights{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetPausedInDebuggerMessage() {
+func (t T) OverlaySetPausedInDebuggerMessage() {
 	c := &Client{}
 	err := proto.OverlaySetPausedInDebuggerMessage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowDebugBorders() {
+func (t T) OverlaySetShowDebugBorders() {
 	c := &Client{}
 	err := proto.OverlaySetShowDebugBorders{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowFPSCounter() {
+func (t T) OverlaySetShowFPSCounter() {
 	c := &Client{}
 	err := proto.OverlaySetShowFPSCounter{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowPaintRects() {
+func (t T) OverlaySetShowPaintRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowPaintRects{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowLayoutShiftRegions() {
+func (t T) OverlaySetShowLayoutShiftRegions() {
 	c := &Client{}
 	err := proto.OverlaySetShowLayoutShiftRegions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowScrollBottleneckRects() {
+func (t T) OverlaySetShowScrollBottleneckRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowScrollBottleneckRects{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowHitTestBorders() {
+func (t T) OverlaySetShowHitTestBorders() {
 	c := &Client{}
 	err := proto.OverlaySetShowHitTestBorders{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowViewportSizeOnResize() {
+func (t T) OverlaySetShowViewportSizeOnResize() {
 	c := &Client{}
 	err := proto.OverlaySetShowViewportSizeOnResize{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlaySetShowHinge() {
+func (t T) OverlaySetShowHinge() {
 	c := &Client{}
 	err := proto.OverlaySetShowHinge{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) OverlayInspectNodeRequested() {
+func (t T) OverlayInspectNodeRequested() {
 	e := proto.OverlayInspectNodeRequested{}
 	e.ProtoName()
 }
 
-func (t C) OverlayNodeHighlightRequested() {
+func (t T) OverlayNodeHighlightRequested() {
 	e := proto.OverlayNodeHighlightRequested{}
 	e.ProtoName()
 }
 
-func (t C) OverlayScreenshotRequested() {
+func (t T) OverlayScreenshotRequested() {
 	e := proto.OverlayScreenshotRequested{}
 	e.ProtoName()
 }
 
-func (t C) OverlayInspectModeCanceled() {
+func (t T) OverlayInspectModeCanceled() {
 	e := proto.OverlayInspectModeCanceled{}
 	e.ProtoName()
 }
 
-func (t C) PageAddScriptToEvaluateOnLoad() {
+func (t T) PageAddScriptToEvaluateOnLoad() {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnLoad{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageAddScriptToEvaluateOnNewDocument() {
+func (t T) PageAddScriptToEvaluateOnNewDocument() {
 	c := &Client{}
 	_, err := proto.PageAddScriptToEvaluateOnNewDocument{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageBringToFront() {
+func (t T) PageBringToFront() {
 	c := &Client{}
 	err := proto.PageBringToFront{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageCaptureScreenshot() {
+func (t T) PageCaptureScreenshot() {
 	c := &Client{}
 	_, err := proto.PageCaptureScreenshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageCaptureSnapshot() {
+func (t T) PageCaptureSnapshot() {
 	c := &Client{}
 	_, err := proto.PageCaptureSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageClearDeviceMetricsOverride() {
+func (t T) PageClearDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.PageClearDeviceMetricsOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageClearDeviceOrientationOverride() {
+func (t T) PageClearDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.PageClearDeviceOrientationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageClearGeolocationOverride() {
+func (t T) PageClearGeolocationOverride() {
 	c := &Client{}
 	err := proto.PageClearGeolocationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageCreateIsolatedWorld() {
+func (t T) PageCreateIsolatedWorld() {
 	c := &Client{}
 	_, err := proto.PageCreateIsolatedWorld{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageDeleteCookie() {
+func (t T) PageDeleteCookie() {
 	c := &Client{}
 	err := proto.PageDeleteCookie{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageDisable() {
+func (t T) PageDisable() {
 	c := &Client{}
 	err := proto.PageDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageEnable() {
+func (t T) PageEnable() {
 	c := &Client{}
 	err := proto.PageEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetAppManifest() {
+func (t T) PageGetAppManifest() {
 	c := &Client{}
 	_, err := proto.PageGetAppManifest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetInstallabilityErrors() {
+func (t T) PageGetInstallabilityErrors() {
 	c := &Client{}
 	_, err := proto.PageGetInstallabilityErrors{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetManifestIcons() {
+func (t T) PageGetManifestIcons() {
 	c := &Client{}
 	_, err := proto.PageGetManifestIcons{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetCookies() {
+func (t T) PageGetCookies() {
 	c := &Client{}
 	_, err := proto.PageGetCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetFrameTree() {
+func (t T) PageGetFrameTree() {
 	c := &Client{}
 	_, err := proto.PageGetFrameTree{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetLayoutMetrics() {
+func (t T) PageGetLayoutMetrics() {
 	c := &Client{}
 	_, err := proto.PageGetLayoutMetrics{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetNavigationHistory() {
+func (t T) PageGetNavigationHistory() {
 	c := &Client{}
 	_, err := proto.PageGetNavigationHistory{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageResetNavigationHistory() {
+func (t T) PageResetNavigationHistory() {
 	c := &Client{}
 	err := proto.PageResetNavigationHistory{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetResourceContent() {
+func (t T) PageGetResourceContent() {
 	c := &Client{}
 	_, err := proto.PageGetResourceContent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGetResourceTree() {
+func (t T) PageGetResourceTree() {
 	c := &Client{}
 	_, err := proto.PageGetResourceTree{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageHandleJavaScriptDialog() {
+func (t T) PageHandleJavaScriptDialog() {
 	c := &Client{}
 	err := proto.PageHandleJavaScriptDialog{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageNavigate() {
+func (t T) PageNavigate() {
 	c := &Client{}
 	_, err := proto.PageNavigate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageNavigateToHistoryEntry() {
+func (t T) PageNavigateToHistoryEntry() {
 	c := &Client{}
 	err := proto.PageNavigateToHistoryEntry{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PagePrintToPDF() {
+func (t T) PagePrintToPDF() {
 	c := &Client{}
 	_, err := proto.PagePrintToPDF{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageReload() {
+func (t T) PageReload() {
 	c := &Client{}
 	err := proto.PageReload{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageRemoveScriptToEvaluateOnLoad() {
+func (t T) PageRemoveScriptToEvaluateOnLoad() {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnLoad{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageRemoveScriptToEvaluateOnNewDocument() {
+func (t T) PageRemoveScriptToEvaluateOnNewDocument() {
 	c := &Client{}
 	err := proto.PageRemoveScriptToEvaluateOnNewDocument{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageScreencastFrameAck() {
+func (t T) PageScreencastFrameAck() {
 	c := &Client{}
 	err := proto.PageScreencastFrameAck{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSearchInResource() {
+func (t T) PageSearchInResource() {
 	c := &Client{}
 	_, err := proto.PageSearchInResource{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetAdBlockingEnabled() {
+func (t T) PageSetAdBlockingEnabled() {
 	c := &Client{}
 	err := proto.PageSetAdBlockingEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetBypassCSP() {
+func (t T) PageSetBypassCSP() {
 	c := &Client{}
 	err := proto.PageSetBypassCSP{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetDeviceMetricsOverride() {
+func (t T) PageSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.PageSetDeviceMetricsOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetDeviceOrientationOverride() {
+func (t T) PageSetDeviceOrientationOverride() {
 	c := &Client{}
 	err := proto.PageSetDeviceOrientationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetFontFamilies() {
+func (t T) PageSetFontFamilies() {
 	c := &Client{}
 	err := proto.PageSetFontFamilies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetFontSizes() {
+func (t T) PageSetFontSizes() {
 	c := &Client{}
 	err := proto.PageSetFontSizes{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetDocumentContent() {
+func (t T) PageSetDocumentContent() {
 	c := &Client{}
 	err := proto.PageSetDocumentContent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetDownloadBehavior() {
+func (t T) PageSetDownloadBehavior() {
 	c := &Client{}
 	err := proto.PageSetDownloadBehavior{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetGeolocationOverride() {
+func (t T) PageSetGeolocationOverride() {
 	c := &Client{}
 	err := proto.PageSetGeolocationOverride{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetLifecycleEventsEnabled() {
+func (t T) PageSetLifecycleEventsEnabled() {
 	c := &Client{}
 	err := proto.PageSetLifecycleEventsEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetTouchEmulationEnabled() {
+func (t T) PageSetTouchEmulationEnabled() {
 	c := &Client{}
 	err := proto.PageSetTouchEmulationEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageStartScreencast() {
+func (t T) PageStartScreencast() {
 	c := &Client{}
 	err := proto.PageStartScreencast{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageStopLoading() {
+func (t T) PageStopLoading() {
 	c := &Client{}
 	err := proto.PageStopLoading{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageCrash() {
+func (t T) PageCrash() {
 	c := &Client{}
 	err := proto.PageCrash{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageClose() {
+func (t T) PageClose() {
 	c := &Client{}
 	err := proto.PageClose{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetWebLifecycleState() {
+func (t T) PageSetWebLifecycleState() {
 	c := &Client{}
 	err := proto.PageSetWebLifecycleState{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageStopScreencast() {
+func (t T) PageStopScreencast() {
 	c := &Client{}
 	err := proto.PageStopScreencast{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetProduceCompilationCache() {
+func (t T) PageSetProduceCompilationCache() {
 	c := &Client{}
 	err := proto.PageSetProduceCompilationCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageAddCompilationCache() {
+func (t T) PageAddCompilationCache() {
 	c := &Client{}
 	err := proto.PageAddCompilationCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageClearCompilationCache() {
+func (t T) PageClearCompilationCache() {
 	c := &Client{}
 	err := proto.PageClearCompilationCache{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageGenerateTestReport() {
+func (t T) PageGenerateTestReport() {
 	c := &Client{}
 	err := proto.PageGenerateTestReport{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageWaitForDebugger() {
+func (t T) PageWaitForDebugger() {
 	c := &Client{}
 	err := proto.PageWaitForDebugger{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageSetInterceptFileChooserDialog() {
+func (t T) PageSetInterceptFileChooserDialog() {
 	c := &Client{}
 	err := proto.PageSetInterceptFileChooserDialog{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PageDomContentEventFired() {
+func (t T) PageDomContentEventFired() {
 	e := proto.PageDomContentEventFired{}
 	e.ProtoName()
 }
 
-func (t C) PageFileChooserOpened() {
+func (t T) PageFileChooserOpened() {
 	e := proto.PageFileChooserOpened{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameAttached() {
+func (t T) PageFrameAttached() {
 	e := proto.PageFrameAttached{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameClearedScheduledNavigation() {
+func (t T) PageFrameClearedScheduledNavigation() {
 	e := proto.PageFrameClearedScheduledNavigation{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameDetached() {
+func (t T) PageFrameDetached() {
 	e := proto.PageFrameDetached{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameNavigated() {
+func (t T) PageFrameNavigated() {
 	e := proto.PageFrameNavigated{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameResized() {
+func (t T) PageFrameResized() {
 	e := proto.PageFrameResized{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameRequestedNavigation() {
+func (t T) PageFrameRequestedNavigation() {
 	e := proto.PageFrameRequestedNavigation{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameScheduledNavigation() {
+func (t T) PageFrameScheduledNavigation() {
 	e := proto.PageFrameScheduledNavigation{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameStartedLoading() {
+func (t T) PageFrameStartedLoading() {
 	e := proto.PageFrameStartedLoading{}
 	e.ProtoName()
 }
 
-func (t C) PageFrameStoppedLoading() {
+func (t T) PageFrameStoppedLoading() {
 	e := proto.PageFrameStoppedLoading{}
 	e.ProtoName()
 }
 
-func (t C) PageDownloadWillBegin() {
+func (t T) PageDownloadWillBegin() {
 	e := proto.PageDownloadWillBegin{}
 	e.ProtoName()
 }
 
-func (t C) PageDownloadProgress() {
+func (t T) PageDownloadProgress() {
 	e := proto.PageDownloadProgress{}
 	e.ProtoName()
 }
 
-func (t C) PageInterstitialHidden() {
+func (t T) PageInterstitialHidden() {
 	e := proto.PageInterstitialHidden{}
 	e.ProtoName()
 }
 
-func (t C) PageInterstitialShown() {
+func (t T) PageInterstitialShown() {
 	e := proto.PageInterstitialShown{}
 	e.ProtoName()
 }
 
-func (t C) PageJavascriptDialogClosed() {
+func (t T) PageJavascriptDialogClosed() {
 	e := proto.PageJavascriptDialogClosed{}
 	e.ProtoName()
 }
 
-func (t C) PageJavascriptDialogOpening() {
+func (t T) PageJavascriptDialogOpening() {
 	e := proto.PageJavascriptDialogOpening{}
 	e.ProtoName()
 }
 
-func (t C) PageLifecycleEvent() {
+func (t T) PageLifecycleEvent() {
 	e := proto.PageLifecycleEvent{}
 	e.ProtoName()
 }
 
-func (t C) PageLoadEventFired() {
+func (t T) PageLoadEventFired() {
 	e := proto.PageLoadEventFired{}
 	e.ProtoName()
 }
 
-func (t C) PageNavigatedWithinDocument() {
+func (t T) PageNavigatedWithinDocument() {
 	e := proto.PageNavigatedWithinDocument{}
 	e.ProtoName()
 }
 
-func (t C) PageScreencastFrame() {
+func (t T) PageScreencastFrame() {
 	e := proto.PageScreencastFrame{}
 	e.ProtoName()
 }
 
-func (t C) PageScreencastVisibilityChanged() {
+func (t T) PageScreencastVisibilityChanged() {
 	e := proto.PageScreencastVisibilityChanged{}
 	e.ProtoName()
 }
 
-func (t C) PageWindowOpen() {
+func (t T) PageWindowOpen() {
 	e := proto.PageWindowOpen{}
 	e.ProtoName()
 }
 
-func (t C) PageCompilationCacheProduced() {
+func (t T) PageCompilationCacheProduced() {
 	e := proto.PageCompilationCacheProduced{}
 	e.ProtoName()
 }
 
-func (t C) PerformanceDisable() {
+func (t T) PerformanceDisable() {
 	c := &Client{}
 	err := proto.PerformanceDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PerformanceEnable() {
+func (t T) PerformanceEnable() {
 	c := &Client{}
 	err := proto.PerformanceEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PerformanceSetTimeDomain() {
+func (t T) PerformanceSetTimeDomain() {
 	c := &Client{}
 	err := proto.PerformanceSetTimeDomain{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PerformanceGetMetrics() {
+func (t T) PerformanceGetMetrics() {
 	c := &Client{}
 	_, err := proto.PerformanceGetMetrics{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) PerformanceMetrics() {
+func (t T) PerformanceMetrics() {
 	e := proto.PerformanceMetrics{}
 	e.ProtoName()
 }
 
-func (t C) SecurityDisable() {
+func (t T) SecurityDisable() {
 	c := &Client{}
 	err := proto.SecurityDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SecurityEnable() {
+func (t T) SecurityEnable() {
 	c := &Client{}
 	err := proto.SecurityEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SecuritySetIgnoreCertificateErrors() {
+func (t T) SecuritySetIgnoreCertificateErrors() {
 	c := &Client{}
 	err := proto.SecuritySetIgnoreCertificateErrors{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SecurityHandleCertificateError() {
+func (t T) SecurityHandleCertificateError() {
 	c := &Client{}
 	err := proto.SecurityHandleCertificateError{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SecuritySetOverrideCertificateErrors() {
+func (t T) SecuritySetOverrideCertificateErrors() {
 	c := &Client{}
 	err := proto.SecuritySetOverrideCertificateErrors{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SecurityCertificateError() {
+func (t T) SecurityCertificateError() {
 	e := proto.SecurityCertificateError{}
 	e.ProtoName()
 }
 
-func (t C) SecurityVisibleSecurityStateChanged() {
+func (t T) SecurityVisibleSecurityStateChanged() {
 	e := proto.SecurityVisibleSecurityStateChanged{}
 	e.ProtoName()
 }
 
-func (t C) SecuritySecurityStateChanged() {
+func (t T) SecuritySecurityStateChanged() {
 	e := proto.SecuritySecurityStateChanged{}
 	e.ProtoName()
 }
 
-func (t C) ServiceWorkerDeliverPushMessage() {
+func (t T) ServiceWorkerDeliverPushMessage() {
 	c := &Client{}
 	err := proto.ServiceWorkerDeliverPushMessage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerDisable() {
+func (t T) ServiceWorkerDisable() {
 	c := &Client{}
 	err := proto.ServiceWorkerDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerDispatchSyncEvent() {
+func (t T) ServiceWorkerDispatchSyncEvent() {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchSyncEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerDispatchPeriodicSyncEvent() {
+func (t T) ServiceWorkerDispatchPeriodicSyncEvent() {
 	c := &Client{}
 	err := proto.ServiceWorkerDispatchPeriodicSyncEvent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerEnable() {
+func (t T) ServiceWorkerEnable() {
 	c := &Client{}
 	err := proto.ServiceWorkerEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerInspectWorker() {
+func (t T) ServiceWorkerInspectWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerInspectWorker{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerSetForceUpdateOnPageLoad() {
+func (t T) ServiceWorkerSetForceUpdateOnPageLoad() {
 	c := &Client{}
 	err := proto.ServiceWorkerSetForceUpdateOnPageLoad{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerSkipWaiting() {
+func (t T) ServiceWorkerSkipWaiting() {
 	c := &Client{}
 	err := proto.ServiceWorkerSkipWaiting{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerStartWorker() {
+func (t T) ServiceWorkerStartWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerStartWorker{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerStopAllWorkers() {
+func (t T) ServiceWorkerStopAllWorkers() {
 	c := &Client{}
 	err := proto.ServiceWorkerStopAllWorkers{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerStopWorker() {
+func (t T) ServiceWorkerStopWorker() {
 	c := &Client{}
 	err := proto.ServiceWorkerStopWorker{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerUnregister() {
+func (t T) ServiceWorkerUnregister() {
 	c := &Client{}
 	err := proto.ServiceWorkerUnregister{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerUpdateRegistration() {
+func (t T) ServiceWorkerUpdateRegistration() {
 	c := &Client{}
 	err := proto.ServiceWorkerUpdateRegistration{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ServiceWorkerWorkerErrorReported() {
+func (t T) ServiceWorkerWorkerErrorReported() {
 	e := proto.ServiceWorkerWorkerErrorReported{}
 	e.ProtoName()
 }
 
-func (t C) ServiceWorkerWorkerRegistrationUpdated() {
+func (t T) ServiceWorkerWorkerRegistrationUpdated() {
 	e := proto.ServiceWorkerWorkerRegistrationUpdated{}
 	e.ProtoName()
 }
 
-func (t C) ServiceWorkerWorkerVersionUpdated() {
+func (t T) ServiceWorkerWorkerVersionUpdated() {
 	e := proto.ServiceWorkerWorkerVersionUpdated{}
 	e.ProtoName()
 }
 
-func (t C) StorageClearDataForOrigin() {
+func (t T) StorageClearDataForOrigin() {
 	c := &Client{}
 	err := proto.StorageClearDataForOrigin{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageGetCookies() {
+func (t T) StorageGetCookies() {
 	c := &Client{}
 	_, err := proto.StorageGetCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageSetCookies() {
+func (t T) StorageSetCookies() {
 	c := &Client{}
 	err := proto.StorageSetCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageClearCookies() {
+func (t T) StorageClearCookies() {
 	c := &Client{}
 	err := proto.StorageClearCookies{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageGetUsageAndQuota() {
+func (t T) StorageGetUsageAndQuota() {
 	c := &Client{}
 	_, err := proto.StorageGetUsageAndQuota{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageTrackCacheStorageForOrigin() {
+func (t T) StorageTrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackCacheStorageForOrigin{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageTrackIndexedDBForOrigin() {
+func (t T) StorageTrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackIndexedDBForOrigin{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageUntrackCacheStorageForOrigin() {
+func (t T) StorageUntrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackCacheStorageForOrigin{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageUntrackIndexedDBForOrigin() {
+func (t T) StorageUntrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackIndexedDBForOrigin{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) StorageCacheStorageContentUpdated() {
+func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	e.ProtoName()
 }
 
-func (t C) StorageCacheStorageListUpdated() {
+func (t T) StorageCacheStorageListUpdated() {
 	e := proto.StorageCacheStorageListUpdated{}
 	e.ProtoName()
 }
 
-func (t C) StorageIndexedDBContentUpdated() {
+func (t T) StorageIndexedDBContentUpdated() {
 	e := proto.StorageIndexedDBContentUpdated{}
 	e.ProtoName()
 }
 
-func (t C) StorageIndexedDBListUpdated() {
+func (t T) StorageIndexedDBListUpdated() {
 	e := proto.StorageIndexedDBListUpdated{}
 	e.ProtoName()
 }
 
-func (t C) SystemInfoGetInfo() {
+func (t T) SystemInfoGetInfo() {
 	c := &Client{}
 	_, err := proto.SystemInfoGetInfo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) SystemInfoGetProcessInfo() {
+func (t T) SystemInfoGetProcessInfo() {
 	c := &Client{}
 	_, err := proto.SystemInfoGetProcessInfo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetActivateTarget() {
+func (t T) TargetActivateTarget() {
 	c := &Client{}
 	err := proto.TargetActivateTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetAttachToTarget() {
+func (t T) TargetAttachToTarget() {
 	c := &Client{}
 	_, err := proto.TargetAttachToTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetAttachToBrowserTarget() {
+func (t T) TargetAttachToBrowserTarget() {
 	c := &Client{}
 	_, err := proto.TargetAttachToBrowserTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetCloseTarget() {
+func (t T) TargetCloseTarget() {
 	c := &Client{}
 	_, err := proto.TargetCloseTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetExposeDevToolsProtocol() {
+func (t T) TargetExposeDevToolsProtocol() {
 	c := &Client{}
 	err := proto.TargetExposeDevToolsProtocol{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetCreateBrowserContext() {
+func (t T) TargetCreateBrowserContext() {
 	c := &Client{}
 	_, err := proto.TargetCreateBrowserContext{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetGetBrowserContexts() {
+func (t T) TargetGetBrowserContexts() {
 	c := &Client{}
 	_, err := proto.TargetGetBrowserContexts{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetCreateTarget() {
+func (t T) TargetCreateTarget() {
 	c := &Client{}
 	_, err := proto.TargetCreateTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetDetachFromTarget() {
+func (t T) TargetDetachFromTarget() {
 	c := &Client{}
 	err := proto.TargetDetachFromTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetDisposeBrowserContext() {
+func (t T) TargetDisposeBrowserContext() {
 	c := &Client{}
 	err := proto.TargetDisposeBrowserContext{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetGetTargetInfo() {
+func (t T) TargetGetTargetInfo() {
 	c := &Client{}
 	_, err := proto.TargetGetTargetInfo{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetGetTargets() {
+func (t T) TargetGetTargets() {
 	c := &Client{}
 	_, err := proto.TargetGetTargets{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetSendMessageToTarget() {
+func (t T) TargetSendMessageToTarget() {
 	c := &Client{}
 	err := proto.TargetSendMessageToTarget{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetSetAutoAttach() {
+func (t T) TargetSetAutoAttach() {
 	c := &Client{}
 	err := proto.TargetSetAutoAttach{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetSetDiscoverTargets() {
+func (t T) TargetSetDiscoverTargets() {
 	c := &Client{}
 	err := proto.TargetSetDiscoverTargets{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetSetRemoteLocations() {
+func (t T) TargetSetRemoteLocations() {
 	c := &Client{}
 	err := proto.TargetSetRemoteLocations{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TargetAttachedToTarget() {
+func (t T) TargetAttachedToTarget() {
 	e := proto.TargetAttachedToTarget{}
 	e.ProtoName()
 }
 
-func (t C) TargetDetachedFromTarget() {
+func (t T) TargetDetachedFromTarget() {
 	e := proto.TargetDetachedFromTarget{}
 	e.ProtoName()
 }
 
-func (t C) TargetReceivedMessageFromTarget() {
+func (t T) TargetReceivedMessageFromTarget() {
 	e := proto.TargetReceivedMessageFromTarget{}
 	e.ProtoName()
 }
 
-func (t C) TargetTargetCreated() {
+func (t T) TargetTargetCreated() {
 	e := proto.TargetTargetCreated{}
 	e.ProtoName()
 }
 
-func (t C) TargetTargetDestroyed() {
+func (t T) TargetTargetDestroyed() {
 	e := proto.TargetTargetDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) TargetTargetCrashed() {
+func (t T) TargetTargetCrashed() {
 	e := proto.TargetTargetCrashed{}
 	e.ProtoName()
 }
 
-func (t C) TargetTargetInfoChanged() {
+func (t T) TargetTargetInfoChanged() {
 	e := proto.TargetTargetInfoChanged{}
 	e.ProtoName()
 }
 
-func (t C) TetheringBind() {
+func (t T) TetheringBind() {
 	c := &Client{}
 	err := proto.TetheringBind{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TetheringUnbind() {
+func (t T) TetheringUnbind() {
 	c := &Client{}
 	err := proto.TetheringUnbind{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TetheringAccepted() {
+func (t T) TetheringAccepted() {
 	e := proto.TetheringAccepted{}
 	e.ProtoName()
 }
 
-func (t C) TracingEnd() {
+func (t T) TracingEnd() {
 	c := &Client{}
 	err := proto.TracingEnd{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TracingGetCategories() {
+func (t T) TracingGetCategories() {
 	c := &Client{}
 	_, err := proto.TracingGetCategories{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TracingRecordClockSyncMarker() {
+func (t T) TracingRecordClockSyncMarker() {
 	c := &Client{}
 	err := proto.TracingRecordClockSyncMarker{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TracingRequestMemoryDump() {
+func (t T) TracingRequestMemoryDump() {
 	c := &Client{}
 	_, err := proto.TracingRequestMemoryDump{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TracingStart() {
+func (t T) TracingStart() {
 	c := &Client{}
 	err := proto.TracingStart{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) TracingBufferUsage() {
+func (t T) TracingBufferUsage() {
 	e := proto.TracingBufferUsage{}
 	e.ProtoName()
 }
 
-func (t C) TracingDataCollected() {
+func (t T) TracingDataCollected() {
 	e := proto.TracingDataCollected{}
 	e.ProtoName()
 }
 
-func (t C) TracingTracingComplete() {
+func (t T) TracingTracingComplete() {
 	e := proto.TracingTracingComplete{}
 	e.ProtoName()
 }
 
-func (t C) FetchDisable() {
+func (t T) FetchDisable() {
 	c := &Client{}
 	err := proto.FetchDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchEnable() {
+func (t T) FetchEnable() {
 	c := &Client{}
 	err := proto.FetchEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchFailRequest() {
+func (t T) FetchFailRequest() {
 	c := &Client{}
 	err := proto.FetchFailRequest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchFulfillRequest() {
+func (t T) FetchFulfillRequest() {
 	c := &Client{}
 	err := proto.FetchFulfillRequest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchContinueRequest() {
+func (t T) FetchContinueRequest() {
 	c := &Client{}
 	err := proto.FetchContinueRequest{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchContinueWithAuth() {
+func (t T) FetchContinueWithAuth() {
 	c := &Client{}
 	err := proto.FetchContinueWithAuth{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchGetResponseBody() {
+func (t T) FetchGetResponseBody() {
 	c := &Client{}
 	_, err := proto.FetchGetResponseBody{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchTakeResponseBodyAsStream() {
+func (t T) FetchTakeResponseBodyAsStream() {
 	c := &Client{}
 	_, err := proto.FetchTakeResponseBodyAsStream{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) FetchRequestPaused() {
+func (t T) FetchRequestPaused() {
 	e := proto.FetchRequestPaused{}
 	e.ProtoName()
 }
 
-func (t C) FetchAuthRequired() {
+func (t T) FetchAuthRequired() {
 	e := proto.FetchAuthRequired{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioEnable() {
+func (t T) WebAudioEnable() {
 	c := &Client{}
 	err := proto.WebAudioEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAudioDisable() {
+func (t T) WebAudioDisable() {
 	c := &Client{}
 	err := proto.WebAudioDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAudioGetRealtimeData() {
+func (t T) WebAudioGetRealtimeData() {
 	c := &Client{}
 	_, err := proto.WebAudioGetRealtimeData{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAudioContextCreated() {
+func (t T) WebAudioContextCreated() {
 	e := proto.WebAudioContextCreated{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioContextWillBeDestroyed() {
+func (t T) WebAudioContextWillBeDestroyed() {
 	e := proto.WebAudioContextWillBeDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioContextChanged() {
+func (t T) WebAudioContextChanged() {
 	e := proto.WebAudioContextChanged{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioListenerCreated() {
+func (t T) WebAudioAudioListenerCreated() {
 	e := proto.WebAudioAudioListenerCreated{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioListenerWillBeDestroyed() {
+func (t T) WebAudioAudioListenerWillBeDestroyed() {
 	e := proto.WebAudioAudioListenerWillBeDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioNodeCreated() {
+func (t T) WebAudioAudioNodeCreated() {
 	e := proto.WebAudioAudioNodeCreated{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioNodeWillBeDestroyed() {
+func (t T) WebAudioAudioNodeWillBeDestroyed() {
 	e := proto.WebAudioAudioNodeWillBeDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioParamCreated() {
+func (t T) WebAudioAudioParamCreated() {
 	e := proto.WebAudioAudioParamCreated{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioAudioParamWillBeDestroyed() {
+func (t T) WebAudioAudioParamWillBeDestroyed() {
 	e := proto.WebAudioAudioParamWillBeDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioNodesConnected() {
+func (t T) WebAudioNodesConnected() {
 	e := proto.WebAudioNodesConnected{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioNodesDisconnected() {
+func (t T) WebAudioNodesDisconnected() {
 	e := proto.WebAudioNodesDisconnected{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioNodeParamConnected() {
+func (t T) WebAudioNodeParamConnected() {
 	e := proto.WebAudioNodeParamConnected{}
 	e.ProtoName()
 }
 
-func (t C) WebAudioNodeParamDisconnected() {
+func (t T) WebAudioNodeParamDisconnected() {
 	e := proto.WebAudioNodeParamDisconnected{}
 	e.ProtoName()
 }
 
-func (t C) WebAuthnEnable() {
+func (t T) WebAuthnEnable() {
 	c := &Client{}
 	err := proto.WebAuthnEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnDisable() {
+func (t T) WebAuthnDisable() {
 	c := &Client{}
 	err := proto.WebAuthnDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnAddVirtualAuthenticator() {
+func (t T) WebAuthnAddVirtualAuthenticator() {
 	c := &Client{}
 	_, err := proto.WebAuthnAddVirtualAuthenticator{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnRemoveVirtualAuthenticator() {
+func (t T) WebAuthnRemoveVirtualAuthenticator() {
 	c := &Client{}
 	err := proto.WebAuthnRemoveVirtualAuthenticator{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnAddCredential() {
+func (t T) WebAuthnAddCredential() {
 	c := &Client{}
 	err := proto.WebAuthnAddCredential{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnGetCredential() {
+func (t T) WebAuthnGetCredential() {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredential{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnGetCredentials() {
+func (t T) WebAuthnGetCredentials() {
 	c := &Client{}
 	_, err := proto.WebAuthnGetCredentials{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnRemoveCredential() {
+func (t T) WebAuthnRemoveCredential() {
 	c := &Client{}
 	err := proto.WebAuthnRemoveCredential{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnClearCredentials() {
+func (t T) WebAuthnClearCredentials() {
 	c := &Client{}
 	err := proto.WebAuthnClearCredentials{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) WebAuthnSetUserVerified() {
+func (t T) WebAuthnSetUserVerified() {
 	c := &Client{}
 	err := proto.WebAuthnSetUserVerified{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MediaEnable() {
+func (t T) MediaEnable() {
 	c := &Client{}
 	err := proto.MediaEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MediaDisable() {
+func (t T) MediaDisable() {
 	c := &Client{}
 	err := proto.MediaDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) MediaPlayerPropertiesChanged() {
+func (t T) MediaPlayerPropertiesChanged() {
 	e := proto.MediaPlayerPropertiesChanged{}
 	e.ProtoName()
 }
 
-func (t C) MediaPlayerEventsAdded() {
+func (t T) MediaPlayerEventsAdded() {
 	e := proto.MediaPlayerEventsAdded{}
 	e.ProtoName()
 }
 
-func (t C) MediaPlayerMessagesLogged() {
+func (t T) MediaPlayerMessagesLogged() {
 	e := proto.MediaPlayerMessagesLogged{}
 	e.ProtoName()
 }
 
-func (t C) MediaPlayerErrorsRaised() {
+func (t T) MediaPlayerErrorsRaised() {
 	e := proto.MediaPlayerErrorsRaised{}
 	e.ProtoName()
 }
 
-func (t C) MediaPlayersCreated() {
+func (t T) MediaPlayersCreated() {
 	e := proto.MediaPlayersCreated{}
 	e.ProtoName()
 }
 
-func (t C) ConsoleClearMessages() {
+func (t T) ConsoleClearMessages() {
 	c := &Client{}
 	err := proto.ConsoleClearMessages{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ConsoleDisable() {
+func (t T) ConsoleDisable() {
 	c := &Client{}
 	err := proto.ConsoleDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ConsoleEnable() {
+func (t T) ConsoleEnable() {
 	c := &Client{}
 	err := proto.ConsoleEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ConsoleMessageAdded() {
+func (t T) ConsoleMessageAdded() {
 	e := proto.ConsoleMessageAdded{}
 	e.ProtoName()
 }
 
-func (t C) DebuggerContinueToLocation() {
+func (t T) DebuggerContinueToLocation() {
 	c := &Client{}
 	err := proto.DebuggerContinueToLocation{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerDisable() {
+func (t T) DebuggerDisable() {
 	c := &Client{}
 	err := proto.DebuggerDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerEnable() {
+func (t T) DebuggerEnable() {
 	c := &Client{}
 	_, err := proto.DebuggerEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerEvaluateOnCallFrame() {
+func (t T) DebuggerEvaluateOnCallFrame() {
 	c := &Client{}
 	_, err := proto.DebuggerEvaluateOnCallFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerExecuteWasmEvaluator() {
+func (t T) DebuggerExecuteWasmEvaluator() {
 	c := &Client{}
 	_, err := proto.DebuggerExecuteWasmEvaluator{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerGetPossibleBreakpoints() {
+func (t T) DebuggerGetPossibleBreakpoints() {
 	c := &Client{}
 	_, err := proto.DebuggerGetPossibleBreakpoints{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerGetScriptSource() {
+func (t T) DebuggerGetScriptSource() {
 	c := &Client{}
 	_, err := proto.DebuggerGetScriptSource{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerGetWasmBytecode() {
+func (t T) DebuggerGetWasmBytecode() {
 	c := &Client{}
 	_, err := proto.DebuggerGetWasmBytecode{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerGetStackTrace() {
+func (t T) DebuggerGetStackTrace() {
 	c := &Client{}
 	_, err := proto.DebuggerGetStackTrace{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerPause() {
+func (t T) DebuggerPause() {
 	c := &Client{}
 	err := proto.DebuggerPause{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerPauseOnAsyncCall() {
+func (t T) DebuggerPauseOnAsyncCall() {
 	c := &Client{}
 	err := proto.DebuggerPauseOnAsyncCall{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerRemoveBreakpoint() {
+func (t T) DebuggerRemoveBreakpoint() {
 	c := &Client{}
 	err := proto.DebuggerRemoveBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerRestartFrame() {
+func (t T) DebuggerRestartFrame() {
 	c := &Client{}
 	_, err := proto.DebuggerRestartFrame{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerResume() {
+func (t T) DebuggerResume() {
 	c := &Client{}
 	err := proto.DebuggerResume{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSearchInContent() {
+func (t T) DebuggerSearchInContent() {
 	c := &Client{}
 	_, err := proto.DebuggerSearchInContent{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetAsyncCallStackDepth() {
+func (t T) DebuggerSetAsyncCallStackDepth() {
 	c := &Client{}
 	err := proto.DebuggerSetAsyncCallStackDepth{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBlackboxPatterns() {
+func (t T) DebuggerSetBlackboxPatterns() {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxPatterns{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBlackboxedRanges() {
+func (t T) DebuggerSetBlackboxedRanges() {
 	c := &Client{}
 	err := proto.DebuggerSetBlackboxedRanges{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBreakpoint() {
+func (t T) DebuggerSetBreakpoint() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetInstrumentationBreakpoint() {
+func (t T) DebuggerSetInstrumentationBreakpoint() {
 	c := &Client{}
 	_, err := proto.DebuggerSetInstrumentationBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBreakpointByURL() {
+func (t T) DebuggerSetBreakpointByURL() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointByURL{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBreakpointOnFunctionCall() {
+func (t T) DebuggerSetBreakpointOnFunctionCall() {
 	c := &Client{}
 	_, err := proto.DebuggerSetBreakpointOnFunctionCall{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetBreakpointsActive() {
+func (t T) DebuggerSetBreakpointsActive() {
 	c := &Client{}
 	err := proto.DebuggerSetBreakpointsActive{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetPauseOnExceptions() {
+func (t T) DebuggerSetPauseOnExceptions() {
 	c := &Client{}
 	err := proto.DebuggerSetPauseOnExceptions{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetReturnValue() {
+func (t T) DebuggerSetReturnValue() {
 	c := &Client{}
 	err := proto.DebuggerSetReturnValue{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetScriptSource() {
+func (t T) DebuggerSetScriptSource() {
 	c := &Client{}
 	_, err := proto.DebuggerSetScriptSource{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetSkipAllPauses() {
+func (t T) DebuggerSetSkipAllPauses() {
 	c := &Client{}
 	err := proto.DebuggerSetSkipAllPauses{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerSetVariableValue() {
+func (t T) DebuggerSetVariableValue() {
 	c := &Client{}
 	err := proto.DebuggerSetVariableValue{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerStepInto() {
+func (t T) DebuggerStepInto() {
 	c := &Client{}
 	err := proto.DebuggerStepInto{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerStepOut() {
+func (t T) DebuggerStepOut() {
 	c := &Client{}
 	err := proto.DebuggerStepOut{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerStepOver() {
+func (t T) DebuggerStepOver() {
 	c := &Client{}
 	err := proto.DebuggerStepOver{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) DebuggerBreakpointResolved() {
+func (t T) DebuggerBreakpointResolved() {
 	e := proto.DebuggerBreakpointResolved{}
 	e.ProtoName()
 }
 
-func (t C) DebuggerPaused() {
+func (t T) DebuggerPaused() {
 	e := proto.DebuggerPaused{}
 	e.ProtoName()
 }
 
-func (t C) DebuggerResumed() {
+func (t T) DebuggerResumed() {
 	e := proto.DebuggerResumed{}
 	e.ProtoName()
 }
 
-func (t C) DebuggerScriptFailedToParse() {
+func (t T) DebuggerScriptFailedToParse() {
 	e := proto.DebuggerScriptFailedToParse{}
 	e.ProtoName()
 }
 
-func (t C) DebuggerScriptParsed() {
+func (t T) DebuggerScriptParsed() {
 	e := proto.DebuggerScriptParsed{}
 	e.ProtoName()
 }
 
-func (t C) HeapProfilerAddInspectedHeapObject() {
+func (t T) HeapProfilerAddInspectedHeapObject() {
 	c := &Client{}
 	err := proto.HeapProfilerAddInspectedHeapObject{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerCollectGarbage() {
+func (t T) HeapProfilerCollectGarbage() {
 	c := &Client{}
 	err := proto.HeapProfilerCollectGarbage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerDisable() {
+func (t T) HeapProfilerDisable() {
 	c := &Client{}
 	err := proto.HeapProfilerDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerEnable() {
+func (t T) HeapProfilerEnable() {
 	c := &Client{}
 	err := proto.HeapProfilerEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerGetHeapObjectID() {
+func (t T) HeapProfilerGetHeapObjectID() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetHeapObjectID{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerGetObjectByHeapObjectID() {
+func (t T) HeapProfilerGetObjectByHeapObjectID() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetObjectByHeapObjectID{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerGetSamplingProfile() {
+func (t T) HeapProfilerGetSamplingProfile() {
 	c := &Client{}
 	_, err := proto.HeapProfilerGetSamplingProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerStartSampling() {
+func (t T) HeapProfilerStartSampling() {
 	c := &Client{}
 	err := proto.HeapProfilerStartSampling{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerStartTrackingHeapObjects() {
+func (t T) HeapProfilerStartTrackingHeapObjects() {
 	c := &Client{}
 	err := proto.HeapProfilerStartTrackingHeapObjects{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerStopSampling() {
+func (t T) HeapProfilerStopSampling() {
 	c := &Client{}
 	_, err := proto.HeapProfilerStopSampling{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerStopTrackingHeapObjects() {
+func (t T) HeapProfilerStopTrackingHeapObjects() {
 	c := &Client{}
 	err := proto.HeapProfilerStopTrackingHeapObjects{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerTakeHeapSnapshot() {
+func (t T) HeapProfilerTakeHeapSnapshot() {
 	c := &Client{}
 	err := proto.HeapProfilerTakeHeapSnapshot{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) HeapProfilerAddHeapSnapshotChunk() {
+func (t T) HeapProfilerAddHeapSnapshotChunk() {
 	e := proto.HeapProfilerAddHeapSnapshotChunk{}
 	e.ProtoName()
 }
 
-func (t C) HeapProfilerHeapStatsUpdate() {
+func (t T) HeapProfilerHeapStatsUpdate() {
 	e := proto.HeapProfilerHeapStatsUpdate{}
 	e.ProtoName()
 }
 
-func (t C) HeapProfilerLastSeenObjectID() {
+func (t T) HeapProfilerLastSeenObjectID() {
 	e := proto.HeapProfilerLastSeenObjectID{}
 	e.ProtoName()
 }
 
-func (t C) HeapProfilerReportHeapSnapshotProgress() {
+func (t T) HeapProfilerReportHeapSnapshotProgress() {
 	e := proto.HeapProfilerReportHeapSnapshotProgress{}
 	e.ProtoName()
 }
 
-func (t C) HeapProfilerResetProfiles() {
+func (t T) HeapProfilerResetProfiles() {
 	e := proto.HeapProfilerResetProfiles{}
 	e.ProtoName()
 }
 
-func (t C) ProfilerDisable() {
+func (t T) ProfilerDisable() {
 	c := &Client{}
 	err := proto.ProfilerDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerEnable() {
+func (t T) ProfilerEnable() {
 	c := &Client{}
 	err := proto.ProfilerEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerGetBestEffortCoverage() {
+func (t T) ProfilerGetBestEffortCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerGetBestEffortCoverage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerSetSamplingInterval() {
+func (t T) ProfilerSetSamplingInterval() {
 	c := &Client{}
 	err := proto.ProfilerSetSamplingInterval{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStart() {
+func (t T) ProfilerStart() {
 	c := &Client{}
 	err := proto.ProfilerStart{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStartPreciseCoverage() {
+func (t T) ProfilerStartPreciseCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerStartPreciseCoverage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStartTypeProfile() {
+func (t T) ProfilerStartTypeProfile() {
 	c := &Client{}
 	err := proto.ProfilerStartTypeProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStop() {
+func (t T) ProfilerStop() {
 	c := &Client{}
 	_, err := proto.ProfilerStop{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStopPreciseCoverage() {
+func (t T) ProfilerStopPreciseCoverage() {
 	c := &Client{}
 	err := proto.ProfilerStopPreciseCoverage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerStopTypeProfile() {
+func (t T) ProfilerStopTypeProfile() {
 	c := &Client{}
 	err := proto.ProfilerStopTypeProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerTakePreciseCoverage() {
+func (t T) ProfilerTakePreciseCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerTakePreciseCoverage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerTakeTypeProfile() {
+func (t T) ProfilerTakeTypeProfile() {
 	c := &Client{}
 	_, err := proto.ProfilerTakeTypeProfile{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerEnableRuntimeCallStats() {
+func (t T) ProfilerEnableRuntimeCallStats() {
 	c := &Client{}
 	err := proto.ProfilerEnableRuntimeCallStats{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerDisableRuntimeCallStats() {
+func (t T) ProfilerDisableRuntimeCallStats() {
 	c := &Client{}
 	err := proto.ProfilerDisableRuntimeCallStats{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerGetRuntimeCallStats() {
+func (t T) ProfilerGetRuntimeCallStats() {
 	c := &Client{}
 	_, err := proto.ProfilerGetRuntimeCallStats{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) ProfilerConsoleProfileFinished() {
+func (t T) ProfilerConsoleProfileFinished() {
 	e := proto.ProfilerConsoleProfileFinished{}
 	e.ProtoName()
 }
 
-func (t C) ProfilerConsoleProfileStarted() {
+func (t T) ProfilerConsoleProfileStarted() {
 	e := proto.ProfilerConsoleProfileStarted{}
 	e.ProtoName()
 }
 
-func (t C) ProfilerPreciseCoverageDeltaUpdate() {
+func (t T) ProfilerPreciseCoverageDeltaUpdate() {
 	e := proto.ProfilerPreciseCoverageDeltaUpdate{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeAwaitPromise() {
+func (t T) RuntimeAwaitPromise() {
 	c := &Client{}
 	_, err := proto.RuntimeAwaitPromise{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeCallFunctionOn() {
+func (t T) RuntimeCallFunctionOn() {
 	c := &Client{}
 	_, err := proto.RuntimeCallFunctionOn{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeCompileScript() {
+func (t T) RuntimeCompileScript() {
 	c := &Client{}
 	_, err := proto.RuntimeCompileScript{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeDisable() {
+func (t T) RuntimeDisable() {
 	c := &Client{}
 	err := proto.RuntimeDisable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeDiscardConsoleEntries() {
+func (t T) RuntimeDiscardConsoleEntries() {
 	c := &Client{}
 	err := proto.RuntimeDiscardConsoleEntries{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeEnable() {
+func (t T) RuntimeEnable() {
 	c := &Client{}
 	err := proto.RuntimeEnable{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeEvaluate() {
+func (t T) RuntimeEvaluate() {
 	c := &Client{}
 	_, err := proto.RuntimeEvaluate{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeGetIsolateID() {
+func (t T) RuntimeGetIsolateID() {
 	c := &Client{}
 	_, err := proto.RuntimeGetIsolateID{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeGetHeapUsage() {
+func (t T) RuntimeGetHeapUsage() {
 	c := &Client{}
 	_, err := proto.RuntimeGetHeapUsage{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeGetProperties() {
+func (t T) RuntimeGetProperties() {
 	c := &Client{}
 	_, err := proto.RuntimeGetProperties{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeGlobalLexicalScopeNames() {
+func (t T) RuntimeGlobalLexicalScopeNames() {
 	c := &Client{}
 	_, err := proto.RuntimeGlobalLexicalScopeNames{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeQueryObjects() {
+func (t T) RuntimeQueryObjects() {
 	c := &Client{}
 	_, err := proto.RuntimeQueryObjects{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeReleaseObject() {
+func (t T) RuntimeReleaseObject() {
 	c := &Client{}
 	err := proto.RuntimeReleaseObject{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeReleaseObjectGroup() {
+func (t T) RuntimeReleaseObjectGroup() {
 	c := &Client{}
 	err := proto.RuntimeReleaseObjectGroup{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeRunIfWaitingForDebugger() {
+func (t T) RuntimeRunIfWaitingForDebugger() {
 	c := &Client{}
 	err := proto.RuntimeRunIfWaitingForDebugger{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeRunScript() {
+func (t T) RuntimeRunScript() {
 	c := &Client{}
 	_, err := proto.RuntimeRunScript{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeSetAsyncCallStackDepth() {
+func (t T) RuntimeSetAsyncCallStackDepth() {
 	c := &Client{}
 	err := proto.RuntimeSetAsyncCallStackDepth{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeSetCustomObjectFormatterEnabled() {
+func (t T) RuntimeSetCustomObjectFormatterEnabled() {
 	c := &Client{}
 	err := proto.RuntimeSetCustomObjectFormatterEnabled{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeSetMaxCallStackSizeToCapture() {
+func (t T) RuntimeSetMaxCallStackSizeToCapture() {
 	c := &Client{}
 	err := proto.RuntimeSetMaxCallStackSizeToCapture{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeTerminateExecution() {
+func (t T) RuntimeTerminateExecution() {
 	c := &Client{}
 	err := proto.RuntimeTerminateExecution{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeAddBinding() {
+func (t T) RuntimeAddBinding() {
 	c := &Client{}
 	err := proto.RuntimeAddBinding{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeRemoveBinding() {
+func (t T) RuntimeRemoveBinding() {
 	c := &Client{}
 	err := proto.RuntimeRemoveBinding{}.Call(c)
 	t.Nil(err)
 }
 
-func (t C) RuntimeBindingCalled() {
+func (t T) RuntimeBindingCalled() {
 	e := proto.RuntimeBindingCalled{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeConsoleAPICalled() {
+func (t T) RuntimeConsoleAPICalled() {
 	e := proto.RuntimeConsoleAPICalled{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeExceptionRevoked() {
+func (t T) RuntimeExceptionRevoked() {
 	e := proto.RuntimeExceptionRevoked{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeExceptionThrown() {
+func (t T) RuntimeExceptionThrown() {
 	e := proto.RuntimeExceptionThrown{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeExecutionContextCreated() {
+func (t T) RuntimeExecutionContextCreated() {
 	e := proto.RuntimeExecutionContextCreated{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeExecutionContextDestroyed() {
+func (t T) RuntimeExecutionContextDestroyed() {
 	e := proto.RuntimeExecutionContextDestroyed{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeExecutionContextsCleared() {
+func (t T) RuntimeExecutionContextsCleared() {
 	e := proto.RuntimeExecutionContextsCleared{}
 	e.ProtoName()
 }
 
-func (t C) RuntimeInspectRequested() {
+func (t T) RuntimeInspectRequested() {
 	e := proto.RuntimeInspectRequested{}
 	e.ProtoName()
 }
 
-func (t C) SchemaGetDomains() {
+func (t T) SchemaGetDomains() {
 	c := &Client{}
 	_, err := proto.SchemaGetDomains{}.Call(c)
 	t.Nil(err)
