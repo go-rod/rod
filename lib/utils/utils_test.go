@@ -220,9 +220,11 @@ func (c C) IdleCounter() {
 	utils.All(func() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 
+		ct.Add()
 		go func() {
 			ct.Add()
 			time.Sleep(300 * time.Millisecond)
+			ct.Done()
 			ct.Done()
 		}()
 

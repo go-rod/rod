@@ -250,7 +250,12 @@ func (de *IdleCounter) Done() {
 
 // Wait ...
 func (de *IdleCounter) Wait(ctx context.Context) {
-	de.tmr.Reset(de.duration)
+	de.Lock()
+	if de.job == 0 {
+		de.tmr.Reset(de.duration)
+	}
+	de.Unlock()
+
 	select {
 	case <-ctx.Done():
 		de.tmr.Stop()
