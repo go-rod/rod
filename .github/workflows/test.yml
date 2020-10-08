@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: test
-        run: go test -race -run /
+        run: go test -race -short -run /
 
   windows:
     runs-on: windows-latest
