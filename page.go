@@ -246,11 +246,11 @@ func (p *Page) Close() error {
 	p, cancel := p.WithCancel()
 	defer cancel()
 
-	wait := p.EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
+	wait := p.browser.Context(p.ctx).EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
 		return e.TargetID == e.TargetID
-	}, func(e *proto.PageJavascriptDialogClosed) bool {
+	}, func(e *proto.PageJavascriptDialogClosed, id proto.TargetSessionID) bool {
 		success = e.Result
-		return !p.browser.headless && !success
+		return id == p.SessionID && !p.browser.headless && !success
 	})
 
 	err = proto.PageClose{}.Call(p)
@@ -383,6 +383,7 @@ func (p *Page) Event() *goob.Observable {
 }
 
 // EachEvent of the specified event type, if any callback returns true the event loop will stop.
+// About the callback type check the doc of Browser.EachEvent .
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 	return p.browser.eachEvent(p.ctx, p.SessionID, callbacks...)
 }

@@ -463,6 +463,19 @@ func (t T) PageWaitIdle() {
 	t.True(p.MustHas("[a=ok]"))
 }
 
+func (t T) PageEventSession() {
+	s := t.Serve()
+	p := t.browser.MustPage("")
+	defer p.Close()
+
+	p.EnableDomain(proto.NetworkEnable{})
+	go t.page.Context(t.Context()).EachEvent(func(e *proto.NetworkRequestWillBeSent) {
+		t.Log("should not goes to here")
+		t.Fail()
+	})()
+	p.Eval(`u => fetch(u)`, s.URL())
+}
+
 func (t T) PageWaitEvent() {
 	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
 	t.page.MustNavigate(t.srcFile("fixtures/click.html"))

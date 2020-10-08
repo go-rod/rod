@@ -205,12 +205,16 @@ func (b *Browser) Pages() (Pages, error) {
 	return pageList, nil
 }
 
-// Event returns the observable for browser events
+// Event returns the observable for browser events, the type of is each event is *cdp.Event
 func (b *Browser) Event() *goob.Observable {
 	return b.event
 }
 
 // EachEvent of the specified event type, if any callback returns true the event loop will stop.
+// The type of callback is (? means optional):
+//
+//     func(proto.Payload, proto.TargetSessionID?) bool?
+//
 func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
 	return b.eachEvent(b.ctx, "", callbacks...)
 }
@@ -250,29 +254,34 @@ func (b *Browser) eachEvent(
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
-	stream := b.event.Subscribe(ctx)
+	events := b.event.Subscribe(ctx)
 
 	return func() {
 		defer func() {
 			cancel()
-			stream = nil
+			events = nil
 			for _, recover := range recovers {
 				recover()
 			}
 		}()
 
-		if stream == nil {
+		if events == nil {
 			panic("can't use wait function twice")
 		}
 
-		goob.Each(stream, func(e *cdp.Event) bool {
+		goob.Each(events, func(e *cdp.Event) bool {
+			if !(sessionID == "" || e.SessionID == string(sessionID)) {
+				return false
+			}
+
 			for i, eType := range eventTypes {
 				eVal := reflect.New(eType)
 				if Event(e, eVal.Interface().(proto.Payload)) {
-					// The type of callback can be one of:
-					//   func(e proto.Payload) bool
-					//   func(e proto.Payload)
-					res := cbValues[i].Call([]reflect.Value{eVal})
+					args := []reflect.Value{eVal}
+					if cbValues[i].Type().NumIn() == 2 {
+						args = append(args, reflect.ValueOf(sessionID))
+					}
+					res := cbValues[i].Call(args)
 					if len(res) > 0 {
 						return res[0].Bool()
 					}
