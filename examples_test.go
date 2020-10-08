@@ -531,3 +531,12 @@ func Example_states() {
 	// false
 	// true
 }
+
+func ExamplePage_Event() {
+	var page *rod.Page
+
+	for e := range page.Event().Subscribe(context.TODO()) {
+		msg := e.(*cdp.Event)
+		fmt.Println(msg.Method, msg.Params)
+	}
+}

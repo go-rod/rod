@@ -375,6 +375,13 @@ func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
 	}, nil
 }
 
+// Event returns the observable for page events. Useful when you want to handle massive event types.
+func (p *Page) Event() *goob.Observable {
+	return p.browser.event.Filter(p.ctx, func(e *cdp.Event) bool {
+		return e.SessionID == string(p.SessionID)
+	})
+}
+
 // EachEvent of the specified event type, if any callback returns true the event loop will stop.
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 	return p.browser.eachEvent(p.ctx, p.SessionID, callbacks...)
