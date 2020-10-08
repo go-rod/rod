@@ -2,8 +2,8 @@ github.com/gorilla/websocket v1.4.2 h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0U
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/ysmood/goob v0.2.8 h1:e2R7qFxVv6eKA8zJ6dKRL3An+Eu/cltn7SMUob79aYw=
 github.com/ysmood/goob v0.2.8/go.mod h1:S3lq113Y91y1UBf1wj1pFOxeahvfKkCk6mTWTWbDdWs=
-github.com/ysmood/got v0.3.2 h1:9UZd8WaQ/6gTKHz5o3davpe5C2h9Xjlvs0rF4uVQuV4=
-github.com/ysmood/got v0.3.2/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
+github.com/ysmood/got v0.4.2 h1:xtYi3f+hmH0abwZ+47qmF4NZzlez6NnuzwS0Pr0skYY=
+github.com/ysmood/got v0.4.2/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
 github.com/ysmood/gotrace v0.1.1 h1:1H9L1Rc0o/80+2Vtm3vn85rNVpNOo94/wf+G5qW0JY8=
 github.com/ysmood/gotrace v0.1.1/go.mod h1:TzhIG7nHDry5//eYZDYcTzuJLYQIkykJzCRIo4/dzQM=
 github.com/ysmood/gson v0.6.1 h1:VUDkQEBU2aL1RieUWv5Z+2jvTq3AAz4P83jVQimm46M=

@@ -59,8 +59,8 @@ func newTesterPool(t *testing.T) TesterPool {
 		fmt.Println("parallel test:", parallel)
 	}
 
-	logName := fmt.Sprintf("[%s]test_cdp.log", time.Now().Local().Format("01-02_15:04:05"))
-	lf, _ := os.Create(filepath.Join("tmp", logName))
+	logName := fmt.Sprintf("%s test_cdp.log", time.Now().Local().Format("01-02_15-04-05"))
+	lf := got.New(t).Open(true, "tmp", logName)
 
 	cp := TesterPool{
 		list:   make(chan T, parallel),
@@ -125,7 +125,7 @@ func (cp TesterPool) get(t *testing.T) T {
 	t.Cleanup(func() {
 		for _, p := range tester.browser.MustPages() {
 			if p.TargetID != tester.page.TargetID {
-				t.Fatal("leaking page: " + p.MustInfo().URL)
+				t.Fatalf("%s is leaking page: %s", t.Name(), p.MustInfo().URL)
 			}
 		}
 
@@ -135,7 +135,30 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.mc.t = t
 	tester.G = got.New(t)
 
+	heartBeat(tester)
+
 	return tester
+}
+
+// when concurrently run tests, indicate the busy ones
+func heartBeat(t T) {
+	if !testing.Short() {
+		return
+	}
+
+	ctx := t.Context()
+	go func() {
+		t.Helper()
+		tmr := time.NewTicker(3 * time.Second)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-tmr.C:
+			}
+			t.Log(t.Name(), "busy...")
+		}
+	}()
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
@@ -160,6 +183,12 @@ func (t T) srcFile(path string) string {
 	f, err := filepath.Abs(slash(path))
 	t.E(err)
 	return "file://" + f
+}
+
+func (t T) newPage(u string) *rod.Page {
+	p := t.browser.MustPage(u)
+	t.Cleanup(p.MustClose)
+	return p
 }
 
 type MockRoundTripper struct {

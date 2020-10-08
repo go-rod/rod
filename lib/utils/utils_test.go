@@ -128,14 +128,14 @@ func (t T) Pause() {
 }
 
 func (t T) BackoffSleeperWakeNow() {
-	t.E(utils.BackoffSleeper(0, 0, nil)(context.Background()))
+	t.E(utils.BackoffSleeper(0, 0, nil)(t.Context()))
 }
 
 func (t T) Retry() {
 	count := 0
 	s1 := utils.BackoffSleeper(1, 5, nil)
 
-	err := utils.Retry(context.Background(), s1, func() (bool, error) {
+	err := utils.Retry(t.Context(), s1, func() (bool, error) {
 		if count > 5 {
 			return true, io.EOF
 		}
@@ -147,8 +147,8 @@ func (t T) Retry() {
 }
 
 func (t T) RetryCancel() {
-	ctx, cancel := context.WithCancel(context.Background())
-	go cancel()
+	ctx := t.Context()
+	go ctx.Cancel()
 	s := utils.BackoffSleeper(time.Second, time.Second, nil)
 
 	err := utils.Retry(ctx, s, func() (bool, error) {
@@ -159,7 +159,7 @@ func (t T) RetryCancel() {
 }
 
 func (t T) CountSleeperErr() {
-	ctx := context.Background()
+	ctx := t.Context()
 	s := utils.CountSleeper(5)
 	for i := 0; i < 5; i++ {
 		_ = s(ctx)
@@ -168,10 +168,8 @@ func (t T) CountSleeperErr() {
 }
 
 func (t T) CountSleeperCancel() {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
 	s := utils.CountSleeper(5)
-	t.Eq(s(ctx).Error(), context.Canceled.Error())
+	t.Eq(s(t.Timeout(0)), context.DeadlineExceeded)
 }
 
 func (t T) MustToJSON() {
@@ -213,7 +211,7 @@ func (t T) IdleCounter() {
 			ct.Done()
 		}()
 
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx := t.Context()
 
 		start := time.Now()
 		ct.Wait(ctx)
@@ -225,17 +223,17 @@ func (t T) IdleCounter() {
 			ct.Done()
 		})
 
-		cancel()
+		ctx.Cancel()
 		ct.Wait(ctx)
 	}, func() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 		start := time.Now()
-		ct.Wait(context.Background())
+		ct.Wait(t.Context())
 		t.Lt(time.Since(start), 150*time.Millisecond)
 	}, func() {
 		ct := utils.NewIdleCounter(0)
 		start := time.Now()
-		ct.Wait(context.Background())
+		ct.Wait(t.Context())
 		t.Lt(time.Since(start), 10*time.Millisecond)
 	})()
 }

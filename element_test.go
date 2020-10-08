@@ -2,7 +2,6 @@ package rod_test
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"image/color"
@@ -49,8 +48,7 @@ func (t T) Tap() {
 		t.browser.Logger(rod.DefaultLogger)
 	}()
 
-	page := t.browser.MustPage("")
-	defer page.MustClose()
+	page := t.newPage("")
 
 	page.MustEmulate(devices.IPad).
 		MustNavigate(t.srcFile("fixtures/touch.html")).
@@ -452,11 +450,11 @@ func (t T) WaitStable() {
 	el.MustWaitStable().MustClick()
 	t.Gt(time.Since(start), time.Second)
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 	t.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
 		go func() {
 			utils.Sleep(0.1)
-			cancel()
+			ctx.Cancel()
 		}()
 		return send()
 	})
@@ -610,8 +608,7 @@ func (t T) ElementErrors() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("form")
 
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
+	ctx := t.Timeout(0)
 
 	_, err := el.Context(ctx).Describe(-1, true)
 	t.Err(err)

@@ -61,9 +61,7 @@ func (t T) ElementHas() {
 }
 
 func (t T) Search() {
-	wait := t.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	wait()
 
 	el := p.MustSearch("click me")
 	t.Eq("click me", el.MustText())

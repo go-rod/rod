@@ -1,7 +1,6 @@
 package rod_test
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"os"
@@ -55,8 +54,7 @@ func (t T) PageFromTarget() {
 }
 
 func (t T) BrowserPages() {
-	page := t.browser.MustPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
-	defer page.MustClose()
+	t.newPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	pages := t.browser.MustPages()
 
@@ -106,10 +104,7 @@ func (t T) BrowserWaitEvent() {
 }
 
 func (t T) BrowserCrash() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	browser := rod.New().Context(ctx).MustConnect()
+	browser := rod.New().Context(t.Context()).MustConnect()
 	page := browser.MustPage("")
 
 	_ = proto.BrowserCrash{}.Call(browser)
@@ -257,16 +252,14 @@ func (t T) BlockingNavigation() {
 	*/
 
 	s := t.Serve()
-	pause, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	pause := t.Context()
 
 	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
 	s.Route("/b", ".html", `<html>ok</html>`)
 
-	blocked := t.browser.MustPage("")
-	defer blocked.MustClose()
+	blocked := t.newPage("")
 
 	go func() {
 		t.Panic(func() {
@@ -276,22 +269,19 @@ func (t T) BlockingNavigation() {
 
 	utils.Sleep(0.3)
 
-	p := t.browser.MustPage(s.URL("/b"))
-	defer p.MustClose()
+	t.newPage(s.URL("/b"))
 }
 
 func (t T) ResolveBlocking() {
 	s := t.Serve()
 
-	pause, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	pause := t.Context()
 
 	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		<-pause.Done()
 	})
 
-	p := t.browser.MustPage("")
-	defer p.MustClose()
+	p := t.newPage("")
 
 	go func() {
 		utils.Sleep(0.1)
@@ -316,17 +306,14 @@ func (t T) Try() {
 func (t T) BrowserOthers() {
 	t.browser.Timeout(time.Hour).CancelTimeout().MustPages()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-
 	t.Panic(func() {
-		t.browser.Context(ctx).MustIncognito()
+		t.browser.Context(t.Timeout(0)).MustIncognito()
 	})
 }
 
 func (t T) BinarySize() {
 	if runtime.GOOS == "windows" {
-		t.Testable.(*testing.T).SkipNow()
+		t.SkipNow()
 	}
 
 	cmd := exec.Command("go", "build",
@@ -339,7 +326,7 @@ func (t T) BinarySize() {
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Testable.(*testing.T).Skip(err, string(out))
+		t.Skip(err, string(out))
 	}
 
 	stat, err := os.Stat("tmp/translator")

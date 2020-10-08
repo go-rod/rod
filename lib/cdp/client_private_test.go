@@ -31,40 +31,38 @@ func (c *wsMockConn) Read() ([]byte, error) {
 }
 
 func (t T) CancelCall() {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
 	cdp := New("")
 	go func() {
 		<-cdp.chReq
 	}()
-	cdp.ctx = context.Background()
-	_, err := cdp.Call(ctx, "", "", nil)
+	cdp.ctx = t.Context()
+	_, err := cdp.Call(t.Timeout(0), "", "", nil)
 	t.Err(err)
 }
 
 func (t T) ReqErr() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 	cdp := New("")
 	cdp.ctx = ctx
-	cdp.close = cancel
+	cdp.close = ctx.Cancel
 	cdp.wsConn = &wsMockConn{
 		send: func([]byte) error { return errors.New("err") },
 	}
 
 	go cdp.consumeMsg()
 
-	_, err := cdp.Call(context.Background(), "", "", nil)
+	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
 }
 
 func (t T) CancelOnReq() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 	cdp := New("")
 	cdp.ctx = ctx
 
 	go func() {
 		utils.Sleep(0.1)
-		cancel()
+		ctx.Cancel()
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
@@ -72,32 +70,29 @@ func (t T) CancelOnReq() {
 
 	go func() {
 		utils.Sleep(0.1)
-		cancel()
+		ctx.Cancel()
 	}()
 
-	_, err = cdp.Call(context.Background(), "", "", nil)
+	_, err = cdp.Call(t.Context(), "", "", nil)
 	t.Eq(err.Error(), "context canceled")
 }
 
 func (t T) CancelBeforeSend() {
 	cdp := New("")
-	cdp.ctx = context.Background()
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-
-	_, err := cdp.Call(ctx, "", "", nil)
-	t.Eq(err.Error(), "context canceled")
+	cdp.ctx = t.Context()
+	_, err := cdp.Call(t.Timeout(0), "", "", nil)
+	t.Eq(err, context.DeadlineExceeded)
 }
 
 func (t T) CancelBeforeCallback() {
 	cdp := New("")
-	cdp.ctx = context.Background()
+	cdp.ctx = t.Context()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 
 	go func() {
 		<-cdp.chReq
-		cancel()
+		ctx.Cancel()
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
@@ -105,7 +100,7 @@ func (t T) CancelBeforeCallback() {
 }
 
 func (t T) CancelOnCallback() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 	cdp := New("")
 	cdp.ctx = ctx
 
@@ -118,16 +113,16 @@ func (t T) CancelOnCallback() {
 		Error:  nil,
 	}
 	utils.Sleep(0.1)
-	cancel()
+	ctx.Cancel()
 }
 
 func (t T) CancelOnReadRes() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx := t.Context()
 	cdp := New("")
 	cdp.ctx = ctx
 	cdp.wsConn = &wsMockConn{
 		read: func() ([]byte, error) {
-			cancel()
+			ctx.Cancel()
 			return utils.MustToJSONBytes(&Response{
 				ID:     1,
 				Result: nil,
@@ -138,12 +133,12 @@ func (t T) CancelOnReadRes() {
 
 	go cdp.readMsgFromBrowser()
 
-	_, err := cdp.Call(context.Background(), "", "", nil)
+	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
 }
 
 func (t T) CancelOnReadEvent() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	cdp := New("")
 	cdp.ctx = ctx
 	cdp.wsConn = &wsMockConn{
@@ -155,6 +150,6 @@ func (t T) CancelOnReadEvent() {
 
 	go cdp.readMsgFromBrowser()
 
-	_, err := cdp.Call(context.Background(), "", "", nil)
+	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
 }

@@ -15,20 +15,21 @@
   </body>
 
   <script>
+    window.touchTrack = ''
     const body = document.body
     body.ontouchstart = (e) => {
       const t = e.touches[0]
-      console.log('start', t.clientX | 0, t.clientY | 0)
+      window.touchTrack += ' start ' + (t.clientX | 0) + ' ' + (t.clientY | 0)
     }
     body.ontouchmove = (e) => {
       const t = e.touches[0]
-      console.log('move', t.clientX | 0, t.clientY | 0)
+      window.touchTrack += ' move ' + (t.clientX | 0) + ' ' + (t.clientY | 0)
     }
     body.ontouchend = () => {
-      console.log('end')
+      window.touchTrack += ' end'
     }
     body.ontouchcancel = () => {
-      console.log('cancel')
+      window.touchTrack += ' cancel'
     }
 
     const btn = document.getElementById('btn')

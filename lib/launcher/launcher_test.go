@@ -93,7 +93,7 @@ func TestLaunchUserMode(t *testing.T) {
 	dir, _ := l.Get("user-data-dir")
 	port := 58472
 
-	url := l.Context(context.Background()).Delete("test").Bin("").
+	url := l.Context(as.Context()).Delete("test").Bin("").
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).

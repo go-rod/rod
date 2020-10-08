@@ -33,8 +33,7 @@ type T struct {
 }
 
 func (t T) Basic() {
-	ctx, done := context.WithCancel(context.Background())
-	defer done()
+	ctx := t.Context()
 
 	url := launcher.New().MustLaunch()
 
@@ -77,8 +76,7 @@ func (t T) Basic() {
 	})
 	t.Err(err)
 
-	timeout, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+	timeout := t.Context()
 
 	sleeper := func() utils.Sleeper {
 		return utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
@@ -107,8 +105,7 @@ func (t T) Basic() {
 
 	frameId := gson.New(res).Get("node.frameId").String()
 
-	timeout, cancel = context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+	timeout = t.Context()
 
 	t.E(utils.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
@@ -139,19 +136,19 @@ func (t T) Error() {
 	t.Eq(cdpErr.Error(), "{10 err data}")
 
 	t.Panic(func() {
-		cdp.New("").MustConnect(context.Background())
+		cdp.New("").MustConnect(t.Context())
 	})
 }
 
 func (t T) NewWithLogger() {
 
 	t.Panic(func() {
-		cdp.New("").MustConnect(context.Background())
+		cdp.New("").MustConnect(t.Context())
 	})
 }
 
 func (t T) Crash() {
-	ctx := context.Background()
+	ctx := t.Context()
 	l := launcher.New()
 
 	client := cdp.New(l.MustLaunch()).Logger(utils.LoggerQuiet).MustConnect(ctx)

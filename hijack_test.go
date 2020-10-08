@@ -1,7 +1,6 @@
 package rod_test
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -38,7 +37,7 @@ func (t T) Hijack() {
 	defer router.MustStop()
 
 	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
-		r := ctx.Request.SetContext(context.Background())
+		r := ctx.Request.SetContext(t.Context())
 		r.Req().URL = r.Req().URL            // override request url
 		r.Req().Header.Set("Test", "header") // override request header
 		r.SetBody([]byte("test"))            // override request body
@@ -140,11 +139,8 @@ func (t T) HijackOnErrorLog() {
 		return gson.New(nil), errors.New("err")
 	})
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	go func() {
-		_ = t.page.Context(ctx).Navigate(s.URL())
+		_ = t.page.Context(t.Context()).Navigate(s.URL())
 	}()
 	wg.Wait()
 
@@ -183,9 +179,7 @@ func (t T) HijackFailRequest() {
 }
 
 func (t T) HijackLoadResponseErr() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	p := t.page.Context(ctx)
+	p := t.page.Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -217,16 +211,14 @@ func (t T) HijackLoadResponseErr() {
 func (t T) HijackResponseErr() {
 	s := t.Serve().Route("/", ".html", `ok`)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	p := t.page.Context(ctx)
+	p := t.page.Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	router.MustAdd("*", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) { // to ignore favicon
 		ctx.OnError = func(err error) {
 			t.Err(err)
 			wg.Done()
@@ -238,7 +230,7 @@ func (t T) HijackResponseErr() {
 
 	go router.Run()
 
-	go func() { _ = p.Navigate(s.URL()) }()
+	go func() { _ = p.Navigate(s.URL("/a")) }()
 
 	wg.Wait()
 }
@@ -263,8 +255,7 @@ func (t T) HandleAuth() {
 
 	t.browser.MustHandleAuth("a", "b")
 
-	page := t.browser.MustPage(s.URL())
-	defer page.MustClose()
+	page := t.newPage(s.URL())
 	page.MustElementR("p", "ok")
 
 	wait := t.browser.HandleAuth("a", "b")
@@ -354,7 +345,7 @@ func (t T) GetDownloadFileWithHijack() {
 	r := page.HijackRequests()
 	r.MustAdd("*", func(ctx *rod.Hijack) {
 		ctx.OnError = func(error) {}
-		ctx.MustLoadResponse()
+		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 	})
 	go r.Run()
 	defer r.MustStop()
