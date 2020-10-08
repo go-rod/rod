@@ -66,30 +66,32 @@ func (t T) SetCookies() {
 }
 
 func (t T) SetExtraHeaders() {
-	s := t.Serve().Route("/", ".html", `ok`)
+	s := t.Serve()
 
-	page := t.browser.MustPage("")
-	defer page.MustClose()
+	wg := sync.WaitGroup{}
+	var header http.Header
+	s.Mux.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		header = r.Header
+		wg.Done()
+	})
 
-	cleanup := page.MustSetExtraHeaders("a", "1", "b", "2")
+	cleanup := t.page.MustSetExtraHeaders("a", "1", "b", "2")
 
-	var e proto.NetworkResponseReceived
-	wait := page.WaitEvent(&e)
-	page.MustNavigate(s.URL())
-	wait()
+	wg.Add(1)
+	t.page.MustNavigate(s.URL())
+	wg.Wait()
 
-	t.Eq("1", e.Response.RequestHeaders["a"].Str())
-	t.Eq("2", e.Response.RequestHeaders["b"].Str())
+	t.Eq(header.Get("a"), "1")
+	t.Eq(header.Get("b"), "2")
 
 	cleanup()
 
-	e = proto.NetworkResponseReceived{}
-	wait = page.WaitEvent(&e)
-	page.MustNavigate(s.URL())
-	wait()
+	wg.Add(1)
+	t.page.MustNavigate(s.URL())
+	wg.Wait()
 
-	t.Nil(e.Response.RequestHeaders["a"].Val())
-	t.Nil(e.Response.RequestHeaders["b"].Val())
+	t.Eq(header.Get("a"), "")
+	t.Eq(header.Get("b"), "")
 }
 
 func (t T) SetUserAgent() {
