@@ -446,8 +446,9 @@ func (t T) WaitInvisible() {
 func (t T) WaitStable() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
+	el.MustEval(`this.classList.add("play")`)
 	start := time.Now()
-	el.MustWaitStable().MustClick()
+	el.MustWaitStable()
 	t.Gt(time.Since(start), time.Second)
 
 	ctx := t.Context()

@@ -405,9 +405,10 @@ func (el *Element) WaitLoad() error {
 	return err
 }
 
-// WaitStable not using requestAnimation here because it can trigger to many checks,
-// or miss checks for jQuery css animation.
-func (el *Element) WaitStable(interval time.Duration) error {
+// WaitStable waits until no shape or position change for d duration.
+// Be careful, d is not the max wait timeout, it's the least stable time.
+// If you want to set a timeout you can use the "Element.Timeout" function.
+func (el *Element) WaitStable(d time.Duration) error {
 	err := el.WaitVisible()
 	if err != nil {
 		return err
@@ -418,7 +419,7 @@ func (el *Element) WaitStable(interval time.Duration) error {
 		return err
 	}
 
-	t := time.NewTicker(interval)
+	t := time.NewTicker(d)
 	defer t.Stop()
 
 	for {
