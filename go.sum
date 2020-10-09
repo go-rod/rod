@@ -2,12 +2,12 @@ github.com/gorilla/websocket v1.4.2 h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0U
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/ysmood/goob v0.2.8 h1:e2R7qFxVv6eKA8zJ6dKRL3An+Eu/cltn7SMUob79aYw=
 github.com/ysmood/goob v0.2.8/go.mod h1:S3lq113Y91y1UBf1wj1pFOxeahvfKkCk6mTWTWbDdWs=
-github.com/ysmood/got v0.4.2 h1:xtYi3f+hmH0abwZ+47qmF4NZzlez6NnuzwS0Pr0skYY=
-github.com/ysmood/got v0.4.2/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
+github.com/ysmood/got v0.4.3 h1:9qd3isZKFWSERleORQQ/mcvppHXZro/mNaPxJwvcoj4=
+github.com/ysmood/got v0.4.3/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
 github.com/ysmood/gotrace v0.1.1 h1:1H9L1Rc0o/80+2Vtm3vn85rNVpNOo94/wf+G5qW0JY8=
 github.com/ysmood/gotrace v0.1.1/go.mod h1:TzhIG7nHDry5//eYZDYcTzuJLYQIkykJzCRIo4/dzQM=
 github.com/ysmood/gson v0.6.1 h1:VUDkQEBU2aL1RieUWv5Z+2jvTq3AAz4P83jVQimm46M=
 github.com/ysmood/gson v0.6.1/go.mod h1:3Kzs5zDl21g5F/BlLTNcuAGAYLKt2lV5G8D1zF3RNmg=
-github.com/ysmood/leakless v0.6.2 h1:btEdYG+HicWS5Yww8tRUS1ZUAAqwZBq/0VME2Pz7v9k=
-github.com/ysmood/leakless v0.6.2/go.mod h1:eOWmPkwrQgyJ+JivIgpu5EoJXRN04Wf+wENtR9CUKyE=
+github.com/ysmood/leakless v0.6.3 h1:blW3g7NYSTkXtRhmV0vq+t4KzWWUJUdd2pB77O0uteQ=
+github.com/ysmood/leakless v0.6.3/go.mod h1:eOWmPkwrQgyJ+JivIgpu5EoJXRN04Wf+wENtR9CUKyE=
 golang.org/x/sys v0.0.0-20200828194041-157a740278f4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

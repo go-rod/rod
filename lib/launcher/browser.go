@@ -14,7 +14,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/leakless"
 )
 
 // HostGoogle to download browser
@@ -43,6 +45,9 @@ type Browser struct {
 	Logger io.Writer
 
 	ExecSearchMap map[string][]string
+
+	// Lock a tcp port to prevent race downloading. Default is 2968 .
+	Lock int
 }
 
 // NewBrowser with default values
@@ -69,6 +74,7 @@ func NewBrowser() *Browser {
 				`Microsoft\Edge\Application\msedge.exe`,
 			)...),
 		},
+		Lock: defaults.Lock,
 	}
 }
 
@@ -161,6 +167,8 @@ func (lc *Browser) download(u string) (err error) {
 // It will first try to find the browser from local disk, if not exists
 // it will try to download the chromium to Dir.
 func (lc *Browser) Get() (string, error) {
+	defer leakless.LockPort(lc.Lock)()
+
 	p, found := lc.lookPath()
 	if found {
 		return p, nil

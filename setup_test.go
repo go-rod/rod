@@ -22,16 +22,11 @@ import (
 	"github.com/ysmood/got"
 	"github.com/ysmood/gotrace/pkg/testleak"
 	"github.com/ysmood/gson"
-	"github.com/ysmood/leakless"
 )
 
 // entry point for all tests
 func Test(t *testing.T) {
 	testleak.Check(t, 0)
-
-	// make sure executables are ready
-	leakless.GetLeaklessBin()
-	utils.E(launcher.NewBrowser().Get())
 
 	got.Each(t, newTesterPool(t).get)
 }

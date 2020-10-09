@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -40,6 +41,9 @@ var Bin string
 // Proxy is the default of launcher.Launcher.Proxy
 var Proxy string
 
+// Lock is the default of launcher.Browser.Lock
+var Lock int
+
 // URL is the default of cdp.Client.New
 var URL string
 
@@ -53,17 +57,18 @@ func init() {
 
 // Reset all flags to their init values.
 func Reset() {
-	Show = false
-	Devtools = false
 	Trace = false
 	Slow = 0
+	Monitor = ""
+	Show = false
+	Devtools = false
 	Dir = ""
 	Port = "0"
 	Bin = ""
+	Proxy = ""
+	Lock = 2978
 	URL = ""
 	CDP = utils.LoggerQuiet
-	Monitor = ""
-	Proxy = ""
 }
 
 // ResetWithEnv set the default value of options used by rod.
@@ -128,12 +133,6 @@ func parse(options string) {
 }
 
 var rules = map[string]func(string){
-	"show": func(string) {
-		Show = true
-	},
-	"devtools": func(string) {
-		Devtools = true
-	},
 	"trace": func(string) {
 		Trace = true
 	},
@@ -142,8 +141,17 @@ var rules = map[string]func(string){
 		Slow, err = time.ParseDuration(v)
 		utils.E(err)
 	},
-	"bin": func(v string) {
-		Bin = v
+	"monitor": func(v string) {
+		Monitor = ":0"
+		if v != "" {
+			Monitor = v
+		}
+	},
+	"show": func(string) {
+		Show = true
+	},
+	"devtools": func(string) {
+		Devtools = true
 	},
 	"dir": func(v string) {
 		Dir = v
@@ -151,19 +159,22 @@ var rules = map[string]func(string){
 	"port": func(v string) {
 		Port = v
 	},
+	"bin": func(v string) {
+		Bin = v
+	},
+	"proxy": func(v string) {
+		Proxy = v
+	},
+	"lock": func(v string) {
+		i, err := strconv.ParseInt(v, 10, 32)
+		if err == nil {
+			Lock = int(i)
+		}
+	},
 	"url": func(v string) {
 		URL = v
 	},
 	"cdp": func(v string) {
 		CDP = log.New(log.Writer(), "[cdp] ", 0)
-	},
-	"monitor": func(v string) {
-		Monitor = ":0"
-		if v != "" {
-			Monitor = v
-		}
-	},
-	"proxy": func(v string) {
-		Proxy = v
 	},
 }
