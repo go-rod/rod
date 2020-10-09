@@ -206,7 +206,7 @@ func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duratio
 
 // IdleCounter is similar to sync.WaitGroup but it only resolves if no jobs for specified duration.
 type IdleCounter struct {
-	sync.Mutex
+	lock     *sync.Mutex
 	job      int
 	duration time.Duration
 	tmr      *time.Timer
@@ -218,6 +218,7 @@ func NewIdleCounter(d time.Duration) *IdleCounter {
 	tmr.Stop()
 
 	return &IdleCounter{
+		lock:     &sync.Mutex{},
 		duration: d,
 		tmr:      tmr,
 	}
@@ -225,8 +226,8 @@ func NewIdleCounter(d time.Duration) *IdleCounter {
 
 // Add ...
 func (de *IdleCounter) Add() {
-	de.Lock()
-	defer de.Unlock()
+	de.lock.Lock()
+	defer de.lock.Unlock()
 
 	de.tmr.Stop()
 	de.job++
@@ -234,8 +235,8 @@ func (de *IdleCounter) Add() {
 
 // Done ...
 func (de *IdleCounter) Done() {
-	de.Lock()
-	defer de.Unlock()
+	de.lock.Lock()
+	defer de.lock.Unlock()
 
 	de.job--
 	if de.job == 0 {
@@ -248,11 +249,11 @@ func (de *IdleCounter) Done() {
 
 // Wait ...
 func (de *IdleCounter) Wait(ctx context.Context) {
-	de.Lock()
+	de.lock.Lock()
 	if de.job == 0 {
 		de.tmr.Reset(de.duration)
 	}
-	de.Unlock()
+	de.lock.Unlock()
 
 	select {
 	case <-ctx.Done():
