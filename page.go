@@ -462,12 +462,6 @@ func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
 	_, err := p.Evaluate(jsHelper(js.WaitLoad))
-	if err != nil {
-		return err
-	}
-
-	// TODO: https://crbug.com/613219
-	_, err = p.Root().Eval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
 	return err
 }
 

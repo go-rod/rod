@@ -43,7 +43,7 @@ type T struct {
 }
 
 type TesterPool struct {
-	list   chan T
+	list   chan *T
 	logger *log.Logger
 }
 
@@ -58,7 +58,7 @@ func newTesterPool(t *testing.T) TesterPool {
 	lf := got.New(t).Open(true, "tmp", logName)
 
 	cp := TesterPool{
-		list:   make(chan T, parallel),
+		list:   make(chan *T, parallel),
 		logger: log.New(lf, "", log.Ltime),
 	}
 
@@ -70,21 +70,15 @@ func newTesterPool(t *testing.T) TesterPool {
 		}()
 	})
 
-	wg := &sync.WaitGroup{}
-	wg.Add(parallel)
 	for i := 0; i < parallel; i++ {
-		go func() {
-			cp.list <- cp.new()
-			wg.Done()
-		}()
+		cp.list <- nil
 	}
-	wg.Wait()
 
 	return cp
 }
 
 // new tester
-func (cp TesterPool) new() T {
+func (cp TesterPool) new() *T {
 	u := launcher.New().MustLaunch()
 
 	mc := newMockClient(cdp.New(u).Logger(cp.logger))
@@ -97,7 +91,7 @@ func (cp TesterPool) new() T {
 
 	page := getOnePage(browser)
 
-	return T{
+	return &T{
 		mc:      mc,
 		browser: browser,
 		page:    page,
@@ -111,6 +105,9 @@ func (cp TesterPool) get(t *testing.T) T {
 	}
 
 	tester := <-cp.list
+	if tester == nil {
+		tester = cp.new()
+	}
 	t.Cleanup(func() { cp.list <- tester })
 
 	if !testing.Short() {
@@ -132,11 +129,11 @@ func (cp TesterPool) get(t *testing.T) T {
 
 	heartBeat(tester)
 
-	return tester
+	return *tester
 }
 
 // when concurrently run tests, indicate the busy ones
-func heartBeat(t T) {
+func heartBeat(t *T) {
 	if !testing.Short() {
 		return
 	}

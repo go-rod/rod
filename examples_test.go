@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -416,8 +417,7 @@ func Example_handle_events() {
 
 	// Listen for all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
-		log := page.MustObjectsToJSON(e.Args).Join(" ")
-		fmt.Println(log)
+		fmt.Println(page.MustObjectsToJSON(e.Args))
 		close(done)
 	})()
 
@@ -458,7 +458,7 @@ func Example_handle_events() {
 	<-done
 
 	// Output:
-	// hello world
+	// [hello world]
 }
 
 // Shows how to intercept requests and modify
@@ -539,4 +539,50 @@ func ExamplePage_Event() {
 		msg := e.(*cdp.Event)
 		fmt.Println(msg.Method, msg.Params)
 	}
+}
+
+// It's a common practice to concurrently use a pool of resources in Go, it's not special for rod.
+func ExamplePage_pool() {
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
+
+	// we create a pool that will hold at most 3 pages
+	pool := make(chan *rod.Page, 3)
+	for i := 0; i < cap(pool); i++ {
+		pool <- nil
+	}
+
+	// a function to get an item from the pool
+	getOnePage := func() (*rod.Page, func()) {
+		page := <-pool
+		if page == nil {
+			page = browser.MustPage("")
+		}
+		return page, func() { pool <- page }
+	}
+
+	yourJob := func() {
+		page, payback := getOnePage()
+		defer payback()
+
+		page.MustNavigate("http://example.com").MustWaitLoad()
+		fmt.Println(page.MustInfo().Title)
+	}
+
+	// run jobs concurrently
+	wg := sync.WaitGroup{}
+	for range "...." {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			yourJob()
+		}()
+	}
+	wg.Wait()
+
+	// Output:
+	// Example Domain
+	// Example Domain
+	// Example Domain
+	// Example Domain
 }

@@ -566,11 +566,11 @@ func (t T) NativeDrag(got.Skip) { // devtools doesn't support to use mouse event
 }
 
 func (t T) Touch() {
-	page := t.newPage("")
+	page := t.newPage("").MustEmulate(devices.IPad)
 
-	page.MustEmulate(devices.IPad).
-		MustNavigate(t.srcFile("fixtures/touch.html")).
-		MustWaitLoad()
+	wait := page.WaitNavigation(proto.PageLifecycleEventNameLoad)
+	page.MustNavigate(t.srcFile("fixtures/touch.html"))
+	wait()
 
 	touch := page.Touch
 
@@ -813,14 +813,22 @@ func (t T) PageWaitLoadErr() {
 func (t T) PageGoBackGoForward() {
 	p := t.newPage("").MustReload()
 
-	p.
-		MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad().
-		MustNavigate(t.srcFile("fixtures/selector.html")).MustWaitLoad()
+	wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+	p.MustNavigate(t.srcFile("fixtures/click.html"))
+	wait()
 
-	p.MustNavigateBack().MustWaitLoad()
+	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+	p.MustNavigate(t.srcFile("fixtures/selector.html"))
+	wait()
+
+	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+	p.MustNavigateBack()
+	wait()
 	t.Regex("fixtures/click.html$", p.MustInfo().URL)
 
-	p.MustNavigateForward().MustWaitLoad()
+	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+	p.MustNavigateForward()
+	wait()
 	t.Regex("fixtures/selector.html$", p.MustInfo().URL)
 }
 
