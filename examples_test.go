@@ -556,7 +556,8 @@ func ExamplePage_pool() {
 	getOnePage := func() (*rod.Page, func()) {
 		page := <-pool
 		if page == nil {
-			page = browser.MustPage("")
+			// if you want pages to share cookies with each remove the MustIncognito()
+			page = browser.MustIncognito().MustPage("")
 		}
 		return page, func() { pool <- page }
 	}
