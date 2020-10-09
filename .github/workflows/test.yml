@@ -31,6 +31,11 @@ jobs:
       - uses: codecov/codecov-action@v1
         if: ${{ always() }}
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: linux-cdp-log
+          path: tmp/cdp-log
+
   macos:
     runs-on: macos-latest
 
@@ -43,6 +48,11 @@ jobs:
 
       - name: test
         run: go test -race -short -run /
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos-cdp-log
+          path: tmp/cdp-log
 
   windows:
     runs-on: windows-latest
@@ -57,6 +67,11 @@ jobs:
       - name: test
         run: go test -race -run /
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: windows-cdp-log
+          path: tmp/cdp-log
+
   docker:
     runs-on: ubuntu-latest
 
@@ -66,10 +81,15 @@ jobs:
       - name: test
         run: |
           docker build -t rodorg/rod -f lib/docker/Dockerfile .
-          docker build -t test -f lib/docker/test.Dockerfile .
-          docker run -v $(pwd):/t -w /t test
+          docker build -t rod -f lib/docker/test.Dockerfile .
+          docker run -v $(pwd):/t -w /t rod go test -run /
 
       - uses: actions/upload-artifact@v2
         with:
           name: review-fonts
           path: tmp/fonts.pdf
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: docker-cdp-log
+          path: tmp/cdp-log

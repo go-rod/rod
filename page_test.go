@@ -260,15 +260,12 @@ func (t T) PageAddStyleTag() {
 func (t T) PageEvalOnNewDocument() {
 	p := t.newPage("")
 
-	p.MustEvalOnNewDocument(`
-  		Object.defineProperty(navigator, 'rod', {
-    		get: () => "rod",
-  		});`)
+	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
 
 	// to activate the script
-	p.MustNavigate("")
+	p.MustNavigate(t.srcFile("fixtures/click.html"))
 
-	t.Eq("rod", p.MustEval("navigator.rod").String())
+	t.Eq(p.MustEval("rod").String(), "ok")
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})

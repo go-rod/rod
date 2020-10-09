@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -54,18 +55,17 @@ func newTesterPool(t *testing.T) TesterPool {
 		fmt.Println("parallel test:", parallel)
 	}
 
-	logName := fmt.Sprintf("%s test_cdp.log", time.Now().Local().Format("01-02_15-04-05"))
-	lf := got.New(t).Open(true, "tmp", logName)
-
 	cp := TesterPool{
+		logger: log.New(ioutil.Discard, "", log.Ltime),
 		list:   make(chan *T, parallel),
-		logger: log.New(lf, "", log.Ltime),
 	}
 
 	t.Cleanup(func() {
 		go func() {
 			for i := 0; i < parallel; i++ {
-				(<-cp.list).browser.MustClose()
+				if t := <-cp.list; t != nil {
+					t.browser.MustClose()
+				}
 			}
 		}()
 	})
@@ -123,6 +123,8 @@ func (cp TesterPool) get(t *testing.T) T {
 
 		tester.mc.setCall(nil)
 	})
+
+	cp.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
 
 	tester.mc.t = t
 	tester.G = got.New(t)
