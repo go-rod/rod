@@ -159,9 +159,7 @@ func (t T) HijackFailRequest() {
 	router := t.browser.HijackRequests()
 	defer router.MustStop()
 
-	err := make(chan error)
 	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
-		ctx.OnError = func(e error) { err <- e }
 		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
 	})
 
@@ -172,9 +170,11 @@ func (t T) HijackFailRequest() {
 	t.page.MustWait(`document.title == 'Failed to fetch'`)
 
 	{ // test error log
-		t.mc.stubErr(1, proto.FetchFailRequest{})
-		t.page.MustNavigate(s.URL())
-		t.Err(<-err)
+		t.mc.stub(1, proto.FetchFailRequest{}, func(send StubSend) (gson.JSON, error) {
+			_, _ = send()
+			return gson.JSON{}, errors.New("err")
+		})
+		_ = t.page.Navigate(s.URL("/a"))
 	}
 }
 
@@ -344,7 +344,6 @@ func (t T) GetDownloadFileWithHijack() {
 
 	r := page.HijackRequests()
 	r.MustAdd("*", func(ctx *rod.Hijack) {
-		ctx.OnError = func(error) {}
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 	})
 	go r.Run()

@@ -131,7 +131,7 @@ func (t T) Basic() {
 	t.Eq("<h4>it works</h4>", gson.New(res).Get("outerHTML").String())
 }
 
-func (t T) Error() {
+func (t T) TestError() {
 	cdpErr := cdp.Error{10, "err", "data"}
 	t.Eq(cdpErr.Error(), "{10 err data}")
 
