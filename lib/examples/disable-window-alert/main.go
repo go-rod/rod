@@ -13,7 +13,7 @@ const (
 <body>
   
 <script language="javascript" type="text/javascript">
-alert("信息不存在");
+alert("Information does not exist");
 </script>
 
 </body>
