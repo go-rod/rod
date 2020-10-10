@@ -113,3 +113,13 @@ func (t T) InputTouchPointMoveTo() {
 	t.Eq(1, p.X)
 	t.Eq(2, p.Y)
 }
+
+func (t T) CookiesToParams() {
+	list := proto.CookiesToParams([]*proto.NetworkCookie{{
+		Name:  "name",
+		Value: "val",
+	}})
+
+	t.Eq(list[0].Name, "name")
+	t.Eq(list[0].Value, "val")
+}

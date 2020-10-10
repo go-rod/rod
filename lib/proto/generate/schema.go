@@ -206,4 +206,11 @@ func optimize(json *gson.JSON) {
 	json.Set("domains.19.types.3.skip", true) // Input.TimeSinceEpoch
 	json.Set("domains.24.types.5.skip", true) // Network.TimeSinceEpoch
 	json.Set("domains.24.types.6.skip", true) // Network.MonotonicTime
+
+	// fix Cookie.Expires
+	json.Set("domains.24.types.25.properties.4", map[string]interface{}{
+		"$ref":        "TimeSinceEpoch",
+		"description": "Cookie expiration date",
+		"name":        "expires",
+	})
 }

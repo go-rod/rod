@@ -25,6 +25,8 @@ func (t T) Incognito() {
 	k := t.Srand(16)
 
 	b := t.browser.MustIncognito().Sleeper(rod.DefaultSleeper)
+	defer b.MustClose()
+
 	page := b.MustPage(file)
 	defer page.MustClose()
 	page.MustEval(`k => localStorage[k] = 1`, k)
@@ -333,6 +335,26 @@ func (t T) BinarySize() {
 	t.E(err)
 
 	t.Lte(float64(stat.Size())/1024/1024, 8.23) // mb
+}
+
+func (t T) BrowserCookies() {
+	b := t.browser.MustIncognito()
+	defer b.MustClose()
+
+	b.MustSetCookies([]*proto.NetworkCookie{{
+		Name:   "a",
+		Value:  "val",
+		Domain: "test.com",
+	}})
+
+	cookies := b.MustGetCookies()
+
+	t.Len(cookies, 1)
+	t.Eq(cookies[0].Name, "a")
+	t.Eq(cookies[0].Value, "val")
+
+	t.mc.stubErr(1, proto.StorageGetCookies{})
+	t.Err(b.GetCookies())
 }
 
 func (t T) BrowserConnectErr() {

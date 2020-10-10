@@ -134,3 +134,22 @@ func (p *InputTouchPoint) MoveTo(x, y float64) {
 	p.X = x
 	p.Y = y
 }
+
+// CookiesToParams converts Cookies list to NetworkCookieParam list
+func CookiesToParams(cookies []*NetworkCookie) []*NetworkCookieParam {
+	list := []*NetworkCookieParam{}
+	for _, c := range cookies {
+		list = append(list, &NetworkCookieParam{
+			Name:     c.Name,
+			Value:    c.Value,
+			Domain:   c.Domain,
+			Path:     c.Path,
+			Secure:   c.Secure,
+			HTTPOnly: c.HTTPOnly,
+			SameSite: c.SameSite,
+			Expires:  c.Expires,
+			Priority: c.Priority,
+		})
+	}
+	return list
+}

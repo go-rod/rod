@@ -71,6 +71,19 @@ func (b *Browser) MustIgnoreCertErrors(enable bool) *Browser {
 	return b
 }
 
+// MustGetCookies is similar GetCookies
+func (b *Browser) MustGetCookies() []*proto.NetworkCookie {
+	nc, err := b.GetCookies()
+	utils.E(err)
+	return nc
+}
+
+// MustSetCookies is similar SetCookies
+func (b *Browser) MustSetCookies(cookies []*proto.NetworkCookie) *Browser {
+	utils.E(b.SetCookies(proto.CookiesToParams(cookies)))
+	return b
+}
+
 // MustFind is similar to Find
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
@@ -350,8 +363,9 @@ func (p *Page) MustEvaluate(opts *Eval) *proto.RuntimeRemoteObject {
 }
 
 // MustWait is similar to Wait
-func (p *Page) MustWait(js string, params ...interface{}) {
+func (p *Page) MustWait(js string, params ...interface{}) *Page {
 	utils.E(p.Wait(nil, js, params))
+	return p
 }
 
 // MustObjectToJSON is similar to ObjectToJSON

@@ -689,6 +689,7 @@ func (t T) PageConsoleLog() {
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
+	p.MustEval(`console.log(1, {b: ['test']})`) // TODO: chrome may sallow the first log
 	wait()
 	t.Eq("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
 	t.Eq(`1 map[b:[test]]`, p.MustObjectsToJSON(e.Args).Join(" "))

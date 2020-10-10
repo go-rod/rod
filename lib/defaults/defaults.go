@@ -50,7 +50,7 @@ var URL string
 // CDP is the default of cdp.Client.Logger
 var CDP utils.Logger
 
-// WsBuf is the default of cdp.DefaultWsClient.WriteBufferSize. Unit is MB, default value is 1MB.
+// WsBuf is the default of cdp.DefaultWsClient.WriteBufferSize. Unit is MB, default value is 2MB.
 var WsBuf float64
 
 // Reset all flags to their init values.
@@ -67,7 +67,7 @@ func Reset() {
 	Lock = 2978
 	URL = ""
 	CDP = utils.LoggerQuiet
-	WsBuf = 1
+	WsBuf = 2
 }
 
 var rules = map[string]func(string){

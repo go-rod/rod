@@ -8907,8 +8907,8 @@ type NetworkCookie struct {
 	// Path Cookie path.
 	Path string `json:"path"`
 
-	// Expires Cookie expiration date as the number of seconds since the UNIX epoch.
-	Expires float64 `json:"expires"`
+	// Expires Cookie expiration date
+	Expires *TimeSinceEpoch `json:"expires"`
 
 	// Size Cookie size.
 	Size int `json:"size"`

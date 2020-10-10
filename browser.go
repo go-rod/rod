@@ -158,7 +158,10 @@ func (b *Browser) Connect() error {
 
 // Close the browser
 func (b *Browser) Close() error {
-	return proto.BrowserClose{}.Call(b)
+	if b.BrowserContextID == "" {
+		return proto.BrowserClose{}.Call(b)
+	}
+	return proto.TargetDisposeBrowserContext{BrowserContextID: b.BrowserContextID}.Call(b)
 }
 
 // Page creates a new browser tab. If url is empty, the default target will be "about:blank".
@@ -407,4 +410,21 @@ func (b *Browser) setHeadless() error {
 		}
 	}
 	return nil
+}
+
+// GetCookies from the browser
+func (b *Browser) GetCookies() ([]*proto.NetworkCookie, error) {
+	res, err := proto.StorageGetCookies{BrowserContextID: b.BrowserContextID}.Call(b)
+	if err != nil {
+		return nil, err
+	}
+	return res.Cookies, nil
+}
+
+// SetCookies to the browser
+func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
+	return proto.StorageSetCookies{
+		Cookies:          cookies,
+		BrowserContextID: b.BrowserContextID,
+	}.Call(b)
 }
