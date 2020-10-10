@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
 )
 
 const (
@@ -37,18 +36,18 @@ func main() {
 	// start cookie server
 	go Server(fmt.Sprintf(":%d", port))
 
-	url, _ := launcher.New().Headless(false).Launch()
-	browser := rod.New().ControlURL(url).MustConnect()
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
 
 	// Creating a Page Object
-	page, _ := browser.Page("")
+	page := browser.MustPage("")
 
 	// Evaluates given script in every frame upon creation
 	// Disable all alerts by making window.alert no-op.
 	page.MustEvalOnNewDocument(`window.alert = () => {}`)
 
 	// Navigate to the website you want to visit
-	page.Navigate(host)
+	page.MustNavigate(host)
 
 	fmt.Println(page.MustElement("script").Text())
 
