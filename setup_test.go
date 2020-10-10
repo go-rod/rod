@@ -17,6 +17,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -85,9 +86,7 @@ func (cp TesterPool) new() *T {
 
 	browser := rod.New().ControlURL("").Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
-		DefaultViewport(&proto.EmulationSetDeviceMetricsOverride{
-			Width: 800, Height: 600, DeviceScaleFactor: 1,
-		})
+		DefaultDevice(devices.Test, true)
 
 	page := getOnePage(browser)
 

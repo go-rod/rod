@@ -45,7 +45,8 @@ type Browser struct {
 	headless   bool
 	monitor    string
 
-	defaultViewport *proto.EmulationSetDeviceMetricsOverride
+	defaultDevice          devices.Device
+	defaultDeviceLandscape bool
 
 	client      CDPClient
 	event       *goob.Observable // all the browser events from cdp client
@@ -60,15 +61,16 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:             context.Background(),
-		sleeper:         DefaultSleeper,
-		slowmotion:      defaults.Slow,
-		trace:           defaults.Trace,
-		monitor:         defaults.Monitor,
-		logger:          DefaultLogger,
-		defaultViewport: devices.LaptopWithMDPIScreen.Metrics(true),
-		targetsLock:     &sync.Mutex{},
-		states:          &sync.Map{},
+		ctx:                    context.Background(),
+		sleeper:                DefaultSleeper,
+		slowmotion:             defaults.Slow,
+		trace:                  defaults.Trace,
+		monitor:                defaults.Monitor,
+		logger:                 DefaultLogger,
+		defaultDevice:          devices.LaptopWithMDPIScreen,
+		defaultDeviceLandscape: true,
+		targetsLock:            &sync.Mutex{},
+		states:                 &sync.Map{},
 	}
 }
 
@@ -121,10 +123,11 @@ func (b *Browser) Client(c CDPClient) *Browser {
 	return b
 }
 
-// DefaultViewport sets the default viewport for new page in the future. Default size is 1200x900.
-// Set it to nil to disable it.
-func (b *Browser) DefaultViewport(viewport *proto.EmulationSetDeviceMetricsOverride) *Browser {
-	b.defaultViewport = viewport
+// DefaultDevice sets the default device for new page in the future. Default is devices.LaptopWithMDPIScreen .
+// Set it to devices.Clear to disable it.
+func (b *Browser) DefaultDevice(d devices.Device, landscape bool) *Browser {
+	b.defaultDevice = d
+	b.defaultDeviceLandscape = landscape
 	return b
 }
 
@@ -352,8 +355,8 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		return nil, err
 	}
 
-	if b.defaultViewport != nil {
-		err = page.SetViewport(b.defaultViewport)
+	if b.defaultDevice != devices.Clear {
+		err = page.Emulate(b.defaultDevice, b.defaultDeviceLandscape)
 		if err != nil {
 			return nil, err
 		}

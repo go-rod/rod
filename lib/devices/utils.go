@@ -13,6 +13,22 @@ type Device struct {
 // Clear is used to clear overrides
 var Clear = Device{}
 
+// Test device
+var Test = Device{gson.NewFrom(`{
+	"screen": {
+		"device-pixel-ratio": 1,
+		"horizontal": {
+			"height": 600,
+			"width": 800
+		},
+		"vertical": {
+			"height": 600,
+			"width": 800
+		}
+	},
+	"user-agent": "Test Agent"
+}`)}
+
 // Metrics config
 func (device Device) Metrics(landscape bool) *proto.EmulationSetDeviceMetricsOverride {
 	if device == Clear {
