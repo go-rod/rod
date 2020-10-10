@@ -261,7 +261,7 @@ func (t T) HandleAuth() {
 	wait := t.browser.HandleAuth("a", "b")
 	var page2 *rod.Page
 	wait2 := utils.All(func() {
-		page2, _ = t.browser.Page(s.URL("/err"))
+		page2, _ = t.browser.Page(proto.TargetCreateTarget{URL: s.URL("/err")})
 	})
 	t.mc.stubErr(1, proto.FetchContinueRequest{})
 	t.Err(wait())

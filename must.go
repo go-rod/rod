@@ -40,7 +40,7 @@ func (b *Browser) MustIncognito() *Browser {
 
 // MustPage is similar to Page
 func (b *Browser) MustPage(url string) *Page {
-	p, err := b.Page(url)
+	p, err := b.Page(proto.TargetCreateTarget{URL: url})
 	utils.E(err)
 	return p
 }

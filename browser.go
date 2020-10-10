@@ -159,11 +159,12 @@ func (b *Browser) Close() error {
 }
 
 // Page creates a new browser tab. If url is empty, the default target will be "about:blank".
-func (b *Browser) Page(url string) (p *Page, err error) {
-	target, err := proto.TargetCreateTarget{
-		URL:              "about:blank",
-		BrowserContextID: b.BrowserContextID,
-	}.Call(b)
+func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
+	req := opts
+	req.BrowserContextID = b.BrowserContextID
+	req.URL = "about:blank"
+
+	target, err := req.Call(b)
 	if err != nil {
 		return nil, err
 	}
@@ -175,8 +176,8 @@ func (b *Browser) Page(url string) (p *Page, err error) {
 	}()
 
 	p, err = b.PageFromTarget(target.TargetID)
-	if err == nil && url != "" { // no need to navigate if url is empty
-		err = p.Navigate(url)
+	if err == nil && opts.URL != "" { // no need to navigate if url is empty
+		err = p.Navigate(opts.URL)
 	}
 
 	return
@@ -191,7 +192,7 @@ func (b *Browser) Pages() (Pages, error) {
 
 	pageList := Pages{}
 	for _, target := range list.TargetInfos {
-		if target.Type != "page" {
+		if target.Type != proto.TargetTargetInfoTypePage {
 			continue
 		}
 
