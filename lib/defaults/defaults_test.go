@@ -25,7 +25,7 @@ func TestBasic(t *testing.T) {
 
 	parse("show,devtools,trace,slow=2s,port=8080,dir=tmp," +
 		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +
-		"proxy=localhost:8080,lock=9981",
+		"proxy=localhost:8080,lock=9981,wsbuf=1234",
 	)
 
 	as.True(Show)
@@ -40,6 +40,7 @@ func TestBasic(t *testing.T) {
 	as.Eq(":0", Monitor)
 	as.Eq("localhost:8080", Proxy)
 	as.Eq(9981, Lock)
+	as.Eq(WsBuf, 1234)
 
 	parse("monitor=:1234")
 	as.Eq(":1234", Monitor)

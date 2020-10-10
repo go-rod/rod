@@ -50,10 +50,8 @@ var URL string
 // CDP is the default of cdp.Client.Logger
 var CDP utils.Logger
 
-// Parse the flags
-func init() {
-	ResetWithEnv("")
-}
+// WsBuf is the default of cdp.DefaultWsClient.WriteBufferSize. Unit is MB, default value is 1MB.
+var WsBuf float64
 
 // Reset all flags to their init values.
 func Reset() {
@@ -69,6 +67,65 @@ func Reset() {
 	Lock = 2978
 	URL = ""
 	CDP = utils.LoggerQuiet
+	WsBuf = 1
+}
+
+var rules = map[string]func(string){
+	"trace": func(string) {
+		Trace = true
+	},
+	"slow": func(v string) {
+		var err error
+		Slow, err = time.ParseDuration(v)
+		utils.E(err)
+	},
+	"monitor": func(v string) {
+		Monitor = ":0"
+		if v != "" {
+			Monitor = v
+		}
+	},
+	"show": func(string) {
+		Show = true
+	},
+	"devtools": func(string) {
+		Devtools = true
+	},
+	"dir": func(v string) {
+		Dir = v
+	},
+	"port": func(v string) {
+		Port = v
+	},
+	"bin": func(v string) {
+		Bin = v
+	},
+	"proxy": func(v string) {
+		Proxy = v
+	},
+	"lock": func(v string) {
+		i, err := strconv.ParseInt(v, 10, 32)
+		if err == nil {
+			Lock = int(i)
+		}
+	},
+	"url": func(v string) {
+		URL = v
+	},
+	"cdp": func(v string) {
+		CDP = log.New(log.Writer(), "[cdp] ", 0)
+	},
+	"wsbuf": func(v string) {
+		i, err := strconv.ParseFloat(v, 64)
+		if err == nil {
+			WsBuf = i
+		}
+	},
+}
+
+// Parse the flags
+func init() {
+	ResetWithEnv("")
 }
 
 // ResetWithEnv set the default value of options used by rod.
@@ -130,51 +187,4 @@ func parse(options string) {
 		}
 		f(v)
 	}
-}
-
-var rules = map[string]func(string){
-	"trace": func(string) {
-		Trace = true
-	},
-	"slow": func(v string) {
-		var err error
-		Slow, err = time.ParseDuration(v)
-		utils.E(err)
-	},
-	"monitor": func(v string) {
-		Monitor = ":0"
-		if v != "" {
-			Monitor = v
-		}
-	},
-	"show": func(string) {
-		Show = true
-	},
-	"devtools": func(string) {
-		Devtools = true
-	},
-	"dir": func(v string) {
-		Dir = v
-	},
-	"port": func(v string) {
-		Port = v
-	},
-	"bin": func(v string) {
-		Bin = v
-	},
-	"proxy": func(v string) {
-		Proxy = v
-	},
-	"lock": func(v string) {
-		i, err := strconv.ParseInt(v, 10, 32)
-		if err == nil {
-			Lock = int(i)
-		}
-	},
-	"url": func(v string) {
-		URL = v
-	},
-	"cdp": func(v string) {
-		CDP = log.New(log.Writer(), "[cdp] ", 0)
-	},
 }

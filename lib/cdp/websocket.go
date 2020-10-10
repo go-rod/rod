@@ -4,18 +4,20 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/gorilla/websocket"
 )
 
 // DefaultWsClient is the default websocket client
 type DefaultWsClient struct {
+	// The unit is byte
 	WriteBufferSize int
 }
 
 // NewDefaultWsClient instance
 func NewDefaultWsClient() *DefaultWsClient {
 	return &DefaultWsClient{
-		WriteBufferSize: 1 * 1024 * 1024,
+		WriteBufferSize: int(defaults.WsBuf * 1024 * 1024),
 	}
 }
 
