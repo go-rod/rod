@@ -70,7 +70,7 @@ type definition struct {
 }
 
 func parse(schema gson.JSON) []*domain {
-	optimize(&schema)
+	optimize(schema)
 
 	list := []*domain{}
 
@@ -190,25 +190,48 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 	return list
 }
 
-func optimize(json *gson.JSON) {
+func optimize(json gson.JSON) {
+	k := func(k, v string) gson.Query {
+		return func(target interface{}) (val interface{}, has bool) {
+			for _, el := range target.([]interface{}) {
+				res := el.(map[string]interface{})[k]
+				if res == v {
+					return el, true
+				}
+			}
+			panic("not found")
+		}
+	}
+
+	getTypes := func(domain string) gson.JSON {
+		res, _ := json.Gets("domains", k("domain", domain), "types")
+		return res
+	}
+
 	// TargetTargetInfoType
-	json.Set("domains.32.types.2.properties.1.enum", []string{
+	j, _ := getTypes("Target").Gets(k("id", "TargetInfo"), "properties", k("name", "type"))
+	j.Set("enum", []string{
 		"page", "background_page", "service_worker", "shared_worker", "browser", "other",
 	})
 
 	// PageLifecycleEventName
-	json.Set("domains.26.events.17.parameters.2.enum", []string{
+	j, _ = json.Gets("domains", k("domain", "Page"), "events", k("name", "lifecycleEvent"), "parameters", k("name", "name"))
+	j.Set("enum", []string{
 		"init", "firstPaint", "firstContentfulPaint", "firstImagePaint", "firstMeaningfulPaintCandidate",
 		"DOMContentLoaded", "load", "networkAlmostIdle", "firstMeaningfulPaint", "networkIdle",
 	})
 
 	// replace these with better type definition
-	json.Set("domains.19.types.3.skip", true) // Input.TimeSinceEpoch
-	json.Set("domains.24.types.5.skip", true) // Network.TimeSinceEpoch
-	json.Set("domains.24.types.6.skip", true) // Network.MonotonicTime
+	j, _ = getTypes("Input").Gets(k("id", "TimeSinceEpoch"))
+	j.Set("skip", true)
+	j, _ = getTypes("Network").Gets(k("id", "TimeSinceEpoch"))
+	j.Set("skip", true)
+	j, _ = getTypes("Network").Gets(k("id", "MonotonicTime"))
+	j.Set("skip", true)
 
 	// fix Cookie.Expires
-	json.Set("domains.24.types.26.properties.4", map[string]interface{}{
+	j, _ = getTypes("Network").Gets(k("id", "Cookie"), "properties")
+	j.Set("4", map[string]interface{}{
 		"$ref":        "TimeSinceEpoch",
 		"description": "Cookie expiration date",
 		"name":        "expires",
