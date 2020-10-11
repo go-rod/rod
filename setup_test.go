@@ -128,30 +128,11 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.mc.t = t
 	tester.G = got.New(t)
 
-	heartBeat(tester)
-
-	return *tester
-}
-
-// when concurrently run tests, indicate the busy ones
-func heartBeat(t *T) {
-	if !testing.Short() {
-		return
+	if testing.Short() {
+		tester.Heartbeat(5 * time.Second)
 	}
 
-	ctx := t.Context()
-	go func() {
-		t.Helper()
-		tmr := time.NewTicker(3 * time.Second)
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case <-tmr.C:
-			}
-			t.Log(t.Name(), "busy...")
-		}
-	}()
+	return *tester
 }
 
 func getOnePage(b *rod.Browser) (page *rod.Page) {
