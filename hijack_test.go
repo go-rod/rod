@@ -148,7 +148,7 @@ func (t T) HijackOnErrorLog() {
 }
 
 func (t T) HijackFailRequest() {
-	s := t.Serve().Route("/", ".html", `<html>
+	s := t.Serve().Route("/page", ".html", `<html>
 	<body></body>
 	<script>
 		fetch('/a').catch(async (err) => {
@@ -165,7 +165,7 @@ func (t T) HijackFailRequest() {
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL()).MustWaitLoad()
+	t.page.MustNavigate(s.URL("/page")).MustWaitLoad()
 
 	t.page.MustWait(`document.title == 'Failed to fetch'`)
 
@@ -274,9 +274,9 @@ func (t T) GetDownloadFile() {
 	content := "test content"
 
 	s.Route("/d", ".bin", []byte(content))
-	s.Route("/", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
+	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
 
-	page := t.page.MustNavigate(s.URL())
+	page := t.page.MustNavigate(s.URL("/page"))
 
 	wait := page.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
 	page.MustElement("a").MustClick()
