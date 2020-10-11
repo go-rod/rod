@@ -469,10 +469,11 @@ func (t T) PageWaitEvent() {
 }
 
 func (t T) PageEvent() {
-	s := t.page.Context(t.Context()).Event().Subscribe(t.Context())
-	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p := t.newPage("")
+	s := p.Event().Subscribe(t.Context())
+	p.MustNavigate(t.srcFile("fixtures/click.html"))
 	for e := range s {
-		if rod.Event(e.(*cdp.Event), &proto.PageFrameNavigated{}) {
+		if rod.Event(e, &proto.PageFrameNavigated{}) {
 			break
 		}
 	}

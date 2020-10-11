@@ -54,8 +54,8 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 	}
 
 	var sessionID proto.TargetSessionID
-	if tsa, ok := r.client.(proto.TargetSessionable); ok {
-		sessionID = tsa.GetTargetSessionID()
+	if tsa, ok := r.client.(proto.Sessionable); ok {
+		sessionID = tsa.GetSessionID()
 	}
 
 	eventCtx, cancel := context.WithCancel(ctx)

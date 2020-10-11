@@ -20,7 +20,7 @@ import (
 // Page implements these interfaces
 var _ proto.Client = &Page{}
 var _ proto.Contextable = &Page{}
-var _ proto.TargetSessionable = &Page{}
+var _ proto.Sessionable = &Page{}
 
 // Page represents the webpage
 // We try to hold as less states as possible
@@ -45,8 +45,6 @@ type Page struct {
 	jsHelperObj   *proto.RuntimeRemoteObject
 	executionIDs  map[proto.PageFrameID]proto.RuntimeExecutionContextID
 	jsContextLock *sync.Mutex
-
-	event *goob.Observable
 }
 
 // IsIframe tells if it's iframe
@@ -65,8 +63,8 @@ func (p *Page) Root() *Page {
 	return f
 }
 
-// GetTargetSessionID interface
-func (p *Page) GetTargetSessionID() proto.TargetSessionID {
+// GetSessionID interface
+func (p *Page) GetSessionID() proto.TargetSessionID {
 	return p.SessionID
 }
 
@@ -378,19 +376,24 @@ func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
 // Event returns the observable for page events. Useful when you want to handle massive event types.
 // The type of the event is *cdp.Event .
 func (p *Page) Event() *goob.Observable {
+	p, cancel := p.WithCancel()
 	return p.browser.event.Filter(p.ctx, func(e *cdp.Event) bool {
+		detached := proto.TargetDetachedFromTarget{}
+		if Event(e, &detached) && detached.SessionID == p.SessionID {
+			cancel()
+			return true
+		}
 		return e.SessionID == string(p.SessionID)
 	})
 }
 
-// EachEvent of the specified event type, if any callback returns true the event loop will stop.
-// About the callback type check the doc of Browser.EachEvent .
+// EachEvent is similar to Browser.EachEvent, but only catches events for current page.
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 	return p.browser.eachEvent(p.ctx, p.SessionID, callbacks...)
 }
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
-func (p *Page) WaitEvent(e proto.Payload) (wait func()) {
+func (p *Page) WaitEvent(e proto.Event) (wait func()) {
 	return p.browser.waitEvent(p.ctx, p.SessionID, e)
 }
 

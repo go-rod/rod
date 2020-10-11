@@ -21,7 +21,7 @@ import (
 // Element implements these interfaces
 var _ proto.Client = &Element{}
 var _ proto.Contextable = &Element{}
-var _ proto.TargetSessionable = &Element{}
+var _ proto.Sessionable = &Element{}
 
 // Element represents the DOM element
 type Element struct {
@@ -33,8 +33,8 @@ type Element struct {
 	Object *proto.RuntimeRemoteObject
 }
 
-// GetTargetSessionID interface
-func (el *Element) GetTargetSessionID() proto.TargetSessionID {
+// GetSessionID interface
+func (el *Element) GetSessionID() proto.TargetSessionID {
 	return el.page.SessionID
 }
 

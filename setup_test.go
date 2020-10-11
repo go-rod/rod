@@ -272,7 +272,7 @@ type StubSend func() (gson.JSON, error)
 
 // When call the cdp.Client.Call the nth time use fn instead.
 // Use p to filter method.
-func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (gson.JSON, error)) {
+func (mc *MockClient) stub(nth int, p proto.Request, fn func(send StubSend) (gson.JSON, error)) {
 	if p == nil {
 		mc.t.Logf("p must be specified")
 		mc.t.FailNow()
@@ -300,7 +300,7 @@ func (mc *MockClient) stub(nth int, p proto.Payload, fn func(send StubSend) (gso
 
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
-func (mc *MockClient) stubErr(nth int, p proto.Payload) {
+func (mc *MockClient) stubErr(nth int, p proto.Request) {
 	mc.stub(nth, p, func(send StubSend) (gson.JSON, error) {
 		return gson.New(nil), errors.New("mock error")
 	})

@@ -155,8 +155,8 @@ func (d *definition) format() (code string) {
 
 		if d.cdpType == cdpTypeEvents {
 			code += utils.S(`
-				// ProtoName interface
-				func (evt {{.name}}) ProtoName() string {
+				// ProtoEvent interface
+				func (evt {{.name}}) ProtoEvent() string {
 					return "{{.event}}"
 				}
 			`, "name", d.name, "event", d.domain.name+"."+d.originName)
@@ -195,7 +195,7 @@ func (d *definition) formatTests() (code string) {
 		return utils.S(`
 		func (t T) {{.name}}() {
 			e := proto.{{.name}}{}
-			e.ProtoName()
+			e.ProtoEvent()
 		}
 		`, "name", d.name)
 	}

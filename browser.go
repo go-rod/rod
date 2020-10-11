@@ -217,17 +217,21 @@ func (b *Browser) Event() *goob.Observable {
 	return b.event
 }
 
-// EachEvent of the specified event type, if any callback returns true the event loop will stop.
-// The type of callback is (? means optional):
+// EachEvent of the specified event types, if any callback returns true the wait function will resolve,
+// The type of each callback is (? means optional):
 //
-//     func(proto.Payload, proto.TargetSessionID?) bool?
+//     func(proto.Event, proto.TargetSessionID?) bool?
+//
+// You can listen to multiple event types at the same time like:
+//
+//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
 //
 func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
 	return b.eachEvent(b.ctx, "", callbacks...)
 }
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
-func (b *Browser) WaitEvent(e proto.Payload) (wait func()) {
+func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
 	return b.waitEvent(b.ctx, "", e)
 }
 
@@ -250,12 +254,12 @@ func (b *Browser) eachEvent(
 		// Only enabled domains will emit events to cdp client.
 		// We enable the domains for the event types if it's not enabled.
 		// We recover the domains to their previous states after the wait ends.
-		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Payload).ProtoName())
-		var enable proto.Payload
+		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Event).ProtoEvent())
+		var enable proto.Request
 		if domain == "Target" { // only Target domain is special
 			enable = proto.TargetSetDiscoverTargets{Discover: true}
 		} else {
-			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Payload)
+			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Request)
 		}
 		recovers[i] = b.Context(ctx).EnableDomain(sessionID, enable)
 	}
@@ -283,7 +287,7 @@ func (b *Browser) eachEvent(
 
 			for i, eType := range eventTypes {
 				eVal := reflect.New(eType)
-				if Event(e, eVal.Interface().(proto.Payload)) {
+				if Event(e, eVal.Interface().(proto.Event)) {
 					args := []reflect.Value{eVal}
 					if cbValues[i].Type().NumIn() == 2 {
 						args = append(args, reflect.ValueOf(sessionID))
@@ -301,13 +305,13 @@ func (b *Browser) eachEvent(
 }
 
 // waits for the next event for one time. It will also load the data into the event object.
-func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID, e proto.Payload) (wait func()) {
+func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID, e proto.Event) (wait func()) {
 	valE := reflect.ValueOf(e)
 	valTrue := reflect.ValueOf(true)
 
 	// dynamically creates a function on runtime:
 	//
-	// func(ee proto.Payload) bool {
+	// func(ee proto.Event) bool {
 	//   *e = *ee
 	//   return true
 	// }

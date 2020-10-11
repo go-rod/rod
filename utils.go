@@ -89,9 +89,10 @@ func (sr *StreamReader) Read(p []byte) (n int, err error) {
 	return sr.buf.Read(p)
 }
 
-// Event helps to convert a cdp.Event to proto.Payload. Returns false if the conversion fails
-func Event(msg *cdp.Event, evt proto.Payload) bool {
-	if msg.Method == evt.ProtoName() {
+// Event helps to convert a *cdp.Event to proto.Event. Returns false if the conversion fails
+func Event(e interface{}, evt proto.Event) bool {
+	msg := e.(*cdp.Event)
+	if msg.Method == evt.ProtoEvent() {
 		err := json.Unmarshal(msg.Params, evt)
 		return err == nil
 	}

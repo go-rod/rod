@@ -19,6 +19,8 @@ type Client struct {
 }
 
 var _ proto.Client = &Client{}
+var _ proto.Sessionable = &Client{}
+var _ proto.Contextable = &Client{}
 
 func (c *Client) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	c.sessionID = sessionID
@@ -27,7 +29,7 @@ func (c *Client) Call(ctx context.Context, sessionID, methodName string, params 
 	return utils.MustToJSONBytes(c.ret), c.err
 }
 
-func (c *Client) GetTargetSessionID() proto.TargetSessionID { return "" }
+func (c *Client) GetSessionID() proto.TargetSessionID { return "" }
 
 func (c *Client) GetContext() context.Context { return nil }
 
@@ -122,4 +124,24 @@ func (t T) CookiesToParams() {
 
 	t.Eq(list[0].Name, "name")
 	t.Eq(list[0].Value, "val")
+}
+
+func (t T) GeneratorOptimize() {
+	var _ proto.TargetTargetInfoType = proto.TargetTargetInfoTypeBackgroundPage
+	var _ proto.TargetTargetInfoType = proto.TargetTargetInfoTypePage
+
+	var _ proto.PageLifecycleEventName = proto.PageLifecycleEventNameInit
+	var _ proto.PageLifecycleEventName = proto.PageLifecycleEventNameFirstContentfulPaint
+	var _ proto.PageLifecycleEventName = proto.PageLifecycleEventNameFirstImagePaint
+
+	a := proto.InputDispatchKeyEvent{}
+	var _ *proto.TimeSinceEpoch = a.Timestamp
+	b := proto.NetworkCookie{}
+	var _ *proto.TimeSinceEpoch = b.Expires
+
+	c := proto.NetworkDataReceived{}
+	var _ *proto.MonotonicTime = c.Timestamp
+
+	d := proto.NetworkCookie{}
+	var _ *proto.TimeSinceEpoch = d.Expires
 }

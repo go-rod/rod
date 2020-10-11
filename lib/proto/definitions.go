@@ -718,8 +718,8 @@ type AnimationAnimationCanceled struct {
 	ID string `json:"id"`
 }
 
-// ProtoName interface
-func (evt AnimationAnimationCanceled) ProtoName() string {
+// ProtoEvent interface
+func (evt AnimationAnimationCanceled) ProtoEvent() string {
 	return "Animation.animationCanceled"
 }
 
@@ -730,8 +730,8 @@ type AnimationAnimationCreated struct {
 	ID string `json:"id"`
 }
 
-// ProtoName interface
-func (evt AnimationAnimationCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt AnimationAnimationCreated) ProtoEvent() string {
 	return "Animation.animationCreated"
 }
 
@@ -742,8 +742,8 @@ type AnimationAnimationStarted struct {
 	Animation *AnimationAnimation `json:"animation"`
 }
 
-// ProtoName interface
-func (evt AnimationAnimationStarted) ProtoName() string {
+// ProtoEvent interface
+func (evt AnimationAnimationStarted) ProtoEvent() string {
 	return "Animation.animationStarted"
 }
 
@@ -892,8 +892,8 @@ type ApplicationCacheApplicationCacheStatusUpdated struct {
 	Status int `json:"status"`
 }
 
-// ProtoName interface
-func (evt ApplicationCacheApplicationCacheStatusUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt ApplicationCacheApplicationCacheStatusUpdated) ProtoEvent() string {
 	return "ApplicationCache.applicationCacheStatusUpdated"
 }
 
@@ -904,8 +904,8 @@ type ApplicationCacheNetworkStateUpdated struct {
 	IsNowOnline bool `json:"isNowOnline"`
 }
 
-// ProtoName interface
-func (evt ApplicationCacheNetworkStateUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt ApplicationCacheNetworkStateUpdated) ProtoEvent() string {
 	return "ApplicationCache.networkStateUpdated"
 }
 
@@ -948,6 +948,12 @@ const (
 
 	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure enum const
 	AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteNoneInsecure"
+
+	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteLax enum const
+	AuditsSameSiteCookieExclusionReasonExcludeSameSiteLax AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteLax"
+
+	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict enum const
+	AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteStrict"
 )
 
 // AuditsSameSiteCookieWarningReason ...
@@ -1170,8 +1176,11 @@ type AuditsBlockedByResponseIssueDetails struct {
 	// Request ...
 	Request *AuditsAffectedRequest `json:"request"`
 
-	// Frame (optional) ...
-	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
+	// ParentFrame (optional) ...
+	ParentFrame *AuditsAffectedFrame `json:"parentFrame,omitempty"`
+
+	// BlockedFrame (optional) ...
+	BlockedFrame *AuditsAffectedFrame `json:"blockedFrame,omitempty"`
 
 	// Reason ...
 	Reason AuditsBlockedByResponseReason `json:"reason"`
@@ -1215,6 +1224,61 @@ type AuditsHeavyAdIssueDetails struct {
 	Frame *AuditsAffectedFrame `json:"frame"`
 }
 
+// AuditsContentSecurityPolicyViolationType ...
+type AuditsContentSecurityPolicyViolationType string
+
+const (
+	// AuditsContentSecurityPolicyViolationTypeKInlineViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKInlineViolation AuditsContentSecurityPolicyViolationType = "kInlineViolation"
+
+	// AuditsContentSecurityPolicyViolationTypeKEvalViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKEvalViolation AuditsContentSecurityPolicyViolationType = "kEvalViolation"
+
+	// AuditsContentSecurityPolicyViolationTypeKURLViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKURLViolation AuditsContentSecurityPolicyViolationType = "kURLViolation"
+
+	// AuditsContentSecurityPolicyViolationTypeKTrustedTypesSinkViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKTrustedTypesSinkViolation AuditsContentSecurityPolicyViolationType = "kTrustedTypesSinkViolation"
+
+	// AuditsContentSecurityPolicyViolationTypeKTrustedTypesPolicyViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKTrustedTypesPolicyViolation AuditsContentSecurityPolicyViolationType = "kTrustedTypesPolicyViolation"
+)
+
+// AuditsSourceCodeLocation ...
+type AuditsSourceCodeLocation struct {
+
+	// URL ...
+	URL string `json:"url"`
+
+	// LineNumber ...
+	LineNumber int `json:"lineNumber"`
+
+	// ColumnNumber ...
+	ColumnNumber int `json:"columnNumber"`
+}
+
+// AuditsContentSecurityPolicyIssueDetails ...
+type AuditsContentSecurityPolicyIssueDetails struct {
+
+	// BlockedURL (optional) The url not included in allowed sources.
+	BlockedURL string `json:"blockedURL,omitempty"`
+
+	// ViolatedDirective Specific directive that is violated, causing the CSP issue.
+	ViolatedDirective string `json:"violatedDirective"`
+
+	// ContentSecurityPolicyViolationType ...
+	ContentSecurityPolicyViolationType AuditsContentSecurityPolicyViolationType `json:"contentSecurityPolicyViolationType"`
+
+	// FrameAncestor (optional) ...
+	FrameAncestor *AuditsAffectedFrame `json:"frameAncestor,omitempty"`
+
+	// SourceCodeLocation (optional) ...
+	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation,omitempty"`
+
+	// ViolatingNodeID (optional) ...
+	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId,omitempty"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -1232,6 +1296,9 @@ const (
 
 	// AuditsInspectorIssueCodeHeavyAdIssue enum const
 	AuditsInspectorIssueCodeHeavyAdIssue AuditsInspectorIssueCode = "HeavyAdIssue"
+
+	// AuditsInspectorIssueCodeContentSecurityPolicyIssue enum const
+	AuditsInspectorIssueCodeContentSecurityPolicyIssue AuditsInspectorIssueCode = "ContentSecurityPolicyIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -1250,6 +1317,9 @@ type AuditsInspectorIssueDetails struct {
 
 	// HeavyAdIssueDetails (optional) ...
 	HeavyAdIssueDetails *AuditsHeavyAdIssueDetails `json:"heavyAdIssueDetails,omitempty"`
+
+	// ContentSecurityPolicyIssueDetails (optional) ...
+	ContentSecurityPolicyIssueDetails *AuditsContentSecurityPolicyIssueDetails `json:"contentSecurityPolicyIssueDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
@@ -1348,8 +1418,8 @@ type AuditsIssueAdded struct {
 	Issue *AuditsInspectorIssue `json:"issue"`
 }
 
-// ProtoName interface
-func (evt AuditsIssueAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt AuditsIssueAdded) ProtoEvent() string {
 	return "Audits.issueAdded"
 }
 
@@ -1488,8 +1558,8 @@ type BackgroundServiceRecordingStateChanged struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoName interface
-func (evt BackgroundServiceRecordingStateChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt BackgroundServiceRecordingStateChanged) ProtoEvent() string {
 	return "BackgroundService.recordingStateChanged"
 }
 
@@ -1501,8 +1571,8 @@ type BackgroundServiceBackgroundServiceEventReceived struct {
 	BackgroundServiceEvent *BackgroundServiceBackgroundServiceEvent `json:"backgroundServiceEvent"`
 }
 
-// ProtoName interface
-func (evt BackgroundServiceBackgroundServiceEventReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt BackgroundServiceBackgroundServiceEventReceived) ProtoEvent() string {
 	return "BackgroundService.backgroundServiceEventReceived"
 }
 
@@ -2352,7 +2422,27 @@ type CSSPlatformFontUsage struct {
 	GlyphCount float64 `json:"glyphCount"`
 }
 
+// CSSFontVariationAxis Information about font variation axes for variable fonts
+type CSSFontVariationAxis struct {
+
+	// Tag The font-variation-setting tag (a.k.a. "axis tag").
+	Tag string `json:"tag"`
+
+	// Name Human-readable variation name in the default language (normally, "en").
+	Name string `json:"name"`
+
+	// MinValue The minimum value (inclusive) the font supports for this tag.
+	MinValue float64 `json:"minValue"`
+
+	// MaxValue The maximum value (inclusive) the font supports for this tag.
+	MaxValue float64 `json:"maxValue"`
+
+	// DefaultValue The default value.
+	DefaultValue float64 `json:"defaultValue"`
+}
+
 // CSSFontFace Properties of a web font: https://www.w3.org/TR/2008/REC-CSS2-20080411/fonts.html#font-descriptions
+// and additional information such as platformFontFamily and fontVariationAxes.
 type CSSFontFace struct {
 
 	// FontFamily The font-family.
@@ -2378,6 +2468,9 @@ type CSSFontFace struct {
 
 	// PlatformFontFamily The resolved platform font family
 	PlatformFontFamily string `json:"platformFontFamily"`
+
+	// FontVariationAxes (optional) Available variation settings (a.k.a. "axes").
+	FontVariationAxes []*CSSFontVariationAxis `json:"fontVariationAxes,omitempty"`
 }
 
 // CSSCSSKeyframesRule CSS keyframes rule representation.
@@ -2732,6 +2825,46 @@ type CSSGetStyleSheetTextResult struct {
 	Text string `json:"text"`
 }
 
+// CSSTrackComputedStyleUpdates (experimental) Starts tracking the given computed styles for updates. The specified array of properties
+// replaces the one previously specified. Pass empty array to disable tracking.
+// Use takeComputedStyleUpdates to retrieve the list of nodes that had properties modified.
+// The changes to computed style properties are only tracked for nodes pushed to the front-end
+// by the DOM agent. If no changes to the tracked properties occur after the node has been pushed
+// to the front-end, no updates will be issued for the node.
+type CSSTrackComputedStyleUpdates struct {
+
+	// PropertiesToTrack ...
+	PropertiesToTrack []*CSSCSSComputedStyleProperty `json:"propertiesToTrack"`
+}
+
+// ProtoName of the command
+func (m CSSTrackComputedStyleUpdates) ProtoName() string { return "CSS.trackComputedStyleUpdates" }
+
+// Call of the command, sessionID is optional.
+func (m CSSTrackComputedStyleUpdates) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
+// CSSTakeComputedStyleUpdates (experimental) Polls the next batch of computed style updates.
+type CSSTakeComputedStyleUpdates struct {
+}
+
+// ProtoName of the command
+func (m CSSTakeComputedStyleUpdates) ProtoName() string { return "CSS.takeComputedStyleUpdates" }
+
+// Call of the command, sessionID is optional.
+func (m CSSTakeComputedStyleUpdates) Call(c Client) (*CSSTakeComputedStyleUpdatesResult, error) {
+	var res CSSTakeComputedStyleUpdatesResult
+	return &res, call(m.ProtoName(), m, &res, c)
+}
+
+// CSSTakeComputedStyleUpdatesResult (experimental) Polls the next batch of computed style updates.
+type CSSTakeComputedStyleUpdatesResult struct {
+
+	// NodeIds The list of node Ids that have their tracked computed styles updated
+	NodeIds []DOMNodeID `json:"nodeIds"`
+}
+
 // CSSSetEffectivePropertyValueForNode Find a rule with the given active property for the given node and set the new value for this
 // property
 type CSSSetEffectivePropertyValueForNode struct {
@@ -2951,6 +3084,21 @@ type CSSTakeCoverageDeltaResult struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
+// CSSSetLocalFontsEnabled (experimental) Enables/disables rendering of local CSS fonts (enabled by default).
+type CSSSetLocalFontsEnabled struct {
+
+	// Enabled Whether rendering of local fonts is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// ProtoName of the command
+func (m CSSSetLocalFontsEnabled) ProtoName() string { return "CSS.setLocalFontsEnabled" }
+
+// Call of the command, sessionID is optional.
+func (m CSSSetLocalFontsEnabled) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
 // CSSFontsUpdated Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
 // web font
 type CSSFontsUpdated struct {
@@ -2959,8 +3107,8 @@ type CSSFontsUpdated struct {
 	Font *CSSFontFace `json:"font,omitempty"`
 }
 
-// ProtoName interface
-func (evt CSSFontsUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt CSSFontsUpdated) ProtoEvent() string {
 	return "CSS.fontsUpdated"
 }
 
@@ -2969,8 +3117,8 @@ func (evt CSSFontsUpdated) ProtoName() string {
 type CSSMediaQueryResultChanged struct {
 }
 
-// ProtoName interface
-func (evt CSSMediaQueryResultChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt CSSMediaQueryResultChanged) ProtoEvent() string {
 	return "CSS.mediaQueryResultChanged"
 }
 
@@ -2981,8 +3129,8 @@ type CSSStyleSheetAdded struct {
 	Header *CSSCSSStyleSheetHeader `json:"header"`
 }
 
-// ProtoName interface
-func (evt CSSStyleSheetAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt CSSStyleSheetAdded) ProtoEvent() string {
 	return "CSS.styleSheetAdded"
 }
 
@@ -2993,8 +3141,8 @@ type CSSStyleSheetChanged struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoName interface
-func (evt CSSStyleSheetChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt CSSStyleSheetChanged) ProtoEvent() string {
 	return "CSS.styleSheetChanged"
 }
 
@@ -3005,8 +3153,8 @@ type CSSStyleSheetRemoved struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoName interface
-func (evt CSSStyleSheetRemoved) ProtoName() string {
+// ProtoEvent interface
+func (evt CSSStyleSheetRemoved) ProtoEvent() string {
 	return "CSS.styleSheetRemoved"
 }
 
@@ -3316,8 +3464,8 @@ type CastSinksUpdated struct {
 	Sinks []*CastSink `json:"sinks"`
 }
 
-// ProtoName interface
-func (evt CastSinksUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt CastSinksUpdated) ProtoEvent() string {
 	return "Cast.sinksUpdated"
 }
 
@@ -3329,8 +3477,8 @@ type CastIssueUpdated struct {
 	IssueMessage string `json:"issueMessage"`
 }
 
-// ProtoName interface
-func (evt CastIssueUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt CastIssueUpdated) ProtoEvent() string {
 	return "Cast.issueUpdated"
 }
 
@@ -3583,6 +3731,16 @@ type DOMRect struct {
 
 	// Height Rectangle height
 	Height float64 `json:"height"`
+}
+
+// DOMCSSComputedStyleProperty ...
+type DOMCSSComputedStyleProperty struct {
+
+	// Name Computed style property name.
+	Name string `json:"name"`
+
+	// Value Computed style property value.
+	Value string `json:"value"`
 }
 
 // DOMCollectClassNamesFromSubtree (experimental) Collects class names for the node with given id and all of it's child nodes.
@@ -3880,7 +4038,9 @@ type DOMGetDocumentResult struct {
 	Root *DOMNode `json:"root"`
 }
 
-// DOMGetFlattenedDocument Returns the root DOM node (and optionally the subtree) to the caller.
+// DOMGetFlattenedDocument (deprecated) Returns the root DOM node (and optionally the subtree) to the caller.
+// Deprecated, as it is not designed to work well with the rest of the DOM agent.
+// Use DOMSnapshot.captureSnapshot instead.
 type DOMGetFlattenedDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
@@ -3901,11 +4061,43 @@ func (m DOMGetFlattenedDocument) Call(c Client) (*DOMGetFlattenedDocumentResult,
 	return &res, call(m.ProtoName(), m, &res, c)
 }
 
-// DOMGetFlattenedDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
+// DOMGetFlattenedDocumentResult (deprecated) Returns the root DOM node (and optionally the subtree) to the caller.
+// Deprecated, as it is not designed to work well with the rest of the DOM agent.
+// Use DOMSnapshot.captureSnapshot instead.
 type DOMGetFlattenedDocumentResult struct {
 
 	// Nodes Resulting node.
 	Nodes []*DOMNode `json:"nodes"`
+}
+
+// DOMGetNodesForSubtreeByStyle (experimental) Finds nodes with a given computed style in a subtree.
+type DOMGetNodesForSubtreeByStyle struct {
+
+	// NodeID Node ID pointing to the root of a subtree.
+	NodeID DOMNodeID `json:"nodeId"`
+
+	// ComputedStyles The style to filter nodes by (includes nodes if any of properties matches).
+	ComputedStyles []*DOMCSSComputedStyleProperty `json:"computedStyles"`
+
+	// Pierce (optional) Whether or not iframes and shadow roots in the same target should be traversed when returning the
+	// results (default is false).
+	Pierce bool `json:"pierce,omitempty"`
+}
+
+// ProtoName of the command
+func (m DOMGetNodesForSubtreeByStyle) ProtoName() string { return "DOM.getNodesForSubtreeByStyle" }
+
+// Call of the command, sessionID is optional.
+func (m DOMGetNodesForSubtreeByStyle) Call(c Client) (*DOMGetNodesForSubtreeByStyleResult, error) {
+	var res DOMGetNodesForSubtreeByStyleResult
+	return &res, call(m.ProtoName(), m, &res, c)
+}
+
+// DOMGetNodesForSubtreeByStyleResult (experimental) Finds nodes with a given computed style in a subtree.
+type DOMGetNodesForSubtreeByStyleResult struct {
+
+	// NodeIds Resulting nodes.
+	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
 // DOMGetNodeForLocation Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
@@ -4630,8 +4822,8 @@ type DOMAttributeModified struct {
 	Value string `json:"value"`
 }
 
-// ProtoName interface
-func (evt DOMAttributeModified) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMAttributeModified) ProtoEvent() string {
 	return "DOM.attributeModified"
 }
 
@@ -4645,8 +4837,8 @@ type DOMAttributeRemoved struct {
 	Name string `json:"name"`
 }
 
-// ProtoName interface
-func (evt DOMAttributeRemoved) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMAttributeRemoved) ProtoEvent() string {
 	return "DOM.attributeRemoved"
 }
 
@@ -4660,8 +4852,8 @@ type DOMCharacterDataModified struct {
 	CharacterData string `json:"characterData"`
 }
 
-// ProtoName interface
-func (evt DOMCharacterDataModified) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMCharacterDataModified) ProtoEvent() string {
 	return "DOM.characterDataModified"
 }
 
@@ -4675,8 +4867,8 @@ type DOMChildNodeCountUpdated struct {
 	ChildNodeCount int `json:"childNodeCount"`
 }
 
-// ProtoName interface
-func (evt DOMChildNodeCountUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMChildNodeCountUpdated) ProtoEvent() string {
 	return "DOM.childNodeCountUpdated"
 }
 
@@ -4693,8 +4885,8 @@ type DOMChildNodeInserted struct {
 	Node *DOMNode `json:"node"`
 }
 
-// ProtoName interface
-func (evt DOMChildNodeInserted) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMChildNodeInserted) ProtoEvent() string {
 	return "DOM.childNodeInserted"
 }
 
@@ -4708,8 +4900,8 @@ type DOMChildNodeRemoved struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoName interface
-func (evt DOMChildNodeRemoved) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMChildNodeRemoved) ProtoEvent() string {
 	return "DOM.childNodeRemoved"
 }
 
@@ -4723,8 +4915,8 @@ type DOMDistributedNodesUpdated struct {
 	DistributedNodes []*DOMBackendNode `json:"distributedNodes"`
 }
 
-// ProtoName interface
-func (evt DOMDistributedNodesUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMDistributedNodesUpdated) ProtoEvent() string {
 	return "DOM.distributedNodesUpdated"
 }
 
@@ -4732,8 +4924,8 @@ func (evt DOMDistributedNodesUpdated) ProtoName() string {
 type DOMDocumentUpdated struct {
 }
 
-// ProtoName interface
-func (evt DOMDocumentUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMDocumentUpdated) ProtoEvent() string {
 	return "DOM.documentUpdated"
 }
 
@@ -4744,8 +4936,8 @@ type DOMInlineStyleInvalidated struct {
 	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
-// ProtoName interface
-func (evt DOMInlineStyleInvalidated) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMInlineStyleInvalidated) ProtoEvent() string {
 	return "DOM.inlineStyleInvalidated"
 }
 
@@ -4759,8 +4951,8 @@ type DOMPseudoElementAdded struct {
 	PseudoElement *DOMNode `json:"pseudoElement"`
 }
 
-// ProtoName interface
-func (evt DOMPseudoElementAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMPseudoElementAdded) ProtoEvent() string {
 	return "DOM.pseudoElementAdded"
 }
 
@@ -4774,8 +4966,8 @@ type DOMPseudoElementRemoved struct {
 	PseudoElementID DOMNodeID `json:"pseudoElementId"`
 }
 
-// ProtoName interface
-func (evt DOMPseudoElementRemoved) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMPseudoElementRemoved) ProtoEvent() string {
 	return "DOM.pseudoElementRemoved"
 }
 
@@ -4790,8 +4982,8 @@ type DOMSetChildNodes struct {
 	Nodes []*DOMNode `json:"nodes"`
 }
 
-// ProtoName interface
-func (evt DOMSetChildNodes) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMSetChildNodes) ProtoEvent() string {
 	return "DOM.setChildNodes"
 }
 
@@ -4805,8 +4997,8 @@ type DOMShadowRootPopped struct {
 	RootID DOMNodeID `json:"rootId"`
 }
 
-// ProtoName interface
-func (evt DOMShadowRootPopped) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMShadowRootPopped) ProtoEvent() string {
 	return "DOM.shadowRootPopped"
 }
 
@@ -4820,8 +5012,8 @@ type DOMShadowRootPushed struct {
 	Root *DOMNode `json:"root"`
 }
 
-// ProtoName interface
-func (evt DOMShadowRootPushed) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMShadowRootPushed) ProtoEvent() string {
 	return "DOM.shadowRootPushed"
 }
 
@@ -5620,8 +5812,8 @@ type DOMStorageDomStorageItemAdded struct {
 	NewValue string `json:"newValue"`
 }
 
-// ProtoName interface
-func (evt DOMStorageDomStorageItemAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMStorageDomStorageItemAdded) ProtoEvent() string {
 	return "DOMStorage.domStorageItemAdded"
 }
 
@@ -5635,8 +5827,8 @@ type DOMStorageDomStorageItemRemoved struct {
 	Key string `json:"key"`
 }
 
-// ProtoName interface
-func (evt DOMStorageDomStorageItemRemoved) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMStorageDomStorageItemRemoved) ProtoEvent() string {
 	return "DOMStorage.domStorageItemRemoved"
 }
 
@@ -5656,8 +5848,8 @@ type DOMStorageDomStorageItemUpdated struct {
 	NewValue string `json:"newValue"`
 }
 
-// ProtoName interface
-func (evt DOMStorageDomStorageItemUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMStorageDomStorageItemUpdated) ProtoEvent() string {
 	return "DOMStorage.domStorageItemUpdated"
 }
 
@@ -5668,8 +5860,8 @@ type DOMStorageDomStorageItemsCleared struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// ProtoName interface
-func (evt DOMStorageDomStorageItemsCleared) ProtoName() string {
+// ProtoEvent interface
+func (evt DOMStorageDomStorageItemsCleared) ProtoEvent() string {
 	return "DOMStorage.domStorageItemsCleared"
 }
 
@@ -5788,8 +5980,8 @@ type DatabaseAddDatabase struct {
 	Database *DatabaseDatabase `json:"database"`
 }
 
-// ProtoName interface
-func (evt DatabaseAddDatabase) ProtoName() string {
+// ProtoEvent interface
+func (evt DatabaseAddDatabase) ProtoEvent() string {
 	return "Database.addDatabase"
 }
 
@@ -5855,6 +6047,33 @@ type EmulationScreenOrientation struct {
 
 	// Angle Orientation angle.
 	Angle int `json:"angle"`
+}
+
+// EmulationDisplayFeatureOrientation enum
+type EmulationDisplayFeatureOrientation string
+
+const (
+	// EmulationDisplayFeatureOrientationVertical enum const
+	EmulationDisplayFeatureOrientationVertical EmulationDisplayFeatureOrientation = "vertical"
+
+	// EmulationDisplayFeatureOrientationHorizontal enum const
+	EmulationDisplayFeatureOrientationHorizontal EmulationDisplayFeatureOrientation = "horizontal"
+)
+
+// EmulationDisplayFeature ...
+type EmulationDisplayFeature struct {
+
+	// Orientation Orientation of a display feature in relation to screen
+	Orientation EmulationDisplayFeatureOrientation `json:"orientation"`
+
+	// Offset The offset from the screen origin in either the x (for vertical
+	// orientation) or y (for horizontal orientation) direction.
+	Offset int `json:"offset"`
+
+	// MaskLength A display feature may mask content such that it is not physically
+	// displayed - this length along with the offset describes this area.
+	// A display feature that only splits content will have a 0 mask_length.
+	MaskLength int `json:"maskLength"`
 }
 
 // EmulationMediaFeature ...
@@ -6072,6 +6291,10 @@ type EmulationSetDeviceMetricsOverride struct {
 	// Viewport (experimental) (optional) If set, the visible area of the page will be overridden to this viewport. This viewport
 	// change is not observed by the page, e.g. viewport-relative elements do not change positions.
 	Viewport *PageViewport `json:"viewport,omitempty"`
+
+	// DisplayFeature (experimental) (optional) If set, the display feature of a multi-segment screen. If not set, multi-segment support
+	// is turned-off.
+	DisplayFeature *EmulationDisplayFeature `json:"displayFeature,omitempty"`
 }
 
 // ProtoName of the command
@@ -6226,6 +6449,36 @@ func (m EmulationSetGeolocationOverride) ProtoName() string {
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetGeolocationOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
+// EmulationSetIdleOverride (experimental) Overrides the Idle state.
+type EmulationSetIdleOverride struct {
+
+	// IsUserActive Mock isUserActive
+	IsUserActive bool `json:"isUserActive"`
+
+	// IsScreenUnlocked Mock isScreenUnlocked
+	IsScreenUnlocked bool `json:"isScreenUnlocked"`
+}
+
+// ProtoName of the command
+func (m EmulationSetIdleOverride) ProtoName() string { return "Emulation.setIdleOverride" }
+
+// Call of the command, sessionID is optional.
+func (m EmulationSetIdleOverride) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
+// EmulationClearIdleOverride (experimental) Clears Idle state overrides.
+type EmulationClearIdleOverride struct {
+}
+
+// ProtoName of the command
+func (m EmulationClearIdleOverride) ProtoName() string { return "Emulation.clearIdleOverride" }
+
+// Call of the command, sessionID is optional.
+func (m EmulationClearIdleOverride) Call(c Client) error {
 	return call(m.ProtoName(), m, nil, c)
 }
 
@@ -6416,8 +6669,8 @@ func (m EmulationSetUserAgentOverride) Call(c Client) error {
 type EmulationVirtualTimeBudgetExpired struct {
 }
 
-// ProtoName interface
-func (evt EmulationVirtualTimeBudgetExpired) ProtoName() string {
+// ProtoEvent interface
+func (evt EmulationVirtualTimeBudgetExpired) ProtoEvent() string {
 	return "Emulation.virtualTimeBudgetExpired"
 }
 
@@ -6523,8 +6776,8 @@ type HeadlessExperimentalNeedsBeginFramesChanged struct {
 	NeedsBeginFrames bool `json:"needsBeginFrames"`
 }
 
-// ProtoName interface
-func (evt HeadlessExperimentalNeedsBeginFramesChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt HeadlessExperimentalNeedsBeginFramesChanged) ProtoEvent() string {
 	return "HeadlessExperimental.needsBeginFramesChanged"
 }
 
@@ -7453,8 +7706,8 @@ type InspectorDetached struct {
 	Reason string `json:"reason"`
 }
 
-// ProtoName interface
-func (evt InspectorDetached) ProtoName() string {
+// ProtoEvent interface
+func (evt InspectorDetached) ProtoEvent() string {
 	return "Inspector.detached"
 }
 
@@ -7462,8 +7715,8 @@ func (evt InspectorDetached) ProtoName() string {
 type InspectorTargetCrashed struct {
 }
 
-// ProtoName interface
-func (evt InspectorTargetCrashed) ProtoName() string {
+// ProtoEvent interface
+func (evt InspectorTargetCrashed) ProtoEvent() string {
 	return "Inspector.targetCrashed"
 }
 
@@ -7471,8 +7724,8 @@ func (evt InspectorTargetCrashed) ProtoName() string {
 type InspectorTargetReloadedAfterCrash struct {
 }
 
-// ProtoName interface
-func (evt InspectorTargetReloadedAfterCrash) ProtoName() string {
+// ProtoEvent interface
+func (evt InspectorTargetReloadedAfterCrash) ProtoEvent() string {
 	return "Inspector.targetReloadedAfterCrash"
 }
 
@@ -7799,8 +8052,8 @@ type LayerTreeLayerPainted struct {
 	Clip *DOMRect `json:"clip"`
 }
 
-// ProtoName interface
-func (evt LayerTreeLayerPainted) ProtoName() string {
+// ProtoEvent interface
+func (evt LayerTreeLayerPainted) ProtoEvent() string {
 	return "LayerTree.layerPainted"
 }
 
@@ -7811,8 +8064,8 @@ type LayerTreeLayerTreeDidChange struct {
 	Layers []*LayerTreeLayer `json:"layers,omitempty"`
 }
 
-// ProtoName interface
-func (evt LayerTreeLayerTreeDidChange) ProtoName() string {
+// ProtoEvent interface
+func (evt LayerTreeLayerTreeDidChange) ProtoEvent() string {
 	return "LayerTree.layerTreeDidChange"
 }
 
@@ -8018,8 +8271,8 @@ type LogEntryAdded struct {
 	Entry *LogLogEntry `json:"entry"`
 }
 
-// ProtoName interface
-func (evt LogEntryAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt LogEntryAdded) ProtoEvent() string {
 	return "Log.entryAdded"
 }
 
@@ -8513,6 +8766,13 @@ const (
 	NetworkResourcePriorityVeryHigh NetworkResourcePriority = "VeryHigh"
 )
 
+// NetworkPostDataEntry Post data entry for HTTP request
+type NetworkPostDataEntry struct {
+
+	// Bytes (optional) ...
+	Bytes []byte `json:"bytes,omitempty"`
+}
+
 // NetworkRequestReferrerPolicy enum
 type NetworkRequestReferrerPolicy string
 
@@ -8562,6 +8822,9 @@ type NetworkRequest struct {
 
 	// HasPostData (optional) True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
 	HasPostData bool `json:"hasPostData,omitempty"`
+
+	// PostDataEntries (experimental) (optional) Request body elements. This will be converted from base64 to binary
+	PostDataEntries []*NetworkPostDataEntry `json:"postDataEntries,omitempty"`
 
 	// MixedContentType (optional) The mixed content type of the request.
 	MixedContentType SecurityMixedContentType `json:"mixedContentType,omitempty"`
@@ -9251,6 +9514,58 @@ type NetworkSignedExchangeInfo struct {
 	Errors []*NetworkSignedExchangeError `json:"errors,omitempty"`
 }
 
+// NetworkCrossOriginOpenerPolicyValue (experimental) ...
+type NetworkCrossOriginOpenerPolicyValue string
+
+const (
+	// NetworkCrossOriginOpenerPolicyValueSameOrigin enum const
+	NetworkCrossOriginOpenerPolicyValueSameOrigin NetworkCrossOriginOpenerPolicyValue = "SameOrigin"
+
+	// NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopups enum const
+	NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopups NetworkCrossOriginOpenerPolicyValue = "SameOriginAllowPopups"
+
+	// NetworkCrossOriginOpenerPolicyValueUnsafeNone enum const
+	NetworkCrossOriginOpenerPolicyValueUnsafeNone NetworkCrossOriginOpenerPolicyValue = "UnsafeNone"
+
+	// NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep enum const
+	NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep NetworkCrossOriginOpenerPolicyValue = "SameOriginPlusCoep"
+)
+
+// NetworkCrossOriginOpenerPolicyStatus (experimental) ...
+type NetworkCrossOriginOpenerPolicyStatus struct {
+
+	// Value ...
+	Value NetworkCrossOriginOpenerPolicyValue `json:"value"`
+}
+
+// NetworkCrossOriginEmbedderPolicyValue (experimental) ...
+type NetworkCrossOriginEmbedderPolicyValue string
+
+const (
+	// NetworkCrossOriginEmbedderPolicyValueNone enum const
+	NetworkCrossOriginEmbedderPolicyValueNone NetworkCrossOriginEmbedderPolicyValue = "None"
+
+	// NetworkCrossOriginEmbedderPolicyValueRequireCorp enum const
+	NetworkCrossOriginEmbedderPolicyValueRequireCorp NetworkCrossOriginEmbedderPolicyValue = "RequireCorp"
+)
+
+// NetworkCrossOriginEmbedderPolicyStatus (experimental) ...
+type NetworkCrossOriginEmbedderPolicyStatus struct {
+
+	// Value ...
+	Value NetworkCrossOriginEmbedderPolicyValue `json:"value"`
+}
+
+// NetworkSecurityIsolationStatus (experimental) ...
+type NetworkSecurityIsolationStatus struct {
+
+	// Coop ...
+	Coop *NetworkCrossOriginOpenerPolicyStatus `json:"coop"`
+
+	// Coep ...
+	Coep *NetworkCrossOriginEmbedderPolicyStatus `json:"coep"`
+}
+
 // NetworkCanClearBrowserCache (deprecated) Tells whether clearing browser cache is supported.
 type NetworkCanClearBrowserCache struct {
 }
@@ -9521,7 +9836,9 @@ type NetworkGetCertificateResult struct {
 // detailed cookie information in the `cookies` field.
 type NetworkGetCookies struct {
 
-	// Urls (optional) The list of URLs for which applicable cookies will be fetched
+	// Urls (optional) The list of URLs for which applicable cookies will be fetched.
+	// If not specified, it's assumed to be set to the list containing
+	// the URLs of the page and all of its subframes.
 	Urls []string `json:"urls,omitempty"`
 }
 
@@ -9886,6 +10203,31 @@ func (m NetworkSetUserAgentOverride) Call(c Client) error {
 	return call(m.ProtoName(), m, nil, c)
 }
 
+// NetworkGetSecurityIsolationStatus (experimental) Returns information about the COEP/COOP isolation status.
+type NetworkGetSecurityIsolationStatus struct {
+
+	// FrameID (optional) If no frameId is provided, the status of the target is provided.
+	FrameID PageFrameID `json:"frameId,omitempty"`
+}
+
+// ProtoName of the command
+func (m NetworkGetSecurityIsolationStatus) ProtoName() string {
+	return "Network.getSecurityIsolationStatus"
+}
+
+// Call of the command, sessionID is optional.
+func (m NetworkGetSecurityIsolationStatus) Call(c Client) (*NetworkGetSecurityIsolationStatusResult, error) {
+	var res NetworkGetSecurityIsolationStatusResult
+	return &res, call(m.ProtoName(), m, &res, c)
+}
+
+// NetworkGetSecurityIsolationStatusResult (experimental) Returns information about the COEP/COOP isolation status.
+type NetworkGetSecurityIsolationStatusResult struct {
+
+	// Status ...
+	Status *NetworkSecurityIsolationStatus `json:"status"`
+}
+
 // NetworkDataReceived Fired when data chunk was received over the network.
 type NetworkDataReceived struct {
 
@@ -9902,8 +10244,8 @@ type NetworkDataReceived struct {
 	EncodedDataLength int `json:"encodedDataLength"`
 }
 
-// ProtoName interface
-func (evt NetworkDataReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkDataReceived) ProtoEvent() string {
 	return "Network.dataReceived"
 }
 
@@ -9926,8 +10268,8 @@ type NetworkEventSourceMessageReceived struct {
 	Data string `json:"data"`
 }
 
-// ProtoName interface
-func (evt NetworkEventSourceMessageReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkEventSourceMessageReceived) ProtoEvent() string {
 	return "Network.eventSourceMessageReceived"
 }
 
@@ -9953,8 +10295,8 @@ type NetworkLoadingFailed struct {
 	BlockedReason NetworkBlockedReason `json:"blockedReason,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkLoadingFailed) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkLoadingFailed) ProtoEvent() string {
 	return "Network.loadingFailed"
 }
 
@@ -9975,8 +10317,8 @@ type NetworkLoadingFinished struct {
 	ShouldReportCorbBlocking bool `json:"shouldReportCorbBlocking,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkLoadingFinished) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkLoadingFinished) ProtoEvent() string {
 	return "Network.loadingFinished"
 }
 
@@ -10030,8 +10372,8 @@ type NetworkRequestIntercepted struct {
 	RequestID NetworkRequestID `json:"requestId,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkRequestIntercepted) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkRequestIntercepted) ProtoEvent() string {
 	return "Network.requestIntercepted"
 }
 
@@ -10042,8 +10384,8 @@ type NetworkRequestServedFromCache struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// ProtoName interface
-func (evt NetworkRequestServedFromCache) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkRequestServedFromCache) ProtoEvent() string {
 	return "Network.requestServedFromCache"
 }
 
@@ -10084,8 +10426,8 @@ type NetworkRequestWillBeSent struct {
 	HasUserGesture bool `json:"hasUserGesture,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkRequestWillBeSent) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkRequestWillBeSent) ProtoEvent() string {
 	return "Network.requestWillBeSent"
 }
 
@@ -10102,8 +10444,8 @@ type NetworkResourceChangedPriority struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt NetworkResourceChangedPriority) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkResourceChangedPriority) ProtoEvent() string {
 	return "Network.resourceChangedPriority"
 }
 
@@ -10117,8 +10459,8 @@ type NetworkSignedExchangeReceived struct {
 	Info *NetworkSignedExchangeInfo `json:"info"`
 }
 
-// ProtoName interface
-func (evt NetworkSignedExchangeReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkSignedExchangeReceived) ProtoEvent() string {
 	return "Network.signedExchangeReceived"
 }
 
@@ -10144,8 +10486,8 @@ type NetworkResponseReceived struct {
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkResponseReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkResponseReceived) ProtoEvent() string {
 	return "Network.responseReceived"
 }
 
@@ -10159,8 +10501,8 @@ type NetworkWebSocketClosed struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketClosed) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketClosed) ProtoEvent() string {
 	return "Network.webSocketClosed"
 }
 
@@ -10177,8 +10519,8 @@ type NetworkWebSocketCreated struct {
 	Initiator *NetworkInitiator `json:"initiator,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketCreated) ProtoEvent() string {
 	return "Network.webSocketCreated"
 }
 
@@ -10195,8 +10537,8 @@ type NetworkWebSocketFrameError struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketFrameError) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketFrameError) ProtoEvent() string {
 	return "Network.webSocketFrameError"
 }
 
@@ -10213,8 +10555,8 @@ type NetworkWebSocketFrameReceived struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketFrameReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketFrameReceived) ProtoEvent() string {
 	return "Network.webSocketFrameReceived"
 }
 
@@ -10231,8 +10573,8 @@ type NetworkWebSocketFrameSent struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketFrameSent) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketFrameSent) ProtoEvent() string {
 	return "Network.webSocketFrameSent"
 }
 
@@ -10249,8 +10591,8 @@ type NetworkWebSocketHandshakeResponseReceived struct {
 	Response *NetworkWebSocketResponse `json:"response"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketHandshakeResponseReceived) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketHandshakeResponseReceived) ProtoEvent() string {
 	return "Network.webSocketHandshakeResponseReceived"
 }
 
@@ -10270,8 +10612,8 @@ type NetworkWebSocketWillSendHandshakeRequest struct {
 	Request *NetworkWebSocketRequest `json:"request"`
 }
 
-// ProtoName interface
-func (evt NetworkWebSocketWillSendHandshakeRequest) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkWebSocketWillSendHandshakeRequest) ProtoEvent() string {
 	return "Network.webSocketWillSendHandshakeRequest"
 }
 
@@ -10292,8 +10634,8 @@ type NetworkRequestWillBeSentExtraInfo struct {
 	Headers NetworkHeaders `json:"headers"`
 }
 
-// ProtoName interface
-func (evt NetworkRequestWillBeSentExtraInfo) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkRequestWillBeSentExtraInfo) ProtoEvent() string {
 	return "Network.requestWillBeSentExtraInfo"
 }
 
@@ -10318,9 +10660,19 @@ type NetworkResponseReceivedExtraInfo struct {
 	HeadersText string `json:"headersText,omitempty"`
 }
 
-// ProtoName interface
-func (evt NetworkResponseReceivedExtraInfo) ProtoName() string {
+// ProtoEvent interface
+func (evt NetworkResponseReceivedExtraInfo) ProtoEvent() string {
 	return "Network.responseReceivedExtraInfo"
+}
+
+// OverlaySourceOrderConfig Configuration data for drawing the source order of an elements children.
+type OverlaySourceOrderConfig struct {
+
+	// ParentOutlineColor the color to outline the givent element in.
+	ParentOutlineColor *DOMRGBA `json:"parentOutlineColor"`
+
+	// ChildOutlineColor the color to outline the child elements in.
+	ChildOutlineColor *DOMRGBA `json:"childOutlineColor"`
 }
 
 // OverlayGridHighlightConfig Configuration data for the highlighting of Grid elements.
@@ -10335,17 +10687,38 @@ type OverlayGridHighlightConfig struct {
 	// ShowNegativeLineNumbers (optional) Show Negative line number labels (default: false).
 	ShowNegativeLineNumbers bool `json:"showNegativeLineNumbers,omitempty"`
 
+	// ShowAreaNames (optional) Show area name labels (default: false).
+	ShowAreaNames bool `json:"showAreaNames,omitempty"`
+
+	// ShowLineNames (optional) Show line name labels (default: false).
+	ShowLineNames bool `json:"showLineNames,omitempty"`
+
+	// ShowTrackSizes (optional) Show track size labels (default: false).
+	ShowTrackSizes bool `json:"showTrackSizes,omitempty"`
+
 	// GridBorderColor (optional) The grid container border highlight color (default: transparent).
 	GridBorderColor *DOMRGBA `json:"gridBorderColor,omitempty"`
 
-	// CellBorderColor (optional) The cell border color (default: transparent).
+	// CellBorderColor (deprecated) (optional) The cell border color (default: transparent). Deprecated, please use rowLineColor and columnLineColor instead.
 	CellBorderColor *DOMRGBA `json:"cellBorderColor,omitempty"`
+
+	// RowLineColor (optional) The row line color (default: transparent).
+	RowLineColor *DOMRGBA `json:"rowLineColor,omitempty"`
+
+	// ColumnLineColor (optional) The column line color (default: transparent).
+	ColumnLineColor *DOMRGBA `json:"columnLineColor,omitempty"`
 
 	// GridBorderDash (optional) Whether the grid border is dashed (default: false).
 	GridBorderDash bool `json:"gridBorderDash,omitempty"`
 
-	// CellBorderDash (optional) Whether the cell border is dashed (default: false).
+	// CellBorderDash (deprecated) (optional) Whether the cell border is dashed (default: false). Deprecated, please us rowLineDash and columnLineDash instead.
 	CellBorderDash bool `json:"cellBorderDash,omitempty"`
+
+	// RowLineDash (optional) Whether row lines are dashed (default: false).
+	RowLineDash bool `json:"rowLineDash,omitempty"`
+
+	// ColumnLineDash (optional) Whether column lines are dashed (default: false).
+	ColumnLineDash bool `json:"columnLineDash,omitempty"`
 
 	// RowGapColor (optional) The row gap highlight fill color (default: transparent).
 	RowGapColor *DOMRGBA `json:"rowGapColor,omitempty"`
@@ -10358,6 +10731,9 @@ type OverlayGridHighlightConfig struct {
 
 	// ColumnHatchColor (optional) The column gap hatching fill color (default: transparent).
 	ColumnHatchColor *DOMRGBA `json:"columnHatchColor,omitempty"`
+
+	// AreaBorderColor (optional) The named grid areas border color (Default: transparent).
+	AreaBorderColor *DOMRGBA `json:"areaBorderColor,omitempty"`
 }
 
 // OverlayHighlightConfig Configuration data for the highlighting of page elements.
@@ -10422,6 +10798,16 @@ const (
 	// OverlayColorFormatHex enum const
 	OverlayColorFormatHex OverlayColorFormat = "hex"
 )
+
+// OverlayGridNodeHighlightConfig Configurations for Persistent Grid Highlight
+type OverlayGridNodeHighlightConfig struct {
+
+	// GridHighlightConfig A descriptor for the highlight appearance.
+	GridHighlightConfig *OverlayGridHighlightConfig `json:"gridHighlightConfig"`
+
+	// NodeID Identifier of the node to highlight.
+	NodeID DOMNodeID `json:"nodeId"`
+}
 
 // OverlayHingeConfig Configuration for dual screen hinge
 type OverlayHingeConfig struct {
@@ -10514,6 +10900,56 @@ func (m OverlayGetHighlightObjectForTest) Call(c Client) (*OverlayGetHighlightOb
 type OverlayGetHighlightObjectForTestResult struct {
 
 	// Highlight Highlight data for the node.
+	Highlight map[string]gson.JSON `json:"highlight"`
+}
+
+// OverlayGetGridHighlightObjectsForTest For Persistent Grid testing.
+type OverlayGetGridHighlightObjectsForTest struct {
+
+	// NodeIds Ids of the node to get highlight object for.
+	NodeIds []DOMNodeID `json:"nodeIds"`
+}
+
+// ProtoName of the command
+func (m OverlayGetGridHighlightObjectsForTest) ProtoName() string {
+	return "Overlay.getGridHighlightObjectsForTest"
+}
+
+// Call of the command, sessionID is optional.
+func (m OverlayGetGridHighlightObjectsForTest) Call(c Client) (*OverlayGetGridHighlightObjectsForTestResult, error) {
+	var res OverlayGetGridHighlightObjectsForTestResult
+	return &res, call(m.ProtoName(), m, &res, c)
+}
+
+// OverlayGetGridHighlightObjectsForTestResult For Persistent Grid testing.
+type OverlayGetGridHighlightObjectsForTestResult struct {
+
+	// Highlights Grid Highlight data for the node ids provided.
+	Highlights map[string]gson.JSON `json:"highlights"`
+}
+
+// OverlayGetSourceOrderHighlightObjectForTest For Source Order Viewer testing.
+type OverlayGetSourceOrderHighlightObjectForTest struct {
+
+	// NodeID Id of the node to highlight.
+	NodeID DOMNodeID `json:"nodeId"`
+}
+
+// ProtoName of the command
+func (m OverlayGetSourceOrderHighlightObjectForTest) ProtoName() string {
+	return "Overlay.getSourceOrderHighlightObjectForTest"
+}
+
+// Call of the command, sessionID is optional.
+func (m OverlayGetSourceOrderHighlightObjectForTest) Call(c Client) (*OverlayGetSourceOrderHighlightObjectForTestResult, error) {
+	var res OverlayGetSourceOrderHighlightObjectForTestResult
+	return &res, call(m.ProtoName(), m, &res, c)
+}
+
+// OverlayGetSourceOrderHighlightObjectForTestResult For Source Order Viewer testing.
+type OverlayGetSourceOrderHighlightObjectForTestResult struct {
+
+	// Highlight Source order highlight data for the node id provided.
 	Highlight map[string]gson.JSON `json:"highlight"`
 }
 
@@ -10629,6 +11065,31 @@ func (m OverlayHighlightRect) Call(c Client) error {
 	return call(m.ProtoName(), m, nil, c)
 }
 
+// OverlayHighlightSourceOrder Highlights the source order of the children of the DOM node with given id or with the given
+// JavaScript object wrapper. Either nodeId or objectId must be specified.
+type OverlayHighlightSourceOrder struct {
+
+	// SourceOrderConfig A descriptor for the appearance of the overlay drawing.
+	SourceOrderConfig *OverlaySourceOrderConfig `json:"sourceOrderConfig"`
+
+	// NodeID (optional) Identifier of the node to highlight.
+	NodeID DOMNodeID `json:"nodeId,omitempty"`
+
+	// BackendNodeID (optional) Identifier of the backend node to highlight.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
+
+	// ObjectID (optional) JavaScript object id of the node to be highlighted.
+	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
+}
+
+// ProtoName of the command
+func (m OverlayHighlightSourceOrder) ProtoName() string { return "Overlay.highlightSourceOrder" }
+
+// Call of the command, sessionID is optional.
+func (m OverlayHighlightSourceOrder) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
 // OverlaySetInspectMode Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
 // Backend then generates 'inspectNodeRequested' event upon element selection.
 type OverlaySetInspectMode struct {
@@ -10708,6 +11169,21 @@ func (m OverlaySetShowFPSCounter) ProtoName() string { return "Overlay.setShowFP
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowFPSCounter) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
+// OverlaySetShowGridOverlays Highlight multiple elements with the CSS Grid overlay.
+type OverlaySetShowGridOverlays struct {
+
+	// GridNodeHighlightConfigs An array of node identifiers and descriptors for the highlight appearance.
+	GridNodeHighlightConfigs []*OverlayGridNodeHighlightConfig `json:"gridNodeHighlightConfigs"`
+}
+
+// ProtoName of the command
+func (m OverlaySetShowGridOverlays) ProtoName() string { return "Overlay.setShowGridOverlays" }
+
+// Call of the command, sessionID is optional.
+func (m OverlaySetShowGridOverlays) Call(c Client) error {
 	return call(m.ProtoName(), m, nil, c)
 }
 
@@ -10815,8 +11291,8 @@ type OverlayInspectNodeRequested struct {
 	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
 }
 
-// ProtoName interface
-func (evt OverlayInspectNodeRequested) ProtoName() string {
+// ProtoEvent interface
+func (evt OverlayInspectNodeRequested) ProtoEvent() string {
 	return "Overlay.inspectNodeRequested"
 }
 
@@ -10827,8 +11303,8 @@ type OverlayNodeHighlightRequested struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoName interface
-func (evt OverlayNodeHighlightRequested) ProtoName() string {
+// ProtoEvent interface
+func (evt OverlayNodeHighlightRequested) ProtoEvent() string {
 	return "Overlay.nodeHighlightRequested"
 }
 
@@ -10839,8 +11315,8 @@ type OverlayScreenshotRequested struct {
 	Viewport *PageViewport `json:"viewport"`
 }
 
-// ProtoName interface
-func (evt OverlayScreenshotRequested) ProtoName() string {
+// ProtoEvent interface
+func (evt OverlayScreenshotRequested) ProtoEvent() string {
 	return "Overlay.screenshotRequested"
 }
 
@@ -10848,13 +11324,58 @@ func (evt OverlayScreenshotRequested) ProtoName() string {
 type OverlayInspectModeCanceled struct {
 }
 
-// ProtoName interface
-func (evt OverlayInspectModeCanceled) ProtoName() string {
+// ProtoEvent interface
+func (evt OverlayInspectModeCanceled) ProtoEvent() string {
 	return "Overlay.inspectModeCanceled"
 }
 
 // PageFrameID Unique frame identifier.
 type PageFrameID string
+
+// PageAdFrameType (experimental) Indicates whether a frame has been identified as an ad.
+type PageAdFrameType string
+
+const (
+	// PageAdFrameTypeNone enum const
+	PageAdFrameTypeNone PageAdFrameType = "none"
+
+	// PageAdFrameTypeChild enum const
+	PageAdFrameTypeChild PageAdFrameType = "child"
+
+	// PageAdFrameTypeRoot enum const
+	PageAdFrameTypeRoot PageAdFrameType = "root"
+)
+
+// PageSecureContextType (experimental) Indicates whether the frame is a secure context and why it is the case.
+type PageSecureContextType string
+
+const (
+	// PageSecureContextTypeSecure enum const
+	PageSecureContextTypeSecure PageSecureContextType = "Secure"
+
+	// PageSecureContextTypeSecureLocalhost enum const
+	PageSecureContextTypeSecureLocalhost PageSecureContextType = "SecureLocalhost"
+
+	// PageSecureContextTypeInsecureScheme enum const
+	PageSecureContextTypeInsecureScheme PageSecureContextType = "InsecureScheme"
+
+	// PageSecureContextTypeInsecureAncestor enum const
+	PageSecureContextTypeInsecureAncestor PageSecureContextType = "InsecureAncestor"
+)
+
+// PageCrossOriginIsolatedContextType (experimental) Indicates whether the frame is cross-origin isolated and why it is the case.
+type PageCrossOriginIsolatedContextType string
+
+const (
+	// PageCrossOriginIsolatedContextTypeIsolated enum const
+	PageCrossOriginIsolatedContextTypeIsolated PageCrossOriginIsolatedContextType = "Isolated"
+
+	// PageCrossOriginIsolatedContextTypeNotIsolated enum const
+	PageCrossOriginIsolatedContextTypeNotIsolated PageCrossOriginIsolatedContextType = "NotIsolated"
+
+	// PageCrossOriginIsolatedContextTypeNotIsolatedFeatureDisabled enum const
+	PageCrossOriginIsolatedContextTypeNotIsolatedFeatureDisabled PageCrossOriginIsolatedContextType = "NotIsolatedFeatureDisabled"
+)
 
 // PageFrame Information about the Frame on the page.
 type PageFrame struct {
@@ -10877,6 +11398,12 @@ type PageFrame struct {
 	// URLFragment (experimental) (optional) Frame document's URL fragment including the '#'.
 	URLFragment string `json:"urlFragment,omitempty"`
 
+	// DomainAndRegistry (experimental) Frame document's registered domain, taking the public suffixes list into account.
+	// Extracted from the Frame's url.
+	// Example URLs: http://www.google.com/file.html -> "google.com"
+	//               http://a.b.co.uk/file.html      -> "b.co.uk"
+	DomainAndRegistry string `json:"domainAndRegistry"`
+
 	// SecurityOrigin Frame document's security origin.
 	SecurityOrigin string `json:"securityOrigin"`
 
@@ -10885,6 +11412,15 @@ type PageFrame struct {
 
 	// UnreachableURL (experimental) (optional) If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.
 	UnreachableURL string `json:"unreachableUrl,omitempty"`
+
+	// AdFrameType (experimental) (optional) Indicates whether this frame was tagged as an ad.
+	AdFrameType PageAdFrameType `json:"adFrameType,omitempty"`
+
+	// SecureContextType (experimental) Indicates whether the main document is a secure context and explains why that is the case.
+	SecureContextType PageSecureContextType `json:"secureContextType"`
+
+	// CrossOriginIsolatedContextType (experimental) Indicates whether this is a cross origin isolated context.
+	CrossOriginIsolatedContextType PageCrossOriginIsolatedContextType `json:"crossOriginIsolatedContextType"`
 }
 
 // PageFrameResource (experimental) Information about the Resource on the page.
@@ -12469,8 +13005,8 @@ type PageDomContentEventFired struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt PageDomContentEventFired) ProtoName() string {
+// ProtoEvent interface
+func (evt PageDomContentEventFired) ProtoEvent() string {
 	return "Page.domContentEventFired"
 }
 
@@ -12498,8 +13034,8 @@ type PageFileChooserOpened struct {
 	Mode PageFileChooserOpenedMode `json:"mode"`
 }
 
-// ProtoName interface
-func (evt PageFileChooserOpened) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFileChooserOpened) ProtoEvent() string {
 	return "Page.fileChooserOpened"
 }
 
@@ -12516,8 +13052,8 @@ type PageFrameAttached struct {
 	Stack *RuntimeStackTrace `json:"stack,omitempty"`
 }
 
-// ProtoName interface
-func (evt PageFrameAttached) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameAttached) ProtoEvent() string {
 	return "Page.frameAttached"
 }
 
@@ -12528,8 +13064,8 @@ type PageFrameClearedScheduledNavigation struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoName interface
-func (evt PageFrameClearedScheduledNavigation) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameClearedScheduledNavigation) ProtoEvent() string {
 	return "Page.frameClearedScheduledNavigation"
 }
 
@@ -12540,8 +13076,8 @@ type PageFrameDetached struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoName interface
-func (evt PageFrameDetached) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameDetached) ProtoEvent() string {
 	return "Page.frameDetached"
 }
 
@@ -12552,8 +13088,8 @@ type PageFrameNavigated struct {
 	Frame *PageFrame `json:"frame"`
 }
 
-// ProtoName interface
-func (evt PageFrameNavigated) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameNavigated) ProtoEvent() string {
 	return "Page.frameNavigated"
 }
 
@@ -12561,8 +13097,8 @@ func (evt PageFrameNavigated) ProtoName() string {
 type PageFrameResized struct {
 }
 
-// ProtoName interface
-func (evt PageFrameResized) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameResized) ProtoEvent() string {
 	return "Page.frameResized"
 }
 
@@ -12583,8 +13119,8 @@ type PageFrameRequestedNavigation struct {
 	Disposition PageClientNavigationDisposition `json:"disposition"`
 }
 
-// ProtoName interface
-func (evt PageFrameRequestedNavigation) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameRequestedNavigation) ProtoEvent() string {
 	return "Page.frameRequestedNavigation"
 }
 
@@ -12605,8 +13141,8 @@ type PageFrameScheduledNavigation struct {
 	URL string `json:"url"`
 }
 
-// ProtoName interface
-func (evt PageFrameScheduledNavigation) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameScheduledNavigation) ProtoEvent() string {
 	return "Page.frameScheduledNavigation"
 }
 
@@ -12617,8 +13153,8 @@ type PageFrameStartedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoName interface
-func (evt PageFrameStartedLoading) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameStartedLoading) ProtoEvent() string {
 	return "Page.frameStartedLoading"
 }
 
@@ -12629,8 +13165,8 @@ type PageFrameStoppedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoName interface
-func (evt PageFrameStoppedLoading) ProtoName() string {
+// ProtoEvent interface
+func (evt PageFrameStoppedLoading) ProtoEvent() string {
 	return "Page.frameStoppedLoading"
 }
 
@@ -12650,8 +13186,8 @@ type PageDownloadWillBegin struct {
 	SuggestedFilename string `json:"suggestedFilename"`
 }
 
-// ProtoName interface
-func (evt PageDownloadWillBegin) ProtoName() string {
+// ProtoEvent interface
+func (evt PageDownloadWillBegin) ProtoEvent() string {
 	return "Page.downloadWillBegin"
 }
 
@@ -12685,8 +13221,8 @@ type PageDownloadProgress struct {
 	State PageDownloadProgressState `json:"state"`
 }
 
-// ProtoName interface
-func (evt PageDownloadProgress) ProtoName() string {
+// ProtoEvent interface
+func (evt PageDownloadProgress) ProtoEvent() string {
 	return "Page.downloadProgress"
 }
 
@@ -12694,8 +13230,8 @@ func (evt PageDownloadProgress) ProtoName() string {
 type PageInterstitialHidden struct {
 }
 
-// ProtoName interface
-func (evt PageInterstitialHidden) ProtoName() string {
+// ProtoEvent interface
+func (evt PageInterstitialHidden) ProtoEvent() string {
 	return "Page.interstitialHidden"
 }
 
@@ -12703,8 +13239,8 @@ func (evt PageInterstitialHidden) ProtoName() string {
 type PageInterstitialShown struct {
 }
 
-// ProtoName interface
-func (evt PageInterstitialShown) ProtoName() string {
+// ProtoEvent interface
+func (evt PageInterstitialShown) ProtoEvent() string {
 	return "Page.interstitialShown"
 }
 
@@ -12719,8 +13255,8 @@ type PageJavascriptDialogClosed struct {
 	UserInput string `json:"userInput"`
 }
 
-// ProtoName interface
-func (evt PageJavascriptDialogClosed) ProtoName() string {
+// ProtoEvent interface
+func (evt PageJavascriptDialogClosed) ProtoEvent() string {
 	return "Page.javascriptDialogClosed"
 }
 
@@ -12746,8 +13282,8 @@ type PageJavascriptDialogOpening struct {
 	DefaultPrompt string `json:"defaultPrompt,omitempty"`
 }
 
-// ProtoName interface
-func (evt PageJavascriptDialogOpening) ProtoName() string {
+// ProtoEvent interface
+func (evt PageJavascriptDialogOpening) ProtoEvent() string {
 	return "Page.javascriptDialogOpening"
 }
 
@@ -12802,8 +13338,8 @@ type PageLifecycleEvent struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt PageLifecycleEvent) ProtoName() string {
+// ProtoEvent interface
+func (evt PageLifecycleEvent) ProtoEvent() string {
 	return "Page.lifecycleEvent"
 }
 
@@ -12814,8 +13350,8 @@ type PageLoadEventFired struct {
 	Timestamp *MonotonicTime `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt PageLoadEventFired) ProtoName() string {
+// ProtoEvent interface
+func (evt PageLoadEventFired) ProtoEvent() string {
 	return "Page.loadEventFired"
 }
 
@@ -12829,8 +13365,8 @@ type PageNavigatedWithinDocument struct {
 	URL string `json:"url"`
 }
 
-// ProtoName interface
-func (evt PageNavigatedWithinDocument) ProtoName() string {
+// ProtoEvent interface
+func (evt PageNavigatedWithinDocument) ProtoEvent() string {
 	return "Page.navigatedWithinDocument"
 }
 
@@ -12847,8 +13383,8 @@ type PageScreencastFrame struct {
 	SessionID int `json:"sessionId"`
 }
 
-// ProtoName interface
-func (evt PageScreencastFrame) ProtoName() string {
+// ProtoEvent interface
+func (evt PageScreencastFrame) ProtoEvent() string {
 	return "Page.screencastFrame"
 }
 
@@ -12859,8 +13395,8 @@ type PageScreencastVisibilityChanged struct {
 	Visible bool `json:"visible"`
 }
 
-// ProtoName interface
-func (evt PageScreencastVisibilityChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt PageScreencastVisibilityChanged) ProtoEvent() string {
 	return "Page.screencastVisibilityChanged"
 }
 
@@ -12881,8 +13417,8 @@ type PageWindowOpen struct {
 	UserGesture bool `json:"userGesture"`
 }
 
-// ProtoName interface
-func (evt PageWindowOpen) ProtoName() string {
+// ProtoEvent interface
+func (evt PageWindowOpen) ProtoEvent() string {
 	return "Page.windowOpen"
 }
 
@@ -12897,8 +13433,8 @@ type PageCompilationCacheProduced struct {
 	Data []byte `json:"data"`
 }
 
-// ProtoName interface
-func (evt PageCompilationCacheProduced) ProtoName() string {
+// ProtoEvent interface
+func (evt PageCompilationCacheProduced) ProtoEvent() string {
 	return "Page.compilationCacheProduced"
 }
 
@@ -13008,8 +13544,8 @@ type PerformanceMetrics struct {
 	Title string `json:"title"`
 }
 
-// ProtoName interface
-func (evt PerformanceMetrics) ProtoName() string {
+// ProtoEvent interface
+func (evt PerformanceMetrics) ProtoEvent() string {
 	return "Performance.metrics"
 }
 
@@ -13304,8 +13840,8 @@ type SecurityCertificateError struct {
 	RequestURL string `json:"requestURL"`
 }
 
-// ProtoName interface
-func (evt SecurityCertificateError) ProtoName() string {
+// ProtoEvent interface
+func (evt SecurityCertificateError) ProtoEvent() string {
 	return "Security.certificateError"
 }
 
@@ -13316,8 +13852,8 @@ type SecurityVisibleSecurityStateChanged struct {
 	VisibleSecurityState *SecurityVisibleSecurityState `json:"visibleSecurityState"`
 }
 
-// ProtoName interface
-func (evt SecurityVisibleSecurityStateChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt SecurityVisibleSecurityStateChanged) ProtoEvent() string {
 	return "Security.visibleSecurityStateChanged"
 }
 
@@ -13341,8 +13877,8 @@ type SecuritySecurityStateChanged struct {
 	Summary string `json:"summary,omitempty"`
 }
 
-// ProtoName interface
-func (evt SecuritySecurityStateChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt SecuritySecurityStateChanged) ProtoEvent() string {
 	return "Security.securityStateChanged"
 }
 
@@ -13678,8 +14214,8 @@ type ServiceWorkerWorkerErrorReported struct {
 	ErrorMessage *ServiceWorkerServiceWorkerErrorMessage `json:"errorMessage"`
 }
 
-// ProtoName interface
-func (evt ServiceWorkerWorkerErrorReported) ProtoName() string {
+// ProtoEvent interface
+func (evt ServiceWorkerWorkerErrorReported) ProtoEvent() string {
 	return "ServiceWorker.workerErrorReported"
 }
 
@@ -13690,8 +14226,8 @@ type ServiceWorkerWorkerRegistrationUpdated struct {
 	Registrations []*ServiceWorkerServiceWorkerRegistration `json:"registrations"`
 }
 
-// ProtoName interface
-func (evt ServiceWorkerWorkerRegistrationUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt ServiceWorkerWorkerRegistrationUpdated) ProtoEvent() string {
 	return "ServiceWorker.workerRegistrationUpdated"
 }
 
@@ -13702,8 +14238,8 @@ type ServiceWorkerWorkerVersionUpdated struct {
 	Versions []*ServiceWorkerServiceWorkerVersion `json:"versions"`
 }
 
-// ProtoName interface
-func (evt ServiceWorkerWorkerVersionUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt ServiceWorkerWorkerVersionUpdated) ProtoEvent() string {
 	return "ServiceWorker.workerVersionUpdated"
 }
 
@@ -13934,8 +14470,8 @@ type StorageCacheStorageContentUpdated struct {
 	CacheName string `json:"cacheName"`
 }
 
-// ProtoName interface
-func (evt StorageCacheStorageContentUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt StorageCacheStorageContentUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageContentUpdated"
 }
 
@@ -13946,8 +14482,8 @@ type StorageCacheStorageListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoName interface
-func (evt StorageCacheStorageListUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt StorageCacheStorageListUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageListUpdated"
 }
 
@@ -13964,8 +14500,8 @@ type StorageIndexedDBContentUpdated struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// ProtoName interface
-func (evt StorageIndexedDBContentUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt StorageIndexedDBContentUpdated) ProtoEvent() string {
 	return "Storage.indexedDBContentUpdated"
 }
 
@@ -13976,8 +14512,8 @@ type StorageIndexedDBListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoName interface
-func (evt StorageIndexedDBListUpdated) ProtoName() string {
+// ProtoEvent interface
+func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 	return "Storage.indexedDBListUpdated"
 }
 
@@ -14237,6 +14773,9 @@ type TargetTargetInfo struct {
 
 	// OpenerID (optional) Opener target Id
 	OpenerID TargetTargetID `json:"openerId,omitempty"`
+
+	// CanAccessOpener (experimental) Whether the opened window has access to the originating window.
+	CanAccessOpener bool `json:"canAccessOpener"`
 
 	// BrowserContextID (experimental) (optional) ...
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -14628,8 +15167,8 @@ type TargetAttachedToTarget struct {
 	WaitingForDebugger bool `json:"waitingForDebugger"`
 }
 
-// ProtoName interface
-func (evt TargetAttachedToTarget) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetAttachedToTarget) ProtoEvent() string {
 	return "Target.attachedToTarget"
 }
 
@@ -14644,8 +15183,8 @@ type TargetDetachedFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoName interface
-func (evt TargetDetachedFromTarget) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetDetachedFromTarget) ProtoEvent() string {
 	return "Target.detachedFromTarget"
 }
 
@@ -14663,8 +15202,8 @@ type TargetReceivedMessageFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoName interface
-func (evt TargetReceivedMessageFromTarget) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetReceivedMessageFromTarget) ProtoEvent() string {
 	return "Target.receivedMessageFromTarget"
 }
 
@@ -14675,8 +15214,8 @@ type TargetTargetCreated struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// ProtoName interface
-func (evt TargetTargetCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetTargetCreated) ProtoEvent() string {
 	return "Target.targetCreated"
 }
 
@@ -14687,8 +15226,8 @@ type TargetTargetDestroyed struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// ProtoName interface
-func (evt TargetTargetDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetTargetDestroyed) ProtoEvent() string {
 	return "Target.targetDestroyed"
 }
 
@@ -14705,8 +15244,8 @@ type TargetTargetCrashed struct {
 	ErrorCode int `json:"errorCode"`
 }
 
-// ProtoName interface
-func (evt TargetTargetCrashed) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetTargetCrashed) ProtoEvent() string {
 	return "Target.targetCrashed"
 }
 
@@ -14718,8 +15257,8 @@ type TargetTargetInfoChanged struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// ProtoName interface
-func (evt TargetTargetInfoChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt TargetTargetInfoChanged) ProtoEvent() string {
 	return "Target.targetInfoChanged"
 }
 
@@ -14763,8 +15302,8 @@ type TetheringAccepted struct {
 	ConnectionID string `json:"connectionId"`
 }
 
-// ProtoName interface
-func (evt TetheringAccepted) ProtoName() string {
+// ProtoEvent interface
+func (evt TetheringAccepted) ProtoEvent() string {
 	return "Tethering.accepted"
 }
 
@@ -14974,8 +15513,8 @@ type TracingBufferUsage struct {
 	Value float64 `json:"value,omitempty"`
 }
 
-// ProtoName interface
-func (evt TracingBufferUsage) ProtoName() string {
+// ProtoEvent interface
+func (evt TracingBufferUsage) ProtoEvent() string {
 	return "Tracing.bufferUsage"
 }
 
@@ -14987,8 +15526,8 @@ type TracingDataCollected struct {
 	Value []map[string]gson.JSON `json:"value"`
 }
 
-// ProtoName interface
-func (evt TracingDataCollected) ProtoName() string {
+// ProtoEvent interface
+func (evt TracingDataCollected) ProtoEvent() string {
 	return "Tracing.dataCollected"
 }
 
@@ -15010,8 +15549,8 @@ type TracingTracingComplete struct {
 	StreamCompression TracingStreamCompression `json:"streamCompression,omitempty"`
 }
 
-// ProtoName interface
-func (evt TracingTracingComplete) ProtoName() string {
+// ProtoEvent interface
+func (evt TracingTracingComplete) ProtoEvent() string {
 	return "Tracing.tracingComplete"
 }
 
@@ -15212,7 +15751,7 @@ type FetchContinueRequest struct {
 	Method string `json:"method,omitempty"`
 
 	// PostData (optional) If set, overrides the post data in the request.
-	PostData string `json:"postData,omitempty"`
+	PostData []byte `json:"postData,omitempty"`
 
 	// Headers (optional) If set, overrides the request headers.
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
@@ -15355,8 +15894,8 @@ type FetchRequestPaused struct {
 	NetworkID FetchRequestID `json:"networkId,omitempty"`
 }
 
-// ProtoName interface
-func (evt FetchRequestPaused) ProtoName() string {
+// ProtoEvent interface
+func (evt FetchRequestPaused) ProtoEvent() string {
 	return "Fetch.requestPaused"
 }
 
@@ -15382,8 +15921,8 @@ type FetchAuthRequired struct {
 	AuthChallenge *FetchAuthChallenge `json:"authChallenge"`
 }
 
-// ProtoName interface
-func (evt FetchAuthRequired) ProtoName() string {
+// ProtoEvent interface
+func (evt FetchAuthRequired) ProtoEvent() string {
 	return "Fetch.authRequired"
 }
 
@@ -15620,8 +16159,8 @@ type WebAudioContextCreated struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// ProtoName interface
-func (evt WebAudioContextCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioContextCreated) ProtoEvent() string {
 	return "WebAudio.contextCreated"
 }
 
@@ -15632,8 +16171,8 @@ type WebAudioContextWillBeDestroyed struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
-// ProtoName interface
-func (evt WebAudioContextWillBeDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioContextWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.contextWillBeDestroyed"
 }
 
@@ -15644,8 +16183,8 @@ type WebAudioContextChanged struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// ProtoName interface
-func (evt WebAudioContextChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioContextChanged) ProtoEvent() string {
 	return "WebAudio.contextChanged"
 }
 
@@ -15656,8 +16195,8 @@ type WebAudioAudioListenerCreated struct {
 	Listener *WebAudioAudioListener `json:"listener"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioListenerCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioListenerCreated) ProtoEvent() string {
 	return "WebAudio.audioListenerCreated"
 }
 
@@ -15671,8 +16210,8 @@ type WebAudioAudioListenerWillBeDestroyed struct {
 	ListenerID WebAudioGraphObjectID `json:"listenerId"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioListenerWillBeDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioListenerWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioListenerWillBeDestroyed"
 }
 
@@ -15683,8 +16222,8 @@ type WebAudioAudioNodeCreated struct {
 	Node *WebAudioAudioNode `json:"node"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioNodeCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioNodeCreated) ProtoEvent() string {
 	return "WebAudio.audioNodeCreated"
 }
 
@@ -15698,8 +16237,8 @@ type WebAudioAudioNodeWillBeDestroyed struct {
 	NodeID WebAudioGraphObjectID `json:"nodeId"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioNodeWillBeDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioNodeWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioNodeWillBeDestroyed"
 }
 
@@ -15710,8 +16249,8 @@ type WebAudioAudioParamCreated struct {
 	Param *WebAudioAudioParam `json:"param"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioParamCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioParamCreated) ProtoEvent() string {
 	return "WebAudio.audioParamCreated"
 }
 
@@ -15728,8 +16267,8 @@ type WebAudioAudioParamWillBeDestroyed struct {
 	ParamID WebAudioGraphObjectID `json:"paramId"`
 }
 
-// ProtoName interface
-func (evt WebAudioAudioParamWillBeDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioAudioParamWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioParamWillBeDestroyed"
 }
 
@@ -15752,8 +16291,8 @@ type WebAudioNodesConnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// ProtoName interface
-func (evt WebAudioNodesConnected) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioNodesConnected) ProtoEvent() string {
 	return "WebAudio.nodesConnected"
 }
 
@@ -15776,8 +16315,8 @@ type WebAudioNodesDisconnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// ProtoName interface
-func (evt WebAudioNodesDisconnected) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioNodesDisconnected) ProtoEvent() string {
 	return "WebAudio.nodesDisconnected"
 }
 
@@ -15797,8 +16336,8 @@ type WebAudioNodeParamConnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// ProtoName interface
-func (evt WebAudioNodeParamConnected) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioNodeParamConnected) ProtoEvent() string {
 	return "WebAudio.nodeParamConnected"
 }
 
@@ -15818,8 +16357,8 @@ type WebAudioNodeParamDisconnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// ProtoName interface
-func (evt WebAudioNodeParamDisconnected) ProtoName() string {
+// ProtoEvent interface
+func (evt WebAudioNodeParamDisconnected) ProtoEvent() string {
 	return "WebAudio.nodeParamDisconnected"
 }
 
@@ -16095,6 +16634,27 @@ func (m WebAuthnSetUserVerified) Call(c Client) error {
 	return call(m.ProtoName(), m, nil, c)
 }
 
+// WebAuthnSetAutomaticPresenceSimulation Sets whether tests of user presence will succeed immediately (if true) or fail to resolve (if false) for an authenticator.
+// The default is true.
+type WebAuthnSetAutomaticPresenceSimulation struct {
+
+	// AuthenticatorID ...
+	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
+
+	// Enabled ...
+	Enabled bool `json:"enabled"`
+}
+
+// ProtoName of the command
+func (m WebAuthnSetAutomaticPresenceSimulation) ProtoName() string {
+	return "WebAuthn.setAutomaticPresenceSimulation"
+}
+
+// Call of the command, sessionID is optional.
+func (m WebAuthnSetAutomaticPresenceSimulation) Call(c Client) error {
+	return call(m.ProtoName(), m, nil, c)
+}
+
 // MediaPlayerID Players will get an ID that is unique within the agent context.
 type MediaPlayerID string
 
@@ -16217,8 +16777,8 @@ type MediaPlayerPropertiesChanged struct {
 	Properties []*MediaPlayerProperty `json:"properties"`
 }
 
-// ProtoName interface
-func (evt MediaPlayerPropertiesChanged) ProtoName() string {
+// ProtoEvent interface
+func (evt MediaPlayerPropertiesChanged) ProtoEvent() string {
 	return "Media.playerPropertiesChanged"
 }
 
@@ -16233,8 +16793,8 @@ type MediaPlayerEventsAdded struct {
 	Events []*MediaPlayerEvent `json:"events"`
 }
 
-// ProtoName interface
-func (evt MediaPlayerEventsAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt MediaPlayerEventsAdded) ProtoEvent() string {
 	return "Media.playerEventsAdded"
 }
 
@@ -16248,8 +16808,8 @@ type MediaPlayerMessagesLogged struct {
 	Messages []*MediaPlayerMessage `json:"messages"`
 }
 
-// ProtoName interface
-func (evt MediaPlayerMessagesLogged) ProtoName() string {
+// ProtoEvent interface
+func (evt MediaPlayerMessagesLogged) ProtoEvent() string {
 	return "Media.playerMessagesLogged"
 }
 
@@ -16263,8 +16823,8 @@ type MediaPlayerErrorsRaised struct {
 	Errors []*MediaPlayerError `json:"errors"`
 }
 
-// ProtoName interface
-func (evt MediaPlayerErrorsRaised) ProtoName() string {
+// ProtoEvent interface
+func (evt MediaPlayerErrorsRaised) ProtoEvent() string {
 	return "Media.playerErrorsRaised"
 }
 
@@ -16277,8 +16837,8 @@ type MediaPlayersCreated struct {
 	Players []MediaPlayerID `json:"players"`
 }
 
-// ProtoName interface
-func (evt MediaPlayersCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt MediaPlayersCreated) ProtoEvent() string {
 	return "Media.playersCreated"
 }
 
@@ -16406,8 +16966,8 @@ type ConsoleMessageAdded struct {
 	Message *ConsoleConsoleMessage `json:"message"`
 }
 
-// ProtoName interface
-func (evt ConsoleMessageAdded) ProtoName() string {
+// ProtoEvent interface
+func (evt ConsoleMessageAdded) ProtoEvent() string {
 	return "Console.messageAdded"
 }
 
@@ -16438,6 +16998,19 @@ type DebuggerScriptPosition struct {
 
 	// ColumnNumber ...
 	ColumnNumber int `json:"columnNumber"`
+}
+
+// DebuggerLocationRange (experimental) Location range within one script.
+type DebuggerLocationRange struct {
+
+	// ScriptID ...
+	ScriptID RuntimeScriptID `json:"scriptId"`
+
+	// Start ...
+	Start *DebuggerScriptPosition `json:"start"`
+
+	// End ...
+	End *DebuggerScriptPosition `json:"end"`
 }
 
 // DebuggerCallFrame JavaScript call frame. Array of call frames form the call stack.
@@ -17331,6 +17904,9 @@ type DebuggerStepInto struct {
 	// BreakOnAsyncCall (experimental) (optional) Debugger will pause on the execution of the first async task which was scheduled
 	// before next pause.
 	BreakOnAsyncCall bool `json:"breakOnAsyncCall,omitempty"`
+
+	// SkipList (experimental) (optional) The skipList specifies location ranges that should be skipped on step into.
+	SkipList []*DebuggerLocationRange `json:"skipList,omitempty"`
 }
 
 // ProtoName of the command
@@ -17355,6 +17931,9 @@ func (m DebuggerStepOut) Call(c Client) error {
 
 // DebuggerStepOver Steps over the statement.
 type DebuggerStepOver struct {
+
+	// SkipList (experimental) (optional) The skipList specifies location ranges that should be skipped on step over.
+	SkipList []*DebuggerLocationRange `json:"skipList,omitempty"`
 }
 
 // ProtoName of the command
@@ -17375,8 +17954,8 @@ type DebuggerBreakpointResolved struct {
 	Location *DebuggerLocation `json:"location"`
 }
 
-// ProtoName interface
-func (evt DebuggerBreakpointResolved) ProtoName() string {
+// ProtoEvent interface
+func (evt DebuggerBreakpointResolved) ProtoEvent() string {
 	return "Debugger.breakpointResolved"
 }
 
@@ -17443,8 +18022,8 @@ type DebuggerPaused struct {
 	AsyncCallStackTraceID *RuntimeStackTraceID `json:"asyncCallStackTraceId,omitempty"`
 }
 
-// ProtoName interface
-func (evt DebuggerPaused) ProtoName() string {
+// ProtoEvent interface
+func (evt DebuggerPaused) ProtoEvent() string {
 	return "Debugger.paused"
 }
 
@@ -17452,8 +18031,8 @@ func (evt DebuggerPaused) ProtoName() string {
 type DebuggerResumed struct {
 }
 
-// ProtoName interface
-func (evt DebuggerResumed) ProtoName() string {
+// ProtoEvent interface
+func (evt DebuggerResumed) ProtoEvent() string {
 	return "Debugger.resumed"
 }
 
@@ -17507,10 +18086,13 @@ type DebuggerScriptFailedToParse struct {
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
+
+	// EmbedderName (experimental) (optional) The name the embedder supplied for this script.
+	EmbedderName string `json:"embedderName,omitempty"`
 }
 
-// ProtoName interface
-func (evt DebuggerScriptFailedToParse) ProtoName() string {
+// ProtoEvent interface
+func (evt DebuggerScriptFailedToParse) ProtoEvent() string {
 	return "Debugger.scriptFailedToParse"
 }
 
@@ -17571,10 +18153,13 @@ type DebuggerScriptParsed struct {
 
 	// DebugSymbols (experimental) (optional) If the scriptLanguage is WebASsembly, the source of debug symbols for the module.
 	DebugSymbols *DebuggerDebugSymbols `json:"debugSymbols,omitempty"`
+
+	// EmbedderName (experimental) (optional) The name the embedder supplied for this script.
+	EmbedderName string `json:"embedderName,omitempty"`
 }
 
-// ProtoName interface
-func (evt DebuggerScriptParsed) ProtoName() string {
+// ProtoEvent interface
+func (evt DebuggerScriptParsed) ProtoEvent() string {
 	return "Debugger.scriptParsed"
 }
 
@@ -17845,8 +18430,8 @@ type HeapProfilerAddHeapSnapshotChunk struct {
 	Chunk string `json:"chunk"`
 }
 
-// ProtoName interface
-func (evt HeapProfilerAddHeapSnapshotChunk) ProtoName() string {
+// ProtoEvent interface
+func (evt HeapProfilerAddHeapSnapshotChunk) ProtoEvent() string {
 	return "HeapProfiler.addHeapSnapshotChunk"
 }
 
@@ -17859,8 +18444,8 @@ type HeapProfilerHeapStatsUpdate struct {
 	StatsUpdate []int `json:"statsUpdate"`
 }
 
-// ProtoName interface
-func (evt HeapProfilerHeapStatsUpdate) ProtoName() string {
+// ProtoEvent interface
+func (evt HeapProfilerHeapStatsUpdate) ProtoEvent() string {
 	return "HeapProfiler.heapStatsUpdate"
 }
 
@@ -17876,8 +18461,8 @@ type HeapProfilerLastSeenObjectID struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
-// ProtoName interface
-func (evt HeapProfilerLastSeenObjectID) ProtoName() string {
+// ProtoEvent interface
+func (evt HeapProfilerLastSeenObjectID) ProtoEvent() string {
 	return "HeapProfiler.lastSeenObjectId"
 }
 
@@ -17894,8 +18479,8 @@ type HeapProfilerReportHeapSnapshotProgress struct {
 	Finished bool `json:"finished,omitempty"`
 }
 
-// ProtoName interface
-func (evt HeapProfilerReportHeapSnapshotProgress) ProtoName() string {
+// ProtoEvent interface
+func (evt HeapProfilerReportHeapSnapshotProgress) ProtoEvent() string {
 	return "HeapProfiler.reportHeapSnapshotProgress"
 }
 
@@ -17903,8 +18488,8 @@ func (evt HeapProfilerReportHeapSnapshotProgress) ProtoName() string {
 type HeapProfilerResetProfiles struct {
 }
 
-// ProtoName interface
-func (evt HeapProfilerResetProfiles) ProtoName() string {
+// ProtoEvent interface
+func (evt HeapProfilerResetProfiles) ProtoEvent() string {
 	return "HeapProfiler.resetProfiles"
 }
 
@@ -18310,8 +18895,8 @@ type ProfilerConsoleProfileFinished struct {
 	Title string `json:"title,omitempty"`
 }
 
-// ProtoName interface
-func (evt ProfilerConsoleProfileFinished) ProtoName() string {
+// ProtoEvent interface
+func (evt ProfilerConsoleProfileFinished) ProtoEvent() string {
 	return "Profiler.consoleProfileFinished"
 }
 
@@ -18328,8 +18913,8 @@ type ProfilerConsoleProfileStarted struct {
 	Title string `json:"title,omitempty"`
 }
 
-// ProtoName interface
-func (evt ProfilerConsoleProfileStarted) ProtoName() string {
+// ProtoEvent interface
+func (evt ProfilerConsoleProfileStarted) ProtoEvent() string {
 	return "Profiler.consoleProfileStarted"
 }
 
@@ -18349,8 +18934,8 @@ type ProfilerPreciseCoverageDeltaUpdate struct {
 	Result []*ProfilerScriptCoverage `json:"result"`
 }
 
-// ProtoName interface
-func (evt ProfilerPreciseCoverageDeltaUpdate) ProtoName() string {
+// ProtoEvent interface
+func (evt ProfilerPreciseCoverageDeltaUpdate) ProtoEvent() string {
 	return "Profiler.preciseCoverageDeltaUpdate"
 }
 
@@ -19486,8 +20071,8 @@ type RuntimeBindingCalled struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// ProtoName interface
-func (evt RuntimeBindingCalled) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeBindingCalled) ProtoEvent() string {
 	return "Runtime.bindingCalled"
 }
 
@@ -19576,8 +20161,8 @@ type RuntimeConsoleAPICalled struct {
 	Context string `json:"context,omitempty"`
 }
 
-// ProtoName interface
-func (evt RuntimeConsoleAPICalled) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeConsoleAPICalled) ProtoEvent() string {
 	return "Runtime.consoleAPICalled"
 }
 
@@ -19591,8 +20176,8 @@ type RuntimeExceptionRevoked struct {
 	ExceptionID int `json:"exceptionId"`
 }
 
-// ProtoName interface
-func (evt RuntimeExceptionRevoked) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeExceptionRevoked) ProtoEvent() string {
 	return "Runtime.exceptionRevoked"
 }
 
@@ -19606,8 +20191,8 @@ type RuntimeExceptionThrown struct {
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails"`
 }
 
-// ProtoName interface
-func (evt RuntimeExceptionThrown) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeExceptionThrown) ProtoEvent() string {
 	return "Runtime.exceptionThrown"
 }
 
@@ -19618,8 +20203,8 @@ type RuntimeExecutionContextCreated struct {
 	Context *RuntimeExecutionContextDescription `json:"context"`
 }
 
-// ProtoName interface
-func (evt RuntimeExecutionContextCreated) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeExecutionContextCreated) ProtoEvent() string {
 	return "Runtime.executionContextCreated"
 }
 
@@ -19630,8 +20215,8 @@ type RuntimeExecutionContextDestroyed struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// ProtoName interface
-func (evt RuntimeExecutionContextDestroyed) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeExecutionContextDestroyed) ProtoEvent() string {
 	return "Runtime.executionContextDestroyed"
 }
 
@@ -19639,8 +20224,8 @@ func (evt RuntimeExecutionContextDestroyed) ProtoName() string {
 type RuntimeExecutionContextsCleared struct {
 }
 
-// ProtoName interface
-func (evt RuntimeExecutionContextsCleared) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeExecutionContextsCleared) ProtoEvent() string {
 	return "Runtime.executionContextsCleared"
 }
 
@@ -19655,8 +20240,8 @@ type RuntimeInspectRequested struct {
 	Hints map[string]gson.JSON `json:"hints"`
 }
 
-// ProtoName interface
-func (evt RuntimeInspectRequested) ProtoName() string {
+// ProtoEvent interface
+func (evt RuntimeInspectRequested) ProtoEvent() string {
 	return "Runtime.inspectRequested"
 }
 
@@ -19741,6 +20326,8 @@ var types = map[string]reflect.Type{
 	"Audits.MixedContentIssueDetails":                    reflect.TypeOf(AuditsMixedContentIssueDetails{}),
 	"Audits.BlockedByResponseIssueDetails":               reflect.TypeOf(AuditsBlockedByResponseIssueDetails{}),
 	"Audits.HeavyAdIssueDetails":                         reflect.TypeOf(AuditsHeavyAdIssueDetails{}),
+	"Audits.SourceCodeLocation":                          reflect.TypeOf(AuditsSourceCodeLocation{}),
+	"Audits.ContentSecurityPolicyIssueDetails":           reflect.TypeOf(AuditsContentSecurityPolicyIssueDetails{}),
 	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
 	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
 	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
@@ -19798,6 +20385,7 @@ var types = map[string]reflect.Type{
 	"CSS.MediaQuery":                                     reflect.TypeOf(CSSMediaQuery{}),
 	"CSS.MediaQueryExpression":                           reflect.TypeOf(CSSMediaQueryExpression{}),
 	"CSS.PlatformFontUsage":                              reflect.TypeOf(CSSPlatformFontUsage{}),
+	"CSS.FontVariationAxis":                              reflect.TypeOf(CSSFontVariationAxis{}),
 	"CSS.FontFace":                                       reflect.TypeOf(CSSFontFace{}),
 	"CSS.CSSKeyframesRule":                               reflect.TypeOf(CSSCSSKeyframesRule{}),
 	"CSS.CSSKeyframeRule":                                reflect.TypeOf(CSSCSSKeyframeRule{}),
@@ -19825,6 +20413,9 @@ var types = map[string]reflect.Type{
 	"CSS.getPlatformFontsForNodeResult":                  reflect.TypeOf(CSSGetPlatformFontsForNodeResult{}),
 	"CSS.getStyleSheetText":                              reflect.TypeOf(CSSGetStyleSheetText{}),
 	"CSS.getStyleSheetTextResult":                        reflect.TypeOf(CSSGetStyleSheetTextResult{}),
+	"CSS.trackComputedStyleUpdates":                      reflect.TypeOf(CSSTrackComputedStyleUpdates{}),
+	"CSS.takeComputedStyleUpdates":                       reflect.TypeOf(CSSTakeComputedStyleUpdates{}),
+	"CSS.takeComputedStyleUpdatesResult":                 reflect.TypeOf(CSSTakeComputedStyleUpdatesResult{}),
 	"CSS.setEffectivePropertyValueForNode":               reflect.TypeOf(CSSSetEffectivePropertyValueForNode{}),
 	"CSS.setKeyframeKey":                                 reflect.TypeOf(CSSSetKeyframeKey{}),
 	"CSS.setKeyframeKeyResult":                           reflect.TypeOf(CSSSetKeyframeKeyResult{}),
@@ -19841,6 +20432,7 @@ var types = map[string]reflect.Type{
 	"CSS.stopRuleUsageTrackingResult":                    reflect.TypeOf(CSSStopRuleUsageTrackingResult{}),
 	"CSS.takeCoverageDelta":                              reflect.TypeOf(CSSTakeCoverageDelta{}),
 	"CSS.takeCoverageDeltaResult":                        reflect.TypeOf(CSSTakeCoverageDeltaResult{}),
+	"CSS.setLocalFontsEnabled":                           reflect.TypeOf(CSSSetLocalFontsEnabled{}),
 	"CSS.fontsUpdated":                                   reflect.TypeOf(CSSFontsUpdated{}),
 	"CSS.mediaQueryResultChanged":                        reflect.TypeOf(CSSMediaQueryResultChanged{}),
 	"CSS.styleSheetAdded":                                reflect.TypeOf(CSSStyleSheetAdded{}),
@@ -19872,6 +20464,7 @@ var types = map[string]reflect.Type{
 	"DOM.BoxModel":                                       reflect.TypeOf(DOMBoxModel{}),
 	"DOM.ShapeOutsideInfo":                               reflect.TypeOf(DOMShapeOutsideInfo{}),
 	"DOM.Rect":                                           reflect.TypeOf(DOMRect{}),
+	"DOM.CSSComputedStyleProperty":                       reflect.TypeOf(DOMCSSComputedStyleProperty{}),
 	"DOM.collectClassNamesFromSubtree":                   reflect.TypeOf(DOMCollectClassNamesFromSubtree{}),
 	"DOM.collectClassNamesFromSubtreeResult":             reflect.TypeOf(DOMCollectClassNamesFromSubtreeResult{}),
 	"DOM.copyTo":                                         reflect.TypeOf(DOMCopyTo{}),
@@ -19893,6 +20486,8 @@ var types = map[string]reflect.Type{
 	"DOM.getDocumentResult":                              reflect.TypeOf(DOMGetDocumentResult{}),
 	"DOM.getFlattenedDocument":                           reflect.TypeOf(DOMGetFlattenedDocument{}),
 	"DOM.getFlattenedDocumentResult":                     reflect.TypeOf(DOMGetFlattenedDocumentResult{}),
+	"DOM.getNodesForSubtreeByStyle":                      reflect.TypeOf(DOMGetNodesForSubtreeByStyle{}),
+	"DOM.getNodesForSubtreeByStyleResult":                reflect.TypeOf(DOMGetNodesForSubtreeByStyleResult{}),
 	"DOM.getNodeForLocation":                             reflect.TypeOf(DOMGetNodeForLocation{}),
 	"DOM.getNodeForLocationResult":                       reflect.TypeOf(DOMGetNodeForLocationResult{}),
 	"DOM.getOuterHTML":                                   reflect.TypeOf(DOMGetOuterHTML{}),
@@ -20008,6 +20603,7 @@ var types = map[string]reflect.Type{
 	"DeviceOrientation.clearDeviceOrientationOverride":   reflect.TypeOf(DeviceOrientationClearDeviceOrientationOverride{}),
 	"DeviceOrientation.setDeviceOrientationOverride":     reflect.TypeOf(DeviceOrientationSetDeviceOrientationOverride{}),
 	"Emulation.ScreenOrientation":                        reflect.TypeOf(EmulationScreenOrientation{}),
+	"Emulation.DisplayFeature":                           reflect.TypeOf(EmulationDisplayFeature{}),
 	"Emulation.MediaFeature":                             reflect.TypeOf(EmulationMediaFeature{}),
 	"Emulation.UserAgentBrandVersion":                    reflect.TypeOf(EmulationUserAgentBrandVersion{}),
 	"Emulation.UserAgentMetadata":                        reflect.TypeOf(EmulationUserAgentMetadata{}),
@@ -20026,6 +20622,8 @@ var types = map[string]reflect.Type{
 	"Emulation.setEmulatedMedia":                         reflect.TypeOf(EmulationSetEmulatedMedia{}),
 	"Emulation.setEmulatedVisionDeficiency":              reflect.TypeOf(EmulationSetEmulatedVisionDeficiency{}),
 	"Emulation.setGeolocationOverride":                   reflect.TypeOf(EmulationSetGeolocationOverride{}),
+	"Emulation.setIdleOverride":                          reflect.TypeOf(EmulationSetIdleOverride{}),
+	"Emulation.clearIdleOverride":                        reflect.TypeOf(EmulationClearIdleOverride{}),
 	"Emulation.setNavigatorOverrides":                    reflect.TypeOf(EmulationSetNavigatorOverrides{}),
 	"Emulation.setPageScaleFactor":                       reflect.TypeOf(EmulationSetPageScaleFactor{}),
 	"Emulation.setScriptExecutionDisabled":               reflect.TypeOf(EmulationSetScriptExecutionDisabled{}),
@@ -20130,6 +20728,7 @@ var types = map[string]reflect.Type{
 	"Memory.getSamplingProfile":                             reflect.TypeOf(MemoryGetSamplingProfile{}),
 	"Memory.getSamplingProfileResult":                       reflect.TypeOf(MemoryGetSamplingProfileResult{}),
 	"Network.ResourceTiming":                                reflect.TypeOf(NetworkResourceTiming{}),
+	"Network.PostDataEntry":                                 reflect.TypeOf(NetworkPostDataEntry{}),
 	"Network.Request":                                       reflect.TypeOf(NetworkRequest{}),
 	"Network.SignedCertificateTimestamp":                    reflect.TypeOf(NetworkSignedCertificateTimestamp{}),
 	"Network.SecurityDetails":                               reflect.TypeOf(NetworkSecurityDetails{}),
@@ -20150,6 +20749,9 @@ var types = map[string]reflect.Type{
 	"Network.SignedExchangeHeader":                          reflect.TypeOf(NetworkSignedExchangeHeader{}),
 	"Network.SignedExchangeError":                           reflect.TypeOf(NetworkSignedExchangeError{}),
 	"Network.SignedExchangeInfo":                            reflect.TypeOf(NetworkSignedExchangeInfo{}),
+	"Network.CrossOriginOpenerPolicyStatus":                 reflect.TypeOf(NetworkCrossOriginOpenerPolicyStatus{}),
+	"Network.CrossOriginEmbedderPolicyStatus":               reflect.TypeOf(NetworkCrossOriginEmbedderPolicyStatus{}),
+	"Network.SecurityIsolationStatus":                       reflect.TypeOf(NetworkSecurityIsolationStatus{}),
 	"Network.canClearBrowserCache":                          reflect.TypeOf(NetworkCanClearBrowserCache{}),
 	"Network.canClearBrowserCacheResult":                    reflect.TypeOf(NetworkCanClearBrowserCacheResult{}),
 	"Network.canClearBrowserCookies":                        reflect.TypeOf(NetworkCanClearBrowserCookies{}),
@@ -20190,6 +20792,8 @@ var types = map[string]reflect.Type{
 	"Network.setExtraHTTPHeaders":                           reflect.TypeOf(NetworkSetExtraHTTPHeaders{}),
 	"Network.setRequestInterception":                        reflect.TypeOf(NetworkSetRequestInterception{}),
 	"Network.setUserAgentOverride":                          reflect.TypeOf(NetworkSetUserAgentOverride{}),
+	"Network.getSecurityIsolationStatus":                    reflect.TypeOf(NetworkGetSecurityIsolationStatus{}),
+	"Network.getSecurityIsolationStatusResult":              reflect.TypeOf(NetworkGetSecurityIsolationStatusResult{}),
 	"Network.dataReceived":                                  reflect.TypeOf(NetworkDataReceived{}),
 	"Network.eventSourceMessageReceived":                    reflect.TypeOf(NetworkEventSourceMessageReceived{}),
 	"Network.loadingFailed":                                 reflect.TypeOf(NetworkLoadingFailed{}),
@@ -20209,23 +20813,31 @@ var types = map[string]reflect.Type{
 	"Network.webSocketWillSendHandshakeRequest":             reflect.TypeOf(NetworkWebSocketWillSendHandshakeRequest{}),
 	"Network.requestWillBeSentExtraInfo":                    reflect.TypeOf(NetworkRequestWillBeSentExtraInfo{}),
 	"Network.responseReceivedExtraInfo":                     reflect.TypeOf(NetworkResponseReceivedExtraInfo{}),
+	"Overlay.SourceOrderConfig":                             reflect.TypeOf(OverlaySourceOrderConfig{}),
 	"Overlay.GridHighlightConfig":                           reflect.TypeOf(OverlayGridHighlightConfig{}),
 	"Overlay.HighlightConfig":                               reflect.TypeOf(OverlayHighlightConfig{}),
+	"Overlay.GridNodeHighlightConfig":                       reflect.TypeOf(OverlayGridNodeHighlightConfig{}),
 	"Overlay.HingeConfig":                                   reflect.TypeOf(OverlayHingeConfig{}),
 	"Overlay.disable":                                       reflect.TypeOf(OverlayDisable{}),
 	"Overlay.enable":                                        reflect.TypeOf(OverlayEnable{}),
 	"Overlay.getHighlightObjectForTest":                     reflect.TypeOf(OverlayGetHighlightObjectForTest{}),
 	"Overlay.getHighlightObjectForTestResult":               reflect.TypeOf(OverlayGetHighlightObjectForTestResult{}),
+	"Overlay.getGridHighlightObjectsForTest":                reflect.TypeOf(OverlayGetGridHighlightObjectsForTest{}),
+	"Overlay.getGridHighlightObjectsForTestResult":          reflect.TypeOf(OverlayGetGridHighlightObjectsForTestResult{}),
+	"Overlay.getSourceOrderHighlightObjectForTest":          reflect.TypeOf(OverlayGetSourceOrderHighlightObjectForTest{}),
+	"Overlay.getSourceOrderHighlightObjectForTestResult":    reflect.TypeOf(OverlayGetSourceOrderHighlightObjectForTestResult{}),
 	"Overlay.hideHighlight":                                 reflect.TypeOf(OverlayHideHighlight{}),
 	"Overlay.highlightFrame":                                reflect.TypeOf(OverlayHighlightFrame{}),
 	"Overlay.highlightNode":                                 reflect.TypeOf(OverlayHighlightNode{}),
 	"Overlay.highlightQuad":                                 reflect.TypeOf(OverlayHighlightQuad{}),
 	"Overlay.highlightRect":                                 reflect.TypeOf(OverlayHighlightRect{}),
+	"Overlay.highlightSourceOrder":                          reflect.TypeOf(OverlayHighlightSourceOrder{}),
 	"Overlay.setInspectMode":                                reflect.TypeOf(OverlaySetInspectMode{}),
 	"Overlay.setShowAdHighlights":                           reflect.TypeOf(OverlaySetShowAdHighlights{}),
 	"Overlay.setPausedInDebuggerMessage":                    reflect.TypeOf(OverlaySetPausedInDebuggerMessage{}),
 	"Overlay.setShowDebugBorders":                           reflect.TypeOf(OverlaySetShowDebugBorders{}),
 	"Overlay.setShowFPSCounter":                             reflect.TypeOf(OverlaySetShowFPSCounter{}),
+	"Overlay.setShowGridOverlays":                           reflect.TypeOf(OverlaySetShowGridOverlays{}),
 	"Overlay.setShowPaintRects":                             reflect.TypeOf(OverlaySetShowPaintRects{}),
 	"Overlay.setShowLayoutShiftRegions":                     reflect.TypeOf(OverlaySetShowLayoutShiftRegions{}),
 	"Overlay.setShowScrollBottleneckRects":                  reflect.TypeOf(OverlaySetShowScrollBottleneckRects{}),
@@ -20512,6 +21124,7 @@ var types = map[string]reflect.Type{
 	"WebAuthn.removeCredential":                             reflect.TypeOf(WebAuthnRemoveCredential{}),
 	"WebAuthn.clearCredentials":                             reflect.TypeOf(WebAuthnClearCredentials{}),
 	"WebAuthn.setUserVerified":                              reflect.TypeOf(WebAuthnSetUserVerified{}),
+	"WebAuthn.setAutomaticPresenceSimulation":               reflect.TypeOf(WebAuthnSetAutomaticPresenceSimulation{}),
 	"Media.PlayerMessage":                                   reflect.TypeOf(MediaPlayerMessage{}),
 	"Media.PlayerProperty":                                  reflect.TypeOf(MediaPlayerProperty{}),
 	"Media.PlayerEvent":                                     reflect.TypeOf(MediaPlayerEvent{}),
@@ -20530,6 +21143,7 @@ var types = map[string]reflect.Type{
 	"Console.messageAdded":                                  reflect.TypeOf(ConsoleMessageAdded{}),
 	"Debugger.Location":                                     reflect.TypeOf(DebuggerLocation{}),
 	"Debugger.ScriptPosition":                               reflect.TypeOf(DebuggerScriptPosition{}),
+	"Debugger.LocationRange":                                reflect.TypeOf(DebuggerLocationRange{}),
 	"Debugger.CallFrame":                                    reflect.TypeOf(DebuggerCallFrame{}),
 	"Debugger.Scope":                                        reflect.TypeOf(DebuggerScope{}),
 	"Debugger.SearchMatch":                                  reflect.TypeOf(DebuggerSearchMatch{}),

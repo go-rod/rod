@@ -92,17 +92,17 @@ func (t T) AnimationSetTiming() {
 
 func (t T) AnimationAnimationCanceled() {
 	e := proto.AnimationAnimationCanceled{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) AnimationAnimationCreated() {
 	e := proto.AnimationAnimationCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) AnimationAnimationStarted() {
 	e := proto.AnimationAnimationStarted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ApplicationCacheEnable() {
@@ -131,12 +131,12 @@ func (t T) ApplicationCacheGetManifestForFrame() {
 
 func (t T) ApplicationCacheApplicationCacheStatusUpdated() {
 	e := proto.ApplicationCacheApplicationCacheStatusUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ApplicationCacheNetworkStateUpdated() {
 	e := proto.ApplicationCacheNetworkStateUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) AuditsGetEncodedResponse() {
@@ -159,7 +159,7 @@ func (t T) AuditsEnable() {
 
 func (t T) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) BackgroundServiceStartObserving() {
@@ -188,12 +188,12 @@ func (t T) BackgroundServiceClearEvents() {
 
 func (t T) BackgroundServiceRecordingStateChanged() {
 	e := proto.BackgroundServiceRecordingStateChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) BackgroundServiceBackgroundServiceEventReceived() {
 	e := proto.BackgroundServiceBackgroundServiceEventReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) BrowserSetPermission() {
@@ -364,6 +364,18 @@ func (t T) CSSGetStyleSheetText() {
 	t.Nil(err)
 }
 
+func (t T) CSSTrackComputedStyleUpdates() {
+	c := &Client{}
+	err := proto.CSSTrackComputedStyleUpdates{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) CSSTakeComputedStyleUpdates() {
+	c := &Client{}
+	_, err := proto.CSSTakeComputedStyleUpdates{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSSetEffectivePropertyValueForNode() {
 	c := &Client{}
 	err := proto.CSSSetEffectivePropertyValueForNode{}.Call(c)
@@ -418,29 +430,35 @@ func (t T) CSSTakeCoverageDelta() {
 	t.Nil(err)
 }
 
+func (t T) CSSSetLocalFontsEnabled() {
+	c := &Client{}
+	err := proto.CSSSetLocalFontsEnabled{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSFontsUpdated() {
 	e := proto.CSSFontsUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CSSMediaQueryResultChanged() {
 	e := proto.CSSMediaQueryResultChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CSSStyleSheetAdded() {
 	e := proto.CSSStyleSheetAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CSSStyleSheetChanged() {
 	e := proto.CSSStyleSheetChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CSSStyleSheetRemoved() {
 	e := proto.CSSStyleSheetRemoved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CacheStorageDeleteCache() {
@@ -505,12 +523,12 @@ func (t T) CastStopCasting() {
 
 func (t T) CastSinksUpdated() {
 	e := proto.CastSinksUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) CastIssueUpdated() {
 	e := proto.CastIssueUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMCollectClassNamesFromSubtree() {
@@ -588,6 +606,12 @@ func (t T) DOMGetDocument() {
 func (t T) DOMGetFlattenedDocument() {
 	c := &Client{}
 	_, err := proto.DOMGetFlattenedDocument{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DOMGetNodesForSubtreeByStyle() {
+	c := &Client{}
+	_, err := proto.DOMGetNodesForSubtreeByStyle{}.Call(c)
 	t.Nil(err)
 }
 
@@ -785,72 +809,72 @@ func (t T) DOMGetFrameOwner() {
 
 func (t T) DOMAttributeModified() {
 	e := proto.DOMAttributeModified{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMAttributeRemoved() {
 	e := proto.DOMAttributeRemoved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMCharacterDataModified() {
 	e := proto.DOMCharacterDataModified{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMChildNodeCountUpdated() {
 	e := proto.DOMChildNodeCountUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMChildNodeInserted() {
 	e := proto.DOMChildNodeInserted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMChildNodeRemoved() {
 	e := proto.DOMChildNodeRemoved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMDistributedNodesUpdated() {
 	e := proto.DOMDistributedNodesUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMDocumentUpdated() {
 	e := proto.DOMDocumentUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMInlineStyleInvalidated() {
 	e := proto.DOMInlineStyleInvalidated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMPseudoElementAdded() {
 	e := proto.DOMPseudoElementAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMPseudoElementRemoved() {
 	e := proto.DOMPseudoElementRemoved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMSetChildNodes() {
 	e := proto.DOMSetChildNodes{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMShadowRootPopped() {
 	e := proto.DOMShadowRootPopped{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMShadowRootPushed() {
 	e := proto.DOMShadowRootPushed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMDebuggerGetEventListeners() {
@@ -969,22 +993,22 @@ func (t T) DOMStorageSetDOMStorageItem() {
 
 func (t T) DOMStorageDomStorageItemAdded() {
 	e := proto.DOMStorageDomStorageItemAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMStorageDomStorageItemRemoved() {
 	e := proto.DOMStorageDomStorageItemRemoved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMStorageDomStorageItemUpdated() {
 	e := proto.DOMStorageDomStorageItemUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DOMStorageDomStorageItemsCleared() {
 	e := proto.DOMStorageDomStorageItemsCleared{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DatabaseDisable() {
@@ -1013,7 +1037,7 @@ func (t T) DatabaseGetDatabaseTableNames() {
 
 func (t T) DatabaseAddDatabase() {
 	e := proto.DatabaseAddDatabase{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DeviceOrientationClearDeviceOrientationOverride() {
@@ -1112,6 +1136,18 @@ func (t T) EmulationSetGeolocationOverride() {
 	t.Nil(err)
 }
 
+func (t T) EmulationSetIdleOverride() {
+	c := &Client{}
+	err := proto.EmulationSetIdleOverride{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationClearIdleOverride() {
+	c := &Client{}
+	err := proto.EmulationClearIdleOverride{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) EmulationSetNavigatorOverrides() {
 	c := &Client{}
 	err := proto.EmulationSetNavigatorOverrides{}.Call(c)
@@ -1168,7 +1204,7 @@ func (t T) EmulationSetUserAgentOverride() {
 
 func (t T) EmulationVirtualTimeBudgetExpired() {
 	e := proto.EmulationVirtualTimeBudgetExpired{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeadlessExperimentalBeginFrame() {
@@ -1191,7 +1227,7 @@ func (t T) HeadlessExperimentalEnable() {
 
 func (t T) HeadlessExperimentalNeedsBeginFramesChanged() {
 	e := proto.HeadlessExperimentalNeedsBeginFramesChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) IOClose() {
@@ -1334,17 +1370,17 @@ func (t T) InspectorEnable() {
 
 func (t T) InspectorDetached() {
 	e := proto.InspectorDetached{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) InspectorTargetCrashed() {
 	e := proto.InspectorTargetCrashed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) InspectorTargetReloadedAfterCrash() {
 	e := proto.InspectorTargetReloadedAfterCrash{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) LayerTreeCompositingReasons() {
@@ -1403,12 +1439,12 @@ func (t T) LayerTreeSnapshotCommandLog() {
 
 func (t T) LayerTreeLayerPainted() {
 	e := proto.LayerTreeLayerPainted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) LayerTreeLayerTreeDidChange() {
 	e := proto.LayerTreeLayerTreeDidChange{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) LogClear() {
@@ -1443,7 +1479,7 @@ func (t T) LogStopViolationsReport() {
 
 func (t T) LogEntryAdded() {
 	e := proto.LogEntryAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) MemoryGetDOMCounters() {
@@ -1674,99 +1710,105 @@ func (t T) NetworkSetUserAgentOverride() {
 	t.Nil(err)
 }
 
+func (t T) NetworkGetSecurityIsolationStatus() {
+	c := &Client{}
+	_, err := proto.NetworkGetSecurityIsolationStatus{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) NetworkDataReceived() {
 	e := proto.NetworkDataReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkEventSourceMessageReceived() {
 	e := proto.NetworkEventSourceMessageReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkLoadingFailed() {
 	e := proto.NetworkLoadingFailed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkLoadingFinished() {
 	e := proto.NetworkLoadingFinished{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkRequestIntercepted() {
 	e := proto.NetworkRequestIntercepted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkRequestServedFromCache() {
 	e := proto.NetworkRequestServedFromCache{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkRequestWillBeSent() {
 	e := proto.NetworkRequestWillBeSent{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkResourceChangedPriority() {
 	e := proto.NetworkResourceChangedPriority{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkSignedExchangeReceived() {
 	e := proto.NetworkSignedExchangeReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkResponseReceived() {
 	e := proto.NetworkResponseReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketClosed() {
 	e := proto.NetworkWebSocketClosed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketCreated() {
 	e := proto.NetworkWebSocketCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketFrameError() {
 	e := proto.NetworkWebSocketFrameError{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketFrameReceived() {
 	e := proto.NetworkWebSocketFrameReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketFrameSent() {
 	e := proto.NetworkWebSocketFrameSent{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketHandshakeResponseReceived() {
 	e := proto.NetworkWebSocketHandshakeResponseReceived{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkWebSocketWillSendHandshakeRequest() {
 	e := proto.NetworkWebSocketWillSendHandshakeRequest{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkRequestWillBeSentExtraInfo() {
 	e := proto.NetworkRequestWillBeSentExtraInfo{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) NetworkResponseReceivedExtraInfo() {
 	e := proto.NetworkResponseReceivedExtraInfo{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) OverlayDisable() {
@@ -1784,6 +1826,18 @@ func (t T) OverlayEnable() {
 func (t T) OverlayGetHighlightObjectForTest() {
 	c := &Client{}
 	_, err := proto.OverlayGetHighlightObjectForTest{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) OverlayGetGridHighlightObjectsForTest() {
+	c := &Client{}
+	_, err := proto.OverlayGetGridHighlightObjectsForTest{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) OverlayGetSourceOrderHighlightObjectForTest() {
+	c := &Client{}
+	_, err := proto.OverlayGetSourceOrderHighlightObjectForTest{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1817,6 +1871,12 @@ func (t T) OverlayHighlightRect() {
 	t.Nil(err)
 }
 
+func (t T) OverlayHighlightSourceOrder() {
+	c := &Client{}
+	err := proto.OverlayHighlightSourceOrder{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) OverlaySetInspectMode() {
 	c := &Client{}
 	err := proto.OverlaySetInspectMode{}.Call(c)
@@ -1844,6 +1904,12 @@ func (t T) OverlaySetShowDebugBorders() {
 func (t T) OverlaySetShowFPSCounter() {
 	c := &Client{}
 	err := proto.OverlaySetShowFPSCounter{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) OverlaySetShowGridOverlays() {
+	c := &Client{}
+	err := proto.OverlaySetShowGridOverlays{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1885,22 +1951,22 @@ func (t T) OverlaySetShowHinge() {
 
 func (t T) OverlayInspectNodeRequested() {
 	e := proto.OverlayInspectNodeRequested{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) OverlayNodeHighlightRequested() {
 	e := proto.OverlayNodeHighlightRequested{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) OverlayScreenshotRequested() {
 	e := proto.OverlayScreenshotRequested{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) OverlayInspectModeCanceled() {
 	e := proto.OverlayInspectModeCanceled{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageAddScriptToEvaluateOnLoad() {
@@ -2229,122 +2295,122 @@ func (t T) PageSetInterceptFileChooserDialog() {
 
 func (t T) PageDomContentEventFired() {
 	e := proto.PageDomContentEventFired{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFileChooserOpened() {
 	e := proto.PageFileChooserOpened{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameAttached() {
 	e := proto.PageFrameAttached{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameClearedScheduledNavigation() {
 	e := proto.PageFrameClearedScheduledNavigation{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameDetached() {
 	e := proto.PageFrameDetached{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameNavigated() {
 	e := proto.PageFrameNavigated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameResized() {
 	e := proto.PageFrameResized{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameRequestedNavigation() {
 	e := proto.PageFrameRequestedNavigation{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameScheduledNavigation() {
 	e := proto.PageFrameScheduledNavigation{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameStartedLoading() {
 	e := proto.PageFrameStartedLoading{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageFrameStoppedLoading() {
 	e := proto.PageFrameStoppedLoading{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageDownloadWillBegin() {
 	e := proto.PageDownloadWillBegin{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageDownloadProgress() {
 	e := proto.PageDownloadProgress{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageInterstitialHidden() {
 	e := proto.PageInterstitialHidden{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageInterstitialShown() {
 	e := proto.PageInterstitialShown{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageJavascriptDialogClosed() {
 	e := proto.PageJavascriptDialogClosed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageJavascriptDialogOpening() {
 	e := proto.PageJavascriptDialogOpening{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageLifecycleEvent() {
 	e := proto.PageLifecycleEvent{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageLoadEventFired() {
 	e := proto.PageLoadEventFired{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageNavigatedWithinDocument() {
 	e := proto.PageNavigatedWithinDocument{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageScreencastFrame() {
 	e := proto.PageScreencastFrame{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageScreencastVisibilityChanged() {
 	e := proto.PageScreencastVisibilityChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageWindowOpen() {
 	e := proto.PageWindowOpen{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PageCompilationCacheProduced() {
 	e := proto.PageCompilationCacheProduced{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) PerformanceDisable() {
@@ -2373,7 +2439,7 @@ func (t T) PerformanceGetMetrics() {
 
 func (t T) PerformanceMetrics() {
 	e := proto.PerformanceMetrics{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) SecurityDisable() {
@@ -2408,17 +2474,17 @@ func (t T) SecuritySetOverrideCertificateErrors() {
 
 func (t T) SecurityCertificateError() {
 	e := proto.SecurityCertificateError{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) SecurityVisibleSecurityStateChanged() {
 	e := proto.SecurityVisibleSecurityStateChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) SecuritySecurityStateChanged() {
 	e := proto.SecuritySecurityStateChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ServiceWorkerDeliverPushMessage() {
@@ -2501,17 +2567,17 @@ func (t T) ServiceWorkerUpdateRegistration() {
 
 func (t T) ServiceWorkerWorkerErrorReported() {
 	e := proto.ServiceWorkerWorkerErrorReported{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ServiceWorkerWorkerRegistrationUpdated() {
 	e := proto.ServiceWorkerWorkerRegistrationUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ServiceWorkerWorkerVersionUpdated() {
 	e := proto.ServiceWorkerWorkerVersionUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) StorageClearDataForOrigin() {
@@ -2570,22 +2636,22 @@ func (t T) StorageUntrackIndexedDBForOrigin() {
 
 func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) StorageCacheStorageListUpdated() {
 	e := proto.StorageCacheStorageListUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) StorageIndexedDBContentUpdated() {
 	e := proto.StorageIndexedDBContentUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) StorageIndexedDBListUpdated() {
 	e := proto.StorageIndexedDBListUpdated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) SystemInfoGetInfo() {
@@ -2698,37 +2764,37 @@ func (t T) TargetSetRemoteLocations() {
 
 func (t T) TargetAttachedToTarget() {
 	e := proto.TargetAttachedToTarget{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetDetachedFromTarget() {
 	e := proto.TargetDetachedFromTarget{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetReceivedMessageFromTarget() {
 	e := proto.TargetReceivedMessageFromTarget{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetTargetCreated() {
 	e := proto.TargetTargetCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetTargetDestroyed() {
 	e := proto.TargetTargetDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetTargetCrashed() {
 	e := proto.TargetTargetCrashed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TargetTargetInfoChanged() {
 	e := proto.TargetTargetInfoChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TetheringBind() {
@@ -2745,7 +2811,7 @@ func (t T) TetheringUnbind() {
 
 func (t T) TetheringAccepted() {
 	e := proto.TetheringAccepted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TracingEnd() {
@@ -2780,17 +2846,17 @@ func (t T) TracingStart() {
 
 func (t T) TracingBufferUsage() {
 	e := proto.TracingBufferUsage{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TracingDataCollected() {
 	e := proto.TracingDataCollected{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) TracingTracingComplete() {
 	e := proto.TracingTracingComplete{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) FetchDisable() {
@@ -2843,12 +2909,12 @@ func (t T) FetchTakeResponseBodyAsStream() {
 
 func (t T) FetchRequestPaused() {
 	e := proto.FetchRequestPaused{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) FetchAuthRequired() {
 	e := proto.FetchAuthRequired{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioEnable() {
@@ -2871,67 +2937,67 @@ func (t T) WebAudioGetRealtimeData() {
 
 func (t T) WebAudioContextCreated() {
 	e := proto.WebAudioContextCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioContextWillBeDestroyed() {
 	e := proto.WebAudioContextWillBeDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioContextChanged() {
 	e := proto.WebAudioContextChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioListenerCreated() {
 	e := proto.WebAudioAudioListenerCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioListenerWillBeDestroyed() {
 	e := proto.WebAudioAudioListenerWillBeDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioNodeCreated() {
 	e := proto.WebAudioAudioNodeCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioNodeWillBeDestroyed() {
 	e := proto.WebAudioAudioNodeWillBeDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioParamCreated() {
 	e := proto.WebAudioAudioParamCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioAudioParamWillBeDestroyed() {
 	e := proto.WebAudioAudioParamWillBeDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioNodesConnected() {
 	e := proto.WebAudioNodesConnected{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioNodesDisconnected() {
 	e := proto.WebAudioNodesDisconnected{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioNodeParamConnected() {
 	e := proto.WebAudioNodeParamConnected{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAudioNodeParamDisconnected() {
 	e := proto.WebAudioNodeParamDisconnected{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) WebAuthnEnable() {
@@ -2994,6 +3060,12 @@ func (t T) WebAuthnSetUserVerified() {
 	t.Nil(err)
 }
 
+func (t T) WebAuthnSetAutomaticPresenceSimulation() {
+	c := &Client{}
+	err := proto.WebAuthnSetAutomaticPresenceSimulation{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) MediaEnable() {
 	c := &Client{}
 	err := proto.MediaEnable{}.Call(c)
@@ -3008,27 +3080,27 @@ func (t T) MediaDisable() {
 
 func (t T) MediaPlayerPropertiesChanged() {
 	e := proto.MediaPlayerPropertiesChanged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) MediaPlayerEventsAdded() {
 	e := proto.MediaPlayerEventsAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) MediaPlayerMessagesLogged() {
 	e := proto.MediaPlayerMessagesLogged{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) MediaPlayerErrorsRaised() {
 	e := proto.MediaPlayerErrorsRaised{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) MediaPlayersCreated() {
 	e := proto.MediaPlayersCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ConsoleClearMessages() {
@@ -3051,7 +3123,7 @@ func (t T) ConsoleEnable() {
 
 func (t T) ConsoleMessageAdded() {
 	e := proto.ConsoleMessageAdded{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DebuggerContinueToLocation() {
@@ -3242,27 +3314,27 @@ func (t T) DebuggerStepOver() {
 
 func (t T) DebuggerBreakpointResolved() {
 	e := proto.DebuggerBreakpointResolved{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DebuggerPaused() {
 	e := proto.DebuggerPaused{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DebuggerResumed() {
 	e := proto.DebuggerResumed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DebuggerScriptFailedToParse() {
 	e := proto.DebuggerScriptFailedToParse{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) DebuggerScriptParsed() {
 	e := proto.DebuggerScriptParsed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeapProfilerAddInspectedHeapObject() {
@@ -3339,27 +3411,27 @@ func (t T) HeapProfilerTakeHeapSnapshot() {
 
 func (t T) HeapProfilerAddHeapSnapshotChunk() {
 	e := proto.HeapProfilerAddHeapSnapshotChunk{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeapProfilerHeapStatsUpdate() {
 	e := proto.HeapProfilerHeapStatsUpdate{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeapProfilerLastSeenObjectID() {
 	e := proto.HeapProfilerLastSeenObjectID{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeapProfilerReportHeapSnapshotProgress() {
 	e := proto.HeapProfilerReportHeapSnapshotProgress{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) HeapProfilerResetProfiles() {
 	e := proto.HeapProfilerResetProfiles{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ProfilerDisable() {
@@ -3454,17 +3526,17 @@ func (t T) ProfilerGetRuntimeCallStats() {
 
 func (t T) ProfilerConsoleProfileFinished() {
 	e := proto.ProfilerConsoleProfileFinished{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ProfilerConsoleProfileStarted() {
 	e := proto.ProfilerConsoleProfileStarted{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) ProfilerPreciseCoverageDeltaUpdate() {
 	e := proto.ProfilerPreciseCoverageDeltaUpdate{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeAwaitPromise() {
@@ -3601,42 +3673,42 @@ func (t T) RuntimeRemoveBinding() {
 
 func (t T) RuntimeBindingCalled() {
 	e := proto.RuntimeBindingCalled{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeConsoleAPICalled() {
 	e := proto.RuntimeConsoleAPICalled{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeExceptionRevoked() {
 	e := proto.RuntimeExceptionRevoked{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeExceptionThrown() {
 	e := proto.RuntimeExceptionThrown{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeExecutionContextCreated() {
 	e := proto.RuntimeExecutionContextCreated{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeExecutionContextDestroyed() {
 	e := proto.RuntimeExecutionContextDestroyed{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeExecutionContextsCleared() {
 	e := proto.RuntimeExecutionContextsCleared{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) RuntimeInspectRequested() {
 	e := proto.RuntimeInspectRequested{}
-	e.ProtoName()
+	e.ProtoEvent()
 }
 
 func (t T) SchemaGetDomains() {

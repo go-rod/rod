@@ -415,7 +415,8 @@ func Example_handle_events() {
 
 	done := make(chan int)
 
-	// Listen for all events of console output.
+	// Listen for all events of console output. You can even listen to multiple types of events at that same time,
+	// check the doc of EachEvent for details.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
 		fmt.Println(page.MustObjectsToJSON(e.Args))
 		close(done)
@@ -428,7 +429,7 @@ func Example_handle_events() {
 	// EachEvent allows us to achieve the same functionality as above.
 	if false {
 		// Subscribe events before they happen, run the "wait()" to start consuming
-		// the events. We can return an optional stop signal unsubscribe events.
+		// the events. We can return an optional stop signal to unsubscribe events.
 		wait := page.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
 			return true
 		})
@@ -436,19 +437,15 @@ func Example_handle_events() {
 		wait()
 	}
 
-	// Or the hardcore style to handle events
+	// Or the for-loop style to handle events to do the same thing above.
 	if false {
-		topic := browser.Event().Subscribe(ctx)
+		topic := page.Event().Subscribe(ctx)
 
 		page.MustNavigate("https://example.com")
 
-		for raw := range topic {
-			cdpEvt := raw.(*cdp.Event)
-			if cdpEvt.SessionID == string(page.SessionID) {
-				var e proto.PageLoadEventFired
-				if rod.Event(cdpEvt, &e) {
-					break
-				}
+		for e := range topic {
+			if rod.Event(e, proto.PageLoadEventFired{}) {
+				break
 			}
 		}
 	}

@@ -13,9 +13,9 @@ type Client interface {
 	Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error)
 }
 
-// TargetSessionable type has a proto.TargetSessionID for its methods
-type TargetSessionable interface {
-	GetTargetSessionID() TargetSessionID
+// Sessionable type has a proto.TargetSessionID for its methods
+type Sessionable interface {
+	GetSessionID() TargetSessionID
 }
 
 // Contextable type has a context.Context for its methods
@@ -23,10 +23,16 @@ type Contextable interface {
 	GetContext() context.Context
 }
 
-// Payload represents a cdp.Response.Result or cdp.Event.Params
-type Payload interface {
-	// ProtoName is the cdp.Response.Method or cdp.Event.Method
+// Request represents a cdp.Request.Method
+type Request interface {
+	// ProtoName returns the cdp.Request.Method
 	ProtoName() string
+}
+
+// Event represents a cdp.Event.Params
+type Event interface {
+	// ProtoEvent returns the cdp.Event.Method
+	ProtoEvent() string
 }
 
 // GetType from method name of this package,
@@ -49,8 +55,8 @@ func call(method string, req, res interface{}, c Client) error {
 	}
 
 	sessionID := ""
-	if tsa, ok := c.(TargetSessionable); ok {
-		sessionID = string(tsa.GetTargetSessionID())
+	if tsa, ok := c.(Sessionable); ok {
+		sessionID = string(tsa.GetSessionID())
 	}
 
 	bin, err := c.Call(ctx, sessionID, method, req)

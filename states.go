@@ -46,7 +46,7 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 }
 
 // LoadState into the method, seesionID can be empty.
-func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Payload) (has bool) {
+func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Request) (has bool) {
 	data, has := b.states.Load(b.key(sessionID, method.ProtoName()))
 	if has {
 		reflect.Indirect(reflect.ValueOf(method)).Set(
@@ -57,7 +57,7 @@ func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Payloa
 }
 
 // EnableDomain and returns a recover function to restore previous state
-func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Payload) (recover func()) {
+func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Request) (recover func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
 
 	if !enabled {
@@ -78,7 +78,7 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Payloa
 }
 
 // DisableDomain and returns a recover function to restore previous state
-func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Payload) (recover func()) {
+func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Request) (recover func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
 	domain, _ := proto.ParseMethodName(req.ProtoName())
 
@@ -109,17 +109,17 @@ func (b *Browser) loadPage(id proto.TargetTargetID) *Page {
 }
 
 // LoadState into the method.
-func (p *Page) LoadState(method proto.Payload) (has bool) {
+func (p *Page) LoadState(method proto.Request) (has bool) {
 	return p.browser.LoadState(p.SessionID, method)
 }
 
 // EnableDomain and returns a recover function to restore previous state
-func (p *Page) EnableDomain(method proto.Payload) (recover func()) {
+func (p *Page) EnableDomain(method proto.Request) (recover func()) {
 	return p.browser.Context(p.ctx).EnableDomain(p.SessionID, method)
 }
 
 // DisableDomain and returns a recover function to restore previous state
-func (p *Page) DisableDomain(method proto.Payload) (recover func()) {
+func (p *Page) DisableDomain(method proto.Request) (recover func()) {
 	return p.browser.Context(p.ctx).DisableDomain(p.SessionID, method)
 }
 
