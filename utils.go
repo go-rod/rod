@@ -106,7 +106,7 @@ func Try(fn func()) (err error) {
 			var ok bool
 			err, ok = val.(error)
 			if !ok {
-				err = newErr(ErrValue, val, utils.MustToJSON(val))
+				err = &ErrTry{val}
 			}
 		}
 	}()

@@ -128,7 +128,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 
 	pt = shape.OnePointInside()
 	if pt == nil {
-		err = newErr(ErrNotInteractable, el, "element has no visible shape")
+		err = &ErrInvisibleShape{}
 		return
 	}
 
@@ -151,7 +151,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 	}
 
 	if !yes {
-		err = newErr(ErrNotInteractable, elAtPoint, "another element covers current one")
+		err = &ErrCovered{elAtPoint}
 	}
 	return
 }

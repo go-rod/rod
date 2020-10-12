@@ -153,8 +153,7 @@ func (p *Page) Evaluate(opts *Eval) (*proto.RuntimeRemoteObject, error) {
 	}
 
 	if res.ExceptionDetails != nil {
-		exp := res.ExceptionDetails.Exception
-		return nil, newErr(ErrEval, exp, exp.Description+" "+exp.Value.String())
+		return nil, &ErrEval{res.ExceptionDetails}
 	}
 
 	return res.Result, nil

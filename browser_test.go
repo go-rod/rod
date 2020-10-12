@@ -295,14 +295,15 @@ func (t T) ResolveBlocking() {
 	})
 }
 
-func (t T) Try() {
+func (t T) TestTry() {
 	t.Nil(rod.Try(func() {}))
 
 	err := rod.Try(func() { panic(1) })
-	var errVal *rod.Error
-	ok := errors.As(err, &errVal)
-	t.True(ok)
-	t.Eq(1, errVal.Details)
+	var errVal *rod.ErrTry
+	t.True(errors.As(err, &errVal))
+	t.Is(err, &rod.ErrTry{})
+	t.Eq(1, errVal.Value)
+	t.Eq(errVal.Error(), "error value: 1")
 }
 
 func (t T) BrowserOthers() {

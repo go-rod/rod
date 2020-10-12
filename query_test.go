@@ -68,7 +68,8 @@ func (t T) Search() {
 	t.True(el.MustClick().MustMatches("[a=ok]"))
 
 	_, err := p.Sleeper(nil).Search(0, 1, "not-exists")
-	t.True(errors.Is(err, rod.ErrElementNotFound))
+	t.True(errors.Is(err, &rod.ErrElementNotFound{}))
+	t.Eq(err.Error(), "cannot find element")
 
 	// when search result is not ready
 	{
@@ -241,15 +242,17 @@ func (t T) ElementTracing() {
 func (t T) PageElementByJS_Err() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	_, err := p.ElementByJS(rod.NewEval(`1`))
-	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an element`)
+	t.Is(err, &rod.ErrExpectElement{})
+	t.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
 func (t T) PageElementsByJS_Err() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
 	_, err := p.ElementsByJS(rod.NewEval(`[1]`))
-	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
+	t.Is(err, &rod.ErrExpectElements{})
+	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 	_, err = p.ElementsByJS(rod.NewEval(`1`))
-	t.Eq(err.Error(), `{"type":"number","value":1,"description":"1"}: expect js to return an array of elements`)
+	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 	_, err = p.ElementsByJS(rod.NewEval(`foo()`))
 	t.Err(err)
 

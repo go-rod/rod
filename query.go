@@ -5,7 +5,6 @@ package rod
 import (
 	"context"
 	"errors"
-	"fmt"
 	"regexp"
 
 	"github.com/go-rod/rod/lib/assets/js"
@@ -105,7 +104,7 @@ func (ps Pages) FindByURL(regex string) (*Page, error) {
 // Has an element that matches the css selector
 func (p *Page) Has(selectors ...string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).Element(selectors...)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -114,7 +113,7 @@ func (p *Page) Has(selectors ...string) (bool, *Element, error) {
 // HasX an element that matches the XPath selector
 func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).ElementX(selectors...)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -123,7 +122,7 @@ func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
 // HasR an element that matches the css selector and its display text matches the js regex.
 func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
 	el, err := p.Sleeper(nil).ElementR(selector, regex)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -160,7 +159,7 @@ func (p *Page) ElementByJS(opts *Eval) (*Element, error) {
 	sleeper := p.sleeper()
 	if sleeper == nil {
 		sleeper = func(context.Context) error {
-			return newErr(ErrElementNotFound, opts, opts.JS)
+			return &ErrElementNotFound{}
 		}
 	}
 
@@ -187,7 +186,7 @@ func (p *Page) ElementByJS(opts *Eval) (*Element, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, newErr(ErrExpectElement, res, utils.MustToJSON(res))
+		return nil, &ErrExpectElement{res}
 	}
 
 	return p.ElementFromObject(res), nil
@@ -211,7 +210,7 @@ func (p *Page) ElementsByJS(opts *Eval) (Elements, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, newErr(ErrExpectElements, res, utils.MustToJSON(res))
+		return nil, &ErrExpectElements{res}
 	}
 
 	defer func() { err = p.Release(res) }()
@@ -232,7 +231,7 @@ func (p *Page) ElementsByJS(opts *Eval) (Elements, error) {
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, newErr(ErrExpectElements, val, utils.MustToJSON(val))
+			return nil, &ErrExpectElements{val}
 		}
 
 		elemList = append(elemList, p.ElementFromObject(val))
@@ -248,7 +247,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 	sleeper := p.sleeper()
 	if sleeper == nil {
 		sleeper = func(context.Context) error {
-			return newErr(ErrElementNotFound, queries, fmt.Sprintf("%v", queries))
+			return &ErrElementNotFound{}
 		}
 	}
 
@@ -378,7 +377,7 @@ func (rc *RaceContext) Do() error {
 			el, err := branch.condition()
 			if err == nil {
 				return true, branch.callback(el)
-			} else if !errors.Is(err, ErrElementNotFound) {
+			} else if !errors.Is(err, &ErrElementNotFound{}) {
 				return true, err
 			}
 		}
@@ -389,7 +388,7 @@ func (rc *RaceContext) Do() error {
 // Has an element that matches the css selector
 func (el *Element) Has(selector string) (bool, *Element, error) {
 	el, err := el.Element(selector)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -398,7 +397,7 @@ func (el *Element) Has(selector string) (bool, *Element, error) {
 // HasX an element that matches the XPath selector
 func (el *Element) HasX(selector string) (bool, *Element, error) {
 	el, err := el.ElementX(selector)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -407,7 +406,7 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 // HasR an element that matches the css selector and its text matches the js regex.
 func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 	el, err := el.ElementR(selector, regex)
-	if errors.Is(err, ErrElementNotFound) {
+	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err

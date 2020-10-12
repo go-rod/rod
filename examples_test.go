@@ -147,11 +147,11 @@ func Example_error_handling() {
 
 	// We use Go's standard way to check error types, no magic.
 	check := func(err error) {
+		var evalErr *rod.ErrEval
 		if errors.Is(err, context.DeadlineExceeded) { // timeout error
 			fmt.Println("timeout err")
-		} else if errors.Is(err, rod.ErrEval) { // eval error
-			// print more details
-			fmt.Printf("%#v\n", rod.AsError(err).Details)
+		} else if errors.As(err, &evalErr) { // eval error
+			fmt.Println(evalErr.LineNumber)
 		} else if err != nil {
 			fmt.Println("can't handle", err)
 		}
@@ -342,7 +342,7 @@ func Example_customize_retry_strategy() {
 	// If sleeper is nil page.ElementE will query without retrying.
 	// If nothing found it will return an error.
 	el, err := page.Sleeper(nil).Element("input")
-	if errors.Is(err, rod.ErrElementNotFound) {
+	if errors.Is(err, &rod.ErrElementNotFound{}) {
 		fmt.Println("element not found")
 	} else if err != nil {
 		panic(err)

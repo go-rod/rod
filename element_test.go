@@ -90,13 +90,19 @@ func (t T) NotInteractable() {
 		div.style = 'position: absolute; left: 0; top: 0; width: 500px; height: 500px;'
 		document.body.append(div)
 	}`)
-	ok, _ := el.Interactable()
-	t.Is(ok, rod.ErrNotInteractable)
+	_, err := el.Interactable()
+	t.Has(err.Error(), "element covered by: <div style=\"position: absolute; left: 0px; top: 0px; width: 500px; height: 500px;\"></div>")
+	t.Is(err, &rod.ErrNotInteractable{})
+	t.Is(err, &rod.ErrCovered{})
 	t.False(el.MustInteractable())
+	var ee *rod.ErrNotInteractable
+	t.True(errors.As(err, &ee))
+	t.Eq(ee.Error(), "element is not cursor interactable")
+
 	p.MustElement("div").MustRemove()
 
 	t.mc.stubErr(1, proto.DOMGetContentQuads{})
-	_, err := el.Interactable()
+	_, err = el.Interactable()
 	t.Err(err)
 
 	t.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
@@ -104,7 +110,8 @@ func (t T) NotInteractable() {
 		return *res.Set("quads", nil), nil
 	})
 	_, err = el.Interactable()
-	t.Err(err)
+	t.Eq(err.Error(), "element has no visible shape")
+	t.Is(err, &rod.ErrNotInteractable{})
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	t.Err(el.Interactable())
@@ -566,13 +573,14 @@ func (t T) FnErr() {
 	_, err := el.Eval("foo()")
 	t.Err(err)
 	t.Has(err.Error(), "ReferenceError: foo is not defined")
-	t.True(errors.Is(err, rod.ErrEval))
-	t.Eq(proto.RuntimeRemoteObjectSubtypeError, rod.AsError(err).Details.(*proto.RuntimeRemoteObject).Subtype)
+	var e *rod.ErrEval
+	t.True(errors.As(err, &e))
+	t.Eq(proto.RuntimeRemoteObjectSubtypeError, e.Exception.Subtype)
 
 	_, err = el.ElementByJS(rod.NewEval("foo()"))
 	t.Err(err)
 	t.Has(err.Error(), "ReferenceError: foo is not defined")
-	t.True(errors.Is(err, rod.ErrEval))
+	t.True(errors.Is(err, &rod.ErrEval{}))
 }
 
 func (t T) ElementEWithDepth() {

@@ -2,64 +2,132 @@ package rod
 
 import (
 	"fmt"
+	"reflect"
 
-	"errors"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 )
 
-var (
-	// ErrValue error
-	ErrValue = errors.New("error value")
-
-	// ErrExpectElement error
-	ErrExpectElement = errors.New("expect js to return an element")
-
-	// ErrExpectElements error
-	ErrExpectElements = errors.New("expect js to return an array of elements")
-
-	// ErrElementNotFound error
-	ErrElementNotFound = errors.New("cannot find element")
-
-	// ErrSrcNotFound error
-	ErrSrcNotFound = errors.New("element doesn't have src attribute")
-
-	// ErrEval error
-	ErrEval = errors.New("eval error")
-
-	// ErrNavigation error
-	ErrNavigation = errors.New("navigation failed")
-
-	// ErrPageCloseCanceled error
-	ErrPageCloseCanceled = errors.New("page close canceled")
-
-	// ErrNotInteractable error. Check the doc of Element.Interactable for details.
-	ErrNotInteractable = errors.New("element is not cursor interactable")
-)
-
-// Error type for rod
-type Error struct {
-	// Code is used to tell error types
-	Code error
-
-	// Details of the cause
-	Details interface{}
+// ErrTry error
+type ErrTry struct {
+	Value interface{}
 }
 
-func newErr(code error, details interface{}, msg string) error {
-	return fmt.Errorf("%s: %w", msg, &Error{code, details})
+func (e *ErrTry) Error() string {
+	return fmt.Sprintf("error value: %#v", e.Value)
 }
 
-// AsError of *rod.Error
-func AsError(err error) (e *Error) {
-	errors.As(err, &e)
-	return
+// Is interface
+func (e *ErrTry) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
-// Error interface
-func (e *Error) Error() string {
-	return e.Code.Error()
+// ErrExpectElement error
+type ErrExpectElement struct {
+	*proto.RuntimeRemoteObject
 }
 
-// Unwrap interface
-func (e *Error) Unwrap() error {
-	return e.Code
+func (e *ErrExpectElement) Error() string {
+	return fmt.Sprintf("expect js to return an element, but got: %s", utils.MustToJSON(e))
+}
+
+// Is interface
+func (e *ErrExpectElement) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+// ErrExpectElements error
+type ErrExpectElements struct {
+	*proto.RuntimeRemoteObject
+}
+
+func (e *ErrExpectElements) Error() string {
+	return fmt.Sprintf("expect js to return an array of elements, but got: %s", utils.MustToJSON(e))
+}
+
+// Is interface
+func (e *ErrExpectElements) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+// ErrElementNotFound error
+type ErrElementNotFound struct {
+}
+
+func (e *ErrElementNotFound) Error() string {
+	return fmt.Sprintf("cannot find element")
+}
+
+// ErrEval error
+type ErrEval struct {
+	*proto.RuntimeExceptionDetails
+}
+
+func (e *ErrEval) Error() string {
+	exp := e.Exception
+	return fmt.Sprintf("eval js error: %s %s", exp.Description, exp.Value)
+}
+
+// Is interface
+func (e *ErrEval) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+// ErrNavigation error
+type ErrNavigation struct {
+	Reason string
+}
+
+func (e *ErrNavigation) Error() string {
+	return "navigation failed: " + e.Reason
+}
+
+// Is interface
+func (e *ErrNavigation) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+// ErrPageCloseCanceled error
+type ErrPageCloseCanceled struct {
+}
+
+func (e *ErrPageCloseCanceled) Error() string {
+	return fmt.Sprintf("page close canceled")
+}
+
+// ErrNotInteractable error. Check the doc of Element.Interactable for details.
+type ErrNotInteractable struct{}
+
+func (e *ErrNotInteractable) Error() string {
+	return "element is not cursor interactable"
+}
+
+// ErrInvisibleShape error.
+type ErrInvisibleShape struct {
+}
+
+func (e *ErrInvisibleShape) Error() string {
+	return "element has no visible shape"
+}
+
+func (e *ErrInvisibleShape) Unwrap() error {
+	return &ErrNotInteractable{}
+}
+
+// ErrCovered error.
+type ErrCovered struct {
+	*Element
+}
+
+func (e *ErrCovered) Error() string {
+	return fmt.Sprintf("element covered by: %v", e.MustHTML())
+}
+
+func (e *ErrCovered) Unwrap() error {
+	return &ErrNotInteractable{}
+}
+
+// Is interface
+func (e *ErrCovered) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }

@@ -138,7 +138,7 @@ func (p *Page) Navigate(url string) error {
 		return err
 	}
 	if res.ErrorText != "" {
-		return newErr(ErrNavigation, res.ErrorText, res.ErrorText)
+		return &ErrNavigation{res.ErrorText}
 	}
 
 	p.FrameID = res.FrameID
@@ -261,7 +261,7 @@ func (p *Page) Close() error {
 	if success {
 		p.cleanupStates()
 	} else {
-		return ErrPageCloseCanceled
+		return &ErrPageCloseCanceled{}
 	}
 
 	return nil

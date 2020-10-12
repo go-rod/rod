@@ -124,7 +124,7 @@ func (t T) PageCloseCancel() {
 	page.MustElement("body").MustClick() // only focused page will handle beforeunload event
 
 	go page.MustHandleDialog(false, "")()
-	t.Eq(rod.ErrPageCloseCanceled, page.Close())
+	t.Eq(page.Close().Error(), "page close canceled")
 
 	// TODO: this is a bug of chrome, it should not kill the target only in headless mode
 	if !t.browser.Headless() {
@@ -690,7 +690,6 @@ func (t T) PageConsoleLog() {
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
-	p.MustEval(`console.log(1, {b: ['test']})`) // TODO: chrome may sallow the first log
 	wait()
 	t.Eq("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
 	t.Eq(`1 map[b:[test]]`, p.MustObjectsToJSON(e.Args).Join(" "))
@@ -775,9 +774,9 @@ func (t T) PageObjectErr() {
 
 func (t T) PageNavigateErr() {
 	// dns error
-	t.Panic(func() {
-		t.page.MustNavigate("http://" + t.Srand(16))
-	})
+	err := t.page.Navigate("http://" + t.Srand(16))
+	t.Is(err, &rod.ErrNavigation{})
+	t.Is(err.Error(), "navigation failed: net::ERR_NAME_NOT_RESOLVED")
 
 	s := t.Serve()
 

@@ -663,7 +663,7 @@ func (el *Element) MustTap() *Element {
 // MustInteractable is similar to Interactable
 func (el *Element) MustInteractable() bool {
 	_, err := el.Interactable()
-	if errors.Is(err, ErrNotInteractable) {
+	if errors.Is(err, &ErrNotInteractable{}) {
 		return false
 	}
 	utils.E(err)
