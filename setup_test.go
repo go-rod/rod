@@ -37,9 +37,7 @@ func Test(t *testing.T) {
 	got.Each(t, newTesterPool(t).get)
 }
 
-// T is a tester. Testers are thread-safe, they won't race each other.
-// Usually, we only have one tester for the whole test. But if testing.Short() is true,
-// we will create runtime.GOMAXPROCS(0) testers, each one holds a standalone browser.
+// T is a tester. Testers are thread-safe, they shouldn't race each other.
 type T struct {
 	got.G
 
@@ -53,11 +51,11 @@ type T struct {
 type TesterPool chan *T
 
 func newTesterPool(t *testing.T) TesterPool {
-	parallel := 1
-	if testing.Short() {
+	parallel := got.Parallel()
+	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
-		fmt.Println("parallel test:", parallel)
 	}
+	fmt.Println("parallel test", parallel)
 
 	cp := TesterPool(make(chan *T, parallel))
 
@@ -99,7 +97,8 @@ func (cp TesterPool) new() *T {
 
 // get a tester
 func (cp TesterPool) get(t *testing.T) T {
-	if testing.Short() {
+	parallel := got.Parallel() != 1
+	if parallel {
 		t.Parallel()
 	}
 
@@ -113,7 +112,7 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.mc.t = t
 	tester.mc.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
 
-	tester.checkLeaking()
+	tester.checkLeaking(!parallel)
 	tester.cancelTimeout = tester.PanicAfter(10 * time.Second)
 
 	return *tester
@@ -149,15 +148,15 @@ func (t T) newPage(u string) *rod.Page {
 	return p
 }
 
-func (t T) checkLeaking() {
-	if !testing.Short() {
+func (t T) checkLeaking(checkGoroutine bool) {
+	if checkGoroutine {
 		testleak.Check(t.Testable.(*testing.T), 0)
 	}
 
 	t.Cleanup(func() {
 		for _, p := range t.browser.MustPages() {
 			if p.TargetID != t.page.TargetID {
-				t.Fatalf("leaking page: %s", p.MustInfo().URL)
+				t.Fatalf("leaking page: %#v", p.MustInfo())
 			}
 		}
 

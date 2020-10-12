@@ -24,7 +24,7 @@ jobs:
 
       - run: go generate
 
-      - run: go test -cover -coverprofile=coverage.txt -run . ./...
+      - run: go test -race -cover -coverprofile=coverage.txt ./...
 
       - run: go run ./lib/utils/check-cov
 
@@ -46,7 +46,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: go test -race -short
+      - run: go test -race
 
       - uses: actions/upload-artifact@v2
         with:
@@ -80,7 +80,7 @@ jobs:
         run: |
           docker build -t rodorg/rod -f lib/docker/Dockerfile .
           docker build -t rod -f lib/docker/test.Dockerfile .
-          docker run -v $(pwd):/t -w /t rod go test -short
+          docker run -v $(pwd):/t -w /t rod go test
 
       - uses: actions/upload-artifact@v2
         with:

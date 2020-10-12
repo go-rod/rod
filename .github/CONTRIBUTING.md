@@ -59,12 +59,9 @@ There are several helper functions for it:
 
 1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run /Click`
 
-### Parallel execution of tests
+### Detect goroutine leak
 
-Because we check goroutine leak on each test, parallel execution will pollution the global goroutine stack.
-You can't have your cake and eat it. By default, we trade speed for safety.
-
-To enable parallel execution, you can use the `-short` flag, for example: `go test -short`. When it's enabled, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well.
+Because parallel execution will pollution the global goroutine stack. By default, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well. To enable detection for each test, just let the `go test -parallel=1`.
 
 ## Convention of the git commit message
 
