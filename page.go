@@ -222,7 +222,6 @@ func (p *Page) Emulate(device devices.Device, landscape bool) error {
 	}
 
 	return p.SetUserAgent(device.UserAgent())
-
 }
 
 // StopLoading forces the page stop navigation and pending resource fetches.
@@ -235,28 +234,32 @@ func (p *Page) Close() error {
 	p.browser.targetsLock.Lock()
 	defer p.browser.targetsLock.Unlock()
 
-	err := p.StopLoading()
-	if err != nil {
-		return err
-	}
-
 	success := true
 	p, cancel := p.WithCancel()
 	defer cancel()
 
-	wait := p.browser.Context(p.ctx).EachEvent(func(e *proto.TargetDetachedFromTarget) bool {
-		return e.TargetID == e.TargetID
-	}, func(e *proto.PageJavascriptDialogClosed, id proto.TargetSessionID) bool {
-		success = e.Result
-		return id == p.SessionID && !p.browser.headless && !success
-	})
+	stream := p.browser.Event().Subscribe(p.ctx)
 
-	err = proto.PageClose{}.Call(p)
+	err := proto.PageClose{}.Call(p)
 	if err != nil {
 		return err
 	}
 
-	wait()
+	for e := range stream {
+		var destroyed proto.TargetTargetDestroyed
+		var closed proto.PageJavascriptDialogClosed
+		stop := false
+		if Event(e, &destroyed) {
+			stop = destroyed.TargetID == p.TargetID
+		} else if Event(e, &closed) {
+			success = closed.Result
+			isCurr := e.(*cdp.Event).SessionID == string(p.SessionID)
+			stop = isCurr && !p.browser.headless && !success
+		}
+		if stop {
+			break
+		}
+	}
 
 	if success {
 		p.cleanupStates()

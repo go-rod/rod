@@ -219,10 +219,6 @@ func (t T) EmulateDevice() {
 func (t T) PageCloseErr() {
 	page := t.newPage(t.srcFile("fixtures/click.html"))
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageStopLoading{})
-		page.MustClose()
-	})
-	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageClose{})
 		page.MustClose()
 	})
@@ -309,8 +305,7 @@ func (t T) PageExposeJSHelper() {
 }
 
 func (t T) PageWaitOpen() {
-	page := t.page.Timeout(3 * time.Second).MustNavigate(t.srcFile("fixtures/open-page.html"))
-	defer page.CancelTimeout()
+	page := t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
 
 	wait := page.MustWaitOpen()
 
@@ -342,32 +337,20 @@ func (t T) PageWaitPauseOpen() {
 	pageB.MustWait(`window.a == 'new page'`)
 	pageB.MustClose()
 
-	t.Panic(func() {
-		defer func() {
-			_ = proto.TargetSetAutoAttach{
-				Flatten: true,
-			}.Call(t.browser)
-		}()
-
-		p := t.newPage("")
+	{ // enable TargetSetAutoAttach err
 		t.mc.stubErr(1, proto.TargetSetAutoAttach{})
-		p.MustWaitPauseOpen()
-	})
-	t.Panic(func() {
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		defer func() {
-			_ = proto.TargetSetAutoAttach{
-				Flatten: true,
-			}.Call(t.browser)
-		}()
-
-		p := t.browser.Context(ctx).MustPage("")
-		defer p.MustClose()
-		t.mc.stubErr(2, proto.TargetSetAutoAttach{})
-		_, r := p.MustWaitPauseOpen()
-		r()
-	})
+		t.Err(t.page.WaitPauseOpen())
+	}
+	{ // disable TargetSetAutoAttach err
+		p := t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
+		wait, resume, _ := p.WaitPauseOpen()
+		go p.MustElement("a").MustClick()
+		newP, _ := wait()
+		t.mc.stubErr(1, proto.TargetSetAutoAttach{})
+		t.Err(resume())
+		t.Nil(resume())
+		newP.MustWaitLoad().MustClose()
+	}
 }
 
 func (t T) PageWait() {
@@ -379,6 +362,11 @@ func (t T) PageWait() {
 		page.MustWait(``)
 	})
 }
+
+func (t T) PageNavigateBlank() {
+	t.page.MustNavigate("")
+}
+
 func (t T) PageWaitNavigation() {
 	s := t.Serve().Route("/", "")
 	wait := t.page.MustWaitNavigation()
@@ -686,7 +674,7 @@ func (t T) PageScroll() {
 }
 
 func (t T) PageConsoleLog() {
-	p := t.page.MustNavigate("").MustWaitLoad()
+	p := t.newPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
@@ -709,6 +697,9 @@ func (t T) PageOthers() {
 }
 
 func (t T) Fonts() {
+	t.cancelTimeout()
+	t.PanicAfter(time.Minute)
+
 	p := t.page.MustNavigate(t.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
 	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts

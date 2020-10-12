@@ -135,16 +135,30 @@ func getOnePage(b *rod.Browser) (page *rod.Page) {
 	return
 }
 
+func (t T) enableCDPLog() {
+	t.mc.principal.Logger(rod.DefaultLogger)
+}
+
+func (t T) dump(args ...interface{}) {
+	t.Log(utils.Dump(args))
+}
+
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
 func (t T) srcFile(path string) string {
+	t.Helper()
 	f, err := filepath.Abs(slash(path))
 	t.E(err)
 	return "file://" + f
 }
 
 func (t T) newPage(u string) *rod.Page {
+	t.Helper()
 	p := t.browser.MustPage(u)
-	t.Cleanup(p.MustClose)
+	t.Cleanup(func() {
+		if !t.Failed() {
+			p.MustClose()
+		}
+	})
 	return p
 }
 
@@ -154,6 +168,10 @@ func (t T) checkLeaking(checkGoroutine bool) {
 	}
 
 	t.Cleanup(func() {
+		if t.Failed() {
+			return
+		}
+
 		for _, p := range t.browser.MustPages() {
 			if p.TargetID != t.page.TargetID {
 				t.Fatalf("leaking page: %#v", p.MustInfo())
