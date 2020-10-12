@@ -103,22 +103,27 @@ func Example_disable_headless_to_debug() {
 	utils.Pause() // pause goroutine
 }
 
-// Usage of timeout context
-func Example_timeout_handling() {
+// Rod use https://golang.org/pkg/context to handle cancelations for IO blocking operations, most times it's timeout.
+// Context will be recursively passed to all sub-methods.
+// For example, methods like Page.Context(ctx) will return a clone of the page with the ctx,
+// all the methods of the returned page will use the ctx if they have IO blocking operations.
+// Page.Timeout or Page.WithCancel is just a shortcut for Page.Context.
+// Of course, Browser or Element works the same way.
+func Example_context_and_timeout() {
 	page := rod.New().MustConnect().MustPage("https://github.com")
 
 	page.
-		// Set a 5-second timeout for all chained actions
+		// Set a 5-second timeout for all chained methods
 		Timeout(5 * time.Second).
 
 		// The total time for MustWaitLoad and MustElement must be less than 5 seconds
 		MustWaitLoad().
 		MustElement("title").
 
-		// Actions after CancelTimeout won't be affected by the 5-second timeout
+		// Methods after CancelTimeout won't be affected by the 5-second timeout
 		CancelTimeout().
 
-		// Set a 10-second timeout for all chained actions
+		// Set a 10-second timeout for all chained methods
 		Timeout(10 * time.Second).
 
 		// Panics if it takes more than 10 seconds
