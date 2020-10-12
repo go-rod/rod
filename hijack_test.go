@@ -284,17 +284,19 @@ func (t T) GetDownloadFile() {
 
 	t.Eq(content, string(data))
 
-	waitErr := page.GetDownloadFile(s.URL("/d"), "", &http.Client{
-		Transport: &MockRoundTripper{err: errors.New("err")},
+	t.Panic(func() { // fail to FetchEnable
+		t.mc.stubErr(2, proto.FetchEnable{})
+		defer func() { _ = proto.FetchDisable{}.Call(page) }()
+		page.Context(t.Context()).MustGetDownloadFile(s.URL("/d"))()
 	})
-	page.MustElement("a").MustClick()
-	{
-		t.mc.stubErr(1, proto.FetchEnable{})
+	{ // Hijack.LoadResponse error
+		waitErr := page.GetDownloadFile(s.URL("/d"), "", &http.Client{
+			Transport: &MockRoundTripper{err: errors.New("err")},
+		})
+		page.MustElement("a").MustClick()
 		_, _, err := waitErr()
 		t.Err(err)
 	}
-	_, _, err := waitErr()
-	t.Err(err)
 }
 
 func (t T) GetDownloadFileFromDataURI() {

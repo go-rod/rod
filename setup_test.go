@@ -109,23 +109,11 @@ func (cp TesterPool) get(t *testing.T) T {
 	}
 	t.Cleanup(func() { cp <- tester })
 
-	if !testing.Short() {
-		testleak.Check(t, 0)
-	}
-
-	t.Cleanup(func() {
-		for _, p := range tester.browser.MustPages() {
-			if p.TargetID != tester.page.TargetID {
-				t.Fatalf("%s is leaking page: %s", t.Name(), p.MustInfo().URL)
-			}
-		}
-
-		tester.mc.setCall(nil)
-	})
-
+	tester.G = got.New(t)
 	tester.mc.t = t
 	tester.mc.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
-	tester.G = got.New(t)
+
+	tester.checkLeaking()
 	tester.cancelTimeout = tester.PanicAfter(10 * time.Second)
 
 	return *tester
@@ -159,6 +147,26 @@ func (t T) newPage(u string) *rod.Page {
 	p := t.browser.MustPage(u)
 	t.Cleanup(p.MustClose)
 	return p
+}
+
+func (t T) checkLeaking() {
+	if !testing.Short() {
+		testleak.Check(t.Testable.(*testing.T), 0)
+	}
+
+	t.Cleanup(func() {
+		for _, p := range t.browser.MustPages() {
+			if p.TargetID != t.page.TargetID {
+				t.Fatalf("leaking page: %s", p.MustInfo().URL)
+			}
+		}
+
+		if t.browser.LoadState(t.page.SessionID, proto.FetchEnable{}) {
+			t.Fatal("leaking FetchEnable")
+		}
+
+		t.mc.setCall(nil)
+	})
 }
 
 type MockRoundTripper struct {
