@@ -17,16 +17,12 @@ var isInDocker = utils.FileExists("/.dockerenv")
 type progresser struct {
 	size   int
 	count  int
-	r      io.Reader
 	logger io.Writer
 	last   time.Time
 }
 
-func (p *progresser) Read(buf []byte) (n int, err error) {
-	n, err = p.r.Read(buf)
-	if err != nil {
-		return 0, err
-	}
+func (p *progresser) Write(b []byte) (n int, err error) {
+	n = len(b)
 
 	if p.count == 0 {
 		_, _ = fmt.Fprint(p.logger, "Progress:")
@@ -104,12 +100,10 @@ func unzip(logger io.Writer, from, to string) (err error) {
 		r, err := f.Open()
 		utils.E(err)
 
-		progress.r = r
-
-		dst, err := os.OpenFile(p, os.O_CREATE|os.O_RDWR, f.Mode())
+		dst, err := os.Create(p)
 		utils.E(err)
 
-		_, err = io.Copy(dst, progress)
+		_, err = io.Copy(io.MultiWriter(dst, progress), r)
 		utils.E(err)
 
 		err = dst.Close()

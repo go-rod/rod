@@ -366,6 +366,8 @@ func (l *Launcher) getURL() (u string, err error) {
 		err = l.ctx.Err()
 	case u = <-l.parser.URL:
 	case <-l.exit:
+		l.parser.Lock()
+		defer l.parser.Unlock()
 		err = errors.New("[launcher] Failed to get the debug url " + l.parser.Buffer)
 	}
 	return

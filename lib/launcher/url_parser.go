@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -15,6 +16,8 @@ var _ io.Writer = &URLParser{}
 
 // URLParser to get control url from stderr
 type URLParser struct {
+	sync.Mutex
+
 	URL    chan string
 	Buffer string // buffer for the browser stdout
 
@@ -32,6 +35,9 @@ var regWS = regexp.MustCompile(`ws://.+/`)
 
 // Write interface
 func (r *URLParser) Write(p []byte) (n int, err error) {
+	r.Lock()
+	defer r.Unlock()
+
 	if !r.done {
 		r.Buffer += string(p)
 

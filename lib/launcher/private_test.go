@@ -13,31 +13,35 @@ import (
 	"github.com/ysmood/got"
 )
 
-func TestToHTTP(t *testing.T) {
-	as := got.New(t)
+type T struct {
+	got.G
+}
+
+func TestPrivate(t *testing.T) {
+	got.Each(t, T{})
+}
+
+func (t T) ToHTTP() {
 	u, _ := url.Parse("wss://a.com")
-	as.Eq("https", toHTTP(*u).Scheme)
+	t.Eq("https", toHTTP(*u).Scheme)
 
 	u, _ = url.Parse("ws://a.com")
-	as.Eq("http", toHTTP(*u).Scheme)
+	t.Eq("http", toHTTP(*u).Scheme)
 }
 
-func TestToWS(t *testing.T) {
-	as := got.New(t)
+func (t T) ToWS() {
 	u, _ := url.Parse("https://a.com")
-	as.Eq("wss", toWS(*u).Scheme)
+	t.Eq("wss", toWS(*u).Scheme)
 
 	u, _ = url.Parse("http://a.com")
-	as.Eq("ws", toWS(*u).Scheme)
+	t.Eq("ws", toWS(*u).Scheme)
 }
 
-func TestUnzip(t *testing.T) {
-	as := got.New(t)
-	as.Err(unzip(ioutil.Discard, "", ""))
+func (t T) Unzip() {
+	t.Err(unzip(ioutil.Discard, "", ""))
 }
 
-func TestLaunchOptions(t *testing.T) {
-	as := got.New(t)
+func (t T) LaunchOptions() {
 	defaults.Show = true
 	defaults.Devtools = true
 	isInDocker = true
@@ -51,32 +55,32 @@ func TestLaunchOptions(t *testing.T) {
 	l := New()
 
 	_, has := l.Get("headless")
-	as.False(has)
+	t.False(has)
 
 	_, has = l.Get("no-sandbox")
-	as.True(has)
+	t.True(has)
 
 	_, has = l.Get("auto-open-devtools-for-tabs")
-	as.True(has)
+	t.True(has)
 }
 
-func TestGetURLErr(t *testing.T) {
-	as := got.New(t)
+func (t T) GetURLErr() {
 	l := New()
 
 	l.ctxCancel()
 	_, err := l.getURL()
-	as.Err(err)
+	t.Err(err)
 
 	l = New()
+	l.parser.Lock()
 	l.parser.Buffer = "err"
+	l.parser.Unlock()
 	close(l.exit)
 	_, err = l.getURL()
-	as.Eq("[launcher] Failed to get the debug url err", err.Error())
+	t.Eq("[launcher] Failed to get the debug url err", err.Error())
 }
 
-func TestRemoteLaunch(t *testing.T) {
-	as := got.New(t)
+func (t T) RemoteLaunch() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -86,7 +90,7 @@ func TestRemoteLaunch(t *testing.T) {
 	l := MustNewRemote(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
-	as.E(b.Call(ctx, "", "Browser.getVersion", nil))
+	t.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	utils.Sleep(1)
 	_, _ = b.Call(ctx, "", "Browser.crash", nil)
 	dir, _ := l.Get("user-data-dir")
@@ -98,22 +102,29 @@ func TestRemoteLaunch(t *testing.T) {
 			break
 		}
 	}
-	as.Err(os.Stat(dir))
+	t.Err(os.Stat(dir))
 }
 
-func TestLaunchErrs(t *testing.T) {
-	as := got.New(t)
+func (t T) LaunchErrs() {
 	l := New().Bin("echo")
 	go func() {
 		l.exit <- struct{}{}
 	}()
 	_, err := l.Launch()
-	as.Err(err)
+	t.Err(err)
 
 	l = New()
-	l.browser.Dir = as.Srand(16)
+	l.browser.Dir = t.Srand(16)
 	l.browser.ExecSearchMap = nil
 	l.browser.Hosts = []string{}
 	_, err = l.Launch()
-	as.Err(err)
+	t.Err(err)
+}
+
+func (t T) Progresser() {
+	p := progresser{size: 100, logger: ioutil.Discard}
+
+	t.E(p.Write(make([]byte, 100)))
+	t.E(p.Write(make([]byte, 100)))
+	t.E(p.Write(make([]byte, 100)))
 }

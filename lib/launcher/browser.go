@@ -126,7 +126,7 @@ func (lc *Browser) download(u string) (err error) {
 	err = utils.Mkdir(lc.Dir)
 	utils.E(err)
 
-	zipFile, err := os.OpenFile(zipPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	zipFile, err := os.Create(zipPath)
 	utils.E(err)
 
 	q, err := http.NewRequestWithContext(lc.Context, http.MethodGet, u, nil)
@@ -146,11 +146,10 @@ func (lc *Browser) download(u string) (err error) {
 
 	progress := &progresser{
 		size:   int(size),
-		r:      res.Body,
 		logger: lc.Logger,
 	}
 
-	_, err = io.Copy(zipFile, progress)
+	_, err = io.Copy(io.MultiWriter(progress, zipFile), res.Body)
 	utils.E(err)
 
 	_, _ = fmt.Fprintln(lc.Logger, "Downloaded:", zipPath)
