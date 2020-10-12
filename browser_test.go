@@ -315,6 +315,9 @@ func (t T) BrowserOthers() {
 }
 
 func (t T) BinarySize() {
+	t.cancelTimeout()
+	t.PanicAfter(30 * time.Second)
+
 	if runtime.GOOS == "windows" {
 		t.SkipNow()
 	}
@@ -360,7 +363,7 @@ func (t T) BrowserCookies() {
 
 func (t T) BrowserConnectErr() {
 	t.Panic(func() {
-		c := newMockClient(nil)
+		c := newMockClient(&cdp.Client{}, nil)
 		c.connect = func() error { return errors.New("err") }
 		rod.New().Client(c).MustConnect()
 	})
@@ -369,7 +372,7 @@ func (t T) BrowserConnectErr() {
 		ch := make(chan *cdp.Event)
 		defer close(ch)
 
-		c := newMockClient(nil)
+		c := newMockClient(&cdp.Client{}, nil)
 		c.connect = func() error { return nil }
 		c.event = ch
 		c.stubErr(1, proto.BrowserGetBrowserCommandLine{})

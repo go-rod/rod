@@ -113,7 +113,7 @@ var rules = map[string]func(string){
 		URL = v
 	},
 	"cdp": func(v string) {
-		CDP = log.New(log.Writer(), "[cdp] ", 0)
+		CDP = log.New(log.Writer(), "[cdp] ", log.LstdFlags|log.Lmsgprefix)
 	},
 	"wsbuf": func(v string) {
 		i, err := strconv.ParseFloat(v, 64)

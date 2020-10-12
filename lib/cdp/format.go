@@ -3,7 +3,7 @@ package cdp
 import (
 	"fmt"
 
-	"github.com/ysmood/gson"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 func (req Request) String() string {
@@ -49,5 +49,5 @@ func fSessionID(s string) string {
 }
 
 func dump(v interface{}) string {
-	return gson.New(v).JSON("", "  ")
+	return utils.MustToJSON(v)
 }

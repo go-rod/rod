@@ -26,6 +26,10 @@ import (
 	"github.com/ysmood/gson"
 )
 
+func init() {
+	got.DefaultFlags("timeout=5m", "run=/")
+}
+
 // entry point for all tests
 func Test(t *testing.T) {
 	testleak.Check(t, 0)
@@ -42,12 +46,11 @@ type T struct {
 	mc      *MockClient
 	browser *rod.Browser
 	page    *rod.Page
+
+	cancelTimeout func()
 }
 
-type TesterPool struct {
-	list   chan *T
-	logger *log.Logger
-}
+type TesterPool chan *T
 
 func newTesterPool(t *testing.T) TesterPool {
 	parallel := 1
@@ -56,15 +59,12 @@ func newTesterPool(t *testing.T) TesterPool {
 		fmt.Println("parallel test:", parallel)
 	}
 
-	cp := TesterPool{
-		logger: log.New(ioutil.Discard, "", log.Ltime),
-		list:   make(chan *T, parallel),
-	}
+	cp := TesterPool(make(chan *T, parallel))
 
 	t.Cleanup(func() {
 		go func() {
 			for i := 0; i < parallel; i++ {
-				if t := <-cp.list; t != nil {
+				if t := <-cp; t != nil {
 					t.browser.MustClose()
 				}
 			}
@@ -72,7 +72,7 @@ func newTesterPool(t *testing.T) TesterPool {
 	})
 
 	for i := 0; i < parallel; i++ {
-		cp.list <- nil
+		cp <- nil
 	}
 
 	return cp
@@ -82,7 +82,7 @@ func newTesterPool(t *testing.T) TesterPool {
 func (cp TesterPool) new() *T {
 	u := launcher.New().MustLaunch()
 
-	mc := newMockClient(cdp.New(u).Logger(cp.logger))
+	mc := newMockClient(cdp.New(u), log.New(ioutil.Discard, "", log.Ltime))
 
 	browser := rod.New().ControlURL("").Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
@@ -103,11 +103,11 @@ func (cp TesterPool) get(t *testing.T) T {
 		t.Parallel()
 	}
 
-	tester := <-cp.list
+	tester := <-cp
 	if tester == nil {
 		tester = cp.new()
 	}
-	t.Cleanup(func() { cp.list <- tester })
+	t.Cleanup(func() { cp <- tester })
 
 	if !testing.Short() {
 		testleak.Check(t, 0)
@@ -123,14 +123,10 @@ func (cp TesterPool) get(t *testing.T) T {
 		tester.mc.setCall(nil)
 	})
 
-	cp.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
-
 	tester.mc.t = t
+	tester.mc.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
 	tester.G = got.New(t)
-
-	if testing.Short() {
-		tester.Heartbeat(5 * time.Second)
-	}
+	tester.cancelTimeout = tester.PanicAfter(10 * time.Second)
 
 	return *tester
 }
@@ -189,14 +185,15 @@ var _ rod.CDPClient = &MockClient{}
 type MockClient struct {
 	sync.RWMutex
 	t         got.Testable
+	logger    *log.Logger
 	principal *cdp.Client
 	call      Call
 	connect   func() error
 	event     <-chan *cdp.Event
 }
 
-func newMockClient(client *cdp.Client) *MockClient {
-	return &MockClient{principal: client}
+func newMockClient(client *cdp.Client, lg *log.Logger) *MockClient {
+	return &MockClient{principal: client.Logger(lg), logger: lg}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
