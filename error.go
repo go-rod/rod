@@ -40,7 +40,7 @@ type Error struct {
 	// Code is used to tell error types
 	Code error
 
-	// Details is a JSON object
+	// Details of the cause
 	Details interface{}
 }
 

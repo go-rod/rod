@@ -145,46 +145,45 @@ func Example_timeout_handling() {
 func Example_error_handling() {
 	page := rod.New().MustConnect().MustPage("https://example.com")
 
-	// The two code blocks below are basically the same:
-
-	// The block below is better for production code. It's the standard error handling.
-	// Usually, this style is more consistent and precisely.
-	{
-		el, err := page.Element("a")
-		if err != nil {
-			fmt.Print(err)
-			return
-		}
-		html, err := el.HTML()
-		if err != nil {
-			fmt.Print(err)
-			return
-		}
-		fmt.Println(html)
-	}
-
-	// The block below is better for debugging or quick scripting. We use panic to short-circuit logics.
-	// So that we can take advantage of fluent interface (https://en.wikipedia.org/wiki/Fluent_interface)
-	// and fail-fast (https://en.wikipedia.org/wiki/Fail-fast).
-	// This style will reduce code, but it may also catch extra errors (less consistent and precisely).
-	{
-		err := rod.Try(func() {
-			fmt.Println(page.MustElement("a").MustHTML())
-		})
-		fmt.Print(err)
-	}
-
-	// Catch specified error types
-	{
-		_, err := page.Timeout(3 * time.Second).Eval(`foo()`)
+	// We use Go's standard way to check error types, no magic.
+	check := func(err error) {
 		if errors.Is(err, context.DeadlineExceeded) { // timeout error
 			fmt.Println("timeout err")
 		} else if errors.Is(err, rod.ErrEval) { // eval error
 			// print more details
-			fmt.Println(rod.AsError(err).Details)
+			fmt.Printf("%#v\n", rod.AsError(err).Details)
 		} else if err != nil {
-			panic(err)
+			fmt.Println("can't handle", err)
 		}
+	}
+
+	// The two code blocks below are doing the same thing in two styles:
+
+	// The block below is better for debugging or quick scripting. We use panic to short-circuit logics.
+	// So that we can take advantage of fluent interface (https://en.wikipedia.org/wiki/Fluent_interface)
+	// and fail-fast (https://en.wikipedia.org/wiki/Fail-fast).
+	// This style will reduce code, but it may also catch extra errors (less consistent and precise).
+	{
+		err := rod.Try(func() {
+			fmt.Println(page.MustElement("a").MustHTML()) // use "Must" prefixed functions
+		})
+		check(err)
+	}
+
+	// The block below is better for production code. It's the standard way to handle errors.
+	// Usually, this style is more consistent and precise.
+	{
+		el, err := page.Element("a")
+		if err != nil {
+			check(err)
+			return
+		}
+		html, err := el.HTML()
+		if err != nil {
+			check(err)
+			return
+		}
+		fmt.Println(html)
 	}
 }
 
