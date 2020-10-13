@@ -13,7 +13,6 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/goob"
 	"github.com/ysmood/gson"
 )
 
@@ -235,27 +234,27 @@ func (p *Page) Close() error {
 	defer p.browser.targetsLock.Unlock()
 
 	success := true
-	p, cancel := p.WithCancel()
+	ctx, cancel := context.WithCancel(p.ctx)
 	defer cancel()
-
-	stream := p.browser.Event().Subscribe(p.ctx)
+	messages := p.browser.Context(ctx).Event()
 
 	err := proto.PageClose{}.Call(p)
 	if err != nil {
 		return err
 	}
 
-	for e := range stream {
-		var destroyed proto.TargetTargetDestroyed
-		var closed proto.PageJavascriptDialogClosed
+	for msg := range messages {
 		stop := false
-		if Event(e, &destroyed) {
-			stop = destroyed.TargetID == p.TargetID
-		} else if Event(e, &closed) {
-			success = closed.Result
-			isCurr := e.(*cdp.Event).SessionID == string(p.SessionID)
+
+		switch e := msg.Event().(type) {
+		case *proto.TargetTargetDestroyed:
+			stop = e.TargetID == p.TargetID
+		case *proto.PageJavascriptDialogClosed:
+			success = e.Result
+			isCurr := msg.SessionID == p.SessionID
 			stop = isCurr && !p.browser.headless && !success
 		}
+
 		if stop {
 			break
 		}
@@ -273,12 +272,12 @@ func (p *Page) Close() error {
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 // Because alert will block js, usually you have to run the wait function in another goroutine.
 func (p *Page) HandleDialog(accept bool, promptText string) func() error {
-	recover := p.EnableDomain(&proto.PageEnable{})
+	restore := p.EnableDomain(&proto.PageEnable{})
 
 	wait := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
 
 	return func() error {
-		defer recover()
+		defer restore()
 
 		wait()
 		return proto.PageHandleJavaScriptDialog{
@@ -376,28 +375,14 @@ func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
 	}, nil
 }
 
-// Event returns the observable for page events. Useful when you want to handle massive event types.
-// The type of the event is *cdp.Event .
-func (p *Page) Event() *goob.Observable {
-	p, cancel := p.WithCancel()
-	return p.browser.event.Filter(p.ctx, func(e *cdp.Event) bool {
-		detached := proto.TargetDetachedFromTarget{}
-		if Event(e, &detached) && detached.SessionID == p.SessionID {
-			cancel()
-			return true
-		}
-		return e.SessionID == string(p.SessionID)
-	})
-}
-
 // EachEvent is similar to Browser.EachEvent, but only catches events for current page.
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
-	return p.browser.eachEvent(p.ctx, p.SessionID, callbacks...)
+	return p.browser.Context(p.ctx).eachEvent(p.SessionID, callbacks...)
 }
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
 func (p *Page) WaitEvent(e proto.Event) (wait func()) {
-	return p.browser.waitEvent(p.ctx, p.SessionID, e)
+	return p.browser.Context(p.ctx).waitEvent(p.SessionID, e)
 }
 
 // WaitNavigation wait for a page lifecycle event when navigating.
@@ -643,6 +628,39 @@ func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
 // Call implements the proto.Client
 func (p *Page) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	return p.browser.Call(ctx, sessionID, methodName, params)
+}
+
+// Event of the page
+func (p *Page) Event() <-chan proto.Event {
+	dst := make(chan proto.Event)
+	p, cancel := p.WithCancel()
+	messages := p.browser.Context(p.ctx).Event()
+
+	go func() {
+		defer close(dst)
+		defer cancel()
+		for {
+			select {
+			case <-p.ctx.Done():
+				return
+			case m := <-messages:
+				detached, ok := m.Event().(*proto.TargetDetachedFromTarget)
+				if ok && detached.SessionID == p.SessionID {
+					return
+				}
+
+				if m.SessionID == p.SessionID {
+					select {
+					case <-p.ctx.Done():
+						return
+					case dst <- m.Event():
+					}
+				}
+			}
+		}
+	}()
+
+	return dst
 }
 
 func (p *Page) enableNodeQuery() {

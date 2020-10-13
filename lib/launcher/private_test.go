@@ -46,7 +46,7 @@ func (t T) LaunchOptions() {
 	defaults.Devtools = true
 	isInDocker = true
 
-	// recover
+	// restore
 	defer func() {
 		defaults.ResetWithEnv("")
 		isInDocker = utils.FileExists("/.dockerenv")

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -443,12 +442,11 @@ func Example_handle_events() {
 
 	// Or the for-loop style to handle events to do the same thing above.
 	if false {
-		topic := page.Event().Subscribe(ctx)
-
 		page.MustNavigate("https://example.com")
 
-		for e := range topic {
-			if rod.Event(e, proto.PageLoadEventFired{}) {
+		for msg := range page.Event() {
+			e := proto.PageLoadEventFired{}
+			if msg.Load(&e) {
 				break
 			}
 		}
@@ -531,15 +529,6 @@ func Example_states() {
 	// Output:
 	// false
 	// true
-}
-
-func ExamplePage_Event() {
-	var page *rod.Page
-
-	for e := range page.Event().Subscribe(context.TODO()) {
-		msg := e.(*cdp.Event)
-		fmt.Println(msg.Method, msg.Params)
-	}
 }
 
 // It's a common practice to concurrently use a pool of resources in Go, it's not special for rod.

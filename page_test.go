@@ -458,10 +458,10 @@ func (t T) PageWaitEvent() {
 
 func (t T) PageEvent() {
 	p := t.newPage("")
-	s := p.Event().Subscribe(t.Context())
+	events := p.Context(t.Context()).Event()
 	p.MustNavigate(t.srcFile("fixtures/click.html"))
-	for e := range s {
-		if rod.Event(e, &proto.PageFrameNavigated{}) {
+	for e := range events {
+		if _, ok := e.(*proto.PageFrameNavigated); ok {
 			break
 		}
 	}

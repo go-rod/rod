@@ -63,39 +63,41 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 	_ = r.enable.Call(r.client)
 
-	r.run = r.browser.eachEvent(eventCtx, proto.TargetSessionID(sessionID), func(e *proto.FetchRequestPaused) bool {
+	r.run = r.browser.Context(eventCtx).eachEvent(proto.TargetSessionID(sessionID), func(e *proto.FetchRequestPaused) bool {
 		go func() {
 			ctx := r.new(eventCtx, e)
 			for _, h := range r.handlers {
-				if h.regexp.MatchString(e.Request.URL) {
-					h.handler(ctx)
+				if !h.regexp.MatchString(e.Request.URL) {
+					continue
+				}
 
-					if ctx.continueRequest != nil {
-						ctx.continueRequest.RequestID = e.RequestID
-						err := ctx.continueRequest.Call(r.client)
-						if err != nil {
-							ctx.OnError(err)
-						}
-						return
-					}
+				h.handler(ctx)
 
-					if ctx.Skip {
-						continue
-					}
-
-					if ctx.Response.fail.ErrorReason != "" {
-						err := ctx.Response.fail.Call(r.client)
-						if err != nil {
-							ctx.OnError(err)
-						}
-						return
-					}
-
-					err := ctx.Response.payload.Call(r.client)
+				if ctx.continueRequest != nil {
+					ctx.continueRequest.RequestID = e.RequestID
+					err := ctx.continueRequest.Call(r.client)
 					if err != nil {
 						ctx.OnError(err)
-						return
 					}
+					return
+				}
+
+				if ctx.Skip {
+					continue
+				}
+
+				if ctx.Response.fail.ErrorReason != "" {
+					err := ctx.Response.fail.Call(r.client)
+					if err != nil {
+						ctx.OnError(err)
+					}
+					return
+				}
+
+				err := ctx.Response.payload.Call(r.client)
+				if err != nil {
+					ctx.OnError(err)
+					return
 				}
 			}
 		}()

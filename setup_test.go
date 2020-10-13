@@ -156,7 +156,8 @@ func (t T) srcFile(path string) string {
 
 func (t T) newPage(u string) *rod.Page {
 	t.Helper()
-	p := t.browser.MustPage(u)
+	p, err := t.browser.Page(proto.TargetCreateTarget{URL: u})
+	t.E(err)
 	t.Cleanup(func() {
 		if !t.Failed() {
 			p.MustClose()
@@ -178,13 +179,13 @@ func (t T) checkLeaking(checkGoroutine bool) {
 		for _, p := range t.browser.MustPages() {
 			if p.TargetID != t.page.TargetID {
 				t.Logf("leaking page: %#v", p.MustInfo())
-				t.Fail()
+				t.FailNow()
 			}
 		}
 
 		if t.browser.LoadState(t.page.SessionID, proto.FetchEnable{}) {
 			t.Logf("leaking FetchEnable")
-			t.Fail()
+			t.FailNow()
 		}
 
 		t.mc.setCall(nil)

@@ -94,8 +94,18 @@ func (t T) BrowserClearStates() {
 	t.E(proto.EmulationClearGeolocationOverride{}.Call(t.page))
 }
 
+func (t T) BrowserEvent() {
+	messages := t.browser.Context(t.Context()).Event()
+	t.newPage("")
+	for msg := range messages {
+		if _, ok := msg.Event().(*proto.TargetTargetCreated); ok {
+			break
+		}
+	}
+}
+
 func (t T) BrowserWaitEvent() {
-	t.NotNil(t.browser.Event())
+	t.NotNil(t.browser.Context(t.Context()).Event())
 
 	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
 	t.page.MustNavigate(t.srcFile("fixtures/click.html"))

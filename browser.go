@@ -217,115 +217,6 @@ func (b *Browser) Pages() (Pages, error) {
 	return pageList, nil
 }
 
-// Event returns the observable for browser events, the type of is each event is *cdp.Event
-func (b *Browser) Event() *goob.Observable {
-	return b.event
-}
-
-// EachEvent of the specified event types, if any callback returns true the wait function will resolve,
-// The type of each callback is (? means optional):
-//
-//     func(proto.Event, proto.TargetSessionID?) bool?
-//
-// You can listen to multiple event types at the same time like:
-//
-//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
-//
-func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
-	return b.eachEvent(b.ctx, "", callbacks...)
-}
-
-// WaitEvent waits for the next event for one time. It will also load the data into the event object.
-func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
-	return b.waitEvent(b.ctx, "", e)
-}
-
-// If the any callback returns true the event loop will stop.
-// It will enable the related domains if not enabled, and recover them after wait ends.
-func (b *Browser) eachEvent(
-	ctx context.Context,
-	sessionID proto.TargetSessionID,
-	callbacks ...interface{},
-) (wait func()) {
-	cbValues := make([]reflect.Value, len(callbacks))
-	eventTypes := make([]reflect.Type, len(callbacks))
-	recovers := []func(){}
-
-	for i, cb := range callbacks {
-		cbValues[i] = reflect.ValueOf(cb)
-		eType := cbValues[i].Type().In(0).Elem()
-		eventTypes[i] = eType
-
-		// Only enabled domains will emit events to cdp client.
-		// We enable the domains for the event types if it's not enabled.
-		// We recover the domains to their previous states after the wait ends.
-		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Event).ProtoEvent())
-		if req := proto.GetType(domain + ".enable"); req != nil {
-			enable := reflect.New(req).Interface().(proto.Request)
-			recovers = append(recovers, b.Context(ctx).EnableDomain(sessionID, enable))
-		}
-	}
-
-	ctx, cancel := context.WithCancel(ctx)
-	events := b.event.Subscribe(ctx)
-
-	return func() {
-		defer func() {
-			cancel()
-			events = nil
-			for _, r := range recovers {
-				r()
-			}
-		}()
-
-		if events == nil {
-			panic("can't use wait function twice")
-		}
-
-		goob.Each(events, func(e *cdp.Event) bool {
-			if !(sessionID == "" || e.SessionID == string(sessionID)) {
-				return false
-			}
-
-			for i, eType := range eventTypes {
-				eVal := reflect.New(eType)
-				if Event(e, eVal.Interface().(proto.Event)) {
-					args := []reflect.Value{eVal}
-					if cbValues[i].Type().NumIn() == 2 {
-						args = append(args, reflect.ValueOf(sessionID))
-					}
-					res := cbValues[i].Call(args)
-					if len(res) > 0 {
-						return res[0].Bool()
-					}
-					break
-				}
-			}
-			return false
-		})
-	}
-}
-
-// waits for the next event for one time. It will also load the data into the event object.
-func (b *Browser) waitEvent(ctx context.Context, sessionID proto.TargetSessionID, e proto.Event) (wait func()) {
-	valE := reflect.ValueOf(e)
-	valTrue := reflect.ValueOf(true)
-
-	// dynamically creates a function on runtime:
-	//
-	// func(ee proto.Event) bool {
-	//   *e = *ee
-	//   return true
-	// }
-	fnType := reflect.FuncOf([]reflect.Type{valE.Type()}, []reflect.Type{valTrue.Type()}, false)
-	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
-		valE.Elem().Set(args[0].Elem())
-		return []reflect.Value{valTrue}
-	})
-
-	return b.eachEvent(ctx, sessionID, fnVal.Interface())
-}
-
 // Call raw cdp interface directly
 func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	res, err = b.client.Call(ctx, sessionID, methodName, params)
@@ -376,12 +267,140 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	return page, nil
 }
 
+// EachEvent of the specified event types, if any callback returns true the wait function will resolve,
+// The type of each callback is (? means optional):
+//
+//     func(proto.Event, proto.TargetSessionID?) bool?
+//
+// You can listen to multiple event types at the same time like:
+//
+//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
+//
+func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
+	return b.eachEvent("", callbacks...)
+}
+
+// WaitEvent waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
+	return b.waitEvent("", e)
+}
+
+// If the any callback returns true the event loop will stop.
+// It will enable the related domains if not enabled, and restore them after wait ends.
+func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interface{}) (wait func()) {
+	cbMap := map[string]reflect.Value{}
+	restores := []func(){}
+
+	for _, cb := range callbacks {
+		cbVal := reflect.ValueOf(cb)
+		eType := cbVal.Type().In(0)
+		name := reflect.New(eType.Elem()).Interface().(proto.Event).ProtoEvent()
+		cbMap[name] = cbVal
+
+		// Only enabled domains will emit events to cdp client.
+		// We enable the domains for the event types if it's not enabled.
+		// We restore the domains to their previous states after the wait ends.
+		domain, _ := proto.ParseMethodName(name)
+		if req := proto.GetType(domain + ".enable"); req != nil {
+			enable := reflect.New(req).Interface().(proto.Request)
+			restores = append(restores, b.EnableDomain(sessionID, enable))
+		}
+	}
+
+	ctx, cancel := context.WithCancel(b.ctx)
+	messages := b.Context(ctx).Event()
+
+	return func() {
+		defer func() {
+			cancel()
+			for _, restore := range restores {
+				restore()
+			}
+		}()
+
+		if ctx.Err() != nil {
+			panic("can't use wait function twice")
+		}
+
+		for msg := range messages {
+			if !(sessionID == "" || msg.SessionID == sessionID) {
+				continue
+			}
+
+			if cbVal, has := cbMap[msg.Method]; has {
+				args := []reflect.Value{reflect.ValueOf(msg.Event())}
+				if cbVal.Type().NumIn() == 2 {
+					args = append(args, reflect.ValueOf(sessionID))
+				}
+				res := cbVal.Call(args)
+				if len(res) > 0 {
+					if res[0].Bool() {
+						return
+					}
+				}
+			}
+		}
+	}
+}
+
+// waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) waitEvent(sessionID proto.TargetSessionID, e proto.Event) (wait func()) {
+	valE := reflect.ValueOf(e)
+	valTrue := reflect.ValueOf(true)
+
+	// dynamically creates a function on runtime:
+	//
+	// func(ee proto.Event) bool {
+	//   *e = *ee
+	//   return true
+	// }
+	fnType := reflect.FuncOf([]reflect.Type{valE.Type()}, []reflect.Type{valTrue.Type()}, false)
+	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
+		valE.Elem().Set(args[0].Elem())
+		return []reflect.Value{valTrue}
+	})
+
+	return b.eachEvent(sessionID, fnVal.Interface())
+}
+
+// Event of the browser
+func (b *Browser) Event() <-chan *Message {
+	src := b.event.Subscribe()
+	dst := make(chan *Message)
+	go func() {
+		defer b.event.Unsubscribe(src)
+		defer close(dst)
+		for {
+			select {
+			case <-b.ctx.Done():
+				return
+			case e, ok := <-src:
+				if !ok {
+					return
+				}
+				select {
+				case <-b.ctx.Done():
+					return
+				case dst <- e.(*Message):
+				}
+			}
+		}
+	}()
+	return dst
+}
+
 func (b *Browser) initEvents() {
 	b.event = goob.New()
 
 	go func() {
+		defer b.event.Close()
 		for msg := range b.client.Event() {
-			b.event.Publish(msg)
+			b.event.Publish(&Message{
+				SessionID: proto.TargetSessionID(msg.SessionID),
+				Method:    msg.Method,
+				lock:      &sync.RWMutex{},
+				data:      msg.Params,
+			})
 		}
 	}()
 }

@@ -12,7 +12,9 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod/lib/cdp"
@@ -25,6 +27,39 @@ type CDPClient interface {
 	Connect(ctx context.Context) error
 	Event() <-chan *cdp.Event
 	Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
+}
+
+// Message represents a cdp.Event
+type Message struct {
+	SessionID proto.TargetSessionID
+	Method    string
+
+	lock  *sync.RWMutex
+	data  json.RawMessage
+	event proto.Event
+}
+
+// Event data
+func (msg *Message) Event() proto.Event {
+	msg.lock.RLock()
+	if msg.event != nil {
+		msg.lock.RUnlock()
+		return msg.event
+	}
+	msg.lock.RUnlock()
+
+	msg.lock.Lock()
+	defer msg.lock.Unlock()
+
+	if msg.event != nil {
+		return msg.event
+	}
+
+	e := reflect.New(proto.GetType(msg.Method)).Interface()
+	utils.E(json.Unmarshal(msg.data, e))
+	msg.event = e.(proto.Event)
+	msg.data = nil
+	return msg.event
 }
 
 // DefaultLogger for rod
@@ -126,16 +161,6 @@ func (sr *StreamReader) Read(p []byte) (n int, err error) {
 	}
 
 	return sr.buf.Read(p)
-}
-
-// Event helps to convert a *cdp.Event to proto.Event. Returns false if the conversion fails
-func Event(e interface{}, evt proto.Event) bool {
-	msg := e.(*cdp.Event)
-	if msg.Method == evt.ProtoEvent() {
-		err := json.Unmarshal(msg.Params, evt)
-		return err == nil
-	}
-	return false
 }
 
 // Try try fn with recover, return the panic as value

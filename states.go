@@ -51,8 +51,8 @@ func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Reques
 	return
 }
 
-// EnableDomain and returns a recover function to restore previous state
-func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Request) (recover func()) {
+// EnableDomain and returns a restore function to restore previous state
+func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
 
 	if !enabled {
@@ -67,8 +67,8 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Reques
 	}
 }
 
-// DisableDomain and returns a recover function to restore previous state
-func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Request) (recover func()) {
+// DisableDomain and returns a restore function to restore previous state
+func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
 	domain, _ := proto.ParseMethodName(req.ProtoName())
 
@@ -99,13 +99,13 @@ func (p *Page) LoadState(method proto.Request) (has bool) {
 	return p.browser.LoadState(p.SessionID, method)
 }
 
-// EnableDomain and returns a recover function to restore previous state
-func (p *Page) EnableDomain(method proto.Request) (recover func()) {
+// EnableDomain and returns a restore function to restore previous state
+func (p *Page) EnableDomain(method proto.Request) (restore func()) {
 	return p.browser.Context(p.ctx).EnableDomain(p.SessionID, method)
 }
 
-// DisableDomain and returns a recover function to restore previous state
-func (p *Page) DisableDomain(method proto.Request) (recover func()) {
+// DisableDomain and returns a restore function to restore previous state
+func (p *Page) DisableDomain(method proto.Request) (restore func()) {
 	return p.browser.Context(p.ctx).DisableDomain(p.SessionID, method)
 }
 
