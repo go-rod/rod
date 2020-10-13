@@ -67,7 +67,7 @@ func Example_disable_headless_to_debug() {
 		Headless(false).
 		Devtools(true)
 
-	defer l.Cleanup()
+	defer l.Cleanup() // remove user-data-dir
 
 	url := l.MustLaunch()
 

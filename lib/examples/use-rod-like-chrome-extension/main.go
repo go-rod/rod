@@ -21,51 +21,58 @@ func main() {
 
 	browser := rod.New().ControlURL(wsURL).MustConnect().DefaultDevice(devices.Clear, false)
 
-	// Whenever we hover to a link, popup a preview of it.
+	// Run a extension. Here we created a link previewer extension as an example.
+	// With this extension, whenever you hover on a link a preview of the linked page will popup.
+	linkPreviewer(browser)
+}
+
+func linkPreviewer(browser *rod.Browser) {
+	// Inject js to every new page
 	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
 		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {
 			return
 		}
-
 		page := browser.MustPageFromTargetID(e.TargetInfo.TargetID)
 
-		page.MustEvalOnNewDocument(fmt.Sprintf(`(async () => {
-			await new Promise((r) => window.addEventListener('load', r))
-
-			%s
-
-			function setup(el) {
-				el.classList.add('x-set')
-				tippy(el, {onShow: (it) => {
-					if (it.props.content.src) return
-					let img = document.createElement('img')
-					img.style.height = '800px'
-					img.src = location.origin + '/rod-preview?url=' + encodeURIComponent(el.href)
-					img.onload = () => it.setContent(img)
-				}, content: 'loading...', maxWidth: 500})
-			}
-
-			(function check() {
-				Array.from(document.querySelectorAll('a:not(.x-set)')).forEach(setup)
-				setTimeout(check, 1000)
-			})()
-		})()`, jsLib))
+		page.MustEvalOnNewDocument(js)
 	})()
 
 	// Create a headless browser to generate preview of links on background.
 	previewer := rod.New().MustConnect().DefaultDevice(devices.IPhone6or7or8, false)
-
 	previewer.MustSetCookies(browser.MustGetCookies()) // share cookies
+	pool := rod.NewPagePool(5)
+	create := func() *rod.Page { return previewer.MustPage("") }
 
+	// Let the request to /rod-preview on each page goes to here to get the preview image.
 	browser.HijackRequests().MustAdd("*/rod-preview*", func(h *rod.Hijack) {
-		u := h.Request.URL().Query().Get("url")
-		page := previewer.MustPage(u).MustWaitLoad()
-		defer page.MustClose()
+		page := pool.Get(create)
+		defer pool.Put(page)
+		page.MustNavigate(h.Request.URL().Query().Get("url"))
 		h.Response.SetBody(page.MustScreenshot())
 	}).Run()
 }
 
 var jsLib = get("https://unpkg.com/@popperjs/core@2") + get("https://unpkg.com/tippy.js@6")
+
+var js = fmt.Sprintf(`window.addEventListener('load', () => {
+	%s
+
+	function setup(el) {
+		el.classList.add('x-set')
+		tippy(el, {onShow: (it) => {
+			if (it.props.content.src) return
+			let img = document.createElement('img')
+			img.style.height = '800px'
+			img.src = location.origin + '/rod-preview?url=' + encodeURIComponent(el.href)
+			img.onload = () => it.setContent(img)
+		}, content: 'loading...', maxWidth: 500})
+	}
+
+	(function check() {
+		Array.from(document.querySelectorAll('a:not(.x-set)')).forEach(setup)
+		setTimeout(check, 1000)
+	})()
+})`, jsLib)
 
 func get(u string) string {
 	res, err := http.Get(u)

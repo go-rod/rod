@@ -242,7 +242,8 @@ func (p *Page) MustHandleDialog(accept bool, promptText string) (wait func()) {
 	}
 }
 
-// MustScreenshot is similar to Screenshot
+// MustScreenshot is similar to Screenshot.
+// If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshot(toFile ...string) []byte {
 	bin, err := p.Screenshot(false, &proto.PageCaptureScreenshot{})
 	utils.E(err)
@@ -250,7 +251,8 @@ func (p *Page) MustScreenshot(toFile ...string) []byte {
 	return bin
 }
 
-// MustScreenshotFullPage is similar to ScreenshotFullPage
+// MustScreenshotFullPage is similar to ScreenshotFullPage.
+// If the toFile is "", it will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	bin, err := p.Screenshot(true, &proto.PageCaptureScreenshot{})
 	utils.E(err)
@@ -258,7 +260,8 @@ func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	return bin
 }
 
-// MustPDF is similar to PDF
+// MustPDF is similar to PDF.
+// If the toFile is "", it will save output to "tmp/pdf" folder, time as the file name.
 func (p *Page) MustPDF(toFile ...string) []byte {
 	r, err := p.PDF(&proto.PagePrintToPDF{})
 	utils.E(err)

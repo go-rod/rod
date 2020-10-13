@@ -67,7 +67,7 @@ We use the standard way to doc the project: [Go Doc](https://pkg.go.dev/github.c
 - [How versioning is handled](#q-how-versioning-is-handled)
 - [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
 
-### Q: How to use rod with docker
+### Q: How to use rod with docker so that I don't have to install a browser
 
 To let rod work with docker is very easy:
 

@@ -39,9 +39,9 @@ type Launcher struct {
 }
 
 // New returns the default arguments to start browser.
-// "--" is optional, with or without it won't affect the result.
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
+// UserDataDir will use OS tmp dir by default.
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
@@ -209,7 +209,8 @@ func (l *Launcher) Devtools(autoOpenForTabs bool) *Launcher {
 }
 
 // UserDataDir is where the browser will look for all of its state, such as cookie and cache.
-// When set to empty, system user's default dir will be used.
+// When set to empty, browser will use current OS home dir.
+// Related doc: https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md
 func (l *Launcher) UserDataDir(dir string) *Launcher {
 	if dir == "" {
 		l.Delete("user-data-dir")
@@ -222,7 +223,10 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 // RemoteDebuggingPort to launch the browser. Zero for a random port. Zero is the default value.
 // If it's not zero, the launcher will try to connect to it before starting a new browser process.
 // For example, to reuse the same browser process for between 2 runs of a Go program, you can
-// do something like launcher.New().RemoteDebuggingPort(9222).MustLaunch()
+// do something like:
+//     launcher.New().RemoteDebuggingPort(9222).MustLaunch()
+//
+// Related doc: https://chromedevtools.github.io/devtools-protocol/
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set("remote-debugging-port", fmt.Sprintf("%d", port))
 }
@@ -288,7 +292,7 @@ func (l *Launcher) MustLaunch() string {
 
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
-// If you want to reuse sessions, such as cookies, set the userDataDir to the same location.
+// If you want to reuse sessions, such as cookies, set the UserDataDir to the same location.
 func (l *Launcher) Launch() (string, error) {
 	defer l.ctxCancel()
 
@@ -390,7 +394,7 @@ func (l *Launcher) Kill() {
 	}
 }
 
-// Cleanup wait until the Browser exits and release related resources
+// Cleanup wait until the Browser exits and remove UserDataDir
 func (l *Launcher) Cleanup() {
 	<-l.exit
 
