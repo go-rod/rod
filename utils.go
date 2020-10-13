@@ -43,6 +43,45 @@ func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
 	return gen
 }
 
+// PagePool to thread-safely limit the number pages at the same time.
+// It's a common practice to a channel to limit concurrency, it's not special for rod.
+// This helper is more like an example to use Go Channel.
+type PagePool chan *Page
+
+// NewPagePool instance
+func NewPagePool(limit int) PagePool {
+	// we create a pool that will hold at most 3 pages
+	pp := make(chan *Page, limit)
+	for i := 0; i < limit; i++ {
+		pp <- nil
+	}
+	return pp
+}
+
+// Get a page from the pool.
+func (pp PagePool) Get(create func() *Page) *Page {
+	p := <-pp
+	if p == nil {
+		p = create()
+	}
+	return p
+}
+
+// Put a page back to the pool
+func (pp PagePool) Put(p *Page) {
+	pp <- p
+}
+
+// Cleanup helper
+func (pp PagePool) Cleanup(iteratee func(*Page)) {
+	for i := 0; i < cap(pp); i++ {
+		p := <-pp
+		if p != nil {
+			iteratee(p)
+		}
+	}
+}
+
 var _ io.Reader = &StreamReader{}
 
 // StreamReader for browser data stream

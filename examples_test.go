@@ -547,31 +547,21 @@ func ExamplePage_pool() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
-	// we create a pool that will hold at most 3 pages
-	pool := make(chan *rod.Page, 3)
-	for i := 0; i < cap(pool); i++ {
-		pool <- nil
-	}
+	// We create a pool that will hold at most 3 pages
+	pool := rod.NewPagePool(3)
 
-	// a function to get an item from the pool
-	getOnePage := func() (*rod.Page, func()) {
-		page := <-pool
-		if page == nil {
-			// if you want pages to share cookies with each remove the MustIncognito()
-			page = browser.MustIncognito().MustPage("")
-		}
-		return page, func() { pool <- page }
-	}
+	// Create a page if needed. If you want pages to share cookies with each remove the MustIncognito()
+	create := func() *rod.Page { return browser.MustIncognito().MustPage("") }
 
 	yourJob := func() {
-		page, payback := getOnePage()
-		defer payback()
+		page := pool.Get(create)
+		defer pool.Put(page)
 
 		page.MustNavigate("http://example.com").MustWaitLoad()
 		fmt.Println(page.MustInfo().Title)
 	}
 
-	// run jobs concurrently
+	// Run 5 jobs concurrently
 	wg := sync.WaitGroup{}
 	for range "...." {
 		wg.Add(1)
@@ -581,6 +571,9 @@ func ExamplePage_pool() {
 		}()
 	}
 	wg.Wait()
+
+	// cleanup pool
+	pool.Cleanup(func(p *rod.Page) { p.MustClose() })
 
 	// Output:
 	// Example Domain

@@ -836,3 +836,13 @@ func (t T) PageInitJSErr() {
 		p.MustEval(`1`)
 	})
 }
+
+func (t T) PagePool() {
+	pool := rod.NewPagePool(3)
+	create := func() *rod.Page { return t.browser.MustPage("") }
+	p := pool.Get(create)
+	pool.Put(p)
+	pool.Cleanup(func(p *rod.Page) {
+		p.MustClose()
+	})
+}
