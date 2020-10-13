@@ -25,11 +25,6 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 
 	key := ""
 	switch methodName {
-	case (proto.TargetSetDiscoverTargets{}).ProtoName(): // only Target domain is special
-		method := reflect.Indirect(reflect.ValueOf(params)).Interface().(proto.TargetSetDiscoverTargets)
-		if !method.Discover {
-			key = (proto.TargetSetDiscoverTargets{}).ProtoName()
-		}
 	case (proto.EmulationClearDeviceMetricsOverride{}).ProtoName():
 		key = (proto.EmulationSetDeviceMetricsOverride{}).ProtoName()
 	case (proto.EmulationClearGeolocationOverride{}).ProtoName():
@@ -66,11 +61,6 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Reques
 
 	return func() {
 		if !enabled {
-			if req.ProtoName() == (proto.TargetSetDiscoverTargets{}).ProtoName() { // only Target domain is special
-				_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
-				return
-			}
-
 			domain, _ := proto.ParseMethodName(req.ProtoName())
 			_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
 		}
@@ -83,11 +73,7 @@ func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Reque
 	domain, _ := proto.ParseMethodName(req.ProtoName())
 
 	if enabled {
-		if req.ProtoName() == (proto.TargetSetDiscoverTargets{}).ProtoName() { // only Target domain is special
-			_ = proto.TargetSetDiscoverTargets{Discover: false}.Call(b)
-		} else {
-			_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
-		}
+		_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
 	}
 
 	return func() {

@@ -149,6 +149,11 @@ func (b *Browser) Connect() error {
 
 	b.initEvents()
 
+	err = proto.TargetSetDiscoverTargets{Discover: true}.Call(b)
+	if err != nil {
+		return err
+	}
+
 	if b.monitor != "" {
 		launcher.NewBrowser().Open(b.ServeMonitor(b.monitor))
 	}
@@ -244,7 +249,7 @@ func (b *Browser) eachEvent(
 ) (wait func()) {
 	cbValues := make([]reflect.Value, len(callbacks))
 	eventTypes := make([]reflect.Type, len(callbacks))
-	recovers := make([]func(), len(callbacks))
+	recovers := []func(){}
 
 	for i, cb := range callbacks {
 		cbValues[i] = reflect.ValueOf(cb)
@@ -255,13 +260,10 @@ func (b *Browser) eachEvent(
 		// We enable the domains for the event types if it's not enabled.
 		// We recover the domains to their previous states after the wait ends.
 		domain, _ := proto.ParseMethodName(reflect.New(eType).Interface().(proto.Event).ProtoEvent())
-		var enable proto.Request
-		if domain == "Target" { // only Target domain is special
-			enable = proto.TargetSetDiscoverTargets{Discover: true}
-		} else {
-			enable = reflect.New(proto.GetType(domain + ".enable")).Interface().(proto.Request)
+		if req := proto.GetType(domain + ".enable"); req != nil {
+			enable := reflect.New(req).Interface().(proto.Request)
+			recovers = append(recovers, b.Context(ctx).EnableDomain(sessionID, enable))
 		}
-		recovers[i] = b.Context(ctx).EnableDomain(sessionID, enable)
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
@@ -271,8 +273,8 @@ func (b *Browser) eachEvent(
 		defer func() {
 			cancel()
 			events = nil
-			for _, recover := range recovers {
-				recover()
+			for _, r := range recovers {
+				r()
 			}
 		}()
 

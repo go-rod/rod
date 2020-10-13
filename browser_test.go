@@ -92,15 +92,18 @@ func (t T) BrowserPages() {
 
 func (t T) BrowserClearStates() {
 	t.E(proto.EmulationClearGeolocationOverride{}.Call(t.page))
-
-	defer t.browser.EnableDomain("", &proto.TargetSetDiscoverTargets{Discover: true})()
-	t.browser.DisableDomain("", &proto.TargetSetDiscoverTargets{Discover: false})()
 }
 
 func (t T) BrowserWaitEvent() {
 	t.NotNil(t.browser.Event())
 
 	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
+	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	wait()
+
+	wait = t.browser.EachEvent(func(e *proto.PageFrameNavigated, id proto.TargetSessionID) bool {
+		return true
+	})
 	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	wait()
 }
@@ -363,19 +366,26 @@ func (t T) BrowserCookies() {
 
 func (t T) BrowserConnectErr() {
 	t.Panic(func() {
-		c := newMockClient(&cdp.Client{}, nil)
-		c.connect = func() error { return errors.New("err") }
+		c := &MockClient{connect: func() error { return errors.New("err") }}
 		rod.New().Client(c).MustConnect()
 	})
-
 	t.Panic(func() {
 		ch := make(chan *cdp.Event)
 		defer close(ch)
 
-		c := newMockClient(&cdp.Client{}, nil)
-		c.connect = func() error { return nil }
-		c.event = ch
-		c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
+		c := &MockClient{connect: func() error { return nil }, event: ch}
+		c.stubErr(1, proto.TargetSetDiscoverTargets{})
+		rod.New().Client(c).MustConnect()
+	})
+	t.Panic(func() {
+		ch := make(chan *cdp.Event)
+		defer close(ch)
+
+		c := &MockClient{connect: func() error { return nil }, event: ch}
+		c.stub(1, proto.TargetSetDiscoverTargets{}, func(send StubSend) (gson.JSON, error) {
+			c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
+			return gson.JSON{}, nil
+		})
 		rod.New().Client(c).MustConnect()
 	})
 }
