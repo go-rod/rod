@@ -332,10 +332,7 @@ func (t T) BinarySize() {
 
 	cmd.Env = append(os.Environ(), "GOOS=linux")
 
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Skip(err, string(out))
-	}
+	t.Nil(cmd.Run())
 
 	stat, err := os.Stat("tmp/translator")
 	t.E(err)

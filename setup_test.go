@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strings"
 	"sync"
@@ -190,16 +191,18 @@ func (t T) checkLeaking(checkGoroutine bool) {
 	})
 }
 
-func (t T) timeoutAfter(timeout time.Duration) {
+func (t *T) timeoutAfter(timeout time.Duration) {
 	if t.cancelTimeout != nil {
 		t.cancelTimeout()
 	}
 
+	name := reflect.TypeOf(T{}).String() + "." + strings.Split(t.Name(), "/")[1]
+
 	t.cancelTimeout = t.DoAfter(timeout, func() {
 		traces := gotrace.Wait(gotrace.Timeout(0), func(tr gotrace.Trace) bool {
-			return !strings.Contains(tr.String(), "rod_test.T."+strings.Split(t.Name(), "/")[1])
+			return !strings.Contains(tr.String(), name)
 		})
-		panic(fmt.Sprintf("%s timeout after %v\n%s", t.Name(), timeout, traces))
+		panic(fmt.Sprintf("%s timeout after %v\n%s", name, timeout, traces))
 	})
 }
 

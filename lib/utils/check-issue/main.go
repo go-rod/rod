@@ -28,7 +28,7 @@ func main() {
 		issuePath = "lib/utils/check-issue/issue.json"
 	}
 
-	data, err := utils.ReadString(issuePath)
+	data, err := os.Open(issuePath)
 	utils.E(err)
 
 	issue := gson.New(data).Get("issue")
