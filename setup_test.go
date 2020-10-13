@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -21,6 +22,7 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
+	"github.com/ysmood/gotrace"
 	"github.com/ysmood/gotrace/pkg/testleak"
 	"github.com/ysmood/gson"
 )
@@ -113,7 +115,7 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.mc.logger.Println("from", tester.mc.id+".log")
 
 	tester.checkLeaking(!parallel)
-	tester.cancelTimeout = tester.PanicAfter(10 * time.Second)
+	tester.timeoutAfter(10 * time.Second)
 
 	return *tester
 }
@@ -185,6 +187,19 @@ func (t T) checkLeaking(checkGoroutine bool) {
 		}
 
 		t.mc.setCall(nil)
+	})
+}
+
+func (t T) timeoutAfter(timeout time.Duration) {
+	if t.cancelTimeout != nil {
+		t.cancelTimeout()
+	}
+
+	t.cancelTimeout = t.DoAfter(timeout, func() {
+		traces := gotrace.Wait(gotrace.Timeout(0), func(tr gotrace.Trace) bool {
+			return !strings.Contains(tr.String(), "rod_test.T."+strings.Split(t.Name(), "/")[1])
+		})
+		panic(fmt.Sprintf("%s timeout after %v\n%s", t.Name(), timeout, traces))
 	})
 }
 

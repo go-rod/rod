@@ -318,8 +318,7 @@ func (t T) BrowserOthers() {
 }
 
 func (t T) BinarySize() {
-	t.cancelTimeout()
-	t.PanicAfter(time.Minute)
+	t.timeoutAfter(time.Minute)
 
 	if runtime.GOOS == "windows" {
 		t.SkipNow()

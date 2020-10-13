@@ -697,8 +697,7 @@ func (t T) PageOthers() {
 }
 
 func (t T) Fonts() {
-	t.cancelTimeout()
-	t.PanicAfter(time.Minute)
+	t.timeoutAfter(time.Minute)
 
 	p := t.page.MustNavigate(t.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
