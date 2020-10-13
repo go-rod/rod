@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -80,7 +79,7 @@ func newTesterPool(t *testing.T) TesterPool {
 func (cp TesterPool) new() *T {
 	u := launcher.New().MustLaunch()
 
-	mc := newMockClient(cdp.New(u), log.New(ioutil.Discard, "", log.Ltime))
+	mc := newMockClient(u)
 
 	browser := rod.New().ControlURL("").Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
@@ -111,6 +110,7 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.G = got.New(t)
 	tester.mc.t = t
 	tester.mc.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
+	tester.mc.logger.Println("from", tester.mc.id+".log")
 
 	tester.checkLeaking(!parallel)
 	tester.cancelTimeout = tester.PanicAfter(10 * time.Second)
@@ -174,33 +174,18 @@ func (t T) checkLeaking(checkGoroutine bool) {
 
 		for _, p := range t.browser.MustPages() {
 			if p.TargetID != t.page.TargetID {
-				t.Fatalf("leaking page: %#v", p.MustInfo())
+				t.Logf("leaking page: %#v", p.MustInfo())
+				t.Fail()
 			}
 		}
 
 		if t.browser.LoadState(t.page.SessionID, proto.FetchEnable{}) {
-			t.Fatal("leaking FetchEnable")
+			t.Logf("leaking FetchEnable")
+			t.Fail()
 		}
 
 		t.mc.setCall(nil)
 	})
-}
-
-type MockRoundTripper struct {
-	res *http.Response
-	err error
-}
-
-func (mrt *MockRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
-	return mrt.res, mrt.err
-}
-
-type MockReader struct {
-	err error
-}
-
-func (mr *MockReader) Read(p []byte) (n int, err error) {
-	return 0, mr.err
 }
 
 type Call func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
@@ -209,6 +194,7 @@ var _ rod.CDPClient = &MockClient{}
 
 type MockClient struct {
 	sync.RWMutex
+	id        string
 	t         got.Testable
 	logger    *log.Logger
 	principal *cdp.Client
@@ -217,8 +203,20 @@ type MockClient struct {
 	event     <-chan *cdp.Event
 }
 
-func newMockClient(client *cdp.Client, lg *log.Logger) *MockClient {
-	return &MockClient{principal: client.Logger(lg), logger: lg}
+var mockClientCount int32
+
+func newMockClient(u string) *MockClient {
+	id := fmt.Sprintf("%02d", atomic.AddInt32(&mockClientCount, 1))
+
+	// create init log file
+	utils.E(os.MkdirAll(slash("tmp/cdp-log/"), 0755))
+	f, err := os.Create(slash("tmp/cdp-log/" + id + ".log"))
+	utils.E(err)
+	lg := log.New(f, "", log.Ltime)
+
+	client := cdp.New(u).Logger(lg)
+
+	return &MockClient{id: id, principal: client, logger: lg}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
@@ -326,6 +324,23 @@ func (mc *MockClient) stubErr(nth int, p proto.Request) {
 	mc.stub(nth, p, func(send StubSend) (gson.JSON, error) {
 		return gson.New(nil), errors.New("mock error")
 	})
+}
+
+type MockRoundTripper struct {
+	res *http.Response
+	err error
+}
+
+func (mrt *MockRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
+	return mrt.res, mrt.err
+}
+
+type MockReader struct {
+	err error
+}
+
+func (mr *MockReader) Read(p []byte) (n int, err error) {
+	return 0, mr.err
 }
 
 var slash = filepath.FromSlash
