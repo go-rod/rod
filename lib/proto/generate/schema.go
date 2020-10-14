@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ysmood/gson"
@@ -192,8 +193,8 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 
 func optimize(json gson.JSON) {
 	k := func(k, v string) gson.Query {
-		return func(target interface{}) (val interface{}, has bool) {
-			for _, el := range target.([]interface{}) {
+		return func(obj interface{}) (val interface{}, has bool) {
+			for _, el := range obj.([]interface{}) {
 				res := el.(map[string]interface{})[k]
 				if res == v {
 					return el, true
@@ -201,6 +202,15 @@ func optimize(json gson.JSON) {
 			}
 			panic("not found")
 		}
+	}
+	index := func(obj interface{}, k, v string) string {
+		for i, el := range obj.([]interface{}) {
+			res := el.(map[string]interface{})[k]
+			if res == v {
+				return fmt.Sprintf("%d", i)
+			}
+		}
+		panic("not found")
 	}
 
 	getTypes := func(domain string) gson.JSON {
@@ -231,7 +241,7 @@ func optimize(json gson.JSON) {
 
 	// fix Cookie.Expires
 	j, _ = getTypes("Network").Gets(k("id", "Cookie"), "properties")
-	j.Set("4", map[string]interface{}{
+	j.Set(index(j.Val(), "name", "expires"), map[string]interface{}{
 		"$ref":        "TimeSinceEpoch",
 		"description": "Cookie expiration date",
 		"name":        "expires",

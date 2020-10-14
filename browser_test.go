@@ -1,12 +1,12 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
-	"sync"
 	"testing"
 	"time"
 
@@ -96,18 +96,38 @@ func (t T) BrowserClearStates() {
 
 func (t T) BrowserEvent() {
 	messages := t.browser.Context(t.Context()).Event()
-	t.newPage("")
+	p := t.newPage("")
+	wait := make(chan struct{})
 	for msg := range messages {
-		if _, ok := msg.Event().(*proto.TargetTargetCreated); ok {
+		e := proto.TargetAttachedToTarget{}
+		if msg.Load(&e) {
+			t.Eq(e.TargetInfo.TargetID, p.TargetID)
+			close(wait)
 			break
 		}
 	}
+	<-wait
+}
+
+func (t T) BrowserEventClose() {
+	event := make(chan *cdp.Event)
+	c := &MockClient{
+		connect: func() error { return nil },
+		call: func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+			return nil, errors.New("err")
+		},
+		event: event,
+	}
+	b := rod.New().Client(c)
+	_ = b.Connect()
+	b.Event()
+	close(event)
 }
 
 func (t T) BrowserWaitEvent() {
 	t.NotNil(t.browser.Context(t.Context()).Event())
 
-	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
+	wait := t.page.WaitEvent(proto.PageFrameNavigated{})
 	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	wait()
 
@@ -121,11 +141,20 @@ func (t T) BrowserWaitEvent() {
 func (t T) BrowserCrash() {
 	browser := rod.New().Context(t.Context()).MustConnect()
 	page := browser.MustPage("")
+	js := `new Promise(r => setTimeout(r, 10000))`
+
+	go t.Panic(func() {
+		page.MustEval(js)
+	})
+
+	utils.Sleep(0.2)
 
 	_ = proto.BrowserCrash{}.Call(browser)
 
+	utils.Sleep(0.3)
+
 	t.Panic(func() {
-		page.MustEval(`new Promise(() => {})`)
+		page.MustEval(js)
 	})
 }
 
@@ -137,13 +166,13 @@ func (t T) BrowserCall() {
 }
 
 func (t T) Monitor() {
-	b := rod.New().Timeout(1 * time.Minute).MustConnect()
+	b := rod.New().MustConnect()
 	defer b.MustClose()
 	p := b.MustPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	b, cancel := b.WithCancel()
 	defer cancel()
-	host := b.ServeMonitor("")
+	host := b.Context(t.Context()).ServeMonitor("")
 
 	page := t.page.MustNavigate(host)
 	t.Has(page.MustElement("#targets a").MustParent().MustHTML(), string(p.TargetID))
@@ -204,60 +233,6 @@ func (t T) TraceLogs() {
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	p.Overlay(0, 0, 100, 30, "")
-}
-
-func (t T) ConcurrentOperations() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	list := []int{}
-	lock := sync.Mutex{}
-	add := func(item int) {
-		lock.Lock()
-		defer lock.Unlock()
-		list = append(list, item)
-	}
-
-	utils.All(func() {
-		add(p.MustEval(`new Promise(r => setTimeout(r, 100, 2))`).Int())
-	}, func() {
-		add(p.MustEval(`1`).Int())
-	})()
-
-	t.Eq([]int{1, 2}, list)
-}
-
-func (t T) PromiseLeak() {
-	/*
-		Perform a slow action then navigate the page to another url,
-		we can see the slow operation will still be executed.
-
-		The unexpected part is that the promise will resolve to the next page's url.
-	*/
-
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	var out string
-
-	utils.All(func() {
-		out = p.MustEval(`new Promise(r => setTimeout(() => r(location.href), 200))`).String()
-	}, func() {
-		utils.Sleep(0.1)
-		p.MustNavigate(t.srcFile("fixtures/input.html"))
-	})()
-
-	t.Has(out, "input.html")
-}
-
-func (t T) ObjectLeak() {
-	/*
-		Seems like it won't leak
-	*/
-
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-
-	el := p.MustElement("button")
-	p.MustNavigate(t.srcFile("fixtures/input.html")).MustWaitLoad()
-	t.Panic(func() {
-		el.MustDescribe()
-	})
 }
 
 func (t T) BlockingNavigation() {
@@ -328,8 +303,6 @@ func (t T) BrowserOthers() {
 }
 
 func (t T) BinarySize() {
-	t.timeoutAfter(time.Minute)
-
 	if runtime.GOOS == "windows" {
 		t.SkipNow()
 	}
@@ -476,4 +449,23 @@ func BenchmarkCache(b *testing.B) {
 			return time
 		}`, time.Now().UnixNano())
 	}
+}
+
+func TestLab(t *testing.T) {
+	b := &rod.Browser{}
+	p := b.PageFromSession("")
+
+	t.SkipNow()
+
+	b = rod.New().MustConnect()
+
+	target, _ := proto.TargetCreateTarget{URL: "http://www.example.com"}.Call(b)
+
+	session, _ := proto.TargetAttachToTarget{TargetID: target.TargetID, Flatten: true}.Call(b)
+
+	p = b.PageFromSession(session.SessionID)
+
+	_, _ = proto.RuntimeEvaluate{Expression: `window`}.Call(p)
+
+	utils.Pause()
 }

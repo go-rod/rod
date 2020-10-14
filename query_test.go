@@ -74,7 +74,7 @@ func (t T) Search() {
 	// when search result is not ready
 	{
 		t.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
-			return gson.New(nil), &cdp.Error{Code: -32000}
+			return gson.New(nil), cdp.ErrCtxNotFound
 		})
 		p.MustSearch("click me")
 	}
@@ -98,7 +98,7 @@ func (t T) Search() {
 		p.MustSearch("click me")
 	})
 	t.Panic(func() {
-		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		p.MustSearch("click me")
 	})
 }
@@ -241,23 +241,23 @@ func (t T) ElementTracing() {
 
 func (t T) PageElementByJS_Err() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	_, err := p.ElementByJS(rod.NewEval(`1`))
+	_, err := p.ElementByJS(rod.Eval(`1`))
 	t.Is(err, &rod.ErrExpectElement{})
 	t.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
 func (t T) PageElementsByJS_Err() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
-	_, err := p.ElementsByJS(rod.NewEval(`[1]`))
+	_, err := p.ElementsByJS(rod.Eval(`[1]`))
 	t.Is(err, &rod.ErrExpectElements{})
 	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-	_, err = p.ElementsByJS(rod.NewEval(`1`))
+	_, err = p.ElementsByJS(rod.Eval(`1`))
 	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-	_, err = p.ElementsByJS(rod.NewEval(`foo()`))
+	_, err = p.ElementsByJS(rod.Eval(`foo()`))
 	t.Err(err)
 
 	t.mc.stubErr(1, proto.RuntimeGetProperties{})
-	_, err = p.ElementsByJS(rod.NewEval(`[document.body]`))
+	_, err = p.ElementsByJS(rod.Eval(`[document.body]`))
 	t.Err(err)
 }
 

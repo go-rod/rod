@@ -199,7 +199,7 @@ func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duratio
 			interval = maxInterval
 		}
 
-		t := time.NewTicker(interval)
+		t := time.NewTimer(interval)
 		defer t.Stop()
 
 		select {

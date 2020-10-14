@@ -113,7 +113,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 		width,
 		height,
 		msg,
-	))
+	).ByPromise())
 
 	remove = func() {
 		_, _ = root.Evaluate(jsHelper(js.RemoveOverlay, id))
@@ -136,7 +136,7 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 	_, _ = el.Evaluate(jsHelper(js.ElementOverlay,
 		id,
 		msg,
-	))
+	).ByPromise())
 
 	removeOverlay = func() {
 		_, _ = el.Evaluate(jsHelper(js.RemoveOverlay, id))
@@ -235,7 +235,7 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 }
 
 func (m *Mouse) initMouseTracer() {
-	_, _ = m.page.Evaluate(jsHelper(js.InitMouseTracer, m.id, assets.MousePointer))
+	_, _ = m.page.Evaluate(jsHelper(js.InitMouseTracer, m.id, assets.MousePointer).ByPromise())
 }
 
 func (m *Mouse) updateMouseTracer() bool {

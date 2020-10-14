@@ -102,14 +102,14 @@ func (t T) HijackContinue() {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-	router.MustAdd("*", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
 		ctx.ContinueRequest(&proto.FetchContinueRequest{})
 		wg.Done()
 	})
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL())
+	t.page.MustNavigate(s.URL("/a"))
 
 	t.Eq("ok", t.page.MustElement("body").MustText())
 	wg.Wait()
@@ -125,7 +125,7 @@ func (t T) HijackOnErrorLog() {
 	wg.Add(1)
 	var err error
 
-	router.MustAdd("*", func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
 		ctx.OnError = func(e error) {
 			err = e
 			wg.Done()
@@ -140,7 +140,7 @@ func (t T) HijackOnErrorLog() {
 	})
 
 	go func() {
-		_ = t.page.Context(t.Context()).Navigate(s.URL())
+		_ = t.page.Context(t.Context()).Navigate(s.URL("/a"))
 	}()
 	wg.Wait()
 
@@ -167,7 +167,7 @@ func (t T) HijackFailRequest() {
 
 	t.page.MustNavigate(s.URL("/page")).MustWaitLoad()
 
-	t.page.MustWait(`document.title == 'Failed to fetch'`)
+	t.page.MustWait(`document.title === 'Failed to fetch'`)
 
 	{ // test error log
 		t.mc.stub(1, proto.FetchFailRequest{}, func(send StubSend) (gson.JSON, error) {
@@ -179,14 +179,14 @@ func (t T) HijackFailRequest() {
 }
 
 func (t T) HijackLoadResponseErr() {
-	p := t.page.Context(t.Context())
+	p := t.newPage("").Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	router.MustAdd("*", func(ctx *rod.Hijack) {
+	router.MustAdd("http://test.com/a", func(ctx *rod.Hijack) {
 		t.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{err: errors.New("err")},
 		}, true))
@@ -199,11 +199,13 @@ func (t T) HijackLoadResponseErr() {
 		}, true))
 
 		wg.Done()
+
+		ctx.Response.Fail(proto.NetworkErrorReasonAborted)
 	})
 
 	go router.Run()
 
-	go func() { _ = p.Navigate(t.srcFile("./fixtures/click.html")) }()
+	_ = p.Navigate("http://test.com/a")
 
 	wg.Wait()
 }
@@ -211,7 +213,7 @@ func (t T) HijackLoadResponseErr() {
 func (t T) HijackResponseErr() {
 	s := t.Serve().Route("/", ".html", `ok`)
 
-	p := t.page.Context(t.Context())
+	p := t.newPage("").Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -225,12 +227,15 @@ func (t T) HijackResponseErr() {
 		}
 
 		ctx.MustLoadResponse()
-		t.mc.stubErr(1, proto.FetchFulfillRequest{})
+		t.mc.stub(1, proto.FetchFulfillRequest{}, func(send StubSend) (gson.JSON, error) {
+			res, _ := send()
+			return res, errors.New("err")
+		})
 	})
 
 	go router.Run()
 
-	go func() { _ = p.Navigate(s.URL("/a")) }()
+	p.MustNavigate(s.URL("/a"))
 
 	wg.Wait()
 }
@@ -239,7 +244,7 @@ func (t T) HandleAuth() {
 	s := t.Serve()
 
 	// mock the server
-	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
 		u, p, ok := r.BasicAuth()
 		if !ok {
 			w.Header().Add("WWW-Authenticate", `Basic realm="web"`)
@@ -255,7 +260,7 @@ func (t T) HandleAuth() {
 
 	t.browser.MustHandleAuth("a", "b")
 
-	page := t.newPage(s.URL())
+	page := t.newPage(s.URL("/a"))
 	page.MustElementR("p", "ok")
 
 	wait := t.browser.HandleAuth("a", "b")
@@ -317,18 +322,18 @@ func (t T) GetDownloadFileFromDataURI() {
 
 	page := t.page.MustNavigate(s.URL())
 
-	wait := page.MustGetDownloadFile("data:*")
+	wait1 := page.MustGetDownloadFile("data:*")
 	page.MustElement("#a").MustClick()
-	data := wait()
+	data := wait1()
 	t.Eq("test data", string(data))
 
-	wait = page.MustGetDownloadFile("data:*")
+	wait2 := page.MustGetDownloadFile("data:*")
 	page.MustElement("#b").MustClick()
-	data = wait()
+	data = wait2()
 	t.Eq("test blob", string(data))
 
 	t.Panic(func() {
-		wait = page.MustGetDownloadFile("data:*")
+		wait := page.MustGetDownloadFile("data:*")
 		page.MustElement("#b").MustClick()
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		data = wait()

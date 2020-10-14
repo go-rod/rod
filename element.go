@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"io"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -25,12 +24,13 @@ var _ proto.Sessionable = &Element{}
 
 // Element represents the DOM element
 type Element struct {
-	ctx     context.Context
+	Object *proto.RuntimeRemoteObject
+
+	ctx context.Context
+
 	sleeper func() utils.Sleeper
 
 	page *Page
-
-	Object *proto.RuntimeRemoteObject
 }
 
 // GetSessionID interface
@@ -45,7 +45,7 @@ func (el *Element) Focus() error {
 		return err
 	}
 
-	_, err = el.Evaluate(NewEval(`this.focus()`).ByUser())
+	_, err = el.Evaluate(Eval(`this.focus()`).ByUser())
 	return err
 }
 
@@ -239,7 +239,7 @@ func (el *Element) Input(text string) error {
 
 // Blur is similar to the method Blur
 func (el *Element) Blur() error {
-	_, err := el.Evaluate(NewEval("this.blur()").ByUser())
+	_, err := el.Evaluate(Eval("this.blur()").ByUser())
 	return err
 }
 
@@ -355,12 +355,11 @@ func (el *Element) Frame() (*Page, error) {
 		return nil, err
 	}
 
-	newPage := *el.page
-	newPage.FrameID = node.FrameID
-	newPage.element = el
-	newPage.jsHelperObj = nil
-	newPage.windowObj = nil
-	return &newPage, nil
+	clone := *el.page
+	clone.FrameID = node.FrameID
+	clone.element = el
+
+	return &clone, clone.updateJSCtxID()
 }
 
 // ContainsElement check if the target is equal or inside the element.
@@ -401,7 +400,7 @@ func (el *Element) Visible() (bool, error) {
 
 // WaitLoad for element like <img>
 func (el *Element) WaitLoad() error {
-	_, err := el.Evaluate(jsHelper(js.WaitLoad))
+	_, err := el.Evaluate(jsHelper(js.WaitLoad).ByPromise())
 	return err
 }
 
@@ -441,7 +440,7 @@ func (el *Element) WaitStable(d time.Duration) error {
 }
 
 // Wait until the js returns true
-func (el *Element) Wait(opts *Eval) error {
+func (el *Element) Wait(opts *EvalOptions) error {
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
 		res, err := el.Evaluate(opts.This(el.Object))
 		if err != nil {
@@ -482,7 +481,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 
 // Resource returns the "src" content of current element. Such as the jpg of <img src="a.jpg">
 func (el *Element) Resource() ([]byte, error) {
-	src, err := el.Evaluate(jsHelper(js.Resource))
+	src, err := el.Evaluate(jsHelper(js.Resource).ByPromise())
 	if err != nil {
 		return nil, err
 	}
@@ -561,62 +560,14 @@ func (el *Element) Call(ctx context.Context, sessionID, methodName string, param
 
 // Eval js on the page. For more info check the Element.Evaluate
 func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return el.Evaluate(NewEval(js, params...))
+	return el.Evaluate(Eval(js, params...))
 }
 
 // Evaluate is just a shortcut of Page.Evaluate with This set to current element.
-func (el *Element) Evaluate(opts *Eval) (*proto.RuntimeRemoteObject, error) {
+func (el *Element) Evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx).Evaluate(opts.This(el.Object))
 }
 
 func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
-}
-
-func (el *Element) ensureParentPage(nodeID proto.DOMNodeID, obj *proto.RuntimeRemoteObject) error {
-	has, err := el.page.hasElement(obj)
-	if err != nil {
-		return err
-	}
-	if has {
-		return nil
-	}
-
-	// DFS for the iframe that holds the element
-	var walk func(page *Page) error
-	walk = func(page *Page) error {
-		list, err := page.Elements("iframe")
-		if err != nil {
-			return err
-		}
-
-		for _, f := range list {
-			p, err := f.Frame()
-			if err != nil {
-				return err
-			}
-
-			obj, err := p.resolveNode(nodeID)
-			if err != nil {
-				return err
-			}
-			if obj.ObjectID != "" {
-				el.page = p
-				el.Object = obj
-				return io.EOF
-			}
-
-			err = walk(p)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	err = walk(el.page)
-	if err == io.EOF {
-		return nil
-	}
-	return err
 }

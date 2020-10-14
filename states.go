@@ -25,10 +25,10 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 
 	key := ""
 	switch methodName {
-	case (proto.EmulationClearDeviceMetricsOverride{}).ProtoName():
-		key = (proto.EmulationSetDeviceMetricsOverride{}).ProtoName()
-	case (proto.EmulationClearGeolocationOverride{}).ProtoName():
-		key = (proto.EmulationSetGeolocationOverride{}).ProtoName()
+	case (proto.EmulationClearDeviceMetricsOverride{}).ProtoReq():
+		key = (proto.EmulationSetDeviceMetricsOverride{}).ProtoReq()
+	case (proto.EmulationClearGeolocationOverride{}).ProtoReq():
+		key = (proto.EmulationSetGeolocationOverride{}).ProtoReq()
 	default:
 		domain, name := proto.ParseMethodName(methodName)
 		if name == "disable" {
@@ -42,7 +42,7 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 
 // LoadState into the method, seesionID can be empty.
 func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Request) (has bool) {
-	data, has := b.states.Load(b.key(sessionID, method.ProtoName()))
+	data, has := b.states.Load(b.key(sessionID, method.ProtoReq()))
 	if has {
 		reflect.Indirect(reflect.ValueOf(method)).Set(
 			reflect.Indirect(reflect.ValueOf(data)),
@@ -51,17 +51,22 @@ func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Reques
 	return
 }
 
+// RemoveState a state
+func (b *Browser) RemoveState(key interface{}) {
+	b.states.Delete(key)
+}
+
 // EnableDomain and returns a restore function to restore previous state
 func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
-	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
+	_, enabled := b.states.Load(b.key(sessionID, req.ProtoReq()))
 
 	if !enabled {
-		_, _ = b.Call(b.ctx, string(sessionID), req.ProtoName(), req)
+		_, _ = b.Call(b.ctx, string(sessionID), req.ProtoReq(), req)
 	}
 
 	return func() {
 		if !enabled {
-			domain, _ := proto.ParseMethodName(req.ProtoName())
+			domain, _ := proto.ParseMethodName(req.ProtoReq())
 			_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
 		}
 	}
@@ -69,8 +74,8 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Reques
 
 // DisableDomain and returns a restore function to restore previous state
 func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
-	_, enabled := b.states.Load(b.key(sessionID, req.ProtoName()))
-	domain, _ := proto.ParseMethodName(req.ProtoName())
+	_, enabled := b.states.Load(b.key(sessionID, req.ProtoReq()))
+	domain, _ := proto.ParseMethodName(req.ProtoReq())
 
 	if enabled {
 		_, _ = b.Call(b.ctx, string(sessionID), domain+".disable", nil)
@@ -78,16 +83,16 @@ func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Reque
 
 	return func() {
 		if enabled {
-			_, _ = b.Call(b.ctx, string(sessionID), req.ProtoName(), req)
+			_, _ = b.Call(b.ctx, string(sessionID), req.ProtoReq(), req)
 		}
 	}
 }
 
-func (b *Browser) storePage(page *Page) {
+func (b *Browser) cachePage(page *Page) {
 	b.states.Store(page.TargetID, page)
 }
 
-func (b *Browser) loadPage(id proto.TargetTargetID) *Page {
+func (b *Browser) loadCachedPage(id proto.TargetTargetID) *Page {
 	if cache, ok := b.states.Load(id); ok {
 		return cache.(*Page)
 	}
@@ -110,5 +115,5 @@ func (p *Page) DisableDomain(method proto.Request) (restore func()) {
 }
 
 func (p *Page) cleanupStates() {
-	p.browser.states.Delete(p.TargetID)
+	p.browser.RemoveState(p.TargetID)
 }

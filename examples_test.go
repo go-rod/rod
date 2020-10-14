@@ -502,7 +502,7 @@ func Example_hijack_requests() {
 func Example_eval_reuse_remote_object() {
 	page := rod.New().MustConnect().MustPage("")
 
-	fn := page.MustEvaluate(rod.NewEval(`Math.random`).ByObject())
+	fn := page.MustEvaluate(rod.Eval(`Math.random`).ByObject())
 
 	res := page.MustEval(`f => f()`, fn)
 

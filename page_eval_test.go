@@ -1,0 +1,168 @@
+package rod_test
+
+import (
+	"time"
+
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
+)
+
+func (t T) PageEvalOnNewDocument() {
+	p := t.newPage("")
+
+	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
+
+	// to activate the script
+	p.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.Eq(p.MustEval("rod").String(), "ok")
+
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+		p.MustEvalOnNewDocument(`1`)
+	})
+}
+
+func (t T) PageEval() {
+	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.Eq(3, page.MustEval(`
+		(a, b) => a + b
+	`, 1, 2).Int())
+	t.Eq(1, page.MustEval(`a => 1`).Int())
+	t.Eq(1, page.MustEval(`function() { return 1 }`).Int())
+	t.Eq(1, page.MustEval(`((1))`).Int())
+	t.Neq(1, page.MustEval(`a = () => 1`).Int())
+	t.Neq(1, page.MustEval(`a = function() { return 1 }`))
+	t.Neq(1, page.MustEval(`/* ) */`))
+
+	// reuse obj
+	obj := page.MustEvaluate(rod.Eval(`() => () => 'ok'`).ByObject())
+	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
+}
+
+func (t T) PageEvalNilContext() {
+	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		return gson.New(nil), cdp.ErrCtxNotFound
+	})
+	t.Eq(1, page.MustEval(`1`).Int())
+}
+
+func (t T) PageExposeJSHelper() {
+	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.Eq("undefined", page.MustEval("typeof(rod)").Str())
+	page.ExposeJSHelper()
+	t.Eq("object", page.MustEval("typeof(rod)").Str())
+}
+
+func (t T) PageExpose() {
+	cb, stop := t.page.MustExpose("exposedFunc")
+
+	t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+
+	t.page.MustEval(`exposedFunc({a: 'ok'})`)
+	t.Eq("ok", (<-cb)[0].Get("a").Str())
+
+	t.page.MustEval(`exposedFunc('ok')`)
+	stop()
+
+	t.Panic(func() {
+		stop()
+	})
+	t.Panic(func() {
+		t.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
+	})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+		t.page.MustExpose("exposedFunc")
+	})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeAddBinding{})
+		t.page.MustExpose("exposedFunc2")
+	})
+}
+
+func (t T) Release() {
+	res, err := t.page.Evaluate(rod.Eval(`document`).ByObject())
+	t.E(err)
+	t.page.MustRelease(res)
+}
+
+func (t T) PromiseLeak() {
+	/*
+		Perform a slow action then navigate the page to another url,
+		we can see the slow operation will still be executed.
+	*/
+
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	utils.All(func() {
+		_, err := p.Eval(`new Promise(r => setTimeout(() => r(location.href), 300))`)
+		t.Is(err, cdp.ErrCtxDestroyed)
+	}, func() {
+		utils.Sleep(0.1)
+		p.MustNavigate(t.srcFile("fixtures/input.html"))
+	})()
+}
+
+func (t T) ObjectLeak() {
+	/*
+		Seems like it won't leak
+	*/
+
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	el := p.MustElement("button")
+	p.MustNavigate(t.srcFile("fixtures/input.html")).MustWaitLoad()
+	t.Panic(func() {
+		el.MustDescribe()
+	})
+}
+
+func (t T) PageObjectErr() {
+	t.Panic(func() {
+		t.page.MustObjectToJSON(&proto.RuntimeRemoteObject{
+			ObjectID: "not-exists",
+		})
+	})
+	t.Panic(func() {
+		t.page.MustElementFromNode(-1)
+	})
+	t.Panic(func() {
+		id := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		t.mc.stubErr(1, proto.DOMResolveNode{})
+		t.page.MustElementFromNode(id)
+	})
+}
+
+func (t T) GetJSHelperRetry() {
+	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		return gson.JSON{}, cdp.ErrCtxNotFound
+	})
+	t.page.MustElements("button")
+}
+
+func (t T) ConcurrentEval() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	list := make(chan int, 2)
+
+	start := time.Now()
+	utils.All(func() {
+		list <- p.MustEval(`new Promise(r => setTimeout(r, 1000, 2))`).Int()
+	}, func() {
+		list <- p.MustEval(`new Promise(r => setTimeout(r, 500, 1))`).Int()
+	})()
+	duration := time.Since(start)
+
+	t.Lt(duration, 1500*time.Millisecond)
+	t.Gt(duration, 1000*time.Millisecond)
+	t.Eq([]int{<-list, <-list}, []int{1, 2})
+}

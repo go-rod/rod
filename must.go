@@ -293,15 +293,17 @@ func (p *Page) MustWaitOpen() (wait func() (newPage *Page)) {
 }
 
 // MustWaitPauseOpen is similar to WaitPauseOpen
-func (p *Page) MustWaitPauseOpen() (wait func() *Page, resume func()) {
-	newPage, r, err := p.WaitPauseOpen()
+func (p *Page) MustWaitPauseOpen() (wait func() (p *Page, resume func())) {
+	w, err := p.WaitPauseOpen()
 	utils.E(err)
 
-	return func() *Page {
-		page, err := newPage()
+	return func() (*Page, func()) {
+		page, resume, err := w()
 		utils.E(err)
-		return page
-	}, func() { utils.E(r()) }
+		return page, func() {
+			utils.E(resume())
+		}
+	}
 }
 
 // MustWaitNavigation is similar to WaitNavigation
@@ -359,7 +361,7 @@ func (p *Page) MustEval(js string, params ...interface{}) gson.JSON {
 }
 
 // MustEvaluate is similar to Evaluate
-func (p *Page) MustEvaluate(opts *Eval) *proto.RuntimeRemoteObject {
+func (p *Page) MustEvaluate(opts *EvalOptions) *proto.RuntimeRemoteObject {
 	res, err := p.Evaluate(opts)
 	utils.E(err)
 	return res
@@ -460,7 +462,7 @@ func (p *Page) MustElementX(xPaths ...string) *Element {
 
 // MustElementByJS is similar to ElementByJS
 func (p *Page) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := p.ElementByJS(NewEval(js, params...))
+	el, err := p.ElementByJS(Eval(js, params...))
 	utils.E(err)
 	return el
 }
@@ -481,7 +483,7 @@ func (p *Page) MustElementsX(xpath string) Elements {
 
 // MustElementsByJS is similar to ElementsByJS
 func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
-	list, err := p.ElementsByJS(NewEval(js, params...))
+	list, err := p.ElementsByJS(Eval(js, params...))
 	utils.E(err)
 	return list
 }
@@ -512,7 +514,7 @@ func (rc *RaceContext) MustElementR(selector, regex string, callback func(*Eleme
 
 // MustElementByJS is similar to ElementByJS
 func (rc *RaceContext) MustElementByJS(js string, params []interface{}, callback func(*Element) error) *RaceContext {
-	return rc.ElementByJS(NewEval(js, params...), callback)
+	return rc.ElementByJS(Eval(js, params...), callback)
 }
 
 // MustDo is similar to Do
@@ -778,7 +780,7 @@ func (el *Element) MustWaitStable() *Element {
 
 // MustWait is similar to Wait
 func (el *Element) MustWait(js string, params ...interface{}) *Element {
-	utils.E(el.Wait(NewEval(js, params)))
+	utils.E(el.Wait(Eval(js, params)))
 	return el
 }
 
@@ -877,7 +879,7 @@ func (el *Element) MustElementX(xpath string) *Element {
 
 // MustElementByJS is similar to ElementByJS
 func (el *Element) MustElementByJS(js string, params ...interface{}) *Element {
-	el, err := el.ElementByJS(NewEval(js, params...))
+	el, err := el.ElementByJS(Eval(js, params...))
 	utils.E(err)
 	return el
 }
@@ -933,7 +935,7 @@ func (el *Element) MustElementsX(xpath string) Elements {
 
 // MustElementsByJS is similar to ElementsByJS
 func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
-	list, err := el.ElementsByJS(NewEval(js, params...))
+	list, err := el.ElementsByJS(Eval(js, params...))
 	utils.E(err)
 	return list
 }

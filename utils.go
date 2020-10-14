@@ -34,32 +34,34 @@ type Message struct {
 	SessionID proto.TargetSessionID
 	Method    string
 
-	lock  *sync.RWMutex
+	lock  *sync.Mutex
 	data  json.RawMessage
-	event proto.Event
+	event reflect.Value
 }
 
-// Event data
-func (msg *Message) Event() proto.Event {
-	msg.lock.RLock()
-	if msg.event != nil {
-		msg.lock.RUnlock()
-		return msg.event
+// Load data into e, returns true if e matches the event type.
+func (msg *Message) Load(e proto.Event) bool {
+	if msg.Method != e.ProtoEvent() {
+		return false
 	}
-	msg.lock.RUnlock()
+
+	eVal := reflect.ValueOf(e)
+	if eVal.Kind() != reflect.Ptr {
+		return true
+	}
+	eVal = reflect.Indirect(eVal)
 
 	msg.lock.Lock()
 	defer msg.lock.Unlock()
-
-	if msg.event != nil {
-		return msg.event
+	if msg.data == nil {
+		eVal.Set(msg.event)
+		return true
 	}
 
-	e := reflect.New(proto.GetType(msg.Method)).Interface()
 	utils.E(json.Unmarshal(msg.data, e))
-	msg.event = e.(proto.Event)
+	msg.event = eVal
 	msg.data = nil
-	return msg.event
+	return true
 }
 
 // DefaultLogger for rod
@@ -78,8 +80,8 @@ func ensureSleeper(gen func() utils.Sleeper) func() utils.Sleeper {
 	return gen
 }
 
-// PagePool to thread-safely limit the number pages at the same time.
-// It's a common practice to a channel to limit concurrency, it's not special for rod.
+// PagePool to thread-safely limit the number of pages at the same time.
+// It's a common practice to use a channel to limit concurrency, it's not special for rod.
 // This helper is more like an example to use Go Channel.
 type PagePool chan *Page
 
@@ -93,7 +95,7 @@ func NewPagePool(limit int) PagePool {
 	return pp
 }
 
-// Get a page from the pool.
+// Get a page from the pool. Use the PagePool.Put to make it reusable later.
 func (pp PagePool) Get(create func() *Page) *Page {
 	p := <-pp
 	if p == nil {
@@ -178,14 +180,6 @@ func Try(fn func()) (err error) {
 	fn()
 
 	return err
-}
-
-func isNilContextErr(err error) bool {
-	if err == nil {
-		return false
-	}
-	cdpErr, ok := err.(*cdp.Error)
-	return ok && cdpErr.Code == -32000 && cdpErr.Message != "Argument should belong to the same JavaScript world as target object"
 }
 
 func genRegMatcher(includes, excludes []string) func(string) bool {

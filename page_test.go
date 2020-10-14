@@ -12,14 +12,12 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
-	"github.com/ysmood/gson"
 )
 
 func (t T) GetPageURL() {
@@ -141,12 +139,6 @@ func (t T) PageContext() {
 	t.page.Timeout(time.Hour).CancelTimeout().MustEval(`1`)
 }
 
-func (t T) Release() {
-	res, err := t.page.Evaluate(rod.NewEval(`document`).ByObject())
-	t.E(err)
-	t.page.MustRelease(res)
-}
-
 func (t T) Window() {
 	page := t.newPage(t.srcFile("fixtures/click.html"))
 
@@ -253,57 +245,6 @@ func (t T) PageAddStyleTag() {
 	t.Eq("rgb(0, 128, 0)", res.String())
 }
 
-func (t T) PageEvalOnNewDocument() {
-	p := t.newPage("")
-
-	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
-
-	// to activate the script
-	p.MustNavigate(t.srcFile("fixtures/click.html"))
-
-	t.Eq(p.MustEval("rod").String(), "ok")
-
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
-		p.MustEvalOnNewDocument(`1`)
-	})
-}
-
-func (t T) PageEval() {
-	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-
-	t.Eq(3, page.MustEval(`
-		(a, b) => a + b
-	`, 1, 2).Int())
-	t.Eq(1, page.MustEval(`a => 1`).Int())
-	t.Eq(1, page.MustEval(`function() { return 1 }`).Int())
-	t.Eq(1, page.MustEval(`((1))`).Int())
-	t.Neq(1, page.MustEval(`a = () => 1`).Int())
-	t.Neq(1, page.MustEval(`a = function() { return 1 }`))
-	t.Neq(1, page.MustEval(`/* ) */`))
-
-	// reuse obj
-	obj := page.MustEvaluate(rod.NewEval(`() => () => 'ok'`).ByObject())
-	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
-}
-
-func (t T) PageEvalNilContext() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
-
-	t.mc.stub(1, proto.RuntimeEvaluate{}, func(send StubSend) (gson.JSON, error) {
-		return gson.New(nil), &cdp.Error{Code: -32000}
-	})
-	t.Eq(1, page.MustEval(`1`).Int())
-}
-
-func (t T) PageExposeJSHelper() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
-
-	t.Eq("undefined", page.MustEval("typeof(rod)").Str())
-	page.ExposeJSHelper()
-	t.Eq("object", page.MustEval("typeof(rod)").Str())
-}
-
 func (t T) PageWaitOpen() {
 	page := t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
 
@@ -318,17 +259,16 @@ func (t T) PageWaitOpen() {
 }
 
 func (t T) PageWaitPauseOpen() {
-	page := t.page.Timeout(5 * time.Second).MustNavigate(t.srcFile("fixtures/open-page.html"))
-	defer page.CancelTimeout()
+	page := t.newPage(t.srcFile("fixtures/open-page.html"))
 
-	wait, resume := page.MustWaitPauseOpen()
+	wait := page.MustWaitPauseOpen()
 
 	go page.MustElement("a").MustClick()
 
-	pageA := wait()
+	pageA, resume := wait()
 	pageA.MustEvalOnNewDocument(`window.a = 'ok'`)
 	resume()
-	t.Eq("ok", pageA.MustEval(`window.a`).String())
+	t.Eq("ok", pageA.MustWaitLoad().MustEval(`window.a`).String())
 	pageA.MustClose()
 
 	w := page.MustWaitOpen()
@@ -343,9 +283,9 @@ func (t T) PageWaitPauseOpen() {
 	}
 	{ // disable TargetSetAutoAttach err
 		p := t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
-		wait, resume, _ := p.WaitPauseOpen()
+		wait, _ := p.WaitPauseOpen()
 		go p.MustElement("a").MustClick()
-		newP, _ := wait()
+		newP, resume, _ := wait()
 		t.mc.stubErr(1, proto.TargetSetAutoAttach{})
 		t.Err(resume())
 		t.Nil(resume())
@@ -354,7 +294,7 @@ func (t T) PageWaitPauseOpen() {
 }
 
 func (t T) PageWait() {
-	page := t.page.Timeout(5 * time.Second).MustNavigate(t.srcFile("fixtures/click.html"))
+	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	page.MustWait(`document.querySelector('button') !== null`)
 
 	t.Panic(func() {
@@ -457,14 +397,20 @@ func (t T) PageWaitEvent() {
 }
 
 func (t T) PageEvent() {
-	p := t.newPage("")
-	events := p.Context(t.Context()).Event()
-	p.MustNavigate(t.srcFile("fixtures/click.html"))
-	for e := range events {
-		if _, ok := e.(*proto.PageFrameNavigated); ok {
+	p := t.browser.MustPage("")
+	ctx := t.Context()
+	events := p.Context(ctx).Event()
+	p.MustNavigate(t.blank())
+	for msg := range events {
+		if msg.Load(proto.PageFrameStartedLoading{}) {
 			break
 		}
 	}
+	utils.Sleep(0.1)
+	ctx.Cancel()
+
+	events = p.Event()
+	p.MustClose()
 }
 
 func (t T) Alert() {
@@ -665,12 +611,14 @@ func (t T) PageInput() {
 func (t T) PageScroll() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/scroll.html")).MustWaitLoad()
 
+	p.Mouse.MustMove(30, 30)
+	p.Mouse.MustClick(proto.InputMouseButtonLeft)
+
 	p.Mouse.MustScroll(0, 10)
 	p.Mouse.MustScroll(100, 190)
 	t.E(p.Mouse.Scroll(200, 300, 5))
-	p.MustElement("button").MustWaitStable()
-	offset := p.MustEval("({x: window.pageXOffset, y: window.pageYOffset})")
-	t.Lt(int(300), offset.Get("y").Int())
+
+	p.MustWait(`pageXOffset > 200 && pageYOffset > 300`)
 }
 
 func (t T) PageConsoleLog() {
@@ -697,8 +645,6 @@ func (t T) PageOthers() {
 }
 
 func (t T) Fonts() {
-	t.timeoutAfter(time.Minute)
-
 	p := t.page.MustNavigate(t.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
 	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts
@@ -711,54 +657,6 @@ func (t T) PagePDF() {
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PagePrintToPDF{})
 		p.MustPDF()
-	})
-}
-
-func (t T) PageExpose() {
-	cb, stop := t.page.MustExpose("exposedFunc")
-
-	t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
-
-	t.page.MustEval(`exposedFunc({a: 'ok'})`)
-	t.Eq("ok", (<-cb)[0].Get("a").Str())
-
-	t.page.MustEval(`exposedFunc('ok')`)
-	stop()
-
-	t.Panic(func() {
-		stop()
-	})
-	t.Panic(func() {
-		t.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
-		t.page.MustExpose("exposedFunc")
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeAddBinding{})
-		t.page.MustExpose("exposedFunc2")
-	})
-}
-
-func (t T) PageObjectErr() {
-	t.Panic(func() {
-		t.page.MustObjectToJSON(&proto.RuntimeRemoteObject{
-			ObjectID: "not-exists",
-		})
-	})
-	t.Panic(func() {
-		t.page.MustElementFromNode(-1)
-	})
-	t.Panic(func() {
-		id := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
-		t.mc.stubErr(1, proto.DOMResolveNode{})
-		t.page.MustElementFromNode(id)
-	})
-	t.Panic(func() {
-		id := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
-		t.mc.stubErr(1, proto.DOMDescribeNode{})
-		t.page.MustElementFromNode(id)
 	})
 }
 
@@ -818,23 +716,6 @@ func (t T) PageGoBackGoForward() {
 	p.MustNavigateForward()
 	wait()
 	t.Regex("fixtures/selector.html$", p.MustInfo().URL)
-}
-
-func (t T) PageInitJSErr() {
-	p := t.newPage(t.srcFile("fixtures/click-iframe.html")).MustElement("iframe").MustFrame()
-
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageCreateIsolatedWorld{})
-		p.MustEval(`1`)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeEvaluate{})
-		p.MustEval(`1`)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		p.MustEval(`1`)
-	})
 }
 
 func (t T) PagePool() {

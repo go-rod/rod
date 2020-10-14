@@ -8,6 +8,7 @@ import (
 	"regexp"
 
 	"github.com/go-rod/rod/lib/assets/js"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -152,7 +153,7 @@ func (p *Page) ElementX(xPaths ...string) (*Element, error) {
 // If sleeper is nil, no retry will be performed.
 // By default, it will retry until the js function doesn't return null.
 // To customize the retry logic, check the examples of Page.Sleeper.
-func (p *Page) ElementByJS(opts *Eval) (*Element, error) {
+func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
 
@@ -203,7 +204,7 @@ func (p *Page) ElementsX(xpath string) (Elements, error) {
 }
 
 // ElementsByJS returns the elements from the return value of the js
-func (p *Page) ElementsByJS(opts *Eval) (Elements, error) {
+func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	res, err := p.Evaluate(opts.ByObject())
 	if err != nil {
 		return nil, err
@@ -277,7 +278,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 		}.Call(p)
 		if err != nil {
 			// when the page is still loading the search result is not ready
-			if isNilContextErr(err) {
+			if errors.Is(err, cdp.ErrCtxNotFound) {
 				return false, nil
 			}
 			return true, err
@@ -362,7 +363,7 @@ func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) 
 }
 
 // ElementByJS the doc is similar to MustElementByJS but has a callback when a match is found
-func (rc *RaceContext) ElementByJS(opts *Eval, callback func(*Element) error) *RaceContext {
+func (rc *RaceContext) ElementByJS(opts *EvalOptions, callback func(*Element) error) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
 		callback,
@@ -423,13 +424,13 @@ func (el *Element) ElementX(xPaths ...string) (*Element, error) {
 }
 
 // ElementByJS returns the element from the return value of the js
-func (el *Element) ElementByJS(opts *Eval) (*Element, error) {
+func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
 	return el.page.Sleeper(nil).ElementByJS(opts.This(el.Object))
 }
 
 // Parent returns the parent element in the DOM tree
 func (el *Element) Parent() (*Element, error) {
-	return el.ElementByJS(NewEval(`this.parentElement`))
+	return el.ElementByJS(Eval(`this.parentElement`))
 }
 
 // Parents that match the selector
@@ -439,12 +440,12 @@ func (el *Element) Parents(selector string) (Elements, error) {
 
 // Next returns the next sibling element in the DOM tree
 func (el *Element) Next() (*Element, error) {
-	return el.ElementByJS(NewEval(`this.nextElementSibling`))
+	return el.ElementByJS(Eval(`this.nextElementSibling`))
 }
 
 // Previous returns the previous sibling element in the DOM tree
 func (el *Element) Previous() (*Element, error) {
-	return el.ElementByJS(NewEval(`this.previousElementSibling`))
+	return el.ElementByJS(Eval(`this.previousElementSibling`))
 }
 
 // ElementR returns the first element in the page that matches the CSS selector and its text matches the js regex.
@@ -463,6 +464,6 @@ func (el *Element) ElementsX(xpath string) (Elements, error) {
 }
 
 // ElementsByJS returns the elements from the return value of the js
-func (el *Element) ElementsByJS(opts *Eval) (Elements, error) {
+func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.Object))
 }

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/assets/js"
-	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -24,26 +23,26 @@ var _ proto.Sessionable = &Page{}
 // Page represents the webpage
 // We try to hold as less states as possible
 type Page struct {
-	// these are the handler for ctx
-	ctx     context.Context
-	sleeper func() utils.Sleeper
-
-	browser *Browser
-
 	TargetID  proto.TargetTargetID
 	SessionID proto.TargetSessionID
 	FrameID   proto.PageFrameID
+
+	ctx context.Context
+
+	sleeper func() utils.Sleeper
+
+	browser *Browser
 
 	// devices
 	Mouse    *Mouse
 	Keyboard *Keyboard
 	Touch    *Touch
 
-	element       *Element                   // iframe only
-	windowObj     *proto.RuntimeRemoteObject // used as the thisObject when eval js
-	jsHelperObj   *proto.RuntimeRemoteObject
-	executionIDs  map[proto.PageFrameID]proto.RuntimeExecutionContextID
-	jsContextLock *sync.Mutex
+	element *Element // iframe only
+
+	jsCtxLock *sync.Mutex
+	jsCtxID   *proto.RuntimeExecutionContextID // use pointer so that page clones can share the change
+	helpers   map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID
 }
 
 // IsIframe tells if it's iframe
@@ -140,29 +139,27 @@ func (p *Page) Navigate(url string) error {
 		return &ErrNavigation{res.ErrorText}
 	}
 
-	p.FrameID = res.FrameID
-
-	return nil
+	return p.updateJSCtxID()
 }
 
 // NavigateBack history.
 func (p *Page) NavigateBack() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(NewEval(`history.back()`).ByUser())
+	_, err := p.Evaluate(Eval(`history.back()`).ByUser())
 	return err
 }
 
 // NavigateForward history.
 func (p *Page) NavigateForward() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(NewEval(`history.forward()`).ByUser())
+	_, err := p.Evaluate(Eval(`history.forward()`).ByUser())
 	return err
 }
 
 // Reload page.
 func (p *Page) Reload() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(NewEval(`location.reload()`).ByUser())
+	_, err := p.Evaluate(Eval(`location.reload()`).ByUser())
 	return err
 }
 
@@ -246,13 +243,13 @@ func (p *Page) Close() error {
 	for msg := range messages {
 		stop := false
 
-		switch e := msg.Event().(type) {
-		case *proto.TargetTargetDestroyed:
-			stop = e.TargetID == p.TargetID
-		case *proto.PageJavascriptDialogClosed:
-			success = e.Result
-			isCurr := msg.SessionID == p.SessionID
-			stop = isCurr && !p.browser.headless && !success
+		destroyed := proto.TargetTargetDestroyed{}
+		closed := proto.PageJavascriptDialogClosed{}
+		if msg.Load(&destroyed) {
+			stop = destroyed.TargetID == p.TargetID
+		} else if msg.SessionID == p.SessionID && msg.Load(&closed) {
+			success = closed.Result
+			stop = !p.browser.headless && !success
 		}
 
 		if stop {
@@ -352,7 +349,7 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 
 // WaitPauseOpen waits for a page opened by the current page, before opening pause the js execution.
 // Because the js will be paused, you should put the code that triggers it in a goroutine.
-func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
+func (p *Page) WaitPauseOpen() (func() (*Page, func() error, error), error) {
 	// TODO: we have to use the browser to call, seems like a chrome bug
 	err := proto.TargetSetAutoAttach{
 		AutoAttach:             true,
@@ -360,18 +357,23 @@ func (p *Page) WaitPauseOpen() (func() (*Page, error), func() error, error) {
 		Flatten:                true,
 	}.Call(p.browser.Context(p.ctx))
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return p.WaitOpen(), func() error {
-		err = proto.TargetSetAutoAttach{
-			Flatten: true,
-		}.Call(p.browser.Context(p.ctx))
-		if err != nil {
-			return err
-		}
+	wait := p.WaitOpen()
 
-		return proto.RuntimeRunIfWaitingForDebugger{}.Call(p)
+	return func() (*Page, func() error, error) {
+		newPage, err := wait()
+		return newPage, func() error {
+			err := proto.TargetSetAutoAttach{
+				Flatten: true,
+			}.Call(p.browser.Context(p.ctx))
+			if err != nil {
+				return err
+			}
+
+			return proto.RuntimeRunIfWaitingForDebugger{}.Call(newPage)
+		}, err
 	}, nil
 }
 
@@ -414,6 +416,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	waitlist := map[proto.NetworkRequestID]string{}
 	idleCounter := utils.NewIdleCounter(d)
 	update := p.tryTraceReq(includes, excludes)
+	update(nil)
 
 	checkDone := func(id proto.NetworkRequestID) {
 		if _, has := waitlist[id]; has {
@@ -446,13 +449,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.Evaluate(jsHelper(js.WaitIdle, timeout.Seconds()))
+	_, err = p.Evaluate(jsHelper(js.WaitIdle, timeout.Seconds()).ByPromise())
 	return err
 }
 
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
-	_, err := p.Evaluate(jsHelper(js.WaitLoad))
+	_, err := p.Evaluate(jsHelper(js.WaitLoad).ByPromise())
 	return err
 }
 
@@ -460,7 +463,7 @@ func (p *Page) WaitLoad() error {
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.Evaluate(jsHelper(js.AddScriptTag, id, url, content))
+	_, err := p.Evaluate(jsHelper(js.AddScriptTag, id, url, content).ByPromise())
 	return err
 }
 
@@ -468,7 +471,7 @@ func (p *Page) AddScriptTag(url, content string) error {
 func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.Evaluate(jsHelper(js.AddStyleTag, id, url, content))
+	_, err := p.Evaluate(jsHelper(js.AddStyleTag, id, url, content).ByPromise())
 	return err
 }
 
@@ -540,7 +543,7 @@ func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interfa
 		removeTrace()
 		removeTrace = remove
 
-		res, err := p.Evaluate(NewEval(js, params...).This(this))
+		res, err := p.Evaluate(Eval(js, params...).This(this))
 		if err != nil {
 			return true, err
 		}
@@ -568,26 +571,30 @@ func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 
 // ElementFromObject creates an Element from the remote object id.
 func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) *Element {
-	return (&Element{
+	// If the element is in an iframe, we need the jsCtxID to inject helper.js to the correct context.
+	id := obj.ObjectID.ExecutionID()
+	if id != p.getJSCtxID() {
+		clone := *p
+		clone.jsCtxID = &id
+		p = &clone
+	}
+
+	return &Element{
+		ctx:     p.ctx,
 		sleeper: p.sleeper,
 		page:    p,
 		Object:  obj,
-	}).Context(p.ctx)
+	}
 }
 
 // ElementFromNode creates an Element from the node id
 func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
-	obj, err := p.resolveNode(id)
+	node, err := proto.DOMResolveNode{NodeID: id}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	el := p.ElementFromObject(obj)
-
-	err = el.ensureParentPage(id, obj)
-	if err != nil {
-		return nil, err
-	}
+	el := p.ElementFromObject(node.Object)
 
 	// make sure always return an element node
 	desc, err := el.Describe(0, false)
@@ -631,30 +638,25 @@ func (p *Page) Call(ctx context.Context, sessionID, methodName string, params in
 }
 
 // Event of the page
-func (p *Page) Event() <-chan proto.Event {
-	dst := make(chan proto.Event)
+func (p *Page) Event() <-chan *Message {
+	dst := make(chan *Message)
 	p, cancel := p.WithCancel()
 	messages := p.browser.Context(p.ctx).Event()
 
 	go func() {
 		defer close(dst)
 		defer cancel()
-		for {
-			select {
-			case <-p.ctx.Done():
+		for m := range messages {
+			detached := proto.TargetDetachedFromTarget{}
+			if m.Load(&detached) && detached.SessionID == p.SessionID {
 				return
-			case m := <-messages:
-				detached, ok := m.Event().(*proto.TargetDetachedFromTarget)
-				if ok && detached.SessionID == p.SessionID {
-					return
-				}
+			}
 
-				if m.SessionID == p.SessionID {
-					select {
-					case <-p.ctx.Done():
-						return
-					case dst <- m.Event():
-					}
+			if m.SessionID == p.SessionID {
+				select {
+				case <-p.ctx.Done():
+					return
+				case dst <- m:
 				}
 			}
 		}
@@ -667,34 +669,4 @@ func (p *Page) enableNodeQuery() {
 	// TODO: I don't know why we need this, seems like a bug of chrome.
 	// We should remove it once chrome fixed this bug.
 	_, _ = proto.DOMGetDocument{}.Call(p)
-}
-
-func (p *Page) resolveNode(nodeID proto.DOMNodeID) (*proto.RuntimeRemoteObject, error) {
-	ctxID, err := p.getExecutionID(false)
-	if err != nil {
-		return nil, err
-	}
-
-	node, err := proto.DOMResolveNode{
-		NodeID:             nodeID,
-		ExecutionContextID: ctxID,
-	}.Call(p)
-	if err != nil {
-		return nil, err
-	}
-
-	return node.Object, nil
-}
-
-func (p *Page) hasElement(obj *proto.RuntimeRemoteObject) (bool, error) {
-	// We don't have a good way to detect if a node is inside an iframe.
-	// Currently this is most efficient way to do it.
-	_, err := p.Eval("() => {}", obj)
-	if err == nil {
-		return true, nil
-	}
-	if cdpErr, ok := err.(*cdp.Error); ok && cdpErr.Code == -32000 {
-		return false, nil
-	}
-	return false, err
 }

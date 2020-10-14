@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -119,7 +120,7 @@ func (t T) NotInteractable() {
 	t.mc.stubErr(1, proto.DOMDescribeNode{})
 	t.Err(el.Interactable())
 
-	t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 	t.Err(el.Interactable())
 }
 
@@ -156,40 +157,14 @@ func (t T) ElementContext() {
 
 func (t T) Iframes() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
-	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
-	el := frame.MustElement("button")
+
+	frame01 := p.MustElement("iframe").MustFrame()
+	t.Eq(frame01.MustEval(`testIsolation()`).Str(), "ok")
+
+	frame02 := frame01.MustElement("iframe").MustFrame()
+	el := frame02.MustElement("button")
 	el.MustClick()
-	t.True(frame.MustHas("[a=ok]"))
-
-	id := el.MustNodeID()
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		p.MustElementFromNode(id)
-	})
-
-	t.Panic(func() {
-		t.mc.stub(1, proto.RuntimeGetProperties{}, func(send StubSend) (gson.JSON, error) {
-			d, _ := send()
-			return *d.Set("result", []interface{}{}), nil
-		})
-		p.MustElementFromNode(id).MustText()
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.DOMDescribeNode{})
-		p.MustElementFromNode(id)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeEvaluate{})
-		p.MustElementFromNode(id)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
-		p.MustElementFromNode(id)
-	})
-	t.Panic(func() {
-		t.mc.stubErr(4, proto.RuntimeEvaluate{})
-		p.MustElementFromNode(id)
-	})
+	t.True(frame02.MustHas("[a=ok]"))
 }
 
 func (t T) Contains() {
@@ -542,7 +517,7 @@ func (t T) UseReleasedElement() {
 
 	btn = p.MustElement("button")
 	t.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
-	t.Eq(btn.Click("left").Error(), "{-32000 Could not find object with given id }")
+	t.Is(btn.Click("left"), cdp.ErrObjNotFound)
 }
 
 func (t T) ElementRemove() {
@@ -577,7 +552,7 @@ func (t T) FnErr() {
 	t.True(errors.As(err, &e))
 	t.Eq(proto.RuntimeRemoteObjectSubtypeError, e.Exception.Subtype)
 
-	_, err = el.ElementByJS(rod.NewEval("foo()"))
+	_, err = el.ElementByJS(rod.Eval("foo()"))
 	t.Err(err)
 	t.Has(err.Error(), "ReferenceError: foo is not defined")
 	t.True(errors.Is(err, &rod.ErrEval{}))

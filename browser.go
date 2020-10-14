@@ -31,12 +31,12 @@ var _ proto.Contextable = &Browser{}
 // To check the env var you can use to quickly enable options from CLI, check here:
 // https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 type Browser struct {
-	// these are the handler for ctx
-	ctx     context.Context
-	sleeper func() utils.Sleeper
-
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
+
+	ctx context.Context
+
+	sleeper func() utils.Sleeper
 
 	logger utils.Logger
 
@@ -173,7 +173,9 @@ func (b *Browser) Close() error {
 func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	req := opts
 	req.BrowserContextID = b.BrowserContextID
-	req.URL = "about:blank"
+	if opts.URL == "" {
+		req.URL = "about:blank"
+	}
 
 	target, err := req.Call(b)
 	if err != nil {
@@ -187,9 +189,6 @@ func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	}()
 
 	p, err = b.PageFromTarget(target.TargetID)
-	if err == nil && opts.URL != "" { // no need to navigate if url is empty
-		err = p.Navigate(opts.URL)
-	}
 
 	return
 }
@@ -228,23 +227,34 @@ func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params
 	return
 }
 
-// PageFromTarget creates a Page instance from a targetID
+// PageFromSession is used for low-level debugging
+func (b *Browser) PageFromSession(sessionID proto.TargetSessionID) *Page {
+	return &Page{
+		ctx:       b.ctx,
+		sleeper:   b.sleeper,
+		browser:   b,
+		SessionID: sessionID,
+	}
+}
+
+// PageFromTarget gets or creates a Page instance.
 func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	b.targetsLock.Lock()
 	defer b.targetsLock.Unlock()
 
-	page := b.loadPage(targetID)
+	page := b.loadCachedPage(targetID)
 	if page != nil {
 		return page, nil
 	}
 
-	page = (&Page{
-		sleeper:       b.sleeper,
-		jsContextLock: &sync.Mutex{},
-		browser:       b,
-		TargetID:      targetID,
-		executionIDs:  map[proto.PageFrameID]proto.RuntimeExecutionContextID{},
-	}).Context(b.ctx)
+	page = &Page{
+		ctx:       b.ctx,
+		sleeper:   b.sleeper,
+		browser:   b,
+		TargetID:  targetID,
+		jsCtxID:   new(proto.RuntimeExecutionContextID),
+		jsCtxLock: &sync.Mutex{},
+	}
 
 	page.Mouse = &Mouse{page: page, id: utils.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}
@@ -262,7 +272,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		}
 	}
 
-	b.storePage(page)
+	b.cachePage(page)
 
 	return page, nil
 }
@@ -283,6 +293,30 @@ func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
 func (b *Browser) WaitEvent(e proto.Event) (wait func()) {
 	return b.waitEvent("", e)
+}
+
+// waits for the next event for one time. It will also load the data into the event object.
+func (b *Browser) waitEvent(sessionID proto.TargetSessionID, e proto.Event) (wait func()) {
+	valE := reflect.ValueOf(e)
+	valTrue := reflect.ValueOf(true)
+
+	if valE.Kind() != reflect.Ptr {
+		valE = reflect.New(valE.Type())
+	}
+
+	// dynamically creates a function on runtime:
+	//
+	// func(ee proto.Event) bool {
+	//   *e = *ee
+	//   return true
+	// }
+	fnType := reflect.FuncOf([]reflect.Type{valE.Type()}, []reflect.Type{valTrue.Type()}, false)
+	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
+		valE.Elem().Set(args[0].Elem())
+		return []reflect.Value{valTrue}
+	})
+
+	return b.eachEvent(sessionID, fnVal.Interface())
 }
 
 // If the any callback returns true the event loop will stop.
@@ -307,20 +341,21 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 		}
 	}
 
-	ctx, cancel := context.WithCancel(b.ctx)
-	messages := b.Context(ctx).Event()
+	b, cancel := b.WithCancel()
+	messages := b.Event()
 
 	return func() {
+		if messages == nil {
+			panic("can't use wait function twice")
+		}
+
 		defer func() {
 			cancel()
+			messages = nil
 			for _, restore := range restores {
 				restore()
 			}
 		}()
-
-		if ctx.Err() != nil {
-			panic("can't use wait function twice")
-		}
 
 		for msg := range messages {
 			if !(sessionID == "" || msg.SessionID == sessionID) {
@@ -328,7 +363,9 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 			}
 
 			if cbVal, has := cbMap[msg.Method]; has {
-				args := []reflect.Value{reflect.ValueOf(msg.Event())}
+				e := reflect.New(proto.GetType(msg.Method))
+				msg.Load(e.Interface().(proto.Event))
+				args := []reflect.Value{e}
 				if cbVal.Type().NumIn() == 2 {
 					args = append(args, reflect.ValueOf(sessionID))
 				}
@@ -341,26 +378,6 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 			}
 		}
 	}
-}
-
-// waits for the next event for one time. It will also load the data into the event object.
-func (b *Browser) waitEvent(sessionID proto.TargetSessionID, e proto.Event) (wait func()) {
-	valE := reflect.ValueOf(e)
-	valTrue := reflect.ValueOf(true)
-
-	// dynamically creates a function on runtime:
-	//
-	// func(ee proto.Event) bool {
-	//   *e = *ee
-	//   return true
-	// }
-	fnType := reflect.FuncOf([]reflect.Type{valE.Type()}, []reflect.Type{valTrue.Type()}, false)
-	fnVal := reflect.MakeFunc(fnType, func(args []reflect.Value) []reflect.Value {
-		valE.Elem().Set(args[0].Elem())
-		return []reflect.Value{valTrue}
-	})
-
-	return b.eachEvent(sessionID, fnVal.Interface())
 }
 
 // Event of the browser
@@ -394,12 +411,12 @@ func (b *Browser) initEvents() {
 
 	go func() {
 		defer b.event.Close()
-		for msg := range b.client.Event() {
+		for e := range b.client.Event() {
 			b.event.Publish(&Message{
-				SessionID: proto.TargetSessionID(msg.SessionID),
-				Method:    msg.Method,
-				lock:      &sync.RWMutex{},
-				data:      msg.Params,
+				SessionID: proto.TargetSessionID(e.SessionID),
+				Method:    e.Method,
+				lock:      &sync.Mutex{},
+				data:      e.Params,
 			})
 		}
 	}()
