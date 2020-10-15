@@ -153,3 +153,7 @@ func (t T) CancelOnReadEvent() {
 	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
 }
+
+func (t T) TestError() {
+	t.Is(&Error{Code: -123}, &Error{Code: -123})
+}

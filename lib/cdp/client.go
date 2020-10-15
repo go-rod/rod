@@ -63,6 +63,12 @@ type Error struct {
 	Data    string `json:"data"`
 }
 
+// Is interface
+func (e Error) Is(target error) bool {
+	err, ok := target.(*Error)
+	return ok && e == *err
+}
+
 // Websocketable enables you to choose the websocket lib you want to use.
 // By default cdp use github.com/gorilla/websocket
 type Websocketable interface {
