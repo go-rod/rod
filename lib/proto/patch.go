@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"time"
+
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
@@ -152,4 +154,15 @@ func CookiesToParams(cookies []*NetworkCookie) []*NetworkCookieParam {
 		})
 	}
 	return list
+}
+
+// ExecutionID of the object
+func (objID RuntimeRemoteObjectID) ExecutionID() RuntimeExecutionContextID {
+	id := struct {
+		ID RuntimeExecutionContextID `json:"injectedScriptId"`
+	}{}
+
+	utils.E(json.Unmarshal([]byte(objID), &id))
+
+	return id.ID
 }

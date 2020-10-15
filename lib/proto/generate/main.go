@@ -131,23 +131,23 @@ func (d *definition) format() (code string) {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
 				code += utils.S(`
-				// ProtoName of the command
-				func (m {{.name}}) ProtoName() string { return "{{.method}}" }
+				// ProtoReq of the command
+				func (m {{.name}}) ProtoReq() string { return "{{.method}}" }
 
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(c Client) (*{{.name}}Result, error) {
 					var res {{.name}}Result
-					return &res, call(m.ProtoName(), m, &res, c)
+					return &res, call(m.ProtoReq(), m, &res, c)
 				}
 				`, "name", d.name, "method", method)
 			} else {
 				code += utils.S(`
-				// ProtoName of the command
-				func (m {{.name}}) ProtoName() string { return "{{.method}}" }
+				// ProtoReq of the command
+				func (m {{.name}}) ProtoReq() string { return "{{.method}}" }
 
 				// Call of the command, sessionID is optional.
 				func (m {{.name}}) Call(c Client) error {
-					return call(m.ProtoName(), m, nil, c)
+					return call(m.ProtoReq(), m, nil, c)
 				}
 				`, "name", d.name, "method", method)
 			}

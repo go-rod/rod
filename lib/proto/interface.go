@@ -25,8 +25,8 @@ type Contextable interface {
 
 // Request represents a cdp.Request.Method
 type Request interface {
-	// ProtoName returns the cdp.Request.Method
-	ProtoName() string
+	// ProtoReq returns the cdp.Request.Method
+	ProtoReq() string
 }
 
 // Event represents a cdp.Event.Params

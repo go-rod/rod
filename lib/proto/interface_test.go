@@ -145,3 +145,9 @@ func (t T) GeneratorOptimize() {
 	d := proto.NetworkCookie{}
 	var _ *proto.TimeSinceEpoch = d.Expires
 }
+
+func (t T) ExecutionID() {
+	var id proto.RuntimeRemoteObjectID = `{"injectedScriptId":3,"id":2}`
+
+	t.Eq(id.ExecutionID(), 3)
+}
