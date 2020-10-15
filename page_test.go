@@ -140,7 +140,7 @@ func (t T) PageContext() {
 }
 
 func (t T) Window() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
+	page := t.newPage(t.blank())
 
 	t.E(page.SetViewport(nil))
 
@@ -177,19 +177,19 @@ func (t T) Window() {
 }
 
 func (t T) SetViewport() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
+	page := t.newPage(t.blank())
 	page.MustSetViewport(317, 419, 0, false)
 	res := page.MustEval(`[window.innerWidth, window.innerHeight]`)
 	t.Eq(317, res.Get("0").Int())
 	t.Eq(419, res.Get("1").Int())
 
-	page2 := t.newPage(t.srcFile("fixtures/click.html"))
+	page2 := t.newPage(t.blank())
 	res = page2.MustEval(`[window.innerWidth, window.innerHeight]`)
 	t.Neq(int(317), res.Get("0").Int())
 }
 
 func (t T) EmulateDevice() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
+	page := t.newPage(t.blank())
 	page.MustEmulate(devices.IPhone6or7or8Plus)
 	res := page.MustEval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
 	t.Eq(980, res.Get("0").Int())
@@ -209,7 +209,7 @@ func (t T) EmulateDevice() {
 }
 
 func (t T) PageCloseErr() {
-	page := t.newPage(t.srcFile("fixtures/click.html"))
+	page := t.newPage(t.blank())
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageClose{})
 		page.MustClose()
@@ -217,7 +217,7 @@ func (t T) PageCloseErr() {
 }
 
 func (t T) PageAddScriptTag() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	p := t.page.MustNavigate(t.blank()).MustWaitLoad()
 
 	res := p.MustAddScriptTag(t.srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
 	t.Eq(0, res.Int())
@@ -392,7 +392,7 @@ func (t T) PageEventSession() {
 
 func (t T) PageWaitEvent() {
 	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
-	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.page.MustNavigate(t.blank())
 	wait()
 }
 
@@ -560,7 +560,7 @@ func (t T) ScreenshotFullPage() {
 
 	p.MustScreenshotFullPage("")
 
-	noEmulation := t.newPage(t.srcFile("fixtures/click.html"))
+	noEmulation := t.newPage(t.blank())
 	t.E(noEmulation.SetViewport(nil))
 	noEmulation.MustScreenshotFullPage()
 
@@ -622,7 +622,7 @@ func (t T) PageScroll() {
 }
 
 func (t T) PageConsoleLog() {
-	p := t.newPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	p := t.newPage(t.blank()).MustWaitLoad()
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
 	p.MustEval(`console.log(1, {b: ['test']})`)
@@ -681,11 +681,11 @@ func (t T) PageNavigateErr() {
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageStopLoading{})
-		t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+		t.page.MustNavigate(t.blank())
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageNavigate{})
-		t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+		t.page.MustNavigate(t.blank())
 	})
 }
 

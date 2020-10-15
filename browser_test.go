@@ -21,17 +21,16 @@ import (
 )
 
 func (t T) Incognito() {
-	file := t.srcFile("fixtures/click.html")
 	k := t.Srand(16)
 
 	b := t.browser.MustIncognito().Sleeper(rod.DefaultSleeper)
 	defer b.MustClose()
 
-	page := b.MustPage(file)
+	page := b.MustPage(t.blank())
 	defer page.MustClose()
 	page.MustEval(`k => localStorage[k] = 1`, k)
 
-	t.True(t.page.MustNavigate(file).MustEval(`k => localStorage[k]`, k).Nil())
+	t.True(t.page.MustNavigate(t.blank()).MustEval(`k => localStorage[k]`, k).Nil())
 	t.Eq(page.MustEval(`k => localStorage[k]`, k).Str(), "1") // localStorage can only store string
 }
 
@@ -56,7 +55,7 @@ func (t T) PageFromTarget() {
 }
 
 func (t T) BrowserPages() {
-	t.newPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	t.newPage(t.blank()).MustWaitLoad()
 
 	pages := t.browser.MustPages()
 
@@ -128,13 +127,13 @@ func (t T) BrowserWaitEvent() {
 	t.NotNil(t.browser.Context(t.Context()).Event())
 
 	wait := t.page.WaitEvent(proto.PageFrameNavigated{})
-	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.page.MustNavigate(t.blank())
 	wait()
 
 	wait = t.browser.EachEvent(func(e *proto.PageFrameNavigated, id proto.TargetSessionID) bool {
 		return true
 	})
-	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	t.page.MustNavigate(t.blank())
 	wait()
 }
 
@@ -168,7 +167,7 @@ func (t T) BrowserCall() {
 func (t T) Monitor() {
 	b := rod.New().MustConnect()
 	defer b.MustClose()
-	p := b.MustPage(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	p := b.MustPage(t.blank()).MustWaitLoad()
 
 	b, cancel := b.WithCancel()
 	defer cancel()

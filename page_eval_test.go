@@ -16,7 +16,7 @@ func (t T) PageEvalOnNewDocument() {
 	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
 
 	// to activate the script
-	p.MustNavigate(t.srcFile("fixtures/click.html"))
+	p.MustNavigate(t.blank())
 
 	t.Eq(p.MustEval("rod").String(), "ok")
 
@@ -27,7 +27,7 @@ func (t T) PageEvalOnNewDocument() {
 }
 
 func (t T) PageEval() {
-	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	page := t.page.MustNavigate(t.blank())
 
 	t.Eq(3, page.MustEval(`
 		(a, b) => a + b
@@ -45,7 +45,7 @@ func (t T) PageEval() {
 }
 
 func (t T) PageEvalNilContext() {
-	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	page := t.page.MustNavigate(t.blank())
 
 	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
 		return gson.New(nil), cdp.ErrCtxNotFound
@@ -54,7 +54,7 @@ func (t T) PageEvalNilContext() {
 }
 
 func (t T) PageExposeJSHelper() {
-	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	page := t.page.MustNavigate(t.blank())
 
 	t.Eq("undefined", page.MustEval("typeof(rod)").Str())
 	page.ExposeJSHelper()
@@ -64,7 +64,7 @@ func (t T) PageExposeJSHelper() {
 func (t T) PageExpose() {
 	cb, stop := t.page.MustExpose("exposedFunc")
 
-	t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	t.page.MustNavigate(t.blank()).MustWaitLoad()
 
 	t.page.MustEval(`exposedFunc({a: 'ok'})`)
 	t.Eq("ok", (<-cb)[0].Get("a").Str())
@@ -100,14 +100,14 @@ func (t T) PromiseLeak() {
 		we can see the slow operation will still be executed.
 	*/
 
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p := t.page.MustNavigate(t.blank())
 
 	utils.All(func() {
 		_, err := p.Eval(`new Promise(r => setTimeout(() => r(location.href), 300))`)
 		t.Is(err, cdp.ErrCtxDestroyed)
 	}, func() {
 		utils.Sleep(0.1)
-		p.MustNavigate(t.srcFile("fixtures/input.html"))
+		p.MustNavigate(t.blank())
 	})()
 }
 
@@ -116,12 +116,12 @@ func (t T) ObjectLeak() {
 		Seems like it won't leak
 	*/
 
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p := t.page.MustNavigate(t.blank())
 
-	el := p.MustElement("button")
-	p.MustNavigate(t.srcFile("fixtures/input.html")).MustWaitLoad()
+	obj := p.MustEvaluate(rod.Eval("{a:1}").ByObject())
+	p.MustReload().MustWaitLoad()
 	t.Panic(func() {
-		el.MustDescribe()
+		p.MustEvaluate(rod.Eval(`obj => obj`, obj))
 	})
 }
 
@@ -135,7 +135,7 @@ func (t T) PageObjectErr() {
 		t.page.MustElementFromNode(-1)
 	})
 	t.Panic(func() {
-		id := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustElement(`body`).MustNodeID()
+		id := t.page.MustNavigate(t.blank()).MustElement(`body`).MustNodeID()
 		t.mc.stubErr(1, proto.DOMResolveNode{})
 		t.page.MustElementFromNode(id)
 	})
@@ -151,7 +151,7 @@ func (t T) GetJSHelperRetry() {
 }
 
 func (t T) ConcurrentEval() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p := t.page.MustNavigate(t.blank())
 	list := make(chan int, 2)
 
 	start := time.Now()

@@ -23,7 +23,7 @@ func nodejsDeps() {
 		log.Fatalln("make sure Node.js is installed")
 	}
 
-	utils.Exec("npm", "i", "--no-audit", "--silent", "eslint-plugin-html")
+	utils.Exec("npm", "i", "--no-audit", "--no-fund", "--silent", "eslint-plugin-html")
 }
 
 func golangDeps() {

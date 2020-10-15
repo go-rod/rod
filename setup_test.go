@@ -150,6 +150,10 @@ func (t T) dump(args ...interface{}) {
 	t.Log(utils.Dump(args))
 }
 
+func (t T) blank() string {
+	return t.srcFile("./fixtures/blank.html")
+}
+
 // get abs file path from fixtures folder, return sample "file:///a/b/click.html"
 func (t T) srcFile(path string) string {
 	t.Helper()
