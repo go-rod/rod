@@ -37,8 +37,12 @@ jobs:
           name: linux-cdp-log
           path: tmp/cdp-log
 
-  macos:
-    runs-on: macos-latest
+  other-os:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/setup-go@v2
@@ -52,25 +56,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: macos-cdp-log
-          path: tmp/cdp-log
-
-  windows:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/setup-go@v2
-        with:
-          go-version: 1.15
-
-      - uses: actions/checkout@v2
-
-      - run: go test -race
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: windows-cdp-log
+          name: ${{ matrix.os }}-log
           path: tmp/cdp-log
 
   docker:
