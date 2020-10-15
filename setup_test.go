@@ -3,14 +3,13 @@ package rod_test
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"reflect"
 	"runtime"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -18,18 +17,24 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
-	"github.com/ysmood/gotrace"
 	"github.com/ysmood/gotrace/pkg/testleak"
 	"github.com/ysmood/gson"
 )
 
+var TimeoutEach = flag.Duration("timeout-each", time.Minute, "timeout for each test")
+
+var LogDir = slash(fmt.Sprintf("tmp/cdp-log/%s", time.Now().Format("2006-01-02_15-04-05")))
+
 func init() {
 	got.DefaultFlags("timeout=5m", "run=/")
+
+	utils.E(os.MkdirAll(slash("tmp/cdp-log"), 0755))
 }
 
 // entry point for all tests
@@ -112,11 +117,10 @@ func (cp TesterPool) get(t *testing.T) T {
 
 	tester.G = got.New(t)
 	tester.mc.t = t
-	tester.mc.logger.SetOutput(tester.Open(true, "tmp", "cdp-log", t.Name()[5:]+".log"))
-	tester.mc.logger.Println("from", tester.mc.id+".log")
+	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()[5:]+".log"))
 
 	tester.checkLeaking(!parallel)
-	tester.timeoutAfter(10 * time.Second)
+	tester.PanicAfter(*TimeoutEach)
 
 	return *tester
 }
@@ -192,21 +196,6 @@ func (t T) checkLeaking(checkGoroutine bool) {
 	})
 }
 
-func (t *T) timeoutAfter(timeout time.Duration) {
-	if t.cancelTimeout != nil {
-		t.cancelTimeout()
-	}
-
-	name := reflect.TypeOf(T{}).String() + "." + strings.Split(t.Name(), "/")[1]
-
-	t.cancelTimeout = t.DoAfter(timeout, func() {
-		traces := gotrace.Wait(gotrace.Timeout(0), func(tr gotrace.Trace) bool {
-			return !strings.Contains(tr.String(), name)
-		})
-		panic(fmt.Sprintf("%s timeout after %v\n%s", name, timeout, traces))
-	})
-}
-
 type Call func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 
 var _ rod.CDPClient = &MockClient{}
@@ -215,7 +204,7 @@ type MockClient struct {
 	sync.RWMutex
 	id        string
 	t         got.Testable
-	logger    *log.Logger
+	log       *log.Logger
 	principal *cdp.Client
 	call      Call
 	connect   func() error
@@ -228,14 +217,14 @@ func newMockClient(u string) *MockClient {
 	id := fmt.Sprintf("%02d", atomic.AddInt32(&mockClientCount, 1))
 
 	// create init log file
-	utils.E(os.MkdirAll(slash("tmp/cdp-log/"), 0755))
-	f, err := os.Create(slash("tmp/cdp-log/" + id + ".log"))
+	utils.E(os.MkdirAll(filepath.Join(LogDir, id), 0755))
+	f, err := os.Create(filepath.Join(LogDir, id, "_.log"))
+	log := log.New(f, "", log.Ltime)
 	utils.E(err)
-	lg := log.New(f, "", log.Ltime)
 
-	client := cdp.New(u).Logger(lg)
+	client := cdp.New(u).Logger(utils.MultiLogger(defaults.CDP, log))
 
-	return &MockClient{id: id, principal: client, logger: lg}
+	return &MockClient{id: id, principal: client, log: log}
 }
 
 func (mc *MockClient) Connect(ctx context.Context) error {
@@ -320,7 +309,7 @@ func (mc *MockClient) stub(nth int, p proto.Request, fn func(send StubSend) (gso
 	count := int64(0)
 
 	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-		if method == p.ProtoName() {
+		if method == p.ProtoReq() {
 			if int(atomic.AddInt64(&count, 1)) == nth {
 				mc.resetCall()
 				j, err := fn(func() (gson.JSON, error) {

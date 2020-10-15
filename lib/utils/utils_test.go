@@ -24,8 +24,15 @@ func Test(t *testing.T) {
 }
 
 func (t T) TestLog() {
-	utils.Log(func(msg ...interface{}) {}).Println()
+	var res []interface{}
+	lg := utils.Log(func(msg ...interface{}) { res = append(res, msg[0]) })
+	lg.Println("ok")
+	t.Eq(res[0], "ok")
+
 	utils.LoggerQuiet.Println()
+
+	utils.MultiLogger(lg, lg).Println("ok")
+	t.Eq(res, []interface{}{"ok", "ok", "ok"})
 }
 
 func (t T) TestE() {

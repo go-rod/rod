@@ -28,7 +28,7 @@ type Logger interface {
 	Println(...interface{})
 }
 
-// Log self
+// Log type for Println
 type Log func(msg ...interface{})
 
 // Println interface
@@ -43,6 +43,15 @@ type loggerQuiet struct{}
 
 // Println interface
 func (l loggerQuiet) Println(...interface{}) {}
+
+// MultiLogger is similar to https://golang.org/pkg/io/#MultiWriter
+func MultiLogger(list ...Logger) Log {
+	return Log(func(msg ...interface{}) {
+		for _, lg := range list {
+			lg.Println(msg...)
+		}
+	})
+}
 
 // E if the last arg is error, panic it
 func E(args ...interface{}) []interface{} {
