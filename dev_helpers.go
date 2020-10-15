@@ -125,7 +125,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 // ExposeJSHelper to page's window object, so you can debug helper.js in the browser console.
 // Such as run `rod.elementR("div", "ok")` in the browser console to test the Page.ElementR.
 func (p *Page) ExposeJSHelper() *Page {
-	p.MustEval(`rod => window.rod = rod`, p.jsHelperObj)
+	utils.E(p.Evaluate(jsHelper(js.Expose)))
 	return p
 }
 

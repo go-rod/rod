@@ -7,6 +7,10 @@ const Helper = `() => {
 ` + `const rod = {
   _() {},
 
+  expose() {
+    window.rod = rod
+  },
+
   element(...selectors) {
     const scope = ensureScope(this)
     for (const selector of selectors) {

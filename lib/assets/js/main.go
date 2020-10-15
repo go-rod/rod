@@ -6,6 +6,8 @@ package js
 type NameType string
 
 const (
+	//Expose NameType function name
+	Expose NameType = "expose"
 	//Element NameType function name
 	Element NameType = "element"
 	//Elements NameType function name
