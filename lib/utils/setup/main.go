@@ -1,19 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"runtime"
 
 	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
 	log.Println("setup project...")
-
-	fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 
 	nodejsDeps()
 	golangDeps()
@@ -22,7 +18,12 @@ func main() {
 }
 
 func nodejsDeps() {
-	utils.Exec("npm", "i", "--no-audit", "--no-fund")
+	_, err := exec.LookPath("npm")
+	if err != nil {
+		log.Fatalln("make sure Node.js is installed")
+	}
+
+	utils.Exec("npm", "i", "--no-audit", "--silent", "eslint-plugin-html")
 }
 
 func golangDeps() {

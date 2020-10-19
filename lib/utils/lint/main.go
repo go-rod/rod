@@ -12,16 +12,19 @@ import (
 )
 
 func main() {
-	log.Println("npx eslint --ext .js,.html --fix --ignore-path .gitignore .")
-	utils.Exec("npx", "eslint", "--ext", ".js,.html", "--fix", "--ignore-path", ".gitignore", ".")
+	exec("npx -q eslint --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
 
-	log.Println("npx prettier --loglevel error --write --ignore-path .gitignore .")
-	utils.Exec("npx", "prettier", "--loglevel", "error", "--write", "--ignore-path", ".gitignore", ".")
+	exec("npx -q prettier --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	log.Println("godev lint")
-	utils.Exec("godev", "lint")
+	exec("godev lint")
 
 	lintMustPrefix()
+}
+
+func exec(cmd string) {
+	log.Println(cmd)
+	args := strings.Split(cmd, " ")
+	utils.Exec(args[0], args[1:]...)
 }
 
 func lintMustPrefix() {
