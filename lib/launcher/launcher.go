@@ -220,10 +220,10 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 	return l
 }
 
-// ProfileDirectory is the browser profile the browser will use.
+// ProfileDir is the browser profile the browser will use.
 // When set to empty, the profile 'Default' is used.
 // Related article: https://superuser.com/a/377195
-func (l *Launcher) ProfileDirectory(dir string) *Launcher {
+func (l *Launcher) ProfileDir(dir string) *Launcher {
 	if dir == "" {
 		l.Delete("profile-directory")
 	} else {
