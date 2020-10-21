@@ -190,3 +190,8 @@ func (t T) ConcurrentEval() {
 	t.Gt(duration, 1000*time.Millisecond)
 	t.Eq([]int{<-list, <-list}, []int{1, 2})
 }
+
+func (t T) PageSlowRender() {
+	p := t.page.MustNavigate(t.srcFile("./fixtures/slow-render.html"))
+	t.Eq(p.MustElement("div").MustText(), "ok")
+}
