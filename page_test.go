@@ -696,7 +696,7 @@ func (t T) PageWaitLoadErr() {
 	})
 }
 
-func (t T) PageGoBackGoForward() {
+func (t T) PageNavigation() {
 	p := t.newPage("").MustReload()
 
 	wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
@@ -716,6 +716,9 @@ func (t T) PageGoBackGoForward() {
 	p.MustNavigateForward()
 	wait()
 	t.Regex("fixtures/selector.html$", p.MustInfo().URL)
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(p.Reload())
 }
 
 func (t T) PagePool() {

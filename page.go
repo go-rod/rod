@@ -151,7 +151,10 @@ func (p *Page) NavigateForward() error {
 func (p *Page) Reload() error {
 	// Not using cdp API because it doesn't work for iframe
 	_, err := p.Evaluate(Eval(`location.reload()`).ByUser())
-	return err
+	if err != nil {
+		return err
+	}
+	return p.updateJSCtxID()
 }
 
 func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
