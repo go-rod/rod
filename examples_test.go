@@ -199,12 +199,12 @@ func Example_search() {
 
 	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
 
-	// get the code mirror editor inside the iframe
-	el := page.MustSearch(".CodeMirror")
+	// Click the zoom-in button of the OpenStreetMap
+	page.MustSearch(".leaflet-control-zoom-in").MustClick()
 
-	fmt.Println(*el.MustAttribute("class"))
+	fmt.Println("done")
 
-	// Output: CodeMirror cm-s-default CodeMirror-wrap
+	// Output: done
 }
 
 func Example_page_screenshot() {
