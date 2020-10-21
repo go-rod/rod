@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -569,4 +570,22 @@ func ExamplePage_pool() {
 	// Example Domain
 	// Example Domain
 	// Example Domain
+}
+
+func Example_load_extension() {
+	extPath, _ := filepath.Abs("fixtures/chrome-extension")
+
+	u := launcher.New().
+		Set("load-extension", extPath). // must use abs path for an extension
+		Headless(false).                // headless mode doesn't support extension yet
+		MustLaunch()
+
+	page := rod.New().ControlURL(u).MustConnect().MustPage("http://example.com")
+
+	page.MustWait(`document.title === 'test-extension'`)
+
+	fmt.Println("ok")
+
+	// Skip
+	// Output: ok
 }
