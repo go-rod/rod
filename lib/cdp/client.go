@@ -21,7 +21,6 @@ type Client struct {
 	wsURL  string
 	header http.Header
 	ws     Websocketable
-	wsConn WebsocketableConn
 
 	callbacks *sync.Map // buffer for response from browser
 
@@ -70,14 +69,10 @@ func (e Error) Is(target error) bool {
 }
 
 // Websocketable enables you to choose the websocket lib you want to use.
-// By default cdp use github.com/gorilla/websocket
+// Such as you can easily wrap gorilla/websocket and use it as the transport layer.
 type Websocketable interface {
 	// Connect to server
-	Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error)
-}
-
-// WebsocketableConn represents a connection session
-type WebsocketableConn interface {
+	Connect(ctx context.Context, url string, header http.Header) error
 	// Send text message only
 	Send([]byte) error
 	// Read returns text message only
@@ -122,10 +117,10 @@ func (cdp *Client) Logger(l utils.Logger) *Client {
 // Connect to browser
 func (cdp *Client) Connect(ctx context.Context) error {
 	if cdp.ws == nil {
-		cdp.ws = NewDefaultWsClient()
+		cdp.ws = &WebSocket{}
 	}
 
-	conn, err := cdp.ws.Connect(ctx, cdp.wsURL, cdp.header)
+	err := cdp.ws.Connect(ctx, cdp.wsURL, cdp.header)
 	if err != nil {
 		return err
 	}
@@ -134,7 +129,6 @@ func (cdp *Client) Connect(ctx context.Context) error {
 
 	cdp.ctx = ctx
 	cdp.close = cancel
-	cdp.wsConn = conn
 
 	go cdp.consumeMsg()
 
@@ -212,7 +206,7 @@ func (cdp *Client) consumeMsg() {
 			return
 
 		case data := <-cdp.chReq:
-			err := cdp.wsConn.Send(data)
+			err := cdp.ws.Send(data)
 			if err != nil {
 				cdp.wsClose(err)
 				return
@@ -235,7 +229,7 @@ func (cdp *Client) readMsgFromBrowser() {
 	defer close(cdp.chEvent)
 
 	for {
-		data, err := cdp.wsConn.Read()
+		data, err := cdp.ws.Read()
 		if err != nil {
 			cdp.wsClose(err)
 			return
