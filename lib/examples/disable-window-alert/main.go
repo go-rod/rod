@@ -5,36 +5,11 @@ import (
 	"net/http"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/utils"
 )
-
-const (
-	indexHTML = `<!doctype html>
-<html>
-<body>
-  
-<script language="javascript" type="text/javascript">
-alert("Information does not exist");
-</script>
-
-</body>
-</html>`
-)
-
-// Server creates a simple HTTP server that pop-up alert .
-func Server(addr string) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		_, _ = fmt.Fprintf(res, indexHTML)
-	})
-	_ = http.ListenAndServe(addr, mux)
-}
-
-var port = 8544
-var host = "http://localhost:8544"
 
 func main() {
-	// start cookie server
-	go Server(fmt.Sprintf(":%d", port))
+	go serve()
 
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
@@ -47,8 +22,18 @@ func main() {
 	page.MustEvalOnNewDocument(`window.alert = () => {}`)
 
 	// Navigate to the website you want to visit
-	page.MustNavigate(host)
+	page.MustNavigate("http://localhost:8080")
 
-	fmt.Println(page.MustElement("script").Text())
+	fmt.Println(page.MustElement("script").MustText())
+}
 
+const testPage = `<html><script>alert("message")</script></html>`
+
+// mock a server
+func serve() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		utils.E(fmt.Fprintf(res, testPage))
+	})
+	utils.E(http.ListenAndServe(":8080", mux))
 }
