@@ -132,7 +132,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 		return
 	}
 
-	scroll, err := el.page.Root().Eval(`{ x: window.scrollX, y: window.scrollY }`)
+	scroll, err := el.page.root.Eval(`{ x: window.scrollX, y: window.scrollY }`)
 	if err != nil {
 		return
 	}
@@ -357,6 +357,7 @@ func (el *Element) Frame() (*Page, error) {
 
 	clone := *el.page
 	clone.FrameID = node.FrameID
+	clone.jsCtxID = new(proto.RuntimeExecutionContextID)
 	clone.element = el
 
 	return &clone, clone.updateJSCtxID()
@@ -536,7 +537,7 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 		},
 	}
 
-	return el.page.Root().Screenshot(false, opts)
+	return el.page.Screenshot(false, opts)
 }
 
 // Release is a shortcut for Page.Release(el.Object)

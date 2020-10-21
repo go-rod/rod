@@ -103,10 +103,9 @@ func (msg *TraceMsg) String() string {
 
 // Overlay a rectangle on the main frame with specified message
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
-	root := p.Root()
 	id := utils.RandString(8)
 
-	_, _ = root.Evaluate(jsHelper(js.Overlay,
+	_, _ = p.root.Evaluate(jsHelper(js.Overlay,
 		id,
 		left,
 		top,
@@ -116,7 +115,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	).ByPromise())
 
 	remove = func() {
-		_, _ = root.Evaluate(jsHelper(js.RemoveOverlay, id))
+		_, _ = p.root.Evaluate(jsHelper(js.RemoveOverlay, id))
 	}
 
 	return

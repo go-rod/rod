@@ -195,3 +195,16 @@ func (t T) PageSlowRender() {
 	p := t.page.MustNavigate(t.srcFile("./fixtures/slow-render.html"))
 	t.Eq(p.MustElement("div").MustText(), "ok")
 }
+
+func (t T) PageIframesReload() {
+	p := t.page.MustNavigate(t.srcFile("./fixtures/click-iframe.html"))
+	frame := p.MustElement("iframe").MustFrame()
+	btn := frame.MustElement("button")
+	t.Eq(btn.MustText(), "click me")
+
+	frame.MustReload().MustWaitLoad()
+	btn = frame.MustElement("button")
+	t.Eq(btn.MustText(), "click me")
+
+	t.Has(*p.MustElement("iframe").MustAttribute("src"), "click.html")
+}

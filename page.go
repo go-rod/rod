@@ -29,6 +29,8 @@ type Page struct {
 
 	ctx context.Context
 
+	root *Page
+
 	sleeper func() utils.Sleeper
 
 	browser *Browser
@@ -48,17 +50,6 @@ type Page struct {
 // IsIframe tells if it's iframe
 func (p *Page) IsIframe() bool {
 	return p.element != nil
-}
-
-// Root page of the iframe, if it's not a iframe returns itself
-func (p *Page) Root() *Page {
-	f := p
-
-	for f.IsIframe() {
-		f = f.element.page
-	}
-
-	return f
 }
 
 // GetSessionID interface
@@ -139,7 +130,7 @@ func (p *Page) Navigate(url string) error {
 		return &ErrNavigation{res.ErrorText}
 	}
 
-	return p.updateJSCtxID()
+	return p.root.updateJSCtxID()
 }
 
 // NavigateBack history.

@@ -253,9 +253,11 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		browser:   b,
 		TargetID:  targetID,
 		jsCtxID:   new(proto.RuntimeExecutionContextID),
+		helpers:   map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID{},
 		jsCtxLock: &sync.Mutex{},
 	}
 
+	page.root = page
 	page.Mouse = &Mouse{page: page, id: utils.RandString(8)}
 	page.Keyboard = &Keyboard{page: page}
 	page.Touch = &Touch{page: page}

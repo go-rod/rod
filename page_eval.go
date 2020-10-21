@@ -254,7 +254,7 @@ func (p *Page) updateJSCtxID() error {
 	}
 
 	p.jsCtxLock.Lock()
-	p.helpers = map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID{}
+	delete(p.helpers, *p.jsCtxID)
 	*p.jsCtxID = obj.Object.ObjectID.ExecutionID()
 	p.jsCtxLock.Unlock()
 	return nil
