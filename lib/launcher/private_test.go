@@ -107,9 +107,6 @@ func (t T) RemoteLaunch() {
 
 func (t T) LaunchErrs() {
 	l := New().Bin("echo")
-	go func() {
-		l.exit <- struct{}{}
-	}()
 	_, err := l.Launch()
 	t.Err(err)
 
