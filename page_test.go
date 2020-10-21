@@ -326,7 +326,11 @@ func (t T) PageWaitRequestIdle() {
 		defer cancel()
 		<-ctx.Done()
 	})
-	s.Route("/r3", "")
+	s.Mux.HandleFunc("/r3", func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Add("Location", "/r4")
+		rw.WriteHeader(http.StatusFound)
+	})
+	s.Route("/r4", "")
 	s.Route("/", ".html", `<html></html>`)
 
 	page := t.newPage(s.URL()).MustWaitLoad()

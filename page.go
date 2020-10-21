@@ -422,9 +422,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 	wait := p.EachEvent(func(sent *proto.NetworkRequestWillBeSent) {
 		if match(sent.Request.URL) {
-			waitlist[sent.RequestID] = sent.Request.URL
-			update(waitlist)
-			idleCounter.Add()
+			// Redirect will send multiple NetworkRequestWillBeSent events with the same RequestID,
+			// we should filter them out.
+			if _, has := waitlist[sent.RequestID]; !has {
+				waitlist[sent.RequestID] = sent.Request.URL
+				update(waitlist)
+				idleCounter.Add()
+			}
 		}
 	}, func(e *proto.NetworkLoadingFinished) {
 		checkDone(e.RequestID)
