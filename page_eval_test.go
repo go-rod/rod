@@ -44,13 +44,37 @@ func (t T) PageEval() {
 	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
 }
 
-func (t T) PageEvalNilContext() {
+func (t T) PageEvaluateRetry() {
 	page := t.page.MustNavigate(t.blank())
 
 	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(nil), cdp.ErrCtxNotFound
+		})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
 	t.Eq(1, page.MustEval(`1`).Int())
+}
+
+func (t T) PageUpdateJSCtxIDErr() {
+	page := t.page.MustNavigate(t.srcFile("./fixtures/click-iframe.html"))
+
+	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		t.mc.stubErr(1, proto.RuntimeEvaluate{})
+		return gson.New(nil), cdp.ErrCtxNotFound
+	})
+	t.Err(page.Eval(`1`))
+
+	el := page.MustElement("iframe")
+
+	t.mc.stubErr(1, proto.DOMGetFrameOwner{})
+	t.Err(el.Frame())
+
+	t.mc.stubErr(2, proto.DOMDescribeNode{})
+	t.Err(el.Frame())
+
+	t.mc.stubErr(1, proto.DOMResolveNode{})
+	t.Err(el.Frame())
 }
 
 func (t T) PageExposeJSHelper() {
