@@ -108,6 +108,10 @@ func (p *Page) Evaluate(opts *EvalOptions) (res *proto.RuntimeRemoteObject, err 
 	for {
 		res, err = p.evaluate(opts)
 		if err != nil && errors.Is(err, cdp.ErrCtxNotFound) {
+			if opts.ThisObj != nil {
+				return nil, &ErrObjectNotFound{opts.ThisObj}
+			}
+
 			if backoff == nil {
 				backoff = utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
 			} else {

@@ -208,3 +208,14 @@ func (t T) PageIframesReload() {
 
 	t.Has(*p.MustElement("iframe").MustAttribute("src"), "click.html")
 }
+
+func (t T) PageObjCrossNavigation() {
+	p := t.page.MustNavigate(t.blank())
+	obj := p.MustEvaluate(rod.Eval(`{}`).ByObject())
+
+	t.page.MustNavigate(t.blank())
+
+	_, err := p.Evaluate(rod.Eval(`1`).This(obj))
+	t.Is(err, &rod.ErrObjectNotFound{})
+	t.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
+}
