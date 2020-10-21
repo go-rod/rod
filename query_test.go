@@ -113,7 +113,7 @@ func (t T) SearchIframes() {
 func (t T) SearchIframesAfterReload() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
 	frame := p.MustElement("iframe").MustFrame().MustElement("iframe").MustFrame()
-	frame.MustReload().MustWaitLoad()
+	frame.MustReload()
 	el := p.MustSearch("button[onclick]")
 	t.Eq("click me", el.MustText())
 	t.True(el.MustClick().MustMatches("[a=ok]"))
