@@ -57,16 +57,6 @@ We use the standard way to doc the project: [Go Doc](https://pkg.go.dev/github.c
 
 ## FAQ
 
-### TOC
-
-- [How to use rod with docker](#q-how-to-use-rod-with-docker)
-- [Why there is always an "about:blank" page](#q-why-there-is-always-an-aboutblank-page)
-- [Does it support other browsers like Firefox or Edge](#q-does-it-support-other-browsers-like-firefox-or-edge)
-- [Why is it called rod](#q-why-is-it-called-rod)
-- [How to contribute](#q-how-to-contribute)
-- [How versioning is handled](#q-how-versioning-is-handled)
-- [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
-
 ### Q: How to use rod with docker so that I don't have to install a browser
 
 To let rod work with docker is very easy:
