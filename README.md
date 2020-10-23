@@ -5,8 +5,7 @@
 [![goreport](https://goreportcard.com/badge/github.com/go-rod/rod)](https://goreportcard.com/report/github.com/go-rod/rod)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
-Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
-It's designed for web automation and scraping. rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
+Rod is a high-level driver directly based on [DevTools Protocol][devtools protocol]. It's designed for web automation and scraping.
 
 ## Features
 
@@ -14,7 +13,7 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations
 - Automatically find or download [browser](lib/launcher)
-- No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
+- Lightweight, no third-party dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetDownloadFile, etc
 - Two-step WaitEvent design, never miss an event ([how it works](https://github.com/ysmood/goob))
 - Correctly handles nested iframes
@@ -43,7 +42,7 @@ Here's the common start process of rod:
 
 1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
 
-1. To control a specific page, rod will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
+1. To control a specific page, rod may inject a js helper script to it. rod uses it to query or manipulate the page content. The js lib is here [assets](lib/assets).
 
 Object model:
 

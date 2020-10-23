@@ -6,13 +6,11 @@ We use Github Projects to manage tasks, you can see the priority and progress of
 
 ## Terminology
 
-When we talk about type in the doc we use [gopls](https://github.com/golang/tools/tree/master/gopls) symbol query syntax. For example, when we say `rod.Page.PDF`, you can run:
+When we talk about type in the doc we use [gopls](https://github.com/golang/tools/tree/master/gopls) symbol query syntax. For example, when we say `rod.Page.PDF`, you can run the below to locate the file and line of it:
 
 ```bash
 gopls workspace_symbol -matcher=fuzzy rod.Page.PDF$
 ```
-
-to locate the file and line of it.
 
 ## Run tests
 
@@ -61,7 +59,7 @@ There are several helper functions for it:
 
 ### Detect goroutine leak
 
-Because parallel execution will pollution the global goroutine stack. By default, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well. To enable detection for each test, just let the `go test -parallel=1`.
+Because parallel execution will pollution the global goroutine stack, by default, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well. To enable detection for each test, just use `go test -parallel=1`.
 
 ## Convention of the git commit message
 
@@ -70,6 +68,5 @@ The commit message follows the rules [here](https://github.com/torvalds/subsurfa
 ## Become a maintainer
 
 At the early stage of this project, we will use a simple model to promote contributors to maintainers.
-Anybody who has contributed code or doc to the project can get write access to issues and PRs contributors.
 Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, then we will start to elect
 new maintainers by voting in the public issue. If no one votes down and 2/3 votes up then one election will pass.

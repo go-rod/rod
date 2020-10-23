@@ -551,7 +551,7 @@ func ExamplePage_pool() {
 		fmt.Println(page.MustInfo().Title)
 	}
 
-	// Run 5 jobs concurrently
+	// Run jobs concurrently
 	wg := sync.WaitGroup{}
 	for range "...." {
 		wg.Add(1)
