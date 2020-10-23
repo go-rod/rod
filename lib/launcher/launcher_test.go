@@ -36,9 +36,9 @@ func (t T) Download() {
 		zw := zip.NewWriter(buf)
 		h := &zip.FileHeader{Name: "to/"}
 		h.SetMode(0755)
-		w, err := zw.CreateHeader(h)
+		_, err := zw.CreateHeader(h)
 		t.E(err)
-		w, err = zw.Create("to/file.txt")
+		w, err := zw.Create("to/file.txt")
 		t.E(err)
 		b := make([]byte, 10*1024)
 		t.E(rand.Read(b))

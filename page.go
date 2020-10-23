@@ -149,9 +149,21 @@ func (p *Page) NavigateForward() error {
 
 // Reload page.
 func (p *Page) Reload() error {
+	p, cancel := p.WithCancel()
+	defer cancel()
+
+	wait := p.EachEvent(func(e *proto.PageFrameNavigated) bool {
+		return e.Frame.ID == p.FrameID
+	})
+
 	// Not using cdp API because it doesn't work for iframe
 	_, err := p.Evaluate(Eval(`location.reload()`).ByUser())
-	return err
+	if err != nil {
+		return err
+	}
+
+	wait()
+	return p.updateJSCtxID()
 }
 
 func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
@@ -419,9 +431,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 	wait := p.EachEvent(func(sent *proto.NetworkRequestWillBeSent) {
 		if match(sent.Request.URL) {
-			waitlist[sent.RequestID] = sent.Request.URL
-			update(waitlist)
-			idleCounter.Add()
+			// Redirect will send multiple NetworkRequestWillBeSent events with the same RequestID,
+			// we should filter them out.
+			if _, has := waitlist[sent.RequestID]; !has {
+				waitlist[sent.RequestID] = sent.Request.URL
+				update(waitlist)
+				idleCounter.Add()
+			}
 		}
 	}, func(e *proto.NetworkLoadingFinished) {
 		checkDone(e.RequestID)

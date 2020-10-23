@@ -285,10 +285,7 @@ func detectJSFunction(js string) bool {
 
 		if last == '=' {
 			if r == '>' {
-				if balanced {
-					return true
-				}
-				return false
+				return balanced
 			}
 			return false
 		}

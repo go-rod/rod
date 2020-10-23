@@ -5,10 +5,7 @@
 [![goreport](https://goreportcard.com/badge/github.com/go-rod/rod)](https://goreportcard.com/report/github.com/go-rod/rod)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
-![logo](fixtures/banner.png)
-
-Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
-It's designed for web automation and scraping. rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
+Rod is a high-level driver directly based on [DevTools Protocol][devtools protocol]. It's designed for web automation and scraping.
 
 ## Features
 
@@ -16,7 +13,7 @@ It's designed for web automation and scraping. rod also tries to expose low-leve
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations
 - Automatically find or download [browser](lib/launcher)
-- No external dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
+- Lightweight, no third-party dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetDownloadFile, etc
 - Two-step WaitEvent design, never miss an event ([how it works](https://github.com/ysmood/goob))
 - Correctly handles nested iframes
@@ -45,7 +42,7 @@ Here's the common start process of rod:
 
 1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
 
-1. To control a specific page, rod will first inject a js helper script to it. rod uses it to query and manipulate the page content. The js lib is in [assets](lib/assets).
+1. To control a specific page, rod may inject a js helper script to it. rod uses it to query or manipulate the page content. The js lib is here [assets](lib/assets).
 
 Object model:
 
@@ -56,16 +53,6 @@ Object model:
 We use the standard way to doc the project: [Go Doc](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
 
 ## FAQ
-
-### TOC
-
-- [How to use rod with docker](#q-how-to-use-rod-with-docker)
-- [Why there is always an "about:blank" page](#q-why-there-is-always-an-aboutblank-page)
-- [Does it support other browsers like Firefox or Edge](#q-does-it-support-other-browsers-like-firefox-or-edge)
-- [Why is it called rod](#q-why-is-it-called-rod)
-- [How to contribute](#q-how-to-contribute)
-- [How versioning is handled](#q-how-versioning-is-handled)
-- [Why another puppeteer like lib](#q-why-another-puppeteer-like-lib)
 
 ### Q: How to use rod with docker so that I don't have to install a browser
 
@@ -117,9 +104,13 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [chromedp][chromedp]
 
-  Chromedp uses a [fix-sized buffer](https://github.com/chromedp/chromedp/blob/b56cd66/target.go#L69-L73) for events, it can cause dead-lock on high concurrency. Because of rod don't use fix-sized buffer, rod will use less memory. Because chromedp uses single-event-loop, the slow event handlers will block each other, rod doesn't have this issue. The reason for these is because rod is based on [goob](https://github.com/ysmood/goob).
+  Theoretically, rod should perform faster and consume less memory than chromedp.
+
+  Chromedp uses a [fix-sized buffer](https://github.com/chromedp/chromedp/blob/b56cd66/target.go#L69-L73) for events, it can cause dead-lock on high concurrency. Because chromedp uses single-event-loop, the slow event handlers will block each other. Rod doesn't have these issues because it's based on [goob](https://github.com/ysmood/goob).
 
   Chromedp will JSON decode every message from browser, rod is decode-on-demand, so rod performs better, especially for heavy network events.
+
+  Chromedp uses third part WebSocket lib which has [1MB overhead](https://github.com/chromedp/chromedp/blob/b56cd66f9cebd6a1fa1283847bbf507409d48225/conn.go#L43-L54) for each cdp client, if you want to control thousands of remote browsers it can become a problem. Because of this limitation, if you evaluate a js script larger than 1MB, chromedp will crash.
 
   When a crash happens, chromedp will leave the zombie browser process on Windows and Mac.
 
@@ -129,7 +120,7 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
   With chromedp, you have to use their verbose DSL like tasks to handle the main logic, because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The heavily used interfaces make the static types useless when tracking issues. In contrast, rod uses as few interfaces as possible.
 
-  Rod has a simpler code structure and better test coverage, you should find it's easier to contribute code to rod. Therefore compared with chromedp, rod has the potential to have more nice functions from the community in the future.
+  Rod has less dependencies, simpler code structure, and better test coverage, you should find it's easier to contribute code to rod. Therefore compared with chromedp, rod has the potential to have more nice functions from the community in the future.
 
   Another problem of chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), but puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent chromedp's maintainers from adding high-level functions that are coupled with runtime. For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years. Even after it's closed, you still can't evaluate js express on the element inside an iframe.
 

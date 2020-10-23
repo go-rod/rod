@@ -452,7 +452,7 @@ func BenchmarkCache(b *testing.B) {
 
 func TestLab(t *testing.T) {
 	b := &rod.Browser{}
-	p := b.PageFromSession("")
+	_ = b.PageFromSession("")
 
 	t.SkipNow()
 
@@ -462,7 +462,7 @@ func TestLab(t *testing.T) {
 
 	session, _ := proto.TargetAttachToTarget{TargetID: target.TargetID, Flatten: true}.Call(b)
 
-	p = b.PageFromSession(session.SessionID)
+	p := b.PageFromSession(session.SessionID)
 
 	_, _ = proto.RuntimeEvaluate{Expression: `window`}.Call(p)
 
