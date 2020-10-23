@@ -502,14 +502,14 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 func (p *Page) Expose(name string) (callback chan []gson.JSON, stop func() error, err error) {
 	fn := "__" + name
 
-	remove, err := p.EvalOnNewDocument(fmt.Sprintf(
-		`function %s(...args) { %s(JSON.stringify(args)) }`, name, fn,
-	))
+	err = proto.RuntimeAddBinding{Name: fn, ExecutionContextID: p.getJSCtxID()}.Call(p)
 	if err != nil {
 		return
 	}
 
-	err = proto.RuntimeAddBinding{Name: fn}.Call(p)
+	remove, err := p.EvalOnNewDocument(fmt.Sprintf(
+		`function %s(...args) { %s(JSON.stringify(args)) }`, name, fn,
+	))
 	if err != nil {
 		return
 	}
