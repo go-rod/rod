@@ -31,7 +31,9 @@ func golangDeps() {
 	utils.E(err)
 
 	cmd := exec.Command("go", "get",
-		"github.com/ysmood/kit/cmd/godev",
+		"golang.org/x/lint/golint",
+		"github.com/kisielk/errcheck",
+		"github.com/fzipp/gocyclo/cmd/gocyclo",
 		"golang.org/x/tools/cmd/goimports",
 		"github.com/client9/misspell/cmd/misspell",
 	)

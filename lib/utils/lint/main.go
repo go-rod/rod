@@ -1,65 +1,45 @@
 package main
 
 import (
-	"go/ast"
-	"go/parser"
-	"go/token"
 	"log"
-	"path/filepath"
+	"os/exec"
 	"strings"
 
 	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
-	exec("npx -q eslint --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
+	run("npx -q eslint --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
 
-	exec("npx -q prettier --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
+	run("npx -q prettier --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	exec("godev lint")
+	run("go mod tidy")
+
+	run("golint -set_exit_status ./...")
+
+	run("errcheck ./...")
+
+	run("gocyclo -over 15 .")
+
+	run("gofmt -s -l -w .")
 
 	lintMustPrefix()
+
+	checkGitClean()
 }
 
-func exec(cmd string) {
-	log.Println(cmd)
+func run(cmd string) {
+	log.Println("[lint]", cmd)
 	args := strings.Split(cmd, " ")
 	utils.Exec(args[0], args[1:]...)
 }
 
-func lintMustPrefix() {
-	log.Println("lint 'Must' prefix")
-
-	paths, err := filepath.Glob("*.go")
+func checkGitClean() {
+	b, err := exec.Command("git", "status", "--porcelain").CombinedOutput()
 	utils.E(err)
-	lintErr := false
 
-	for _, p := range paths {
-		name := filepath.Base(p)
-		if name == "must.go" || strings.HasSuffix(name, "_test.go") {
-			continue
-		}
-
-		src, err := utils.ReadString(p)
-		utils.E(err)
-
-		list := token.NewFileSet()
-		f, err := parser.ParseFile(list, p, src, 0)
-		if err != nil {
-			panic(err)
-		}
-
-		for _, decl := range f.Decls {
-			fd, ok := decl.(*ast.FuncDecl)
-			if ok && strings.HasPrefix(fd.Name.Name, "Must") {
-				log.Printf("%s %s\n", list.Position(fd.Name.Pos()), fd.Name.Name)
-				lintErr = true
-			}
-		}
-		break
-	}
-
-	if lintErr {
-		log.Fatalln("'Must' prefixed function should be declared in file 'must.go'")
+	out := string(b)
+	if out != "" {
+		panic("Changes of \"go generate\", \"lint auto fix\", etc are not git committed:\n" + out)
 	}
 }
