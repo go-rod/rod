@@ -25,9 +25,6 @@ func (t T) WebSocketErr() {
 	t.Err(ws.Send([]byte("test")))
 
 	mc.errOnCount = 1
-	t.Err(ws.Send([]byte("test")))
-
-	mc.errOnCount = 1
 	mc.frame = []byte{0, 127, 1}
 	ws.r = bufio.NewReader(mc)
 	t.Err(ws.Read())

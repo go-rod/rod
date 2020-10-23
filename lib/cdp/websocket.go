@@ -29,7 +29,7 @@ type WebSocket struct {
 	close  func()
 	conn   net.Conn
 	r      *bufio.Reader
-	header [14]byte // Send is thread-safe, so we can safely share a header for all frames
+	header [18]byte // Send is thread-safe, so we can safely share a header for all frames
 	mask   []byte
 }
 
@@ -79,13 +79,14 @@ func (ws *WebSocket) initDialer(u *url.URL) {
 
 func (ws *WebSocket) initConstants() {
 	// FIN is alway true, Opcode is always text frame.
-	ws.header = [14]byte{0b1000_0001}
+	ws.header = [18]byte{0b1000_0001}
 
 	ws.mask = []byte{0, 1, 2, 3}
 }
 
 // Send a message to browser.
 // Because we use zero-copy design, it will modify the content of the msg.
+// It won't allocate new memory.
 func (ws *WebSocket) Send(msg []byte) error {
 	ws.header[1] = 0b1000_0000
 
@@ -108,12 +109,8 @@ func (ws *WebSocket) Send(msg []byte) error {
 		ws.header[i+2] = byte((size >> digit) & 0xff)
 	}
 
-	_, err := ws.conn.Write(ws.header[:i+2])
-	if err != nil {
-		return ws.checkClose(err)
-	}
-
-	_, err = ws.conn.Write(ws.mask)
+	copy(ws.header[i+2:], ws.mask)
+	_, err := ws.conn.Write(ws.header[:i+6])
 	if err != nil {
 		return ws.checkClose(err)
 	}
