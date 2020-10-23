@@ -5,8 +5,6 @@
 [![goreport](https://goreportcard.com/badge/github.com/go-rod/rod)](https://goreportcard.com/report/github.com/go-rod/rod)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
-![logo](fixtures/banner.png)
-
 Rod is a High-level Devtools driver directly based on [DevTools Protocol][devtools protocol].
 It's designed for web automation and scraping. rod also tries to expose low-level interfaces to users, so that whenever a function is missing users can easily send control requests to the browser directly.
 
