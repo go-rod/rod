@@ -193,11 +193,6 @@ func (cdp *Client) Event() <-chan *Event {
 	return cdp.chEvent
 }
 
-type requestMsg struct {
-	request *Request
-	data    []byte
-}
-
 // consume messages from client and browser
 func (cdp *Client) consumeMsg() {
 	for {

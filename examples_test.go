@@ -401,7 +401,7 @@ func Example_direct_cdp() {
 
 	{
 		// Interact with the cdp JSON API directly
-		_, _ = page.Call(nil, "", "Page.setAdBlockingEnabled", map[string]bool{
+		_, _ = page.Call(context.TODO(), "", "Page.setAdBlockingEnabled", map[string]bool{
 			"enabled": true,
 		})
 	}

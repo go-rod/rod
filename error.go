@@ -55,7 +55,7 @@ type ErrElementNotFound struct {
 }
 
 func (e *ErrElementNotFound) Error() string {
-	return fmt.Sprintf("cannot find element")
+	return "cannot find element"
 }
 
 // ErrObjectNotFound error
@@ -106,7 +106,7 @@ type ErrPageCloseCanceled struct {
 }
 
 func (e *ErrPageCloseCanceled) Error() string {
-	return fmt.Sprintf("page close canceled")
+	return "page close canceled"
 }
 
 // ErrNotInteractable error. Check the doc of Element.Interactable for details.

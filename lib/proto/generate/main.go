@@ -63,9 +63,9 @@ func main() {
 	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init))
 	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode))
 
-	utils.Exec("gofmt", "-s", "-w", "./lib/proto")
-	utils.Exec("goimports", "-w", "./lib/proto")      // golang.org/x/tools/cmd/goimports
-	utils.Exec("misspell", "-w", "-q", "./lib/proto") // github.com/client9/misspell/cmd/misspell
+	path := "./lib/proto"
+	utils.Exec("gofmt", "-s", "-w", path)
+	utils.Exec("golangci-lint", "run", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path)
 }
 
 func (d *definition) comment() string {

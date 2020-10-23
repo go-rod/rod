@@ -239,14 +239,14 @@ func (t T) ElementTracing() {
 	t.Eq(`rod.element("code")`, p.MustElement("code").MustText())
 }
 
-func (t T) PageElementByJS_Err() {
+func (t T) PageElementByJSErr() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	_, err := p.ElementByJS(rod.Eval(`1`))
 	t.Is(err, &rod.ErrExpectElement{})
 	t.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
-func (t T) PageElementsByJS_Err() {
+func (t T) PageElementsByJSErr() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
 	_, err := p.ElementsByJS(rod.Eval(`[1]`))
 	t.Is(err, &rod.ErrExpectElements{})

@@ -413,7 +413,7 @@ func (t T) PageEvent() {
 	utils.Sleep(0.1)
 	ctx.Cancel()
 
-	events = p.Event()
+	p.Event()
 	p.MustClose()
 }
 

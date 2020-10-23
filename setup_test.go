@@ -51,8 +51,6 @@ type T struct {
 	mc      *MockClient
 	browser *rod.Browser
 	page    *rod.Page
-
-	cancelTimeout func()
 }
 
 type TesterPool chan *T
@@ -353,6 +351,17 @@ type MockReader struct {
 
 func (mr *MockReader) Read(p []byte) (n int, err error) {
 	return 0, mr.err
+}
+
+func TestLintIgnore(t *testing.T) {
+	_ = rod.Try(func() {
+		tt := T{}
+		tt.dump()
+		tt.enableCDPLog()
+
+		mc := &MockClient{}
+		mc.stubCounter()
+	})
 }
 
 var slash = filepath.FromSlash
