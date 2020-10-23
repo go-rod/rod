@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/devices"
@@ -20,6 +21,8 @@ func main() {
 	wsURL := launcher.NewUserMode().MustLaunch()
 
 	browser := rod.New().ControlURL(wsURL).MustConnect().DefaultDevice(devices.Clear, false)
+
+	go handleExit()
 
 	// Run a extension. Here we created a link previewer extension as an example.
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.
@@ -80,4 +83,15 @@ func get(u string) string {
 	b, err := ioutil.ReadAll(res.Body)
 	utils.E(err)
 	return string(b)
+}
+
+func handleExit() {
+	fmt.Println("Press q + Enter to exit...")
+	for {
+		input := ""
+		utils.E(fmt.Scanln(&input))
+		if input == "q" {
+			os.Exit(0)
+		}
+	}
 }
