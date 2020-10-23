@@ -15,13 +15,7 @@ func main() {
 
 	run("go mod tidy")
 
-	run("golint -set_exit_status ./...")
-
-	run("errcheck ./...")
-
-	run("gocyclo -over 15 .")
-
-	run("gofmt -s -l -w .")
+	run("golangci-lint run --fix -E gofmt,golint,gocyclo,misspell ./...")
 
 	lintMustPrefix()
 
