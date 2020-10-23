@@ -469,9 +469,7 @@ func (t T) MouseClick() {
 }
 
 func (t T) MouseDrag() {
-	wait := t.page.WaitNavigation(proto.PageLifecycleEventNameNetworkIdle)
-	page := t.page.MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
-	wait()
+	page := t.newPage("").MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Timeout(3 * time.Second).Mouse
 
 	mouse.MustMove(3, 3)
