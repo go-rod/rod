@@ -282,6 +282,16 @@ func (p *Page) MustGetDownloadFile(pattern string) func() []byte {
 	}
 }
 
+// MustGetDownloadFile is similar to GetDownloadFile
+func (b *Browser) MustGetDownloadFile(pattern string) func() []byte {
+	wait := b.GetDownloadFile(pattern, http.DefaultClient)
+	return func() []byte {
+		_, body, err := wait()
+		utils.E(err)
+		return body
+	}
+}
+
 // MustWaitOpen is similar to WaitOpen
 func (p *Page) MustWaitOpen() (wait func() (newPage *Page)) {
 	w := p.WaitOpen()
