@@ -375,7 +375,7 @@ func Example_customize_browser_launch() {
 
 	// Adding authentication to the proxy, for the next auth request.
 	// We use CLI tool "mitmproxy --proxyauth user:pass" as an example.
-	browser.MustHandleAuth("user", "pass")
+	go browser.MustHandleAuth("user", "pass")()
 
 	// mitmproxy needs a cert config to support https. We use http here instead,
 	// for example

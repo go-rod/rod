@@ -257,7 +257,7 @@ func (t T) HandleAuth() {
 	})
 	s.Route("/err", ".html", "err page")
 
-	t.browser.MustHandleAuth("a", "b")
+	go t.browser.MustHandleAuth("a", "b")()
 
 	page := t.newPage(s.URL("/a"))
 	page.MustElementR("p", "ok")

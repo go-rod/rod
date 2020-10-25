@@ -60,9 +60,9 @@ func (b *Browser) MustPageFromTargetID(targetID proto.TargetTargetID) *Page {
 }
 
 // MustHandleAuth is similar to HandleAuth
-func (b *Browser) MustHandleAuth(username, password string) {
-	wait := b.HandleAuth(username, password)
-	go func() { utils.E(wait()) }()
+func (b *Browser) MustHandleAuth(username, password string) (wait func()) {
+	w := b.HandleAuth(username, password)
+	return func() { utils.E(w()) }
 }
 
 // MustIgnoreCertErrors is similar to IgnoreCertErrors
