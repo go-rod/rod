@@ -31,9 +31,6 @@ jobs:
 
       - run: go run ./lib/utils/check-cov
 
-      - uses: codecov/codecov-action@v1
-        if: ${{ always() }}
-
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:

@@ -15,7 +15,7 @@ func main() {
 
 	run("go mod tidy")
 
-	run("golangci-lint run --fix -E gofmt,golint,gocyclo,misspell ./...")
+	run("golangci-lint run --fix ./...")
 
 	lintMustPrefix()
 
