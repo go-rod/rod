@@ -470,7 +470,10 @@ func (t T) MouseClick() {
 
 func (t T) MouseDrag() {
 	page := t.newPage("").MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
-	mouse := page.Timeout(3 * time.Second).Mouse
+	mouse := page.Mouse
+
+	// TODO: sometimes the page may miss some mouse events
+	page.MustEval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
 
 	mouse.MustMove(3, 3)
 	mouse.MustDown("left")
