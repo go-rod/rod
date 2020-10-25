@@ -472,15 +472,13 @@ func (t T) MouseDrag() {
 	page := t.newPage("").MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Mouse
 
-	// TODO: sometimes the page may miss some mouse events
-	page.MustEval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
-
 	mouse.MustMove(3, 3)
 	mouse.MustDown("left")
 	t.E(mouse.Move(60, 80, 3))
 	mouse.MustUp("left")
 
-	page.MustWait(`dragTrack == " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80"`)
+	utils.Sleep(0.3)
+	t.Eq(page.MustEval(`dragTrack`).Str(), " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80")
 }
 
 func (t T) NativeDrag(got.Skip) { // devtools doesn't support to use mouse event to simulate it for now
