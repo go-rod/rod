@@ -94,7 +94,7 @@ Please check this [doc](.github/CONTRIBUTING.md).
 
 Before `v1.0.0` whenever the second section changed, such as `v0.1.0` to `v0.2.0`, there must be some public API changes, such as changes of function names or parameter types. If only the last section changed, no public API will be changed.
 
-You can use the Github's release comparison to see the automated changelog, for example, [compare v0.44.2 with v0.44.0](https://github.com/go-rod/rod/compare/v0.44.0...v0.44.2).
+You can use the Github's release comparison to see the automated changelog, for example, [compare v0.75.2 with v0.76.0](https://github.com/go-rod/rod/compare/v0.75.2...v0.76.0).
 
 ### Q: Why another puppeteer like lib
 
