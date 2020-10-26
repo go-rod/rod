@@ -7,8 +7,8 @@ import (
 	"errors"
 	"regexp"
 
-	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -166,7 +166,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 
 	removeTrace := func() {}
 	err = utils.Retry(p.ctx, sleeper, func() (bool, error) {
-		remove := p.tryTraceEval(opts.JS, opts.JSArgs)
+		remove := p.tryTraceEval(opts)
 		removeTrace()
 		removeTrace = remove
 

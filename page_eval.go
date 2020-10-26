@@ -7,9 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/go-rod/rod/lib/assets"
-	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -37,21 +36,21 @@ type EvalOptions struct {
 	// Whether execution should be treated as initiated by user in the UI.
 	UserGesture bool
 
-	jsHelper bool
+	jsHelper *js.Function
 }
 
 // Eval creates a EvalOptions with ByValue set to true.
 func Eval(js string, args ...interface{}) *EvalOptions {
-	return &EvalOptions{true, false, nil, js, args, false, false}
+	return &EvalOptions{true, false, nil, js, args, false, nil}
 }
 
-// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/assets/helper.js".
-func jsHelper(name js.Name, args ...interface{}) *EvalOptions {
+// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/js/helper.js".
+func jsHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue:  true,
-		JS:       fmt.Sprintf(`(rod, ...args) => rod.%s.apply(this, args)`, name),
 		JSArgs:   args,
-		jsHelper: true,
+		JS:       `({fn}, ...args) => fn.apply(this, args)`,
+		jsHelper: fn,
 	}
 }
 
@@ -194,32 +193,73 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 		}
 	}
 
-	if opts.jsHelper {
+	if opts.jsHelper != nil {
 		p.jsCtxLock.Lock()
-		id := p.helpers[*p.jsCtxID]
-		jsCtx := *p.jsCtxID
+		id, err := p.ensureJSHelper(opts.jsHelper)
 		p.jsCtxLock.Unlock()
-
-		if id == "" {
-			// inject js helper into the page
-			res, err := proto.RuntimeCallFunctionOn{
-				ExecutionContextID:  jsCtx,
-				FunctionDeclaration: assets.Helper,
-			}.Call(p)
-			if err != nil {
-				return nil, err
-			}
-			id = res.Result.ObjectID
-
-			p.jsCtxLock.Lock()
-			p.helpers[jsCtx] = id
-			p.jsCtxLock.Unlock()
+		if err != nil {
+			return nil, err
 		}
 
 		formated = append([]*proto.RuntimeCallArgument{{ObjectID: id}}, formated...)
 	}
 
 	return formated, nil
+}
+
+func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, error) {
+	if p.helpers == nil {
+		p.helpers = map[proto.RuntimeExecutionContextID]map[string]proto.RuntimeRemoteObjectID{}
+	}
+
+	list, ok := p.helpers[*p.jsCtxID]
+	if !ok {
+		list = map[string]proto.RuntimeRemoteObjectID{}
+		p.helpers[*p.jsCtxID] = list
+	}
+
+	fns, has := list[js.Functions.Name]
+	if !has {
+		res, err := proto.RuntimeCallFunctionOn{
+			ExecutionContextID:  *p.jsCtxID,
+			FunctionDeclaration: js.Functions.Definition,
+		}.Call(p)
+		if err != nil {
+			return "", err
+		}
+		fns = res.Result.ObjectID
+		list[js.Functions.Name] = fns
+	}
+
+	id, has := list[fn.Name]
+	if !has {
+		for _, dep := range fn.Dependencies {
+			_, err := p.ensureJSHelper(dep)
+			if err != nil {
+				return "", err
+			}
+		}
+
+		res, err := proto.RuntimeCallFunctionOn{
+			ExecutionContextID: *p.jsCtxID,
+			Arguments:          []*proto.RuntimeCallArgument{{ObjectID: fns}},
+
+			FunctionDeclaration: fmt.Sprintf(
+				// We wrap an extra {fn: fn} here to reduce the response body size,
+				// we only need the object id, but the cdp will return the whole function string.
+				"functions => { functions.%s = %s; return { fn: functions.%s } }",
+				fn.Name, fn.Definition, fn.Name,
+			),
+		}.Call(p)
+		if err != nil {
+			return "", err
+		}
+
+		id = res.Result.ObjectID
+		list[fn.Name] = id
+	}
+
+	return id, nil
 }
 
 func (p *Page) getJSCtxID() proto.RuntimeExecutionContextID {
@@ -236,8 +276,8 @@ func (p *Page) updateJSCtxID() error {
 		}
 
 		p.jsCtxLock.Lock()
-		p.helpers = map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID{}
 		*p.jsCtxID = obj.Result.ObjectID.ExecutionID()
+		p.helpers = nil
 		p.jsCtxLock.Unlock()
 		return nil
 	}

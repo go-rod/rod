@@ -10,12 +10,11 @@ import (
 	"html"
 	"net"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
-	"github.com/go-rod/rod/lib/assets/js"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -121,13 +120,6 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	return
 }
 
-// ExposeJSHelper to page's window object, so you can debug helper.js in the browser console.
-// Such as run `rod.elementR("div", "ok")` in the browser console to test the Page.ElementR.
-func (p *Page) ExposeJSHelper() *Page {
-	utils.E(p.Evaluate(jsHelper(js.Expose)))
-	return p
-}
-
 // Trace with an overlay on the element
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
@@ -165,28 +157,28 @@ func (el *Element) tryTraceInput(details string) func() {
 	return el.Trace(details)
 }
 
-var regHelperJS = regexp.MustCompile(`\A\(rod, \.\.\.args\) => (rod\..+)\.apply\(this, `)
-
-func (p *Page) tryTraceEval(js string, params []interface{}) func() {
+func (p *Page) tryTraceEval(opts *EvalOptions) func() {
 	if !p.browser.trace {
 		return func() {}
 	}
 
-	matches := regHelperJS.FindStringSubmatch(js)
-	if matches != nil {
-		js = matches[1]
+	fn := ""
+
+	if opts.jsHelper != nil {
+		fn = "rod." + opts.jsHelper.Name
 	}
-	paramsStr := strings.Trim(mustToJSONForDev(params), "[]\r\n")
+
+	paramsStr := strings.Trim(mustToJSONForDev(opts.JSArgs), "[]\r\n")
 
 	p.browser.logger.Println(&TraceMsg{
 		TraceTypeEval,
 		map[string]interface{}{
-			"js":     js,
-			"params": params,
+			"js":     fn,
+			"params": opts.JSArgs,
 		},
 	})
 
-	msg := fmt.Sprintf("js <code>%s(%s)</code>", js, html.EscapeString(paramsStr))
+	msg := fmt.Sprintf("js <code>%s(%s)</code>", fn, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 

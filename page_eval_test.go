@@ -77,14 +77,6 @@ func (t T) PageUpdateJSCtxIDErr() {
 	t.Err(el.Frame())
 }
 
-func (t T) PageExposeJSHelper() {
-	page := t.page.MustNavigate(t.blank())
-
-	t.Eq("undefined", page.MustEval("typeof(rod)").Str())
-	page.ExposeJSHelper()
-	t.Eq("object", page.MustEval("typeof(rod)").Str())
-}
-
 func (t T) PageExpose() {
 	cb, stop := t.page.MustExpose("exposedFunc")
 

@@ -11,8 +11,8 @@ import (
 
 	"github.com/ysmood/gson"
 
-	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )

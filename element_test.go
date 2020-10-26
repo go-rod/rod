@@ -404,13 +404,10 @@ func (t T) WaitInvisible() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	h4 := p.MustElement("h4")
 	btn := p.MustElement("button")
-	timeout := 3 * time.Second
 
 	t.True(h4.MustVisible())
 
-	h4t := h4.Timeout(timeout)
-	h4t.MustWaitVisible()
-	h4t.CancelTimeout()
+	h4.MustWaitVisible()
 
 	go func() {
 		utils.Sleep(0.03)
@@ -419,8 +416,8 @@ func (t T) WaitInvisible() {
 		btn.MustEval(`this.style.visibility = 'hidden'`)
 	}()
 
-	h4.Timeout(timeout).MustWaitInvisible()
-	btn.Timeout(timeout).MustWaitInvisible()
+	h4.MustWaitInvisible()
+	btn.MustWaitInvisible()
 
 	t.False(p.MustHas("h4"))
 }

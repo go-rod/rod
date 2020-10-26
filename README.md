@@ -38,9 +38,7 @@ Here's the common start process of rod:
 
 1. Use the JSON-RPC to talk to the Devtools endpoint to control the browser. The lib handles it is [cdp](lib/cdp).
 
-1. The type definitions of the JSON-RPC are in lib [proto](lib/proto).
-
-1. To control a specific page, rod may inject a js helper script to it. rod uses it to query or manipulate the page content. The js lib is here [assets](lib/assets).
+1. Use the type definitions of the JSON-RPC to perform high-level actions. The lib handles it is [proto](lib/proto).
 
 Object model:
 

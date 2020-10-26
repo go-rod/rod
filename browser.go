@@ -1,9 +1,10 @@
 //go:generate go run ./lib/utils/setup
-//go:generate go run ./lib/utils/lint
 //go:generate go run ./lib/proto/generate
+//go:generate go run ./lib/js/generate
 //go:generate go run ./lib/assets/generate
 //go:generate go run ./lib/devices/generate
 //go:generate go run ./lib/launcher/revision
+//go:generate go run ./lib/utils/lint
 
 package rod
 
@@ -252,9 +253,8 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		sleeper:   b.sleeper,
 		browser:   b,
 		TargetID:  targetID,
-		jsCtxID:   new(proto.RuntimeExecutionContextID),
-		helpers:   map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID{},
 		jsCtxLock: &sync.Mutex{},
+		jsCtxID:   new(proto.RuntimeExecutionContextID),
 	}
 
 	page.root = page

@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-rod/rod/lib/assets/js"
 	"github.com/go-rod/rod/lib/devices"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -44,7 +44,7 @@ type Page struct {
 
 	jsCtxLock *sync.Mutex
 	jsCtxID   *proto.RuntimeExecutionContextID // use pointer so that page clones can share the change
-	helpers   map[proto.RuntimeExecutionContextID]proto.RuntimeRemoteObjectID
+	helpers   map[proto.RuntimeExecutionContextID]map[string]proto.RuntimeRemoteObjectID
 }
 
 // IsIframe tells if it's iframe
@@ -546,11 +546,13 @@ func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interfa
 	defer removeTrace()
 
 	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
-		remove := p.tryTraceEval(js, params)
+		opts := Eval(js, params...).This(this)
+
+		remove := p.tryTraceEval(opts)
 		removeTrace()
 		removeTrace = remove
 
-		res, err := p.Evaluate(Eval(js, params...).This(this))
+		res, err := p.Evaluate(opts)
 		if err != nil {
 			return true, err
 		}
