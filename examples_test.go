@@ -25,9 +25,8 @@ func Example() {
 	// Even you forget to close, rod will close it after main process ends.
 	defer browser.MustClose()
 
-	// Timeout will be passed to all chained function calls.
-	// The code will panic out if any chained call is used after the timeout.
-	page := browser.Timeout(time.Minute).MustPage("https://github.com")
+	// Create a new page
+	page := browser.MustPage("https://github.com")
 
 	// We use css selector to get the search input element and input "git"
 	page.MustElement("input").MustInput("git").MustPress(input.Enter)
@@ -75,7 +74,6 @@ func Example_disable_headless_to_debug() {
 	// Slowmotion is a debug related function that waits 2 seconds between
 	// each action, making it easier to inspect what your code is doing.
 	browser := rod.New().
-		Timeout(time.Minute).
 		ControlURL(url).
 		Trace(true).
 		Slowmotion(2 * time.Second).
@@ -195,7 +193,7 @@ func Example_error_handling() {
 // Example_search shows how to use Search to get element inside nested iframes or shadow DOMs.
 // It works the same as https://developers.google.com/web/tools/chrome-devtools/dom#search
 func Example_search() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
@@ -278,13 +276,10 @@ func Example_race_selectors() {
 	}).MustDo()
 }
 
-// Example_wait_for_animation is an example to simulate humans more accurately.
-// If a button is moving too fast, you cannot click it as a human. To more
-// accurately simulate human inputs, actions triggered by Rod can be based on
-// mouse point location, so you can allow Rod to wait for the button to become
-// stable before it tries clicking it.
+// Rod uses mouse cursor to simulate clicks, so if a button is moving because of animation, the click may not work as expected.
+// We usually use WaitStable to make sure the target isn't changing anymore.
 func Example_wait_for_animation() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://getbootstrap.com/docs/4.0/components/modal/")
@@ -293,11 +288,8 @@ func Example_wait_for_animation() {
 
 	saveBtn := page.MustElementR("#exampleModalLive button", "Close")
 
-	// Here, WaitStable will wait until the save button's position becomes
-	// stable. The timeout is 5 seconds, after which it times out (or after 1
-	// minute since the browser was created). Timeouts from parents are
-	// inherited to the children as well.
-	saveBtn.Timeout(5 * time.Second).MustWaitStable().MustClick().MustWaitInvisible()
+	// Here, WaitStable will wait until the button's position and size become stable.
+	saveBtn.MustWaitStable().MustClick().MustWaitInvisible()
 
 	fmt.Println("done")
 
@@ -306,7 +298,7 @@ func Example_wait_for_animation() {
 
 // When you want to wait for an ajax request to complete, this example will be useful.
 func Example_wait_for_request() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://duckduckgo.com/")
@@ -330,7 +322,7 @@ func Example_wait_for_request() {
 // Shows how to change the retry/polling options that is used to query elements.
 // This is useful when you want to customize the element query retry logic.
 func Example_customize_retry_strategy() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("https://github.com")
@@ -409,7 +401,7 @@ func Example_direct_cdp() {
 
 // Shows how to listen for events.
 func Example_handle_events() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -467,7 +459,7 @@ func Example_handle_events() {
 //    browser --req-> rod ---> server ---> rod --res-> browser
 // The --req-> and --res-> are the parts that can be modified.
 func Example_hijack_requests() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	router := browser.HijackRequests()
@@ -514,7 +506,7 @@ func Example_eval_reuse_remote_object() {
 // Shows how to update the state of the current page.
 // In this example we enable the network domain.
 func Example_states() {
-	browser := rod.New().Timeout(time.Minute).MustConnect()
+	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
 	page := browser.MustPage("")
