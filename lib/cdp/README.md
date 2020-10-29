@@ -1,11 +1,11 @@
 # Overview
 
-This client is directly based on [doc](https://chromedevtools.github.io/devtools-protocol/)
+This client is directly based on this [doc](https://chromedevtools.github.io/devtools-protocol/).
 
 You can treat it as a minimal example of how to use the DevTools Protocol, no complex abstraction.
 
-The lib is thread-safe, and context first. The overhead of encoding API will never be the bottleneck as long as you use headless browser.
+It's thread-safe, and context first.
 
-For a basic example, check this [file](example_test.go).
+For basic usage, check this [file](example_test.go).
 
-For a detailed example, check this [file](main_test.go).
+For more info, check the unit tests.

@@ -88,12 +88,7 @@ func get(u string) string {
 }
 
 func waitExit() {
-	fmt.Println("Press q + Enter to exit...")
-	for {
-		input := ""
-		utils.E(fmt.Scanln(&input))
-		if input == "q" {
-			os.Exit(0)
-		}
-	}
+	fmt.Println("Press Enter to exit...")
+	utils.E(fmt.Scanln())
+	os.Exit(0)
 }
