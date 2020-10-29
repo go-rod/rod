@@ -13,6 +13,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -31,6 +32,24 @@ func (t T) Incognito() {
 
 	t.True(t.page.MustNavigate(t.blank()).MustEval(`k => localStorage[k]`, k).Nil())
 	t.Eq(page.MustEval(`k => localStorage[k]`, k).Str(), "1") // localStorage can only store string
+}
+
+func (t T) DefaultDevice() {
+	ua := ""
+	wait := make(chan struct{})
+
+	s := t.Serve()
+	s.Mux.HandleFunc("/t", func(rw http.ResponseWriter, r *http.Request) {
+		ua = r.Header.Get("User-Agent")
+		close(wait)
+	})
+
+	t.browser.DefaultDevice(devices.IPhoneX, false)
+	defer t.browser.DefaultDevice(devices.Test, true)
+
+	t.newPage(s.URL("/t"))
+
+	t.Eq(ua, devices.IPhoneX.UserAgent().UserAgent)
 }
 
 func (t T) PageErr() {

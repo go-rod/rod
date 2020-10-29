@@ -174,9 +174,7 @@ func (b *Browser) Close() error {
 func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	req := opts
 	req.BrowserContextID = b.BrowserContextID
-	if opts.URL == "" {
-		req.URL = "about:blank"
-	}
+	req.URL = "about:blank"
 
 	target, err := req.Call(b)
 	if err != nil {
@@ -190,6 +188,15 @@ func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	}()
 
 	p, err = b.PageFromTarget(target.TargetID)
+	if err != nil {
+		return
+	}
+
+	if opts.URL == "" {
+		return
+	}
+
+	err = p.Navigate(opts.URL)
 
 	return
 }
