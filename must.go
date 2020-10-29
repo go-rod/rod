@@ -347,10 +347,10 @@ func (p *Page) MustEvalOnNewDocument(js string) {
 }
 
 // MustExpose is similar to Expose
-func (p *Page) MustExpose(name string) (chan []gson.JSON, func()) {
-	c, s, err := p.Expose(name)
+func (p *Page) MustExpose(name string, fn func(gson.JSON) (interface{}, error)) (stop func()) {
+	s, err := p.Expose(name, fn)
 	utils.E(err)
-	return c, func() { utils.E(s()) }
+	return func() { utils.E(s()) }
 }
 
 // MustEval is similar to Eval

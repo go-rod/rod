@@ -78,14 +78,15 @@ func (t T) PageUpdateJSCtxIDErr() {
 }
 
 func (t T) PageExpose() {
-	cb, stop := t.page.MustExpose("exposedFunc")
+	stop := t.page.MustExpose("exposedFunc", func(g gson.JSON) (interface{}, error) {
+		return g.Get("a").Str(), nil
+	})
 
 	t.page.MustNavigate(t.blank()).MustWaitLoad()
 
-	t.page.MustEval(`exposedFunc({a: 'ok'})`)
-	t.Eq("ok", (<-cb)[0].Get("a").Str())
+	res := t.page.MustEval(`exposedFunc({a: 'ok'})`)
+	t.Eq("ok", res.Str())
 
-	t.page.MustEval(`exposedFunc('ok')`)
 	stop()
 
 	t.Panic(func() {
@@ -95,12 +96,12 @@ func (t T) PageExpose() {
 		t.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
-		t.page.MustExpose("exposedFunc")
+		t.mc.stubErr(1, proto.RuntimeAddBinding{})
+		t.page.MustExpose("exposedFunc2", nil)
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeAddBinding{})
-		t.page.MustExpose("exposedFunc2")
+		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+		t.page.MustExpose("exposedFunc", nil)
 	})
 }
 

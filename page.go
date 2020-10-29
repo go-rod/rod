@@ -498,23 +498,28 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 	return
 }
 
-// Expose function to the page's window object. Must bind before navigation. Bindings survive reloads.
-func (p *Page) Expose(name string) (callback chan []gson.JSON, stop func() error, err error) {
-	fn := "__" + name
+// Expose fn to the page's window object. Must expose before navigation. The exposure survives reloads.
+func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (stop func() error, err error) {
+	bind := "_" + utils.RandString(8)
 
-	err = proto.RuntimeAddBinding{Name: fn, ExecutionContextID: p.getJSCtxID()}.Call(p)
+	err = proto.RuntimeAddBinding{Name: bind, ExecutionContextID: p.getJSCtxID()}.Call(p)
 	if err != nil {
 		return
 	}
 
-	remove, err := p.EvalOnNewDocument(fmt.Sprintf(
-		`function %s(...args) { %s(JSON.stringify(args)) }`, name, fn,
-	))
+	remove, err := p.EvalOnNewDocument(utils.S(`
+		window.{{.name}} = (req) => new Promise((resolve, reject) => {
+			window.cb{{.bind}} = (res, err) => {
+				delete window.cb{{.bind}}
+				err ? reject(err) : resolve(res)
+			}
+			{{.bind}}(JSON.stringify(req))
+		})
+	`, "name", name, "bind", bind))
 	if err != nil {
 		return
 	}
 
-	callback = make(chan []gson.JSON)
 	p, cancel := p.WithCancel()
 
 	stop = func() error {
@@ -523,16 +528,16 @@ func (p *Page) Expose(name string) (callback chan []gson.JSON, stop func() error
 		if err != nil {
 			return err
 		}
-		return proto.RuntimeRemoveBinding{Name: fn}.Call(p)
+		return proto.RuntimeRemoveBinding{Name: bind}.Call(p)
 	}
 
 	go func() {
 		p.EachEvent(func(e *proto.RuntimeBindingCalled) {
-			if e.Name == fn {
-				select {
-				case <-p.ctx.Done():
-				case callback <- gson.NewFrom(e.Payload).Arr():
-				}
+			if e.Name == bind {
+				req := gson.NewFrom(e.Payload)
+				res, err := fn(req)
+				code := fmt.Sprintf("(res, err) => cb%s(res, err)", bind)
+				_, _ = p.Eval(code, res, err)
 			}
 		})()
 	}()
