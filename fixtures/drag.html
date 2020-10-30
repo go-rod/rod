@@ -39,6 +39,7 @@
     }
 
     document.onmousemove = (e) => {
+      if (e.clientX === 0 && e.clientY === 0) return
       window.dragTrack += ' move ' + e.clientX + ' ' + e.clientY
     }
 
