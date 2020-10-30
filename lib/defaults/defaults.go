@@ -109,7 +109,7 @@ var rules = map[string]func(string){
 		URL = v
 	},
 	"cdp": func(v string) {
-		CDP = log.New(log.Writer(), "[cdp] ", log.LstdFlags|log.Lmsgprefix)
+		CDP = log.New(log.Writer(), "[cdp] ", log.LstdFlags)
 	},
 }
 
