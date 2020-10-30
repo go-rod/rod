@@ -68,7 +68,7 @@ func (ws *WebSocket) initDialer(u *url.URL) {
 	}
 
 	if u.Scheme == "wss" {
-		ws.Dialer = &tls.Dialer{}
+		ws.Dialer = &tlsDialer{}
 		if u.Port() == "" {
 			u.Host += ":443"
 		}
@@ -210,4 +210,11 @@ func (ws *WebSocket) checkClose(err error) error {
 		ws.close()
 	}
 	return err
+}
+
+// TODO: replace it with tls.Dialer once golang v1.15 is widely used.
+type tlsDialer struct{}
+
+func (d *tlsDialer) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
+	return tls.Dial(network, address, nil)
 }
