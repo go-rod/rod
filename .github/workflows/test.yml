@@ -82,7 +82,7 @@ jobs:
           name: cdp-log-docker
           path: tmp/cdp-log
 
-  go: # make sure at least support golang v1.13
+  go: # make sure at least golang v1.13 is supported
     runs-on: ubuntu-latest
 
     steps:

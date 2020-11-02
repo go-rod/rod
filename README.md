@@ -26,7 +26,7 @@ Such as the usage of method `HandleAuth`, you can search all the `*_test.go` fil
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
-[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and [chromedp][chromedp].
+[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and chromedp.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
@@ -121,8 +121,6 @@ There are a lot of great projects, but no one is perfect, choose the best one th
   Another problem of chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), but puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent chromedp's maintainers from adding high-level functions that are coupled with runtime. For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years. Even after it's closed, you still can't evaluate js express on the element inside an iframe.
 
 - [puppeteer][puppeteer]
-
-  Puppeteer can't guarantee event order, rod guarantees all event order.
 
   Puppeteer will JSON decode every message from browser, rod is decode-on-demand, so rod performs better, especially for heavy network events.
 
