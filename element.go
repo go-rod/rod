@@ -2,7 +2,6 @@ package rod
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"path/filepath"
 	"reflect"
@@ -487,25 +486,19 @@ func (el *Element) Resource() ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := proto.PageGetResourceContent{
-		FrameID: el.page.FrameID,
-		URL:     src.Value.String(),
-	}.Call(el)
+	return el.page.GetResource(src.Value.String())
+}
+
+// BackgroundImage returns the css background-image of the element
+func (el *Element) BackgroundImage() ([]byte, error) {
+	res, err := el.Eval(`window.getComputedStyle(this).backgroundImage.replace(/^url\("/, '').replace(/"\)$/, '')`)
 	if err != nil {
 		return nil, err
 	}
 
-	data := res.Content
+	u := res.Value.Str()
 
-	var bin []byte
-	if res.Base64Encoded {
-		bin, err = base64.StdEncoding.DecodeString(data)
-		utils.E(err)
-	} else {
-		bin = []byte(data)
-	}
-
-	return bin, nil
+	return el.page.GetResource(u)
 }
 
 // Screenshot of the area of the element

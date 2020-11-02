@@ -817,6 +817,13 @@ func (el *Element) MustResource() []byte {
 	return bin
 }
 
+// MustBackgroundImage is similar to BackgroundImage
+func (el *Element) MustBackgroundImage() []byte {
+	bin, err := el.BackgroundImage()
+	utils.E(err)
+	return bin
+}
+
 // MustScreenshot is similar to Screenshot
 func (el *Element) MustScreenshot(toFile ...string) []byte {
 	bin, err := el.Screenshot(proto.PageCaptureScreenshotFormatPng, 0)

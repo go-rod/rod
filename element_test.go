@@ -457,9 +457,14 @@ func (t T) CanvasToImage() {
 	t.Eq(src.At(50, 50), color.NRGBA{0xFF, 0x00, 0x00, 0xFF})
 }
 
+func (t T) ElementWaitLoad() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/resource.html"))
+	p.MustElement("img").MustWaitLoad()
+}
+
 func (t T) Resource() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/resource.html"))
-	el := p.MustElement("img").MustWaitLoad()
+	el := p.MustElement("img")
 	t.Eq(len(el.MustResource()), 22661)
 
 	t.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
@@ -478,6 +483,17 @@ func (t T) Resource() {
 		t.mc.stubErr(1, proto.PageGetResourceContent{})
 		el.MustResource()
 	})
+}
+
+func (t T) BackgroundImage() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/resource.html"))
+	el := p.MustElement("div")
+	t.Eq(len(el.MustBackgroundImage()), 22661)
+
+	{
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		t.Err(el.BackgroundImage())
+	}
 }
 
 func (t T) ElementScreenshot() {

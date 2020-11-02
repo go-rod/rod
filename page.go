@@ -3,6 +3,7 @@ package rod
 import (
 	"context"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"sync"
@@ -332,6 +333,30 @@ func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 	}
 
 	return NewStreamReader(p, res.Stream), nil
+}
+
+// GetResource content by the url. Such as image, css, html, etc.
+// Use the proto.PageGetResourceTree to list all the resources.
+func (p *Page) GetResource(url string) ([]byte, error) {
+	res, err := proto.PageGetResourceContent{
+		FrameID: p.FrameID,
+		URL:     url,
+	}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	data := res.Content
+
+	var bin []byte
+	if res.Base64Encoded {
+		bin, err = base64.StdEncoding.DecodeString(data)
+		utils.E(err)
+	} else {
+		bin = []byte(data)
+	}
+
+	return bin, nil
 }
 
 // WaitOpen waits for the next new page opened by the current one
