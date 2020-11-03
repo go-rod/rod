@@ -168,7 +168,7 @@ func (lc *Browser) download(u string) (err error) {
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.Lock)()
 
-	p, found := lc.lookPath()
+	p, found := lc.LookPath()
 	if found {
 		return p, nil
 	}
@@ -176,7 +176,8 @@ func (lc *Browser) Get() (string, error) {
 	return p, lc.Download()
 }
 
-func (lc *Browser) lookPath() (string, bool) {
+// LookPath of the browser executable.
+func (lc *Browser) LookPath() (string, bool) {
 	execPath := lc.ExecPath()
 
 	list := append(lc.ExecSearchMap[runtime.GOOS], execPath)
@@ -196,7 +197,7 @@ func (lc *Browser) Open(url string) {
 	// Windows doesn't support format [::]
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
-	bin, _ := lc.lookPath()
+	bin, _ := lc.LookPath()
 	p := exec.Command(bin, url)
 	utils.E(p.Start())
 	utils.E(p.Process.Release())
