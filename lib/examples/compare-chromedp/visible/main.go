@@ -39,7 +39,7 @@ const (
 func testServer(addr string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
-		_, _ = fmt.Fprintf(res, indexHTML)
+		_, _ = fmt.Fprint(res, indexHTML)
 	})
 	_ = http.ListenAndServe(addr, mux)
 }

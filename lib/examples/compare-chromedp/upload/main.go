@@ -45,7 +45,7 @@ func uploadServer(addr string) {
 	// create http server and result channel
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		_, _ = fmt.Fprintf(res, uploadHTML)
+		_, _ = fmt.Fprint(res, uploadHTML)
 	})
 	mux.HandleFunc("/upload", func(res http.ResponseWriter, req *http.Request) {
 		f, _, err := req.FormFile("upload")

@@ -17,7 +17,7 @@ func main() {
 	l := launcher.MustNewRemote("ws://localhost:9222")
 
 	// Manipulate flags like the example in examples_test.go
-	l.Set("window-size", "1920,1080").Delete("any-flag")
+	l.Set("any-flag").Delete("any-flag")
 
 	browser := rod.New().Client(l.Client()).MustConnect()
 
@@ -31,7 +31,8 @@ func main() {
 	utils.Pause()
 }
 
-func hardcoreStyle() {
+// To manually launch a browser
+func _() {
 	// You can also manually launch a browser in the image:
 	// docker run -p 9222:9222 rodorg/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0
 	u := launcher.MustResolveURL("9222")

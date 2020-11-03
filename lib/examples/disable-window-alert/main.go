@@ -33,7 +33,7 @@ const testPage = `<html><script>alert("message")</script></html>`
 func serve() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		utils.E(fmt.Fprintf(res, testPage))
+		utils.E(fmt.Fprint(res, testPage))
 	})
 	utils.E(http.ListenAndServe(":8080", mux))
 }
