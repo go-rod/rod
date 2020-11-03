@@ -126,7 +126,7 @@ func init() {
 //     os.Getenv("rod")
 //     env
 //
-// Each value is separated by a ",", key and value are separated by "=",
+// Values are separated by commas, key and value are separated by "=",
 // For example, on unix-like OS:
 //
 //    rod="show,trace,slow,monitor" go run main.go

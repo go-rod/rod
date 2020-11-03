@@ -3,6 +3,8 @@
 [![GoDoc](https://godoc.org/github.com/go-rod/rod?status.svg)](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
+## [Documentation](https://go-rod.github.io/) | [API reference](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
+
 Rod is a high-level driver directly based on [DevTools Protocol][devtools protocol]. It's designed for web automation and scraping.
 
 ## Features
@@ -43,10 +45,6 @@ Here's the common start process of rod:
 Object model:
 
 ![object model](fixtures/object-model.svg)
-
-## API Documentation
-
-We use the standard way to doc the project: [Go Doc](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
 
 ## FAQ
 
