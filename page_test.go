@@ -457,8 +457,8 @@ func (t T) Mouse() {
 }
 
 func (t T) MouseClick() {
-	t.browser.Slowmotion(1)
-	defer func() { t.browser.Slowmotion(0) }()
+	t.browser.SlowMotion(1)
+	defer func() { t.browser.SlowMotion(0) }()
 
 	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	page.MustElement("button")

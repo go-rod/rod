@@ -76,7 +76,7 @@ func Example_disable_headless_to_debug() {
 	browser := rod.New().
 		ControlURL(url).
 		Trace(true).
-		Slowmotion(2 * time.Second).
+		SlowMotion(2 * time.Second).
 		MustConnect()
 
 	// ServeMonitor plays screenshots of each tab. This feature is extremely

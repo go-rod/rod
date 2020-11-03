@@ -41,7 +41,7 @@ type Browser struct {
 
 	logger utils.Logger
 
-	slowmotion time.Duration // see defaults.slow
+	slowMotion time.Duration // see defaults.slow
 	trace      bool          // see defaults.Trace
 	headless   bool
 	monitor    string
@@ -64,7 +64,7 @@ func New() *Browser {
 	return &Browser{
 		ctx:                    context.Background(),
 		sleeper:                DefaultSleeper,
-		slowmotion:             defaults.Slow,
+		slowMotion:             defaults.Slow,
 		trace:                  defaults.Trace,
 		monitor:                defaults.Monitor,
 		logger:                 DefaultLogger,
@@ -94,9 +94,9 @@ func (b *Browser) ControlURL(url string) *Browser {
 	return b
 }
 
-// Slowmotion set the delay for each control action, such as the simulation of the human inputs
-func (b *Browser) Slowmotion(delay time.Duration) *Browser {
-	b.slowmotion = delay
+// SlowMotion set the delay for each control action, such as the simulation of the human inputs
+func (b *Browser) SlowMotion(delay time.Duration) *Browser {
+	b.slowMotion = delay
 	return b
 }
 

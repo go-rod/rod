@@ -218,10 +218,10 @@ func (t T) MonitorErr() {
 func (t T) Trace() {
 	var msg *rod.TraceMsg
 	t.browser.Logger(utils.Log(func(list ...interface{}) { msg = list[0].(*rod.TraceMsg) }))
-	t.browser.Trace(true).Slowmotion(time.Microsecond)
+	t.browser.Trace(true).SlowMotion(time.Microsecond)
 	defer func() {
 		t.browser.Logger(rod.DefaultLogger)
-		t.browser.Trace(defaults.Trace).Slowmotion(defaults.Slow)
+		t.browser.Trace(defaults.Trace).SlowMotion(defaults.Slow)
 	}()
 
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))

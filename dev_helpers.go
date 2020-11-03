@@ -138,11 +138,11 @@ func (el *Element) Trace(msg string) (removeOverlay func()) {
 
 // check method and sleep if needed
 func (b *Browser) trySlowmotion() {
-	if b.slowmotion == 0 {
+	if b.slowMotion == 0 {
 		return
 	}
 
-	time.Sleep(b.slowmotion)
+	time.Sleep(b.slowMotion)
 }
 
 func (el *Element) tryTraceInput(details string) func() {
