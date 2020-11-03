@@ -17,7 +17,7 @@ type Dialer interface {
 	DialContext(ctx context.Context, network, address string) (net.Conn, error)
 }
 
-var _ Websocketable = &WebSocket{}
+var _ WebSocketable = &WebSocket{}
 
 // WebSocket client for chromium. It only implements a subset of WebSocket protocol.
 // Limitation: https://bugs.chromium.org/p/chromium/issues/detail?id=1069431

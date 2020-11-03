@@ -20,7 +20,7 @@ type Client struct {
 
 	wsURL  string
 	header http.Header
-	ws     Websocketable
+	ws     WebSocketable
 
 	callbacks *sync.Map // buffer for response from browser
 
@@ -68,9 +68,9 @@ func (e Error) Is(target error) bool {
 	return ok && e == *err
 }
 
-// Websocketable enables you to choose the websocket lib you want to use.
+// WebSocketable enables you to choose the websocket lib you want to use.
 // Such as you can easily wrap gorilla/websocket and use it as the transport layer.
-type Websocketable interface {
+type WebSocketable interface {
 	// Connect to server
 	Connect(ctx context.Context, url string, header http.Header) error
 	// Send text message only
@@ -103,7 +103,7 @@ func (cdp *Client) Header(header http.Header) *Client {
 }
 
 // Websocket set the websocket lib to use
-func (cdp *Client) Websocket(ws Websocketable) *Client {
+func (cdp *Client) Websocket(ws WebSocketable) *Client {
 	cdp.ws = ws
 	return cdp
 }
