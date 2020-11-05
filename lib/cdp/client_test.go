@@ -103,7 +103,7 @@ func (t T) Basic() {
 	})
 	t.E(err)
 
-	frameId := gson.New(res).Get("node.frameId").String()
+	frameID := gson.New(res).Get("node.frameId").String()
 
 	timeout = t.Context()
 
@@ -111,7 +111,7 @@ func (t T) Basic() {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, sessionID, "Page.createIsolatedWorld", map[string]interface{}{
-			"frameId": frameId,
+			"frameId": frameID,
 		})
 		t.E(err)
 

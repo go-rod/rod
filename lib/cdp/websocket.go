@@ -1,74 +1,216 @@
 package cdp
 
 import (
+	"bufio"
 	"context"
+	"crypto/tls"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"net"
 	"net/http"
-
-	"github.com/go-rod/rod/lib/defaults"
-	"github.com/gorilla/websocket"
+	"net/url"
 )
 
-// DefaultWsClient is the default websocket client
-type DefaultWsClient struct {
-	// The unit is byte
-	WriteBufferSize int
+// Dialer interface for WebSocket connection
+type Dialer interface {
+	DialContext(ctx context.Context, network, address string) (net.Conn, error)
 }
 
-// NewDefaultWsClient instance
-func NewDefaultWsClient() *DefaultWsClient {
-	return &DefaultWsClient{
-		WriteBufferSize: int(defaults.WsBuf * 1024 * 1024),
-	}
+var _ Websocketable = &WebSocket{}
+
+// WebSocket client for chromium. It only implements a subset of WebSocket protocol.
+// Limitation: https://bugs.chromium.org/p/chromium/issues/detail?id=1069431
+// Ref: https://tools.ietf.org/html/rfc6455
+type WebSocket struct {
+	// Dialer is usually used for proxy
+	Dialer Dialer
+
+	close  func()
+	conn   net.Conn
+	r      *bufio.Reader
+	header [14]byte // Send is thread-safe, so we can safely share a header for all frames
+	mask   []byte
 }
 
-// DefaultWsConn is the default websocket connection type
-type DefaultWsConn struct {
-	close func()
-	conn  *websocket.Conn
-}
-
-// Connect interface
-func (c *DefaultWsClient) Connect(ctx context.Context, url string, header http.Header) (WebsocketableConn, error) {
+// Connect to browser
+func (ws *WebSocket) Connect(ctx context.Context, wsURL string, header http.Header) error {
 	ctx, cancel := context.WithCancel(ctx)
-	dialer := *websocket.DefaultDialer
-	dialer.WriteBufferSize = c.WriteBufferSize
+	ws.close = cancel
 
-	conn, _, err := dialer.DialContext(ctx, url, header)
+	u, err := url.Parse(wsURL)
 	if err != nil {
-		defer cancel()
-		return nil, err
+		return err
 	}
 
-	// The ctx will be ignored after the Connection is established,
-	// therefore we need extra code to close it.
+	ws.initDialer(u)
+
+	conn, err := ws.Dialer.DialContext(ctx, "tcp", u.Host)
+	if err != nil {
+		return err
+	}
+
 	go func() {
 		<-ctx.Done()
 		_ = conn.Close()
 	}()
 
-	return &DefaultWsConn{close: cancel, conn: conn}, nil
+	ws.initConstants()
 
+	ws.conn = conn
+	ws.r = bufio.NewReader(conn)
+	return ws.handshake(ctx, u, header)
 }
 
-// Send a message
-func (c *DefaultWsConn) Send(data []byte) error {
-	err := c.conn.WriteMessage(websocket.TextMessage, data)
-	c.checkClose(err)
-	return err
-}
-
-// Read a message
-func (c *DefaultWsConn) Read() (data []byte, err error) {
-	var msgType = -1
-	for msgType != websocket.TextMessage && err == nil {
-		msgType, data, err = c.conn.ReadMessage()
-		c.checkClose(err)
+func (ws *WebSocket) initDialer(u *url.URL) {
+	if ws.Dialer != nil {
+		return
 	}
-	return
+
+	if u.Scheme == "wss" {
+		ws.Dialer = &tls.Dialer{}
+		if u.Port() == "" {
+			u.Host += ":443"
+		}
+	} else {
+		ws.Dialer = &net.Dialer{}
+	}
 }
 
-func (c *DefaultWsConn) checkClose(err error) {
+func (ws *WebSocket) initConstants() {
+	// FIN is alway true, Opcode is always text frame.
+	ws.header = [14]byte{0b1000_0001}
+
+	ws.mask = []byte{0, 1, 2, 3}
+}
+
+// Send a message to browser.
+// Because we use zero-copy design, it will modify the content of the msg.
+func (ws *WebSocket) Send(msg []byte) error {
+	ws.header[1] = 0b1000_0000
+
+	size := len(msg)
+	fieldLen := 0
+	switch {
+	case size <= 125:
+		ws.header[1] |= byte(size)
+	case size < 65536:
+		ws.header[1] |= 126
+		fieldLen = 2
+	default:
+		ws.header[1] |= 127
+		fieldLen = 8
+	}
+
+	var i int
+	for i = 0; i < fieldLen; i++ {
+		digit := (fieldLen - i - 1) * 8
+		ws.header[i+2] = byte((size >> digit) & 0xff)
+	}
+
+	_, err := ws.conn.Write(ws.header[:i+2])
 	if err != nil {
-		c.close()
+		return ws.checkClose(err)
 	}
+
+	_, err = ws.conn.Write(ws.mask)
+	if err != nil {
+		return ws.checkClose(err)
+	}
+
+	for i := range msg {
+		msg[i] = msg[i] ^ ws.mask[i%4]
+	}
+
+	_, err = ws.conn.Write(msg)
+	return ws.checkClose(err)
+}
+
+// Read a message from browser
+func (ws *WebSocket) Read() ([]byte, error) {
+	_, _ = ws.r.ReadByte()
+	b, err := ws.r.ReadByte()
+	if err != nil {
+		return nil, ws.checkClose(err)
+	}
+
+	size := 0
+	fieldLen := 0
+
+	b &= 0x7f
+	switch {
+	case b <= 125:
+		size = int(b)
+	case b == 126:
+		fieldLen = 2
+	case b == 127:
+		fieldLen = 8
+	}
+
+	for i := 0; i < fieldLen; i++ {
+		b, err := ws.r.ReadByte()
+		if err != nil {
+			return nil, ws.checkClose(err)
+		}
+
+		size = size<<8 + int(b)
+	}
+
+	data := make([]byte, size)
+	_, err = io.ReadFull(ws.r, data)
+	return data, ws.checkClose(err)
+}
+
+// ErrBadHandshake type
+type ErrBadHandshake struct {
+	*http.Response
+}
+
+func (e *ErrBadHandshake) Error() string {
+	body, _ := ioutil.ReadAll(e.Response.Body)
+	return fmt.Sprintf(
+		"websocket bad handshake: %s. %s",
+		e.Response.Status, body,
+	)
+}
+
+func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Header) error {
+	req := (&http.Request{Method: http.MethodGet, URL: u, Header: http.Header{
+		"Upgrade":               {"websocket"},
+		"Connection":            {"Upgrade"},
+		"Sec-WebSocket-Key":     {"nil"},
+		"Sec-WebSocket-Version": {"13"},
+	}}).WithContext(ctx)
+
+	for k, vs := range header {
+		if k == "Host" && len(vs) > 0 {
+			req.Host = vs[0]
+		} else {
+			req.Header[k] = vs
+		}
+	}
+
+	err := req.Write(ws.conn)
+	if err != nil {
+		return ws.checkClose(err)
+	}
+
+	res, err := http.ReadResponse(ws.r, req)
+	if err != nil {
+		return ws.checkClose(err)
+	}
+
+	if res.StatusCode != http.StatusSwitchingProtocols ||
+		res.Header.Get("Sec-Websocket-Accept") != "Q67D9eATKx531lK8F7u2rqQNnNI=" {
+		return &ErrBadHandshake{res}
+	}
+
+	return nil
+}
+
+func (ws *WebSocket) checkClose(err error) error {
+	if err != nil {
+		ws.close()
+	}
+	return err
 }

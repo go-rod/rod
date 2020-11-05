@@ -196,15 +196,26 @@ func (t T) PageSlowRender() {
 	t.Eq(p.MustElement("div").MustText(), "ok")
 }
 
-func (t T) PageIframesReload() {
+func (t T) PageIframeReload() {
 	p := t.page.MustNavigate(t.srcFile("./fixtures/click-iframe.html"))
 	frame := p.MustElement("iframe").MustFrame()
 	btn := frame.MustElement("button")
 	t.Eq(btn.MustText(), "click me")
 
-	frame.MustReload().MustWaitLoad()
+	frame.MustReload()
 	btn = frame.MustElement("button")
 	t.Eq(btn.MustText(), "click me")
 
 	t.Has(*p.MustElement("iframe").MustAttribute("src"), "click.html")
+}
+
+func (t T) PageObjCrossNavigation() {
+	p := t.page.MustNavigate(t.blank())
+	obj := p.MustEvaluate(rod.Eval(`{}`).ByObject())
+
+	t.page.MustNavigate(t.blank())
+
+	_, err := p.Evaluate(rod.Eval(`1`).This(obj))
+	t.Is(err, &rod.ErrObjectNotFound{})
+	t.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
 }

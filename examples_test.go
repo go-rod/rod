@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -199,12 +200,12 @@ func Example_search() {
 
 	page := browser.MustPage("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
 
-	// get the code mirror editor inside the iframe
-	el := page.MustSearch(".CodeMirror")
+	// Click the zoom-in button of the OpenStreetMap
+	page.MustSearch(".leaflet-control-zoom-in").MustClick()
 
-	fmt.Println(*el.MustAttribute("class"))
+	fmt.Println("done")
 
-	// Output: CodeMirror cm-s-default CodeMirror-wrap
+	// Output: done
 }
 
 func Example_page_screenshot() {
@@ -400,7 +401,7 @@ func Example_direct_cdp() {
 
 	{
 		// Interact with the cdp JSON API directly
-		_, _ = page.Call(nil, "", "Page.setAdBlockingEnabled", map[string]bool{
+		_, _ = page.Call(context.TODO(), "", "Page.setAdBlockingEnabled", map[string]bool{
 			"enabled": true,
 		})
 	}
@@ -550,7 +551,7 @@ func ExamplePage_pool() {
 		fmt.Println(page.MustInfo().Title)
 	}
 
-	// Run 5 jobs concurrently
+	// Run jobs concurrently
 	wg := sync.WaitGroup{}
 	for range "...." {
 		wg.Add(1)
@@ -569,4 +570,22 @@ func ExamplePage_pool() {
 	// Example Domain
 	// Example Domain
 	// Example Domain
+}
+
+func Example_load_extension() {
+	extPath, _ := filepath.Abs("fixtures/chrome-extension")
+
+	u := launcher.New().
+		Set("load-extension", extPath). // must use abs path for an extension
+		Headless(false).                // headless mode doesn't support extension yet
+		MustLaunch()
+
+	page := rod.New().ControlURL(u).MustConnect().MustPage("http://example.com")
+
+	page.MustWait(`document.title === 'test-extension'`)
+
+	fmt.Println("ok")
+
+	// Skip
+	// Output: ok
 }

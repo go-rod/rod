@@ -55,7 +55,21 @@ type ErrElementNotFound struct {
 }
 
 func (e *ErrElementNotFound) Error() string {
-	return fmt.Sprintf("cannot find element")
+	return "cannot find element"
+}
+
+// ErrObjectNotFound error
+type ErrObjectNotFound struct {
+	*proto.RuntimeRemoteObject
+}
+
+func (e *ErrObjectNotFound) Error() string {
+	return fmt.Sprintf("cannot find object: %s", utils.MustToJSON(e))
+}
+
+// Is interface
+func (e *ErrObjectNotFound) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
 // ErrEval error
@@ -92,7 +106,7 @@ type ErrPageCloseCanceled struct {
 }
 
 func (e *ErrPageCloseCanceled) Error() string {
-	return fmt.Sprintf("page close canceled")
+	return "page close canceled"
 }
 
 // ErrNotInteractable error. Check the doc of Element.Interactable for details.

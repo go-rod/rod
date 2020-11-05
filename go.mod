@@ -3,7 +3,6 @@ module github.com/go-rod/rod
 go 1.15
 
 require (
-	github.com/gorilla/websocket v1.4.2
 	github.com/ysmood/goob v0.3.0
 	github.com/ysmood/got v0.8.3
 	github.com/ysmood/gotrace v0.1.1

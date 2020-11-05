@@ -463,7 +463,7 @@ func (t T) CanvasToImage() {
 func (t T) Resource() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/resource.html"))
 	el := p.MustElement("img").MustWaitLoad()
-	t.Eq(15456, len(el.MustResource()))
+	t.Eq(len(el.MustResource()), 22661)
 
 	t.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
 		return gson.New(proto.PageGetResourceContentResult{

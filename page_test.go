@@ -326,7 +326,11 @@ func (t T) PageWaitRequestIdle() {
 		defer cancel()
 		<-ctx.Done()
 	})
-	s.Route("/r3", "")
+	s.Mux.HandleFunc("/r3", func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Add("Location", "/r4")
+		rw.WriteHeader(http.StatusFound)
+	})
+	s.Route("/r4", "")
 	s.Route("/", ".html", `<html></html>`)
 
 	page := t.newPage(s.URL()).MustWaitLoad()
@@ -409,7 +413,7 @@ func (t T) PageEvent() {
 	utils.Sleep(0.1)
 	ctx.Cancel()
 
-	events = p.Event()
+	p.Event()
 	p.MustClose()
 }
 
@@ -696,7 +700,7 @@ func (t T) PageWaitLoadErr() {
 	})
 }
 
-func (t T) PageGoBackGoForward() {
+func (t T) PageNavigation() {
 	p := t.newPage("").MustReload()
 
 	wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
@@ -716,6 +720,9 @@ func (t T) PageGoBackGoForward() {
 	p.MustNavigateForward()
 	wait()
 	t.Regex("fixtures/selector.html$", p.MustInfo().URL)
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(p.Reload())
 }
 
 func (t T) PagePool() {

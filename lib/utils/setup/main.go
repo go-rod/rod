@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 	"os/exec"
 
 	"github.com/go-rod/rod/lib/utils"
@@ -20,25 +19,17 @@ func main() {
 func nodejsDeps() {
 	_, err := exec.LookPath("npm")
 	if err != nil {
-		log.Fatalln("make sure Node.js is installed")
+		log.Fatalln("please install Node.js: https://nodejs.org")
 	}
 
-	utils.Exec("npm", "i", "--no-audit", "--no-fund", "--silent", "eslint-plugin-html")
+	utils.Exec("npm", "i", "-q", "--no-audit", "--no-fund", "--silent", "eslint-plugin-html")
 }
 
 func golangDeps() {
-	homeDir, err := os.UserHomeDir()
-	utils.E(err)
-
-	cmd := exec.Command("go", "get",
-		"github.com/ysmood/kit/cmd/godev",
-		"golang.org/x/tools/cmd/goimports",
-		"github.com/client9/misspell/cmd/misspell",
-	)
-	cmd.Env = append(os.Environ(), "GO111MODULE=on")
-	cmd.Dir = homeDir
-	utils.SetCmdStdPipe(cmd)
-	utils.E(cmd.Run())
+	_, err := exec.Command("golangci-lint", "--version").CombinedOutput()
+	if err != nil {
+		log.Fatal("please install golangci-lint: https://golangci-lint.run")
+	}
 }
 
 func genDockerIgnore() {

@@ -3,6 +3,7 @@ package cdp
 import (
 	"context"
 	"errors"
+	"net/http"
 	"testing"
 
 	"github.com/go-rod/rod/lib/utils"
@@ -17,16 +18,21 @@ type T struct {
 	got.G
 }
 
-type wsMockConn struct {
+type MockWebSocket struct {
 	send func([]byte) error
 	read func() ([]byte, error)
 }
 
-func (c *wsMockConn) Send(b []byte) error {
+// Connect interface
+func (c *MockWebSocket) Connect(ctx context.Context, url string, header http.Header) error {
+	return nil
+}
+
+func (c *MockWebSocket) Send(b []byte) error {
 	return c.send(b)
 }
 
-func (c *wsMockConn) Read() ([]byte, error) {
+func (c *MockWebSocket) Read() ([]byte, error) {
 	return c.read()
 }
 
@@ -45,7 +51,7 @@ func (t T) ReqErr() {
 	cdp := New("")
 	cdp.ctx = ctx
 	cdp.close = ctx.Cancel
-	cdp.wsConn = &wsMockConn{
+	cdp.ws = &MockWebSocket{
 		send: func([]byte) error { return errors.New("err") },
 	}
 
@@ -120,7 +126,7 @@ func (t T) CancelOnReadRes() {
 	ctx := t.Context()
 	cdp := New("")
 	cdp.ctx = ctx
-	cdp.wsConn = &wsMockConn{
+	cdp.ws = &MockWebSocket{
 		read: func() ([]byte, error) {
 			ctx.Cancel()
 			return utils.MustToJSONBytes(&Response{
@@ -141,7 +147,7 @@ func (t T) CancelOnReadEvent() {
 	ctx, cancel := context.WithCancel(t.Context())
 	cdp := New("")
 	cdp.ctx = ctx
-	cdp.wsConn = &wsMockConn{
+	cdp.ws = &MockWebSocket{
 		read: func() ([]byte, error) {
 			cancel()
 			return utils.MustToJSONBytes(&Event{}), nil

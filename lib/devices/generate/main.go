@@ -38,8 +38,7 @@ func main() {
 	utils.E(utils.OutputFile(path, code))
 
 	utils.Exec("gofmt", "-s", "-w", path)
-	utils.Exec("goimports", "-w", path)
-	utils.Exec("misspell", "-w", "-q", path)
+	utils.Exec("golangci-lint", "run", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path)
 }
 
 func getDeviceList() gson.JSON {

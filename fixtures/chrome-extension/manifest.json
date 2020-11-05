@@ -4,9 +4,10 @@
   "name": "test",
   "description": "Test extension",
   "version": "1.0",
-  "background": {
-    "scripts": ["main.js"],
-    "persistent": true
-  },
-  "permissions": ["activeTab"]
+  "content_scripts": [
+    {
+      "js": ["main.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

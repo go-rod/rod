@@ -1,1 +1,1 @@
-console.log('ok')
+window.document.title = 'test-extension'

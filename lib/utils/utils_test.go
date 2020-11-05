@@ -194,14 +194,6 @@ func (t T) Exec() {
 	utils.Exec("echo")
 }
 
-type errReader struct {
-	err error
-}
-
-func (r *errReader) Read(p []byte) (n int, err error) {
-	return 0, r.err
-}
-
 func (t T) EscapeGoString() {
 	t.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
 }
