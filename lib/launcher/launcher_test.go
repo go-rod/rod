@@ -174,7 +174,7 @@ var testProfileDir = flag.Bool("test-profile-dir", false, "set it to test profil
 
 func (t T) ProfileDir() {
 	url := launcher.New().Headless(false).
-		ProfileDir("test-profile-dir")
+		ProfileDir("").ProfileDir("test-profile-dir")
 
 	if !*testProfileDir {
 		t.Skip("It's not CI friendly, so we skip it!")
