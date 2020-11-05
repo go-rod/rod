@@ -172,7 +172,7 @@ func newBrowser() (*launcher.Browser, func()) {
 
 var testProfileDir = flag.Bool("test-profile-dir", false, "set it to test profile dir")
 
-func (t T) TestProfileDir() {
+func (t T) ProfileDir() {
 	if !*testProfileDir {
 		t.Skip("It's not CI friendly, so we skip it!")
 	}
