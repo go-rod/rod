@@ -179,7 +179,7 @@ func (t T) ProfileDir() {
 
 	url := launcher.New().Headless(false).
 		ProfileDir("test-profile-dir")
-	url.Launch()
+	url.MustLaunch()
 
 	userDataDir, _ := url.Get("user-data-dir")
 	file, err := os.Stat(filepath.Join(userDataDir, "test-profile-dir"))
