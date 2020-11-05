@@ -184,6 +184,6 @@ func (t T) ProfileDir() {
 	userDataDir, _ := url.Get("user-data-dir")
 	file, err := os.Stat(filepath.Join(userDataDir, "test-profile-dir"))
 
-	t.Nil(err)
+	t.E(err)
 	t.True(file.IsDir())
 }
