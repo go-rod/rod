@@ -168,3 +168,14 @@ func newBrowser() (*launcher.Browser, func()) {
 	b.Context = ctx
 	return b, cancel
 }
+
+func (t T) TestProfileDir() {
+	url := launcher.New().ProfileDir("new-profile")
+	url.MustLaunch()
+
+	userDataDir, _ := url.Get("user-data-dir")
+	file, err := os.Stat(filepath.Join(userDataDir, "new-profile"))
+
+	t.Nil(err)
+	t.Eq(file.IsDir(), true)
+}
