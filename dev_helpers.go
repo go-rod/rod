@@ -170,13 +170,16 @@ func (p *Page) tryTraceEval(opts *EvalOptions) func() {
 
 	paramsStr := strings.Trim(mustToJSONForDev(opts.JSArgs), "[]\r\n")
 
-	p.browser.logger.Println(&TraceMsg{
-		TraceTypeEval,
-		map[string]interface{}{
-			"js":     fn,
-			"params": opts.JSArgs,
-		},
-	})
+	info := map[string]interface{}{"js": fn}
+
+	if opts.ThisObj != nil {
+		info["this"] = opts.ThisObj.Description
+	}
+	if len(opts.JSArgs) > 0 {
+		info["params"] = opts.JSArgs
+	}
+
+	p.browser.logger.Println(&TraceMsg{TraceTypeEval, info})
 
 	msg := fmt.Sprintf("js <code>%s(%s)</code>", fn, html.EscapeString(paramsStr))
 	return p.Overlay(0, 0, 500, 0, msg)
