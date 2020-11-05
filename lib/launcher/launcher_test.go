@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/rand"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -167,4 +168,23 @@ func newBrowser() (*launcher.Browser, func()) {
 	}
 	b.Context = ctx
 	return b, cancel
+}
+
+var testProfileDir = flag.Bool("test-profile-dir", false, "set it to test profile dir")
+
+func (t T) ProfileDir() {
+	url := launcher.New().Headless(false).
+		ProfileDir("").ProfileDir("test-profile-dir")
+
+	if !*testProfileDir {
+		t.Skip("It's not CI friendly, so we skip it!")
+	}
+
+	url.MustLaunch()
+
+	userDataDir, _ := url.Get("user-data-dir")
+	file, err := os.Stat(filepath.Join(userDataDir, "test-profile-dir"))
+
+	t.E(err)
+	t.True(file.IsDir())
 }

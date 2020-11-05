@@ -219,6 +219,18 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 	return l
 }
 
+// ProfileDir is the browser profile the browser will use.
+// When set to empty, the profile 'Default' is used.
+// Related article: https://superuser.com/a/377195
+func (l *Launcher) ProfileDir(dir string) *Launcher {
+	if dir == "" {
+		l.Delete("profile-directory")
+	} else {
+		l.Set("profile-directory", dir)
+	}
+	return l
+}
+
 // RemoteDebuggingPort to launch the browser. Zero for a random port. Zero is the default value.
 // If it's not zero, the launcher will try to connect to it before starting a new browser process.
 // For example, to reuse the same browser process for between 2 runs of a Go program, you can
