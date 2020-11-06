@@ -169,3 +169,9 @@ var Tag = &Function{
 	Definition:   `e=>e.tagName?e:e.parentElement`,
 	Dependencies: []*Function{},
 }
+
+var ExposeFunc = &Function{
+	Name:         "exposeFunc",
+	Definition:   `function(e,t){let n=0;window[e]=(e=>new Promise((i,o)=>{const s=t+"_cb"+n++;window[s]=((e,t)=>{delete window[s],t?o(t):i(e)}),window[t](JSON.stringify({req:e,cb:s}))}))}`,
+	Dependencies: []*Function{},
+}

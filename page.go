@@ -523,7 +523,7 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 	return
 }
 
-// Expose fn to the page's window object. Must expose before navigation. The exposure survives reloads.
+// Expose fn to the page's window object.The exposure survives reloads.
 func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (stop func() error, err error) {
 	bind := "_" + utils.RandString(8)
 
@@ -532,15 +532,14 @@ func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (sto
 		return
 	}
 
-	remove, err := p.EvalOnNewDocument(utils.S(`
-		window.{{.name}} = (req) => new Promise((resolve, reject) => {
-			window.cb{{.bind}} = (res, err) => {
-				delete window.cb{{.bind}}
-				err ? reject(err) : resolve(res)
-			}
-			{{.bind}}(JSON.stringify(req))
-		})
-	`, "name", name, "bind", bind))
+	code := fmt.Sprintf(`(%s)("%s", "%s")`, js.ExposeFunc.Definition, name, bind)
+
+	_, err = p.Evaluate(Eval(code))
+	if err != nil {
+		return
+	}
+
+	remove, err := p.EvalOnNewDocument(code)
 	if err != nil {
 		return
 	}
@@ -556,16 +555,14 @@ func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (sto
 		return proto.RuntimeRemoveBinding{Name: bind}.Call(p)
 	}
 
-	go func() {
-		p.EachEvent(func(e *proto.RuntimeBindingCalled) {
-			if e.Name == bind {
-				req := gson.NewFrom(e.Payload)
-				res, err := fn(req)
-				code := fmt.Sprintf("(res, err) => cb%s(res, err)", bind)
-				_, _ = p.Eval(code, res, err)
-			}
-		})()
-	}()
+	go p.EachEvent(func(e *proto.RuntimeBindingCalled) {
+		if e.Name == bind {
+			payload := gson.NewFrom(e.Payload)
+			res, err := fn(payload.Get("req"))
+			code := fmt.Sprintf("(res, err) => %s(res, err)", payload.Get("cb").Str())
+			_, _ = p.Evaluate(Eval(code, res, err))
+		}
+	})()
 
 	return
 }

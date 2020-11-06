@@ -32,6 +32,9 @@ func (t T) PageEval() {
 	t.Eq(3, page.MustEval(`
 		(a, b) => a + b
 	`, 1, 2).Int())
+	t.Eq(10, page.MustEval(`
+		10
+	`).Int())
 	t.Eq(1, page.MustEval(`a => 1`).Int())
 	t.Eq(1, page.MustEval(`function() { return 1 }`).Int())
 	t.Eq(1, page.MustEval(`((1))`).Int())
@@ -78,11 +81,11 @@ func (t T) PageUpdateJSCtxIDErr() {
 }
 
 func (t T) PageExpose() {
+	t.newPage(t.blank()).MustWaitLoad()
+
 	stop := t.page.MustExpose("exposedFunc", func(g gson.JSON) (interface{}, error) {
 		return g.Get("a").Str(), nil
 	})
-
-	t.page.MustNavigate(t.blank()).MustWaitLoad()
 
 	res := t.page.MustEval(`exposedFunc({a: 'ok'})`)
 	t.Eq("ok", res.Str())
@@ -94,6 +97,10 @@ func (t T) PageExpose() {
 	})
 	t.Panic(func() {
 		t.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
+	})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		t.page.MustExpose("exposedFunc", nil)
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeAddBinding{})

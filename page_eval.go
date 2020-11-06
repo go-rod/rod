@@ -5,6 +5,7 @@ package rod
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/cdp"
@@ -41,7 +42,15 @@ type EvalOptions struct {
 
 // Eval creates a EvalOptions with ByValue set to true.
 func Eval(js string, args ...interface{}) *EvalOptions {
-	return &EvalOptions{true, false, nil, js, args, false, nil}
+	return &EvalOptions{
+		ByValue:      true,
+		AwaitPromise: false,
+		ThisObj:      nil,
+		JS:           js,
+		JSArgs:       args,
+		UserGesture:  false,
+		jsHelper:     nil,
+	}
 }
 
 // Convert name and jsArgs to Page.Eval, the name is method name in the "lib/js/helper.js".
@@ -79,10 +88,11 @@ func (e *EvalOptions) ByPromise() *EvalOptions {
 }
 
 func (e *EvalOptions) formatToJSFunc() string {
-	if detectJSFunction(e.JS) {
-		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, e.JS)
+	js := strings.TrimSpace(e.JS)
+	if detectJSFunction(js) {
+		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 	}
-	return fmt.Sprintf(`function() { return %s }`, e.JS)
+	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
 // Eval is just a shortcut for Page.Evaluate
