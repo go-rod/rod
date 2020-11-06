@@ -271,16 +271,22 @@ func (p *Page) Close() error {
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
-// Because alert will block js, usually you have to run the wait function in another goroutine.
-func (p *Page) HandleDialog(accept bool, promptText string) func() error {
+// Because modal dialog will block js, usually you have to run the wait function in another goroutine
+// before the action that will trigger the dialog. For example:
+//
+//     wait := page.MustHandleDialog(true, "")
+//     go wait()
+//     page.MustElement("button").MustClick()
+//
+func (p *Page) HandleDialog(accept bool, promptText string) (wait func() error) {
 	restore := p.EnableDomain(&proto.PageEnable{})
 
-	wait := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
+	w := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
 
 	return func() error {
 		defer restore()
 
-		wait()
+		w()
 		return proto.PageHandleJavaScriptDialog{
 			Accept:     accept,
 			PromptText: promptText,
