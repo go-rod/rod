@@ -87,15 +87,15 @@ func (ps Pages) Find(selector string) (*Page, error) {
 	return nil, nil
 }
 
-// FindByURL returns the page that has the url that matches the js regex
-func (ps Pages) FindByURL(regex string) (*Page, error) {
+// FindByURL returns the page that has the url that matches the jsRegex
+func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 	for _, page := range ps {
 		res, err := page.Eval(`location.href`)
 		if err != nil {
 			return nil, err
 		}
 		url := res.Value.String()
-		if regexp.MustCompile(regex).MatchString(url) {
+		if regexp.MustCompile(jsRegex).MatchString(url) {
 			return page, nil
 		}
 	}
@@ -103,8 +103,8 @@ func (ps Pages) FindByURL(regex string) (*Page, error) {
 }
 
 // Has an element that matches the css selector
-func (p *Page) Has(selectors ...string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).Element(selectors...)
+func (p *Page) Has(selector string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).Element(selector)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
@@ -112,41 +112,39 @@ func (p *Page) Has(selectors ...string) (bool, *Element, error) {
 }
 
 // HasX an element that matches the XPath selector
-func (p *Page) HasX(selectors ...string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementX(selectors...)
+func (p *Page) HasX(selector string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).ElementX(selector)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
 }
 
-// HasR an element that matches the css selector and its display text matches the js regex.
-func (p *Page) HasR(selector, regex string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementR(selector, regex)
+// HasR an element that matches the css selector and its display text matches the jsRegex.
+func (p *Page) HasR(selector, jsRegex string) (bool, *Element, error) {
+	el, err := p.Sleeper(nil).ElementR(selector, jsRegex)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
 }
 
-// Element retries until an element in the page that matches one of the CSS selectors, then returns
+// Element retries until an element in the page that matches the CSS selector, then returns
 // the matched element.
-func (p *Page) Element(selectors ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.Element).Strings(selectors...))
+func (p *Page) Element(selector string) (*Element, error) {
+	return p.ElementByJS(jsHelper(js.Element, selector))
 }
 
-// ElementR retries until an element in the page that matches one of the pairs, then returns
-// the matched element.
-// Each pairs is a css selector and a regex. A sample call will look like page.MustElementR("div", "click me").
-// The regex is the js regex, not golang's.
-func (p *Page) ElementR(pairs ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementR).Strings(pairs...))
+// ElementR retries until an element in the page that matches the css selector and it's text matches the jsRegex,
+// then returns the matched element.
+func (p *Page) ElementR(selector, jsRegex string) (*Element, error) {
+	return p.ElementByJS(jsHelper(js.ElementR, selector, jsRegex))
 }
 
 // ElementX retries until an element in the page that matches one of the XPath selectors, then returns
 // the matched element.
-func (p *Page) ElementX(xPaths ...string) (*Element, error) {
-	return p.ElementByJS(jsHelper(js.ElementX).Strings(xPaths...))
+func (p *Page) ElementX(xPath string) (*Element, error) {
+	return p.ElementByJS(jsHelper(js.ElementX, xPath))
 }
 
 // ElementByJS returns the element from the return value of the js function.
@@ -404,9 +402,9 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 	return err == nil, el, err
 }
 
-// HasR an element that matches the css selector and its text matches the js regex.
-func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
-	el, err := el.ElementR(selector, regex)
+// HasR returns true if a child element that matches the css selector and its text matches the jsRegex.
+func (el *Element) HasR(selector, jsRegex string) (bool, *Element, error) {
+	el, err := el.ElementR(selector, jsRegex)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
@@ -414,13 +412,18 @@ func (el *Element) HasR(selector, regex string) (bool, *Element, error) {
 }
 
 // Element returns the first child that matches the css selector
-func (el *Element) Element(selectors ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.Element).Strings(selectors...))
+func (el *Element) Element(selector string) (*Element, error) {
+	return el.ElementByJS(jsHelper(js.Element, selector))
+}
+
+// ElementR returns the first child element that matches the css selector and its text matches the jsRegex.
+func (el *Element) ElementR(selector, jsRegex string) (*Element, error) {
+	return el.ElementByJS(jsHelper(js.ElementR, selector, jsRegex))
 }
 
 // ElementX returns the first child that matches the XPath selector
-func (el *Element) ElementX(xPaths ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementX).Strings(xPaths...))
+func (el *Element) ElementX(xPath string) (*Element, error) {
+	return el.ElementByJS(jsHelper(js.ElementX, xPath))
 }
 
 // ElementByJS returns the element from the return value of the js
@@ -446,11 +449,6 @@ func (el *Element) Next() (*Element, error) {
 // Previous returns the previous sibling element in the DOM tree
 func (el *Element) Previous() (*Element, error) {
 	return el.ElementByJS(Eval(`this.previousElementSibling`))
-}
-
-// ElementR returns the first element in the page that matches the CSS selector and its text matches the js regex.
-func (el *Element) ElementR(pairs ...string) (*Element, error) {
-	return el.ElementByJS(jsHelper(js.ElementR).Strings(pairs...))
 }
 
 // Elements returns all elements that match the css selector

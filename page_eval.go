@@ -78,14 +78,6 @@ func (e *EvalOptions) ByPromise() *EvalOptions {
 	return e
 }
 
-// Strings appends each string to JSArgs
-func (e *EvalOptions) Strings(list ...string) *EvalOptions {
-	for _, s := range list {
-		e.JSArgs = append(e.JSArgs, s)
-	}
-	return e
-}
-
 func (e *EvalOptions) formatToJSFunc() string {
 	if detectJSFunction(e.JS) {
 		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, e.JS)

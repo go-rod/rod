@@ -440,22 +440,22 @@ func (p *Page) MustSearch(queries ...string) *Element {
 }
 
 // MustElement is similar to Element
-func (p *Page) MustElement(selectors ...string) *Element {
-	el, err := p.Element(selectors...)
+func (p *Page) MustElement(selector string) *Element {
+	el, err := p.Element(selector)
 	utils.E(err)
 	return el
 }
 
 // MustElementR is similar to ElementR
-func (p *Page) MustElementR(pairs ...string) *Element {
-	el, err := p.ElementR(pairs...)
+func (p *Page) MustElementR(selector, jsRegex string) *Element {
+	el, err := p.ElementR(selector, jsRegex)
 	utils.E(err)
 	return el
 }
 
 // MustElementX is similar to ElementX
-func (p *Page) MustElementX(xPaths ...string) *Element {
-	el, err := p.ElementX(xPaths...)
+func (p *Page) MustElementX(xPath string) *Element {
+	el, err := p.ElementX(xPath)
 	utils.E(err)
 	return el
 }

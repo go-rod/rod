@@ -4,7 +4,7 @@ package js
 
 var Element = &Function{
 	Name:         "element",
-	Definition:   `function(...e){const t=functions.selectable(this);for(const n of e){const e=t.querySelector(n);if(e)return e}return null}`,
+	Definition:   `function(e){return functions.selectable(this).querySelector(e)}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -16,7 +16,7 @@ var Elements = &Function{
 
 var ElementX = &Function{
 	Name:         "elementX",
-	Definition:   `function(...e){const t=functions.selectable(this);for(const n of e){const e=document.evaluate(n,t,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;if(e)return e}return null}`,
+	Definition:   `function(e){const t=functions.selectable(this);return document.evaluate(e,t,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -28,7 +28,7 @@ var ElementsX = &Function{
 
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(...e){for(let t=0;t<e.length-1;t+=2){const n=e[t],i=e[t+1],o=new RegExp(i),s=Array.from((this.document||this).querySelectorAll(n)).find(e=>o.test(functions.text.call(e)));if(s)return s}return null}`,
+	Definition:   `function(e,t){const n=new RegExp(t),i=Array.from((this.document||this).querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return i||null}`,
 	Dependencies: []*Function{Text},
 }
 
@@ -64,7 +64,7 @@ var Rect = &Function{
 
 var Overlay = &Function{
 	Name:         "overlay",
-	Definition:   `async function(e,t,n,i,o,s){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${o}px;\n        width: ${i}px;` + "`" + `,i*o==0&&(r.style.border="none"),!s)return void document.body.appendChild(r);const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${o}px;` + "`" + `,l.innerHTML=s,r.appendChild(l),document.body.appendChild(r),window.innerHeight<l.offsetHeight+n+o&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}`,
+	Definition:   `async function(e,t,n,i,o,s){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${o}px;\n        width: ${i}px;` + "`" + `,i*o==0&&(r.style.border="none"),!s)return void document.body.appendChild(r);const d=document.createElement("div");d.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${o}px;` + "`" + `,d.innerHTML=s,r.appendChild(d),document.body.appendChild(r),window.innerHeight<d.offsetHeight+n+o&&(d.style.top=-d.offsetHeight-2+"px"),window.innerWidth<d.offsetWidth+t&&(d.style.left=window.innerWidth-d.offsetWidth-t+"px")}`,
 	Dependencies: []*Function{WaitLoad},
 }
 

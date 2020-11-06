@@ -119,12 +119,6 @@ func (t T) SearchIframesAfterReload() {
 	t.True(el.MustClick().MustMatches("[a=ok]"))
 }
 
-func (t T) PageElementWithSelectors() {
-	t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
-	el := t.page.MustElement("p", "button")
-	t.Eq("01", el.MustText())
-}
-
 func (t T) PageRace() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 
