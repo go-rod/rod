@@ -81,13 +81,23 @@ func (t T) PageUpdateJSCtxIDErr() {
 }
 
 func (t T) PageExpose() {
-	t.newPage(t.blank()).MustWaitLoad()
+	page := t.newPage(t.blank()).MustWaitLoad()
 
-	stop := t.page.MustExpose("exposedFunc", func(g gson.JSON) (interface{}, error) {
-		return g.Get("a").Str(), nil
+	stop := page.MustExpose("exposedFunc", func(g gson.JSON) (interface{}, error) {
+		return g.Get("k").Str(), nil
 	})
 
-	res := t.page.MustEval(`exposedFunc({a: 'ok'})`)
+	utils.All(func() {
+		res := page.MustEval(`exposedFunc({k: 'a'})`)
+		t.Eq("a", res.Str())
+	}, func() {
+		res := page.MustEval(`exposedFunc({k: 'b'})`)
+		t.Eq("b", res.Str())
+	})()
+
+	// survive the reload
+	page.MustReload().MustWaitLoad()
+	res := page.MustEval(`exposedFunc({k: 'ok'})`)
 	t.Eq("ok", res.Str())
 
 	stop()
@@ -96,19 +106,19 @@ func (t T) PageExpose() {
 		stop()
 	})
 	t.Panic(func() {
-		t.page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
+		page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		t.page.MustExpose("exposedFunc", nil)
+		page.MustExpose("exposedFunc", nil)
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeAddBinding{})
-		t.page.MustExpose("exposedFunc2", nil)
+		page.MustExpose("exposedFunc2", nil)
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
-		t.page.MustExpose("exposedFunc", nil)
+		page.MustExpose("exposedFunc", nil)
 	})
 }
 
