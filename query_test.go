@@ -176,6 +176,9 @@ func (t T) ElementR() {
 	p = t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el = p.MustElementR("input", `submit`)
 	t.Eq("submit", el.MustText())
+
+	el = p.MustElementR("input", `placeholder`)
+	t.Eq("blur", *el.MustAttribute("id"))
 }
 
 func (t T) ElementFromElement() {

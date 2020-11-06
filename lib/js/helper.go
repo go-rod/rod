@@ -130,7 +130,7 @@ var Invisible = &Function{
 
 var Text = &Function{
 	Name:         "text",
-	Definition:   `function(){switch(this.tagName){case"INPUT":case"TEXTAREA":return this.value;case"SELECT":return Array.from(this.selectedOptions).map(e=>e.innerText).join();case void 0:return this.textContent;default:return this.innerText}}`,
+	Definition:   `function(){switch(this.tagName){case"INPUT":case"TEXTAREA":return this.value||this.placeholder;case"SELECT":return Array.from(this.selectedOptions).map(e=>e.innerText).join();case void 0:return this.textContent;default:return this.innerText}}`,
 	Dependencies: []*Function{},
 }
 
