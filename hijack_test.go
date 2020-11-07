@@ -312,26 +312,11 @@ func (t T) GetDownloadFileBrowser() {
 
 	browser := t.browser
 	page := browser.MustPage(s.URL("/page"))
-
 	wait := browser.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
 	page.MustElement("a").MustClick()
 	data := wait()
 
 	t.Eq(content, string(data))
-
-	t.Panic(func() { // fail to FetchEnable
-		t.mc.stubErr(2, proto.FetchEnable{})
-		defer func() { _ = proto.FetchDisable{}.Call(page) }()
-		browser.Context(t.Context()).MustGetDownloadFile(s.URL("/d"))()
-	})
-	{ // Hijack.LoadResponse error
-		waitErr := browser.GetDownloadFile(s.URL("/d"), "", &http.Client{
-			Transport: &MockRoundTripper{err: errors.New("err")},
-		})
-		page.MustElement("a").MustClick()
-		_, _, err := waitErr()
-		t.Err(err)
-	}
 }
 
 func (t T) GetDownloadFileFromDataURI() {
