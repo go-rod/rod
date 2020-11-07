@@ -371,6 +371,68 @@ func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse
 
 // GetDownloadFile of the next download url that matches the pattern, returns the file content.
 // The handler will be used once and removed.
+func (b *Browser) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType, client *http.Client) func() (http.Header, []byte, error) {
+	enable := b.DisableDomain("", &proto.FetchEnable{})
+
+	_ = proto.BrowserSetDownloadBehavior{
+		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
+		BrowserContextID: b.BrowserContextID,
+	}.Call(b)
+
+	r := b.HijackRequests()
+
+	ctx, cancel := context.WithCancel(b.GetContext())
+	downloading := &proto.PageDownloadWillBegin{}
+	waitDownload := b.Context(ctx).WaitEvent(downloading)
+
+	return func() (http.Header, []byte, error) {
+		defer enable()
+		defer cancel()
+
+		defer func() {
+			_ = proto.BrowserSetDownloadBehavior{
+				Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
+				BrowserContextID: b.BrowserContextID,
+			}.Call(b)
+		}()
+
+		var body []byte
+		var header http.Header
+		wg := &sync.WaitGroup{}
+		wg.Add(1)
+
+		var err error
+		err = r.Add(pattern, resourceType, func(ctx *Hijack) {
+			defer wg.Done()
+
+			ctx.Skip = true
+
+			err = ctx.LoadResponse(client, true)
+			if err != nil {
+				return
+			}
+
+			header = ctx.Response.Headers()
+			body = ctx.Response.payload.Body
+		})
+		if err != nil {
+			return nil, nil, err
+		}
+
+		go r.Run()
+		go func() {
+			waitDownload()
+		}()
+
+		wg.Wait()
+		r.MustStop()
+
+		return header, body, nil
+	}
+}
+
+// GetDownloadFile of the next download url that matches the pattern, returns the file content.
+// The handler will be used once and removed.
 func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType, client *http.Client) func() (http.Header, []byte, error) {
 	enable := p.DisableDomain(&proto.FetchEnable{})
 
