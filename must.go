@@ -31,16 +31,6 @@ func (b *Browser) MustClose() {
 	_ = b.Close()
 }
 
-// MustGetDownloadFile is similar to GetDownloadFile
-func (b *Browser) MustGetDownloadFile(pattern string) func() []byte {
-	wait := b.GetDownloadFile(pattern, "", http.DefaultClient)
-	return func() []byte {
-		_, body, err := wait()
-		utils.E(err)
-		return body
-	}
-}
-
 // MustIncognito is similar to Incognito
 func (b *Browser) MustIncognito() *Browser {
 	b, err := b.Incognito()

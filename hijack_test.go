@@ -303,22 +303,6 @@ func (t T) GetDownloadFile() {
 	}
 }
 
-func (t T) GetDownloadFileBrowser() {
-	s := t.Serve()
-	content := "test content"
-
-	s.Route("/d", ".bin", []byte(content))
-	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download target="_blank">click</a></html>`, s.URL()))
-
-	browser := t.browser
-	page := browser.MustPage(s.URL("/page"))
-	wait := browser.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
-	page.MustElement("a").MustClick()
-	data := wait()
-
-	t.Eq(content, string(data))
-}
-
 func (t T) GetDownloadFileFromDataURI() {
 	s := t.Serve()
 
