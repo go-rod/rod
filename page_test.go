@@ -800,3 +800,21 @@ func (t T) WaitDownloadDataURI() {
 	data = wait2()
 	t.Eq("test blob", string(data))
 }
+
+func (t T) WaitDownloadFromNewPage() {
+	s := t.Serve()
+	content := "test content"
+
+	s.Route("/d", ".bin", content)
+	s.Route("/page", ".html", fmt.Sprintf(
+		`<html><a href="%s/d" download target="_blank">click</a></html>`,
+		s.URL()),
+	)
+
+	page := t.page.MustNavigate(s.URL("/page"))
+	wait := page.MustWaitDownload()
+	page.MustElement("a").MustClick()
+	data := wait()
+
+	t.Eq(content, string(data))
+}
