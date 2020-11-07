@@ -420,9 +420,7 @@ func (b *Browser) GetDownloadFile(pattern string, resourceType proto.NetworkReso
 		}
 
 		go r.Run()
-		go func() {
-			waitDownload()
-		}()
+		go waitDownload()
 
 		wg.Wait()
 		r.MustStop()
