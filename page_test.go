@@ -456,6 +456,15 @@ func (t T) Mouse() {
 	})
 }
 
+func (t T) MouseHoldMultiple() {
+	p := t.page.MustNavigate(t.blank())
+
+	p.Mouse.MustDown("left")
+	defer p.Mouse.MustUp("left")
+	p.Mouse.MustDown("right")
+	defer p.Mouse.MustUp("right")
+}
+
 func (t T) MouseClick() {
 	t.browser.SlowMotion(1)
 	defer func() { t.browser.SlowMotion(0) }()
@@ -632,19 +641,6 @@ func (t T) PageConsoleLog() {
 	wait()
 	t.Eq("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
 	t.Eq(`1 map[b:[test]]`, p.MustObjectsToJSON(e.Args).Join(" "))
-}
-
-func (t T) PageOthers() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
-
-	t.Eq("body", p.MustElementByJS(`document.body`).MustDescribe().LocalName)
-	t.Len(p.MustElementsByJS(`document.querySelectorAll('input')`), 5)
-	t.Eq(1, p.MustEval(`1`).Int())
-
-	p.Mouse.MustDown("left")
-	defer p.Mouse.MustUp("left")
-	p.Mouse.MustDown("right")
-	defer p.Mouse.MustUp("right")
 }
 
 func (t T) Fonts() {

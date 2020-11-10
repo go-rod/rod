@@ -153,10 +153,10 @@ func (t T) PageElementX() {
 }
 
 func (t T) PageElementsX() {
-	t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 	t.page.MustElement("body")
-	list := t.page.MustElementsX("//input")
-	t.Len(list, 5)
+	list := t.page.MustElementsX("//button")
+	t.Len(list, 4)
 }
 
 func (t T) ElementR() {
@@ -203,13 +203,13 @@ func (t T) ElementParents() {
 }
 
 func (t T) ElementSiblings() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
-	el := p.MustElement("hr")
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+	el := p.MustElement("div")
 	a := el.MustPrevious()
 	b := el.MustNext()
 
-	t.Eq("INPUT", a.MustEval(`this.tagName`).String())
-	t.Eq("SELECT", b.MustEval(`this.tagName`).String())
+	t.Eq(a.MustText(), "01")
+	t.Eq(b.MustText(), "04")
 }
 
 func (t T) ElementFromElementX() {
@@ -236,15 +236,21 @@ func (t T) ElementTracing() {
 	t.Eq(`rod.element("code")`, p.MustElement("code").MustText())
 }
 
-func (t T) PageElementByJSErr() {
+func (t T) PageElementByJS() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	t.Eq(p.MustElementByJS(`document.querySelector('button')`).MustText(), "click me")
+
 	_, err := p.ElementByJS(rod.Eval(`1`))
 	t.Is(err, &rod.ErrExpectElement{})
 	t.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
-func (t T) PageElementsByJSErr() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+func (t T) PageElementsByJS() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html")).MustWaitLoad()
+
+	t.Len(p.MustElementsByJS("document.querySelectorAll('button')"), 4)
+
 	_, err := p.ElementsByJS(rod.Eval(`[1]`))
 	t.Is(err, &rod.ErrExpectElements{})
 	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
