@@ -59,7 +59,7 @@ func (t T) Trace() {
 
 	t.Eq(rod.TraceTypeInput, msg.Type)
 	t.Eq("left click", msg.Details)
-	t.Eq(`[input] "left click"`, msg.String())
+	t.Eq(`[input] left click`, msg.String())
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)

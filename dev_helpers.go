@@ -97,7 +97,12 @@ type TraceMsg struct {
 }
 
 func (msg *TraceMsg) String() string {
-	return fmt.Sprintf("[%s] %v", msg.Type, utils.MustToJSON(msg.Details))
+	info := ""
+	var ok bool
+	if info, ok = msg.Details.(string); !ok {
+		info = utils.MustToJSON(msg.Details)
+	}
+	return fmt.Sprintf("[%s] %s", msg.Type, info)
 }
 
 // Overlay a rectangle on the main frame with specified message
