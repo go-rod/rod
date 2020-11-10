@@ -22,7 +22,7 @@ var ElementX = &Function{
 
 var ElementsX = &Function{
 	Name:         "elementsX",
-	Definition:   `function(e){const t=functions.selectable(this),n=document.evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[];let o;for(;o=n.iterateNext();)i.push(o);return i}`,
+	Definition:   `function(e){const t=functions.selectable(this),n=document.evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[];let s;for(;s=n.iterateNext();)i.push(s);return i}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -64,13 +64,13 @@ var Rect = &Function{
 
 var Overlay = &Function{
 	Name:         "overlay",
-	Definition:   `async function(e,t,n,i,o,s){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${o}px;\n        width: ${i}px;` + "`" + `,i*o==0&&(r.style.border="none"),!s)return void document.body.appendChild(r);const d=document.createElement("div");d.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${o}px;` + "`" + `,d.innerHTML=s,r.appendChild(d),document.body.appendChild(r),window.innerHeight<d.offsetHeight+n+o&&(d.style.top=-d.offsetHeight-2+"px"),window.innerWidth<d.offsetWidth+t&&(d.style.left=window.innerWidth-d.offsetWidth-t+"px")}`,
+	Definition:   `async function(e,t,n,i,s,o){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${s}px;\n        width: ${i}px;` + "`" + `,i*s==0&&(r.style.border="none"),!o)return void document.body.appendChild(r);const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${s}px;` + "`" + `,l.innerHTML=o,r.appendChild(l),document.body.appendChild(r),window.innerHeight<l.offsetHeight+n+s&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 var ElementOverlay = &Function{
 	Name:         "elementOverlay",
-	Definition:   `async function(e,t){const n=functions.tag(this);let i=n.getBoundingClientRect();await functions.overlay(e,i.left,i.top,i.width,i.height,t);const o=()=>{const t=document.getElementById(e);if(null===t)return;const s=n.getBoundingClientRect();i.left!==s.left||i.top!==s.top||i.width!==s.width||i.height!==s.height?(t.style.left=s.left+"px",t.style.top=s.top+"px",t.style.width=s.width+"px",t.style.height=s.height+"px",i=s,setTimeout(o,100)):setTimeout(o,100)};setTimeout(o,100)}`,
+	Definition:   `async function(e,t){const n=functions.tag(this);let i=n.getBoundingClientRect();await functions.overlay(e,i.left,i.top,i.width,i.height,t);const s=()=>{const t=document.getElementById(e);if(null===t)return;const o=n.getBoundingClientRect();i.left!==o.left||i.top!==o.top||i.width!==o.width||i.height!==o.height?(t.style.left=o.left+"px",t.style.top=o.top+"px",t.style.width=o.width+"px",t.style.height=o.height+"px",i=o,setTimeout(s,100)):setTimeout(s,100)};setTimeout(s,100)}`,
 	Dependencies: []*Function{Tag, Overlay},
 }
 
@@ -98,6 +98,12 @@ var InputEvent = &Function{
 	Dependencies: []*Function{},
 }
 
+var InputTime = &Function{
+	Name:         "inputTime",
+	Definition:   `function(e){const t=new Date(e),n=e=>e.toString().padStart(2,"0"),i=t.getFullYear(),s=n(t.getMonth()+1),o=n(t.getDate()),r=n(t.getHours()),l=n(t.getMinutes());switch(this.type){case"date":this.value=` + "`" + `${i}-${s}-${o}` + "`" + `;break;case"datetime-local":this.value=` + "`" + `${i}-${s}-${o}T${r}:${l}` + "`" + `;break;case"month":this.value=s;break;case"time":this.value=` + "`" + `${r}:${l}` + "`" + `}functions.inputEvent.call(this)}`,
+	Dependencies: []*Function{InputEvent},
+}
+
 var SelectText = &Function{
 	Name:         "selectText",
 	Definition:   `function(e){const t=this.value.match(new RegExp(e));t&&this.setSelectionRange(t.index,t.index+t[0].length)}`,
@@ -112,7 +118,7 @@ var SelectAllText = &Function{
 
 var Select = &Function{
 	Name:         "select",
-	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(e=>t=>t.matches(e));break;default:i=e.map(e=>t=>t.innerText.includes(e))}const o=Array.from(this.options);i.forEach(e=>{const n=o.find(e);n&&(n.selected=t)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0}))}`,
+	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(e=>t=>t.matches(e));break;default:i=e.map(e=>t=>t.innerText.includes(e))}const s=Array.from(this.options);i.forEach(e=>{const n=s.find(e);n&&(n.selected=t)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0}))}`,
 	Dependencies: []*Function{},
 }
 
@@ -142,13 +148,13 @@ var Resource = &Function{
 
 var AddScriptTag = &Function{
 	Name:         "addScriptTag",
-	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,o)=>{var s=document.createElement("script");t?(s.src=t,s.onload=i):(s.type="text/javascript",s.text=n,i()),s.id=e,s.onerror=o,document.head.appendChild(s)})}`,
+	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,s)=>{var o=document.createElement("script");t?(o.src=t,o.onload=i):(o.type="text/javascript",o.text=n,i()),o.id=e,o.onerror=s,document.head.appendChild(o)})}`,
 	Dependencies: []*Function{},
 }
 
 var AddStyleTag = &Function{
 	Name:         "addStyleTag",
-	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,o)=>{var s;t?((s=document.createElement("link")).rel="stylesheet",s.href=t):((s=document.createElement("style")).type="text/css",s.appendChild(document.createTextNode(n)),i()),s.id=e,s.onload=i,s.onerror=o,document.head.appendChild(s)})}`,
+	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,s)=>{var o;t?((o=document.createElement("link")).rel="stylesheet",o.href=t):((o=document.createElement("style")).type="text/css",o.appendChild(document.createTextNode(n)),i()),o.id=e,o.onload=i,o.onerror=s,document.head.appendChild(o)})}`,
 	Dependencies: []*Function{},
 }
 
@@ -172,6 +178,6 @@ var Tag = &Function{
 
 var ExposeFunc = &Function{
 	Name:         "exposeFunc",
-	Definition:   `function(e,t){let n=0;window[e]=(e=>new Promise((i,o)=>{const s=t+"_cb"+n++;window[s]=((e,t)=>{delete window[s],t?o(t):i(e)}),window[t](JSON.stringify({req:e,cb:s}))}))}`,
+	Definition:   `function(e,t){let n=0;window[e]=(e=>new Promise((i,s)=>{const o=t+"_cb"+n++;window[o]=((e,t)=>{delete window[o],t?s(t):i(e)}),window[t](JSON.stringify({req:e,cb:o}))}))}`,
 	Dependencies: []*Function{},
 }

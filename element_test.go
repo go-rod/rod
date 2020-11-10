@@ -229,7 +229,7 @@ func (t T) KeyUp() {
 	t.True(p.MustHas("body[event=key-up-x]"))
 }
 
-func (t T) Text() {
+func (t T) Input() {
 	text := "雲の上は\nいつも晴れ"
 
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
@@ -242,6 +242,39 @@ func (t T) Text() {
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustText()
+	})
+}
+
+func (t T) InputTime() {
+	now := time.Now()
+
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+
+	var el *rod.Element
+	{
+		el = p.MustElement("[type=date]")
+		el.MustInputTime(now)
+
+		t.Eq(el.MustText(), now.Format("2006-01-02"))
+		t.True(p.MustHas("[event=input-date-change]"))
+	}
+
+	{
+		el = p.MustElement("[type=datetime-local]")
+		el.MustInputTime(now)
+
+		t.Eq(el.MustText(), now.Format("2006-01-02T15:04"))
+		t.True(p.MustHas("[event=input-datetime-local-change]"))
+	}
+
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustInputTime(now)
+	})
+
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+		el.MustInputTime(now)
 	})
 }
 

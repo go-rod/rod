@@ -212,7 +212,7 @@ func (el *Element) SelectAllText() error {
 	return err
 }
 
-// Input focus the element and input text to it.
+// Input focuses on the element and input text to it.
 // To empty the input you can use something like el.SelectAllText().MustInput("")
 func (el *Element) Input(text string) error {
 	err := el.WaitVisible()
@@ -233,6 +233,24 @@ func (el *Element) Input(text string) error {
 	}
 
 	_, err = el.Evaluate(jsHelper(js.InputEvent).ByUser())
+	return err
+}
+
+// InputTime focuses on the element and input time to it.
+func (el *Element) InputTime(t time.Time) error {
+	err := el.WaitVisible()
+	if err != nil {
+		return err
+	}
+
+	err = el.Focus()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTraceInput("input " + t.String())()
+
+	_, err = el.Evaluate(jsHelper(js.InputTime, t.UnixNano()/1e6).ByUser())
 	return err
 }
 

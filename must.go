@@ -699,6 +699,12 @@ func (el *Element) MustInput(text string) *Element {
 	return el
 }
 
+// MustInput is similar to Input
+func (el *Element) MustInputTime(t time.Time) *Element {
+	utils.E(el.InputTime(t))
+	return el
+}
+
 // MustBlur is similar to Blur
 func (el *Element) MustBlur() *Element {
 	utils.E(el.Blur())

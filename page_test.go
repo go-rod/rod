@@ -620,6 +620,11 @@ func (t T) PageInput() {
 	})
 }
 
+func (t T) PageInputDate() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	p.MustElement("[type=date]").MustInput("12")
+}
+
 func (t T) PageScroll() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/scroll.html")).MustWaitLoad()
 
