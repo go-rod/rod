@@ -61,9 +61,18 @@ can dynamically launch a browser for each remote driver with customizable browse
 It's [tuned](lib/docker/Dockerfile) for screenshots and fonts among popular natural languages.
 You can easily load balance requests to the cluster of this image, each container can create multiple browser instances at the same time.
 
-### Q: Why there is always an "about:blank" page
+### Q: Why is there always an "about:blank" page
 
-It's an issue of the browser itself. If we enable the `--no-first-run` flag and we don't create a blank page, it will create a hello page which will consume more power.
+It's an issue of the browser itself. If we enable the `--no-first-run` flag and we don't create a blank page, it will create a hello page which will consume more power. You can use the pseudo code below to reuse it or close it:
+
+```go
+page := browser.MustPages().MustFindByURL("about:blank")
+if reuse {
+  page.MustNavigate(url)
+} else {
+  page.MustClose()
+}
+```
 
 ### Q: Does it support other browsers like Firefox or Edge
 

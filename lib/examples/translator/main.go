@@ -15,11 +15,13 @@ func main() {
 
 	page := browser.MustPage("https://translate.google.com")
 
-	wait := page.MustWaitRequestIdle()
-	page.MustElement("#source").MustInput(source)
+	el := page.MustElement(`textarea[aria-label="Source text"]`)
+
+	wait := page.MustWaitRequestIdle("https://accounts.google.com")
+	el.MustInput(source)
 	wait()
 
-	result := page.MustElement(".tlid-translation").MustText()
+	result := page.MustElement("[role=region] span[lang]").MustText()
 
 	fmt.Println(result)
 }
