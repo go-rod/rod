@@ -47,6 +47,8 @@ func TestBasic(t *testing.T) {
 	as.Panic(func() {
 		parse("a")
 	})
+
+	as.Eq(try(func() { parse("slow=1") }), "invalid value for \"slow\": time: missing unit in duration \"1\" (learn format from https://golang.org/pkg/time/#ParseDuration)")
 }
 
 func TestDotFile(t *testing.T) {
@@ -65,4 +67,14 @@ dir=path =to file
 	as.True(Show)
 	as.Eq("9999", Port)
 	as.Eq("path =to file", Dir)
+}
+
+func try(fn func()) (err interface{}) {
+	defer func() {
+		err = recover()
+	}()
+
+	fn()
+
+	return err
 }

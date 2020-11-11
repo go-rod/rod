@@ -18,6 +18,7 @@ import (
 var Trace bool
 
 // Slow is the default of rod.Browser.Slowmotion
+// The format is same as https://golang.org/pkg/time/#ParseDuration
 var Slow time.Duration
 
 // Monitor is the default of rod.Browser.ServeMonitor
@@ -73,7 +74,11 @@ var rules = map[string]func(string){
 	"slow": func(v string) {
 		var err error
 		Slow, err = time.ParseDuration(v)
-		utils.E(err)
+		if err != nil {
+			msg := "invalid value for \"slow\": " + err.Error() +
+				" (learn format from https://golang.org/pkg/time/#ParseDuration)"
+			panic(msg)
+		}
 	},
 	"monitor": func(v string) {
 		Monitor = ":0"
