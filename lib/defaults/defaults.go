@@ -134,7 +134,7 @@ func init() {
 // Values are separated by commas, key and value are separated by "=",
 // For example, on unix-like OS:
 //
-//    rod="show,trace,slow,monitor" go run main.go
+//    rod="show,trace,slow=1s,monitor" go run main.go
 //
 //    rod="slow=1s,dir=path/has /space,monitor=:9223" go run main.go
 //
