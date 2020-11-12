@@ -206,9 +206,7 @@ type Hijack struct {
 	continueRequest *proto.FetchContinueRequest
 }
 
-// ContinueRequest without hijacking. Pass an empty proto.FetchContinueRequest struct to
-// use the default continue behavior:
-//     ctx.ContinueRequest(&proto.FetchContinueRequest{})
+// ContinueRequest without hijacking. The RequestID will be set by the router, you don't have to set it.
 func (h *Hijack) ContinueRequest(cq *proto.FetchContinueRequest) {
 	h.continueRequest = cq
 }
