@@ -112,3 +112,13 @@ func unzip(logger io.Writer, from, to string) (err error) {
 
 	return zr.Close()
 }
+
+func getSelfClosePage() string {
+	path := filepath.Join(os.TempDir(), "rod", "self-close.html")
+
+	if !utils.FileExists(path) {
+		_ = utils.OutputFile(path, "<script>close()</script>")
+	}
+
+	return path
+}

@@ -58,7 +58,7 @@ func New() *Launcher {
 		"headless": nil,
 
 		// to prevent welcome page
-		"": {"about:blank"},
+		"": {getSelfClosePage()},
 
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
@@ -121,6 +121,7 @@ func NewUserMode() *Launcher {
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
 			"enable-automation":     nil,
+			"":                      {getSelfClosePage()},
 		},
 		exit:    make(chan struct{}),
 		browser: NewBrowser(),

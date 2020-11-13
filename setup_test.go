@@ -91,7 +91,7 @@ func (cp TesterPool) new() *T {
 		MustIgnoreCertErrors(false).
 		DefaultDevice(devices.Test)
 
-	page := getOnePage(browser)
+	page := browser.MustPage("")
 
 	return &T{
 		mc:      mc,
@@ -121,23 +121,6 @@ func (cp TesterPool) get(t *testing.T) T {
 	tester.PanicAfter(*TimeoutEach)
 
 	return *tester
-}
-
-func getOnePage(b *rod.Browser) (page *rod.Page) {
-	for i := 0; i < 50; i++ {
-		page = b.MustPages().First()
-		if page != nil {
-			return
-		}
-		utils.Sleep(0.1)
-	}
-
-	// TODO: I don't know why sometimes windows don't have the init page
-	if runtime.GOOS == "windows" {
-		page = b.MustPage("")
-	}
-
-	return
 }
 
 func (t T) enableCDPLog() {
