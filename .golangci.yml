@@ -10,3 +10,6 @@ linters:
 
 gocyclo:
   min-complexity: 15
+
+issues:
+  exclude-use-default: false

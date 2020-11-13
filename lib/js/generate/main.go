@@ -19,6 +19,7 @@ func main() {
 		name := fn.Get("name").Str()
 		def := fn.Get("definition").Str()
 		out += utils.S(`
+			// {{.Name}} ...
 			var {{.Name}} = &Function{
 				Name: "{{.name}}",
 				Definition:   {{.definition}},

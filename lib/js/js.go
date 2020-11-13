@@ -11,6 +11,7 @@ type Function struct {
 	Dependencies []*Function
 }
 
+// Functions ...
 var Functions = &Function{
 	Name:         "functions",
 	Definition:   "() => ({})",

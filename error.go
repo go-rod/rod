@@ -120,10 +120,12 @@ func (e *ErrNotInteractable) Error() string {
 type ErrInvisibleShape struct {
 }
 
+// Error ...
 func (e *ErrInvisibleShape) Error() string {
 	return "element has no visible shape"
 }
 
+// Unwrap ...
 func (e *ErrInvisibleShape) Unwrap() error {
 	return &ErrNotInteractable{}
 }
@@ -133,10 +135,12 @@ type ErrCovered struct {
 	*Element
 }
 
+// Error ...
 func (e *ErrCovered) Error() string {
 	return fmt.Sprintf("element covered by: %v", e.MustHTML())
 }
 
+// Unwrap ...
 func (e *ErrCovered) Unwrap() error {
 	return &ErrNotInteractable{}
 }
