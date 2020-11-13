@@ -122,11 +122,11 @@ func (t T) SearchIframesAfterReload() {
 func (t T) PageRace() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 
-	t.Eq("01", p.Race().MustElement("button").MustDo())
+	t.Eq("01", p.Race().MustElement("button").MustDo().MustText())
 
-	t.Eq("01", p.Race().MustElementX("//button").MustDo())
+	t.Eq("01", p.Race().MustElementX("//button").MustDo().MustText())
 
-	t.Eq("02", p.Race().MustElementR("button", "02").MustDo())
+	t.Eq("02", p.Race().MustElementR("button", "02").MustDo().MustText())
 
 	el, err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
 		MustElement("not-exists").
