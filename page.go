@@ -487,13 +487,13 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.Evaluate(jsHelper(js.WaitIdle, timeout.Seconds()).ByPromise())
+	_, err = p.Evaluate(EvalHelper(js.WaitIdle, timeout.Seconds()).ByPromise())
 	return err
 }
 
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
-	_, err := p.Evaluate(jsHelper(js.WaitLoad).ByPromise())
+	_, err := p.Evaluate(EvalHelper(js.WaitLoad).ByPromise())
 	return err
 }
 
@@ -501,7 +501,7 @@ func (p *Page) WaitLoad() error {
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.Evaluate(jsHelper(js.AddScriptTag, id, url, content).ByPromise())
+	_, err := p.Evaluate(EvalHelper(js.AddScriptTag, id, url, content).ByPromise())
 	return err
 }
 
@@ -509,7 +509,7 @@ func (p *Page) AddScriptTag(url, content string) error {
 func (p *Page) AddStyleTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))
 	id := hex.EncodeToString(hash[:])
-	_, err := p.Evaluate(jsHelper(js.AddStyleTag, id, url, content).ByPromise())
+	_, err := p.Evaluate(EvalHelper(js.AddStyleTag, id, url, content).ByPromise())
 	return err
 }
 

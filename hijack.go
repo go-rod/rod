@@ -425,7 +425,7 @@ func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourc
 
 			u := downloading.URL
 			if strings.HasPrefix(u, "blob:") {
-				res, e := p.Evaluate(jsHelper(js.FetchAsDataURL, u).ByPromise())
+				res, e := p.Evaluate(EvalHelper(js.FetchAsDataURL, u).ByPromise())
 				if e != nil {
 					err = e
 					wg.Done()

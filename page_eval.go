@@ -53,8 +53,9 @@ func Eval(js string, args ...interface{}) *EvalOptions {
 	}
 }
 
-// Convert name and jsArgs to Page.Eval, the name is method name in the "lib/js/helper.js".
-func jsHelper(fn *js.Function, args ...interface{}) *EvalOptions {
+// EvalHelper creates a special EvalOptions that will cache the fn on the page js context.
+// Useful when you want to extend the helpers of Rod, such as create your own selector helpers.
+func EvalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue:  true,
 		JSArgs:   args,
