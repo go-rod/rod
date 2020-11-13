@@ -44,6 +44,15 @@ If the code coverage is less than 100%, the CI will fail.
 
 Learn the [basics](https://blog.golang.org/cover) first.
 
+To visually see the coverage report you can run something like this:
+
+```bash
+go test -cover -coverprofile=coverage.txt
+go tool cover -html=coverage.txt
+```
+
+It will open a web page to tell you which line is not covered.
+
 To cover the error branch of the code we usually intercept cdp calls.
 There are several helper functions for it:
 
