@@ -42,8 +42,8 @@ func (t T) DefaultDevice() {
 		close(wait)
 	})
 
-	t.browser.DefaultDevice(devices.IPhoneX, false)
-	defer t.browser.DefaultDevice(devices.Test, true)
+	t.browser.DefaultDevice(devices.IPhoneX)
+	defer t.browser.DefaultDevice(devices.Test)
 
 	t.newPage(s.URL("/t"))
 

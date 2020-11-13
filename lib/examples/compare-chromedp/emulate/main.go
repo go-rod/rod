@@ -9,7 +9,7 @@ func main() {
 	page := rod.New().MustConnect().MustPage("")
 
 	// emulate iPhone 7 landscape
-	err := page.Emulate(devices.IPhone6or7or8, true)
+	err := page.Emulate(devices.IPhone6or7or8.Landescape())
 	if err != nil {
 		panic(err)
 	}

@@ -18,7 +18,7 @@ func main() {
 		code += utils.S(`
 
 			// {{.name}} device
-			{{.name}} = Device{gson.NewFrom({{.desc}})}`,
+			{{.name}} = New({{.desc}})`,
 			"name", normalizeName(name),
 			"title", name,
 			"desc", utils.EscapeGoString(strings.TrimSpace(d.JSON("\t", "  "))),

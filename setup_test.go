@@ -89,7 +89,7 @@ func (cp TesterPool) new() *T {
 
 	browser := rod.New().ControlURL("").Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
-		DefaultDevice(devices.Test, true)
+		DefaultDevice(devices.Test)
 
 	page := getOnePage(browser)
 

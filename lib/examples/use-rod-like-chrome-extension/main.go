@@ -22,7 +22,7 @@ func main() {
 	// Launches a new browser with the "new user mode" option, and returns the URL to control that browser.
 	wsURL := launcher.NewUserMode().MustLaunch()
 
-	browser := rod.New().ControlURL(wsURL).MustConnect().DefaultDevice(devices.Clear, false)
+	browser := rod.New().ControlURL(wsURL).MustConnect().DefaultDevice(devices.Clear)
 
 	// Run a extension. Here we created a link previewer extension as an example.
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.
@@ -33,7 +33,7 @@ func main() {
 
 func linkPreviewer(browser *rod.Browser) {
 	// Create a headless browser to generate preview of links on background.
-	previewer := rod.New().MustConnect().DefaultDevice(devices.IPhone6or7or8, false)
+	previewer := rod.New().MustConnect().DefaultDevice(devices.IPhone6or7or8)
 	previewer.MustSetCookies(browser.MustGetCookies()) // share cookies
 	pool := rod.NewPagePool(5)
 	create := func() *rod.Page { return previewer.MustPage("") }

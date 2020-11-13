@@ -8,13 +8,14 @@ import (
 // Device for devices
 type Device struct {
 	gson.JSON
+	landscape bool
 }
 
 // Clear is used to clear overrides
 var Clear = Device{}
 
 // Test device
-var Test = Device{gson.NewFrom(`{
+var Test = New(`{
 	"screen": {
 		"device-pixel-ratio": 1,
 		"horizontal": {
@@ -27,17 +28,29 @@ var Test = Device{gson.NewFrom(`{
 		}
 	},
 	"user-agent": "Test Agent"
-}`)}
+}`)
+
+// New device from json string
+func New(json string) Device {
+	return Device{gson.NewFrom(json), false}
+}
+
+// Landescape clones the device and set it to landscape mode
+func (device Device) Landescape() Device {
+	d := device
+	d.landscape = true
+	return d
+}
 
 // Metrics config
-func (device Device) Metrics(landscape bool) *proto.EmulationSetDeviceMetricsOverride {
+func (device Device) Metrics() *proto.EmulationSetDeviceMetricsOverride {
 	if device == Clear {
 		return nil
 	}
 
 	var screen gson.JSON
 	var orientation *proto.EmulationScreenOrientation
-	if landscape {
+	if device.landscape {
 		screen = device.Get("screen.horizontal")
 		orientation = &proto.EmulationScreenOrientation{
 			Angle: 90,

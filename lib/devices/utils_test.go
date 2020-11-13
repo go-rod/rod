@@ -10,7 +10,7 @@ import (
 func TestErr(t *testing.T) {
 	as := got.New(t)
 
-	v := devices.IPad.Metrics(false)
+	v := devices.IPad.Metrics()
 	touch := devices.IPad.Touch()
 	as.Eq(768, v.Width)
 	as.Eq(1024, v.Height)
@@ -19,7 +19,7 @@ func TestErr(t *testing.T) {
 	as.True(v.Mobile)
 	as.True(touch.Enabled)
 
-	v = devices.LaptopWithMDPIScreen.Metrics(true)
+	v = devices.LaptopWithMDPIScreen.Landescape().Metrics()
 	touch = devices.LaptopWithMDPIScreen.Touch()
 	as.Eq(1280, v.Width)
 	as.Eq(90, v.ScreenOrientation.Angle)
@@ -29,7 +29,7 @@ func TestErr(t *testing.T) {
 	u := devices.IPad.UserAgent()
 	as.Eq("Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1", u.UserAgent)
 
-	as.Nil(devices.Clear.Metrics(true))
+	as.Nil(devices.Clear.Metrics())
 	as.False(devices.Clear.Touch().Enabled)
 	as.Nil(devices.Clear.UserAgent())
 }

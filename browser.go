@@ -46,8 +46,7 @@ type Browser struct {
 	headless   bool
 	monitor    string
 
-	defaultDevice          devices.Device
-	defaultDeviceLandscape bool
+	defaultDevice devices.Device
 
 	client      CDPClient
 	event       *goob.Observable // all the browser events from cdp client
@@ -62,16 +61,15 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:                    context.Background(),
-		sleeper:                DefaultSleeper,
-		slowMotion:             defaults.Slow,
-		trace:                  defaults.Trace,
-		monitor:                defaults.Monitor,
-		logger:                 DefaultLogger,
-		defaultDevice:          devices.LaptopWithMDPIScreen,
-		defaultDeviceLandscape: true,
-		targetsLock:            &sync.Mutex{},
-		states:                 &sync.Map{},
+		ctx:           context.Background(),
+		sleeper:       DefaultSleeper,
+		slowMotion:    defaults.Slow,
+		trace:         defaults.Trace,
+		monitor:       defaults.Monitor,
+		logger:        DefaultLogger,
+		defaultDevice: devices.LaptopWithMDPIScreen.Landescape(),
+		targetsLock:   &sync.Mutex{},
+		states:        &sync.Map{},
 	}
 }
 
@@ -126,9 +124,8 @@ func (b *Browser) Client(c CDPClient) *Browser {
 
 // DefaultDevice sets the default device for new page in the future. Default is devices.LaptopWithMDPIScreen .
 // Set it to devices.Clear to disable it.
-func (b *Browser) DefaultDevice(d devices.Device, landscape bool) *Browser {
+func (b *Browser) DefaultDevice(d devices.Device) *Browser {
 	b.defaultDevice = d
-	b.defaultDeviceLandscape = landscape
 	return b
 }
 
@@ -275,7 +272,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	if b.defaultDevice != devices.Clear {
-		err = page.Emulate(b.defaultDevice, b.defaultDeviceLandscape)
+		err = page.Emulate(b.defaultDevice)
 		if err != nil {
 			return nil, err
 		}

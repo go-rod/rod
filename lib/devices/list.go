@@ -2,12 +2,10 @@
 
 package devices
 
-import "github.com/ysmood/gson"
-
 var (
 
 	// IPhone4 device
-	IPhone4 = Device{gson.NewFrom(`{
+	IPhone4 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -27,10 +25,10 @@ var (
 	  "title": "iPhone 4",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53"
-	}`)}
+	}`)
 
 	// IPhone5orSE device
-	IPhone5orSE = Device{gson.NewFrom(`{
+	IPhone5orSE = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -68,10 +66,10 @@ var (
 	  "title": "iPhone 5/SE",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
-	}`)}
+	}`)
 
 	// IPhone6or7or8 device
-	IPhone6or7or8 = Device{gson.NewFrom(`{
+	IPhone6or7or8 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -109,10 +107,10 @@ var (
 	  "title": "iPhone 6/7/8",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)}
+	}`)
 
 	// IPhone6or7or8Plus device
-	IPhone6or7or8Plus = Device{gson.NewFrom(`{
+	IPhone6or7or8Plus = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -150,10 +148,10 @@ var (
 	  "title": "iPhone 6/7/8 Plus",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)}
+	}`)
 
 	// IPhoneX device
-	IPhoneX = Device{gson.NewFrom(`{
+	IPhoneX = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -173,10 +171,10 @@ var (
 	  "title": "iPhone X",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)}
+	}`)
 
 	// BlackBerryZ30 device
-	BlackBerryZ30 = Device{gson.NewFrom(`{
+	BlackBerryZ30 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -196,10 +194,10 @@ var (
 	  "title": "BlackBerry Z30",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+"
-	}`)}
+	}`)
 
 	// Nexus4 device
-	Nexus4 = Device{gson.NewFrom(`{
+	Nexus4 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -226,10 +224,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "4.4.2"
 	  }
-	}`)}
+	}`)
 
 	// Nexus5 device
-	Nexus5 = Device{gson.NewFrom(`{
+	Nexus5 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -324,10 +322,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "6.0"
 	  }
-	}`)}
+	}`)
 
 	// Nexus5X device
-	Nexus5X = Device{gson.NewFrom(`{
+	Nexus5X = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -440,10 +438,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "8.0.0"
 	  }
-	}`)}
+	}`)
 
 	// Nexus6 device
-	Nexus6 = Device{gson.NewFrom(`{
+	Nexus6 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -470,10 +468,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "7.1.1"
 	  }
-	}`)}
+	}`)
 
 	// Nexus6P device
-	Nexus6P = Device{gson.NewFrom(`{
+	Nexus6P = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -518,10 +516,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "8.0.0"
 	  }
-	}`)}
+	}`)
 
 	// Pixel2 device
-	Pixel2 = Device{gson.NewFrom(`{
+	Pixel2 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -548,10 +546,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "8.0"
 	  }
-	}`)}
+	}`)
 
 	// Pixel2XL device
-	Pixel2XL = Device{gson.NewFrom(`{
+	Pixel2XL = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -578,10 +576,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "8.0.0"
 	  }
-	}`)}
+	}`)
 
 	// LGOptimusL70 device
-	LGOptimusL70 = Device{gson.NewFrom(`{
+	LGOptimusL70 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -608,10 +606,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "4.4.2"
 	  }
-	}`)}
+	}`)
 
 	// NokiaN9 device
-	NokiaN9 = Device{gson.NewFrom(`{
+	NokiaN9 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -631,10 +629,10 @@ var (
 	  "title": "Nokia N9",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13"
-	}`)}
+	}`)
 
 	// NokiaLumia520 device
-	NokiaLumia520 = Device{gson.NewFrom(`{
+	NokiaLumia520 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -654,10 +652,10 @@ var (
 	  "title": "Nokia Lumia 520",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)"
-	}`)}
+	}`)
 
 	// MicrosoftLumia550 device
-	MicrosoftLumia550 = Device{gson.NewFrom(`{
+	MicrosoftLumia550 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -677,10 +675,10 @@ var (
 	  "title": "Microsoft Lumia 550",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
-	}`)}
+	}`)
 
 	// MicrosoftLumia950 device
-	MicrosoftLumia950 = Device{gson.NewFrom(`{
+	MicrosoftLumia950 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -700,10 +698,10 @@ var (
 	  "title": "Microsoft Lumia 950",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
-	}`)}
+	}`)
 
 	// GalaxySIII device
-	GalaxySIII = Device{gson.NewFrom(`{
+	GalaxySIII = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -730,10 +728,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "4.0"
 	  }
-	}`)}
+	}`)
 
 	// GalaxyS5 device
-	GalaxyS5 = Device{gson.NewFrom(`{
+	GalaxyS5 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -760,10 +758,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "5.0"
 	  }
-	}`)}
+	}`)
 
 	// JioPhone2 device
-	JioPhone2 = Device{gson.NewFrom(`{
+	JioPhone2 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -783,10 +781,10 @@ var (
 	  "title": "JioPhone 2",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5"
-	}`)}
+	}`)
 
 	// KindleFireHDX device
-	KindleFireHDX = Device{gson.NewFrom(`{
+	KindleFireHDX = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -806,10 +804,10 @@ var (
 	  "title": "Kindle Fire HDX",
 	  "type": "tablet",
 	  "user-agent": "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true"
-	}`)}
+	}`)
 
 	// IPadMini device
-	IPadMini = Device{gson.NewFrom(`{
+	IPadMini = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -829,10 +827,10 @@ var (
 	  "title": "iPad Mini",
 	  "type": "tablet",
 	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)}
+	}`)
 
 	// IPad device
-	IPad = Device{gson.NewFrom(`{
+	IPad = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -870,10 +868,10 @@ var (
 	  "title": "iPad",
 	  "type": "tablet",
 	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)}
+	}`)
 
 	// IPadPro device
-	IPadPro = Device{gson.NewFrom(`{
+	IPadPro = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -893,10 +891,10 @@ var (
 	  "title": "iPad Pro",
 	  "type": "tablet",
 	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)}
+	}`)
 
 	// BlackberryPlayBook device
-	BlackberryPlayBook = Device{gson.NewFrom(`{
+	BlackberryPlayBook = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -916,10 +914,10 @@ var (
 	  "title": "Blackberry PlayBook",
 	  "type": "tablet",
 	  "user-agent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+"
-	}`)}
+	}`)
 
 	// Nexus10 device
-	Nexus10 = Device{gson.NewFrom(`{
+	Nexus10 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -946,10 +944,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "6.0.1"
 	  }
-	}`)}
+	}`)
 
 	// Nexus7 device
-	Nexus7 = Device{gson.NewFrom(`{
+	Nexus7 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -976,10 +974,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "6.0.1"
 	  }
-	}`)}
+	}`)
 
 	// GalaxyNote3 device
-	GalaxyNote3 = Device{gson.NewFrom(`{
+	GalaxyNote3 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -1006,10 +1004,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "4.3"
 	  }
-	}`)}
+	}`)
 
 	// GalaxyNoteII device
-	GalaxyNoteII = Device{gson.NewFrom(`{
+	GalaxyNoteII = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -1036,10 +1034,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "4.1"
 	  }
-	}`)}
+	}`)
 
 	// LaptopWithTouch device
-	LaptopWithTouch = Device{gson.NewFrom(`{
+	LaptopWithTouch = New(`{
 	  "capabilities": [
 	    "touch"
 	  ],
@@ -1064,10 +1062,10 @@ var (
 	  "title": "Laptop with touch",
 	  "type": "notebook",
 	  "user-agent": ""
-	}`)}
+	}`)
 
 	// LaptopWithHiDPIScreen device
-	LaptopWithHiDPIScreen = Device{gson.NewFrom(`{
+	LaptopWithHiDPIScreen = New(`{
 	  "capabilities": [],
 	  "modes": [
 	    {
@@ -1090,10 +1088,10 @@ var (
 	  "title": "Laptop with HiDPI screen",
 	  "type": "notebook",
 	  "user-agent": ""
-	}`)}
+	}`)
 
 	// LaptopWithMDPIScreen device
-	LaptopWithMDPIScreen = Device{gson.NewFrom(`{
+	LaptopWithMDPIScreen = New(`{
 	  "capabilities": [],
 	  "modes": [
 	    {
@@ -1116,10 +1114,10 @@ var (
 	  "title": "Laptop with MDPI screen",
 	  "type": "notebook",
 	  "user-agent": ""
-	}`)}
+	}`)
 
 	// MotoG4 device
-	MotoG4 = Device{gson.NewFrom(`{
+	MotoG4 = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -1164,10 +1162,10 @@ var (
 	    "platform": "Android",
 	    "platformVersion": "6.0.1"
 	  }
-	}`)}
+	}`)
 
 	// SurfaceDuo device
-	SurfaceDuo = Device{gson.NewFrom(`{
+	SurfaceDuo = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -1262,10 +1260,10 @@ var (
 	  "title": "Surface Duo",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
-	}`)}
+	}`)
 
 	// GalaxyFold device
-	GalaxyFold = Device{gson.NewFrom(`{
+	GalaxyFold = New(`{
 	  "capabilities": [
 	    "touch",
 	    "mobile"
@@ -1336,5 +1334,5 @@ var (
 	  "title": "Galaxy Fold",
 	  "type": "phone",
 	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
-	}`)}
+	}`)
 )

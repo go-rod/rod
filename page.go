@@ -210,8 +210,8 @@ func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) erro
 }
 
 // Emulate the device, such as iPhone9. If device is devices.Clear, it will clear the override.
-func (p *Page) Emulate(device devices.Device, landscape bool) error {
-	err := p.SetViewport(device.Metrics(landscape))
+func (p *Page) Emulate(device devices.Device) error {
+	err := p.SetViewport(device.Metrics())
 	if err != nil {
 		return err
 	}

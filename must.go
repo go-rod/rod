@@ -219,7 +219,7 @@ func (p *Page) MustSetViewport(width, height int, deviceScaleFactor float64, mob
 
 // MustEmulate is similar to Emulate
 func (p *Page) MustEmulate(device devices.Device) *Page {
-	utils.E(p.Emulate(device, false))
+	utils.E(p.Emulate(device))
 	return p
 }
 
