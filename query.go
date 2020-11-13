@@ -337,6 +337,7 @@ func (p *Page) Race() *RaceContext {
 func (rc *RaceContext) Element(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		condition: func() (*Element, error) { return rc.noSleepPage.Element(selector) },
+		callback:  func(e *Element) error { return nil },
 	})
 	return rc
 }
@@ -345,6 +346,7 @@ func (rc *RaceContext) Element(selector string) *RaceContext {
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		condition: func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
+		callback:  func(e *Element) error { return nil },
 	})
 	return rc
 }
@@ -353,6 +355,7 @@ func (rc *RaceContext) ElementX(selector string) *RaceContext {
 func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		condition: func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
+		callback:  func(e *Element) error { return nil },
 	})
 	return rc
 }
@@ -361,6 +364,7 @@ func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		condition: func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
+		callback:  func(e *Element) error { return nil },
 	})
 	return rc
 }
