@@ -488,21 +488,6 @@ func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
-// MustElement is similar to Element
-func (rc *RaceContext) MustElement(selector string) *RaceContext {
-	return rc.Element(selector)
-}
-
-// MustElementX is similar to ElementX
-func (rc *RaceContext) MustElementX(selector string) *RaceContext {
-	return rc.ElementX(selector)
-}
-
-// MustElementR is similar to ElementR
-func (rc *RaceContext) MustElementR(selector, regex string) *RaceContext {
-	return rc.ElementR(selector, regex)
-}
-
 // MustElementByJS is similar to ElementByJS
 func (rc *RaceContext) MustElementByJS(js string, params []interface{}) *RaceContext {
 	return rc.ElementByJS(Eval(js, params...))
