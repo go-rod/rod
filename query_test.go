@@ -122,15 +122,18 @@ func (t T) SearchIframesAfterReload() {
 func (t T) PageRace() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 
-	p.Race().MustElement("button").MustHandle(func(e *rod.Element) {
-		t.Eq("01", e.MustText())
-	}).MustDo()
+	p.Race().MustElement("button").MustHandle(func(e *rod.Element) { t.Eq("01", e.MustText()) }).MustDo()
+	t.Eq("01", p.Race().MustElement("button").MustDo().MustText())
 
-	p.Race().MustElementX("//button").MustHandle(func(e *rod.Element) {
-		t.Eq("01", e.MustText())
-	}).MustDo()
+	p.Race().MustElementX("//button").MustHandle(func(e *rod.Element) { t.Eq("01", e.MustText()) }).MustDo()
+	t.Eq("01", p.Race().MustElementX("//button").MustDo().MustText())
 
+	p.Race().MustElementR("button", "02").MustHandle(func(e *rod.Element) { t.Eq("02", e.MustText()) }).MustDo()
 	t.Eq("02", p.Race().MustElementR("button", "02").MustDo().MustText())
+
+	p.Race().MustElementByJS("document.querySelector('button')", nil).
+		MustHandle(func(e *rod.Element) { t.Eq("01", e.MustText()) }).MustDo()
+	t.Eq("01", p.Race().MustElementByJS("document.querySelector('button')", nil).MustDo().MustText())
 
 	el, err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
 		MustElement("not-exists").MustHandle(func(e *rod.Element) {}).
