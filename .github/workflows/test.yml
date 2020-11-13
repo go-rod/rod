@@ -14,6 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/
+          key: ${{ runner.os }}
+
       - uses: actions/setup-node@v1
 
       - uses: actions/setup-go@v2
@@ -45,6 +50,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/
+          key: ${{ runner.os }}
+
       - uses: actions/setup-go@v2
         with:
           go-version: 1.15
@@ -63,6 +73,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/t
+          key: docker
+
       - uses: actions/checkout@v2
 
       - name: test
@@ -86,6 +101,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/
+          key: go-${{ runner.os }}
+
       - uses: actions/setup-go@v2
         with:
           go-version: 1.13
