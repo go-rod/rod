@@ -381,7 +381,7 @@ func (rc *RaceContext) Do() (*Element, error) {
 			bEl, err := branch.condition()
 			if err == nil {
 				el = bEl
-				return true, branch.callback(el)
+				return true, branch.callback(bEl)
 			} else if !errors.Is(err, &ErrElementNotFound{}) {
 				return true, err
 			}

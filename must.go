@@ -510,11 +510,10 @@ func (rc *RaceContext) MustElementByJS(js string, params []interface{}) *RaceCon
 
 // MustHandle is similar to Handle
 func (rc *RaceContext) MustHandle(callback func(*Element)) *RaceContext {
-	rc.Handle(func(e *Element) error {
+	return rc.Handle(func(e *Element) error {
 		callback(e)
 		return nil
 	})
-	return nil
 }
 
 // MustDo is similar to Do
