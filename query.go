@@ -318,7 +318,6 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 
 type raceBranch struct {
 	condition func() (*Element, error)
-	callback  func(*Element) error
 }
 
 // RaceContext stores the branches to race
@@ -333,55 +332,53 @@ func (p *Page) Race() *RaceContext {
 	return &RaceContext{page: p, noSleepPage: p.Sleeper(nil)}
 }
 
-// Element the doc is similar to MustElement but has a callback when a match is found
-func (rc *RaceContext) Element(selector string, callback func(*Element) error) *RaceContext {
+// Element the doc is similar to MustElement
+func (rc *RaceContext) Element(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.Element(selector) },
-		callback,
 	})
 	return rc
 }
 
-// ElementX the doc is similar to ElementX but has a callback when a match is found
-func (rc *RaceContext) ElementX(selector string, callback func(*Element) error) *RaceContext {
+// ElementX the doc is similar to ElementX
+func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
-		callback,
 	})
 	return rc
 }
 
-// ElementR the doc is similar to ElementR but has a callback when a match is found
-func (rc *RaceContext) ElementR(selector, regex string, callback func(*Element) error) *RaceContext {
+// ElementR the doc is similar to ElementR
+func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
-		callback,
 	})
 	return rc
 }
 
-// ElementByJS the doc is similar to MustElementByJS but has a callback when a match is found
-func (rc *RaceContext) ElementByJS(opts *EvalOptions, callback func(*Element) error) *RaceContext {
+// ElementByJS the doc is similar to MustElementByJS
+func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
-		callback,
 	})
 	return rc
 }
 
 // Do the race
-func (rc *RaceContext) Do() error {
-	return utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
+func (rc *RaceContext) Do() (*Element, error) {
+	var el *Element
+	err := utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
 		for _, branch := range rc.branches {
-			el, err := branch.condition()
-			if err == nil {
-				return true, branch.callback(el)
-			} else if !errors.Is(err, &ErrElementNotFound{}) {
+			bEl, err := branch.condition()
+			if err == nil || !errors.Is(err, &ErrElementNotFound{}) {
+				el = bEl
 				return true, err
 			}
 		}
 		return
 	})
+
+	return el, err
 }
 
 // Has an element that matches the css selector

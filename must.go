@@ -489,38 +489,31 @@ func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 }
 
 // MustElement is similar to Element
-func (rc *RaceContext) MustElement(selector string, callback func(*Element)) *RaceContext {
-	return rc.Element(selector, func(el *Element) error {
-		callback(el)
-		return nil
-	})
+func (rc *RaceContext) MustElement(selector string) *RaceContext {
+	return rc.Element(selector)
 }
 
 // MustElementX is similar to ElementX
-func (rc *RaceContext) MustElementX(selector string, callback func(*Element)) *RaceContext {
-	return rc.ElementX(selector, func(el *Element) error {
-		callback(el)
-		return nil
-	})
+func (rc *RaceContext) MustElementX(selector string) *RaceContext {
+	return rc.ElementX(selector)
 }
 
 // MustElementR is similar to ElementR
-func (rc *RaceContext) MustElementR(selector, regex string, callback func(*Element)) *RaceContext {
-	return rc.ElementR(selector, regex, func(el *Element) error {
-		callback(el)
-		return nil
-	})
+func (rc *RaceContext) MustElementR(selector, regex string) *RaceContext {
+	return rc.ElementR(selector, regex)
 }
 
 // MustElementByJS is similar to ElementByJS
-func (rc *RaceContext) MustElementByJS(js string, params []interface{}, callback func(*Element) error) *RaceContext {
-	return rc.ElementByJS(Eval(js, params...), callback)
+func (rc *RaceContext) MustElementByJS(js string, params []interface{}) *RaceContext {
+	return rc.ElementByJS(Eval(js, params...))
 }
 
 // MustDo is similar to Do
-func (rc *RaceContext) MustDo() *Page {
-	utils.E(rc.Do())
-	return rc.page
+func (rc *RaceContext) MustDo() *Element {
+	el, err := rc.Do()
+	utils.E(err)
+
+	return el
 }
 
 // MustMove is similar to Move

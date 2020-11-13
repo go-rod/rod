@@ -122,27 +122,23 @@ func (t T) SearchIframesAfterReload() {
 func (t T) PageRace() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
 
-	p.Race().MustElement("button", func(el *rod.Element) {
-		t.Eq("01", el.MustText())
-	}).MustDo()
+	t.Eq("01", p.Race().MustElement("button").MustDo())
 
-	p.Race().MustElementX("//button", func(el *rod.Element) {
-		t.Eq("01", el.MustText())
-	}).MustDo()
+	t.Eq("01", p.Race().MustElementX("//button").MustDo())
 
-	p.Race().MustElementR("button", "02", func(el *rod.Element) {
-		t.Eq("02", el.MustText())
-	}).MustDo()
+	t.Eq("02", p.Race().MustElementR("button", "02").MustDo())
 
-	err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
-		MustElement("not-exists", func(el *rod.Element) {}).
-		MustElementX("//not-exists", func(el *rod.Element) {}).
-		MustElementR("not-exists", "test", func(el *rod.Element) {}).
+	el, err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
+		MustElement("not-exists").
+		MustElementX("//not-exists").
+		MustElementR("not-exists", "test").
 		Do()
 	t.Err(err)
+	t.Nil(el)
 
-	err = p.Race().MustElementByJS(`notExists()`, nil, nil).Do()
+	el, err = p.Race().MustElementByJS(`notExists()`, nil).Do()
 	t.Err(err)
+	t.Nil(el)
 }
 
 func (t T) PageElementX() {
