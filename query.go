@@ -318,6 +318,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 
 type raceBranch struct {
 	condition func() (*Element, error)
+	callback  func(*Element) error
 }
 
 // RaceContext stores the branches to race
@@ -335,7 +336,7 @@ func (p *Page) Race() *RaceContext {
 // Element the doc is similar to MustElement
 func (rc *RaceContext) Element(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		func() (*Element, error) { return rc.noSleepPage.Element(selector) },
+		condition: func() (*Element, error) { return rc.noSleepPage.Element(selector) },
 	})
 	return rc
 }
@@ -343,7 +344,7 @@ func (rc *RaceContext) Element(selector string) *RaceContext {
 // ElementX the doc is similar to ElementX
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
+		condition: func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
 	})
 	return rc
 }
@@ -351,7 +352,7 @@ func (rc *RaceContext) ElementX(selector string) *RaceContext {
 // ElementR the doc is similar to ElementR
 func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
+		condition: func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
 	})
 	return rc
 }
@@ -359,8 +360,16 @@ func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 // ElementByJS the doc is similar to MustElementByJS
 func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
+		condition: func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
 	})
+	return rc
+}
+
+// Handle adds a callback function to the most recent chained selector.
+// The callback function is run, if the corresponding selector is
+// present first, in the Race condition.
+func (rc *RaceContext) Handle(callback func(*Element) error) *RaceContext {
+	rc.branches[len(rc.branches)-1].callback = callback
 	return rc
 }
 
@@ -370,8 +379,10 @@ func (rc *RaceContext) Do() (*Element, error) {
 	err := utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
 		for _, branch := range rc.branches {
 			bEl, err := branch.condition()
-			if err == nil || !errors.Is(err, &ErrElementNotFound{}) {
+			if err == nil {
 				el = bEl
+				return true, branch.callback(el)
+			} else if !errors.Is(err, &ErrElementNotFound{}) {
 				return true, err
 			}
 		}
