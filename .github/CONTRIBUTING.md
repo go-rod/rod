@@ -78,6 +78,8 @@ The commit message follows the rules [here](https://github.com/torvalds/subsurfa
 
 ## Become a maintainer
 
-At the early stage of this project, we will use a simple model to promote contributors to maintainers.
-Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, then we will start to elect
+Anyone has contributed code to the project can become a member of the project and have the write permission to issues and doc repos.
+
+At the early stage of this project, we will use a simple model to promote members to maintainers.
+Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, the standard is whether the member is good enough to review others' code, then we will start to elect
 new maintainers by voting in the public issue. If no one votes down and 2/3 votes up then one election will pass.
