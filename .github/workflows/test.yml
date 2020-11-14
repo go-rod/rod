@@ -16,8 +16,10 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ~/
-          key: ${{ runner.os }}
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - uses: actions/setup-node@v1
 
@@ -52,8 +54,10 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ~/
-          key: ${{ runner.os }}
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - uses: actions/setup-go@v2
         with:
@@ -103,8 +107,10 @@ jobs:
     steps:
       - uses: actions/cache@v2
         with:
-          path: ~/
-          key: go-${{ runner.os }}
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - uses: actions/setup-go@v2
         with:
