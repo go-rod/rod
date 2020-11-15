@@ -129,6 +129,11 @@ func (b *Browser) DefaultDevice(d devices.Device) *Browser {
 	return b
 }
 
+// NoDefaultDevice is the same as DefaultDevice(devices.Clear)
+func (b *Browser) NoDefaultDevice() *Browser {
+	return b.DefaultDevice(devices.Clear)
+}
+
 // Connect to the browser and start to control it.
 // If fails to connect, try to launch a local browser, if local browser not found try to download one.
 func (b *Browser) Connect() error {

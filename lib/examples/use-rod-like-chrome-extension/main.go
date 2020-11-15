@@ -22,7 +22,7 @@ func main() {
 	// Launches a new browser with the "new user mode" option, and returns the URL to control that browser.
 	wsURL := launcher.NewUserMode().MustLaunch()
 
-	browser := rod.New().ControlURL(wsURL).MustConnect().DefaultDevice(devices.Clear)
+	browser := rod.New().ControlURL(wsURL).MustConnect().NoDefaultDevice()
 
 	// Run a extension. Here we created a link previewer extension as an example.
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.

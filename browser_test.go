@@ -34,20 +34,21 @@ func (t T) Incognito() {
 
 func (t T) DefaultDevice() {
 	ua := ""
-	wait := make(chan struct{})
 
 	s := t.Serve()
 	s.Mux.HandleFunc("/t", func(rw http.ResponseWriter, r *http.Request) {
 		ua = r.Header.Get("User-Agent")
-		close(wait)
 	})
 
 	t.browser.DefaultDevice(devices.IPhoneX)
 	defer t.browser.DefaultDevice(devices.Test)
 
 	t.newPage(s.URL("/t"))
-
 	t.Eq(ua, devices.IPhoneX.UserAgent().UserAgent)
+
+	t.browser.NoDefaultDevice()
+	t.newPage(s.URL("/t"))
+	t.Neq(ua, devices.IPhoneX.UserAgent().UserAgent)
 }
 
 func (t T) PageErr() {
