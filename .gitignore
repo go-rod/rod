@@ -6,3 +6,4 @@ tmp/
 coverage.txt
 rod.test
 package-lock.json
+package.json
