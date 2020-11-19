@@ -308,7 +308,7 @@ func (t T) BrowserConnectErr() {
 
 		c := &MockClient{connect: func() error { return nil }, event: ch}
 		c.stub(1, proto.TargetSetDiscoverTargets{}, func(send StubSend) (gson.JSON, error) {
-			c.stubErr(1, proto.BrowserGetBrowserCommandLine{})
+			c.stubErr(1, proto.BrowserGetVersion{})
 			return gson.JSON{}, nil
 		})
 		rod.New().Client(c).MustConnect()

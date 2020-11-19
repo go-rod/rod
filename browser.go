@@ -11,6 +11,7 @@ package rod
 import (
 	"context"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -452,16 +453,17 @@ func (b *Browser) Headless() bool {
 }
 
 func (b *Browser) setHeadless() error {
-	res, err := proto.BrowserGetBrowserCommandLine{}.Call(b)
+	res, err := proto.BrowserGetVersion{}.Call(b)
 	if err != nil {
 		return err
 	}
 
-	for _, arg := range res.Arguments {
-		if arg == "--headless" {
-			b.headless = true
-		}
+	// TODO: There's no good way to detect headless yet.
+	// The proto.BrowserGetBrowserCommandLine requires --enable-automation which is annoying
+	if strings.Contains(res.UserAgent, " Headless") {
+		b.headless = true
 	}
+
 	return nil
 }
 

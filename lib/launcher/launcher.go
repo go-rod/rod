@@ -120,7 +120,6 @@ func NewUserMode() *Launcher {
 		ctxCancel: cancel,
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
-			"enable-automation":     nil,
 			"":                      {getSelfClosePage()},
 		},
 		exit:    make(chan struct{}),
