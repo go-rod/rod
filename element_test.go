@@ -159,11 +159,12 @@ func (t T) Iframes() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click-iframes.html"))
 
 	frame01 := p.MustElement("iframe").MustFrame()
-	t.Eq(frame01.MustEval(`testIsolation()`).Str(), "ok")
 
 	frame02 := frame01.MustElement("iframe").MustFrame()
 	el := frame02.MustElement("button")
 	el.MustClick()
+
+	t.Eq(frame01.MustEval(`testIsolation()`).Str(), "ok")
 	t.True(frame02.MustHas("[a=ok]"))
 }
 
