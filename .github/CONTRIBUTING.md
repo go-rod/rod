@@ -6,6 +6,14 @@ Please learned [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faq
 
 We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/orgs/go-rod/projects/1).
 
+## Become a maintainer
+
+Anyone has contributed code to the project can become a member of the project and have the write permission to issues and doc repositories.
+
+At the early stage of this project, we will use a simple model to promote members to maintainers.
+Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, the standard is whether the member is good enough to review others' code, then we will start to elect
+new maintainers by voting in the public issue. If no one votes down and 2/3 votes up then an election passes.
+
 ## Terminology
 
 When we talk about type in the doc we use [gopls](https://github.com/golang/tools/tree/master/gopls) symbol query syntax. For example, when we say `rod.Page.PDF`, you can run the below to locate the file and line of it:
@@ -75,11 +83,3 @@ Because parallel execution will pollution the global goroutine stack, by default
 ## Convention of the git commit message
 
 The commit message follows the rules [here](https://github.com/torvalds/subsurface-for-dirk/blame/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88). We don't use rules like [Conventional Commits](https://www.conventionalcommits.org/) because it's hard for beginners to write correct commit messages. It will encourage reviewers to spend more time on high-level problems, not the details. We also want to reduce the overhead when reading the git-blame, for example, `fix: correct minor typos in code` is the same as `fix minor typos in code`, there's no need to repeat content in the title line.
-
-## Become a maintainer
-
-Anyone has contributed code to the project can become a member of the project and have the write permission to issues and doc repositories.
-
-At the early stage of this project, we will use a simple model to promote members to maintainers.
-Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, the standard is whether the member is good enough to review others' code, then we will start to elect
-new maintainers by voting in the public issue. If no one votes down and 2/3 votes up then an election passes.
