@@ -6,6 +6,8 @@
 ## [Documentation](https://go-rod.github.io/) | [API reference](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
 
 Rod is a high-level driver directly based on [DevTools Protocol][devtools protocol]. It's designed for web automation and scraping.
+Rod is designed for both high-level and low-level use, senior programmers can use the low-level packages and functions to easily
+customize or build up their own version of Rod, the high-level functions are just examples to build a default version of Rod.
 
 ## Features
 
@@ -16,7 +18,7 @@ Rod is a high-level driver directly based on [DevTools Protocol][devtools protoc
 - Lightweight, no third-party dependencies, [CI](https://github.com/go-rod/rod/actions) tested on Linux, Mac, and Windows
 - High-level helpers like WaitStable, WaitRequestIdle, HijackRequests, GetDownloadFile, etc
 - Two-step WaitEvent design, never miss an event ([how it works](https://github.com/ysmood/goob))
-- Correctly handles nested iframes
+- Correctly handles nested iframes or shadow DOMs
 - No zombie browser process after the crash ([how it works](https://github.com/ysmood/leakless))
 
 ## Examples
