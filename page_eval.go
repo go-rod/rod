@@ -163,6 +163,51 @@ func (p *Page) evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	return res.Result, nil
 }
 
+// Expose fn to the page's window object with the name. The exposure survives reloads.
+// Call stop to unbind the fn.
+func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (stop func() error, err error) {
+	bind := "_" + utils.RandString(8)
+
+	err = proto.RuntimeAddBinding{Name: bind, ExecutionContextID: p.getJSCtxID()}.Call(p)
+	if err != nil {
+		return
+	}
+
+	code := fmt.Sprintf(`(%s)("%s", "%s")`, js.ExposeFunc.Definition, name, bind)
+
+	_, err = p.Evaluate(Eval(code))
+	if err != nil {
+		return
+	}
+
+	remove, err := p.EvalOnNewDocument(code)
+	if err != nil {
+		return
+	}
+
+	p, cancel := p.WithCancel()
+
+	stop = func() error {
+		defer cancel()
+		err := remove()
+		if err != nil {
+			return err
+		}
+		return proto.RuntimeRemoveBinding{Name: bind}.Call(p)
+	}
+
+	go p.EachEvent(func(e *proto.RuntimeBindingCalled) {
+		if e.Name == bind {
+			payload := gson.NewFrom(e.Payload)
+			res, err := fn(payload.Get("req"))
+			code := fmt.Sprintf("(res, err) => %s(res, err)", payload.Get("cb").Str())
+			_, _ = p.Evaluate(Eval(code, res, err))
+		}
+	})()
+
+	return
+}
+
 func (p *Page) initSession() error {
 	session, err := proto.TargetAttachToTarget{
 		TargetID: p.TargetID,
