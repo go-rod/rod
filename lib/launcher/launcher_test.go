@@ -103,6 +103,8 @@ func (t T) Launch() {
 }
 
 func (t T) LaunchUserMode() {
+	_ = os.Remove(launcher.GetSelfClosePage())
+
 	l := launcher.NewUserMode()
 	defer l.Kill()
 
@@ -122,6 +124,7 @@ func (t T) LaunchUserMode() {
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		Devtools(true).Devtools(false).
+		StartURL("about:blank").
 		Proxy("test.com").
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").

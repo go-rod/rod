@@ -42,6 +42,7 @@ type Launcher struct {
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
 // UserDataDir will use OS tmp dir by default.
+// StartURL will be set to GetSelfClosePage().
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
@@ -58,7 +59,7 @@ func New() *Launcher {
 		"headless": nil,
 
 		// to prevent welcome page
-		"": {getSelfClosePage()},
+		"": {GetSelfClosePage()},
 
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
@@ -120,7 +121,7 @@ func NewUserMode() *Launcher {
 		ctxCancel: cancel,
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
-			"":                      {getSelfClosePage()},
+			"":                      {GetSelfClosePage()},
 		},
 		exit:    make(chan struct{}),
 		browser: NewBrowser(),
@@ -257,6 +258,11 @@ func (l *Launcher) WorkingDir(path string) *Launcher {
 // Timezone list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 func (l *Launcher) Env(env ...string) *Launcher {
 	return l.Set(flagEnv, env...)
+}
+
+// StartURL to launch
+func (l *Launcher) StartURL(u string) *Launcher {
+	return l.Set("", u)
 }
 
 // FormatArgs returns the formated arg list for cli

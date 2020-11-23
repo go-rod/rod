@@ -113,7 +113,8 @@ func unzip(logger io.Writer, from, to string) (err error) {
 	return zr.Close()
 }
 
-func getSelfClosePage() string {
+// GetSelfClosePage returns an absolute file path of page that will close it self after it's opened.
+func GetSelfClosePage() string {
 	path := filepath.Join(os.TempDir(), "rod", "self-close.html")
 
 	if !utils.FileExists(path) {
