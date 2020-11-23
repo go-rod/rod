@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"testing"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -339,23 +338,4 @@ func (t T) StreamReader() {
 	})
 	_, err = r.Read(nil)
 	t.Err(err)
-}
-
-func TestLab(t *testing.T) {
-	b := &rod.Browser{}
-	_ = b.PageFromSession("")
-
-	t.SkipNow()
-
-	b = rod.New().MustConnect()
-
-	target, _ := proto.TargetCreateTarget{URL: "http://www.example.com"}.Call(b)
-
-	session, _ := proto.TargetAttachToTarget{TargetID: target.TargetID, Flatten: true}.Call(b)
-
-	p := b.PageFromSession(session.SessionID)
-
-	_, _ = proto.RuntimeEvaluate{Expression: `window`}.Call(p)
-
-	utils.Pause()
 }
