@@ -734,3 +734,11 @@ func (t T) PagePool() {
 		p.MustClose()
 	})
 }
+
+func (t T) PageUseNonExistSession(got.Skip) {
+	// TODO: chrome bug that hangs for closing non-exist session id
+	// Related chrome ticket: https://bugs.chromium.org/p/chromium/issues/detail?id=1151822
+	p := t.browser.PageFromSession("nonexist").Timeout(time.Second)
+	err := proto.PageClose{}.Call(p)
+	t.Is(err, context.DeadlineExceeded)
+}

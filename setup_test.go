@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -165,9 +166,17 @@ func (t T) checkLeaking(checkGoroutine bool) {
 			return
 		}
 
-		for _, p := range t.browser.MustPages() {
-			if p.TargetID != t.page.TargetID {
-				t.Logf("leaking page: %#v", p.MustInfo())
+		// TODO: because of T.PageUseNonExistSession, we have to set a timeout here.
+		res, err := proto.TargetGetTargets{}.Call(t.browser)
+		t.E(err)
+		for _, target := range res.TargetInfos {
+			if target.Type != proto.TargetTargetInfoTypePage ||
+				strings.HasSuffix(target.URL, "/self-close.html") {
+				continue
+			}
+
+			if target.TargetID != t.page.TargetID {
+				t.Logf("leaking page: %#v", target)
 				t.FailNow()
 			}
 		}
