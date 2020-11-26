@@ -30,7 +30,7 @@ Such as the usage of method `HandleAuth`, you can search all the `*_test.go` fil
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
-[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and chromedp.
+[Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and Chromedp.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
@@ -50,7 +50,7 @@ Object model:
 
 ## FAQ
 
-### Q: How to use rod with docker so that I don't have to install a browser
+### Q: How to use Rod with docker so that I don't have to install a browser
 
 To let rod work with docker is very easy:
 
@@ -88,37 +88,37 @@ Please check this [doc](.github/CONTRIBUTING.md).
 
 Before `v1.0.0` whenever the second section changed, such as `v0.1.0` to `v0.2.0`, there must be some public API changes, such as changes of function names or parameter types. If only the last section changed, no public API will be changed.
 
-You can use the Github's release comparison to see the automated changelog, for example, [compare v0.75.2 with v0.76.0](https://github.com/go-rod/rod/compare/v0.75.2...v0.76.0).
+You can use Github's release comparison to see the automated changelog, for example, [compare v0.75.2 with v0.76.0](https://github.com/go-rod/rod/compare/v0.75.2...v0.76.0).
 
 ### Q: Why another puppeteer like lib
 
 There are a lot of great projects, but no one is perfect, choose the best one that fits your needs is important.
 
-- [chromedp][chromedp]
+- [Chromedp][chromedp]
 
-  Theoretically, rod should perform faster and consume less memory than chromedp.
+  Theoretically, Rod should perform faster and consume less memory than Chromedp.
 
-  Chromedp uses a [fix-sized buffer](https://github.com/chromedp/chromedp/blob/b56cd66/target.go#L69-L73) for events, it can cause dead-lock on high concurrency. Because chromedp uses single-event-loop, the slow event handlers will block each other. Rod doesn't have these issues because it's based on [goob](https://github.com/ysmood/goob).
+  Chromedp uses a [fix-sized buffer](https://github.com/chromedp/chromedp/blob/b56cd66/target.go#L69-L73) for events, it can cause dead-lock on high concurrency. Because Chromedp uses single event-loop, the slow event handlers will block each other. Rod doesn't have these issues because it's based on [goob](https://github.com/ysmood/goob).
 
-  Chromedp will JSON decode every message from browser, rod is decode-on-demand, so rod performs better, especially for heavy network events.
+  Chromedp will JSON decode every message from the browser, rod is decode-on-demand, so Rod performs better, especially for heavy network events.
 
-  Chromedp uses third part WebSocket lib which has [1MB overhead](https://github.com/chromedp/chromedp/blob/b56cd66f9cebd6a1fa1283847bbf507409d48225/conn.go#L43-L54) for each cdp client, if you want to control thousands of remote browsers it can become a problem. Because of this limitation, if you evaluate a js script larger than 1MB, chromedp will crash.
+  Chromedp uses third part WebSocket lib which has [1MB overhead](https://github.com/chromedp/chromedp/blob/b56cd66f9cebd6a1fa1283847bbf507409d48225/conn.go#L43-L54) for each cdp client, if you want to control thousands of remote browsers it can become a problem. Because of this limitation, if you evaluate a js script larger than 1MB, Chromedp will crash.
 
-  When a crash happens, chromedp will leave the zombie browser process on Windows and Mac.
+  When a crash happens, Chromedp will leave the zombie browser process on Windows and Mac.
 
   Rod is more configurable, such as you can even replace the WebSocket lib with the lib you like.
 
   For direct code comparison you can check [here](lib/examples/compare-chromedp). If you compare the example called `logic` between [rod](lib/examples/compare-chromedp/logic/main.go) and [chromedp](https://github.com/chromedp/examples/blob/master/logic/main.go), you will find out how much simpler rod is.
 
-  With chromedp, you have to use their verbose DSL like tasks to handle the main logic, because chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The heavily used interfaces make the static types useless when tracking issues. In contrast, rod uses as few interfaces as possible.
+  With Chromedp, you have to use their verbose DSL like tasks to handle the main logic, because Chromedp uses several wrappers to handle execution with context and options which makes it very hard to understand their code when bugs happen. The heavily used interfaces make the static types useless when tracking issues. In contrast, Rod uses as few interfaces as possible.
 
-  Rod has less dependencies, simpler code structure, and better test coverage ([100%](lib/utils/check-cov/main.go)), you should find it's easier to contribute code to rod. Therefore compared with chromedp, rod has the potential to have more nice functions from the community in the future.
+  Rod has less dependencies, a simpler code structure, and better test coverage ([100%](lib/utils/check-cov/main.go)), you should find it's easier to contribute code to Rod. Therefore compared with Chromedp, Rod has the potential to have more nice functions from the community in the future.
 
-  Another problem of chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent chromedp's maintainers from adding high-level functions that are coupled with runtime. For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years. Even after it's closed, you still can't evaluate js express on the element inside an iframe.
+  Another problem of Chromedp is their architecture is based on [DOM node id](https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-NodeId), puppeteer and rod are based on [remote object id](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObjectId). In consequence, it will prevent Chromedp's maintainers from adding high-level functions that are coupled with runtime. For example, this [ticket](https://github.com/chromedp/chromedp/issues/72) had opened for 3 years. Even after it's closed, you still can't evaluate js express on the element inside an iframe.
 
 - [puppeteer][puppeteer]
 
-  Puppeteer will JSON decode every message from browser, rod is decode-on-demand, so rod performs better, especially for heavy network events.
+  Puppeteer will JSON decode every message from the browser, Rod is decode-on-demand, so Rod performs better, especially for heavy network events.
 
   With puppeteer, you have to handle promise/async/await a lot. End to end tests requires a lot of sync operations to simulate human inputs, because Puppeteer is based on Nodejs all IO operations are async calls, so usually, people end up typing tons of async/await. The overhead grows when your project grows.
 
@@ -130,19 +130,19 @@ There are a lot of great projects, but no one is perfect, choose the best one th
 
 - [selenium](https://www.selenium.dev/)
 
-  Selenium is based on [webdriver protocol](https://www.w3.org/TR/webdriver/) which has much less functions compare to [devtools protocol][devtools protocol]. Such as it can't handle [closed shadow DOM](https://github.com/sukgu/shadow-automation-selenium/issues/7#issuecomment-563062460). No way to save page as PDF. No support for tools like [Profiler](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) or [Performance](https://chromedevtools.github.io/devtools-protocol/tot/Performance/), etc.
+  Selenium is based on [webdriver protocol](https://www.w3.org/TR/webdriver/) which has much less functions compare to [devtools protocol][devtools protocol]. Such as it can't handle [closed shadow DOM](https://github.com/sukgu/shadow-automation-selenium/issues/7#issuecomment-563062460). No way to save pages as PDF. No support for tools like [Profiler](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) or [Performance](https://chromedevtools.github.io/devtools-protocol/tot/Performance/), etc.
 
   Harder to set up and maintain because of extra dependencies like a browser driver.
 
   Though selenium sells itself for better cross-browser support, it's usually very hard to make it work for all major browsers.
 
-  There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of puppeteer.
+  There are plenty of articles about "selenium vs puppeteer", you can treat rod as the Golang version of Puppeteer.
 
 - [cypress](https://www.cypress.io/)
 
   Cypress is very limited, for closed shadow dom or cross-domain iframes it's almost unusable. Read their [limitation doc](https://docs.cypress.io/guides/references/trade-offs.html) for more details.
 
-  If you want to cooperate with us to create a testing focused framework base on rod to overcome the limitation of cypress, please contact us.
+  If you want to cooperate with us to create a testing focused framework base on Rod to overcome the limitation of cypress, please contact us.
 
 [devtools protocol]: https://chromedevtools.github.io/devtools-protocol
 [chromedp]: https://github.com/chromedp/chromedp
