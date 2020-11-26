@@ -184,13 +184,6 @@ var AddStyleTag = &Function{
 	Dependencies: []*Function{},
 }
 
-// FetchAsDataURL ...
-var FetchAsDataURL = &Function{
-	Name:         "fetchAsDataURL",
-	Definition:   `e=>fetch(e).then(e=>e.blob()).then(e=>new Promise((t,n)=>{var i=new FileReader;i.onload=(()=>t(i.result)),i.onerror=(()=>n(i.error)),i.readAsDataURL(e)}))`,
-	Dependencies: []*Function{},
-}
-
 // Selectable ...
 var Selectable = &Function{
 	Name:         "selectable",

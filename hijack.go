@@ -8,9 +8,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"sync"
 
-	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -367,93 +365,6 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse {
 	ctx.fail.ErrorReason = reason
 	return ctx
-}
-
-// GetDownloadFile of the next download url that matches the pattern, returns the file content.
-// The handler will be used once and removed.
-func (p *Page) GetDownloadFile(pattern string, resourceType proto.NetworkResourceType, client *http.Client) func() (http.Header, []byte, error) {
-	enable := p.DisableDomain(&proto.FetchEnable{})
-
-	_ = proto.BrowserSetDownloadBehavior{
-		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDeny,
-		BrowserContextID: p.browser.BrowserContextID,
-	}.Call(p)
-
-	r := p.HijackRequests()
-
-	p, cancel := p.WithCancel()
-	downloading := &proto.PageDownloadWillBegin{}
-	waitDownload := p.WaitEvent(downloading)
-
-	return func() (http.Header, []byte, error) {
-		defer enable()
-		defer cancel()
-
-		defer func() {
-			_ = proto.BrowserSetDownloadBehavior{
-				Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
-				BrowserContextID: r.browser.BrowserContextID,
-			}.Call(r.client)
-		}()
-
-		var body []byte
-		var header http.Header
-		wg := &sync.WaitGroup{}
-		wg.Add(1)
-
-		var err error
-		err = r.Add(pattern, resourceType, func(ctx *Hijack) {
-			defer wg.Done()
-
-			ctx.Skip = true
-
-			err = ctx.LoadResponse(client, true)
-			if err != nil {
-				return
-			}
-
-			header = ctx.Response.Headers()
-			body = ctx.Response.payload.Body
-		})
-		if err != nil {
-			return nil, nil, err
-		}
-
-		go r.Run()
-		go func() {
-			waitDownload()
-
-			u := downloading.URL
-			if strings.HasPrefix(u, "blob:") {
-				res, e := p.Evaluate(EvalHelper(js.FetchAsDataURL, u).ByPromise())
-				if e != nil {
-					err = e
-					wg.Done()
-					return
-				}
-				u = res.Value.Str()
-			}
-
-			if strings.HasPrefix(u, "data:") {
-				t, d := parseDataURI(u)
-				header = http.Header{"Content-Type": []string{t}}
-				body = d
-			} else {
-				return
-			}
-
-			wg.Done()
-		}()
-
-		wg.Wait()
-		r.MustStop()
-
-		if err != nil {
-			return nil, nil, err
-		}
-
-		return header, body, nil
-	}
 }
 
 // HandleAuth for the next basic HTTP authentication.

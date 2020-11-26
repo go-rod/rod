@@ -12,6 +12,8 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-rod/rod/lib/devices"
@@ -272,13 +274,19 @@ func (p *Page) MustPDF(toFile ...string) []byte {
 	return bin
 }
 
-// MustGetDownloadFile is similar to GetDownloadFile
-func (p *Page) MustGetDownloadFile(pattern string) func() []byte {
-	wait := p.GetDownloadFile(pattern, "", http.DefaultClient)
+// MustWaitDownload is similar to WaitDownload.
+// It will read the file into bytes then remove the file.
+func (p *Page) MustWaitDownload() func() []byte {
+	tmpDir := filepath.Join(os.TempDir(), "rod", "downloads")
+	wait := p.WaitDownload(tmpDir)
+
 	return func() []byte {
-		_, body, err := wait()
+		info := wait()
+		path := filepath.Join(tmpDir, info.GUID)
+		defer func() { _ = os.Remove(path) }()
+		b, err := ioutil.ReadFile(path)
 		utils.E(err)
-		return body
+		return b
 	}
 }
 

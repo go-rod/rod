@@ -455,6 +455,16 @@ func Example_handle_events() {
 	// [hello world]
 }
 
+func Example_download_file() {
+	page := rod.New().MustConnect().MustPage("https://file-examples.com/index.php/sample-documents-download/sample-pdf-download/")
+
+	wait := page.MustWaitDownload()
+
+	page.MustElementR("a", "DOWNLOAD SAMPLE PDF FILE").MustClick()
+
+	_ = utils.OutputFile("t.pdf", wait())
+}
+
 // Shows how to intercept requests and modify
 // both the request and the response.
 // The entire process of hijacking one request:

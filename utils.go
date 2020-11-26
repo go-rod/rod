@@ -9,7 +9,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -301,13 +300,7 @@ func parseDataURI(uri string) (string, []byte) {
 	matches := regDataURI.FindStringSubmatch(uri)
 	l := len(matches[0])
 	contentType := matches[1]
-	codec := matches[2]
 
-	if codec == ";base64" {
-		bin, _ := base64.StdEncoding.DecodeString(uri[l:])
-		return contentType, bin
-	}
-
-	s, _ := url.PathUnescape(uri[l:])
-	return matches[1], []byte(s)
+	bin, _ := base64.StdEncoding.DecodeString(uri[l:])
+	return contentType, bin
 }

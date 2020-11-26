@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
 	"net/http"
 	"os"
@@ -133,6 +134,10 @@ func (t T) PageCloseCancel() {
 
 func (t T) LoadState() {
 	t.True(t.page.LoadState(&proto.PageEnable{}))
+}
+
+func (t T) DisableDomain() {
+	defer t.page.DisableDomain(&proto.PageEnable{})()
 }
 
 func (t T) PageContext() {
@@ -398,6 +403,14 @@ func (t T) PageWaitEvent() {
 	wait := t.page.WaitEvent(&proto.PageFrameNavigated{})
 	t.page.MustNavigate(t.blank())
 	wait()
+}
+
+func (t T) PageWaitEventParseEventOnlyOnce() {
+	nav1 := t.page.WaitEvent(&proto.PageFrameNavigated{})
+	nav2 := t.page.WaitEvent(&proto.PageFrameNavigated{})
+	t.page.MustNavigate(t.blank())
+	nav1()
+	nav2()
 }
 
 func (t T) PageEvent() {
@@ -735,10 +748,55 @@ func (t T) PagePool() {
 	})
 }
 
-func (t T) PageUseNonExistSession(got.Skip) {
+func (t T) PageUseNonExistSession() {
 	// TODO: chrome bug that hangs for closing non-exist session id
 	// Related chrome ticket: https://bugs.chromium.org/p/chromium/issues/detail?id=1151822
-	p := t.browser.PageFromSession("nonexist").Timeout(time.Second)
+	p := t.browser.PageFromSession("nonexist").Timeout(300 * time.Millisecond)
 	err := proto.PageClose{}.Call(p)
 	t.Is(err, context.DeadlineExceeded)
+}
+
+func (t T) WaitDownload() {
+	s := t.Serve()
+	content := "test content"
+
+	s.Route("/d", ".bin", []byte(content))
+	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
+
+	page := t.page.MustNavigate(s.URL("/page"))
+
+	wait := page.MustWaitDownload()
+	page.MustElement("a").MustClick()
+	data := wait()
+
+	t.Eq(content, string(data))
+}
+
+func (t T) WaitDownloadDataURI() {
+	s := t.Serve()
+
+	s.Route("/", ".html",
+		`<html>
+			<a id="a" href="data:text/plain;,test%20data" download>click</a>
+			<a id="b" download>click</a>
+			<script>
+				const b = document.getElementById('b')
+				b.href = URL.createObjectURL(new Blob(['test blob'], {
+					type: "text/plain; charset=utf-8"
+				}))
+			</script>
+		</html>`,
+	)
+
+	page := t.page.MustNavigate(s.URL())
+
+	wait1 := page.MustWaitDownload()
+	page.MustElement("#a").MustClick()
+	data := wait1()
+	t.Eq("test data", string(data))
+
+	wait2 := page.MustWaitDownload()
+	page.MustElement("#b").MustClick()
+	data = wait2()
+	t.Eq("test blob", string(data))
 }

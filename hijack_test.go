@@ -2,7 +2,6 @@ package rod_test
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -111,6 +110,30 @@ func (t T) HijackContinue() {
 	t.page.MustNavigate(s.URL("/a"))
 
 	t.Eq("ok", t.page.MustElement("body").MustText())
+	wg.Wait()
+}
+
+func (t T) HijackSkip() {
+	s := t.Serve()
+
+	router := t.page.HijackRequests()
+	defer router.MustStop()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
+		ctx.Skip = true
+		wg.Done()
+	})
+	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
+		ctx.ContinueRequest(&proto.FetchContinueRequest{})
+		wg.Done()
+	})
+
+	go router.Run()
+
+	t.page.MustNavigate(s.URL("/a"))
+
 	wg.Wait()
 }
 
@@ -271,93 +294,4 @@ func (t T) HandleAuth() {
 	t.Err(wait())
 	wait2()
 	page2.MustClose()
-}
-
-func (t T) GetDownloadFile() {
-	s := t.Serve()
-	content := "test content"
-
-	s.Route("/d", ".bin", []byte(content))
-	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
-
-	page := t.page.MustNavigate(s.URL("/page"))
-
-	wait := page.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
-	page.MustElement("a").MustClick()
-	data := wait()
-
-	t.Eq(content, string(data))
-
-	t.Panic(func() { // fail to FetchEnable
-		t.mc.stubErr(2, proto.FetchEnable{})
-		defer func() { _ = proto.FetchDisable{}.Call(page) }()
-		page.Context(t.Context()).MustGetDownloadFile(s.URL("/d"))()
-	})
-	{ // Hijack.LoadResponse error
-		waitErr := page.GetDownloadFile(s.URL("/d"), "", &http.Client{
-			Transport: &MockRoundTripper{err: errors.New("err")},
-		})
-		page.MustElement("a").MustClick()
-		_, _, err := waitErr()
-		t.Err(err)
-	}
-}
-
-func (t T) GetDownloadFileFromDataURI() {
-	s := t.Serve()
-
-	s.Route("/", ".html",
-		`<html>
-			<a id="a" href="data:text/plain;,test%20data" download>click</a>
-			<a id="b" download>click</a>
-			<script>
-				const b = document.getElementById('b')
-				b.href = URL.createObjectURL(new Blob(['test blob'], {
-					type: "text/plain; charset=utf-8"
-				}))
-			</script>
-		</html>`,
-	)
-
-	page := t.page.MustNavigate(s.URL())
-
-	wait1 := page.MustGetDownloadFile("data:*")
-	page.MustElement("#a").MustClick()
-	data := wait1()
-	t.Eq("test data", string(data))
-
-	wait2 := page.MustGetDownloadFile("data:*")
-	page.MustElement("#b").MustClick()
-	data = wait2()
-	t.Eq("test blob", string(data))
-
-	t.Panic(func() {
-		wait := page.MustGetDownloadFile("data:*")
-		page.MustElement("#b").MustClick()
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		data = wait()
-	})
-}
-
-func (t T) GetDownloadFileWithHijack() {
-	s := t.Serve()
-	content := "test content"
-
-	s.Route("/d", ".bin", []byte(content))
-	s.Route("/", ".html", fmt.Sprintf(`<html><a href="%s" download>click</a></html>`, s.URL("/d")))
-
-	page := t.page.MustNavigate(s.URL())
-
-	r := page.HijackRequests()
-	r.MustAdd("*", func(ctx *rod.Hijack) {
-		ctx.ContinueRequest(&proto.FetchContinueRequest{})
-	})
-	go r.Run()
-	defer r.MustStop()
-
-	wait := page.MustGetDownloadFile(s.URL("/d")) // the pattern is used to prevent favicon request
-	page.MustElement("a").MustClick()
-	data := wait()
-
-	t.Eq(content, string(data))
 }
