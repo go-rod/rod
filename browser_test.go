@@ -243,7 +243,9 @@ func (t T) BrowserOthers() {
 	t.browser.Timeout(time.Hour).CancelTimeout().MustPages()
 
 	t.Panic(func() {
-		t.browser.Context(t.Timeout(0)).MustIncognito()
+		b, cancel := t.browser.WithCancel()
+		cancel()
+		b.MustIncognito()
 	})
 }
 

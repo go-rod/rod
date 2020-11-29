@@ -42,7 +42,7 @@ func (t T) Basic() {
 		Header(http.Header{"test": {}}).MustConnect(ctx)
 
 	defer func() {
-		t.E(client.Call(ctx, "", "Browser.close", nil))
+		_, _ = client.Call(ctx, "", "Browser.close", nil)
 	}()
 
 	go func() {
