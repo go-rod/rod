@@ -173,20 +173,22 @@ func (p *Page) tryTraceEval(opts *EvalOptions) func() {
 		fn = "rod." + opts.jsHelper.Name
 	}
 
-	paramsStr := strings.Trim(mustToJSONForDev(opts.JSArgs), "[]\r\n")
-
 	info := map[string]interface{}{"js": fn}
+	paramsStr := ""
+	thisStr := ""
 
 	if opts.ThisObj != nil {
 		info["this"] = opts.ThisObj.Description
+		thisStr = opts.ThisObj.Description
 	}
 	if len(opts.JSArgs) > 0 {
 		info["params"] = opts.JSArgs
+		paramsStr = html.EscapeString(strings.Trim(mustToJSONForDev(opts.JSArgs), "[]\r\n"))
 	}
 
 	p.browser.logger.Println(&TraceMsg{TraceTypeEval, info})
 
-	msg := fmt.Sprintf("js <code>%s(%s)</code>", fn, html.EscapeString(paramsStr))
+	msg := fmt.Sprintf("js <code>%s(%s) %s</code>", fn, paramsStr, thisStr)
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 

@@ -460,17 +460,16 @@ func (el *Element) WaitStable(d time.Duration) error {
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
 	removeTrace := func() {}
-	defer removeTrace()
+	defer func() { removeTrace() }()
 
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
+		removeTrace()
+		removeTrace = el.page.tryTraceEval(opts)
+
 		res, err := el.Evaluate(opts.This(el.Object))
 		if err != nil {
 			return true, err
 		}
-
-		remove := el.page.Context(el.ctx).tryTraceEval(opts)
-		removeTrace()
-		removeTrace = remove
 
 		if res.Value.Bool() {
 			return true, nil
