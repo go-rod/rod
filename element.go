@@ -283,7 +283,8 @@ func (el *Element) Matches(selector string) (bool, error) {
 	return res.Value.Bool(), nil
 }
 
-// Attribute is similar to the method Attribute
+// Attribute of the DOM object.
+// Attribute vs Property: https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
 func (el *Element) Attribute(name string) (*string, error) {
 	attr, err := el.Eval("(n) => this.getAttribute(n)", name)
 	if err != nil {
@@ -298,7 +299,8 @@ func (el *Element) Attribute(name string) (*string, error) {
 	return &s, nil
 }
 
-// Property is similar to the method Property
+// Property of the DOM object.
+// Property vs Attribute: https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html
 func (el *Element) Property(name string) (gson.JSON, error) {
 	prop, err := el.Eval("(n) => this[n]", name)
 	if err != nil {
