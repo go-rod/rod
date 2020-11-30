@@ -50,6 +50,10 @@ Object model:
 
 ## FAQ
 
+### Q: How to contribute or become an maintainer
+
+Please check this [doc](.github/CONTRIBUTING.md).
+
 ### Q: How to use Rod with docker so that I don't have to install a browser
 
 To let rod work with docker is very easy:
@@ -74,13 +78,8 @@ Rod should work with any browser that supports [DevTools Protocol](https://chrom
 
 ### Q: Why is it called rod
 
-Rod is related to puppetry, see [rod Puppet](https://en.wikipedia.org/wiki/Puppet#rod_puppet).
-So we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
-So in this sense, `puppeteer.js` sounds strange, we are controlling a puppeteer?
-
-### Q: How to contribute
-
-Please check this [doc](.github/CONTRIBUTING.md).
+Rod is the name of a control device for puppetry, such as this [image](https://user-images.githubusercontent.com/1415488/80178856-31cd8880-863a-11ea-83e9-64f84be3282d.png).
+The meaning is we are the puppeteer, the browser is the puppet, we use the rod to control the puppet.
 
 ### Q: How versioning is handled
 
