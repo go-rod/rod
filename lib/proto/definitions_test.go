@@ -30,6 +30,12 @@ func (t T) AccessibilityGetFullAXTree() {
 	t.Nil(err)
 }
 
+func (t T) AccessibilityQueryAXTree() {
+	c := &Client{}
+	_, err := proto.AccessibilityQueryAXTree{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) AnimationDisable() {
 	c := &Client{}
 	err := proto.AnimationDisable{}.Call(c)
@@ -1698,6 +1704,12 @@ func (t T) NetworkSetExtraHTTPHeaders() {
 	t.Nil(err)
 }
 
+func (t T) NetworkSetAttachDebugHeader() {
+	c := &Client{}
+	err := proto.NetworkSetAttachDebugHeader{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) NetworkSetRequestInterception() {
 	c := &Client{}
 	err := proto.NetworkSetRequestInterception{}.Call(c)
@@ -1713,6 +1725,12 @@ func (t T) NetworkSetUserAgentOverride() {
 func (t T) NetworkGetSecurityIsolationStatus() {
 	c := &Client{}
 	_, err := proto.NetworkGetSecurityIsolationStatus{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) NetworkLoadNetworkResource() {
+	c := &Client{}
+	_, err := proto.NetworkLoadNetworkResource{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3503,6 +3521,24 @@ func (t T) ProfilerTakePreciseCoverage() {
 func (t T) ProfilerTakeTypeProfile() {
 	c := &Client{}
 	_, err := proto.ProfilerTakeTypeProfile{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) ProfilerEnableCounters() {
+	c := &Client{}
+	err := proto.ProfilerEnableCounters{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) ProfilerDisableCounters() {
+	c := &Client{}
+	err := proto.ProfilerDisableCounters{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) ProfilerGetCounters() {
+	c := &Client{}
+	_, err := proto.ProfilerGetCounters{}.Call(c)
 	t.Nil(err)
 }
 

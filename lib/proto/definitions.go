@@ -431,6 +431,50 @@ type AccessibilityGetFullAXTreeResult struct {
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
 
+// AccessibilityQueryAXTree (experimental) Query a DOM node's accessibility subtree for accessible name and role.
+// This command computes the name and role for all nodes in the subtree, including those that are
+// ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
+// node is specified, or the DOM node does not exist, the command returns an error. If neither
+// `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
+type AccessibilityQueryAXTree struct {
+
+	// NodeID (optional) Identifier of the node for the root to query.
+	NodeID DOMNodeID `json:"nodeId,omitempty"`
+
+	// BackendNodeID (optional) Identifier of the backend node for the root to query.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
+
+	// ObjectID (optional) JavaScript object id of the node wrapper for the root to query.
+	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
+
+	// AccessibleName (optional) Find nodes with this computed name.
+	AccessibleName string `json:"accessibleName,omitempty"`
+
+	// Role (optional) Find nodes with this computed role.
+	Role string `json:"role,omitempty"`
+}
+
+// ProtoReq of the command
+func (m AccessibilityQueryAXTree) ProtoReq() string { return "Accessibility.queryAXTree" }
+
+// Call of the command, sessionID is optional.
+func (m AccessibilityQueryAXTree) Call(c Client) (*AccessibilityQueryAXTreeResult, error) {
+	var res AccessibilityQueryAXTreeResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// AccessibilityQueryAXTreeResult (experimental) Query a DOM node's accessibility subtree for accessible name and role.
+// This command computes the name and role for all nodes in the subtree, including those that are
+// ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
+// node is specified, or the DOM node does not exist, the command returns an error. If neither
+// `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
+type AccessibilityQueryAXTreeResult struct {
+
+	// Nodes A list of `Accessibility.AXNode` matching the specified attributes,
+	// including nodes that are ignored for accessibility.
+	Nodes []*AccessibilityAXNode `json:"nodes"`
+}
+
 // AnimationAnimationType enum
 type AnimationAnimationType string
 
@@ -1713,9 +1757,6 @@ type BrowserPermissionDescriptor struct {
 	// Note that userVisibleOnly = true is the only currently supported type.
 	UserVisibleOnly bool `json:"userVisibleOnly,omitempty"`
 
-	// Type (optional) For "wake-lock" permission, must specify type as either "screen" or "system".
-	Type string `json:"type,omitempty"`
-
 	// AllowWithoutSanitization (optional) For "clipboard" permission, may specify allowWithoutSanitization.
 	AllowWithoutSanitization bool `json:"allowWithoutSanitization,omitempty"`
 }
@@ -2190,9 +2231,12 @@ type CSSCSSStyleSheetHeader struct {
 
 	// IsMutable Whether this stylesheet is mutable. Inline stylesheets become mutable
 	// after they have been modified via CSSOM API.
-	// <link> element's stylesheets are never mutable. Constructed stylesheets
-	// (new CSSStyleSheet()) are mutable immediately after creation.
+	// <link> element's stylesheets become mutable only if DevTools modifies them.
+	// Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
 	IsMutable bool `json:"isMutable"`
+
+	// IsConstructed Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+	IsConstructed bool `json:"isConstructed"`
 
 	// StartLine Line offset of the stylesheet within the resource (zero based).
 	StartLine float64 `json:"startLine"`
@@ -9524,6 +9568,15 @@ type NetworkCrossOriginOpenerPolicyStatus struct {
 
 	// Value ...
 	Value NetworkCrossOriginOpenerPolicyValue `json:"value"`
+
+	// ReportOnlyValue ...
+	ReportOnlyValue NetworkCrossOriginOpenerPolicyValue `json:"reportOnlyValue"`
+
+	// ReportingEndpoint (optional) ...
+	ReportingEndpoint string `json:"reportingEndpoint,omitempty"`
+
+	// ReportOnlyReportingEndpoint (optional) ...
+	ReportOnlyReportingEndpoint string `json:"reportOnlyReportingEndpoint,omitempty"`
 }
 
 // NetworkCrossOriginEmbedderPolicyValue (experimental) ...
@@ -9542,6 +9595,15 @@ type NetworkCrossOriginEmbedderPolicyStatus struct {
 
 	// Value ...
 	Value NetworkCrossOriginEmbedderPolicyValue `json:"value"`
+
+	// ReportOnlyValue ...
+	ReportOnlyValue NetworkCrossOriginEmbedderPolicyValue `json:"reportOnlyValue"`
+
+	// ReportingEndpoint (optional) ...
+	ReportingEndpoint string `json:"reportingEndpoint,omitempty"`
+
+	// ReportOnlyReportingEndpoint (optional) ...
+	ReportOnlyReportingEndpoint string `json:"reportOnlyReportingEndpoint,omitempty"`
 }
 
 // NetworkSecurityIsolationStatus (experimental) ...
@@ -9552,6 +9614,39 @@ type NetworkSecurityIsolationStatus struct {
 
 	// Coep ...
 	Coep *NetworkCrossOriginEmbedderPolicyStatus `json:"coep"`
+}
+
+// NetworkLoadNetworkResourcePageResult (experimental) An object providing the result of a network resource load.
+type NetworkLoadNetworkResourcePageResult struct {
+
+	// Success ...
+	Success bool `json:"success"`
+
+	// NetError (optional) Optional values used for error reporting.
+	NetError float64 `json:"netError,omitempty"`
+
+	// NetErrorName (optional) ...
+	NetErrorName string `json:"netErrorName,omitempty"`
+
+	// HTTPStatusCode (optional) ...
+	HTTPStatusCode float64 `json:"httpStatusCode,omitempty"`
+
+	// Stream (optional) If successful, one of the following two fields holds the result.
+	Stream IOStreamHandle `json:"stream,omitempty"`
+
+	// Headers (optional) Response headers.
+	Headers NetworkHeaders `json:"headers,omitempty"`
+}
+
+// NetworkLoadNetworkResourceOptions (experimental) An options object that may be extended later to better support CORS,
+// CORB and streaming.
+type NetworkLoadNetworkResourceOptions struct {
+
+	// DisableCache ...
+	DisableCache bool `json:"disableCache"`
+
+	// IncludeCredentials ...
+	IncludeCredentials bool `json:"includeCredentials"`
 }
 
 // NetworkCanClearBrowserCache (deprecated) Tells whether clearing browser cache is supported.
@@ -10094,7 +10189,7 @@ func (m NetworkSetCookie) Call(c Client) (*NetworkSetCookieResult, error) {
 // NetworkSetCookieResult Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
 type NetworkSetCookieResult struct {
 
-	// Success True if successfully set cookie.
+	// Success (deprecated) Always set to true. If an error occurs, the response indicates protocol error.
 	Success bool `json:"success"`
 }
 
@@ -10143,6 +10238,21 @@ func (m NetworkSetExtraHTTPHeaders) ProtoReq() string { return "Network.setExtra
 
 // Call of the command, sessionID is optional.
 func (m NetworkSetExtraHTTPHeaders) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// NetworkSetAttachDebugHeader (experimental) Specifies whether to sned a debug header to all outgoing requests.
+type NetworkSetAttachDebugHeader struct {
+
+	// Enabled Whether to send a debug header.
+	Enabled bool `json:"enabled"`
+}
+
+// ProtoReq of the command
+func (m NetworkSetAttachDebugHeader) ProtoReq() string { return "Network.setAttachDebugHeader" }
+
+// Call of the command, sessionID is optional.
+func (m NetworkSetAttachDebugHeader) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -10210,6 +10320,35 @@ type NetworkGetSecurityIsolationStatusResult struct {
 
 	// Status ...
 	Status *NetworkSecurityIsolationStatus `json:"status"`
+}
+
+// NetworkLoadNetworkResource (experimental) Fetches the resource and returns the content.
+type NetworkLoadNetworkResource struct {
+
+	// FrameID Frame id to get the resource for.
+	FrameID PageFrameID `json:"frameId"`
+
+	// URL URL of the resource to get content for.
+	URL string `json:"url"`
+
+	// Options Options for the request.
+	Options *NetworkLoadNetworkResourceOptions `json:"options"`
+}
+
+// ProtoReq of the command
+func (m NetworkLoadNetworkResource) ProtoReq() string { return "Network.loadNetworkResource" }
+
+// Call of the command, sessionID is optional.
+func (m NetworkLoadNetworkResource) Call(c Client) (*NetworkLoadNetworkResourceResult, error) {
+	var res NetworkLoadNetworkResourceResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// NetworkLoadNetworkResourceResult (experimental) Fetches the resource and returns the content.
+type NetworkLoadNetworkResourceResult struct {
+
+	// Resource ...
+	Resource *NetworkLoadNetworkResourcePageResult `json:"resource"`
 }
 
 // NetworkDataReceived Fired when data chunk was received over the network.
@@ -10718,6 +10857,9 @@ type OverlayGridHighlightConfig struct {
 
 	// AreaBorderColor (optional) The named grid areas border color (Default: transparent).
 	AreaBorderColor *DOMRGBA `json:"areaBorderColor,omitempty"`
+
+	// GridBackgroundColor (optional) The grid container background color (Default: transparent).
+	GridBackgroundColor *DOMRGBA `json:"gridBackgroundColor,omitempty"`
 }
 
 // OverlayHighlightConfig Configuration data for the highlighting of page elements.
@@ -14754,8 +14896,11 @@ type TargetTargetInfo struct {
 	// OpenerID (optional) Opener target Id
 	OpenerID TargetTargetID `json:"openerId,omitempty"`
 
-	// CanAccessOpener (experimental) Whether the opened window has access to the originating window.
+	// CanAccessOpener (experimental) Whether the target has access to the originating window.
 	CanAccessOpener bool `json:"canAccessOpener"`
+
+	// OpenerFrameID (experimental) (optional) Frame id of originating window (is only set if target has an opener).
+	OpenerFrameID PageFrameID `json:"openerFrameId,omitempty"`
 
 	// BrowserContextID (experimental) (optional) ...
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -14853,7 +14998,7 @@ func (m TargetCloseTarget) Call(c Client) (*TargetCloseTargetResult, error) {
 // TargetCloseTargetResult Closes the target. If the target is a page that gets closed too.
 type TargetCloseTargetResult struct {
 
-	// Success ...
+	// Success (deprecated) Always set to true. If an error occurs, the response indicates protocol error.
 	Success bool `json:"success"`
 }
 
@@ -15537,7 +15682,7 @@ func (evt TracingTracingComplete) ProtoEvent() string {
 // FetchRequestID Unique request identifier.
 type FetchRequestID string
 
-// FetchRequestStage (experimental) Stages of the request to handle. Request will intercept before the request is
+// FetchRequestStage Stages of the request to handle. Request will intercept before the request is
 // sent. Response will intercept after the response is received (but before response
 // body is received.
 type FetchRequestStage string
@@ -15550,7 +15695,7 @@ const (
 	FetchRequestStageResponse FetchRequestStage = "Response"
 )
 
-// FetchRequestPattern (experimental) ...
+// FetchRequestPattern ...
 type FetchRequestPattern struct {
 
 	// URLPattern (optional) Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
@@ -15585,7 +15730,7 @@ const (
 	FetchAuthChallengeSourceProxy FetchAuthChallengeSource = "Proxy"
 )
 
-// FetchAuthChallenge (experimental) Authorization challenge for HTTP status code 401 or 407.
+// FetchAuthChallenge Authorization challenge for HTTP status code 401 or 407.
 type FetchAuthChallenge struct {
 
 	// Source (optional) Source of the authentication challenge.
@@ -15615,7 +15760,7 @@ const (
 	FetchAuthChallengeResponseResponseProvideCredentials FetchAuthChallengeResponseResponse = "ProvideCredentials"
 )
 
-// FetchAuthChallengeResponse (experimental) Response to an AuthChallenge.
+// FetchAuthChallengeResponse Response to an AuthChallenge.
 type FetchAuthChallengeResponse struct {
 
 	// Response The decision on what to do in response to the authorization challenge.  Default means
@@ -16019,7 +16164,7 @@ type WebAudioBaseAudioContext struct {
 	SampleRate float64 `json:"sampleRate"`
 }
 
-// WebAudioAudioListener Protocol object for AudioListner
+// WebAudioAudioListener Protocol object for AudioListener
 type WebAudioAudioListener struct {
 
 	// ListenerID ...
@@ -18603,6 +18748,19 @@ type ProfilerCounterInfo struct {
 	Value int `json:"value"`
 }
 
+// ProfilerRuntimeCallCounterInfo (experimental) Runtime call counter information.
+type ProfilerRuntimeCallCounterInfo struct {
+
+	// Name Counter name.
+	Name string `json:"name"`
+
+	// Value Counter value.
+	Value float64 `json:"value"`
+
+	// Time Counter time in seconds.
+	Time float64 `json:"time"`
+}
+
 // ProfilerDisable ...
 type ProfilerDisable struct {
 }
@@ -18811,6 +18969,50 @@ type ProfilerTakeTypeProfileResult struct {
 	Result []*ProfilerScriptTypeProfile `json:"result"`
 }
 
+// ProfilerEnableCounters (experimental) Enable counters collection.
+type ProfilerEnableCounters struct {
+}
+
+// ProtoReq of the command
+func (m ProfilerEnableCounters) ProtoReq() string { return "Profiler.enableCounters" }
+
+// Call of the command, sessionID is optional.
+func (m ProfilerEnableCounters) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// ProfilerDisableCounters (experimental) Disable counters collection.
+type ProfilerDisableCounters struct {
+}
+
+// ProtoReq of the command
+func (m ProfilerDisableCounters) ProtoReq() string { return "Profiler.disableCounters" }
+
+// Call of the command, sessionID is optional.
+func (m ProfilerDisableCounters) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// ProfilerGetCounters (experimental) Retrieve counters.
+type ProfilerGetCounters struct {
+}
+
+// ProtoReq of the command
+func (m ProfilerGetCounters) ProtoReq() string { return "Profiler.getCounters" }
+
+// Call of the command, sessionID is optional.
+func (m ProfilerGetCounters) Call(c Client) (*ProfilerGetCountersResult, error) {
+	var res ProfilerGetCountersResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// ProfilerGetCountersResult (experimental) Retrieve counters.
+type ProfilerGetCountersResult struct {
+
+	// Result Collected counters information.
+	Result []*ProfilerCounterInfo `json:"result"`
+}
+
 // ProfilerEnableRuntimeCallStats (experimental) Enable run time call stats collection.
 type ProfilerEnableRuntimeCallStats struct {
 }
@@ -18851,8 +19053,8 @@ func (m ProfilerGetRuntimeCallStats) Call(c Client) (*ProfilerGetRuntimeCallStat
 // ProfilerGetRuntimeCallStatsResult (experimental) Retrieve run time call stats.
 type ProfilerGetRuntimeCallStatsResult struct {
 
-	// Result Collected counter information.
-	Result []*ProfilerCounterInfo `json:"result"`
+	// Result Collected runtime call counter information.
+	Result []*ProfilerRuntimeCallCounterInfo `json:"result"`
 }
 
 // ProfilerConsoleProfileFinished ...
@@ -20263,6 +20465,8 @@ var types = map[string]reflect.Type{
 	"Accessibility.getPartialAXTreeResult":               reflect.TypeOf(AccessibilityGetPartialAXTreeResult{}),
 	"Accessibility.getFullAXTree":                        reflect.TypeOf(AccessibilityGetFullAXTree{}),
 	"Accessibility.getFullAXTreeResult":                  reflect.TypeOf(AccessibilityGetFullAXTreeResult{}),
+	"Accessibility.queryAXTree":                          reflect.TypeOf(AccessibilityQueryAXTree{}),
+	"Accessibility.queryAXTreeResult":                    reflect.TypeOf(AccessibilityQueryAXTreeResult{}),
 	"Animation.Animation":                                reflect.TypeOf(AnimationAnimation{}),
 	"Animation.AnimationEffect":                          reflect.TypeOf(AnimationAnimationEffect{}),
 	"Animation.KeyframesRule":                            reflect.TypeOf(AnimationKeyframesRule{}),
@@ -20728,6 +20932,8 @@ var types = map[string]reflect.Type{
 	"Network.CrossOriginOpenerPolicyStatus":                 reflect.TypeOf(NetworkCrossOriginOpenerPolicyStatus{}),
 	"Network.CrossOriginEmbedderPolicyStatus":               reflect.TypeOf(NetworkCrossOriginEmbedderPolicyStatus{}),
 	"Network.SecurityIsolationStatus":                       reflect.TypeOf(NetworkSecurityIsolationStatus{}),
+	"Network.LoadNetworkResourcePageResult":                 reflect.TypeOf(NetworkLoadNetworkResourcePageResult{}),
+	"Network.LoadNetworkResourceOptions":                    reflect.TypeOf(NetworkLoadNetworkResourceOptions{}),
 	"Network.canClearBrowserCache":                          reflect.TypeOf(NetworkCanClearBrowserCache{}),
 	"Network.canClearBrowserCacheResult":                    reflect.TypeOf(NetworkCanClearBrowserCacheResult{}),
 	"Network.canClearBrowserCookies":                        reflect.TypeOf(NetworkCanClearBrowserCookies{}),
@@ -20766,10 +20972,13 @@ var types = map[string]reflect.Type{
 	"Network.setCookies":                                    reflect.TypeOf(NetworkSetCookies{}),
 	"Network.setDataSizeLimitsForTest":                      reflect.TypeOf(NetworkSetDataSizeLimitsForTest{}),
 	"Network.setExtraHTTPHeaders":                           reflect.TypeOf(NetworkSetExtraHTTPHeaders{}),
+	"Network.setAttachDebugHeader":                          reflect.TypeOf(NetworkSetAttachDebugHeader{}),
 	"Network.setRequestInterception":                        reflect.TypeOf(NetworkSetRequestInterception{}),
 	"Network.setUserAgentOverride":                          reflect.TypeOf(NetworkSetUserAgentOverride{}),
 	"Network.getSecurityIsolationStatus":                    reflect.TypeOf(NetworkGetSecurityIsolationStatus{}),
 	"Network.getSecurityIsolationStatusResult":              reflect.TypeOf(NetworkGetSecurityIsolationStatusResult{}),
+	"Network.loadNetworkResource":                           reflect.TypeOf(NetworkLoadNetworkResource{}),
+	"Network.loadNetworkResourceResult":                     reflect.TypeOf(NetworkLoadNetworkResourceResult{}),
 	"Network.dataReceived":                                  reflect.TypeOf(NetworkDataReceived{}),
 	"Network.eventSourceMessageReceived":                    reflect.TypeOf(NetworkEventSourceMessageReceived{}),
 	"Network.loadingFailed":                                 reflect.TypeOf(NetworkLoadingFailed{}),
@@ -21209,6 +21418,7 @@ var types = map[string]reflect.Type{
 	"Profiler.TypeProfileEntry":                             reflect.TypeOf(ProfilerTypeProfileEntry{}),
 	"Profiler.ScriptTypeProfile":                            reflect.TypeOf(ProfilerScriptTypeProfile{}),
 	"Profiler.CounterInfo":                                  reflect.TypeOf(ProfilerCounterInfo{}),
+	"Profiler.RuntimeCallCounterInfo":                       reflect.TypeOf(ProfilerRuntimeCallCounterInfo{}),
 	"Profiler.disable":                                      reflect.TypeOf(ProfilerDisable{}),
 	"Profiler.enable":                                       reflect.TypeOf(ProfilerEnable{}),
 	"Profiler.getBestEffortCoverage":                        reflect.TypeOf(ProfilerGetBestEffortCoverage{}),
@@ -21226,6 +21436,10 @@ var types = map[string]reflect.Type{
 	"Profiler.takePreciseCoverageResult":                    reflect.TypeOf(ProfilerTakePreciseCoverageResult{}),
 	"Profiler.takeTypeProfile":                              reflect.TypeOf(ProfilerTakeTypeProfile{}),
 	"Profiler.takeTypeProfileResult":                        reflect.TypeOf(ProfilerTakeTypeProfileResult{}),
+	"Profiler.enableCounters":                               reflect.TypeOf(ProfilerEnableCounters{}),
+	"Profiler.disableCounters":                              reflect.TypeOf(ProfilerDisableCounters{}),
+	"Profiler.getCounters":                                  reflect.TypeOf(ProfilerGetCounters{}),
+	"Profiler.getCountersResult":                            reflect.TypeOf(ProfilerGetCountersResult{}),
 	"Profiler.enableRuntimeCallStats":                       reflect.TypeOf(ProfilerEnableRuntimeCallStats{}),
 	"Profiler.disableRuntimeCallStats":                      reflect.TypeOf(ProfilerDisableRuntimeCallStats{}),
 	"Profiler.getRuntimeCallStats":                          reflect.TypeOf(ProfilerGetRuntimeCallStats{}),
