@@ -483,3 +483,42 @@ func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
 		BrowserContextID: b.BrowserContextID,
 	}.Call(b)
 }
+
+// WaitDownload returns a helper to get the next download file.
+// The file path will be:
+//     filepath.Join(dir, info.GUID)
+func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillBegin) {
+	var oldDownloadBehavior proto.BrowserSetDownloadBehavior
+	has := b.LoadState("", &oldDownloadBehavior)
+
+	_ = proto.BrowserSetDownloadBehavior{
+		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorAllowAndName,
+		BrowserContextID: b.BrowserContextID,
+		DownloadPath:     dir,
+	}.Call(b)
+
+	var start *proto.PageDownloadWillBegin
+
+	waitProgress := b.EachEvent(func(e *proto.PageDownloadWillBegin) {
+		start = e
+	}, func(e *proto.PageDownloadProgress) bool {
+		return start.GUID == e.GUID && e.State == proto.PageDownloadProgressStateCompleted
+	})
+
+	return func() *proto.PageDownloadWillBegin {
+		defer func() {
+			if has {
+				_ = oldDownloadBehavior.Call(b)
+			} else {
+				_ = proto.BrowserSetDownloadBehavior{
+					Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
+					BrowserContextID: b.BrowserContextID,
+				}.Call(b)
+			}
+		}()
+
+		waitProgress()
+
+		return start
+	}
+}

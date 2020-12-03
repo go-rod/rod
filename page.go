@@ -364,38 +364,6 @@ func (p *Page) GetResource(url string) ([]byte, error) {
 	return bin, nil
 }
 
-// WaitDownload returns a helper to get the next download file.
-// The file path will be:
-//     filepath.Join(dir, info.GUID)
-func (p *Page) WaitDownload(dir string) func() (info *proto.PageDownloadWillBegin) {
-	_ = proto.BrowserSetDownloadBehavior{
-		Behavior:         proto.BrowserSetDownloadBehaviorBehaviorAllowAndName,
-		BrowserContextID: p.browser.BrowserContextID,
-		DownloadPath:     dir,
-	}.Call(p)
-
-	var start *proto.PageDownloadWillBegin
-
-	waitProgress := p.EachEvent(func(e *proto.PageDownloadWillBegin) {
-		start = e
-	}, func(e *proto.PageDownloadProgress) bool {
-		return start.GUID == e.GUID && e.State == proto.PageDownloadProgressStateCompleted
-	})
-
-	return func() *proto.PageDownloadWillBegin {
-		defer func() {
-			_ = proto.BrowserSetDownloadBehavior{
-				Behavior:         proto.BrowserSetDownloadBehaviorBehaviorDefault,
-				BrowserContextID: p.browser.BrowserContextID,
-			}.Call(p)
-		}()
-
-		waitProgress()
-
-		return start
-	}
-}
-
 // WaitOpen waits for the next new page opened by the current one
 func (p *Page) WaitOpen() func() (*Page, error) {
 	var targetID proto.TargetTargetID

@@ -86,6 +86,22 @@ func (b *Browser) MustSetCookies(cookies []*proto.NetworkCookie) *Browser {
 	return b
 }
 
+// MustWaitDownload is similar to WaitDownload.
+// It will read the file into bytes then remove the file.
+func (b *Browser) MustWaitDownload() func() []byte {
+	tmpDir := filepath.Join(os.TempDir(), "rod", "downloads")
+	wait := b.WaitDownload(tmpDir)
+
+	return func() []byte {
+		info := wait()
+		path := filepath.Join(tmpDir, info.GUID)
+		defer func() { _ = os.Remove(path) }()
+		b, err := ioutil.ReadFile(path)
+		utils.E(err)
+		return b
+	}
+}
+
 // MustFind is similar to Find
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
@@ -272,22 +288,6 @@ func (p *Page) MustPDF(toFile ...string) []byte {
 
 	utils.E(saveFile(saveFileTypePDF, bin, toFile))
 	return bin
-}
-
-// MustWaitDownload is similar to WaitDownload.
-// It will read the file into bytes then remove the file.
-func (p *Page) MustWaitDownload() func() []byte {
-	tmpDir := filepath.Join(os.TempDir(), "rod", "downloads")
-	wait := p.WaitDownload(tmpDir)
-
-	return func() []byte {
-		info := wait()
-		path := filepath.Join(tmpDir, info.GUID)
-		defer func() { _ = os.Remove(path) }()
-		b, err := ioutil.ReadFile(path)
-		utils.E(err)
-		return b
-	}
 }
 
 // MustWaitOpen is similar to WaitOpen

@@ -3,7 +3,6 @@ package rod_test
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"image/png"
 	"net/http"
 	"os"
@@ -754,67 +753,4 @@ func (t T) PageUseNonExistSession() {
 	p := t.browser.PageFromSession("nonexist").Timeout(300 * time.Millisecond)
 	err := proto.PageClose{}.Call(p)
 	t.Is(err, context.DeadlineExceeded)
-}
-
-func (t T) WaitDownload() {
-	s := t.Serve()
-	content := "test content"
-
-	s.Route("/d", ".bin", []byte(content))
-	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
-
-	page := t.page.MustNavigate(s.URL("/page"))
-
-	wait := page.MustWaitDownload()
-	page.MustElement("a").MustClick()
-	data := wait()
-
-	t.Eq(content, string(data))
-}
-
-func (t T) WaitDownloadDataURI() {
-	s := t.Serve()
-
-	s.Route("/", ".html",
-		`<html>
-			<a id="a" href="data:text/plain;,test%20data" download>click</a>
-			<a id="b" download>click</a>
-			<script>
-				const b = document.getElementById('b')
-				b.href = URL.createObjectURL(new Blob(['test blob'], {
-					type: "text/plain; charset=utf-8"
-				}))
-			</script>
-		</html>`,
-	)
-
-	page := t.page.MustNavigate(s.URL())
-
-	wait1 := page.MustWaitDownload()
-	page.MustElement("#a").MustClick()
-	data := wait1()
-	t.Eq("test data", string(data))
-
-	wait2 := page.MustWaitDownload()
-	page.MustElement("#b").MustClick()
-	data = wait2()
-	t.Eq("test blob", string(data))
-}
-
-func (t T) WaitDownloadFromNewPage() {
-	s := t.Serve()
-	content := "test content"
-
-	s.Route("/d", ".bin", content)
-	s.Route("/page", ".html", fmt.Sprintf(
-		`<html><a href="%s/d" download target="_blank">click</a></html>`,
-		s.URL()),
-	)
-
-	page := t.page.MustNavigate(s.URL("/page"))
-	wait := page.MustWaitDownload()
-	page.MustElement("a").MustClick()
-	data := wait()
-
-	t.Eq(content, string(data))
 }

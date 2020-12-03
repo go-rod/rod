@@ -3,6 +3,7 @@ package rod_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
@@ -288,6 +289,69 @@ func (t T) BrowserCookies() {
 
 	t.mc.stubErr(1, proto.StorageGetCookies{})
 	t.Err(b.GetCookies())
+}
+
+func (t T) WaitDownload() {
+	s := t.Serve()
+	content := "test content"
+
+	s.Route("/d", ".bin", []byte(content))
+	s.Route("/page", ".html", fmt.Sprintf(`<html><a href="%s/d" download>click</a></html>`, s.URL()))
+
+	page := t.page.MustNavigate(s.URL("/page"))
+
+	wait := t.browser.MustWaitDownload()
+	page.MustElement("a").MustClick()
+	data := wait()
+
+	t.Eq(content, string(data))
+}
+
+func (t T) WaitDownloadDataURI() {
+	s := t.Serve()
+
+	s.Route("/", ".html",
+		`<html>
+			<a id="a" href="data:text/plain;,test%20data" download>click</a>
+			<a id="b" download>click</a>
+			<script>
+				const b = document.getElementById('b')
+				b.href = URL.createObjectURL(new Blob(['test blob'], {
+					type: "text/plain; charset=utf-8"
+				}))
+			</script>
+		</html>`,
+	)
+
+	page := t.page.MustNavigate(s.URL())
+
+	wait1 := t.browser.MustWaitDownload()
+	page.MustElement("#a").MustClick()
+	data := wait1()
+	t.Eq("test data", string(data))
+
+	wait2 := t.browser.MustWaitDownload()
+	page.MustElement("#b").MustClick()
+	data = wait2()
+	t.Eq("test blob", string(data))
+}
+
+func (t T) WaitDownloadFromNewPage() {
+	s := t.Serve()
+	content := "test content"
+
+	s.Route("/d", ".bin", content)
+	s.Route("/page", ".html", fmt.Sprintf(
+		`<html><a href="%s/d" download target="_blank">click</a></html>`,
+		s.URL()),
+	)
+
+	page := t.page.MustNavigate(s.URL("/page"))
+	wait := t.browser.MustWaitDownload()
+	page.MustElement("a").MustClick()
+	data := wait()
+
+	t.Eq(content, string(data))
 }
 
 func (t T) BrowserConnectErr() {

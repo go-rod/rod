@@ -456,9 +456,10 @@ func Example_handle_events() {
 }
 
 func Example_download_file() {
-	page := rod.New().MustConnect().MustPage("https://file-examples.com/index.php/sample-documents-download/sample-pdf-download/")
+	browser := rod.New().MustConnect()
+	page := browser.MustPage("https://file-examples.com/index.php/sample-documents-download/sample-pdf-download/")
 
-	wait := page.MustWaitDownload()
+	wait := browser.MustWaitDownload()
 
 	page.MustElementR("a", "DOWNLOAD SAMPLE PDF FILE").MustClick()
 
