@@ -50,7 +50,7 @@ Object model:
 
 ## FAQ
 
-### Q: How to contribute or become an maintainer
+### Q: How to contribute or become a maintainer
 
 Please check this [doc](.github/CONTRIBUTING.md).
 
