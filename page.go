@@ -210,17 +210,17 @@ func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) erro
 
 // Emulate the device, such as iPhone9. If device is devices.Clear, it will clear the override.
 func (p *Page) Emulate(device devices.Device) error {
-	err := p.SetViewport(device.Metrics())
+	err := p.SetViewport(device.MetricsEmulation())
 	if err != nil {
 		return err
 	}
 
-	err = device.Touch().Call(p)
+	err = device.TouchEmulation().Call(p)
 	if err != nil {
 		return err
 	}
 
-	return p.SetUserAgent(device.UserAgent())
+	return p.SetUserAgent(device.UserAgentEmulation())
 }
 
 // StopLoading forces the page stop navigation and pending resource fetches.

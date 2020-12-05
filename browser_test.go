@@ -44,11 +44,11 @@ func (t T) DefaultDevice() {
 	defer t.browser.DefaultDevice(devices.Test)
 
 	t.newPage(s.URL("/t"))
-	t.Eq(ua, devices.IPhoneX.UserAgent().UserAgent)
+	t.Eq(ua, devices.IPhoneX.UserAgentEmulation().UserAgent)
 
 	t.browser.NoDefaultDevice()
 	t.newPage(s.URL("/t"))
-	t.Neq(ua, devices.IPhoneX.UserAgent().UserAgent)
+	t.Neq(ua, devices.IPhoneX.UserAgentEmulation().UserAgent)
 }
 
 func (t T) PageErr() {

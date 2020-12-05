@@ -277,7 +277,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		return nil, err
 	}
 
-	if b.defaultDevice != devices.Clear {
+	if !b.defaultDevice.IsClear() {
 		err = page.Emulate(b.defaultDevice)
 		if err != nil {
 			return nil, err

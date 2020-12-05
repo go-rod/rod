@@ -10,8 +10,8 @@ import (
 func TestErr(t *testing.T) {
 	as := got.New(t)
 
-	v := devices.IPad.Metrics()
-	touch := devices.IPad.Touch()
+	v := devices.IPad.MetricsEmulation()
+	touch := devices.IPad.TouchEmulation()
 	as.Eq(768, v.Width)
 	as.Eq(1024, v.Height)
 	as.Eq(2, v.DeviceScaleFactor)
@@ -19,17 +19,17 @@ func TestErr(t *testing.T) {
 	as.True(v.Mobile)
 	as.True(touch.Enabled)
 
-	v = devices.LaptopWithMDPIScreen.Landescape().Metrics()
-	touch = devices.LaptopWithMDPIScreen.Touch()
+	v = devices.LaptopWithMDPIScreen.Landescape().MetricsEmulation()
+	touch = devices.LaptopWithMDPIScreen.TouchEmulation()
 	as.Eq(1280, v.Width)
 	as.Eq(90, v.ScreenOrientation.Angle)
 	as.False(v.Mobile)
 	as.False(touch.Enabled)
 
-	u := devices.IPad.UserAgent()
+	u := devices.IPad.UserAgentEmulation()
 	as.Eq("Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1", u.UserAgent)
 
-	as.Nil(devices.Clear.Metrics())
-	as.False(devices.Clear.Touch().Enabled)
-	as.Nil(devices.Clear.UserAgent())
+	as.Nil(devices.Clear.MetricsEmulation())
+	as.False(devices.Clear.TouchEmulation().Enabled)
+	as.Nil(devices.Clear.UserAgentEmulation())
 }
