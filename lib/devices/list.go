@@ -2,1337 +2,729 @@
 
 package devices
 
+import (
+	"github.com/go-rod/rod/lib/devices/raw"
+)
+
 var (
 
 	// IPhone4 device
-	IPhone4 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 320,
-	      "width": 480
-	    },
-	    "vertical": {
-	      "height": 480,
-	      "width": 320
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "iPhone 4",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53"
-	}`)
+	IPhone4 = Device{
+		raw: &raw.Device{
+			Title:        "iPhone 4",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  480,
+					Height: 320,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  320,
+					Height: 480,
+				},
+			},
+		},
+	}
 
 	// IPhone5orSE device
-	IPhone5orSE = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 320,
-	      "outline": {
-	        "image": "@url(optimized/iPhone5-landscape.avif)",
-	        "insets": {
-	          "bottom": 28,
-	          "left": 115,
-	          "right": 115,
-	          "top": 25
-	        }
-	      },
-	      "width": 568
-	    },
-	    "vertical": {
-	      "height": 568,
-	      "outline": {
-	        "image": "@url(optimized/iPhone5-portrait.avif)",
-	        "insets": {
-	          "bottom": 111,
-	          "left": 29,
-	          "right": 25,
-	          "top": 105
-	        }
-	      },
-	      "width": 320
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPhone 5/SE",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
-	}`)
+	IPhone5orSE = Device{
+		raw: &raw.Device{
+			Title:        "iPhone 5/SE",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  568,
+					Height: 320,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  320,
+					Height: 568,
+				},
+			},
+		},
+	}
 
 	// IPhone6or7or8 device
-	IPhone6or7or8 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 375,
-	      "outline": {
-	        "image": "@url(optimized/iPhone6-landscape.avif)",
-	        "insets": {
-	          "bottom": 28,
-	          "left": 106,
-	          "right": 106,
-	          "top": 28
-	        }
-	      },
-	      "width": 667
-	    },
-	    "vertical": {
-	      "height": 667,
-	      "outline": {
-	        "image": "@url(optimized/iPhone6-portrait.avif)",
-	        "insets": {
-	          "bottom": 105,
-	          "left": 28,
-	          "right": 28,
-	          "top": 105
-	        }
-	      },
-	      "width": 375
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPhone 6/7/8",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)
+	IPhone6or7or8 = Device{
+		raw: &raw.Device{
+			Title:        "iPhone 6/7/8",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  667,
+					Height: 375,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  375,
+					Height: 667,
+				},
+			},
+		},
+	}
 
 	// IPhone6or7or8Plus device
-	IPhone6or7or8Plus = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 414,
-	      "outline": {
-	        "image": "@url(optimized/iPhone6Plus-landscape.avif)",
-	        "insets": {
-	          "bottom": 27,
-	          "left": 109,
-	          "right": 109,
-	          "top": 29
-	        }
-	      },
-	      "width": 736
-	    },
-	    "vertical": {
-	      "height": 736,
-	      "outline": {
-	        "image": "@url(optimized/iPhone6Plus-portrait.avif)",
-	        "insets": {
-	          "bottom": 111,
-	          "left": 26,
-	          "right": 30,
-	          "top": 107
-	        }
-	      },
-	      "width": 414
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPhone 6/7/8 Plus",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)
+	IPhone6or7or8Plus = Device{
+		raw: &raw.Device{
+			Title:        "iPhone 6/7/8 Plus",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  736,
+					Height: 414,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  414,
+					Height: 736,
+				},
+			},
+		},
+	}
 
 	// IPhoneX device
-	IPhoneX = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 375,
-	      "width": 812
-	    },
-	    "vertical": {
-	      "height": 812,
-	      "width": 375
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPhone X",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-	}`)
+	IPhoneX = Device{
+		raw: &raw.Device{
+			Title:        "iPhone X",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  812,
+					Height: 375,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  375,
+					Height: 812,
+				},
+			},
+		},
+	}
 
 	// BlackBerryZ30 device
-	BlackBerryZ30 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "BlackBerry Z30",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+"
-	}`)
+	BlackBerryZ30 = Device{
+		raw: &raw.Device{
+			Title:        "BlackBerry Z30",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// Nexus4 device
-	Nexus4 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 384,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 384
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 4",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Nexus 4",
-	    "platform": "Android",
-	    "platformVersion": "4.4.2"
-	  }
-	}`)
+	Nexus4 = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 4",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 384,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  384,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// Nexus5 device
-	Nexus5 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "modes": [
-	    {
-	      "image": "@url(optimized/google-nexus-5-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-default-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 48,
-	        "left": 0,
-	        "right": 0,
-	        "top": 25
-	      },
-	      "orientation": "vertical",
-	      "title": "default"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-navigation-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 48,
-	        "left": 0,
-	        "right": 0,
-	        "top": 80
-	      },
-	      "orientation": "vertical",
-	      "title": "navigation bar"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-vertical-keyboard-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 312,
-	        "left": 0,
-	        "right": 0,
-	        "top": 80
-	      },
-	      "orientation": "vertical",
-	      "title": "keyboard"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-default-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 42,
-	        "top": 25
-	      },
-	      "orientation": "horizontal",
-	      "title": "default"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-navigation-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 42,
-	        "top": 80
-	      },
-	      "orientation": "horizontal",
-	      "title": "navigation bar"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5-horizontal-keyboard-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 202,
-	        "left": 0,
-	        "right": 42,
-	        "top": 80
-	      },
-	      "orientation": "horizontal",
-	      "title": "keyboard"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 5",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Nexus 5",
-	    "platform": "Android",
-	    "platformVersion": "6.0"
-	  }
-	}`)
+	Nexus5 = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 5",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// Nexus5X device
-	Nexus5X = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "modes": [
-	    {
-	      "image": "@url(optimized/google-nexus-5x-vertical-default-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-default-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 48,
-	        "left": 0,
-	        "right": 0,
-	        "top": 24
-	      },
-	      "orientation": "vertical",
-	      "title": "default"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5x-vertical-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-navigation-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 48,
-	        "left": 0,
-	        "right": 0,
-	        "top": 80
-	      },
-	      "orientation": "vertical",
-	      "title": "navigation bar"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5x-vertical-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-vertical-keyboard-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 342,
-	        "left": 0,
-	        "right": 0,
-	        "top": 80
-	      },
-	      "orientation": "vertical",
-	      "title": "keyboard"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5x-horizontal-default-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-default-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 48,
-	        "top": 24
-	      },
-	      "orientation": "horizontal",
-	      "title": "default"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5x-horizontal-navigation-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-navigation-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 48,
-	        "top": 80
-	      },
-	      "orientation": "horizontal",
-	      "title": "navigation bar"
-	    },
-	    {
-	      "image": "@url(optimized/google-nexus-5x-horizontal-keyboard-1x.avif) 1x, @url(optimized/google-nexus-5x-horizontal-keyboard-2x.avif) 2x",
-	      "insets": {
-	        "bottom": 222,
-	        "left": 0,
-	        "right": 48,
-	        "top": 80
-	      },
-	      "orientation": "horizontal",
-	      "title": "keyboard"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2.625,
-	    "horizontal": {
-	      "height": 412,
-	      "outline": {
-	        "image": "@url(optimized/Nexus5X-landscape.avif)",
-	        "insets": {
-	          "bottom": 19,
-	          "left": 88,
-	          "right": 98,
-	          "top": 21
-	        }
-	      },
-	      "width": 732
-	    },
-	    "vertical": {
-	      "height": 732,
-	      "outline": {
-	        "image": "@url(optimized/Nexus5X-portrait.avif)",
-	        "insets": {
-	          "bottom": 98,
-	          "left": 18,
-	          "right": 22,
-	          "top": 88
-	        }
-	      },
-	      "width": 412
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 5X",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Nexus 5X",
-	    "platform": "Android",
-	    "platformVersion": "8.0.0"
-	  }
-	}`)
+	Nexus5X = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 5X",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2.625,
+				Horizontal: raw.ScreenSize{
+					Width:  732,
+					Height: 412,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  412,
+					Height: 732,
+				},
+			},
+		},
+	}
 
 	// Nexus6 device
-	Nexus6 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3.5,
-	    "horizontal": {
-	      "height": 412,
-	      "width": 732
-	    },
-	    "vertical": {
-	      "height": 732,
-	      "width": 412
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 6",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Nexus 6",
-	    "platform": "Android",
-	    "platformVersion": "7.1.1"
-	  }
-	}`)
+	Nexus6 = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 6",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3.5,
+				Horizontal: raw.ScreenSize{
+					Width:  732,
+					Height: 412,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  412,
+					Height: 732,
+				},
+			},
+		},
+	}
 
 	// Nexus6P device
-	Nexus6P = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3.5,
-	    "horizontal": {
-	      "height": 412,
-	      "outline": {
-	        "image": "@url(optimized/Nexus6P-landscape.avif)",
-	        "insets": {
-	          "bottom": 17,
-	          "left": 94,
-	          "right": 88,
-	          "top": 17
-	        }
-	      },
-	      "width": 732
-	    },
-	    "vertical": {
-	      "height": 732,
-	      "outline": {
-	        "image": "@url(optimized/Nexus6P-portrait.avif)",
-	        "insets": {
-	          "bottom": 88,
-	          "left": 16,
-	          "right": 16,
-	          "top": 94
-	        }
-	      },
-	      "width": 412
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 6P",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Nexus 6P",
-	    "platform": "Android",
-	    "platformVersion": "8.0.0"
-	  }
-	}`)
+	Nexus6P = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 6P",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3.5,
+				Horizontal: raw.ScreenSize{
+					Width:  732,
+					Height: 412,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  412,
+					Height: 732,
+				},
+			},
+		},
+	}
 
 	// Pixel2 device
-	Pixel2 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2.625,
-	    "horizontal": {
-	      "height": 411,
-	      "width": 731
-	    },
-	    "vertical": {
-	      "height": 731,
-	      "width": 411
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Pixel 2",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Pixel 2",
-	    "platform": "Android",
-	    "platformVersion": "8.0"
-	  }
-	}`)
+	Pixel2 = Device{
+		raw: &raw.Device{
+			Title:        "Pixel 2",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2.625,
+				Horizontal: raw.ScreenSize{
+					Width:  731,
+					Height: 411,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  411,
+					Height: 731,
+				},
+			},
+		},
+	}
 
 	// Pixel2XL device
-	Pixel2XL = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3.5,
-	    "horizontal": {
-	      "height": 411,
-	      "width": 823
-	    },
-	    "vertical": {
-	      "height": 823,
-	      "width": 411
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Pixel 2 XL",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Pixel 2 XL",
-	    "platform": "Android",
-	    "platformVersion": "8.0.0"
-	  }
-	}`)
+	Pixel2XL = Device{
+		raw: &raw.Device{
+			Title:        "Pixel 2 XL",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3.5,
+				Horizontal: raw.ScreenSize{
+					Width:  823,
+					Height: 411,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  411,
+					Height: 823,
+				},
+			},
+		},
+	}
 
 	// LGOptimusL70 device
-	LGOptimusL70 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1.25,
-	    "horizontal": {
-	      "height": 384,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 384
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "LG Optimus L70",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "LGMS323",
-	    "platform": "Android",
-	    "platformVersion": "4.4.2"
-	  }
-	}`)
+	LGOptimusL70 = Device{
+		raw: &raw.Device{
+			Title:        "LG Optimus L70",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1.25,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 384,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  384,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// NokiaN9 device
-	NokiaN9 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1,
-	    "horizontal": {
-	      "height": 480,
-	      "width": 854
-	    },
-	    "vertical": {
-	      "height": 854,
-	      "width": 480
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nokia N9",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13"
-	}`)
+	NokiaN9 = Device{
+		raw: &raw.Device{
+			Title:        "Nokia N9",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1,
+				Horizontal: raw.ScreenSize{
+					Width:  854,
+					Height: 480,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  480,
+					Height: 854,
+				},
+			},
+		},
+	}
 
 	// NokiaLumia520 device
-	NokiaLumia520 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1.5,
-	    "horizontal": {
-	      "height": 320,
-	      "width": 533
-	    },
-	    "vertical": {
-	      "height": 533,
-	      "width": 320
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nokia Lumia 520",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)"
-	}`)
+	NokiaLumia520 = Device{
+		raw: &raw.Device{
+			Title:        "Nokia Lumia 520",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1.5,
+				Horizontal: raw.ScreenSize{
+					Width:  533,
+					Height: 320,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  320,
+					Height: 533,
+				},
+			},
+		},
+	}
 
 	// MicrosoftLumia550 device
-	MicrosoftLumia550 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 360,
-	      "width": 640
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Microsoft Lumia 550",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
-	}`)
+	MicrosoftLumia550 = Device{
+		raw: &raw.Device{
+			Title:        "Microsoft Lumia 550",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+			},
+		},
+	}
 
 	// MicrosoftLumia950 device
-	MicrosoftLumia950 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 4,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Microsoft Lumia 950",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263"
-	}`)
+	MicrosoftLumia950 = Device{
+		raw: &raw.Device{
+			Title:        "Microsoft Lumia 950",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+			Screen: raw.Screen{
+				DevicePixelRatio: 4,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// GalaxySIII device
-	GalaxySIII = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Galaxy S III",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "GT-I9300",
-	    "platform": "Android",
-	    "platformVersion": "4.0"
-	  }
-	}`)
+	GalaxySIII = Device{
+		raw: &raw.Device{
+			Title:        "Galaxy S III",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// GalaxyS5 device
-	GalaxyS5 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Galaxy S5",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "SM-G900P",
-	    "platform": "Android",
-	    "platformVersion": "5.0"
-	  }
-	}`)
+	GalaxyS5 = Device{
+		raw: &raw.Device{
+			Title:        "Galaxy S5",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// JioPhone2 device
-	JioPhone2 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1,
-	    "horizontal": {
-	      "height": 240,
-	      "width": 320
-	    },
-	    "vertical": {
-	      "height": 320,
-	      "width": 240
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "JioPhone 2",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5"
-	}`)
+	JioPhone2 = Device{
+		raw: &raw.Device{
+			Title:        "JioPhone 2",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1,
+				Horizontal: raw.ScreenSize{
+					Width:  320,
+					Height: 240,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  240,
+					Height: 320,
+				},
+			},
+		},
+	}
 
 	// KindleFireHDX device
-	KindleFireHDX = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 800,
-	      "width": 1280
-	    },
-	    "vertical": {
-	      "height": 1280,
-	      "width": 800
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Kindle Fire HDX",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true"
-	}`)
+	KindleFireHDX = Device{
+		raw: &raw.Device{
+			Title:        "Kindle Fire HDX",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1280,
+					Height: 800,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  800,
+					Height: 1280,
+				},
+			},
+		},
+	}
 
 	// IPadMini device
-	IPadMini = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 768,
-	      "width": 1024
-	    },
-	    "vertical": {
-	      "height": 1024,
-	      "width": 768
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "iPad Mini",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)
+	IPadMini = Device{
+		raw: &raw.Device{
+			Title:        "iPad Mini",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1024,
+					Height: 768,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  768,
+					Height: 1024,
+				},
+			},
+		},
+	}
 
 	// IPad device
-	IPad = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 768,
-	      "outline": {
-	        "image": "@url(optimized/iPad-landscape.avif)",
-	        "insets": {
-	          "bottom": 52,
-	          "left": 112,
-	          "right": 116,
-	          "top": 56
-	        }
-	      },
-	      "width": 1024
-	    },
-	    "vertical": {
-	      "height": 1024,
-	      "outline": {
-	        "image": "@url(optimized/iPad-portrait.avif)",
-	        "insets": {
-	          "bottom": 114,
-	          "left": 52,
-	          "right": 55,
-	          "top": 114
-	        }
-	      },
-	      "width": 768
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPad",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)
+	IPad = Device{
+		raw: &raw.Device{
+			Title:        "iPad",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1024,
+					Height: 768,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  768,
+					Height: 1024,
+				},
+			},
+		},
+	}
 
 	// IPadPro device
-	IPadPro = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 1024,
-	      "width": 1366
-	    },
-	    "vertical": {
-	      "height": 1366,
-	      "width": 1024
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "iPad Pro",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
-	}`)
+	IPadPro = Device{
+		raw: &raw.Device{
+			Title:        "iPad Pro",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1366,
+					Height: 1024,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  1024,
+					Height: 1366,
+				},
+			},
+		},
+	}
 
 	// BlackberryPlayBook device
-	BlackberryPlayBook = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1,
-	    "horizontal": {
-	      "height": 600,
-	      "width": 1024
-	    },
-	    "vertical": {
-	      "height": 1024,
-	      "width": 600
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Blackberry PlayBook",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+"
-	}`)
+	BlackberryPlayBook = Device{
+		raw: &raw.Device{
+			Title:        "Blackberry PlayBook",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1,
+				Horizontal: raw.ScreenSize{
+					Width:  1024,
+					Height: 600,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  600,
+					Height: 1024,
+				},
+			},
+		},
+	}
 
 	// Nexus10 device
-	Nexus10 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 800,
-	      "width": 1280
-	    },
-	    "vertical": {
-	      "height": 1280,
-	      "width": 800
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 10",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": false,
-	    "model": "Nexus 10",
-	    "platform": "Android",
-	    "platformVersion": "6.0.1"
-	  }
-	}`)
+	Nexus10 = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 10",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1280,
+					Height: 800,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  800,
+					Height: 1280,
+				},
+			},
+		},
+	}
 
 	// Nexus7 device
-	Nexus7 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 600,
-	      "width": 960
-	    },
-	    "vertical": {
-	      "height": 960,
-	      "width": 600
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Nexus 7",
-	  "type": "tablet",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": false,
-	    "model": "Nexus 7",
-	    "platform": "Android",
-	    "platformVersion": "6.0.1"
-	  }
-	}`)
+	Nexus7 = Device{
+		raw: &raw.Device{
+			Title:        "Nexus 7",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  960,
+					Height: 600,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  600,
+					Height: 960,
+				},
+			},
+		},
+	}
 
 	// GalaxyNote3 device
-	GalaxyNote3 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Galaxy Note 3",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "SM-N900T",
-	    "platform": "Android",
-	    "platformVersion": "4.3"
-	  }
-	}`)
+	GalaxyNote3 = Device{
+		raw: &raw.Device{
+			Title:        "Galaxy Note 3",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// GalaxyNoteII device
-	GalaxyNoteII = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 360,
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Galaxy Note II",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "GT-N7100",
-	    "platform": "Android",
-	    "platformVersion": "4.1"
-	  }
-	}`)
+	GalaxyNoteII = Device{
+		raw: &raw.Device{
+			Title:        "Galaxy Note II",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// LaptopWithTouch device
-	LaptopWithTouch = New(`{
-	  "capabilities": [
-	    "touch"
-	  ],
-	  "modes": [
-	    {
-	      "orientation": "horizontal",
-	      "title": "default"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1,
-	    "horizontal": {
-	      "height": 950,
-	      "width": 1280
-	    },
-	    "vertical": {
-	      "height": 1280,
-	      "width": 950
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Laptop with touch",
-	  "type": "notebook",
-	  "user-agent": ""
-	}`)
+	LaptopWithTouch = Device{
+		raw: &raw.Device{
+			Title:        "Laptop with touch",
+			Capabilities: []string{"touch"},
+			UserAgent:    "",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1,
+				Horizontal: raw.ScreenSize{
+					Width:  1280,
+					Height: 950,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  950,
+					Height: 1280,
+				},
+			},
+		},
+	}
 
 	// LaptopWithHiDPIScreen device
-	LaptopWithHiDPIScreen = New(`{
-	  "capabilities": [],
-	  "modes": [
-	    {
-	      "orientation": "horizontal",
-	      "title": "default"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2,
-	    "horizontal": {
-	      "height": 900,
-	      "width": 1440
-	    },
-	    "vertical": {
-	      "height": 1440,
-	      "width": 900
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Laptop with HiDPI screen",
-	  "type": "notebook",
-	  "user-agent": ""
-	}`)
+	LaptopWithHiDPIScreen = Device{
+		raw: &raw.Device{
+			Title:        "Laptop with HiDPI screen",
+			Capabilities: []string{},
+			UserAgent:    "",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2,
+				Horizontal: raw.ScreenSize{
+					Width:  1440,
+					Height: 900,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  900,
+					Height: 1440,
+				},
+			},
+		},
+	}
 
 	// LaptopWithMDPIScreen device
-	LaptopWithMDPIScreen = New(`{
-	  "capabilities": [],
-	  "modes": [
-	    {
-	      "orientation": "horizontal",
-	      "title": "default"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 1,
-	    "horizontal": {
-	      "height": 800,
-	      "width": 1280
-	    },
-	    "vertical": {
-	      "height": 1280,
-	      "width": 800
-	    }
-	  },
-	  "show-by-default": false,
-	  "title": "Laptop with MDPI screen",
-	  "type": "notebook",
-	  "user-agent": ""
-	}`)
+	LaptopWithMDPIScreen = Device{
+		raw: &raw.Device{
+			Title:        "Laptop with MDPI screen",
+			Capabilities: []string{},
+			UserAgent:    "",
+			Screen: raw.Screen{
+				DevicePixelRatio: 1,
+				Horizontal: raw.ScreenSize{
+					Width:  1280,
+					Height: 800,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  800,
+					Height: 1280,
+				},
+			},
+		},
+	}
 
 	// MotoG4 device
-	MotoG4 = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 360,
-	      "outline": {
-	        "image": "@url(optimized/MotoG4-landscape.avif)",
-	        "insets": {
-	          "bottom": 30,
-	          "left": 91,
-	          "right": 74,
-	          "top": 30
-	        }
-	      },
-	      "width": 640
-	    },
-	    "vertical": {
-	      "height": 640,
-	      "outline": {
-	        "image": "@url(optimized/MotoG4-portrait.avif)",
-	        "insets": {
-	          "bottom": 74,
-	          "left": 30,
-	          "right": 30,
-	          "top": 91
-	        }
-	      },
-	      "width": 360
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Moto G4",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-	  "user-agent-metadata": {
-	    "architecture": "",
-	    "mobile": true,
-	    "model": "Moto G (4)",
-	    "platform": "Android",
-	    "platformVersion": "6.0.1"
-	  }
-	}`)
+	MotoG4 = Device{
+		raw: &raw.Device{
+			Title:        "Moto G4",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  640,
+					Height: 360,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  360,
+					Height: 640,
+				},
+			},
+		},
+	}
 
 	// SurfaceDuo device
-	SurfaceDuo = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "dual-screen": true,
-	  "modes": [
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "vertical",
-	      "title": "default"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "horizontal",
-	      "title": "default"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "vertical-spanned",
-	      "title": "spanned"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "horizontal-spanned",
-	      "title": "spanned"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 2.5,
-	    "horizontal": {
-	      "height": 540,
-	      "width": 720
-	    },
-	    "horizontal-spanned": {
-	      "height": 1114,
-	      "hinge": {
-	        "contentColor": {
-	          "a": 1,
-	          "b": 38,
-	          "g": 38,
-	          "r": 38
-	        },
-	        "height": 34,
-	        "width": 720,
-	        "x": 0,
-	        "y": 540
-	      },
-	      "width": 720
-	    },
-	    "vertical": {
-	      "height": 720,
-	      "width": 540
-	    },
-	    "vertical-spanned": {
-	      "height": 720,
-	      "hinge": {
-	        "contentColor": {
-	          "a": 1,
-	          "b": 38,
-	          "g": 38,
-	          "r": 38
-	        },
-	        "height": 720,
-	        "width": 34,
-	        "x": 540,
-	        "y": 0
-	      },
-	      "width": 1114
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Surface Duo",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
-	}`)
+	SurfaceDuo = Device{
+		raw: &raw.Device{
+			Title:        "Surface Duo",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 2.5,
+				Horizontal: raw.ScreenSize{
+					Width:  720,
+					Height: 540,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  540,
+					Height: 720,
+				},
+			},
+		},
+	}
 
 	// GalaxyFold device
-	GalaxyFold = New(`{
-	  "capabilities": [
-	    "touch",
-	    "mobile"
-	  ],
-	  "dual-screen": true,
-	  "modes": [
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "vertical",
-	      "title": "default"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "horizontal",
-	      "title": "default"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "vertical-spanned",
-	      "title": "spanned"
-	    },
-	    {
-	      "insets": {
-	        "bottom": 0,
-	        "left": 0,
-	        "right": 0,
-	        "top": 0
-	      },
-	      "orientation": "horizontal-spanned",
-	      "title": "spanned"
-	    }
-	  ],
-	  "screen": {
-	    "device-pixel-ratio": 3,
-	    "horizontal": {
-	      "height": 280,
-	      "width": 653
-	    },
-	    "horizontal-spanned": {
-	      "height": 717,
-	      "width": 512
-	    },
-	    "vertical": {
-	      "height": 653,
-	      "width": 280
-	    },
-	    "vertical-spanned": {
-	      "height": 512,
-	      "width": 717
-	    }
-	  },
-	  "show-by-default": true,
-	  "title": "Galaxy Fold",
-	  "type": "phone",
-	  "user-agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
-	}`)
+	GalaxyFold = Device{
+		raw: &raw.Device{
+			Title:        "Galaxy Fold",
+			Capabilities: []string{"touch", "mobile"},
+			UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+			Screen: raw.Screen{
+				DevicePixelRatio: 3,
+				Horizontal: raw.ScreenSize{
+					Width:  653,
+					Height: 280,
+				},
+				Vertical: raw.ScreenSize{
+					Width:  280,
+					Height: 653,
+				},
+			},
+		},
+	}
 )

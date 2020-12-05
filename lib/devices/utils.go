@@ -1,13 +1,13 @@
 package devices
 
 import (
+	"github.com/go-rod/rod/lib/devices/raw"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/gson"
 )
 
 // Device for devices
 type Device struct {
-	gson.JSON
+	raw       *raw.Device
 	landscape bool
 }
 
@@ -15,24 +15,21 @@ type Device struct {
 var Clear = Device{}
 
 // Test device
-var Test = New(`{
-	"screen": {
-		"device-pixel-ratio": 1,
-		"horizontal": {
-			"height": 600,
-			"width": 800
+var Test = Device{
+	raw: &raw.Device{
+		UserAgent: "Test Agent",
+		Screen: raw.Screen{
+			DevicePixelRatio: 1,
+			Horizontal: raw.ScreenSize{
+				Width:  800,
+				Height: 600,
+			},
+			Vertical: raw.ScreenSize{
+				Width:  800,
+				Height: 600,
+			},
 		},
-		"vertical": {
-			"height": 600,
-			"width": 800
-		}
 	},
-	"user-agent": "Test Agent"
-}`)
-
-// New device from json string
-func New(json string) Device {
-	return Device{gson.NewFrom(json), false}
 }
 
 // Landescape clones the device and set it to landscape mode
@@ -48,16 +45,16 @@ func (device Device) Metrics() *proto.EmulationSetDeviceMetricsOverride {
 		return nil
 	}
 
-	var screen gson.JSON
+	var screen raw.ScreenSize
 	var orientation *proto.EmulationScreenOrientation
 	if device.landscape {
-		screen = device.Get("screen.horizontal")
+		screen = device.raw.Screen.Horizontal
 		orientation = &proto.EmulationScreenOrientation{
 			Angle: 90,
 			Type:  proto.EmulationScreenOrientationTypeLandscapePrimary,
 		}
 	} else {
-		screen = device.Get("screen.vertical")
+		screen = device.raw.Screen.Vertical
 		orientation = &proto.EmulationScreenOrientation{
 			Angle: 0,
 			Type:  proto.EmulationScreenOrientationTypePortraitPrimary,
@@ -65,11 +62,11 @@ func (device Device) Metrics() *proto.EmulationSetDeviceMetricsOverride {
 	}
 
 	return &proto.EmulationSetDeviceMetricsOverride{
-		Width:             screen.Get("width").Int(),
-		Height:            screen.Get("height").Int(),
-		DeviceScaleFactor: device.Get("screen.device-pixel-ratio").Num(),
+		Width:             screen.Width,
+		Height:            screen.Height,
+		DeviceScaleFactor: device.raw.Screen.DevicePixelRatio,
 		ScreenOrientation: orientation,
-		Mobile:            has(device.Get("capabilities"), "mobile"),
+		Mobile:            has(device.raw.Capabilities, "mobile"),
 	}
 }
 
@@ -82,7 +79,7 @@ func (device Device) Touch() *proto.EmulationSetTouchEmulationEnabled {
 	}
 
 	return &proto.EmulationSetTouchEmulationEnabled{
-		Enabled:        has(device.Get("capabilities"), "touch"),
+		Enabled:        has(device.raw.Capabilities, "touch"),
 		MaxTouchPoints: 5,
 	}
 }
@@ -94,13 +91,13 @@ func (device Device) UserAgent() *proto.NetworkSetUserAgentOverride {
 	}
 
 	return &proto.NetworkSetUserAgentOverride{
-		UserAgent: device.Get("user-agent").String(),
+		UserAgent: device.raw.UserAgent,
 	}
 }
 
-func has(arr gson.JSON, str string) bool {
-	for _, item := range arr.Arr() {
-		if item.Str() == str {
+func has(arr []string, str string) bool {
+	for _, item := range arr {
+		if item == str {
 			return true
 		}
 	}
