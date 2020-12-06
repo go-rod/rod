@@ -490,6 +490,14 @@ func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 	return err
 }
 
+// WaitRepaint waits until the next repaint.
+// Doc: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+func (p *Page) WaitRepaint() error {
+	// we use root here because iframe doesn't trigger requestAnimationFrame
+	_, err := p.root.Eval(`new Promise(r => requestAnimationFrame(r))`)
+	return err
+}
+
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
 	_, err := p.Evaluate(EvalHelper(js.WaitLoad).ByPromise())

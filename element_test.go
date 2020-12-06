@@ -30,6 +30,10 @@ func (t T) Click() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
+	t.Panic(func() {
+		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
+		el.MustClick()
+	})
 }
 
 func (t T) ClickWrapped() {
@@ -69,9 +73,14 @@ func (t T) Tap() {
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustTap()
+
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.DOMGetContentQuads{})
+		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		el.MustTap()
+	})
+	t.Panic(func() {
+		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
 		el.MustTap()
 	})
 }
@@ -135,6 +144,9 @@ func (t T) Hover() {
 	t.Err(el.Hover())
 
 	t.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Err(el.Hover())
+
+	t.mc.stubErr(3, proto.DOMGetContentQuads{})
 	t.Err(el.Hover())
 
 	t.mc.stubErr(1, proto.InputDispatchMouseEvent{})
@@ -244,6 +256,18 @@ func (t T) Input() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustText()
 	})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustInput("")
+	})
+	t.Panic(func() {
+		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		el.MustInput("")
+	})
+	t.Panic(func() {
+		t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+		el.MustInput("")
+	})
 }
 
 func (t T) InputTime() {
@@ -272,7 +296,14 @@ func (t T) InputTime() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		el.MustInputTime(now)
 	})
-
+	t.Panic(func() {
+		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		el.MustInputTime(now)
+	})
+	t.Panic(func() {
+		t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+		el.MustInputTime(now)
+	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustInputTime(now)
@@ -456,6 +487,16 @@ func (t T) WaitInvisible() {
 	t.False(p.MustHas("h4"))
 }
 
+func (t T) WaitEnabled() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p.MustElement("button").MustWaitEnabled()
+}
+
+func (t T) WaitWritable() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	p.MustElement("input").MustWaitWritable()
+}
+
 func (t T) WaitStable() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
@@ -482,6 +523,21 @@ func (t T) WaitStable() {
 		t.mc.stubErr(2, proto.DOMGetContentQuads{})
 		el.MustWaitStable()
 	})
+}
+
+func (t T) WaitStableRAP() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
+	el := p.MustElement("button")
+	el.MustEval(`this.classList.add("play")`)
+	start := time.Now()
+	t.E(el.WaitStableRAF())
+	t.Gt(time.Since(start), time.Second)
+
+	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+	t.Err(el.WaitStableRAF())
+
+	t.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Err(el.WaitStableRAF())
 }
 
 func (t T) CanvasToImage() {
@@ -543,15 +599,14 @@ func (t T) ElementScreenshot() {
 	t.Nil(os.Stat(f))
 
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		el.MustScreenshot()
+		el.Context(t.Timeout(0)).MustScreenshot()
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustScreenshot()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
 }

@@ -796,6 +796,16 @@ func (el *Element) MustWaitInvisible() *Element {
 	return el
 }
 
+// MustWaitEnabled is similar to WaitEnabled
+func (el *Element) MustWaitEnabled() {
+	utils.E(el.WaitEnabled())
+}
+
+// MustWaitWritable is similar to WaitWritable
+func (el *Element) MustWaitWritable() {
+	utils.E(el.WaitWritable())
+}
+
 // MustShape is similar to Shape
 func (el *Element) MustShape() *proto.DOMGetContentQuadsResult {
 	shape, err := el.Shape()

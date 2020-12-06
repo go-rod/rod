@@ -54,6 +54,11 @@ func (el *Element) ScrollIntoView() error {
 	defer el.tryTraceInput("scroll into view")()
 	el.page.browser.trySlowmotion()
 
+	err := el.WaitStableRAF()
+	if err != nil {
+		return err
+	}
+
 	return proto.DOMScrollIntoViewIfNeeded{ObjectID: el.id()}.Call(el)
 }
 
@@ -89,6 +94,11 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		return err
 	}
 
+	err = el.WaitEnabled()
+	if err != nil {
+		return err
+	}
+
 	defer el.tryTraceInput(string(button) + " click")()
 
 	return el.page.Mouse.Click(button)
@@ -102,6 +112,11 @@ func (el *Element) Tap() error {
 	}
 
 	err = el.ScrollIntoView()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitEnabled()
 	if err != nil {
 		return err
 	}
@@ -220,6 +235,16 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
+	err = el.WaitEnabled()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitWritable()
+	if err != nil {
+		return err
+	}
+
 	err = el.Focus()
 	if err != nil {
 		return err
@@ -239,6 +264,16 @@ func (el *Element) Input(text string) error {
 // InputTime focuses on the element and input time to it.
 func (el *Element) InputTime(t time.Time) error {
 	err := el.WaitVisible()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitEnabled()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitWritable()
 	if err != nil {
 		return err
 	}
@@ -459,6 +494,35 @@ func (el *Element) WaitStable(d time.Duration) error {
 	return nil
 }
 
+// WaitStableRAF waits until no shape or position change for 2 consecutive animation frames.
+// If you want to wait animation that is triggered by JS not CSS, you'd better use Element.WaitStable.
+// About animation frame: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+func (el *Element) WaitStableRAF() error {
+	err := el.WaitVisible()
+	if err != nil {
+		return err
+	}
+
+	var shape *proto.DOMGetContentQuadsResult
+
+	for {
+		err = el.page.WaitRepaint()
+		if err != nil {
+			return err
+		}
+
+		current, err := el.Shape()
+		if err != nil {
+			return err
+		}
+		if reflect.DeepEqual(shape, current) {
+			break
+		}
+		shape = current
+	}
+	return nil
+}
+
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
 	removeTrace := func() {}
@@ -484,6 +548,18 @@ func (el *Element) Wait(opts *EvalOptions) error {
 // WaitVisible until the element is visible
 func (el *Element) WaitVisible() error {
 	return el.Wait(EvalHelper(js.Visible))
+}
+
+// WaitEnabled until the element is not disabled.
+// Doc for readonly: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly
+func (el *Element) WaitEnabled() error {
+	return el.Wait(Eval(`!this.disabled`))
+}
+
+// WaitWritable until the element is not readonly.
+// Doc for disabled: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
+func (el *Element) WaitWritable() error {
+	return el.Wait(Eval(`!this.readonly`))
 }
 
 // WaitInvisible until the element invisible

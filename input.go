@@ -272,7 +272,8 @@ type Touch struct {
 // Start a touch action
 func (t *Touch) Start(points ...*proto.InputTouchPoint) error {
 	// TODO: https://crbug.com/613219
-	_, _ = t.page.root.Eval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`)
+	_ = t.page.WaitRepaint()
+	_ = t.page.WaitRepaint()
 
 	return proto.InputDispatchTouchEvent{
 		Type:        proto.InputDispatchTouchEventTypeTouchStart,
