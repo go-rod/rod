@@ -96,7 +96,7 @@ func (e *EvalOptions) formatToJSFunc() string {
 	return fmt.Sprintf(`function() { return %s }`, js)
 }
 
-// Eval is just a shortcut for Page.Evaluate
+// Eval is just a shortcut for Page.Evaluate with AwaitPromise set true.
 func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
 	return p.Evaluate(Eval(js, jsArgs...).ByPromise())
 }
