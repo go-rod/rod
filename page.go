@@ -295,6 +295,9 @@ func (p *Page) HandleDialog(accept bool, promptText string) (wait func() error) 
 
 // Screenshot options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
 func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
+	if req == nil {
+		req = &proto.PageCaptureScreenshot{}
+	}
 	if fullpage {
 		metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
 		if err != nil {
