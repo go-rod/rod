@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	mr "math/rand"
@@ -42,7 +43,9 @@ var LoggerQuiet Logger = loggerQuiet{}
 type loggerQuiet struct{}
 
 // Println interface
-func (l loggerQuiet) Println(...interface{}) {}
+func (l loggerQuiet) Println(msg ...interface{}) {
+	fmt.Fprint(ioutil.Discard, msg...)
+}
 
 // MultiLogger is similar to https://golang.org/pkg/io/#MultiWriter
 func MultiLogger(list ...Logger) Log {

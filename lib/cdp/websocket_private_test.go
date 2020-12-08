@@ -2,6 +2,7 @@ package cdp
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"net"
 	"net/url"
@@ -33,6 +34,9 @@ func (t T) WebSocketErr() {
 
 	mc.errOnCount = 1
 	t.Err(ws.handshake(t.Context(), u, nil))
+
+	tls := &tlsDialer{}
+	t.Err(tls.DialContext(context.Background(), "", ""))
 }
 
 type MockConn struct {
