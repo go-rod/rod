@@ -18,7 +18,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
-	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -216,7 +215,7 @@ func newMockClient(u string) *MockClient {
 	log := log.New(f, "", log.Ltime)
 	utils.E(err)
 
-	client := cdp.New(u).Logger(utils.MultiLogger(defaults.CDP, log))
+	client := cdp.New(u)
 
 	return &MockClient{id: id, principal: client, log: log}
 }

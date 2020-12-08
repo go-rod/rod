@@ -4,7 +4,6 @@ package cdp
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sync"
 	"sync/atomic"
@@ -55,19 +54,6 @@ type Event struct {
 	Params    json.RawMessage `json:"params,omitempty"`
 }
 
-// Error of the Response
-type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    string `json:"data"`
-}
-
-// Is interface
-func (e Error) Is(target error) bool {
-	err, ok := target.(*Error)
-	return ok && e == *err
-}
-
 // WebSocketable enables you to choose the websocket lib you want to use.
 // Such as you can easily wrap gorilla/websocket and use it as the transport layer.
 type WebSocketable interface {
@@ -77,11 +63,6 @@ type WebSocketable interface {
 	Send([]byte) error
 	// Read returns text message only
 	Read() ([]byte, error)
-}
-
-// Error interface
-func (e *Error) Error() string {
-	return fmt.Sprintf("%v", *e)
 }
 
 // New creates a cdp connection, all messages from Client.Event must be received or they will block the client.
@@ -164,7 +145,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 
 	select {
 	case <-cdp.ctx.Done():
-		return nil, cdp.ctx.Err()
+		return nil, &errConnClosed{cdp.ctx.Err()}
 
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -174,7 +155,7 @@ func (cdp *Client) Call(ctx context.Context, sessionID, method string, params in
 
 	select {
 	case <-cdp.ctx.Done():
-		return nil, cdp.ctx.Err()
+		return nil, &errConnClosed{cdp.ctx.Err()}
 
 	case <-ctx.Done():
 		return nil, ctx.Err()

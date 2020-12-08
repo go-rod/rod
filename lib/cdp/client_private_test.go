@@ -72,7 +72,7 @@ func (t T) CancelOnReq() {
 	}()
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	t.Eq(err.Error(), "context canceled")
+	t.Is(err, context.Canceled)
 
 	go func() {
 		utils.Sleep(0.1)
@@ -80,7 +80,7 @@ func (t T) CancelOnReq() {
 	}()
 
 	_, err = cdp.Call(t.Context(), "", "", nil)
-	t.Eq(err.Error(), "context canceled")
+	t.Is(err, context.Canceled)
 }
 
 func (t T) CancelBeforeSend() {

@@ -169,9 +169,8 @@ func (t T) BrowserCrash() {
 
 	utils.Sleep(0.3)
 
-	t.Panic(func() {
-		page.MustEval(js)
-	})
+	_, err := page.Eval(js)
+	t.Is(err, cdp.ErrConnClosed)
 }
 
 func (t T) BrowserCall() {

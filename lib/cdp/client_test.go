@@ -188,5 +188,6 @@ func (t T) Crash() {
 		"expression":   `new Promise(() => {})`,
 		"awaitPromise": true,
 	})
-	t.Regex(`context canceled`, err.Error())
+	t.Is(err, cdp.ErrConnClosed)
+	t.Eq(err.Error(), "cdp connection closed: context canceled")
 }
