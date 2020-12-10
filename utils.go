@@ -89,7 +89,6 @@ type PagePool chan *Page
 
 // NewPagePool instance
 func NewPagePool(limit int) PagePool {
-	// we create a pool that will hold at most 3 pages
 	pp := make(chan *Page, limit)
 	for i := 0; i < limit; i++ {
 		pp <- nil
