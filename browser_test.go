@@ -76,7 +76,7 @@ func (t T) BrowserPages() {
 
 	pages := t.browser.MustPages()
 
-	t.Len(pages, 2)
+	t.Len(pages, 3)
 
 	{
 		t.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
@@ -84,7 +84,7 @@ func (t T) BrowserPages() {
 			return *d.Set("targetInfos.0.type", "iframe"), nil
 		})
 		pages := t.browser.MustPages()
-		t.Len(pages, 1)
+		t.Len(pages, 2)
 	}
 
 	t.Panic(func() {
@@ -240,7 +240,7 @@ func (t T) TestTry() {
 }
 
 func (t T) BrowserOthers() {
-	t.browser.Timeout(time.Hour).CancelTimeout().MustPages()
+	t.browser.Timeout(time.Second).CancelTimeout().MustGetCookies()
 
 	t.Panic(func() {
 		b, cancel := t.browser.WithCancel()

@@ -103,8 +103,6 @@ func (t T) Launch() {
 }
 
 func (t T) LaunchUserMode() {
-	_ = os.Remove(launcher.GetSelfClosePage())
-
 	l := launcher.NewUserMode()
 	defer l.Kill()
 
