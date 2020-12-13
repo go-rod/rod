@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -79,4 +80,11 @@ func (t T) TraceLogs() {
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	p.Overlay(0, 0, 100, 30, "")
+}
+
+func (t T) ExposeHelpers() {
+	p := t.newPage(t.srcFile("fixtures/click.html"))
+	p.ExposeHelpers(js.ElementR)
+
+	t.Eq(p.MustElementByJS(`rod.elementR('button', 'click me')`).MustText(), "click me")
 }

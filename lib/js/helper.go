@@ -33,8 +33,8 @@ var ElementsX = &Function{
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){const n=new RegExp(t),i=Array.from((this.document||this).querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return i||null}`,
-	Dependencies: []*Function{Text},
+	Definition:   `function(e,t){const n=new RegExp(t),i=functions.selectable(this),s=Array.from(i.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return s||null}`,
+	Dependencies: []*Function{Selectable, Text},
 }
 
 // Parents ...
@@ -187,7 +187,7 @@ var AddStyleTag = &Function{
 // Selectable ...
 var Selectable = &Function{
 	Name:         "selectable",
-	Definition:   `e=>e===window?e.document:e`,
+	Definition:   `e=>e.querySelector?e:document`,
 	Dependencies: []*Function{},
 }
 

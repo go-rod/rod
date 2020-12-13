@@ -125,6 +125,15 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	return
 }
 
+// ExposeHelpers helper functions to page's js context so that we can use the Devtools' console to debug them.
+func (p *Page) ExposeHelpers(list ...*js.Function) {
+	p.MustEvaluate(EvalHelper(&js.Function{
+		Name:         "_" + utils.RandString(8), // use a random name so it won't hit the cache
+		Definition:   "() => { window.rod = functions }",
+		Dependencies: list,
+	}))
+}
+
 // Trace with an overlay on the element
 func (el *Element) Trace(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
