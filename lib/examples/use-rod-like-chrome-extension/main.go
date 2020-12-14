@@ -24,6 +24,8 @@ func main() {
 
 	browser := rod.New().ControlURL(wsURL).MustConnect().NoDefaultDevice()
 
+	browser.MustPage("")
+
 	// Run a extension. Here we created a link previewer extension as an example.
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.
 	linkPreviewer(browser)

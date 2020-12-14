@@ -20,7 +20,6 @@ import (
 const (
 	flagWorkingDir = "rod-working-dir"
 	flagEnv        = "rod-env"
-	blankURL       = "about:blank"
 )
 
 // Launcher is a helper to launch browser binary smartly
@@ -43,7 +42,6 @@ type Launcher struct {
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
 // UserDataDir will use OS tmp dir by default.
-// Because on Windows if there's no tab the browser process will exit, so we open a "about:blank" page to keep the browser alive.
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
@@ -59,8 +57,9 @@ func New() *Launcher {
 		// enable headless by default
 		"headless": nil,
 
-		// to prevent welcome page
-		"": {blankURL},
+		// to disable the init blank window
+		"no-first-run":      nil,
+		"no-startup-window": nil,
 
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
@@ -81,7 +80,6 @@ func New() *Launcher {
 		"enable-features":                                    {"NetworkService", "NetworkServiceInProcess"},
 		"force-color-profile":                                {"srgb"},
 		"metrics-recording-only":                             nil,
-		"no-first-run":                                       nil,
 		"use-mock-keychain":                                  nil,
 	}
 
@@ -122,7 +120,7 @@ func NewUserMode() *Launcher {
 		ctxCancel: cancel,
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
-			"":                      {blankURL},
+			"no-startup-window":     nil,
 		},
 		exit:    make(chan struct{}),
 		browser: NewBrowser(),
@@ -261,7 +259,7 @@ func (l *Launcher) Env(env ...string) *Launcher {
 	return l.Set(flagEnv, env...)
 }
 
-// StartURL to launch, by default it's "about:blank".
+// StartURL to launch
 func (l *Launcher) StartURL(u string) *Launcher {
 	return l.Set("", u)
 }
