@@ -685,6 +685,16 @@ func (t T) ElementOthers() {
 	t.Len(el.MustElementsByJS(`[]`), 0)
 }
 
+func (t T) ElementEqual() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/describe.html"))
+	el1 := p.MustElement("body > ul")
+	el2 := p.MustElement("html > body > ul")
+	t.True(el1.MustEqual(el2))
+
+	el3 := p.MustElement("ul ul")
+	t.False(el1.MustEqual(el3))
+}
+
 func (t T) ElementFromPointErr() {
 	t.mc.stubErr(1, proto.DOMGetNodeForLocation{})
 	t.Err(t.page.ElementFromPoint(10, 10))

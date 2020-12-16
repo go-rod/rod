@@ -664,6 +664,12 @@ func (el *Element) Evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, erro
 	return el.page.Context(el.ctx).Evaluate(opts.This(el.Object))
 }
 
+// Equal checks if the two elements are equal.
+func (el *Element) Equal(elm *Element) (bool, error) {
+	res, err := el.Eval(`elm => this === elm`, elm.Object)
+	return res.Value.Bool(), err
+}
+
 func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
 }
