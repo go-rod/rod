@@ -978,3 +978,10 @@ func (r *HijackRouter) MustStop() {
 func (h *Hijack) MustLoadResponse() {
 	utils.E(h.LoadResponse(http.DefaultClient, true))
 }
+
+// MustEqual is similar to Equal
+func (el *Element) MustEqual(elm *Element) bool {
+	res, err := el.Equal(elm)
+	utils.E(err)
+	return res
+}
