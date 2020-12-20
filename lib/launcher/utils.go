@@ -100,7 +100,7 @@ func unzip(logger io.Writer, from, to string) (err error) {
 		r, err := f.Open()
 		utils.E(err)
 
-		dst, err := os.Create(p)
+		dst, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, f.Mode())
 		utils.E(err)
 
 		_, err = io.Copy(io.MultiWriter(dst, progress), r)
