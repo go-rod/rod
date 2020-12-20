@@ -14,7 +14,12 @@ import (
 )
 
 func getSchema() gson.JSON {
-	l := launcher.New()
+	b := launcher.NewBrowser()
+	b.ExecSearchMap = make(map[string][]string)
+	bin, err := b.Get()
+	utils.E(err)
+
+	l := launcher.New().Bin(bin)
 
 	defer func() {
 		p, err := os.FindProcess(l.PID())

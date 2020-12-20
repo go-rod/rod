@@ -157,6 +157,7 @@ func CookiesToParams(cookies []*NetworkCookie) []*NetworkCookieParam {
 }
 
 // ExecutionID of the object
+// TODO: We should get rid of this API, see https://github.com/ChromeDevTools/devtools-protocol/issues/169
 func (objID RuntimeRemoteObjectID) ExecutionID() RuntimeExecutionContextID {
 	id := struct {
 		ID RuntimeExecutionContextID `json:"injectedScriptId"`
