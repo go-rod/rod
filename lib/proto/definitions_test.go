@@ -2628,6 +2628,12 @@ func (t T) StorageGetUsageAndQuota() {
 	t.Nil(err)
 }
 
+func (t T) StorageOverrideQuotaForOrigin() {
+	c := &Client{}
+	err := proto.StorageOverrideQuotaForOrigin{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageTrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackCacheStorageForOrigin{}.Call(c)

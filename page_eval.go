@@ -168,7 +168,7 @@ func (p *Page) evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (stop func() error, err error) {
 	bind := "_" + utils.RandString(8)
 
-	err = proto.RuntimeAddBinding{Name: bind, ExecutionContextID: p.getJSCtxID()}.Call(p)
+	err = proto.RuntimeAddBinding{Name: bind}.Call(p)
 	if err != nil {
 		return
 	}
