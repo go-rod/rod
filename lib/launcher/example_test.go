@@ -25,3 +25,12 @@ func Example_custom_launch() {
 
 	rod.New().ControlURL(<-parser.URL).MustConnect()
 }
+
+func Example_disable_auto_download() {
+	path, found := launcher.NewBrowser().LookPath()
+	if found {
+		// Check the doc for Bin to learn why
+		u := launcher.New().Bin(path).MustLaunch()
+		rod.New().ControlURL(u).MustConnect()
+	}
+}

@@ -207,11 +207,7 @@ func Example_search() {
 }
 
 func Example_page_screenshot() {
-	page := rod.New().MustConnect().MustPage("")
-
-	wait := page.MustWaitNavigation()
-	page.MustNavigate("https://github.com")
-	wait() // until the navigation to settle down
+	page := rod.New().MustConnect().MustPage("https://github.com").MustWaitLoad()
 
 	// simple version
 	page.MustScreenshot("my.png")
@@ -233,11 +229,7 @@ func Example_page_screenshot() {
 }
 
 func Example_page_pdf() {
-	page := rod.New().MustConnect().MustPage("")
-
-	wait := page.MustWaitNavigation()
-	page.MustNavigate("https://github.com")
-	wait() // until the navigation to settle down
+	page := rod.New().MustConnect().MustPage("https://github.com").MustWaitLoad()
 
 	// simple version
 	page.MustPDF("my.pdf")

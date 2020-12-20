@@ -61,6 +61,9 @@ func New() *Launcher {
 		"no-first-run":      nil,
 		"no-startup-window": nil,
 
+		// TODO: about the "site-per-process" see https://github.com/puppeteer/puppeteer/issues/2548
+		"disable-features": {"site-per-process", "TranslateUI"},
+
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
 		"disable-backgrounding-occluded-windows":             nil,
@@ -69,7 +72,6 @@ func New() *Launcher {
 		"disable-component-extensions-with-background-pages": nil,
 		"disable-default-apps":                               nil,
 		"disable-dev-shm-usage":                              nil,
-		"disable-features":                                   {"site-per-process", "TranslateUI"},
 		"disable-hang-monitor":                               nil,
 		"disable-ipc-flooding-protection":                    nil,
 		"disable-popup-blocking":                             nil,
