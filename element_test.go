@@ -31,7 +31,7 @@ func (t T) Click() {
 		el.MustClick()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(8, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 }
@@ -88,6 +88,9 @@ func (t T) Tap() {
 func (t T) Interactable() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	t.True(p.MustElement("button").MustInteractable())
+
+	t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
+	t.Err(p.MustElement("button").Interactable())
 }
 
 func (t T) NotInteractable() {
@@ -190,6 +193,9 @@ func (t T) Contains() {
 	pt := a.MustShape().OnePointInside()
 	el := p.MustElementFromPoint(int(pt.X), int(pt.Y))
 	t.True(a.MustContainsElement(el))
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(a.ContainsElement(el))
 }
 
 func (t T) ShadowDOM() {
@@ -698,6 +704,14 @@ func (t T) ElementEqual() {
 func (t T) ElementFromPointErr() {
 	t.mc.stubErr(1, proto.DOMGetNodeForLocation{})
 	t.Err(t.page.ElementFromPoint(10, 10))
+}
+
+func (t T) ElementFromNodeErr() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	el := p.MustElementX("//button/text()")
+
+	t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+	t.Err(p.ElementFromNode(el.MustNodeID()))
 }
 
 func (t T) ElementErrors() {

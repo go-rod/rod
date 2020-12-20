@@ -6,6 +6,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -265,6 +266,9 @@ func (t T) PageElementsByJS() {
 	t.mc.stubErr(1, proto.RuntimeGetProperties{})
 	_, err = p.ElementsByJS(rod.Eval(`[document.body]`))
 	t.Err(err)
+
+	t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
+	t.Err(p.ElementsByJS(rod.EvalHelper(js.Elements, "button")))
 }
 
 func (t T) ElementsOthers() {
