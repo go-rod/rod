@@ -264,7 +264,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		browser:   b,
 		TargetID:  targetID,
 		jsCtxLock: &sync.Mutex{},
-		jsCtxID:   new(proto.RuntimeExecutionContextID),
+		jsCtxID:   new(proto.RuntimeRemoteObjectID),
 	}
 
 	page.root = page

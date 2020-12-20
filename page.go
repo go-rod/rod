@@ -43,8 +43,8 @@ type Page struct {
 	element *Element // iframe only
 
 	jsCtxLock *sync.Mutex
-	jsCtxID   *proto.RuntimeExecutionContextID // use pointer so that page clones can share the change
-	helpers   map[proto.RuntimeExecutionContextID]map[string]proto.RuntimeRemoteObjectID
+	jsCtxID   *proto.RuntimeRemoteObjectID // use pointer so that page clones can share the change
+	helpers   map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID
 }
 
 // IsIframe tells if it's iframe
@@ -578,9 +578,13 @@ func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 }
 
 // ElementFromObject creates an Element from the remote object id.
-func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) *Element {
+func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) (*Element, error) {
 	// If the element is in an iframe, we need the jsCtxID to inject helper.js to the correct context.
-	id := obj.ObjectID.ExecutionID()
+	id, err := p.jsCtxIDByObjectID(obj.ObjectID)
+	if err != nil {
+		return nil, err
+	}
+
 	if id != p.getJSCtxID() {
 		clone := *p
 		clone.jsCtxID = &id
@@ -592,7 +596,7 @@ func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) *Element {
 		sleeper: p.sleeper,
 		page:    p,
 		Object:  obj,
-	}
+	}, nil
 }
 
 // ElementFromNode creates an Element from the node id
@@ -602,7 +606,10 @@ func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
 		return nil, err
 	}
 
-	el := p.ElementFromObject(node.Object)
+	el, err := p.ElementFromObject(node.Object)
+	if err != nil {
+		return nil, err
+	}
 
 	// make sure always return an element node
 	desc, err := el.Describe(0, false)

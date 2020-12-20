@@ -5,10 +5,7 @@ package proto
 import (
 	"encoding/json"
 	"strconv"
-	"strings"
 	"time"
-
-	"github.com/go-rod/rod/lib/utils"
 )
 
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
@@ -155,21 +152,4 @@ func CookiesToParams(cookies []*NetworkCookie) []*NetworkCookieParam {
 		})
 	}
 	return list
-}
-
-// ExecutionID of the object
-// TODO: We should get rid of this API, see https://github.com/ChromeDevTools/devtools-protocol/issues/169
-func (objID RuntimeRemoteObjectID) ExecutionID() RuntimeExecutionContextID {
-	id := struct {
-		ID RuntimeExecutionContextID `json:"injectedScriptId"`
-	}{}
-
-	err := json.Unmarshal([]byte(objID), &id)
-	if err != nil {
-		s, err := strconv.ParseInt(strings.Split(string(objID), ".")[1], 10, 64)
-		utils.E(err)
-		id.ID = RuntimeExecutionContextID(s)
-	}
-
-	return id.ID
 }

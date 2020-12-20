@@ -399,7 +399,7 @@ func (el *Element) ShadowRoot() (*Element, error) {
 		return nil, err
 	}
 
-	return el.page.ElementFromObject(shadowNode.Object), nil
+	return el.page.ElementFromObject(shadowNode.Object)
 }
 
 // Frame creates a page instance that represents the iframe
@@ -411,7 +411,7 @@ func (el *Element) Frame() (*Page, error) {
 
 	clone := *el.page
 	clone.FrameID = node.FrameID
-	clone.jsCtxID = new(proto.RuntimeExecutionContextID)
+	clone.jsCtxID = new(proto.RuntimeRemoteObjectID)
 	clone.element = el
 
 	return &clone, clone.updateJSCtxID()

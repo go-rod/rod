@@ -146,7 +146,7 @@ func (p *Page) evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	}
 
 	if opts.ThisObj == nil {
-		req.ExecutionContextID = p.getJSCtxID()
+		req.ObjectID = p.getJSCtxID()
 	} else {
 		req.ObjectID = opts.ThisObj.ObjectID
 	}
@@ -257,7 +257,7 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 
 func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, error) {
 	if p.helpers == nil {
-		p.helpers = map[proto.RuntimeExecutionContextID]map[string]proto.RuntimeRemoteObjectID{}
+		p.helpers = map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID{}
 	}
 
 	list, ok := p.helpers[*p.jsCtxID]
@@ -269,7 +269,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 	fns, has := list[js.Functions.Name]
 	if !has {
 		res, err := proto.RuntimeCallFunctionOn{
-			ExecutionContextID:  *p.jsCtxID,
+			ObjectID:            *p.jsCtxID,
 			FunctionDeclaration: js.Functions.Definition,
 		}.Call(p)
 		if err != nil {
@@ -289,8 +289,8 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		}
 
 		res, err := proto.RuntimeCallFunctionOn{
-			ExecutionContextID: *p.jsCtxID,
-			Arguments:          []*proto.RuntimeCallArgument{{ObjectID: fns}},
+			ObjectID:  *p.jsCtxID,
+			Arguments: []*proto.RuntimeCallArgument{{ObjectID: fns}},
 
 			FunctionDeclaration: fmt.Sprintf(
 				// We wrap an extra {fn: fn} here to reduce the response body size,
@@ -310,7 +310,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 	return id, nil
 }
 
-func (p *Page) getJSCtxID() proto.RuntimeExecutionContextID {
+func (p *Page) getJSCtxID() proto.RuntimeRemoteObjectID {
 	p.jsCtxLock.Lock()
 	defer p.jsCtxLock.Unlock()
 	return *p.jsCtxID
@@ -324,7 +324,7 @@ func (p *Page) updateJSCtxID() error {
 		}
 
 		p.jsCtxLock.Lock()
-		*p.jsCtxID = obj.Result.ObjectID.ExecutionID()
+		*p.jsCtxID = obj.Result.ObjectID
 		p.helpers = nil
 		p.jsCtxLock.Unlock()
 		return nil
@@ -346,8 +346,22 @@ func (p *Page) updateJSCtxID() error {
 	}
 
 	p.jsCtxLock.Lock()
+	defer p.jsCtxLock.Unlock()
+
 	delete(p.helpers, *p.jsCtxID)
-	*p.jsCtxID = obj.Object.ObjectID.ExecutionID()
-	p.jsCtxLock.Unlock()
-	return nil
+	id, err := p.jsCtxIDByObjectID(obj.Object.ObjectID)
+	*p.jsCtxID = id
+	return err
+}
+
+func (p *Page) jsCtxIDByObjectID(id proto.RuntimeRemoteObjectID) (proto.RuntimeRemoteObjectID, error) {
+	res, err := proto.RuntimeCallFunctionOn{
+		ObjectID:            id,
+		FunctionDeclaration: `() => window`,
+	}.Call(p)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Result.ObjectID, nil
 }

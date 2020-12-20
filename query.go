@@ -188,7 +188,7 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 		return nil, &ErrExpectElement{res}
 	}
 
-	return p.ElementFromObject(res), nil
+	return p.ElementFromObject(res)
 }
 
 // Elements returns all elements that match the css selector
@@ -233,7 +233,12 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 			return nil, &ErrExpectElements{val}
 		}
 
-		elemList = append(elemList, p.ElementFromObject(val))
+		el, err := p.ElementFromObject(val)
+		if err != nil {
+			return nil, err
+		}
+
+		elemList = append(elemList, el)
 	}
 
 	return elemList, err
