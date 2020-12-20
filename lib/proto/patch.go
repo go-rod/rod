@@ -5,6 +5,7 @@ package proto
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/utils"
@@ -163,7 +164,12 @@ func (objID RuntimeRemoteObjectID) ExecutionID() RuntimeExecutionContextID {
 		ID RuntimeExecutionContextID `json:"injectedScriptId"`
 	}{}
 
-	utils.E(json.Unmarshal([]byte(objID), &id))
+	err := json.Unmarshal([]byte(objID), &id)
+	if err != nil {
+		s, err := strconv.ParseInt(strings.Split(string(objID), ".")[1], 10, 64)
+		utils.E(err)
+		id.ID = RuntimeExecutionContextID(s)
+	}
 
 	return id.ID
 }
