@@ -32,6 +32,10 @@ func (t T) Incognito() {
 	t.Eq(page.MustEval(`k => localStorage[k]`, k).Str(), "1") // localStorage can only store string
 }
 
+func (t T) BrowserResetControlURL() {
+	rod.New().ControlURL("test").ControlURL("")
+}
+
 func (t T) DefaultDevice() {
 	ua := ""
 

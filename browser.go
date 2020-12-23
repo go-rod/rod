@@ -89,7 +89,11 @@ func (b *Browser) Incognito() (*Browser, error) {
 
 // ControlURL set the url to remote control browser.
 func (b *Browser) ControlURL(url string) *Browser {
-	b.client = cdp.New(url)
+	if url == "" {
+		b.client = nil
+	} else {
+		b.client = cdp.New(url)
+	}
 	return b
 }
 

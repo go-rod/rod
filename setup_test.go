@@ -97,7 +97,7 @@ func (cp TesterPool) new() *T {
 
 	mc := newMockClient(u)
 
-	browser := rod.New().ControlURL("").Client(mc).MustConnect().
+	browser := rod.New().Client(mc).MustConnect().
 		MustIgnoreCertErrors(false).
 		DefaultDevice(devices.Test)
 
