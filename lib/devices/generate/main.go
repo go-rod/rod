@@ -39,7 +39,7 @@ func main() {
 			"name", normalizeName(name),
 			"title", name,
 			"capabilities", toGoArr(d.Get("capabilities")),
-			"userAgent", d.Get("user-agent"),
+			"userAgent", getUserAgent(d),
 			"devicePixelRatio", d.Get("screen.device-pixel-ratio").Int(),
 			"horizontalWidth", d.Get("screen.horizontal.width").Int(),
 			"horizontalHeight", d.Get("screen.horizontal.height").Int(),
@@ -91,6 +91,14 @@ func normalizeName(name string) string {
 	}
 
 	return strings.Join(list, "")
+}
+
+func getUserAgent(val gson.JSON) string {
+	ua := val.Get("user-agent").String()
+	if ua == "" {
+		return "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+	}
+	return ua
 }
 
 func toGoArr(val gson.JSON) string {

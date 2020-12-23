@@ -548,7 +548,7 @@ var (
 	LaptopWithTouch = Device{
 		Title:        "Laptop with touch",
 		Capabilities: []string{"touch"},
-		UserAgent:    "",
+		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -566,7 +566,7 @@ var (
 	LaptopWithHiDPIScreen = Device{
 		Title:        "Laptop with HiDPI screen",
 		Capabilities: []string{},
-		UserAgent:    "",
+		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -584,7 +584,7 @@ var (
 	LaptopWithMDPIScreen = Device{
 		Title:        "Laptop with MDPI screen",
 		Capabilities: []string{},
-		UserAgent:    "",
+		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
