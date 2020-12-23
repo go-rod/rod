@@ -57,7 +57,7 @@ func fnName(name string) string {
 }
 
 func getList() gson.JSON {
-	code, err := exec.Command("npx", "-q", "uglify-es", "-c", "-m", "--", "lib/js/helper.js").CombinedOutput()
+	code, err := exec.Command("npx", "-yq", "--", "uglify-es", "-c", "-m", "--", "lib/js/helper.js").CombinedOutput()
 	if err != nil {
 		panic(string(code))
 	}
