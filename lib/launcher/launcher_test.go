@@ -127,6 +127,7 @@ func (t T) LaunchUserMode() {
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").
 		Env("TZ=Asia/Tokyo").
+		XVFB().
 		MustLaunch()
 
 	t.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())

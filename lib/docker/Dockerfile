@@ -40,6 +40,9 @@ COPY lib/docker/fonts-local.conf /etc/fonts/local.conf
 # timezone support
 RUN apk add tzdata
 
+# headful mode support, for example: $ xvfb-run chromium-browser --remote-debugging-port=9222
+RUN apk add xvfb-run
+
 # processs reaper
 RUN apk add dumb-init
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

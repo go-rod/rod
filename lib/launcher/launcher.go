@@ -20,6 +20,7 @@ import (
 const (
 	flagWorkingDir = "rod-working-dir"
 	flagEnv        = "rod-env"
+	flagXVFB       = "rod-xvfb"
 )
 
 // Launcher is a helper to launch browser binary smartly
@@ -194,6 +195,11 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l.Delete("headless")
 }
 
+// XVFB enables to run browser in by XVFB. Useful when you want to run headful mode on linux.
+func (l *Launcher) XVFB() *Launcher {
+	return l.Set(flagXVFB)
+}
+
 // Leakless switch. If enabled, the browser will be force killed after the Go process exits.
 // The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Leakless(enable bool) *Launcher {
@@ -365,6 +371,8 @@ func (l *Launcher) Launch() (string, error) {
 }
 
 func (l *Launcher) setupCmd(cmd *exec.Cmd) {
+	l.osSetupCmd(cmd)
+
 	dir, _ := l.Get(flagWorkingDir)
 	env, _ := l.GetFlags(flagEnv)
 	cmd.Dir = dir
@@ -406,6 +414,7 @@ func (l *Launcher) Kill() {
 	// Browser don't have an API to tell if the children processes are ready.
 	utils.Sleep(1)
 
+	killGroup(l.PID())
 	p, err := os.FindProcess(l.PID())
 	if err == nil {
 		_ = p.Kill()

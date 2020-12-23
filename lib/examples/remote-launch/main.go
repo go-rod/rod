@@ -19,13 +19,16 @@ func main() {
 	// Manipulate flags like the example in examples_test.go
 	l.Set("any-flag").Delete("any-flag")
 
+	// Launch with headful mode
+	l.Headless(false).XVFB()
+
 	browser := rod.New().Client(l.Client()).MustConnect()
 
 	// You may want to start a server to watch the screenshots inside the docker
 	launcher.NewBrowser().Open(browser.ServeMonitor(""))
 
 	fmt.Println(
-		browser.MustPage("https://github.com").MustEval("() => document.title"),
+		browser.MustPage("https://www.wikipedia.org/").MustEval("() => document.title"),
 	)
 
 	utils.Pause()

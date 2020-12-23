@@ -130,7 +130,7 @@ func (p *RemoteLauncher) launch(w http.ResponseWriter, r *http.Request) {
 	parsedURL, err := url.Parse(u)
 	utils.E(err)
 
-	p.Logger.Println("Launch", u, l.FormatArgs())
+	p.Logger.Println("Launch", u, options)
 	defer p.Logger.Println("Close", u)
 
 	parsedWS, err := url.Parse(u)
