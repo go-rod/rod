@@ -84,15 +84,16 @@ func newTesterPool(t *testing.T) TesterPool {
 
 // new tester
 func (cp TesterPool) new() *T {
-	if !(*BrowserBin != "" || utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv")) {
+	bin := *BrowserBin
+	if !(bin != "" || utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv")) {
 		b := launcher.NewBrowser()
 		b.ExecSearchMap = make(map[string][]string)
 		var err error
-		*BrowserBin, err = b.Get()
+		bin, err = b.Get()
 		utils.E(err)
 	}
 
-	u := launcher.New().Bin(*BrowserBin).MustLaunch()
+	u := launcher.New().Bin(bin).MustLaunch()
 
 	mc := newMockClient(u)
 
