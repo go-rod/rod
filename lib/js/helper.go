@@ -89,7 +89,7 @@ var ElementOverlay = &Function{
 // RemoveOverlay ...
 var RemoveOverlay = &Function{
 	Name:         "removeOverlay",
-	Definition:   `function(e){const t=document.getElementById(e);t&&t.remove()}`,
+	Definition:   `function(e){const t=document.getElementById(e);t&&Element.prototype.remove.call(t)}`,
 	Dependencies: []*Function{},
 }
 
