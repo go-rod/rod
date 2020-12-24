@@ -31,7 +31,7 @@ func (t T) Click() {
 		el.MustClick()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(8, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 }
@@ -73,10 +73,9 @@ func (t T) Tap() {
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 		el.MustTap()
-
 	})
 	t.Panic(func() {
-		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
 		el.MustTap()
 	})
 	t.Panic(func() {
@@ -612,7 +611,7 @@ func (t T) ElementScreenshot() {
 		el.MustScreenshot()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
 		el.MustScreenshot()
 	})
 }

@@ -64,12 +64,7 @@ func (el *Element) ScrollIntoView() error {
 
 // Hover the mouse over the center of the element.
 func (el *Element) Hover() error {
-	err := el.WaitVisible()
-	if err != nil {
-		return err
-	}
-
-	err = el.ScrollIntoView()
+	err := el.ScrollIntoView()
 	if err != nil {
 		return err
 	}
@@ -106,12 +101,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 
 // Tap the button just like a human.
 func (el *Element) Tap() error {
-	err := el.WaitVisible()
-	if err != nil {
-		return err
-	}
-
-	err = el.ScrollIntoView()
+	err := el.ScrollIntoView()
 	if err != nil {
 		return err
 	}
@@ -184,12 +174,7 @@ func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 
 // Press a key
 func (el *Element) Press(key rune) error {
-	err := el.WaitVisible()
-	if err != nil {
-		return err
-	}
-
-	err = el.Focus()
+	err := el.Focus()
 	if err != nil {
 		return err
 	}
@@ -605,12 +590,7 @@ func (el *Element) BackgroundImage() ([]byte, error) {
 
 // Screenshot of the area of the element
 func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality int) ([]byte, error) {
-	err := el.WaitVisible()
-	if err != nil {
-		return nil, err
-	}
-
-	err = el.ScrollIntoView()
+	err := el.ScrollIntoView()
 	if err != nil {
 		return nil, err
 	}

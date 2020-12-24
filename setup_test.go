@@ -255,7 +255,7 @@ func (mc *MockClient) setCall(fn Call) {
 
 	if mc.call != nil {
 		mc.t.Logf("leaking MockClient.stub")
-		mc.t.FailNow()
+		mc.t.Fail()
 	}
 	mc.call = fn
 }
