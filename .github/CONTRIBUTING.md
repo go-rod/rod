@@ -39,6 +39,15 @@ rod=show,trace,slow=2s go test -v -run /Click
 
 Check type `defaults.ResetWithEnv` for how it works.
 
+### Specify browser binary
+
+To use a locally installed browser, instead of downloading the latest version of chromium every time while running tests, use the `--browser-bin=<command to launch browser>` flag.
+
+For example:
+```bash
+go test -v --browser-bin=google-chrome
+```
+
 ### Lint project
 
 ```bash
