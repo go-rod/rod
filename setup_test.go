@@ -28,6 +28,7 @@ import (
 )
 
 var TimeoutEach = flag.Duration("timeout-each", time.Minute, "timeout for each test")
+var BrowserBin = flag.String("browser-bin", "", "browser binary to use")
 
 var LogDir = slash(fmt.Sprintf("tmp/cdp-log/%s", time.Now().Format("2006-01-02_15-04-05")))
 
@@ -83,17 +84,15 @@ func newTesterPool(t *testing.T) TesterPool {
 
 // new tester
 func (cp TesterPool) new() *T {
-	bin := ""
-
-	if !(utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv")) {
+	if !(*BrowserBin != "" || utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv")) {
 		b := launcher.NewBrowser()
 		b.ExecSearchMap = make(map[string][]string)
 		var err error
-		bin, err = b.Get()
+		*BrowserBin, err = b.Get()
 		utils.E(err)
 	}
 
-	u := launcher.New().Bin(bin).MustLaunch()
+	u := launcher.New().Bin(*BrowserBin).MustLaunch()
 
 	mc := newMockClient(u)
 
