@@ -13,9 +13,9 @@ func main() {
 
 	run("npx -yq -- prettier --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	run("go mod tidy")
+	run("go run github.com/ysmood/golangci-lint/lint -- run --fix")
 
-	run("golangci-lint run --fix ./...")
+	run("go mod tidy")
 
 	lintMustPrefix()
 
@@ -34,6 +34,6 @@ func checkGitClean() {
 
 	out := string(b)
 	if out != "" {
-		panic("Changes of \"go generate\", \"lint auto fix\", etc are not git committed:\n" + out)
+		panic("Please run \"go generate\" on local and git commit the changes:" + out)
 	}
 }

@@ -11,7 +11,6 @@ func main() {
 	log.Println("setup project...")
 
 	nodejsDeps()
-	golangDeps()
 
 	genDockerIgnore()
 }
@@ -23,13 +22,6 @@ func nodejsDeps() {
 	}
 
 	utils.Exec("npm", "i", "-q", "--no-audit", "--no-fund", "--silent", "eslint-plugin-html")
-}
-
-func golangDeps() {
-	_, err := exec.Command("golangci-lint", "--version").CombinedOutput()
-	if err != nil {
-		log.Fatal("please install golangci-lint: https://golangci-lint.run")
-	}
 }
 
 func genDockerIgnore() {

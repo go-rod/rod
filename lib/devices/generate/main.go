@@ -65,7 +65,10 @@ func main() {
 	utils.E(utils.OutputFile(path, code))
 
 	utils.Exec("gofmt", "-s", "-w", path)
-	utils.Exec("golangci-lint", "run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path)
+	utils.Exec(
+		"go", "run", "github.com/ysmood/golangci-lint/lint", "--",
+		"run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path,
+	)
 }
 
 func getDeviceList() gson.JSON {
