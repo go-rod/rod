@@ -85,7 +85,7 @@ func newTesterPool(t *testing.T) TesterPool {
 // new tester
 func (cp TesterPool) new() *T {
 	bin := *BrowserBin
-	const notInContainer = !(utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv"))
+	notInContainer := !(utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv"))
 	if bin == "" && notInContainer {
 		b := launcher.NewBrowser()
 		b.ExecSearchMap = make(map[string][]string)
