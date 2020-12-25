@@ -41,11 +41,11 @@ Check type `defaults.ResetWithEnv` for how it works.
 
 ### Specify browser binary
 
-To use a locally installed browser, instead of downloading the latest version of chromium every time while running tests, use the `--browser-bin=<command to launch browser>` flag.
+You can use the `-browser-bin` flag to specify a custom browser executable path:
 
 For example:
 ```bash
-go test -v --browser-bin=google-chrome
+go test -v --browser-bin=/path/to/browser
 ```
 
 ### Lint project
