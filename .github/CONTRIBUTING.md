@@ -39,6 +39,16 @@ rod=show,trace,slow=2s go test -v -run /Click
 
 Check type `defaults.ResetWithEnv` for how it works.
 
+### Specify browser binary
+
+You can use the `-browser-bin` flag to specify a custom browser executable path:
+
+For example:
+
+```bash
+go test -v --browser-bin=/path/to/browser
+```
+
 ### Lint project
 
 ```bash
