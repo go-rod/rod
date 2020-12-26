@@ -1310,6 +1310,9 @@ type AuditsContentSecurityPolicyIssueDetails struct {
 	// ViolatedDirective Specific directive that is violated, causing the CSP issue.
 	ViolatedDirective string `json:"violatedDirective"`
 
+	// IsReportOnly ...
+	IsReportOnly bool `json:"isReportOnly"`
+
 	// ContentSecurityPolicyViolationType ...
 	ContentSecurityPolicyViolationType AuditsContentSecurityPolicyViolationType `json:"contentSecurityPolicyViolationType"`
 
@@ -1718,6 +1721,9 @@ const (
 	// BrowserPermissionTypeVideoCapture enum const
 	BrowserPermissionTypeVideoCapture BrowserPermissionType = "videoCapture"
 
+	// BrowserPermissionTypeVideoCapturePanTiltZoom enum const
+	BrowserPermissionTypeVideoCapturePanTiltZoom BrowserPermissionType = "videoCapturePanTiltZoom"
+
 	// BrowserPermissionTypeIdleDetection enum const
 	BrowserPermissionTypeIdleDetection BrowserPermissionType = "idleDetection"
 
@@ -1759,6 +1765,9 @@ type BrowserPermissionDescriptor struct {
 
 	// AllowWithoutSanitization (optional) For "clipboard" permission, may specify allowWithoutSanitization.
 	AllowWithoutSanitization bool `json:"allowWithoutSanitization,omitempty"`
+
+	// PanTiltZoom (optional) For "camera" permission, may specify panTiltZoom.
+	PanTiltZoom bool `json:"panTiltZoom,omitempty"`
 }
 
 // BrowserBucket (experimental) Chrome histogram bucket.
@@ -8869,6 +8878,10 @@ type NetworkRequest struct {
 
 	// IsLinkPreload (optional) Whether is loaded via link preload.
 	IsLinkPreload bool `json:"isLinkPreload,omitempty"`
+
+	// TrustTokenParams (experimental) (optional) Set for requests when the TrustToken API is used. Contains the parameters
+	// passed by the developer (e.g. via "fetch") as understood by the backend.
+	TrustTokenParams *NetworkTrustTokenParams `json:"trustTokenParams,omitempty"`
 }
 
 // NetworkSignedCertificateTimestamp Details of a signed certificate timestamp (SCT).
@@ -9015,6 +9028,47 @@ const (
 
 	// NetworkServiceWorkerResponseSourceNetwork enum const
 	NetworkServiceWorkerResponseSourceNetwork NetworkServiceWorkerResponseSource = "network"
+)
+
+// NetworkTrustTokenParamsRefreshPolicy enum
+type NetworkTrustTokenParamsRefreshPolicy string
+
+const (
+	// NetworkTrustTokenParamsRefreshPolicyUseCached enum const
+	NetworkTrustTokenParamsRefreshPolicyUseCached NetworkTrustTokenParamsRefreshPolicy = "UseCached"
+
+	// NetworkTrustTokenParamsRefreshPolicyRefresh enum const
+	NetworkTrustTokenParamsRefreshPolicyRefresh NetworkTrustTokenParamsRefreshPolicy = "Refresh"
+)
+
+// NetworkTrustTokenParams (experimental) Determines what type of Trust Token operation is executed and
+// depending on the type, some additional parameters.
+type NetworkTrustTokenParams struct {
+
+	// Type ...
+	Type NetworkTrustTokenOperationType `json:"type"`
+
+	// RefreshPolicy Only set for "srr-token-redemption" type and determine whether
+	// to request a fresh SRR or use a still valid cached SRR.
+	RefreshPolicy NetworkTrustTokenParamsRefreshPolicy `json:"refreshPolicy"`
+
+	// Issuers (optional) Origins of issuers from whom to request tokens or redemption
+	// records.
+	Issuers []string `json:"issuers,omitempty"`
+}
+
+// NetworkTrustTokenOperationType (experimental) ...
+type NetworkTrustTokenOperationType string
+
+const (
+	// NetworkTrustTokenOperationTypeIssuance enum const
+	NetworkTrustTokenOperationTypeIssuance NetworkTrustTokenOperationType = "Issuance"
+
+	// NetworkTrustTokenOperationTypeRedemption enum const
+	NetworkTrustTokenOperationTypeRedemption NetworkTrustTokenOperationType = "Redemption"
+
+	// NetworkTrustTokenOperationTypeSigning enum const
+	NetworkTrustTokenOperationTypeSigning NetworkTrustTokenOperationType = "Signing"
 )
 
 // NetworkResponse HTTP response data.
@@ -9185,6 +9239,10 @@ type NetworkInitiator struct {
 	// LineNumber (optional) Initiator line number, set for Parser type or for Script type (when script is importing
 	// module) (0-based).
 	LineNumber float64 `json:"lineNumber,omitempty"`
+
+	// ColumnNumber (optional) Initiator column number, set for Parser type or for Script type (when script is importing
+	// module) (0-based).
+	ColumnNumber float64 `json:"columnNumber,omitempty"`
 }
 
 // NetworkCookie Cookie object
@@ -9263,6 +9321,15 @@ const (
 
 	// NetworkSetCookieBlockedReasonUnknownError enum const
 	NetworkSetCookieBlockedReasonUnknownError NetworkSetCookieBlockedReason = "UnknownError"
+
+	// NetworkSetCookieBlockedReasonSchemefulSameSiteStrict enum const
+	NetworkSetCookieBlockedReasonSchemefulSameSiteStrict NetworkSetCookieBlockedReason = "SchemefulSameSiteStrict"
+
+	// NetworkSetCookieBlockedReasonSchemefulSameSiteLax enum const
+	NetworkSetCookieBlockedReasonSchemefulSameSiteLax NetworkSetCookieBlockedReason = "SchemefulSameSiteLax"
+
+	// NetworkSetCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax enum const
+	NetworkSetCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax NetworkSetCookieBlockedReason = "SchemefulSameSiteUnspecifiedTreatedAsLax"
 )
 
 // NetworkCookieBlockedReason (experimental) Types of reasons why a cookie may not be sent with a request.
@@ -9295,6 +9362,15 @@ const (
 
 	// NetworkCookieBlockedReasonUnknownError enum const
 	NetworkCookieBlockedReasonUnknownError NetworkCookieBlockedReason = "UnknownError"
+
+	// NetworkCookieBlockedReasonSchemefulSameSiteStrict enum const
+	NetworkCookieBlockedReasonSchemefulSameSiteStrict NetworkCookieBlockedReason = "SchemefulSameSiteStrict"
+
+	// NetworkCookieBlockedReasonSchemefulSameSiteLax enum const
+	NetworkCookieBlockedReasonSchemefulSameSiteLax NetworkCookieBlockedReason = "SchemefulSameSiteLax"
+
+	// NetworkCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax enum const
+	NetworkCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax NetworkCookieBlockedReason = "SchemefulSameSiteUnspecifiedTreatedAsLax"
 )
 
 // NetworkBlockedSetCookieWithReason (experimental) A cookie which was not stored from a response with the corresponding reason.
@@ -14512,8 +14588,35 @@ type StorageGetUsageAndQuotaResult struct {
 	// Quota Storage quota (bytes).
 	Quota float64 `json:"quota"`
 
+	// OverrideActive Whether or not the origin has an active storage quota override
+	OverrideActive bool `json:"overrideActive"`
+
 	// UsageBreakdown Storage usage per type (bytes).
 	UsageBreakdown []*StorageUsageForType `json:"usageBreakdown"`
+}
+
+// StorageOverrideQuotaForOrigin (experimental) Override quota for the specified origin
+type StorageOverrideQuotaForOrigin struct {
+
+	// Origin Security origin.
+	Origin string `json:"origin"`
+
+	// QuotaSize (optional) The quota size (in bytes) to override the original quota with.
+	// If this is called multiple times, the overridden quota will be equal to
+	// the quotaSize provided in the final call. If this is called without
+	// specifying a quotaSize, the quota will be reset to the default value for
+	// the specified origin. If this is called multiple times with different
+	// origins, the override will be maintained for each origin until it is
+	// disabled (called without a quotaSize).
+	QuotaSize float64 `json:"quotaSize,omitempty"`
+}
+
+// ProtoReq of the command
+func (m StorageOverrideQuotaForOrigin) ProtoReq() string { return "Storage.overrideQuotaForOrigin" }
+
+// Call of the command, sessionID is optional.
+func (m StorageOverrideQuotaForOrigin) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
 }
 
 // StorageTrackCacheStorageForOrigin Registers origin to be notified when an update occurs to its cache storage list.
@@ -16535,6 +16638,11 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 
 	// HasUserVerification (optional) Defaults to false.
 	HasUserVerification bool `json:"hasUserVerification,omitempty"`
+
+	// HasLargeBlob (optional) If set to true, the authenticator will support the largeBlob extension.
+	// https://w3c.github.io/webauthn#largeBlob
+	// Defaults to false.
+	HasLargeBlob bool `json:"hasLargeBlob,omitempty"`
 
 	// AutomaticPresenceSimulation (optional) If set to true, tests of user presence will succeed immediately.
 	// Otherwise, they will not be resolved. Defaults to true.
@@ -20198,8 +20306,6 @@ func (m RuntimeTerminateExecution) Call(c Client) error {
 // RuntimeAddBinding (experimental) If executionContextId is empty, adds binding with the given name on the
 // global objects of all inspected contexts, including those created later,
 // bindings survive reloads.
-// If executionContextId is specified, adds binding only on global object of
-// given execution context.
 // Binding function takes exactly one argument, this argument should be string,
 // in case of any other input, function throws an exception.
 // Each binding function call produces Runtime.bindingCalled notification.
@@ -20208,8 +20314,18 @@ type RuntimeAddBinding struct {
 	// Name ...
 	Name string `json:"name"`
 
-	// ExecutionContextID (optional) ...
+	// ExecutionContextID (optional) If specified, the binding would only be exposed to the specified
+	// execution context. If omitted and `executionContextName` is not set,
+	// the binding is exposed to all execution contexts of the target.
+	// This parameter is mutually exclusive with `executionContextName`.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
+
+	// ExecutionContextName (experimental) (optional) If specified, the binding is exposed to the executionContext with
+	// matching name, even for contexts created after the binding is added.
+	// See also `ExecutionContext.name` and `worldName` parameter to
+	// `Page.addScriptToEvaluateOnNewDocument`.
+	// This parameter is mutually exclusive with `executionContextId`.
+	ExecutionContextName string `json:"executionContextName,omitempty"`
 }
 
 // ProtoReq of the command
@@ -20912,6 +21028,7 @@ var types = map[string]reflect.Type{
 	"Network.Request":                                       reflect.TypeOf(NetworkRequest{}),
 	"Network.SignedCertificateTimestamp":                    reflect.TypeOf(NetworkSignedCertificateTimestamp{}),
 	"Network.SecurityDetails":                               reflect.TypeOf(NetworkSecurityDetails{}),
+	"Network.TrustTokenParams":                              reflect.TypeOf(NetworkTrustTokenParams{}),
 	"Network.Response":                                      reflect.TypeOf(NetworkResponse{}),
 	"Network.WebSocketRequest":                              reflect.TypeOf(NetworkWebSocketRequest{}),
 	"Network.WebSocketResponse":                             reflect.TypeOf(NetworkWebSocketResponse{}),
@@ -21190,6 +21307,7 @@ var types = map[string]reflect.Type{
 	"Storage.clearCookies":                                  reflect.TypeOf(StorageClearCookies{}),
 	"Storage.getUsageAndQuota":                              reflect.TypeOf(StorageGetUsageAndQuota{}),
 	"Storage.getUsageAndQuotaResult":                        reflect.TypeOf(StorageGetUsageAndQuotaResult{}),
+	"Storage.overrideQuotaForOrigin":                        reflect.TypeOf(StorageOverrideQuotaForOrigin{}),
 	"Storage.trackCacheStorageForOrigin":                    reflect.TypeOf(StorageTrackCacheStorageForOrigin{}),
 	"Storage.trackIndexedDBForOrigin":                       reflect.TypeOf(StorageTrackIndexedDBForOrigin{}),
 	"Storage.untrackCacheStorageForOrigin":                  reflect.TypeOf(StorageUntrackCacheStorageForOrigin{}),
