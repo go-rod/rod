@@ -177,6 +177,9 @@ func (t T) ElementR() {
 
 	el = p.MustElementR("input", `placeholder`)
 	t.Eq("blur", *el.MustAttribute("id"))
+
+	el = p.MustElementR("option", `/cc/i`)
+	t.Eq("CC", el.MustText())
 }
 
 func (t T) ElementFromElement() {

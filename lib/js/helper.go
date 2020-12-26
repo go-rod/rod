@@ -33,7 +33,7 @@ var ElementsX = &Function{
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){const n=new RegExp(t),i=functions.selectable(this),s=Array.from(i.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return s||null}`,
+	Definition:   `function(e,t){var n;try{n=new RegExp(eval(t))}catch(e){n=new RegExp(t)};i=functions.selectable(this),s=Array.from(i.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return s||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
