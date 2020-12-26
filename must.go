@@ -461,6 +461,13 @@ func (p *Page) MustElementR(selector, jsRegex string) *Element {
 	return el
 }
 
+// MustElementRF is similar to ElementRF
+func (p *Page) MustElementRF(selector, jsRegex, regexFlags string) *Element {
+	el, err := p.ElementRF(selector, jsRegex, regexFlags)
+	utils.E(err)
+	return el
+}
+
 // MustElementX is similar to ElementX
 func (p *Page) MustElementX(xPath string) *Element {
 	el, err := p.ElementX(xPath)

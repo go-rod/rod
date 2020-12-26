@@ -141,6 +141,12 @@ func (p *Page) ElementR(selector, jsRegex string) (*Element, error) {
 	return p.ElementByJS(EvalHelper(js.ElementR, selector, jsRegex))
 }
 
+// ElementRF is similar to ElementR, but explicitly sets regex flags to use. Useful when jsRegex code is untrusted,
+// preventing malicious injection through eval.
+func (p *Page) ElementRF(selector, jsRegex, regexFlags string) (*Element, error) {
+	return p.ElementByJS(EvalHelper(js.ElementRF, selector, jsRegex, regexFlags))
+}
+
 // ElementX retries until an element in the page that matches one of the XPath selectors, then returns
 // the matched element.
 func (p *Page) ElementX(xPath string) (*Element, error) {
