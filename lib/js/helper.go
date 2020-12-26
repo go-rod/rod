@@ -33,14 +33,14 @@ var ElementsX = &Function{
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){var n;try{n=new RegExp(eval(t))}catch(e){n=new RegExp(t)};i=functions.selectable(this),s=Array.from(i.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return s||null}`,
+	Definition:   `function(selector,regex){var reg;try{reg=new RegExp(eval(regex))}catch(e){reg=new RegExp(regex)}const s=functions.selectable(this),el=Array.from(s.querySelectorAll(selector)).find(e=>reg.test(functions.text.call(e)));return el||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
 // ElementRF ...
 var ElementRF = &Function{
 	Name:         "elementRF",
-	Definition:   `function(e,t,f){var n=new RegExp(t,f);i=functions.selectable(this),s=Array.from(i.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return s||null}`,
+	Definition:   `function(e,t,n){const i=new RegExp(t,n),s=functions.selectable(this),o=Array.from(s.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return o||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
