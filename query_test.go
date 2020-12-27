@@ -177,6 +177,18 @@ func (t T) ElementR() {
 
 	el = p.MustElementR("input", `placeholder`)
 	t.Eq("blur", *el.MustAttribute("id"))
+
+	el = p.MustElementR("option", `/cc/i`)
+	t.Eq("CC", el.MustText())
+}
+
+func (t T) ElementRF() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+	el := p.MustElementRF("option", "cc", "i")
+	t.Eq("CC", el.MustText())
+
+	el = p.MustElementRF("option", "A", "")
+	t.Eq("A", el.MustText())
 }
 
 func (t T) ElementFromElement() {
