@@ -26,7 +26,7 @@ customize or build up their own version of Rod, the high-level functions are jus
 Please check the [examples_test.go](examples_test.go) file first, then check the [examples](lib/examples) folder.
 
 For more detailed examples, please search the unit tests.
-Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth` or `HandleAuthE`,
+Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth`,
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub issues, they contain a lot of usage examples too.
 
