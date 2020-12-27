@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	run("npx -yq -- eslint --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
+	run("npx -yq -- eslint@7.16.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
 
-	run("npx -yq -- prettier --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
+	run("npx -yq -- prettier@2.2.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
 	run("go run github.com/ysmood/golangci-lint/lint -- run --fix")
 

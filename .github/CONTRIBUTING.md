@@ -80,11 +80,16 @@ There are several helper functions for it:
 
 ### To run inside docker
 
-1. `docker build -t rod -f lib/docker/test.Dockerfile .`
+1. Build the test image: `docker build -t rod -f lib/docker/test.Dockerfile .`
 
-1. `docker volume create rod`
+1. Create a cache volume for containers: `docker volume create rod`
 
-1. `docker run --rm -v rod:/root -v $(pwd):/t rod go test -v -run /Click`
+1. Run a container with and mount the cache volume to it: `docker run --rm -v rod:/root -v $(pwd):/t -it rod go bash`
+
+1. Run lint in the container: `go run ./lib/utils/lint`
+   You might want to set global git ignore for the container if the lint fails: [link](https://docs.github.com/en/free-pro-team@latest/github/using-git/ignoring-files#configuring-ignored-files-for-all-repositories-on-your-computer).
+
+1. Run tests in the container: `go test -run /Click`
 
 ### Detect goroutine leak
 

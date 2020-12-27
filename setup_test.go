@@ -85,7 +85,7 @@ func newTesterPool(t *testing.T) TesterPool {
 // new tester
 func (cp TesterPool) new() *T {
 	bin := *BrowserBin
-	if bin == "" && !utils.InContainer {
+	if bin == "" {
 		b := launcher.NewBrowser()
 		b.ExecSearchMap = make(map[string][]string)
 		var err error
