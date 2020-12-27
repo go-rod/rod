@@ -44,12 +44,12 @@ func (t T) Unzip() {
 func (t T) LaunchOptions() {
 	defaults.Show = true
 	defaults.Devtools = true
-	isInDocker = true
+	inContainer = true
 
 	// restore
 	defer func() {
 		defaults.ResetWithEnv("")
-		isInDocker = utils.FileExists("/.dockerenv")
+		inContainer = utils.InContainer
 	}()
 
 	l := New()

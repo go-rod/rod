@@ -23,6 +23,9 @@ import (
 	"github.com/ysmood/gson"
 )
 
+// InContainer will be true if is inside container environment, such as docker
+var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv")
+
 // Logger interface
 type Logger interface {
 	// Same as fmt.Printf

@@ -92,7 +92,7 @@ func New() *Launcher {
 	if defaults.Devtools {
 		defaultFlags["auto-open-devtools-for-tabs"] = nil
 	}
-	if isInDocker {
+	if inContainer {
 		defaultFlags["no-sandbox"] = nil
 	}
 	if defaults.Proxy != "" {

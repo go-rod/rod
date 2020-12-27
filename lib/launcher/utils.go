@@ -12,7 +12,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-var isInDocker = utils.FileExists("/.dockerenv") || utils.FileExists("/.containerenv")
+var inContainer = utils.InContainer
 
 type progresser struct {
 	size   int
