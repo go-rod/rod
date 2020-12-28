@@ -161,6 +161,12 @@ func (p *Page) MustReload() *Page {
 	return p
 }
 
+// MustActivate is similar to Activate
+func (p *Page) MustActivate() *Page {
+	utils.E(p.Activate())
+	return p
+}
+
 // MustNavigateBack is similar to NavigateBack
 func (p *Page) MustNavigateBack() *Page {
 	utils.E(p.NavigateBack())

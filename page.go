@@ -166,6 +166,12 @@ func (p *Page) Reload() error {
 	return p.updateJSCtxID()
 }
 
+// Activate (focuses) the page
+func (p *Page) Activate() (*Page, error) {
+	err := proto.TargetActivateTarget{TargetID: p.TargetID}.Call(p.browser)
+	return p, err
+}
+
 func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	res, err := proto.BrowserGetWindowForTarget{TargetID: p.TargetID}.Call(p)
 	if err != nil {

@@ -143,6 +143,10 @@ func (t T) PageContext() {
 	t.page.Timeout(time.Hour).CancelTimeout().MustEval(`1`)
 }
 
+func (t T) PageActivate() {
+	t.page.MustActivate()
+}
+
 func (t T) Window() {
 	page := t.newPage(t.blank())
 
