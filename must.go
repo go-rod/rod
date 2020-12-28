@@ -797,13 +797,15 @@ func (el *Element) MustWaitInvisible() *Element {
 }
 
 // MustWaitEnabled is similar to WaitEnabled
-func (el *Element) MustWaitEnabled() {
+func (el *Element) MustWaitEnabled() *Element {
 	utils.E(el.WaitEnabled())
+	return el
 }
 
 // MustWaitWritable is similar to WaitWritable
-func (el *Element) MustWaitWritable() {
+func (el *Element) MustWaitWritable() *Element {
 	utils.E(el.WaitWritable())
+	return el
 }
 
 // MustShape is similar to Shape
