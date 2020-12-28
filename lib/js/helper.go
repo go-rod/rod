@@ -37,13 +37,6 @@ var ElementR = &Function{
 	Dependencies: []*Function{Selectable, Text},
 }
 
-// ElementRF ...
-var ElementRF = &Function{
-	Name:         "elementRF",
-	Definition:   `function(e,t,n){const i=new RegExp(t,n),s=functions.selectable(this),o=Array.from(s.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return o||null}`,
-	Dependencies: []*Function{Selectable, Text},
-}
-
 // Parents ...
 var Parents = &Function{
 	Name:         "parents",
