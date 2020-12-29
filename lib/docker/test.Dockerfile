@@ -2,7 +2,7 @@
 
 FROM rodorg/rod
 
-RUN apt-get install -y git curl
+RUN apt-get update && apt-get install --no-install-recommends -y git curl xz-utils
 
 # install nodejs
 RUN curl -L https://nodejs.org/dist/v15.5.0/node-v15.5.0-linux-x64.tar.xz > node.tar.xz
