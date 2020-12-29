@@ -110,5 +110,7 @@ func unzip(logger io.Writer, from, to string) (err error) {
 		utils.E(err)
 	}
 
-	return zr.Close()
+	utils.E(zr.Close())
+
+	return os.Remove(from)
 }
