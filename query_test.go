@@ -190,11 +190,14 @@ func (t T) ElementFromElement() {
 
 func (t T) ElementsFromElement() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
-	p.MustElement("form")
+	el := p.MustElement("form")
 	list := p.MustElement("form").MustElements("option")
 
 	t.Len(list, 4)
 	t.Eq("B", list[1].MustText())
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(el.ElementsByJS(rod.EvalHelper(js.Elements, "input")))
 }
 
 func (t T) ElementParent() {

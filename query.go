@@ -445,7 +445,11 @@ func (el *Element) ElementX(xPath string) (*Element, error) {
 
 // ElementByJS returns the element from the return value of the js
 func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
-	return el.page.Sleeper(nil).ElementByJS(opts.This(el.Object))
+	e, err := el.page.Sleeper(nil).ElementByJS(opts.This(el.Object))
+	if err != nil {
+		return nil, err
+	}
+	return e.Sleeper(el.sleeper), nil
 }
 
 // Parent returns the parent element in the DOM tree
@@ -480,5 +484,14 @@ func (el *Element) ElementsX(xpath string) (Elements, error) {
 
 // ElementsByJS returns the elements from the return value of the js
 func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
-	return el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.Object))
+	es, err := el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.Object))
+	if err != nil {
+		return nil, err
+	}
+
+	list := make(Elements, len(es))
+	for i, e := range es {
+		list[i] = e.Sleeper(el.sleeper)
+	}
+	return list, nil
 }
