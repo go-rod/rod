@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"path/filepath"
 	"reflect"
@@ -506,6 +507,18 @@ func (el *Element) WaitStableRAF() error {
 		shape = current
 	}
 	return nil
+}
+
+// WaitInteractable waits for the element to be interactable
+func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
+	err = utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
+		pt, err = el.Interactable()
+		if errors.Is(err, &ErrCovered{}) {
+			return false, nil
+		}
+		return true, err
+	})
+	return
 }
 
 // Wait until the js returns true

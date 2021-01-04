@@ -135,6 +135,25 @@ func (t T) NotInteractable() {
 	t.Err(el.Interactable())
 }
 
+func (t T) WaitInteractable() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	el := p.MustElement("button")
+
+	start := time.Now()
+
+	// cover the button with a green div for 1sec
+	p.MustWaitLoad().MustEval(`() => {
+		let div = document.createElement('div')
+		div.style = 'position: absolute; left: 0; top: 0; width: 500px; height: 500px;'
+		document.body.append(div)
+		setTimeout(() => div.remove(), 1000)
+	}`)
+
+	el.MustWaitInteractable()
+
+	t.Gt(time.Since(start), time.Second)
+}
+
 func (t T) Hover() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")

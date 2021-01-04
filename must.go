@@ -675,6 +675,12 @@ func (el *Element) MustInteractable() bool {
 	return true
 }
 
+// MustWaitInteractable is similar to WaitInteractable
+func (el *Element) MustWaitInteractable() *Element {
+	utils.E(el.WaitInteractable())
+	return el
+}
+
 // MustPress is similar to Press
 func (el *Element) MustPress(key rune) *Element {
 	utils.E(el.Press(key))
