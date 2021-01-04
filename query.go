@@ -484,14 +484,5 @@ func (el *Element) ElementsX(xpath string) (Elements, error) {
 
 // ElementsByJS returns the elements from the return value of the js
 func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
-	es, err := el.page.Context(el.ctx).Sleeper(nil).ElementsByJS(opts.This(el.Object))
-	if err != nil {
-		return nil, err
-	}
-
-	list := make(Elements, len(es))
-	for i, e := range es {
-		list[i] = e.Sleeper(el.sleeper)
-	}
-	return list, nil
+	return el.page.Context(el.ctx).ElementsByJS(opts.This(el.Object))
 }
