@@ -19,6 +19,31 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
+// TraceType for logger
+type TraceType string
+
+// String interface
+func (t TraceType) String() string {
+	return fmt.Sprintf("[%s]", string(t))
+}
+
+const (
+	// TraceTypeWaitRequestsIdle type
+	TraceTypeWaitRequestsIdle TraceType = "wait requests idle"
+
+	// TraceTypeWaitRequests type
+	TraceTypeWaitRequests TraceType = "wait requests"
+
+	// TraceTypeQuery type
+	TraceTypeQuery TraceType = "query"
+
+	// TraceTypeWait type
+	TraceTypeWait TraceType = "wait"
+
+	// TraceTypeInput type
+	TraceTypeInput TraceType = "input"
+)
+
 // ServeMonitor starts the monitor server.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
 func (b *Browser) ServeMonitor(host string) string {
@@ -67,42 +92,22 @@ func (b *Browser) ServeMonitor(host string) string {
 	return url
 }
 
-// TraceType for logger
-type TraceType string
+// check method and sleep if needed
+func (b *Browser) trySlowmotion() {
+	if b.slowMotion == 0 {
+		return
+	}
 
-const (
-	// TraceTypeWaitRequestsIdle type
-	TraceTypeWaitRequestsIdle TraceType = "wait requests idle"
-
-	// TraceTypeWaitRequests type
-	TraceTypeWaitRequests TraceType = "wait requests"
-
-	// TraceTypeEval type
-	TraceTypeEval TraceType = "eval"
-
-	// TraceTypeAction type
-	TraceTypeAction TraceType = "act"
-
-	// TraceTypeInput type
-	TraceTypeInput TraceType = "input"
-)
-
-// TraceMsg for logger
-type TraceMsg struct {
-	// Type of the message
-	Type TraceType
-
-	// Details is a json object
-	Details interface{}
+	time.Sleep(b.slowMotion)
 }
 
-func (msg *TraceMsg) String() string {
-	info := ""
-	var ok bool
-	if info, ok = msg.Details.(string); !ok {
-		info = utils.MustToJSON(msg.Details)
-	}
-	return fmt.Sprintf("[%s] %s", msg.Type, info)
+// ExposeHelpers helper functions to page's js context so that we can use the Devtools' console to debug them.
+func (p *Page) ExposeHelpers(list ...*js.Function) {
+	p.MustEvaluate(EvalHelper(&js.Function{
+		Name:         "_" + utils.RandString(8), // use a random name so it won't hit the cache
+		Definition:   "() => { window.rod = functions }",
+		Dependencies: list,
+	}))
 }
 
 // Overlay a rectangle on the main frame with specified message
@@ -125,79 +130,27 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	return
 }
 
-// ExposeHelpers helper functions to page's js context so that we can use the Devtools' console to debug them.
-func (p *Page) ExposeHelpers(list ...*js.Function) {
-	p.MustEvaluate(EvalHelper(&js.Function{
-		Name:         "_" + utils.RandString(8), // use a random name so it won't hit the cache
-		Definition:   "() => { window.rod = functions }",
-		Dependencies: list,
-	}))
-}
-
-// Trace with an overlay on the element
-func (el *Element) Trace(msg string) (removeOverlay func()) {
-	id := utils.RandString(8)
-
-	_, _ = el.Evaluate(EvalHelper(js.ElementOverlay,
-		id,
-		msg,
-	).ByPromise())
-
-	removeOverlay = func() {
-		_, _ = el.Evaluate(EvalHelper(js.RemoveOverlay, id))
-	}
-
-	return
-}
-
-// check method and sleep if needed
-func (b *Browser) trySlowmotion() {
-	if b.slowMotion == 0 {
-		return
-	}
-
-	time.Sleep(b.slowMotion)
-}
-
-func (el *Element) tryTraceInput(details string) func() {
-	if !el.page.browser.trace {
-		return func() {}
-	}
-
-	msg := &TraceMsg{TraceTypeInput, details}
-
-	el.page.browser.logger.Println(msg)
-
-	return el.Trace(details)
-}
-
-func (p *Page) tryTraceEval(opts *EvalOptions) func() {
+func (p *Page) tryTrace(typ TraceType, msg ...interface{}) func() {
 	if !p.browser.trace {
 		return func() {}
 	}
 
-	fn := ""
+	msg = append([]interface{}{typ}, msg...)
+	msg = append(msg, p)
 
-	if opts.jsHelper != nil {
-		fn = "rod." + opts.jsHelper.Name
+	p.browser.logger.Println(msg...)
+
+	return p.Overlay(0, 0, 500, 0, fmt.Sprint(msg))
+}
+
+func (p *Page) tryTraceQuery(opts *EvalOptions) func() {
+	if !p.browser.trace {
+		return func() {}
 	}
 
-	info := map[string]interface{}{"js": fn}
-	paramsStr := ""
-	thisStr := ""
+	p.browser.logger.Println(TraceTypeQuery, opts, p)
 
-	if opts.ThisObj != nil {
-		info["this"] = opts.ThisObj.Description
-		thisStr = opts.ThisObj.Description
-	}
-	if len(opts.JSArgs) > 0 {
-		info["params"] = opts.JSArgs
-		paramsStr = html.EscapeString(strings.Trim(mustToJSONForDev(opts.JSArgs), "[]\r\n"))
-	}
-
-	p.browser.logger.Println(&TraceMsg{TraceTypeEval, info})
-
-	msg := fmt.Sprintf("js <code>%s(%s) %s</code>", fn, paramsStr, thisStr)
+	msg := fmt.Sprintf("<code>%s</code>", html.EscapeString(opts.String()))
 	return p.Overlay(0, 0, 500, 0, msg)
 }
 
@@ -206,12 +159,12 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 		return func(map[proto.NetworkRequestID]string) {}
 	}
 
-	msg := &TraceMsg{TraceTypeWaitRequestsIdle, map[string][]string{
+	msg := map[string][]string{
 		"includes": includes,
 		"excludes": excludes,
-	}}
-	p.browser.logger.Println(msg)
-	cleanup := p.Overlay(0, 0, 300, 0, msg.String())
+	}
+	p.browser.logger.Println(TraceTypeWaitRequestsIdle, msg, p)
+	cleanup := p.Overlay(0, 0, 500, 0, utils.MustToJSON(msg))
 
 	ch := make(chan map[string]string)
 	update := func(list map[proto.NetworkRequestID]string) {
@@ -233,15 +186,41 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 				return
 			case waitlist = <-ch:
 			case <-t.C:
-				p.browser.logger.Println(&TraceMsg{
-					TraceTypeWaitRequests,
-					waitlist,
-				})
+				p.browser.logger.Println(TraceTypeWaitRequests, p, waitlist)
 			}
 		}
 	}()
 
 	return update
+}
+
+// Overlay msg on the element
+func (el *Element) Overlay(msg string) (removeOverlay func()) {
+	id := utils.RandString(8)
+
+	_, _ = el.Evaluate(EvalHelper(js.ElementOverlay,
+		id,
+		msg,
+	).ByPromise())
+
+	removeOverlay = func() {
+		_, _ = el.Evaluate(EvalHelper(js.RemoveOverlay, id))
+	}
+
+	return
+}
+
+func (el *Element) tryTrace(typ TraceType, msg ...interface{}) func() {
+	if !el.page.browser.trace {
+		return func() {}
+	}
+
+	msg = append([]interface{}{typ}, msg...)
+	msg = append(msg, el)
+
+	el.page.browser.logger.Println(msg...)
+
+	return el.Overlay(fmt.Sprint(msg))
 }
 
 func (m *Mouse) initMouseTracer() {

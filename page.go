@@ -47,6 +47,11 @@ type Page struct {
 	helpers   map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID
 }
 
+// String interface
+func (p *Page) String() string {
+	return "page:" + string(p.TargetID)
+}
+
 // IsIframe tells if it's iframe
 func (p *Page) IsIframe() bool {
 	return p.element != nil
@@ -384,6 +389,7 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 	})
 
 	return func() (*Page, error) {
+		defer p.tryTrace(TraceTypeWait, "wait open")()
 		wait()
 		return b.PageFromTarget(targetID)
 	}
@@ -405,6 +411,8 @@ func (p *Page) WaitPauseOpen() (func() (*Page, func() error, error), error) {
 	wait := p.WaitOpen()
 
 	return func() (*Page, func() error, error) {
+		defer p.tryTrace(TraceTypeWait, "pause open")()
+
 		newPage, err := wait()
 		return newPage, func() error {
 			err := proto.TargetSetAutoAttach{
@@ -426,6 +434,7 @@ func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 
 // WaitEvent waits for the next event for one time. It will also load the data into the event object.
 func (p *Page) WaitEvent(e proto.Event) (wait func()) {
+	defer p.tryTrace(TraceTypeWait, "event", e.ProtoEvent())()
 	return p.browser.Context(p.ctx).waitEvent(p.SessionID, e)
 }
 
@@ -439,6 +448,7 @@ func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 	})
 
 	return func() {
+		defer p.tryTrace(TraceTypeWait, "navigation", name)()
 		wait()
 		_ = proto.PageSetLifecycleEventsEnabled{Enabled: false}.Call(p)
 	}
@@ -509,6 +519,7 @@ func (p *Page) WaitRepaint() error {
 
 // WaitLoad waits for the `window.onload` event, it returns immediately if the event is already fired.
 func (p *Page) WaitLoad() error {
+	defer p.tryTrace(TraceTypeWait, "load")()
 	_, err := p.Evaluate(EvalHelper(js.WaitLoad).ByPromise())
 	return err
 }
@@ -547,15 +558,8 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 
 // Wait js function until it returns true
 func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interface{}) error {
-	removeTrace := func() {}
-	defer removeTrace()
-
 	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
 		opts := Eval(js, params...).This(this)
-
-		remove := p.tryTraceEval(opts)
-		removeTrace()
-		removeTrace = remove
 
 		res, err := p.Evaluate(opts)
 		if err != nil {

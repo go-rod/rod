@@ -64,6 +64,27 @@ func EvalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	}
 }
 
+// String interface
+func (e *EvalOptions) String() string {
+	fn := ""
+
+	if e.jsHelper != nil {
+		fn = "rod." + e.jsHelper.Name
+	}
+
+	paramsStr := ""
+	thisStr := ""
+
+	if e.ThisObj != nil {
+		thisStr = e.ThisObj.Description
+	}
+	if len(e.JSArgs) > 0 {
+		paramsStr = strings.Trim(mustToJSONForDev(e.JSArgs), "[]\r\n")
+	}
+
+	return fmt.Sprintf("%s(%s) %s", fn, paramsStr, thisStr)
+}
+
 // This set the obj as ThisObj
 func (e *EvalOptions) This(obj *proto.RuntimeRemoteObject) *EvalOptions {
 	e.ThisObj = obj

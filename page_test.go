@@ -351,9 +351,9 @@ func (t T) PageWaitRequestIdle() {
 
 	waitReq := ""
 	t.browser.Logger(utils.Log(func(msg ...interface{}) {
-		tm := msg[0].(*rod.TraceMsg)
-		if tm.Type == rod.TraceTypeWaitRequests {
-			list := tm.Details.(map[string]string)
+		typ := msg[0].(rod.TraceType)
+		if typ == rod.TraceTypeWaitRequests {
+			list := msg[2].(map[string]string)
 			for _, v := range list {
 				waitReq = v
 				break

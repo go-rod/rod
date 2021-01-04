@@ -137,7 +137,7 @@ type ErrCovered struct {
 
 // Error ...
 func (e *ErrCovered) Error() string {
-	return fmt.Sprintf("element covered by: %s", e.Object.Description)
+	return fmt.Sprintf("element covered by: %s", e.String())
 }
 
 // Unwrap ...

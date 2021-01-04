@@ -46,21 +46,28 @@ func (t T) MonitorErr() {
 }
 
 func (t T) Trace() {
-	var msg *rod.TraceMsg
-	t.browser.Logger(utils.Log(func(list ...interface{}) { msg = list[0].(*rod.TraceMsg) }))
+	t.Eq(rod.TraceTypeInput.String(), "[input]")
+
+	var msg []interface{}
+	t.browser.Logger(utils.Log(func(list ...interface{}) { msg = list }))
 	t.browser.Trace(true).SlowMotion(time.Microsecond)
 	defer func() {
 		t.browser.Logger(rod.DefaultLogger)
 		t.browser.Trace(defaults.Trace).SlowMotion(defaults.Slow)
 	}()
 
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+
+	t.Eq(rod.TraceTypeWait, msg[0])
+	t.Eq("load", msg[1])
+	t.Eq(p, msg[2])
+
 	el := p.MustElement("button")
 	el.MustClick()
 
-	t.Eq(rod.TraceTypeInput, msg.Type)
-	t.Eq("left click", msg.Details)
-	t.Eq(`[input] left click`, msg.String())
+	t.Eq(rod.TraceTypeInput, msg[0])
+	t.Eq("left click", msg[1])
+	t.Eq(el, msg[2])
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	_ = p.Mouse.Move(10, 10, 1)

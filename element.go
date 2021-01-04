@@ -38,6 +38,11 @@ func (el *Element) GetSessionID() proto.TargetSessionID {
 	return el.page.SessionID
 }
 
+// String interface
+func (el *Element) String() string {
+	return el.Object.Description
+}
+
 // Focus sets focus on the specified element
 func (el *Element) Focus() error {
 	err := el.ScrollIntoView()
@@ -52,7 +57,7 @@ func (el *Element) Focus() error {
 // ScrollIntoView scrolls the current element into the visible area of the browser
 // window if it's not already within the visible area.
 func (el *Element) ScrollIntoView() error {
-	defer el.tryTraceInput("scroll into view")()
+	defer el.tryTrace(TraceTypeInput, "scroll into view")()
 	el.page.browser.trySlowmotion()
 
 	err := el.WaitStableRAF()
@@ -95,7 +100,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 		return err
 	}
 
-	defer el.tryTraceInput(string(button) + " click")()
+	defer el.tryTrace(TraceTypeInput, string(button)+" click")()
 
 	return el.page.Mouse.Click(button)
 }
@@ -117,7 +122,7 @@ func (el *Element) Tap() error {
 		return err
 	}
 
-	defer el.tryTraceInput("tap")()
+	defer el.tryTrace(TraceTypeInput, "tap")()
 
 	return el.page.Touch.Tap(pt.X, pt.Y)
 }
@@ -180,7 +185,7 @@ func (el *Element) Press(key rune) error {
 		return err
 	}
 
-	defer el.tryTraceInput("press " + input.Keys[key].Key)()
+	defer el.tryTrace(TraceTypeInput, "press "+input.Keys[key].Key)()
 
 	return el.page.Keyboard.Press(key)
 }
@@ -192,7 +197,7 @@ func (el *Element) SelectText(regex string) error {
 		return err
 	}
 
-	defer el.tryTraceInput("select text: " + regex)()
+	defer el.tryTrace(TraceTypeInput, "select text: "+regex)()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.Evaluate(EvalHelper(js.SelectText, regex).ByUser())
@@ -206,7 +211,7 @@ func (el *Element) SelectAllText() error {
 		return err
 	}
 
-	defer el.tryTraceInput("select all text")()
+	defer el.tryTrace(TraceTypeInput, "select all text")()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.Evaluate(EvalHelper(js.SelectAllText).ByUser())
@@ -236,7 +241,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	defer el.tryTraceInput("input " + text)()
+	defer el.tryTrace(TraceTypeInput, "input "+text)()
 
 	err = el.page.Keyboard.InsertText(text)
 	if err != nil {
@@ -269,7 +274,7 @@ func (el *Element) InputTime(t time.Time) error {
 		return err
 	}
 
-	defer el.tryTraceInput("input " + t.String())()
+	defer el.tryTrace(TraceTypeInput, "input "+t.String())()
 
 	_, err = el.Evaluate(EvalHelper(js.InputTime, t.UnixNano()/1e6).ByUser())
 	return err
@@ -288,7 +293,7 @@ func (el *Element) Select(selectors []string, selected bool, t SelectorType) err
 		return err
 	}
 
-	defer el.tryTraceInput(fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
+	defer el.tryTrace(TraceTypeInput, fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
 	_, err = el.Evaluate(EvalHelper(js.Select, selectors, selected, t).ByUser())
@@ -340,7 +345,7 @@ func (el *Element) SetFiles(paths []string) error {
 		absPaths = append(absPaths, absPath)
 	}
 
-	defer el.tryTraceInput(fmt.Sprintf("set files: %v", absPaths))()
+	defer el.tryTrace(TraceTypeInput, fmt.Sprintf("set files: %v", absPaths))()
 	el.page.browser.trySlowmotion()
 
 	err := proto.DOMSetFileInputFiles{
@@ -441,6 +446,7 @@ func (el *Element) Visible() (bool, error) {
 
 // WaitLoad for element like <img>
 func (el *Element) WaitLoad() error {
+	defer el.tryTrace(TraceTypeWait, "load")()
 	_, err := el.Evaluate(EvalHelper(js.WaitLoad).ByPromise())
 	return err
 }
@@ -453,6 +459,8 @@ func (el *Element) WaitStable(d time.Duration) error {
 	if err != nil {
 		return err
 	}
+
+	defer el.tryTrace(TraceTypeWait, "stable")()
 
 	shape, err := el.Shape()
 	if err != nil {
@@ -489,6 +497,8 @@ func (el *Element) WaitStableRAF() error {
 		return err
 	}
 
+	defer el.tryTrace(TraceTypeWait, "stable RAF")()
+
 	var shape *proto.DOMGetContentQuadsResult
 
 	for {
@@ -511,6 +521,8 @@ func (el *Element) WaitStableRAF() error {
 
 // WaitInteractable waits for the element to be interactable
 func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
+	defer el.tryTrace(TraceTypeWait, "interactable")()
+
 	err = utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
 		pt, err = el.Interactable()
 		if errors.Is(err, &ErrCovered{}) {
@@ -523,13 +535,7 @@ func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
 
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
-	removeTrace := func() {}
-	defer func() { removeTrace() }()
-
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
-		removeTrace()
-		removeTrace = el.page.tryTraceEval(opts)
-
 		res, err := el.Evaluate(opts.This(el.Object))
 		if err != nil {
 			return true, err
@@ -545,23 +551,27 @@ func (el *Element) Wait(opts *EvalOptions) error {
 
 // WaitVisible until the element is visible
 func (el *Element) WaitVisible() error {
+	defer el.tryTrace(TraceTypeWait, "visible")()
 	return el.Wait(EvalHelper(js.Visible))
 }
 
 // WaitEnabled until the element is not disabled.
 // Doc for readonly: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly
 func (el *Element) WaitEnabled() error {
+	defer el.tryTrace(TraceTypeWait, "enabled")()
 	return el.Wait(Eval(`!this.disabled`))
 }
 
 // WaitWritable until the element is not readonly.
 // Doc for disabled: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
 func (el *Element) WaitWritable() error {
+	defer el.tryTrace(TraceTypeWait, "writable")()
 	return el.Wait(Eval(`!this.readonly`))
 }
 
 // WaitInvisible until the element invisible
 func (el *Element) WaitInvisible() error {
+	defer el.tryTrace(TraceTypeWait, "invisible")()
 	return el.Wait(EvalHelper(js.Invisible))
 }
 
