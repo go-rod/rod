@@ -103,7 +103,7 @@ func (t T) NotInteractable() {
 		document.body.append(div)
 	}`)
 	_, err := el.Interactable()
-	t.Has(err.Error(), "element covered by: <div style=\"position: absolute; left: 0px; top: 0px; width: 500px; height: 500px;\"></div>")
+	t.Has(err.Error(), "element covered by: div")
 	t.Is(err, &rod.ErrNotInteractable{})
 	t.Is(err, &rod.ErrCovered{})
 	t.False(el.MustInteractable())
