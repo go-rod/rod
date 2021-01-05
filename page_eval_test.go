@@ -237,3 +237,10 @@ func (t T) EnsureJSHelperErr() {
 	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 	t.Err(p.Evaluate(rod.EvalHelper(js.Overlay, "test", 0, 0, 10, 10, "msg")))
 }
+
+func (t T) EvalOptionsString() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	el := p.MustElement("button")
+
+	t.Eq(rod.Eval(`this.parentElement`).This(el.Object).String(), "this.parentElement() button")
+}

@@ -66,7 +66,7 @@ func EvalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 
 // String interface
 func (e *EvalOptions) String() string {
-	fn := ""
+	fn := e.JS
 
 	if e.jsHelper != nil {
 		fn = "rod." + e.jsHelper.Name
