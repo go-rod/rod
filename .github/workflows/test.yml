@@ -66,6 +66,7 @@ jobs:
         run: |
           docker build -t rodorg/rod -f lib/docker/Dockerfile .
           docker build -t rod -f lib/docker/test.Dockerfile .
+          docker run rodorg/rod rod-launcher -h
           docker run -v $(pwd):/t -w /t rod go test
 
       - uses: actions/upload-artifact@v2

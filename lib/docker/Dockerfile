@@ -7,7 +7,7 @@
 #     -t rodorg/rod -f lib/docker/Dockerfile .
 
 # build rod-launcher tool
-FROM golang:alpine AS go
+FROM golang AS go
 
 ARG goproxy=""
 
