@@ -42,6 +42,12 @@ func (t T) Hijack() {
 		r.SetBody(123)                       // override request body
 		r.SetBody(r.Body())                  // override request body
 
+		type MyState struct {
+			Val int
+		}
+
+		ctx.CustomState = &MyState{10}
+
 		t.Eq(http.MethodPost, r.Method())
 		t.Eq(s.URL("/a"), r.URL().String())
 

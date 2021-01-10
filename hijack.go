@@ -202,6 +202,9 @@ type Hijack struct {
 	Skip bool
 
 	continueRequest *proto.FetchContinueRequest
+
+	// CustomState is used to store things for this context
+	CustomState interface{}
 }
 
 // ContinueRequest without hijacking. The RequestID will be set by the router, you don't have to set it.
