@@ -48,11 +48,6 @@ func (t T) ClickWrapped() {
 }
 
 func (t T) Tap() {
-	t.browser.Logger(utils.LoggerQuiet)
-	defer func() {
-		t.browser.Logger(rod.DefaultLogger)
-	}()
-
 	page := t.newPage("")
 
 	page.MustEmulate(devices.IPad).
@@ -60,9 +55,7 @@ func (t T) Tap() {
 		MustWaitLoad()
 	el := page.MustElement("button")
 
-	t.browser.Trace(true)
 	el.MustTap()
-	t.browser.Trace(false)
 
 	t.True(page.MustHas("[tapped=true]"))
 

@@ -445,9 +445,7 @@ func (t T) Mouse() {
 	page.MustElement("button")
 	mouse := page.Mouse
 
-	t.browser.Trace(true)
 	mouse.MustScroll(0, 10)
-	t.browser.Trace(defaults.Trace)
 	mouse.MustMove(140, 160)
 	mouse.MustDown("left")
 	mouse.MustUp("left")
@@ -614,10 +612,8 @@ func (t T) PageInput() {
 
 	el := p.MustElement("input")
 	el.MustFocus()
-	t.browser.Trace(true)
 	p.Keyboard.MustPress('A')
 	p.Keyboard.MustInsertText(" Test")
-	t.browser.Trace(defaults.Trace)
 	p.Keyboard.MustPress(input.Tab)
 
 	t.Eq("A Test", el.MustText())

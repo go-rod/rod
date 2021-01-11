@@ -87,9 +87,7 @@ func (k *Keyboard) InsertText(text string) error {
 	k.Lock()
 	defer k.Unlock()
 
-	if k.page.browser.trace {
-		defer k.page.Overlay(0, 0, 200, 0, "insert text "+text)()
-	}
+	defer k.page.tryTrace(TraceTypeInput, "insert text "+text)()
 	k.page.browser.trySlowmotion()
 
 	err := proto.InputInsertText{Text: text}.Call(k.page)
@@ -163,9 +161,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	m.Lock()
 	defer m.Unlock()
 
-	if m.page.browser.trace {
-		defer m.page.Overlay(0, 0, 200, 0, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
-	}
+	defer m.page.tryTrace(TraceTypeInput, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
 	m.page.browser.trySlowmotion()
 
 	if steps < 1 {
@@ -253,9 +249,6 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 
 // Click the button. It's the combination of Mouse.Down and Mouse.Up
 func (m *Mouse) Click(button proto.InputMouseButton) error {
-	if m.page.browser.trace {
-		defer m.page.Overlay(0, 0, 200, 0, "click "+string(button))()
-	}
 	m.page.browser.trySlowmotion()
 
 	err := m.Down(button, 1)
@@ -315,9 +308,7 @@ func (t *Touch) Cancel() error {
 
 // Tap dispatches a touchstart and touchend event.
 func (t *Touch) Tap(x, y float64) error {
-	if t.page.browser.trace {
-		defer t.page.Overlay(0, 0, 200, 0, "touch")()
-	}
+	defer t.page.tryTrace(TraceTypeInput, "touch")()
 	t.page.browser.trySlowmotion()
 
 	p := &proto.InputTouchPoint{X: x, Y: y}

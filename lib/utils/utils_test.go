@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"io"
 	"path/filepath"
 	"testing"
@@ -123,11 +122,8 @@ func (t T) Sleep() {
 }
 
 func (t T) All() {
-	utils.All(func() {
-		fmt.Println("one")
-	}, func() {
-		fmt.Println("two")
-	})()
+	c := t.Count(3)
+	utils.All(c, c, c)()
 }
 
 func (t T) Pause() {
@@ -190,8 +186,10 @@ func (t T) FileExists() {
 	t.Eq(false, utils.FileExists(t.Srand(16)))
 }
 
-func (t T) Exec() {
-	utils.Exec("echo")
+func (t T) ExecErr() {
+	t.Panic(func() {
+		utils.Exec("")
+	})
 }
 
 func (t T) EscapeGoString() {
