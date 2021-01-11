@@ -615,24 +615,29 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 		return nil, err
 	}
 
+	opts := &proto.PageCaptureScreenshot{
+		Quality: quality,
+		Format:  format,
+	}
+
+	bin, err := el.page.Screenshot(false, opts)
+	if err != nil {
+		return nil, err
+	}
+
 	// so that it won't clip the css-transformed element
 	box, err := el.Evaluate(EvalHelper(js.Rect))
 	if err != nil {
 		return nil, err
 	}
 
-	opts := &proto.PageCaptureScreenshot{
-		Format: format,
-		Clip: &proto.PageViewport{
-			X:      box.Value.Get("x").Num(),
-			Y:      box.Value.Get("y").Num(),
-			Width:  box.Value.Get("width").Num(),
-			Height: box.Value.Get("height").Num(),
-			Scale:  1,
-		},
-	}
-
-	return el.page.Screenshot(false, opts)
+	// TODO: proto.PageCaptureScreenshot has a Clip option, but it's buggy, so now we do in Go.
+	return utils.CropImage(bin, quality,
+		box.Value.Get("x").Int(),
+		box.Value.Get("y").Int(),
+		box.Value.Get("width").Int(),
+		box.Value.Get("height").Int(),
+	)
 }
 
 // Release is a shortcut for Page.Release(el.Object)

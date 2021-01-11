@@ -271,7 +271,7 @@ func (t T) BinarySize() {
 	stat, err := os.Stat("tmp/translator")
 	t.E(err)
 
-	t.Lte(float64(stat.Size())/1024/1024, 8.3) // mb
+	t.Lte(float64(stat.Size())/1024/1024, 8.4) // mb
 }
 
 func (t T) BrowserCookies() {

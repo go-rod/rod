@@ -616,10 +616,11 @@ func (t T) ElementScreenshot() {
 	t.Nil(os.Stat(f))
 
 	t.Panic(func() {
-		el.Context(t.Timeout(0)).MustScreenshot()
+		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+		el.MustScreenshot()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+		t.mc.stubErr(1, proto.PageCaptureScreenshot{})
 		el.MustScreenshot()
 	})
 	t.Panic(func() {

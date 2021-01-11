@@ -8,6 +8,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"io/ioutil"
 	mr "math/rand"
@@ -354,4 +357,35 @@ func SetCmdStdPipe(cmd *exec.Cmd) {
 // EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change
 func EscapeGoString(s string) string {
 	return "`" + strings.ReplaceAll(s, "`", "` + \"`\" + `") + "`"
+}
+
+// CropImage by the specified box, quality is only for jpeg bin.
+func CropImage(bin []byte, quality, x, y, width, height int) ([]byte, error) {
+	img, typ, err := image.Decode(bytes.NewBuffer(bin))
+	if err != nil {
+		return nil, err
+	}
+
+	cropped := bytes.NewBuffer(nil)
+
+	switch typ {
+	case "png":
+		img = img.(*image.NRGBA).SubImage(image.Rect(
+			x, y, x+width, y+height,
+		))
+
+		err = png.Encode(cropped, img)
+	case "jpeg":
+		img = img.(*image.YCbCr).SubImage(image.Rect(
+			x, y, x+width, y+height,
+		))
+
+		if quality == 0 {
+			quality = 80
+		}
+
+		err = jpeg.Encode(cropped, img, &jpeg.Options{Quality: quality})
+	}
+
+	return cropped.Bytes(), err
 }

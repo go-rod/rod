@@ -5,6 +5,9 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"path/filepath"
 	"testing"
@@ -233,4 +236,18 @@ func (t T) IdleCounter() {
 		ct.Wait(t.Context())
 		t.Lt(time.Since(start), 10*time.Millisecond)
 	})()
+}
+
+func (t T) CropImage() {
+	img := image.NewNRGBA(image.Rect(0, 0, 100, 100))
+
+	t.Err(utils.CropImage(nil, 0, 0, 0, 0, 0))
+
+	bin := bytes.NewBuffer(nil)
+	t.E(png.Encode(bin, img))
+	t.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
+
+	bin = bytes.NewBuffer(nil)
+	t.E(jpeg.Encode(bin, img, &jpeg.Options{Quality: 80}))
+	t.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
 }
