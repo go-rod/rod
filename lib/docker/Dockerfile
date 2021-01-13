@@ -34,6 +34,8 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
     ca-certificates \
     # fonts
     fonts-liberation fonts-noto-color-emoji fonts-noto-cjk \
+    # timezone
+    tzdata \
     # processs reaper
     dumb-init \
     # headful mode support, for example: $ xvfb-run chromium-browser --remote-debugging-port=9222
