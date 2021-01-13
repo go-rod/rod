@@ -11,7 +11,6 @@ import (
 
 	"github.com/ysmood/gson"
 
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -178,16 +177,14 @@ func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
 
-// Press a key
-func (el *Element) Press(key rune) error {
+// Press is similar with Keyboard.Press. It will focus on the element before pressing.
+func (el *Element) Press(keys ...rune) error {
 	err := el.Focus()
 	if err != nil {
 		return err
 	}
 
-	defer el.tryTrace(TraceTypeInput, "press "+input.Keys[key].Key)()
-
-	return el.page.Keyboard.Press(key)
+	return el.page.Keyboard.Press(keys...)
 }
 
 // SelectText selects the text that matches the regular expression

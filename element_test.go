@@ -234,11 +234,11 @@ func (t T) ShadowDOM() {
 func (t T) Press() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("[type=text]")
-	el.MustPress('A')
-	el.MustPress(' ')
-	el.MustPress('b')
 
-	t.Eq("A b", el.MustText())
+	el.MustPress('1', '2', input.Backspace, ' ')
+	el.MustPress([]rune("A b")...)
+
+	t.Eq("1 A b", el.MustText())
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})

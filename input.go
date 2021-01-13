@@ -55,25 +55,28 @@ func (k *Keyboard) Up(key rune) error {
 	return nil
 }
 
-// Press a key. It's a combination of Keyboard.Down and Keyboard.Up
-func (k *Keyboard) Press(key rune) error {
+// Press keys one by one like a human typing on the keyboard.
+// Each press is a combination of Keyboard.Down and Keyboard.Up.
+// It can be used to input Chinese or Janpanese characters, you have to use InsertText to do that.
+func (k *Keyboard) Press(keys ...rune) error {
 	k.Lock()
 	defer k.Unlock()
 
-	if k.page.browser.trace {
-		defer k.page.Overlay(0, 0, 200, 0, "press "+input.Keys[key].Key)()
-	}
-	k.page.browser.trySlowmotion()
+	for _, key := range keys {
+		defer k.page.tryTrace(TraceTypeInput, "press "+input.Keys[key].Key)()
 
-	actions := input.Encode(key)
+		k.page.browser.trySlowmotion()
 
-	k.modifiers = actions[0].Modifiers
-	defer func() { k.modifiers = 0 }()
+		actions := input.Encode(key)
 
-	for _, action := range actions {
-		err := action.Call(k.page)
-		if err != nil {
-			return err
+		k.modifiers = actions[0].Modifiers
+		defer func() { k.modifiers = 0 }()
+
+		for _, action := range actions {
+			err := action.Call(k.page)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil

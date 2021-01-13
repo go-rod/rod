@@ -682,8 +682,8 @@ func (el *Element) MustWaitInteractable() *Element {
 }
 
 // MustPress is similar to Press
-func (el *Element) MustPress(key rune) *Element {
-	utils.E(el.Press(key))
+func (el *Element) MustPress(keys ...rune) *Element {
+	utils.E(el.Press(keys...))
 	return el
 }
 
