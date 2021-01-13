@@ -301,7 +301,7 @@ func Example_wait_for_request() {
 	wait := page.MustWaitRequestIdle()
 
 	// This will trigger the search ajax request
-	page.MustElement("#search_form_input_homepage").MustClick().MustInput("test")
+	page.MustElement("#search_form_input_homepage").MustClick().MustInput("lisp")
 
 	// Wait until there's no active requests
 	wait()
