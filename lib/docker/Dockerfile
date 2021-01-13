@@ -23,7 +23,7 @@ ARG apt_sources="http://archive.ubuntu.com"
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
     apt-get update && \
-    TZ="America/New_York" DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    apt-get install --no-install-recommends -y \
     # chromium dependencies
     libnss3 \
     libxss1 \
