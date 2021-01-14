@@ -26,7 +26,15 @@ type EvalOptions struct {
 	// ThisObj represents the "this" object in the JS
 	ThisObj *proto.RuntimeRemoteObject
 
-	// JS code to eval
+	// JS code to eval. It can be an expression or function definition. If it's a function definition
+	// the function will be executed with the JSArgs. Such as
+	//     1 + 2
+	// is the same as
+	//     () => 1 + 2
+	// or
+	//     function() {
+	//         return 1 + 2
+	//     }
 	JS string
 
 	// JSArgs represents the arguments in the JS if the JS is a function definition.
