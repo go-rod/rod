@@ -129,6 +129,39 @@ func (res *DOMGetContentQuadsResult) OnePointInside() *Point {
 	return &center
 }
 
+// Box returns the smallest leveled rectangle that can cover the whole shape.
+func (res *DOMGetContentQuadsResult) Box() (box *DOMRect) {
+	if len(res.Quads) == 0 {
+		return
+	}
+
+	left := res.Quads[0][0]
+	top := res.Quads[0][1]
+	right := left
+	bottom := top
+
+	for _, q := range res.Quads {
+		q.Each(func(pt Point, _ int) {
+			if pt.X < left {
+				left = pt.X
+			}
+			if pt.Y < top {
+				top = pt.Y
+			}
+			if pt.X > right {
+				right = pt.X
+			}
+			if pt.Y > bottom {
+				bottom = pt.Y
+			}
+		})
+	}
+
+	box = &DOMRect{left, top, right - left, bottom - top}
+
+	return
+}
+
 // MoveTo X and Y to x and y
 func (p *InputTouchPoint) MoveTo(x, y float64) {
 	p.X = x

@@ -624,7 +624,7 @@ func (t T) ElementScreenshot() {
 		el.MustScreenshot()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(3, proto.DOMGetContentQuads{})
 		el.MustScreenshot()
 	})
 }

@@ -626,17 +626,19 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 	}
 
 	// so that it won't clip the css-transformed element
-	box, err := el.Evaluate(EvalHelper(js.Rect))
+	shape, err := el.Shape()
 	if err != nil {
 		return nil, err
 	}
 
+	box := shape.Box()
+
 	// TODO: proto.PageCaptureScreenshot has a Clip option, but it's buggy, so now we do in Go.
 	return utils.CropImage(bin, quality,
-		box.Value.Get("x").Int(),
-		box.Value.Get("y").Int(),
-		box.Value.Get("width").Int(),
-		box.Value.Get("height").Int(),
+		int(box.X),
+		int(box.Y),
+		int(box.Width),
+		int(box.Height),
 	)
 }
 

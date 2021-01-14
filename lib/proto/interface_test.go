@@ -106,6 +106,23 @@ func (t T) Rect() {
 	pt := res.OnePointInside()
 	t.Eq(348.5, pt.X)
 	t.Eq(399.25, pt.Y)
+
+}
+
+func (t T) Box() {
+	res := &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{
+		{1, 1, 2, 1, 2, 2, 1, 2},
+		{2, 0, 3, 0, 3, 1, 2, 1},
+		{0, 2, 1, 2, 1, 3, 0, 3},
+	}}
+	t.Eq(res.Box(), &proto.DOMRect{
+		X:      0,
+		Y:      0,
+		Width:  3,
+		Height: 3,
+	})
+
+	t.Nil((&proto.DOMGetContentQuadsResult{}).Box())
 }
 
 func (t T) InputTouchPointMoveTo() {
