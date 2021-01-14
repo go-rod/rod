@@ -31,7 +31,7 @@ func (t T) Click() {
 		el.MustClick()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(8, proto.RuntimeCallFunctionOn{})
 		el.MustClick()
 	})
 }
@@ -79,10 +79,11 @@ func (t T) Tap() {
 
 func (t T) Interactable() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	t.True(p.MustElement("button").MustInteractable())
+	el := p.MustElement("button")
+	t.True(el.MustInteractable())
 
-	t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
-	t.Err(p.MustElement("button").Interactable())
+	t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
+	t.Err(el.Interactable())
 }
 
 func (t T) NotInteractable() {
@@ -126,6 +127,14 @@ func (t T) NotInteractable() {
 
 	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
 	t.Err(el.Interactable())
+}
+
+func (t T) NotInteractableWithNoPointerEvents() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/interactable.html"))
+	_, err := p.MustElementR("span", "click me").Interactable()
+	t.Is(err, &rod.ErrNoPointerEvents{})
+	t.Is(err, &rod.ErrNotInteractable{})
+	t.Eq(err.Error(), "element's pointer-events is none: span")
 }
 
 func (t T) WaitInteractable() {

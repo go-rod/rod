@@ -149,3 +149,23 @@ func (e *ErrCovered) Unwrap() error {
 func (e *ErrCovered) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
+
+// ErrNoPointerEvents error.
+type ErrNoPointerEvents struct {
+	*Element
+}
+
+// Error ...
+func (e *ErrNoPointerEvents) Error() string {
+	return fmt.Sprintf("element's pointer-events is none: %s", e.String())
+}
+
+// Unwrap ...
+func (e *ErrNoPointerEvents) Unwrap() error {
+	return &ErrNotInteractable{}
+}
+
+// Is interface
+func (e *ErrNoPointerEvents) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}

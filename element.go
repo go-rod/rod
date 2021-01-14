@@ -130,6 +130,15 @@ func (el *Element) Tap() error {
 // The cursor can be mouse, finger, stylus, etc.
 // If not interactable err will be ErrNotInteractable, such as when covered by a modal,
 func (el *Element) Interactable() (pt *proto.Point, err error) {
+	noPointerEvents, err := el.Eval(`getComputedStyle(this).pointerEvents === 'none'`)
+	if err != nil {
+		return nil, err
+	}
+
+	if noPointerEvents.Value.Bool() {
+		return nil, &ErrNoPointerEvents{el}
+	}
+
 	shape, err := el.Shape()
 	if err != nil {
 		return
@@ -154,12 +163,12 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 		return
 	}
 
-	yes, err := el.ContainsElement(elAtPoint)
+	isParent, err := el.ContainsElement(elAtPoint)
 	if err != nil {
 		return
 	}
 
-	if !yes {
+	if !isParent {
 		err = &ErrCovered{elAtPoint}
 	}
 	return
