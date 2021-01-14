@@ -22,20 +22,21 @@ func (t T) PageElements() {
 
 func (t T) Pages() {
 	t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	pages := t.browser.MustPages()
 
-	t.True(t.browser.MustPages().MustFind("button").MustHas("button"))
-	t.True(t.browser.MustPages().MustFindByURL("click.html").MustHas("button"))
+	t.True(pages.MustFind("button").MustHas("button"))
+	t.True(pages.MustFindByURL("click.html").MustHas("button"))
 
-	t.Nil(t.browser.MustPages().Find("____"))
-	t.Nil(t.browser.MustPages().MustFindByURL("____"))
+	t.Nil(pages.Find("____"))
+	t.Nil(pages.MustFindByURL("____"))
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		t.browser.MustPages().MustFind("button")
+		pages.MustFind("button")
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-		t.browser.MustPages().MustFindByURL("____")
+		pages.MustFindByURL("____")
 	})
 }
 
@@ -48,6 +49,12 @@ func (t T) PageHas() {
 	t.False(t.page.MustHasX("//a"))
 	t.True(t.page.MustHasR("button", "03"))
 	t.False(t.page.MustHasR("button", "11"))
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(t.page.HasX("//a"))
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(t.page.HasR("button", "03"))
 }
 
 func (t T) ElementHas() {

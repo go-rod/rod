@@ -108,7 +108,10 @@ func (p *Page) Has(selector string) (bool, *Element, error) {
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
-	return err == nil, el, err
+	if err != nil {
+		return false, nil, err
+	}
+	return true, el.Sleeper(p.sleeper), nil
 }
 
 // HasX an element that matches the XPath selector
@@ -117,7 +120,10 @@ func (p *Page) HasX(selector string) (bool, *Element, error) {
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
-	return err == nil, el, err
+	if err != nil {
+		return false, nil, err
+	}
+	return true, el.Sleeper(p.sleeper), nil
 }
 
 // HasR an element that matches the css selector and its display text matches the jsRegex.
@@ -126,7 +132,10 @@ func (p *Page) HasR(selector, jsRegex string) (bool, *Element, error) {
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
-	return err == nil, el, err
+	if err != nil {
+		return false, nil, err
+	}
+	return true, el.Sleeper(p.sleeper), nil
 }
 
 // Element retries until an element in the page that matches the CSS selector, then returns
@@ -398,7 +407,11 @@ func (rc *RaceContext) Do() (*Element, error) {
 		return
 	})
 
-	return el, err
+	if err != nil {
+		return nil, err
+	}
+
+	return el.Sleeper(rc.page.sleeper), nil
 }
 
 // Has an element that matches the css selector
