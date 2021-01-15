@@ -405,8 +405,7 @@ func Example_handle_events() {
 
 	done := make(chan int)
 
-	// Listen for all events of console output. You can even listen to multiple types of events at that same time,
-	// check the doc of EachEvent for details.
+	// Listen for all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
 		fmt.Println(page.MustObjectsToJSON(e.Args))
 		close(done)
