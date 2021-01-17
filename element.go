@@ -410,6 +410,7 @@ func (el *Element) Frame() (*Page, error) {
 	clone.FrameID = node.FrameID
 	clone.jsCtxID = new(proto.RuntimeRemoteObjectID)
 	clone.element = el
+	clone.sleeper = el.sleeper
 
 	return &clone, clone.updateJSCtxID()
 }
