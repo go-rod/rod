@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
@@ -56,6 +57,13 @@ type ErrElementNotFound struct {
 
 func (e *ErrElementNotFound) Error() string {
 	return "cannot find element"
+}
+
+// NotFoundSleeper returns ErrElementNotFound on the first call
+func NotFoundSleeper() utils.Sleeper {
+	return func(context.Context) error {
+		return &ErrElementNotFound{}
+	}
 }
 
 // ErrObjectNotFound error

@@ -3,7 +3,6 @@
 package rod
 
 import (
-	"context"
 	"errors"
 	"regexp"
 
@@ -104,7 +103,7 @@ func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 
 // Has an element that matches the css selector
 func (p *Page) Has(selector string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).Element(selector)
+	el, err := p.Sleeper(NotFoundSleeper).Element(selector)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
@@ -116,7 +115,7 @@ func (p *Page) Has(selector string) (bool, *Element, error) {
 
 // HasX an element that matches the XPath selector
 func (p *Page) HasX(selector string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementX(selector)
+	el, err := p.Sleeper(NotFoundSleeper).ElementX(selector)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
@@ -128,7 +127,7 @@ func (p *Page) HasX(selector string) (bool, *Element, error) {
 
 // HasR an element that matches the css selector and its display text matches the jsRegex.
 func (p *Page) HasR(selector, jsRegex string) (bool, *Element, error) {
-	el, err := p.Sleeper(nil).ElementR(selector, jsRegex)
+	el, err := p.Sleeper(NotFoundSleeper).ElementR(selector, jsRegex)
 	if errors.Is(err, &ErrElementNotFound{}) {
 		return false, nil, nil
 	}
@@ -164,15 +163,8 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	var res *proto.RuntimeRemoteObject
 	var err error
 
-	sleeper := p.sleeper()
-	if sleeper == nil {
-		sleeper = func(context.Context) error {
-			return &ErrElementNotFound{}
-		}
-	}
-
 	removeTrace := func() {}
-	err = utils.Retry(p.ctx, sleeper, func() (bool, error) {
+	err = utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
 		remove := p.tryTraceQuery(opts)
 		removeTrace()
 		removeTrace = remove
@@ -257,13 +249,6 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
-	sleeper := p.sleeper()
-	if sleeper == nil {
-		sleeper = func(context.Context) error {
-			return &ErrElementNotFound{}
-		}
-	}
-
 	list := Elements{}
 
 	search := func(query string) (bool, error) {
@@ -312,7 +297,7 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 		return true, nil
 	}
 
-	err := utils.Retry(p.ctx, sleeper, func() (bool, error) {
+	err := utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
 		p.enableNodeQuery()
 
 		for _, query := range queries {
@@ -331,26 +316,25 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 }
 
 type raceBranch struct {
-	condition func() (*Element, error)
+	condition func(*Page) (*Element, error)
 	callback  func(*Element) error
 }
 
 // RaceContext stores the branches to race
 type RaceContext struct {
-	page        *Page
-	noSleepPage *Page
-	branches    []*raceBranch
+	page     *Page
+	branches []*raceBranch
 }
 
 // Race creates a context to race selectors
 func (p *Page) Race() *RaceContext {
-	return &RaceContext{page: p, noSleepPage: p.Sleeper(nil)}
+	return &RaceContext{page: p}
 }
 
 // Element the doc is similar to MustElement
 func (rc *RaceContext) Element(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		condition: func() (*Element, error) { return rc.noSleepPage.Element(selector) },
+		condition: func(p *Page) (*Element, error) { return p.Element(selector) },
 	})
 	return rc
 }
@@ -358,7 +342,7 @@ func (rc *RaceContext) Element(selector string) *RaceContext {
 // ElementX the doc is similar to ElementX
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		condition: func() (*Element, error) { return rc.noSleepPage.ElementX(selector) },
+		condition: func(p *Page) (*Element, error) { return p.ElementX(selector) },
 	})
 	return rc
 }
@@ -366,7 +350,7 @@ func (rc *RaceContext) ElementX(selector string) *RaceContext {
 // ElementR the doc is similar to ElementR
 func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		condition: func() (*Element, error) { return rc.noSleepPage.ElementR(selector, regex) },
+		condition: func(p *Page) (*Element, error) { return p.ElementR(selector, regex) },
 	})
 	return rc
 }
@@ -374,7 +358,7 @@ func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 // ElementByJS the doc is similar to MustElementByJS
 func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
-		condition: func() (*Element, error) { return rc.noSleepPage.ElementByJS(opts) },
+		condition: func(p *Page) (*Element, error) { return p.ElementByJS(opts) },
 	})
 	return rc
 }
@@ -392,12 +376,12 @@ func (rc *RaceContext) Do() (*Element, error) {
 	var el *Element
 	err := utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
 		for _, branch := range rc.branches {
-			bEl, err := branch.condition()
+			bEl, err := branch.condition(rc.page.Sleeper(NotFoundSleeper))
 			if err == nil {
-				el = bEl
+				el = bEl.Sleeper(rc.page.sleeper)
 
 				if branch.callback != nil {
-					err = branch.callback(bEl)
+					err = branch.callback(el)
 				}
 				return true, err
 			} else if !errors.Is(err, &ErrElementNotFound{}) {
@@ -406,12 +390,7 @@ func (rc *RaceContext) Do() (*Element, error) {
 		}
 		return
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return el.Sleeper(rc.page.sleeper), nil
+	return el, err
 }
 
 // Has an element that matches the css selector
@@ -458,7 +437,7 @@ func (el *Element) ElementX(xPath string) (*Element, error) {
 
 // ElementByJS returns the element from the return value of the js
 func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
-	e, err := el.page.Sleeper(nil).ElementByJS(opts.This(el.Object))
+	e, err := el.page.Sleeper(NotFoundSleeper).ElementByJS(opts.This(el.Object))
 	if err != nil {
 		return nil, err
 	}

@@ -75,7 +75,7 @@ func (t T) Search() {
 	t.Eq("click me", el.MustText())
 	t.True(el.MustClick().MustMatches("[a=ok]"))
 
-	_, err := p.Sleeper(nil).Search(0, 1, "not-exists")
+	_, err := p.Sleeper(rod.NotFoundSleeper).Search(0, 1, "not-exists")
 	t.True(errors.Is(err, &rod.ErrElementNotFound{}))
 	t.Eq(err.Error(), "cannot find element")
 
@@ -154,6 +154,17 @@ func (t T) PageRace() {
 	el, err = p.Race().MustElementByJS(`notExists()`, nil).Do()
 	t.Err(err)
 	t.Nil(el)
+}
+
+func (t T) PageRaceRetryInHandle() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+	p.Race().Element("div").MustHandle(func(e *rod.Element) {
+		go func() {
+			utils.Sleep(0.5)
+			e.MustElement("button").MustEval(`this.innerText = '04'`)
+		}()
+		e.MustElement("button").MustWait("this.innerText === '04'")
+	}).MustDo()
 }
 
 func (t T) PageElementX() {

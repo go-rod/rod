@@ -47,7 +47,7 @@ func (b *Browser) WithCancel() (*Browser, func()) {
 // Sleeper returns a clone with for chained sub-operations
 func (b *Browser) Sleeper(sleeper func() utils.Sleeper) *Browser {
 	newObj := *b
-	newObj.sleeper = ensureSleeper(sleeper)
+	newObj.sleeper = sleeper
 	return &newObj
 }
 
@@ -85,7 +85,7 @@ func (p *Page) WithCancel() (*Page, func()) {
 // Sleeper returns a clone with for chained sub-operations
 func (p *Page) Sleeper(sleeper func() utils.Sleeper) *Page {
 	newObj := *p
-	newObj.sleeper = ensureSleeper(sleeper)
+	newObj.sleeper = sleeper
 	return &newObj
 }
 
@@ -123,6 +123,6 @@ func (el *Element) WithCancel() (*Element, func()) {
 // Sleeper returns a clone with for chained sub-operations
 func (el *Element) Sleeper(sleeper func() utils.Sleeper) *Element {
 	newObj := *el
-	newObj.sleeper = ensureSleeper(sleeper)
+	newObj.sleeper = sleeper
 	return &newObj
 }

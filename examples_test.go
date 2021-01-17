@@ -332,7 +332,7 @@ func Example_customize_retry_strategy() {
 
 	// If sleeper is nil page.ElementE will query without retrying.
 	// If nothing found it will return an error.
-	el, err := page.Sleeper(nil).Element("input")
+	el, err := page.Sleeper(rod.NotFoundSleeper).Element("input")
 	if errors.Is(err, &rod.ErrElementNotFound{}) {
 		fmt.Println("element not found")
 	} else if err != nil {
