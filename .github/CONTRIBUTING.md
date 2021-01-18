@@ -51,6 +51,9 @@ go test -v --browser-bin=/path/to/browser
 
 ### Lint project
 
+You can run all commands inside Docker so that you don't have to install all the development dependencies.
+Check [Use Docker for development](#Use-Docker-for-development) for more info.
+
 ```bash
 go generate # only required for first time
 go run ./lib/utils/lint
@@ -78,7 +81,7 @@ There are several helper functions for it:
 - `rod_test.MockClient.stub`
 - `rod_test.MockClient.stubErr`
 
-### To run inside docker
+### Use Docker for development
 
 1. Build the test image: `docker build -t rod -f lib/docker/test.Dockerfile .`
 
@@ -87,7 +90,7 @@ There are several helper functions for it:
 1. Run a container with and mount the cache volume to it: `docker run --rm -v rod:/root -v $(pwd):/t -it rod go bash`
 
 1. Run lint in the container: `go run ./lib/utils/lint`
-   You might want to set global git ignore for the container if the lint fails: [link](https://docs.github.com/en/free-pro-team@latest/github/using-git/ignoring-files#configuring-ignored-files-for-all-repositories-on-your-computer).
+   You might want to set a global git-ignore in the container if the lint fails: [link](https://docs.github.com/en/free-pro-team@latest/github/using-git/ignoring-files#configuring-ignored-files-for-all-repositories-on-your-computer).
 
 1. Run tests in the container: `go test -run /Click`
 
