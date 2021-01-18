@@ -73,11 +73,11 @@ func main() {
 }
 
 func currentVer() string {
-	q := req("/repos/go-rod/rod/releases?per_page=1")
+	q := req("/repos/go-rod/rod/tags?per_page=1")
 	res, err := http.DefaultClient.Do(q)
 	utils.E(err)
 
-	currentVer := gson.New(res.Body).Get("0.tag_name").Str()
+	currentVer := gson.New(res.Body).Get("0.name").Str()
 
 	return currentVer
 }
