@@ -46,6 +46,12 @@ var ErrNodeNotFoundAtPos = &Error{
 	Message: "No node found at given location",
 }
 
+// ErrNoContentQuads type
+var ErrNoContentQuads = &Error{
+	Code:    -32000,
+	Message: "Could not compute content quads.",
+}
+
 // ErrConnClosed type
 var ErrConnClosed = &errConnClosed{}
 

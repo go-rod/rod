@@ -133,6 +133,10 @@ func (t T) InteractableWithNoShape() {
 	el = p.MustElement("#outside")
 	_, err = el.Interactable()
 	t.Is(err, &rod.ErrInvisibleShape{})
+
+	el = p.MustElement("#invisible")
+	_, err = el.Interactable()
+	t.Is(err, &rod.ErrInvisibleShape{})
 }
 
 func (t T) NotInteractableWithNoPointerEvents() {
