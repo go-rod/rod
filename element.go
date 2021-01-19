@@ -534,11 +534,19 @@ func (el *Element) WaitStableRAF() error {
 	return nil
 }
 
-// WaitInteractable waits for the element to be interactable
+// WaitInteractable waits for the element to be interactable.
+// It will try to scroll to the element on each try.
 func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
 	defer el.tryTrace(TraceTypeWait, "interactable")()
 
 	err = utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
+		// For lazy loading page the element can be outside of the viewport.
+		// If we don't scroll to it, it will never be available.
+		err := el.ScrollIntoView()
+		if err != nil {
+			return true, err
+		}
+
 		pt, err = el.Interactable()
 		if errors.Is(err, &ErrCovered{}) {
 			return false, nil

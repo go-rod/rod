@@ -164,6 +164,9 @@ func (t T) WaitInteractable() {
 	el.MustWaitInteractable()
 
 	t.Gt(time.Since(start), time.Second)
+
+	t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+	t.Err(el.WaitInteractable())
 }
 
 func (t T) Hover() {
