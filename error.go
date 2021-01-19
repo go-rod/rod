@@ -126,11 +126,17 @@ func (e *ErrNotInteractable) Error() string {
 
 // ErrInvisibleShape error.
 type ErrInvisibleShape struct {
+	*Element
 }
 
 // Error ...
 func (e *ErrInvisibleShape) Error() string {
-	return "element has no visible shape"
+	return fmt.Sprintf("element has no visible shape or outside the viewport: %s", e.String())
+}
+
+// Is interface
+func (e *ErrInvisibleShape) Is(err error) bool {
+	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
 
 // Unwrap ...

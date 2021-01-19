@@ -118,29 +118,52 @@ func (q DOMQuad) Center() Point {
 	return Point{x / float64(q.Len()), y / float64(q.Len())}
 }
 
+// Area of the polygon
+// https://en.wikipedia.org/wiki/Polygon#Area
+func (q DOMQuad) Area() float64 {
+	area := 0.0
+	l := len(q)/2 - 1
+
+	for i := 0; i < l; i++ {
+		area += q[i*2]*q[i*2+3] - q[i*2+2]*q[i*2+1]
+	}
+	area += q[l*2]*q[1] - q[0]*q[l*2+1]
+
+	return area / 2
+}
+
 // OnePointInside the shape
 func (res *DOMGetContentQuadsResult) OnePointInside() *Point {
-	if len(res.Quads) == 0 {
-		return nil
+	for _, q := range res.Quads {
+		if q.Area() >= 1 {
+			pt := q.Center()
+			return &pt
+		}
 	}
 
-	center := res.Quads[0].Center()
-
-	return &center
+	return nil
 }
 
 // Box returns the smallest leveled rectangle that can cover the whole shape.
 func (res *DOMGetContentQuadsResult) Box() (box *DOMRect) {
-	if len(res.Quads) == 0 {
+	return Shape(res.Quads).Box()
+}
+
+// Shape is a list of DOMQuad
+type Shape []DOMQuad
+
+// Box returns the smallest leveled rectangle that can cover the whole shape.
+func (qs Shape) Box() (box *DOMRect) {
+	if len(qs) == 0 {
 		return
 	}
 
-	left := res.Quads[0][0]
-	top := res.Quads[0][1]
+	left := qs[0][0]
+	top := qs[0][1]
 	right := left
 	bottom := top
 
-	for _, q := range res.Quads {
+	for _, q := range qs {
 		q.Each(func(pt Point, _ int) {
 			if pt.X < left {
 				left = pt.X

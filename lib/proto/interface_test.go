@@ -102,11 +102,20 @@ func (t T) Rect() {
 	res := &proto.DOMGetContentQuadsResult{}
 	t.Nil(res.OnePointInside())
 
+	res = &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{{1, 1, 2, 1, 2, 1, 1, 1}}}
+	t.Nil(res.OnePointInside())
+
 	res = &proto.DOMGetContentQuadsResult{Quads: []proto.DOMQuad{rect}}
 	pt := res.OnePointInside()
 	t.Eq(348.5, pt.X)
 	t.Eq(399.25, pt.Y)
 
+}
+
+func (t T) Area() {
+	t.Eq(proto.DOMQuad{1, 1, 2, 1, 2, 1, 1, 1}.Area(), 0)
+	t.Eq(proto.DOMQuad{1, 1, 2, 1, 2, 2, 1, 2}.Area(), 1)
+	t.Eq(proto.DOMQuad{1, 1, 2, 1, 2, 4, 1, 3}.Area(), 2.5)
 }
 
 func (t T) Box() {

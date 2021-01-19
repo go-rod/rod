@@ -1,12 +1,21 @@
 <html>
   <style>
-    span {
+    #no-pointer-events {
       pointer-events: none;
+    }
+
+    #outside {
+      position: absolute;
+      left: 10000px;
     }
   </style>
   <body>
     <button>
-      <span>click me</span>
+      <span id="no-pointer-events">click me</span>
     </button>
+
+    <div id="no-shape"></div>
+
+    <button id="outside">outside viewport</button>
   </body>
 </html>

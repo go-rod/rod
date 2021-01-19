@@ -11,6 +11,7 @@ import (
 
 	"github.com/ysmood/gson"
 
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -146,7 +147,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 
 	pt = shape.OnePointInside()
 	if pt == nil {
-		err = &ErrInvisibleShape{}
+		err = &ErrInvisibleShape{el}
 		return
 	}
 
@@ -160,6 +161,9 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 		int(pt.Y)+scroll.Value.Get("y").Int(),
 	)
 	if err != nil {
+		if errors.Is(err, cdp.ErrNodeNotFoundAtPos) {
+			err = &ErrInvisibleShape{el}
+		}
 		return
 	}
 

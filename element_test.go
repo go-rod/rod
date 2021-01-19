@@ -111,14 +111,6 @@ func (t T) NotInteractable() {
 	_, err = el.Interactable()
 	t.Err(err)
 
-	t.mc.stub(1, proto.DOMGetContentQuads{}, func(send StubSend) (gson.JSON, error) {
-		res, _ := send()
-		return *res.Set("quads", nil), nil
-	})
-	_, err = el.Interactable()
-	t.Eq(err.Error(), "element has no visible shape")
-	t.Is(err, &rod.ErrNotInteractable{})
-
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	t.Err(el.Interactable())
 
@@ -129,12 +121,26 @@ func (t T) NotInteractable() {
 	t.Err(el.Interactable())
 }
 
+func (t T) InteractableWithNoShape() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/interactable.html"))
+
+	el := p.MustElement("#no-shape")
+	_, err := el.Interactable()
+	t.Is(err, &rod.ErrInvisibleShape{})
+	t.Is(err, &rod.ErrNotInteractable{})
+	t.Eq(err.Error(), "element has no visible shape or outside the viewport: div#no-shape")
+
+	el = p.MustElement("#outside")
+	_, err = el.Interactable()
+	t.Is(err, &rod.ErrInvisibleShape{})
+}
+
 func (t T) NotInteractableWithNoPointerEvents() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/interactable.html"))
-	_, err := p.MustElementR("span", "click me").Interactable()
+	_, err := p.MustElementR("#no-pointer-events", "click me").Interactable()
 	t.Is(err, &rod.ErrNoPointerEvents{})
 	t.Is(err, &rod.ErrNotInteractable{})
-	t.Eq(err.Error(), "element's pointer-events is none: span")
+	t.Eq(err.Error(), "element's pointer-events is none: span#no-pointer-events")
 }
 
 func (t T) WaitInteractable() {

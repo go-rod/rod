@@ -40,6 +40,12 @@ var ErrObjNotFound = &Error{
 	Message: "Could not find object with given id",
 }
 
+// ErrNodeNotFoundAtPos type
+var ErrNodeNotFoundAtPos = &Error{
+	Code:    -32000,
+	Message: "No node found at given location",
+}
+
 // ErrConnClosed type
 var ErrConnClosed = &errConnClosed{}
 
