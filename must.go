@@ -259,10 +259,13 @@ func (p *Page) MustClose() {
 }
 
 // MustHandleDialog is similar to HandleDialog
-func (p *Page) MustHandleDialog(accept bool, promptText string) (wait func()) {
-	w := p.HandleDialog(accept, promptText)
-	return func() {
-		utils.E(w())
+func (p *Page) MustHandleDialog() (wait func() *proto.PageJavascriptDialogOpening, handle func(bool, string)) {
+	w, h := p.HandleDialog()
+	return w, func(accept bool, promptText string) {
+		utils.E(h(&proto.PageHandleJavaScriptDialog{
+			Accept:     accept,
+			PromptText: promptText,
+		}))
 	}
 }
 

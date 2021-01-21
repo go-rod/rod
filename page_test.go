@@ -121,13 +121,19 @@ func (t T) PageCloseCancel() {
 	page := t.browser.MustPage(t.srcFile("fixtures/prevent-close.html"))
 	page.MustElement("body").MustClick() // only focused page will handle beforeunload event
 
-	go page.MustHandleDialog(false, "")()
+	w, h := page.MustHandleDialog()
+	go func() {
+		w()
+		h(false, "")
+	}()
 	t.Eq(page.Close().Error(), "page close canceled")
 
 	// TODO: this is a bug of chrome, it should not kill the target only in headless mode
 	if !t.browser.Headless() {
-		go page.MustHandleDialog(true, "")()
-		page.MustClose()
+		w, h := page.MustHandleDialog()
+		go page.MustClose()
+		w()
+		h(true, "")
 	}
 }
 
@@ -436,8 +442,13 @@ func (t T) PageEvent() {
 func (t T) Alert() {
 	page := t.page.MustNavigate(t.srcFile("fixtures/alert.html"))
 
-	go page.MustHandleDialog(true, "")()
-	page.MustElement("button").MustClick()
+	wait, handle := page.MustHandleDialog()
+
+	go page.MustElement("button").MustClick()
+
+	e := wait()
+	t.Eq(e.Message, "clicked")
+	handle(true, "")
 }
 
 func (t T) Mouse() {

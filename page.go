@@ -281,27 +281,30 @@ func (p *Page) Close() error {
 }
 
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
-// Because modal dialog will block js, usually you have to run the wait function in another goroutine
-// before the action that will trigger the dialog. For example:
+// Because modal dialog will block js, usually you have to trigger the dialog in another goroutine.
+// For example:
 //
-//     wait := page.MustHandleDialog(true, "")
-//     go wait()
-//     page.MustElement("button").MustClick()
+//     wait, handle := page.MustHandleDialog()
+//     go page.MustElement("button").MustClick()
+//     wait()
+//     handle(true, "")
 //
-func (p *Page) HandleDialog(accept bool, promptText string) (wait func() error) {
+func (p *Page) HandleDialog() (
+	wait func() *proto.PageJavascriptDialogOpening,
+	handle func(*proto.PageHandleJavaScriptDialog) error,
+) {
 	restore := p.EnableDomain(&proto.PageEnable{})
 
-	w := p.WaitEvent(&proto.PageJavascriptDialogOpening{})
+	var e proto.PageJavascriptDialogOpening
+	w := p.WaitEvent(&e)
 
-	return func() error {
-		defer restore()
-
-		w()
-		return proto.PageHandleJavaScriptDialog{
-			Accept:     accept,
-			PromptText: promptText,
-		}.Call(p)
-	}
+	return func() *proto.PageJavascriptDialogOpening {
+			w()
+			return &e
+		}, func(h *proto.PageHandleJavaScriptDialog) error {
+			defer restore()
+			return h.Call(p)
+		}
 }
 
 // Screenshot options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
