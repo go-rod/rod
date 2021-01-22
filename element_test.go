@@ -97,7 +97,7 @@ func (t T) NotInteractable() {
 		document.body.append(div)
 	}`)
 	_, err := el.Interactable()
-	t.Has(err.Error(), "element covered by: div")
+	t.Has(err.Error(), "element covered by: <div>")
 	t.Is(err, &rod.ErrNotInteractable{})
 	t.Is(err, &rod.ErrCovered{})
 	t.False(el.MustInteractable())
@@ -128,7 +128,7 @@ func (t T) InteractableWithNoShape() {
 	_, err := el.Interactable()
 	t.Is(err, &rod.ErrInvisibleShape{})
 	t.Is(err, &rod.ErrNotInteractable{})
-	t.Eq(err.Error(), "element has no visible shape or outside the viewport: div#no-shape")
+	t.Eq(err.Error(), "element has no visible shape or outside the viewport: <div#no-shape>")
 
 	el = p.MustElement("#outside")
 	_, err = el.Interactable()
@@ -144,7 +144,7 @@ func (t T) NotInteractableWithNoPointerEvents() {
 	_, err := p.MustElementR("#no-pointer-events", "click me").Interactable()
 	t.Is(err, &rod.ErrNoPointerEvents{})
 	t.Is(err, &rod.ErrNotInteractable{})
-	t.Eq(err.Error(), "element's pointer-events is none: span#no-pointer-events")
+	t.Eq(err.Error(), "element's pointer-events is none: <span#no-pointer-events>")
 }
 
 func (t T) WaitInteractable() {

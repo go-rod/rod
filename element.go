@@ -40,7 +40,7 @@ func (el *Element) GetSessionID() proto.TargetSessionID {
 
 // String interface
 func (el *Element) String() string {
-	return el.Object.Description
+	return fmt.Sprintf("<%s>", el.Object.Description)
 }
 
 // Focus sets focus on the specified element

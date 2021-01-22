@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"sync"
 	"time"
 
@@ -49,7 +50,11 @@ type Page struct {
 
 // String interface
 func (p *Page) String() string {
-	return "page:" + string(p.TargetID)
+	id := p.TargetID
+	if len(id) > 8 {
+		id = id[:8]
+	}
+	return fmt.Sprintf("<page:%s>", id)
 }
 
 // IsIframe tells if it's iframe
