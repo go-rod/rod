@@ -77,7 +77,7 @@ func (t T) GetURLErr() {
 	l.parser.Unlock()
 	close(l.exit)
 	_, err = l.getURL()
-	t.Eq("[launcher] Failed to get the debug url err", err.Error())
+	t.Eq("[launcher] Failed to get the debug url: err", err.Error())
 }
 
 func (t T) RemoteLaunch() {
@@ -124,4 +124,15 @@ func (t T) Progresser() {
 	t.E(p.Write(make([]byte, 100)))
 	t.E(p.Write(make([]byte, 100)))
 	t.E(p.Write(make([]byte, 100)))
+}
+
+func (t T) URLParserErr() {
+	u := &URLParser{
+		Buffer: "error",
+	}
+
+	t.Eq(u.Err().Error(), "[launcher] Failed to get the debug url: error")
+
+	u.Buffer = "/tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory"
+	t.Eq(u.Err().Error(), "[launcher] Failed to launch the browser, the doc might help https://go-rod.github.io/#/compatibility?id=os: /tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory")
 }

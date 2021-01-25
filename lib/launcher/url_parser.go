@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
@@ -53,6 +54,17 @@ func (r *URLParser) Write(p []byte) (n int, err error) {
 	}
 
 	return len(p), nil
+}
+
+// Err returns the common error parsed from stdout and stderr
+func (r *URLParser) Err() error {
+	msg := "[launcher] Failed to get the debug url: "
+
+	if strings.Contains(r.Buffer, "error while loading shared libraries") {
+		msg = "[launcher] Failed to launch the browser, the doc might help https://go-rod.github.io/#/compatibility?id=os: "
+	}
+
+	return errors.New(msg + r.Buffer)
 }
 
 // MustResolveURL is similar to FetchURL

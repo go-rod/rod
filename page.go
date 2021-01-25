@@ -24,9 +24,19 @@ var _ proto.Sessionable = &Page{}
 // Page represents the webpage
 // We try to hold as less states as possible
 type Page struct {
-	TargetID  proto.TargetTargetID
+	// TargetID is a unique ID for a remote page.
+	// It's usually used in events sent from the browser to tell which page an event belongs to.
+	TargetID proto.TargetTargetID
+
+	// FrameID is a unique ID for a browsing context.
+	// Usually, different FrameID means different javascript execution context.
+	// Such as an iframe and the page it belongs to will have the same TargetID but different FrameIDs.
+	FrameID proto.PageFrameID
+
+	// SessionID is a unique ID for a page attachment to a controller.
+	// It's usually used in transport layer to tell which page to send the control signal.
+	// A page can attached to multiple controllers, the browser uses it distinguish controllers.
 	SessionID proto.TargetSessionID
-	FrameID   proto.PageFrameID
 
 	ctx context.Context
 
