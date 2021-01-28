@@ -57,6 +57,9 @@ type T struct {
 type TesterPool chan *T
 
 func newTesterPool(t *testing.T) TesterPool {
+	// preload the browser so that each test doesn't timeout because of browser downloading
+	got.New(t).E(launcher.NewBrowser().Get())
+
 	parallel := got.Parallel()
 	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
