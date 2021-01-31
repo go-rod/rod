@@ -672,6 +672,10 @@ func (t T) PageConsoleLog() {
 }
 
 func (t T) Fonts() {
+	if !utils.InContainer { // No need to test font rendering on regular OS
+		t.SkipNow()
+	}
+
 	p := t.page.MustNavigate(t.srcFile("fixtures/fonts.html")).MustWaitLoad()
 
 	p.MustPDF("tmp", "fonts.pdf") // download the file from Github Actions Artifacts
