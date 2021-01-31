@@ -152,8 +152,6 @@ func (lc *Browser) download(u string) (err error) {
 	_, err = io.Copy(io.MultiWriter(progress, zipFile), res.Body)
 	utils.E(err)
 
-	_, _ = fmt.Fprintln(lc.Logger, "Downloaded:", zipPath)
-
 	err = zipFile.Close()
 	utils.E(err)
 
