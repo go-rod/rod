@@ -68,7 +68,7 @@ Learn the [basics](https://blog.golang.org/cover) first.
 To visually see the coverage report you can run something like this:
 
 ```bash
-go test -cover -coverprofile=coverage.txt
+go test -coverprofile=coverage.txt
 go tool cover -html=coverage.txt
 ```
 
