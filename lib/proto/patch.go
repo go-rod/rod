@@ -47,31 +47,41 @@ func (t MonotonicTime) MarshalJSON() ([]byte, error) {
 }
 
 type inputDispatchMouseEvent struct {
-	Type        InputDispatchMouseEventType        `json:"type"`
-	X           float64                            `json:"x"`
-	Y           float64                            `json:"y"`
-	Modifiers   int                                `json:"modifiers,omitempty"`
-	Timestamp   *TimeSinceEpoch                    `json:"timestamp,omitempty"`
-	Button      InputMouseButton                   `json:"button,omitempty"`
-	Buttons     int                                `json:"buttons,omitempty"`
-	ClickCount  int                                `json:"clickCount,omitempty"`
-	DeltaX      float64                            `json:"deltaX,omitempty"`
-	DeltaY      float64                            `json:"deltaY,omitempty"`
-	PointerType InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
+	Type               InputDispatchMouseEventType        `json:"type"`
+	X                  float64                            `json:"x"`
+	Y                  float64                            `json:"y"`
+	Modifiers          int                                `json:"modifiers,omitempty"`
+	Timestamp          *TimeSinceEpoch                    `json:"timestamp,omitempty"`
+	Button             InputMouseButton                   `json:"button,omitempty"`
+	Buttons            int                                `json:"buttons,omitempty"`
+	ClickCount         int                                `json:"clickCount,omitempty"`
+	Force              float64                            `json:"force,omitempty"`
+	TangentialPressure float64                            `json:"tangentialPressure,omitempty"`
+	TiltX              int                                `json:"tiltX,omitempty"`
+	TiltY              int                                `json:"tiltY,omitempty"`
+	Twist              int                                `json:"twist,omitempty"`
+	DeltaX             float64                            `json:"deltaX,omitempty"`
+	DeltaY             float64                            `json:"deltaY,omitempty"`
+	PointerType        InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
 }
 
 type inputDispatchMouseWheelEvent struct {
-	Type        InputDispatchMouseEventType        `json:"type"`
-	X           float64                            `json:"x"`
-	Y           float64                            `json:"y"`
-	Modifiers   int                                `json:"modifiers,omitempty"`
-	Timestamp   *TimeSinceEpoch                    `json:"timestamp,omitempty"`
-	Button      InputMouseButton                   `json:"button,omitempty"`
-	Buttons     int                                `json:"buttons,omitempty"`
-	ClickCount  int                                `json:"clickCount,omitempty"`
-	DeltaX      float64                            `json:"deltaX"`
-	DeltaY      float64                            `json:"deltaY"`
-	PointerType InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
+	Type               InputDispatchMouseEventType        `json:"type"`
+	X                  float64                            `json:"x"`
+	Y                  float64                            `json:"y"`
+	Modifiers          int                                `json:"modifiers,omitempty"`
+	Timestamp          *TimeSinceEpoch                    `json:"timestamp,omitempty"`
+	Button             InputMouseButton                   `json:"button,omitempty"`
+	Buttons            int                                `json:"buttons,omitempty"`
+	ClickCount         int                                `json:"clickCount,omitempty"`
+	Force              float64                            `json:"force,omitempty"`
+	TangentialPressure float64                            `json:"tangentialPressure,omitempty"`
+	TiltX              int                                `json:"tiltX,omitempty"`
+	TiltY              int                                `json:"tiltY,omitempty"`
+	Twist              int                                `json:"twist,omitempty"`
+	DeltaX             float64                            `json:"deltaX"`
+	DeltaY             float64                            `json:"deltaY"`
+	PointerType        InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
 }
 
 // MarshalJSON interface
@@ -80,12 +90,44 @@ func (e InputDispatchMouseEvent) MarshalJSON() ([]byte, error) {
 	var ee interface{}
 
 	if e.Type == InputDispatchMouseEventTypeMouseWheel {
-		ee = &inputDispatchMouseWheelEvent{}
+		ee = &inputDispatchMouseWheelEvent{
+			Type:               e.Type,
+			X:                  e.X,
+			Y:                  e.Y,
+			Modifiers:          e.Modifiers,
+			Timestamp:          e.Timestamp,
+			Button:             e.Button,
+			Buttons:            e.Buttons,
+			ClickCount:         e.ClickCount,
+			Force:              e.Force,
+			TangentialPressure: e.TangentialPressure,
+			TiltX:              e.TiltX,
+			TiltY:              e.TiltY,
+			Twist:              e.Twist,
+			DeltaX:             e.DeltaX,
+			DeltaY:             e.DeltaY,
+			PointerType:        e.PointerType,
+		}
 	} else {
-		ee = &inputDispatchMouseEvent{}
+		ee = &inputDispatchMouseEvent{
+			Type:               e.Type,
+			X:                  e.X,
+			Y:                  e.Y,
+			Modifiers:          e.Modifiers,
+			Timestamp:          e.Timestamp,
+			Button:             e.Button,
+			Buttons:            e.Buttons,
+			ClickCount:         e.ClickCount,
+			Force:              e.Force,
+			TangentialPressure: e.TangentialPressure,
+			TiltX:              e.TiltX,
+			TiltY:              e.TiltY,
+			Twist:              e.Twist,
+			DeltaX:             e.DeltaX,
+			DeltaY:             e.DeltaY,
+			PointerType:        e.PointerType,
+		}
 	}
-
-	assign(e, ee)
 
 	return json.Marshal(ee)
 }

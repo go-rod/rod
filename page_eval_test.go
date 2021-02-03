@@ -69,16 +69,18 @@ func (t T) PageUpdateJSCtxIDErr() {
 	})
 	t.Err(page.Eval(`1`))
 
-	el := page.MustElement("iframe")
+	frame := page.MustElement("iframe").MustFrame()
 
 	t.mc.stubErr(1, proto.DOMGetFrameOwner{})
-	t.Err(el.Frame())
+	t.Err(frame.Element(`button`))
 
-	t.mc.stubErr(2, proto.DOMDescribeNode{})
-	t.Err(el.Frame())
+	frame.MustReload()
+	t.mc.stubErr(1, proto.DOMDescribeNode{})
+	t.Err(frame.Element(`button`))
 
+	frame.MustReload()
 	t.mc.stubErr(1, proto.DOMResolveNode{})
-	t.Err(el.Frame())
+	t.Err(frame.Element(`button`))
 }
 
 func (t T) PageExpose() {

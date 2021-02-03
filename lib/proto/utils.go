@@ -1,7 +1,6 @@
 package proto
 
 import (
-	"reflect"
 	"regexp"
 	"strings"
 )
@@ -20,15 +19,4 @@ func PatternToReg(pattern string) string {
 	pattern = regBackSlash.ReplaceAllString(pattern, "$1.")
 
 	return `\A` + strings.TrimSpace(pattern) + `\z`
-}
-
-// assign each fields from src to dst
-func assign(src, dst interface{}) {
-	srcVal := reflect.ValueOf(src)
-	dstVal := reflect.ValueOf(dst).Elem()
-
-	l := srcVal.NumField()
-	for i := 0; i < l; i++ {
-		dstVal.Field(i).Set(srcVal.Field(i))
-	}
 }

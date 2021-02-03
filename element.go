@@ -420,7 +420,7 @@ func (el *Element) Frame() (*Page, error) {
 	clone.element = el
 	clone.sleeper = el.sleeper
 
-	return &clone, clone.updateJSCtxID()
+	return &clone, nil
 }
 
 // ContainsElement check if the target is equal or inside the element.

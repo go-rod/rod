@@ -1,9 +1,9 @@
 //go:generate go run ./lib/utils/setup
+//go:generate go run ./lib/launcher/revision
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/js/generate
 //go:generate go run ./lib/assets/generate
 //go:generate go run ./lib/devices/generate
-//go:generate go run ./lib/launcher/revision
 //go:generate go run ./lib/utils/lint
 
 package rod
@@ -11,7 +11,6 @@ package rod
 import (
 	"context"
 	"reflect"
-	"strings"
 	"sync"
 	"time"
 
@@ -44,7 +43,6 @@ type Browser struct {
 
 	slowMotion time.Duration // see defaults.slow
 	trace      bool          // see defaults.Trace
-	headless   bool
 	monitor    string
 
 	defaultDevice devices.Device
@@ -166,7 +164,7 @@ func (b *Browser) Connect() error {
 		launcher.NewBrowser().Open(b.ServeMonitor(b.monitor))
 	}
 
-	return b.setHeadless()
+	return nil
 }
 
 // Close the browser
@@ -262,11 +260,21 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		return page, nil
 	}
 
+	session, err := proto.TargetAttachToTarget{
+		TargetID: targetID,
+		Flatten:  true, // if it's not set no response will return
+	}.Call(b)
+	if err != nil {
+		return nil, err
+	}
+
 	page = &Page{
 		ctx:       b.ctx,
 		sleeper:   b.sleeper,
 		browser:   b,
 		TargetID:  targetID,
+		SessionID: session.SessionID,
+		FrameID:   proto.PageFrameID(targetID),
 		jsCtxLock: &sync.Mutex{},
 		jsCtxID:   new(proto.RuntimeRemoteObjectID),
 	}
@@ -276,11 +284,6 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	page.Keyboard = &Keyboard{page: page}
 	page.Touch = &Touch{page: page}
 
-	err := page.initSession()
-	if err != nil {
-		return nil, err
-	}
-
 	if !b.defaultDevice.IsClear() {
 		err = page.Emulate(b.defaultDevice)
 		if err != nil {
@@ -289,6 +292,14 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	b.cachePage(page)
+
+	// If we don't enable it, it will cause a lot of unexpected browser behavior.
+	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
+	page.EnableDomain(&proto.PageEnable{})
+
+	// If we don't enable it, it will remove remote node id whenever we disable the domain
+	// even after we re-enable it again we can't query the ids any more.
+	page.EnableDomain(&proto.DOMEnable{})
 
 	return page, nil
 }
@@ -449,26 +460,6 @@ func (b *Browser) pageInfo(id proto.TargetTargetID) (*proto.TargetTargetInfo, er
 // IgnoreCertErrors switch. If enabled, all certificate errors will be ignored.
 func (b *Browser) IgnoreCertErrors(enable bool) error {
 	return proto.SecuritySetIgnoreCertificateErrors{Ignore: enable}.Call(b)
-}
-
-// Headless mode or not
-func (b *Browser) Headless() bool {
-	return b.headless
-}
-
-func (b *Browser) setHeadless() error {
-	res, err := proto.BrowserGetVersion{}.Call(b)
-	if err != nil {
-		return err
-	}
-
-	// TODO: There's no good way to detect headless yet.
-	// The proto.BrowserGetBrowserCommandLine requires --enable-automation which is annoying
-	if strings.Contains(res.UserAgent, " Headless") {
-		b.headless = true
-	}
-
-	return nil
 }
 
 // GetCookies from the browser

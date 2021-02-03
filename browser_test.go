@@ -370,17 +370,6 @@ func (t T) BrowserConnectErr() {
 		c.stubErr(1, proto.TargetSetDiscoverTargets{})
 		rod.New().Client(c).MustConnect()
 	})
-	t.Panic(func() {
-		ch := make(chan *cdp.Event)
-		defer close(ch)
-
-		c := &MockClient{connect: func() error { return nil }, event: ch}
-		c.stub(1, proto.TargetSetDiscoverTargets{}, func(send StubSend) (gson.JSON, error) {
-			c.stubErr(1, proto.BrowserGetVersion{})
-			return gson.JSON{}, nil
-		})
-		rod.New().Client(c).MustConnect()
-	})
 }
 
 func (t T) StreamReader() {

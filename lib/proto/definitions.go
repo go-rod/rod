@@ -112,6 +112,9 @@ const (
 	// AccessibilityAXValueNativeSourceTypeLegend enum const
 	AccessibilityAXValueNativeSourceTypeLegend AccessibilityAXValueNativeSourceType = "legend"
 
+	// AccessibilityAXValueNativeSourceTypeRubyannotation enum const
+	AccessibilityAXValueNativeSourceTypeRubyannotation AccessibilityAXValueNativeSourceType = "rubyannotation"
+
 	// AccessibilityAXValueNativeSourceTypeTablecaption enum const
 	AccessibilityAXValueNativeSourceTypeTablecaption AccessibilityAXValueNativeSourceType = "tablecaption"
 
@@ -411,8 +414,12 @@ type AccessibilityGetPartialAXTreeResult struct {
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
 
-// AccessibilityGetFullAXTree (experimental) Fetches the entire accessibility tree
+// AccessibilityGetFullAXTree (experimental) Fetches the entire accessibility tree for the root Document
 type AccessibilityGetFullAXTree struct {
+
+	// MaxDepth (optional) The maximum depth at which descendants of the root node should be retrieved.
+	// If omitted, the full tree is returned.
+	MaxDepth int `json:"max_depth,omitempty"`
 }
 
 // ProtoReq of the command
@@ -424,8 +431,33 @@ func (m AccessibilityGetFullAXTree) Call(c Client) (*AccessibilityGetFullAXTreeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree
+// AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree for the root Document
 type AccessibilityGetFullAXTreeResult struct {
+
+	// Nodes ...
+	Nodes []*AccessibilityAXNode `json:"nodes"`
+}
+
+// AccessibilityGetChildAXNodes (experimental) Fetches a particular accessibility node by AXNodeId.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetChildAXNodes struct {
+
+	// ID ...
+	ID AccessibilityAXNodeID `json:"id"`
+}
+
+// ProtoReq of the command
+func (m AccessibilityGetChildAXNodes) ProtoReq() string { return "Accessibility.getChildAXNodes" }
+
+// Call of the command, sessionID is optional.
+func (m AccessibilityGetChildAXNodes) Call(c Client) (*AccessibilityGetChildAXNodesResult, error) {
+	var res AccessibilityGetChildAXNodesResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// AccessibilityGetChildAXNodesResult (experimental) Fetches a particular accessibility node by AXNodeId.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetChildAXNodesResult struct {
 
 	// Nodes ...
 	Nodes []*AccessibilityAXNode `json:"nodes"`
@@ -1291,6 +1323,9 @@ const (
 // AuditsSourceCodeLocation ...
 type AuditsSourceCodeLocation struct {
 
+	// ScriptID (optional) ...
+	ScriptID RuntimeScriptID `json:"scriptId,omitempty"`
+
 	// URL ...
 	URL string `json:"url"`
 
@@ -1326,6 +1361,67 @@ type AuditsContentSecurityPolicyIssueDetails struct {
 	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId,omitempty"`
 }
 
+// AuditsSharedArrayBufferIssueType ...
+type AuditsSharedArrayBufferIssueType string
+
+const (
+	// AuditsSharedArrayBufferIssueTypeTransferIssue enum const
+	AuditsSharedArrayBufferIssueTypeTransferIssue AuditsSharedArrayBufferIssueType = "TransferIssue"
+
+	// AuditsSharedArrayBufferIssueTypeCreationIssue enum const
+	AuditsSharedArrayBufferIssueTypeCreationIssue AuditsSharedArrayBufferIssueType = "CreationIssue"
+)
+
+// AuditsSharedArrayBufferIssueDetails Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+// code. Currently only used for COEP/COOP, but may be extended to include
+// some CSP errors in the future.
+type AuditsSharedArrayBufferIssueDetails struct {
+
+	// SourceCodeLocation ...
+	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
+
+	// IsWarning ...
+	IsWarning bool `json:"isWarning"`
+
+	// Type ...
+	Type AuditsSharedArrayBufferIssueType `json:"type"`
+}
+
+// AuditsTwaQualityEnforcementViolationType ...
+type AuditsTwaQualityEnforcementViolationType string
+
+const (
+	// AuditsTwaQualityEnforcementViolationTypeKHTTPError enum const
+	AuditsTwaQualityEnforcementViolationTypeKHTTPError AuditsTwaQualityEnforcementViolationType = "kHttpError"
+
+	// AuditsTwaQualityEnforcementViolationTypeKUnavailableOffline enum const
+	AuditsTwaQualityEnforcementViolationTypeKUnavailableOffline AuditsTwaQualityEnforcementViolationType = "kUnavailableOffline"
+
+	// AuditsTwaQualityEnforcementViolationTypeKDigitalAssetLinks enum const
+	AuditsTwaQualityEnforcementViolationTypeKDigitalAssetLinks AuditsTwaQualityEnforcementViolationType = "kDigitalAssetLinks"
+)
+
+// AuditsTrustedWebActivityIssueDetails ...
+type AuditsTrustedWebActivityIssueDetails struct {
+
+	// URL The url that triggers the violation.
+	URL string `json:"url"`
+
+	// ViolationType ...
+	ViolationType AuditsTwaQualityEnforcementViolationType `json:"violationType"`
+
+	// HTTPStatusCode (optional) ...
+	HTTPStatusCode int `json:"httpStatusCode,omitempty"`
+
+	// PackageName (optional) The package name of the Trusted Web Activity client app. This field is
+	// only used when violation type is kDigitalAssetLinks.
+	PackageName string `json:"packageName,omitempty"`
+
+	// Signature (optional) The signature of the Trusted Web Activity client app. This field is only
+	// used when violation type is kDigitalAssetLinks.
+	Signature string `json:"signature,omitempty"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -1346,6 +1442,12 @@ const (
 
 	// AuditsInspectorIssueCodeContentSecurityPolicyIssue enum const
 	AuditsInspectorIssueCodeContentSecurityPolicyIssue AuditsInspectorIssueCode = "ContentSecurityPolicyIssue"
+
+	// AuditsInspectorIssueCodeSharedArrayBufferIssue enum const
+	AuditsInspectorIssueCodeSharedArrayBufferIssue AuditsInspectorIssueCode = "SharedArrayBufferIssue"
+
+	// AuditsInspectorIssueCodeTrustedWebActivityIssue enum const
+	AuditsInspectorIssueCodeTrustedWebActivityIssue AuditsInspectorIssueCode = "TrustedWebActivityIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -1367,6 +1469,12 @@ type AuditsInspectorIssueDetails struct {
 
 	// ContentSecurityPolicyIssueDetails (optional) ...
 	ContentSecurityPolicyIssueDetails *AuditsContentSecurityPolicyIssueDetails `json:"contentSecurityPolicyIssueDetails,omitempty"`
+
+	// SharedArrayBufferIssueDetails (optional) ...
+	SharedArrayBufferIssueDetails *AuditsSharedArrayBufferIssueDetails `json:"sharedArrayBufferIssueDetails,omitempty"`
+
+	// TwaQualityEnforcementDetails (optional) ...
+	TwaQualityEnforcementDetails *AuditsTrustedWebActivityIssueDetails `json:"twaQualityEnforcementDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
@@ -1685,6 +1793,9 @@ const (
 	// BrowserPermissionTypeClipboardSanitizedWrite enum const
 	BrowserPermissionTypeClipboardSanitizedWrite BrowserPermissionType = "clipboardSanitizedWrite"
 
+	// BrowserPermissionTypeDisplayCapture enum const
+	BrowserPermissionTypeDisplayCapture BrowserPermissionType = "displayCapture"
+
 	// BrowserPermissionTypeDurableStorage enum const
 	BrowserPermissionTypeDurableStorage BrowserPermissionType = "durableStorage"
 
@@ -1769,6 +1880,17 @@ type BrowserPermissionDescriptor struct {
 	// PanTiltZoom (optional) For "camera" permission, may specify panTiltZoom.
 	PanTiltZoom bool `json:"panTiltZoom,omitempty"`
 }
+
+// BrowserBrowserCommandID (experimental) Browser command ids used by executeBrowserCommand.
+type BrowserBrowserCommandID string
+
+const (
+	// BrowserBrowserCommandIDOpenTabSearch enum const
+	BrowserBrowserCommandIDOpenTabSearch BrowserBrowserCommandID = "openTabSearch"
+
+	// BrowserBrowserCommandIDCloseTabSearch enum const
+	BrowserBrowserCommandIDCloseTabSearch BrowserBrowserCommandID = "closeTabSearch"
+)
 
 // BrowserBucket (experimental) Chrome histogram bucket.
 type BrowserBucket struct {
@@ -2129,6 +2251,21 @@ func (m BrowserSetDockTile) ProtoReq() string { return "Browser.setDockTile" }
 
 // Call of the command, sessionID is optional.
 func (m BrowserSetDockTile) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// BrowserExecuteBrowserCommand (experimental) Invoke custom browser commands used by telemetry.
+type BrowserExecuteBrowserCommand struct {
+
+	// CommandID ...
+	CommandID BrowserBrowserCommandID `json:"commandId"`
+}
+
+// ProtoReq of the command
+func (m BrowserExecuteBrowserCommand) ProtoReq() string { return "Browser.executeBrowserCommand" }
+
+// Call of the command, sessionID is optional.
+func (m BrowserExecuteBrowserCommand) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -3577,6 +3714,15 @@ const (
 
 	// DOMPseudoTypeSelection enum const
 	DOMPseudoTypeSelection DOMPseudoType = "selection"
+
+	// DOMPseudoTypeTargetText enum const
+	DOMPseudoTypeTargetText DOMPseudoType = "target-text"
+
+	// DOMPseudoTypeSpellingError enum const
+	DOMPseudoTypeSpellingError DOMPseudoType = "spelling-error"
+
+	// DOMPseudoTypeGrammarError enum const
+	DOMPseudoTypeGrammarError DOMPseudoType = "grammar-error"
 
 	// DOMPseudoTypeFirstLineInherited enum const
 	DOMPseudoTypeFirstLineInherited DOMPseudoType = "first-line-inherited"
@@ -5080,6 +5226,17 @@ const (
 	DOMDebuggerDOMBreakpointTypeNodeRemoved DOMDebuggerDOMBreakpointType = "node-removed"
 )
 
+// DOMDebuggerCSPViolationType (experimental) CSP Violation type.
+type DOMDebuggerCSPViolationType string
+
+const (
+	// DOMDebuggerCSPViolationTypeTrustedtypeSinkViolation enum const
+	DOMDebuggerCSPViolationTypeTrustedtypeSinkViolation DOMDebuggerCSPViolationType = "trustedtype-sink-violation"
+
+	// DOMDebuggerCSPViolationTypeTrustedtypePolicyViolation enum const
+	DOMDebuggerCSPViolationTypeTrustedtypePolicyViolation DOMDebuggerCSPViolationType = "trustedtype-policy-violation"
+)
+
 // DOMDebuggerEventListener Object event listener.
 type DOMDebuggerEventListener struct {
 
@@ -5212,6 +5369,23 @@ func (m DOMDebuggerRemoveXHRBreakpoint) ProtoReq() string { return "DOMDebugger.
 
 // Call of the command, sessionID is optional.
 func (m DOMDebuggerRemoveXHRBreakpoint) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// DOMDebuggerSetBreakOnCSPViolation (experimental) Sets breakpoint on particular CSP violations.
+type DOMDebuggerSetBreakOnCSPViolation struct {
+
+	// ViolationTypes CSP Violations to stop upon.
+	ViolationTypes []DOMDebuggerCSPViolationType `json:"violationTypes"`
+}
+
+// ProtoReq of the command
+func (m DOMDebuggerSetBreakOnCSPViolation) ProtoReq() string {
+	return "DOMDebugger.setBreakOnCSPViolation"
+}
+
+// Call of the command, sessionID is optional.
+func (m DOMDebuggerSetBreakOnCSPViolation) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -6187,6 +6361,17 @@ type EmulationUserAgentMetadata struct {
 	Mobile bool `json:"mobile"`
 }
 
+// EmulationDisabledImageType (experimental) Enum of image types that can be disabled.
+type EmulationDisabledImageType string
+
+const (
+	// EmulationDisabledImageTypeAvif enum const
+	EmulationDisabledImageTypeAvif EmulationDisabledImageType = "avif"
+
+	// EmulationDisabledImageTypeWebp enum const
+	EmulationDisabledImageTypeWebp EmulationDisabledImageType = "webp"
+)
+
 // EmulationCanEmulate Tells whether emulation is supported.
 type EmulationCanEmulate struct {
 }
@@ -6685,6 +6870,21 @@ func (m EmulationSetVisibleSize) ProtoReq() string { return "Emulation.setVisibl
 
 // Call of the command, sessionID is optional.
 func (m EmulationSetVisibleSize) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EmulationSetDisabledImageTypes (experimental) ...
+type EmulationSetDisabledImageTypes struct {
+
+	// ImageTypes Image types to disable.
+	ImageTypes []EmulationDisabledImageType `json:"imageTypes"`
+}
+
+// ProtoReq of the command
+func (m EmulationSetDisabledImageTypes) ProtoReq() string { return "Emulation.setDisabledImageTypes" }
+
+// Call of the command, sessionID is optional.
+func (m EmulationSetDisabledImageTypes) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -7282,6 +7482,18 @@ type InputTouchPoint struct {
 	// Force (optional) Force (default: 1.0).
 	Force float64 `json:"force,omitempty"`
 
+	// TangentialPressure (experimental) (optional) The normalized tangential pressure, which has a range of [-1,1] (default: 0).
+	TangentialPressure float64 `json:"tangentialPressure,omitempty"`
+
+	// TiltX (experimental) (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
+	TiltX int `json:"tiltX,omitempty"`
+
+	// TiltY (experimental) (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+	TiltY int `json:"tiltY,omitempty"`
+
+	// Twist (experimental) (optional) The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
+	Twist int `json:"twist,omitempty"`
+
 	// ID (optional) Identifier used to track touch sources between events, must be unique within an event.
 	ID float64 `json:"id,omitempty"`
 }
@@ -7477,6 +7689,21 @@ type InputDispatchMouseEvent struct {
 
 	// ClickCount (optional) Number of times the mouse button was clicked (default: 0).
 	ClickCount int `json:"clickCount,omitempty"`
+
+	// Force (experimental) (optional) The normalized pressure, which has a range of [0,1] (default: 0).
+	Force float64 `json:"force,omitempty"`
+
+	// TangentialPressure (experimental) (optional) The normalized tangential pressure, which has a range of [-1,1] (default: 0).
+	TangentialPressure float64 `json:"tangentialPressure,omitempty"`
+
+	// TiltX (experimental) (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
+	TiltX int `json:"tiltX,omitempty"`
+
+	// TiltY (experimental) (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+	TiltY int `json:"tiltY,omitempty"`
+
+	// Twist (experimental) (optional) The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
+	Twist int `json:"twist,omitempty"`
 
 	// DeltaX (optional) X delta in CSS pixels for mouse wheel event (default: 0).
 	DeltaX float64 `json:"deltaX,omitempty"`
@@ -8603,6 +8830,9 @@ const (
 	// NetworkResourceTypeCSPViolationReport enum const
 	NetworkResourceTypeCSPViolationReport NetworkResourceType = "CSPViolationReport"
 
+	// NetworkResourceTypePreflight enum const
+	NetworkResourceTypePreflight NetworkResourceType = "Preflight"
+
 	// NetworkResourceTypeOther enum const
 	NetworkResourceTypeOther NetworkResourceType = "Other"
 )
@@ -9013,6 +9243,96 @@ const (
 	NetworkBlockedReasonCorpNotSameSite NetworkBlockedReason = "corp-not-same-site"
 )
 
+// NetworkCorsError The reason why request was blocked.
+type NetworkCorsError string
+
+const (
+	// NetworkCorsErrorDisallowedByMode enum const
+	NetworkCorsErrorDisallowedByMode NetworkCorsError = "DisallowedByMode"
+
+	// NetworkCorsErrorInvalidResponse enum const
+	NetworkCorsErrorInvalidResponse NetworkCorsError = "InvalidResponse"
+
+	// NetworkCorsErrorWildcardOriginNotAllowed enum const
+	NetworkCorsErrorWildcardOriginNotAllowed NetworkCorsError = "WildcardOriginNotAllowed"
+
+	// NetworkCorsErrorMissingAllowOriginHeader enum const
+	NetworkCorsErrorMissingAllowOriginHeader NetworkCorsError = "MissingAllowOriginHeader"
+
+	// NetworkCorsErrorMultipleAllowOriginValues enum const
+	NetworkCorsErrorMultipleAllowOriginValues NetworkCorsError = "MultipleAllowOriginValues"
+
+	// NetworkCorsErrorInvalidAllowOriginValue enum const
+	NetworkCorsErrorInvalidAllowOriginValue NetworkCorsError = "InvalidAllowOriginValue"
+
+	// NetworkCorsErrorAllowOriginMismatch enum const
+	NetworkCorsErrorAllowOriginMismatch NetworkCorsError = "AllowOriginMismatch"
+
+	// NetworkCorsErrorInvalidAllowCredentials enum const
+	NetworkCorsErrorInvalidAllowCredentials NetworkCorsError = "InvalidAllowCredentials"
+
+	// NetworkCorsErrorCorsDisabledScheme enum const
+	NetworkCorsErrorCorsDisabledScheme NetworkCorsError = "CorsDisabledScheme"
+
+	// NetworkCorsErrorPreflightInvalidStatus enum const
+	NetworkCorsErrorPreflightInvalidStatus NetworkCorsError = "PreflightInvalidStatus"
+
+	// NetworkCorsErrorPreflightDisallowedRedirect enum const
+	NetworkCorsErrorPreflightDisallowedRedirect NetworkCorsError = "PreflightDisallowedRedirect"
+
+	// NetworkCorsErrorPreflightWildcardOriginNotAllowed enum const
+	NetworkCorsErrorPreflightWildcardOriginNotAllowed NetworkCorsError = "PreflightWildcardOriginNotAllowed"
+
+	// NetworkCorsErrorPreflightMissingAllowOriginHeader enum const
+	NetworkCorsErrorPreflightMissingAllowOriginHeader NetworkCorsError = "PreflightMissingAllowOriginHeader"
+
+	// NetworkCorsErrorPreflightMultipleAllowOriginValues enum const
+	NetworkCorsErrorPreflightMultipleAllowOriginValues NetworkCorsError = "PreflightMultipleAllowOriginValues"
+
+	// NetworkCorsErrorPreflightInvalidAllowOriginValue enum const
+	NetworkCorsErrorPreflightInvalidAllowOriginValue NetworkCorsError = "PreflightInvalidAllowOriginValue"
+
+	// NetworkCorsErrorPreflightAllowOriginMismatch enum const
+	NetworkCorsErrorPreflightAllowOriginMismatch NetworkCorsError = "PreflightAllowOriginMismatch"
+
+	// NetworkCorsErrorPreflightInvalidAllowCredentials enum const
+	NetworkCorsErrorPreflightInvalidAllowCredentials NetworkCorsError = "PreflightInvalidAllowCredentials"
+
+	// NetworkCorsErrorPreflightMissingAllowExternal enum const
+	NetworkCorsErrorPreflightMissingAllowExternal NetworkCorsError = "PreflightMissingAllowExternal"
+
+	// NetworkCorsErrorPreflightInvalidAllowExternal enum const
+	NetworkCorsErrorPreflightInvalidAllowExternal NetworkCorsError = "PreflightInvalidAllowExternal"
+
+	// NetworkCorsErrorInvalidAllowMethodsPreflightResponse enum const
+	NetworkCorsErrorInvalidAllowMethodsPreflightResponse NetworkCorsError = "InvalidAllowMethodsPreflightResponse"
+
+	// NetworkCorsErrorInvalidAllowHeadersPreflightResponse enum const
+	NetworkCorsErrorInvalidAllowHeadersPreflightResponse NetworkCorsError = "InvalidAllowHeadersPreflightResponse"
+
+	// NetworkCorsErrorMethodDisallowedByPreflightResponse enum const
+	NetworkCorsErrorMethodDisallowedByPreflightResponse NetworkCorsError = "MethodDisallowedByPreflightResponse"
+
+	// NetworkCorsErrorHeaderDisallowedByPreflightResponse enum const
+	NetworkCorsErrorHeaderDisallowedByPreflightResponse NetworkCorsError = "HeaderDisallowedByPreflightResponse"
+
+	// NetworkCorsErrorRedirectContainsCredentials enum const
+	NetworkCorsErrorRedirectContainsCredentials NetworkCorsError = "RedirectContainsCredentials"
+
+	// NetworkCorsErrorInsecurePrivateNetwork enum const
+	NetworkCorsErrorInsecurePrivateNetwork NetworkCorsError = "InsecurePrivateNetwork"
+)
+
+// NetworkCorsErrorStatus ...
+type NetworkCorsErrorStatus struct {
+
+	// CorsError ...
+	CorsError NetworkCorsError `json:"corsError"`
+
+	// FailedParameter ...
+	FailedParameter string `json:"failedParameter"`
+}
+
 // NetworkServiceWorkerResponseSource Source of serviceworker response.
 type NetworkServiceWorkerResponseSource string
 
@@ -9042,13 +9362,14 @@ const (
 )
 
 // NetworkTrustTokenParams (experimental) Determines what type of Trust Token operation is executed and
-// depending on the type, some additional parameters.
+// depending on the type, some additional parameters. The values
+// are specified in third_party/blink/renderer/core/fetch/trust_token.idl.
 type NetworkTrustTokenParams struct {
 
 	// Type ...
 	Type NetworkTrustTokenOperationType `json:"type"`
 
-	// RefreshPolicy Only set for "srr-token-redemption" type and determine whether
+	// RefreshPolicy Only set for "token-redemption" type and determine whether
 	// to request a fresh SRR or use a still valid cached SRR.
 	RefreshPolicy NetworkTrustTokenParamsRefreshPolicy `json:"refreshPolicy"`
 
@@ -9220,6 +9541,9 @@ const (
 	// NetworkInitiatorTypeSignedExchange enum const
 	NetworkInitiatorTypeSignedExchange NetworkInitiatorType = "SignedExchange"
 
+	// NetworkInitiatorTypePreflight enum const
+	NetworkInitiatorTypePreflight NetworkInitiatorType = "preflight"
+
 	// NetworkInitiatorTypeOther enum const
 	NetworkInitiatorTypeOther NetworkInitiatorType = "other"
 )
@@ -9243,6 +9567,9 @@ type NetworkInitiator struct {
 	// ColumnNumber (optional) Initiator column number, set for Parser type or for Script type (when script is importing
 	// module) (0-based).
 	ColumnNumber float64 `json:"columnNumber,omitempty"`
+
+	// RequestID (optional) Set if another request triggered this request (e.g. preflight).
+	RequestID NetworkRequestID `json:"requestId,omitempty"`
 }
 
 // NetworkCookie Cookie object
@@ -9280,6 +9607,9 @@ type NetworkCookie struct {
 
 	// Priority (experimental) Cookie Priority
 	Priority NetworkCookiePriority `json:"priority"`
+
+	// SameParty (experimental) True if cookie is SameParty.
+	SameParty bool `json:"sameParty"`
 }
 
 // NetworkSetCookieBlockedReason (experimental) Types of reasons why a cookie may not be stored from a response.
@@ -9622,6 +9952,47 @@ type NetworkSignedExchangeInfo struct {
 	Errors []*NetworkSignedExchangeError `json:"errors,omitempty"`
 }
 
+// NetworkPrivateNetworkRequestPolicy (experimental) ...
+type NetworkPrivateNetworkRequestPolicy string
+
+const (
+	// NetworkPrivateNetworkRequestPolicyAllow enum const
+	NetworkPrivateNetworkRequestPolicyAllow NetworkPrivateNetworkRequestPolicy = "Allow"
+
+	// NetworkPrivateNetworkRequestPolicyBlockFromInsecureToMorePrivate enum const
+	NetworkPrivateNetworkRequestPolicyBlockFromInsecureToMorePrivate NetworkPrivateNetworkRequestPolicy = "BlockFromInsecureToMorePrivate"
+)
+
+// NetworkIPAddressSpace (experimental) ...
+type NetworkIPAddressSpace string
+
+const (
+	// NetworkIPAddressSpaceLocal enum const
+	NetworkIPAddressSpaceLocal NetworkIPAddressSpace = "Local"
+
+	// NetworkIPAddressSpacePrivate enum const
+	NetworkIPAddressSpacePrivate NetworkIPAddressSpace = "Private"
+
+	// NetworkIPAddressSpacePublic enum const
+	NetworkIPAddressSpacePublic NetworkIPAddressSpace = "Public"
+
+	// NetworkIPAddressSpaceUnknown enum const
+	NetworkIPAddressSpaceUnknown NetworkIPAddressSpace = "Unknown"
+)
+
+// NetworkClientSecurityState (experimental) ...
+type NetworkClientSecurityState struct {
+
+	// InitiatorIsSecureContext ...
+	InitiatorIsSecureContext bool `json:"initiatorIsSecureContext"`
+
+	// InitiatorIPAddressSpace ...
+	InitiatorIPAddressSpace NetworkIPAddressSpace `json:"initiatorIPAddressSpace"`
+
+	// PrivateNetworkRequestPolicy ...
+	PrivateNetworkRequestPolicy NetworkPrivateNetworkRequestPolicy `json:"privateNetworkRequestPolicy"`
+}
+
 // NetworkCrossOriginOpenerPolicyValue (experimental) ...
 type NetworkCrossOriginOpenerPolicyValue string
 
@@ -9685,11 +10056,11 @@ type NetworkCrossOriginEmbedderPolicyStatus struct {
 // NetworkSecurityIsolationStatus (experimental) ...
 type NetworkSecurityIsolationStatus struct {
 
-	// Coop ...
-	Coop *NetworkCrossOriginOpenerPolicyStatus `json:"coop"`
+	// Coop (optional) ...
+	Coop *NetworkCrossOriginOpenerPolicyStatus `json:"coop,omitempty"`
 
-	// Coep ...
-	Coep *NetworkCrossOriginEmbedderPolicyStatus `json:"coep"`
+	// Coep (optional) ...
+	Coep *NetworkCrossOriginEmbedderPolicyStatus `json:"coep,omitempty"`
 }
 
 // NetworkLoadNetworkResourcePageResult (experimental) An object providing the result of a network resource load.
@@ -10317,18 +10688,18 @@ func (m NetworkSetExtraHTTPHeaders) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// NetworkSetAttachDebugHeader (experimental) Specifies whether to sned a debug header to all outgoing requests.
-type NetworkSetAttachDebugHeader struct {
+// NetworkSetAttachDebugStack (experimental) Specifies whether to attach a page script stack id in requests
+type NetworkSetAttachDebugStack struct {
 
-	// Enabled Whether to send a debug header.
+	// Enabled Whether to attach a page script stack for debugging purpose.
 	Enabled bool `json:"enabled"`
 }
 
 // ProtoReq of the command
-func (m NetworkSetAttachDebugHeader) ProtoReq() string { return "Network.setAttachDebugHeader" }
+func (m NetworkSetAttachDebugStack) ProtoReq() string { return "Network.setAttachDebugStack" }
 
 // Call of the command, sessionID is optional.
-func (m NetworkSetAttachDebugHeader) Call(c Client) error {
+func (m NetworkSetAttachDebugStack) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -10492,6 +10863,9 @@ type NetworkLoadingFailed struct {
 
 	// BlockedReason (optional) The reason why loading was blocked, if any.
 	BlockedReason NetworkBlockedReason `json:"blockedReason,omitempty"`
+
+	// CorsErrorStatus (optional) The reason why loading was blocked by CORS, if any.
+	CorsErrorStatus *NetworkCorsErrorStatus `json:"corsErrorStatus,omitempty"`
 }
 
 // ProtoEvent interface
@@ -10816,6 +11190,57 @@ func (evt NetworkWebSocketWillSendHandshakeRequest) ProtoEvent() string {
 	return "Network.webSocketWillSendHandshakeRequest"
 }
 
+// NetworkWebTransportCreated Fired upon WebTransport creation.
+type NetworkWebTransportCreated struct {
+
+	// TransportID WebTransport identifier.
+	TransportID NetworkRequestID `json:"transportId"`
+
+	// URL WebTransport request URL.
+	URL string `json:"url"`
+
+	// Timestamp Timestamp.
+	Timestamp *MonotonicTime `json:"timestamp"`
+
+	// Initiator (optional) Request initiator.
+	Initiator *NetworkInitiator `json:"initiator,omitempty"`
+}
+
+// ProtoEvent interface
+func (evt NetworkWebTransportCreated) ProtoEvent() string {
+	return "Network.webTransportCreated"
+}
+
+// NetworkWebTransportConnectionEstablished Fired when WebTransport handshake is finished.
+type NetworkWebTransportConnectionEstablished struct {
+
+	// TransportID WebTransport identifier.
+	TransportID NetworkRequestID `json:"transportId"`
+
+	// Timestamp Timestamp.
+	Timestamp *MonotonicTime `json:"timestamp"`
+}
+
+// ProtoEvent interface
+func (evt NetworkWebTransportConnectionEstablished) ProtoEvent() string {
+	return "Network.webTransportConnectionEstablished"
+}
+
+// NetworkWebTransportClosed Fired when WebTransport is disposed.
+type NetworkWebTransportClosed struct {
+
+	// TransportID WebTransport identifier.
+	TransportID NetworkRequestID `json:"transportId"`
+
+	// Timestamp Timestamp.
+	Timestamp *MonotonicTime `json:"timestamp"`
+}
+
+// ProtoEvent interface
+func (evt NetworkWebTransportClosed) ProtoEvent() string {
+	return "Network.webTransportClosed"
+}
+
 // NetworkRequestWillBeSentExtraInfo (experimental) Fired when additional information about a requestWillBeSent event is available from the
 // network stack. Not every requestWillBeSent event will have an additional
 // requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -10831,6 +11256,9 @@ type NetworkRequestWillBeSentExtraInfo struct {
 
 	// Headers Raw request headers as they will be sent over the wire.
 	Headers NetworkHeaders `json:"headers"`
+
+	// ClientSecurityState (optional) The client security state set for the request.
+	ClientSecurityState *NetworkClientSecurityState `json:"clientSecurityState,omitempty"`
 }
 
 // ProtoEvent interface
@@ -10862,6 +11290,74 @@ type NetworkResponseReceivedExtraInfo struct {
 // ProtoEvent interface
 func (evt NetworkResponseReceivedExtraInfo) ProtoEvent() string {
 	return "Network.responseReceivedExtraInfo"
+}
+
+// NetworkTrustTokenOperationDoneStatus enum
+type NetworkTrustTokenOperationDoneStatus string
+
+const (
+	// NetworkTrustTokenOperationDoneStatusOk enum const
+	NetworkTrustTokenOperationDoneStatusOk NetworkTrustTokenOperationDoneStatus = "Ok"
+
+	// NetworkTrustTokenOperationDoneStatusInvalidArgument enum const
+	NetworkTrustTokenOperationDoneStatusInvalidArgument NetworkTrustTokenOperationDoneStatus = "InvalidArgument"
+
+	// NetworkTrustTokenOperationDoneStatusFailedPrecondition enum const
+	NetworkTrustTokenOperationDoneStatusFailedPrecondition NetworkTrustTokenOperationDoneStatus = "FailedPrecondition"
+
+	// NetworkTrustTokenOperationDoneStatusResourceExhausted enum const
+	NetworkTrustTokenOperationDoneStatusResourceExhausted NetworkTrustTokenOperationDoneStatus = "ResourceExhausted"
+
+	// NetworkTrustTokenOperationDoneStatusAlreadyExists enum const
+	NetworkTrustTokenOperationDoneStatusAlreadyExists NetworkTrustTokenOperationDoneStatus = "AlreadyExists"
+
+	// NetworkTrustTokenOperationDoneStatusUnavailable enum const
+	NetworkTrustTokenOperationDoneStatusUnavailable NetworkTrustTokenOperationDoneStatus = "Unavailable"
+
+	// NetworkTrustTokenOperationDoneStatusBadResponse enum const
+	NetworkTrustTokenOperationDoneStatusBadResponse NetworkTrustTokenOperationDoneStatus = "BadResponse"
+
+	// NetworkTrustTokenOperationDoneStatusInternalError enum const
+	NetworkTrustTokenOperationDoneStatusInternalError NetworkTrustTokenOperationDoneStatus = "InternalError"
+
+	// NetworkTrustTokenOperationDoneStatusUnknownError enum const
+	NetworkTrustTokenOperationDoneStatusUnknownError NetworkTrustTokenOperationDoneStatus = "UnknownError"
+
+	// NetworkTrustTokenOperationDoneStatusFulfilledLocally enum const
+	NetworkTrustTokenOperationDoneStatusFulfilledLocally NetworkTrustTokenOperationDoneStatus = "FulfilledLocally"
+)
+
+// NetworkTrustTokenOperationDone (experimental) Fired exactly once for each Trust Token operation. Depending on
+// the type of the operation and whether the operation succeeded or
+// failed, the event is fired before the corresponding request was sent
+// or after the response was received.
+type NetworkTrustTokenOperationDone struct {
+
+	// Status Detailed success or error status of the operation.
+	// 'AlreadyExists' also signifies a successful operation, as the result
+	// of the operation already exists und thus, the operation was abort
+	// preemptively (e.g. a cache hit).
+	Status NetworkTrustTokenOperationDoneStatus `json:"status"`
+
+	// Type ...
+	Type NetworkTrustTokenOperationType `json:"type"`
+
+	// RequestID ...
+	RequestID NetworkRequestID `json:"requestId"`
+
+	// TopLevelOrigin (optional) Top level origin. The context in which the operation was attempted.
+	TopLevelOrigin string `json:"topLevelOrigin,omitempty"`
+
+	// IssuerOrigin (optional) Origin of the issuer in case of a "Issuance" or "Redemption" operation.
+	IssuerOrigin string `json:"issuerOrigin,omitempty"`
+
+	// IssuedTokenCount (optional) The number of obtained Trust Tokens on a successful "Issuance" operation.
+	IssuedTokenCount int `json:"issuedTokenCount,omitempty"`
+}
+
+// ProtoEvent interface
+func (evt NetworkTrustTokenOperationDone) ProtoEvent() string {
+	return "Network.trustTokenOperationDone"
 }
 
 // OverlaySourceOrderConfig Configuration data for drawing the source order of an elements children.
@@ -10938,6 +11434,79 @@ type OverlayGridHighlightConfig struct {
 	GridBackgroundColor *DOMRGBA `json:"gridBackgroundColor,omitempty"`
 }
 
+// OverlayFlexContainerHighlightConfig Configuration data for the highlighting of Flex container elements.
+type OverlayFlexContainerHighlightConfig struct {
+
+	// ContainerBorder (optional) The style of the container border
+	ContainerBorder *OverlayLineStyle `json:"containerBorder,omitempty"`
+
+	// LineSeparator (optional) The style of the separator between lines
+	LineSeparator *OverlayLineStyle `json:"lineSeparator,omitempty"`
+
+	// ItemSeparator (optional) The style of the separator between items
+	ItemSeparator *OverlayLineStyle `json:"itemSeparator,omitempty"`
+
+	// MainDistributedSpace (optional) Style of content-distribution space on the main axis (justify-content).
+	MainDistributedSpace *OverlayBoxStyle `json:"mainDistributedSpace,omitempty"`
+
+	// CrossDistributedSpace (optional) Style of content-distribution space on the cross axis (align-content).
+	CrossDistributedSpace *OverlayBoxStyle `json:"crossDistributedSpace,omitempty"`
+
+	// RowGapSpace (optional) Style of empty space caused by row gaps (gap/row-gap).
+	RowGapSpace *OverlayBoxStyle `json:"rowGapSpace,omitempty"`
+
+	// ColumnGapSpace (optional) Style of empty space caused by columns gaps (gap/column-gap).
+	ColumnGapSpace *OverlayBoxStyle `json:"columnGapSpace,omitempty"`
+
+	// CrossAlignment (optional) Style of the self-alignment line (align-items).
+	CrossAlignment *OverlayLineStyle `json:"crossAlignment,omitempty"`
+}
+
+// OverlayLineStylePattern enum
+type OverlayLineStylePattern string
+
+const (
+	// OverlayLineStylePatternDashed enum const
+	OverlayLineStylePatternDashed OverlayLineStylePattern = "dashed"
+
+	// OverlayLineStylePatternDotted enum const
+	OverlayLineStylePatternDotted OverlayLineStylePattern = "dotted"
+)
+
+// OverlayLineStyle Style information for drawing a line.
+type OverlayLineStyle struct {
+
+	// Color (optional) The color of the line (default: transparent)
+	Color *DOMRGBA `json:"color,omitempty"`
+
+	// Pattern (optional) The line pattern (default: solid)
+	Pattern OverlayLineStylePattern `json:"pattern,omitempty"`
+}
+
+// OverlayBoxStyle Style information for drawing a box.
+type OverlayBoxStyle struct {
+
+	// FillColor (optional) The background color for the box (default: transparent)
+	FillColor *DOMRGBA `json:"fillColor,omitempty"`
+
+	// HatchColor (optional) The hatching color for the box (default: transparent)
+	HatchColor *DOMRGBA `json:"hatchColor,omitempty"`
+}
+
+// OverlayContrastAlgorithm ...
+type OverlayContrastAlgorithm string
+
+const (
+	// OverlayContrastAlgorithmAa enum const
+	OverlayContrastAlgorithmAa OverlayContrastAlgorithm = "aa"
+
+	// OverlayContrastAlgorithmAaa enum const
+	OverlayContrastAlgorithmAaa OverlayContrastAlgorithm = "aaa"
+
+	// OverlayContrastAlgorithmApca enum const
+	OverlayContrastAlgorithmApca OverlayContrastAlgorithm = "apca"
+)
+
 // OverlayHighlightConfig Configuration data for the highlighting of page elements.
 type OverlayHighlightConfig struct {
 
@@ -10985,6 +11554,12 @@ type OverlayHighlightConfig struct {
 
 	// GridHighlightConfig (optional) The grid layout highlight configuration (default: all transparent).
 	GridHighlightConfig *OverlayGridHighlightConfig `json:"gridHighlightConfig,omitempty"`
+
+	// FlexContainerHighlightConfig (optional) The flex container highlight configuration (default: all transparent).
+	FlexContainerHighlightConfig *OverlayFlexContainerHighlightConfig `json:"flexContainerHighlightConfig,omitempty"`
+
+	// ContrastAlgorithm (optional) The contrast algorithm to use for the contrast ratio (default: aa).
+	ContrastAlgorithm OverlayContrastAlgorithm `json:"contrastAlgorithm,omitempty"`
 }
 
 // OverlayColorFormat ...
@@ -11006,6 +11581,16 @@ type OverlayGridNodeHighlightConfig struct {
 
 	// GridHighlightConfig A descriptor for the highlight appearance.
 	GridHighlightConfig *OverlayGridHighlightConfig `json:"gridHighlightConfig"`
+
+	// NodeID Identifier of the node to highlight.
+	NodeID DOMNodeID `json:"nodeId"`
+}
+
+// OverlayFlexNodeHighlightConfig ...
+type OverlayFlexNodeHighlightConfig struct {
+
+	// FlexContainerHighlightConfig A descriptor for the highlight appearance of flex containers.
+	FlexContainerHighlightConfig *OverlayFlexContainerHighlightConfig `json:"flexContainerHighlightConfig"`
 
 	// NodeID Identifier of the node to highlight.
 	NodeID DOMNodeID `json:"nodeId"`
@@ -11389,6 +11974,21 @@ func (m OverlaySetShowGridOverlays) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// OverlaySetShowFlexOverlays ...
+type OverlaySetShowFlexOverlays struct {
+
+	// FlexNodeHighlightConfigs An array of node identifiers and descriptors for the highlight appearance.
+	FlexNodeHighlightConfigs []*OverlayFlexNodeHighlightConfig `json:"flexNodeHighlightConfigs"`
+}
+
+// ProtoReq of the command
+func (m OverlaySetShowFlexOverlays) ProtoReq() string { return "Overlay.setShowFlexOverlays" }
+
+// Call of the command, sessionID is optional.
+func (m OverlaySetShowFlexOverlays) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // OverlaySetShowPaintRects Requests that backend shows paint rectangles
 type OverlaySetShowPaintRects struct {
 
@@ -11450,6 +12050,21 @@ func (m OverlaySetShowHitTestBorders) ProtoReq() string { return "Overlay.setSho
 
 // Call of the command, sessionID is optional.
 func (m OverlaySetShowHitTestBorders) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// OverlaySetShowWebVitals Request that backend shows an overlay with web vital metrics.
+type OverlaySetShowWebVitals struct {
+
+	// Show ...
+	Show bool `json:"show"`
+}
+
+// ProtoReq of the command
+func (m OverlaySetShowWebVitals) ProtoReq() string { return "Overlay.setShowWebVitals" }
+
+// Call of the command, sessionID is optional.
+func (m OverlaySetShowWebVitals) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -11579,6 +12194,23 @@ const (
 	PageCrossOriginIsolatedContextTypeNotIsolatedFeatureDisabled PageCrossOriginIsolatedContextType = "NotIsolatedFeatureDisabled"
 )
 
+// PageGatedAPIFeatures (experimental) ...
+type PageGatedAPIFeatures string
+
+const (
+	// PageGatedAPIFeaturesSharedArrayBuffers enum const
+	PageGatedAPIFeaturesSharedArrayBuffers PageGatedAPIFeatures = "SharedArrayBuffers"
+
+	// PageGatedAPIFeaturesSharedArrayBuffersTransferAllowed enum const
+	PageGatedAPIFeaturesSharedArrayBuffersTransferAllowed PageGatedAPIFeatures = "SharedArrayBuffersTransferAllowed"
+
+	// PageGatedAPIFeaturesPerformanceMeasureMemory enum const
+	PageGatedAPIFeaturesPerformanceMeasureMemory PageGatedAPIFeatures = "PerformanceMeasureMemory"
+
+	// PageGatedAPIFeaturesPerformanceProfile enum const
+	PageGatedAPIFeaturesPerformanceProfile PageGatedAPIFeatures = "PerformanceProfile"
+)
+
 // PageFrame Information about the Frame on the page.
 type PageFrame struct {
 
@@ -11623,6 +12255,9 @@ type PageFrame struct {
 
 	// CrossOriginIsolatedContextType (experimental) Indicates whether this is a cross origin isolated context.
 	CrossOriginIsolatedContextType PageCrossOriginIsolatedContextType `json:"crossOriginIsolatedContextType"`
+
+	// GatedAPIFeatures (experimental) Indicated which gated APIs / features are available.
+	GatedAPIFeatures []PageGatedAPIFeatures `json:"gatedAPIFeatures"`
 }
 
 // PageFrameResource (experimental) Information about the Resource on the page.
@@ -12087,6 +12722,9 @@ type PageCaptureScreenshot struct {
 
 	// FromSurface (experimental) (optional) Capture the screenshot from the surface, rather than the view. Defaults to true.
 	FromSurface bool `json:"fromSurface,omitempty"`
+
+	// CaptureBeyondViewport (experimental) (optional) Capture the screenshot beyond the viewport. Defaults to false.
+	CaptureBeyondViewport bool `json:"captureBeyondViewport,omitempty"`
 }
 
 // ProtoReq of the command
@@ -13271,11 +13909,25 @@ func (evt PageFrameClearedScheduledNavigation) ProtoEvent() string {
 	return "Page.frameClearedScheduledNavigation"
 }
 
+// PageFrameDetachedReason enum
+type PageFrameDetachedReason string
+
+const (
+	// PageFrameDetachedReasonRemove enum const
+	PageFrameDetachedReasonRemove PageFrameDetachedReason = "remove"
+
+	// PageFrameDetachedReasonSwap enum const
+	PageFrameDetachedReasonSwap PageFrameDetachedReason = "swap"
+)
+
 // PageFrameDetached Fired when frame has been detached from its parent.
 type PageFrameDetached struct {
 
 	// FrameID Id of the frame that has been detached.
 	FrameID PageFrameID `json:"frameId"`
+
+	// Reason (experimental) ...
+	Reason PageFrameDetachedReason `json:"reason"`
 }
 
 // ProtoEvent interface
@@ -13293,6 +13945,18 @@ type PageFrameNavigated struct {
 // ProtoEvent interface
 func (evt PageFrameNavigated) ProtoEvent() string {
 	return "Page.frameNavigated"
+}
+
+// PageDocumentOpened (experimental) Fired when opening document to write to.
+type PageDocumentOpened struct {
+
+	// Frame Frame object.
+	Frame *PageFrame `json:"frame"`
+}
+
+// ProtoEvent interface
+func (evt PageDocumentOpened) ProtoEvent() string {
+	return "Page.documentOpened"
 }
 
 // PageFrameResized (experimental) ...
@@ -13749,6 +14413,115 @@ type PerformanceMetrics struct {
 // ProtoEvent interface
 func (evt PerformanceMetrics) ProtoEvent() string {
 	return "Performance.metrics"
+}
+
+// PerformanceTimelineLargestContentfulPaint See https://github.com/WICG/LargestContentfulPaint and largest_contentful_paint.idl
+type PerformanceTimelineLargestContentfulPaint struct {
+
+	// RenderTime ...
+	RenderTime *TimeSinceEpoch `json:"renderTime"`
+
+	// LoadTime ...
+	LoadTime *TimeSinceEpoch `json:"loadTime"`
+
+	// Size The number of pixels being painted.
+	Size float64 `json:"size"`
+
+	// ElementID (optional) The id attribute of the element, if available.
+	ElementID string `json:"elementId,omitempty"`
+
+	// URL (optional) The URL of the image (may be trimmed).
+	URL string `json:"url,omitempty"`
+
+	// NodeID (optional) ...
+	NodeID DOMBackendNodeID `json:"nodeId,omitempty"`
+}
+
+// PerformanceTimelineLayoutShiftAttribution ...
+type PerformanceTimelineLayoutShiftAttribution struct {
+
+	// PreviousRect ...
+	PreviousRect *DOMRect `json:"previousRect"`
+
+	// CurrentRect ...
+	CurrentRect *DOMRect `json:"currentRect"`
+
+	// NodeID (optional) ...
+	NodeID DOMBackendNodeID `json:"nodeId,omitempty"`
+}
+
+// PerformanceTimelineLayoutShift See https://wicg.github.io/layout-instability/#sec-layout-shift and layout_shift.idl
+type PerformanceTimelineLayoutShift struct {
+
+	// Value Score increment produced by this event.
+	Value float64 `json:"value"`
+
+	// HadRecentInput ...
+	HadRecentInput bool `json:"hadRecentInput"`
+
+	// LastInputTime ...
+	LastInputTime *TimeSinceEpoch `json:"lastInputTime"`
+
+	// Sources ...
+	Sources []*PerformanceTimelineLayoutShiftAttribution `json:"sources"`
+}
+
+// PerformanceTimelineTimelineEvent ...
+type PerformanceTimelineTimelineEvent struct {
+
+	// FrameID Identifies the frame that this event is related to. Empty for non-frame targets.
+	FrameID PageFrameID `json:"frameId"`
+
+	// Type The event type, as specified in https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+	// This determines which of the optional "details" fiedls is present.
+	Type string `json:"type"`
+
+	// Name Name may be empty depending on the type.
+	Name string `json:"name"`
+
+	// Time Time in seconds since Epoch, monotonically increasing within document lifetime.
+	Time *TimeSinceEpoch `json:"time"`
+
+	// Duration (optional) Event duration, if applicable.
+	Duration float64 `json:"duration,omitempty"`
+
+	// LcpDetails (optional) ...
+	LcpDetails *PerformanceTimelineLargestContentfulPaint `json:"lcpDetails,omitempty"`
+
+	// LayoutShiftDetails (optional) ...
+	LayoutShiftDetails *PerformanceTimelineLayoutShift `json:"layoutShiftDetails,omitempty"`
+}
+
+// PerformanceTimelineEnable Previously buffered events would be reported before method returns.
+// See also: timelineEventAdded
+type PerformanceTimelineEnable struct {
+
+	// EventTypes The types of event to report, as specified in
+	// https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+	// The specified filter overrides any previous filters, passing empty
+	// filter disables recording.
+	// Note that not all types exposed to the web platform are currently supported.
+	EventTypes []string `json:"eventTypes"`
+}
+
+// ProtoReq of the command
+func (m PerformanceTimelineEnable) ProtoReq() string { return "PerformanceTimeline.enable" }
+
+// Call of the command, sessionID is optional.
+func (m PerformanceTimelineEnable) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// PerformanceTimelineTimelineEventAdded Sent when a performance timeline event is added. See reportPerformanceTimeline method.
+type PerformanceTimelineTimelineEventAdded struct {
+
+	// Event ...
+	Event *PerformanceTimelineTimelineEvent `json:"event"`
+}
+
+// ProtoEvent interface
+func (evt PerformanceTimelineTimelineEventAdded) ProtoEvent() string {
+	return "PerformanceTimeline.timelineEventAdded"
 }
 
 // SecurityCertificateID An internal certificate ID value.
@@ -14489,6 +15262,17 @@ type StorageUsageForType struct {
 	Usage float64 `json:"usage"`
 }
 
+// StorageTrustTokens (experimental) Pair of issuer origin and number of available (signed, but not used) Trust
+// Tokens from that issuer.
+type StorageTrustTokens struct {
+
+	// IssuerOrigin ...
+	IssuerOrigin string `json:"issuerOrigin"`
+
+	// Count ...
+	Count float64 `json:"count"`
+}
+
 // StorageClearDataForOrigin Clears storage for origin.
 type StorageClearDataForOrigin struct {
 
@@ -14683,6 +15467,28 @@ func (m StorageUntrackIndexedDBForOrigin) ProtoReq() string {
 // Call of the command, sessionID is optional.
 func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageGetTrustTokens (experimental) Returns the number of stored Trust Tokens per issuer for the
+// current browsing context.
+type StorageGetTrustTokens struct {
+}
+
+// ProtoReq of the command
+func (m StorageGetTrustTokens) ProtoReq() string { return "Storage.getTrustTokens" }
+
+// Call of the command, sessionID is optional.
+func (m StorageGetTrustTokens) Call(c Client) (*StorageGetTrustTokensResult, error) {
+	var res StorageGetTrustTokensResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// StorageGetTrustTokensResult (experimental) Returns the number of stored Trust Tokens per issuer for the
+// current browsing context.
+type StorageGetTrustTokensResult struct {
+
+	// Tokens ...
+	Tokens []*StorageTrustTokens `json:"tokens"`
 }
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
@@ -15606,6 +16412,22 @@ const (
 	TracingStreamCompressionGzip TracingStreamCompression = "gzip"
 )
 
+// TracingMemoryDumpLevelOfDetail Details exposed when memory request explicitly declared.
+// Keep consistent with memory_dump_request_args.h and
+// memory_instrumentation.mojom
+type TracingMemoryDumpLevelOfDetail string
+
+const (
+	// TracingMemoryDumpLevelOfDetailBackground enum const
+	TracingMemoryDumpLevelOfDetailBackground TracingMemoryDumpLevelOfDetail = "background"
+
+	// TracingMemoryDumpLevelOfDetailLight enum const
+	TracingMemoryDumpLevelOfDetailLight TracingMemoryDumpLevelOfDetail = "light"
+
+	// TracingMemoryDumpLevelOfDetailDetailed enum const
+	TracingMemoryDumpLevelOfDetailDetailed TracingMemoryDumpLevelOfDetail = "detailed"
+)
+
 // TracingEnd Stop trace events collection.
 type TracingEnd struct {
 }
@@ -15658,6 +16480,9 @@ type TracingRequestMemoryDump struct {
 
 	// Deterministic (optional) Enables more deterministic results by forcing garbage collection
 	Deterministic bool `json:"deterministic,omitempty"`
+
+	// LevelOfDetail (optional) Specifies level of details in memory dump. Defaults to "detailed".
+	LevelOfDetail TracingMemoryDumpLevelOfDetail `json:"levelOfDetail,omitempty"`
 }
 
 // ProtoReq of the command
@@ -15716,6 +16541,11 @@ type TracingStart struct {
 
 	// TraceConfig (optional) ...
 	TraceConfig *TracingTraceConfig `json:"traceConfig,omitempty"`
+
+	// PerfettoConfig (optional) Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+	// When specified, the parameters `categories`, `options`, `traceConfig`
+	// are ignored.
+	PerfettoConfig []byte `json:"perfettoConfig,omitempty"`
 }
 
 // ProtoReq of the command
@@ -16604,6 +17434,17 @@ const (
 	WebAuthnAuthenticatorProtocolCtap2 WebAuthnAuthenticatorProtocol = "ctap2"
 )
 
+// WebAuthnCtap2Version ...
+type WebAuthnCtap2Version string
+
+const (
+	// WebAuthnCtap2VersionCtap20 enum const
+	WebAuthnCtap2VersionCtap20 WebAuthnCtap2Version = "ctap2_0"
+
+	// WebAuthnCtap2VersionCtap21 enum const
+	WebAuthnCtap2VersionCtap21 WebAuthnCtap2Version = "ctap2_1"
+)
+
 // WebAuthnAuthenticatorTransport ...
 type WebAuthnAuthenticatorTransport string
 
@@ -16629,6 +17470,9 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 
 	// Protocol ...
 	Protocol WebAuthnAuthenticatorProtocol `json:"protocol"`
+
+	// Ctap2Version (optional) Defaults to ctap2_0. Ignored if |protocol| == u2f.
+	Ctap2Version WebAuthnCtap2Version `json:"ctap2Version,omitempty"`
 
 	// Transport ...
 	Transport WebAuthnAuthenticatorTransport `json:"transport"`
@@ -16677,6 +17521,10 @@ type WebAuthnCredential struct {
 	// assertion.
 	// See https://w3c.github.io/webauthn/#signature-counter
 	SignCount int `json:"signCount"`
+
+	// LargeBlob (optional) The large blob associated with the credential.
+	// See https://w3c.github.io/webauthn/#sctn-large-blob-extension
+	LargeBlob []byte `json:"largeBlob,omitempty"`
 }
 
 // WebAuthnEnable Enable the WebAuthn domain and start intercepting credential storage and
@@ -17526,38 +18374,6 @@ type DebuggerEvaluateOnCallFrameResult struct {
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
 }
 
-// DebuggerExecuteWasmEvaluator (experimental) Execute a Wasm Evaluator module on a given call frame.
-type DebuggerExecuteWasmEvaluator struct {
-
-	// CallFrameID WebAssembly call frame identifier to evaluate on.
-	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
-
-	// Evaluator Code of the evaluator module.
-	Evaluator []byte `json:"evaluator"`
-
-	// Timeout (experimental) (optional) Terminate execution after timing out (number of milliseconds).
-	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
-}
-
-// ProtoReq of the command
-func (m DebuggerExecuteWasmEvaluator) ProtoReq() string { return "Debugger.executeWasmEvaluator" }
-
-// Call of the command, sessionID is optional.
-func (m DebuggerExecuteWasmEvaluator) Call(c Client) (*DebuggerExecuteWasmEvaluatorResult, error) {
-	var res DebuggerExecuteWasmEvaluatorResult
-	return &res, call(m.ProtoReq(), m, &res, c)
-}
-
-// DebuggerExecuteWasmEvaluatorResult (experimental) Execute a Wasm Evaluator module on a given call frame.
-type DebuggerExecuteWasmEvaluatorResult struct {
-
-	// Result Object wrapper for the evaluation result.
-	Result *RuntimeRemoteObject `json:"result"`
-
-	// ExceptionDetails (optional) Exception details.
-	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
-}
-
 // DebuggerGetPossibleBreakpoints Returns possible locations for breakpoint. scriptId in start and end range locations should be
 // the same.
 type DebuggerGetPossibleBreakpoints struct {
@@ -18199,6 +19015,9 @@ const (
 
 	// DebuggerPausedReasonAssert enum const
 	DebuggerPausedReasonAssert DebuggerPausedReason = "assert"
+
+	// DebuggerPausedReasonCSPViolation enum const
+	DebuggerPausedReasonCSPViolation DebuggerPausedReason = "CSPViolation"
 
 	// DebuggerPausedReasonDebugCommand enum const
 	DebuggerPausedReasonDebugCommand DebuggerPausedReason = "debugCommand"
@@ -19262,9 +20081,6 @@ const (
 
 	// RuntimeRemoteObjectTypeBigint enum const
 	RuntimeRemoteObjectTypeBigint RuntimeRemoteObjectType = "bigint"
-
-	// RuntimeRemoteObjectTypeWasm enum const
-	RuntimeRemoteObjectTypeWasm RuntimeRemoteObjectType = "wasm"
 )
 
 // RuntimeRemoteObjectSubtype enum
@@ -19322,23 +20138,8 @@ const (
 	// RuntimeRemoteObjectSubtypeDataview enum const
 	RuntimeRemoteObjectSubtypeDataview RuntimeRemoteObjectSubtype = "dataview"
 
-	// RuntimeRemoteObjectSubtypeI32 enum const
-	RuntimeRemoteObjectSubtypeI32 RuntimeRemoteObjectSubtype = "i32"
-
-	// RuntimeRemoteObjectSubtypeI64 enum const
-	RuntimeRemoteObjectSubtypeI64 RuntimeRemoteObjectSubtype = "i64"
-
-	// RuntimeRemoteObjectSubtypeF32 enum const
-	RuntimeRemoteObjectSubtypeF32 RuntimeRemoteObjectSubtype = "f32"
-
-	// RuntimeRemoteObjectSubtypeF64 enum const
-	RuntimeRemoteObjectSubtypeF64 RuntimeRemoteObjectSubtype = "f64"
-
-	// RuntimeRemoteObjectSubtypeV128 enum const
-	RuntimeRemoteObjectSubtypeV128 RuntimeRemoteObjectSubtype = "v128"
-
-	// RuntimeRemoteObjectSubtypeExternref enum const
-	RuntimeRemoteObjectSubtypeExternref RuntimeRemoteObjectSubtype = "externref"
+	// RuntimeRemoteObjectSubtypeWebassemblymemory enum const
+	RuntimeRemoteObjectSubtypeWebassemblymemory RuntimeRemoteObjectSubtype = "webassemblymemory"
 )
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
@@ -19347,7 +20148,9 @@ type RuntimeRemoteObject struct {
 	// Type Object type.
 	Type RuntimeRemoteObjectType `json:"type"`
 
-	// Subtype (optional) Object subtype hint. Specified for `object` or `wasm` type values only.
+	// Subtype (optional) Object subtype hint. Specified for `object` type values only.
+	// NOTE: If you change anything here, make sure to also update
+	// `subtype` in `ObjectPreview` and `PropertyPreview` below.
 	Subtype RuntimeRemoteObjectSubtype `json:"subtype,omitempty"`
 
 	// ClassName (optional) Object class (constructor) name. Specified for `object` type values only.
@@ -19454,6 +20257,24 @@ const (
 
 	// RuntimeObjectPreviewSubtypeError enum const
 	RuntimeObjectPreviewSubtypeError RuntimeObjectPreviewSubtype = "error"
+
+	// RuntimeObjectPreviewSubtypeProxy enum const
+	RuntimeObjectPreviewSubtypeProxy RuntimeObjectPreviewSubtype = "proxy"
+
+	// RuntimeObjectPreviewSubtypePromise enum const
+	RuntimeObjectPreviewSubtypePromise RuntimeObjectPreviewSubtype = "promise"
+
+	// RuntimeObjectPreviewSubtypeTypedarray enum const
+	RuntimeObjectPreviewSubtypeTypedarray RuntimeObjectPreviewSubtype = "typedarray"
+
+	// RuntimeObjectPreviewSubtypeArraybuffer enum const
+	RuntimeObjectPreviewSubtypeArraybuffer RuntimeObjectPreviewSubtype = "arraybuffer"
+
+	// RuntimeObjectPreviewSubtypeDataview enum const
+	RuntimeObjectPreviewSubtypeDataview RuntimeObjectPreviewSubtype = "dataview"
+
+	// RuntimeObjectPreviewSubtypeWebassemblymemory enum const
+	RuntimeObjectPreviewSubtypeWebassemblymemory RuntimeObjectPreviewSubtype = "webassemblymemory"
 )
 
 // RuntimeObjectPreview (experimental) Object containing abbreviated remote object value.
@@ -19549,6 +20370,24 @@ const (
 
 	// RuntimePropertyPreviewSubtypeError enum const
 	RuntimePropertyPreviewSubtypeError RuntimePropertyPreviewSubtype = "error"
+
+	// RuntimePropertyPreviewSubtypeProxy enum const
+	RuntimePropertyPreviewSubtypeProxy RuntimePropertyPreviewSubtype = "proxy"
+
+	// RuntimePropertyPreviewSubtypePromise enum const
+	RuntimePropertyPreviewSubtypePromise RuntimePropertyPreviewSubtype = "promise"
+
+	// RuntimePropertyPreviewSubtypeTypedarray enum const
+	RuntimePropertyPreviewSubtypeTypedarray RuntimePropertyPreviewSubtype = "typedarray"
+
+	// RuntimePropertyPreviewSubtypeArraybuffer enum const
+	RuntimePropertyPreviewSubtypeArraybuffer RuntimePropertyPreviewSubtype = "arraybuffer"
+
+	// RuntimePropertyPreviewSubtypeDataview enum const
+	RuntimePropertyPreviewSubtypeDataview RuntimePropertyPreviewSubtype = "dataview"
+
+	// RuntimePropertyPreviewSubtypeWebassemblymemory enum const
+	RuntimePropertyPreviewSubtypeWebassemblymemory RuntimePropertyPreviewSubtype = "webassemblymemory"
 )
 
 // RuntimePropertyPreview (experimental) ...
@@ -19675,6 +20514,11 @@ type RuntimeExecutionContextDescription struct {
 
 	// Name Human readable name describing given context.
 	Name string `json:"name"`
+
+	// UniqueID (experimental) A system-unique execution context identifier. Unlike the id, this is unique across
+	// multiple processes, so can be reliably used to identify specific context while backend
+	// performs a cross-process navigation.
+	UniqueID string `json:"uniqueId"`
 
 	// AuxData (optional) Embedder-specific auxiliary data.
 	AuxData map[string]gson.JSON `json:"auxData,omitempty"`
@@ -19953,6 +20797,9 @@ type RuntimeEvaluate struct {
 
 	// ContextID (optional) Specifies in which execution context to perform evaluation. If the parameter is omitted the
 	// evaluation will be performed in the context of the inspected page.
+	// This is mutually exclusive with `uniqueContextId`, which offers an
+	// alternative way to identify the execution context that is more reliable
+	// in a multi-process environment.
 	ContextID RuntimeExecutionContextID `json:"contextId,omitempty"`
 
 	// ReturnByValue (optional) Whether the result is expected to be a JSON object that should be sent by value.
@@ -19988,6 +20835,14 @@ type RuntimeEvaluate struct {
 	// when called with non-callable arguments. This flag bypasses CSP for this
 	// evaluation and allows unsafe-eval. Defaults to true.
 	AllowUnsafeEvalBlockedByCSP bool `json:"allowUnsafeEvalBlockedByCSP,omitempty"`
+
+	// UniqueContextID (experimental) (optional) An alternative way to specify the execution context to evaluate in.
+	// Compared to contextId that may be reused across processes, this is guaranteed to be
+	// system-unique, so it can be used to prevent accidental evaluation of the expression
+	// in context different than intended (e.g. as a result of navigation across process
+	// boundaries).
+	// This is mutually exclusive with `contextId`.
+	UniqueContextID string `json:"uniqueContextId,omitempty"`
 }
 
 // ProtoReq of the command
@@ -20581,6 +21436,8 @@ var types = map[string]reflect.Type{
 	"Accessibility.getPartialAXTreeResult":               reflect.TypeOf(AccessibilityGetPartialAXTreeResult{}),
 	"Accessibility.getFullAXTree":                        reflect.TypeOf(AccessibilityGetFullAXTree{}),
 	"Accessibility.getFullAXTreeResult":                  reflect.TypeOf(AccessibilityGetFullAXTreeResult{}),
+	"Accessibility.getChildAXNodes":                      reflect.TypeOf(AccessibilityGetChildAXNodes{}),
+	"Accessibility.getChildAXNodesResult":                reflect.TypeOf(AccessibilityGetChildAXNodesResult{}),
 	"Accessibility.queryAXTree":                          reflect.TypeOf(AccessibilityQueryAXTree{}),
 	"Accessibility.queryAXTreeResult":                    reflect.TypeOf(AccessibilityQueryAXTreeResult{}),
 	"Animation.Animation":                                reflect.TypeOf(AnimationAnimation{}),
@@ -20624,6 +21481,8 @@ var types = map[string]reflect.Type{
 	"Audits.HeavyAdIssueDetails":                         reflect.TypeOf(AuditsHeavyAdIssueDetails{}),
 	"Audits.SourceCodeLocation":                          reflect.TypeOf(AuditsSourceCodeLocation{}),
 	"Audits.ContentSecurityPolicyIssueDetails":           reflect.TypeOf(AuditsContentSecurityPolicyIssueDetails{}),
+	"Audits.SharedArrayBufferIssueDetails":               reflect.TypeOf(AuditsSharedArrayBufferIssueDetails{}),
+	"Audits.TrustedWebActivityIssueDetails":              reflect.TypeOf(AuditsTrustedWebActivityIssueDetails{}),
 	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
 	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
 	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
@@ -20664,6 +21523,7 @@ var types = map[string]reflect.Type{
 	"Browser.getWindowForTargetResult":                   reflect.TypeOf(BrowserGetWindowForTargetResult{}),
 	"Browser.setWindowBounds":                            reflect.TypeOf(BrowserSetWindowBounds{}),
 	"Browser.setDockTile":                                reflect.TypeOf(BrowserSetDockTile{}),
+	"Browser.executeBrowserCommand":                      reflect.TypeOf(BrowserExecuteBrowserCommand{}),
 	"CSS.PseudoElementMatches":                           reflect.TypeOf(CSSPseudoElementMatches{}),
 	"CSS.InheritedStyleEntry":                            reflect.TypeOf(CSSInheritedStyleEntry{}),
 	"CSS.RuleMatch":                                      reflect.TypeOf(CSSRuleMatch{}),
@@ -20853,6 +21713,7 @@ var types = map[string]reflect.Type{
 	"DOMDebugger.removeEventListenerBreakpoint":          reflect.TypeOf(DOMDebuggerRemoveEventListenerBreakpoint{}),
 	"DOMDebugger.removeInstrumentationBreakpoint":        reflect.TypeOf(DOMDebuggerRemoveInstrumentationBreakpoint{}),
 	"DOMDebugger.removeXHRBreakpoint":                    reflect.TypeOf(DOMDebuggerRemoveXHRBreakpoint{}),
+	"DOMDebugger.setBreakOnCSPViolation":                 reflect.TypeOf(DOMDebuggerSetBreakOnCSPViolation{}),
 	"DOMDebugger.setDOMBreakpoint":                       reflect.TypeOf(DOMDebuggerSetDOMBreakpoint{}),
 	"DOMDebugger.setEventListenerBreakpoint":             reflect.TypeOf(DOMDebuggerSetEventListenerBreakpoint{}),
 	"DOMDebugger.setInstrumentationBreakpoint":           reflect.TypeOf(DOMDebuggerSetInstrumentationBreakpoint{}),
@@ -20929,6 +21790,7 @@ var types = map[string]reflect.Type{
 	"Emulation.setLocaleOverride":                        reflect.TypeOf(EmulationSetLocaleOverride{}),
 	"Emulation.setTimezoneOverride":                      reflect.TypeOf(EmulationSetTimezoneOverride{}),
 	"Emulation.setVisibleSize":                           reflect.TypeOf(EmulationSetVisibleSize{}),
+	"Emulation.setDisabledImageTypes":                    reflect.TypeOf(EmulationSetDisabledImageTypes{}),
 	"Emulation.setUserAgentOverride":                     reflect.TypeOf(EmulationSetUserAgentOverride{}),
 	"Emulation.virtualTimeBudgetExpired":                 reflect.TypeOf(EmulationVirtualTimeBudgetExpired{}),
 	"HeadlessExperimental.ScreenshotParams":              reflect.TypeOf(HeadlessExperimentalScreenshotParams{}),
@@ -21028,6 +21890,7 @@ var types = map[string]reflect.Type{
 	"Network.Request":                                       reflect.TypeOf(NetworkRequest{}),
 	"Network.SignedCertificateTimestamp":                    reflect.TypeOf(NetworkSignedCertificateTimestamp{}),
 	"Network.SecurityDetails":                               reflect.TypeOf(NetworkSecurityDetails{}),
+	"Network.CorsErrorStatus":                               reflect.TypeOf(NetworkCorsErrorStatus{}),
 	"Network.TrustTokenParams":                              reflect.TypeOf(NetworkTrustTokenParams{}),
 	"Network.Response":                                      reflect.TypeOf(NetworkResponse{}),
 	"Network.WebSocketRequest":                              reflect.TypeOf(NetworkWebSocketRequest{}),
@@ -21046,6 +21909,7 @@ var types = map[string]reflect.Type{
 	"Network.SignedExchangeHeader":                          reflect.TypeOf(NetworkSignedExchangeHeader{}),
 	"Network.SignedExchangeError":                           reflect.TypeOf(NetworkSignedExchangeError{}),
 	"Network.SignedExchangeInfo":                            reflect.TypeOf(NetworkSignedExchangeInfo{}),
+	"Network.ClientSecurityState":                           reflect.TypeOf(NetworkClientSecurityState{}),
 	"Network.CrossOriginOpenerPolicyStatus":                 reflect.TypeOf(NetworkCrossOriginOpenerPolicyStatus{}),
 	"Network.CrossOriginEmbedderPolicyStatus":               reflect.TypeOf(NetworkCrossOriginEmbedderPolicyStatus{}),
 	"Network.SecurityIsolationStatus":                       reflect.TypeOf(NetworkSecurityIsolationStatus{}),
@@ -21089,7 +21953,7 @@ var types = map[string]reflect.Type{
 	"Network.setCookies":                                    reflect.TypeOf(NetworkSetCookies{}),
 	"Network.setDataSizeLimitsForTest":                      reflect.TypeOf(NetworkSetDataSizeLimitsForTest{}),
 	"Network.setExtraHTTPHeaders":                           reflect.TypeOf(NetworkSetExtraHTTPHeaders{}),
-	"Network.setAttachDebugHeader":                          reflect.TypeOf(NetworkSetAttachDebugHeader{}),
+	"Network.setAttachDebugStack":                           reflect.TypeOf(NetworkSetAttachDebugStack{}),
 	"Network.setRequestInterception":                        reflect.TypeOf(NetworkSetRequestInterception{}),
 	"Network.setUserAgentOverride":                          reflect.TypeOf(NetworkSetUserAgentOverride{}),
 	"Network.getSecurityIsolationStatus":                    reflect.TypeOf(NetworkGetSecurityIsolationStatus{}),
@@ -21113,12 +21977,20 @@ var types = map[string]reflect.Type{
 	"Network.webSocketFrameSent":                            reflect.TypeOf(NetworkWebSocketFrameSent{}),
 	"Network.webSocketHandshakeResponseReceived":            reflect.TypeOf(NetworkWebSocketHandshakeResponseReceived{}),
 	"Network.webSocketWillSendHandshakeRequest":             reflect.TypeOf(NetworkWebSocketWillSendHandshakeRequest{}),
+	"Network.webTransportCreated":                           reflect.TypeOf(NetworkWebTransportCreated{}),
+	"Network.webTransportConnectionEstablished":             reflect.TypeOf(NetworkWebTransportConnectionEstablished{}),
+	"Network.webTransportClosed":                            reflect.TypeOf(NetworkWebTransportClosed{}),
 	"Network.requestWillBeSentExtraInfo":                    reflect.TypeOf(NetworkRequestWillBeSentExtraInfo{}),
 	"Network.responseReceivedExtraInfo":                     reflect.TypeOf(NetworkResponseReceivedExtraInfo{}),
+	"Network.trustTokenOperationDone":                       reflect.TypeOf(NetworkTrustTokenOperationDone{}),
 	"Overlay.SourceOrderConfig":                             reflect.TypeOf(OverlaySourceOrderConfig{}),
 	"Overlay.GridHighlightConfig":                           reflect.TypeOf(OverlayGridHighlightConfig{}),
+	"Overlay.FlexContainerHighlightConfig":                  reflect.TypeOf(OverlayFlexContainerHighlightConfig{}),
+	"Overlay.LineStyle":                                     reflect.TypeOf(OverlayLineStyle{}),
+	"Overlay.BoxStyle":                                      reflect.TypeOf(OverlayBoxStyle{}),
 	"Overlay.HighlightConfig":                               reflect.TypeOf(OverlayHighlightConfig{}),
 	"Overlay.GridNodeHighlightConfig":                       reflect.TypeOf(OverlayGridNodeHighlightConfig{}),
+	"Overlay.FlexNodeHighlightConfig":                       reflect.TypeOf(OverlayFlexNodeHighlightConfig{}),
 	"Overlay.HingeConfig":                                   reflect.TypeOf(OverlayHingeConfig{}),
 	"Overlay.disable":                                       reflect.TypeOf(OverlayDisable{}),
 	"Overlay.enable":                                        reflect.TypeOf(OverlayEnable{}),
@@ -21140,10 +22012,12 @@ var types = map[string]reflect.Type{
 	"Overlay.setShowDebugBorders":                           reflect.TypeOf(OverlaySetShowDebugBorders{}),
 	"Overlay.setShowFPSCounter":                             reflect.TypeOf(OverlaySetShowFPSCounter{}),
 	"Overlay.setShowGridOverlays":                           reflect.TypeOf(OverlaySetShowGridOverlays{}),
+	"Overlay.setShowFlexOverlays":                           reflect.TypeOf(OverlaySetShowFlexOverlays{}),
 	"Overlay.setShowPaintRects":                             reflect.TypeOf(OverlaySetShowPaintRects{}),
 	"Overlay.setShowLayoutShiftRegions":                     reflect.TypeOf(OverlaySetShowLayoutShiftRegions{}),
 	"Overlay.setShowScrollBottleneckRects":                  reflect.TypeOf(OverlaySetShowScrollBottleneckRects{}),
 	"Overlay.setShowHitTestBorders":                         reflect.TypeOf(OverlaySetShowHitTestBorders{}),
+	"Overlay.setShowWebVitals":                              reflect.TypeOf(OverlaySetShowWebVitals{}),
 	"Overlay.setShowViewportSizeOnResize":                   reflect.TypeOf(OverlaySetShowViewportSizeOnResize{}),
 	"Overlay.setShowHinge":                                  reflect.TypeOf(OverlaySetShowHinge{}),
 	"Overlay.inspectNodeRequested":                          reflect.TypeOf(OverlayInspectNodeRequested{}),
@@ -21242,6 +22116,7 @@ var types = map[string]reflect.Type{
 	"Page.frameClearedScheduledNavigation":                  reflect.TypeOf(PageFrameClearedScheduledNavigation{}),
 	"Page.frameDetached":                                    reflect.TypeOf(PageFrameDetached{}),
 	"Page.frameNavigated":                                   reflect.TypeOf(PageFrameNavigated{}),
+	"Page.documentOpened":                                   reflect.TypeOf(PageDocumentOpened{}),
 	"Page.frameResized":                                     reflect.TypeOf(PageFrameResized{}),
 	"Page.frameRequestedNavigation":                         reflect.TypeOf(PageFrameRequestedNavigation{}),
 	"Page.frameScheduledNavigation":                         reflect.TypeOf(PageFrameScheduledNavigation{}),
@@ -21267,6 +22142,12 @@ var types = map[string]reflect.Type{
 	"Performance.getMetrics":                                reflect.TypeOf(PerformanceGetMetrics{}),
 	"Performance.getMetricsResult":                          reflect.TypeOf(PerformanceGetMetricsResult{}),
 	"Performance.metrics":                                   reflect.TypeOf(PerformanceMetrics{}),
+	"PerformanceTimeline.LargestContentfulPaint":            reflect.TypeOf(PerformanceTimelineLargestContentfulPaint{}),
+	"PerformanceTimeline.LayoutShiftAttribution":            reflect.TypeOf(PerformanceTimelineLayoutShiftAttribution{}),
+	"PerformanceTimeline.LayoutShift":                       reflect.TypeOf(PerformanceTimelineLayoutShift{}),
+	"PerformanceTimeline.TimelineEvent":                     reflect.TypeOf(PerformanceTimelineTimelineEvent{}),
+	"PerformanceTimeline.enable":                            reflect.TypeOf(PerformanceTimelineEnable{}),
+	"PerformanceTimeline.timelineEventAdded":                reflect.TypeOf(PerformanceTimelineTimelineEventAdded{}),
 	"Security.CertificateSecurityState":                     reflect.TypeOf(SecurityCertificateSecurityState{}),
 	"Security.SafetyTipInfo":                                reflect.TypeOf(SecuritySafetyTipInfo{}),
 	"Security.VisibleSecurityState":                         reflect.TypeOf(SecurityVisibleSecurityState{}),
@@ -21300,6 +22181,7 @@ var types = map[string]reflect.Type{
 	"ServiceWorker.workerRegistrationUpdated":               reflect.TypeOf(ServiceWorkerWorkerRegistrationUpdated{}),
 	"ServiceWorker.workerVersionUpdated":                    reflect.TypeOf(ServiceWorkerWorkerVersionUpdated{}),
 	"Storage.UsageForType":                                  reflect.TypeOf(StorageUsageForType{}),
+	"Storage.TrustTokens":                                   reflect.TypeOf(StorageTrustTokens{}),
 	"Storage.clearDataForOrigin":                            reflect.TypeOf(StorageClearDataForOrigin{}),
 	"Storage.getCookies":                                    reflect.TypeOf(StorageGetCookies{}),
 	"Storage.getCookiesResult":                              reflect.TypeOf(StorageGetCookiesResult{}),
@@ -21312,6 +22194,8 @@ var types = map[string]reflect.Type{
 	"Storage.trackIndexedDBForOrigin":                       reflect.TypeOf(StorageTrackIndexedDBForOrigin{}),
 	"Storage.untrackCacheStorageForOrigin":                  reflect.TypeOf(StorageUntrackCacheStorageForOrigin{}),
 	"Storage.untrackIndexedDBForOrigin":                     reflect.TypeOf(StorageUntrackIndexedDBForOrigin{}),
+	"Storage.getTrustTokens":                                reflect.TypeOf(StorageGetTrustTokens{}),
+	"Storage.getTrustTokensResult":                          reflect.TypeOf(StorageGetTrustTokensResult{}),
 	"Storage.cacheStorageContentUpdated":                    reflect.TypeOf(StorageCacheStorageContentUpdated{}),
 	"Storage.cacheStorageListUpdated":                       reflect.TypeOf(StorageCacheStorageListUpdated{}),
 	"Storage.indexedDBContentUpdated":                       reflect.TypeOf(StorageIndexedDBContentUpdated{}),
@@ -21458,8 +22342,6 @@ var types = map[string]reflect.Type{
 	"Debugger.enableResult":                                 reflect.TypeOf(DebuggerEnableResult{}),
 	"Debugger.evaluateOnCallFrame":                          reflect.TypeOf(DebuggerEvaluateOnCallFrame{}),
 	"Debugger.evaluateOnCallFrameResult":                    reflect.TypeOf(DebuggerEvaluateOnCallFrameResult{}),
-	"Debugger.executeWasmEvaluator":                         reflect.TypeOf(DebuggerExecuteWasmEvaluator{}),
-	"Debugger.executeWasmEvaluatorResult":                   reflect.TypeOf(DebuggerExecuteWasmEvaluatorResult{}),
 	"Debugger.getPossibleBreakpoints":                       reflect.TypeOf(DebuggerGetPossibleBreakpoints{}),
 	"Debugger.getPossibleBreakpointsResult":                 reflect.TypeOf(DebuggerGetPossibleBreakpointsResult{}),
 	"Debugger.getScriptSource":                              reflect.TypeOf(DebuggerGetScriptSource{}),

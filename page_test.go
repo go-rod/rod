@@ -128,13 +128,8 @@ func (t T) PageCloseCancel() {
 	}()
 	t.Eq(page.Close().Error(), "page close canceled")
 
-	// TODO: this is a bug of chrome, it should not kill the target only in headless mode
-	if !t.browser.Headless() {
-		w, h := page.MustHandleDialog()
-		go page.MustClose()
-		w()
-		h(true, "")
-	}
+	page.MustEval(`window.onbeforeunload = null`)
+	page.MustClose()
 }
 
 func (t T) LoadState() {
@@ -768,4 +763,19 @@ func (t T) PageUseNonExistSession() {
 	p := t.browser.PageFromSession("nonexist").Timeout(300 * time.Millisecond)
 	err := proto.PageClose{}.Call(p)
 	t.Is(err, context.DeadlineExceeded)
+}
+
+func (t T) PageElementFromObjectErr() {
+	p := t.newPage(t.srcFile("./fixtures/click.html"))
+	utils.Sleep(0.1)
+	res, err := proto.DOMGetNodeForLocation{X: 10, Y: 10}.Call(p)
+	t.E(err)
+
+	obj, err := proto.DOMResolveNode{
+		BackendNodeID: res.BackendNodeID,
+	}.Call(p)
+	t.E(err)
+
+	t.mc.stubErr(1, proto.RuntimeEvaluate{})
+	t.Err(p.ElementFromObject(obj.Object))
 }

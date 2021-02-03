@@ -149,10 +149,7 @@ func (p *Page) Evaluate(opts *EvalOptions) (res *proto.RuntimeRemoteObject, err 
 				_ = backoff(p.ctx)
 			}
 
-			err := p.updateJSCtxID()
-			if err != nil {
-				return nil, err
-			}
+			p.unsetJSCtxID()
 
 			continue
 		}
@@ -175,7 +172,10 @@ func (p *Page) evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	}
 
 	if opts.ThisObj == nil {
-		req.ObjectID = p.getJSCtxID()
+		req.ObjectID, err = p.getJSCtxID()
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		req.ObjectID = opts.ThisObj.ObjectID
 	}
@@ -237,29 +237,6 @@ func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (sto
 	return
 }
 
-func (p *Page) initSession() error {
-	session, err := proto.TargetAttachToTarget{
-		TargetID: p.TargetID,
-		Flatten:  true, // if it's not set no response will return
-	}.Call(p)
-	if err != nil {
-		return err
-	}
-	p.SessionID = session.SessionID
-
-	// If we don't enable it, it will cause a lot of unexpected browser behavior.
-	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
-	p.EnableDomain(&proto.PageEnable{})
-
-	// If we don't enable it, it will remove remote node id whenever we disable the domain
-	// even after we re-enable it again we can't query the ids any more.
-	p.EnableDomain(&proto.DOMEnable{})
-
-	p.FrameID = proto.PageFrameID(p.TargetID)
-
-	return p.updateJSCtxID()
-}
-
 func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, error) {
 	formated := []*proto.RuntimeCallArgument{}
 	for _, arg := range opts.JSArgs {
@@ -271,9 +248,7 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 	}
 
 	if opts.jsHelper != nil {
-		p.jsCtxLock.Lock()
 		id, err := p.ensureJSHelper(opts.jsHelper)
-		p.jsCtxLock.Unlock()
 		if err != nil {
 			return nil, err
 		}
@@ -285,20 +260,25 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 }
 
 func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, error) {
+	jsCtxID, err := p.getJSCtxID()
+	if err != nil {
+		return "", err
+	}
+
 	if p.helpers == nil {
 		p.helpers = map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID{}
 	}
 
-	list, ok := p.helpers[*p.jsCtxID]
+	list, ok := p.helpers[jsCtxID]
 	if !ok {
 		list = map[string]proto.RuntimeRemoteObjectID{}
-		p.helpers[*p.jsCtxID] = list
+		p.helpers[jsCtxID] = list
 	}
 
 	fns, has := list[js.Functions.Name]
 	if !has {
 		res, err := proto.RuntimeCallFunctionOn{
-			ObjectID:            *p.jsCtxID,
+			ObjectID:            jsCtxID,
 			FunctionDeclaration: js.Functions.Definition,
 		}.Call(p)
 		if err != nil {
@@ -318,7 +298,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		}
 
 		res, err := proto.RuntimeCallFunctionOn{
-			ObjectID:  *p.jsCtxID,
+			ObjectID:  jsCtxID,
 			Arguments: []*proto.RuntimeCallArgument{{ObjectID: fns}},
 
 			FunctionDeclaration: fmt.Sprintf(
@@ -339,48 +319,51 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 	return id, nil
 }
 
-func (p *Page) getJSCtxID() proto.RuntimeRemoteObjectID {
+func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 	p.jsCtxLock.Lock()
 	defer p.jsCtxLock.Unlock()
-	return *p.jsCtxID
-}
 
-func (p *Page) updateJSCtxID() error {
+	if *p.jsCtxID != "" {
+		return *p.jsCtxID, nil
+	}
+
 	if !p.IsIframe() {
 		obj, err := proto.RuntimeEvaluate{Expression: "window"}.Call(p)
 		if err != nil {
-			return err
+			return "", err
 		}
 
-		p.jsCtxLock.Lock()
 		*p.jsCtxID = obj.Result.ObjectID
 		p.helpers = nil
-		p.jsCtxLock.Unlock()
-		return nil
+		return *p.jsCtxID, nil
 	}
 
 	owner, err := proto.DOMGetFrameOwner{FrameID: p.FrameID}.Call(p)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	node, err := proto.DOMDescribeNode{BackendNodeID: owner.BackendNodeID, Pierce: true}.Call(p)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	obj, err := proto.DOMResolveNode{BackendNodeID: node.Node.ContentDocument.BackendNodeID}.Call(p)
 	if err != nil {
-		return err
+		return "", err
 	}
-
-	p.jsCtxLock.Lock()
-	defer p.jsCtxLock.Unlock()
 
 	delete(p.helpers, *p.jsCtxID)
 	id, err := p.jsCtxIDByObjectID(obj.Object.ObjectID)
 	*p.jsCtxID = id
-	return err
+	return *p.jsCtxID, err
+}
+
+func (p *Page) unsetJSCtxID() {
+	p.jsCtxLock.Lock()
+	defer p.jsCtxLock.Unlock()
+
+	*p.jsCtxID = ""
 }
 
 func (p *Page) jsCtxIDByObjectID(id proto.RuntimeRemoteObjectID) (proto.RuntimeRemoteObjectID, error) {

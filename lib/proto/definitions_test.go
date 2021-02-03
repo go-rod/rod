@@ -30,6 +30,12 @@ func (t T) AccessibilityGetFullAXTree() {
 	t.Nil(err)
 }
 
+func (t T) AccessibilityGetChildAXNodes() {
+	c := &Client{}
+	_, err := proto.AccessibilityGetChildAXNodes{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) AccessibilityQueryAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityQueryAXTree{}.Call(c)
@@ -289,6 +295,12 @@ func (t T) BrowserSetWindowBounds() {
 func (t T) BrowserSetDockTile() {
 	c := &Client{}
 	err := proto.BrowserSetDockTile{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) BrowserExecuteBrowserCommand() {
+	c := &Client{}
+	err := proto.BrowserExecuteBrowserCommand{}.Call(c)
 	t.Nil(err)
 }
 
@@ -913,6 +925,12 @@ func (t T) DOMDebuggerRemoveXHRBreakpoint() {
 	t.Nil(err)
 }
 
+func (t T) DOMDebuggerSetBreakOnCSPViolation() {
+	c := &Client{}
+	err := proto.DOMDebuggerSetBreakOnCSPViolation{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMDebuggerSetDOMBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetDOMBreakpoint{}.Call(c)
@@ -1199,6 +1217,12 @@ func (t T) EmulationSetTimezoneOverride() {
 func (t T) EmulationSetVisibleSize() {
 	c := &Client{}
 	err := proto.EmulationSetVisibleSize{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetDisabledImageTypes() {
+	c := &Client{}
+	err := proto.EmulationSetDisabledImageTypes{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1704,9 +1728,9 @@ func (t T) NetworkSetExtraHTTPHeaders() {
 	t.Nil(err)
 }
 
-func (t T) NetworkSetAttachDebugHeader() {
+func (t T) NetworkSetAttachDebugStack() {
 	c := &Client{}
-	err := proto.NetworkSetAttachDebugHeader{}.Call(c)
+	err := proto.NetworkSetAttachDebugStack{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1819,6 +1843,21 @@ func (t T) NetworkWebSocketWillSendHandshakeRequest() {
 	e.ProtoEvent()
 }
 
+func (t T) NetworkWebTransportCreated() {
+	e := proto.NetworkWebTransportCreated{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkWebTransportConnectionEstablished() {
+	e := proto.NetworkWebTransportConnectionEstablished{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkWebTransportClosed() {
+	e := proto.NetworkWebTransportClosed{}
+	e.ProtoEvent()
+}
+
 func (t T) NetworkRequestWillBeSentExtraInfo() {
 	e := proto.NetworkRequestWillBeSentExtraInfo{}
 	e.ProtoEvent()
@@ -1826,6 +1865,11 @@ func (t T) NetworkRequestWillBeSentExtraInfo() {
 
 func (t T) NetworkResponseReceivedExtraInfo() {
 	e := proto.NetworkResponseReceivedExtraInfo{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkTrustTokenOperationDone() {
+	e := proto.NetworkTrustTokenOperationDone{}
 	e.ProtoEvent()
 }
 
@@ -1931,6 +1975,12 @@ func (t T) OverlaySetShowGridOverlays() {
 	t.Nil(err)
 }
 
+func (t T) OverlaySetShowFlexOverlays() {
+	c := &Client{}
+	err := proto.OverlaySetShowFlexOverlays{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) OverlaySetShowPaintRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowPaintRects{}.Call(c)
@@ -1952,6 +2002,12 @@ func (t T) OverlaySetShowScrollBottleneckRects() {
 func (t T) OverlaySetShowHitTestBorders() {
 	c := &Client{}
 	err := proto.OverlaySetShowHitTestBorders{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) OverlaySetShowWebVitals() {
+	c := &Client{}
+	err := proto.OverlaySetShowWebVitals{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2341,6 +2397,11 @@ func (t T) PageFrameNavigated() {
 	e.ProtoEvent()
 }
 
+func (t T) PageDocumentOpened() {
+	e := proto.PageDocumentOpened{}
+	e.ProtoEvent()
+}
+
 func (t T) PageFrameResized() {
 	e := proto.PageFrameResized{}
 	e.ProtoEvent()
@@ -2457,6 +2518,17 @@ func (t T) PerformanceGetMetrics() {
 
 func (t T) PerformanceMetrics() {
 	e := proto.PerformanceMetrics{}
+	e.ProtoEvent()
+}
+
+func (t T) PerformanceTimelineEnable() {
+	c := &Client{}
+	err := proto.PerformanceTimelineEnable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PerformanceTimelineTimelineEventAdded() {
+	e := proto.PerformanceTimelineTimelineEventAdded{}
 	e.ProtoEvent()
 }
 
@@ -2655,6 +2727,12 @@ func (t T) StorageUntrackCacheStorageForOrigin() {
 func (t T) StorageUntrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackIndexedDBForOrigin{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageGetTrustTokens() {
+	c := &Client{}
+	_, err := proto.StorageGetTrustTokens{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3171,12 +3249,6 @@ func (t T) DebuggerEnable() {
 func (t T) DebuggerEvaluateOnCallFrame() {
 	c := &Client{}
 	_, err := proto.DebuggerEvaluateOnCallFrame{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) DebuggerExecuteWasmEvaluator() {
-	c := &Client{}
-	_, err := proto.DebuggerExecuteWasmEvaluator{}.Call(c)
 	t.Nil(err)
 }
 

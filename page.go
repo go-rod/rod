@@ -150,7 +150,9 @@ func (p *Page) Navigate(url string) error {
 		return &ErrNavigation{res.ErrorText}
 	}
 
-	return p.root.updateJSCtxID()
+	p.root.unsetJSCtxID()
+
+	return nil
 }
 
 // NavigateBack history.
@@ -183,7 +185,10 @@ func (p *Page) Reload() error {
 	}
 
 	wait()
-	return p.updateJSCtxID()
+
+	p.unsetJSCtxID()
+
+	return nil
 }
 
 // Activate (focuses) the page
@@ -278,7 +283,7 @@ func (p *Page) Close() error {
 			stop = destroyed.TargetID == p.TargetID
 		} else if msg.SessionID == p.SessionID && msg.Load(&closed) {
 			success = closed.Result
-			stop = !p.browser.headless && !success
+			stop = !success
 		}
 
 		if stop {
@@ -613,7 +618,12 @@ func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) (*Element, erro
 		return nil, err
 	}
 
-	if id != p.getJSCtxID() {
+	pid, err := p.getJSCtxID()
+	if err != nil {
+		return nil, err
+	}
+
+	if id != pid {
 		clone := *p
 		clone.jsCtxID = &id
 		p = &clone
