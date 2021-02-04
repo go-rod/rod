@@ -309,20 +309,6 @@ func (p *Page) MustWaitOpen() (wait func() (newPage *Page)) {
 	}
 }
 
-// MustWaitPauseOpen is similar to WaitPauseOpen
-func (p *Page) MustWaitPauseOpen() (wait func() (p *Page, resume func())) {
-	w, err := p.WaitPauseOpen()
-	utils.E(err)
-
-	return func() (*Page, func()) {
-		page, resume, err := w()
-		utils.E(err)
-		return page, func() {
-			utils.E(resume())
-		}
-	}
-}
-
 // MustWaitNavigation is similar to WaitNavigation
 func (p *Page) MustWaitNavigation() func() {
 	return p.WaitNavigation(proto.PageLifecycleEventNameNetworkAlmostIdle)

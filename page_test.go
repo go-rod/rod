@@ -267,41 +267,6 @@ func (t T) PageWaitOpen() {
 	t.Eq("new page", newPage.MustEval("window.a").String())
 }
 
-func (t T) PageWaitPauseOpen() {
-	page := t.newPage(t.srcFile("fixtures/open-page.html"))
-
-	wait := page.MustWaitPauseOpen()
-
-	go page.MustElement("a").MustClick()
-
-	pageA, resume := wait()
-	pageA.MustEvalOnNewDocument(`window.a = 'ok'`)
-	resume()
-	t.Eq("ok", pageA.MustWaitLoad().MustEval(`window.a`).String())
-	pageA.MustClose()
-
-	w := page.MustWaitOpen()
-	page.MustElement("a").MustClick()
-	pageB := w()
-	pageB.MustWait(`window.a == 'new page'`)
-	pageB.MustClose()
-
-	{ // enable TargetSetAutoAttach err
-		t.mc.stubErr(1, proto.TargetSetAutoAttach{})
-		t.Err(t.page.WaitPauseOpen())
-	}
-	{ // disable TargetSetAutoAttach err
-		p := t.page.MustNavigate(t.srcFile("fixtures/open-page.html"))
-		wait, _ := p.WaitPauseOpen()
-		go p.MustElement("a").MustClick()
-		newP, resume, _ := wait()
-		t.mc.stubErr(1, proto.TargetSetAutoAttach{})
-		t.Err(resume())
-		t.Nil(resume())
-		newP.MustWaitLoad().MustClose()
-	}
-}
-
 func (t T) PageWait() {
 	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	page.MustWait(`document.querySelector('button') !== null`)
