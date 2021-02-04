@@ -285,6 +285,12 @@ func (t T) Input() {
 	text := "雲の上は\nいつも晴れ"
 
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
+
+	{
+		el := p.MustElement("[contenteditable=true]").MustInput(text)
+		t.Eq(text, el.MustText())
+	}
+
 	el := p.MustElement("textarea")
 	el.MustInput(text)
 
