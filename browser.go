@@ -161,7 +161,7 @@ func (b *Browser) Connect() error {
 	}
 
 	if b.monitor != "" {
-		launcher.NewBrowser().Open(b.ServeMonitor(b.monitor))
+		launcher.MustOpen(b.ServeMonitor(b.monitor))
 	}
 
 	return nil

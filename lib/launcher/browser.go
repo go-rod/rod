@@ -44,6 +44,14 @@ type Browser struct {
 	// Log to print output
 	Logger io.Writer
 
+	// ExecSearchMap is the candidate paths for broweser executable.
+	// Sample value:
+	//     {
+	//     	"linux": {
+	//     		"chromium-browser",
+	//     		"/usr/bin/google-chrome",
+	//     	}
+	//     }
 	ExecSearchMap map[string][]string
 
 	// Lock a tcp port to prevent race downloading. Default is 2968 .
@@ -53,33 +61,39 @@ type Browser struct {
 // NewBrowser with default values
 func NewBrowser() *Browser {
 	return &Browser{
-		Context:  context.Background(),
-		Revision: DefaultRevision,
-		Hosts:    []string{HostGoogle, HostTaobao},
-		Dir:      filepath.Join(os.TempDir(), "rod"),
-		Logger:   os.Stdout,
-		ExecSearchMap: map[string][]string{
-			"darwin": {
-				"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-				"/Applications/Chromium.app/Contents/MacOS/Chromium",
-			},
-			"linux": {
-				"chromium",
-				"chromium-browser",
-				"google-chrome",
-				"/usr/bin/google-chrome",
-			},
-			"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
-				`Google\Chrome\Application\chrome.exe`,
-				`Microsoft\Edge\Application\msedge.exe`,
-			)...),
-		},
-		Lock: defaults.Lock,
+		Context:       context.Background(),
+		Revision:      DefaultRevision,
+		Hosts:         []string{HostGoogle, HostTaobao},
+		Dir:           filepath.Join(os.TempDir(), "rod"),
+		Logger:        os.Stdout,
+		ExecSearchMap: map[string][]string{},
+		Lock:          defaults.Lock,
 	}
 }
 
-// ExecPath of the chromium executable
-func (lc *Browser) ExecPath() string {
+// SearchGlobal will set the ExecSearchMap to often used paths for each OS.
+func (lc *Browser) SearchGlobal() *Browser {
+	lc.ExecSearchMap = map[string][]string{
+		"darwin": {
+			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+			"/Applications/Chromium.app/Contents/MacOS/Chromium",
+		},
+		"linux": {
+			"chromium",
+			"chromium-browser",
+			"google-chrome",
+			"/usr/bin/google-chrome",
+		},
+		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
+			`Google\Chrome\Application\chrome.exe`,
+			`Microsoft\Edge\Application\msedge.exe`,
+		)...),
+	}
+	return lc
+}
+
+// Destination of the downloaded browser executable
+func (lc *Browser) Destination() string {
 	bin := map[string]string{
 		"darwin":  fmt.Sprintf("chromium-%d/chrome-mac/Chromium.app/Contents/MacOS/Chromium", lc.Revision),
 		"linux":   fmt.Sprintf("chromium-%d/chrome-linux/chrome", lc.Revision),
@@ -160,9 +174,9 @@ func (lc *Browser) download(u string) (err error) {
 	return unzip(lc.Logger, zipPath, unzipPath)
 }
 
-// Get is a smart helper to get the browser executable binary.
-// It will first try to find the browser from local disk, if not exists
-// it will try to download the chromium to Dir.
+// Get is a smart helper to get the browser executable path.
+// It will first try to find the browser from local disk via ExecSearchMap or Destination,
+// if not exists it will try to download the chromium to Destination.
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.Lock)()
 
@@ -174,9 +188,16 @@ func (lc *Browser) Get() (string, error) {
 	return p, lc.Download()
 }
 
+// MustGet is similar with Get
+func (lc *Browser) MustGet() string {
+	p, err := lc.Get()
+	utils.E(err)
+	return p
+}
+
 // LookPath of the browser executable.
 func (lc *Browser) LookPath() (string, bool) {
-	execPath := lc.ExecPath()
+	execPath := lc.Destination()
 
 	list := append(lc.ExecSearchMap[runtime.GOOS], execPath)
 
@@ -190,12 +211,12 @@ func (lc *Browser) LookPath() (string, bool) {
 	return execPath, false
 }
 
-// Open url via a browser
-func (lc *Browser) Open(url string) {
+// MustOpen url via a browser
+func MustOpen(url string) {
 	// Windows doesn't support format [::]
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
-	bin, _ := lc.LookPath()
+	bin, _ := NewBrowser().SearchGlobal().LookPath()
 	p := exec.Command(bin, url)
 	utils.E(p.Start())
 	utils.E(p.Process.Release())

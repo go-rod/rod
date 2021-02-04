@@ -25,7 +25,7 @@ func main() {
 	browser := rod.New().Client(l.Client()).MustConnect()
 
 	// You may want to start a server to watch the screenshots inside the docker
-	launcher.NewBrowser().Open(browser.ServeMonitor(""))
+	launcher.MustOpen(browser.ServeMonitor(""))
 
 	fmt.Println(
 		browser.MustPage("https://www.wikipedia.org/").MustEval("() => document.title"),

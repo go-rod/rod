@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"regexp"
 	"strings"
 
@@ -14,19 +13,8 @@ import (
 )
 
 func getSchema() gson.JSON {
-	b := launcher.NewBrowser()
-	b.ExecSearchMap = make(map[string][]string)
-	bin, err := b.Get()
-	utils.E(err)
-
-	l := launcher.New().Bin(bin)
-
-	defer func() {
-		p, err := os.FindProcess(l.PID())
-		if err == nil {
-			_ = p.Kill()
-		}
-	}()
+	l := launcher.New().Bin(launcher.NewBrowser().MustGet())
+	defer l.Kill()
 
 	u := l.MustLaunch()
 	parsed, err := url.Parse(u)

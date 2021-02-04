@@ -3,6 +3,7 @@ package launcher
 import (
 	"context"
 	"io/ioutil"
+	"log"
 	"net/url"
 	"os"
 	"testing"
@@ -85,7 +86,9 @@ func (t T) RemoteLaunch() {
 	defer cancel()
 
 	s := got.New(t).Serve()
-	s.Mux.Handle("/", NewRemoteLauncher())
+	rl := NewRemoteLauncher()
+	rl.Logger = log.New(os.Stdout, "&&&&&", 0)
+	s.Mux.Handle("/", rl)
 
 	l := MustNewRemote(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
@@ -110,7 +113,7 @@ func (t T) LaunchErrs() {
 	_, err := l.Launch()
 	t.Err(err)
 
-	l = New()
+	l = New().Bin("")
 	l.browser.Dir = t.Srand(16)
 	l.browser.ExecSearchMap = nil
 	l.browser.Hosts = []string{}

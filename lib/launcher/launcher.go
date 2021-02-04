@@ -417,6 +417,10 @@ func (l *Launcher) Kill() {
 	// Browser don't have an API to tell if the children processes are ready.
 	utils.Sleep(1)
 
+	if l.PID() == 0 { // avoid killing the current process
+		return
+	}
+
 	killGroup(l.PID())
 	p, err := os.FindProcess(l.PID())
 	if err == nil {

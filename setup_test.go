@@ -28,7 +28,6 @@ import (
 )
 
 var TimeoutEach = flag.Duration("timeout-each", time.Minute, "timeout for each test")
-var BrowserBin = flag.String("browser-bin", "", "browser binary to use")
 
 var LogDir = slash(fmt.Sprintf("tmp/cdp-log/%s", time.Now().Format("2006-01-02_15-04-05")))
 
@@ -57,9 +56,6 @@ type T struct {
 type TesterPool chan *T
 
 func newTesterPool(t *testing.T) TesterPool {
-	// preload the browser so that each test doesn't timeout because of browser downloading
-	got.New(t).E(launcher.NewBrowser().Get())
-
 	parallel := got.Parallel()
 	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
@@ -87,16 +83,7 @@ func newTesterPool(t *testing.T) TesterPool {
 
 // new tester
 func (cp TesterPool) new() *T {
-	bin := *BrowserBin
-	if bin == "" {
-		b := launcher.NewBrowser()
-		b.ExecSearchMap = make(map[string][]string)
-		var err error
-		bin, err = b.Get()
-		utils.E(err)
-	}
-
-	u := launcher.New().Bin(bin).MustLaunch()
+	u := launcher.New().MustLaunch()
 
 	mc := newMockClient(u)
 

@@ -56,6 +56,10 @@ func (t T) Download() {
 	b.Dir = filepath.Join("tmp", "browser-from-mirror", t.Srand(16))
 	t.E(b.Download())
 	t.Nil(os.Stat(b.Dir))
+
+	t.Len(b.ExecSearchMap, 0)
+	b.SearchGlobal()
+	t.Len(b.ExecSearchMap, 3)
 }
 
 func (t T) DownloadErr() {
@@ -72,6 +76,10 @@ func (t T) DownloadErr() {
 	b.ExecSearchMap = map[string][]string{runtime.GOOS: {}}
 	_, err := b.Get()
 	t.Err(err)
+
+	t.Panic(func() {
+		b.MustGet()
+	})
 }
 
 func (t T) Launch() {
@@ -106,6 +114,8 @@ func (t T) LaunchUserMode() {
 	l := launcher.NewUserMode()
 	defer l.Kill()
 
+	l.Kill() // empty kill should do nothing
+
 	_, has := l.Get("not-exists")
 	t.False(has)
 
@@ -127,14 +137,13 @@ func (t T) LaunchUserMode() {
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").
 		Env("TZ=Asia/Tokyo").
-		XVFB().
 		MustLaunch()
 
 	t.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
 }
 
 func (t T) TestOpen() {
-	launcher.NewBrowser().Open("about:blank")
+	launcher.MustOpen("about:blank")
 }
 
 func (t T) UserModeErr() {
@@ -160,6 +169,11 @@ func (t T) LaunchErr() {
 	t.Panic(func() {
 		launcher.New().Client()
 	})
+	{
+		l := launcher.New().XVFB()
+		_, _ = l.Launch()
+		l.Kill()
+	}
 }
 
 func newBrowser() (*launcher.Browser, func()) {
