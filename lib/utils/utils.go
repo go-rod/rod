@@ -137,7 +137,7 @@ func ReadString(p string) (string, error) {
 	return string(bin), err
 }
 
-// All run all actions concurrently, returns the wait function for all actions.
+// All runs all actions concurrently, returns the wait function for all actions.
 func All(actions ...func()) func() {
 	wg := &sync.WaitGroup{}
 

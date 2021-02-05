@@ -1,3 +1,4 @@
+// Package proto is a lib to encode/decode the data of the cdp protocol.
 package proto
 
 import (
