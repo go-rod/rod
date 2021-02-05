@@ -35,6 +35,8 @@ func init() {
 	got.DefaultFlags("timeout=5m", "run=/")
 
 	utils.E(os.MkdirAll(slash("tmp/cdp-log"), 0755))
+
+	launcher.NewBrowser().MustGet() // preload browser to local
 }
 
 // entry point for all tests
