@@ -46,7 +46,7 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
 # processs reaper
 ENTRYPOINT ["dumb-init", "--"]
 
-COPY --from=go /tmp/rod /tmp/rod
+COPY --from=go /root/.cache/rod /root/.cache/rod
 COPY --from=go /rod/rod-launcher /usr/bin/
 
 CMD rod-launcher

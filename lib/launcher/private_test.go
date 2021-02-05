@@ -2,10 +2,11 @@ package launcher
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/url"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -14,11 +15,25 @@ import (
 	"github.com/ysmood/got"
 )
 
+func HostTest(host string) Host {
+	return func(revision int) string {
+		return fmt.Sprintf(
+			"%s/chromium-browser-snapshots/%s/%d/%s",
+			host,
+			hostConf.urlPrefix,
+			revision,
+			hostConf.zipName,
+		)
+	}
+}
+
 type T struct {
 	got.G
 }
 
 func TestPrivate(t *testing.T) {
+	NewBrowser().MustGet() // preload browser to local
+
 	got.Each(t, T{})
 }
 
@@ -87,7 +102,6 @@ func (t T) RemoteLaunch() {
 
 	s := got.New(t).Serve()
 	rl := NewRemoteLauncher()
-	rl.Logger = log.New(os.Stdout, "&&&&&", 0)
 	s.Mux.Handle("/", rl)
 
 	l := MustNewRemote(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
@@ -113,10 +127,12 @@ func (t T) LaunchErrs() {
 	_, err := l.Launch()
 	t.Err(err)
 
+	s := t.Serve()
+	s.Route("/", "", nil)
 	l = New().Bin("")
-	l.browser.Dir = t.Srand(16)
-	l.browser.ExecSearchMap = nil
-	l.browser.Hosts = []string{}
+	l.browser.Logger = ioutil.Discard
+	l.browser.Dir = filepath.Join("tmp", "browser-from-mirror", t.Srand(16))
+	l.browser.Hosts = []Host{HostTest(s.URL())}
 	_, err = l.Launch()
 	t.Err(err)
 }

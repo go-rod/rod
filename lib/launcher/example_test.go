@@ -9,15 +9,7 @@ import (
 )
 
 func Example_use_system_browser() {
-	path := launcher.NewBrowser().SearchGlobal().MustGet()
-	u := launcher.New().Bin(path).MustLaunch()
-	rod.New().ControlURL(u).MustConnect()
-}
-
-func Example_disable_auto_download() {
-	path, found := launcher.NewBrowser().LookPath()
-	if found {
-		// Check the doc for Bin to learn why
+	if path, exists := launcher.LookPath(); exists {
 		u := launcher.New().Bin(path).MustLaunch()
 		rod.New().ControlURL(u).MustConnect()
 	}
@@ -27,8 +19,8 @@ func Example_custom_launch() {
 	// get the browser executable path
 	path := launcher.NewBrowser().MustGet()
 
-	// use the helper to construct args, this line is optional, you can construct the args manually
-	args := launcher.New().Headless(false).Env("TZ=Asia/Tokyo").FormatArgs()
+	// use the FormatArgs to construct args, this line is optional, you can construct the args manually
+	args := launcher.New().FormatArgs()
 
 	parser := launcher.NewURLParser()
 

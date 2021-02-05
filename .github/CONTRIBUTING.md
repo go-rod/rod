@@ -85,14 +85,15 @@ There are several helper functions for it:
 
 1. Build the test image: `docker build -t rod -f lib/docker/test.Dockerfile .`
 
-1. Create a cache volume for containers: `docker volume create rod`
+1. Run a container with and mount the cache volume to it: `docker run -v $(pwd):/t --name rod -it rod bash`
 
-1. Run a container with and mount the cache volume to it: `docker run --rm -v rod:/root -v $(pwd):/t -it rod go bash`
+1. Open another terminal, copy your global git-ignore file to the container: `docker cp ~/.gitignore_global rod:/root/`
 
 1. Run lint in the container: `go run ./lib/utils/lint`
-   You might want to set a global git-ignore in the container if the lint fails: [link](https://docs.github.com/en/free-pro-team@latest/github/using-git/ignoring-files#configuring-ignored-files-for-all-repositories-on-your-computer).
 
-1. Run tests in the container: `go test -run /Click`
+1. Run tests in the container: `go test -run /Click -v`
+
+1. After you exit the container with `exit`, you can restart it by: `docker start -i rod`
 
 ### Detect goroutine leak
 

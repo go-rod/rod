@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
-	"crypto/rand"
 	"flag"
 	"fmt"
 	"io"
@@ -13,7 +12,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
+	"strings"
 	"testing"
 	"time"
 
@@ -27,59 +26,59 @@ type T struct {
 }
 
 func Test(t *testing.T) {
+	launcher.NewBrowser().MustGet() // preload browser to local
+
 	got.Each(t, T{})
+}
+
+func (t T) DownloadHosts() {
+	t.Has(launcher.HostGoogle(launcher.DefaultRevision), "https://storage.googleapis.com/chromium-browser-snapshots")
+	t.Has(launcher.HostTaobao(launcher.DefaultRevision), "https://npm.taobao.org/mirrors/chromium-browser-snapshots")
 }
 
 func (t T) Download() {
 	s := t.Serve()
-	s.Mux.HandleFunc("/bin/", func(rw http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/fast/", func(rw http.ResponseWriter, r *http.Request) {
 		buf := bytes.NewBuffer(nil)
 		zw := zip.NewWriter(buf)
+
+		// folder "to"
 		h := &zip.FileHeader{Name: "to/"}
 		h.SetMode(0755)
 		_, err := zw.CreateHeader(h)
 		t.E(err)
-		w, err := zw.Create("to/file.txt")
+
+		// file "file.txt"
+		w, err := zw.CreateHeader(&zip.FileHeader{Name: "to/file.txt"})
 		t.E(err)
-		b := make([]byte, 10*1024)
-		t.E(rand.Read(b))
+		b := []byte(strings.Repeat("test", 1000))
 		t.E(w.Write(b))
+
 		t.E(zw.Close())
 
 		rw.Header().Add("Content-Length", fmt.Sprintf("%d", buf.Len()))
 		t.E(io.Copy(rw, buf))
 	})
+	s.Mux.HandleFunc("/slow/", func(rw http.ResponseWriter, r *http.Request) {
+		t := time.NewTimer(3 * time.Second)
+		select {
+		case <-t.C:
+		case <-r.Context().Done():
+			t.Stop()
+		}
+	})
 
 	b, cancel := newBrowser()
+	b.Logger = ioutil.Discard
 	defer cancel()
-	b.Hosts = []string{"https://github.com", s.URL("/bin")}
+	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
 	b.Dir = filepath.Join("tmp", "browser-from-mirror", t.Srand(16))
 	t.E(b.Download())
 	t.Nil(os.Stat(b.Dir))
-
-	t.Len(b.ExecSearchMap, 0)
-	b.SearchGlobal()
-	t.Len(b.ExecSearchMap, 3)
 }
 
-func (t T) DownloadErr() {
-	b, cancel := newBrowser()
-	defer cancel()
-
-	b.Hosts = []string{}
-	t.Err(b.Download())
-
-	b.Hosts = []string{"not-exists"}
-	t.Err(b.Download())
-
-	b.Dir = ""
-	b.ExecSearchMap = map[string][]string{runtime.GOOS: {}}
-	_, err := b.Get()
-	t.Err(err)
-
-	t.Panic(func() {
-		b.MustGet()
-	})
+func (t T) BrowserGet() {
+	t.Nil(os.Stat(launcher.NewBrowser().MustGet()))
 }
 
 func (t T) Launch() {
@@ -143,7 +142,7 @@ func (t T) LaunchUserMode() {
 }
 
 func (t T) TestOpen() {
-	launcher.MustOpen("about:blank")
+	launcher.Open("about:blank")
 }
 
 func (t T) UserModeErr() {

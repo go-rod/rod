@@ -2,57 +2,70 @@ package launcher
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
+	"sync"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/leakless"
 )
 
+// Host to download browser
+type Host func(revision int) string
+
+var hostConf = map[string]struct {
+	zipName   string
+	urlPrefix string
+}{
+	"darwin":  {"chrome-mac.zip", "Mac"},
+	"linux":   {"chrome-linux.zip", "Linux_x64"},
+	"windows": {"chrome-win.zip", "Win"},
+}[runtime.GOOS]
+
 // HostGoogle to download browser
-const HostGoogle = "https://storage.googleapis.com"
+func HostGoogle(revision int) string {
+	return fmt.Sprintf(
+		"https://storage.googleapis.com/chromium-browser-snapshots/%s/%d/%s",
+		hostConf.urlPrefix,
+		revision,
+		hostConf.zipName,
+	)
+}
 
 // HostTaobao to download browser
-const HostTaobao = "https://npm.taobao.org/mirrors"
+func HostTaobao(revision int) string {
+	return fmt.Sprintf(
+		"https://npm.taobao.org/mirrors/chromium-browser-snapshots/%s/%d/%s",
+		hostConf.urlPrefix,
+		revision,
+		hostConf.zipName,
+	)
+}
 
 // Browser is a helper to download browser smartly
 type Browser struct {
 	Context context.Context
 
-	// Hosts to download browser, examples:
-	// https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/748030/chrome-linux.zip
-	// https://storage.googleapis.com/chromium-browser-snapshots/Mac/748030/chrome-mac.zip
-	// https://storage.googleapis.com/chromium-browser-snapshots/Win/748030/chrome-win.zip
-	Hosts []string
+	// Hosts are the candidates to download the browser.
+	Hosts []Host
 
 	// Revision of the browser to use
 	Revision int
 
-	// Dir default is the filepath.Join(os.TempDir(), "rod")
+	// Dir default is the $HOME/.cache/rod
 	Dir string
 
 	// Log to print output
 	Logger io.Writer
-
-	// ExecSearchMap is the candidate paths for broweser executable.
-	// Sample value:
-	//     {
-	//     	"linux": {
-	//     		"chromium-browser",
-	//     		"/usr/bin/google-chrome",
-	//     	}
-	//     }
-	ExecSearchMap map[string][]string
 
 	// Lock a tcp port to prevent race downloading. Default is 2968 .
 	Lock int
@@ -60,36 +73,19 @@ type Browser struct {
 
 // NewBrowser with default values
 func NewBrowser() *Browser {
-	return &Browser{
-		Context:       context.Background(),
-		Revision:      DefaultRevision,
-		Hosts:         []string{HostGoogle, HostTaobao},
-		Dir:           filepath.Join(os.TempDir(), "rod"),
-		Logger:        os.Stdout,
-		ExecSearchMap: map[string][]string{},
-		Lock:          defaults.Lock,
+	dir := ""
+	if usr, err := user.Current(); err == nil {
+		dir = usr.HomeDir
 	}
-}
 
-// SearchGlobal will set the ExecSearchMap to often used paths for each OS.
-func (lc *Browser) SearchGlobal() *Browser {
-	lc.ExecSearchMap = map[string][]string{
-		"darwin": {
-			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-			"/Applications/Chromium.app/Contents/MacOS/Chromium",
-		},
-		"linux": {
-			"chromium",
-			"chromium-browser",
-			"google-chrome",
-			"/usr/bin/google-chrome",
-		},
-		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
-			`Google\Chrome\Application\chrome.exe`,
-			`Microsoft\Edge\Application\msedge.exe`,
-		)...),
+	return &Browser{
+		Context:  context.Background(),
+		Revision: DefaultRevision,
+		Hosts:    []Host{HostGoogle, HostTaobao},
+		Dir:      filepath.Join(dir, ".cache", "rod"),
+		Logger:   os.Stdout,
+		Lock:     defaults.Lock,
 	}
-	return lc
 }
 
 // Destination of the downloaded browser executable
@@ -103,55 +99,70 @@ func (lc *Browser) Destination() string {
 	return filepath.Join(lc.Dir, bin)
 }
 
-// Download chromium
-func (lc *Browser) Download() error {
-	conf := map[string]struct {
-		zipName   string
-		urlPrefix string
-	}{
-		"darwin":  {"chrome-mac.zip", "Mac"},
-		"linux":   {"chrome-linux.zip", "Linux_x64"},
-		"windows": {"chrome-win.zip", "Win"},
-	}[runtime.GOOS]
-
-	for _, host := range lc.Hosts {
-		u := fmt.Sprintf("%s/chromium-browser-snapshots/%s/%d/%s", host, conf.urlPrefix, lc.Revision, conf.zipName)
-		err := lc.download(u)
-		if err != nil {
-			_, _ = fmt.Fprintln(lc.Logger, "[rod/lib/launcher]", err.Error())
-			continue
-		}
-		return nil
-	}
-	return errors.New("failed to download chrome")
-}
-
-func (lc *Browser) download(u string) (err error) {
+// Download browser from the fastest host. It will race downloading a TCP packet from each host and use the fastest host.
+func (lc *Browser) Download() (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = e.(error)
 		}
 	}()
 
+	u, err := lc.fastestHost()
+	utils.E(err)
+	return lc.download(lc.Context, u)
+}
+
+func (lc *Browser) fastestHost() (fastest string, err error) {
+	setURL := sync.Once{}
+	ctx, cancel := context.WithCancel(lc.Context)
+	defer cancel()
+
+	for _, host := range lc.Hosts {
+		u := host(lc.Revision)
+
+		go func() {
+			defer func() {
+				_ = recover()
+				cancel()
+			}()
+
+			q, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+			utils.E(err)
+
+			res, err := lc.httpClient().Do(q)
+			utils.E(err)
+			defer func() { _ = res.Body.Close() }()
+
+			buf := make([]byte, 64*1024) // a TCP packet won't be larger than 64KB
+			_, err = res.Body.Read(buf)
+			utils.E(err)
+
+			setURL.Do(func() {
+				fastest = u
+			})
+		}()
+	}
+
+	<-ctx.Done()
+
+	return
+}
+
+func (lc *Browser) download(ctx context.Context, u string) error {
 	_, _ = fmt.Fprintln(lc.Logger, "Download:", u)
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 
-	err = utils.Mkdir(lc.Dir)
+	err := utils.Mkdir(lc.Dir)
 	utils.E(err)
 
 	zipFile, err := os.Create(zipPath)
 	utils.E(err)
 
-	q, err := http.NewRequestWithContext(lc.Context, http.MethodGet, u, nil)
+	q, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	utils.E(err)
 
-	res, err := (&http.Client{
-		Transport: &http.Transport{
-			DisableKeepAlives: true,
-			IdleConnTimeout:   30 * time.Second,
-		},
-	}).Do(q)
+	res, err := lc.httpClient().Do(q)
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
 
@@ -171,21 +182,24 @@ func (lc *Browser) download(u string) (err error) {
 
 	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
 	_ = os.RemoveAll(unzipPath)
-	return unzip(lc.Logger, zipPath, unzipPath)
+	utils.E(unzip(lc.Logger, zipPath, unzipPath))
+	return os.Remove(zipPath)
+}
+
+func (lc *Browser) httpClient() *http.Client {
+	return &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
 }
 
 // Get is a smart helper to get the browser executable path.
-// It will first try to find the browser from local disk via ExecSearchMap or Destination,
-// if not exists it will try to download the chromium to Destination.
+// If Destination doesn't exists it will download the browser to Destination.
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.Lock)()
 
-	p, found := lc.LookPath()
-	if found {
-		return p, nil
+	if lc.Exists() {
+		return lc.Destination(), nil
 	}
 
-	return p, lc.Download()
+	return lc.Destination(), lc.Download()
 }
 
 // MustGet is similar with Get
@@ -195,31 +209,53 @@ func (lc *Browser) MustGet() string {
 	return p
 }
 
-// LookPath of the browser executable.
-func (lc *Browser) LookPath() (string, bool) {
-	execPath := lc.Destination()
+// Exists returns true if the browser executable path exists.
+func (lc *Browser) Exists() bool {
+	_, err := os.Stat(lc.Destination())
+	return err == nil
+}
 
-	list := append(lc.ExecSearchMap[runtime.GOOS], execPath)
+// LookPath searches for the browser executable from often used paths on current operating system.
+func LookPath() (found string, has bool) {
+	list := map[string][]string{
+		"darwin": {
+			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+			"/Applications/Chromium.app/Contents/MacOS/Chromium",
+		},
+		"linux": {
+			"chromium",
+			"chromium-browser",
+			"google-chrome",
+			"/usr/bin/google-chrome",
+		},
+		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
+			`Google\Chrome\Application\chrome.exe`,
+			`Microsoft\Edge\Application\msedge.exe`,
+		)...),
+	}[runtime.GOOS]
 
 	for _, path := range list {
-		found, err := exec.LookPath(path)
-		if err == nil {
-			return found, true
+		var err error
+		found, err = exec.LookPath(path)
+		has = err == nil
+		if has {
+			break
 		}
 	}
 
-	return execPath, false
+	return
 }
 
-// MustOpen url via a browser
-func MustOpen(url string) {
+// Open tries to open the url via system's default browser.
+func Open(url string) {
 	// Windows doesn't support format [::]
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
-	bin, _ := NewBrowser().SearchGlobal().LookPath()
-	p := exec.Command(bin, url)
-	utils.E(p.Start())
-	utils.E(p.Process.Release())
+	if bin, has := LookPath(); has {
+		p := exec.Command(bin, url)
+		_ = p.Start()
+		_ = p.Process.Release()
+	}
 }
 
 func expandWindowsExePaths(list ...string) []string {

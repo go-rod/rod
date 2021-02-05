@@ -82,7 +82,7 @@ func Example_disable_headless_to_debug() {
 	// ServeMonitor plays screenshots of each tab. This feature is extremely
 	// useful when debugging with headless mode.
 	// You can also enable it with env rod=monitor
-	launcher.MustOpen(browser.ServeMonitor(""))
+	launcher.Open(browser.ServeMonitor(""))
 
 	defer browser.MustClose()
 

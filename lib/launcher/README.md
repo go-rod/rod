@@ -1,3 +1,3 @@
 # Overview
 
-A lib to help launch or download browser. You can also use it as a standalone lib without Rod.
+A lib helps to find, launch or download the browser. You can also use it as a standalone lib without Rod.
