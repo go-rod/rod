@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -73,16 +72,17 @@ type Browser struct {
 
 // NewBrowser with default values
 func NewBrowser() *Browser {
-	dir := ""
-	if usr, err := user.Current(); err == nil {
-		dir = usr.HomeDir
-	}
+	homeDir := map[string]string{
+		"windows": filepath.Join(os.Getenv("APPDATA")),
+		"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
+		"linux":   filepath.Join(os.Getenv("HOME"), ".cache"),
+	}[runtime.GOOS]
 
 	return &Browser{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
 		Hosts:    []Host{HostGoogle, HostTaobao},
-		Dir:      filepath.Join(dir, ".cache", "rod"),
+		Dir:      filepath.Join(homeDir, "rod"),
 		Logger:   os.Stdout,
 		Lock:     defaults.Lock,
 	}
