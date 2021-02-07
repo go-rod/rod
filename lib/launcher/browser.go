@@ -60,7 +60,8 @@ type Browser struct {
 	// Revision of the browser to use
 	Revision int
 
-	// Dir default is the $HOME/.cache/rod
+	// Dir to download broweser. The default path for unix is "$HOME/.cache/rod",
+	// for Windows it's "%APPDATA%\rod".
 	Dir string
 
 	// Log to print output
