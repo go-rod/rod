@@ -83,7 +83,7 @@ There are several helper functions for it:
 
 ### Use Docker for development
 
-1. Build the test image: `docker build -t rod -f lib/docker/test.Dockerfile .`
+1. Build the test image: `docker build -t rod -f lib/docker/dev.Dockerfile .`
 
 1. Run a container with and mount the cache volume to it: `docker run -v $(pwd):/t --name rod -it rod bash`
 
