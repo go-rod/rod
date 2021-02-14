@@ -6,9 +6,10 @@ var (
 
 	// IPhone4 device
 	IPhone4 = Device{
-		Title:        "iPhone 4",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
+		Title:          "iPhone 4",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -24,9 +25,10 @@ var (
 
 	// IPhone5orSE device
 	IPhone5orSE = Device{
-		Title:        "iPhone 5/SE",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1",
+		Title:          "iPhone 5/SE",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -42,9 +44,10 @@ var (
 
 	// IPhone6or7or8 device
 	IPhone6or7or8 = Device{
-		Title:        "iPhone 6/7/8",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		Title:          "iPhone 6/7/8",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -60,9 +63,10 @@ var (
 
 	// IPhone6or7or8Plus device
 	IPhone6or7or8Plus = Device{
-		Title:        "iPhone 6/7/8 Plus",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		Title:          "iPhone 6/7/8 Plus",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -78,9 +82,10 @@ var (
 
 	// IPhoneX device
 	IPhoneX = Device{
-		Title:        "iPhone X",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		Title:          "iPhone X",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -96,9 +101,10 @@ var (
 
 	// BlackBerryZ30 device
 	BlackBerryZ30 = Device{
-		Title:        "BlackBerry Z30",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+",
+		Title:          "BlackBerry Z30",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.0.9.2372 Mobile Safari/537.10+",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -114,9 +120,10 @@ var (
 
 	// Nexus4 device
 	Nexus4 = Device{
-		Title:        "Nexus 4",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Nexus 4",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -132,9 +139,10 @@ var (
 
 	// Nexus5 device
 	Nexus5 = Device{
-		Title:        "Nexus 5",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Nexus 5",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -150,9 +158,10 @@ var (
 
 	// Nexus5X device
 	Nexus5X = Device{
-		Title:        "Nexus 5X",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Nexus 5X",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -168,9 +177,10 @@ var (
 
 	// Nexus6 device
 	Nexus6 = Device{
-		Title:        "Nexus 6",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Nexus 6",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -186,9 +196,10 @@ var (
 
 	// Nexus6P device
 	Nexus6P = Device{
-		Title:        "Nexus 6P",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Nexus 6P",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -204,9 +215,10 @@ var (
 
 	// Pixel2 device
 	Pixel2 = Device{
-		Title:        "Pixel 2",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Pixel 2",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -222,9 +234,10 @@ var (
 
 	// Pixel2XL device
 	Pixel2XL = Device{
-		Title:        "Pixel 2 XL",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Pixel 2 XL",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -240,9 +253,10 @@ var (
 
 	// LGOptimusL70 device
 	LGOptimusL70 = Device{
-		Title:        "LG Optimus L70",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+		Title:          "LG Optimus L70",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -258,9 +272,10 @@ var (
 
 	// NokiaN9 device
 	NokiaN9 = Device{
-		Title:        "Nokia N9",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+		Title:          "Nokia N9",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -276,9 +291,10 @@ var (
 
 	// NokiaLumia520 device
 	NokiaLumia520 = Device{
-		Title:        "Nokia Lumia 520",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
+		Title:          "Nokia Lumia 520",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 520)",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -294,9 +310,10 @@ var (
 
 	// MicrosoftLumia550 device
 	MicrosoftLumia550 = Device{
-		Title:        "Microsoft Lumia 550",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+		Title:          "Microsoft Lumia 550",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 550) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -312,9 +329,10 @@ var (
 
 	// MicrosoftLumia950 device
 	MicrosoftLumia950 = Device{
-		Title:        "Microsoft Lumia 950",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+		Title:          "Microsoft Lumia 950",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 950) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/14.14263",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 4,
 			Horizontal: ScreenSize{
@@ -330,9 +348,10 @@ var (
 
 	// GalaxySIII device
 	GalaxySIII = Device{
-		Title:        "Galaxy S III",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		Title:          "Galaxy S III",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -348,9 +367,10 @@ var (
 
 	// GalaxyS5 device
 	GalaxyS5 = Device{
-		Title:        "Galaxy S5",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Galaxy S5",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -366,9 +386,10 @@ var (
 
 	// JioPhone2 device
 	JioPhone2 = Device{
-		Title:        "JioPhone 2",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
+		Title:          "JioPhone 2",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -384,9 +405,10 @@ var (
 
 	// KindleFireHDX device
 	KindleFireHDX = Device{
-		Title:        "Kindle Fire HDX",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+		Title:          "Kindle Fire HDX",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; U; en-us; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -402,9 +424,10 @@ var (
 
 	// IPadMini device
 	IPadMini = Device{
-		Title:        "iPad Mini",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		Title:          "iPad Mini",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -420,9 +443,10 @@ var (
 
 	// IPad device
 	IPad = Device{
-		Title:        "iPad",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		Title:          "iPad",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -438,9 +462,10 @@ var (
 
 	// IPadPro device
 	IPadPro = Device{
-		Title:        "iPad Pro",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		Title:          "iPad Pro",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -456,9 +481,10 @@ var (
 
 	// BlackberryPlayBook device
 	BlackberryPlayBook = Device{
-		Title:        "Blackberry PlayBook",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
+		Title:          "Blackberry PlayBook",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -474,9 +500,10 @@ var (
 
 	// Nexus10 device
 	Nexus10 = Device{
-		Title:        "Nexus 10",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		Title:          "Nexus 10",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -492,9 +519,10 @@ var (
 
 	// Nexus7 device
 	Nexus7 = Device{
-		Title:        "Nexus 7",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		Title:          "Nexus 7",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -510,9 +538,10 @@ var (
 
 	// GalaxyNote3 device
 	GalaxyNote3 = Device{
-		Title:        "Galaxy Note 3",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		Title:          "Galaxy Note 3",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.3; en-us; SM-N900T Build/JSS15J) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -528,9 +557,10 @@ var (
 
 	// GalaxyNoteII device
 	GalaxyNoteII = Device{
-		Title:        "Galaxy Note II",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		Title:          "Galaxy Note II",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.1; en-us; GT-N7100 Build/JRO03C) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -546,9 +576,10 @@ var (
 
 	// LaptopWithTouch device
 	LaptopWithTouch = Device{
-		Title:        "Laptop with touch",
-		Capabilities: []string{"touch"},
-		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		Title:          "Laptop with touch",
+		Capabilities:   []string{"touch"},
+		UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -564,9 +595,10 @@ var (
 
 	// LaptopWithHiDPIScreen device
 	LaptopWithHiDPIScreen = Device{
-		Title:        "Laptop with HiDPI screen",
-		Capabilities: []string{},
-		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		Title:          "Laptop with HiDPI screen",
+		Capabilities:   []string{},
+		UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -582,9 +614,10 @@ var (
 
 	// LaptopWithMDPIScreen device
 	LaptopWithMDPIScreen = Device{
-		Title:        "Laptop with MDPI screen",
-		Capabilities: []string{},
-		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		Title:          "Laptop with MDPI screen",
+		Capabilities:   []string{},
+		UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
 			Horizontal: ScreenSize{
@@ -600,9 +633,10 @@ var (
 
 	// MotoG4 device
 	MotoG4 = Device{
-		Title:        "Moto G4",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Moto G4",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{
@@ -618,9 +652,10 @@ var (
 
 	// SurfaceDuo device
 	SurfaceDuo = Device{
-		Title:        "Surface Duo",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Surface Duo",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
 			Horizontal: ScreenSize{
@@ -636,9 +671,10 @@ var (
 
 	// GalaxyFold device
 	GalaxyFold = Device{
-		Title:        "Galaxy Fold",
-		Capabilities: []string{"touch", "mobile"},
-		UserAgent:    "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		Title:          "Galaxy Fold",
+		Capabilities:   []string{"touch", "mobile"},
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
 			Horizontal: ScreenSize{

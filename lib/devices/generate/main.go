@@ -24,6 +24,7 @@ func main() {
 				Title:        "{{.title}}",
 				Capabilities: {{.capabilities}},
 				UserAgent:    "{{.userAgent}}",
+				AcceptLanguage: "en",
 				Screen: Screen{
 					DevicePixelRatio: {{.devicePixelRatio}},
 					Horizontal: ScreenSize{

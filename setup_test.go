@@ -18,7 +18,6 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
-	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -89,9 +88,7 @@ func (cp TesterPool) new() *T {
 
 	mc := newMockClient(u)
 
-	browser := rod.New().Client(mc).MustConnect().
-		MustIgnoreCertErrors(false).
-		DefaultDevice(devices.Test)
+	browser := rod.New().Client(mc).MustConnect().MustIgnoreCertErrors(false)
 
 	page := browser.MustPage("")
 

@@ -121,11 +121,7 @@ func (p *Page) SetExtraHeaders(dict []string) (func(), error) {
 // If req is nil, a default user agent will be used, a typical mac chrome.
 func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	if req == nil {
-		req = &proto.NetworkSetUserAgentOverride{
-			UserAgent:      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-			AcceptLanguage: "en",
-			Platform:       "MacIntel",
-		}
+		req = devices.LaptopWithMDPIScreen.UserAgentEmulation()
 	}
 	return req.Call(p)
 }

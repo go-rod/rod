@@ -53,7 +53,7 @@ func (t T) Hijack() {
 
 		t.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		t.Has(ctx.Request.Header("Origin"), s.URL())
-		t.Len(ctx.Request.Headers(), 5).Msg("%s", utils.Dump(ctx.Request.Headers()))
+		t.Len(ctx.Request.Headers(), 6)
 		t.True(ctx.Request.JSONBody().Nil())
 
 		// send request load response from real destination as the default value to hijack

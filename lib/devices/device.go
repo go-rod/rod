@@ -6,10 +6,11 @@ import (
 
 // Device represents a emulated device.
 type Device struct {
-	Capabilities []string
-	UserAgent    string
-	Screen       Screen
-	Title        string
+	Capabilities   []string
+	UserAgent      string
+	AcceptLanguage string
+	Screen         Screen
+	Title          string
 
 	landscape bool
 	clear     bool
@@ -87,7 +88,8 @@ func (device Device) UserAgentEmulation() *proto.NetworkSetUserAgentOverride {
 	}
 
 	return &proto.NetworkSetUserAgentOverride{
-		UserAgent: device.UserAgent,
+		UserAgent:      device.UserAgent,
+		AcceptLanguage: device.AcceptLanguage,
 	}
 }
 

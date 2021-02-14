@@ -45,7 +45,7 @@ func (t T) DefaultDevice() {
 	})
 
 	t.browser.DefaultDevice(devices.IPhoneX)
-	defer t.browser.DefaultDevice(devices.Test)
+	defer t.browser.DefaultDevice(devices.LaptopWithMDPIScreen.Landescape())
 
 	t.newPage(s.URL("/t"))
 	t.Eq(ua, devices.IPhoneX.UserAgentEmulation().UserAgent)
