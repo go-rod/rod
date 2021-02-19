@@ -121,6 +121,8 @@ func New() *Launcher {
 // completely close the running browser. Unfortunately, there's no API for rod to tell it automatically yet.
 func NewUserMode() *Launcher {
 	ctx, cancel := context.WithCancel(context.Background())
+	bin, _ := LookPath()
+
 	return &Launcher{
 		ctx:       ctx,
 		ctxCancel: cancel,
@@ -128,8 +130,9 @@ func NewUserMode() *Launcher {
 			"remote-debugging-port": {"37712"},
 			"no-startup-window":     nil,
 		},
-		exit:    make(chan struct{}),
 		browser: NewBrowser(),
+		exit:    make(chan struct{}),
+		bin:     bin,
 		parser:  NewURLParser(),
 		logger:  ioutil.Discard,
 	}
