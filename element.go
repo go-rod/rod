@@ -386,23 +386,18 @@ func (el *Element) SetFiles(paths []string) error {
 	return err
 }
 
-// Describe the current element
+// Describe the current element. The depth is the maximum depth at which children should be retrieved, defaults to 1,
+// use -1 for the entire subtree or provide an integer larger than 0.
+// The pierce decides whether or not iframes and shadow roots should be traversed when returning the subtree.
+// The returned proto.DOMNode.NodeID will always be empty, because NodeID is not stable (when proto.DOMDocumentUpdated
+// is fired all NodeID on the page will be reassigned to another value)
+// we don't recommend using the NodeID, instead, use the BackendNodeID to identify the element.
 func (el *Element) Describe(depth int, pierce bool) (*proto.DOMNode, error) {
 	val, err := proto.DOMDescribeNode{ObjectID: el.id(), Depth: int(depth), Pierce: pierce}.Call(el)
 	if err != nil {
 		return nil, err
 	}
 	return val.Node, nil
-}
-
-// NodeID of the node
-func (el *Element) NodeID() (proto.DOMNodeID, error) {
-	el.page.enableNodeQuery()
-	node, err := proto.DOMRequestNode{ObjectID: el.id()}.Call(el)
-	if err != nil {
-		return 0, err
-	}
-	return node.NodeID, nil
 }
 
 // ShadowRoot returns the shadow root of this element

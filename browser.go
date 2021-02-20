@@ -297,10 +297,6 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
 	page.EnableDomain(&proto.PageEnable{})
 
-	// If we don't enable it, it will remove remote node id whenever we disable the domain
-	// even after we re-enable it again we can't query the ids any more.
-	page.EnableDomain(&proto.DOMEnable{})
-
 	return page, nil
 }
 

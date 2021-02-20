@@ -220,7 +220,7 @@ func (t T) Contains() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	a := p.MustElement("button")
 
-	b := p.MustElementFromNode(a.MustNodeID())
+	b := p.MustElementFromNode(a.MustDescribe())
 	t.True(a.MustContainsElement(b))
 
 	pt := a.MustShape().OnePointInside()
@@ -764,7 +764,7 @@ func (t T) ElementFromNodeErr() {
 	el := p.MustElementX("//button/text()")
 
 	t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
-	t.Err(p.ElementFromNode(el.MustNodeID()))
+	t.Err(p.ElementFromNode(el.MustDescribe()))
 }
 
 func (t T) ElementErrors() {
@@ -814,9 +814,4 @@ func (t T) ElementErrors() {
 
 	err = el.Context(ctx).Release()
 	t.Err(err)
-
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.DOMRequestNode{})
-		el.MustNodeID()
-	})
 }

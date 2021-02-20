@@ -395,8 +395,8 @@ func (p *Page) MustObjectsToJSON(list []*proto.RuntimeRemoteObject) gson.JSON {
 }
 
 // MustElementFromNode is similar to Page.ElementFromNode
-func (p *Page) MustElementFromNode(id proto.DOMNodeID) *Element {
-	el, err := p.ElementFromNode(id)
+func (p *Page) MustElementFromNode(node *proto.DOMNode) *Element {
+	el, err := p.ElementFromNode(node)
 	utils.E(err)
 	return el
 }
@@ -601,13 +601,6 @@ func (el *Element) MustDescribe() *proto.DOMNode {
 	node, err := el.Describe(1, false)
 	utils.E(err)
 	return node
-}
-
-// MustNodeID is similar to Element.NodeID
-func (el *Element) MustNodeID() proto.DOMNodeID {
-	id, err := el.NodeID()
-	utils.E(err)
-	return id
 }
 
 // MustShadowRoot is similar to Element.ShadowRoot

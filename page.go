@@ -601,14 +601,17 @@ func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) (*Element, erro
 	}, nil
 }
 
-// ElementFromNode creates an Element from the node id
-func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
-	node, err := proto.DOMResolveNode{NodeID: id}.Call(p)
+// ElementFromNode creates an Element from the node, NodeID or BackendNodeID must be specified.
+func (p *Page) ElementFromNode(node *proto.DOMNode) (*Element, error) {
+	res, err := proto.DOMResolveNode{
+		NodeID:        node.NodeID,
+		BackendNodeID: node.BackendNodeID,
+	}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	el, err := p.ElementFromObject(node.Object)
+	el, err := p.ElementFromObject(res.Object)
 	if err != nil {
 		return nil, err
 	}
@@ -631,14 +634,14 @@ func (p *Page) ElementFromNode(id proto.DOMNodeID) (*Element, error) {
 // ElementFromPoint creates an Element from the absolute point on the page.
 // The point should include the window scroll offset.
 func (p *Page) ElementFromPoint(x, y int) (*Element, error) {
-	p.enableNodeQuery()
-
 	node, err := proto.DOMGetNodeForLocation{X: x, Y: y}.Call(p)
 	if err != nil {
 		return nil, err
 	}
 
-	return p.ElementFromNode(node.NodeID)
+	return p.ElementFromNode(&proto.DOMNode{
+		BackendNodeID: node.BackendNodeID,
+	})
 }
 
 // Release the remote object. Usually, you don't need to call it.
@@ -680,10 +683,4 @@ func (p *Page) Event() <-chan *Message {
 	}()
 
 	return dst
-}
-
-func (p *Page) enableNodeQuery() {
-	// TODO: I don't know why we need this, seems like a bug of chrome.
-	// We should remove it once chrome fixed this bug.
-	_, _ = proto.DOMGetDocument{}.Call(p)
 }

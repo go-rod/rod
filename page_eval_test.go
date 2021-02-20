@@ -169,12 +169,12 @@ func (t T) PageObjectErr() {
 		})
 	})
 	t.Panic(func() {
-		t.page.MustElementFromNode(-1)
+		t.page.MustElementFromNode(&proto.DOMNode{NodeID: -1})
 	})
 	t.Panic(func() {
-		id := t.page.MustNavigate(t.blank()).MustElement(`body`).MustNodeID()
+		node := t.page.MustNavigate(t.blank()).MustElement(`body`).MustDescribe()
 		t.mc.stubErr(1, proto.DOMResolveNode{})
-		t.page.MustElementFromNode(id)
+		t.page.MustElementFromNode(node)
 	})
 }
 

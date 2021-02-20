@@ -249,6 +249,8 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
 func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
+	defer p.EnableDomain(proto.DOMEnable{})()
+
 	list := Elements{}
 
 	search := func(query string) (bool, error) {
@@ -282,12 +284,18 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 		}
 
 		for _, id := range result.NodeIds {
-			// TODO: some times the node id can be zero, feels like a bug of devtools server
+			// TODO: This is definitely a bad design of cdp, hope they can optimize it in the future.
+			// It's unnecessary to ask the user to explicitly call it.
+			//
+			// When the id is zero, it means the proto.DOMDocumentUpdated has fired which will
+			// invlidate all the existing NodeID. We have to call proto.DOMGetDocument
+			// to reset the remote browser's tracker.
 			if id == 0 {
+				_, _ = proto.DOMGetDocument{}.Call(p)
 				return false, nil
 			}
 
-			el, err := p.ElementFromNode(id)
+			el, err := p.ElementFromNode(&proto.DOMNode{NodeID: id})
 			if err != nil {
 				return true, err
 			}
@@ -298,8 +306,6 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 	}
 
 	err := utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
-		p.enableNodeQuery()
-
 		for _, query := range queries {
 			stop, err := search(query)
 			if stop {
