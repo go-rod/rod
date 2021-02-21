@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -24,18 +23,18 @@ func main() {
 
 	browser := rod.New().ControlURL(wsURL).MustConnect().NoDefaultDevice()
 
-	browser.MustPage("")
-
 	// Run a extension. Here we created a link previewer extension as an example.
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.
 	linkPreviewer(browser)
+
+	browser.MustPage("")
 
 	waitExit()
 }
 
 func linkPreviewer(browser *rod.Browser) {
 	// Create a headless browser to generate preview of links on background.
-	previewer := rod.New().MustConnect().DefaultDevice(devices.IPhone6or7or8)
+	previewer := rod.New().MustConnect()
 	previewer.MustSetCookies(browser.MustGetCookies()) // share cookies
 	pool := rod.NewPagePool(5)
 	create := func() *rod.Page { return previewer.MustPage("") }
@@ -69,7 +68,7 @@ var js = fmt.Sprintf(`window.addEventListener('load', () => {
 		tippy(el, {onShow: async (it) => {
 			if (it.props.content.src) return
 			let img = document.createElement('img')
-			img.style.height = '800px'
+			img.style.width = '400px'
 			img.src = "data:image/png;base64," + await getPreview(el.href)
 			it.setContent(img)
 		}, content: 'loading...', maxWidth: 500})
