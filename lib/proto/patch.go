@@ -4,46 +4,38 @@ package proto
 
 import (
 	"encoding/json"
-	"strconv"
 	"time"
 )
 
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
-type TimeSinceEpoch struct {
-	time.Time
-}
+// To convert a time.Time to TimeSinceEpoch, for example:
+//     proto.TimeSinceEpoch(time.Now().Unix())
+// For session cookie, the value should be -1.
+type TimeSinceEpoch float64
 
-// UnmarshalJSON interface
-func (t *TimeSinceEpoch) UnmarshalJSON(b []byte) error {
-	v, _ := strconv.ParseFloat(string(b), 64)
-	t.Time = (time.Unix(0, 0)).Add(
-		time.Duration(v * float64(time.Second)),
+// Time interface
+func (t TimeSinceEpoch) Time() time.Time {
+	return (time.Unix(0, 0)).Add(
+		time.Duration(t * TimeSinceEpoch(time.Second)),
 	)
-	return nil
 }
 
-// MarshalJSON interface
-func (t TimeSinceEpoch) MarshalJSON() ([]byte, error) {
-	d := float64(t.Time.UnixNano()) / float64(time.Second)
-	return json.Marshal(d)
+// String interface
+func (t TimeSinceEpoch) String() string {
+	return t.Time().String()
 }
 
 // MonotonicTime Monotonically increasing time in seconds since an arbitrary point in the past.
-type MonotonicTime struct {
-	time.Duration
+type MonotonicTime float64
+
+// Duration interface
+func (t MonotonicTime) Duration() time.Duration {
+	return time.Duration(t * MonotonicTime(time.Second))
 }
 
-// UnmarshalJSON interface
-func (t *MonotonicTime) UnmarshalJSON(b []byte) error {
-	v, _ := strconv.ParseFloat(string(b), 64)
-	t.Duration = time.Duration(v * float64(time.Second))
-	return nil
-}
-
-// MarshalJSON interface
-func (t MonotonicTime) MarshalJSON() ([]byte, error) {
-	d := float64(t.Duration) / float64(time.Second)
-	return json.Marshal(d)
+// String interface
+func (t MonotonicTime) String() string {
+	return t.Duration().String()
 }
 
 type inputDispatchMouseEvent struct {
@@ -51,7 +43,7 @@ type inputDispatchMouseEvent struct {
 	X                  float64                            `json:"x"`
 	Y                  float64                            `json:"y"`
 	Modifiers          int                                `json:"modifiers,omitempty"`
-	Timestamp          *TimeSinceEpoch                    `json:"timestamp,omitempty"`
+	Timestamp          TimeSinceEpoch                     `json:"timestamp,omitempty"`
 	Button             InputMouseButton                   `json:"button,omitempty"`
 	Buttons            int                                `json:"buttons,omitempty"`
 	ClickCount         int                                `json:"clickCount,omitempty"`
@@ -70,7 +62,7 @@ type inputDispatchMouseWheelEvent struct {
 	X                  float64                            `json:"x"`
 	Y                  float64                            `json:"y"`
 	Modifiers          int                                `json:"modifiers,omitempty"`
-	Timestamp          *TimeSinceEpoch                    `json:"timestamp,omitempty"`
+	Timestamp          TimeSinceEpoch                     `json:"timestamp,omitempty"`
 	Button             InputMouseButton                   `json:"button,omitempty"`
 	Buttons            int                                `json:"buttons,omitempty"`
 	ClickCount         int                                `json:"clickCount,omitempty"`
