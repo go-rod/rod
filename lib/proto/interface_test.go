@@ -54,7 +54,7 @@ func (t T) TimeCodec() {
 	var duration proto.MonotonicTime
 	t.E(json.Unmarshal(raw, &duration))
 
-	t.Eq(123123, duration.Milliseconds())
+	t.Eq(123123, duration.Duration().Milliseconds())
 
 	data, err := json.Marshal(duration)
 	t.E(err)
@@ -64,7 +64,7 @@ func (t T) TimeCodec() {
 	var datetime proto.TimeSinceEpoch
 	t.E(json.Unmarshal(raw, &datetime))
 
-	t.Eq(123, datetime.Unix())
+	t.Eq(123, datetime.Time().Unix())
 
 	data, err = json.Marshal(datetime)
 	t.E(err)
@@ -161,13 +161,13 @@ func (t T) GeneratorOptimize() {
 	var _ proto.PageLifecycleEventName = proto.PageLifecycleEventNameFirstImagePaint
 
 	a := proto.InputDispatchKeyEvent{}
-	var _ *proto.TimeSinceEpoch = a.Timestamp
+	var _ proto.TimeSinceEpoch = a.Timestamp
 	b := proto.NetworkCookie{}
-	var _ *proto.TimeSinceEpoch = b.Expires
+	var _ proto.TimeSinceEpoch = b.Expires
 
 	c := proto.NetworkDataReceived{}
-	var _ *proto.MonotonicTime = c.Timestamp
+	var _ proto.MonotonicTime = c.Timestamp
 
 	d := proto.NetworkCookie{}
-	var _ *proto.TimeSinceEpoch = d.Expires
+	var _ proto.TimeSinceEpoch = d.Expires
 }

@@ -22,7 +22,7 @@ func main() {
 	go cookieServer(fmt.Sprintf(":%d", *flagPort))
 
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
-	expr := &proto.TimeSinceEpoch{Time: time.Now().Add(180 * 24 * time.Hour)}
+	expr := proto.TimeSinceEpoch(time.Now().Add(180 * 24 * time.Hour).Unix())
 
 	page := rod.New().MustConnect().MustPage("")
 

@@ -75,9 +75,9 @@ func typeName(domain *domain, schema gson.JSON) string {
 
 	switch typeName {
 	case "NetworkTimeSinceEpoch", "InputTimeSinceEpoch":
-		typeName = "*TimeSinceEpoch"
+		typeName = "TimeSinceEpoch"
 	case "NetworkMonotonicTime":
-		typeName = "*MonotonicTime"
+		typeName = "MonotonicTime"
 	}
 
 	return typeName
