@@ -60,14 +60,15 @@ type Browser struct {
 // New creates a controller
 func New() *Browser {
 	return &Browser{
-		ctx:         context.Background(),
-		sleeper:     DefaultSleeper,
-		slowMotion:  defaults.Slow,
-		trace:       defaults.Trace,
-		monitor:     defaults.Monitor,
-		logger:      DefaultLogger,
-		targetsLock: &sync.Mutex{},
-		states:      &sync.Map{},
+		ctx:           context.Background(),
+		sleeper:       DefaultSleeper,
+		slowMotion:    defaults.Slow,
+		trace:         defaults.Trace,
+		monitor:       defaults.Monitor,
+		logger:        DefaultLogger,
+		defaultDevice: devices.Clear,
+		targetsLock:   &sync.Mutex{},
+		states:        &sync.Map{},
 	}
 }
 
