@@ -1,7 +1,9 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -293,6 +295,21 @@ func (t T) PageElementsByJS() {
 
 	t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
 	t.Err(p.ElementsByJS(rod.EvalHelper(js.Elements, "button")))
+}
+
+func (t T) PageElementTimeout() {
+	page := t.page.MustNavigate(t.blank())
+	start := time.Now()
+	_, err := page.Timeout(300 * time.Millisecond).Element("not-exists")
+	t.Is(err, context.DeadlineExceeded)
+	t.Gt(time.Since(start), 300*time.Millisecond)
+}
+
+func (t T) PageElementMaxRetry() {
+	page := t.page.MustNavigate(t.blank())
+	s := func() utils.Sleeper { return utils.CountSleeper(5) }
+	_, err := page.Sleeper(s).Element("not-exists")
+	t.Is(err, &utils.ErrMaxSleepCount{})
 }
 
 func (t T) ElementsOthers() {

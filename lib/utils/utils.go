@@ -6,14 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
 	"io"
 	"io/ioutil"
-	mr "math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -155,73 +153,6 @@ func All(actions ...func()) func() {
 	return wg.Wait
 }
 
-// Sleep the goroutine for specified seconds, such as 2.3 seconds
-func Sleep(seconds float64) {
-	d := time.Duration(seconds * float64(time.Second))
-	time.Sleep(d)
-}
-
-// Sleeper sleeps the current gouroutine for sometime, returns the reason to wake, if ctx is done release resource
-type Sleeper func(context.Context) error
-
-// CountSleeper wakes immediately. When counts to the max returns errors.New("max sleep count")
-func CountSleeper(max int) Sleeper {
-	count := 0
-	return func(ctx context.Context) error {
-		if ctx.Err() != nil {
-			return ctx.Err()
-		}
-
-		if count == max {
-			return errors.New("max sleep count")
-		}
-		count++
-		return nil
-	}
-}
-
-// DefaultBackoff algorithm: A(n) = A(n-1) * random[1.9, 2.1)
-func DefaultBackoff(interval time.Duration) time.Duration {
-	scale := 2 + (mr.Float64()-0.5)*0.2
-	return time.Duration(float64(interval) * scale)
-}
-
-// BackoffSleeper returns a sleeper that sleeps in a backoff manner every time get called.
-// If algorithm is nil, DefaultBackoff will be used.
-// Set interval and maxInterval to the same value to make it a constant sleeper.
-// If maxInterval is not greater than 0, the sleeper will wake immediately.
-func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duration) time.Duration) Sleeper {
-	if algorithm == nil {
-		algorithm = DefaultBackoff
-	}
-
-	return func(ctx context.Context) error {
-		// wake immediately
-		if maxInterval <= 0 {
-			return nil
-		}
-
-		var interval time.Duration
-		if init < maxInterval {
-			interval = algorithm(init)
-		} else {
-			interval = maxInterval
-		}
-
-		t := time.NewTimer(interval)
-		defer t.Stop()
-
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-t.C:
-			init = interval
-		}
-
-		return nil
-	}
-}
-
 // IdleCounter is similar to sync.WaitGroup but it only resolves if no jobs for specified duration.
 type IdleCounter struct {
 	lock     *sync.Mutex
@@ -277,20 +208,6 @@ func (de *IdleCounter) Wait(ctx context.Context) {
 	case <-ctx.Done():
 		de.tmr.Stop()
 	case <-de.tmr.C:
-	}
-}
-
-// Retry fn and sleeper until fn returns true or s returns error
-func Retry(ctx context.Context, s Sleeper, fn func() (stop bool, err error)) error {
-	for {
-		stop, err := fn()
-		if stop {
-			return err
-		}
-		err = s(ctx)
-		if err != nil {
-			return err
-		}
 	}
 }
 
