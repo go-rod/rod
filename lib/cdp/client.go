@@ -89,7 +89,7 @@ func (cdp *Client) Websocket(ws WebSocketable) *Client {
 	return cdp
 }
 
-// Logger override for debugging
+// Logger sets the logger to log all the requests, responses, and events transferred between Rod and the browser.
 func (cdp *Client) Logger(l utils.Logger) *Client {
 	cdp.logger = l
 	return cdp

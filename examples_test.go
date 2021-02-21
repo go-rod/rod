@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -584,4 +585,18 @@ func Example_load_extension() {
 
 	// Skip
 	// Output: ok
+}
+
+func Example_log_cdp_traffic() {
+	cdp := cdp.New(launcher.New().MustLaunch()).
+
+		// Here we can customize how to log the requests, responses, and events transferred between Rod and the browser.
+		Logger(utils.Log(func(msg ...interface{}) {
+			// Such as use some fancy lib like github.com/davecgh/go-spew/spew to make the output more readable:
+			//     spew.Println(msg)
+			// Here we use %#v as an example.
+			fmt.Printf("%#v\n", msg)
+		}))
+
+	rod.New().Client(cdp).MustConnect().MustPage("http://example.com")
 }

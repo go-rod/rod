@@ -13,6 +13,7 @@ customize or build up their own version of Rod, the high-level functions are jus
 ## Features
 
 - Chained context design, intuitive to timeout or cancel the long-running task
+- Auto-wait elements to be ready
 - Debugging friendly, auto input tracing, remote monitoring headless browser
 - Thread-safe for all operations
 - Automatically find or download [browser](lib/launcher)

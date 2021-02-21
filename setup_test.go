@@ -134,7 +134,9 @@ func (t T) blank() string {
 	return t.srcFile("./fixtures/blank.html")
 }
 
-// get abs file path from fixtures folder, return sample "file:///a/b/click.html"
+// Get abs file path from fixtures folder, such as "file:///a/b/click.html".
+// Usually the path can be used for html src attribute like:
+//     <img src="file:///a/b">
 func (t T) srcFile(path string) string {
 	t.Helper()
 	f, err := filepath.Abs(slash(path))

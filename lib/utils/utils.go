@@ -164,7 +164,7 @@ func Sleep(seconds float64) {
 // Sleeper sleeps the current gouroutine for sometime, returns the reason to wake, if ctx is done release resource
 type Sleeper func(context.Context) error
 
-// CountSleeper wake immediately. When counts to the max returns errors.New("max sleep count")
+// CountSleeper wakes immediately. When counts to the max returns errors.New("max sleep count")
 func CountSleeper(max int) Sleeper {
 	count := 0
 	return func(ctx context.Context) error {
