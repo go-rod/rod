@@ -69,6 +69,7 @@ func (el *Element) ScrollIntoView() error {
 }
 
 // Hover the mouse over the center of the element.
+// It will try to scroll to the element and wait until it's interactable.
 func (el *Element) Hover() error {
 	err := el.ScrollIntoView()
 	if err != nil {
@@ -89,6 +90,8 @@ func (el *Element) Hover() error {
 }
 
 // Click will press then release the button just like a human.
+// It will try to scroll to the element, hover the mouse over it,
+// wait until the it's interactable and enabled first.
 func (el *Element) Click(button proto.InputMouseButton) error {
 	err := el.Hover()
 	if err != nil {
@@ -105,7 +108,8 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 	return el.page.Mouse.Click(button)
 }
 
-// Tap the button just like a human.
+// Tap will scroll to the button and tap it just like a human.
+// It will try to scroll to the element, wait until the it's interactable and enabled first.
 func (el *Element) Tap() error {
 	err := el.ScrollIntoView()
 	if err != nil {
@@ -194,7 +198,8 @@ func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
 
-// Press is similar with Keyboard.Press. It will focus on the element before pressing.
+// Press is similar with Keyboard.Press.
+// It will try to scroll to the element and focus on it first.
 func (el *Element) Press(keys ...rune) error {
 	err := el.Focus()
 	if err != nil {
@@ -204,7 +209,8 @@ func (el *Element) Press(keys ...rune) error {
 	return el.page.Keyboard.Press(keys...)
 }
 
-// SelectText selects the text that matches the regular expression
+// SelectText selects the text that matches the regular expression.
+// It will try to scroll to the element and focus on it first.
 func (el *Element) SelectText(regex string) error {
 	err := el.Focus()
 	if err != nil {
@@ -219,6 +225,7 @@ func (el *Element) SelectText(regex string) error {
 }
 
 // SelectAllText selects all text
+// It will try to scroll to the element and focus on it first.
 func (el *Element) SelectAllText() error {
 	err := el.Focus()
 	if err != nil {
@@ -233,6 +240,7 @@ func (el *Element) SelectAllText() error {
 }
 
 // Input focuses on the element and input text to it.
+// It will scroll to the element, wait until it's visible, enabled and writable first.
 // To empty the input you can use something like el.SelectAllText().MustInput("")
 func (el *Element) Input(text string) error {
 	err := el.Focus()
@@ -267,6 +275,8 @@ func (el *Element) Input(text string) error {
 }
 
 // InputTime focuses on the element and input time to it.
+// It will scroll to the element, wait until it's visible, enabled and writable first.
+// It will wait until the element is visible, enabled and writable.
 func (el *Element) InputTime(t time.Time) error {
 	err := el.Focus()
 	if err != nil {
@@ -301,6 +311,7 @@ func (el *Element) Blur() error {
 }
 
 // Select the children option elements that match the selectors.
+// It will scroll to the element, wait until it's visible first.
 func (el *Element) Select(selectors []string, selected bool, t SelectorType) error {
 	err := el.Focus()
 	if err != nil {
