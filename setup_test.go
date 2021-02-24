@@ -257,9 +257,10 @@ func (mc *MockClient) resetCall() {
 	mc.call = nil
 }
 
-// Use it to find out which cdp call to intercept. Put a special like log.Println("*****") after the cdp call you want to intercept.
+// Use it to find out which cdp call to intercept. Put a print like log.Println("*****") after the cdp call you want to intercept.
 // The output of the test should has something like:
 //
+//     [stubCounter] begin
 //     [stubCounter] 1, proto.DOMResolveNode{}
 //     [stubCounter] 1, proto.RuntimeCallFunctionOn{}
 //     [stubCounter] 2, proto.RuntimeCallFunctionOn{}
@@ -269,6 +270,8 @@ func (mc *MockClient) resetCall() {
 func (mc *MockClient) stubCounter() {
 	l := sync.Mutex{}
 	mCount := map[string]int{}
+
+	fmt.Fprintln(os.Stdout, "[stubCounter] begin")
 
 	mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 		l.Lock()

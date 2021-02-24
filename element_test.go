@@ -302,15 +302,23 @@ func (t T) Input() {
 		el.MustText()
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
 		el.MustInput("")
 	})
 	t.Panic(func() {
-		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
 		el.MustInput("")
 	})
 	t.Panic(func() {
-		t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(6, proto.RuntimeCallFunctionOn{})
+		el.MustInput("")
+	})
+	t.Panic(func() {
+		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
+		el.MustInput("")
+	})
+	t.Panic(func() {
+		t.mc.stubErr(1, proto.InputInsertText{})
 		el.MustInput("")
 	})
 }
@@ -342,15 +350,15 @@ func (t T) InputTime() {
 		el.MustInputTime(now)
 	})
 	t.Panic(func() {
-		t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
 		el.MustInputTime(now)
 	})
 	t.Panic(func() {
-		t.mc.stubErr(3, proto.RuntimeCallFunctionOn{})
+		t.mc.stubErr(6, proto.RuntimeCallFunctionOn{})
 		el.MustInputTime(now)
 	})
 	t.Panic(func() {
-		t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
+		t.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
 		el.MustInputTime(now)
 	})
 }
@@ -433,6 +441,11 @@ func (t T) SelectOptions() {
 	err = el.Select([]string{`[value="c"]`}, false, rod.SelectorTypeCSSSector)
 	t.E(err)
 	t.Eq("", el.MustText())
+
+	{
+		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		t.Err(el.Select([]string{"B"}, true, rod.SelectorTypeText))
+	}
 }
 
 func (t T) Matches() {

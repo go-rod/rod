@@ -235,7 +235,12 @@ func (el *Element) SelectAllText() error {
 // Input focuses on the element and input text to it.
 // To empty the input you can use something like el.SelectAllText().MustInput("")
 func (el *Element) Input(text string) error {
-	err := el.WaitVisible()
+	err := el.Focus()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitVisible()
 	if err != nil {
 		return err
 	}
@@ -246,11 +251,6 @@ func (el *Element) Input(text string) error {
 	}
 
 	err = el.WaitWritable()
-	if err != nil {
-		return err
-	}
-
-	err = el.Focus()
 	if err != nil {
 		return err
 	}
@@ -268,7 +268,12 @@ func (el *Element) Input(text string) error {
 
 // InputTime focuses on the element and input time to it.
 func (el *Element) InputTime(t time.Time) error {
-	err := el.WaitVisible()
+	err := el.Focus()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitVisible()
 	if err != nil {
 		return err
 	}
@@ -279,11 +284,6 @@ func (el *Element) InputTime(t time.Time) error {
 	}
 
 	err = el.WaitWritable()
-	if err != nil {
-		return err
-	}
-
-	err = el.Focus()
 	if err != nil {
 		return err
 	}
@@ -302,7 +302,12 @@ func (el *Element) Blur() error {
 
 // Select the children option elements that match the selectors.
 func (el *Element) Select(selectors []string, selected bool, t SelectorType) error {
-	err := el.WaitVisible()
+	err := el.Focus()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitVisible()
 	if err != nil {
 		return err
 	}
