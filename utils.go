@@ -78,6 +78,7 @@ var DefaultSleeper = func() utils.Sleeper {
 // PagePool to thread-safely limit the number of pages at the same time.
 // It's a common practice to use a channel to limit concurrency, it's not special for rod.
 // This helper is more like an example to use Go Channel.
+// Reference: https://golang.org/doc/effective_go#channels
 type PagePool chan *Page
 
 // NewPagePool instance
