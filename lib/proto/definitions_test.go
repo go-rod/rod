@@ -169,6 +169,12 @@ func (t T) AuditsEnable() {
 	t.Nil(err)
 }
 
+func (t T) AuditsCheckContrast() {
+	c := &Client{}
+	err := proto.AuditsCheckContrast{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
 	e.ProtoEvent()
@@ -2238,6 +2244,12 @@ func (t T) PageSetAdBlockingEnabled() {
 func (t T) PageSetBypassCSP() {
 	c := &Client{}
 	err := proto.PageSetBypassCSP{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PageGetPermissionsPolicyState() {
+	c := &Client{}
+	_, err := proto.PageGetPermissionsPolicyState{}.Call(c)
 	t.Nil(err)
 }
 

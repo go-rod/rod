@@ -1372,9 +1372,8 @@ const (
 	AuditsSharedArrayBufferIssueTypeCreationIssue AuditsSharedArrayBufferIssueType = "CreationIssue"
 )
 
-// AuditsSharedArrayBufferIssueDetails Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
-// code. Currently only used for COEP/COOP, but may be extended to include
-// some CSP errors in the future.
+// AuditsSharedArrayBufferIssueDetails Details for a issue arising from an SAB being instantiated in, or
+// transferred to a context that is not cross-origin isolated.
 type AuditsSharedArrayBufferIssueDetails struct {
 
 	// SourceCodeLocation ...
@@ -1422,6 +1421,51 @@ type AuditsTrustedWebActivityIssueDetails struct {
 	Signature string `json:"signature,omitempty"`
 }
 
+// AuditsLowTextContrastIssueDetails ...
+type AuditsLowTextContrastIssueDetails struct {
+
+	// ViolatingNodeID ...
+	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId"`
+
+	// ViolatingNodeSelector ...
+	ViolatingNodeSelector string `json:"violatingNodeSelector"`
+
+	// ContrastRatio ...
+	ContrastRatio float64 `json:"contrastRatio"`
+
+	// ThresholdAA ...
+	ThresholdAA float64 `json:"thresholdAA"`
+
+	// ThresholdAAA ...
+	ThresholdAAA float64 `json:"thresholdAAA"`
+
+	// FontSize ...
+	FontSize string `json:"fontSize"`
+
+	// FontWeight ...
+	FontWeight string `json:"fontWeight"`
+}
+
+// AuditsCorsIssueDetails Details for a CORS related issue, e.g. a warning or error related to
+// CORS RFC1918 enforcement.
+type AuditsCorsIssueDetails struct {
+
+	// CorsErrorStatus ...
+	CorsErrorStatus *NetworkCorsErrorStatus `json:"corsErrorStatus"`
+
+	// IsWarning ...
+	IsWarning bool `json:"isWarning"`
+
+	// Request ...
+	Request *AuditsAffectedRequest `json:"request"`
+
+	// ResourceIPAddressSpace (optional) ...
+	ResourceIPAddressSpace NetworkIPAddressSpace `json:"resourceIPAddressSpace,omitempty"`
+
+	// ClientSecurityState (optional) ...
+	ClientSecurityState *NetworkClientSecurityState `json:"clientSecurityState,omitempty"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -1448,6 +1492,12 @@ const (
 
 	// AuditsInspectorIssueCodeTrustedWebActivityIssue enum const
 	AuditsInspectorIssueCodeTrustedWebActivityIssue AuditsInspectorIssueCode = "TrustedWebActivityIssue"
+
+	// AuditsInspectorIssueCodeLowTextContrastIssue enum const
+	AuditsInspectorIssueCodeLowTextContrastIssue AuditsInspectorIssueCode = "LowTextContrastIssue"
+
+	// AuditsInspectorIssueCodeCorsIssue enum const
+	AuditsInspectorIssueCodeCorsIssue AuditsInspectorIssueCode = "CorsIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -1475,6 +1525,12 @@ type AuditsInspectorIssueDetails struct {
 
 	// TwaQualityEnforcementDetails (optional) ...
 	TwaQualityEnforcementDetails *AuditsTrustedWebActivityIssueDetails `json:"twaQualityEnforcementDetails,omitempty"`
+
+	// LowTextContrastIssueDetails (optional) ...
+	LowTextContrastIssueDetails *AuditsLowTextContrastIssueDetails `json:"lowTextContrastIssueDetails,omitempty"`
+
+	// CorsIssueDetails (optional) ...
+	CorsIssueDetails *AuditsCorsIssueDetails `json:"corsIssueDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
@@ -1563,6 +1619,19 @@ func (m AuditsEnable) ProtoReq() string { return "Audits.enable" }
 
 // Call of the command, sessionID is optional.
 func (m AuditsEnable) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// AuditsCheckContrast Runs the contrast check for the target page. Found issues are reported
+// using Audits.issueAdded event.
+type AuditsCheckContrast struct {
+}
+
+// ProtoReq of the command
+func (m AuditsCheckContrast) ProtoReq() string { return "Audits.checkContrast" }
+
+// Call of the command, sessionID is optional.
+func (m AuditsCheckContrast) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -6337,13 +6406,14 @@ type EmulationUserAgentBrandVersion struct {
 }
 
 // EmulationUserAgentMetadata (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+// Missing optional values will be filled in by the target with what it would normally use.
 type EmulationUserAgentMetadata struct {
 
-	// Brands ...
-	Brands []*EmulationUserAgentBrandVersion `json:"brands"`
+	// Brands (optional) ...
+	Brands []*EmulationUserAgentBrandVersion `json:"brands,omitempty"`
 
-	// FullVersion ...
-	FullVersion string `json:"fullVersion"`
+	// FullVersion (optional) ...
+	FullVersion string `json:"fullVersion,omitempty"`
 
 	// Platform ...
 	Platform string `json:"platform"`
@@ -8958,6 +9028,22 @@ const (
 	NetworkCookiePriorityHigh NetworkCookiePriority = "High"
 )
 
+// NetworkCookieSourceScheme (experimental) Represents the source scheme of the origin that originally set the cookie.
+// A value of "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
+// This is a temporary ability and it will be removed in the future.
+type NetworkCookieSourceScheme string
+
+const (
+	// NetworkCookieSourceSchemeUnset enum const
+	NetworkCookieSourceSchemeUnset NetworkCookieSourceScheme = "Unset"
+
+	// NetworkCookieSourceSchemeNonSecure enum const
+	NetworkCookieSourceSchemeNonSecure NetworkCookieSourceScheme = "NonSecure"
+
+	// NetworkCookieSourceSchemeSecure enum const
+	NetworkCookieSourceSchemeSecure NetworkCookieSourceScheme = "Secure"
+)
+
 // NetworkResourceTiming Timing information for the request.
 type NetworkResourceTiming struct {
 
@@ -9610,6 +9696,14 @@ type NetworkCookie struct {
 
 	// SameParty (experimental) True if cookie is SameParty.
 	SameParty bool `json:"sameParty"`
+
+	// SourceScheme (experimental) Cookie source scheme type.
+	SourceScheme NetworkCookieSourceScheme `json:"sourceScheme"`
+
+	// SourcePort (experimental) Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+	// This is a temporary ability and it will be removed in the future.
+	SourcePort int `json:"sourcePort"`
 }
 
 // NetworkSetCookieBlockedReason (experimental) Types of reasons why a cookie may not be stored from a response.
@@ -9660,6 +9754,12 @@ const (
 
 	// NetworkSetCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax enum const
 	NetworkSetCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax NetworkSetCookieBlockedReason = "SchemefulSameSiteUnspecifiedTreatedAsLax"
+
+	// NetworkSetCookieBlockedReasonSamePartyFromCrossPartyContext enum const
+	NetworkSetCookieBlockedReasonSamePartyFromCrossPartyContext NetworkSetCookieBlockedReason = "SamePartyFromCrossPartyContext"
+
+	// NetworkSetCookieBlockedReasonSamePartyConflictsWithOtherAttributes enum const
+	NetworkSetCookieBlockedReasonSamePartyConflictsWithOtherAttributes NetworkSetCookieBlockedReason = "SamePartyConflictsWithOtherAttributes"
 )
 
 // NetworkCookieBlockedReason (experimental) Types of reasons why a cookie may not be sent with a request.
@@ -9701,6 +9801,9 @@ const (
 
 	// NetworkCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax enum const
 	NetworkCookieBlockedReasonSchemefulSameSiteUnspecifiedTreatedAsLax NetworkCookieBlockedReason = "SchemefulSameSiteUnspecifiedTreatedAsLax"
+
+	// NetworkCookieBlockedReasonSamePartyFromCrossPartyContext enum const
+	NetworkCookieBlockedReasonSamePartyFromCrossPartyContext NetworkCookieBlockedReason = "SamePartyFromCrossPartyContext"
 )
 
 // NetworkBlockedSetCookieWithReason (experimental) A cookie which was not stored from a response with the corresponding reason.
@@ -9739,7 +9842,7 @@ type NetworkCookieParam struct {
 	Value string `json:"value"`
 
 	// URL (optional) The request-URI to associate with the setting of the cookie. This value can affect the
-	// default domain and path values of the created cookie.
+	// default domain, path, source port, and source scheme values of the created cookie.
 	URL string `json:"url,omitempty"`
 
 	// Domain (optional) Cookie domain.
@@ -9762,6 +9865,17 @@ type NetworkCookieParam struct {
 
 	// Priority (experimental) (optional) Cookie Priority.
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
+
+	// SameParty (experimental) (optional) True if cookie is SameParty.
+	SameParty bool `json:"sameParty,omitempty"`
+
+	// SourceScheme (experimental) (optional) Cookie source scheme type.
+	SourceScheme NetworkCookieSourceScheme `json:"sourceScheme,omitempty"`
+
+	// SourcePort (experimental) (optional) Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+	// This is a temporary ability and it will be removed in the future.
+	SourcePort int `json:"sourcePort,omitempty"`
 }
 
 // NetworkAuthChallengeSource enum
@@ -9961,6 +10075,9 @@ const (
 
 	// NetworkPrivateNetworkRequestPolicyBlockFromInsecureToMorePrivate enum const
 	NetworkPrivateNetworkRequestPolicyBlockFromInsecureToMorePrivate NetworkPrivateNetworkRequestPolicy = "BlockFromInsecureToMorePrivate"
+
+	// NetworkPrivateNetworkRequestPolicyWarnFromInsecureToMorePrivate enum const
+	NetworkPrivateNetworkRequestPolicyWarnFromInsecureToMorePrivate NetworkPrivateNetworkRequestPolicy = "WarnFromInsecureToMorePrivate"
 )
 
 // NetworkIPAddressSpace (experimental) ...
@@ -10599,7 +10716,7 @@ type NetworkSetCookie struct {
 	Value string `json:"value"`
 
 	// URL (optional) The request-URI to associate with the setting of the cookie. This value can affect the
-	// default domain and path values of the created cookie.
+	// default domain, path, source port, and source scheme values of the created cookie.
 	URL string `json:"url,omitempty"`
 
 	// Domain (optional) Cookie domain.
@@ -10622,6 +10739,17 @@ type NetworkSetCookie struct {
 
 	// Priority (experimental) (optional) Cookie Priority type.
 	Priority NetworkCookiePriority `json:"priority,omitempty"`
+
+	// SameParty (experimental) (optional) True if cookie is SameParty.
+	SameParty bool `json:"sameParty,omitempty"`
+
+	// SourceScheme (experimental) (optional) Cookie source scheme type.
+	SourceScheme NetworkCookieSourceScheme `json:"sourceScheme,omitempty"`
+
+	// SourcePort (experimental) (optional) Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
+	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
+	// This is a temporary ability and it will be removed in the future.
+	SourcePort int `json:"sourcePort,omitempty"`
 }
 
 // ProtoReq of the command
@@ -11282,6 +11410,10 @@ type NetworkResponseReceivedExtraInfo struct {
 	// Headers Raw response headers as they were received over the wire.
 	Headers NetworkHeaders `json:"headers"`
 
+	// ResourceIPAddressSpace The IP address space of the resource. The address space can only be determined once the transport
+	// established the connection, so we can't send it in `requestWillBeSentExtraInfo`.
+	ResourceIPAddressSpace NetworkIPAddressSpace `json:"resourceIPAddressSpace"`
+
 	// HeadersText (optional) Raw response header text as it was received over the wire. The raw text may not always be
 	// available, such as in the case of HTTP/2 or QUIC.
 	HeadersText string `json:"headersText,omitempty"`
@@ -11462,6 +11594,19 @@ type OverlayFlexContainerHighlightConfig struct {
 	CrossAlignment *OverlayLineStyle `json:"crossAlignment,omitempty"`
 }
 
+// OverlayFlexItemHighlightConfig Configuration data for the highlighting of Flex item elements.
+type OverlayFlexItemHighlightConfig struct {
+
+	// BaseSizeBox (optional) Style of the box representing the item's base size
+	BaseSizeBox *OverlayBoxStyle `json:"baseSizeBox,omitempty"`
+
+	// BaseSizeBorder (optional) Style of the border around the box representing the item's base size
+	BaseSizeBorder *OverlayLineStyle `json:"baseSizeBorder,omitempty"`
+
+	// FlexibilityArrow (optional) Style of the arrow representing if the item grew or shrank
+	FlexibilityArrow *OverlayLineStyle `json:"flexibilityArrow,omitempty"`
+}
+
 // OverlayLineStylePattern enum
 type OverlayLineStylePattern string
 
@@ -11557,6 +11702,9 @@ type OverlayHighlightConfig struct {
 
 	// FlexContainerHighlightConfig (optional) The flex container highlight configuration (default: all transparent).
 	FlexContainerHighlightConfig *OverlayFlexContainerHighlightConfig `json:"flexContainerHighlightConfig,omitempty"`
+
+	// FlexItemHighlightConfig (optional) The flex item highlight configuration (default: all transparent).
+	FlexItemHighlightConfig *OverlayFlexItemHighlightConfig `json:"flexItemHighlightConfig,omitempty"`
 
 	// ContrastAlgorithm (optional) The contrast algorithm to use for the contrast ratio (default: aa).
 	ContrastAlgorithm OverlayContrastAlgorithm `json:"contrastAlgorithm,omitempty"`
@@ -12210,6 +12358,205 @@ const (
 	// PageGatedAPIFeaturesPerformanceProfile enum const
 	PageGatedAPIFeaturesPerformanceProfile PageGatedAPIFeatures = "PerformanceProfile"
 )
+
+// PagePermissionsPolicyFeature (experimental) All Permissions Policy features. This enum should match the one defined
+// in renderer/core/feature_policy/feature_policy_features.json5.
+type PagePermissionsPolicyFeature string
+
+const (
+	// PagePermissionsPolicyFeatureAccelerometer enum const
+	PagePermissionsPolicyFeatureAccelerometer PagePermissionsPolicyFeature = "accelerometer"
+
+	// PagePermissionsPolicyFeatureAmbientLightSensor enum const
+	PagePermissionsPolicyFeatureAmbientLightSensor PagePermissionsPolicyFeature = "ambient-light-sensor"
+
+	// PagePermissionsPolicyFeatureAutoplay enum const
+	PagePermissionsPolicyFeatureAutoplay PagePermissionsPolicyFeature = "autoplay"
+
+	// PagePermissionsPolicyFeatureCamera enum const
+	PagePermissionsPolicyFeatureCamera PagePermissionsPolicyFeature = "camera"
+
+	// PagePermissionsPolicyFeatureChDpr enum const
+	PagePermissionsPolicyFeatureChDpr PagePermissionsPolicyFeature = "ch-dpr"
+
+	// PagePermissionsPolicyFeatureChDeviceMemory enum const
+	PagePermissionsPolicyFeatureChDeviceMemory PagePermissionsPolicyFeature = "ch-device-memory"
+
+	// PagePermissionsPolicyFeatureChDownlink enum const
+	PagePermissionsPolicyFeatureChDownlink PagePermissionsPolicyFeature = "ch-downlink"
+
+	// PagePermissionsPolicyFeatureChEct enum const
+	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-etc"
+
+	// PagePermissionsPolicyFeatureChLang enum const
+	PagePermissionsPolicyFeatureChLang PagePermissionsPolicyFeature = "ch-lang"
+
+	// PagePermissionsPolicyFeatureChRtt enum const
+	PagePermissionsPolicyFeatureChRtt PagePermissionsPolicyFeature = "ch-rtt"
+
+	// PagePermissionsPolicyFeatureChUa enum const
+	PagePermissionsPolicyFeatureChUa PagePermissionsPolicyFeature = "ch-ua"
+
+	// PagePermissionsPolicyFeatureChUaArch enum const
+	PagePermissionsPolicyFeatureChUaArch PagePermissionsPolicyFeature = "ch-ua-arch"
+
+	// PagePermissionsPolicyFeatureChUaPlatform enum const
+	PagePermissionsPolicyFeatureChUaPlatform PagePermissionsPolicyFeature = "ch-ua-platform"
+
+	// PagePermissionsPolicyFeatureChUaModel enum const
+	PagePermissionsPolicyFeatureChUaModel PagePermissionsPolicyFeature = "ch-ua-model"
+
+	// PagePermissionsPolicyFeatureChUaMobile enum const
+	PagePermissionsPolicyFeatureChUaMobile PagePermissionsPolicyFeature = "ch-ua-mobile"
+
+	// PagePermissionsPolicyFeatureChUaFullVersion enum const
+	PagePermissionsPolicyFeatureChUaFullVersion PagePermissionsPolicyFeature = "ch-ua-full-version"
+
+	// PagePermissionsPolicyFeatureChUaPlatformVersion enum const
+	PagePermissionsPolicyFeatureChUaPlatformVersion PagePermissionsPolicyFeature = "ch-ua-platform-version"
+
+	// PagePermissionsPolicyFeatureChViewportWidth enum const
+	PagePermissionsPolicyFeatureChViewportWidth PagePermissionsPolicyFeature = "ch-viewport-width"
+
+	// PagePermissionsPolicyFeatureChWidth enum const
+	PagePermissionsPolicyFeatureChWidth PagePermissionsPolicyFeature = "ch-width"
+
+	// PagePermissionsPolicyFeatureClipboardRead enum const
+	PagePermissionsPolicyFeatureClipboardRead PagePermissionsPolicyFeature = "clipboard-read"
+
+	// PagePermissionsPolicyFeatureClipboardWrite enum const
+	PagePermissionsPolicyFeatureClipboardWrite PagePermissionsPolicyFeature = "clipboard-write"
+
+	// PagePermissionsPolicyFeatureConversionMeasurement enum const
+	PagePermissionsPolicyFeatureConversionMeasurement PagePermissionsPolicyFeature = "conversion-measurement"
+
+	// PagePermissionsPolicyFeatureCrossOriginIsolated enum const
+	PagePermissionsPolicyFeatureCrossOriginIsolated PagePermissionsPolicyFeature = "cross-origin-isolated"
+
+	// PagePermissionsPolicyFeatureDisplayCapture enum const
+	PagePermissionsPolicyFeatureDisplayCapture PagePermissionsPolicyFeature = "display-capture"
+
+	// PagePermissionsPolicyFeatureDocumentDomain enum const
+	PagePermissionsPolicyFeatureDocumentDomain PagePermissionsPolicyFeature = "document-domain"
+
+	// PagePermissionsPolicyFeatureEncryptedMedia enum const
+	PagePermissionsPolicyFeatureEncryptedMedia PagePermissionsPolicyFeature = "encrypted-media"
+
+	// PagePermissionsPolicyFeatureExecutionWhileOutOfViewport enum const
+	PagePermissionsPolicyFeatureExecutionWhileOutOfViewport PagePermissionsPolicyFeature = "execution-while-out-of-viewport"
+
+	// PagePermissionsPolicyFeatureExecutionWhileNotRendered enum const
+	PagePermissionsPolicyFeatureExecutionWhileNotRendered PagePermissionsPolicyFeature = "execution-while-not-rendered"
+
+	// PagePermissionsPolicyFeatureFocusWithoutUserActivation enum const
+	PagePermissionsPolicyFeatureFocusWithoutUserActivation PagePermissionsPolicyFeature = "focus-without-user-activation"
+
+	// PagePermissionsPolicyFeatureFullscreen enum const
+	PagePermissionsPolicyFeatureFullscreen PagePermissionsPolicyFeature = "fullscreen"
+
+	// PagePermissionsPolicyFeatureFrobulate enum const
+	PagePermissionsPolicyFeatureFrobulate PagePermissionsPolicyFeature = "frobulate"
+
+	// PagePermissionsPolicyFeatureGamepad enum const
+	PagePermissionsPolicyFeatureGamepad PagePermissionsPolicyFeature = "gamepad"
+
+	// PagePermissionsPolicyFeatureGeolocation enum const
+	PagePermissionsPolicyFeatureGeolocation PagePermissionsPolicyFeature = "geolocation"
+
+	// PagePermissionsPolicyFeatureGyroscope enum const
+	PagePermissionsPolicyFeatureGyroscope PagePermissionsPolicyFeature = "gyroscope"
+
+	// PagePermissionsPolicyFeatureHid enum const
+	PagePermissionsPolicyFeatureHid PagePermissionsPolicyFeature = "hid"
+
+	// PagePermissionsPolicyFeatureIdleDetection enum const
+	PagePermissionsPolicyFeatureIdleDetection PagePermissionsPolicyFeature = "idle-detection"
+
+	// PagePermissionsPolicyFeatureInterestCohort enum const
+	PagePermissionsPolicyFeatureInterestCohort PagePermissionsPolicyFeature = "interest-cohort"
+
+	// PagePermissionsPolicyFeatureMagnetometer enum const
+	PagePermissionsPolicyFeatureMagnetometer PagePermissionsPolicyFeature = "magnetometer"
+
+	// PagePermissionsPolicyFeatureMicrophone enum const
+	PagePermissionsPolicyFeatureMicrophone PagePermissionsPolicyFeature = "microphone"
+
+	// PagePermissionsPolicyFeatureMidi enum const
+	PagePermissionsPolicyFeatureMidi PagePermissionsPolicyFeature = "midi"
+
+	// PagePermissionsPolicyFeatureOtpCredentials enum const
+	PagePermissionsPolicyFeatureOtpCredentials PagePermissionsPolicyFeature = "otp-credentials"
+
+	// PagePermissionsPolicyFeaturePayment enum const
+	PagePermissionsPolicyFeaturePayment PagePermissionsPolicyFeature = "payment"
+
+	// PagePermissionsPolicyFeaturePictureInPicture enum const
+	PagePermissionsPolicyFeaturePictureInPicture PagePermissionsPolicyFeature = "picture-in-picture"
+
+	// PagePermissionsPolicyFeaturePublickeyCredentialsGet enum const
+	PagePermissionsPolicyFeaturePublickeyCredentialsGet PagePermissionsPolicyFeature = "publickey-credentials-get"
+
+	// PagePermissionsPolicyFeatureScreenWakeLock enum const
+	PagePermissionsPolicyFeatureScreenWakeLock PagePermissionsPolicyFeature = "screen-wake-lock"
+
+	// PagePermissionsPolicyFeatureSerial enum const
+	PagePermissionsPolicyFeatureSerial PagePermissionsPolicyFeature = "serial"
+
+	// PagePermissionsPolicyFeatureStorageAccessAPI enum const
+	PagePermissionsPolicyFeatureStorageAccessAPI PagePermissionsPolicyFeature = "storage-access-api"
+
+	// PagePermissionsPolicyFeatureSyncXhr enum const
+	PagePermissionsPolicyFeatureSyncXhr PagePermissionsPolicyFeature = "sync-xhr"
+
+	// PagePermissionsPolicyFeatureTrustTokenRedemption enum const
+	PagePermissionsPolicyFeatureTrustTokenRedemption PagePermissionsPolicyFeature = "trust-token-redemption"
+
+	// PagePermissionsPolicyFeatureUsb enum const
+	PagePermissionsPolicyFeatureUsb PagePermissionsPolicyFeature = "usb"
+
+	// PagePermissionsPolicyFeatureVerticalScroll enum const
+	PagePermissionsPolicyFeatureVerticalScroll PagePermissionsPolicyFeature = "vertical-scroll"
+
+	// PagePermissionsPolicyFeatureWebShare enum const
+	PagePermissionsPolicyFeatureWebShare PagePermissionsPolicyFeature = "web-share"
+
+	// PagePermissionsPolicyFeatureXrSpatialTracking enum const
+	PagePermissionsPolicyFeatureXrSpatialTracking PagePermissionsPolicyFeature = "xr-spatial-tracking"
+)
+
+// PagePermissionsPolicyBlockReason (experimental) Reason for a permissions policy feature to be disabled.
+type PagePermissionsPolicyBlockReason string
+
+const (
+	// PagePermissionsPolicyBlockReasonHeader enum const
+	PagePermissionsPolicyBlockReasonHeader PagePermissionsPolicyBlockReason = "Header"
+
+	// PagePermissionsPolicyBlockReasonIframeAttribute enum const
+	PagePermissionsPolicyBlockReasonIframeAttribute PagePermissionsPolicyBlockReason = "IframeAttribute"
+)
+
+// PagePermissionsPolicyBlockLocator (experimental) ...
+type PagePermissionsPolicyBlockLocator struct {
+
+	// FrameID ...
+	FrameID PageFrameID `json:"frameId"`
+
+	// BlockReason ...
+	BlockReason PagePermissionsPolicyBlockReason `json:"blockReason"`
+}
+
+// PagePermissionsPolicyFeatureState (experimental) ...
+type PagePermissionsPolicyFeatureState struct {
+
+	// Feature ...
+	Feature PagePermissionsPolicyFeature `json:"feature"`
+
+	// Allowed ...
+	Allowed bool `json:"allowed"`
+
+	// Locator (optional) ...
+	Locator *PagePermissionsPolicyBlockLocator `json:"locator,omitempty"`
+}
 
 // PageFrame Information about the Frame on the page.
 type PageFrame struct {
@@ -13406,6 +13753,29 @@ func (m PageSetBypassCSP) ProtoReq() string { return "Page.setBypassCSP" }
 // Call of the command, sessionID is optional.
 func (m PageSetBypassCSP) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// PageGetPermissionsPolicyState (experimental) Get Permissions Policy state on given frame.
+type PageGetPermissionsPolicyState struct {
+
+	// FrameID ...
+	FrameID PageFrameID `json:"frameId"`
+}
+
+// ProtoReq of the command
+func (m PageGetPermissionsPolicyState) ProtoReq() string { return "Page.getPermissionsPolicyState" }
+
+// Call of the command, sessionID is optional.
+func (m PageGetPermissionsPolicyState) Call(c Client) (*PageGetPermissionsPolicyStateResult, error) {
+	var res PageGetPermissionsPolicyStateResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// PageGetPermissionsPolicyStateResult (experimental) Get Permissions Policy state on given frame.
+type PageGetPermissionsPolicyStateResult struct {
+
+	// States ...
+	States []*PagePermissionsPolicyFeatureState `json:"states"`
 }
 
 // PageSetDeviceMetricsOverride (deprecated) (experimental) Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
@@ -20140,6 +20510,9 @@ const (
 
 	// RuntimeRemoteObjectSubtypeWebassemblymemory enum const
 	RuntimeRemoteObjectSubtypeWebassemblymemory RuntimeRemoteObjectSubtype = "webassemblymemory"
+
+	// RuntimeRemoteObjectSubtypeWasmvalue enum const
+	RuntimeRemoteObjectSubtypeWasmvalue RuntimeRemoteObjectSubtype = "wasmvalue"
 )
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
@@ -20275,6 +20648,9 @@ const (
 
 	// RuntimeObjectPreviewSubtypeWebassemblymemory enum const
 	RuntimeObjectPreviewSubtypeWebassemblymemory RuntimeObjectPreviewSubtype = "webassemblymemory"
+
+	// RuntimeObjectPreviewSubtypeWasmvalue enum const
+	RuntimeObjectPreviewSubtypeWasmvalue RuntimeObjectPreviewSubtype = "wasmvalue"
 )
 
 // RuntimeObjectPreview (experimental) Object containing abbreviated remote object value.
@@ -20388,6 +20764,9 @@ const (
 
 	// RuntimePropertyPreviewSubtypeWebassemblymemory enum const
 	RuntimePropertyPreviewSubtypeWebassemblymemory RuntimePropertyPreviewSubtype = "webassemblymemory"
+
+	// RuntimePropertyPreviewSubtypeWasmvalue enum const
+	RuntimePropertyPreviewSubtypeWasmvalue RuntimePropertyPreviewSubtype = "wasmvalue"
 )
 
 // RuntimePropertyPreview (experimental) ...
@@ -21483,12 +21862,15 @@ var types = map[string]reflect.Type{
 	"Audits.ContentSecurityPolicyIssueDetails":           reflect.TypeOf(AuditsContentSecurityPolicyIssueDetails{}),
 	"Audits.SharedArrayBufferIssueDetails":               reflect.TypeOf(AuditsSharedArrayBufferIssueDetails{}),
 	"Audits.TrustedWebActivityIssueDetails":              reflect.TypeOf(AuditsTrustedWebActivityIssueDetails{}),
+	"Audits.LowTextContrastIssueDetails":                 reflect.TypeOf(AuditsLowTextContrastIssueDetails{}),
+	"Audits.CorsIssueDetails":                            reflect.TypeOf(AuditsCorsIssueDetails{}),
 	"Audits.InspectorIssueDetails":                       reflect.TypeOf(AuditsInspectorIssueDetails{}),
 	"Audits.InspectorIssue":                              reflect.TypeOf(AuditsInspectorIssue{}),
 	"Audits.getEncodedResponse":                          reflect.TypeOf(AuditsGetEncodedResponse{}),
 	"Audits.getEncodedResponseResult":                    reflect.TypeOf(AuditsGetEncodedResponseResult{}),
 	"Audits.disable":                                     reflect.TypeOf(AuditsDisable{}),
 	"Audits.enable":                                      reflect.TypeOf(AuditsEnable{}),
+	"Audits.checkContrast":                               reflect.TypeOf(AuditsCheckContrast{}),
 	"Audits.issueAdded":                                  reflect.TypeOf(AuditsIssueAdded{}),
 	"BackgroundService.EventMetadata":                    reflect.TypeOf(BackgroundServiceEventMetadata{}),
 	"BackgroundService.BackgroundServiceEvent":           reflect.TypeOf(BackgroundServiceBackgroundServiceEvent{}),
@@ -21986,6 +22368,7 @@ var types = map[string]reflect.Type{
 	"Overlay.SourceOrderConfig":                             reflect.TypeOf(OverlaySourceOrderConfig{}),
 	"Overlay.GridHighlightConfig":                           reflect.TypeOf(OverlayGridHighlightConfig{}),
 	"Overlay.FlexContainerHighlightConfig":                  reflect.TypeOf(OverlayFlexContainerHighlightConfig{}),
+	"Overlay.FlexItemHighlightConfig":                       reflect.TypeOf(OverlayFlexItemHighlightConfig{}),
 	"Overlay.LineStyle":                                     reflect.TypeOf(OverlayLineStyle{}),
 	"Overlay.BoxStyle":                                      reflect.TypeOf(OverlayBoxStyle{}),
 	"Overlay.HighlightConfig":                               reflect.TypeOf(OverlayHighlightConfig{}),
@@ -22024,6 +22407,8 @@ var types = map[string]reflect.Type{
 	"Overlay.nodeHighlightRequested":                        reflect.TypeOf(OverlayNodeHighlightRequested{}),
 	"Overlay.screenshotRequested":                           reflect.TypeOf(OverlayScreenshotRequested{}),
 	"Overlay.inspectModeCanceled":                           reflect.TypeOf(OverlayInspectModeCanceled{}),
+	"Page.PermissionsPolicyBlockLocator":                    reflect.TypeOf(PagePermissionsPolicyBlockLocator{}),
+	"Page.PermissionsPolicyFeatureState":                    reflect.TypeOf(PagePermissionsPolicyFeatureState{}),
 	"Page.Frame":                                            reflect.TypeOf(PageFrame{}),
 	"Page.FrameResource":                                    reflect.TypeOf(PageFrameResource{}),
 	"Page.FrameResourceTree":                                reflect.TypeOf(PageFrameResourceTree{}),
@@ -22089,6 +22474,8 @@ var types = map[string]reflect.Type{
 	"Page.searchInResourceResult":                           reflect.TypeOf(PageSearchInResourceResult{}),
 	"Page.setAdBlockingEnabled":                             reflect.TypeOf(PageSetAdBlockingEnabled{}),
 	"Page.setBypassCSP":                                     reflect.TypeOf(PageSetBypassCSP{}),
+	"Page.getPermissionsPolicyState":                        reflect.TypeOf(PageGetPermissionsPolicyState{}),
+	"Page.getPermissionsPolicyStateResult":                  reflect.TypeOf(PageGetPermissionsPolicyStateResult{}),
 	"Page.setDeviceMetricsOverride":                         reflect.TypeOf(PageSetDeviceMetricsOverride{}),
 	"Page.setDeviceOrientationOverride":                     reflect.TypeOf(PageSetDeviceOrientationOverride{}),
 	"Page.setFontFamilies":                                  reflect.TypeOf(PageSetFontFamilies{}),
