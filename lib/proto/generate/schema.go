@@ -24,6 +24,7 @@ const (
 type domain struct {
 	name         string
 	experimental bool
+	description  string
 	definitions  []*definition
 	global       gson.JSON
 }
@@ -87,6 +88,10 @@ func parseDomain(global, schema gson.JSON) *domain {
 		experimental: schema.Get("experimental").Bool(),
 		definitions:  []*definition{},
 		global:       global,
+	}
+
+	if schema.Has("description") {
+		domain.description = schema.Get("description").Str()
 	}
 
 	for _, cdpType := range []cdpType{cdpTypeTypes, cdpTypeCommands, cdpTypeEvents} {

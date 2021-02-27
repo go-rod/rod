@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"path/filepath"
 	"regexp"
 
@@ -12,7 +13,7 @@ func main() {
 
 	schema := getSchema()
 
-	code := comment + utils.S(`
+	init := comment + utils.S(`
 
 		package proto
 
@@ -23,10 +24,9 @@ func main() {
 
 		// Version of cdp protocol
 		const Version = "v{{.major}}.{{.minor}}"
-	`, "major", schema.Get("version.major").Str(), "minor", schema.Get("version.minor").Str())
 
-	init := `
-		var types = map[string]reflect.Type{`
+		var types = map[string]reflect.Type{
+	`, "major", schema.Get("version.major").Str(), "minor", schema.Get("version.minor").Str())
 
 	testsCode := comment + `
 
@@ -38,6 +38,23 @@ func main() {
 	`
 
 	for _, domain := range parse(schema) {
+
+		code := comment + `
+
+			package proto
+
+			import (
+				"github.com/ysmood/gson"
+			)
+		`
+
+		code += fmt.Sprintf("/*\n\n%s\n\n", domain.name)
+
+		if domain.description != "" {
+			code += domain.description + "\n\n"
+		}
+		code += "*/\n\n"
+
 		for _, definition := range domain.definitions {
 			if definition.skip {
 				continue
@@ -54,13 +71,18 @@ func main() {
 				)
 			}
 		}
+
+		utils.E(utils.OutputFile(
+			filepath.FromSlash(
+				fmt.Sprintf("lib/proto/%s.go", toSnakeCase(domain.name))),
+			code))
 	}
 
 	init += `
 		}
 	`
 
-	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), code+init))
+	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions.go"), init))
 	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode))
 
 	path := "./lib/proto"
