@@ -76,3 +76,17 @@ func (t T) newPage(ctx context.Context) (*cdp.Client, string) {
 
 	return client, sessionID
 }
+
+func (t T) DuplicatedConnectErr() {
+	l := launcher.New()
+	t.Cleanup(l.Kill)
+
+	u := l.MustLaunch()
+
+	ws := &cdp.WebSocket{}
+	t.E(ws.Connect(t.Context(), u, nil))
+
+	t.Panic(func() {
+		_ = ws.Connect(t.Context(), u, nil)
+	})
+}

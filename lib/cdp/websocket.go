@@ -35,6 +35,10 @@ type WebSocket struct {
 
 // Connect to browser
 func (ws *WebSocket) Connect(ctx context.Context, wsURL string, header http.Header) error {
+	if ws.conn != nil {
+		panic("duplicated connection: " + wsURL)
+	}
+
 	ctx, cancel := context.WithCancel(ctx)
 	ws.close = cancel
 
