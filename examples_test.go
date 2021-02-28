@@ -529,16 +529,19 @@ func Example_states() {
 	// true
 }
 
-// It's a common practice to concurrently use a pool of resources in Go, it's not special for rod.
+// We can use PagePool to concurrently control and reuse pages.
 func ExamplePage_pool() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
-	// We create a pool that will hold at most 3 pages
+	// We create a pool that will hold at most 3 pages which means the max concurrency is 3
 	pool := rod.NewPagePool(3)
 
-	// Create a page if needed. If you want pages to share cookies with each remove the MustIncognito()
-	create := func() *rod.Page { return browser.MustIncognito().MustPage("") }
+	// Create a page if needed
+	create := func() *rod.Page {
+		// We use MustIncognito to isolate pages with each other
+		return browser.MustIncognito().MustPage("")
+	}
 
 	yourJob := func() {
 		page := pool.Get(create)

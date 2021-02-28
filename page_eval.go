@@ -61,8 +61,9 @@ func Eval(js string, args ...interface{}) *EvalOptions {
 	}
 }
 
-// EvalHelper creates a special EvalOptions that will cache the fn on the page js context.
-// Useful when you want to extend the helpers of Rod, such as create your own selector helpers.
+// EvalHelper creates a special EvalOptions that will eval and cache the fn on the page's js context.
+// When the fn.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.
+// Useful when you need to eval a huge js expression many times.
 func EvalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue:  true,
@@ -259,6 +260,7 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 	return formated, nil
 }
 
+// Check the doc of EvalHelper
 func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, error) {
 	jsCtxID, err := p.getJSCtxID()
 	if err != nil {
@@ -319,6 +321,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 	return id, nil
 }
 
+// Returns the page's window object, the page can be an iframe
 func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 	p.jsCtxLock.Lock()
 	defer p.jsCtxLock.Unlock()

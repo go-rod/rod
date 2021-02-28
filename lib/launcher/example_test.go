@@ -27,6 +27,7 @@ func Example_custom_launch() {
 	cmd := exec.Command(path, args...)
 	cmd.Stderr = parser
 	utils.E(cmd.Start())
+	u := launcher.MustResolveURL(<-parser.URL)
 
-	rod.New().ControlURL(<-parser.URL).MustConnect()
+	rod.New().ControlURL(u).MustConnect()
 }

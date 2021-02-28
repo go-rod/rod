@@ -5,7 +5,7 @@ type Function struct {
 	// Name must be unique and not conflict with the function names in "helper.js"
 	Name string
 
-	// Definition hold the code of a js function from "helper.js",
+	// Definition holds the code of a js function from "helper.js",
 	// the js code is compressed by uglify-js.
 	Definition string
 
