@@ -454,11 +454,11 @@ func (el *Element) Text() (string, error) {
 
 // HTML of the element
 func (el *Element) HTML() (string, error) {
-	str, err := el.Eval(`this.outerHTML`)
+	res, err := proto.DOMGetOuterHTML{ObjectID: el.Object.ObjectID}.Call(el)
 	if err != nil {
 		return "", err
 	}
-	return str.Value.String(), nil
+	return res.OuterHTML, nil
 }
 
 // Visible returns true if the element is visible on the page

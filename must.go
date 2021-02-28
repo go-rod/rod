@@ -123,6 +123,13 @@ func (p *Page) MustInfo() *proto.TargetTargetInfo {
 	return info
 }
 
+// MustHTML is similar to Page.HTML
+func (p *Page) MustHTML() string {
+	html, err := p.HTML()
+	utils.E(err)
+	return html
+}
+
 // MustCookies is similar to Page.Cookies
 func (p *Page) MustCookies(urls ...string) []*proto.NetworkCookie {
 	cookies, err := p.Cookies(urls)

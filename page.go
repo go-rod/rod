@@ -82,6 +82,15 @@ func (p *Page) Info() (*proto.TargetTargetInfo, error) {
 	return p.browser.pageInfo(p.TargetID)
 }
 
+// HTML of the page
+func (p *Page) HTML() (string, error) {
+	el, err := p.Element("html")
+	if err != nil {
+		return "", err
+	}
+	return el.HTML()
+}
+
 // Cookies returns the page cookies. By default it will return the cookies for current page.
 // The urls is the list of URLs for which applicable cookies will be fetched.
 func (p *Page) Cookies(urls []string) ([]*proto.NetworkCookie, error) {

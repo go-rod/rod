@@ -117,6 +117,14 @@ func (t T) SetUserAgent() {
 	t.Eq(lang, "en")
 }
 
+func (t T) PageHTML() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
+	t.Has(p.MustHTML(), "<head>")
+
+	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	t.Err(p.HTML())
+}
+
 func (t T) PageCloseCancel() {
 	page := t.browser.MustPage(t.srcFile("fixtures/prevent-close.html"))
 	page.MustElement("body").MustClick() // only focused page will handle beforeunload event

@@ -20,8 +20,7 @@ func main() {
 	page := rod.New().ControlURL(*flagDevToolWsURL).MustConnect().MustPage("https://duckduckgo.com")
 
 	page.MustElement("#logo_homepage_link").MustWaitVisible()
-	body := page.MustElement("html").MustHTML()
 
 	log.Println("Body of duckduckgo.com starts with:")
-	log.Println(body[0:100])
+	log.Println(page.MustHTML()[0:100])
 }
