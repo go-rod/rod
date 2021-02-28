@@ -361,10 +361,10 @@ type AccessibilityAXNode struct {
 type AccessibilityDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityDisable) ProtoReq() string { return "Accessibility.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AccessibilityDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -374,10 +374,10 @@ func (m AccessibilityDisable) Call(c Client) error {
 type AccessibilityEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityEnable) ProtoReq() string { return "Accessibility.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AccessibilityEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -398,10 +398,10 @@ type AccessibilityGetPartialAXTree struct {
 	FetchRelatives bool `json:"fetchRelatives,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityGetPartialAXTree) ProtoReq() string { return "Accessibility.getPartialAXTree" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AccessibilityGetPartialAXTree) Call(c Client) (*AccessibilityGetPartialAXTreeResult, error) {
 	var res AccessibilityGetPartialAXTreeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -423,10 +423,10 @@ type AccessibilityGetFullAXTree struct {
 	MaxDepth int `json:"max_depth,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityGetFullAXTree) ProtoReq() string { return "Accessibility.getFullAXTree" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AccessibilityGetFullAXTree) Call(c Client) (*AccessibilityGetFullAXTreeResult, error) {
 	var res AccessibilityGetFullAXTreeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -447,10 +447,10 @@ type AccessibilityGetChildAXNodes struct {
 	ID AccessibilityAXNodeID `json:"id"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityGetChildAXNodes) ProtoReq() string { return "Accessibility.getChildAXNodes" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AccessibilityGetChildAXNodes) Call(c Client) (*AccessibilityGetChildAXNodesResult, error) {
 	var res AccessibilityGetChildAXNodesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -487,10 +487,10 @@ type AccessibilityQueryAXTree struct {
 	Role string `json:"role,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AccessibilityQueryAXTree) ProtoReq() string { return "Accessibility.queryAXTree" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AccessibilityQueryAXTree) Call(c Client) (*AccessibilityQueryAXTreeResult, error) {
 	var res AccessibilityQueryAXTreeResult
 	return &res, call(m.ProtoReq(), m, &res, c)

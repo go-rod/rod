@@ -94,10 +94,10 @@ type ConsoleConsoleMessage struct {
 type ConsoleClearMessages struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ConsoleClearMessages) ProtoReq() string { return "Console.clearMessages" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ConsoleClearMessages) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -106,10 +106,10 @@ func (m ConsoleClearMessages) Call(c Client) error {
 type ConsoleDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ConsoleDisable) ProtoReq() string { return "Console.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ConsoleDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -119,10 +119,10 @@ func (m ConsoleDisable) Call(c Client) error {
 type ConsoleEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ConsoleEnable) ProtoReq() string { return "Console.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ConsoleEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -134,7 +134,7 @@ type ConsoleMessageAdded struct {
 	Message *ConsoleConsoleMessage `json:"message"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ConsoleMessageAdded) ProtoEvent() string {
 	return "Console.messageAdded"
 }

@@ -77,10 +77,10 @@ type BackgroundServiceStartObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BackgroundServiceStartObserving) ProtoReq() string { return "BackgroundService.startObserving" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BackgroundServiceStartObserving) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -92,10 +92,10 @@ type BackgroundServiceStopObserving struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BackgroundServiceStopObserving) ProtoReq() string { return "BackgroundService.stopObserving" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BackgroundServiceStopObserving) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -110,10 +110,10 @@ type BackgroundServiceSetRecording struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BackgroundServiceSetRecording) ProtoReq() string { return "BackgroundService.setRecording" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BackgroundServiceSetRecording) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -125,10 +125,10 @@ type BackgroundServiceClearEvents struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BackgroundServiceClearEvents) ProtoReq() string { return "BackgroundService.clearEvents" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BackgroundServiceClearEvents) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -143,7 +143,7 @@ type BackgroundServiceRecordingStateChanged struct {
 	Service BackgroundServiceServiceName `json:"service"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt BackgroundServiceRecordingStateChanged) ProtoEvent() string {
 	return "BackgroundService.recordingStateChanged"
 }
@@ -156,7 +156,7 @@ type BackgroundServiceBackgroundServiceEventReceived struct {
 	BackgroundServiceEvent *BackgroundServiceBackgroundServiceEvent `json:"backgroundServiceEvent"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt BackgroundServiceBackgroundServiceEventReceived) ProtoEvent() string {
 	return "BackgroundService.backgroundServiceEventReceived"
 }

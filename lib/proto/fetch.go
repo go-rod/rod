@@ -112,10 +112,10 @@ type FetchAuthChallengeResponse struct {
 type FetchDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchDisable) ProtoReq() string { return "Fetch.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -134,10 +134,10 @@ type FetchEnable struct {
 	HandleAuthRequests bool `json:"handleAuthRequests,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchEnable) ProtoReq() string { return "Fetch.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -152,10 +152,10 @@ type FetchFailRequest struct {
 	ErrorReason NetworkErrorReason `json:"errorReason"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchFailRequest) ProtoReq() string { return "Fetch.failRequest" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchFailRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -186,10 +186,10 @@ type FetchFulfillRequest struct {
 	ResponsePhrase string `json:"responsePhrase,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchFulfillRequest) ProtoReq() string { return "Fetch.fulfillRequest" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchFulfillRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -213,10 +213,10 @@ type FetchContinueRequest struct {
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchContinueRequest) ProtoReq() string { return "Fetch.continueRequest" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchContinueRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -231,10 +231,10 @@ type FetchContinueWithAuth struct {
 	AuthChallengeResponse *FetchAuthChallengeResponse `json:"authChallengeResponse"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchContinueWithAuth) ProtoReq() string { return "Fetch.continueWithAuth" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m FetchContinueWithAuth) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -251,10 +251,10 @@ type FetchGetResponseBody struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchGetResponseBody) ProtoReq() string { return "Fetch.getResponseBody" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m FetchGetResponseBody) Call(c Client) (*FetchGetResponseBodyResult, error) {
 	var res FetchGetResponseBodyResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -291,10 +291,10 @@ type FetchTakeResponseBodyAsStream struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m FetchTakeResponseBodyAsStream) ProtoReq() string { return "Fetch.takeResponseBodyAsStream" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m FetchTakeResponseBodyAsStream) Call(c Client) (*FetchTakeResponseBodyAsStreamResult, error) {
 	var res FetchTakeResponseBodyAsStreamResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -350,7 +350,7 @@ type FetchRequestPaused struct {
 	NetworkID FetchRequestID `json:"networkId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt FetchRequestPaused) ProtoEvent() string {
 	return "Fetch.requestPaused"
 }
@@ -377,7 +377,7 @@ type FetchAuthRequired struct {
 	AuthChallenge *FetchAuthChallenge `json:"authChallenge"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt FetchAuthRequired) ProtoEvent() string {
 	return "Fetch.authRequired"
 }

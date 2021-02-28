@@ -24,10 +24,10 @@ type SchemaDomain struct {
 type SchemaGetDomains struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SchemaGetDomains) ProtoReq() string { return "Schema.getDomains" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m SchemaGetDomains) Call(c Client) (*SchemaGetDomainsResult, error) {
 	var res SchemaGetDomainsResult
 	return &res, call(m.ProtoReq(), m, &res, c)

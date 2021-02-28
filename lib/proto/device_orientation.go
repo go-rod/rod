@@ -12,12 +12,12 @@ DeviceOrientation
 type DeviceOrientationClearDeviceOrientationOverride struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DeviceOrientationClearDeviceOrientationOverride) ProtoReq() string {
 	return "DeviceOrientation.clearDeviceOrientationOverride"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DeviceOrientationClearDeviceOrientationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -35,12 +35,12 @@ type DeviceOrientationSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DeviceOrientationSetDeviceOrientationOverride) ProtoReq() string {
 	return "DeviceOrientation.setDeviceOrientationOverride"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DeviceOrientationSetDeviceOrientationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }

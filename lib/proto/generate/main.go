@@ -156,10 +156,10 @@ func (d *definition) format() (code string) {
 			method := d.domain.name + "." + d.originName
 			if d.returnValue {
 				code += utils.S(`
-				// ProtoReq of the command
+				// ProtoReq name
 				func (m {{.name}}) ProtoReq() string { return "{{.method}}" }
 
-				// Call of the command, sessionID is optional.
+				// Call the request
 				func (m {{.name}}) Call(c Client) (*{{.name}}Result, error) {
 					var res {{.name}}Result
 					return &res, call(m.ProtoReq(), m, &res, c)
@@ -167,10 +167,10 @@ func (d *definition) format() (code string) {
 				`, "name", d.name, "method", method)
 			} else {
 				code += utils.S(`
-				// ProtoReq of the command
+				// ProtoReq name
 				func (m {{.name}}) ProtoReq() string { return "{{.method}}" }
 
-				// Call of the command, sessionID is optional.
+				// Call sends the request
 				func (m {{.name}}) Call(c Client) error {
 					return call(m.ProtoReq(), m, nil, c)
 				}
@@ -180,7 +180,7 @@ func (d *definition) format() (code string) {
 
 		if d.cdpType == cdpTypeEvents {
 			code += utils.S(`
-				// ProtoEvent interface
+				// ProtoEvent name
 				func (evt {{.name}}) ProtoEvent() string {
 					return "{{.event}}"
 				}

@@ -30,10 +30,10 @@ type DOMStorageClear struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageClear) ProtoReq() string { return "DOMStorage.clear" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMStorageClear) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -42,10 +42,10 @@ func (m DOMStorageClear) Call(c Client) error {
 type DOMStorageDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageDisable) ProtoReq() string { return "DOMStorage.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMStorageDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -54,10 +54,10 @@ func (m DOMStorageDisable) Call(c Client) error {
 type DOMStorageEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageEnable) ProtoReq() string { return "DOMStorage.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMStorageEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -69,10 +69,10 @@ type DOMStorageGetDOMStorageItems struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageGetDOMStorageItems) ProtoReq() string { return "DOMStorage.getDOMStorageItems" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DOMStorageGetDOMStorageItems) Call(c Client) (*DOMStorageGetDOMStorageItemsResult, error) {
 	var res DOMStorageGetDOMStorageItemsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -95,10 +95,10 @@ type DOMStorageRemoveDOMStorageItem struct {
 	Key string `json:"key"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageRemoveDOMStorageItem) ProtoReq() string { return "DOMStorage.removeDOMStorageItem" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMStorageRemoveDOMStorageItem) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -116,10 +116,10 @@ type DOMStorageSetDOMStorageItem struct {
 	Value string `json:"value"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMStorageSetDOMStorageItem) ProtoReq() string { return "DOMStorage.setDOMStorageItem" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMStorageSetDOMStorageItem) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -137,7 +137,7 @@ type DOMStorageDomStorageItemAdded struct {
 	NewValue string `json:"newValue"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DOMStorageDomStorageItemAdded) ProtoEvent() string {
 	return "DOMStorage.domStorageItemAdded"
 }
@@ -152,7 +152,7 @@ type DOMStorageDomStorageItemRemoved struct {
 	Key string `json:"key"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DOMStorageDomStorageItemRemoved) ProtoEvent() string {
 	return "DOMStorage.domStorageItemRemoved"
 }
@@ -173,7 +173,7 @@ type DOMStorageDomStorageItemUpdated struct {
 	NewValue string `json:"newValue"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DOMStorageDomStorageItemUpdated) ProtoEvent() string {
 	return "DOMStorage.domStorageItemUpdated"
 }
@@ -185,7 +185,7 @@ type DOMStorageDomStorageItemsCleared struct {
 	StorageID *DOMStorageStorageID `json:"storageId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DOMStorageDomStorageItemsCleared) ProtoEvent() string {
 	return "DOMStorage.domStorageItemsCleared"
 }

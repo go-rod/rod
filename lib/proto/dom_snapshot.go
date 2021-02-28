@@ -356,10 +356,10 @@ type DOMSnapshotTextBoxSnapshot struct {
 type DOMSnapshotDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMSnapshotDisable) ProtoReq() string { return "DOMSnapshot.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMSnapshotDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -368,10 +368,10 @@ func (m DOMSnapshotDisable) Call(c Client) error {
 type DOMSnapshotEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMSnapshotEnable) ProtoReq() string { return "DOMSnapshot.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DOMSnapshotEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -395,10 +395,10 @@ type DOMSnapshotGetSnapshot struct {
 	IncludeUserAgentShadowTree bool `json:"includeUserAgentShadowTree,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMSnapshotGetSnapshot) ProtoReq() string { return "DOMSnapshot.getSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DOMSnapshotGetSnapshot) Call(c Client) (*DOMSnapshotGetSnapshotResult, error) {
 	var res DOMSnapshotGetSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -436,10 +436,10 @@ type DOMSnapshotCaptureSnapshot struct {
 	IncludeDOMRects bool `json:"includeDOMRects,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DOMSnapshotCaptureSnapshot) ProtoReq() string { return "DOMSnapshot.captureSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DOMSnapshotCaptureSnapshot) Call(c Client) (*DOMSnapshotCaptureSnapshotResult, error) {
 	var res DOMSnapshotCaptureSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)

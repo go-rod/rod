@@ -12,10 +12,10 @@ Inspector
 type InspectorDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InspectorDisable) ProtoReq() string { return "Inspector.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InspectorDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -24,10 +24,10 @@ func (m InspectorDisable) Call(c Client) error {
 type InspectorEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InspectorEnable) ProtoReq() string { return "Inspector.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InspectorEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -39,7 +39,7 @@ type InspectorDetached struct {
 	Reason string `json:"reason"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt InspectorDetached) ProtoEvent() string {
 	return "Inspector.detached"
 }
@@ -48,7 +48,7 @@ func (evt InspectorDetached) ProtoEvent() string {
 type InspectorTargetCrashed struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt InspectorTargetCrashed) ProtoEvent() string {
 	return "Inspector.targetCrashed"
 }
@@ -57,7 +57,7 @@ func (evt InspectorTargetCrashed) ProtoEvent() string {
 type InspectorTargetReloadedAfterCrash struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt InspectorTargetReloadedAfterCrash) ProtoEvent() string {
 	return "Inspector.targetReloadedAfterCrash"
 }

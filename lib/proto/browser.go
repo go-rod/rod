@@ -218,10 +218,10 @@ type BrowserSetPermission struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserSetPermission) ProtoReq() string { return "Browser.setPermission" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserSetPermission) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -239,10 +239,10 @@ type BrowserGrantPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGrantPermissions) ProtoReq() string { return "Browser.grantPermissions" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserGrantPermissions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -254,10 +254,10 @@ type BrowserResetPermissions struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserResetPermissions) ProtoReq() string { return "Browser.resetPermissions" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserResetPermissions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -295,10 +295,10 @@ type BrowserSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserSetDownloadBehavior) ProtoReq() string { return "Browser.setDownloadBehavior" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserSetDownloadBehavior) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -307,10 +307,10 @@ func (m BrowserSetDownloadBehavior) Call(c Client) error {
 type BrowserClose struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserClose) ProtoReq() string { return "Browser.close" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserClose) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -319,10 +319,10 @@ func (m BrowserClose) Call(c Client) error {
 type BrowserCrash struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserCrash) ProtoReq() string { return "Browser.crash" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserCrash) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -331,10 +331,10 @@ func (m BrowserCrash) Call(c Client) error {
 type BrowserCrashGpuProcess struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserCrashGpuProcess) ProtoReq() string { return "Browser.crashGpuProcess" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserCrashGpuProcess) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -343,10 +343,10 @@ func (m BrowserCrashGpuProcess) Call(c Client) error {
 type BrowserGetVersion struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetVersion) ProtoReq() string { return "Browser.getVersion" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetVersion) Call(c Client) (*BrowserGetVersionResult, error) {
 	var res BrowserGetVersionResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -376,10 +376,10 @@ type BrowserGetVersionResult struct {
 type BrowserGetBrowserCommandLine struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetBrowserCommandLine) ProtoReq() string { return "Browser.getBrowserCommandLine" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetBrowserCommandLine) Call(c Client) (*BrowserGetBrowserCommandLineResult, error) {
 	var res BrowserGetBrowserCommandLineResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -405,10 +405,10 @@ type BrowserGetHistograms struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetHistograms) ProtoReq() string { return "Browser.getHistograms" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetHistograms) Call(c Client) (*BrowserGetHistogramsResult, error) {
 	var res BrowserGetHistogramsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -431,10 +431,10 @@ type BrowserGetHistogram struct {
 	Delta bool `json:"delta,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetHistogram) ProtoReq() string { return "Browser.getHistogram" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetHistogram) Call(c Client) (*BrowserGetHistogramResult, error) {
 	var res BrowserGetHistogramResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -454,10 +454,10 @@ type BrowserGetWindowBounds struct {
 	WindowID BrowserWindowID `json:"windowId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetWindowBounds) ProtoReq() string { return "Browser.getWindowBounds" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetWindowBounds) Call(c Client) (*BrowserGetWindowBoundsResult, error) {
 	var res BrowserGetWindowBoundsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -478,10 +478,10 @@ type BrowserGetWindowForTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserGetWindowForTarget) ProtoReq() string { return "Browser.getWindowForTarget" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m BrowserGetWindowForTarget) Call(c Client) (*BrowserGetWindowForTargetResult, error) {
 	var res BrowserGetWindowForTargetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -509,10 +509,10 @@ type BrowserSetWindowBounds struct {
 	Bounds *BrowserBounds `json:"bounds"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserSetWindowBounds) ProtoReq() string { return "Browser.setWindowBounds" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserSetWindowBounds) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -527,10 +527,10 @@ type BrowserSetDockTile struct {
 	Image []byte `json:"image,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserSetDockTile) ProtoReq() string { return "Browser.setDockTile" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserSetDockTile) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -542,10 +542,10 @@ type BrowserExecuteBrowserCommand struct {
 	CommandID BrowserBrowserCommandID `json:"commandId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m BrowserExecuteBrowserCommand) ProtoReq() string { return "Browser.executeBrowserCommand" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m BrowserExecuteBrowserCommand) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }

@@ -1381,10 +1381,10 @@ type NetworkLoadNetworkResourceOptions struct {
 type NetworkCanClearBrowserCache struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkCanClearBrowserCache) ProtoReq() string { return "Network.canClearBrowserCache" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkCanClearBrowserCache) Call(c Client) (*NetworkCanClearBrowserCacheResult, error) {
 	var res NetworkCanClearBrowserCacheResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1401,10 +1401,10 @@ type NetworkCanClearBrowserCacheResult struct {
 type NetworkCanClearBrowserCookies struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkCanClearBrowserCookies) ProtoReq() string { return "Network.canClearBrowserCookies" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkCanClearBrowserCookies) Call(c Client) (*NetworkCanClearBrowserCookiesResult, error) {
 	var res NetworkCanClearBrowserCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1421,12 +1421,12 @@ type NetworkCanClearBrowserCookiesResult struct {
 type NetworkCanEmulateNetworkConditions struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkCanEmulateNetworkConditions) ProtoReq() string {
 	return "Network.canEmulateNetworkConditions"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkCanEmulateNetworkConditions) Call(c Client) (*NetworkCanEmulateNetworkConditionsResult, error) {
 	var res NetworkCanEmulateNetworkConditionsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1443,10 +1443,10 @@ type NetworkCanEmulateNetworkConditionsResult struct {
 type NetworkClearBrowserCache struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkClearBrowserCache) ProtoReq() string { return "Network.clearBrowserCache" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkClearBrowserCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1455,10 +1455,10 @@ func (m NetworkClearBrowserCache) Call(c Client) error {
 type NetworkClearBrowserCookies struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkClearBrowserCookies) ProtoReq() string { return "Network.clearBrowserCookies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkClearBrowserCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1501,12 +1501,12 @@ type NetworkContinueInterceptedRequest struct {
 	AuthChallengeResponse *NetworkAuthChallengeResponse `json:"authChallengeResponse,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkContinueInterceptedRequest) ProtoReq() string {
 	return "Network.continueInterceptedRequest"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkContinueInterceptedRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1528,10 +1528,10 @@ type NetworkDeleteCookies struct {
 	Path string `json:"path,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkDeleteCookies) ProtoReq() string { return "Network.deleteCookies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkDeleteCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1540,10 +1540,10 @@ func (m NetworkDeleteCookies) Call(c Client) error {
 type NetworkDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkDisable) ProtoReq() string { return "Network.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1567,10 +1567,10 @@ type NetworkEmulateNetworkConditions struct {
 	ConnectionType NetworkConnectionType `json:"connectionType,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkEmulateNetworkConditions) ProtoReq() string { return "Network.emulateNetworkConditions" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkEmulateNetworkConditions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1588,10 +1588,10 @@ type NetworkEnable struct {
 	MaxPostDataSize int `json:"maxPostDataSize,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkEnable) ProtoReq() string { return "Network.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1601,10 +1601,10 @@ func (m NetworkEnable) Call(c Client) error {
 type NetworkGetAllCookies struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetAllCookies) ProtoReq() string { return "Network.getAllCookies" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetAllCookies) Call(c Client) (*NetworkGetAllCookiesResult, error) {
 	var res NetworkGetAllCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1625,10 +1625,10 @@ type NetworkGetCertificate struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetCertificate) ProtoReq() string { return "Network.getCertificate" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetCertificate) Call(c Client) (*NetworkGetCertificateResult, error) {
 	var res NetworkGetCertificateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1651,10 +1651,10 @@ type NetworkGetCookies struct {
 	Urls []string `json:"urls,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetCookies) ProtoReq() string { return "Network.getCookies" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetCookies) Call(c Client) (*NetworkGetCookiesResult, error) {
 	var res NetworkGetCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1675,10 +1675,10 @@ type NetworkGetResponseBody struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetResponseBody) ProtoReq() string { return "Network.getResponseBody" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetResponseBody) Call(c Client) (*NetworkGetResponseBodyResult, error) {
 	var res NetworkGetResponseBodyResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1701,10 +1701,10 @@ type NetworkGetRequestPostData struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetRequestPostData) ProtoReq() string { return "Network.getRequestPostData" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetRequestPostData) Call(c Client) (*NetworkGetRequestPostDataResult, error) {
 	var res NetworkGetRequestPostDataResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1724,12 +1724,12 @@ type NetworkGetResponseBodyForInterception struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetResponseBodyForInterception) ProtoReq() string {
 	return "Network.getResponseBodyForInterception"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetResponseBodyForInterception) Call(c Client) (*NetworkGetResponseBodyForInterceptionResult, error) {
 	var res NetworkGetResponseBodyForInterceptionResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1755,12 +1755,12 @@ type NetworkTakeResponseBodyForInterceptionAsStream struct {
 	InterceptionID NetworkInterceptionID `json:"interceptionId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkTakeResponseBodyForInterceptionAsStream) ProtoReq() string {
 	return "Network.takeResponseBodyForInterceptionAsStream"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(c Client) (*NetworkTakeResponseBodyForInterceptionAsStreamResult, error) {
 	var res NetworkTakeResponseBodyForInterceptionAsStreamResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1785,10 +1785,10 @@ type NetworkReplayXHR struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkReplayXHR) ProtoReq() string { return "Network.replayXHR" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkReplayXHR) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1809,10 +1809,10 @@ type NetworkSearchInResponseBody struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSearchInResponseBody) ProtoReq() string { return "Network.searchInResponseBody" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkSearchInResponseBody) Call(c Client) (*NetworkSearchInResponseBodyResult, error) {
 	var res NetworkSearchInResponseBodyResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1832,10 +1832,10 @@ type NetworkSetBlockedURLs struct {
 	Urls []string `json:"urls"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetBlockedURLs) ProtoReq() string { return "Network.setBlockedURLs" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetBlockedURLs) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1847,10 +1847,10 @@ type NetworkSetBypassServiceWorker struct {
 	Bypass bool `json:"bypass"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetBypassServiceWorker) ProtoReq() string { return "Network.setBypassServiceWorker" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetBypassServiceWorker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1862,10 +1862,10 @@ type NetworkSetCacheDisabled struct {
 	CacheDisabled bool `json:"cacheDisabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetCacheDisabled) ProtoReq() string { return "Network.setCacheDisabled" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetCacheDisabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1916,10 +1916,10 @@ type NetworkSetCookie struct {
 	SourcePort int `json:"sourcePort,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetCookie) ProtoReq() string { return "Network.setCookie" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkSetCookie) Call(c Client) (*NetworkSetCookieResult, error) {
 	var res NetworkSetCookieResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1939,10 +1939,10 @@ type NetworkSetCookies struct {
 	Cookies []*NetworkCookieParam `json:"cookies"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetCookies) ProtoReq() string { return "Network.setCookies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1957,10 +1957,10 @@ type NetworkSetDataSizeLimitsForTest struct {
 	MaxResourceSize int `json:"maxResourceSize"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetDataSizeLimitsForTest) ProtoReq() string { return "Network.setDataSizeLimitsForTest" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetDataSizeLimitsForTest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1972,10 +1972,10 @@ type NetworkSetExtraHTTPHeaders struct {
 	Headers NetworkHeaders `json:"headers"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetExtraHTTPHeaders) ProtoReq() string { return "Network.setExtraHTTPHeaders" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetExtraHTTPHeaders) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1987,10 +1987,10 @@ type NetworkSetAttachDebugStack struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetAttachDebugStack) ProtoReq() string { return "Network.setAttachDebugStack" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetAttachDebugStack) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -2004,10 +2004,10 @@ type NetworkSetRequestInterception struct {
 	Patterns []*NetworkRequestPattern `json:"patterns"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetRequestInterception) ProtoReq() string { return "Network.setRequestInterception" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetRequestInterception) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -2028,10 +2028,10 @@ type NetworkSetUserAgentOverride struct {
 	UserAgentMetadata *EmulationUserAgentMetadata `json:"userAgentMetadata,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkSetUserAgentOverride) ProtoReq() string { return "Network.setUserAgentOverride" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m NetworkSetUserAgentOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -2043,12 +2043,12 @@ type NetworkGetSecurityIsolationStatus struct {
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkGetSecurityIsolationStatus) ProtoReq() string {
 	return "Network.getSecurityIsolationStatus"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkGetSecurityIsolationStatus) Call(c Client) (*NetworkGetSecurityIsolationStatusResult, error) {
 	var res NetworkGetSecurityIsolationStatusResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -2074,10 +2074,10 @@ type NetworkLoadNetworkResource struct {
 	Options *NetworkLoadNetworkResourceOptions `json:"options"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m NetworkLoadNetworkResource) ProtoReq() string { return "Network.loadNetworkResource" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m NetworkLoadNetworkResource) Call(c Client) (*NetworkLoadNetworkResourceResult, error) {
 	var res NetworkLoadNetworkResourceResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -2106,7 +2106,7 @@ type NetworkDataReceived struct {
 	EncodedDataLength int `json:"encodedDataLength"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkDataReceived) ProtoEvent() string {
 	return "Network.dataReceived"
 }
@@ -2130,7 +2130,7 @@ type NetworkEventSourceMessageReceived struct {
 	Data string `json:"data"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkEventSourceMessageReceived) ProtoEvent() string {
 	return "Network.eventSourceMessageReceived"
 }
@@ -2160,7 +2160,7 @@ type NetworkLoadingFailed struct {
 	CorsErrorStatus *NetworkCorsErrorStatus `json:"corsErrorStatus,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkLoadingFailed) ProtoEvent() string {
 	return "Network.loadingFailed"
 }
@@ -2182,7 +2182,7 @@ type NetworkLoadingFinished struct {
 	ShouldReportCorbBlocking bool `json:"shouldReportCorbBlocking,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkLoadingFinished) ProtoEvent() string {
 	return "Network.loadingFinished"
 }
@@ -2237,7 +2237,7 @@ type NetworkRequestIntercepted struct {
 	RequestID NetworkRequestID `json:"requestId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkRequestIntercepted) ProtoEvent() string {
 	return "Network.requestIntercepted"
 }
@@ -2249,7 +2249,7 @@ type NetworkRequestServedFromCache struct {
 	RequestID NetworkRequestID `json:"requestId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkRequestServedFromCache) ProtoEvent() string {
 	return "Network.requestServedFromCache"
 }
@@ -2291,7 +2291,7 @@ type NetworkRequestWillBeSent struct {
 	HasUserGesture bool `json:"hasUserGesture,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkRequestWillBeSent) ProtoEvent() string {
 	return "Network.requestWillBeSent"
 }
@@ -2309,7 +2309,7 @@ type NetworkResourceChangedPriority struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkResourceChangedPriority) ProtoEvent() string {
 	return "Network.resourceChangedPriority"
 }
@@ -2324,7 +2324,7 @@ type NetworkSignedExchangeReceived struct {
 	Info *NetworkSignedExchangeInfo `json:"info"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkSignedExchangeReceived) ProtoEvent() string {
 	return "Network.signedExchangeReceived"
 }
@@ -2351,7 +2351,7 @@ type NetworkResponseReceived struct {
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkResponseReceived) ProtoEvent() string {
 	return "Network.responseReceived"
 }
@@ -2366,7 +2366,7 @@ type NetworkWebSocketClosed struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketClosed) ProtoEvent() string {
 	return "Network.webSocketClosed"
 }
@@ -2384,7 +2384,7 @@ type NetworkWebSocketCreated struct {
 	Initiator *NetworkInitiator `json:"initiator,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketCreated) ProtoEvent() string {
 	return "Network.webSocketCreated"
 }
@@ -2402,7 +2402,7 @@ type NetworkWebSocketFrameError struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketFrameError) ProtoEvent() string {
 	return "Network.webSocketFrameError"
 }
@@ -2420,7 +2420,7 @@ type NetworkWebSocketFrameReceived struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketFrameReceived) ProtoEvent() string {
 	return "Network.webSocketFrameReceived"
 }
@@ -2438,7 +2438,7 @@ type NetworkWebSocketFrameSent struct {
 	Response *NetworkWebSocketFrame `json:"response"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketFrameSent) ProtoEvent() string {
 	return "Network.webSocketFrameSent"
 }
@@ -2456,7 +2456,7 @@ type NetworkWebSocketHandshakeResponseReceived struct {
 	Response *NetworkWebSocketResponse `json:"response"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketHandshakeResponseReceived) ProtoEvent() string {
 	return "Network.webSocketHandshakeResponseReceived"
 }
@@ -2477,7 +2477,7 @@ type NetworkWebSocketWillSendHandshakeRequest struct {
 	Request *NetworkWebSocketRequest `json:"request"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebSocketWillSendHandshakeRequest) ProtoEvent() string {
 	return "Network.webSocketWillSendHandshakeRequest"
 }
@@ -2498,7 +2498,7 @@ type NetworkWebTransportCreated struct {
 	Initiator *NetworkInitiator `json:"initiator,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebTransportCreated) ProtoEvent() string {
 	return "Network.webTransportCreated"
 }
@@ -2513,7 +2513,7 @@ type NetworkWebTransportConnectionEstablished struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebTransportConnectionEstablished) ProtoEvent() string {
 	return "Network.webTransportConnectionEstablished"
 }
@@ -2528,7 +2528,7 @@ type NetworkWebTransportClosed struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkWebTransportClosed) ProtoEvent() string {
 	return "Network.webTransportClosed"
 }
@@ -2553,7 +2553,7 @@ type NetworkRequestWillBeSentExtraInfo struct {
 	ClientSecurityState *NetworkClientSecurityState `json:"clientSecurityState,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkRequestWillBeSentExtraInfo) ProtoEvent() string {
 	return "Network.requestWillBeSentExtraInfo"
 }
@@ -2583,7 +2583,7 @@ type NetworkResponseReceivedExtraInfo struct {
 	HeadersText string `json:"headersText,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkResponseReceivedExtraInfo) ProtoEvent() string {
 	return "Network.responseReceivedExtraInfo"
 }
@@ -2651,7 +2651,7 @@ type NetworkTrustTokenOperationDone struct {
 	IssuedTokenCount int `json:"issuedTokenCount,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt NetworkTrustTokenOperationDone) ProtoEvent() string {
 	return "Network.trustTokenOperationDone"
 }

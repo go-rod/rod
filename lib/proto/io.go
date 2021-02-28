@@ -21,10 +21,10 @@ type IOClose struct {
 	Handle IOStreamHandle `json:"handle"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IOClose) ProtoReq() string { return "IO.close" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IOClose) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -43,10 +43,10 @@ type IORead struct {
 	Size int `json:"size,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IORead) ProtoReq() string { return "IO.read" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IORead) Call(c Client) (*IOReadResult, error) {
 	var res IOReadResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -72,10 +72,10 @@ type IOResolveBlob struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IOResolveBlob) ProtoReq() string { return "IO.resolveBlob" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IOResolveBlob) Call(c Client) (*IOResolveBlobResult, error) {
 	var res IOResolveBlobResult
 	return &res, call(m.ProtoReq(), m, &res, c)

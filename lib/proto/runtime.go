@@ -608,10 +608,10 @@ type RuntimeAwaitPromise struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeAwaitPromise) ProtoReq() string { return "Runtime.awaitPromise" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeAwaitPromise) Call(c Client) (*RuntimeAwaitPromiseResult, error) {
 	var res RuntimeAwaitPromiseResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -668,10 +668,10 @@ type RuntimeCallFunctionOn struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeCallFunctionOn) ProtoReq() string { return "Runtime.callFunctionOn" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeCallFunctionOn) Call(c Client) (*RuntimeCallFunctionOnResult, error) {
 	var res RuntimeCallFunctionOnResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -705,10 +705,10 @@ type RuntimeCompileScript struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeCompileScript) ProtoReq() string { return "Runtime.compileScript" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeCompileScript) Call(c Client) (*RuntimeCompileScriptResult, error) {
 	var res RuntimeCompileScriptResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -728,10 +728,10 @@ type RuntimeCompileScriptResult struct {
 type RuntimeDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeDisable) ProtoReq() string { return "Runtime.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -740,10 +740,10 @@ func (m RuntimeDisable) Call(c Client) error {
 type RuntimeDiscardConsoleEntries struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeDiscardConsoleEntries) ProtoReq() string { return "Runtime.discardConsoleEntries" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -754,10 +754,10 @@ func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
 type RuntimeEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeEnable) ProtoReq() string { return "Runtime.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -828,10 +828,10 @@ type RuntimeEvaluate struct {
 	UniqueContextID string `json:"uniqueContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeEvaluate) ProtoReq() string { return "Runtime.evaluate" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeEvaluate) Call(c Client) (*RuntimeEvaluateResult, error) {
 	var res RuntimeEvaluateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -851,10 +851,10 @@ type RuntimeEvaluateResult struct {
 type RuntimeGetIsolateID struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeGetIsolateID) ProtoReq() string { return "Runtime.getIsolateId" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeGetIsolateID) Call(c Client) (*RuntimeGetIsolateIDResult, error) {
 	var res RuntimeGetIsolateIDResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -872,10 +872,10 @@ type RuntimeGetIsolateIDResult struct {
 type RuntimeGetHeapUsage struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeGetHeapUsage) ProtoReq() string { return "Runtime.getHeapUsage" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeGetHeapUsage) Call(c Client) (*RuntimeGetHeapUsageResult, error) {
 	var res RuntimeGetHeapUsageResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -911,10 +911,10 @@ type RuntimeGetProperties struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeGetProperties) ProtoReq() string { return "Runtime.getProperties" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeGetProperties) Call(c Client) (*RuntimeGetPropertiesResult, error) {
 	var res RuntimeGetPropertiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -944,10 +944,10 @@ type RuntimeGlobalLexicalScopeNames struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeGlobalLexicalScopeNames) ProtoReq() string { return "Runtime.globalLexicalScopeNames" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeGlobalLexicalScopeNames) Call(c Client) (*RuntimeGlobalLexicalScopeNamesResult, error) {
 	var res RuntimeGlobalLexicalScopeNamesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -970,10 +970,10 @@ type RuntimeQueryObjects struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeQueryObjects) ProtoReq() string { return "Runtime.queryObjects" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeQueryObjects) Call(c Client) (*RuntimeQueryObjectsResult, error) {
 	var res RuntimeQueryObjectsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -993,10 +993,10 @@ type RuntimeReleaseObject struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeReleaseObject) ProtoReq() string { return "Runtime.releaseObject" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeReleaseObject) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1008,10 +1008,10 @@ type RuntimeReleaseObjectGroup struct {
 	ObjectGroup string `json:"objectGroup"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeReleaseObjectGroup) ProtoReq() string { return "Runtime.releaseObjectGroup" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeReleaseObjectGroup) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1020,10 +1020,10 @@ func (m RuntimeReleaseObjectGroup) Call(c Client) error {
 type RuntimeRunIfWaitingForDebugger struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeRunIfWaitingForDebugger) ProtoReq() string { return "Runtime.runIfWaitingForDebugger" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeRunIfWaitingForDebugger) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1059,10 +1059,10 @@ type RuntimeRunScript struct {
 	AwaitPromise bool `json:"awaitPromise,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeRunScript) ProtoReq() string { return "Runtime.runScript" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m RuntimeRunScript) Call(c Client) (*RuntimeRunScriptResult, error) {
 	var res RuntimeRunScriptResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1086,10 +1086,10 @@ type RuntimeSetAsyncCallStackDepth struct {
 	MaxDepth int `json:"maxDepth"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeSetAsyncCallStackDepth) ProtoReq() string { return "Runtime.setAsyncCallStackDepth" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeSetAsyncCallStackDepth) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1101,12 +1101,12 @@ type RuntimeSetCustomObjectFormatterEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeSetCustomObjectFormatterEnabled) ProtoReq() string {
 	return "Runtime.setCustomObjectFormatterEnabled"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeSetCustomObjectFormatterEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1118,12 +1118,12 @@ type RuntimeSetMaxCallStackSizeToCapture struct {
 	Size int `json:"size"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeSetMaxCallStackSizeToCapture) ProtoReq() string {
 	return "Runtime.setMaxCallStackSizeToCapture"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1133,10 +1133,10 @@ func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
 type RuntimeTerminateExecution struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeTerminateExecution) ProtoReq() string { return "Runtime.terminateExecution" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeTerminateExecution) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1166,10 +1166,10 @@ type RuntimeAddBinding struct {
 	ExecutionContextName string `json:"executionContextName,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeAddBinding) ProtoReq() string { return "Runtime.addBinding" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeAddBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1182,10 +1182,10 @@ type RuntimeRemoveBinding struct {
 	Name string `json:"name"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m RuntimeRemoveBinding) ProtoReq() string { return "Runtime.removeBinding" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m RuntimeRemoveBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1203,7 +1203,7 @@ type RuntimeBindingCalled struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeBindingCalled) ProtoEvent() string {
 	return "Runtime.bindingCalled"
 }
@@ -1293,7 +1293,7 @@ type RuntimeConsoleAPICalled struct {
 	Context string `json:"context,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeConsoleAPICalled) ProtoEvent() string {
 	return "Runtime.consoleAPICalled"
 }
@@ -1308,7 +1308,7 @@ type RuntimeExceptionRevoked struct {
 	ExceptionID int `json:"exceptionId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeExceptionRevoked) ProtoEvent() string {
 	return "Runtime.exceptionRevoked"
 }
@@ -1323,7 +1323,7 @@ type RuntimeExceptionThrown struct {
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeExceptionThrown) ProtoEvent() string {
 	return "Runtime.exceptionThrown"
 }
@@ -1335,7 +1335,7 @@ type RuntimeExecutionContextCreated struct {
 	Context *RuntimeExecutionContextDescription `json:"context"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeExecutionContextCreated) ProtoEvent() string {
 	return "Runtime.executionContextCreated"
 }
@@ -1347,7 +1347,7 @@ type RuntimeExecutionContextDestroyed struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeExecutionContextDestroyed) ProtoEvent() string {
 	return "Runtime.executionContextDestroyed"
 }
@@ -1356,7 +1356,7 @@ func (evt RuntimeExecutionContextDestroyed) ProtoEvent() string {
 type RuntimeExecutionContextsCleared struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeExecutionContextsCleared) ProtoEvent() string {
 	return "Runtime.executionContextsCleared"
 }
@@ -1372,7 +1372,7 @@ type RuntimeInspectRequested struct {
 	Hints map[string]gson.JSON `json:"hints"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt RuntimeInspectRequested) ProtoEvent() string {
 	return "Runtime.inspectRequested"
 }

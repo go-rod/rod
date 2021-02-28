@@ -17,10 +17,10 @@ type TetheringBind struct {
 	Port int `json:"port"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TetheringBind) ProtoReq() string { return "Tethering.bind" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TetheringBind) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -32,10 +32,10 @@ type TetheringUnbind struct {
 	Port int `json:"port"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TetheringUnbind) ProtoReq() string { return "Tethering.unbind" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TetheringUnbind) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -50,7 +50,7 @@ type TetheringAccepted struct {
 	ConnectionID string `json:"connectionId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TetheringAccepted) ProtoEvent() string {
 	return "Tethering.accepted"
 }

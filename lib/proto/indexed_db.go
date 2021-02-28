@@ -159,10 +159,10 @@ type IndexedDBClearObjectStore struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBClearObjectStore) ProtoReq() string { return "IndexedDB.clearObjectStore" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IndexedDBClearObjectStore) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -177,10 +177,10 @@ type IndexedDBDeleteDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBDeleteDatabase) ProtoReq() string { return "IndexedDB.deleteDatabase" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IndexedDBDeleteDatabase) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -201,12 +201,12 @@ type IndexedDBDeleteObjectStoreEntries struct {
 	KeyRange *IndexedDBKeyRange `json:"keyRange"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBDeleteObjectStoreEntries) ProtoReq() string {
 	return "IndexedDB.deleteObjectStoreEntries"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IndexedDBDeleteObjectStoreEntries) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -215,10 +215,10 @@ func (m IndexedDBDeleteObjectStoreEntries) Call(c Client) error {
 type IndexedDBDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBDisable) ProtoReq() string { return "IndexedDB.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IndexedDBDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -227,10 +227,10 @@ func (m IndexedDBDisable) Call(c Client) error {
 type IndexedDBEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBEnable) ProtoReq() string { return "IndexedDB.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m IndexedDBEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -260,10 +260,10 @@ type IndexedDBRequestData struct {
 	KeyRange *IndexedDBKeyRange `json:"keyRange,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBRequestData) ProtoReq() string { return "IndexedDB.requestData" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IndexedDBRequestData) Call(c Client) (*IndexedDBRequestDataResult, error) {
 	var res IndexedDBRequestDataResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -292,10 +292,10 @@ type IndexedDBGetMetadata struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBGetMetadata) ProtoReq() string { return "IndexedDB.getMetadata" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IndexedDBGetMetadata) Call(c Client) (*IndexedDBGetMetadataResult, error) {
 	var res IndexedDBGetMetadataResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -323,10 +323,10 @@ type IndexedDBRequestDatabase struct {
 	DatabaseName string `json:"databaseName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBRequestDatabase) ProtoReq() string { return "IndexedDB.requestDatabase" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IndexedDBRequestDatabase) Call(c Client) (*IndexedDBRequestDatabaseResult, error) {
 	var res IndexedDBRequestDatabaseResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -346,10 +346,10 @@ type IndexedDBRequestDatabaseNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m IndexedDBRequestDatabaseNames) ProtoReq() string { return "IndexedDB.requestDatabaseNames" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m IndexedDBRequestDatabaseNames) Call(c Client) (*IndexedDBRequestDatabaseNamesResult, error) {
 	var res IndexedDBRequestDatabaseNamesResult
 	return &res, call(m.ProtoReq(), m, &res, c)

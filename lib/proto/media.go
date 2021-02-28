@@ -101,10 +101,10 @@ type MediaPlayerError struct {
 type MediaEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MediaEnable) ProtoReq() string { return "Media.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MediaEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -113,10 +113,10 @@ func (m MediaEnable) Call(c Client) error {
 type MediaDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MediaDisable) ProtoReq() string { return "Media.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MediaDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -132,7 +132,7 @@ type MediaPlayerPropertiesChanged struct {
 	Properties []*MediaPlayerProperty `json:"properties"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt MediaPlayerPropertiesChanged) ProtoEvent() string {
 	return "Media.playerPropertiesChanged"
 }
@@ -148,7 +148,7 @@ type MediaPlayerEventsAdded struct {
 	Events []*MediaPlayerEvent `json:"events"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt MediaPlayerEventsAdded) ProtoEvent() string {
 	return "Media.playerEventsAdded"
 }
@@ -163,7 +163,7 @@ type MediaPlayerMessagesLogged struct {
 	Messages []*MediaPlayerMessage `json:"messages"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt MediaPlayerMessagesLogged) ProtoEvent() string {
 	return "Media.playerMessagesLogged"
 }
@@ -178,7 +178,7 @@ type MediaPlayerErrorsRaised struct {
 	Errors []*MediaPlayerError `json:"errors"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt MediaPlayerErrorsRaised) ProtoEvent() string {
 	return "Media.playerErrorsRaised"
 }
@@ -192,7 +192,7 @@ type MediaPlayersCreated struct {
 	Players []MediaPlayerID `json:"players"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt MediaPlayersCreated) ProtoEvent() string {
 	return "Media.playersCreated"
 }

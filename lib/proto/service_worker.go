@@ -131,10 +131,10 @@ type ServiceWorkerDeliverPushMessage struct {
 	Data string `json:"data"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerDeliverPushMessage) ProtoReq() string { return "ServiceWorker.deliverPushMessage" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerDeliverPushMessage) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -143,10 +143,10 @@ func (m ServiceWorkerDeliverPushMessage) Call(c Client) error {
 type ServiceWorkerDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerDisable) ProtoReq() string { return "ServiceWorker.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -167,10 +167,10 @@ type ServiceWorkerDispatchSyncEvent struct {
 	LastChance bool `json:"lastChance"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerDispatchSyncEvent) ProtoReq() string { return "ServiceWorker.dispatchSyncEvent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerDispatchSyncEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -188,12 +188,12 @@ type ServiceWorkerDispatchPeriodicSyncEvent struct {
 	Tag string `json:"tag"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerDispatchPeriodicSyncEvent) ProtoReq() string {
 	return "ServiceWorker.dispatchPeriodicSyncEvent"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -202,10 +202,10 @@ func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(c Client) error {
 type ServiceWorkerEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerEnable) ProtoReq() string { return "ServiceWorker.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -217,10 +217,10 @@ type ServiceWorkerInspectWorker struct {
 	VersionID string `json:"versionId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerInspectWorker) ProtoReq() string { return "ServiceWorker.inspectWorker" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerInspectWorker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -232,12 +232,12 @@ type ServiceWorkerSetForceUpdateOnPageLoad struct {
 	ForceUpdateOnPageLoad bool `json:"forceUpdateOnPageLoad"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerSetForceUpdateOnPageLoad) ProtoReq() string {
 	return "ServiceWorker.setForceUpdateOnPageLoad"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -249,10 +249,10 @@ type ServiceWorkerSkipWaiting struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerSkipWaiting) ProtoReq() string { return "ServiceWorker.skipWaiting" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerSkipWaiting) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -264,10 +264,10 @@ type ServiceWorkerStartWorker struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerStartWorker) ProtoReq() string { return "ServiceWorker.startWorker" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerStartWorker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -276,10 +276,10 @@ func (m ServiceWorkerStartWorker) Call(c Client) error {
 type ServiceWorkerStopAllWorkers struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerStopAllWorkers) ProtoReq() string { return "ServiceWorker.stopAllWorkers" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerStopAllWorkers) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -291,10 +291,10 @@ type ServiceWorkerStopWorker struct {
 	VersionID string `json:"versionId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerStopWorker) ProtoReq() string { return "ServiceWorker.stopWorker" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerStopWorker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -306,10 +306,10 @@ type ServiceWorkerUnregister struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerUnregister) ProtoReq() string { return "ServiceWorker.unregister" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerUnregister) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -321,10 +321,10 @@ type ServiceWorkerUpdateRegistration struct {
 	ScopeURL string `json:"scopeURL"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ServiceWorkerUpdateRegistration) ProtoReq() string { return "ServiceWorker.updateRegistration" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ServiceWorkerUpdateRegistration) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -336,7 +336,7 @@ type ServiceWorkerWorkerErrorReported struct {
 	ErrorMessage *ServiceWorkerServiceWorkerErrorMessage `json:"errorMessage"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ServiceWorkerWorkerErrorReported) ProtoEvent() string {
 	return "ServiceWorker.workerErrorReported"
 }
@@ -348,7 +348,7 @@ type ServiceWorkerWorkerRegistrationUpdated struct {
 	Registrations []*ServiceWorkerServiceWorkerRegistration `json:"registrations"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ServiceWorkerWorkerRegistrationUpdated) ProtoEvent() string {
 	return "ServiceWorker.workerRegistrationUpdated"
 }
@@ -360,7 +360,7 @@ type ServiceWorkerWorkerVersionUpdated struct {
 	Versions []*ServiceWorkerServiceWorkerVersion `json:"versions"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ServiceWorkerWorkerVersionUpdated) ProtoEvent() string {
 	return "ServiceWorker.workerVersionUpdated"
 }

@@ -599,10 +599,10 @@ type AuditsGetEncodedResponse struct {
 	SizeOnly bool `json:"sizeOnly,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AuditsGetEncodedResponse) ProtoReq() string { return "Audits.getEncodedResponse" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AuditsGetEncodedResponse) Call(c Client) (*AuditsGetEncodedResponseResult, error) {
 	var res AuditsGetEncodedResponseResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -626,10 +626,10 @@ type AuditsGetEncodedResponseResult struct {
 type AuditsDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AuditsDisable) ProtoReq() string { return "Audits.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AuditsDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -639,10 +639,10 @@ func (m AuditsDisable) Call(c Client) error {
 type AuditsEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AuditsEnable) ProtoReq() string { return "Audits.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AuditsEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -652,10 +652,10 @@ func (m AuditsEnable) Call(c Client) error {
 type AuditsCheckContrast struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AuditsCheckContrast) ProtoReq() string { return "Audits.checkContrast" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AuditsCheckContrast) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -667,7 +667,7 @@ type AuditsIssueAdded struct {
 	Issue *AuditsInspectorIssue `json:"issue"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt AuditsIssueAdded) ProtoEvent() string {
 	return "Audits.issueAdded"
 }

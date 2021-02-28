@@ -115,10 +115,10 @@ type AnimationKeyframeStyle struct {
 type AnimationDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationDisable) ProtoReq() string { return "Animation.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -127,10 +127,10 @@ func (m AnimationDisable) Call(c Client) error {
 type AnimationEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationEnable) ProtoReq() string { return "Animation.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -142,10 +142,10 @@ type AnimationGetCurrentTime struct {
 	ID string `json:"id"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationGetCurrentTime) ProtoReq() string { return "Animation.getCurrentTime" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AnimationGetCurrentTime) Call(c Client) (*AnimationGetCurrentTimeResult, error) {
 	var res AnimationGetCurrentTimeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -162,10 +162,10 @@ type AnimationGetCurrentTimeResult struct {
 type AnimationGetPlaybackRate struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationGetPlaybackRate) ProtoReq() string { return "Animation.getPlaybackRate" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AnimationGetPlaybackRate) Call(c Client) (*AnimationGetPlaybackRateResult, error) {
 	var res AnimationGetPlaybackRateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -185,10 +185,10 @@ type AnimationReleaseAnimations struct {
 	Animations []string `json:"animations"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationReleaseAnimations) ProtoReq() string { return "Animation.releaseAnimations" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationReleaseAnimations) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -200,10 +200,10 @@ type AnimationResolveAnimation struct {
 	AnimationID string `json:"animationId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationResolveAnimation) ProtoReq() string { return "Animation.resolveAnimation" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m AnimationResolveAnimation) Call(c Client) (*AnimationResolveAnimationResult, error) {
 	var res AnimationResolveAnimationResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -226,10 +226,10 @@ type AnimationSeekAnimations struct {
 	CurrentTime float64 `json:"currentTime"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationSeekAnimations) ProtoReq() string { return "Animation.seekAnimations" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationSeekAnimations) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -244,10 +244,10 @@ type AnimationSetPaused struct {
 	Paused bool `json:"paused"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationSetPaused) ProtoReq() string { return "Animation.setPaused" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationSetPaused) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -259,10 +259,10 @@ type AnimationSetPlaybackRate struct {
 	PlaybackRate float64 `json:"playbackRate"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationSetPlaybackRate) ProtoReq() string { return "Animation.setPlaybackRate" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationSetPlaybackRate) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -280,10 +280,10 @@ type AnimationSetTiming struct {
 	Delay float64 `json:"delay"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m AnimationSetTiming) ProtoReq() string { return "Animation.setTiming" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m AnimationSetTiming) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -295,7 +295,7 @@ type AnimationAnimationCanceled struct {
 	ID string `json:"id"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt AnimationAnimationCanceled) ProtoEvent() string {
 	return "Animation.animationCanceled"
 }
@@ -307,7 +307,7 @@ type AnimationAnimationCreated struct {
 	ID string `json:"id"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt AnimationAnimationCreated) ProtoEvent() string {
 	return "Animation.animationCreated"
 }
@@ -319,7 +319,7 @@ type AnimationAnimationStarted struct {
 	Animation *AnimationAnimation `json:"animation"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt AnimationAnimationStarted) ProtoEvent() string {
 	return "Animation.animationStarted"
 }

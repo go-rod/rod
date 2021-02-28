@@ -87,10 +87,10 @@ type TargetActivateTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetActivateTarget) ProtoReq() string { return "Target.activateTarget" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetActivateTarget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -107,10 +107,10 @@ type TargetAttachToTarget struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetAttachToTarget) ProtoReq() string { return "Target.attachToTarget" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetAttachToTarget) Call(c Client) (*TargetAttachToTargetResult, error) {
 	var res TargetAttachToTargetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -127,10 +127,10 @@ type TargetAttachToTargetResult struct {
 type TargetAttachToBrowserTarget struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetAttachToBrowserTarget) ProtoReq() string { return "Target.attachToBrowserTarget" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetAttachToBrowserTarget) Call(c Client) (*TargetAttachToBrowserTargetResult, error) {
 	var res TargetAttachToBrowserTargetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -150,10 +150,10 @@ type TargetCloseTarget struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetCloseTarget) ProtoReq() string { return "Target.closeTarget" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetCloseTarget) Call(c Client) (*TargetCloseTargetResult, error) {
 	var res TargetCloseTargetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -183,10 +183,10 @@ type TargetExposeDevToolsProtocol struct {
 	BindingName string `json:"bindingName,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetExposeDevToolsProtocol) ProtoReq() string { return "Target.exposeDevToolsProtocol" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetExposeDevToolsProtocol) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -205,10 +205,10 @@ type TargetCreateBrowserContext struct {
 	ProxyBypassList string `json:"proxyBypassList,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetCreateBrowserContext) ProtoReq() string { return "Target.createBrowserContext" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetCreateBrowserContext) Call(c Client) (*TargetCreateBrowserContextResult, error) {
 	var res TargetCreateBrowserContextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -226,10 +226,10 @@ type TargetCreateBrowserContextResult struct {
 type TargetGetBrowserContexts struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetGetBrowserContexts) ProtoReq() string { return "Target.getBrowserContexts" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetGetBrowserContexts) Call(c Client) (*TargetGetBrowserContextsResult, error) {
 	var res TargetGetBrowserContextsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -269,10 +269,10 @@ type TargetCreateTarget struct {
 	Background bool `json:"background,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetCreateTarget) ProtoReq() string { return "Target.createTarget" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetCreateTarget) Call(c Client) (*TargetCreateTargetResult, error) {
 	var res TargetCreateTargetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -295,10 +295,10 @@ type TargetDetachFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetDetachFromTarget) ProtoReq() string { return "Target.detachFromTarget" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetDetachFromTarget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -311,10 +311,10 @@ type TargetDisposeBrowserContext struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetDisposeBrowserContext) ProtoReq() string { return "Target.disposeBrowserContext" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetDisposeBrowserContext) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -326,10 +326,10 @@ type TargetGetTargetInfo struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetGetTargetInfo) ProtoReq() string { return "Target.getTargetInfo" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetGetTargetInfo) Call(c Client) (*TargetGetTargetInfoResult, error) {
 	var res TargetGetTargetInfoResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -346,10 +346,10 @@ type TargetGetTargetInfoResult struct {
 type TargetGetTargets struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetGetTargets) ProtoReq() string { return "Target.getTargets" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TargetGetTargets) Call(c Client) (*TargetGetTargetsResult, error) {
 	var res TargetGetTargetsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -377,10 +377,10 @@ type TargetSendMessageToTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetSendMessageToTarget) ProtoReq() string { return "Target.sendMessageToTarget" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetSendMessageToTarget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -403,10 +403,10 @@ type TargetSetAutoAttach struct {
 	Flatten bool `json:"flatten,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetSetAutoAttach) ProtoReq() string { return "Target.setAutoAttach" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetSetAutoAttach) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -419,10 +419,10 @@ type TargetSetDiscoverTargets struct {
 	Discover bool `json:"discover"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetSetDiscoverTargets) ProtoReq() string { return "Target.setDiscoverTargets" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetSetDiscoverTargets) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -435,10 +435,10 @@ type TargetSetRemoteLocations struct {
 	Locations []*TargetRemoteLocation `json:"locations"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TargetSetRemoteLocations) ProtoReq() string { return "Target.setRemoteLocations" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TargetSetRemoteLocations) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -456,7 +456,7 @@ type TargetAttachedToTarget struct {
 	WaitingForDebugger bool `json:"waitingForDebugger"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetAttachedToTarget) ProtoEvent() string {
 	return "Target.attachedToTarget"
 }
@@ -472,7 +472,7 @@ type TargetDetachedFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetDetachedFromTarget) ProtoEvent() string {
 	return "Target.detachedFromTarget"
 }
@@ -491,7 +491,7 @@ type TargetReceivedMessageFromTarget struct {
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetReceivedMessageFromTarget) ProtoEvent() string {
 	return "Target.receivedMessageFromTarget"
 }
@@ -503,7 +503,7 @@ type TargetTargetCreated struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetTargetCreated) ProtoEvent() string {
 	return "Target.targetCreated"
 }
@@ -515,7 +515,7 @@ type TargetTargetDestroyed struct {
 	TargetID TargetTargetID `json:"targetId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetTargetDestroyed) ProtoEvent() string {
 	return "Target.targetDestroyed"
 }
@@ -533,7 +533,7 @@ type TargetTargetCrashed struct {
 	ErrorCode int `json:"errorCode"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetTargetCrashed) ProtoEvent() string {
 	return "Target.targetCrashed"
 }
@@ -546,7 +546,7 @@ type TargetTargetInfoChanged struct {
 	TargetInfo *TargetTargetInfo `json:"targetInfo"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TargetTargetInfoChanged) ProtoEvent() string {
 	return "Target.targetInfoChanged"
 }

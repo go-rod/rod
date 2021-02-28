@@ -173,10 +173,10 @@ type SystemInfoProcessInfo struct {
 type SystemInfoGetInfo struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SystemInfoGetInfo) ProtoReq() string { return "SystemInfo.getInfo" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m SystemInfoGetInfo) Call(c Client) (*SystemInfoGetInfoResult, error) {
 	var res SystemInfoGetInfoResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -205,10 +205,10 @@ type SystemInfoGetInfoResult struct {
 type SystemInfoGetProcessInfo struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SystemInfoGetProcessInfo) ProtoReq() string { return "SystemInfo.getProcessInfo" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m SystemInfoGetProcessInfo) Call(c Client) (*SystemInfoGetProcessInfoResult, error) {
 	var res SystemInfoGetProcessInfoResult
 	return &res, call(m.ProtoReq(), m, &res, c)

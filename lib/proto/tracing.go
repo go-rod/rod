@@ -103,10 +103,10 @@ const (
 type TracingEnd struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TracingEnd) ProtoReq() string { return "Tracing.end" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TracingEnd) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -115,10 +115,10 @@ func (m TracingEnd) Call(c Client) error {
 type TracingGetCategories struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TracingGetCategories) ProtoReq() string { return "Tracing.getCategories" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error) {
 	var res TracingGetCategoriesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -138,10 +138,10 @@ type TracingRecordClockSyncMarker struct {
 	SyncID string `json:"syncId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TracingRecordClockSyncMarker) ProtoReq() string { return "Tracing.recordClockSyncMarker" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TracingRecordClockSyncMarker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -156,10 +156,10 @@ type TracingRequestMemoryDump struct {
 	LevelOfDetail TracingMemoryDumpLevelOfDetail `json:"levelOfDetail,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TracingRequestMemoryDump) ProtoReq() string { return "Tracing.requestMemoryDump" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResult, error) {
 	var res TracingRequestMemoryDumpResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -219,10 +219,10 @@ type TracingStart struct {
 	PerfettoConfig []byte `json:"perfettoConfig,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m TracingStart) ProtoReq() string { return "Tracing.start" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m TracingStart) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -242,7 +242,7 @@ type TracingBufferUsage struct {
 	Value float64 `json:"value,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TracingBufferUsage) ProtoEvent() string {
 	return "Tracing.bufferUsage"
 }
@@ -255,7 +255,7 @@ type TracingDataCollected struct {
 	Value []map[string]gson.JSON `json:"value"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TracingDataCollected) ProtoEvent() string {
 	return "Tracing.dataCollected"
 }
@@ -278,7 +278,7 @@ type TracingTracingComplete struct {
 	StreamCompression TracingStreamCompression `json:"streamCompression,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt TracingTracingComplete) ProtoEvent() string {
 	return "Tracing.tracingComplete"
 }

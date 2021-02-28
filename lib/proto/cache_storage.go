@@ -99,10 +99,10 @@ type CacheStorageDeleteCache struct {
 	CacheID CacheStorageCacheID `json:"cacheId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CacheStorageDeleteCache) ProtoReq() string { return "CacheStorage.deleteCache" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CacheStorageDeleteCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -117,10 +117,10 @@ type CacheStorageDeleteEntry struct {
 	Request string `json:"request"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CacheStorageDeleteEntry) ProtoReq() string { return "CacheStorage.deleteEntry" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CacheStorageDeleteEntry) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -132,10 +132,10 @@ type CacheStorageRequestCacheNames struct {
 	SecurityOrigin string `json:"securityOrigin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CacheStorageRequestCacheNames) ProtoReq() string { return "CacheStorage.requestCacheNames" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m CacheStorageRequestCacheNames) Call(c Client) (*CacheStorageRequestCacheNamesResult, error) {
 	var res CacheStorageRequestCacheNamesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -161,12 +161,12 @@ type CacheStorageRequestCachedResponse struct {
 	RequestHeaders []*CacheStorageHeader `json:"requestHeaders"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CacheStorageRequestCachedResponse) ProtoReq() string {
 	return "CacheStorage.requestCachedResponse"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m CacheStorageRequestCachedResponse) Call(c Client) (*CacheStorageRequestCachedResponseResult, error) {
 	var res CacheStorageRequestCachedResponseResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -195,10 +195,10 @@ type CacheStorageRequestEntries struct {
 	PathFilter string `json:"pathFilter,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CacheStorageRequestEntries) ProtoReq() string { return "CacheStorage.requestEntries" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m CacheStorageRequestEntries) Call(c Client) (*CacheStorageRequestEntriesResult, error) {
 	var res CacheStorageRequestEntriesResult
 	return &res, call(m.ProtoReq(), m, &res, c)

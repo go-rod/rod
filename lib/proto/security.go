@@ -212,10 +212,10 @@ const (
 type SecurityDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SecurityDisable) ProtoReq() string { return "Security.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m SecurityDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -224,10 +224,10 @@ func (m SecurityDisable) Call(c Client) error {
 type SecurityEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SecurityEnable) ProtoReq() string { return "Security.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m SecurityEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -239,12 +239,12 @@ type SecuritySetIgnoreCertificateErrors struct {
 	Ignore bool `json:"ignore"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SecuritySetIgnoreCertificateErrors) ProtoReq() string {
 	return "Security.setIgnoreCertificateErrors"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m SecuritySetIgnoreCertificateErrors) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -259,10 +259,10 @@ type SecurityHandleCertificateError struct {
 	Action SecurityCertificateErrorAction `json:"action"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SecurityHandleCertificateError) ProtoReq() string { return "Security.handleCertificateError" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m SecurityHandleCertificateError) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -275,12 +275,12 @@ type SecuritySetOverrideCertificateErrors struct {
 	Override bool `json:"override"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m SecuritySetOverrideCertificateErrors) ProtoReq() string {
 	return "Security.setOverrideCertificateErrors"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m SecuritySetOverrideCertificateErrors) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -301,7 +301,7 @@ type SecurityCertificateError struct {
 	RequestURL string `json:"requestURL"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt SecurityCertificateError) ProtoEvent() string {
 	return "Security.certificateError"
 }
@@ -313,7 +313,7 @@ type SecurityVisibleSecurityStateChanged struct {
 	VisibleSecurityState *SecurityVisibleSecurityState `json:"visibleSecurityState"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt SecurityVisibleSecurityStateChanged) ProtoEvent() string {
 	return "Security.visibleSecurityStateChanged"
 }
@@ -338,7 +338,7 @@ type SecuritySecurityStateChanged struct {
 	Summary string `json:"summary,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt SecuritySecurityStateChanged) ProtoEvent() string {
 	return "Security.securityStateChanged"
 }

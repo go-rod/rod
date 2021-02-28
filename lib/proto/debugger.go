@@ -240,10 +240,10 @@ type DebuggerContinueToLocation struct {
 	TargetCallFrames DebuggerContinueToLocationTargetCallFrames `json:"targetCallFrames,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerContinueToLocation) ProtoReq() string { return "Debugger.continueToLocation" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerContinueToLocation) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -252,10 +252,10 @@ func (m DebuggerContinueToLocation) Call(c Client) error {
 type DebuggerDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerDisable) ProtoReq() string { return "Debugger.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -269,10 +269,10 @@ type DebuggerEnable struct {
 	MaxScriptsCacheSize float64 `json:"maxScriptsCacheSize,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerEnable) ProtoReq() string { return "Debugger.enable" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerEnable) Call(c Client) (*DebuggerEnableResult, error) {
 	var res DebuggerEnableResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -320,10 +320,10 @@ type DebuggerEvaluateOnCallFrame struct {
 	Timeout RuntimeTimeDelta `json:"timeout,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerEvaluateOnCallFrame) ProtoReq() string { return "Debugger.evaluateOnCallFrame" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerEvaluateOnCallFrame) Call(c Client) (*DebuggerEvaluateOnCallFrameResult, error) {
 	var res DebuggerEvaluateOnCallFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -354,10 +354,10 @@ type DebuggerGetPossibleBreakpoints struct {
 	RestrictToFunction bool `json:"restrictToFunction,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerGetPossibleBreakpoints) ProtoReq() string { return "Debugger.getPossibleBreakpoints" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerGetPossibleBreakpoints) Call(c Client) (*DebuggerGetPossibleBreakpointsResult, error) {
 	var res DebuggerGetPossibleBreakpointsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -378,10 +378,10 @@ type DebuggerGetScriptSource struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerGetScriptSource) ProtoReq() string { return "Debugger.getScriptSource" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerGetScriptSource) Call(c Client) (*DebuggerGetScriptSourceResult, error) {
 	var res DebuggerGetScriptSourceResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -404,10 +404,10 @@ type DebuggerGetWasmBytecode struct {
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerGetWasmBytecode) ProtoReq() string { return "Debugger.getWasmBytecode" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerGetWasmBytecode) Call(c Client) (*DebuggerGetWasmBytecodeResult, error) {
 	var res DebuggerGetWasmBytecodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -427,10 +427,10 @@ type DebuggerGetStackTrace struct {
 	StackTraceID *RuntimeStackTraceID `json:"stackTraceId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerGetStackTrace) ProtoReq() string { return "Debugger.getStackTrace" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerGetStackTrace) Call(c Client) (*DebuggerGetStackTraceResult, error) {
 	var res DebuggerGetStackTraceResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -447,10 +447,10 @@ type DebuggerGetStackTraceResult struct {
 type DebuggerPause struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerPause) ProtoReq() string { return "Debugger.pause" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerPause) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -462,10 +462,10 @@ type DebuggerPauseOnAsyncCall struct {
 	ParentStackTraceID *RuntimeStackTraceID `json:"parentStackTraceId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerPauseOnAsyncCall) ProtoReq() string { return "Debugger.pauseOnAsyncCall" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerPauseOnAsyncCall) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -477,10 +477,10 @@ type DebuggerRemoveBreakpoint struct {
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerRemoveBreakpoint) ProtoReq() string { return "Debugger.removeBreakpoint" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerRemoveBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -492,10 +492,10 @@ type DebuggerRestartFrame struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerRestartFrame) ProtoReq() string { return "Debugger.restartFrame" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error) {
 	var res DebuggerRestartFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -525,10 +525,10 @@ type DebuggerResume struct {
 	TerminateOnResume bool `json:"terminateOnResume,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerResume) ProtoReq() string { return "Debugger.resume" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerResume) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -549,10 +549,10 @@ type DebuggerSearchInContent struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSearchInContent) ProtoReq() string { return "Debugger.searchInContent" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSearchInContent) Call(c Client) (*DebuggerSearchInContentResult, error) {
 	var res DebuggerSearchInContentResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -573,10 +573,10 @@ type DebuggerSetAsyncCallStackDepth struct {
 	MaxDepth int `json:"maxDepth"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetAsyncCallStackDepth) ProtoReq() string { return "Debugger.setAsyncCallStackDepth" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetAsyncCallStackDepth) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -590,10 +590,10 @@ type DebuggerSetBlackboxPatterns struct {
 	Patterns []string `json:"patterns"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBlackboxPatterns) ProtoReq() string { return "Debugger.setBlackboxPatterns" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetBlackboxPatterns) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -611,10 +611,10 @@ type DebuggerSetBlackboxedRanges struct {
 	Positions []*DebuggerScriptPosition `json:"positions"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBlackboxedRanges) ProtoReq() string { return "Debugger.setBlackboxedRanges" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetBlackboxedRanges) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -630,10 +630,10 @@ type DebuggerSetBreakpoint struct {
 	Condition string `json:"condition,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBreakpoint) ProtoReq() string { return "Debugger.setBreakpoint" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSetBreakpoint) Call(c Client) (*DebuggerSetBreakpointResult, error) {
 	var res DebuggerSetBreakpointResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -667,12 +667,12 @@ type DebuggerSetInstrumentationBreakpoint struct {
 	Instrumentation DebuggerSetInstrumentationBreakpointInstrumentation `json:"instrumentation"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetInstrumentationBreakpoint) ProtoReq() string {
 	return "Debugger.setInstrumentationBreakpoint"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSetInstrumentationBreakpoint) Call(c Client) (*DebuggerSetInstrumentationBreakpointResult, error) {
 	var res DebuggerSetInstrumentationBreakpointResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -712,10 +712,10 @@ type DebuggerSetBreakpointByURL struct {
 	Condition string `json:"condition,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBreakpointByURL) ProtoReq() string { return "Debugger.setBreakpointByUrl" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSetBreakpointByURL) Call(c Client) (*DebuggerSetBreakpointByURLResult, error) {
 	var res DebuggerSetBreakpointByURLResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -747,12 +747,12 @@ type DebuggerSetBreakpointOnFunctionCall struct {
 	Condition string `json:"condition,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBreakpointOnFunctionCall) ProtoReq() string {
 	return "Debugger.setBreakpointOnFunctionCall"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSetBreakpointOnFunctionCall) Call(c Client) (*DebuggerSetBreakpointOnFunctionCallResult, error) {
 	var res DebuggerSetBreakpointOnFunctionCallResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -774,10 +774,10 @@ type DebuggerSetBreakpointsActive struct {
 	Active bool `json:"active"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetBreakpointsActive) ProtoReq() string { return "Debugger.setBreakpointsActive" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetBreakpointsActive) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -804,10 +804,10 @@ type DebuggerSetPauseOnExceptions struct {
 	State DebuggerSetPauseOnExceptionsState `json:"state"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetPauseOnExceptions) ProtoReq() string { return "Debugger.setPauseOnExceptions" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetPauseOnExceptions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -819,10 +819,10 @@ type DebuggerSetReturnValue struct {
 	NewValue *RuntimeCallArgument `json:"newValue"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetReturnValue) ProtoReq() string { return "Debugger.setReturnValue" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetReturnValue) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -841,10 +841,10 @@ type DebuggerSetScriptSource struct {
 	DryRun bool `json:"dryRun,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetScriptSource) ProtoReq() string { return "Debugger.setScriptSource" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m DebuggerSetScriptSource) Call(c Client) (*DebuggerSetScriptSourceResult, error) {
 	var res DebuggerSetScriptSourceResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -876,10 +876,10 @@ type DebuggerSetSkipAllPauses struct {
 	Skip bool `json:"skip"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetSkipAllPauses) ProtoReq() string { return "Debugger.setSkipAllPauses" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetSkipAllPauses) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -902,10 +902,10 @@ type DebuggerSetVariableValue struct {
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerSetVariableValue) ProtoReq() string { return "Debugger.setVariableValue" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerSetVariableValue) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -921,10 +921,10 @@ type DebuggerStepInto struct {
 	SkipList []*DebuggerLocationRange `json:"skipList,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerStepInto) ProtoReq() string { return "Debugger.stepInto" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerStepInto) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -933,10 +933,10 @@ func (m DebuggerStepInto) Call(c Client) error {
 type DebuggerStepOut struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerStepOut) ProtoReq() string { return "Debugger.stepOut" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerStepOut) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -948,10 +948,10 @@ type DebuggerStepOver struct {
 	SkipList []*DebuggerLocationRange `json:"skipList,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m DebuggerStepOver) ProtoReq() string { return "Debugger.stepOver" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m DebuggerStepOver) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -966,7 +966,7 @@ type DebuggerBreakpointResolved struct {
 	Location *DebuggerLocation `json:"location"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DebuggerBreakpointResolved) ProtoEvent() string {
 	return "Debugger.breakpointResolved"
 }
@@ -1037,7 +1037,7 @@ type DebuggerPaused struct {
 	AsyncCallStackTraceID *RuntimeStackTraceID `json:"asyncCallStackTraceId,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DebuggerPaused) ProtoEvent() string {
 	return "Debugger.paused"
 }
@@ -1046,7 +1046,7 @@ func (evt DebuggerPaused) ProtoEvent() string {
 type DebuggerResumed struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DebuggerResumed) ProtoEvent() string {
 	return "Debugger.resumed"
 }
@@ -1106,7 +1106,7 @@ type DebuggerScriptFailedToParse struct {
 	EmbedderName string `json:"embedderName,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DebuggerScriptFailedToParse) ProtoEvent() string {
 	return "Debugger.scriptFailedToParse"
 }
@@ -1173,7 +1173,7 @@ type DebuggerScriptParsed struct {
 	EmbedderName string `json:"embedderName,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt DebuggerScriptParsed) ProtoEvent() string {
 	return "Debugger.scriptParsed"
 }

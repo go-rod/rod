@@ -134,10 +134,10 @@ type LayerTreeCompositingReasons struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeCompositingReasons) ProtoReq() string { return "LayerTree.compositingReasons" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeCompositingReasons) Call(c Client) (*LayerTreeCompositingReasonsResult, error) {
 	var res LayerTreeCompositingReasonsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -157,10 +157,10 @@ type LayerTreeCompositingReasonsResult struct {
 type LayerTreeDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeDisable) ProtoReq() string { return "LayerTree.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LayerTreeDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -169,10 +169,10 @@ func (m LayerTreeDisable) Call(c Client) error {
 type LayerTreeEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeEnable) ProtoReq() string { return "LayerTree.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LayerTreeEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -184,10 +184,10 @@ type LayerTreeLoadSnapshot struct {
 	Tiles []*LayerTreePictureTile `json:"tiles"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeLoadSnapshot) ProtoReq() string { return "LayerTree.loadSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeLoadSnapshot) Call(c Client) (*LayerTreeLoadSnapshotResult, error) {
 	var res LayerTreeLoadSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -207,10 +207,10 @@ type LayerTreeMakeSnapshot struct {
 	LayerID LayerTreeLayerID `json:"layerId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeMakeSnapshot) ProtoReq() string { return "LayerTree.makeSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeMakeSnapshot) Call(c Client) (*LayerTreeMakeSnapshotResult, error) {
 	var res LayerTreeMakeSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -239,10 +239,10 @@ type LayerTreeProfileSnapshot struct {
 	ClipRect *DOMRect `json:"clipRect,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeProfileSnapshot) ProtoReq() string { return "LayerTree.profileSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeProfileSnapshot) Call(c Client) (*LayerTreeProfileSnapshotResult, error) {
 	var res LayerTreeProfileSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -262,10 +262,10 @@ type LayerTreeReleaseSnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeReleaseSnapshot) ProtoReq() string { return "LayerTree.releaseSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LayerTreeReleaseSnapshot) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -286,10 +286,10 @@ type LayerTreeReplaySnapshot struct {
 	Scale float64 `json:"scale,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeReplaySnapshot) ProtoReq() string { return "LayerTree.replaySnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeReplaySnapshot) Call(c Client) (*LayerTreeReplaySnapshotResult, error) {
 	var res LayerTreeReplaySnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -309,10 +309,10 @@ type LayerTreeSnapshotCommandLog struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LayerTreeSnapshotCommandLog) ProtoReq() string { return "LayerTree.snapshotCommandLog" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m LayerTreeSnapshotCommandLog) Call(c Client) (*LayerTreeSnapshotCommandLogResult, error) {
 	var res LayerTreeSnapshotCommandLogResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -335,7 +335,7 @@ type LayerTreeLayerPainted struct {
 	Clip *DOMRect `json:"clip"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt LayerTreeLayerPainted) ProtoEvent() string {
 	return "LayerTree.layerPainted"
 }
@@ -347,7 +347,7 @@ type LayerTreeLayerTreeDidChange struct {
 	Layers []*LayerTreeLayer `json:"layers,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt LayerTreeLayerTreeDidChange) ProtoEvent() string {
 	return "LayerTree.layerTreeDidChange"
 }

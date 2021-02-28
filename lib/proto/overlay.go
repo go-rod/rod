@@ -303,10 +303,10 @@ const (
 type OverlayDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayDisable) ProtoReq() string { return "Overlay.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -315,10 +315,10 @@ func (m OverlayDisable) Call(c Client) error {
 type OverlayEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayEnable) ProtoReq() string { return "Overlay.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -342,12 +342,12 @@ type OverlayGetHighlightObjectForTest struct {
 	ShowAccessibilityInfo bool `json:"showAccessibilityInfo,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayGetHighlightObjectForTest) ProtoReq() string {
 	return "Overlay.getHighlightObjectForTest"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m OverlayGetHighlightObjectForTest) Call(c Client) (*OverlayGetHighlightObjectForTestResult, error) {
 	var res OverlayGetHighlightObjectForTestResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -367,12 +367,12 @@ type OverlayGetGridHighlightObjectsForTest struct {
 	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayGetGridHighlightObjectsForTest) ProtoReq() string {
 	return "Overlay.getGridHighlightObjectsForTest"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m OverlayGetGridHighlightObjectsForTest) Call(c Client) (*OverlayGetGridHighlightObjectsForTestResult, error) {
 	var res OverlayGetGridHighlightObjectsForTestResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -392,12 +392,12 @@ type OverlayGetSourceOrderHighlightObjectForTest struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayGetSourceOrderHighlightObjectForTest) ProtoReq() string {
 	return "Overlay.getSourceOrderHighlightObjectForTest"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m OverlayGetSourceOrderHighlightObjectForTest) Call(c Client) (*OverlayGetSourceOrderHighlightObjectForTestResult, error) {
 	var res OverlayGetSourceOrderHighlightObjectForTestResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -414,10 +414,10 @@ type OverlayGetSourceOrderHighlightObjectForTestResult struct {
 type OverlayHideHighlight struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHideHighlight) ProtoReq() string { return "Overlay.hideHighlight" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHideHighlight) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -435,10 +435,10 @@ type OverlayHighlightFrame struct {
 	ContentOutlineColor *DOMRGBA `json:"contentOutlineColor,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHighlightFrame) ProtoReq() string { return "Overlay.highlightFrame" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHighlightFrame) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -463,10 +463,10 @@ type OverlayHighlightNode struct {
 	Selector string `json:"selector,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHighlightNode) ProtoReq() string { return "Overlay.highlightNode" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHighlightNode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -484,10 +484,10 @@ type OverlayHighlightQuad struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHighlightQuad) ProtoReq() string { return "Overlay.highlightQuad" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHighlightQuad) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -514,10 +514,10 @@ type OverlayHighlightRect struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHighlightRect) ProtoReq() string { return "Overlay.highlightRect" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHighlightRect) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -539,10 +539,10 @@ type OverlayHighlightSourceOrder struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlayHighlightSourceOrder) ProtoReq() string { return "Overlay.highlightSourceOrder" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlayHighlightSourceOrder) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -559,10 +559,10 @@ type OverlaySetInspectMode struct {
 	HighlightConfig *OverlayHighlightConfig `json:"highlightConfig,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetInspectMode) ProtoReq() string { return "Overlay.setInspectMode" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetInspectMode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -574,10 +574,10 @@ type OverlaySetShowAdHighlights struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowAdHighlights) ProtoReq() string { return "Overlay.setShowAdHighlights" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowAdHighlights) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -589,12 +589,12 @@ type OverlaySetPausedInDebuggerMessage struct {
 	Message string `json:"message,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetPausedInDebuggerMessage) ProtoReq() string {
 	return "Overlay.setPausedInDebuggerMessage"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetPausedInDebuggerMessage) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -606,10 +606,10 @@ type OverlaySetShowDebugBorders struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowDebugBorders) ProtoReq() string { return "Overlay.setShowDebugBorders" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowDebugBorders) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -621,10 +621,10 @@ type OverlaySetShowFPSCounter struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowFPSCounter) ProtoReq() string { return "Overlay.setShowFPSCounter" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowFPSCounter) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -636,10 +636,10 @@ type OverlaySetShowGridOverlays struct {
 	GridNodeHighlightConfigs []*OverlayGridNodeHighlightConfig `json:"gridNodeHighlightConfigs"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowGridOverlays) ProtoReq() string { return "Overlay.setShowGridOverlays" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowGridOverlays) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -651,10 +651,10 @@ type OverlaySetShowFlexOverlays struct {
 	FlexNodeHighlightConfigs []*OverlayFlexNodeHighlightConfig `json:"flexNodeHighlightConfigs"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowFlexOverlays) ProtoReq() string { return "Overlay.setShowFlexOverlays" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowFlexOverlays) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -666,10 +666,10 @@ type OverlaySetShowPaintRects struct {
 	Result bool `json:"result"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowPaintRects) ProtoReq() string { return "Overlay.setShowPaintRects" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowPaintRects) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -681,12 +681,12 @@ type OverlaySetShowLayoutShiftRegions struct {
 	Result bool `json:"result"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowLayoutShiftRegions) ProtoReq() string {
 	return "Overlay.setShowLayoutShiftRegions"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowLayoutShiftRegions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -698,12 +698,12 @@ type OverlaySetShowScrollBottleneckRects struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowScrollBottleneckRects) ProtoReq() string {
 	return "Overlay.setShowScrollBottleneckRects"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowScrollBottleneckRects) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -715,10 +715,10 @@ type OverlaySetShowHitTestBorders struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowHitTestBorders) ProtoReq() string { return "Overlay.setShowHitTestBorders" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowHitTestBorders) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -730,10 +730,10 @@ type OverlaySetShowWebVitals struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowWebVitals) ProtoReq() string { return "Overlay.setShowWebVitals" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowWebVitals) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -745,12 +745,12 @@ type OverlaySetShowViewportSizeOnResize struct {
 	Show bool `json:"show"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowViewportSizeOnResize) ProtoReq() string {
 	return "Overlay.setShowViewportSizeOnResize"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowViewportSizeOnResize) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -762,10 +762,10 @@ type OverlaySetShowHinge struct {
 	HingeConfig *OverlayHingeConfig `json:"hingeConfig,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m OverlaySetShowHinge) ProtoReq() string { return "Overlay.setShowHinge" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m OverlaySetShowHinge) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -778,7 +778,7 @@ type OverlayInspectNodeRequested struct {
 	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt OverlayInspectNodeRequested) ProtoEvent() string {
 	return "Overlay.inspectNodeRequested"
 }
@@ -790,7 +790,7 @@ type OverlayNodeHighlightRequested struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt OverlayNodeHighlightRequested) ProtoEvent() string {
 	return "Overlay.nodeHighlightRequested"
 }
@@ -802,7 +802,7 @@ type OverlayScreenshotRequested struct {
 	Viewport *PageViewport `json:"viewport"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt OverlayScreenshotRequested) ProtoEvent() string {
 	return "Overlay.screenshotRequested"
 }
@@ -811,7 +811,7 @@ func (evt OverlayScreenshotRequested) ProtoEvent() string {
 type OverlayInspectModeCanceled struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt OverlayInspectModeCanceled) ProtoEvent() string {
 	return "Overlay.inspectModeCanceled"
 }

@@ -100,10 +100,10 @@ type PerformanceTimelineEnable struct {
 	EventTypes []string `json:"eventTypes"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PerformanceTimelineEnable) ProtoReq() string { return "PerformanceTimeline.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PerformanceTimelineEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -115,7 +115,7 @@ type PerformanceTimelineTimelineEventAdded struct {
 	Event *PerformanceTimelineTimelineEvent `json:"event"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PerformanceTimelineTimelineEventAdded) ProtoEvent() string {
 	return "PerformanceTimeline.timelineEventAdded"
 }

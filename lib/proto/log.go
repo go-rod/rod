@@ -145,10 +145,10 @@ type LogViolationSetting struct {
 type LogClear struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LogClear) ProtoReq() string { return "Log.clear" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LogClear) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -157,10 +157,10 @@ func (m LogClear) Call(c Client) error {
 type LogDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LogDisable) ProtoReq() string { return "Log.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LogDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -170,10 +170,10 @@ func (m LogDisable) Call(c Client) error {
 type LogEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LogEnable) ProtoReq() string { return "Log.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LogEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -185,10 +185,10 @@ type LogStartViolationsReport struct {
 	Config []*LogViolationSetting `json:"config"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LogStartViolationsReport) ProtoReq() string { return "Log.startViolationsReport" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LogStartViolationsReport) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -197,10 +197,10 @@ func (m LogStartViolationsReport) Call(c Client) error {
 type LogStopViolationsReport struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m LogStopViolationsReport) ProtoReq() string { return "Log.stopViolationsReport" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m LogStopViolationsReport) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -212,7 +212,7 @@ type LogEntryAdded struct {
 	Entry *LogLogEntry `json:"entry"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt LogEntryAdded) ProtoEvent() string {
 	return "Log.entryAdded"
 }

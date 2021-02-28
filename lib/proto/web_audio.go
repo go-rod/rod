@@ -194,10 +194,10 @@ type WebAudioAudioParam struct {
 type WebAudioEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m WebAudioEnable) ProtoReq() string { return "WebAudio.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m WebAudioEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -206,10 +206,10 @@ func (m WebAudioEnable) Call(c Client) error {
 type WebAudioDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m WebAudioDisable) ProtoReq() string { return "WebAudio.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m WebAudioDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -221,10 +221,10 @@ type WebAudioGetRealtimeData struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m WebAudioGetRealtimeData) ProtoReq() string { return "WebAudio.getRealtimeData" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m WebAudioGetRealtimeData) Call(c Client) (*WebAudioGetRealtimeDataResult, error) {
 	var res WebAudioGetRealtimeDataResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -244,7 +244,7 @@ type WebAudioContextCreated struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioContextCreated) ProtoEvent() string {
 	return "WebAudio.contextCreated"
 }
@@ -256,7 +256,7 @@ type WebAudioContextWillBeDestroyed struct {
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioContextWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.contextWillBeDestroyed"
 }
@@ -268,7 +268,7 @@ type WebAudioContextChanged struct {
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioContextChanged) ProtoEvent() string {
 	return "WebAudio.contextChanged"
 }
@@ -280,7 +280,7 @@ type WebAudioAudioListenerCreated struct {
 	Listener *WebAudioAudioListener `json:"listener"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioListenerCreated) ProtoEvent() string {
 	return "WebAudio.audioListenerCreated"
 }
@@ -295,7 +295,7 @@ type WebAudioAudioListenerWillBeDestroyed struct {
 	ListenerID WebAudioGraphObjectID `json:"listenerId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioListenerWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioListenerWillBeDestroyed"
 }
@@ -307,7 +307,7 @@ type WebAudioAudioNodeCreated struct {
 	Node *WebAudioAudioNode `json:"node"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioNodeCreated) ProtoEvent() string {
 	return "WebAudio.audioNodeCreated"
 }
@@ -322,7 +322,7 @@ type WebAudioAudioNodeWillBeDestroyed struct {
 	NodeID WebAudioGraphObjectID `json:"nodeId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioNodeWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioNodeWillBeDestroyed"
 }
@@ -334,7 +334,7 @@ type WebAudioAudioParamCreated struct {
 	Param *WebAudioAudioParam `json:"param"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioParamCreated) ProtoEvent() string {
 	return "WebAudio.audioParamCreated"
 }
@@ -352,7 +352,7 @@ type WebAudioAudioParamWillBeDestroyed struct {
 	ParamID WebAudioGraphObjectID `json:"paramId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioAudioParamWillBeDestroyed) ProtoEvent() string {
 	return "WebAudio.audioParamWillBeDestroyed"
 }
@@ -376,7 +376,7 @@ type WebAudioNodesConnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioNodesConnected) ProtoEvent() string {
 	return "WebAudio.nodesConnected"
 }
@@ -400,7 +400,7 @@ type WebAudioNodesDisconnected struct {
 	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioNodesDisconnected) ProtoEvent() string {
 	return "WebAudio.nodesDisconnected"
 }
@@ -421,7 +421,7 @@ type WebAudioNodeParamConnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioNodeParamConnected) ProtoEvent() string {
 	return "WebAudio.nodeParamConnected"
 }
@@ -442,7 +442,7 @@ type WebAudioNodeParamDisconnected struct {
 	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt WebAudioNodeParamDisconnected) ProtoEvent() string {
 	return "WebAudio.nodeParamDisconnected"
 }

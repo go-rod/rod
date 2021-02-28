@@ -56,10 +56,10 @@ type HeadlessExperimentalBeginFrame struct {
 	Screenshot *HeadlessExperimentalScreenshotParams `json:"screenshot,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m HeadlessExperimentalBeginFrame) ProtoReq() string { return "HeadlessExperimental.beginFrame" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m HeadlessExperimentalBeginFrame) Call(c Client) (*HeadlessExperimentalBeginFrameResult, error) {
 	var res HeadlessExperimentalBeginFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -83,10 +83,10 @@ type HeadlessExperimentalBeginFrameResult struct {
 type HeadlessExperimentalDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m HeadlessExperimentalDisable) ProtoReq() string { return "HeadlessExperimental.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m HeadlessExperimentalDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -95,10 +95,10 @@ func (m HeadlessExperimentalDisable) Call(c Client) error {
 type HeadlessExperimentalEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m HeadlessExperimentalEnable) ProtoReq() string { return "HeadlessExperimental.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m HeadlessExperimentalEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -112,7 +112,7 @@ type HeadlessExperimentalNeedsBeginFramesChanged struct {
 	NeedsBeginFrames bool `json:"needsBeginFrames"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt HeadlessExperimentalNeedsBeginFramesChanged) ProtoEvent() string {
 	return "HeadlessExperimental.needsBeginFramesChanged"
 }

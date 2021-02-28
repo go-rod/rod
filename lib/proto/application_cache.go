@@ -57,10 +57,10 @@ type ApplicationCacheFrameWithManifest struct {
 type ApplicationCacheEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ApplicationCacheEnable) ProtoReq() string { return "ApplicationCache.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ApplicationCacheEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -72,12 +72,12 @@ type ApplicationCacheGetApplicationCacheForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ApplicationCacheGetApplicationCacheForFrame) ProtoReq() string {
 	return "ApplicationCache.getApplicationCacheForFrame"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ApplicationCacheGetApplicationCacheForFrame) Call(c Client) (*ApplicationCacheGetApplicationCacheForFrameResult, error) {
 	var res ApplicationCacheGetApplicationCacheForFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -95,12 +95,12 @@ type ApplicationCacheGetApplicationCacheForFrameResult struct {
 type ApplicationCacheGetFramesWithManifests struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ApplicationCacheGetFramesWithManifests) ProtoReq() string {
 	return "ApplicationCache.getFramesWithManifests"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ApplicationCacheGetFramesWithManifests) Call(c Client) (*ApplicationCacheGetFramesWithManifestsResult, error) {
 	var res ApplicationCacheGetFramesWithManifestsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -122,12 +122,12 @@ type ApplicationCacheGetManifestForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ApplicationCacheGetManifestForFrame) ProtoReq() string {
 	return "ApplicationCache.getManifestForFrame"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ApplicationCacheGetManifestForFrame) Call(c Client) (*ApplicationCacheGetManifestForFrameResult, error) {
 	var res ApplicationCacheGetManifestForFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -153,7 +153,7 @@ type ApplicationCacheApplicationCacheStatusUpdated struct {
 	Status int `json:"status"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ApplicationCacheApplicationCacheStatusUpdated) ProtoEvent() string {
 	return "ApplicationCache.applicationCacheStatusUpdated"
 }
@@ -165,7 +165,7 @@ type ApplicationCacheNetworkStateUpdated struct {
 	IsNowOnline bool `json:"isNowOnline"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ApplicationCacheNetworkStateUpdated) ProtoEvent() string {
 	return "ApplicationCache.networkStateUpdated"
 }

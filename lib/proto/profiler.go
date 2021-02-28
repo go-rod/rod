@@ -157,10 +157,10 @@ type ProfilerRuntimeCallCounterInfo struct {
 type ProfilerDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerDisable) ProtoReq() string { return "Profiler.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -169,10 +169,10 @@ func (m ProfilerDisable) Call(c Client) error {
 type ProfilerEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerEnable) ProtoReq() string { return "Profiler.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -182,10 +182,10 @@ func (m ProfilerEnable) Call(c Client) error {
 type ProfilerGetBestEffortCoverage struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerGetBestEffortCoverage) ProtoReq() string { return "Profiler.getBestEffortCoverage" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerGetBestEffortCoverage) Call(c Client) (*ProfilerGetBestEffortCoverageResult, error) {
 	var res ProfilerGetBestEffortCoverageResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -206,10 +206,10 @@ type ProfilerSetSamplingInterval struct {
 	Interval int `json:"interval"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerSetSamplingInterval) ProtoReq() string { return "Profiler.setSamplingInterval" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerSetSamplingInterval) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -218,10 +218,10 @@ func (m ProfilerSetSamplingInterval) Call(c Client) error {
 type ProfilerStart struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStart) ProtoReq() string { return "Profiler.start" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerStart) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -241,10 +241,10 @@ type ProfilerStartPreciseCoverage struct {
 	AllowTriggeredUpdates bool `json:"allowTriggeredUpdates,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStartPreciseCoverage) ProtoReq() string { return "Profiler.startPreciseCoverage" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerStartPreciseCoverage) Call(c Client) (*ProfilerStartPreciseCoverageResult, error) {
 	var res ProfilerStartPreciseCoverageResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -263,10 +263,10 @@ type ProfilerStartPreciseCoverageResult struct {
 type ProfilerStartTypeProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStartTypeProfile) ProtoReq() string { return "Profiler.startTypeProfile" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerStartTypeProfile) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -275,10 +275,10 @@ func (m ProfilerStartTypeProfile) Call(c Client) error {
 type ProfilerStop struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStop) ProtoReq() string { return "Profiler.stop" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerStop) Call(c Client) (*ProfilerStopResult, error) {
 	var res ProfilerStopResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -296,10 +296,10 @@ type ProfilerStopResult struct {
 type ProfilerStopPreciseCoverage struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStopPreciseCoverage) ProtoReq() string { return "Profiler.stopPreciseCoverage" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerStopPreciseCoverage) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -308,10 +308,10 @@ func (m ProfilerStopPreciseCoverage) Call(c Client) error {
 type ProfilerStopTypeProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerStopTypeProfile) ProtoReq() string { return "Profiler.stopTypeProfile" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerStopTypeProfile) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -321,10 +321,10 @@ func (m ProfilerStopTypeProfile) Call(c Client) error {
 type ProfilerTakePreciseCoverage struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerTakePreciseCoverage) ProtoReq() string { return "Profiler.takePreciseCoverage" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerTakePreciseCoverage) Call(c Client) (*ProfilerTakePreciseCoverageResult, error) {
 	var res ProfilerTakePreciseCoverageResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -345,10 +345,10 @@ type ProfilerTakePreciseCoverageResult struct {
 type ProfilerTakeTypeProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerTakeTypeProfile) ProtoReq() string { return "Profiler.takeTypeProfile" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerTakeTypeProfile) Call(c Client) (*ProfilerTakeTypeProfileResult, error) {
 	var res ProfilerTakeTypeProfileResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -365,10 +365,10 @@ type ProfilerTakeTypeProfileResult struct {
 type ProfilerEnableCounters struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerEnableCounters) ProtoReq() string { return "Profiler.enableCounters" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerEnableCounters) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -377,10 +377,10 @@ func (m ProfilerEnableCounters) Call(c Client) error {
 type ProfilerDisableCounters struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerDisableCounters) ProtoReq() string { return "Profiler.disableCounters" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerDisableCounters) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -389,10 +389,10 @@ func (m ProfilerDisableCounters) Call(c Client) error {
 type ProfilerGetCounters struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerGetCounters) ProtoReq() string { return "Profiler.getCounters" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerGetCounters) Call(c Client) (*ProfilerGetCountersResult, error) {
 	var res ProfilerGetCountersResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -409,10 +409,10 @@ type ProfilerGetCountersResult struct {
 type ProfilerEnableRuntimeCallStats struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerEnableRuntimeCallStats) ProtoReq() string { return "Profiler.enableRuntimeCallStats" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerEnableRuntimeCallStats) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -421,10 +421,10 @@ func (m ProfilerEnableRuntimeCallStats) Call(c Client) error {
 type ProfilerDisableRuntimeCallStats struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerDisableRuntimeCallStats) ProtoReq() string { return "Profiler.disableRuntimeCallStats" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m ProfilerDisableRuntimeCallStats) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -433,10 +433,10 @@ func (m ProfilerDisableRuntimeCallStats) Call(c Client) error {
 type ProfilerGetRuntimeCallStats struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m ProfilerGetRuntimeCallStats) ProtoReq() string { return "Profiler.getRuntimeCallStats" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m ProfilerGetRuntimeCallStats) Call(c Client) (*ProfilerGetRuntimeCallStatsResult, error) {
 	var res ProfilerGetRuntimeCallStatsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -465,7 +465,7 @@ type ProfilerConsoleProfileFinished struct {
 	Title string `json:"title,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ProfilerConsoleProfileFinished) ProtoEvent() string {
 	return "Profiler.consoleProfileFinished"
 }
@@ -483,7 +483,7 @@ type ProfilerConsoleProfileStarted struct {
 	Title string `json:"title,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ProfilerConsoleProfileStarted) ProtoEvent() string {
 	return "Profiler.consoleProfileStarted"
 }
@@ -504,7 +504,7 @@ type ProfilerPreciseCoverageDeltaUpdate struct {
 	Result []*ProfilerScriptCoverage `json:"result"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt ProfilerPreciseCoverageDeltaUpdate) ProtoEvent() string {
 	return "Profiler.preciseCoverageDeltaUpdate"
 }

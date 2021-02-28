@@ -22,10 +22,10 @@ type PerformanceMetric struct {
 type PerformanceDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PerformanceDisable) ProtoReq() string { return "Performance.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PerformanceDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -48,10 +48,10 @@ type PerformanceEnable struct {
 	TimeDomain PerformanceEnableTimeDomain `json:"timeDomain,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PerformanceEnable) ProtoReq() string { return "Performance.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PerformanceEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -76,10 +76,10 @@ type PerformanceSetTimeDomain struct {
 	TimeDomain PerformanceSetTimeDomainTimeDomain `json:"timeDomain"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PerformanceSetTimeDomain) ProtoReq() string { return "Performance.setTimeDomain" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PerformanceSetTimeDomain) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -88,10 +88,10 @@ func (m PerformanceSetTimeDomain) Call(c Client) error {
 type PerformanceGetMetrics struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PerformanceGetMetrics) ProtoReq() string { return "Performance.getMetrics" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PerformanceGetMetrics) Call(c Client) (*PerformanceGetMetricsResult, error) {
 	var res PerformanceGetMetricsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -114,7 +114,7 @@ type PerformanceMetrics struct {
 	Title string `json:"title"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PerformanceMetrics) ProtoEvent() string {
 	return "Performance.metrics"
 }

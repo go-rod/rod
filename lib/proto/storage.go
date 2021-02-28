@@ -77,10 +77,10 @@ type StorageClearDataForOrigin struct {
 	StorageTypes string `json:"storageTypes"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageClearDataForOrigin) ProtoReq() string { return "Storage.clearDataForOrigin" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageClearDataForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -92,10 +92,10 @@ type StorageGetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageGetCookies) ProtoReq() string { return "Storage.getCookies" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m StorageGetCookies) Call(c Client) (*StorageGetCookiesResult, error) {
 	var res StorageGetCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -118,10 +118,10 @@ type StorageSetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageSetCookies) ProtoReq() string { return "Storage.setCookies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageSetCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -133,10 +133,10 @@ type StorageClearCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageClearCookies) ProtoReq() string { return "Storage.clearCookies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageClearCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -148,10 +148,10 @@ type StorageGetUsageAndQuota struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageGetUsageAndQuota) ProtoReq() string { return "Storage.getUsageAndQuota" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m StorageGetUsageAndQuota) Call(c Client) (*StorageGetUsageAndQuotaResult, error) {
 	var res StorageGetUsageAndQuotaResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -189,10 +189,10 @@ type StorageOverrideQuotaForOrigin struct {
 	QuotaSize float64 `json:"quotaSize,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageOverrideQuotaForOrigin) ProtoReq() string { return "Storage.overrideQuotaForOrigin" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageOverrideQuotaForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -204,12 +204,12 @@ type StorageTrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageTrackCacheStorageForOrigin) ProtoReq() string {
 	return "Storage.trackCacheStorageForOrigin"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageTrackCacheStorageForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -221,10 +221,10 @@ type StorageTrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageTrackIndexedDBForOrigin) ProtoReq() string { return "Storage.trackIndexedDBForOrigin" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageTrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -236,12 +236,12 @@ type StorageUntrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageUntrackCacheStorageForOrigin) ProtoReq() string {
 	return "Storage.untrackCacheStorageForOrigin"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageUntrackCacheStorageForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -253,12 +253,12 @@ type StorageUntrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageUntrackIndexedDBForOrigin) ProtoReq() string {
 	return "Storage.untrackIndexedDBForOrigin"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -268,10 +268,10 @@ func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
 type StorageGetTrustTokens struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m StorageGetTrustTokens) ProtoReq() string { return "Storage.getTrustTokens" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m StorageGetTrustTokens) Call(c Client) (*StorageGetTrustTokensResult, error) {
 	var res StorageGetTrustTokensResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -295,7 +295,7 @@ type StorageCacheStorageContentUpdated struct {
 	CacheName string `json:"cacheName"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt StorageCacheStorageContentUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageContentUpdated"
 }
@@ -307,7 +307,7 @@ type StorageCacheStorageListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt StorageCacheStorageListUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageListUpdated"
 }
@@ -325,7 +325,7 @@ type StorageIndexedDBContentUpdated struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt StorageIndexedDBContentUpdated) ProtoEvent() string {
 	return "Storage.indexedDBContentUpdated"
 }
@@ -337,7 +337,7 @@ type StorageIndexedDBListUpdated struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 	return "Storage.indexedDBListUpdated"
 }

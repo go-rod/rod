@@ -36,10 +36,10 @@ type CastEnable struct {
 	PresentationURL string `json:"presentationUrl,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CastEnable) ProtoReq() string { return "Cast.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CastEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -48,10 +48,10 @@ func (m CastEnable) Call(c Client) error {
 type CastDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CastDisable) ProtoReq() string { return "Cast.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CastDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -64,10 +64,10 @@ type CastSetSinkToUse struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CastSetSinkToUse) ProtoReq() string { return "Cast.setSinkToUse" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CastSetSinkToUse) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -79,10 +79,10 @@ type CastStartTabMirroring struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CastStartTabMirroring) ProtoReq() string { return "Cast.startTabMirroring" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CastStartTabMirroring) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -94,10 +94,10 @@ type CastStopCasting struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m CastStopCasting) ProtoReq() string { return "Cast.stopCasting" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m CastStopCasting) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -110,7 +110,7 @@ type CastSinksUpdated struct {
 	Sinks []*CastSink `json:"sinks"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt CastSinksUpdated) ProtoEvent() string {
 	return "Cast.sinksUpdated"
 }
@@ -123,7 +123,7 @@ type CastIssueUpdated struct {
 	IssueMessage string `json:"issueMessage"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt CastIssueUpdated) ProtoEvent() string {
 	return "Cast.issueUpdated"
 }

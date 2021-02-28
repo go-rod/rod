@@ -63,10 +63,10 @@ type MemoryModule struct {
 type MemoryGetDOMCounters struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryGetDOMCounters) ProtoReq() string { return "Memory.getDOMCounters" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m MemoryGetDOMCounters) Call(c Client) (*MemoryGetDOMCountersResult, error) {
 	var res MemoryGetDOMCountersResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -89,10 +89,10 @@ type MemoryGetDOMCountersResult struct {
 type MemoryPrepareForLeakDetection struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryPrepareForLeakDetection) ProtoReq() string { return "Memory.prepareForLeakDetection" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemoryPrepareForLeakDetection) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -101,12 +101,12 @@ func (m MemoryPrepareForLeakDetection) Call(c Client) error {
 type MemoryForciblyPurgeJavaScriptMemory struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryForciblyPurgeJavaScriptMemory) ProtoReq() string {
 	return "Memory.forciblyPurgeJavaScriptMemory"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemoryForciblyPurgeJavaScriptMemory) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -118,12 +118,12 @@ type MemorySetPressureNotificationsSuppressed struct {
 	Suppressed bool `json:"suppressed"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemorySetPressureNotificationsSuppressed) ProtoReq() string {
 	return "Memory.setPressureNotificationsSuppressed"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemorySetPressureNotificationsSuppressed) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -135,12 +135,12 @@ type MemorySimulatePressureNotification struct {
 	Level MemoryPressureLevel `json:"level"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemorySimulatePressureNotification) ProtoReq() string {
 	return "Memory.simulatePressureNotification"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemorySimulatePressureNotification) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -155,10 +155,10 @@ type MemoryStartSampling struct {
 	SuppressRandomness bool `json:"suppressRandomness,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryStartSampling) ProtoReq() string { return "Memory.startSampling" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemoryStartSampling) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -167,10 +167,10 @@ func (m MemoryStartSampling) Call(c Client) error {
 type MemoryStopSampling struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryStopSampling) ProtoReq() string { return "Memory.stopSampling" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m MemoryStopSampling) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -180,10 +180,10 @@ func (m MemoryStopSampling) Call(c Client) error {
 type MemoryGetAllTimeSamplingProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryGetAllTimeSamplingProfile) ProtoReq() string { return "Memory.getAllTimeSamplingProfile" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m MemoryGetAllTimeSamplingProfile) Call(c Client) (*MemoryGetAllTimeSamplingProfileResult, error) {
 	var res MemoryGetAllTimeSamplingProfileResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -202,10 +202,10 @@ type MemoryGetAllTimeSamplingProfileResult struct {
 type MemoryGetBrowserSamplingProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryGetBrowserSamplingProfile) ProtoReq() string { return "Memory.getBrowserSamplingProfile" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m MemoryGetBrowserSamplingProfile) Call(c Client) (*MemoryGetBrowserSamplingProfileResult, error) {
 	var res MemoryGetBrowserSamplingProfileResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -224,10 +224,10 @@ type MemoryGetBrowserSamplingProfileResult struct {
 type MemoryGetSamplingProfile struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m MemoryGetSamplingProfile) ProtoReq() string { return "Memory.getSamplingProfile" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m MemoryGetSamplingProfile) Call(c Client) (*MemoryGetSamplingProfileResult, error) {
 	var res MemoryGetSamplingProfileResult
 	return &res, call(m.ProtoReq(), m, &res, c)

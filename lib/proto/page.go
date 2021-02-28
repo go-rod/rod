@@ -702,10 +702,10 @@ type PageAddScriptToEvaluateOnLoad struct {
 	ScriptSource string `json:"scriptSource"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageAddScriptToEvaluateOnLoad) ProtoReq() string { return "Page.addScriptToEvaluateOnLoad" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageAddScriptToEvaluateOnLoad) Call(c Client) (*PageAddScriptToEvaluateOnLoadResult, error) {
 	var res PageAddScriptToEvaluateOnLoadResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -730,12 +730,12 @@ type PageAddScriptToEvaluateOnNewDocument struct {
 	WorldName string `json:"worldName,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageAddScriptToEvaluateOnNewDocument) ProtoReq() string {
 	return "Page.addScriptToEvaluateOnNewDocument"
 }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageAddScriptToEvaluateOnNewDocument) Call(c Client) (*PageAddScriptToEvaluateOnNewDocumentResult, error) {
 	var res PageAddScriptToEvaluateOnNewDocumentResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -752,10 +752,10 @@ type PageAddScriptToEvaluateOnNewDocumentResult struct {
 type PageBringToFront struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageBringToFront) ProtoReq() string { return "Page.bringToFront" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageBringToFront) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -790,10 +790,10 @@ type PageCaptureScreenshot struct {
 	CaptureBeyondViewport bool `json:"captureBeyondViewport,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageCaptureScreenshot) ProtoReq() string { return "Page.captureScreenshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageCaptureScreenshot) Call(c Client) (*PageCaptureScreenshotResult, error) {
 	var res PageCaptureScreenshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -822,10 +822,10 @@ type PageCaptureSnapshot struct {
 	Format PageCaptureSnapshotFormat `json:"format,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageCaptureSnapshot) ProtoReq() string { return "Page.captureSnapshot" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageCaptureSnapshot) Call(c Client) (*PageCaptureSnapshotResult, error) {
 	var res PageCaptureSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -843,10 +843,10 @@ type PageCaptureSnapshotResult struct {
 type PageClearDeviceMetricsOverride struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageClearDeviceMetricsOverride) ProtoReq() string { return "Page.clearDeviceMetricsOverride" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageClearDeviceMetricsOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -855,12 +855,12 @@ func (m PageClearDeviceMetricsOverride) Call(c Client) error {
 type PageClearDeviceOrientationOverride struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageClearDeviceOrientationOverride) ProtoReq() string {
 	return "Page.clearDeviceOrientationOverride"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageClearDeviceOrientationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -869,10 +869,10 @@ func (m PageClearDeviceOrientationOverride) Call(c Client) error {
 type PageClearGeolocationOverride struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageClearGeolocationOverride) ProtoReq() string { return "Page.clearGeolocationOverride" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageClearGeolocationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -891,10 +891,10 @@ type PageCreateIsolatedWorld struct {
 	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageCreateIsolatedWorld) ProtoReq() string { return "Page.createIsolatedWorld" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageCreateIsolatedWorld) Call(c Client) (*PageCreateIsolatedWorldResult, error) {
 	var res PageCreateIsolatedWorldResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -917,10 +917,10 @@ type PageDeleteCookie struct {
 	URL string `json:"url"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageDeleteCookie) ProtoReq() string { return "Page.deleteCookie" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageDeleteCookie) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -929,10 +929,10 @@ func (m PageDeleteCookie) Call(c Client) error {
 type PageDisable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageDisable) ProtoReq() string { return "Page.disable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -941,10 +941,10 @@ func (m PageDisable) Call(c Client) error {
 type PageEnable struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageEnable) ProtoReq() string { return "Page.enable" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -953,10 +953,10 @@ func (m PageEnable) Call(c Client) error {
 type PageGetAppManifest struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetAppManifest) ProtoReq() string { return "Page.getAppManifest" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetAppManifest) Call(c Client) (*PageGetAppManifestResult, error) {
 	var res PageGetAppManifestResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -982,10 +982,10 @@ type PageGetAppManifestResult struct {
 type PageGetInstallabilityErrors struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetInstallabilityErrors) ProtoReq() string { return "Page.getInstallabilityErrors" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetInstallabilityErrors) Call(c Client) (*PageGetInstallabilityErrorsResult, error) {
 	var res PageGetInstallabilityErrorsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1002,10 +1002,10 @@ type PageGetInstallabilityErrorsResult struct {
 type PageGetManifestIcons struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetManifestIcons) ProtoReq() string { return "Page.getManifestIcons" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetManifestIcons) Call(c Client) (*PageGetManifestIconsResult, error) {
 	var res PageGetManifestIconsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1023,10 +1023,10 @@ type PageGetManifestIconsResult struct {
 type PageGetCookies struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetCookies) ProtoReq() string { return "Page.getCookies" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetCookies) Call(c Client) (*PageGetCookiesResult, error) {
 	var res PageGetCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1044,10 +1044,10 @@ type PageGetCookiesResult struct {
 type PageGetFrameTree struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetFrameTree) ProtoReq() string { return "Page.getFrameTree" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetFrameTree) Call(c Client) (*PageGetFrameTreeResult, error) {
 	var res PageGetFrameTreeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1064,10 +1064,10 @@ type PageGetFrameTreeResult struct {
 type PageGetLayoutMetrics struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetLayoutMetrics) ProtoReq() string { return "Page.getLayoutMetrics" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error) {
 	var res PageGetLayoutMetricsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1090,10 +1090,10 @@ type PageGetLayoutMetricsResult struct {
 type PageGetNavigationHistory struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetNavigationHistory) ProtoReq() string { return "Page.getNavigationHistory" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetNavigationHistory) Call(c Client) (*PageGetNavigationHistoryResult, error) {
 	var res PageGetNavigationHistoryResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1113,10 +1113,10 @@ type PageGetNavigationHistoryResult struct {
 type PageResetNavigationHistory struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageResetNavigationHistory) ProtoReq() string { return "Page.resetNavigationHistory" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageResetNavigationHistory) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1131,10 +1131,10 @@ type PageGetResourceContent struct {
 	URL string `json:"url"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetResourceContent) ProtoReq() string { return "Page.getResourceContent" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetResourceContent) Call(c Client) (*PageGetResourceContentResult, error) {
 	var res PageGetResourceContentResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1154,10 +1154,10 @@ type PageGetResourceContentResult struct {
 type PageGetResourceTree struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetResourceTree) ProtoReq() string { return "Page.getResourceTree" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetResourceTree) Call(c Client) (*PageGetResourceTreeResult, error) {
 	var res PageGetResourceTreeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1181,10 +1181,10 @@ type PageHandleJavaScriptDialog struct {
 	PromptText string `json:"promptText,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageHandleJavaScriptDialog) ProtoReq() string { return "Page.handleJavaScriptDialog" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageHandleJavaScriptDialog) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1208,10 +1208,10 @@ type PageNavigate struct {
 	ReferrerPolicy PageReferrerPolicy `json:"referrerPolicy,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageNavigate) ProtoReq() string { return "Page.navigate" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageNavigate) Call(c Client) (*PageNavigateResult, error) {
 	var res PageNavigateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1237,10 +1237,10 @@ type PageNavigateToHistoryEntry struct {
 	EntryID int `json:"entryId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageNavigateToHistoryEntry) ProtoReq() string { return "Page.navigateToHistoryEntry" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageNavigateToHistoryEntry) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1319,10 +1319,10 @@ type PagePrintToPDF struct {
 	TransferMode PagePrintToPDFTransferMode `json:"transferMode,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PagePrintToPDF) ProtoReq() string { return "Page.printToPDF" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PagePrintToPDF) Call(c Client) (*PagePrintToPDFResult, error) {
 	var res PagePrintToPDFResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1349,10 +1349,10 @@ type PageReload struct {
 	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageReload) ProtoReq() string { return "Page.reload" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageReload) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1364,12 +1364,12 @@ type PageRemoveScriptToEvaluateOnLoad struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageRemoveScriptToEvaluateOnLoad) ProtoReq() string {
 	return "Page.removeScriptToEvaluateOnLoad"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageRemoveScriptToEvaluateOnLoad) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1381,12 +1381,12 @@ type PageRemoveScriptToEvaluateOnNewDocument struct {
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageRemoveScriptToEvaluateOnNewDocument) ProtoReq() string {
 	return "Page.removeScriptToEvaluateOnNewDocument"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageRemoveScriptToEvaluateOnNewDocument) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1398,10 +1398,10 @@ type PageScreencastFrameAck struct {
 	SessionID int `json:"sessionId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageScreencastFrameAck) ProtoReq() string { return "Page.screencastFrameAck" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageScreencastFrameAck) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1425,10 +1425,10 @@ type PageSearchInResource struct {
 	IsRegex bool `json:"isRegex,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSearchInResource) ProtoReq() string { return "Page.searchInResource" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageSearchInResource) Call(c Client) (*PageSearchInResourceResult, error) {
 	var res PageSearchInResourceResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1448,10 +1448,10 @@ type PageSetAdBlockingEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetAdBlockingEnabled) ProtoReq() string { return "Page.setAdBlockingEnabled" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetAdBlockingEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1463,10 +1463,10 @@ type PageSetBypassCSP struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetBypassCSP) ProtoReq() string { return "Page.setBypassCSP" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetBypassCSP) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1478,10 +1478,10 @@ type PageGetPermissionsPolicyState struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGetPermissionsPolicyState) ProtoReq() string { return "Page.getPermissionsPolicyState" }
 
-// Call of the command, sessionID is optional.
+// Call the request
 func (m PageGetPermissionsPolicyState) Call(c Client) (*PageGetPermissionsPolicyStateResult, error) {
 	var res PageGetPermissionsPolicyStateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1537,10 +1537,10 @@ type PageSetDeviceMetricsOverride struct {
 	Viewport *PageViewport `json:"viewport,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetDeviceMetricsOverride) ProtoReq() string { return "Page.setDeviceMetricsOverride" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetDeviceMetricsOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1558,12 +1558,12 @@ type PageSetDeviceOrientationOverride struct {
 	Gamma float64 `json:"gamma"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetDeviceOrientationOverride) ProtoReq() string {
 	return "Page.setDeviceOrientationOverride"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetDeviceOrientationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1575,10 +1575,10 @@ type PageSetFontFamilies struct {
 	FontFamilies *PageFontFamilies `json:"fontFamilies"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetFontFamilies) ProtoReq() string { return "Page.setFontFamilies" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetFontFamilies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1590,10 +1590,10 @@ type PageSetFontSizes struct {
 	FontSizes *PageFontSizes `json:"fontSizes"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetFontSizes) ProtoReq() string { return "Page.setFontSizes" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetFontSizes) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1608,10 +1608,10 @@ type PageSetDocumentContent struct {
 	HTML string `json:"html"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetDocumentContent) ProtoReq() string { return "Page.setDocumentContent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetDocumentContent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1641,10 +1641,10 @@ type PageSetDownloadBehavior struct {
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetDownloadBehavior) ProtoReq() string { return "Page.setDownloadBehavior" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetDownloadBehavior) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1663,10 +1663,10 @@ type PageSetGeolocationOverride struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetGeolocationOverride) ProtoReq() string { return "Page.setGeolocationOverride" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetGeolocationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1678,10 +1678,10 @@ type PageSetLifecycleEventsEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetLifecycleEventsEnabled) ProtoReq() string { return "Page.setLifecycleEventsEnabled" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetLifecycleEventsEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1707,10 +1707,10 @@ type PageSetTouchEmulationEnabled struct {
 	Configuration PageSetTouchEmulationEnabledConfiguration `json:"configuration,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetTouchEmulationEnabled) ProtoReq() string { return "Page.setTouchEmulationEnabled" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetTouchEmulationEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1745,10 +1745,10 @@ type PageStartScreencast struct {
 	EveryNthFrame int `json:"everyNthFrame,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageStartScreencast) ProtoReq() string { return "Page.startScreencast" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageStartScreencast) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1757,10 +1757,10 @@ func (m PageStartScreencast) Call(c Client) error {
 type PageStopLoading struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageStopLoading) ProtoReq() string { return "Page.stopLoading" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageStopLoading) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1769,10 +1769,10 @@ func (m PageStopLoading) Call(c Client) error {
 type PageCrash struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageCrash) ProtoReq() string { return "Page.crash" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageCrash) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1781,10 +1781,10 @@ func (m PageCrash) Call(c Client) error {
 type PageClose struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageClose) ProtoReq() string { return "Page.close" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageClose) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1809,10 +1809,10 @@ type PageSetWebLifecycleState struct {
 	State PageSetWebLifecycleStateState `json:"state"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetWebLifecycleState) ProtoReq() string { return "Page.setWebLifecycleState" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetWebLifecycleState) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1821,10 +1821,10 @@ func (m PageSetWebLifecycleState) Call(c Client) error {
 type PageStopScreencast struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageStopScreencast) ProtoReq() string { return "Page.stopScreencast" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageStopScreencast) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1836,10 +1836,10 @@ type PageSetProduceCompilationCache struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetProduceCompilationCache) ProtoReq() string { return "Page.setProduceCompilationCache" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetProduceCompilationCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1855,10 +1855,10 @@ type PageAddCompilationCache struct {
 	Data []byte `json:"data"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageAddCompilationCache) ProtoReq() string { return "Page.addCompilationCache" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageAddCompilationCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1867,10 +1867,10 @@ func (m PageAddCompilationCache) Call(c Client) error {
 type PageClearCompilationCache struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageClearCompilationCache) ProtoReq() string { return "Page.clearCompilationCache" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageClearCompilationCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1885,10 +1885,10 @@ type PageGenerateTestReport struct {
 	Group string `json:"group,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageGenerateTestReport) ProtoReq() string { return "Page.generateTestReport" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageGenerateTestReport) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1897,10 +1897,10 @@ func (m PageGenerateTestReport) Call(c Client) error {
 type PageWaitForDebugger struct {
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageWaitForDebugger) ProtoReq() string { return "Page.waitForDebugger" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageWaitForDebugger) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1914,12 +1914,12 @@ type PageSetInterceptFileChooserDialog struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m PageSetInterceptFileChooserDialog) ProtoReq() string {
 	return "Page.setInterceptFileChooserDialog"
 }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m PageSetInterceptFileChooserDialog) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1931,7 +1931,7 @@ type PageDomContentEventFired struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageDomContentEventFired) ProtoEvent() string {
 	return "Page.domContentEventFired"
 }
@@ -1960,7 +1960,7 @@ type PageFileChooserOpened struct {
 	Mode PageFileChooserOpenedMode `json:"mode"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFileChooserOpened) ProtoEvent() string {
 	return "Page.fileChooserOpened"
 }
@@ -1978,7 +1978,7 @@ type PageFrameAttached struct {
 	Stack *RuntimeStackTrace `json:"stack,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameAttached) ProtoEvent() string {
 	return "Page.frameAttached"
 }
@@ -1990,7 +1990,7 @@ type PageFrameClearedScheduledNavigation struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameClearedScheduledNavigation) ProtoEvent() string {
 	return "Page.frameClearedScheduledNavigation"
 }
@@ -2016,7 +2016,7 @@ type PageFrameDetached struct {
 	Reason PageFrameDetachedReason `json:"reason"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameDetached) ProtoEvent() string {
 	return "Page.frameDetached"
 }
@@ -2028,7 +2028,7 @@ type PageFrameNavigated struct {
 	Frame *PageFrame `json:"frame"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameNavigated) ProtoEvent() string {
 	return "Page.frameNavigated"
 }
@@ -2040,7 +2040,7 @@ type PageDocumentOpened struct {
 	Frame *PageFrame `json:"frame"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageDocumentOpened) ProtoEvent() string {
 	return "Page.documentOpened"
 }
@@ -2049,7 +2049,7 @@ func (evt PageDocumentOpened) ProtoEvent() string {
 type PageFrameResized struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameResized) ProtoEvent() string {
 	return "Page.frameResized"
 }
@@ -2071,7 +2071,7 @@ type PageFrameRequestedNavigation struct {
 	Disposition PageClientNavigationDisposition `json:"disposition"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameRequestedNavigation) ProtoEvent() string {
 	return "Page.frameRequestedNavigation"
 }
@@ -2093,7 +2093,7 @@ type PageFrameScheduledNavigation struct {
 	URL string `json:"url"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameScheduledNavigation) ProtoEvent() string {
 	return "Page.frameScheduledNavigation"
 }
@@ -2105,7 +2105,7 @@ type PageFrameStartedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameStartedLoading) ProtoEvent() string {
 	return "Page.frameStartedLoading"
 }
@@ -2117,7 +2117,7 @@ type PageFrameStoppedLoading struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageFrameStoppedLoading) ProtoEvent() string {
 	return "Page.frameStoppedLoading"
 }
@@ -2138,7 +2138,7 @@ type PageDownloadWillBegin struct {
 	SuggestedFilename string `json:"suggestedFilename"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageDownloadWillBegin) ProtoEvent() string {
 	return "Page.downloadWillBegin"
 }
@@ -2173,7 +2173,7 @@ type PageDownloadProgress struct {
 	State PageDownloadProgressState `json:"state"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageDownloadProgress) ProtoEvent() string {
 	return "Page.downloadProgress"
 }
@@ -2182,7 +2182,7 @@ func (evt PageDownloadProgress) ProtoEvent() string {
 type PageInterstitialHidden struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageInterstitialHidden) ProtoEvent() string {
 	return "Page.interstitialHidden"
 }
@@ -2191,7 +2191,7 @@ func (evt PageInterstitialHidden) ProtoEvent() string {
 type PageInterstitialShown struct {
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageInterstitialShown) ProtoEvent() string {
 	return "Page.interstitialShown"
 }
@@ -2207,7 +2207,7 @@ type PageJavascriptDialogClosed struct {
 	UserInput string `json:"userInput"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageJavascriptDialogClosed) ProtoEvent() string {
 	return "Page.javascriptDialogClosed"
 }
@@ -2234,7 +2234,7 @@ type PageJavascriptDialogOpening struct {
 	DefaultPrompt string `json:"defaultPrompt,omitempty"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageJavascriptDialogOpening) ProtoEvent() string {
 	return "Page.javascriptDialogOpening"
 }
@@ -2290,7 +2290,7 @@ type PageLifecycleEvent struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageLifecycleEvent) ProtoEvent() string {
 	return "Page.lifecycleEvent"
 }
@@ -2302,7 +2302,7 @@ type PageLoadEventFired struct {
 	Timestamp MonotonicTime `json:"timestamp"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageLoadEventFired) ProtoEvent() string {
 	return "Page.loadEventFired"
 }
@@ -2317,7 +2317,7 @@ type PageNavigatedWithinDocument struct {
 	URL string `json:"url"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageNavigatedWithinDocument) ProtoEvent() string {
 	return "Page.navigatedWithinDocument"
 }
@@ -2335,7 +2335,7 @@ type PageScreencastFrame struct {
 	SessionID int `json:"sessionId"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageScreencastFrame) ProtoEvent() string {
 	return "Page.screencastFrame"
 }
@@ -2347,7 +2347,7 @@ type PageScreencastVisibilityChanged struct {
 	Visible bool `json:"visible"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageScreencastVisibilityChanged) ProtoEvent() string {
 	return "Page.screencastVisibilityChanged"
 }
@@ -2369,7 +2369,7 @@ type PageWindowOpen struct {
 	UserGesture bool `json:"userGesture"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageWindowOpen) ProtoEvent() string {
 	return "Page.windowOpen"
 }
@@ -2385,7 +2385,7 @@ type PageCompilationCacheProduced struct {
 	Data []byte `json:"data"`
 }
 
-// ProtoEvent interface
+// ProtoEvent name
 func (evt PageCompilationCacheProduced) ProtoEvent() string {
 	return "Page.compilationCacheProduced"
 }

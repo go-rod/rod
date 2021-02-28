@@ -156,10 +156,10 @@ type InputDispatchKeyEvent struct {
 	Commands []string `json:"commands,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputDispatchKeyEvent) ProtoReq() string { return "Input.dispatchKeyEvent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputDispatchKeyEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -172,10 +172,10 @@ type InputInsertText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputInsertText) ProtoReq() string { return "Input.insertText" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputInsertText) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -263,10 +263,10 @@ type InputDispatchMouseEvent struct {
 	PointerType InputDispatchMouseEventPointerType `json:"pointerType,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputDispatchMouseEvent) ProtoReq() string { return "Input.dispatchMouseEvent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputDispatchMouseEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -308,10 +308,10 @@ type InputDispatchTouchEvent struct {
 	Timestamp TimeSinceEpoch `json:"timestamp,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputDispatchTouchEvent) ProtoReq() string { return "Input.dispatchTouchEvent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputDispatchTouchEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -365,10 +365,10 @@ type InputEmulateTouchFromMouseEvent struct {
 	ClickCount int `json:"clickCount,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputEmulateTouchFromMouseEvent) ProtoReq() string { return "Input.emulateTouchFromMouseEvent" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputEmulateTouchFromMouseEvent) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -380,10 +380,10 @@ type InputSetIgnoreInputEvents struct {
 	Ignore bool `json:"ignore"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputSetIgnoreInputEvents) ProtoReq() string { return "Input.setIgnoreInputEvents" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputSetIgnoreInputEvents) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -408,10 +408,10 @@ type InputSynthesizePinchGesture struct {
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputSynthesizePinchGesture) ProtoReq() string { return "Input.synthesizePinchGesture" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputSynthesizePinchGesture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -459,10 +459,10 @@ type InputSynthesizeScrollGesture struct {
 	InteractionMarkerName string `json:"interactionMarkerName,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputSynthesizeScrollGesture) ProtoReq() string { return "Input.synthesizeScrollGesture" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputSynthesizeScrollGesture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -487,10 +487,10 @@ type InputSynthesizeTapGesture struct {
 	GestureSourceType InputGestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
-// ProtoReq of the command
+// ProtoReq name
 func (m InputSynthesizeTapGesture) ProtoReq() string { return "Input.synthesizeTapGesture" }
 
-// Call of the command, sessionID is optional.
+// Call sends the request
 func (m InputSynthesizeTapGesture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
