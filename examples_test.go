@@ -235,13 +235,11 @@ func Example_page_pdf() {
 	// simple version
 	page.MustPDF("my.pdf")
 
-	// customization version
+	// customized version
 	pdf, _ := page.PDF(&proto.PagePrintToPDF{
-		PaperWidth:              8.5,
-		PaperHeight:             11,
-		PageRanges:              "1-3",
-		IgnoreInvalidPageRanges: false,
-		DisplayHeaderFooter:     true,
+		PaperWidth:  8.5,
+		PaperHeight: 11,
+		PageRanges:  "1-3",
 	})
 	_ = utils.OutputFile("my.pdf", pdf)
 }

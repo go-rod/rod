@@ -423,18 +423,21 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 	}
 }
 
-// EachEvent is similar to Browser.EachEvent, but only catches events for current page.
-// We can subscribe the events to know when the navigation is complete or when the page is rendered.
-// If you want to dismiss all page's dialogs you can subscribe "proto.PageJavascriptDialogOpening".
+// EachEvent of the specified event types, if any callback returns true the wait function will resolve,
+// The type of each callback is (? means optional):
 //
-// For example:
+//     func(proto.Event, proto.TargetSessionID?) bool?
 //
-//     go page.EachEvent(func(e *proto.PageJavascriptDialogOpening) {
-//     _ = proto.PageHandleJavaScriptDialog{
-//				Accept:     false,
-//				PromptText: "",
-//			}.Call(page)
-//		})()
+// You can listen to multiple event types at the same time like:
+//
+//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
+//
+// Such as subscribe the events to know when the navigation is complete or when the page is rendered.
+// Here's an example to dismiss all dialogs/alerts on the page:
+//
+//      go page.EachEvent(func(e *proto.PageJavascriptDialogOpening) {
+//          _ = proto.PageHandleJavaScriptDialog{ Accept: false, PromptText: ""}.Call(page)
+//      })()
 //
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 	return p.browser.Context(p.ctx).eachEvent(p.SessionID, callbacks...)
@@ -705,4 +708,3 @@ func (p *Page) Event() <-chan *Message {
 
 	return dst
 }
-
