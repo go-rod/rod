@@ -313,6 +313,11 @@ func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 	return ctx
 }
 
+// IsNavigation return whether the request is a navigation request.
+func (ctx *HijackRequest) IsNavigation() bool {
+	return ctx.event.ResourceType == proto.NetworkResourceTypeDocument
+}
+
 // HijackResponse context
 type HijackResponse struct {
 	payload *proto.FetchFulfillRequest
@@ -414,3 +419,4 @@ func (b *Browser) HandleAuth(username, password string) func() error {
 		return
 	}
 }
+
