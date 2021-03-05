@@ -419,4 +419,3 @@ func (b *Browser) HandleAuth(username, password string) func() error {
 		return
 	}
 }
-
