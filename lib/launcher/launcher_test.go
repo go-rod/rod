@@ -130,6 +130,7 @@ func (t T) LaunchUserMode() {
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
+		NoSandbox(true).NoSandbox(false).
 		Devtools(true).Devtools(false).
 		StartURL("about:blank").
 		Proxy("test.com").
