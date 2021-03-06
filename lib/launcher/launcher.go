@@ -201,6 +201,17 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l.Delete("headless")
 }
 
+// NoSandbox switch. Whether to run browser in no-sandbox mode.
+// Linux users may face "running as root without --no-sandbox is not supported" in some Linux/Chrome combinations. This function helps switch mode easily.
+// Be aware disabling sandbox is not trivial. Use at your own risk.
+// Related doc: https://bugs.chromium.org/p/chromium/issues/detail?id=638180
+func (l *Launcher) NoSandbox(enable bool) *Launcher {
+	if enable {
+		return l.Set("no-sandbox")
+	}
+	return l.Delete("no-sandbox")
+}
+
 // XVFB enables to run browser in by XVFB. Useful when you want to run headful mode on linux.
 func (l *Launcher) XVFB() *Launcher {
 	return l.Set(flagXVFB)
