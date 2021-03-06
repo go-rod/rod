@@ -74,8 +74,9 @@ func main() {
 
 func getDeviceList() gson.JSON {
 	// we use the list from the web UI of devtools
+	// TODO: We should keep update with their latest list, using hash id is a temp solution
 	res, err := http.Get(
-		"https://raw.githubusercontent.com/ChromeDevTools/devtools-frontend/master/front_end/emulated_devices/module.json",
+		"https://raw.githubusercontent.com/ChromeDevTools/devtools-frontend/c4e2fefe3327aa9fe5f4398a1baddb8726c230d5/front_end/emulated_devices/module.json",
 	)
 	utils.E(err)
 

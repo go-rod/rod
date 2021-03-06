@@ -300,15 +300,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	return page, nil
 }
 
-// EachEvent of the specified event types, if any callback returns true the wait function will resolve,
-// The type of each callback is (? means optional):
-//
-//     func(proto.Event, proto.TargetSessionID?) bool?
-//
-// You can listen to multiple event types at the same time like:
-//
-//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
-//
+// EachEvent is similar to Page.EachEvent, but catches events of the entire browser.
 func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
 	return b.eachEvent("", callbacks...)
 }
