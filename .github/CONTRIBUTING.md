@@ -1,13 +1,5 @@
 # Contributing
 
-Your help is more than welcome! Even just open an issue to ask a question may greatly help others.
-
-Please read [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html) before you ask questions.
-
-We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/orgs/go-rod/projects/1).
-
-## Become a maintainer
-
 Anyone has contributed code to the project can become a member of the project and have the write permission to issues and doc repositories.
 
 At the early stage of this project, we will use a simple model to promote members to maintainers.
@@ -26,15 +18,18 @@ gopls workspace_symbol -matcher=fuzzy rod.Page.PDF$
 
 No magic, just `go test`.
 
-We use type `rod_test.T` to hold all the tests.
-For more details check doc [here](https://github.com/ysmood/got).
+### Filter tests
 
-Use regex to match and run a single test: `go test -v -run /^Click$`.
+Use regex: `go test -run /^Click$`.
+
+Test a specific package: `go test ./lib/launcher`.
+
+Run all tests: `go test ./...`
 
 ### Disable headless mode
 
 ```bash
-rod=show,trace,slow=2s go test -v -run /Click
+rod=show,trace,slow=2s go test -run /Click
 ```
 
 Check type `defaults.ResetWithEnv` for how it works.
@@ -46,7 +41,7 @@ You can use the `-browser-bin` flag to specify a custom browser executable path:
 For example:
 
 ```bash
-go test -v --browser-bin=/path/to/browser
+go test --browser-bin=/path/to/browser
 ```
 
 ### Lint project
@@ -68,7 +63,7 @@ Learn the [basics](https://blog.golang.org/cover) first.
 To visually see the coverage report you can run something like this:
 
 ```bash
-go test -coverprofile=coverage.txt
+go test -coverprofile=coverage.txt ./...
 go tool cover -html=coverage.txt
 ```
 
@@ -91,7 +86,7 @@ There are several helper functions for it:
 
 1. Run lint in the container: `go run ./lib/utils/lint`
 
-1. Run tests in the container: `go test -run /Click -v`
+1. Run tests in the container: `go test -run /Click`
 
 1. After you exit the container with `exit`, you can restart it by: `docker start -i rod`
 
