@@ -403,7 +403,10 @@ func (t T) PageEvent() {
 	utils.Sleep(0.1)
 	ctx.Cancel()
 
-	p.Event()
+	go func() {
+		for range p.Event() {
+		}
+	}()
 	p.MustClose()
 }
 
