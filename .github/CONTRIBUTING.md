@@ -14,9 +14,17 @@ When we talk about type in the doc we use [gopls](https://github.com/golang/tool
 gopls workspace_symbol -matcher=fuzzy rod.Page.PDF$
 ```
 
+- `cdp`: It's the short for Chrome Devtools Protocol
+
 ## Run tests
 
 No magic, just `go test`.
+
+The entry point of tests is [setup_test.go](../setup_test.go). All the test helpers are defined in it.
+
+The `cdp` requests of each test will be recorded and output to folder `tmp/cdp-log`, the CI will store them as
+[artifacts](https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts) so that we can download
+them for debugging.
 
 ### Filter tests
 
