@@ -14,14 +14,17 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// HijackRequests creates a new router instance for requests hijacking.
-// When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
-// but such as 304 Not Modified will still work as expected.
+// HijackRequests same as Page.HijackRequests, but can intercept requests of the entire browser.
 func (b *Browser) HijackRequests() *HijackRouter {
 	return newHijackRouter(b, b).initEvents()
 }
 
-// HijackRequests same as Browser.HijackRequests, but scoped with the page
+// HijackRequests creates a new router instance for requests hijacking.
+// When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
+// but such as 304 Not Modified will still work as expected.
+// The entire process of hijacking one request:
+//    browser --req-> rod ---> server ---> rod --res-> browser
+// The --req-> and --res-> are the parts that can be modified.
 func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()
 }
