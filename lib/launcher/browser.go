@@ -228,6 +228,7 @@ func LookPath() (found string, has bool) {
 			"chromium-browser",
 			"google-chrome",
 			"/usr/bin/google-chrome",
+			"/usr/bin/microsoft-edge",
 		},
 		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
 			`Google\Chrome\Application\chrome.exe`,
