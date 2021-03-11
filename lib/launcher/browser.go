@@ -222,12 +222,14 @@ func LookPath() (found string, has bool) {
 		"darwin": {
 			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 			"/Applications/Chromium.app/Contents/MacOS/Chromium",
+			"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
 		},
 		"linux": {
 			"chromium",
 			"chromium-browser",
 			"google-chrome",
 			"/usr/bin/google-chrome",
+			"microsoft-edge",
 			"/usr/bin/microsoft-edge",
 		},
 		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
