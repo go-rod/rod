@@ -1,6 +1,6 @@
 module github.com/go-rod/rod
 
-go 1.15
+go 1.16
 
 require (
 	github.com/ysmood/goob v0.3.0

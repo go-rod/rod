@@ -22,11 +22,9 @@ func main() {
 
 	run("npx -yq -- prettier@2.2.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	run("go run github.com/ysmood/golangci-lint")
+	run("golangci-lint")
 
 	lintMustPrefix()
-
-	run("go mod tidy")
 
 	checkGitClean()
 }

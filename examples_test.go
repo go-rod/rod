@@ -328,6 +328,7 @@ func Example_customize_retry_strategy() {
 		}
 	}
 	el, _ := page.Sleeper(sleeper).Element("input")
+	fmt.Println(el.MustProperty("name"))
 
 	// If sleeper is nil page.ElementE will query without retrying.
 	// If nothing found it will return an error.
@@ -338,9 +339,11 @@ func Example_customize_retry_strategy() {
 		panic(err)
 	}
 
-	fmt.Println(el.MustEval(`this.name`).String())
+	fmt.Println(el.MustProperty("name"))
 
-	// Output: q
+	// Output:
+	// q
+	// q
 }
 
 // Shows how we can further customize the browser with the launcher library.

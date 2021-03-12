@@ -88,7 +88,7 @@ func main() {
 	path := "./lib/proto"
 	utils.Exec("gofmt", "-s", "-w", path)
 	utils.Exec(
-		"go", "run", "github.com/ysmood/golangci-lint", "--",
+		"golangci-lint", "--",
 		"run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path,
 	)
 }
