@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
-	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -237,7 +236,7 @@ func (t T) EnsureJSHelperErr() {
 	p := t.page.MustNavigate(t.blank())
 
 	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
-	t.Err(p.Evaluate(rod.EvalHelper(js.Overlay, "test", 0, 0, 10, 10, "msg")))
+	t.Err(p.Elements(`button`))
 }
 
 func (t T) EvalOptionsString() {

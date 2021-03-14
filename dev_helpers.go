@@ -103,7 +103,7 @@ func (b *Browser) trySlowmotion() {
 
 // ExposeHelpers helper functions to page's js context so that we can use the Devtools' console to debug them.
 func (p *Page) ExposeHelpers(list ...*js.Function) {
-	p.MustEvaluate(EvalHelper(&js.Function{
+	p.MustEvaluate(evalHelper(&js.Function{
 		Name:         "_" + utils.RandString(8), // use a random name so it won't hit the cache
 		Definition:   "() => { window.rod = functions }",
 		Dependencies: list,
@@ -114,7 +114,7 @@ func (p *Page) ExposeHelpers(list ...*js.Function) {
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	id := utils.RandString(8)
 
-	_, _ = p.root.Evaluate(EvalHelper(js.Overlay,
+	_, _ = p.root.Evaluate(evalHelper(js.Overlay,
 		id,
 		left,
 		top,
@@ -124,7 +124,7 @@ func (p *Page) Overlay(left, top, width, height float64, msg string) (remove fun
 	).ByPromise())
 
 	remove = func() {
-		_, _ = p.root.Evaluate(EvalHelper(js.RemoveOverlay, id))
+		_, _ = p.root.Evaluate(evalHelper(js.RemoveOverlay, id))
 	}
 
 	return
@@ -198,13 +198,13 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 func (el *Element) Overlay(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
 
-	_, _ = el.Evaluate(EvalHelper(js.ElementOverlay,
+	_, _ = el.Evaluate(evalHelper(js.ElementOverlay,
 		id,
 		msg,
 	).ByPromise())
 
 	removeOverlay = func() {
-		_, _ = el.Evaluate(EvalHelper(js.RemoveOverlay, id))
+		_, _ = el.Evaluate(evalHelper(js.RemoveOverlay, id))
 	}
 
 	return
@@ -224,11 +224,11 @@ func (el *Element) tryTrace(typ TraceType, msg ...interface{}) func() {
 }
 
 func (m *Mouse) initMouseTracer() {
-	_, _ = m.page.Evaluate(EvalHelper(js.InitMouseTracer, m.id, assets.MousePointer).ByPromise())
+	_, _ = m.page.Evaluate(evalHelper(js.InitMouseTracer, m.id, assets.MousePointer).ByPromise())
 }
 
 func (m *Mouse) updateMouseTracer() bool {
-	res, err := m.page.Evaluate(EvalHelper(js.UpdateMouseTracer, m.id, m.x, m.y))
+	res, err := m.page.Evaluate(evalHelper(js.UpdateMouseTracer, m.id, m.x, m.y))
 	if err != nil {
 		return true
 	}

@@ -140,19 +140,19 @@ func (p *Page) HasR(selector, jsRegex string) (bool, *Element, error) {
 // Element retries until an element in the page that matches the CSS selector, then returns
 // the matched element.
 func (p *Page) Element(selector string) (*Element, error) {
-	return p.ElementByJS(EvalHelper(js.Element, selector))
+	return p.ElementByJS(evalHelper(js.Element, selector))
 }
 
 // ElementR retries until an element in the page that matches the css selector and it's text matches the jsRegex,
 // then returns the matched element.
 func (p *Page) ElementR(selector, jsRegex string) (*Element, error) {
-	return p.ElementByJS(EvalHelper(js.ElementR, selector, jsRegex))
+	return p.ElementByJS(evalHelper(js.ElementR, selector, jsRegex))
 }
 
 // ElementX retries until an element in the page that matches one of the XPath selectors, then returns
 // the matched element.
 func (p *Page) ElementX(xPath string) (*Element, error) {
-	return p.ElementByJS(EvalHelper(js.ElementX, xPath))
+	return p.ElementByJS(evalHelper(js.ElementX, xPath))
 }
 
 // ElementByJS returns the element from the return value of the js function.
@@ -194,12 +194,12 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 
 // Elements returns all elements that match the css selector
 func (p *Page) Elements(selector string) (Elements, error) {
-	return p.ElementsByJS(EvalHelper(js.Elements, selector))
+	return p.ElementsByJS(evalHelper(js.Elements, selector))
 }
 
 // ElementsX returns all elements that match the XPath selector
 func (p *Page) ElementsX(xpath string) (Elements, error) {
-	return p.ElementsByJS(EvalHelper(js.ElementsX, xpath))
+	return p.ElementsByJS(evalHelper(js.ElementsX, xpath))
 }
 
 // ElementsByJS returns the elements from the return value of the js
@@ -428,17 +428,17 @@ func (el *Element) HasR(selector, jsRegex string) (bool, *Element, error) {
 
 // Element returns the first child that matches the css selector
 func (el *Element) Element(selector string) (*Element, error) {
-	return el.ElementByJS(EvalHelper(js.Element, selector))
+	return el.ElementByJS(evalHelper(js.Element, selector))
 }
 
 // ElementR returns the first child element that matches the css selector and its text matches the jsRegex.
 func (el *Element) ElementR(selector, jsRegex string) (*Element, error) {
-	return el.ElementByJS(EvalHelper(js.ElementR, selector, jsRegex))
+	return el.ElementByJS(evalHelper(js.ElementR, selector, jsRegex))
 }
 
 // ElementX returns the first child that matches the XPath selector
 func (el *Element) ElementX(xPath string) (*Element, error) {
-	return el.ElementByJS(EvalHelper(js.ElementX, xPath))
+	return el.ElementByJS(evalHelper(js.ElementX, xPath))
 }
 
 // ElementByJS returns the element from the return value of the js
@@ -457,7 +457,7 @@ func (el *Element) Parent() (*Element, error) {
 
 // Parents that match the selector
 func (el *Element) Parents(selector string) (Elements, error) {
-	return el.ElementsByJS(EvalHelper(js.Parents, selector))
+	return el.ElementsByJS(evalHelper(js.Parents, selector))
 }
 
 // Next returns the next sibling element in the DOM tree
@@ -472,12 +472,12 @@ func (el *Element) Previous() (*Element, error) {
 
 // Elements returns all elements that match the css selector
 func (el *Element) Elements(selector string) (Elements, error) {
-	return el.ElementsByJS(EvalHelper(js.Elements, selector))
+	return el.ElementsByJS(evalHelper(js.Elements, selector))
 }
 
 // ElementsX returns all elements that match the XPath selector
 func (el *Element) ElementsX(xpath string) (Elements, error) {
-	return el.ElementsByJS(EvalHelper(js.ElementsX, xpath))
+	return el.ElementsByJS(evalHelper(js.ElementsX, xpath))
 }
 
 // ElementsByJS returns the elements from the return value of the js

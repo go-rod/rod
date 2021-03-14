@@ -220,7 +220,7 @@ func (el *Element) SelectText(regex string) error {
 	defer el.tryTrace(TraceTypeInput, "select text: "+regex)()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.Evaluate(EvalHelper(js.SelectText, regex).ByUser())
+	_, err = el.Evaluate(evalHelper(js.SelectText, regex).ByUser())
 	return err
 }
 
@@ -235,7 +235,7 @@ func (el *Element) SelectAllText() error {
 	defer el.tryTrace(TraceTypeInput, "select all text")()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.Evaluate(EvalHelper(js.SelectAllText).ByUser())
+	_, err = el.Evaluate(evalHelper(js.SelectAllText).ByUser())
 	return err
 }
 
@@ -270,7 +270,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	_, err = el.Evaluate(EvalHelper(js.InputEvent).ByUser())
+	_, err = el.Evaluate(evalHelper(js.InputEvent).ByUser())
 	return err
 }
 
@@ -300,7 +300,7 @@ func (el *Element) InputTime(t time.Time) error {
 
 	defer el.tryTrace(TraceTypeInput, "input "+t.String())()
 
-	_, err = el.Evaluate(EvalHelper(js.InputTime, t.UnixNano()/1e6).ByUser())
+	_, err = el.Evaluate(evalHelper(js.InputTime, t.UnixNano()/1e6).ByUser())
 	return err
 }
 
@@ -326,7 +326,7 @@ func (el *Element) Select(selectors []string, selected bool, t SelectorType) err
 	defer el.tryTrace(TraceTypeInput, fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.Evaluate(EvalHelper(js.Select, selectors, selected, t).ByUser())
+	_, err = el.Evaluate(evalHelper(js.Select, selectors, selected, t).ByUser())
 	return err
 }
 
@@ -436,7 +436,7 @@ func (el *Element) Frame() (*Page, error) {
 
 // ContainsElement check if the target is equal or inside the element.
 func (el *Element) ContainsElement(target *Element) (bool, error) {
-	res, err := el.Evaluate(EvalHelper(js.ContainsElement, target.Object))
+	res, err := el.Evaluate(evalHelper(js.ContainsElement, target.Object))
 	if err != nil {
 		return false, err
 	}
@@ -445,7 +445,7 @@ func (el *Element) ContainsElement(target *Element) (bool, error) {
 
 // Text that the element displays
 func (el *Element) Text() (string, error) {
-	str, err := el.Evaluate(EvalHelper(js.Text))
+	str, err := el.Evaluate(evalHelper(js.Text))
 	if err != nil {
 		return "", err
 	}
@@ -463,7 +463,7 @@ func (el *Element) HTML() (string, error) {
 
 // Visible returns true if the element is visible on the page
 func (el *Element) Visible() (bool, error) {
-	res, err := el.Evaluate(EvalHelper(js.Visible))
+	res, err := el.Evaluate(evalHelper(js.Visible))
 	if err != nil {
 		return false, err
 	}
@@ -473,7 +473,7 @@ func (el *Element) Visible() (bool, error) {
 // WaitLoad for element like <img>
 func (el *Element) WaitLoad() error {
 	defer el.tryTrace(TraceTypeWait, "load")()
-	_, err := el.Evaluate(EvalHelper(js.WaitLoad).ByPromise())
+	_, err := el.Evaluate(evalHelper(js.WaitLoad).ByPromise())
 	return err
 }
 
@@ -586,7 +586,7 @@ func (el *Element) Wait(opts *EvalOptions) error {
 // WaitVisible until the element is visible
 func (el *Element) WaitVisible() error {
 	defer el.tryTrace(TraceTypeWait, "visible")()
-	return el.Wait(EvalHelper(js.Visible))
+	return el.Wait(evalHelper(js.Visible))
 }
 
 // WaitEnabled until the element is not disabled.
@@ -606,7 +606,7 @@ func (el *Element) WaitWritable() error {
 // WaitInvisible until the element invisible
 func (el *Element) WaitInvisible() error {
 	defer el.tryTrace(TraceTypeWait, "invisible")()
-	return el.Wait(EvalHelper(js.Invisible))
+	return el.Wait(evalHelper(js.Invisible))
 }
 
 // CanvasToImage get image data of a canvas.
@@ -625,7 +625,7 @@ func (el *Element) CanvasToImage(format string, quality float64) ([]byte, error)
 
 // Resource returns the "src" content of current element. Such as the jpg of <img src="a.jpg">
 func (el *Element) Resource() ([]byte, error) {
-	src, err := el.Evaluate(EvalHelper(js.Resource).ByPromise())
+	src, err := el.Evaluate(evalHelper(js.Resource).ByPromise())
 	if err != nil {
 		return nil, err
 	}

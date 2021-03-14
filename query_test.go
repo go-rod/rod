@@ -8,7 +8,6 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
-	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -217,7 +216,7 @@ func (t T) ElementsFromElement() {
 	t.Eq("B", list[1].MustText())
 
 	t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-	t.Err(el.ElementsByJS(rod.EvalHelper(js.Elements, "input")))
+	t.Err(el.Elements("input"))
 }
 
 func (t T) ElementParent() {
@@ -294,7 +293,7 @@ func (t T) PageElementsByJS() {
 	t.Err(err)
 
 	t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})
-	t.Err(p.ElementsByJS(rod.EvalHelper(js.Elements, "button")))
+	t.Err(p.Elements("button"))
 }
 
 func (t T) PageElementTimeout() {
