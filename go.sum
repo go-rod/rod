@@ -6,5 +6,5 @@ github.com/ysmood/gotrace v0.2.0 h1:IkTC6rJREwXSaG8yWK+NFwIJGIsxA1DjC6/gxYyQttE=
 github.com/ysmood/gotrace v0.2.0/go.mod h1:TzhIG7nHDry5//eYZDYcTzuJLYQIkykJzCRIo4/dzQM=
 github.com/ysmood/gson v0.6.3 h1:4cU+5oOdsyundXHy00t99H0rLXLthuseD3x6W+xmCiU=
 github.com/ysmood/gson v0.6.3/go.mod h1:3Kzs5zDl21g5F/BlLTNcuAGAYLKt2lV5G8D1zF3RNmg=
-github.com/ysmood/leakless v0.6.12 h1:XxtRYl97bJklfv4BZVdyGnd/y42p6w8lu1hUzfCkT4M=
-github.com/ysmood/leakless v0.6.12/go.mod h1:R8iAXPRaG97QJwqxs74RdwzcRHT1SWCGTNqY8q0JvMQ=
+github.com/ysmood/leakless v0.6.14 h1:+RKbekKP9+WzVSylTlhwp2x9+zSojKOiGUYewgZyO8g=
+github.com/ysmood/leakless v0.6.14/go.mod h1:R8iAXPRaG97QJwqxs74RdwzcRHT1SWCGTNqY8q0JvMQ=
