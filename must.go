@@ -80,9 +80,14 @@ func (b *Browser) MustGetCookies() []*proto.NetworkCookie {
 	return nc
 }
 
-// MustSetCookies is similar Browser.SetCookies
-func (b *Browser) MustSetCookies(cookies []*proto.NetworkCookie) *Browser {
-	utils.E(b.SetCookies(proto.CookiesToParams(cookies)))
+// MustSetCookies is similar Browser.SetCookies.
+// If the len(cookies) is 0 it will clear all the cookies.
+func (b *Browser) MustSetCookies(cookies ...*proto.NetworkCookie) *Browser {
+	if len(cookies) == 0 {
+		utils.E(b.SetCookies(nil))
+	} else {
+		utils.E(b.SetCookies(proto.CookiesToParams(cookies)))
+	}
 	return b
 }
 
@@ -137,8 +142,12 @@ func (p *Page) MustCookies(urls ...string) []*proto.NetworkCookie {
 	return cookies
 }
 
-// MustSetCookies is similar to Page.SetCookies
+// MustSetCookies is similar to Page.SetCookies.
+// If the len(cookies) is 0 it will clear all the cookies.
 func (p *Page) MustSetCookies(cookies ...*proto.NetworkCookieParam) *Page {
+	if len(cookies) == 0 {
+		cookies = nil
+	}
 	utils.E(p.SetCookies(cookies))
 	return p
 }

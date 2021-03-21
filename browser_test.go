@@ -278,17 +278,23 @@ func (t T) BrowserCookies() {
 	b := t.browser.MustIncognito()
 	defer b.MustClose()
 
-	b.MustSetCookies([]*proto.NetworkCookie{{
+	b.MustSetCookies(&proto.NetworkCookie{
 		Name:   "a",
 		Value:  "val",
 		Domain: "test.com",
-	}})
+	})
 
 	cookies := b.MustGetCookies()
 
 	t.Len(cookies, 1)
 	t.Eq(cookies[0].Name, "a")
 	t.Eq(cookies[0].Value, "val")
+
+	{
+		b.MustSetCookies()
+		cookies := b.MustGetCookies()
+		t.Len(cookies, 0)
+	}
 
 	t.mc.stubErr(1, proto.StorageGetCookies{})
 	t.Err(b.GetCookies())

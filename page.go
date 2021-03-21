@@ -109,10 +109,12 @@ func (p *Page) Cookies(urls []string) ([]*proto.NetworkCookie, error) {
 	return res.Cookies, nil
 }
 
-// SetCookies of the page.
+// SetCookies is similar to Browser.SetCookies .
 func (p *Page) SetCookies(cookies []*proto.NetworkCookieParam) error {
-	err := proto.NetworkSetCookies{Cookies: cookies}.Call(p)
-	return err
+	if cookies == nil {
+		return proto.NetworkClearBrowserCookies{}.Call(p)
+	}
+	return proto.NetworkSetCookies{Cookies: cookies}.Call(p)
 }
 
 // SetExtraHeaders whether to always send extra HTTP headers with the requests from this page.

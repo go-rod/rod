@@ -28,15 +28,15 @@ func (t T) GetPageURL() {
 func (t T) SetCookies() {
 	s := t.Serve()
 
-	page := t.page.MustSetCookies(&proto.NetworkCookieParam{
+	page := t.page.MustSetCookies([]*proto.NetworkCookieParam{{
 		Name:  "cookie-a",
 		Value: "1",
 		URL:   s.URL(),
-	}, &proto.NetworkCookieParam{
+	}, {
 		Name:  "cookie-b",
 		Value: "2",
 		URL:   s.URL(),
-	}).MustNavigate(s.URL())
+	}}...).MustNavigate(s.URL())
 
 	cookies := page.MustCookies()
 
@@ -47,7 +47,7 @@ func (t T) SetCookies() {
 	t.Eq("1", cookies[0].Value)
 	t.Eq("2", cookies[1].Value)
 
-	t.E(proto.NetworkClearBrowserCookies{}.Call(page))
+	page.MustSetCookies()
 
 	cookies = page.MustCookies()
 	t.Len(cookies, 0)

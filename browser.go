@@ -459,8 +459,12 @@ func (b *Browser) GetCookies() ([]*proto.NetworkCookie, error) {
 	return res.Cookies, nil
 }
 
-// SetCookies to the browser
+// SetCookies to the browser. If the cookies is nil it will clear all the cookies.
 func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
+	if cookies == nil {
+		return proto.StorageClearCookies{BrowserContextID: b.BrowserContextID}.Call(b)
+	}
+
 	return proto.StorageSetCookies{
 		Cookies:          cookies,
 		BrowserContextID: b.BrowserContextID,

@@ -35,7 +35,7 @@ func main() {
 func linkPreviewer(browser *rod.Browser) {
 	// Create a headless browser to generate preview of links on background.
 	previewer := rod.New().MustConnect()
-	previewer.MustSetCookies(browser.MustGetCookies()) // share cookies
+	previewer.MustSetCookies(browser.MustGetCookies()...) // share cookies
 	pool := rod.NewPagePool(5)
 	create := func() *rod.Page { return previewer.MustPage("") }
 
