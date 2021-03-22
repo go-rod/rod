@@ -48,7 +48,7 @@ func (t T) ClickWrapped() {
 }
 
 func (t T) Tap() {
-	page := t.newPage("")
+	page := t.newPage()
 
 	page.MustEmulate(devices.IPad).
 		MustNavigate(t.srcFile("fixtures/touch.html")).

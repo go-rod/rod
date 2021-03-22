@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/devices"
@@ -40,9 +41,10 @@ func (b *Browser) MustIncognito() *Browser {
 	return b
 }
 
-// MustPage is similar to Browser.Page
-func (b *Browser) MustPage(url string) *Page {
-	p, err := b.Page(proto.TargetCreateTarget{URL: url})
+// MustPage is similar to Browser.Page.
+// The url list will be joined by "/".
+func (b *Browser) MustPage(url ...string) *Page {
+	p, err := b.Page(proto.TargetCreateTarget{URL: strings.Join(url, "/")})
 	utils.E(err)
 	return p
 }

@@ -207,7 +207,7 @@ func (t T) HijackFailRequest() {
 }
 
 func (t T) HijackLoadResponseErr() {
-	p := t.newPage("").Context(t.Context())
+	p := t.newPage().Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -241,7 +241,7 @@ func (t T) HijackLoadResponseErr() {
 func (t T) HijackResponseErr() {
 	s := t.Serve().Route("/", ".html", `ok`)
 
-	p := t.newPage("").Context(t.Context())
+	p := t.newPage().Context(t.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 

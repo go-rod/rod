@@ -27,7 +27,7 @@ func main() {
 	// With this extension, whenever you hover on a link a preview of the linked page will popup.
 	linkPreviewer(browser)
 
-	browser.MustPage("")
+	browser.MustPage()
 
 	waitExit()
 }
@@ -37,7 +37,7 @@ func linkPreviewer(browser *rod.Browser) {
 	previewer := rod.New().MustConnect()
 	previewer.MustSetCookies(browser.MustGetCookies()...) // share cookies
 	pool := rod.NewPagePool(5)
-	create := func() *rod.Page { return previewer.MustPage("") }
+	create := func() *rod.Page { return previewer.MustPage() }
 
 	go browser.EachEvent(func(e *proto.TargetTargetCreated) {
 		if e.TargetInfo.Type != proto.TargetTargetInfoTypePage {

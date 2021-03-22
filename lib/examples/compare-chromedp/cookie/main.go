@@ -24,7 +24,7 @@ func main() {
 	host := fmt.Sprintf("http://localhost:%d", *flagPort)
 	expr := proto.TimeSinceEpoch(time.Now().Add(180 * 24 * time.Hour).Unix())
 
-	page := rod.New().MustConnect().MustPage("")
+	page := rod.New().MustConnect().MustPage()
 
 	page.MustSetCookies(&proto.NetworkCookieParam{
 		Name:     "cookie1",

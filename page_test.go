@@ -72,7 +72,7 @@ func (t T) SetExtraHeaders() {
 		wg.Done()
 	})
 
-	p := t.newPage("")
+	p := t.newPage()
 	cleanup := p.MustSetExtraHeaders("a", "1", "b", "2")
 
 	wg.Add(1)
@@ -110,7 +110,7 @@ func (t T) SetUserAgent() {
 		wg.Done()
 	})
 
-	t.newPage("").MustSetUserAgent(nil).MustNavigate(s.URL())
+	t.newPage().MustSetUserAgent(nil).MustNavigate(s.URL())
 	wg.Wait()
 
 	t.Eq(ua, "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
@@ -391,7 +391,7 @@ func (t T) PageWaitEventParseEventOnlyOnce() {
 }
 
 func (t T) PageEvent() {
-	p := t.browser.MustPage("")
+	p := t.browser.MustPage()
 	ctx := t.Context()
 	events := p.Context(ctx).Event()
 	p.MustNavigate(t.blank())
@@ -474,7 +474,7 @@ func (t T) MouseClick() {
 }
 
 func (t T) MouseDrag() {
-	page := t.newPage("").MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
+	page := t.newPage().MustNavigate(t.srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Mouse
 
 	mouse.MustMove(3, 3)
@@ -506,7 +506,7 @@ func (t T) NativeDrag(got.Skip) { // devtools doesn't support to use mouse event
 }
 
 func (t T) Touch() {
-	page := t.newPage("").MustEmulate(devices.IPad)
+	page := t.newPage().MustEmulate(devices.IPad)
 
 	wait := page.WaitNavigation(proto.PageLifecycleEventNameLoad)
 	page.MustNavigate(t.srcFile("fixtures/touch.html"))
@@ -566,7 +566,7 @@ func (t T) ScreenshotFullPage() {
 	t.Eq(1280, res.Get("w").Int())
 	t.Eq(800, res.Get("h").Int())
 
-	p.MustScreenshotFullPage("")
+	p.MustScreenshotFullPage()
 
 	noEmulation := t.newPage(t.blank())
 	t.E(noEmulation.SetViewport(nil))
@@ -699,7 +699,7 @@ func (t T) PageWaitLoadErr() {
 }
 
 func (t T) PageNavigation() {
-	p := t.newPage("").MustReload()
+	p := t.newPage().MustReload()
 
 	wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
 	p.MustNavigate(t.srcFile("fixtures/click.html"))
@@ -725,7 +725,7 @@ func (t T) PageNavigation() {
 
 func (t T) PagePool() {
 	pool := rod.NewPagePool(3)
-	create := func() *rod.Page { return t.browser.MustPage("") }
+	create := func() *rod.Page { return t.browser.MustPage() }
 	p := pool.Get(create)
 	pool.Put(p)
 	pool.Cleanup(func(p *rod.Page) {

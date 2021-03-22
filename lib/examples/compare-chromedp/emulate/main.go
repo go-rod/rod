@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	page := rod.New().MustConnect().MustPage("")
+	page := rod.New().MustConnect().MustPage()
 
 	// emulate iPhone 7 landscape
 	err := page.Emulate(devices.IPhone6or7or8.Landescape())

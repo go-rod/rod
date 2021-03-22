@@ -373,7 +373,7 @@ func Example_customize_browser_launch() {
 // When rod doesn't have a feature that you need. You can easily call the cdp to achieve it.
 // List of cdp API: https://chromedevtools.github.io/devtools-protocol
 func Example_direct_cdp() {
-	page := rod.New().MustConnect().MustPage("")
+	page := rod.New().MustConnect().MustPage()
 
 	// Rod doesn't have a method to enable AD blocking,
 	// but you can call cdp interface directly to achieve it.
@@ -403,7 +403,7 @@ func Example_handle_events() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	page := browser.Context(ctx).MustPage("")
+	page := browser.Context(ctx).MustPage()
 
 	done := make(chan int)
 
@@ -499,7 +499,7 @@ func Example_hijack_requests() {
 
 // Shows how to share a remote object reference between two Eval
 func Example_eval_reuse_remote_object() {
-	page := rod.New().MustConnect().MustPage("")
+	page := rod.New().MustConnect().MustPage()
 
 	fn := page.MustEvaluate(rod.Eval(`Math.random`).ByObject())
 
@@ -515,7 +515,7 @@ func Example_states() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
-	page := browser.MustPage("")
+	page := browser.MustPage()
 
 	// LoadState detects whether the network domain is enabled or not.
 	fmt.Println(page.LoadState(&proto.NetworkEnable{}))
@@ -541,7 +541,7 @@ func ExamplePage_pool() {
 	// Create a page if needed
 	create := func() *rod.Page {
 		// We use MustIncognito to isolate pages with each other
-		return browser.MustIncognito().MustPage("")
+		return browser.MustIncognito().MustPage()
 	}
 
 	yourJob := func() {

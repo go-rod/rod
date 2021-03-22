@@ -11,7 +11,7 @@ import (
 )
 
 func (t T) PageEvalOnNewDocument() {
-	p := t.newPage("")
+	p := t.newPage()
 
 	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
 

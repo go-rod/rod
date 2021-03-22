@@ -175,7 +175,7 @@ func (b *Browser) Close() error {
 	return proto.TargetDisposeBrowserContext{BrowserContextID: b.BrowserContextID}.Call(b)
 }
 
-// Page creates a new browser tab. If url is empty, the default target will be "about:blank".
+// Page creates a new browser tab. If opts.URL is empty, the default target will be "about:blank".
 func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	req := opts
 	req.BrowserContextID = b.BrowserContextID

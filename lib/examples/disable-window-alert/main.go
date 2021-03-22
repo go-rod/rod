@@ -15,7 +15,7 @@ func main() {
 	defer browser.MustClose()
 
 	// Creating a Page Object
-	page := browser.MustPage("")
+	page := browser.MustPage()
 
 	// Evaluates given script in every frame upon creation
 	// Disable all alerts by making window.alert no-op.

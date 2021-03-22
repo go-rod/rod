@@ -50,7 +50,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 			l := launcher.MustNewRemote("http://127.0.0.1:9222")
 			client := l.Client()
 			browser := rod.New().Context(ctx).Client(client).MustConnect()
-			page := browser.MustPage("")
+			page := browser.MustPage()
 			wait := page.MustWaitNavigation()
 			page.MustNavigate(s.URL())
 			wait()

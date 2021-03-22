@@ -90,7 +90,7 @@ func (cp TesterPool) new() *T {
 
 	browser := rod.New().Client(mc).MustConnect().MustIgnoreCertErrors(false)
 
-	page := browser.MustPage("")
+	page := browser.MustPage()
 
 	return &T{
 		mc:      mc,
@@ -144,10 +144,9 @@ func (t T) srcFile(path string) string {
 	return "file://" + f
 }
 
-func (t T) newPage(u string) *rod.Page {
+func (t T) newPage(u ...string) *rod.Page {
 	t.Helper()
-	p, err := t.browser.Page(proto.TargetCreateTarget{URL: u})
-	t.E(err)
+	p := t.browser.MustPage(u...)
 	t.Cleanup(func() {
 		if !t.Failed() {
 			p.MustClose()

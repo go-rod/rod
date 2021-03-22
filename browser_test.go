@@ -58,7 +58,7 @@ func (t T) DefaultDevice() {
 func (t T) PageErr() {
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.TargetAttachToTarget{})
-		t.browser.MustPage("")
+		t.browser.MustPage()
 	})
 }
 
@@ -93,7 +93,7 @@ func (t T) BrowserPages() {
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.TargetCreateTarget{})
-		t.browser.MustPage("")
+		t.browser.MustPage()
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.TargetGetTargets{})
@@ -116,7 +116,7 @@ func (t T) BrowserClearStates() {
 
 func (t T) BrowserEvent() {
 	messages := t.browser.Context(t.Context()).Event()
-	p := t.newPage("")
+	p := t.newPage()
 	wait := make(chan struct{})
 	for msg := range messages {
 		e := proto.TargetAttachedToTarget{}
@@ -160,7 +160,7 @@ func (t T) BrowserWaitEvent() {
 
 func (t T) BrowserCrash() {
 	browser := rod.New().Context(t.Context()).MustConnect()
-	page := browser.MustPage("")
+	page := browser.MustPage()
 	js := `new Promise(r => setTimeout(r, 10000))`
 
 	go t.Panic(func() {
@@ -198,7 +198,7 @@ func (t T) BlockingNavigation() {
 	})
 	s.Route("/b", ".html", `<html>ok</html>`)
 
-	blocked := t.newPage("")
+	blocked := t.newPage()
 
 	go func() {
 		t.Panic(func() {
@@ -220,7 +220,7 @@ func (t T) ResolveBlocking() {
 		<-pause.Done()
 	})
 
-	p := t.newPage("")
+	p := t.newPage()
 
 	go func() {
 		utils.Sleep(0.1)
