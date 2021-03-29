@@ -52,6 +52,7 @@ func (t T) Hijack() {
 		t.Eq(s.URL("/a"), r.URL().String())
 
 		t.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
+		t.Is(ctx.Request.IsNavigation(), false)
 		t.Has(ctx.Request.Header("Origin"), s.URL())
 		t.Len(ctx.Request.Headers(), 6)
 		t.True(ctx.Request.JSONBody().Nil())
