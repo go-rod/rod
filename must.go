@@ -453,11 +453,13 @@ func (p *Page) MustHasR(selector, regex string) bool {
 	return has
 }
 
-// MustSearch is similar to Page.Search
-func (p *Page) MustSearch(queries ...string) *Element {
-	list, err := p.Search(0, 1, queries...)
+// MustSearch is similar to Page.Search .
+// It only returns the first element in the search result.
+func (p *Page) MustSearch(query string) *Element {
+	res, err := p.Search(query)
 	utils.E(err)
-	return list.First()
+	res.Release()
+	return res.First
 }
 
 // MustElement is similar to Page.Element

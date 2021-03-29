@@ -76,7 +76,7 @@ func (t T) Search() {
 	t.Eq("click me", el.MustText())
 	t.True(el.MustClick().MustMatches("[a=ok]"))
 
-	_, err := p.Sleeper(rod.NotFoundSleeper).Search(0, 1, "not-exists")
+	_, err := p.Sleeper(rod.NotFoundSleeper).Search("not-exists")
 	t.True(errors.Is(err, &rod.ErrElementNotFound{}))
 	t.Eq(err.Error(), "cannot find element")
 
@@ -110,6 +110,32 @@ func (t T) Search() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		p.MustSearch("click me")
 	})
+}
+
+func (t T) SearchElements() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html"))
+
+	{
+		res, err := p.Search("button")
+		t.E(err)
+
+		c, err := res.All()
+		t.E(err)
+
+		t.Len(c, 4)
+
+		t.mc.stubErr(1, proto.DOMGetSearchResults{})
+		t.Err(res.All())
+
+		t.mc.stubErr(1, proto.DOMResolveNode{})
+		t.Err(res.All())
+	}
+
+	{ // disable retry
+		sleeper := func() utils.Sleeper { return utils.CountSleeper(1) }
+		_, err := p.Sleeper(sleeper).Search("not-exists")
+		t.Err(err)
+	}
 }
 
 func (t T) SearchIframes() {

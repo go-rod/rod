@@ -245,16 +245,21 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	return elemList, err
 }
 
-// Search for each given query in the DOM tree until the result count is not zero, before that it will keep retrying.
+// Search for the given query in the DOM tree until the result count is not zero, before that it will keep retrying.
 // The query can be plain text or css selector or xpath.
 // It will search nested iframes and shadow doms too.
-func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
-	defer p.EnableDomain(proto.DOMEnable{})()
+func (p *Page) Search(query string) (*SearchResult, error) {
+	sr := &SearchResult{
+		page:    p,
+		restore: p.EnableDomain(proto.DOMEnable{}),
+	}
 
-	list := Elements{}
+	err := utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
+		if sr.DOMPerformSearchResult != nil {
+			_ = proto.DOMDiscardSearchResults{SearchID: sr.SearchID}.Call(p)
+		}
 
-	search := func(query string) (bool, error) {
-		search, err := proto.DOMPerformSearch{
+		res, err := proto.DOMPerformSearch{
 			Query:                     query,
 			IncludeUserAgentShadowDOM: true,
 		}.Call(p)
@@ -262,18 +267,16 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 			return true, err
 		}
 
-		defer func() {
-			_ = proto.DOMDiscardSearchResults{SearchID: search.SearchID}.Call(p)
-		}()
+		sr.DOMPerformSearchResult = res
 
-		if search.ResultCount == 0 {
+		if res.ResultCount == 0 {
 			return false, nil
 		}
 
 		result, err := proto.DOMGetSearchResults{
-			SearchID:  search.SearchID,
-			FromIndex: int(from),
-			ToIndex:   int(to),
+			SearchID:  res.SearchID,
+			FromIndex: 0,
+			ToIndex:   1,
 		}.Call(p)
 		if err != nil {
 			// when the page is still loading the search result is not ready
@@ -283,42 +286,79 @@ func (p *Page) Search(from, to int, queries ...string) (Elements, error) {
 			return true, err
 		}
 
-		for _, id := range result.NodeIds {
-			// TODO: This is definitely a bad design of cdp, hope they can optimize it in the future.
-			// It's unnecessary to ask the user to explicitly call it.
-			//
-			// When the id is zero, it means the proto.DOMDocumentUpdated has fired which will
-			// invlidate all the existing NodeID. We have to call proto.DOMGetDocument
-			// to reset the remote browser's tracker.
-			if id == 0 {
-				_, _ = proto.DOMGetDocument{}.Call(p)
-				return false, nil
-			}
+		id := result.NodeIds[0]
 
-			el, err := p.ElementFromNode(&proto.DOMNode{NodeID: id})
-			if err != nil {
-				return true, err
-			}
-			list = append(list, el)
+		// TODO: This is definitely a bad design of cdp, hope they can optimize it in the future.
+		// It's unnecessary to ask the user to explicitly call it.
+		//
+		// When the id is zero, it means the proto.DOMDocumentUpdated has fired which will
+		// invlidate all the existing NodeID. We have to call proto.DOMGetDocument
+		// to reset the remote browser's tracker.
+		if id == 0 {
+			_, _ = proto.DOMGetDocument{}.Call(p)
+			return false, nil
 		}
+
+		el, err := p.ElementFromNode(&proto.DOMNode{NodeID: id})
+		if err != nil {
+			return true, err
+		}
+
+		sr.First = el
 
 		return true, nil
-	}
-
-	err := utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
-		for _, query := range queries {
-			stop, err := search(query)
-			if stop {
-				return stop, err
-			}
-		}
-		return false, nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
+	return sr, nil
+}
+
+// SearchResult handler
+type SearchResult struct {
+	*proto.DOMPerformSearchResult
+
+	page    *Page
+	restore func()
+
+	// First element in the search result
+	First *Element
+}
+
+// Get l elements at the index of i from the remote search result.
+func (s *SearchResult) Get(i, l int) (Elements, error) {
+	result, err := proto.DOMGetSearchResults{
+		SearchID:  s.SearchID,
+		FromIndex: i,
+		ToIndex:   i + l,
+	}.Call(s.page)
+	if err != nil {
+		return nil, err
+	}
+
+	list := Elements{}
+
+	for _, id := range result.NodeIds {
+		el, err := s.page.ElementFromNode(&proto.DOMNode{NodeID: id})
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, el)
+	}
+
 	return list, nil
+}
+
+// All returns all elements
+func (s *SearchResult) All() (Elements, error) {
+	return s.Get(0, s.ResultCount)
+}
+
+// Release the remote search result
+func (s *SearchResult) Release() {
+	s.restore()
+	_ = proto.DOMDiscardSearchResults{SearchID: s.SearchID}.Call(s.page)
 }
 
 type raceBranch struct {
