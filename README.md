@@ -6,8 +6,7 @@
 ## [Documentation](https://go-rod.github.io/) | [API reference](https://pkg.go.dev/github.com/go-rod/rod?tab=doc)
 
 Rod is a high-level driver directly based on [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol).
-It's designed for web automation and scraping.
-Rod is designed for both high-level and low-level use, senior programmers can use the low-level packages and functions to easily
+It's designed for web automation and scraping for both high-level and low-level use, senior developers can use the low-level packages and functions to easily
 customize or build up their own version of Rod, the high-level functions are just examples to build a default version of Rod.
 
 ## Features
