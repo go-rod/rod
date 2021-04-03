@@ -60,3 +60,4 @@ We use Github Projects to manage tasks, you can see the priority and progress of
 If you want to contribute code for this project please read the [Contributor Guide](.github/CONTRIBUTING.md).
 
 [discord room]: https://discord.gg/CpevuvY
+[中文文档]: https://go-rod.github.io/i18n/zh-CN
