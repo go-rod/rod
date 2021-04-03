@@ -280,7 +280,8 @@ func (p *Page) Search(query string) (*SearchResult, error) {
 		}.Call(p)
 		if err != nil {
 			// when the page is still loading the search result is not ready
-			if errors.Is(err, cdp.ErrCtxNotFound) {
+			if errors.Is(err, cdp.ErrCtxNotFound) ||
+				errors.Is(err, cdp.ErrSearchSessionNotFound) {
 				return false, nil
 			}
 			return true, err

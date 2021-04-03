@@ -28,6 +28,12 @@ var ErrCtxNotFound = &Error{
 	Message: "Cannot find context with specified id",
 }
 
+// ErrSearchSessionNotFound type
+var ErrSearchSessionNotFound = &Error{
+	Code:    -32000,
+	Message: "No search session with given id found",
+}
+
 // ErrCtxDestroyed type
 var ErrCtxDestroyed = &Error{
 	Code:    -32000,
