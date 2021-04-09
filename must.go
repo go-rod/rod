@@ -394,6 +394,12 @@ func (p *Page) MustWait(js string, params ...interface{}) *Page {
 	return p
 }
 
+// MustWaitElementsMoreThan is similar to Page.WaitElementsMoreThan
+func (p *Page) MustWaitElementsMoreThan(selector string, num int) *Page {
+	utils.E(p.WaitElementsMoreThan(selector, num))
+	return p
+}
+
 // MustObjectToJSON is similar to Page.ObjectToJSON
 func (p *Page) MustObjectToJSON(obj *proto.RuntimeRemoteObject) gson.JSON {
 	j, err := p.ObjectToJSON(obj)

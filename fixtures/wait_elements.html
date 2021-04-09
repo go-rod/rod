@@ -1,0 +1,18 @@
+<html>
+  <body>
+    <ul>
+      <li>list 1</li>
+      <li>list 2</li>
+      <li>list 3</li>
+      <li>list 4</li>
+      <li>list 5</li>
+    </ul>
+    <script>
+      setTimeout(function () {
+        var li = document.createElement('li')
+        li.textContent = 'list 6'
+        document.querySelector('ul').appendChild(li)
+      }, 1000)
+    </script>
+  </body>
+</html>
