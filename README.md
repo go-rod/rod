@@ -35,20 +35,6 @@ You can also search the GitHub issues, they contain a lot of usage examples too.
 
 If you have questions, please raise an issue or join the [chat room][discord room].
 
-## How it works
-
-Here's the common start process of rod:
-
-1. Try to connect to a Devtools endpoint (WebSocket), if not found try to launch a local browser, if still not found try to download one, then connect again. The lib to handle it is [launcher](lib/launcher).
-
-1. Use the JSON-RPC to talk to the Devtools endpoint to control the browser. The lib handles it is [cdp](lib/cdp).
-
-1. Use the type definitions of the JSON-RPC to perform high-level actions. The lib handles it is [proto](lib/proto).
-
-Object model:
-
-![object model](fixtures/object-model.svg)
-
 ## Join us
 
 Your help is more than welcome! Even just open an issue to ask a question may greatly help others.
