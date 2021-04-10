@@ -583,6 +583,11 @@ func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interfa
 	})
 }
 
+// WaitElementsMoreThan Wait until there are more than <num> <selector> elements.
+func (p *Page) WaitElementsMoreThan(selector string, num int) error {
+	return p.Wait(nil, `(s, n) => document.querySelectorAll(s).length > n`, []interface{}{selector, num})
+}
+
 // ObjectToJSON by object id
 func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 	if obj.ObjectID == "" {

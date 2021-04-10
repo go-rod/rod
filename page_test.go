@@ -125,6 +125,11 @@ func (t T) PageHTML() {
 	t.Err(p.HTML())
 }
 
+func (t T) MustWaitElementsMoreThan() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/wait_elements.html")).MustWaitElementsMoreThan("li", 5)
+	t.Gt(len(p.MustElements("li")), 5)
+}
+
 func (t T) PageCloseCancel() {
 	page := t.browser.MustPage(t.srcFile("fixtures/prevent-close.html"))
 	page.MustElement("body").MustClick() // only focused page will handle beforeunload event
