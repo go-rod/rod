@@ -28,7 +28,7 @@ func (t T) Monitor() {
 	page.MustWait(`(id) => document.title.includes(id)`, p.TargetID)
 
 	img := t.Req("", host+"/screenshot").Bytes()
-	t.Gt(len(img), 10)
+	t.Gt(img.Len(), 10)
 
 	res := t.Req("", host+"/api/page/test")
 	t.Eq(400, res.StatusCode)
