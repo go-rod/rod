@@ -116,6 +116,12 @@ There are several helper functions for it:
 
 Because parallel execution will pollution the global goroutine stack, by default, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well. To enable detection for each test, just use `go test -parallel=1`.
 
+### Debug dependency libs
+
+Run `go mod vendor` to create a local mirror of dependencies.
+The Golang compiler will use the libs under `vendor` folder as a priority.
+For example, we can modify file `./vendor/github.com/ysmood/goob/goob.go` to debug, such as add some extra logs.
+
 ## Convention of the git commit message
 
 The commit message follows the rules [here](https://github.com/torvalds/subsurface-for-dirk/blame/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88). We don't use rules like [Conventional Commits](https://www.conventionalcommits.org/) because it's hard for beginners to write correct commit messages. It will encourage reviewers to spend more time on high-level problems, not the details. We also want to reduce the overhead when reading the git-blame, for example, `fix: correct minor typos in code` is the same as `fix minor typos in code`, there's no need to repeat content in the title line.
