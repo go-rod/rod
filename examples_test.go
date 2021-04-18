@@ -89,14 +89,14 @@ func Example_disable_headless_to_debug() {
 
 	page := browser.MustPage("https://www.wikipedia.org/")
 
-	page.MustElement("#searchLanguage").MustSelect("[lang=zh]")
+	page.MustElement("#searchLanguage").MustSelect("中文")
 	page.MustElement("#searchInput").MustInput("热干面")
 	page.Keyboard.MustPress(input.Enter)
 
 	fmt.Println(page.MustElement("#firstHeading").MustText())
 
 	// Response gets the binary of the image as a []byte.
-	img := page.MustElement(`[alt="A bowl of hot dry noodles."]`).MustResource()
+	img := page.MustElement(`[alt="Hot Dry Noodles.jpg"]`).MustResource()
 	fmt.Println(len(img)) // print the size of the image
 
 	utils.Pause() // pause goroutine
