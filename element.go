@@ -312,6 +312,7 @@ func (el *Element) Blur() error {
 
 // Select the children option elements that match the selectors.
 // It will scroll to the element, wait until it's visible first.
+// If no option matches the selectors, it will return ErrElementNotFound.
 func (el *Element) Select(selectors []string, selected bool, t SelectorType) error {
 	err := el.Focus()
 	if err != nil {
@@ -326,8 +327,14 @@ func (el *Element) Select(selectors []string, selected bool, t SelectorType) err
 	defer el.tryTrace(TraceTypeInput, fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
 	el.page.browser.trySlowmotion()
 
-	_, err = el.Evaluate(evalHelper(js.Select, selectors, selected, t).ByUser())
-	return err
+	res, err := el.Evaluate(evalHelper(js.Select, selectors, selected, t).ByUser())
+	if err != nil {
+		return err
+	}
+	if !res.Value.Bool() {
+		return &ErrElementNotFound{}
+	}
+	return nil
 }
 
 // Matches checks if the element can be selected by the css selector

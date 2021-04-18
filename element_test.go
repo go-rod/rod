@@ -417,14 +417,6 @@ func (t T) SelectQuery() {
 	t.Eq(2, el.MustEval("this.selectedIndex").Int())
 }
 
-func (t T) SelectQueryNum() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
-	el := p.MustElement("select")
-	el.MustSelect("123")
-
-	t.Eq(-1, el.MustEval("this.selectedIndex").Int())
-}
-
 func (t T) SelectOptions() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("select")
@@ -442,8 +434,16 @@ func (t T) SelectOptions() {
 	t.E(err)
 	t.Eq("", el.MustText())
 
+	// option not found error
+	t.Is(el.Select([]string{"not-exists"}, true, rod.SelectorTypeCSSSector), &rod.ErrElementNotFound{})
+
 	{
 		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		t.Err(el.Select([]string{"B"}, true, rod.SelectorTypeText))
+	}
+
+	{
+		t.mc.stubErr(6, proto.RuntimeCallFunctionOn{})
 		t.Err(el.Select([]string{"B"}, true, rod.SelectorTypeText))
 	}
 }

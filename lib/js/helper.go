@@ -138,7 +138,7 @@ var SelectAllText = &Function{
 // Select ...
 var Select = &Function{
 	Name:         "select",
-	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(e=>t=>t.matches(e));break;default:i=e.map(e=>t=>t.innerText.includes(e))}const s=Array.from(this.options);i.forEach(e=>{const n=s.find(e);n&&(n.selected=t)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0}))}`,
+	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(e=>t=>t.matches(e));break;default:i=e.map(e=>t=>t.innerText.includes(e))}const s=Array.from(this.options);let o=!1;return i.forEach(e=>{const n=s.find(e);if(n)return n.selected=t,void(o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
 	Dependencies: []*Function{},
 }
 
