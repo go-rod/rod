@@ -96,7 +96,7 @@ func Example_disable_headless_to_debug() {
 	fmt.Println(page.MustElement("#firstHeading").MustText())
 
 	// Response gets the binary of the image as a []byte.
-	img := page.MustElement(`[alt="Hot Dry Noodles.jpg"]`).MustResource()
+	img := page.MustElement(`[alt="A bowl of hot dry noodles."]`).MustResource()
 	fmt.Println(len(img)) // print the size of the image
 
 	utils.Pause() // pause goroutine
