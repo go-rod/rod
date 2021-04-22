@@ -695,6 +695,17 @@ const (
 	PageReferrerPolicyUnsafeURL PageReferrerPolicy = "unsafeUrl"
 )
 
+// PageCompilationCacheParams (experimental) Per-script compilation cache parameters for `Page.produceCompilationCache`
+type PageCompilationCacheParams struct {
+
+	// URL The URL of the script to produce a compilation cache entry for.
+	URL string `json:"url"`
+
+	// Eager (optional) A hint to the backend whether eager compilation is recommended.
+	// (the actual compilation mode used is upon backend discretion).
+	Eager bool `json:"eager,omitempty"`
+}
+
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
 
@@ -1076,14 +1087,23 @@ func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error
 // PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
 type PageGetLayoutMetricsResult struct {
 
-	// LayoutViewport Metrics relating to the layout viewport.
+	// LayoutViewport (deprecated) Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
 	LayoutViewport *PageLayoutViewport `json:"layoutViewport"`
 
-	// VisualViewport Metrics relating to the visual viewport.
+	// VisualViewport (deprecated) Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
 	VisualViewport *PageVisualViewport `json:"visualViewport"`
 
-	// ContentSize Size of scrollable area.
+	// ContentSize (deprecated) Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
 	ContentSize *DOMRect `json:"contentSize"`
+
+	// CSSLayoutViewport Metrics relating to the layout viewport in CSS pixels.
+	CSSLayoutViewport *PageLayoutViewport `json:"cssLayoutViewport"`
+
+	// CSSVisualViewport Metrics relating to the visual viewport in CSS pixels.
+	CSSVisualViewport *PageVisualViewport `json:"cssVisualViewport"`
+
+	// CSSContentSize Size of scrollable area in CSS pixels.
+	CSSContentSize *DOMRect `json:"cssContentSize"`
 }
 
 // PageGetNavigationHistory Returns navigation history for the current page.
@@ -1830,6 +1850,7 @@ func (m PageStopScreencast) Call(c Client) error {
 }
 
 // PageSetProduceCompilationCache (experimental) Forces compilation cache to be generated for every subresource script.
+// See also: `Page.produceCompilationCache`.
 type PageSetProduceCompilationCache struct {
 
 	// Enabled ...
@@ -1841,6 +1862,29 @@ func (m PageSetProduceCompilationCache) ProtoReq() string { return "Page.setProd
 
 // Call sends the request
 func (m PageSetProduceCompilationCache) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// PageProduceCompilationCache (experimental) Requests backend to produce compilation cache for the specified scripts.
+// Unlike setProduceCompilationCache, this allows client to only produce cache
+// for specific scripts. `scripts` are appeneded to the list of scripts
+// for which the cache for would produced. Disabling compilation cache with
+// `setProduceCompilationCache` would reset all pending cache requests.
+// The list may also be reset during page navigation.
+// When script with a matching URL is encountered, the cache is optionally
+// produced upon backend discretion, based on internal heuristics.
+// See also: `Page.compilationCacheProduced`.
+type PageProduceCompilationCache struct {
+
+	// Scripts ...
+	Scripts []*PageCompilationCacheParams `json:"scripts"`
+}
+
+// ProtoReq name
+func (m PageProduceCompilationCache) ProtoReq() string { return "Page.produceCompilationCache" }
+
+// Call sends the request
+func (m PageProduceCompilationCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

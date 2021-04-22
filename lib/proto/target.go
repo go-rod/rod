@@ -245,7 +245,7 @@ type TargetGetBrowserContextsResult struct {
 // TargetCreateTarget Creates a new page.
 type TargetCreateTarget struct {
 
-	// URL The initial URL the page will be navigated to.
+	// URL The initial URL the page will be navigated to. An empty string indicates about:blank.
 	URL string `json:"url"`
 
 	// Width (optional) Frame width in DIP (headless chrome only).

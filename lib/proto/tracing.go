@@ -99,6 +99,24 @@ const (
 	TracingMemoryDumpLevelOfDetailDetailed TracingMemoryDumpLevelOfDetail = "detailed"
 )
 
+// TracingTracingBackend Backend type to use for tracing. `chrome` uses the Chrome-integrated
+// tracing service and is supported on all platforms. `system` is only
+// supported on Chrome OS and uses the Perfetto system tracing service.
+// `auto` chooses `system` when the perfettoConfig provided to Tracing.start
+// specifies at least one non-Chrome data source; otherwise uses `chrome`.
+type TracingTracingBackend string
+
+const (
+	// TracingTracingBackendAuto enum const
+	TracingTracingBackendAuto TracingTracingBackend = "auto"
+
+	// TracingTracingBackendChrome enum const
+	TracingTracingBackendChrome TracingTracingBackend = "chrome"
+
+	// TracingTracingBackendSystem enum const
+	TracingTracingBackendSystem TracingTracingBackend = "system"
+)
+
 // TracingEnd Stop trace events collection.
 type TracingEnd struct {
 }
@@ -217,6 +235,9 @@ type TracingStart struct {
 	// When specified, the parameters `categories`, `options`, `traceConfig`
 	// are ignored.
 	PerfettoConfig []byte `json:"perfettoConfig,omitempty"`
+
+	// TracingBackend (optional) Backend type (defaults to `auto`)
+	TracingBackend TracingTracingBackend `json:"tracingBackend,omitempty"`
 }
 
 // ProtoReq name

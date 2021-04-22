@@ -266,6 +266,32 @@ type OverlayFlexNodeHighlightConfig struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
+// OverlayScrollSnapContainerHighlightConfig ...
+type OverlayScrollSnapContainerHighlightConfig struct {
+
+	// SnapportBorder (optional) The style of the snapport border (default: transparent)
+	SnapportBorder *OverlayLineStyle `json:"snapportBorder,omitempty"`
+
+	// SnapAreaBorder (optional) The style of the snap area border (default: transparent)
+	SnapAreaBorder *OverlayLineStyle `json:"snapAreaBorder,omitempty"`
+
+	// ScrollMarginColor (optional) The margin highlight fill color (default: transparent).
+	ScrollMarginColor *DOMRGBA `json:"scrollMarginColor,omitempty"`
+
+	// ScrollPaddingColor (optional) The padding highlight fill color (default: transparent).
+	ScrollPaddingColor *DOMRGBA `json:"scrollPaddingColor,omitempty"`
+}
+
+// OverlayScrollSnapHighlightConfig ...
+type OverlayScrollSnapHighlightConfig struct {
+
+	// ScrollSnapContainerHighlightConfig A descriptor for the highlight appearance of scroll snap containers.
+	ScrollSnapContainerHighlightConfig *OverlayScrollSnapContainerHighlightConfig `json:"scrollSnapContainerHighlightConfig"`
+
+	// NodeID Identifier of the node to highlight.
+	NodeID DOMNodeID `json:"nodeId"`
+}
+
 // OverlayHingeConfig Configuration for dual screen hinge
 type OverlayHingeConfig struct {
 
@@ -656,6 +682,23 @@ func (m OverlaySetShowFlexOverlays) ProtoReq() string { return "Overlay.setShowF
 
 // Call sends the request
 func (m OverlaySetShowFlexOverlays) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// OverlaySetShowScrollSnapOverlays ...
+type OverlaySetShowScrollSnapOverlays struct {
+
+	// ScrollSnapHighlightConfigs An array of node identifiers and descriptors for the highlight appearance.
+	ScrollSnapHighlightConfigs []*OverlayScrollSnapHighlightConfig `json:"scrollSnapHighlightConfigs"`
+}
+
+// ProtoReq name
+func (m OverlaySetShowScrollSnapOverlays) ProtoReq() string {
+	return "Overlay.setShowScrollSnapOverlays"
+}
+
+// Call sends the request
+func (m OverlaySetShowScrollSnapOverlays) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

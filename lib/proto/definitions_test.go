@@ -238,6 +238,12 @@ func (t T) BrowserSetDownloadBehavior() {
 	t.Nil(err)
 }
 
+func (t T) BrowserCancelDownload() {
+	c := &Client{}
+	err := proto.BrowserCancelDownload{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) BrowserClose() {
 	c := &Client{}
 	err := proto.BrowserClose{}.Call(c)
@@ -1338,6 +1344,12 @@ func (t T) IndexedDBRequestDatabaseNames() {
 	t.Nil(err)
 }
 
+func (t T) InputDispatchDragEvent() {
+	c := &Client{}
+	err := proto.InputDispatchDragEvent{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) InputDispatchKeyEvent() {
 	c := &Client{}
 	err := proto.InputDispatchKeyEvent{}.Call(c)
@@ -1575,6 +1587,18 @@ func (t T) MemoryGetBrowserSamplingProfile() {
 func (t T) MemoryGetSamplingProfile() {
 	c := &Client{}
 	_, err := proto.MemoryGetSamplingProfile{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) NetworkSetAcceptedEncodings() {
+	c := &Client{}
+	err := proto.NetworkSetAcceptedEncodings{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) NetworkClearAcceptedEncodingsOverride() {
+	c := &Client{}
+	err := proto.NetworkClearAcceptedEncodingsOverride{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1987,6 +2011,12 @@ func (t T) OverlaySetShowFlexOverlays() {
 	t.Nil(err)
 }
 
+func (t T) OverlaySetShowScrollSnapOverlays() {
+	c := &Client{}
+	err := proto.OverlaySetShowScrollSnapOverlays{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) OverlaySetShowPaintRects() {
 	c := &Client{}
 	err := proto.OverlaySetShowPaintRects{}.Call(c)
@@ -2346,6 +2376,12 @@ func (t T) PageStopScreencast() {
 func (t T) PageSetProduceCompilationCache() {
 	c := &Client{}
 	err := proto.PageSetProduceCompilationCache{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PageProduceCompilationCache() {
+	c := &Client{}
+	err := proto.PageProduceCompilationCache{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2745,6 +2781,12 @@ func (t T) StorageUntrackIndexedDBForOrigin() {
 func (t T) StorageGetTrustTokens() {
 	c := &Client{}
 	_, err := proto.StorageGetTrustTokens{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageClearTrustTokens() {
+	c := &Client{}
+	_, err := proto.StorageClearTrustTokens{}.Call(c)
 	t.Nil(err)
 }
 

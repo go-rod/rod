@@ -285,6 +285,31 @@ type StorageGetTrustTokensResult struct {
 	Tokens []*StorageTrustTokens `json:"tokens"`
 }
 
+// StorageClearTrustTokens (experimental) Removes all Trust Tokens issued by the provided issuerOrigin.
+// Leaves other stored data, including the issuer's Redemption Records, intact.
+type StorageClearTrustTokens struct {
+
+	// IssuerOrigin ...
+	IssuerOrigin string `json:"issuerOrigin"`
+}
+
+// ProtoReq name
+func (m StorageClearTrustTokens) ProtoReq() string { return "Storage.clearTrustTokens" }
+
+// Call the request
+func (m StorageClearTrustTokens) Call(c Client) (*StorageClearTrustTokensResult, error) {
+	var res StorageClearTrustTokensResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// StorageClearTrustTokensResult (experimental) Removes all Trust Tokens issued by the provided issuerOrigin.
+// Leaves other stored data, including the issuer's Redemption Records, intact.
+type StorageClearTrustTokensResult struct {
+
+	// DidDeleteTokens True if any tokens were deleted, false otherwise.
+	DidDeleteTokens bool `json:"didDeleteTokens"`
+}
+
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
 type StorageCacheStorageContentUpdated struct {
 

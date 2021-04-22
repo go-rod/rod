@@ -474,9 +474,6 @@ const (
 	// NetworkBlockedReasonContentType enum const
 	NetworkBlockedReasonContentType NetworkBlockedReason = "content-type"
 
-	// NetworkBlockedReasonCollapsedByClient enum const
-	NetworkBlockedReasonCollapsedByClient NetworkBlockedReason = "collapsed-by-client"
-
 	// NetworkBlockedReasonCoepFrameResourceNeedsCoepHeader enum const
 	NetworkBlockedReasonCoepFrameResourceNeedsCoepHeader NetworkBlockedReason = "coep-frame-resource-needs-coep-header"
 
@@ -1230,6 +1227,20 @@ type NetworkSignedExchangeInfo struct {
 	Errors []*NetworkSignedExchangeError `json:"errors,omitempty"`
 }
 
+// NetworkContentEncoding (experimental) List of content encodings supported by the backend.
+type NetworkContentEncoding string
+
+const (
+	// NetworkContentEncodingDeflate enum const
+	NetworkContentEncodingDeflate NetworkContentEncoding = "deflate"
+
+	// NetworkContentEncodingGzip enum const
+	NetworkContentEncodingGzip NetworkContentEncoding = "gzip"
+
+	// NetworkContentEncodingBr enum const
+	NetworkContentEncodingBr NetworkContentEncoding = "br"
+)
+
 // NetworkPrivateNetworkRequestPolicy (experimental) ...
 type NetworkPrivateNetworkRequestPolicy string
 
@@ -1314,6 +1325,9 @@ const (
 	// NetworkCrossOriginEmbedderPolicyValueNone enum const
 	NetworkCrossOriginEmbedderPolicyValueNone NetworkCrossOriginEmbedderPolicyValue = "None"
 
+	// NetworkCrossOriginEmbedderPolicyValueCorsOrCredentialless enum const
+	NetworkCrossOriginEmbedderPolicyValueCorsOrCredentialless NetworkCrossOriginEmbedderPolicyValue = "CorsOrCredentialless"
+
 	// NetworkCrossOriginEmbedderPolicyValueRequireCorp enum const
 	NetworkCrossOriginEmbedderPolicyValueRequireCorp NetworkCrossOriginEmbedderPolicyValue = "RequireCorp"
 )
@@ -1375,6 +1389,35 @@ type NetworkLoadNetworkResourceOptions struct {
 
 	// IncludeCredentials ...
 	IncludeCredentials bool `json:"includeCredentials"`
+}
+
+// NetworkSetAcceptedEncodings (experimental) Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
+type NetworkSetAcceptedEncodings struct {
+
+	// Encodings List of accepted content encodings.
+	Encodings []NetworkContentEncoding `json:"encodings"`
+}
+
+// ProtoReq name
+func (m NetworkSetAcceptedEncodings) ProtoReq() string { return "Network.setAcceptedEncodings" }
+
+// Call sends the request
+func (m NetworkSetAcceptedEncodings) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// NetworkClearAcceptedEncodingsOverride (experimental) Clears accepted encodings set by setAcceptedEncodings
+type NetworkClearAcceptedEncodingsOverride struct {
+}
+
+// ProtoReq name
+func (m NetworkClearAcceptedEncodingsOverride) ProtoReq() string {
+	return "Network.clearAcceptedEncodingsOverride"
+}
+
+// Call sends the request
+func (m NetworkClearAcceptedEncodingsOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
 }
 
 // NetworkCanClearBrowserCache (deprecated) Tells whether clearing browser cache is supported.

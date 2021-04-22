@@ -484,6 +484,9 @@ type AuditsCorsIssueDetails struct {
 	// Request ...
 	Request *AuditsAffectedRequest `json:"request"`
 
+	// InitiatorOrigin (optional) ...
+	InitiatorOrigin string `json:"initiatorOrigin,omitempty"`
+
 	// ResourceIPAddressSpace (optional) ...
 	ResourceIPAddressSpace NetworkIPAddressSpace `json:"resourceIPAddressSpace,omitempty"`
 
@@ -650,6 +653,9 @@ func (m AuditsEnable) Call(c Client) error {
 // AuditsCheckContrast Runs the contrast check for the target page. Found issues are reported
 // using Audits.issueAdded event.
 type AuditsCheckContrast struct {
+
+	// ReportAAA (optional) Whether to report WCAG AAA level issues. Default is false.
+	ReportAAA bool `json:"reportAAA,omitempty"`
 }
 
 // ProtoReq name

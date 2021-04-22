@@ -303,6 +303,24 @@ func (m BrowserSetDownloadBehavior) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// BrowserCancelDownload (experimental) Cancel a download if in progress
+type BrowserCancelDownload struct {
+
+	// GUID Global unique identifier of the download.
+	GUID string `json:"guid"`
+
+	// BrowserContextID (optional) BrowserContext to perform the action in. When omitted, default browser context is used.
+	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
+}
+
+// ProtoReq name
+func (m BrowserCancelDownload) ProtoReq() string { return "Browser.cancelDownload" }
+
+// Call sends the request
+func (m BrowserCancelDownload) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // BrowserClose Close browser gracefully.
 type BrowserClose struct {
 }
