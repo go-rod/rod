@@ -327,7 +327,7 @@ func (t T) PageElementTimeout() {
 	start := time.Now()
 	_, err := page.Timeout(300 * time.Millisecond).Element("not-exists")
 	t.Is(err, context.DeadlineExceeded)
-	t.Gt(time.Since(start), 300*time.Millisecond)
+	t.Gte(time.Since(start), 300*time.Millisecond)
 }
 
 func (t T) PageElementMaxRetry() {
