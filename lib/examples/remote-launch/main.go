@@ -11,7 +11,7 @@ import (
 func main() {
 	// To launch remote browsers, you need a remote launcher service,
 	// Rod provides a docker image for beginers, make sure have started:
-	// docker run -p 9222:9222 rodorg/rod
+	// docker run -p 9222:9222 ghcr.io/go-rod/rod
 	//
 	// For more information, check the doc of launcher.RemoteLauncher
 	l := launcher.MustNewRemote("ws://localhost:9222")
@@ -37,7 +37,7 @@ func main() {
 // To manually launch a browser
 func _() {
 	// You can also manually launch a browser in the image:
-	// docker run -p 9222:9222 rodorg/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0
+	// docker run -p 9222:9222 ghcr.io/go-rod/rod chromium-browser --headless --no-sandbox --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0
 	u := launcher.MustResolveURL("9222")
 
 	browser := rod.New().ControlURL(u).MustConnect()

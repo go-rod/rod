@@ -112,6 +112,10 @@ There are several helper functions for it:
 
 1. After you exit the container with `exit`, you can restart it by: `docker start -i rod`
 
+### Deployment of docker images
+
+We use `.github/workflows/docker.yml` to automate it.
+
 ### Detect goroutine leak
 
 Because parallel execution will pollution the global goroutine stack, by default, the goroutine leak detection for each test will be disabled, but the detection for the whole test program will still work as well. To enable detection for each test, just use `go test -parallel=1`.

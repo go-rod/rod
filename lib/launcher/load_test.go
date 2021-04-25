@@ -20,7 +20,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 
 	s := got.New(b).Serve()
 
-	// docker run --rm -p 9222:9222 rodorg/rod
+	// docker run --rm -p 9222:9222 ghcr.io/go-rod/rod
 	s.HostURL.Host = "host.docker.internal"
 
 	s.Route("/", ".html", `<html><body>

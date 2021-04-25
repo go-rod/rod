@@ -1,10 +1,10 @@
 # Examples:
 #
-#   docker build -t rodorg/rod -f lib/docker/Dockerfile .
+#   docker build -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
 #
 #   // use mirrors
 #   docker build --build-arg goproxy=https://goproxy.io,direct --build-arg apt_sources=https://mirrors.tuna.tsinghua.edu.cn \
-#     -t rodorg/rod -f lib/docker/Dockerfile .
+#     -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
 
 # build rod-launcher tool
 FROM golang AS go

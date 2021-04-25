@@ -16,5 +16,5 @@ jobs:
 
       - name: check
         env:
-          GH_ROBOT_TOKEN: ${{ secrets.GH_ROBOT_TOKEN }}
+          ROD_GITHUB_ROBOT: ${{secrets.ROD_GITHUB_ROBOT}}
         run: go run ./lib/utils/check-issue

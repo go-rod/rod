@@ -10,7 +10,7 @@ on:
     - cron: '17 5 * * *'
 
 jobs:
-  linux:
+  test-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +36,7 @@ jobs:
             tmp/cdp-log
             coverage.txt
 
-  other-os:
+  test-other-os:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
@@ -58,31 +58,7 @@ jobs:
           name: cdp-log-${{ matrix.os }}
           path: tmp/cdp-log
 
-  docker:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: test
-        run: |
-          docker build -t rodorg/rod -f lib/docker/Dockerfile .
-          docker build -t rod -f lib/docker/dev.Dockerfile .
-          docker run rodorg/rod rod-launcher -h
-          docker run -v $(pwd):/t -w /t rod go test
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: review-fonts-docker
-          path: tmp/fonts.pdf
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: cdp-log-docker
-          path: tmp/cdp-log
-
-  go: # make sure at least golang v1.13 is supported
+  test-old-go:
     runs-on: ubuntu-latest
 
     steps:
@@ -92,4 +68,5 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      # As long as the build works we don't have to run tests.
       - run: go build ./lib/examples/translator

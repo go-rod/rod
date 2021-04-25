@@ -1,6 +1,6 @@
 # this is only for rod unit tests
 
-FROM rodorg/rod
+FROM ghcr.io/go-rod/rod
 
 ARG node="https://nodejs.org/dist/v15.5.0/node-v15.5.0-linux-x64.tar.xz"
 ARG golang="https://golang.org/dl/go1.15.6.linux-amd64.tar.gz"
