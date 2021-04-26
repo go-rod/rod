@@ -1,7 +1,6 @@
 // The .github/workflows/docker.yml will use it as an github action
-// To test it locally, you can generate a personal github token: https://github.com/settings/tokens
 // Then run this:
-//   ROD_GITHUB_ROBOT=your_token GITHUB_REF=refs/heads/master go run ./lib/utils/docker
+//   DOCKER_TOKEN=your_token go run ./lib/utils/docker refs/heads/master
 package main
 
 import (
@@ -17,14 +16,15 @@ import (
 const registry = "ghcr.io"
 const image = registry + "/go-rod/rod"
 
-var ref = os.Getenv("GITHUB_REF")
-var token = os.Getenv("ROD_GITHUB_ROBOT")
+var token = os.Getenv("DOCKER_TOKEN")
 
 func main() {
-	fmt.Println("GITHUB_REF:", ref)
+	event := os.Args[1]
 
-	master := regexp.MustCompile(`^refs/heads/master$`).MatchString(ref)
-	m := regexp.MustCompile(`^refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)$`).FindStringSubmatch(ref)
+	fmt.Println("Event:", event)
+
+	master := regexp.MustCompile(`^refs/heads/master$`).MatchString(event)
+	m := regexp.MustCompile(`^refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)$`).FindStringSubmatch(event)
 	ver := ""
 	if len(m) > 1 {
 		ver = m[1]

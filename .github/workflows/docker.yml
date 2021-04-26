@@ -12,9 +12,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: go run ./lib/utils/docker
+      - run: go run ./lib/utils/docker $GITHUB_REF
         env:
-          ROD_GITHUB_ROBOT: ${{secrets.ROD_GITHUB_ROBOT}}
+          DOCKER_TOKEN: ${{secrets.ROD_GITHUB_ROBOT}}
 
       - uses: actions/upload-artifact@v2
         with:
