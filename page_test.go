@@ -415,6 +415,16 @@ func (t T) PageEvent() {
 	p.MustClose()
 }
 
+func (t T) PageStopEventAfterDetach() {
+	p := t.browser.MustPage().Context(t.Context())
+	go func() {
+		utils.Sleep(0.3)
+		p.MustClose()
+	}()
+	for range p.Event() {
+	}
+}
+
 func (t T) Alert() {
 	page := t.page.MustNavigate(t.srcFile("fixtures/alert.html"))
 
