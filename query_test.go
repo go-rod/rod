@@ -288,7 +288,7 @@ func (t T) ElementTracing() {
 	}()
 
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	t.Eq(`rod.element("code") body`, p.MustElement("body").MustElement("code").MustText())
+	t.Eq(`rod.element("code") html`, p.MustElement("html").MustElement("code").MustText())
 }
 
 func (t T) PageElementByJS() {

@@ -54,7 +54,7 @@ var ContainsElement = &Function{
 // InitMouseTracer ...
 var InitMouseTracer = &Function{
 	Name:         "initMouseTracer",
-	Definition:   `async function(e,t){if(await functions.waitLoad(),document.getElementById(e))return;const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.appendChild(i)}`,
+	Definition:   `async function(e,t){if(await functions.waitLoad(),document.getElementById(e))return;const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.parentElement.appendChild(i)}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
@@ -75,7 +75,7 @@ var Rect = &Function{
 // Overlay ...
 var Overlay = &Function{
 	Name:         "overlay",
-	Definition:   `async function(e,t,n,i,s,o){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${s}px;\n        width: ${i}px;` + "`" + `,i*s==0&&(r.style.border="none"),!o)return void document.body.appendChild(r);const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${s}px;` + "`" + `,l.innerHTML=o,r.appendChild(l),document.body.appendChild(r),window.innerHeight<l.offsetHeight+n+s&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}`,
+	Definition:   `async function(e,t,n,i,s,o){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${s}px;\n        width: ${i}px;` + "`" + `,i*s==0&&(r.style.border="none"),!o)return void document.body.parentElement.appendChild(r);const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${s}px;` + "`" + `,l.innerHTML=o,r.appendChild(l),document.body.parentElement.appendChild(r),window.innerHeight<l.offsetHeight+n+s&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
