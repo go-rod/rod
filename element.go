@@ -72,22 +72,12 @@ func (el *Element) ScrollIntoView() error {
 // Hover the mouse over the center of the element.
 // Before the action, it will try to scroll to the element and wait until it's interactable.
 func (el *Element) Hover() error {
-	err := el.ScrollIntoView()
+	pt, err := el.WaitInteractable()
 	if err != nil {
 		return err
 	}
 
-	pt, err := el.Interactable()
-	if err != nil {
-		return err
-	}
-
-	err = el.page.Mouse.Move(pt.X, pt.Y, 1)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return el.page.Mouse.Move(pt.X, pt.Y, 1)
 }
 
 // Click will press then release the button just like a human.
@@ -122,7 +112,7 @@ func (el *Element) Tap() error {
 		return err
 	}
 
-	pt, err := el.Interactable()
+	pt, err := el.WaitInteractable()
 	if err != nil {
 		return err
 	}
