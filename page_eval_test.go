@@ -139,10 +139,10 @@ func (t T) PromiseLeak() {
 	p := t.page.MustNavigate(t.blank())
 
 	utils.All(func() {
-		_, err := p.Eval(`new Promise(r => setTimeout(() => r(location.href), 300))`)
+		_, err := p.Eval(`new Promise(r => setTimeout(() => r(location.href), 1000))`)
 		t.Is(err, cdp.ErrCtxDestroyed)
 	}, func() {
-		utils.Sleep(0.1)
+		utils.Sleep(0.3)
 		p.MustNavigate(t.blank())
 	})()
 }
