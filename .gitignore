@@ -6,5 +6,6 @@ tmp/
 .dockerignore
 coverage.txt
 rod.test
+.golangci.yml
 package-lock.json
 package.json
