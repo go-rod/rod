@@ -23,8 +23,13 @@ func MustNewRemote(remoteURL string) *Launcher {
 }
 
 // NewRemote creates a Launcher instance from remote defaults.
+// The browser it connects to must be launched by RemoteLauncher.
 // For more info check the doc of RemoteLauncher.
 func NewRemote(remoteURL string) (*Launcher, error) {
+	if remoteURL == "" {
+		remoteURL = "ws://127.0.0.1:7317"
+	}
+
 	u, err := url.Parse(remoteURL)
 	if err != nil {
 		return nil, err

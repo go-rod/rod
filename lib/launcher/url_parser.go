@@ -82,6 +82,10 @@ var regProtocol = regexp.MustCompile(`^\w+://`)
 // "https://host:9222" "http://host:9222". The return string will look like:
 // "ws://host:9222/devtools/browser/4371405f-84df-4ad6-9e0f-eab81f7521cc"
 func ResolveURL(u string) (string, error) {
+	if u == "" {
+		u = "9222"
+	}
+
 	u = strings.TrimSpace(u)
 	u = regPort.ReplaceAllString(u, "127.0.0.1:$1")
 

@@ -12,7 +12,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-var addr = flag.String("address", ":9222", "the address to listen to")
+var addr = flag.String("address", ":7317", "the address to listen to")
 var quiet = flag.Bool("quiet", false, "silent the log")
 
 // a cli tool to launch browser remotely

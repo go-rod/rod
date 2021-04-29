@@ -98,10 +98,16 @@ func (t T) Launch() {
 			u2 := launcher.MustResolveURL(prefix + parsed.Port())
 			t.Regex(u, u2)
 		}
+
+		_, err := launcher.ResolveURL("")
+		t.Err(err)
 	}
 
 	{
-		_, err := launcher.NewRemote("1://")
+		_, err := launcher.NewRemote("")
+		t.Err(err)
+
+		_, err = launcher.NewRemote("1://")
 		t.Err(err)
 
 		_, err = launcher.NewRemote("ws://not-exists")

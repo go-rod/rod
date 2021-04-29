@@ -20,7 +20,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 
 	s := got.New(b).Serve()
 
-	// docker run --rm -p 9222:9222 ghcr.io/go-rod/rod
+	// docker run --rm -p 7317:7317 ghcr.io/go-rod/rod
 	s.HostURL.Host = "host.docker.internal"
 
 	s.Route("/", ".html", `<html><body>
@@ -47,7 +47,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 				}()
 			}()
 
-			l := launcher.MustNewRemote("http://127.0.0.1:9222")
+			l := launcher.MustNewRemote("")
 			client := l.Client()
 			browser := rod.New().Context(ctx).Client(client).MustConnect()
 			page := browser.MustPage()

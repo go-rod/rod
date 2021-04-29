@@ -227,6 +227,7 @@ func LookPath() (found string, has bool) {
 		"linux": {
 			"chromium",
 			"chromium-browser",
+			"chrome",
 			"google-chrome",
 			"/usr/bin/google-chrome",
 			"microsoft-edge",

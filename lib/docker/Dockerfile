@@ -21,6 +21,8 @@ FROM ubuntu:bionic
 
 ARG apt_sources="http://archive.ubuntu.com"
 
+RUN ln -s /root/.cache/rod/chromium-869685/chrome-linux/chrome /usr/bin/chrome
+
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -50,6 +52,3 @@ COPY --from=go /root/.cache/rod /root/.cache/rod
 COPY --from=go /rod/rod-launcher /usr/bin/
 
 CMD rod-launcher
-
-# the default port for rod-launcher
-EXPOSE 9222
