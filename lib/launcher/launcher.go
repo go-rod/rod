@@ -213,8 +213,8 @@ func (l *Launcher) NoSandbox(enable bool) *Launcher {
 }
 
 // XVFB enables to run browser in by XVFB. Useful when you want to run headful mode on linux.
-func (l *Launcher) XVFB() *Launcher {
-	return l.Set(flagXVFB)
+func (l *Launcher) XVFB(args ...string) *Launcher {
+	return l.Set(flagXVFB, args...)
 }
 
 // Leakless switch. If enabled, the browser will be force killed after the Go process exits.

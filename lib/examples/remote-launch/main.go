@@ -23,7 +23,7 @@ func main() {
 	l.Set("any-flag").Delete("any-flag")
 
 	// Launch with headful mode
-	l.Headless(false).XVFB()
+	l.Headless(false).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16")
 
 	browser := rod.New().Client(l.Client()).MustConnect()
 
@@ -31,7 +31,7 @@ func main() {
 	launcher.Open(browser.ServeMonitor(""))
 
 	fmt.Println(
-		browser.MustPage("https://www.wikipedia.org/").MustEval("() => document.title"),
+		browser.MustPage("https://example.com/").MustEval("() => document.title"),
 	)
 
 	utils.Pause()
