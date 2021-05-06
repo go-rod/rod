@@ -3,6 +3,7 @@ package launcher
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -154,4 +155,11 @@ func (t T) URLParserErr() {
 
 	u.Buffer = "/tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory"
 	t.Eq(u.Err().Error(), "[launcher] Failed to launch the browser, the doc might help https://go-rod.github.io/#/compatibility?id=os: /tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory")
+}
+
+func (t T) BrowserDownloadErr() {
+	b := NewBrowser()
+	b.Logger = io.Discard
+	malURL := "https://npm.taobao.org/mirrors/chromium-browser-snapshots//869685/"
+	t.Has(b.download(t.Context(), malURL).Error(), "failed to download the browser: 200")
 }
