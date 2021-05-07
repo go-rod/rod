@@ -42,7 +42,6 @@ type Launcher struct {
 // New returns the default arguments to start browser.
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
-// UserDataDir will use OS tmp dir by default, this folder will usually be cleaned up by the OS after reboot.
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
