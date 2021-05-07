@@ -18,10 +18,9 @@ func main() {
 	// For more information, check the doc of launcher.RemoteLauncher
 	l := launcher.MustNewRemote("")
 	l.NoSandbox(true)
-	l.XVFB() //this must set before l.Set("rod-xvfb"
+	l.XVFB("--server-num=5","--server-args=-screen 0 1600x900x16")
 	// Manipulate flags like the example in examples_test.go
 	l.Set("any-flag").Delete("any-flag")
-	l.Set("rod-xvfb","--server-num=5","--server-args=-screen 0 1600x900x16")
 	// Launch with headful mode
 	l.Headless(false)
 	browser := rod.New().Client(l.Client()).MustConnect()
