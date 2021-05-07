@@ -819,14 +819,6 @@ func (t T) ElementErrors() {
 func (t T) ElementMoveMouseOut() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
-	btn.MustEval(`this.onmouseenter = () => this.dataset['a'] = 1`)
-
-	btn.MustHover()
-	time.Sleep(time.Second * 3)
-	btn.MustMoveMouseOut()
-	time.Sleep(time.Second * 3)
-	btn.MustHover()
-	time.Sleep(time.Second * 3)
-	t.Err(btn.MoveMouseOut())
-	time.Sleep(time.Second * 3)
+	btn.MustEval(`this.onmouseout = () => this.setAttribute('name', 'mouse moved.')`)
+	t.Eq("mouse moved.", *btn.MustHover().MustMoveMouseOut().MustAttribute("name"))
 }
