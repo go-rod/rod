@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
@@ -17,12 +18,11 @@ func main() {
 	//
 	// For more information, check the doc of launcher.RemoteLauncher
 	l := launcher.MustNewRemote("")
-	l.NoSandbox(true)
-	l.XVFB("--server-num=5","--server-args=-screen 0 1600x900x16")
+
 	// Manipulate flags like the example in examples_test.go
 	l.Set("any-flag").Delete("any-flag")
 	// Launch with headful mode
-	l.Headless(false)
+	l.Headless(false).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16")
 	browser := rod.New().Client(l.Client()).MustConnect()
 
 	// You may want to start a server to watch the screenshots inside the docker
