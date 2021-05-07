@@ -3,7 +3,6 @@
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/js/generate
 //go:generate go run ./lib/assets/generate
-//go:generate go run ./lib/devices/generate
 //go:generate go run ./lib/utils/lint
 
 package rod

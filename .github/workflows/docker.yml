@@ -1,4 +1,4 @@
-name: Release Image
+name: Docker
 on: [push, pull_request]
 
 jobs:
