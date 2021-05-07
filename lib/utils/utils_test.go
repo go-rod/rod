@@ -144,7 +144,7 @@ func (t T) FileExists() {
 
 func (t T) ExecErr() {
 	t.Panic(func() {
-		utils.Exec("")
+		utils.ExecLine("")
 	})
 }
 

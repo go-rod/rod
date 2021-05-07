@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -18,21 +16,15 @@ func main() {
 		}
 	}()
 
-	run("npx -yq -- eslint@7.16.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
+	utils.ExecLine("npx -yq -- eslint@7.16.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
 
-	run("npx -yq -- prettier@2.2.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
+	utils.ExecLine("npx -yq -- prettier@2.2.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	run("golangci-lint")
+	utils.ExecLine("golangci-lint")
 
 	lintMustPrefix()
 
 	checkGitClean()
-}
-
-func run(cmd string) {
-	log.Println("[lint]", cmd)
-	args := strings.Split(cmd, " ")
-	utils.Exec(args[0], args[1:]...)
 }
 
 func checkGitClean() {
