@@ -1007,3 +1007,8 @@ func (el *Element) MustEqual(elm *Element) bool {
 	utils.E(err)
 	return res
 }
+
+// MustMoveMouseOut is similar to Element.MoveMouseOut
+func (el *Element) MustMoveMouseOut() {
+	utils.E(el.MoveMouseOut())
+}

@@ -716,7 +716,7 @@ func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
 }
 
-// MoveMouseOut Move the mouse out of the current element
+// MoveMouseOut of the current element
 func (el *Element) MoveMouseOut() error {
 	shape, err := el.Shape()
 	if err != nil {
