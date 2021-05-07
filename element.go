@@ -715,3 +715,12 @@ func (el *Element) Equal(elm *Element) (bool, error) {
 func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
 }
+
+func (el *Element) MoveMouseOut() error {
+	shape, err := el.Shape()
+	if err != nil {
+		return err
+	}
+	box := shape.Box()
+	return el.page.Mouse.Move(box.X+box.Width, box.Y, 1)
+}
