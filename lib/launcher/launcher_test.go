@@ -147,10 +147,6 @@ func (t T) LaunchUserMode() {
 	t.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
 }
 
-func (t T) TestOpen() {
-	launcher.Open("about:blank")
-}
-
 func (t T) UserModeErr() {
 	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").Launch()
 	t.Err(err)

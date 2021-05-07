@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 	"time"
@@ -162,4 +163,15 @@ func (t T) BrowserDownloadErr() {
 	b.Logger = io.Discard
 	malURL := "https://npm.taobao.org/mirrors/chromium-browser-snapshots//869685/"
 	t.Has(b.download(t.Context(), malURL).Error(), "failed to download the browser: 200")
+}
+
+func (t T) TestOpen() {
+	openExec = func(name string, arg ...string) *exec.Cmd {
+		cmd := exec.Command("not-exists")
+		cmd.Process = &os.Process{}
+		return cmd
+	}
+	defer func() { openExec = exec.Command }()
+
+	Open("about:blank")
 }

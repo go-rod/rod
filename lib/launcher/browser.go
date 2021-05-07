@@ -259,13 +259,16 @@ func LookPath() (found string, has bool) {
 	return
 }
 
+// interface for testing
+var openExec func(name string, arg ...string) *exec.Cmd = exec.Command
+
 // Open tries to open the url via system's default browser.
 func Open(url string) {
 	// Windows doesn't support format [::]
 	url = strings.Replace(url, "[::]", "[::1]", 1)
 
 	if bin, has := LookPath(); has {
-		p := exec.Command(bin, url)
+		p := openExec(bin, url)
 		_ = p.Start()
 		_ = p.Process.Release()
 	}
