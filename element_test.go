@@ -189,6 +189,16 @@ func (t T) Hover() {
 	t.Err(el.Hover())
 }
 
+func (t T) ElementMoveMouseOut() {
+	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+	btn := p.MustElement("button")
+	btn.MustEval(`this.onmouseout = () => this.setAttribute('name', 'mouse moved.')`)
+	t.Eq("mouse moved.", *btn.MustHover().MustMoveMouseOut().MustAttribute("name"))
+
+	t.mc.stubErr(1, proto.DOMGetContentQuads{})
+	t.Err(btn.MoveMouseOut())
+}
+
 func (t T) MouseMoveErr() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	t.mc.stubErr(1, proto.InputDispatchMouseEvent{})

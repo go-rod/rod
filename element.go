@@ -80,6 +80,16 @@ func (el *Element) Hover() error {
 	return el.page.Mouse.Move(pt.X, pt.Y, 1)
 }
 
+// MoveMouseOut of the current element
+func (el *Element) MoveMouseOut() error {
+	shape, err := el.Shape()
+	if err != nil {
+		return err
+	}
+	box := shape.Box()
+	return el.page.Mouse.Move(box.X+box.Width, box.Y, 1)
+}
+
 // Click will press then release the button just like a human.
 // Before the action, it will try to scroll to the element, hover the mouse over it,
 // wait until the it's interactable and enabled.
