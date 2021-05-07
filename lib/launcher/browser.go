@@ -2,8 +2,10 @@ package launcher
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -167,8 +169,14 @@ func (lc *Browser) download(ctx context.Context, u string) error {
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
 
-	size, err := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
-	utils.E(err)
+	size, _ := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
+
+	if res.StatusCode >= 400 || size < 1024*1024 {
+		b, err := ioutil.ReadAll(res.Body)
+		utils.E(err)
+		err = errors.New("failed to download the browser")
+		return fmt.Errorf("%w: %d %s", err, res.StatusCode, string(b))
+	}
 
 	progress := &progresser{
 		size:   int(size),

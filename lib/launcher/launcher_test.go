@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -51,13 +50,13 @@ func (t T) Download() {
 		// file "file.txt"
 		w, err := zw.CreateHeader(&zip.FileHeader{Name: "to/file.txt"})
 		t.E(err)
-		b := []byte(strings.Repeat("test", 1000))
+		b := []byte(t.Srand(2 * 1024 * 1024))
 		t.E(w.Write(b))
 
 		t.E(zw.Close())
 
 		rw.Header().Add("Content-Length", fmt.Sprintf("%d", buf.Len()))
-		t.E(io.Copy(rw, buf))
+		_, _ = io.Copy(rw, buf)
 	})
 	s.Mux.HandleFunc("/slow/", func(rw http.ResponseWriter, r *http.Request) {
 		t := time.NewTimer(3 * time.Second)

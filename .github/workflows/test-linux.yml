@@ -1,0 +1,37 @@
+name: Test Linux
+on:
+  push:
+    branches:
+      - '**'
+
+  pull_request:
+
+  schedule:
+    - cron: '17 5 * * *'
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v1
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - uses: actions/checkout@v2
+
+      - run: go generate
+
+      - run: go test -race -coverprofile=coverage.txt ./...
+
+      - run: go run ./lib/utils/check-cov
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: cdp-log-linux
+          path: |
+            tmp/cdp-log
+            coverage.txt
