@@ -73,5 +73,5 @@ func description() string {
 
 	sha := strings.TrimSpace(string(b))
 
-	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/commit/` + sha
+	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + sha + "/lib/docker/Dockerfile"
 }
