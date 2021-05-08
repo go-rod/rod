@@ -12,7 +12,7 @@ import (
 	"github.com/ysmood/got"
 )
 
-func BenchmarkRemoteLauncher(b *testing.B) {
+func BenchmarkManager(b *testing.B) {
 	const concurrent = 30 // how many browsers will run at the same time
 	const num = 300       // how many browsers we will launch
 
@@ -47,7 +47,7 @@ func BenchmarkRemoteLauncher(b *testing.B) {
 				}()
 			}()
 
-			l := launcher.MustNewRemote("")
+			l := launcher.MustNewManaged("")
 			client := l.Client()
 			browser := rod.New().Context(ctx).Client(client).MustConnect()
 			page := browser.MustPage()

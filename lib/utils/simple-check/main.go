@@ -9,6 +9,6 @@ func main() {
 	utils.ExecLine("go test -coverprofile=coverage.txt ./lib/launcher")
 	utils.ExecLine("go run ./lib/utils/check-cov")
 
-	utils.ExecLine("go test -coverprofile=coverage.txt -parallel=4")
+	utils.ExecLine("go test -coverprofile=coverage.txt")
 	utils.ExecLine("go run ./lib/utils/check-cov")
 }

@@ -1,20 +1,17 @@
-# Examples:
+# To build the image:
 #
-#   docker build -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
+#     docker build -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
 #
-#   // use mirrors
-#   docker build --build-arg goproxy=https://goproxy.io,direct --build-arg apt_sources=https://mirrors.tuna.tsinghua.edu.cn \
-#     -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
 
-# build rod-launcher tool
+# build rod-manager
 FROM golang AS go
 
-ARG goproxy=""
+ARG goproxy="https://goproxy.io,direct"
 
 COPY . /rod
 WORKDIR /rod
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
-RUN go build ./lib/launcher/rod-launcher
+RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
 
 FROM ubuntu:bionic
@@ -49,6 +46,6 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
 ENTRYPOINT ["dumb-init", "--"]
 
 COPY --from=go /root/.cache/rod /root/.cache/rod
-COPY --from=go /rod/rod-launcher /usr/bin/
+COPY --from=go /rod/rod-manager /usr/bin/
 
-CMD rod-launcher
+CMD rod-manager

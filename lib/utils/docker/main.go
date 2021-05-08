@@ -59,7 +59,7 @@ func test() {
 	wd, err := os.Getwd()
 	utils.E(err)
 
-	utils.Exec("docker", "run", image, "rod-launcher", "-h")
+	utils.Exec("docker", "run", image, "rod-manager", "-h")
 	utils.Exec("docker", "run", "-v", fmt.Sprintf("%s:/t", wd), "-w=/t", "dev", "go", "test")
 }
 

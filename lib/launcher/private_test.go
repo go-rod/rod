@@ -102,10 +102,10 @@ func (t T) RemoteLaunch() {
 	defer cancel()
 
 	s := got.New(t).Serve()
-	rl := NewRemoteLauncher()
+	rl := NewManager()
 	s.Mux.Handle("/", rl)
 
-	l := MustNewRemote(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
+	l := MustNewManaged(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
 	t.E(b.Call(ctx, "", "Browser.getVersion", nil))

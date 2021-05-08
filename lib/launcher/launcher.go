@@ -21,22 +21,26 @@ const (
 	flagWorkingDir = "rod-working-dir"
 	flagEnv        = "rod-env"
 	flagXVFB       = "rod-xvfb"
+	flagLeakless   = "rod-leakless"
+	flagBin        = "rod-bin"
 )
 
 // Launcher is a helper to launch browser binary smartly
 type Launcher struct {
-	logger    io.Writer
+	Flags map[string][]string `json:"flags"`
+
 	ctx       context.Context
 	ctxCancel func()
-	browser   *Browser
-	bin       string
-	url       string
-	parser    *URLParser
-	Flags     map[string][]string `json:"flags"`
-	pid       int
-	exit      chan struct{}
-	remote    bool // remote mode or not
-	leakless  bool
+
+	logger io.Writer
+
+	browser *Browser
+	parser  *URLParser
+	pid     int
+	exit    chan struct{}
+
+	managed    bool
+	serviceURL string
 }
 
 // New returns the default arguments to start browser.
@@ -50,6 +54,9 @@ func New() *Launcher {
 	}
 
 	defaultFlags := map[string][]string{
+		flagBin:      {defaults.Bin},
+		flagLeakless: nil,
+
 		"user-data-dir": {dir},
 
 		// use random port by default
@@ -109,9 +116,7 @@ func New() *Launcher {
 		Flags:     defaultFlags,
 		exit:      make(chan struct{}),
 		browser:   NewBrowser(),
-		bin:       defaults.Bin,
 		parser:    NewURLParser(),
-		leakless:  true,
 		logger:    ioutil.Discard,
 	}
 }
@@ -129,10 +134,10 @@ func NewUserMode() *Launcher {
 		Flags: map[string][]string{
 			"remote-debugging-port": {"37712"},
 			"no-startup-window":     nil,
+			flagBin:                 {bin},
 		},
 		browser: NewBrowser(),
 		exit:    make(chan struct{}),
-		bin:     bin,
 		parser:  NewURLParser(),
 		logger:  ioutil.Discard,
 	}
@@ -157,6 +162,12 @@ func (l *Launcher) Get(name string) (string, bool) {
 		return list[0], true
 	}
 	return "", false
+}
+
+// Has flag or not
+func (l *Launcher) Has(name string) bool {
+	_, has := l.GetFlags(name)
+	return has
 }
 
 // GetFlags from settings
@@ -189,8 +200,7 @@ func (l *Launcher) Delete(name string) *Launcher {
 
 // Bin set browser executable file path. If it's empty, launcher will automatically search or download the bin.
 func (l *Launcher) Bin(path string) *Launcher {
-	l.bin = path
-	return l
+	return l.Set(flagBin, path)
 }
 
 // Headless switch. Whether to run browser in headless mode. A mode without visible UI.
@@ -220,8 +230,10 @@ func (l *Launcher) XVFB(args ...string) *Launcher {
 // Leakless switch. If enabled, the browser will be force killed after the Go process exits.
 // The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Leakless(enable bool) *Launcher {
-	l.leakless = enable
-	return l
+	if enable {
+		return l.Set(flagLeakless)
+	}
+	return l.Delete(flagLeakless)
 }
 
 // Devtools switch to auto open devtools for each tab
@@ -257,12 +269,8 @@ func (l *Launcher) ProfileDir(dir string) *Launcher {
 }
 
 // RemoteDebuggingPort to launch the browser. Zero for a random port. Zero is the default value.
-// If it's not zero, the launcher will try to connect to it before starting a new browser process.
-// For example, to reuse the same browser process for between 2 runs of a Go program, you can
-// do something like:
-//     launcher.New().RemoteDebuggingPort(9222).MustLaunch()
-//
-// Related doc: https://chromedevtools.github.io/devtools-protocol/
+// If it's not zero and the Launcher.Leakless is disabled, the launcher will try to reconnect to it first,
+// if the reconnection fails it will launch a new browser.
 func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set("remote-debugging-port", fmt.Sprintf("%d", port))
 }
@@ -345,7 +353,7 @@ func (l *Launcher) Launch() (string, error) {
 	var ll *leakless.Launcher
 	var cmd *exec.Cmd
 
-	if l.leakless && leakless.Support() {
+	if l.Has(flagLeakless) && leakless.Support() {
 		ll = leakless.New()
 		cmd = ll.Command(bin, l.FormatArgs()...)
 	} else {
@@ -400,11 +408,12 @@ func (l *Launcher) setupCmd(cmd *exec.Cmd) {
 }
 
 func (l *Launcher) getBin() (string, error) {
-	if l.bin == "" {
+	bin, _ := l.Get(flagBin)
+	if bin == "" {
 		l.browser.Context = l.ctx
 		return l.browser.Get()
 	}
-	return l.bin, nil
+	return bin, nil
 }
 
 func (l *Launcher) getURL() (u string, err error) {

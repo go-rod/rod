@@ -103,13 +103,13 @@ func (t T) Launch() {
 	}
 
 	{
-		_, err := launcher.NewRemote("")
+		_, err := launcher.NewManaged("")
 		t.Err(err)
 
-		_, err = launcher.NewRemote("1://")
+		_, err = launcher.NewManaged("1://")
 		t.Err(err)
 
-		_, err = launcher.NewRemote("ws://not-exists")
+		_, err = launcher.NewManaged("ws://not-exists")
 		t.Err(err)
 	}
 }
