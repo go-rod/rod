@@ -3,7 +3,6 @@ package launcher
 import (
 	"context"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -160,7 +159,7 @@ func (t T) URLParserErr() {
 
 func (t T) BrowserDownloadErr() {
 	b := NewBrowser()
-	b.Logger = io.Discard
+	b.Logger = ioutil.Discard
 	malURL := "https://npm.taobao.org/mirrors/chromium-browser-snapshots//869685/"
 	t.Has(b.download(t.Context(), malURL).Error(), "failed to download the browser: 200")
 }
