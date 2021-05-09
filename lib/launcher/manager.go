@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod/lib/cdp"
-	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -118,7 +117,7 @@ func NewManager() *Manager {
 			p, _ := os.Getwd()
 			return p
 		}(),
-		flags.UserDataDir: defaults.Dir,
+		flags.UserDataDir: DefaultUserDataDirPrefix,
 	}
 
 	return &Manager{

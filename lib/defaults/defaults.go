@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -59,7 +58,7 @@ func Reset() {
 	Monitor = ""
 	Show = false
 	Devtools = false
-	Dir = filepath.Join(os.TempDir(), "rod", "user-data", utils.RandString(8))
+	Dir = ""
 	Port = "0"
 	Bin = ""
 	Proxy = ""

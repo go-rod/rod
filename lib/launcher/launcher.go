@@ -18,6 +18,9 @@ import (
 	"github.com/ysmood/leakless"
 )
 
+// DefaultUserDataDirPrefix ...
+var DefaultUserDataDirPrefix = filepath.Join(os.TempDir(), "rod", "user-data")
+
 // Launcher is a helper to launch browser binary smartly
 type Launcher struct {
 	Flags map[flags.Flag][]string `json:"flags"`
@@ -41,11 +44,16 @@ type Launcher struct {
 // Leakless will be enabled by default.
 // UserDataDir will use OS tmp dir by default, this folder will usually be cleaned up by the OS after reboot.
 func New() *Launcher {
+	dir := defaults.Dir
+	if dir == "" {
+		dir = filepath.Join(DefaultUserDataDirPrefix, utils.RandString(8))
+	}
+
 	defaultFlags := map[flags.Flag][]string{
 		flags.Bin:      {defaults.Bin},
 		flags.Leakless: nil,
 
-		flags.UserDataDir: {defaults.Dir},
+		flags.UserDataDir: {dir},
 
 		// use random port by default
 		flags.RemoteDebuggingPort: {defaults.Port},
