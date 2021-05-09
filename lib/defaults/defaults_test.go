@@ -22,6 +22,7 @@ func TestBasic(t *testing.T) {
 	as.Eq("", Monitor)
 	as.Eq("", URL)
 	as.Eq(2978, Lock)
+	as.Regex(`rod[\\/]user-data`, Dir)
 
 	parse("show,devtools,trace,slow=2s,port=8080,dir=tmp," +
 		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +

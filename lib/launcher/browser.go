@@ -52,6 +52,14 @@ func HostTaobao(revision int) string {
 	)
 }
 
+// DefaultBrowserDir for downloaded browser. For unix is "$HOME/.cache/rod/browser",
+// for Windows it's "%APPDATA%\rod\browser"
+var DefaultBrowserDir = filepath.Join(map[string]string{
+	"windows": filepath.Join(os.Getenv("APPDATA")),
+	"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
+	"linux":   filepath.Join(os.Getenv("HOME"), ".cache"),
+}[runtime.GOOS], "rod", "browser")
+
 // Browser is a helper to download browser smartly
 type Browser struct {
 	Context context.Context
@@ -62,8 +70,7 @@ type Browser struct {
 	// Revision of the browser to use
 	Revision int
 
-	// Dir to download broweser. The default path for unix is "$HOME/.cache/rod",
-	// for Windows it's "%APPDATA%\rod".
+	// Dir to download broweser.
 	Dir string
 
 	// Log to print output
@@ -75,17 +82,11 @@ type Browser struct {
 
 // NewBrowser with default values
 func NewBrowser() *Browser {
-	homeDir := map[string]string{
-		"windows": filepath.Join(os.Getenv("APPDATA")),
-		"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
-		"linux":   filepath.Join(os.Getenv("HOME"), ".cache"),
-	}[runtime.GOOS]
-
 	return &Browser{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
 		Hosts:    []Host{HostGoogle, HostTaobao},
-		Dir:      filepath.Join(homeDir, "rod"),
+		Dir:      DefaultBrowserDir,
 		Logger:   os.Stdout,
 		Lock:     defaults.Lock,
 	}

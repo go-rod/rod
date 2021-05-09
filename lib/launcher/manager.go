@@ -2,18 +2,23 @@ package launcher
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
+	"strings"
 
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// HeaderName for remote launch
-const HeaderName = "Rod-Launcher"
-
-const flagKeepUserDataDir = "rod-keep-user-data-dir"
+const (
+	// HeaderName for remote launch
+	HeaderName = "Rod-Launcher"
+)
 
 // MustNewManaged is similar to MustNewManaged
 func MustNewManaged(serviceURL string) *Launcher {
@@ -50,10 +55,10 @@ func NewManaged(serviceURL string) (*Launcher, error) {
 	return l, json.NewDecoder(res.Body).Decode(l)
 }
 
-// KeepUserDataDir after remote browser is closed. By default user-data-dir will be removed.
+// KeepUserDataDir after remote browser is closed. By default launcher.FlagUserDataDir will be removed.
 func (l *Launcher) KeepUserDataDir() *Launcher {
 	l.mustManaged()
-	l.Set(flagKeepUserDataDir)
+	l.Set(flags.KeepUserDataDir)
 	return l
 }
 
@@ -66,7 +71,7 @@ func (l *Launcher) JSON() []byte {
 func (l *Launcher) Client() *cdp.Client {
 	l.mustManaged()
 	header := http.Header{}
-	header.Add(HeaderName, utils.MustToJSON(l))
+	header.Add(string(HeaderName), utils.MustToJSON(l))
 	return cdp.New(l.serviceURL).Header(header)
 }
 
@@ -93,15 +98,45 @@ var _ http.Handler = &Manager{}
 //     4. Y transparently proxy the websocket connect between X and the launched browser
 //
 type Manager struct {
-	Logger   utils.Logger
-	Defaults func() *Launcher
+	// Logger for key events
+	Logger utils.Logger
+
+	// Defaults should return the default Launcher settings
+	Defaults func(http.ResponseWriter, *http.Request) *Launcher
+
+	// BeforeLaunch hook is called right before the launching with the Launcher instance that will be used
+	// to launch the browser.
+	// Such as use it to filter malicious values of Launcher.UserDataDir, Launcher.Bin, or Launcher.WorkingDir.
+	BeforeLaunch func(*Launcher, http.ResponseWriter, *http.Request)
 }
 
 // NewManager instance
 func NewManager() *Manager {
+	allowedPath := map[flags.Flag]string{
+		flags.Bin: DefaultBrowserDir,
+		flags.WorkingDir: func() string {
+			p, _ := os.Getwd()
+			return p
+		}(),
+		flags.UserDataDir: defaults.Dir,
+	}
+
 	return &Manager{
 		Logger:   utils.LoggerQuiet,
-		Defaults: New,
+		Defaults: func(_ http.ResponseWriter, _ *http.Request) *Launcher { return New() },
+		BeforeLaunch: func(l *Launcher, w http.ResponseWriter, r *http.Request) {
+			for f, allowed := range allowedPath {
+				p := l.Get(f)
+				if p != "" && !strings.HasPrefix(p, allowed) {
+					b := []byte(fmt.Sprintf("not allowed %s path: %s", f, p))
+					w.Header().Add("Content-Length", fmt.Sprintf("%d", len(b)))
+					w.WriteHeader(http.StatusBadRequest)
+					utils.E(w.Write(b))
+					w.(http.Flusher).Flush()
+					panic(http.ErrAbortHandler)
+				}
+			}
+		},
 	}
 }
 
@@ -111,24 +146,22 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	m.defaults(w, r)
-}
-
-func (m *Manager) defaults(w http.ResponseWriter, _ *http.Request) {
-	l := New()
+	l := m.Defaults(w, r)
 	utils.E(w.Write(l.JSON()))
 }
 
 func (m *Manager) launch(w http.ResponseWriter, r *http.Request) {
-	l := m.Defaults()
+	l := New()
 
-	options := r.Header.Get(HeaderName)
+	options := r.Header.Get(string(HeaderName))
 	if options != "" {
 		l.Flags = nil
 		utils.E(json.Unmarshal([]byte(options), l))
 	}
 
-	kill := l.Has(flagLeakless)
+	m.BeforeLaunch(l, w, r)
+
+	kill := l.Has(flags.Leakless)
 
 	// Always enable leakless so that if the Manager process crashes
 	// all the managed browsers will be killed.
@@ -154,9 +187,9 @@ func (m *Manager) cleanup(l *Launcher, kill bool) {
 		m.Logger.Println("Killed PID:", l.PID())
 	}
 
-	if !l.Has(flagKeepUserDataDir) {
+	if !l.Has(flags.KeepUserDataDir) {
 		l.Cleanup()
-		dir, _ := l.Get("user-data-dir")
+		dir := l.Get(flags.UserDataDir)
 		m.Logger.Println("Removed", dir)
 	}
 }

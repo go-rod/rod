@@ -17,6 +17,7 @@ import (
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/ysmood/got"
 )
 
@@ -120,15 +121,14 @@ func (t T) LaunchUserMode() {
 
 	l.Kill() // empty kill should do nothing
 
-	_, has := l.Get("not-exists")
+	has := l.Has("not-exists")
 	t.False(has)
 
 	l.Append("test-append", "a")
-	f, has := l.Get("test-append")
-	t.True(has)
+	f := l.Get("test-append")
 	t.Eq("a", f)
 
-	dir, _ := l.Get("user-data-dir")
+	dir := l.Get(flags.UserDataDir)
 	port := 58472
 
 	url := l.Context(t.Context()).Delete("test").Bin("").
@@ -199,7 +199,7 @@ func (t T) ProfileDir() {
 
 	url.MustLaunch()
 
-	userDataDir, _ := url.Get("user-data-dir")
+	userDataDir := url.Get(flags.UserDataDir)
 	file, err := os.Stat(filepath.Join(userDataDir, "test-profile-dir"))
 
 	t.E(err)

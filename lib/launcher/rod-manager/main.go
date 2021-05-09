@@ -15,7 +15,7 @@ import (
 
 var addr = flag.String("address", ":7317", "the address to listen to")
 var quiet = flag.Bool("quiet", false, "silence the log")
-var bin = flag.String("bin", "", "default browser executable path")
+var allowAllPath = flag.Bool("allow-all", false, "allow all path set by the client")
 
 func main() {
 	flag.Parse()
@@ -26,8 +26,8 @@ func main() {
 		m.Logger = log.New(os.Stdout, "", 0)
 	}
 
-	m.Defaults = func() *launcher.Launcher {
-		return launcher.New().Bin(*bin)
+	if *allowAllPath {
+		m.BeforeLaunch = func(l *launcher.Launcher, rw http.ResponseWriter, r *http.Request) {}
 	}
 
 	l, err := net.Listen("tcp", *addr)

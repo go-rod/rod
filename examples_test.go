@@ -67,7 +67,7 @@ func Example_disable_headless_to_debug() {
 		Headless(false).
 		Devtools(true)
 
-	defer l.Cleanup() // remove user-data-dir
+	defer l.Cleanup() // remove launcher.FlagUserDataDir
 
 	url := l.MustLaunch()
 

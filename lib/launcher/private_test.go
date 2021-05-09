@@ -1,7 +1,6 @@
 package launcher
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
 	"net/url"
@@ -11,7 +10,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/launcher/flags"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
 )
@@ -71,14 +72,11 @@ func (t T) LaunchOptions() {
 
 	l := New()
 
-	_, has := l.Get("headless")
-	t.False(has)
+	t.False(l.Has(flags.Headless))
 
-	_, has = l.Get("no-sandbox")
-	t.True(has)
+	t.True(l.Has(flags.NoSandbox))
 
-	_, has = l.Get("auto-open-devtools-for-tabs")
-	t.True(has)
+	t.True(l.Has("auto-open-devtools-for-tabs"))
 }
 
 func (t T) GetURLErr() {
@@ -98,20 +96,19 @@ func (t T) GetURLErr() {
 }
 
 func (t T) RemoteLaunch() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	ctx := t.Timeout(5 * time.Second)
 
 	s := got.New(t).Serve()
 	rl := NewManager()
 	s.Mux.Handle("/", rl)
 
-	l := MustNewManaged(s.URL()).KeepUserDataDir().Delete(flagKeepUserDataDir)
+	l := MustNewManaged(s.URL()).KeepUserDataDir().Delete(flags.KeepUserDataDir)
 	client := l.Client()
 	b := client.MustConnect(ctx)
 	t.E(b.Call(ctx, "", "Browser.getVersion", nil))
 	utils.Sleep(1)
 	_, _ = b.Call(ctx, "", "Browser.crash", nil)
-	dir, _ := l.Get("user-data-dir")
+	dir := l.Get(flags.UserDataDir)
 
 	for ctx.Err() == nil {
 		utils.Sleep(0.1)
@@ -121,6 +118,9 @@ func (t T) RemoteLaunch() {
 		}
 	}
 	t.Err(os.Stat(dir))
+
+	err := MustNewManaged(s.URL()).Bin("go").Client().Connect(ctx).(*cdp.ErrBadHandshake)
+	t.Eq(t.Read(err.Body).String(), "not allowed rod-bin path: go")
 }
 
 func (t T) LaunchErrs() {
