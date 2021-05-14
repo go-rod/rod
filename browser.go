@@ -56,7 +56,9 @@ type Browser struct {
 	states *sync.Map
 }
 
-// New creates a controller
+// New creates a controller.
+// DefaultDevice is set to devices.LaptopWithMDPIScreen.Landescape() . You can use
+// NoDefaultDevice to disable it.
 func New() *Browser {
 	return &Browser{
 		ctx:           context.Background(),
