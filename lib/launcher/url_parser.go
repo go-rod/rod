@@ -67,7 +67,7 @@ func (r *URLParser) Err() error {
 	return errors.New(msg + r.Buffer)
 }
 
-// MustResolveURL is similar to FetchURL
+// MustResolveURL is similar to ResolveURL
 func MustResolveURL(u string) string {
 	u, err := ResolveURL(u)
 	utils.E(err)
