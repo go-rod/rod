@@ -44,6 +44,8 @@ type Browser struct {
 	trace      bool          // see defaults.Trace
 	monitor    string
 
+	onMust interface{ Fatal(...interface{}) }
+
 	defaultDevice devices.Device
 
 	client      CDPClient
