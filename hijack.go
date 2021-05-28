@@ -64,7 +64,7 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 	_ = r.enable.Call(r.client)
 
-	r.run = r.browser.Context(eventCtx).eachEvent(proto.TargetSessionID(sessionID), func(e *proto.FetchRequestPaused) bool {
+	r.run = r.browser.Context(eventCtx).eachEvent(sessionID, func(e *proto.FetchRequestPaused) bool {
 		go func() {
 			ctx := r.new(eventCtx, e)
 			for _, h := range r.handlers {
@@ -224,7 +224,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 
 	defer func() { _ = res.Body.Close() }()
 
-	h.Response.payload.ResponseCode = int(res.StatusCode)
+	h.Response.payload.ResponseCode = res.StatusCode
 
 	list := []string{}
 	for k, vs := range res.Header {
