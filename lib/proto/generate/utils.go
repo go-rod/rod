@@ -124,7 +124,7 @@ func symbol(n string) string {
 		return ""
 	}
 
-	n = strings.Replace(n, ".", "", -1)
+	n = strings.ReplaceAll(n, ".", "")
 
 	dashed := regexp.MustCompile(`[-_]`).Split(n, -1)
 	if len(dashed) > 1 {
@@ -157,9 +157,7 @@ func symbol(n string) string {
 }
 
 func replaceLower(n, word string) string {
-	return regexp.MustCompile(word+`([A-Z-_]|$)`).ReplaceAllStringFunc(n, func(s string) string {
-		return strings.ToUpper(s)
-	})
+	return regexp.MustCompile(word+`([A-Z-_]|$)`).ReplaceAllStringFunc(n, strings.ToUpper)
 }
 
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
