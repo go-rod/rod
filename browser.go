@@ -34,6 +34,8 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
+	e func(args ...interface{})
+
 	ctx context.Context
 
 	sleeper func() utils.Sleeper
@@ -60,7 +62,7 @@ type Browser struct {
 // DefaultDevice is set to devices.LaptopWithMDPIScreen.Landescape() . You can use
 // NoDefaultDevice to disable it.
 func New() *Browser {
-	return &Browser{
+	return (&Browser{
 		ctx:           context.Background(),
 		sleeper:       DefaultSleeper,
 		slowMotion:    defaults.Slow,
@@ -70,7 +72,7 @@ func New() *Browser {
 		defaultDevice: devices.LaptopWithMDPIScreen.Landescape(),
 		targetsLock:   &sync.Mutex{},
 		states:        &sync.Map{},
-	}
+	}).WithPanic(utils.Panic)
 }
 
 // Incognito creates a new incognito browser
@@ -248,6 +250,7 @@ func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params
 // PageFromSession is used for low-level debugging
 func (b *Browser) PageFromSession(sessionID proto.TargetSessionID) *Page {
 	return &Page{
+		e:         b.e,
 		ctx:       b.ctx,
 		sleeper:   b.sleeper,
 		browser:   b,
@@ -274,6 +277,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	page = &Page{
+		e:         b.e,
 		ctx:       b.ctx,
 		sleeper:   b.sleeper,
 		browser:   b,
