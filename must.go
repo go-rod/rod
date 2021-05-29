@@ -23,9 +23,22 @@ import (
 	"github.com/ysmood/gson"
 )
 
+// Panic returns a browser clone with the specified panic function.
+// The p must stop the current gouroutine's execution immediately, such as use runtime.Goexit() or panic inside it.
+func (b *Browser) WithPanic(p func(interface{})) *Browser {
+	n := *b
+	n.e = func(args ...interface{}) {
+		err, ok := args[len(args)-1].(error)
+		if ok {
+			panic(err)
+		}
+	}
+	return &n
+}
+
 // MustConnect is similar to Browser.Connect
 func (b *Browser) MustConnect() *Browser {
-	utils.E(b.Connect())
+	b.e(b.Connect())
 	return b
 }
 
@@ -126,7 +139,7 @@ func (ps Pages) MustFindByURL(regex string) *Page {
 // MustInfo is similar to Page.Info
 func (p *Page) MustInfo() *proto.TargetTargetInfo {
 	info, err := p.Info()
-	utils.E(err)
+	p.e(err)
 	return info
 }
 
