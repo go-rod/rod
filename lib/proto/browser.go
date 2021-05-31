@@ -293,6 +293,9 @@ type BrowserSetDownloadBehavior struct {
 	// DownloadPath (optional) The default path to save downloaded files to. This is required if behavior is set to 'allow'
 	// or 'allowAndName'.
 	DownloadPath string `json:"downloadPath,omitempty"`
+
+	// EventsEnabled (optional) Whether to emit download events (defaults to false).
+	EventsEnabled bool `json:"eventsEnabled,omitempty"`
 }
 
 // ProtoReq name
@@ -566,4 +569,60 @@ func (m BrowserExecuteBrowserCommand) ProtoReq() string { return "Browser.execut
 // Call sends the request
 func (m BrowserExecuteBrowserCommand) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// BrowserDownloadWillBegin (experimental) Fired when page is about to start a download.
+type BrowserDownloadWillBegin struct {
+
+	// FrameID Id of the frame that caused the download to begin.
+	FrameID PageFrameID `json:"frameId"`
+
+	// GUID Global unique identifier of the download.
+	GUID string `json:"guid"`
+
+	// URL URL of the resource being downloaded.
+	URL string `json:"url"`
+
+	// SuggestedFilename Suggested file name of the resource (the actual name of the file saved on disk may differ).
+	SuggestedFilename string `json:"suggestedFilename"`
+}
+
+// ProtoEvent name
+func (evt BrowserDownloadWillBegin) ProtoEvent() string {
+	return "Browser.downloadWillBegin"
+}
+
+// BrowserDownloadProgressState enum
+type BrowserDownloadProgressState string
+
+const (
+	// BrowserDownloadProgressStateInProgress enum const
+	BrowserDownloadProgressStateInProgress BrowserDownloadProgressState = "inProgress"
+
+	// BrowserDownloadProgressStateCompleted enum const
+	BrowserDownloadProgressStateCompleted BrowserDownloadProgressState = "completed"
+
+	// BrowserDownloadProgressStateCanceled enum const
+	BrowserDownloadProgressStateCanceled BrowserDownloadProgressState = "canceled"
+)
+
+// BrowserDownloadProgress (experimental) Fired when download makes progress. Last call has |done| == true.
+type BrowserDownloadProgress struct {
+
+	// GUID Global unique identifier of the download.
+	GUID string `json:"guid"`
+
+	// TotalBytes Total expected bytes to download.
+	TotalBytes float64 `json:"totalBytes"`
+
+	// ReceivedBytes Total bytes received.
+	ReceivedBytes float64 `json:"receivedBytes"`
+
+	// State Download status.
+	State BrowserDownloadProgressState `json:"state"`
+}
+
+// ProtoEvent name
+func (evt BrowserDownloadProgress) ProtoEvent() string {
+	return "Browser.downloadProgress"
 }

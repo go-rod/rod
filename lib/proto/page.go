@@ -76,7 +76,7 @@ const (
 )
 
 // PagePermissionsPolicyFeature (experimental) All Permissions Policy features. This enum should match the one defined
-// in renderer/core/feature_policy/feature_policy_features.json5.
+// in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
 type PagePermissionsPolicyFeature string
 
 const (
@@ -85,6 +85,9 @@ const (
 
 	// PagePermissionsPolicyFeatureAmbientLightSensor enum const
 	PagePermissionsPolicyFeatureAmbientLightSensor PagePermissionsPolicyFeature = "ambient-light-sensor"
+
+	// PagePermissionsPolicyFeatureAttributionReporting enum const
+	PagePermissionsPolicyFeatureAttributionReporting PagePermissionsPolicyFeature = "attribution-reporting"
 
 	// PagePermissionsPolicyFeatureAutoplay enum const
 	PagePermissionsPolicyFeatureAutoplay PagePermissionsPolicyFeature = "autoplay"
@@ -106,6 +109,9 @@ const (
 
 	// PagePermissionsPolicyFeatureChLang enum const
 	PagePermissionsPolicyFeatureChLang PagePermissionsPolicyFeature = "ch-lang"
+
+	// PagePermissionsPolicyFeatureChPrefersColorScheme enum const
+	PagePermissionsPolicyFeatureChPrefersColorScheme PagePermissionsPolicyFeature = "ch-prefers-color-scheme"
 
 	// PagePermissionsPolicyFeatureChRtt enum const
 	PagePermissionsPolicyFeatureChRtt PagePermissionsPolicyFeature = "ch-rtt"
@@ -143,11 +149,11 @@ const (
 	// PagePermissionsPolicyFeatureClipboardWrite enum const
 	PagePermissionsPolicyFeatureClipboardWrite PagePermissionsPolicyFeature = "clipboard-write"
 
-	// PagePermissionsPolicyFeatureConversionMeasurement enum const
-	PagePermissionsPolicyFeatureConversionMeasurement PagePermissionsPolicyFeature = "conversion-measurement"
-
 	// PagePermissionsPolicyFeatureCrossOriginIsolated enum const
 	PagePermissionsPolicyFeatureCrossOriginIsolated PagePermissionsPolicyFeature = "cross-origin-isolated"
+
+	// PagePermissionsPolicyFeatureDirectSockets enum const
+	PagePermissionsPolicyFeatureDirectSockets PagePermissionsPolicyFeature = "direct-sockets"
 
 	// PagePermissionsPolicyFeatureDisplayCapture enum const
 	PagePermissionsPolicyFeatureDisplayCapture PagePermissionsPolicyFeature = "display-capture"
@@ -218,6 +224,9 @@ const (
 	// PagePermissionsPolicyFeatureSerial enum const
 	PagePermissionsPolicyFeatureSerial PagePermissionsPolicyFeature = "serial"
 
+	// PagePermissionsPolicyFeatureSharedAutofill enum const
+	PagePermissionsPolicyFeatureSharedAutofill PagePermissionsPolicyFeature = "shared-autofill"
+
 	// PagePermissionsPolicyFeatureStorageAccessAPI enum const
 	PagePermissionsPolicyFeatureStorageAccessAPI PagePermissionsPolicyFeature = "storage-access-api"
 
@@ -274,6 +283,122 @@ type PagePermissionsPolicyFeatureState struct {
 	Locator *PagePermissionsPolicyBlockLocator `json:"locator,omitempty"`
 }
 
+// PageOriginTrialTokenStatus (experimental) Origin Trial(https://www.chromium.org/blink/origin-trials) support.
+// Status for an Origin Trial token.
+type PageOriginTrialTokenStatus string
+
+const (
+	// PageOriginTrialTokenStatusSuccess enum const
+	PageOriginTrialTokenStatusSuccess PageOriginTrialTokenStatus = "Success"
+
+	// PageOriginTrialTokenStatusNotSupported enum const
+	PageOriginTrialTokenStatusNotSupported PageOriginTrialTokenStatus = "NotSupported"
+
+	// PageOriginTrialTokenStatusInsecure enum const
+	PageOriginTrialTokenStatusInsecure PageOriginTrialTokenStatus = "Insecure"
+
+	// PageOriginTrialTokenStatusExpired enum const
+	PageOriginTrialTokenStatusExpired PageOriginTrialTokenStatus = "Expired"
+
+	// PageOriginTrialTokenStatusWrongOrigin enum const
+	PageOriginTrialTokenStatusWrongOrigin PageOriginTrialTokenStatus = "WrongOrigin"
+
+	// PageOriginTrialTokenStatusInvalidSignature enum const
+	PageOriginTrialTokenStatusInvalidSignature PageOriginTrialTokenStatus = "InvalidSignature"
+
+	// PageOriginTrialTokenStatusMalformed enum const
+	PageOriginTrialTokenStatusMalformed PageOriginTrialTokenStatus = "Malformed"
+
+	// PageOriginTrialTokenStatusWrongVersion enum const
+	PageOriginTrialTokenStatusWrongVersion PageOriginTrialTokenStatus = "WrongVersion"
+
+	// PageOriginTrialTokenStatusFeatureDisabled enum const
+	PageOriginTrialTokenStatusFeatureDisabled PageOriginTrialTokenStatus = "FeatureDisabled"
+
+	// PageOriginTrialTokenStatusTokenDisabled enum const
+	PageOriginTrialTokenStatusTokenDisabled PageOriginTrialTokenStatus = "TokenDisabled"
+
+	// PageOriginTrialTokenStatusFeatureDisabledForUser enum const
+	PageOriginTrialTokenStatusFeatureDisabledForUser PageOriginTrialTokenStatus = "FeatureDisabledForUser"
+)
+
+// PageOriginTrialStatus (experimental) Status for an Origin Trial.
+type PageOriginTrialStatus string
+
+const (
+	// PageOriginTrialStatusEnabled enum const
+	PageOriginTrialStatusEnabled PageOriginTrialStatus = "Enabled"
+
+	// PageOriginTrialStatusValidTokenNotProvided enum const
+	PageOriginTrialStatusValidTokenNotProvided PageOriginTrialStatus = "ValidTokenNotProvided"
+
+	// PageOriginTrialStatusOSNotSupported enum const
+	PageOriginTrialStatusOSNotSupported PageOriginTrialStatus = "OSNotSupported"
+
+	// PageOriginTrialStatusTrialNotAllowed enum const
+	PageOriginTrialStatusTrialNotAllowed PageOriginTrialStatus = "TrialNotAllowed"
+)
+
+// PageOriginTrialUsageRestriction (experimental) ...
+type PageOriginTrialUsageRestriction string
+
+const (
+	// PageOriginTrialUsageRestrictionNone enum const
+	PageOriginTrialUsageRestrictionNone PageOriginTrialUsageRestriction = "None"
+
+	// PageOriginTrialUsageRestrictionSubset enum const
+	PageOriginTrialUsageRestrictionSubset PageOriginTrialUsageRestriction = "Subset"
+)
+
+// PageOriginTrialToken (experimental) ...
+type PageOriginTrialToken struct {
+
+	// Origin ...
+	Origin string `json:"origin"`
+
+	// MatchSubDomains ...
+	MatchSubDomains bool `json:"matchSubDomains"`
+
+	// TrialName ...
+	TrialName string `json:"trialName"`
+
+	// ExpiryTime ...
+	ExpiryTime TimeSinceEpoch `json:"expiryTime"`
+
+	// IsThirdParty ...
+	IsThirdParty bool `json:"isThirdParty"`
+
+	// UsageRestriction ...
+	UsageRestriction PageOriginTrialUsageRestriction `json:"usageRestriction"`
+}
+
+// PageOriginTrialTokenWithStatus (experimental) ...
+type PageOriginTrialTokenWithStatus struct {
+
+	// RawTokenText ...
+	RawTokenText string `json:"rawTokenText"`
+
+	// ParsedToken (optional) `parsedToken` is present only when the token is extractable and
+	// parsable.
+	ParsedToken *PageOriginTrialToken `json:"parsedToken,omitempty"`
+
+	// Status ...
+	Status PageOriginTrialTokenStatus `json:"status"`
+}
+
+// PageOriginTrial (experimental) ...
+type PageOriginTrial struct {
+
+	// TrialName ...
+	TrialName string `json:"trialName"`
+
+	// Status ...
+	Status PageOriginTrialStatus `json:"status"`
+
+	// TokensWithStatus ...
+	TokensWithStatus []*PageOriginTrialTokenWithStatus `json:"tokensWithStatus"`
+}
+
 // PageFrame Information about the Frame on the page.
 type PageFrame struct {
 
@@ -321,6 +446,9 @@ type PageFrame struct {
 
 	// GatedAPIFeatures (experimental) Indicated which gated APIs / features are available.
 	GatedAPIFeatures []PageGatedAPIFeatures `json:"gatedAPIFeatures"`
+
+	// OriginTrials (experimental) (optional) Frame document's origin trials with at least one token present.
+	OriginTrials []*PageOriginTrial `json:"originTrials,omitempty"`
 }
 
 // PageFrameResource (experimental) Information about the Resource on the page.
@@ -706,6 +834,17 @@ type PageCompilationCacheParams struct {
 	Eager bool `json:"eager,omitempty"`
 }
 
+// PageNavigationType (experimental) The type of a frameNavigated event.
+type PageNavigationType string
+
+const (
+	// PageNavigationTypeNavigation enum const
+	PageNavigationTypeNavigation PageNavigationType = "Navigation"
+
+	// PageNavigationTypeBackForwardCacheRestore enum const
+	PageNavigationTypeBackForwardCacheRestore PageNavigationType = "BackForwardCacheRestore"
+)
+
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
 
@@ -739,6 +878,10 @@ type PageAddScriptToEvaluateOnNewDocument struct {
 	// This world name will be used as the ExecutionContextDescription::name when the corresponding
 	// event is emitted.
 	WorldName string `json:"worldName,omitempty"`
+
+	// IncludeCommandLineAPI (experimental) (optional) Specifies whether command line API should be available to the script, defaults
+	// to false.
+	IncludeCommandLineAPI bool `json:"includeCommandLineAPI,omitempty"`
 }
 
 // ProtoReq name
@@ -2070,6 +2213,9 @@ type PageFrameNavigated struct {
 
 	// Frame Frame object.
 	Frame *PageFrame `json:"frame"`
+
+	// Type (experimental) ...
+	Type PageNavigationType `json:"type"`
 }
 
 // ProtoEvent name
@@ -2166,7 +2312,8 @@ func (evt PageFrameStoppedLoading) ProtoEvent() string {
 	return "Page.frameStoppedLoading"
 }
 
-// PageDownloadWillBegin (experimental) Fired when page is about to start a download.
+// PageDownloadWillBegin (deprecated) (experimental) Fired when page is about to start a download.
+// Deprecated. Use Browser.downloadWillBegin instead.
 type PageDownloadWillBegin struct {
 
 	// FrameID Id of the frame that caused download to begin.
@@ -2201,7 +2348,8 @@ const (
 	PageDownloadProgressStateCanceled PageDownloadProgressState = "canceled"
 )
 
-// PageDownloadProgress (experimental) Fired when download makes progress. Last call has |done| == true.
+// PageDownloadProgress (deprecated) (experimental) Fired when download makes progress. Last call has |done| == true.
+// Deprecated. Use Browser.downloadProgress instead.
 type PageDownloadProgress struct {
 
 	// GUID Global unique identifier of the download.
@@ -2337,6 +2485,24 @@ type PageLifecycleEvent struct {
 // ProtoEvent name
 func (evt PageLifecycleEvent) ProtoEvent() string {
 	return "Page.lifecycleEvent"
+}
+
+// PageBackForwardCacheNotUsed (experimental) Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+// not assume any ordering with the Page.frameNavigated event. This event is fired only for
+// main-frame history navigation where the document changes (non-same-document navigations),
+// when bfcache navigation fails.
+type PageBackForwardCacheNotUsed struct {
+
+	// LoaderID The loader id for the associated navgation.
+	LoaderID NetworkLoaderID `json:"loaderId"`
+
+	// FrameID The frame id of the associated frame.
+	FrameID PageFrameID `json:"frameId"`
+}
+
+// ProtoEvent name
+func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
+	return "Page.backForwardCacheNotUsed"
 }
 
 // PageLoadEventFired ...

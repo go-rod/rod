@@ -568,6 +568,9 @@ const (
 
 	// NetworkCorsErrorInsecurePrivateNetwork enum const
 	NetworkCorsErrorInsecurePrivateNetwork NetworkCorsError = "InsecurePrivateNetwork"
+
+	// NetworkCorsErrorNoCorsRedirectModeNotFollow enum const
+	NetworkCorsErrorNoCorsRedirectModeNotFollow NetworkCorsError = "NoCorsRedirectModeNotFollow"
 )
 
 // NetworkCorsErrorStatus ...
@@ -1112,8 +1115,8 @@ const (
 // NetworkRequestPattern (experimental) Request pattern for interception.
 type NetworkRequestPattern struct {
 
-	// URLPattern (optional) Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
-	// backslash. Omitting is equivalent to "*".
+	// URLPattern (optional) Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
+	// backslash. Omitting is equivalent to `"*"`.
 	URLPattern string `json:"urlPattern,omitempty"`
 
 	// ResourceType (optional) If set, only requests for matching resource types will be intercepted.

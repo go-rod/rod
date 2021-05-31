@@ -116,6 +116,20 @@ const (
 	DOMShadowRootTypeClosed DOMShadowRootType = "closed"
 )
 
+// DOMCompatibilityMode Document compatibility mode.
+type DOMCompatibilityMode string
+
+const (
+	// DOMCompatibilityModeQuirksMode enum const
+	DOMCompatibilityModeQuirksMode DOMCompatibilityMode = "QuirksMode"
+
+	// DOMCompatibilityModeLimitedQuirksMode enum const
+	DOMCompatibilityModeLimitedQuirksMode DOMCompatibilityMode = "LimitedQuirksMode"
+
+	// DOMCompatibilityModeNoQuirksMode enum const
+	DOMCompatibilityModeNoQuirksMode DOMCompatibilityMode = "NoQuirksMode"
+)
+
 // DOMNode DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
 // DOMNode is a base node mirror type.
 type DOMNode struct {
@@ -197,7 +211,9 @@ type DOMNode struct {
 	// PseudoElements (optional) Pseudo elements associated with this node.
 	PseudoElements []*DOMNode `json:"pseudoElements,omitempty"`
 
-	// ImportedDocument (optional) Import document for the HTMLImport links.
+	// ImportedDocument (deprecated) (optional) Deprecated, as the HTML Imports API has been removed (crbug.com/937746).
+	// This property used to return the imported document for the HTMLImport links.
+	// The property is always undefined now.
 	ImportedDocument *DOMNode `json:"importedDocument,omitempty"`
 
 	// DistributedNodes (optional) Distributed nodes for given insertion point.
@@ -205,6 +221,9 @@ type DOMNode struct {
 
 	// IsSVG (optional) Whether the node is SVG.
 	IsSVG bool `json:"isSVG,omitempty"`
+
+	// CompatibilityMode (optional) ...
+	CompatibilityMode DOMCompatibilityMode `json:"compatibilityMode,omitempty"`
 }
 
 // DOMRGBA A structure holding an RGBA color.

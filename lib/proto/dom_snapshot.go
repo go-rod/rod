@@ -331,6 +331,12 @@ type DOMSnapshotLayoutTreeSnapshot struct {
 
 	// ClientRects (optional) The client rect of nodes. Only available when includeDOMRects is set to true
 	ClientRects []DOMSnapshotRectangle `json:"clientRects,omitempty"`
+
+	// BlendedBackgroundColors (experimental) (optional) The list of background colors that are blended with colors of overlapping elements.
+	BlendedBackgroundColors []DOMSnapshotStringIndex `json:"blendedBackgroundColors,omitempty"`
+
+	// TextColorOpacities (experimental) (optional) The list of computed text opacities.
+	TextColorOpacities []float64 `json:"textColorOpacities,omitempty"`
 }
 
 // DOMSnapshotTextBoxSnapshot Table of details of the post layout rendered text positions. The exact layout should not be regarded as
@@ -434,6 +440,16 @@ type DOMSnapshotCaptureSnapshot struct {
 
 	// IncludeDOMRects (optional) Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot
 	IncludeDOMRects bool `json:"includeDOMRects,omitempty"`
+
+	// IncludeBlendedBackgroundColors (experimental) (optional) Whether to include blended background colors in the snapshot (default: false).
+	// Blended background color is achieved by blending background colors of all elements
+	// that overlap with the current element.
+	IncludeBlendedBackgroundColors bool `json:"includeBlendedBackgroundColors,omitempty"`
+
+	// IncludeTextColorOpacities (experimental) (optional) Whether to include text color opacity in the snapshot (default: false).
+	// An element might have the opacity property set that affects the text color of the element.
+	// The final text color opacity is computed based on the opacity of all overlapping elements.
+	IncludeTextColorOpacities bool `json:"includeTextColorOpacities,omitempty"`
 }
 
 // ProtoReq name

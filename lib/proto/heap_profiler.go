@@ -238,6 +238,9 @@ type HeapProfilerStopTrackingHeapObjects struct {
 
 	// TreatGlobalObjectsAsRoots (optional) ...
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
+
+	// CaptureNumericValue (optional) If true, numerical values are included in the snapshot
+	CaptureNumericValue bool `json:"captureNumericValue,omitempty"`
 }
 
 // ProtoReq name
@@ -258,6 +261,9 @@ type HeapProfilerTakeHeapSnapshot struct {
 
 	// TreatGlobalObjectsAsRoots (optional) If true, a raw snapshot without artificial roots will be generated
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
+
+	// CaptureNumericValue (optional) If true, numerical values are included in the snapshot
+	CaptureNumericValue bool `json:"captureNumericValue,omitempty"`
 }
 
 // ProtoReq name
