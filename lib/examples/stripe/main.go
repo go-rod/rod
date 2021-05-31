@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/go-rod/rod"
@@ -39,5 +40,9 @@ func post(path, body string) gson.JSON {
 	req, _ := http.NewRequest(http.MethodPost, "https://api.stripe.com/v1"+path, bytes.NewBufferString(body))
 	req.Header.Add("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc")
 	res, _ := http.DefaultClient.Do(req)
-	return gson.New(res.Body)
+	if res != nil {
+		defer func() { _ = res.Body.Close() }()
+	}
+	data, _ := ioutil.ReadAll(res.Body)
+	return gson.New(data)
 }

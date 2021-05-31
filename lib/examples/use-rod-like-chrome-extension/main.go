@@ -83,6 +83,7 @@ var js = fmt.Sprintf(`window.addEventListener('load', () => {
 func get(u string) string {
 	res, err := http.Get(u)
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 	b, err := ioutil.ReadAll(res.Body)
 	utils.E(err)
 	return string(b)

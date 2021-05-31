@@ -3,6 +3,7 @@ package launcher
 import (
 	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -105,6 +106,10 @@ func ResolveURL(u string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer func() { _ = res.Body.Close() }()
 
-	return gson.New(res.Body).Get("webSocketDebuggerUrl").Str(), nil
+	data, err := ioutil.ReadAll(res.Body)
+	utils.E(err)
+
+	return gson.New(data).Get("webSocketDebuggerUrl").Str(), nil
 }

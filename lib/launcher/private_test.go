@@ -120,7 +120,7 @@ func (t T) RemoteLaunch() {
 	t.Err(os.Stat(dir))
 
 	err := MustNewManaged(s.URL()).Bin("go").Client().Connect(ctx).(*cdp.ErrBadHandshake)
-	t.Eq(t.Read(err.Body).String(), "not allowed rod-bin path: go")
+	t.Eq(err.Body, "not allowed rod-bin path: go")
 }
 
 func (t T) LaunchErrs() {
