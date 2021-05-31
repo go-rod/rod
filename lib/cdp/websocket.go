@@ -164,14 +164,14 @@ func (ws *WebSocket) Read() ([]byte, error) {
 
 // ErrBadHandshake type
 type ErrBadHandshake struct {
-	*http.Response
+	Status string
+	Body   string
 }
 
 func (e *ErrBadHandshake) Error() string {
-	body, _ := ioutil.ReadAll(e.Response.Body)
 	return fmt.Sprintf(
 		"websocket bad handshake: %s. %s",
-		e.Response.Status, body,
+		e.Status, e.Body,
 	)
 }
 
@@ -200,10 +200,15 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 	if err != nil {
 		return ws.checkClose(err)
 	}
+	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusSwitchingProtocols ||
 		res.Header.Get("Sec-Websocket-Accept") != "Q67D9eATKx531lK8F7u2rqQNnNI=" {
-		return &ErrBadHandshake{res}
+		body, _ := ioutil.ReadAll(res.Body)
+		return &ErrBadHandshake{
+			Status: res.Status,
+			Body:   string(body),
+		}
 	}
 
 	return nil

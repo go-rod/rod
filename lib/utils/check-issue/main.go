@@ -61,6 +61,7 @@ func main() {
 		q.Body = ioutil.NopCloser(bytes.NewBuffer(utils.MustToJSONBytes(map[string]string{"body": msg})))
 		res, err := http.DefaultClient.Do(q)
 		utils.E(err)
+		defer func() { _ = res.Body.Close() }()
 
 		log.Println(res.Status)
 
@@ -76,8 +77,12 @@ func currentVer() string {
 	q := req("/repos/go-rod/rod/tags?per_page=1")
 	res, err := http.DefaultClient.Do(q)
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 
-	currentVer := gson.New(res.Body).Get("0.name").Str()
+	data, err := ioutil.ReadAll(res.Body)
+	utils.E(err)
+
+	currentVer := gson.New(data).Get("0.name").Str()
 
 	return currentVer
 }

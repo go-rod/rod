@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -79,8 +80,12 @@ func getDeviceList() gson.JSON {
 		"https://raw.githubusercontent.com/ChromeDevTools/devtools-frontend/c4e2fefe3327aa9fe5f4398a1baddb8726c230d5/front_end/emulated_devices/module.json",
 	)
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 
-	return gson.New(res.Body).Get("extensions")
+	data, err := ioutil.ReadAll(res.Body)
+	utils.E(err)
+
+	return gson.New(data).Get("extensions")
 }
 
 func normalizeName(name string) string {

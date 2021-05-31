@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -24,8 +25,12 @@ func getSchema() gson.JSON {
 
 	res, err := http.Get(parsed.String())
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 
-	obj := gson.New(res.Body)
+	data, err := ioutil.ReadAll(res.Body)
+	utils.E(err)
+
+	obj := gson.New(data)
 
 	utils.E(utils.OutputFile("tmp/proto.json", obj.JSON("", "  ")))
 

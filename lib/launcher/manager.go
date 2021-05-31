@@ -50,6 +50,7 @@ func NewManaged(serviceURL string) (*Launcher, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer func() { _ = res.Body.Close() }()
 
 	return l, json.NewDecoder(res.Body).Decode(l)
 }

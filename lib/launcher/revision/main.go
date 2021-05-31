@@ -22,6 +22,7 @@ var slash = filepath.FromSlash
 func main() {
 	res, err := http.Get(MirrorChromium)
 	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
 
 	str, err := ioutil.ReadAll(res.Body)
 	utils.E(err)
