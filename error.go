@@ -183,3 +183,11 @@ func (e *ErrNoPointerEvents) Unwrap() error {
 func (e *ErrNoPointerEvents) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
 }
+
+// ErrPageNotFound error
+type ErrPageNotFound struct {
+}
+
+func (e *ErrPageNotFound) Error() string {
+	return "cannot find page"
+}

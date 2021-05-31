@@ -28,8 +28,12 @@ func (t T) Pages() {
 	t.True(pages.MustFind("button").MustHas("button"))
 	t.True(pages.MustFindByURL("click.html").MustHas("button"))
 
-	t.Nil(pages.Find("____"))
-	t.Nil(pages.MustFindByURL("____"))
+	_, err := pages.Find("____")
+	t.Err(err)
+	t.Eq(err.Error(), "cannot find page")
+	t.Panic(func() {
+		pages.MustFindByURL("____")
+	})
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
