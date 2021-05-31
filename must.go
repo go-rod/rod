@@ -427,7 +427,7 @@ func (p *Page) MustElementFromNode(node *proto.DOMNode) *Element {
 
 // MustElementFromPoint is similar to Page.ElementFromPoint
 func (p *Page) MustElementFromPoint(left, top int) *Element {
-	el, err := p.ElementFromPoint(int(left), int(top))
+	el, err := p.ElementFromPoint(left, top)
 	utils.E(err)
 	return el
 }

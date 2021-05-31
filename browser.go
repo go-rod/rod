@@ -144,7 +144,11 @@ func (b *Browser) Connect() error {
 	if b.client == nil {
 		u := defaults.URL
 		if u == "" {
-			u = launcher.New().Context(b.ctx).MustLaunch()
+			var err error
+			u, err = launcher.New().Context(b.ctx).Launch()
+			if err != nil {
+				return err
+			}
 		}
 		b.client = cdp.New(u)
 	}
