@@ -316,6 +316,16 @@ func (t T) BrowserExecuteBrowserCommand() {
 	t.Nil(err)
 }
 
+func (t T) BrowserDownloadWillBegin() {
+	e := proto.BrowserDownloadWillBegin{}
+	e.ProtoEvent()
+}
+
+func (t T) BrowserDownloadProgress() {
+	e := proto.BrowserDownloadProgress{}
+	e.ProtoEvent()
+}
+
 func (t T) CSSAddRule() {
 	c := &Client{}
 	_, err := proto.CSSAddRule{}.Call(c)
@@ -1386,6 +1396,12 @@ func (t T) InputSetIgnoreInputEvents() {
 	t.Nil(err)
 }
 
+func (t T) InputSetInterceptDrags() {
+	c := &Client{}
+	err := proto.InputSetInterceptDrags{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) InputSynthesizePinchGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizePinchGesture{}.Call(c)
@@ -1402,6 +1418,11 @@ func (t T) InputSynthesizeTapGesture() {
 	c := &Client{}
 	err := proto.InputSynthesizeTapGesture{}.Call(c)
 	t.Nil(err)
+}
+
+func (t T) InputDragIntercepted() {
+	e := proto.InputDragIntercepted{}
+	e.ProtoEvent()
 }
 
 func (t T) InspectorDisable() {
@@ -2507,6 +2528,11 @@ func (t T) PageJavascriptDialogOpening() {
 
 func (t T) PageLifecycleEvent() {
 	e := proto.PageLifecycleEvent{}
+	e.ProtoEvent()
+}
+
+func (t T) PageBackForwardCacheNotUsed() {
+	e := proto.PageBackForwardCacheNotUsed{}
 	e.ProtoEvent()
 }
 

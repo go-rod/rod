@@ -462,6 +462,22 @@ func (m InputSetIgnoreInputEvents) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// InputSetInterceptDrags (experimental) Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
+// Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
+type InputSetInterceptDrags struct {
+
+	// Enabled ...
+	Enabled bool `json:"enabled"`
+}
+
+// ProtoReq name
+func (m InputSetInterceptDrags) ProtoReq() string { return "Input.setInterceptDrags" }
+
+// Call sends the request
+func (m InputSetInterceptDrags) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // InputSynthesizePinchGesture (experimental) Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
 type InputSynthesizePinchGesture struct {
 
@@ -567,4 +583,17 @@ func (m InputSynthesizeTapGesture) ProtoReq() string { return "Input.synthesizeT
 // Call sends the request
 func (m InputSynthesizeTapGesture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// InputDragIntercepted (experimental) Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+// restore normal drag and drop behavior.
+type InputDragIntercepted struct {
+
+	// Data ...
+	Data *InputDragData `json:"data"`
+}
+
+// ProtoEvent name
+func (evt InputDragIntercepted) ProtoEvent() string {
+	return "Input.dragIntercepted"
 }

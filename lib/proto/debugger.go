@@ -485,7 +485,7 @@ func (m DebuggerRemoveBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// DebuggerRestartFrame Restarts particular call frame from the beginning.
+// DebuggerRestartFrame (deprecated) Restarts particular call frame from the beginning.
 type DebuggerRestartFrame struct {
 
 	// CallFrameID Call frame identifier to evaluate on.
@@ -501,7 +501,7 @@ func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerRestartFrameResult Restarts particular call frame from the beginning.
+// DebuggerRestartFrameResult (deprecated) Restarts particular call frame from the beginning.
 type DebuggerRestartFrameResult struct {
 
 	// CallFrames New stack trace.

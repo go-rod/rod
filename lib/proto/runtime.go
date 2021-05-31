@@ -1152,10 +1152,13 @@ type RuntimeAddBinding struct {
 	// Name ...
 	Name string `json:"name"`
 
-	// ExecutionContextID (optional) If specified, the binding would only be exposed to the specified
+	// ExecutionContextID (deprecated) (optional) If specified, the binding would only be exposed to the specified
 	// execution context. If omitted and `executionContextName` is not set,
 	// the binding is exposed to all execution contexts of the target.
 	// This parameter is mutually exclusive with `executionContextName`.
+	// Deprecated in favor of `executionContextName` due to an unclear use case
+	// and bugs in implementation (crbug.com/1169639). `executionContextId` will be
+	// removed in the future.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 
 	// ExecutionContextName (experimental) (optional) If specified, the binding is exposed to the executionContext with

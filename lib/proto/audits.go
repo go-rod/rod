@@ -484,6 +484,9 @@ type AuditsCorsIssueDetails struct {
 	// Request ...
 	Request *AuditsAffectedRequest `json:"request"`
 
+	// Location (optional) ...
+	Location *AuditsSourceCodeLocation `json:"location,omitempty"`
+
 	// InitiatorOrigin (optional) ...
 	InitiatorOrigin string `json:"initiatorOrigin,omitempty"`
 
@@ -492,6 +495,67 @@ type AuditsCorsIssueDetails struct {
 
 	// ClientSecurityState (optional) ...
 	ClientSecurityState *NetworkClientSecurityState `json:"clientSecurityState,omitempty"`
+}
+
+// AuditsAttributionReportingIssueType ...
+type AuditsAttributionReportingIssueType string
+
+const (
+	// AuditsAttributionReportingIssueTypePermissionPolicyDisabled enum const
+	AuditsAttributionReportingIssueTypePermissionPolicyDisabled AuditsAttributionReportingIssueType = "PermissionPolicyDisabled"
+
+	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID enum const
+	AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID AuditsAttributionReportingIssueType = "InvalidAttributionSourceEventId"
+
+	// AuditsAttributionReportingIssueTypeInvalidAttributionData enum const
+	AuditsAttributionReportingIssueTypeInvalidAttributionData AuditsAttributionReportingIssueType = "InvalidAttributionData"
+
+	// AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin enum const
+	AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionSourceUntrustworthyOrigin"
+
+	// AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin enum const
+	AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionUntrustworthyOrigin"
+)
+
+// AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
+// Explainer: https://github.com/WICG/conversion-measurement-api
+type AuditsAttributionReportingIssueDetails struct {
+
+	// ViolationType ...
+	ViolationType AuditsAttributionReportingIssueType `json:"violationType"`
+
+	// Frame (optional) ...
+	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
+
+	// Request (optional) ...
+	Request *AuditsAffectedRequest `json:"request,omitempty"`
+
+	// ViolatingNodeID (optional) ...
+	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId,omitempty"`
+
+	// InvalidParameter (optional) ...
+	InvalidParameter string `json:"invalidParameter,omitempty"`
+}
+
+// AuditsQuirksModeIssueDetails Details for issues about documents in Quirks Mode
+// or Limited Quirks Mode that affects page layouting.
+type AuditsQuirksModeIssueDetails struct {
+
+	// IsLimitedQuirksMode If false, it means the document's mode is "quirks"
+	// instead of "limited-quirks".
+	IsLimitedQuirksMode bool `json:"isLimitedQuirksMode"`
+
+	// DocumentNodeID ...
+	DocumentNodeID DOMBackendNodeID `json:"documentNodeId"`
+
+	// URL ...
+	URL string `json:"url"`
+
+	// FrameID ...
+	FrameID PageFrameID `json:"frameId"`
+
+	// LoaderID ...
+	LoaderID NetworkLoaderID `json:"loaderId"`
 }
 
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
@@ -526,6 +590,12 @@ const (
 
 	// AuditsInspectorIssueCodeCorsIssue enum const
 	AuditsInspectorIssueCodeCorsIssue AuditsInspectorIssueCode = "CorsIssue"
+
+	// AuditsInspectorIssueCodeAttributionReportingIssue enum const
+	AuditsInspectorIssueCodeAttributionReportingIssue AuditsInspectorIssueCode = "AttributionReportingIssue"
+
+	// AuditsInspectorIssueCodeQuirksModeIssue enum const
+	AuditsInspectorIssueCodeQuirksModeIssue AuditsInspectorIssueCode = "QuirksModeIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -559,6 +629,12 @@ type AuditsInspectorIssueDetails struct {
 
 	// CorsIssueDetails (optional) ...
 	CorsIssueDetails *AuditsCorsIssueDetails `json:"corsIssueDetails,omitempty"`
+
+	// AttributionReportingIssueDetails (optional) ...
+	AttributionReportingIssueDetails *AuditsAttributionReportingIssueDetails `json:"attributionReportingIssueDetails,omitempty"`
+
+	// QuirksModeIssueDetails (optional) ...
+	QuirksModeIssueDetails *AuditsQuirksModeIssueDetails `json:"quirksModeIssueDetails,omitempty"`
 }
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
