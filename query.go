@@ -83,7 +83,7 @@ func (ps Pages) Find(selector string) (*Page, error) {
 			return page, nil
 		}
 	}
-	return nil, nil
+	return nil, &ErrPageNotFound{}
 }
 
 // FindByURL returns the page that has the url that matches the jsRegex
@@ -98,7 +98,7 @@ func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 			return page, nil
 		}
 	}
-	return nil, nil
+	return nil, &ErrPageNotFound{}
 }
 
 // Has an element that matches the css selector
