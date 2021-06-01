@@ -151,14 +151,30 @@ func (b *Browser) MustWaitDownload() func() []byte {
 // MustFind is similar to Browser.Find
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
-	utils.E(err)
+	if err != nil {
+		if len(ps) > 0 {
+			ps[0].e(err)
+		} else {
+			// fallback to utils.E, because we don't have enough
+			// context to call the scope `.e`.
+			utils.E(err)
+		}
+	}
 	return p
 }
 
 // MustFindByURL is similar to Page.FindByURL
 func (ps Pages) MustFindByURL(regex string) *Page {
 	p, err := ps.FindByURL(regex)
-	utils.E(err)
+	if err != nil {
+		if len(ps) > 0 {
+			ps[0].e(err)
+		} else {
+			// fallback to utils.E, because we don't have enough
+			// context to call the scope `.e`.
+			utils.E(err)
+		}
+	}
 	return p
 }
 

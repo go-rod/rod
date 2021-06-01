@@ -26,7 +26,9 @@ func (t T) Pages() {
 	pages := t.browser.MustPages()
 
 	t.True(pages.MustFind("button").MustHas("button"))
+	t.Panic(func() { rod.Pages{}.MustFind("____") })
 	t.True(pages.MustFindByURL("click.html").MustHas("button"))
+	t.Panic(func() { rod.Pages{}.MustFindByURL("____") })
 
 	_, err := pages.Find("____")
 	t.Err(err)
