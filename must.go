@@ -588,91 +588,91 @@ func (rc *RaceContext) MustHandle(callback func(*Element)) *RaceContext {
 // MustDo is similar to RaceContext.Do
 func (rc *RaceContext) MustDo() *Element {
 	el, err := rc.Do()
-	utils.E(err)
+	rc.page.e(err)
 	return el
 }
 
 // MustMove is similar to Mouse.Move
 func (m *Mouse) MustMove(x, y float64) *Mouse {
-	utils.E(m.Move(x, y, 0))
+	m.page.e(m.Move(x, y, 0))
 	return m
 }
 
 // MustScroll is similar to Mouse.Scroll
 func (m *Mouse) MustScroll(x, y float64) *Mouse {
-	utils.E(m.Scroll(x, y, 0))
+	m.page.e(m.Scroll(x, y, 0))
 	return m
 }
 
 // MustDown is similar to Mouse.Down
 func (m *Mouse) MustDown(button proto.InputMouseButton) *Mouse {
-	utils.E(m.Down(button, 1))
+	m.page.e(m.Down(button, 1))
 	return m
 }
 
 // MustUp is similar to Mouse.Up
 func (m *Mouse) MustUp(button proto.InputMouseButton) *Mouse {
-	utils.E(m.Up(button, 1))
+	m.page.e(m.Up(button, 1))
 	return m
 }
 
 // MustClick is similar to Mouse.Click
 func (m *Mouse) MustClick(button proto.InputMouseButton) *Mouse {
-	utils.E(m.Click(button))
+	m.page.e(m.Click(button))
 	return m
 }
 
 // MustDown is similar to Keyboard.Down
 func (k *Keyboard) MustDown(key rune) *Keyboard {
-	utils.E(k.Down(key))
+	k.page.e(k.Down(key))
 	return k
 }
 
 // MustUp is similar to Keyboard.Up
 func (k *Keyboard) MustUp(key rune) *Keyboard {
-	utils.E(k.Up(key))
+	k.page.e(k.Up(key))
 	return k
 }
 
 // MustPress is similar to Keyboard.Press
 func (k *Keyboard) MustPress(key rune) *Keyboard {
-	utils.E(k.Press(key))
+	k.page.e(k.Press(key))
 	return k
 }
 
 // MustInsertText is similar to Keyboard.InsertText
 func (k *Keyboard) MustInsertText(text string) *Keyboard {
-	utils.E(k.InsertText(text))
+	k.page.e(k.InsertText(text))
 	return k
 }
 
 // MustStart is similar to Touch.Start
 func (t *Touch) MustStart(points ...*proto.InputTouchPoint) *Touch {
-	utils.E(t.Start(points...))
+	t.page.e(t.Start(points...))
 	return t
 }
 
 // MustMove is similar to Touch.Move
 func (t *Touch) MustMove(points ...*proto.InputTouchPoint) *Touch {
-	utils.E(t.Move(points...))
+	t.page.e(t.Move(points...))
 	return t
 }
 
 // MustEnd is similar to Touch.End
 func (t *Touch) MustEnd() *Touch {
-	utils.E(t.End())
+	t.page.e(t.End())
 	return t
 }
 
 // MustCancel is similar to Touch.Cancel
 func (t *Touch) MustCancel() *Touch {
-	utils.E(t.Cancel())
+	t.page.e(t.Cancel())
 	return t
 }
 
 // MustTap is similar to Touch.Tap
 func (t *Touch) MustTap(x, y float64) *Touch {
-	utils.E(t.Tap(x, y))
+	t.page.e(t.Tap(x, y))
 	return t
 }
 
@@ -1035,24 +1035,24 @@ func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
 
 // MustAdd is similar to HijackRouter.Add
 func (r *HijackRouter) MustAdd(pattern string, handler func(*Hijack)) *HijackRouter {
-	utils.E(r.Add(pattern, "", handler))
+	r.browser.e(r.Add(pattern, "", handler))
 	return r
 }
 
 // MustRemove is similar to HijackRouter.Remove
 func (r *HijackRouter) MustRemove(pattern string) *HijackRouter {
-	utils.E(r.Remove(pattern))
+	r.browser.e(r.Remove(pattern))
 	return r
 }
 
 // MustStop is similar to HijackRouter.Stop
 func (r *HijackRouter) MustStop() {
-	utils.E(r.Stop())
+	r.browser.e(r.Stop())
 }
 
 // MustLoadResponse is similar to Hijack.LoadResponse
 func (h *Hijack) MustLoadResponse() {
-	utils.E(h.LoadResponse(http.DefaultClient, true))
+	h.browser.e(h.LoadResponse(http.DefaultClient, true))
 }
 
 // MustEqual is similar to Element.Equal
