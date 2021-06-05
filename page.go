@@ -38,6 +38,8 @@ type Page struct {
 	// A page can attached to multiple controllers, the browser uses it distinguish controllers.
 	SessionID proto.TargetSessionID
 
+	e func(args ...interface{})
+
 	ctx context.Context
 
 	root *Page
@@ -625,6 +627,7 @@ func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) (*Element, erro
 	}
 
 	return &Element{
+		e:       p.e,
 		ctx:     p.ctx,
 		sleeper: p.sleeper,
 		page:    p,

@@ -60,11 +60,14 @@ func MultiLogger(list ...Logger) Log {
 	})
 }
 
+// Panic is the same as the built-in panic
+var Panic = func(v interface{}) { panic(v) }
+
 // E if the last arg is error, panic it
 func E(args ...interface{}) []interface{} {
 	err, ok := args[len(args)-1].(error)
 	if ok {
-		panic(err)
+		Panic(err)
 	}
 	return args
 }

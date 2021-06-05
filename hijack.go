@@ -174,6 +174,8 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 			},
 		},
 		OnError: func(err error) {},
+
+		browser: r.browser,
 	}
 }
 
@@ -208,6 +210,8 @@ type Hijack struct {
 
 	// CustomState is used to store things for this context
 	CustomState interface{}
+
+	browser *Browser
 }
 
 // ContinueRequest without hijacking. The RequestID will be set by the router, you don't have to set it.
