@@ -26,7 +26,7 @@ var _ proto.Sessionable = &Element{}
 type Element struct {
 	Object *proto.RuntimeRemoteObject
 
-	e func(args ...interface{})
+	e eFunc
 
 	ctx context.Context
 
