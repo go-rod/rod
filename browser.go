@@ -34,7 +34,7 @@ type Browser struct {
 	// BrowserContextID is the id for incognito window
 	BrowserContextID proto.BrowserBrowserContextID
 
-	e func(args ...interface{})
+	e eFunc
 
 	ctx context.Context
 
