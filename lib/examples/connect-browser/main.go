@@ -22,6 +22,6 @@ func main() {
 	browser := rod.New().ControlURL(u).MustConnect()
 
 	fmt.Println(
-		browser.MustPage("https://www.wikipedia.org/").MustEval("() => document.title"),
+		browser.MustPage("https://example.com/").MustEval("() => document.title"),
 	)
 }
