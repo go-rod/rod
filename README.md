@@ -29,11 +29,12 @@ Please check the [examples_test.go](examples_test.go) file first, then check the
 For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth`,
 for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
-You can also search the GitHub issues, they contain a lot of usage examples too.
+You can also search the GitHub [issues](https://github.com/go-rod/rod/issues) or [discussions](https://github.com/go-rod/rod/discussions),
+a lot of usage examples are recorded there.
 
 [Here](lib/examples/compare-chromedp) is a comparison of the examples between rod and Chromedp.
 
-If you have questions, please raise an issue or join the [chat room][discord room].
+If you have questions, please raise an [issues](https://github.com/go-rod/rod/issues)/[discussions](https://github.com/go-rod/rod/discussions) or join the [chat room][discord room].
 
 ## Join us
 
