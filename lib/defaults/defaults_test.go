@@ -21,7 +21,7 @@ func TestBasic(t *testing.T) {
 	as.False(Devtools)
 	as.Eq("", Monitor)
 	as.Eq("", URL)
-	as.Eq(2978, Lock)
+	as.Eq(2978, LockPort)
 
 	parse("show,devtools,trace,slow=2s,port=8080,dir=tmp," +
 		"url=http://test.com,cdp,monitor,bin=/path/to/chrome," +
@@ -39,7 +39,7 @@ func TestBasic(t *testing.T) {
 	as.NotNil(CDP.Println)
 	as.Eq(":0", Monitor)
 	as.Eq("localhost:8080", Proxy)
-	as.Eq(9981, Lock)
+	as.Eq(9981, LockPort)
 
 	parse("monitor=:1234")
 	as.Eq(":1234", Monitor)

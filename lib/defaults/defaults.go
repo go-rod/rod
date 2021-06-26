@@ -42,8 +42,8 @@ var Bin string
 // Proxy is the default of launcher.Launcher.Proxy
 var Proxy string
 
-// Lock is the default of launcher.Browser.Lock
-var Lock int
+// LockPort is the default of launcher.Browser.LockPort
+var LockPort int
 
 // URL is the default of cdp.Client.New
 var URL string
@@ -62,7 +62,7 @@ func Reset() {
 	Port = "0"
 	Bin = ""
 	Proxy = ""
-	Lock = 2978
+	LockPort = 2978
 	URL = ""
 	CDP = utils.LoggerQuiet
 }
@@ -107,7 +107,7 @@ var rules = map[string]func(string){
 	"lock": func(v string) {
 		i, err := strconv.ParseInt(v, 10, 32)
 		if err == nil {
-			Lock = int(i)
+			LockPort = int(i)
 		}
 	},
 	"url": func(v string) {

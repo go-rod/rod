@@ -76,8 +76,8 @@ type Browser struct {
 	// Log to print output
 	Logger io.Writer
 
-	// Lock a tcp port to prevent race downloading. Default is 2968 .
-	Lock int
+	// LockPort a tcp port to prevent race downloading. Default is 2968 .
+	LockPort int
 }
 
 // NewBrowser with default values
@@ -88,7 +88,7 @@ func NewBrowser() *Browser {
 		Hosts:    []Host{HostGoogle, HostTaobao},
 		Dir:      DefaultBrowserDir,
 		Logger:   os.Stdout,
-		Lock:     defaults.Lock,
+		LockPort: defaults.LockPort,
 	}
 }
 
@@ -203,7 +203,7 @@ func (lc *Browser) httpClient() *http.Client {
 // Get is a smart helper to get the browser executable path.
 // If Destination doesn't exists it will download the browser to Destination.
 func (lc *Browser) Get() (string, error) {
-	defer leakless.LockPort(lc.Lock)()
+	defer leakless.LockPort(lc.LockPort)()
 
 	if lc.Exists() {
 		return lc.Destination(), nil
