@@ -13,12 +13,11 @@ WORKDIR /rod
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
+RUN ln -s $(go run ./lib/utils/get-browser) /usr/bin/chrome
 
 FROM ubuntu:bionic
 
 ARG apt_sources="http://archive.ubuntu.com"
-
-RUN ln -s /root/.cache/rod/chromium-869685/chrome-linux/chrome /usr/bin/chrome
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
     apt-get update && \
@@ -46,6 +45,7 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
 ENTRYPOINT ["dumb-init", "--"]
 
 COPY --from=go /root/.cache/rod /root/.cache/rod
+COPY --from=go /usr/bin/chrome /usr/bin/
 COPY --from=go /rod/rod-manager /usr/bin/
 
 CMD rod-manager

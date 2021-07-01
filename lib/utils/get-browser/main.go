@@ -1,10 +1,15 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
-	utils.E(launcher.NewBrowser().Get())
+	p, err := launcher.NewBrowser().Get()
+	utils.E(err)
+
+	fmt.Println(p)
 }
