@@ -85,8 +85,8 @@ Learn the [basics](https://blog.golang.org/cover) first.
 To visually see the coverage report you can run something like this:
 
 ```bash
-go test -coverprofile=coverage.txt ./...
-go tool cover -html=coverage.txt
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
 ```
 
 It will open a web page to tell you which line is not covered.

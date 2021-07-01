@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	err := got.EnsureCoverage("coverage.txt", 100)
+	err := got.EnsureCoverage("coverage.out", 100)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

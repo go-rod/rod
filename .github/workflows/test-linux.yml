@@ -24,7 +24,7 @@ jobs:
 
       - run: go generate
 
-      - run: go test -race -coverprofile=coverage.txt ./...
+      - run: go test -race -coverprofile=coverage.out ./...
 
       - run: go run ./lib/utils/check-cov
 
@@ -34,4 +34,4 @@ jobs:
           name: cdp-log-linux
           path: |
             tmp/cdp-log
-            coverage.txt
+            coverage.out
