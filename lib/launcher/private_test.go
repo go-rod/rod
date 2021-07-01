@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -87,9 +88,9 @@ func (t T) GetURLErr() {
 	t.Err(err)
 
 	l = New()
-	l.parser.Lock()
+	l.parser.lock.Lock()
 	l.parser.Buffer = "err"
-	l.parser.Unlock()
+	l.parser.lock.Unlock()
 	close(l.exit)
 	_, err = l.getURL()
 	t.Eq("[launcher] Failed to get the debug url: err", err.Error())
@@ -149,6 +150,7 @@ func (t T) Progresser() {
 func (t T) URLParserErr() {
 	u := &URLParser{
 		Buffer: "error",
+		lock:   &sync.Mutex{},
 	}
 
 	t.Eq(u.Err().Error(), "[launcher] Failed to get the debug url: error")

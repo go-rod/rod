@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"context"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -18,27 +19,35 @@ var _ io.Writer = &URLParser{}
 
 // URLParser to get control url from stderr
 type URLParser struct {
-	sync.Mutex
-
 	URL    chan string
 	Buffer string // buffer for the browser stdout
 
+	lock *sync.Mutex
+	ctx  context.Context
 	done bool
 }
 
 // NewURLParser instance
 func NewURLParser() *URLParser {
 	return &URLParser{
-		URL: make(chan string),
+		URL:  make(chan string),
+		lock: &sync.Mutex{},
+		ctx:  context.Background(),
 	}
 }
 
 var regWS = regexp.MustCompile(`ws://.+/`)
 
+// Context sets the context
+func (r *URLParser) Context(ctx context.Context) *URLParser {
+	r.ctx = ctx
+	return r
+}
+
 // Write interface
 func (r *URLParser) Write(p []byte) (n int, err error) {
-	r.Lock()
-	defer r.Unlock()
+	r.lock.Lock()
+	defer r.lock.Unlock()
 
 	if !r.done {
 		r.Buffer += string(p)
@@ -48,7 +57,11 @@ func (r *URLParser) Write(p []byte) (n int, err error) {
 			u, err := url.Parse(strings.TrimSpace(str))
 			utils.E(err)
 
-			r.URL <- "http://" + u.Host
+			select {
+			case <-r.ctx.Done():
+			case r.URL <- "http://" + u.Host:
+			}
+
 			r.done = true
 			r.Buffer = ""
 		}
@@ -59,6 +72,9 @@ func (r *URLParser) Write(p []byte) (n int, err error) {
 
 // Err returns the common error parsed from stdout and stderr
 func (r *URLParser) Err() error {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+
 	msg := "[launcher] Failed to get the debug url: "
 
 	if strings.Contains(r.Buffer, "error while loading shared libraries") {

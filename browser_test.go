@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
-	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -406,11 +405,9 @@ func (t T) StreamReader() {
 }
 
 func (t T) BrowserConnectFailure() {
-	defaultBin := defaults.Bin
-	defaults.Bin = "~invalid~"
-	defer func() { defaults.Bin = defaultBin }()
-
-	err := rod.New().Connect()
+	c := t.Context()
+	c.Cancel()
+	err := rod.New().Context(c).Connect()
 	if err == nil {
 		t.Fatal("expected an error on connect failure")
 	}

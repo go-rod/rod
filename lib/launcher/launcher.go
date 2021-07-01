@@ -139,10 +139,11 @@ func NewUserMode() *Launcher {
 	}
 }
 
-// Context set the context
+// Context sets the context
 func (l *Launcher) Context(ctx context.Context) *Launcher {
 	ctx, cancel := context.WithCancel(ctx)
 	l.ctx = ctx
+	l.parser.Context(ctx)
 	l.ctxCancel = cancel
 	return l
 }
@@ -412,8 +413,6 @@ func (l *Launcher) getURL() (u string, err error) {
 		err = l.ctx.Err()
 	case u = <-l.parser.URL:
 	case <-l.exit:
-		l.parser.Lock()
-		defer l.parser.Unlock()
 		err = l.parser.Err()
 	}
 	return
