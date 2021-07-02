@@ -277,15 +277,16 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	page = &Page{
-		e:         b.e,
-		ctx:       b.ctx,
-		sleeper:   b.sleeper,
-		browser:   b,
-		TargetID:  targetID,
-		SessionID: session.SessionID,
-		FrameID:   proto.PageFrameID(targetID),
-		jsCtxLock: &sync.Mutex{},
-		jsCtxID:   new(proto.RuntimeRemoteObjectID),
+		e:           b.e,
+		ctx:         b.ctx,
+		sleeper:     b.sleeper,
+		browser:     b,
+		TargetID:    targetID,
+		SessionID:   session.SessionID,
+		FrameID:     proto.PageFrameID(targetID),
+		jsCtxLock:   &sync.Mutex{},
+		jsCtxID:     new(proto.RuntimeRemoteObjectID),
+		helpersLock: &sync.Mutex{},
 	}
 
 	page.root = page

@@ -55,9 +55,10 @@ type Page struct {
 
 	element *Element // iframe only
 
-	jsCtxLock *sync.Mutex
-	jsCtxID   *proto.RuntimeRemoteObjectID // use pointer so that page clones can share the change
-	helpers   map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID
+	jsCtxLock   *sync.Mutex
+	jsCtxID     *proto.RuntimeRemoteObjectID // use pointer so that page clones can share the change
+	helpersLock *sync.Mutex
+	helpers     map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID
 }
 
 // String interface

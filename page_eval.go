@@ -263,6 +263,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		return "", err
 	}
 
+	p.helpersLock.Lock()
 	if p.helpers == nil {
 		p.helpers = map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID{}
 	}
@@ -272,6 +273,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		list = map[string]proto.RuntimeRemoteObjectID{}
 		p.helpers[jsCtxID] = list
 	}
+	p.helpersLock.Unlock()
 
 	fns, has := list[js.Functions.Name]
 	if !has {
@@ -333,7 +335,9 @@ func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 		}
 
 		*p.jsCtxID = obj.Result.ObjectID
+		p.helpersLock.Lock()
 		p.helpers = nil
+		p.helpersLock.Unlock()
 		return *p.jsCtxID, nil
 	}
 
@@ -352,7 +356,9 @@ func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 		return "", err
 	}
 
+	p.helpersLock.Lock()
 	delete(p.helpers, *p.jsCtxID)
+	p.helpersLock.Unlock()
 	id, err := p.jsCtxIDByObjectID(obj.Object.ObjectID)
 	*p.jsCtxID = id
 	return *p.jsCtxID, err
