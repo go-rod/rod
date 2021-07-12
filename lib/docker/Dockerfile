@@ -1,5 +1,4 @@
 # To build the image:
-#
 #     docker build -t ghcr.io/go-rod/rod -f lib/docker/Dockerfile .
 #
 
@@ -10,10 +9,9 @@ ARG goproxy="https://goproxy.io,direct"
 
 COPY . /rod
 WORKDIR /rod
-RUN go env -w GO111MODULE=on && go env -w GOPROXY=$goproxy
+RUN go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
-RUN go run ./lib/utils/get-browser > /root/.cache/rod/browser-path
 
 FROM ubuntu:bionic
 
@@ -45,7 +43,7 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
 ENTRYPOINT ["dumb-init", "--"]
 
 COPY --from=go /root/.cache/rod /root/.cache/rod
-RUN ln -s $(cat /root/.cache/rod/browser-path) /usr/bin/chrome
-COPY --from=go /rod/rod-manager /usr/bin/
+RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome-linux/chrome /usr/bin/chrome
 
+COPY --from=go /rod/rod-manager /usr/bin/
 CMD rod-manager
