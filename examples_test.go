@@ -368,13 +368,12 @@ func Example_customize_browser_launch() {
 }
 
 // When rod doesn't have a feature that you need. You can easily call the cdp to achieve it.
-// List of cdp API: https://chromedevtools.github.io/devtools-protocol
+// List of cdp API: https://github.com/go-rod/rod/tree/master/lib/proto
 func Example_direct_cdp() {
 	page := rod.New().MustConnect().MustPage()
 
 	// Rod doesn't have a method to enable AD blocking,
 	// but you can call cdp interface directly to achieve it.
-	// Doc: https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-setAdBlockingEnabled
 
 	// The two code blocks below are equal to enable AD blocking
 

@@ -337,7 +337,7 @@ func (p *Page) HandleDialog() (
 		}
 }
 
-// Screenshot options: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-captureScreenshot
+// Screenshot captures the screenshot of current page.
 func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
 	if req == nil {
 		req = &proto.PageCaptureScreenshot{}
