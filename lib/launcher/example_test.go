@@ -1,6 +1,7 @@
 package launcher_test
 
 import (
+	"os"
 	"os/exec"
 
 	"github.com/go-rod/rod"
@@ -14,6 +15,12 @@ func Example_use_system_browser() {
 		u := launcher.New().Bin(path).MustLaunch()
 		rod.New().ControlURL(u).MustConnect()
 	}
+}
+
+func Example_print_browser_CLI_output() {
+	// Pipe the browser stderr and stdout to os.Stdout .
+	u := launcher.New().Logger(os.Stdout).MustLaunch()
+	rod.New().ControlURL(u).MustConnect()
 }
 
 func Example_custom_launch() {
