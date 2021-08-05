@@ -230,6 +230,9 @@ type OverlayHighlightConfig struct {
 
 	// ContrastAlgorithm (optional) The contrast algorithm to use for the contrast ratio (default: aa).
 	ContrastAlgorithm OverlayContrastAlgorithm `json:"contrastAlgorithm,omitempty"`
+
+	// ContainerQueryContainerHighlightConfig (optional) The container query container highlight configuration (default: all transparent).
+	ContainerQueryContainerHighlightConfig *OverlayContainerQueryContainerHighlightConfig `json:"containerQueryContainerHighlightConfig,omitempty"`
 }
 
 // OverlayColorFormat ...
@@ -303,6 +306,23 @@ type OverlayHingeConfig struct {
 
 	// OutlineColor (optional) The content box highlight outline color (default: transparent).
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
+}
+
+// OverlayContainerQueryHighlightConfig ...
+type OverlayContainerQueryHighlightConfig struct {
+
+	// ContainerQueryContainerHighlightConfig A descriptor for the highlight appearance of container query containers.
+	ContainerQueryContainerHighlightConfig *OverlayContainerQueryContainerHighlightConfig `json:"containerQueryContainerHighlightConfig"`
+
+	// NodeID Identifier of the container node to highlight.
+	NodeID DOMNodeID `json:"nodeId"`
+}
+
+// OverlayContainerQueryContainerHighlightConfig ...
+type OverlayContainerQueryContainerHighlightConfig struct {
+
+	// ContainerBorder (optional) The style of the container border
+	ContainerBorder *OverlayLineStyle `json:"containerBorder,omitempty"`
 }
 
 // OverlayInspectMode ...
@@ -448,7 +468,10 @@ func (m OverlayHideHighlight) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// OverlayHighlightFrame Highlights owner element of the frame with given id.
+// OverlayHighlightFrame (deprecated) Highlights owner element of the frame with given id.
+// Deprecated: Doesn't work reliablity and cannot be fixed due to process
+// separatation (the owner node might be in a different process). Determine
+// the owner node in the client and use highlightNode.
 type OverlayHighlightFrame struct {
 
 	// FrameID Identifier of the frame to highlight.
@@ -699,6 +722,23 @@ func (m OverlaySetShowScrollSnapOverlays) ProtoReq() string {
 
 // Call sends the request
 func (m OverlaySetShowScrollSnapOverlays) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// OverlaySetShowContainerQueryOverlays ...
+type OverlaySetShowContainerQueryOverlays struct {
+
+	// ContainerQueryHighlightConfigs An array of node identifiers and descriptors for the highlight appearance.
+	ContainerQueryHighlightConfigs []*OverlayContainerQueryHighlightConfig `json:"containerQueryHighlightConfigs"`
+}
+
+// ProtoReq name
+func (m OverlaySetShowContainerQueryOverlays) ProtoReq() string {
+	return "Overlay.setShowContainerQueryOverlays"
+}
+
+// Call sends the request
+func (m OverlaySetShowContainerQueryOverlays) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

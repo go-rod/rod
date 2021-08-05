@@ -258,6 +258,9 @@ type DOMSnapshotNodeTreeSnapshot struct {
 	// NodeType (optional) `Node`'s nodeType.
 	NodeType []int `json:"nodeType,omitempty"`
 
+	// ShadowRootType (optional) Type of the shadow root the `Node` is in. String values are equal to the `ShadowRootType` enum.
+	ShadowRootType *DOMSnapshotRareStringData `json:"shadowRootType,omitempty"`
+
 	// NodeName (optional) `Node`'s nodeName.
 	NodeName []DOMSnapshotStringIndex `json:"nodeName,omitempty"`
 

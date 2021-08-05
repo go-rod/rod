@@ -362,6 +362,10 @@ type NetworkRequest struct {
 	// TrustTokenParams (experimental) (optional) Set for requests when the TrustToken API is used. Contains the parameters
 	// passed by the developer (e.g. via "fetch") as understood by the backend.
 	TrustTokenParams *NetworkTrustTokenParams `json:"trustTokenParams,omitempty"`
+
+	// IsSameSite (experimental) (optional) True if this resource request is considered to be the 'same site' as the
+	// request correspondinfg to the main frame.
+	IsSameSite bool `json:"isSameSite,omitempty"`
 }
 
 // NetworkSignedCertificateTimestamp Details of a signed certificate timestamp (SCT).
@@ -1328,8 +1332,8 @@ const (
 	// NetworkCrossOriginEmbedderPolicyValueNone enum const
 	NetworkCrossOriginEmbedderPolicyValueNone NetworkCrossOriginEmbedderPolicyValue = "None"
 
-	// NetworkCrossOriginEmbedderPolicyValueCorsOrCredentialless enum const
-	NetworkCrossOriginEmbedderPolicyValueCorsOrCredentialless NetworkCrossOriginEmbedderPolicyValue = "CorsOrCredentialless"
+	// NetworkCrossOriginEmbedderPolicyValueCredentialless enum const
+	NetworkCrossOriginEmbedderPolicyValueCredentialless NetworkCrossOriginEmbedderPolicyValue = "Credentialless"
 
 	// NetworkCrossOriginEmbedderPolicyValueRequireCorp enum const
 	NetworkCrossOriginEmbedderPolicyValueRequireCorp NetworkCrossOriginEmbedderPolicyValue = "RequireCorp"
@@ -1990,24 +1994,6 @@ func (m NetworkSetCookies) ProtoReq() string { return "Network.setCookies" }
 
 // Call sends the request
 func (m NetworkSetCookies) Call(c Client) error {
-	return call(m.ProtoReq(), m, nil, c)
-}
-
-// NetworkSetDataSizeLimitsForTest (experimental) For testing.
-type NetworkSetDataSizeLimitsForTest struct {
-
-	// MaxTotalSize Maximum total buffer size.
-	MaxTotalSize int `json:"maxTotalSize"`
-
-	// MaxResourceSize Maximum per-resource size.
-	MaxResourceSize int `json:"maxResourceSize"`
-}
-
-// ProtoReq name
-func (m NetworkSetDataSizeLimitsForTest) ProtoReq() string { return "Network.setDataSizeLimitsForTest" }
-
-// Call sends the request
-func (m NetworkSetDataSizeLimitsForTest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -2700,4 +2686,79 @@ type NetworkTrustTokenOperationDone struct {
 // ProtoEvent name
 func (evt NetworkTrustTokenOperationDone) ProtoEvent() string {
 	return "Network.trustTokenOperationDone"
+}
+
+// NetworkSubresourceWebBundleMetadataReceived (experimental) Fired once when parsing the .wbn file has succeeded.
+// The event contains the information about the web bundle contents.
+type NetworkSubresourceWebBundleMetadataReceived struct {
+
+	// RequestID Request identifier. Used to match this information to another event.
+	RequestID NetworkRequestID `json:"requestId"`
+
+	// Urls A list of URLs of resources in the subresource Web Bundle.
+	Urls []string `json:"urls"`
+}
+
+// ProtoEvent name
+func (evt NetworkSubresourceWebBundleMetadataReceived) ProtoEvent() string {
+	return "Network.subresourceWebBundleMetadataReceived"
+}
+
+// NetworkSubresourceWebBundleMetadataError (experimental) Fired once when parsing the .wbn file has failed.
+type NetworkSubresourceWebBundleMetadataError struct {
+
+	// RequestID Request identifier. Used to match this information to another event.
+	RequestID NetworkRequestID `json:"requestId"`
+
+	// ErrorMessage Error message
+	ErrorMessage string `json:"errorMessage"`
+}
+
+// ProtoEvent name
+func (evt NetworkSubresourceWebBundleMetadataError) ProtoEvent() string {
+	return "Network.subresourceWebBundleMetadataError"
+}
+
+// NetworkSubresourceWebBundleInnerResponseParsed (experimental) Fired when handling requests for resources within a .wbn file.
+// Note: this will only be fired for resources that are requested by the webpage.
+type NetworkSubresourceWebBundleInnerResponseParsed struct {
+
+	// InnerRequestID Request identifier of the subresource request
+	InnerRequestID NetworkRequestID `json:"innerRequestId"`
+
+	// InnerRequestURL URL of the subresource resource.
+	InnerRequestURL string `json:"innerRequestURL"`
+
+	// BundleRequestID (optional) Bundle request identifier. Used to match this information to another event.
+	// This made be absent in case when the instrumentation was enabled only
+	// after webbundle was parsed.
+	BundleRequestID NetworkRequestID `json:"bundleRequestId,omitempty"`
+}
+
+// ProtoEvent name
+func (evt NetworkSubresourceWebBundleInnerResponseParsed) ProtoEvent() string {
+	return "Network.subresourceWebBundleInnerResponseParsed"
+}
+
+// NetworkSubresourceWebBundleInnerResponseError (experimental) Fired when request for resources within a .wbn file failed.
+type NetworkSubresourceWebBundleInnerResponseError struct {
+
+	// InnerRequestID Request identifier of the subresource request
+	InnerRequestID NetworkRequestID `json:"innerRequestId"`
+
+	// InnerRequestURL URL of the subresource resource.
+	InnerRequestURL string `json:"innerRequestURL"`
+
+	// ErrorMessage Error message
+	ErrorMessage string `json:"errorMessage"`
+
+	// BundleRequestID (optional) Bundle request identifier. Used to match this information to another event.
+	// This made be absent in case when the instrumentation was enabled only
+	// after webbundle was parsed.
+	BundleRequestID NetworkRequestID `json:"bundleRequestId,omitempty"`
+}
+
+// ProtoEvent name
+func (evt NetworkSubresourceWebBundleInnerResponseError) ProtoEvent() string {
+	return "Network.subresourceWebBundleInnerResponseError"
 }

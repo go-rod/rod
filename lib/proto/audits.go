@@ -55,6 +55,9 @@ const (
 
 	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict enum const
 	AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteStrict"
+
+	// AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty enum const
+	AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty AuditsSameSiteCookieExclusionReason = "ExcludeInvalidSameParty"
 )
 
 // AuditsSameSiteCookieWarningReason ...
@@ -102,8 +105,14 @@ const (
 // information without the cookie.
 type AuditsSameSiteCookieIssueDetails struct {
 
-	// Cookie ...
-	Cookie *AuditsAffectedCookie `json:"cookie"`
+	// Cookie (optional) If AffectedCookie is not set then rawCookieLine contains the raw
+	// Set-Cookie header string. This hints at a problem where the
+	// cookie line is syntactically or semantically malformed in a way
+	// that no valid cookie could be created.
+	Cookie *AuditsAffectedCookie `json:"cookie,omitempty"`
+
+	// RawCookieLine (optional) ...
+	RawCookieLine string `json:"rawCookieLine,omitempty"`
 
 	// CookieWarningReasons ...
 	CookieWarningReasons []AuditsSameSiteCookieWarningReason `json:"cookieWarningReasons"`
@@ -558,6 +567,32 @@ type AuditsQuirksModeIssueDetails struct {
 	LoaderID NetworkLoaderID `json:"loaderId"`
 }
 
+// AuditsNavigatorUserAgentIssueDetails ...
+type AuditsNavigatorUserAgentIssueDetails struct {
+
+	// URL ...
+	URL string `json:"url"`
+
+	// Location (optional) ...
+	Location *AuditsSourceCodeLocation `json:"location,omitempty"`
+}
+
+// AuditsWasmCrossOriginModuleSharingIssueDetails ...
+type AuditsWasmCrossOriginModuleSharingIssueDetails struct {
+
+	// WasmModuleURL ...
+	WasmModuleURL string `json:"wasmModuleUrl"`
+
+	// SourceOrigin ...
+	SourceOrigin string `json:"sourceOrigin"`
+
+	// TargetOrigin ...
+	TargetOrigin string `json:"targetOrigin"`
+
+	// IsWarning ...
+	IsWarning bool `json:"isWarning"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -596,6 +631,12 @@ const (
 
 	// AuditsInspectorIssueCodeQuirksModeIssue enum const
 	AuditsInspectorIssueCodeQuirksModeIssue AuditsInspectorIssueCode = "QuirksModeIssue"
+
+	// AuditsInspectorIssueCodeNavigatorUserAgentIssue enum const
+	AuditsInspectorIssueCodeNavigatorUserAgentIssue AuditsInspectorIssueCode = "NavigatorUserAgentIssue"
+
+	// AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue enum const
+	AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue AuditsInspectorIssueCode = "WasmCrossOriginModuleSharingIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -635,7 +676,17 @@ type AuditsInspectorIssueDetails struct {
 
 	// QuirksModeIssueDetails (optional) ...
 	QuirksModeIssueDetails *AuditsQuirksModeIssueDetails `json:"quirksModeIssueDetails,omitempty"`
+
+	// NavigatorUserAgentIssueDetails (optional) ...
+	NavigatorUserAgentIssueDetails *AuditsNavigatorUserAgentIssueDetails `json:"navigatorUserAgentIssueDetails,omitempty"`
+
+	// WasmCrossOriginModuleSharingIssue (optional) ...
+	WasmCrossOriginModuleSharingIssue *AuditsWasmCrossOriginModuleSharingIssueDetails `json:"wasmCrossOriginModuleSharingIssue,omitempty"`
 }
+
+// AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.
+// exceptions, CDP message, console messages, etc.) to reference an issue.
+type AuditsIssueID string
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
 type AuditsInspectorIssue struct {
@@ -645,6 +696,10 @@ type AuditsInspectorIssue struct {
 
 	// Details ...
 	Details *AuditsInspectorIssueDetails `json:"details"`
+
+	// IssueID (optional) A unique id for this issue. May be omitted if no other entity (e.g.
+	// exception, CDP message, etc.) is referencing this issue.
+	IssueID AuditsIssueID `json:"issueId,omitempty"`
 }
 
 // AuditsGetEncodedResponseEncoding enum

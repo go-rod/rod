@@ -434,6 +434,12 @@ func (t T) CSSSetMediaText() {
 	t.Nil(err)
 }
 
+func (t T) CSSSetContainerQueryText() {
+	c := &Client{}
+	_, err := proto.CSSSetContainerQueryText{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSSetRuleSelector() {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(c)
@@ -844,6 +850,12 @@ func (t T) DOMUndo() {
 func (t T) DOMGetFrameOwner() {
 	c := &Client{}
 	_, err := proto.DOMGetFrameOwner{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DOMGetContainerForNode() {
+	c := &Client{}
+	_, err := proto.DOMGetContainerForNode{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1767,12 +1779,6 @@ func (t T) NetworkSetCookies() {
 	t.Nil(err)
 }
 
-func (t T) NetworkSetDataSizeLimitsForTest() {
-	c := &Client{}
-	err := proto.NetworkSetDataSizeLimitsForTest{}.Call(c)
-	t.Nil(err)
-}
-
 func (t T) NetworkSetExtraHTTPHeaders() {
 	c := &Client{}
 	err := proto.NetworkSetExtraHTTPHeaders{}.Call(c)
@@ -1924,6 +1930,26 @@ func (t T) NetworkTrustTokenOperationDone() {
 	e.ProtoEvent()
 }
 
+func (t T) NetworkSubresourceWebBundleMetadataReceived() {
+	e := proto.NetworkSubresourceWebBundleMetadataReceived{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkSubresourceWebBundleMetadataError() {
+	e := proto.NetworkSubresourceWebBundleMetadataError{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkSubresourceWebBundleInnerResponseParsed() {
+	e := proto.NetworkSubresourceWebBundleInnerResponseParsed{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkSubresourceWebBundleInnerResponseError() {
+	e := proto.NetworkSubresourceWebBundleInnerResponseError{}
+	e.ProtoEvent()
+}
+
 func (t T) OverlayDisable() {
 	c := &Client{}
 	err := proto.OverlayDisable{}.Call(c)
@@ -2035,6 +2061,12 @@ func (t T) OverlaySetShowFlexOverlays() {
 func (t T) OverlaySetShowScrollSnapOverlays() {
 	c := &Client{}
 	err := proto.OverlaySetShowScrollSnapOverlays{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) OverlaySetShowContainerQueryOverlays() {
+	c := &Client{}
+	err := proto.OverlaySetShowContainerQueryOverlays{}.Call(c)
 	t.Nil(err)
 }
 

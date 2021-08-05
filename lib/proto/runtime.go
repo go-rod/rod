@@ -537,6 +537,11 @@ type RuntimeExceptionDetails struct {
 
 	// ExecutionContextID (optional) Identifier of the context where exception happened.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
+
+	// ExceptionMetaData (experimental) (optional) Dictionary with entries of meta data that the client associated
+	// with this exception, such as information about associated network
+	// requests, etc.
+	ExceptionMetaData map[string]gson.JSON `json:"exceptionMetaData,omitempty"`
 }
 
 // RuntimeTimestamp Number of milliseconds since epoch.
@@ -666,6 +671,9 @@ type RuntimeCallFunctionOn struct {
 	// ObjectGroup (optional) Symbolic group name that can be used to release multiple objects. If objectGroup is not
 	// specified and objectId is, objectGroup will be inherited from object.
 	ObjectGroup string `json:"objectGroup,omitempty"`
+
+	// ThrowOnSideEffect (experimental) (optional) Whether to throw an exception if side effect cannot be ruled out during evaluation.
+	ThrowOnSideEffect bool `json:"throwOnSideEffect,omitempty"`
 }
 
 // ProtoReq name

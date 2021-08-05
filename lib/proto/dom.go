@@ -74,6 +74,9 @@ const (
 	// DOMPseudoTypeGrammarError enum const
 	DOMPseudoTypeGrammarError DOMPseudoType = "grammar-error"
 
+	// DOMPseudoTypeHighlight enum const
+	DOMPseudoTypeHighlight DOMPseudoType = "highlight"
+
 	// DOMPseudoTypeFirstLineInherited enum const
 	DOMPseudoTypeFirstLineInherited DOMPseudoType = "first-line-inherited"
 
@@ -1370,6 +1373,36 @@ type DOMGetFrameOwnerResult struct {
 	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
 
 	// NodeID (optional) Id of the node at given coordinates, only when enabled and requested document.
+	NodeID DOMNodeID `json:"nodeId,omitempty"`
+}
+
+// DOMGetContainerForNode (experimental) Returns the container of the given node based on container query conditions.
+// If containerName is given, it will find the nearest container with a matching name;
+// otherwise it will find the nearest container regardless of its container name.
+type DOMGetContainerForNode struct {
+
+	// NodeID ...
+	NodeID DOMNodeID `json:"nodeId"`
+
+	// ContainerName (optional) ...
+	ContainerName string `json:"containerName,omitempty"`
+}
+
+// ProtoReq name
+func (m DOMGetContainerForNode) ProtoReq() string { return "DOM.getContainerForNode" }
+
+// Call the request
+func (m DOMGetContainerForNode) Call(c Client) (*DOMGetContainerForNodeResult, error) {
+	var res DOMGetContainerForNodeResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMGetContainerForNodeResult (experimental) Returns the container of the given node based on container query conditions.
+// If containerName is given, it will find the nearest container with a matching name;
+// otherwise it will find the nearest container regardless of its container name.
+type DOMGetContainerForNodeResult struct {
+
+	// NodeID (optional) The container node for the given node, or null if not found.
 	NodeID DOMNodeID `json:"nodeId,omitempty"`
 }
 

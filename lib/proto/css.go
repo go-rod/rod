@@ -96,7 +96,9 @@ type CSSCSSStyleSheetHeader struct {
 	// FrameID Owner frame identifier.
 	FrameID PageFrameID `json:"frameId"`
 
-	// SourceURL Stylesheet resource URL.
+	// SourceURL Stylesheet resource URL. Empty if this is a constructed stylesheet created using
+	// new CSSStyleSheet() (but non-empty if this is a constructed sylesheet imported
+	// as a CSS module script).
 	SourceURL string `json:"sourceURL"`
 
 	// SourceMapURL (optional) URL of source map associated with the stylesheet (if any).
@@ -127,7 +129,8 @@ type CSSCSSStyleSheetHeader struct {
 	// Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
 	IsMutable bool `json:"isMutable"`
 
-	// IsConstructed Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+	// IsConstructed True if this stylesheet is created through new CSSStyleSheet() or imported as a
+	// CSS module script.
 	IsConstructed bool `json:"isConstructed"`
 
 	// StartLine Line offset of the stylesheet within the resource (zero based).
@@ -165,6 +168,10 @@ type CSSCSSRule struct {
 	// Media (optional) Media list array (for rules involving media queries). The array enumerates media queries
 	// starting with the innermost one, going outwards.
 	Media []*CSSCSSMedia `json:"media,omitempty"`
+
+	// ContainerQueries (experimental) (optional) Container query list array (for rules involving container queries).
+	// The array enumerates container queries starting with the innermost one, going outwards.
+	ContainerQueries []*CSSCSSContainerQuery `json:"containerQueries,omitempty"`
 }
 
 // CSSRuleUsage CSS coverage information.
@@ -341,6 +348,23 @@ type CSSMediaQueryExpression struct {
 
 	// ComputedLength (optional) Computed length of media query expression (if applicable).
 	ComputedLength float64 `json:"computedLength,omitempty"`
+}
+
+// CSSCSSContainerQuery (experimental) CSS container query rule descriptor.
+type CSSCSSContainerQuery struct {
+
+	// Text Container query text.
+	Text string `json:"text"`
+
+	// Range (optional) The associated rule header range in the enclosing stylesheet (if
+	// available).
+	Range *CSSSourceRange `json:"range,omitempty"`
+
+	// StyleSheetID (optional) Identifier of the stylesheet containing this object (if exists).
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
+
+	// Name (optional) Optional name for the container.
+	Name string `json:"name,omitempty"`
 }
 
 // CSSPlatformFontUsage Information about amount of glyphs that were rendered with given font.
@@ -879,6 +903,35 @@ type CSSSetMediaTextResult struct {
 
 	// Media The resulting CSS media rule after modification.
 	Media *CSSCSSMedia `json:"media"`
+}
+
+// CSSSetContainerQueryText (experimental) Modifies the expression of a container query.
+type CSSSetContainerQueryText struct {
+
+	// StyleSheetID ...
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
+
+	// Range ...
+	Range *CSSSourceRange `json:"range"`
+
+	// Text ...
+	Text string `json:"text"`
+}
+
+// ProtoReq name
+func (m CSSSetContainerQueryText) ProtoReq() string { return "CSS.setContainerQueryText" }
+
+// Call the request
+func (m CSSSetContainerQueryText) Call(c Client) (*CSSSetContainerQueryTextResult, error) {
+	var res CSSSetContainerQueryTextResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// CSSSetContainerQueryTextResult (experimental) Modifies the expression of a container query.
+type CSSSetContainerQueryTextResult struct {
+
+	// ContainerQuery The resulting CSS container query rule after modification.
+	ContainerQuery *CSSCSSContainerQuery `json:"containerQuery"`
 }
 
 // CSSSetRuleSelector Modifies the rule selector.
