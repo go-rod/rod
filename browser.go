@@ -392,7 +392,7 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 				msg.Load(e.Interface().(proto.Event))
 				args := []reflect.Value{e}
 				if cbVal.Type().NumIn() == 2 {
-					args = append(args, reflect.ValueOf(sessionID))
+					args = append(args, reflect.ValueOf(msg.SessionID))
 				}
 				res := cbVal.Call(args)
 				if len(res) > 0 {
