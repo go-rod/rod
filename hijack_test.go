@@ -3,6 +3,7 @@ package rod_test
 import (
 	"errors"
 	"io/ioutil"
+	"mime"
 	"net/http"
 	"sync"
 
@@ -118,6 +119,22 @@ func (t T) HijackContinue() {
 
 	t.Eq("ok", t.page.MustElement("body").MustText())
 	wg.Wait()
+}
+
+func (t T) HijackMockWholeResponse() {
+	router := t.page.HijackRequests()
+	defer router.MustStop()
+
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		ctx.Response.SetHeader("Content-Type", mime.TypeByExtension(".html"))
+		ctx.Response.SetBody("<body>ok</body>")
+	})
+
+	go router.Run()
+
+	t.page.MustNavigate("http://test.com")
+
+	t.Eq("ok", t.page.MustElement("body").MustText())
 }
 
 func (t T) HijackSkip() {
