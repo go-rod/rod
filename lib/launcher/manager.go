@@ -19,7 +19,7 @@ const (
 	HeaderName = "Rod-Launcher"
 )
 
-// MustNewManaged is similar to MustNewManaged
+// MustNewManaged is similar to NewManaged
 func MustNewManaged(serviceURL string) *Launcher {
 	l, err := NewManaged(serviceURL)
 	utils.E(err)

@@ -341,7 +341,8 @@ func (ctx *HijackResponse) Body() string {
 	return string(ctx.payload.Body)
 }
 
-// Headers of the payload
+// Headers returns the clone of response headers.
+// If you want to modify the response headers use HijackResponse.SetHeader .
 func (ctx *HijackResponse) Headers() http.Header {
 	header := http.Header{}
 

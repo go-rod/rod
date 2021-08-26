@@ -396,12 +396,9 @@ func Example_handle_events() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	page := browser.MustPage()
 
-	page := browser.Context(ctx).MustPage()
-
-	done := make(chan int)
+	done := make(chan struct{})
 
 	// Listen for all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
@@ -573,8 +570,12 @@ func Example_load_extension() {
 	extPath, _ := filepath.Abs("fixtures/chrome-extension")
 
 	u := launcher.New().
-		Set("load-extension", extPath). // must use abs path for an extension
-		Headless(false).                // headless mode doesn't support extension yet
+		// Must use abs path for an extension
+		Set("load-extension", extPath).
+		// Headless mode doesn't support extension yet.
+		// Reason: https://bugs.chromium.org/p/chromium/issues/detail?id=706008#c5
+		// You can use XVFB to get rid of it: https://github.com/go-rod/rod/blob/master/lib/examples/launch-managed/main.go
+		Headless(false).
 		MustLaunch()
 
 	page := rod.New().ControlURL(u).MustConnect().MustPage("http://example.com")
