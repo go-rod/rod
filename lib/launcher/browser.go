@@ -261,7 +261,7 @@ func LookPath() (found string, has bool) {
 }
 
 // interface for testing
-var openExec func(name string, arg ...string) *exec.Cmd = exec.Command
+var openExec = exec.Command
 
 // Open tries to open the url via system's default browser.
 func Open(url string) {
