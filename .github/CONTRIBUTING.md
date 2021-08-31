@@ -56,16 +56,6 @@ rod=show,trace,slow=2s go test -run /Click
 
 Check type `defaults.ResetWithEnv` for how it works.
 
-### Specify browser binary
-
-You can use the `-browser-bin` flag to specify a custom browser executable path:
-
-For example:
-
-```bash
-go test --browser-bin=/path/to/browser
-```
-
 ### Lint project
 
 You can run all commands inside Docker so that you don't have to install all the development dependencies.
