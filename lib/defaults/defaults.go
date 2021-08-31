@@ -14,41 +14,53 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Trace is the default of rod.Browser.Trace
+// Trace is the default of rod.Browser.Trace .
+// Env name is "trace".
 var Trace bool
 
-// Slow is the default of rod.Browser.Slowmotion
+// Slow is the default of rod.Browser.Slowmotion .
 // The format is same as https://golang.org/pkg/time/#ParseDuration
+// Env name is "slow".
 var Slow time.Duration
 
-// Monitor is the default of rod.Browser.ServeMonitor
+// Monitor is the default of rod.Browser.ServeMonitor .
+// Env name is "monitor".
 var Monitor string
 
-// Show is the default of launcher.Launcher.Headless
+// Show is the default of launcher.Launcher.Headless .
+// Env name is "show".
 var Show bool
 
-// Devtools is the default of launcher.Launcher.Devtools
+// Devtools is the default of launcher.Launcher.Devtools .
+// Env name is "devtools".
 var Devtools bool
 
-// Dir is the default of launcher.Launcher.UserDataDir
+// Dir is the default of launcher.Launcher.UserDataDir .
+// Env name is "dir".
 var Dir string
 
-// Port is the default of launcher.Launcher.RemoteDebuggingPort
+// Port is the default of launcher.Launcher.RemoteDebuggingPort .
+// Env name is "port".
 var Port string
 
-// Bin is the default of launcher.Launcher.Bin
+// Bin is the default of launcher.Launcher.Bin .
+// Env name is "bin".
 var Bin string
 
 // Proxy is the default of launcher.Launcher.Proxy
+// Env name is "trace".
 var Proxy string
 
 // LockPort is the default of launcher.Browser.LockPort
+// Env name is "lock".
 var LockPort int
 
-// URL is the default of cdp.Client.New
+// URL is the default of cdp.Client.New .
+// Env name is "url".
 var URL string
 
 // CDP is the default of cdp.Client.Logger
+// Env name is "cdp".
 var CDP utils.Logger
 
 // Reset all flags to their init values.
@@ -67,7 +79,7 @@ func Reset() {
 	CDP = utils.LoggerQuiet
 }
 
-var rules = map[string]func(string){
+var envParsers = map[string]func(string){
 	"trace": func(string) {
 		Trace = true
 	},
@@ -176,7 +188,7 @@ func parse(options string) {
 			continue
 		}
 
-		f := rules[n]
+		f := envParsers[n]
 		if f == nil {
 			panic("unknown rod env option: " + n)
 		}
