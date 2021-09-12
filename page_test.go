@@ -20,6 +20,10 @@ import (
 	"github.com/ysmood/got"
 )
 
+func (t T) GetPageBrowser() {
+	t.Equal(t.page.Browser(), t.browser)
+}
+
 func (t T) GetPageURL() {
 	t.page.MustNavigate(t.srcFile("fixtures/click-iframe.html")).MustWaitLoad()
 	t.Regex(`/fixtures/click-iframe.html\z`, t.page.MustInfo().URL)

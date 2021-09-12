@@ -19,6 +19,11 @@ import (
 	"github.com/ysmood/gson"
 )
 
+func (t T) GetElementPage() {
+	el := t.page.MustNavigate(t.blank()).MustElement("html")
+	t.Eq(el.Page().SessionID, t.page.SessionID)
+}
+
 func (t T) Click() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")

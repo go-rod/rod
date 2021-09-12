@@ -45,6 +45,11 @@ func (el *Element) String() string {
 	return fmt.Sprintf("<%s>", el.Object.Description)
 }
 
+// Page of the element
+func (el *Element) Page() *Page {
+	return el.page
+}
+
 // Focus sets focus on the specified element.
 // Before the action, it will try to scroll to the element.
 func (el *Element) Focus() error {

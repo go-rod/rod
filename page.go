@@ -80,6 +80,11 @@ func (p *Page) GetSessionID() proto.TargetSessionID {
 	return p.SessionID
 }
 
+// Browser of the page
+func (p *Page) Browser() *Browser {
+	return p.browser
+}
+
 // Info of the page, such as the URL or title of the page
 func (p *Page) Info() (*proto.TargetTargetInfo, error) {
 	return p.browser.pageInfo(p.TargetID)
