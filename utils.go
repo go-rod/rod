@@ -114,6 +114,45 @@ func (pp PagePool) Cleanup(iteratee func(*Page)) {
 	}
 }
 
+// BrowserPool to thread-safely limit the number of browsers at the same time.
+// It's a common practice to use a channel to limit concurrency, it's not special for rod.
+// This helper is more like an example to use Go Channel.
+// Reference: https://golang.org/doc/effective_go#channels
+type BrowserPool chan *Browser
+
+// NewBrowserPool instance
+func NewBrowserPool(limit int) BrowserPool {
+	pp := make(chan *Browser, limit)
+	for i := 0; i < limit; i++ {
+		pp <- nil
+	}
+	return pp
+}
+
+// Get a browser from the pool. Use the BrowserPool.Put to make it reusable later.
+func (bp BrowserPool) Get(create func() *Browser) *Browser {
+	p := <-bp
+	if p == nil {
+		p = create()
+	}
+	return p
+}
+
+// Put a browser back to the pool
+func (bp BrowserPool) Put(p *Browser) {
+	bp <- p
+}
+
+// Cleanup helper
+func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
+	for i := 0; i < cap(bp); i++ {
+		p := <-bp
+		if p != nil {
+			iteratee(p)
+		}
+	}
+}
+
 var _ io.Reader = &StreamReader{}
 
 // StreamReader for browser data stream

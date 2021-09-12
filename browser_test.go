@@ -412,3 +412,13 @@ func (t T) BrowserConnectFailure() {
 		t.Fatal("expected an error on connect failure")
 	}
 }
+
+func (t T) BrowserPool() {
+	pool := rod.NewBrowserPool(3)
+	create := func() *rod.Browser { return rod.New().MustConnect() }
+	b := pool.Get(create)
+	pool.Put(b)
+	pool.Cleanup(func(p *rod.Browser) {
+		p.MustClose()
+	})
+}
