@@ -5,7 +5,7 @@
 # build rod-manager
 FROM golang AS go
 
-ARG goproxy="https://goproxy.io,direct"
+ARG goproxy="https://proxy.golang.org,direct"
 
 COPY . /rod
 WORKDIR /rod
