@@ -25,7 +25,6 @@ RUN curl -L $golang > golang.tar.gz && \
     rm golang.tar.gz
 
 ENV PATH="/usr/local/lib/.node/bin:/usr/local/lib/go/bin:/root/go/bin/:${PATH}"
-ENV GOPROXY=https://goproxy.io,direct
 
 # setup global git ignore
 RUN git config --global core.excludesfile ~/.gitignore_global
