@@ -62,10 +62,10 @@ func DefaultBackoff(interval time.Duration) time.Duration {
 }
 
 // BackoffSleeper returns a sleeper that sleeps in a backoff manner every time get called.
-// If algorithm is nil, DefaultBackoff will be used.
-// Set interval and maxInterval to the same value to make it a constant sleeper.
+// The sleep interval of the sleeper will grow from initInterval to maxInterval by the specified algorithm, then use maxInterval as the interval.
 // If maxInterval is not greater than 0, the sleeper will wake immediately.
-func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duration) time.Duration) Sleeper {
+// If algorithm is nil, DefaultBackoff will be used.
+func BackoffSleeper(initInterval, maxInterval time.Duration, algorithm func(time.Duration) time.Duration) Sleeper {
 	l := sync.Mutex{}
 
 	if algorithm == nil {
@@ -82,8 +82,8 @@ func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duratio
 		}
 
 		var interval time.Duration
-		if init < maxInterval {
-			interval = algorithm(init)
+		if initInterval < maxInterval {
+			interval = algorithm(initInterval)
 		} else {
 			interval = maxInterval
 		}
@@ -95,7 +95,7 @@ func BackoffSleeper(init, maxInterval time.Duration, algorithm func(time.Duratio
 		case <-ctx.Done():
 			return ctx.Err()
 		case <-t.C:
-			init = interval
+			initInterval = interval
 		}
 
 		return nil
