@@ -545,6 +545,13 @@ func (p *Page) WaitLoad() error {
 	return err
 }
 
+// WaitLoad waits for "document.readyState === "interactive, it returns immediately if the page is already loaded.
+func (p *Page) WaitInteractive() error {
+	defer p.tryTrace(TraceTypeWait, "load")()
+	_, err := p.Evaluate(evalHelper(js.WaitInteractive).ByPromise())
+	return err
+}
+
 // AddScriptTag to page. If url is empty, content will be used.
 func (p *Page) AddScriptTag(url, content string) error {
 	hash := md5.Sum([]byte(url + content))

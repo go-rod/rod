@@ -395,6 +395,12 @@ func (p *Page) MustWaitLoad() *Page {
 	return p
 }
 
+// MustWaitLoad is similar to Page.WaitLoad
+func (p *Page) MustWaitInteractive() *Page {
+	p.e(p.WaitInteractive())
+	return p
+}
+
 // MustAddScriptTag is similar to Page.AddScriptTag
 func (p *Page) MustAddScriptTag(url string) *Page {
 	p.e(p.AddScriptTag(url, ""))
