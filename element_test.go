@@ -22,6 +22,7 @@ import (
 func (t T) GetElementPage() {
 	el := t.page.MustNavigate(t.blank()).MustElement("html")
 	t.Eq(el.Page().SessionID, t.page.SessionID)
+	
 }
 
 func (t T) Click() {
