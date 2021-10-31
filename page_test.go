@@ -774,3 +774,19 @@ func (t T) PageElementFromObjectErr() {
 	t.mc.stubErr(1, proto.RuntimeEvaluate{})
 	t.Err(p.ElementFromObject(obj.Object))
 }
+
+func (t T) PageWaitInteractive() {
+	// Launch a new browser with default options, and connect to it.
+	browser := rod.New().MustConnect()
+
+	// Even you forget to close, rod will close it after main process ends.
+	defer browser.MustClose()
+
+	// Create a new page
+	page := browser.MustPage("https://github.com").MustWaitInteractive()
+
+	// We use css selector to get the search input element and input "git"
+	page.MustElement("input").MustInput("git").MustPress(input.Enter)
+
+
+}
