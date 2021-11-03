@@ -364,6 +364,13 @@ func TestWaitDownloadDataURI(t *testing.T) {
 	g.Eq("test blob", string(data))
 }
 
+func TestWaitDownloadCancel(t *testing.T) {
+	g := setup(t)
+
+	wait := g.browser.Context(g.Timeout(0)).WaitDownload(os.TempDir())
+	g.Eq(wait(), (*proto.PageDownloadWillBegin)(nil))
+}
+
 func TestWaitDownloadFromNewPage(t *testing.T) {
 	g := setup(t)
 
