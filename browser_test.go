@@ -316,6 +316,16 @@ func (t T) WaitDownload() {
 	t.Eq(content, string(data))
 }
 
+func (t T) WaitDownloadWithTimeout() {
+	s := t.Serve()
+	s.Route("/page", ".html", `<html></html>`)
+
+	wait := t.browser.Timeout(time.Millisecond).WaitDownload(os.TempDir())
+	t.page.MustNavigate(s.URL("/page"))
+	e := wait()
+	t.Eq(e, nil)
+}
+
 func (t T) WaitDownloadDataURI() {
 	s := t.Serve()
 
