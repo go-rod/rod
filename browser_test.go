@@ -323,7 +323,8 @@ func (t T) WaitDownloadWithTimeout() {
 	wait := t.browser.Timeout(time.Millisecond).WaitDownload(os.TempDir())
 	t.page.MustNavigate(s.URL("/page"))
 	e := wait()
-	t.Eq(e, nil)
+	var enil *proto.PageDownloadWillBegin
+	t.Eq(e, enil)
 }
 
 func (t T) WaitDownloadDataURI() {
