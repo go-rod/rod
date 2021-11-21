@@ -783,6 +783,7 @@ func (t T) PageWaitInteractive() {
 	defer browser.MustClose()
 
 	// Create a new page
+	// Will wait till page is Interactive
 	page := browser.MustPage("https://github.com").MustWaitInteractive()
 
 	// We use css selector to get the search input element and input "git"
