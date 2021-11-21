@@ -110,7 +110,7 @@ var WaitLoad = &Function{
 // WaitInteractive ...
 var WaitInteractive = &Function{
 	Name:         "waitInteractive",
-	Definition:   `function(){const e=this===window;return new Promise((t,n)=>{if(e){if("interactive"===document.readyState||"complete"===document.readyState)return t();let e=setInterval(()=>{if("interactive"===document.readyState)return clearInterval(e),t()},0)}})}`,
+	Definition:   `function(){const e=this===window;return new Promise((t,n)=>{if(e){if("interactive"===document.readyState||"complete"===document.readyState)return t();let e=setInterval(()=>{if("interactive"===document.readyState)return clearInterval(e),t()},0)}else void 0===this.complete||this.complete?t():(this.addEventListener("load",t),this.addEventListener("error",n))})}`,
 	Dependencies: []*Function{},
 }
 
