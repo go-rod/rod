@@ -603,22 +603,3 @@ func Example_log_cdp_traffic() {
 	rod.New().Client(cdp).MustConnect().MustPage("http://example.com")
 }
 
-func Example_Interactive() {
-	// Launch a new browser with default options, and connect to it.
-	browser := rod.New().MustConnect()
-
-	// Even you forget to close, rod will close it after main process ends.
-	defer browser.MustClose()
-
-	// Create a new page
-	page := browser.MustPage("https://github.com").MustWaitInteractive()
-
-	// We use css selector to get the search input element and input "git"
-	page.MustElement("input").MustInput("git").MustPress(input.Enter)
-
-	// Wait until css selector get the element then get the text content of it.
-	text := page.MustElement(".codesearch-results p").MustText()
-
-	fmt.Println(text)
-
-}
