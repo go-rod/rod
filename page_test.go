@@ -673,6 +673,11 @@ func (t T) Fonts() {
 
 func (t T) PagePDF() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+
+	s, err := p.PDF(&proto.PagePrintToPDF{})
+	t.E(err)
+	t.Nil(s.Close())
+
 	p.MustPDF("")
 
 	t.Panic(func() {

@@ -153,7 +153,7 @@ func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
 	}
 }
 
-var _ io.Reader = &StreamReader{}
+var _ io.ReadCloser = &StreamReader{}
 
 // StreamReader for browser data stream
 type StreamReader struct {
@@ -197,6 +197,11 @@ func (sr *StreamReader) Read(p []byte) (n int, err error) {
 	}
 
 	return sr.buf.Read(p)
+}
+
+// Close the stream, discard any temporary backing storage.
+func (sr *StreamReader) Close() error {
+	return proto.IOClose{Handle: sr.handle}.Call(sr.c)
 }
 
 // Try try fn with recover, return the panic as value
