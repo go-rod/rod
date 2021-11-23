@@ -545,7 +545,7 @@ func (p *Page) WaitLoad() error {
 	return err
 }
 
-// WaitLoad waits for "document.readyState === "interactive, it returns immediately if the page is already loaded.
+// WaitInteractive waits for "document.readyState === "interactive, it returns immediately if the page is already loaded.
 func (p *Page) WaitInteractive() error {
 	defer p.tryTrace(TraceTypeWait, "load")()
 	_, err := p.Evaluate(evalHelper(js.WaitInteractive).ByPromise())

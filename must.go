@@ -395,7 +395,7 @@ func (p *Page) MustWaitLoad() *Page {
 	return p
 }
 
-// MustWaitLoad is similar to Page.WaitLoad
+// MustWaitInteractive is similar to Page.WaitLoad
 func (p *Page) MustWaitInteractive() *Page {
 	p.e(p.WaitInteractive())
 	return p
