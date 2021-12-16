@@ -78,9 +78,6 @@ func unzip(logger io.Writer, from, to string) (err error) {
 	zr, err := zip.OpenReader(from)
 	utils.E(err)
 
-	err = utils.Mkdir(to)
-	utils.E(err)
-
 	size := 0
 	for _, f := range zr.File {
 		size += int(f.FileInfo().Size())
@@ -90,6 +87,8 @@ func unzip(logger io.Writer, from, to string) (err error) {
 
 	for _, f := range zr.File {
 		p := filepath.Join(to, f.Name)
+
+		_ = utils.Mkdir(filepath.Dir(p))
 
 		if f.FileInfo().IsDir() {
 			err := os.Mkdir(p, f.Mode())
