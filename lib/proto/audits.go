@@ -58,6 +58,9 @@ const (
 
 	// AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty enum const
 	AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty AuditsSameSiteCookieExclusionReason = "ExcludeInvalidSameParty"
+
+	// AuditsSameSiteCookieExclusionReasonExcludeSamePartyCrossPartyContext enum const
+	AuditsSameSiteCookieExclusionReasonExcludeSamePartyCrossPartyContext AuditsSameSiteCookieExclusionReason = "ExcludeSamePartyCrossPartyContext"
 )
 
 // AuditsSameSiteCookieWarningReason ...
@@ -352,6 +355,9 @@ const (
 
 	// AuditsContentSecurityPolicyViolationTypeKTrustedTypesPolicyViolation enum const
 	AuditsContentSecurityPolicyViolationTypeKTrustedTypesPolicyViolation AuditsContentSecurityPolicyViolationType = "kTrustedTypesPolicyViolation"
+
+	// AuditsContentSecurityPolicyViolationTypeKWasmEvalViolation enum const
+	AuditsContentSecurityPolicyViolationTypeKWasmEvalViolation AuditsContentSecurityPolicyViolationType = "kWasmEvalViolation"
 )
 
 // AuditsSourceCodeLocation ...
@@ -524,6 +530,12 @@ const (
 
 	// AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin enum const
 	AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionUntrustworthyOrigin"
+
+	// AuditsAttributionReportingIssueTypeAttributionTriggerDataTooLarge enum const
+	AuditsAttributionReportingIssueTypeAttributionTriggerDataTooLarge AuditsAttributionReportingIssueType = "AttributionTriggerDataTooLarge"
+
+	// AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge enum const
+	AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge AuditsAttributionReportingIssueType = "AttributionEventSourceTriggerDataTooLarge"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -593,6 +605,45 @@ type AuditsWasmCrossOriginModuleSharingIssueDetails struct {
 	IsWarning bool `json:"isWarning"`
 }
 
+// AuditsGenericIssueErrorType ...
+type AuditsGenericIssueErrorType string
+
+const (
+	// AuditsGenericIssueErrorTypeCrossOriginPortalPostMessageError enum const
+	AuditsGenericIssueErrorTypeCrossOriginPortalPostMessageError AuditsGenericIssueErrorType = "CrossOriginPortalPostMessageError"
+)
+
+// AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
+type AuditsGenericIssueDetails struct {
+
+	// ErrorType Issues with the same errorType are aggregated in the frontend.
+	ErrorType AuditsGenericIssueErrorType `json:"errorType"`
+
+	// FrameID (optional) ...
+	FrameID PageFrameID `json:"frameId,omitempty"`
+}
+
+// AuditsDeprecationIssueDetails This issue tracks information needed to print a deprecation message.
+// The formatting is inherited from the old console.log version, see more at:
+// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
+// TODO(crbug.com/1264960): Re-work format to add i18n support per:
+// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+type AuditsDeprecationIssueDetails struct {
+
+	// AffectedFrame (optional) ...
+	AffectedFrame *AuditsAffectedFrame `json:"affectedFrame,omitempty"`
+
+	// SourceCodeLocation ...
+	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
+
+	// Message (deprecated) (optional) The content of the deprecation issue (this won't be translated),
+	// e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
+	// around January 2022. Please use Web Storage or Indexed Database
+	// instead. This standard was abandoned in January, 1970. See
+	// https://www.chromestatus.com/feature/5684870116278272 for more details."
+	Message string `json:"message,omitempty"`
+}
+
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
 // optional fields in InspectorIssueDetails to convey more specific
 // information about the kind of issue.
@@ -637,6 +688,12 @@ const (
 
 	// AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue enum const
 	AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue AuditsInspectorIssueCode = "WasmCrossOriginModuleSharingIssue"
+
+	// AuditsInspectorIssueCodeGenericIssue enum const
+	AuditsInspectorIssueCodeGenericIssue AuditsInspectorIssueCode = "GenericIssue"
+
+	// AuditsInspectorIssueCodeDeprecationIssue enum const
+	AuditsInspectorIssueCodeDeprecationIssue AuditsInspectorIssueCode = "DeprecationIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -682,6 +739,12 @@ type AuditsInspectorIssueDetails struct {
 
 	// WasmCrossOriginModuleSharingIssue (optional) ...
 	WasmCrossOriginModuleSharingIssue *AuditsWasmCrossOriginModuleSharingIssueDetails `json:"wasmCrossOriginModuleSharingIssue,omitempty"`
+
+	// GenericIssueDetails (optional) ...
+	GenericIssueDetails *AuditsGenericIssueDetails `json:"genericIssueDetails,omitempty"`
+
+	// DeprecationIssueDetails (optional) ...
+	DeprecationIssueDetails *AuditsDeprecationIssueDetails `json:"deprecationIssueDetails,omitempty"`
 }
 
 // AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.

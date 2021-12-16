@@ -254,7 +254,7 @@ type TargetCreateTarget struct {
 	// Height (optional) Frame height in DIP (headless chrome only).
 	Height int `json:"height,omitempty"`
 
-	// BrowserContextID (optional) The browser context to create the page in.
+	// BrowserContextID (experimental) (optional) The browser context to create the page in.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 
 	// EnableBeginFrameControl (experimental) (optional) Whether BeginFrames for this target will be controlled via DevTools (headless chrome only,
@@ -388,6 +388,8 @@ func (m TargetSendMessageToTarget) Call(c Client) error {
 // TargetSetAutoAttach (experimental) Controls whether to automatically attach to new targets which are considered to be related to
 // this one. When turned on, attaches to all existing related targets as well. When turned off,
 // automatically detaches from all currently attached targets.
+// This also clears all targets added by `autoAttachRelated` from the list of targets to watch
+// for creation of related targets.
 type TargetSetAutoAttach struct {
 
 	// AutoAttach Whether to auto-attach to related targets.
@@ -408,6 +410,29 @@ func (m TargetSetAutoAttach) ProtoReq() string { return "Target.setAutoAttach" }
 
 // Call sends the request
 func (m TargetSetAutoAttach) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// TargetAutoAttachRelated (experimental) Adds the specified target to the list of targets that will be monitored for any related target
+// creation (such as child frames, child workers and new versions of service worker) and reported
+// through `attachedToTarget`. The specified target is also auto-attached.
+// This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
+// `setAutoAttach`. Only available at the Browser target.
+type TargetAutoAttachRelated struct {
+
+	// TargetID ...
+	TargetID TargetTargetID `json:"targetId"`
+
+	// WaitForDebuggerOnStart Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
+	// to run paused targets.
+	WaitForDebuggerOnStart bool `json:"waitForDebuggerOnStart"`
+}
+
+// ProtoReq name
+func (m TargetAutoAttachRelated) ProtoReq() string { return "Target.autoAttachRelated" }
+
+// Call sends the request
+func (m TargetAutoAttachRelated) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

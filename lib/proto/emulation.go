@@ -218,6 +218,24 @@ func (m EmulationSetFocusEmulationEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// EmulationSetAutoDarkModeOverride (experimental) Automatically render all web contents using a dark theme.
+type EmulationSetAutoDarkModeOverride struct {
+
+	// Enabled (optional) Whether to enable or disable automatic dark mode.
+	// If not specified, any existing override will be cleared.
+	Enabled bool `json:"enabled,omitempty"`
+}
+
+// ProtoReq name
+func (m EmulationSetAutoDarkModeOverride) ProtoReq() string {
+	return "Emulation.setAutoDarkModeOverride"
+}
+
+// Call sends the request
+func (m EmulationSetAutoDarkModeOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
 type EmulationSetCPUThrottlingRate struct {
 

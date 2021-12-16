@@ -178,7 +178,9 @@ type FetchFulfillRequest struct {
 	// over the protocol as text.
 	BinaryResponseHeaders []byte `json:"binaryResponseHeaders,omitempty"`
 
-	// Body (optional) A response body.
+	// Body (optional) A response body. If absent, original response body will be used if
+	// the request is intercepted at the response stage and empty body
+	// will be used if the request is intercepted at the request stage.
 	Body []byte `json:"body,omitempty"`
 
 	// ResponsePhrase (optional) A textual representation of responseCode.
@@ -211,6 +213,9 @@ type FetchContinueRequest struct {
 
 	// Headers (optional) If set, overrides the request headers.
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
+
+	// InterceptResponse (experimental) (optional) If set, overrides response interception behavior for this request.
+	InterceptResponse bool `json:"interceptResponse,omitempty"`
 }
 
 // ProtoReq name
@@ -236,6 +241,39 @@ func (m FetchContinueWithAuth) ProtoReq() string { return "Fetch.continueWithAut
 
 // Call sends the request
 func (m FetchContinueWithAuth) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// FetchContinueResponse (experimental) Continues loading of the paused response, optionally modifying the
+// response headers. If either responseCode or headers are modified, all of them
+// must be present.
+type FetchContinueResponse struct {
+
+	// RequestID An id the client received in requestPaused event.
+	RequestID FetchRequestID `json:"requestId"`
+
+	// ResponseCode (optional) An HTTP response code. If absent, original response code will be used.
+	ResponseCode int `json:"responseCode,omitempty"`
+
+	// ResponsePhrase (optional) A textual representation of responseCode.
+	// If absent, a standard phrase matching responseCode is used.
+	ResponsePhrase string `json:"responsePhrase,omitempty"`
+
+	// ResponseHeaders (optional) Response headers. If absent, original response headers will be used.
+	ResponseHeaders []*FetchHeaderEntry `json:"responseHeaders,omitempty"`
+
+	// BinaryResponseHeaders (optional) Alternative way of specifying response headers as a \0-separated
+	// series of name: value pairs. Prefer the above method unless you
+	// need to represent some non-UTF8 values that can't be transmitted
+	// over the protocol as text.
+	BinaryResponseHeaders []byte `json:"binaryResponseHeaders,omitempty"`
+}
+
+// ProtoReq name
+func (m FetchContinueResponse) ProtoReq() string { return "Fetch.continueResponse" }
+
+// Call sends the request
+func (m FetchContinueResponse) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -341,6 +379,9 @@ type FetchRequestPaused struct {
 
 	// ResponseStatusCode (optional) Response code if intercepted at response stage.
 	ResponseStatusCode int `json:"responseStatusCode,omitempty"`
+
+	// ResponseStatusText (optional) Response status text if intercepted at response stage.
+	ResponseStatusText string `json:"responseStatusText,omitempty"`
 
 	// ResponseHeaders (optional) Response headers if intercepted at the response stage.
 	ResponseHeaders []*FetchHeaderEntry `json:"responseHeaders,omitempty"`

@@ -98,6 +98,9 @@ const (
 type AccessibilityAXValueNativeSourceType string
 
 const (
+	// AccessibilityAXValueNativeSourceTypeDescription enum const
+	AccessibilityAXValueNativeSourceTypeDescription AccessibilityAXValueNativeSourceType = "description"
+
 	// AccessibilityAXValueNativeSourceTypeFigcaption enum const
 	AccessibilityAXValueNativeSourceTypeFigcaption AccessibilityAXValueNativeSourceType = "figcaption"
 
@@ -418,9 +421,16 @@ type AccessibilityGetPartialAXTreeResult struct {
 // AccessibilityGetFullAXTree (experimental) Fetches the entire accessibility tree for the root Document
 type AccessibilityGetFullAXTree struct {
 
-	// MaxDepth (optional) The maximum depth at which descendants of the root node should be retrieved.
+	// Depth (optional) The maximum depth at which descendants of the root node should be retrieved.
 	// If omitted, the full tree is returned.
+	Depth int `json:"depth,omitempty"`
+
+	// MaxDepth (deprecated) (optional) Deprecated. This parameter has been renamed to `depth`. If depth is not provided, max_depth will be used.
 	MaxDepth int `json:"max_depth,omitempty"`
+
+	// FrameID (optional) The frame for whose document the AX tree should be retrieved.
+	// If omitted, the root frame is used.
+	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
 // ProtoReq name
@@ -445,6 +455,10 @@ type AccessibilityGetChildAXNodes struct {
 
 	// ID ...
 	ID AccessibilityAXNodeID `json:"id"`
+
+	// FrameID (optional) The frame in whose document the node resides.
+	// If omitted, the root frame is used.
+	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
 // ProtoReq name

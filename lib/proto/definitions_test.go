@@ -117,40 +117,6 @@ func (t T) AnimationAnimationStarted() {
 	e.ProtoEvent()
 }
 
-func (t T) ApplicationCacheEnable() {
-	c := &Client{}
-	err := proto.ApplicationCacheEnable{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ApplicationCacheGetApplicationCacheForFrame() {
-	c := &Client{}
-	_, err := proto.ApplicationCacheGetApplicationCacheForFrame{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ApplicationCacheGetFramesWithManifests() {
-	c := &Client{}
-	_, err := proto.ApplicationCacheGetFramesWithManifests{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ApplicationCacheGetManifestForFrame() {
-	c := &Client{}
-	_, err := proto.ApplicationCacheGetManifestForFrame{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ApplicationCacheApplicationCacheStatusUpdated() {
-	e := proto.ApplicationCacheApplicationCacheStatusUpdated{}
-	e.ProtoEvent()
-}
-
-func (t T) ApplicationCacheNetworkStateUpdated() {
-	e := proto.ApplicationCacheNetworkStateUpdated{}
-	e.ProtoEvent()
-}
-
 func (t T) AuditsGetEncodedResponse() {
 	c := &Client{}
 	_, err := proto.AuditsGetEncodedResponse{}.Call(c)
@@ -859,6 +825,12 @@ func (t T) DOMGetContainerForNode() {
 	t.Nil(err)
 }
 
+func (t T) DOMGetQueryingDescendantsForContainer() {
+	c := &Client{}
+	_, err := proto.DOMGetQueryingDescendantsForContainer{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMAttributeModified() {
 	e := proto.DOMAttributeModified{}
 	e.ProtoEvent()
@@ -986,6 +958,18 @@ func (t T) DOMDebuggerSetInstrumentationBreakpoint() {
 func (t T) DOMDebuggerSetXHRBreakpoint() {
 	c := &Client{}
 	err := proto.DOMDebuggerSetXHRBreakpoint{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EventBreakpointsSetInstrumentationBreakpoint() {
+	c := &Client{}
+	err := proto.EventBreakpointsSetInstrumentationBreakpoint{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EventBreakpointsRemoveInstrumentationBreakpoint() {
+	c := &Client{}
+	err := proto.EventBreakpointsRemoveInstrumentationBreakpoint{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1137,6 +1121,12 @@ func (t T) EmulationResetPageScaleFactor() {
 func (t T) EmulationSetFocusEmulationEnabled() {
 	c := &Client{}
 	err := proto.EmulationSetFocusEmulationEnabled{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetAutoDarkModeOverride() {
+	c := &Client{}
+	err := proto.EmulationSetAutoDarkModeOverride{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1381,6 +1371,12 @@ func (t T) InputDispatchKeyEvent() {
 func (t T) InputInsertText() {
 	c := &Client{}
 	err := proto.InputInsertText{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) InputImeSetComposition() {
+	c := &Client{}
+	err := proto.InputImeSetComposition{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1809,6 +1805,12 @@ func (t T) NetworkGetSecurityIsolationStatus() {
 	t.Nil(err)
 }
 
+func (t T) NetworkEnableReportingAPI() {
+	c := &Client{}
+	err := proto.NetworkEnableReportingAPI{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) NetworkLoadNetworkResource() {
 	c := &Client{}
 	_, err := proto.NetworkLoadNetworkResource{}.Call(c)
@@ -1947,6 +1949,16 @@ func (t T) NetworkSubresourceWebBundleInnerResponseParsed() {
 
 func (t T) NetworkSubresourceWebBundleInnerResponseError() {
 	e := proto.NetworkSubresourceWebBundleInnerResponseError{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkReportingAPIReportAdded() {
+	e := proto.NetworkReportingAPIReportAdded{}
+	e.ProtoEvent()
+}
+
+func (t T) NetworkReportingAPIReportUpdated() {
+	e := proto.NetworkReportingAPIReportUpdated{}
 	e.ProtoEvent()
 }
 
@@ -2112,6 +2124,12 @@ func (t T) OverlaySetShowHinge() {
 	t.Nil(err)
 }
 
+func (t T) OverlaySetShowIsolatedElements() {
+	c := &Client{}
+	err := proto.OverlaySetShowIsolatedElements{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) OverlayInspectNodeRequested() {
 	e := proto.OverlayInspectNodeRequested{}
 	e.ProtoEvent()
@@ -2219,6 +2237,12 @@ func (t T) PageGetInstallabilityErrors() {
 func (t T) PageGetManifestIcons() {
 	c := &Client{}
 	_, err := proto.PageGetManifestIcons{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PageGetAppID() {
+	c := &Client{}
+	_, err := proto.PageGetAppID{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2336,6 +2360,12 @@ func (t T) PageGetPermissionsPolicyState() {
 	t.Nil(err)
 }
 
+func (t T) PageGetOriginTrials() {
+	c := &Client{}
+	_, err := proto.PageGetOriginTrials{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) PageSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.PageSetDeviceMetricsOverride{}.Call(c)
@@ -2423,12 +2453,6 @@ func (t T) PageSetWebLifecycleState() {
 func (t T) PageStopScreencast() {
 	c := &Client{}
 	err := proto.PageStopScreencast{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) PageSetProduceCompilationCache() {
-	c := &Client{}
-	err := proto.PageSetProduceCompilationCache{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2964,6 +2988,12 @@ func (t T) TargetSetAutoAttach() {
 	t.Nil(err)
 }
 
+func (t T) TargetAutoAttachRelated() {
+	c := &Client{}
+	err := proto.TargetAutoAttachRelated{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) TargetSetDiscoverTargets() {
 	c := &Client{}
 	err := proto.TargetSetDiscoverTargets{}.Call(c)
@@ -3106,6 +3136,12 @@ func (t T) FetchContinueRequest() {
 func (t T) FetchContinueWithAuth() {
 	c := &Client{}
 	err := proto.FetchContinueWithAuth{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FetchContinueResponse() {
+	c := &Client{}
+	err := proto.FetchContinueResponse{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3711,42 +3747,6 @@ func (t T) ProfilerTakePreciseCoverage() {
 func (t T) ProfilerTakeTypeProfile() {
 	c := &Client{}
 	_, err := proto.ProfilerTakeTypeProfile{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerEnableCounters() {
-	c := &Client{}
-	err := proto.ProfilerEnableCounters{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerDisableCounters() {
-	c := &Client{}
-	err := proto.ProfilerDisableCounters{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerGetCounters() {
-	c := &Client{}
-	_, err := proto.ProfilerGetCounters{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerEnableRuntimeCallStats() {
-	c := &Client{}
-	err := proto.ProfilerEnableRuntimeCallStats{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerDisableRuntimeCallStats() {
-	c := &Client{}
-	err := proto.ProfilerDisableRuntimeCallStats{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerGetRuntimeCallStats() {
-	c := &Client{}
-	_, err := proto.ProfilerGetRuntimeCallStats{}.Call(c)
 	t.Nil(err)
 }
 

@@ -107,6 +107,9 @@ type InputDragData struct {
 	// Items ...
 	Items []*InputDragDataItem `json:"items"`
 
+	// Files (optional) List of filenames that should be included when dropping
+	Files []string `json:"files,omitempty"`
+
 	// DragOperationsMask Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
 	DragOperationsMask int `json:"dragOperationsMask"`
 }
@@ -251,6 +254,35 @@ func (m InputInsertText) ProtoReq() string { return "Input.insertText" }
 
 // Call sends the request
 func (m InputInsertText) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// InputImeSetComposition (experimental) This method sets the current candidate text for ime.
+// Use imeCommitComposition to commit the final text.
+// Use imeSetComposition with empty string as text to cancel composition.
+type InputImeSetComposition struct {
+
+	// Text The text to insert
+	Text string `json:"text"`
+
+	// SelectionStart selection start
+	SelectionStart int `json:"selectionStart"`
+
+	// SelectionEnd selection end
+	SelectionEnd int `json:"selectionEnd"`
+
+	// ReplacementStart (optional) replacement start
+	ReplacementStart int `json:"replacementStart,omitempty"`
+
+	// ReplacementEnd (optional) replacement end
+	ReplacementEnd int `json:"replacementEnd,omitempty"`
+}
+
+// ProtoReq name
+func (m InputImeSetComposition) ProtoReq() string { return "Input.imeSetComposition" }
+
+// Call sends the request
+func (m InputImeSetComposition) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
