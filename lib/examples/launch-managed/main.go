@@ -31,7 +31,7 @@ func main() {
 	launcher.Open(browser.ServeMonitor(""))
 
 	fmt.Println(
-		browser.MustPage("https://example.com/").MustEval("() => document.title"),
+		browser.MustPage("https://mdn.dev/").MustEval("() => document.title"),
 	)
 
 	utils.Pause()

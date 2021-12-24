@@ -144,7 +144,7 @@ func Example_context_and_timeout() {
 // the no-prefix version of them.
 // About why we use "Must" as the prefix, it's similar to https://golang.org/pkg/regexp/#MustCompile
 func Example_error_handling() {
-	page := rod.New().MustConnect().MustPage("https://example.com")
+	page := rod.New().MustConnect().MustPage("https://mdn.dev")
 
 	// We use Go's standard way to check error types, no magic.
 	check := func(err error) {
@@ -364,7 +364,7 @@ func Example_customize_browser_launch() {
 
 	// mitmproxy needs a cert config to support https. We use http here instead,
 	// for example
-	fmt.Println(browser.MustPage("https://example.com/").MustElement("title").MustText())
+	fmt.Println(browser.MustPage("https://mdn.dev/").MustElement("title").MustText())
 }
 
 // When rod doesn't have a feature that you need. You can easily call the cdp to achieve it.
@@ -407,7 +407,7 @@ func Example_handle_events() {
 	})()
 
 	wait := page.WaitEvent(&proto.PageLoadEventFired{})
-	page.MustNavigate("https://example.com")
+	page.MustNavigate("https://mdn.dev")
 	wait()
 
 	// EachEvent allows us to achieve the same functionality as above.
@@ -417,13 +417,13 @@ func Example_handle_events() {
 		wait := page.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
 			return true
 		})
-		page.MustNavigate("https://example.com")
+		page.MustNavigate("https://mdn.dev")
 		wait()
 	}
 
 	// Or the for-loop style to handle events to do the same thing above.
 	if false {
-		page.MustNavigate("https://example.com")
+		page.MustNavigate("https://mdn.dev")
 
 		for msg := range page.Event() {
 			e := proto.PageLoadEventFired{}
@@ -541,7 +541,7 @@ func ExamplePage_pool() {
 		page := pool.Get(create)
 		defer pool.Put(page)
 
-		page.MustNavigate("http://example.com").MustWaitLoad()
+		page.MustNavigate("http://mdn.dev").MustWaitLoad()
 		fmt.Println(page.MustInfo().Title)
 	}
 
@@ -560,10 +560,10 @@ func ExamplePage_pool() {
 	pool.Cleanup(func(p *rod.Page) { p.MustClose() })
 
 	// Output:
-	// Example Domain
-	// Example Domain
-	// Example Domain
-	// Example Domain
+	// mdn.dev
+	// mdn.dev
+	// mdn.dev
+	// mdn.dev
 }
 
 func Example_load_extension() {
@@ -578,7 +578,7 @@ func Example_load_extension() {
 		Headless(false).
 		MustLaunch()
 
-	page := rod.New().ControlURL(u).MustConnect().MustPage("http://example.com")
+	page := rod.New().ControlURL(u).MustConnect().MustPage("http://mdn.dev")
 
 	page.MustWait(`document.title === 'test-extension'`)
 
@@ -599,5 +599,5 @@ func Example_log_cdp_traffic() {
 			fmt.Printf("%#v\n", msg)
 		}))
 
-	rod.New().Client(cdp).MustConnect().MustPage("http://example.com")
+	rod.New().Client(cdp).MustConnect().MustPage("http://mdn.dev")
 }

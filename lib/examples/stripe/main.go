@@ -31,7 +31,7 @@ func getRedirectURL() string {
 
 	return post(
 		"/payment_intents",
-		"amount=100&currency=usd&payment_method_data[type]=card&confirm=true&return_url=https%3A%2F%2Fexample.com"+
+		"amount=100&currency=usd&payment_method_data[type]=card&confirm=true&return_url=https%3A%2F%2Fmdn.dev"+
 			"&payment_method_data[card][token]="+token,
 	).Get("next_action.redirect_to_url.url").Str()
 }
