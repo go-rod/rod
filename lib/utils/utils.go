@@ -42,14 +42,7 @@ func (l Log) Println(msg ...interface{}) {
 }
 
 // LoggerQuiet does nothing
-var LoggerQuiet Logger = loggerQuiet{}
-
-type loggerQuiet struct{}
-
-// Println interface
-func (l loggerQuiet) Println(msg ...interface{}) {
-	fmt.Fprint(ioutil.Discard, msg...)
-}
+var LoggerQuiet Logger = Log(func(_ ...interface{}) {})
 
 // MultiLogger is similar to https://golang.org/pkg/io/#MultiWriter
 func MultiLogger(list ...Logger) Log {

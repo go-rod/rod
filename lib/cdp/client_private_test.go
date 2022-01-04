@@ -3,6 +3,7 @@ package cdp
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
 	"testing"
 
@@ -55,32 +56,8 @@ func (t T) ReqErr() {
 		send: func([]byte) error { return errors.New("err") },
 	}
 
-	go cdp.consumeMsg()
-
 	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
-}
-
-func (t T) CancelOnReq() {
-	ctx := t.Context()
-	cdp := New("")
-	cdp.ctx = ctx
-
-	go func() {
-		utils.Sleep(0.1)
-		ctx.Cancel()
-	}()
-
-	_, err := cdp.Call(ctx, "", "", nil)
-	t.Is(err, context.Canceled)
-
-	go func() {
-		utils.Sleep(0.1)
-		ctx.Cancel()
-	}()
-
-	_, err = cdp.Call(t.Context(), "", "", nil)
-	t.Is(err, context.Canceled)
 }
 
 func (t T) CancelBeforeSend() {
@@ -91,42 +68,32 @@ func (t T) CancelBeforeSend() {
 }
 
 func (t T) CancelBeforeCallback() {
-	cdp := New("")
-	cdp.ctx = t.Context()
-
 	ctx := t.Context()
-
-	go func() {
-		<-cdp.chReq
-		ctx.Cancel()
-	}()
+	cdp := New("")
+	cdp.ws = &MockWebSocket{
+		read: func() ([]byte, error) {
+			<-ctx.Done() // delay until send finishes
+			utils.Sleep(0.1)
+			return nil, errors.New("read failed")
+		},
+		send: func([]byte) error {
+			ctx.Cancel() // cancel the request after send
+			return nil
+		},
+	}
+	cdp.MustConnect(ctx)
 
 	_, err := cdp.Call(ctx, "", "", nil)
 	t.Eq(err.Error(), "context canceled")
 }
 
-func (t T) CancelOnCallback() {
-	ctx := t.Context()
-	cdp := New("")
-	cdp.ctx = ctx
-
-	go cdp.consumeMsg()
-
-	cdp.callbacks.Store(1, make(chan *Response))
-	cdp.chRes <- &Response{
-		ID:     1,
-		Result: nil,
-		Error:  nil,
-	}
-	utils.Sleep(0.1)
-	ctx.Cancel()
-}
-
 func (t T) CancelOnReadRes() {
 	ctx := t.Context()
 	cdp := New("")
-	cdp.ctx = ctx
 	cdp.ws = &MockWebSocket{
+		send: func(bytes []byte) error {
+			return ctx.Err()
+		},
 		read: func() ([]byte, error) {
 			ctx.Cancel()
 			return utils.MustToJSONBytes(&Response{
@@ -136,25 +103,41 @@ func (t T) CancelOnReadRes() {
 			}), nil
 		},
 	}
+	cdp.MustConnect(ctx)
 
-	go cdp.readMsgFromBrowser()
-
-	_, err := cdp.Call(t.Context(), "", "", nil)
+	_, err := cdp.Call(ctx, "", "", nil)
 	t.Err(err)
+}
+
+func (t T) CallAfterBrowserDone() {
+	ctx := t.Context()
+	cdp := New("")
+	cdp.ws = &MockWebSocket{
+		send: func(bytes []byte) error { return io.EOF },
+		read: func() ([]byte, error) { return nil, io.EOF },
+	}
+	cdp.MustConnect(ctx)
+	utils.Sleep(0.1)
+
+	_, err := cdp.Call(ctx, "", "", nil)
+	t.Err(err)
+	t.Is(err, io.EOF)
+	t.Eq(err.Error(), "cdp connection closed: EOF")
 }
 
 func (t T) CancelOnReadEvent() {
 	ctx, cancel := context.WithCancel(t.Context())
 	cdp := New("")
-	cdp.ctx = ctx
 	cdp.ws = &MockWebSocket{
+		send: func(bytes []byte) error {
+			return ctx.Err()
+		},
 		read: func() ([]byte, error) {
 			cancel()
 			return utils.MustToJSONBytes(&Event{}), nil
 		},
 	}
-
-	go cdp.readMsgFromBrowser()
+	cdp.MustConnect(ctx)
 
 	_, err := cdp.Call(t.Context(), "", "", nil)
 	t.Err(err)
@@ -162,4 +145,32 @@ func (t T) CancelOnReadEvent() {
 
 func (t T) TestError() {
 	t.Is(&Error{Code: -123}, &Error{Code: -123})
+}
+
+func (t T) PendingRequests() {
+	pending := newPendingRequests()
+
+	err := pending.add(1, newPendingRequest())
+	t.Nil(err)
+	err = pending.add(2, newPendingRequest())
+	t.Nil(err)
+	pending.fulfill(1, &Response{})
+
+	// resolving something where no-one is waiting is fine
+	pending.delete(2)
+	pending.fulfill(2, &Response{})
+	pending.fulfill(3, &Response{})
+
+	pending.close(io.EOF)
+	pending.close(errors.New("this will be ignored"))
+
+	err = pending.add(3, newPendingRequest())
+	t.Is(err, io.EOF)
+	t.Err(err)
+
+	pending = newPendingRequests()
+	pending.close(nil)
+	err = pending.add(3, newPendingRequest())
+	t.Err(err)
+	t.Eq(err.Error(), "browser has shut down")
 }

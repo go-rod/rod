@@ -1406,6 +1406,33 @@ type DOMGetContainerForNodeResult struct {
 	NodeID DOMNodeID `json:"nodeId,omitempty"`
 }
 
+// DOMGetQueryingDescendantsForContainer (experimental) Returns the descendants of a container query container that have
+// container queries against this container.
+type DOMGetQueryingDescendantsForContainer struct {
+
+	// NodeID Id of the container node to find querying descendants from.
+	NodeID DOMNodeID `json:"nodeId"`
+}
+
+// ProtoReq name
+func (m DOMGetQueryingDescendantsForContainer) ProtoReq() string {
+	return "DOM.getQueryingDescendantsForContainer"
+}
+
+// Call the request
+func (m DOMGetQueryingDescendantsForContainer) Call(c Client) (*DOMGetQueryingDescendantsForContainerResult, error) {
+	var res DOMGetQueryingDescendantsForContainerResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMGetQueryingDescendantsForContainerResult (experimental) Returns the descendants of a container query container that have
+// container queries against this container.
+type DOMGetQueryingDescendantsForContainerResult struct {
+
+	// NodeIds Descendant nodes with container queries against the given container.
+	NodeIds []DOMNodeID `json:"nodeIds"`
+}
+
 // DOMAttributeModified Fired when `Element`'s attribute is modified.
 type DOMAttributeModified struct {
 

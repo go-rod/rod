@@ -40,7 +40,7 @@ func (t T) SetCookies() {
 		Name:  "cookie-b",
 		Value: "2",
 		URL:   s.URL(),
-	}}...).MustNavigate(s.URL())
+	}}...).MustNavigate(s.URL()).MustWaitLoad()
 
 	cookies := page.MustCookies()
 

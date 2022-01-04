@@ -189,5 +189,5 @@ func (t T) Crash() {
 		"awaitPromise": true,
 	})
 	t.Is(err, cdp.ErrConnClosed)
-	t.Eq(err.Error(), "cdp connection closed: context canceled")
+	t.Eq(err.Error(), "cdp connection closed: EOF")
 }

@@ -917,6 +917,9 @@ type RuntimeGetProperties struct {
 
 	// GeneratePreview (experimental) (optional) Whether preview should be generated for the results.
 	GeneratePreview bool `json:"generatePreview,omitempty"`
+
+	// NonIndexedPropertiesOnly (experimental) (optional) If true, returns non-indexed properties only.
+	NonIndexedPropertiesOnly bool `json:"nonIndexedPropertiesOnly,omitempty"`
 }
 
 // ProtoReq name
@@ -1381,6 +1384,9 @@ type RuntimeInspectRequested struct {
 
 	// Hints ...
 	Hints map[string]gson.JSON `json:"hints"`
+
+	// ExecutionContextID (experimental) (optional) Identifier of the context where the call was made.
+	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
 // ProtoEvent name
