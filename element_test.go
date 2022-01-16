@@ -456,11 +456,6 @@ func (t T) SelectOptions() {
 		t.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
 		t.Err(el.Select([]string{"B"}, true, rod.SelectorTypeText))
 	}
-
-	{
-		t.mc.stubErr(6, proto.RuntimeCallFunctionOn{})
-		t.Err(el.Select([]string{"B"}, true, rod.SelectorTypeText))
-	}
 }
 
 func (t T) Matches() {

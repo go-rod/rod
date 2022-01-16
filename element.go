@@ -256,11 +256,6 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	err = el.WaitVisible()
-	if err != nil {
-		return err
-	}
-
 	err = el.WaitEnabled()
 	if err != nil {
 		return err
@@ -270,8 +265,6 @@ func (el *Element) Input(text string) error {
 	if err != nil {
 		return err
 	}
-
-	defer el.tryTrace(TraceTypeInput, "input "+text)()
 
 	err = el.page.Keyboard.InsertText(text)
 	if err != nil {
@@ -287,11 +280,6 @@ func (el *Element) Input(text string) error {
 // It will wait until the element is visible, enabled and writable.
 func (el *Element) InputTime(t time.Time) error {
 	err := el.Focus()
-	if err != nil {
-		return err
-	}
-
-	err = el.WaitVisible()
 	if err != nil {
 		return err
 	}
@@ -323,11 +311,6 @@ func (el *Element) Blur() error {
 // If no option matches the selectors, it will return ErrElementNotFound.
 func (el *Element) Select(selectors []string, selected bool, t SelectorType) error {
 	err := el.Focus()
-	if err != nil {
-		return err
-	}
-
-	err = el.WaitVisible()
 	if err != nil {
 		return err
 	}
