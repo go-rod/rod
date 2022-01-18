@@ -383,8 +383,9 @@ type NetworkSignedCertificateTimestamp struct {
 	// LogID Log ID.
 	LogID string `json:"logId"`
 
-	// Timestamp Issuance date.
-	Timestamp TimeSinceEpoch `json:"timestamp"`
+	// Timestamp Issuance date. Unlike TimeSinceEpoch, this contains the number of
+	// milliseconds since January 1, 1970, UTC, not the number of seconds.
+	Timestamp float64 `json:"timestamp"`
 
 	// HashAlgorithm Hash algorithm.
 	HashAlgorithm string `json:"hashAlgorithm"`
@@ -554,6 +555,12 @@ const (
 
 	// NetworkCorsErrorPreflightInvalidAllowExternal enum const
 	NetworkCorsErrorPreflightInvalidAllowExternal NetworkCorsError = "PreflightInvalidAllowExternal"
+
+	// NetworkCorsErrorPreflightMissingAllowPrivateNetwork enum const
+	NetworkCorsErrorPreflightMissingAllowPrivateNetwork NetworkCorsError = "PreflightMissingAllowPrivateNetwork"
+
+	// NetworkCorsErrorPreflightInvalidAllowPrivateNetwork enum const
+	NetworkCorsErrorPreflightInvalidAllowPrivateNetwork NetworkCorsError = "PreflightInvalidAllowPrivateNetwork"
 
 	// NetworkCorsErrorInvalidAllowMethodsPreflightResponse enum const
 	NetworkCorsErrorInvalidAllowMethodsPreflightResponse NetworkCorsError = "InvalidAllowMethodsPreflightResponse"
@@ -878,6 +885,13 @@ type NetworkCookie struct {
 	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort int `json:"sourcePort"`
+
+	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
+	// of the request to the endpoint that set the cookie.
+	PartitionKey string `json:"partitionKey,omitempty"`
+
+	// PartitionKeyOpaque (experimental) (optional) True if cookie partition key is opaque.
+	PartitionKeyOpaque bool `json:"partitionKeyOpaque,omitempty"`
 }
 
 // NetworkSetCookieBlockedReason (experimental) Types of reasons why a cookie may not be stored from a response.
@@ -1056,6 +1070,11 @@ type NetworkCookieParam struct {
 	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort int `json:"sourcePort,omitempty"`
+
+	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
+	// of the request to the endpoint that set the cookie.
+	// If not set, the cookie will be set as not partitioned.
+	PartitionKey string `json:"partitionKey,omitempty"`
 }
 
 // NetworkAuthChallengeSource enum
@@ -1441,6 +1460,16 @@ type NetworkReportingAPIReport struct {
 
 	// Status ...
 	Status NetworkReportStatus `json:"status"`
+}
+
+// NetworkReportingAPIEndpoint (experimental) ...
+type NetworkReportingAPIEndpoint struct {
+
+	// URL The URL of the endpoint to which reports may be delivered.
+	URL string `json:"url"`
+
+	// GroupName Name of the endpoint group.
+	GroupName string `json:"groupName"`
 }
 
 // NetworkLoadNetworkResourcePageResult (experimental) An object providing the result of a network resource load.
@@ -2042,6 +2071,11 @@ type NetworkSetCookie struct {
 	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort int `json:"sourcePort,omitempty"`
+
+	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
+	// of the request to the endpoint that set the cookie.
+	// If not set, the cookie will be set as not partitioned.
+	PartitionKey string `json:"partitionKey,omitempty"`
 }
 
 // ProtoReq name
@@ -2898,4 +2932,19 @@ type NetworkReportingAPIReportUpdated struct {
 // ProtoEvent name
 func (evt NetworkReportingAPIReportUpdated) ProtoEvent() string {
 	return "Network.reportingApiReportUpdated"
+}
+
+// NetworkReportingAPIEndpointsChangedForOrigin (experimental) ...
+type NetworkReportingAPIEndpointsChangedForOrigin struct {
+
+	// Origin Origin of the document(s) which configured the endpoints.
+	Origin string `json:"origin"`
+
+	// Endpoints ...
+	Endpoints []*NetworkReportingAPIEndpoint `json:"endpoints"`
+}
+
+// ProtoEvent name
+func (evt NetworkReportingAPIEndpointsChangedForOrigin) ProtoEvent() string {
+	return "Network.reportingApiEndpointsChangedForOrigin"
 }

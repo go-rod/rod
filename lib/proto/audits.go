@@ -536,6 +536,21 @@ const (
 
 	// AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge enum const
 	AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge AuditsAttributionReportingIssueType = "AttributionEventSourceTriggerDataTooLarge"
+
+	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry enum const
+	AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry AuditsAttributionReportingIssueType = "InvalidAttributionSourceExpiry"
+
+	// AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority enum const
+	AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority AuditsAttributionReportingIssueType = "InvalidAttributionSourcePriority"
+
+	// AuditsAttributionReportingIssueTypeInvalidEventSourceTriggerData enum const
+	AuditsAttributionReportingIssueTypeInvalidEventSourceTriggerData AuditsAttributionReportingIssueType = "InvalidEventSourceTriggerData"
+
+	// AuditsAttributionReportingIssueTypeInvalidTriggerPriority enum const
+	AuditsAttributionReportingIssueTypeInvalidTriggerPriority AuditsAttributionReportingIssueType = "InvalidTriggerPriority"
+
+	// AuditsAttributionReportingIssueTypeInvalidTriggerDedupKey enum const
+	AuditsAttributionReportingIssueTypeInvalidTriggerDedupKey AuditsAttributionReportingIssueType = "InvalidTriggerDedupKey"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.

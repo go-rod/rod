@@ -30,6 +30,18 @@ func (t T) AccessibilityGetFullAXTree() {
 	t.Nil(err)
 }
 
+func (t T) AccessibilityGetRootAXNode() {
+	c := &Client{}
+	_, err := proto.AccessibilityGetRootAXNode{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) AccessibilityGetAXNodeAndAncestors() {
+	c := &Client{}
+	_, err := proto.AccessibilityGetAXNodeAndAncestors{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) AccessibilityGetChildAXNodes() {
 	c := &Client{}
 	_, err := proto.AccessibilityGetChildAXNodes{}.Call(c)
@@ -40,6 +52,16 @@ func (t T) AccessibilityQueryAXTree() {
 	c := &Client{}
 	_, err := proto.AccessibilityQueryAXTree{}.Call(c)
 	t.Nil(err)
+}
+
+func (t T) AccessibilityLoadComplete() {
+	e := proto.AccessibilityLoadComplete{}
+	e.ProtoEvent()
+}
+
+func (t T) AccessibilityNodesUpdated() {
+	e := proto.AccessibilityNodesUpdated{}
+	e.ProtoEvent()
 }
 
 func (t T) AnimationDisable() {
@@ -518,6 +540,12 @@ func (t T) CastDisable() {
 func (t T) CastSetSinkToUse() {
 	c := &Client{}
 	err := proto.CastSetSinkToUse{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) CastStartDesktopMirroring() {
+	c := &Client{}
+	err := proto.CastStartDesktopMirroring{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1962,6 +1990,11 @@ func (t T) NetworkReportingAPIReportUpdated() {
 	e.ProtoEvent()
 }
 
+func (t T) NetworkReportingAPIEndpointsChangedForOrigin() {
+	e := proto.NetworkReportingAPIEndpointsChangedForOrigin{}
+	e.ProtoEvent()
+}
+
 func (t T) OverlayDisable() {
 	c := &Client{}
 	err := proto.OverlayDisable{}.Call(c)
@@ -2471,6 +2504,12 @@ func (t T) PageAddCompilationCache() {
 func (t T) PageClearCompilationCache() {
 	c := &Client{}
 	err := proto.PageClearCompilationCache{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PageSetSPCTransactionMode() {
+	c := &Client{}
+	err := proto.PageSetSPCTransactionMode{}.Call(c)
 	t.Nil(err)
 }
 

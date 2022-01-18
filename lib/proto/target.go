@@ -203,6 +203,10 @@ type TargetCreateBrowserContext struct {
 
 	// ProxyBypassList (optional) Proxy bypass list, similar to the one passed to --proxy-bypass-list
 	ProxyBypassList string `json:"proxyBypassList,omitempty"`
+
+	// OriginsWithUniversalNetworkAccess (optional) An optional list of origins to grant unlimited cross-origin access to.
+	// Parts of the URL other than those constituting origin are ignored.
+	OriginsWithUniversalNetworkAccess []string `json:"originsWithUniversalNetworkAccess,omitempty"`
 }
 
 // ProtoReq name

@@ -158,6 +158,9 @@ const (
 	// PagePermissionsPolicyFeatureChUaFullVersion enum const
 	PagePermissionsPolicyFeatureChUaFullVersion PagePermissionsPolicyFeature = "ch-ua-full-version"
 
+	// PagePermissionsPolicyFeatureChUaFullVersionList enum const
+	PagePermissionsPolicyFeatureChUaFullVersionList PagePermissionsPolicyFeature = "ch-ua-full-version-list"
+
 	// PagePermissionsPolicyFeatureChUaPlatformVersion enum const
 	PagePermissionsPolicyFeatureChUaPlatformVersion PagePermissionsPolicyFeature = "ch-ua-platform-version"
 
@@ -227,6 +230,9 @@ const (
 	// PagePermissionsPolicyFeatureInterestCohort enum const
 	PagePermissionsPolicyFeatureInterestCohort PagePermissionsPolicyFeature = "interest-cohort"
 
+	// PagePermissionsPolicyFeatureJoinAdInterestGroup enum const
+	PagePermissionsPolicyFeatureJoinAdInterestGroup PagePermissionsPolicyFeature = "join-ad-interest-group"
+
 	// PagePermissionsPolicyFeatureKeyboardMap enum const
 	PagePermissionsPolicyFeatureKeyboardMap PagePermissionsPolicyFeature = "keyboard-map"
 
@@ -250,6 +256,9 @@ const (
 
 	// PagePermissionsPolicyFeaturePublickeyCredentialsGet enum const
 	PagePermissionsPolicyFeaturePublickeyCredentialsGet PagePermissionsPolicyFeature = "publickey-credentials-get"
+
+	// PagePermissionsPolicyFeatureRunAdAuction enum const
+	PagePermissionsPolicyFeatureRunAdAuction PagePermissionsPolicyFeature = "run-ad-auction"
 
 	// PagePermissionsPolicyFeatureScreenWakeLock enum const
 	PagePermissionsPolicyFeatureScreenWakeLock PagePermissionsPolicyFeature = "screen-wake-lock"
@@ -1205,6 +1214,9 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonContentMediaSessionService enum const
 	PageBackForwardCacheNotRestoredReasonContentMediaSessionService PageBackForwardCacheNotRestoredReason = "ContentMediaSessionService"
+
+	// PageBackForwardCacheNotRestoredReasonContentScreenReader enum const
+	PageBackForwardCacheNotRestoredReasonContentScreenReader PageBackForwardCacheNotRestoredReason = "ContentScreenReader"
 
 	// PageBackForwardCacheNotRestoredReasonEmbedderPopupBlockerTabHelper enum const
 	PageBackForwardCacheNotRestoredReasonEmbedderPopupBlockerTabHelper PageBackForwardCacheNotRestoredReason = "EmbedderPopupBlockerTabHelper"
@@ -2522,6 +2534,36 @@ func (m PageClearCompilationCache) ProtoReq() string { return "Page.clearCompila
 
 // Call sends the request
 func (m PageClearCompilationCache) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// PageSetSPCTransactionModeMode enum
+type PageSetSPCTransactionModeMode string
+
+const (
+	// PageSetSPCTransactionModeModeNone enum const
+	PageSetSPCTransactionModeModeNone PageSetSPCTransactionModeMode = "none"
+
+	// PageSetSPCTransactionModeModeAutoaccept enum const
+	PageSetSPCTransactionModeModeAutoaccept PageSetSPCTransactionModeMode = "autoaccept"
+
+	// PageSetSPCTransactionModeModeAutoreject enum const
+	PageSetSPCTransactionModeModeAutoreject PageSetSPCTransactionModeMode = "autoreject"
+)
+
+// PageSetSPCTransactionMode (experimental) Sets the Secure Payment Confirmation transaction mode.
+// https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+type PageSetSPCTransactionMode struct {
+
+	// Mode ...
+	Mode PageSetSPCTransactionModeMode `json:"mode"`
+}
+
+// ProtoReq name
+func (m PageSetSPCTransactionMode) ProtoReq() string { return "Page.setSPCTransactionMode" }
+
+// Call sends the request
+func (m PageSetSPCTransactionMode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

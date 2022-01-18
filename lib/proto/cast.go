@@ -72,6 +72,21 @@ func (m CastSetSinkToUse) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// CastStartDesktopMirroring Starts mirroring the desktop to the sink.
+type CastStartDesktopMirroring struct {
+
+	// SinkName ...
+	SinkName string `json:"sinkName"`
+}
+
+// ProtoReq name
+func (m CastStartDesktopMirroring) ProtoReq() string { return "Cast.startDesktopMirroring" }
+
+// Call sends the request
+func (m CastStartDesktopMirroring) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // CastStartTabMirroring Starts mirroring the tab to the sink.
 type CastStartTabMirroring struct {
 

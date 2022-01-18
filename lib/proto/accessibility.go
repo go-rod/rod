@@ -353,11 +353,17 @@ type AccessibilityAXNode struct {
 	// Properties (optional) All other properties
 	Properties []*AccessibilityAXProperty `json:"properties,omitempty"`
 
+	// ParentID (optional) ID for this node's parent.
+	ParentID AccessibilityAXNodeID `json:"parentId,omitempty"`
+
 	// ChildIds (optional) IDs for each of this node's child nodes.
 	ChildIds []AccessibilityAXNodeID `json:"childIds,omitempty"`
 
 	// BackendDOMNodeID (optional) The backend ID for the associated DOM node, if any.
 	BackendDOMNodeID DOMBackendNodeID `json:"backendDOMNodeId,omitempty"`
+
+	// FrameID (optional) The frame ID for the frame associated with this nodes document.
+	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
 // AccessibilityDisable Disables the accessibility domain.
@@ -449,6 +455,65 @@ type AccessibilityGetFullAXTreeResult struct {
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
 
+// AccessibilityGetRootAXNode (experimental) Fetches the root node.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetRootAXNode struct {
+
+	// FrameID (optional) The frame in whose document the node resides.
+	// If omitted, the root frame is used.
+	FrameID PageFrameID `json:"frameId,omitempty"`
+}
+
+// ProtoReq name
+func (m AccessibilityGetRootAXNode) ProtoReq() string { return "Accessibility.getRootAXNode" }
+
+// Call the request
+func (m AccessibilityGetRootAXNode) Call(c Client) (*AccessibilityGetRootAXNodeResult, error) {
+	var res AccessibilityGetRootAXNodeResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// AccessibilityGetRootAXNodeResult (experimental) Fetches the root node.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetRootAXNodeResult struct {
+
+	// Node ...
+	Node *AccessibilityAXNode `json:"node"`
+}
+
+// AccessibilityGetAXNodeAndAncestors (experimental) Fetches a node and all ancestors up to and including the root.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetAXNodeAndAncestors struct {
+
+	// NodeID (optional) Identifier of the node to get.
+	NodeID DOMNodeID `json:"nodeId,omitempty"`
+
+	// BackendNodeID (optional) Identifier of the backend node to get.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
+
+	// ObjectID (optional) JavaScript object id of the node wrapper to get.
+	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
+}
+
+// ProtoReq name
+func (m AccessibilityGetAXNodeAndAncestors) ProtoReq() string {
+	return "Accessibility.getAXNodeAndAncestors"
+}
+
+// Call the request
+func (m AccessibilityGetAXNodeAndAncestors) Call(c Client) (*AccessibilityGetAXNodeAndAncestorsResult, error) {
+	var res AccessibilityGetAXNodeAndAncestorsResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// AccessibilityGetAXNodeAndAncestorsResult (experimental) Fetches a node and all ancestors up to and including the root.
+// Requires `enable()` to have been called previously.
+type AccessibilityGetAXNodeAndAncestorsResult struct {
+
+	// Nodes ...
+	Nodes []*AccessibilityAXNode `json:"nodes"`
+}
+
 // AccessibilityGetChildAXNodes (experimental) Fetches a particular accessibility node by AXNodeId.
 // Requires `enable()` to have been called previously.
 type AccessibilityGetChildAXNodes struct {
@@ -520,4 +585,29 @@ type AccessibilityQueryAXTreeResult struct {
 	// Nodes A list of `Accessibility.AXNode` matching the specified attributes,
 	// including nodes that are ignored for accessibility.
 	Nodes []*AccessibilityAXNode `json:"nodes"`
+}
+
+// AccessibilityLoadComplete (experimental) The loadComplete event mirrors the load complete event sent by the browser to assistive
+// technology when the web page has finished loading.
+type AccessibilityLoadComplete struct {
+
+	// Root New document root node.
+	Root *AccessibilityAXNode `json:"root"`
+}
+
+// ProtoEvent name
+func (evt AccessibilityLoadComplete) ProtoEvent() string {
+	return "Accessibility.loadComplete"
+}
+
+// AccessibilityNodesUpdated (experimental) The nodesUpdated event is sent every time a previously requested node has changed the in tree.
+type AccessibilityNodesUpdated struct {
+
+	// Nodes Updated node data.
+	Nodes []*AccessibilityAXNode `json:"nodes"`
+}
+
+// ProtoEvent name
+func (evt AccessibilityNodesUpdated) ProtoEvent() string {
+	return "Accessibility.nodesUpdated"
 }

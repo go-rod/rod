@@ -318,7 +318,7 @@ func (evt SecurityVisibleSecurityStateChanged) ProtoEvent() string {
 	return "Security.visibleSecurityStateChanged"
 }
 
-// SecuritySecurityStateChanged The security state of the page changed.
+// SecuritySecurityStateChanged (deprecated) The security state of the page changed. No longer being sent.
 type SecuritySecurityStateChanged struct {
 
 	// SecurityState Security state.
@@ -327,14 +327,14 @@ type SecuritySecurityStateChanged struct {
 	// SchemeIsCryptographic (deprecated) True if the page was loaded over cryptographic transport such as HTTPS.
 	SchemeIsCryptographic bool `json:"schemeIsCryptographic"`
 
-	// Explanations List of explanations for the security state. If the overall security state is `insecure` or
-	// `warning`, at least one corresponding explanation should be included.
+	// Explanations (deprecated) Previously a list of explanations for the security state. Now always
+	// empty.
 	Explanations []*SecuritySecurityStateExplanation `json:"explanations"`
 
 	// InsecureContentStatus (deprecated) Information about insecure content on the page.
 	InsecureContentStatus *SecurityInsecureContentStatus `json:"insecureContentStatus"`
 
-	// Summary (optional) Overrides user-visible description of the state.
+	// Summary (deprecated) (optional) Overrides user-visible description of the state. Always omitted.
 	Summary string `json:"summary,omitempty"`
 }
 
