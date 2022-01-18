@@ -5,7 +5,7 @@ package js
 // Element ...
 var Element = &Function{
 	Name:         "element",
-	Definition:   `function(e){return functions.selectable(this).querySelector(e)}`,
+	Definition:   `function(e){const t=functions.selectable(this);return t.querySelector(e)}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -19,21 +19,21 @@ var Elements = &Function{
 // ElementX ...
 var ElementX = &Function{
 	Name:         "elementX",
-	Definition:   `function(e){const t=functions.selectable(this);return document.evaluate(e,t,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue}`,
+	Definition:   `function(e){var t=functions.selectable(this);return document.evaluate(e,t,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue}`,
 	Dependencies: []*Function{Selectable},
 }
 
 // ElementsX ...
 var ElementsX = &Function{
 	Name:         "elementsX",
-	Definition:   `function(e){const t=functions.selectable(this),n=document.evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[];let s;for(;s=n.iterateNext();)i.push(s);return i}`,
+	Definition:   `function(e){var t,n=functions.selectable(this);const i=document.evaluate(e,n,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),s=[];for(;t=i.iterateNext();)s.push(t);return s}`,
 	Dependencies: []*Function{Selectable},
 }
 
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){var n,i=t.match(/(\/?)(.+)\1([a-z]*)/i);n=i[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(i[3])?new RegExp(t):new RegExp(i[2],i[3]);const s=functions.selectable(this),o=Array.from(s.querySelectorAll(e)).find(e=>n.test(functions.text.call(e)));return o||null}`,
+	Definition:   `function(e,t){var n=t.match(/(\/?)(.+)\1([a-z]*)/i),i=n[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(n[3])?new RegExp(t):new RegExp(n[2],n[3]);const s=functions.selectable(this);e=Array.from(s.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return e||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
@@ -54,7 +54,7 @@ var ContainsElement = &Function{
 // InitMouseTracer ...
 var InitMouseTracer = &Function{
 	Name:         "initMouseTracer",
-	Definition:   `async function(e,t){if(await functions.waitLoad(),document.getElementById(e))return;const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.parentElement.appendChild(i)}`,
+	Definition:   `async function(e,t){if(await functions.waitLoad(),!document.getElementById(e)){const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.parentElement.appendChild(i)}}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
@@ -68,42 +68,50 @@ var UpdateMouseTracer = &Function{
 // Rect ...
 var Rect = &Function{
 	Name:         "rect",
-	Definition:   `function(){const e=functions.tag(this).getBoundingClientRect();return{x:e.x,y:e.y,width:e.width,height:e.height}}`,
+	Definition:   `function(){var e=functions.tag(this).getBoundingClientRect();return{x:e.x,y:e.y,width:e.width,height:e.height}}`,
 	Dependencies: []*Function{Tag},
 }
 
 // Overlay ...
 var Overlay = &Function{
-	Name:         "overlay",
-	Definition:   `async function(e,t,n,i,s,o){await functions.waitLoad();const r=document.createElement("div");if(r.id=e,r.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;\n        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;\n        box-sizing: border-box;\n        left: ${t}px;\n        top: ${n}px;\n        height: ${s}px;\n        width: ${i}px;` + "`" + `,i*s==0&&(r.style.border="none"),!o)return void document.body.parentElement.appendChild(r);const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;\n        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;\n        top: ${s}px;` + "`" + `,l.innerHTML=o,r.appendChild(l),document.body.parentElement.appendChild(r),window.innerHeight<l.offsetHeight+n+s&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}`,
+	Name: "overlay",
+	Definition: `async function(e,t,n,i,s,r){await functions.waitLoad();const o=document.createElement("div");if(o.id=e,o.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;
+        border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;
+        box-sizing: border-box;
+        left: ${t}px;
+        top: ${n}px;
+        height: ${s}px;
+        width: ${i}px;` + "`" + `,i*s==0&&(o.style.border="none"),r){const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
+        box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;
+        top: ${s}px;` + "`" + `,l.innerHTML=r,o.appendChild(l),document.body.parentElement.appendChild(o),window.innerHeight<l.offsetHeight+n+s&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}else document.body.parentElement.appendChild(o)}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 // ElementOverlay ...
 var ElementOverlay = &Function{
 	Name:         "elementOverlay",
-	Definition:   `async function(e,t){const n=functions.tag(this);let i=n.getBoundingClientRect();await functions.overlay(e,i.left,i.top,i.width,i.height,t);const s=()=>{const t=document.getElementById(e);if(null===t)return;const o=n.getBoundingClientRect();i.left!==o.left||i.top!==o.top||i.width!==o.width||i.height!==o.height?(t.style.left=o.left+"px",t.style.top=o.top+"px",t.style.width=o.width+"px",t.style.height=o.height+"px",i=o,setTimeout(s,100)):setTimeout(s,100)};setTimeout(s,100)}`,
+	Definition:   `async function(n,e){const i=100,s=functions.tag(this);let r=s.getBoundingClientRect();await functions.overlay(n,r.left,r.top,r.width,r.height,e);const o=()=>{const e=document.getElementById(n);var t;null!==e&&(t=s.getBoundingClientRect(),r.left===t.left&&r.top===t.top&&r.width===t.width&&r.height===t.height||(e.style.left=t.left+"px",e.style.top=t.top+"px",e.style.width=t.width+"px",e.style.height=t.height+"px",r=t),setTimeout(o,i))};setTimeout(o,i)}`,
 	Dependencies: []*Function{Tag, Overlay},
 }
 
 // RemoveOverlay ...
 var RemoveOverlay = &Function{
 	Name:         "removeOverlay",
-	Definition:   `function(e){const t=document.getElementById(e);t&&Element.prototype.remove.call(t)}`,
+	Definition:   `function(e){e=document.getElementById(e);e&&Element.prototype.remove.call(e)}`,
 	Dependencies: []*Function{},
 }
 
 // WaitIdle ...
 var WaitIdle = &Function{
 	Name:         "waitIdle",
-	Definition:   `e=>new Promise(t=>{window.requestIdleCallback(t,{timeout:e})})`,
+	Definition:   `function(t){return new Promise(e=>{window.requestIdleCallback(e,{timeout:t})})}`,
 	Dependencies: []*Function{},
 }
 
 // WaitLoad ...
 var WaitLoad = &Function{
 	Name:         "waitLoad",
-	Definition:   `function(){const e=this===window;return new Promise((t,n)=>{if(e){if("complete"===document.readyState)return t();window.addEventListener("load",t)}else void 0===this.complete||this.complete?t():(this.addEventListener("load",t),this.addEventListener("error",n))})}`,
+	Definition:   `function(){const n=this===window;return new Promise((e,t)=>{if(n){if("complete"===document.readyState)return e();window.addEventListener("load",e)}else void 0===this.complete||this.complete?e():(this.addEventListener("load",e),this.addEventListener("error",t))})}`,
 	Dependencies: []*Function{},
 }
 
@@ -117,14 +125,14 @@ var InputEvent = &Function{
 // InputTime ...
 var InputTime = &Function{
 	Name:         "inputTime",
-	Definition:   `function(e){const t=new Date(e),n=e=>e.toString().padStart(2,"0"),i=t.getFullYear(),s=n(t.getMonth()+1),o=n(t.getDate()),r=n(t.getHours()),l=n(t.getMinutes());switch(this.type){case"date":this.value=` + "`" + `${i}-${s}-${o}` + "`" + `;break;case"datetime-local":this.value=` + "`" + `${i}-${s}-${o}T${r}:${l}` + "`" + `;break;case"month":this.value=s;break;case"time":this.value=` + "`" + `${r}:${l}` + "`" + `}functions.inputEvent.call(this)}`,
+	Definition:   `function(e){const t=new Date(e);var e=e=>e.toString().padStart(2,"0"),n=t.getFullYear(),i=e(t.getMonth()+1),s=e(t.getDate()),r=e(t.getHours()),o=e(t.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${i}-` + "`" + `+s;break;case"datetime-local":this.value=n+` + "`" + `-${i}-${s}T${r}:` + "`" + `+o;break;case"month":this.value=i;break;case"time":this.value=r+":"+o}functions.inputEvent.call(this)}`,
 	Dependencies: []*Function{InputEvent},
 }
 
 // SelectText ...
 var SelectText = &Function{
 	Name:         "selectText",
-	Definition:   `function(e){const t=this.value.match(new RegExp(e));t&&this.setSelectionRange(t.index,t.index+t[0].length)}`,
+	Definition:   `function(e){e=this.value.match(new RegExp(e));e&&this.setSelectionRange(e.index,e.index+e[0].length)}`,
 	Dependencies: []*Function{},
 }
 
@@ -138,14 +146,14 @@ var SelectAllText = &Function{
 // Select ...
 var Select = &Function{
 	Name:         "select",
-	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(e=>t=>t.matches(e));break;default:i=e.map(e=>t=>t.innerText.includes(e))}const s=Array.from(this.options);let o=!1;return i.forEach(e=>{const n=s.find(e);if(n)return n.selected=t,void(o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
+	Definition:   `function(e,n,t){let i;switch(t){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(t=>e=>e.matches(t));break;default:i=e.map(t=>e=>e.innerText.includes(t))}const s=Array.from(this.options);let r=!1;return i.forEach(e=>{const t=s.find(e);t&&(t.selected=n,r=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),r}`,
 	Dependencies: []*Function{},
 }
 
 // Visible ...
 var Visible = &Function{
 	Name:         "visible",
-	Definition:   `function(){const e=functions.tag(this),t=e.getBoundingClientRect(),n=window.getComputedStyle(e);return"none"!==n.display&&"hidden"!==n.visibility&&!!(t.top||t.bottom||t.width||t.height)}`,
+	Definition:   `function(){const e=functions.tag(this);var t=e.getBoundingClientRect(),n=window.getComputedStyle(e);return"none"!==n.display&&"hidden"!==n.visibility&&!!(t.top||t.bottom||t.width||t.height)}`,
 	Dependencies: []*Function{Tag},
 }
 
@@ -173,34 +181,34 @@ var Resource = &Function{
 // AddScriptTag ...
 var AddScriptTag = &Function{
 	Name:         "addScriptTag",
-	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,s)=>{var o=document.createElement("script");t?(o.src=t,o.onload=i):(o.type="text/javascript",o.text=n,i()),o.id=e,o.onerror=s,document.head.appendChild(o)})}`,
+	Definition:   `function(i,s,r){if(!document.getElementById(i))return new Promise((e,t)=>{var n=document.createElement("script");s?(n.src=s,n.onload=e):(n.type="text/javascript",n.text=r,e()),n.id=i,n.onerror=t,document.head.appendChild(n)})}`,
 	Dependencies: []*Function{},
 }
 
 // AddStyleTag ...
 var AddStyleTag = &Function{
 	Name:         "addStyleTag",
-	Definition:   `function(e,t,n){if(!document.getElementById(e))return new Promise((i,s)=>{var o;t?((o=document.createElement("link")).rel="stylesheet",o.href=t):((o=document.createElement("style")).type="text/css",o.appendChild(document.createTextNode(n)),i()),o.id=e,o.onload=i,o.onerror=s,document.head.appendChild(o)})}`,
+	Definition:   `function(i,s,r){if(!document.getElementById(i))return new Promise((e,t)=>{var n;s?((n=document.createElement("link")).rel="stylesheet",n.href=s):((n=document.createElement("style")).type="text/css",n.appendChild(document.createTextNode(r)),e()),n.id=i,n.onload=e,n.onerror=t,document.head.appendChild(n)})}`,
 	Dependencies: []*Function{},
 }
 
 // Selectable ...
 var Selectable = &Function{
 	Name:         "selectable",
-	Definition:   `e=>e.querySelector?e:document`,
+	Definition:   `function(e){return e.querySelector?e:document}`,
 	Dependencies: []*Function{},
 }
 
 // Tag ...
 var Tag = &Function{
 	Name:         "tag",
-	Definition:   `e=>e.tagName?e:e.parentElement`,
+	Definition:   `function(e){return e.tagName?e:e.parentElement}`,
 	Dependencies: []*Function{},
 }
 
 // ExposeFunc ...
 var ExposeFunc = &Function{
 	Name:         "exposeFunc",
-	Definition:   `function(e,t){let n=0;window[e]=(e=>new Promise((i,s)=>{const o=t+"_cb"+n++;window[o]=((e,t)=>{delete window[o],t?s(t):i(e)}),window[t](JSON.stringify({req:e,cb:o}))}))}`,
+	Definition:   `function(e,t){let r=0;window[e]=e=>new Promise((n,i)=>{const s=t+"_cb"+r++;window[s]=(e,t)=>{delete window[s],t?i(t):n(e)},window[t](JSON.stringify({req:e,cb:s}))})}`,
 	Dependencies: []*Function{},
 }

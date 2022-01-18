@@ -18,9 +18,9 @@ func main() {
 		}
 	}()
 
-	utils.ExecLine("npx -yq -- eslint@7.16.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
+	utils.ExecLine("npx -yq -- eslint@8.7.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
 
-	utils.ExecLine("npx -yq -- prettier@2.2.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
+	utils.ExecLine("npx -yq -- prettier@2.5.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
 	utils.ExecLine(filepath.Join(build.Default.GOPATH, "bin", "golangci-lint"))
 
