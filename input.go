@@ -237,6 +237,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 		Button:     button,
 		Buttons:    buttons,
 		ClickCount: clicks,
+		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,
 		Y:          m.y,
 	}.Call(m.page)
