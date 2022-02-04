@@ -386,6 +386,14 @@ func (rc *RaceContext) Element(selector string) *RaceContext {
 	return rc
 }
 
+// ElementFunc takes a custom function to determine race success
+func (rc *RaceContext) ElementFunc(fn func(*Page) (*Element, error)) *RaceContext {
+	rc.branches = append(rc.branches, &raceBranch{
+		condition: fn,
+	})
+	return rc
+}
+
 // ElementX the doc is similar to ElementX
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
