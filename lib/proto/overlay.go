@@ -817,7 +817,7 @@ func (m OverlaySetShowScrollBottleneckRects) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// OverlaySetShowHitTestBorders Requests that backend shows hit-test borders on layers
+// OverlaySetShowHitTestBorders (deprecated) Deprecated, no longer has any effect.
 type OverlaySetShowHitTestBorders struct {
 
 	// Show True for showing hit-test borders

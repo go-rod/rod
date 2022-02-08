@@ -39,6 +39,9 @@ const (
 	// StorageStorageTypeCacheStorage enum const
 	StorageStorageTypeCacheStorage StorageStorageType = "cache_storage"
 
+	// StorageStorageTypeInterestGroups enum const
+	StorageStorageTypeInterestGroups StorageStorageType = "interest_groups"
+
 	// StorageStorageTypeAll enum const
 	StorageStorageTypeAll StorageStorageType = "all"
 
@@ -65,6 +68,76 @@ type StorageTrustTokens struct {
 
 	// Count ...
 	Count float64 `json:"count"`
+}
+
+// StorageInterestGroupAccessType Enum of interest group access types.
+type StorageInterestGroupAccessType string
+
+const (
+	// StorageInterestGroupAccessTypeJoin enum const
+	StorageInterestGroupAccessTypeJoin StorageInterestGroupAccessType = "join"
+
+	// StorageInterestGroupAccessTypeLeave enum const
+	StorageInterestGroupAccessTypeLeave StorageInterestGroupAccessType = "leave"
+
+	// StorageInterestGroupAccessTypeUpdate enum const
+	StorageInterestGroupAccessTypeUpdate StorageInterestGroupAccessType = "update"
+
+	// StorageInterestGroupAccessTypeBid enum const
+	StorageInterestGroupAccessTypeBid StorageInterestGroupAccessType = "bid"
+
+	// StorageInterestGroupAccessTypeWin enum const
+	StorageInterestGroupAccessTypeWin StorageInterestGroupAccessType = "win"
+)
+
+// StorageInterestGroupAd Ad advertising element inside an interest group.
+type StorageInterestGroupAd struct {
+
+	// RenderURL ...
+	RenderURL string `json:"renderUrl"`
+
+	// Metadata (optional) ...
+	Metadata string `json:"metadata,omitempty"`
+}
+
+// StorageInterestGroupDetails The full details of an interest group.
+type StorageInterestGroupDetails struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+
+	// Name ...
+	Name string `json:"name"`
+
+	// ExpirationTime ...
+	ExpirationTime float64 `json:"expirationTime"`
+
+	// JoiningOrigin ...
+	JoiningOrigin string `json:"joiningOrigin"`
+
+	// BiddingURL (optional) ...
+	BiddingURL string `json:"biddingUrl,omitempty"`
+
+	// BiddingWasmHelperURL (optional) ...
+	BiddingWasmHelperURL string `json:"biddingWasmHelperUrl,omitempty"`
+
+	// UpdateURL (optional) ...
+	UpdateURL string `json:"updateUrl,omitempty"`
+
+	// TrustedBiddingSignalsURL (optional) ...
+	TrustedBiddingSignalsURL string `json:"trustedBiddingSignalsUrl,omitempty"`
+
+	// TrustedBiddingSignalsKeys ...
+	TrustedBiddingSignalsKeys []string `json:"trustedBiddingSignalsKeys"`
+
+	// UserBiddingSignals (optional) ...
+	UserBiddingSignals string `json:"userBiddingSignals,omitempty"`
+
+	// Ads ...
+	Ads []*StorageInterestGroupAd `json:"ads"`
+
+	// AdComponents ...
+	AdComponents []*StorageInterestGroupAd `json:"adComponents"`
 }
 
 // StorageClearDataForOrigin Clears storage for origin.
@@ -310,6 +383,47 @@ type StorageClearTrustTokensResult struct {
 	DidDeleteTokens bool `json:"didDeleteTokens"`
 }
 
+// StorageGetInterestGroupDetails (experimental) Gets details for a named interest group.
+type StorageGetInterestGroupDetails struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+
+	// Name ...
+	Name string `json:"name"`
+}
+
+// ProtoReq name
+func (m StorageGetInterestGroupDetails) ProtoReq() string { return "Storage.getInterestGroupDetails" }
+
+// Call the request
+func (m StorageGetInterestGroupDetails) Call(c Client) (*StorageGetInterestGroupDetailsResult, error) {
+	var res StorageGetInterestGroupDetailsResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// StorageGetInterestGroupDetailsResult (experimental) Gets details for a named interest group.
+type StorageGetInterestGroupDetailsResult struct {
+
+	// Details ...
+	Details *StorageInterestGroupDetails `json:"details"`
+}
+
+// StorageSetInterestGroupTracking (experimental) Enables/Disables issuing of interestGroupAccessed events.
+type StorageSetInterestGroupTracking struct {
+
+	// Enable ...
+	Enable bool `json:"enable"`
+}
+
+// ProtoReq name
+func (m StorageSetInterestGroupTracking) ProtoReq() string { return "Storage.setInterestGroupTracking" }
+
+// Call sends the request
+func (m StorageSetInterestGroupTracking) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
 type StorageCacheStorageContentUpdated struct {
 
@@ -365,4 +479,22 @@ type StorageIndexedDBListUpdated struct {
 // ProtoEvent name
 func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 	return "Storage.indexedDBListUpdated"
+}
+
+// StorageInterestGroupAccessed One of the interest groups was accessed by the associated page.
+type StorageInterestGroupAccessed struct {
+
+	// Type ...
+	Type StorageInterestGroupAccessType `json:"type"`
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+
+	// Name ...
+	Name string `json:"name"`
+}
+
+// ProtoEvent name
+func (evt StorageInterestGroupAccessed) ProtoEvent() string {
+	return "Storage.interestGroupAccessed"
 }

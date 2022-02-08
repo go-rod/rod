@@ -657,6 +657,31 @@ type AuditsDeprecationIssueDetails struct {
 	// instead. This standard was abandoned in January, 1970. See
 	// https://www.chromestatus.com/feature/5684870116278272 for more details."
 	Message string `json:"message,omitempty"`
+
+	// DeprecationType ...
+	DeprecationType string `json:"deprecationType"`
+}
+
+// AuditsClientHintIssueReason ...
+type AuditsClientHintIssueReason string
+
+const (
+	// AuditsClientHintIssueReasonMetaTagAllowListInvalidOrigin enum const
+	AuditsClientHintIssueReasonMetaTagAllowListInvalidOrigin AuditsClientHintIssueReason = "MetaTagAllowListInvalidOrigin"
+
+	// AuditsClientHintIssueReasonMetaTagModifiedHTML enum const
+	AuditsClientHintIssueReasonMetaTagModifiedHTML AuditsClientHintIssueReason = "MetaTagModifiedHTML"
+)
+
+// AuditsClientHintIssueDetails This issue tracks client hints related issues. It's used to deprecate old
+// features, encourage the use of new ones, and provide general guidance.
+type AuditsClientHintIssueDetails struct {
+
+	// SourceCodeLocation ...
+	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
+
+	// ClientHintIssueReason ...
+	ClientHintIssueReason AuditsClientHintIssueReason `json:"clientHintIssueReason"`
 }
 
 // AuditsInspectorIssueCode A unique identifier for the type of issue. Each type may use one of the
@@ -709,6 +734,9 @@ const (
 
 	// AuditsInspectorIssueCodeDeprecationIssue enum const
 	AuditsInspectorIssueCodeDeprecationIssue AuditsInspectorIssueCode = "DeprecationIssue"
+
+	// AuditsInspectorIssueCodeClientHintIssue enum const
+	AuditsInspectorIssueCodeClientHintIssue AuditsInspectorIssueCode = "ClientHintIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -760,6 +788,9 @@ type AuditsInspectorIssueDetails struct {
 
 	// DeprecationIssueDetails (optional) ...
 	DeprecationIssueDetails *AuditsDeprecationIssueDetails `json:"deprecationIssueDetails,omitempty"`
+
+	// ClientHintIssueDetails (optional) ...
+	ClientHintIssueDetails *AuditsClientHintIssueDetails `json:"clientHintIssueDetails,omitempty"`
 }
 
 // AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.

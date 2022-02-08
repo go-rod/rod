@@ -84,6 +84,11 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 	// Defaults to false.
 	HasCredBlob bool `json:"hasCredBlob,omitempty"`
 
+	// HasMinPinLength (optional) If set to true, the authenticator will support the minPinLength extension.
+	// https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
+	// Defaults to false.
+	HasMinPinLength bool `json:"hasMinPinLength,omitempty"`
+
 	// AutomaticPresenceSimulation (optional) If set to true, tests of user presence will succeed immediately.
 	// Otherwise, they will not be resolved. Defaults to true.
 	AutomaticPresenceSimulation bool `json:"automaticPresenceSimulation,omitempty"`

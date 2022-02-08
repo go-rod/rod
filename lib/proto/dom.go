@@ -103,6 +103,18 @@ const (
 
 	// DOMPseudoTypeInputListButton enum const
 	DOMPseudoTypeInputListButton DOMPseudoType = "input-list-button"
+
+	// DOMPseudoTypeTransition enum const
+	DOMPseudoTypeTransition DOMPseudoType = "transition"
+
+	// DOMPseudoTypeTransitionContainer enum const
+	DOMPseudoTypeTransitionContainer DOMPseudoType = "transition-container"
+
+	// DOMPseudoTypeTransitionOldContent enum const
+	DOMPseudoTypeTransitionOldContent DOMPseudoType = "transition-old-content"
+
+	// DOMPseudoTypeTransitionNewContent enum const
+	DOMPseudoTypeTransitionNewContent DOMPseudoType = "transition-new-content"
 )
 
 // DOMShadowRootType Shadow root type.

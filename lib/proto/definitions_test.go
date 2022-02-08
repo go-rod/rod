@@ -2911,6 +2911,18 @@ func (t T) StorageClearTrustTokens() {
 	t.Nil(err)
 }
 
+func (t T) StorageGetInterestGroupDetails() {
+	c := &Client{}
+	_, err := proto.StorageGetInterestGroupDetails{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSetInterestGroupTracking() {
+	c := &Client{}
+	err := proto.StorageSetInterestGroupTracking{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	e.ProtoEvent()
@@ -2928,6 +2940,11 @@ func (t T) StorageIndexedDBContentUpdated() {
 
 func (t T) StorageIndexedDBListUpdated() {
 	e := proto.StorageIndexedDBListUpdated{}
+	e.ProtoEvent()
+}
+
+func (t T) StorageInterestGroupAccessed() {
+	e := proto.StorageInterestGroupAccessed{}
 	e.ProtoEvent()
 }
 
@@ -3933,6 +3950,12 @@ func (t T) RuntimeAddBinding() {
 func (t T) RuntimeRemoveBinding() {
 	c := &Client{}
 	err := proto.RuntimeRemoveBinding{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) RuntimeGetExceptionDetails() {
+	c := &Client{}
+	_, err := proto.RuntimeGetExceptionDetails{}.Call(c)
 	t.Nil(err)
 }
 

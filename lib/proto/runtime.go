@@ -1204,6 +1204,37 @@ func (m RuntimeRemoveBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// RuntimeGetExceptionDetails (experimental) This method tries to lookup and populate exception details for a
+// JavaScript Error object.
+// Note that the stackTrace portion of the resulting exceptionDetails will
+// only be populated if the Runtime domain was enabled at the time when the
+// Error was thrown.
+type RuntimeGetExceptionDetails struct {
+
+	// ErrorObjectID The error object for which to resolve the exception details.
+	ErrorObjectID RuntimeRemoteObjectID `json:"errorObjectId"`
+}
+
+// ProtoReq name
+func (m RuntimeGetExceptionDetails) ProtoReq() string { return "Runtime.getExceptionDetails" }
+
+// Call the request
+func (m RuntimeGetExceptionDetails) Call(c Client) (*RuntimeGetExceptionDetailsResult, error) {
+	var res RuntimeGetExceptionDetailsResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// RuntimeGetExceptionDetailsResult (experimental) This method tries to lookup and populate exception details for a
+// JavaScript Error object.
+// Note that the stackTrace portion of the resulting exceptionDetails will
+// only be populated if the Runtime domain was enabled at the time when the
+// Error was thrown.
+type RuntimeGetExceptionDetailsResult struct {
+
+	// ExceptionDetails (optional) ...
+	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
+}
+
 // RuntimeBindingCalled (experimental) Notification is issued every time when binding is called.
 type RuntimeBindingCalled struct {
 

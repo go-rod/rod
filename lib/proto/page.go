@@ -303,6 +303,9 @@ const (
 
 	// PagePermissionsPolicyBlockReasonIframeAttribute enum const
 	PagePermissionsPolicyBlockReasonIframeAttribute PagePermissionsPolicyBlockReason = "IframeAttribute"
+
+	// PagePermissionsPolicyBlockReasonInFencedFrameTree enum const
+	PagePermissionsPolicyBlockReasonInFencedFrameTree PagePermissionsPolicyBlockReason = "InFencedFrameTree"
 )
 
 // PagePermissionsPolicyBlockLocator (experimental) ...
@@ -761,6 +764,16 @@ type PageFontFamilies struct {
 
 	// Pictograph (optional) The pictograph font-family.
 	Pictograph string `json:"pictograph,omitempty"`
+}
+
+// PageScriptFontFamilies (experimental) Font families collection for a script.
+type PageScriptFontFamilies struct {
+
+	// Script Name of the script which these font families are defined for.
+	Script string `json:"script"`
+
+	// FontFamilies Generic font families collection for the script.
+	FontFamilies *PageFontFamilies `json:"fontFamilies"`
 }
 
 // PageFontSizes (experimental) Default font sizes.
@@ -1286,6 +1299,19 @@ type PageBackForwardCacheNotRestoredExplanation struct {
 
 	// Reason Not restored reason
 	Reason PageBackForwardCacheNotRestoredReason `json:"reason"`
+}
+
+// PageBackForwardCacheNotRestoredExplanationTree (experimental) ...
+type PageBackForwardCacheNotRestoredExplanationTree struct {
+
+	// URL URL of each frame
+	URL string `json:"url"`
+
+	// Explanations Not restored reasons of each frame
+	Explanations []*PageBackForwardCacheNotRestoredExplanation `json:"explanations"`
+
+	// Children Array of children frame
+	Children []*PageBackForwardCacheNotRestoredExplanationTree `json:"children"`
 }
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -2230,6 +2256,9 @@ type PageSetFontFamilies struct {
 
 	// FontFamilies Specifies font families to set. If a font family is not specified, it won't be changed.
 	FontFamilies *PageFontFamilies `json:"fontFamilies"`
+
+	// ForScripts (optional) Specifies font families to set for individual scripts.
+	ForScripts []*PageScriptFontFamilies `json:"forScripts,omitempty"`
 }
 
 // ProtoReq name
@@ -3006,6 +3035,9 @@ type PageBackForwardCacheNotUsed struct {
 
 	// NotRestoredExplanations Array of reasons why the page could not be cached. This must not be empty.
 	NotRestoredExplanations []*PageBackForwardCacheNotRestoredExplanation `json:"notRestoredExplanations"`
+
+	// NotRestoredExplanationsTree (optional) Tree structure of reasons why the page could not be cached for each frame.
+	NotRestoredExplanationsTree *PageBackForwardCacheNotRestoredExplanationTree `json:"notRestoredExplanationsTree,omitempty"`
 }
 
 // ProtoEvent name

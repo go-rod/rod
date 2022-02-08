@@ -72,7 +72,9 @@ type DebuggerCallFrame struct {
 	// Location Location in the source code.
 	Location *DebuggerLocation `json:"location"`
 
-	// URL JavaScript script name or url.
+	// URL (deprecated) JavaScript script name or url.
+	// Deprecated in favor of using the `location.scriptId` to resolve the URL via a previously
+	// sent `Debugger.scriptParsed` event.
 	URL string `json:"url"`
 
 	// ScopeChain Scope chain for this call frame.
