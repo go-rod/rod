@@ -24,13 +24,15 @@ import (
 type Host func(revision int) string
 
 var hostConf = map[string]struct {
-	zipName   string
 	urlPrefix string
+	zipName   string
 }{
-	"darwin":  {"chrome-mac.zip", "Mac"},
-	"linux":   {"chrome-linux.zip", "Linux_x64"},
-	"windows": {"chrome-win.zip", "Win"},
-}[runtime.GOOS]
+	"darwin_amd64":  {"Mac", "chrome-mac.zip"},
+	"darwin_arm64":  {"Mac_Arm", "chrome-mac.zip"},
+	"linux_amd64":   {"Linux_x64", "chrome-linux.zip"},
+	"windows_386":   {"Win", "chrome-win.zip"},
+	"windows_amd64": {"Win_x64", "chrome-win.zip"},
+}[runtime.GOOS+"_"+runtime.GOARCH]
 
 // HostGoogle to download browser
 func HostGoogle(revision int) string {
@@ -42,10 +44,10 @@ func HostGoogle(revision int) string {
 	)
 }
 
-// HostTaobao to download browser
-func HostTaobao(revision int) string {
+// HostNPM to download browser
+func HostNPM(revision int) string {
 	return fmt.Sprintf(
-		"https://npm.taobao.org/mirrors/chromium-browser-snapshots/%s/%d/%s",
+		"https://registry.npmmirror.com/-/binary/chromium-browser-snapshots/%s/%d/%s",
 		hostConf.urlPrefix,
 		revision,
 		hostConf.zipName,
@@ -85,7 +87,7 @@ func NewBrowser() *Browser {
 	return &Browser{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
-		Hosts:    []Host{HostGoogle, HostTaobao},
+		Hosts:    []Host{HostGoogle, HostNPM},
 		Dir:      DefaultBrowserDir,
 		Logger:   os.Stdout,
 		LockPort: defaults.LockPort,

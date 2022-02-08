@@ -33,7 +33,7 @@ func Test(t *testing.T) {
 
 func (t T) DownloadHosts() {
 	t.Has(launcher.HostGoogle(launcher.DefaultRevision), "https://storage.googleapis.com/chromium-browser-snapshots")
-	t.Has(launcher.HostTaobao(launcher.DefaultRevision), "https://npm.taobao.org/mirrors/chromium-browser-snapshots")
+	t.Has(launcher.HostNPM(launcher.DefaultRevision), "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots")
 }
 
 func (t T) Download() {
