@@ -3,32 +3,40 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
-	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/go-rod/rod/lib/utils"
 )
 
-const mirror = "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots/Mac_Arm/"
+const mirror = "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots/"
 
 var slash = filepath.FromSlash
 
 func main() {
-	res, err := http.Get(mirror)
-	utils.E(err)
-	defer func() { _ = res.Body.Close() }()
+	list := getList(mirror)
 
-	var data interface{}
-	err = json.NewDecoder(res.Body).Decode(&data)
-	utils.E(err)
+	revLists := [][]int{}
+	for _, os := range list {
+		revList := []int{}
+		for _, s := range getList(mirror + os + "/") {
+			rev, err := strconv.ParseInt(s, 10, 32)
+			if err != nil {
+				log.Fatal(err)
+			}
+			revList = append(revList, int(rev))
+		}
+		sort.Ints(revList)
+		revLists = append(revLists, revList)
+	}
 
-	list := data.([]interface{})
-	latest := list[len(list)-1].(map[string]interface{})["name"].(string)
-	revision := strings.TrimRight(latest, "/")
+	rev := largestCommonRevision(revLists)
 
-	if !regexp.MustCompile(`^\d+$`).MatchString(revision) {
+	if rev < 969819 {
 		utils.E(fmt.Errorf("cannot match version of the latest chromium from %s", mirror))
 	}
 
@@ -39,9 +47,55 @@ package launcher
 // DefaultRevision for chrome
 const DefaultRevision = {{.revision}}
 `,
-		"revision", revision,
+		"revision", rev,
 	)
 
 	utils.E(utils.OutputFile(slash("lib/launcher/revision.go"), build))
 
+}
+
+func getList(path string) []string {
+	res, err := http.Get(path)
+	utils.E(err)
+	defer func() { _ = res.Body.Close() }()
+
+	var data interface{}
+	err = json.NewDecoder(res.Body).Decode(&data)
+	utils.E(err)
+
+	list := data.([]interface{})
+
+	names := []string{}
+	for _, it := range list {
+		name := it.(map[string]interface{})["name"].(string)
+		names = append(names, strings.TrimRight(name, "/"))
+	}
+
+	return names
+}
+
+func largestCommonRevision(revLists [][]int) int {
+	sort.Slice(revLists, func(i, j int) bool {
+		return len(revLists[i]) < len(revLists[j])
+	})
+
+	shortest := revLists[0]
+
+	for i := len(shortest) - 1; i >= 0; i-- {
+		r := shortest[i]
+
+		isCommon := true
+		for i := 1; i < len(revLists); i++ {
+			index := sort.SearchInts(revLists[i], r)
+			if revLists[i][index] != r {
+				isCommon = false
+				break
+			}
+		}
+		if isCommon {
+			return r
+		}
+	}
+
+	return 0
 }
