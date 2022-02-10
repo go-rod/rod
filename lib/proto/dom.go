@@ -473,8 +473,22 @@ func (m DOMDiscardSearchResults) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// DOMEnableIncludeWhitespace enum
+type DOMEnableIncludeWhitespace string
+
+const (
+	// DOMEnableIncludeWhitespaceNone enum const
+	DOMEnableIncludeWhitespaceNone DOMEnableIncludeWhitespace = "none"
+
+	// DOMEnableIncludeWhitespaceAll enum const
+	DOMEnableIncludeWhitespaceAll DOMEnableIncludeWhitespace = "all"
+)
+
 // DOMEnable Enables DOM agent for the given page.
 type DOMEnable struct {
+
+	// IncludeWhitespace (experimental) (optional) Whether to include whitespaces in the children array of returned Nodes.
+	IncludeWhitespace DOMEnableIncludeWhitespace `json:"includeWhitespace,omitempty"`
 }
 
 // ProtoReq name

@@ -604,22 +604,6 @@ type AuditsNavigatorUserAgentIssueDetails struct {
 	Location *AuditsSourceCodeLocation `json:"location,omitempty"`
 }
 
-// AuditsWasmCrossOriginModuleSharingIssueDetails ...
-type AuditsWasmCrossOriginModuleSharingIssueDetails struct {
-
-	// WasmModuleURL ...
-	WasmModuleURL string `json:"wasmModuleUrl"`
-
-	// SourceOrigin ...
-	SourceOrigin string `json:"sourceOrigin"`
-
-	// TargetOrigin ...
-	TargetOrigin string `json:"targetOrigin"`
-
-	// IsWarning ...
-	IsWarning bool `json:"isWarning"`
-}
-
 // AuditsGenericIssueErrorType ...
 type AuditsGenericIssueErrorType string
 
@@ -671,6 +655,78 @@ const (
 
 	// AuditsClientHintIssueReasonMetaTagModifiedHTML enum const
 	AuditsClientHintIssueReasonMetaTagModifiedHTML AuditsClientHintIssueReason = "MetaTagModifiedHTML"
+)
+
+// AuditsFederatedAuthRequestIssueDetails ...
+type AuditsFederatedAuthRequestIssueDetails struct {
+
+	// FederatedAuthRequestIssueReason ...
+	FederatedAuthRequestIssueReason AuditsFederatedAuthRequestIssueReason `json:"federatedAuthRequestIssueReason"`
+}
+
+// AuditsFederatedAuthRequestIssueReason Represents the failure reason when a federated authentication reason fails.
+// Should be updated alongside RequestIdTokenStatus in
+// third_party/blink/public/mojom/webid/federated_auth_request.mojom to include
+// all cases except for success.
+type AuditsFederatedAuthRequestIssueReason string
+
+const (
+	// AuditsFederatedAuthRequestIssueReasonApprovalDeclined enum const
+	AuditsFederatedAuthRequestIssueReasonApprovalDeclined AuditsFederatedAuthRequestIssueReason = "ApprovalDeclined"
+
+	// AuditsFederatedAuthRequestIssueReasonTooManyRequests enum const
+	AuditsFederatedAuthRequestIssueReasonTooManyRequests AuditsFederatedAuthRequestIssueReason = "TooManyRequests"
+
+	// AuditsFederatedAuthRequestIssueReasonWellKnownHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownHTTPNotFound AuditsFederatedAuthRequestIssueReason = "WellKnownHttpNotFound"
+
+	// AuditsFederatedAuthRequestIssueReasonWellKnownNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownNoResponse AuditsFederatedAuthRequestIssueReason = "WellKnownNoResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse AuditsFederatedAuthRequestIssueReason = "WellKnownInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonClientIDMetadataHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonClientIDMetadataHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ClientIdMetadataHttpNotFound"
+
+	// AuditsFederatedAuthRequestIssueReasonClientIDMetadataNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonClientIDMetadataNoResponse AuditsFederatedAuthRequestIssueReason = "ClientIdMetadataNoResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonClientIDMetadataInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonClientIDMetadataInvalidResponse AuditsFederatedAuthRequestIssueReason = "ClientIdMetadataInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonErrorFetchingSignin enum const
+	AuditsFederatedAuthRequestIssueReasonErrorFetchingSignin AuditsFederatedAuthRequestIssueReason = "ErrorFetchingSignin"
+
+	// AuditsFederatedAuthRequestIssueReasonInvalidSigninResponse enum const
+	AuditsFederatedAuthRequestIssueReasonInvalidSigninResponse AuditsFederatedAuthRequestIssueReason = "InvalidSigninResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonAccountsHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonAccountsHTTPNotFound AuditsFederatedAuthRequestIssueReason = "AccountsHttpNotFound"
+
+	// AuditsFederatedAuthRequestIssueReasonAccountsNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonAccountsNoResponse AuditsFederatedAuthRequestIssueReason = "AccountsNoResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonAccountsInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonAccountsInvalidResponse AuditsFederatedAuthRequestIssueReason = "AccountsInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonIDTokenHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonIDTokenHTTPNotFound AuditsFederatedAuthRequestIssueReason = "IdTokenHttpNotFound"
+
+	// AuditsFederatedAuthRequestIssueReasonIDTokenNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonIDTokenNoResponse AuditsFederatedAuthRequestIssueReason = "IdTokenNoResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonIDTokenInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonIDTokenInvalidResponse AuditsFederatedAuthRequestIssueReason = "IdTokenInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonIDTokenInvalidRequest enum const
+	AuditsFederatedAuthRequestIssueReasonIDTokenInvalidRequest AuditsFederatedAuthRequestIssueReason = "IdTokenInvalidRequest"
+
+	// AuditsFederatedAuthRequestIssueReasonErrorIDToken enum const
+	AuditsFederatedAuthRequestIssueReasonErrorIDToken AuditsFederatedAuthRequestIssueReason = "ErrorIdToken"
+
+	// AuditsFederatedAuthRequestIssueReasonCanceled enum const
+	AuditsFederatedAuthRequestIssueReasonCanceled AuditsFederatedAuthRequestIssueReason = "Canceled"
 )
 
 // AuditsClientHintIssueDetails This issue tracks client hints related issues. It's used to deprecate old
@@ -726,9 +782,6 @@ const (
 	// AuditsInspectorIssueCodeNavigatorUserAgentIssue enum const
 	AuditsInspectorIssueCodeNavigatorUserAgentIssue AuditsInspectorIssueCode = "NavigatorUserAgentIssue"
 
-	// AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue enum const
-	AuditsInspectorIssueCodeWasmCrossOriginModuleSharingIssue AuditsInspectorIssueCode = "WasmCrossOriginModuleSharingIssue"
-
 	// AuditsInspectorIssueCodeGenericIssue enum const
 	AuditsInspectorIssueCodeGenericIssue AuditsInspectorIssueCode = "GenericIssue"
 
@@ -737,6 +790,9 @@ const (
 
 	// AuditsInspectorIssueCodeClientHintIssue enum const
 	AuditsInspectorIssueCodeClientHintIssue AuditsInspectorIssueCode = "ClientHintIssue"
+
+	// AuditsInspectorIssueCodeFederatedAuthRequestIssue enum const
+	AuditsInspectorIssueCodeFederatedAuthRequestIssue AuditsInspectorIssueCode = "FederatedAuthRequestIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -780,9 +836,6 @@ type AuditsInspectorIssueDetails struct {
 	// NavigatorUserAgentIssueDetails (optional) ...
 	NavigatorUserAgentIssueDetails *AuditsNavigatorUserAgentIssueDetails `json:"navigatorUserAgentIssueDetails,omitempty"`
 
-	// WasmCrossOriginModuleSharingIssue (optional) ...
-	WasmCrossOriginModuleSharingIssue *AuditsWasmCrossOriginModuleSharingIssueDetails `json:"wasmCrossOriginModuleSharingIssue,omitempty"`
-
 	// GenericIssueDetails (optional) ...
 	GenericIssueDetails *AuditsGenericIssueDetails `json:"genericIssueDetails,omitempty"`
 
@@ -791,6 +844,9 @@ type AuditsInspectorIssueDetails struct {
 
 	// ClientHintIssueDetails (optional) ...
 	ClientHintIssueDetails *AuditsClientHintIssueDetails `json:"clientHintIssueDetails,omitempty"`
+
+	// FederatedAuthRequestIssueDetails (optional) ...
+	FederatedAuthRequestIssueDetails *AuditsFederatedAuthRequestIssueDetails `json:"federatedAuthRequestIssueDetails,omitempty"`
 }
 
 // AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.

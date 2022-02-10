@@ -172,6 +172,10 @@ type CSSCSSRule struct {
 	// ContainerQueries (experimental) (optional) Container query list array (for rules involving container queries).
 	// The array enumerates container queries starting with the innermost one, going outwards.
 	ContainerQueries []*CSSCSSContainerQuery `json:"containerQueries,omitempty"`
+
+	// Supports (experimental) (optional) @supports CSS at-rule array.
+	// The array enumerates @supports at-rules starting with the innermost one, going outwards.
+	Supports []*CSSCSSSupports `json:"supports,omitempty"`
 }
 
 // CSSRuleUsage CSS coverage information.
@@ -365,6 +369,20 @@ type CSSCSSContainerQuery struct {
 
 	// Name (optional) Optional name for the container.
 	Name string `json:"name,omitempty"`
+}
+
+// CSSCSSSupports (experimental) CSS Supports at-rule descriptor.
+type CSSCSSSupports struct {
+
+	// Text Supports rule text.
+	Text string `json:"text"`
+
+	// Range (optional) The associated rule header range in the enclosing stylesheet (if
+	// available).
+	Range *CSSSourceRange `json:"range,omitempty"`
+
+	// StyleSheetID (optional) Identifier of the stylesheet containing this object (if exists).
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
 }
 
 // CSSPlatformFontUsage Information about amount of glyphs that were rendered with given font.

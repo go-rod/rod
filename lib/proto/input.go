@@ -229,7 +229,7 @@ type InputDispatchKeyEvent struct {
 
 	// Commands (experimental) (optional) Editing commands to send with the key event (e.g., 'selectAll') (default: []).
 	// These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
-	// See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+	// See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
 	Commands []string `json:"commands,omitempty"`
 }
 

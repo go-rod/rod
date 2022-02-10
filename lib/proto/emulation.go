@@ -586,10 +586,6 @@ type EmulationSetVirtualTimePolicy struct {
 	// forwards to prevent deadlock.
 	MaxVirtualTimeTaskStarvationCount int `json:"maxVirtualTimeTaskStarvationCount,omitempty"`
 
-	// WaitForNavigation (optional) If set the virtual time policy change should be deferred until any frame starts navigating.
-	// Note any previous deferred policy change is superseded.
-	WaitForNavigation bool `json:"waitForNavigation,omitempty"`
-
 	// InitialVirtualTime (optional) If set, base::Time::Now will be overridden to initially return this value.
 	InitialVirtualTime TimeSinceEpoch `json:"initialVirtualTime,omitempty"`
 }

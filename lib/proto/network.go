@@ -1353,6 +1353,9 @@ const (
 
 	// NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep enum const
 	NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep NetworkCrossOriginOpenerPolicyValue = "SameOriginPlusCoep"
+
+	// NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopupsPlusCoep enum const
+	NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopupsPlusCoep NetworkCrossOriginOpenerPolicyValue = "SameOriginAllowPopupsPlusCoep"
 )
 
 // NetworkCrossOriginOpenerPolicyStatus (experimental) ...

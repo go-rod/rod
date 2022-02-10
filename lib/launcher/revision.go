@@ -3,4 +3,4 @@
 package launcher
 
 // DefaultRevision for chrome
-const DefaultRevision = 961656
+const DefaultRevision = 969832

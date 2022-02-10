@@ -110,7 +110,7 @@ type StorageInterestGroupDetails struct {
 	Name string `json:"name"`
 
 	// ExpirationTime ...
-	ExpirationTime float64 `json:"expirationTime"`
+	ExpirationTime TimeSinceEpoch `json:"expirationTime"`
 
 	// JoiningOrigin ...
 	JoiningOrigin string `json:"joiningOrigin"`
@@ -483,6 +483,9 @@ func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 
 // StorageInterestGroupAccessed One of the interest groups was accessed by the associated page.
 type StorageInterestGroupAccessed struct {
+
+	// AccessTime ...
+	AccessTime TimeSinceEpoch `json:"accessTime"`
 
 	// Type ...
 	Type StorageInterestGroupAccessType `json:"type"`

@@ -155,6 +155,9 @@ const (
 	// PagePermissionsPolicyFeatureChUaMobile enum const
 	PagePermissionsPolicyFeatureChUaMobile PagePermissionsPolicyFeature = "ch-ua-mobile"
 
+	// PagePermissionsPolicyFeatureChUaFull enum const
+	PagePermissionsPolicyFeatureChUaFull PagePermissionsPolicyFeature = "ch-ua-full"
+
 	// PagePermissionsPolicyFeatureChUaFullVersion enum const
 	PagePermissionsPolicyFeatureChUaFullVersion PagePermissionsPolicyFeature = "ch-ua-full-version"
 
@@ -167,6 +170,9 @@ const (
 	// PagePermissionsPolicyFeatureChUaReduced enum const
 	PagePermissionsPolicyFeatureChUaReduced PagePermissionsPolicyFeature = "ch-ua-reduced"
 
+	// PagePermissionsPolicyFeatureChUaWow64 enum const
+	PagePermissionsPolicyFeatureChUaWow64 PagePermissionsPolicyFeature = "ch-ua-wow64"
+
 	// PagePermissionsPolicyFeatureChViewportHeight enum const
 	PagePermissionsPolicyFeatureChViewportHeight PagePermissionsPolicyFeature = "ch-viewport-height"
 
@@ -175,6 +181,9 @@ const (
 
 	// PagePermissionsPolicyFeatureChWidth enum const
 	PagePermissionsPolicyFeatureChWidth PagePermissionsPolicyFeature = "ch-width"
+
+	// PagePermissionsPolicyFeatureChPartitionedCookies enum const
+	PagePermissionsPolicyFeatureChPartitionedCookies PagePermissionsPolicyFeature = "ch-partitioned-cookies"
 
 	// PagePermissionsPolicyFeatureClipboardRead enum const
 	PagePermissionsPolicyFeatureClipboardRead PagePermissionsPolicyFeature = "clipboard-read"
@@ -226,9 +235,6 @@ const (
 
 	// PagePermissionsPolicyFeatureIdleDetection enum const
 	PagePermissionsPolicyFeatureIdleDetection PagePermissionsPolicyFeature = "idle-detection"
-
-	// PagePermissionsPolicyFeatureInterestCohort enum const
-	PagePermissionsPolicyFeatureInterestCohort PagePermissionsPolicyFeature = "interest-cohort"
 
 	// PagePermissionsPolicyFeatureJoinAdInterestGroup enum const
 	PagePermissionsPolicyFeatureJoinAdInterestGroup PagePermissionsPolicyFeature = "join-ad-interest-group"
@@ -907,8 +913,8 @@ const (
 type PageBackForwardCacheNotRestoredReason string
 
 const (
-	// PageBackForwardCacheNotRestoredReasonNotMainFrame enum const
-	PageBackForwardCacheNotRestoredReasonNotMainFrame PageBackForwardCacheNotRestoredReason = "NotMainFrame"
+	// PageBackForwardCacheNotRestoredReasonNotPrimaryMainFrame enum const
+	PageBackForwardCacheNotRestoredReasonNotPrimaryMainFrame PageBackForwardCacheNotRestoredReason = "NotPrimaryMainFrame"
 
 	// PageBackForwardCacheNotRestoredReasonBackForwardCacheDisabled enum const
 	PageBackForwardCacheNotRestoredReasonBackForwardCacheDisabled PageBackForwardCacheNotRestoredReason = "BackForwardCacheDisabled"
