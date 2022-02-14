@@ -86,8 +86,7 @@ func largestCommonRevision(revLists [][]int) int {
 
 		isCommon := true
 		for i := 1; i < len(revLists); i++ {
-			index := sort.SearchInts(revLists[i], r)
-			if revLists[i][index] != r {
+			if !has(revLists[i], r) {
 				isCommon = false
 				break
 			}
@@ -98,4 +97,9 @@ func largestCommonRevision(revLists [][]int) int {
 	}
 
 	return 0
+}
+
+func has(list []int, i int) bool {
+	index := sort.SearchInts(list, i)
+	return index < len(list) && list[index] == i
 }
