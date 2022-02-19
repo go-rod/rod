@@ -13,8 +13,10 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/got"
 	"github.com/ysmood/gson"
 )
 
@@ -421,4 +423,13 @@ func (t T) BrowserPool() {
 	pool.Cleanup(func(p *rod.Browser) {
 		p.MustClose()
 	})
+}
+
+func (t T) OldBrowser(got.Skip) {
+	u := launcher.New().Revision(686378).MustLaunch()
+	b := rod.New().ControlURL(u).MustConnect()
+	t.Cleanup(b.MustClose)
+	res, err := proto.BrowserGetVersion{}.Call(b)
+	t.E(err)
+	t.Eq(res.Revision, "@19d4547535ab5aba70b4730443f84e8153052174")
 }
