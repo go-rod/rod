@@ -132,6 +132,7 @@ func (t T) LaunchUserMode() {
 	port := 58472
 
 	url := l.Context(t.Context()).Delete("test").Bin("").
+		Revision(launcher.DefaultRevision).
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).

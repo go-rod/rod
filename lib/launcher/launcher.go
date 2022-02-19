@@ -189,9 +189,15 @@ func (l *Launcher) Delete(name flags.Flag) *Launcher {
 	return l
 }
 
-// Bin set
+// Bin of the browser binary path to launch, if the path is not empty the auto download will be disabled
 func (l *Launcher) Bin(path string) *Launcher {
 	return l.Set(flags.Bin, path)
+}
+
+// Revision of the browser to auto download
+func (l *Launcher) Revision(rev int) *Launcher {
+	l.browser.Revision = rev
+	return l
 }
 
 // Headless switch. Whether to run browser in headless mode. A mode without visible UI.
