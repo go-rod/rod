@@ -952,6 +952,35 @@ type CSSSetContainerQueryTextResult struct {
 	ContainerQuery *CSSCSSContainerQuery `json:"containerQuery"`
 }
 
+// CSSSetSupportsText (experimental) Modifies the expression of a supports at-rule.
+type CSSSetSupportsText struct {
+
+	// StyleSheetID ...
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
+
+	// Range ...
+	Range *CSSSourceRange `json:"range"`
+
+	// Text ...
+	Text string `json:"text"`
+}
+
+// ProtoReq name
+func (m CSSSetSupportsText) ProtoReq() string { return "CSS.setSupportsText" }
+
+// Call the request
+func (m CSSSetSupportsText) Call(c Client) (*CSSSetSupportsTextResult, error) {
+	var res CSSSetSupportsTextResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// CSSSetSupportsTextResult (experimental) Modifies the expression of a supports at-rule.
+type CSSSetSupportsTextResult struct {
+
+	// Supports The resulting CSS Supports rule after modification.
+	Supports *CSSCSSSupports `json:"supports"`
+}
+
 // CSSSetRuleSelector Modifies the rule selector.
 type CSSSetRuleSelector struct {
 

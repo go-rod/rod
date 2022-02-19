@@ -428,6 +428,12 @@ func (t T) CSSSetContainerQueryText() {
 	t.Nil(err)
 }
 
+func (t T) CSSSetSupportsText() {
+	c := &Client{}
+	_, err := proto.CSSSetSupportsText{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSSetRuleSelector() {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(c)

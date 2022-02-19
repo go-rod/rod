@@ -174,6 +174,8 @@ var types = map[string]reflect.Type{
 	"CSS.setMediaTextResult":                           reflect.TypeOf(CSSSetMediaTextResult{}),
 	"CSS.setContainerQueryText":                        reflect.TypeOf(CSSSetContainerQueryText{}),
 	"CSS.setContainerQueryTextResult":                  reflect.TypeOf(CSSSetContainerQueryTextResult{}),
+	"CSS.setSupportsText":                              reflect.TypeOf(CSSSetSupportsText{}),
+	"CSS.setSupportsTextResult":                        reflect.TypeOf(CSSSetSupportsTextResult{}),
 	"CSS.setRuleSelector":                              reflect.TypeOf(CSSSetRuleSelector{}),
 	"CSS.setRuleSelectorResult":                        reflect.TypeOf(CSSSetRuleSelectorResult{}),
 	"CSS.setStyleSheetText":                            reflect.TypeOf(CSSSetStyleSheetText{}),

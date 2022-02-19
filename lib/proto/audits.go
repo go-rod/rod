@@ -155,6 +155,9 @@ const (
 type AuditsMixedContentResourceType string
 
 const (
+	// AuditsMixedContentResourceTypeAttributionSrc enum const
+	AuditsMixedContentResourceTypeAttributionSrc AuditsMixedContentResourceType = "AttributionSrc"
+
 	// AuditsMixedContentResourceTypeAudio enum const
 	AuditsMixedContentResourceTypeAudio AuditsMixedContentResourceType = "Audio"
 
@@ -666,7 +669,7 @@ type AuditsFederatedAuthRequestIssueDetails struct {
 
 // AuditsFederatedAuthRequestIssueReason Represents the failure reason when a federated authentication reason fails.
 // Should be updated alongside RequestIdTokenStatus in
-// third_party/blink/public/mojom/webid/federated_auth_request.mojom to include
+// third_party/blink/public/mojom/devtools/inspector_issue.mojom to include
 // all cases except for success.
 type AuditsFederatedAuthRequestIssueReason string
 
