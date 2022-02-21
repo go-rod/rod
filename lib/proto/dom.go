@@ -104,17 +104,20 @@ const (
 	// DOMPseudoTypeInputListButton enum const
 	DOMPseudoTypeInputListButton DOMPseudoType = "input-list-button"
 
-	// DOMPseudoTypeTransition enum const
-	DOMPseudoTypeTransition DOMPseudoType = "transition"
+	// DOMPseudoTypePageTransition enum const
+	DOMPseudoTypePageTransition DOMPseudoType = "page-transition"
 
-	// DOMPseudoTypeTransitionContainer enum const
-	DOMPseudoTypeTransitionContainer DOMPseudoType = "transition-container"
+	// DOMPseudoTypePageTransitionContainer enum const
+	DOMPseudoTypePageTransitionContainer DOMPseudoType = "page-transition-container"
 
-	// DOMPseudoTypeTransitionOldContent enum const
-	DOMPseudoTypeTransitionOldContent DOMPseudoType = "transition-old-content"
+	// DOMPseudoTypePageTransitionImageWrapper enum const
+	DOMPseudoTypePageTransitionImageWrapper DOMPseudoType = "page-transition-image-wrapper"
 
-	// DOMPseudoTypeTransitionNewContent enum const
-	DOMPseudoTypeTransitionNewContent DOMPseudoType = "transition-new-content"
+	// DOMPseudoTypePageTransitionOutgoingImage enum const
+	DOMPseudoTypePageTransitionOutgoingImage DOMPseudoType = "page-transition-outgoing-image"
+
+	// DOMPseudoTypePageTransitionIncomingImage enum const
+	DOMPseudoTypePageTransitionIncomingImage DOMPseudoType = "page-transition-incoming-image"
 )
 
 // DOMShadowRootType Shadow root type.
