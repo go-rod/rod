@@ -356,8 +356,8 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 		oldView := proto.EmulationSetDeviceMetricsOverride{}
 		set := p.LoadState(&oldView)
 		view := oldView
-		view.Width = int(metrics.ContentSize.Width)
-		view.Height = int(metrics.ContentSize.Height)
+		view.Width = int(metrics.CSSContentSize.Width)
+		view.Height = int(metrics.CSSContentSize.Height)
 
 		err = p.SetViewport(&view)
 		if err != nil {
