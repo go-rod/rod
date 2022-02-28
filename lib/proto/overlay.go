@@ -245,6 +245,9 @@ const (
 	// OverlayColorFormatHsl enum const
 	OverlayColorFormatHsl OverlayColorFormat = "hsl"
 
+	// OverlayColorFormatHwb enum const
+	OverlayColorFormatHwb OverlayColorFormat = "hwb"
+
 	// OverlayColorFormatHex enum const
 	OverlayColorFormatHex OverlayColorFormat = "hex"
 )

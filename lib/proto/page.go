@@ -1305,6 +1305,11 @@ type PageBackForwardCacheNotRestoredExplanation struct {
 
 	// Reason Not restored reason
 	Reason PageBackForwardCacheNotRestoredReason `json:"reason"`
+
+	// Context (optional) Context associated with the reason. The meaning of this context is
+	// dependent on the reason:
+	// - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
+	Context string `json:"context,omitempty"`
 }
 
 // PageBackForwardCacheNotRestoredExplanationTree (experimental) ...

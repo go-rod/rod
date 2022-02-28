@@ -392,6 +392,12 @@ func (t T) CSSGetStyleSheetText() {
 	t.Nil(err)
 }
 
+func (t T) CSSGetLayersForNode() {
+	c := &Client{}
+	_, err := proto.CSSGetLayersForNode{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSTrackComputedStyleUpdates() {
 	c := &Client{}
 	err := proto.CSSTrackComputedStyleUpdates{}.Call(c)
@@ -1287,6 +1293,12 @@ func (t T) EmulationSetDisabledImageTypes() {
 func (t T) EmulationSetUserAgentOverride() {
 	c := &Client{}
 	err := proto.EmulationSetUserAgentOverride{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetAutomationOverride() {
+	c := &Client{}
+	err := proto.EmulationSetAutomationOverride{}.Call(c)
 	t.Nil(err)
 }
 

@@ -40,73 +40,73 @@ type AuditsAffectedFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// AuditsSameSiteCookieExclusionReason ...
-type AuditsSameSiteCookieExclusionReason string
+// AuditsCookieExclusionReason ...
+type AuditsCookieExclusionReason string
 
 const (
-	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax enum const
-	AuditsSameSiteCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteUnspecifiedTreatedAsLax"
+	// AuditsCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax enum const
+	AuditsCookieExclusionReasonExcludeSameSiteUnspecifiedTreatedAsLax AuditsCookieExclusionReason = "ExcludeSameSiteUnspecifiedTreatedAsLax"
 
-	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure enum const
-	AuditsSameSiteCookieExclusionReasonExcludeSameSiteNoneInsecure AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteNoneInsecure"
+	// AuditsCookieExclusionReasonExcludeSameSiteNoneInsecure enum const
+	AuditsCookieExclusionReasonExcludeSameSiteNoneInsecure AuditsCookieExclusionReason = "ExcludeSameSiteNoneInsecure"
 
-	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteLax enum const
-	AuditsSameSiteCookieExclusionReasonExcludeSameSiteLax AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteLax"
+	// AuditsCookieExclusionReasonExcludeSameSiteLax enum const
+	AuditsCookieExclusionReasonExcludeSameSiteLax AuditsCookieExclusionReason = "ExcludeSameSiteLax"
 
-	// AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict enum const
-	AuditsSameSiteCookieExclusionReasonExcludeSameSiteStrict AuditsSameSiteCookieExclusionReason = "ExcludeSameSiteStrict"
+	// AuditsCookieExclusionReasonExcludeSameSiteStrict enum const
+	AuditsCookieExclusionReasonExcludeSameSiteStrict AuditsCookieExclusionReason = "ExcludeSameSiteStrict"
 
-	// AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty enum const
-	AuditsSameSiteCookieExclusionReasonExcludeInvalidSameParty AuditsSameSiteCookieExclusionReason = "ExcludeInvalidSameParty"
+	// AuditsCookieExclusionReasonExcludeInvalidSameParty enum const
+	AuditsCookieExclusionReasonExcludeInvalidSameParty AuditsCookieExclusionReason = "ExcludeInvalidSameParty"
 
-	// AuditsSameSiteCookieExclusionReasonExcludeSamePartyCrossPartyContext enum const
-	AuditsSameSiteCookieExclusionReasonExcludeSamePartyCrossPartyContext AuditsSameSiteCookieExclusionReason = "ExcludeSamePartyCrossPartyContext"
+	// AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext enum const
+	AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext AuditsCookieExclusionReason = "ExcludeSamePartyCrossPartyContext"
 )
 
-// AuditsSameSiteCookieWarningReason ...
-type AuditsSameSiteCookieWarningReason string
+// AuditsCookieWarningReason ...
+type AuditsCookieWarningReason string
 
 const (
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext AuditsSameSiteCookieWarningReason = "WarnSameSiteUnspecifiedCrossSiteContext"
+	// AuditsCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext enum const
+	AuditsCookieWarningReasonWarnSameSiteUnspecifiedCrossSiteContext AuditsCookieWarningReason = "WarnSameSiteUnspecifiedCrossSiteContext"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteNoneInsecure enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteNoneInsecure AuditsSameSiteCookieWarningReason = "WarnSameSiteNoneInsecure"
+	// AuditsCookieWarningReasonWarnSameSiteNoneInsecure enum const
+	AuditsCookieWarningReasonWarnSameSiteNoneInsecure AuditsCookieWarningReason = "WarnSameSiteNoneInsecure"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe AuditsSameSiteCookieWarningReason = "WarnSameSiteUnspecifiedLaxAllowUnsafe"
+	// AuditsCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe enum const
+	AuditsCookieWarningReasonWarnSameSiteUnspecifiedLaxAllowUnsafe AuditsCookieWarningReason = "WarnSameSiteUnspecifiedLaxAllowUnsafe"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictLaxDowngradeStrict"
+	// AuditsCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict enum const
+	AuditsCookieWarningReasonWarnSameSiteStrictLaxDowngradeStrict AuditsCookieWarningReason = "WarnSameSiteStrictLaxDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictCrossDowngradeStrict"
+	// AuditsCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict enum const
+	AuditsCookieWarningReasonWarnSameSiteStrictCrossDowngradeStrict AuditsCookieWarningReason = "WarnSameSiteStrictCrossDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax AuditsSameSiteCookieWarningReason = "WarnSameSiteStrictCrossDowngradeLax"
+	// AuditsCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax enum const
+	AuditsCookieWarningReasonWarnSameSiteStrictCrossDowngradeLax AuditsCookieWarningReason = "WarnSameSiteStrictCrossDowngradeLax"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict AuditsSameSiteCookieWarningReason = "WarnSameSiteLaxCrossDowngradeStrict"
+	// AuditsCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict enum const
+	AuditsCookieWarningReasonWarnSameSiteLaxCrossDowngradeStrict AuditsCookieWarningReason = "WarnSameSiteLaxCrossDowngradeStrict"
 
-	// AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax enum const
-	AuditsSameSiteCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax AuditsSameSiteCookieWarningReason = "WarnSameSiteLaxCrossDowngradeLax"
+	// AuditsCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax enum const
+	AuditsCookieWarningReasonWarnSameSiteLaxCrossDowngradeLax AuditsCookieWarningReason = "WarnSameSiteLaxCrossDowngradeLax"
 )
 
-// AuditsSameSiteCookieOperation ...
-type AuditsSameSiteCookieOperation string
+// AuditsCookieOperation ...
+type AuditsCookieOperation string
 
 const (
-	// AuditsSameSiteCookieOperationSetCookie enum const
-	AuditsSameSiteCookieOperationSetCookie AuditsSameSiteCookieOperation = "SetCookie"
+	// AuditsCookieOperationSetCookie enum const
+	AuditsCookieOperationSetCookie AuditsCookieOperation = "SetCookie"
 
-	// AuditsSameSiteCookieOperationReadCookie enum const
-	AuditsSameSiteCookieOperationReadCookie AuditsSameSiteCookieOperation = "ReadCookie"
+	// AuditsCookieOperationReadCookie enum const
+	AuditsCookieOperationReadCookie AuditsCookieOperation = "ReadCookie"
 )
 
-// AuditsSameSiteCookieIssueDetails This information is currently necessary, as the front-end has a difficult
+// AuditsCookieIssueDetails This information is currently necessary, as the front-end has a difficult
 // time finding a specific cookie. With this, we can convey specific error
 // information without the cookie.
-type AuditsSameSiteCookieIssueDetails struct {
+type AuditsCookieIssueDetails struct {
 
 	// Cookie (optional) If AffectedCookie is not set then rawCookieLine contains the raw
 	// Set-Cookie header string. This hints at a problem where the
@@ -118,14 +118,14 @@ type AuditsSameSiteCookieIssueDetails struct {
 	RawCookieLine string `json:"rawCookieLine,omitempty"`
 
 	// CookieWarningReasons ...
-	CookieWarningReasons []AuditsSameSiteCookieWarningReason `json:"cookieWarningReasons"`
+	CookieWarningReasons []AuditsCookieWarningReason `json:"cookieWarningReasons"`
 
 	// CookieExclusionReasons ...
-	CookieExclusionReasons []AuditsSameSiteCookieExclusionReason `json:"cookieExclusionReasons"`
+	CookieExclusionReasons []AuditsCookieExclusionReason `json:"cookieExclusionReasons"`
 
 	// Operation Optionally identifies the site-for-cookies and the cookie url, which
 	// may be used by the front-end as additional context.
-	Operation AuditsSameSiteCookieOperation `json:"operation"`
+	Operation AuditsCookieOperation `json:"operation"`
 
 	// SiteForCookies (optional) ...
 	SiteForCookies string `json:"siteForCookies,omitempty"`
@@ -749,8 +749,8 @@ type AuditsClientHintIssueDetails struct {
 type AuditsInspectorIssueCode string
 
 const (
-	// AuditsInspectorIssueCodeSameSiteCookieIssue enum const
-	AuditsInspectorIssueCodeSameSiteCookieIssue AuditsInspectorIssueCode = "SameSiteCookieIssue"
+	// AuditsInspectorIssueCodeCookieIssue enum const
+	AuditsInspectorIssueCodeCookieIssue AuditsInspectorIssueCode = "CookieIssue"
 
 	// AuditsInspectorIssueCodeMixedContentIssue enum const
 	AuditsInspectorIssueCodeMixedContentIssue AuditsInspectorIssueCode = "MixedContentIssue"
@@ -803,8 +803,8 @@ const (
 // add a new optional field to this type.
 type AuditsInspectorIssueDetails struct {
 
-	// SameSiteCookieIssueDetails (optional) ...
-	SameSiteCookieIssueDetails *AuditsSameSiteCookieIssueDetails `json:"sameSiteCookieIssueDetails,omitempty"`
+	// CookieIssueDetails (optional) ...
+	CookieIssueDetails *AuditsCookieIssueDetails `json:"cookieIssueDetails,omitempty"`
 
 	// MixedContentIssueDetails (optional) ...
 	MixedContentIssueDetails *AuditsMixedContentIssueDetails `json:"mixedContentIssueDetails,omitempty"`

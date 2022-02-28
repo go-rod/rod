@@ -698,6 +698,21 @@ func (m EmulationSetUserAgentOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// EmulationSetAutomationOverride (experimental) Allows overriding the automation flag.
+type EmulationSetAutomationOverride struct {
+
+	// Enabled Whether the override should be enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// ProtoReq name
+func (m EmulationSetAutomationOverride) ProtoReq() string { return "Emulation.setAutomationOverride" }
+
+// Call sends the request
+func (m EmulationSetAutomationOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // EmulationVirtualTimeBudgetExpired (experimental) Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
 type EmulationVirtualTimeBudgetExpired struct {
 }
