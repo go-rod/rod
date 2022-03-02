@@ -263,19 +263,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		return "", err
 	}
 
-	p.helpersLock.Lock()
-	if p.helpers == nil {
-		p.helpers = map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID{}
-	}
-
-	list, ok := p.helpers[jsCtxID]
-	if !ok {
-		list = map[string]proto.RuntimeRemoteObjectID{}
-		p.helpers[jsCtxID] = list
-	}
-	p.helpersLock.Unlock()
-
-	fns, has := list[js.Functions.Name]
+	fnID, has := p.getHelper(jsCtxID, js.Functions.Name)
 	if !has {
 		res, err := proto.RuntimeCallFunctionOn{
 			ObjectID:            jsCtxID,
@@ -284,11 +272,11 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		if err != nil {
 			return "", err
 		}
-		fns = res.Result.ObjectID
-		list[js.Functions.Name] = fns
+		fnID = res.Result.ObjectID
+		p.setHelper(jsCtxID, js.Functions.Name, fnID)
 	}
 
-	id, has := list[fn.Name]
+	id, has := p.getHelper(jsCtxID, fn.Name)
 	if !has {
 		for _, dep := range fn.Dependencies {
 			_, err := p.ensureJSHelper(dep)
@@ -299,7 +287,7 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 
 		res, err := proto.RuntimeCallFunctionOn{
 			ObjectID:  jsCtxID,
-			Arguments: []*proto.RuntimeCallArgument{{ObjectID: fns}},
+			Arguments: []*proto.RuntimeCallArgument{{ObjectID: fnID}},
 
 			FunctionDeclaration: fmt.Sprintf(
 				// we only need the object id, but the cdp will return the whole function string.
@@ -313,10 +301,35 @@ func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, err
 		}
 
 		id = res.Result.ObjectID
-		list[fn.Name] = id
+		p.setHelper(jsCtxID, fn.Name, id)
 	}
 
 	return id, nil
+}
+
+func (p *Page) getHelper(jsCtxID proto.RuntimeRemoteObjectID, name string) (proto.RuntimeRemoteObjectID, bool) {
+	p.helpersLock.Lock()
+	defer p.helpersLock.Unlock()
+
+	if p.helpers == nil {
+		p.helpers = map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID{}
+	}
+
+	list, ok := p.helpers[jsCtxID]
+	if !ok {
+		list = map[string]proto.RuntimeRemoteObjectID{}
+		p.helpers[jsCtxID] = list
+	}
+
+	id, ok := list[name]
+	return id, ok
+}
+
+func (p *Page) setHelper(jsCtxID proto.RuntimeRemoteObjectID, name string, fnID proto.RuntimeRemoteObjectID) {
+	p.helpersLock.Lock()
+	defer p.helpersLock.Unlock()
+
+	p.helpers[jsCtxID][name] = fnID
 }
 
 // Returns the page's window object, the page can be an iframe
