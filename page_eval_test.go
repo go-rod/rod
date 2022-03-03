@@ -70,9 +70,6 @@ func (t T) PageUpdateJSCtxIDErr() {
 
 	frame := page.MustElement("iframe").MustFrame()
 
-	t.mc.stubErr(1, proto.DOMGetFrameOwner{})
-	t.Err(frame.Element(`button`))
-
 	frame.MustReload()
 	t.mc.stubErr(1, proto.DOMDescribeNode{})
 	t.Err(frame.Element(`button`))

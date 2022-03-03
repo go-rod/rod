@@ -354,17 +354,12 @@ func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 		return *p.jsCtxID, nil
 	}
 
-	owner, err := proto.DOMGetFrameOwner{FrameID: p.FrameID}.Call(p)
+	node, err := p.element.Describe(1, true)
 	if err != nil {
 		return "", err
 	}
 
-	node, err := proto.DOMDescribeNode{BackendNodeID: owner.BackendNodeID, Pierce: true}.Call(p)
-	if err != nil {
-		return "", err
-	}
-
-	obj, err := proto.DOMResolveNode{BackendNodeID: node.Node.ContentDocument.BackendNodeID}.Call(p)
+	obj, err := proto.DOMResolveNode{BackendNodeID: node.ContentDocument.BackendNodeID}.Call(p)
 	if err != nil {
 		return "", err
 	}
