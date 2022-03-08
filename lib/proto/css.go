@@ -57,6 +57,13 @@ type CSSInheritedStyleEntry struct {
 	MatchedCSSRules []*CSSRuleMatch `json:"matchedCSSRules"`
 }
 
+// CSSInheritedPseudoElementMatches Inherited pseudo element matches from pseudos of an ancestor node.
+type CSSInheritedPseudoElementMatches struct {
+
+	// PseudoElements Matches of pseudo styles from the pseudos of an ancestor node.
+	PseudoElements []*CSSPseudoElementMatches `json:"pseudoElements"`
+}
+
 // CSSRuleMatch Match data for a CSS rule.
 type CSSRuleMatch struct {
 
@@ -760,6 +767,9 @@ type CSSGetMatchedStylesForNodeResult struct {
 
 	// Inherited (optional) A chain of inherited styles (from the immediate node parent up to the DOM tree root).
 	Inherited []*CSSInheritedStyleEntry `json:"inherited,omitempty"`
+
+	// InheritedPseudoElements (optional) A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+	InheritedPseudoElements []*CSSInheritedPseudoElementMatches `json:"inheritedPseudoElements,omitempty"`
 
 	// CSSKeyframesRules (optional) A list of CSS keyframed animations matching this node.
 	CSSKeyframesRules []*CSSCSSKeyframesRule `json:"cssKeyframesRules,omitempty"`

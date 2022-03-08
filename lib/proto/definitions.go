@@ -119,6 +119,7 @@ var types = map[string]reflect.Type{
 	"Browser.downloadProgress":                         reflect.TypeOf(BrowserDownloadProgress{}),
 	"CSS.PseudoElementMatches":                         reflect.TypeOf(CSSPseudoElementMatches{}),
 	"CSS.InheritedStyleEntry":                          reflect.TypeOf(CSSInheritedStyleEntry{}),
+	"CSS.InheritedPseudoElementMatches":                reflect.TypeOf(CSSInheritedPseudoElementMatches{}),
 	"CSS.RuleMatch":                                    reflect.TypeOf(CSSRuleMatch{}),
 	"CSS.Value":                                        reflect.TypeOf(CSSValue{}),
 	"CSS.SelectorList":                                 reflect.TypeOf(CSSSelectorList{}),
