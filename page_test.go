@@ -215,6 +215,59 @@ func (t T) SetViewport() {
 	t.Neq(int(317), res.Get("0").Int())
 }
 
+func (t T) SetDocumentContent() {
+	page := t.newPage(t.blank())
+
+	doctype := "<!DOCTYPE html>"
+	html4StrictDoctype := `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`
+	html4LooseDoctype := `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">`
+	xhtml11Doctype := `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">`
+
+	exampleWithHTML4StrictDoctype := html4StrictDoctype + "<html><head></head><body><div>test</div></body></html>"
+	page.MustSetDocumentContent(exampleWithHTML4StrictDoctype)
+	exp1 := page.MustEval(`() => new XMLSerializer().serializeToString(document)`).Str()
+	t.Eq(exp1, `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><div>test</div></body></html>`)
+	t.Eq(page.MustElement("html").MustHTML(), "<html><head></head><body><div>test</div></body></html>")
+	t.Eq(page.MustElement("head").MustText(), "")
+
+	exampleWithHTML4LooseDoctype := html4LooseDoctype + "<html><head></head><body><div>test</div></body></html>"
+	page.MustSetDocumentContent(exampleWithHTML4LooseDoctype)
+	exp2 := page.MustEval(`() => new XMLSerializer().serializeToString(document)`).Str()
+	t.Eq(exp2, `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><div>test</div></body></html>`)
+	t.Eq(page.MustElement("html").MustHTML(), "<html><head></head><body><div>test</div></body></html>")
+	t.Eq(page.MustElement("head").MustText(), "")
+
+	exampleWithXHTMLDoctype := xhtml11Doctype + "<html><head></head><body><div>test</div></body></html>"
+	page.MustSetDocumentContent(exampleWithXHTMLDoctype)
+	exp3 := page.MustEval(`() => new XMLSerializer().serializeToString(document)`).Str()
+	t.Eq(exp3, `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><div>test</div></body></html>`)
+	t.Eq(page.MustElement("html").MustHTML(), "<html><head></head><body><div>test</div></body></html>")
+	t.Eq(page.MustElement("head").MustText(), "")
+
+	exampleWithHTML5Doctype := doctype + "<html><head></head><body><div>test</div></body></html>"
+	page.MustSetDocumentContent(exampleWithHTML5Doctype)
+	exp4 := page.MustEval(`() => new XMLSerializer().serializeToString(document)`).Str()
+	t.Eq(exp4, `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><div>test</div></body></html>`)
+	t.Eq(page.MustElement("html").MustHTML(), "<html><head></head><body><div>test</div></body></html>")
+	t.Eq(page.MustElement("head").MustText(), "")
+
+	exampleWithoutDoctype := "<html><head></head><body><div>test</div></body></html>"
+	page.MustSetDocumentContent(exampleWithoutDoctype)
+	t.Eq(page.MustElement("html").MustHTML(), "<html><head></head><body><div>test</div></body></html>")
+
+	exampleBasic := doctype + "<div>test</div>"
+	page.MustSetDocumentContent(exampleBasic)
+	t.Eq(page.MustElement("div").MustText(), "test")
+
+	exampleWithTrickyContent := "<div>test</div>\x7F"
+	page.MustSetDocumentContent(exampleWithTrickyContent)
+	t.Eq(page.MustElement("div").MustText(), "test")
+
+	exampleWithEmoji := "<div>💪</div>"
+	page.MustSetDocumentContent(exampleWithEmoji)
+	t.Eq(page.MustElement("div").MustText(), "💪")
+}
+
 func (t T) EmulateDevice() {
 	page := t.newPage(t.blank())
 	page.MustEmulate(devices.IPhone6or7or8)
