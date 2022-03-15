@@ -256,16 +256,10 @@ func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) erro
 
 // SetDocumentContent sets the page document html content
 func (p *Page) SetDocumentContent(html string) error {
-	err := proto.PageSetDocumentContent{
+	return proto.PageSetDocumentContent{
 		FrameID: p.FrameID,
 		HTML:    html,
 	}.Call(p)
-
-	if err != nil {
-		return fmt.Errorf("could not set the page document html content: %w", err)
-	}
-
-	return nil
 }
 
 // Emulate the device, such as iPhone9. If device is devices.Clear, it will clear the override.
