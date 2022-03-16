@@ -6,6 +6,5 @@ tmp/
 .dockerignore
 *.out
 rod.test
-.golangci.yml
 package-lock.json
 package.json

@@ -68,7 +68,7 @@ func main() {
 
 	utils.Exec("gofmt", "-s", "-w", path)
 	utils.Exec(
-		"golangci-lint", "--",
+		"go", "run", "github.com/ysmood/golangci-lint@v0.5.0", "--",
 		"run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path,
 	)
 }

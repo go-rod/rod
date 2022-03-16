@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go/build"
 	"os"
 	"os/exec"
-	"path/filepath"
 
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -22,7 +20,7 @@ func main() {
 
 	utils.ExecLine("npx -yq -- prettier@2.5.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	utils.ExecLine(filepath.Join(build.Default.GOPATH, "bin", "golangci-lint"))
+	utils.ExecLine("go run github.com/ysmood/golangci-lint@v0.5.0")
 
 	lintMustPrefix()
 
