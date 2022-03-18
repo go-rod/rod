@@ -89,7 +89,7 @@ func (ps Pages) Find(selector string) (*Page, error) {
 // FindByURL returns the page that has the url that matches the jsRegex
 func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 	for _, page := range ps {
-		res, err := page.Eval(`location.href`)
+		res, err := page.Eval(`() => location.href`)
 		if err != nil {
 			return nil, err
 		}
@@ -493,7 +493,7 @@ func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
 
 // Parent returns the parent element in the DOM tree
 func (el *Element) Parent() (*Element, error) {
-	return el.ElementByJS(Eval(`this.parentElement`))
+	return el.ElementByJS(Eval(`() => this.parentElement`))
 }
 
 // Parents that match the selector
@@ -503,12 +503,12 @@ func (el *Element) Parents(selector string) (Elements, error) {
 
 // Next returns the next sibling element in the DOM tree
 func (el *Element) Next() (*Element, error) {
-	return el.ElementByJS(Eval(`this.nextElementSibling`))
+	return el.ElementByJS(Eval(`() => this.nextElementSibling`))
 }
 
 // Previous returns the previous sibling element in the DOM tree
 func (el *Element) Previous() (*Element, error) {
-	return el.ElementByJS(Eval(`this.previousElementSibling`))
+	return el.ElementByJS(Eval(`() => this.previousElementSibling`))
 }
 
 // Elements returns all elements that match the css selector

@@ -93,5 +93,5 @@ func (t T) ExposeHelpers() {
 	p := t.newPage(t.srcFile("fixtures/click.html"))
 	p.ExposeHelpers(js.ElementR)
 
-	t.Eq(p.MustElementByJS(`rod.elementR('button', 'click me')`).MustText(), "click me")
+	t.Eq(p.MustElementByJS(`() => rod.elementR('button', 'click me')`).MustText(), "click me")
 }

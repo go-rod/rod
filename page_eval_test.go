@@ -18,7 +18,7 @@ func (t T) PageEvalOnNewDocument() {
 	// to activate the script
 	p.MustNavigate(t.blank())
 
-	t.Eq(p.MustEval("rod").String(), "ok")
+	t.Eq(p.MustEval("() => rod").String(), "ok")
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
@@ -32,19 +32,13 @@ func (t T) PageEval() {
 	t.Eq(3, page.MustEval(`
 		(a, b) => a + b
 	`, 1, 2).Int())
-	t.Eq(10, page.MustEval(`
-		10
-	`).Int())
-	t.Eq(1, page.MustEval(`a => 1`).Int())
-	t.Eq(1, page.MustEval(`function() { return 1 }`).Int())
-	t.Eq(1, page.MustEval(`((1))`).Int())
-	t.Neq(1, page.MustEval(`a = () => 1`).Int())
-	t.Neq(1, page.MustEval(`a = function() { return 1 }`))
-	t.Neq(1, page.MustEval(`/* ) */`))
 
 	// reuse obj
 	obj := page.MustEvaluate(rod.Eval(`() => () => 'ok'`).ByObject())
 	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
+
+	_, err := page.Eval(`10`)
+	t.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
 }
 
 func (t T) PageEvaluateRetry() {
@@ -56,7 +50,7 @@ func (t T) PageEvaluateRetry() {
 		})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
-	t.Eq(1, page.MustEval(`1`).Int())
+	t.Eq(1, page.MustEval(`() => 1`).Int())
 }
 
 func (t T) PageUpdateJSCtxIDErr() {
@@ -66,7 +60,7 @@ func (t T) PageUpdateJSCtxIDErr() {
 		t.mc.stubErr(1, proto.RuntimeEvaluate{})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
-	t.Err(page.Eval(`1`))
+	t.Err(page.Eval(`() => 1`))
 
 	frame := page.MustElement("iframe").MustFrame()
 
@@ -87,16 +81,16 @@ func (t T) PageExpose() {
 	})
 
 	utils.All(func() {
-		res := page.MustEval(`exposedFunc({k: 'a'})`)
+		res := page.MustEval(`() => exposedFunc({k: 'a'})`)
 		t.Eq("a", res.Str())
 	}, func() {
-		res := page.MustEval(`exposedFunc({k: 'b'})`)
+		res := page.MustEval(`() => exposedFunc({k: 'b'})`)
 		t.Eq("b", res.Str())
 	})()
 
 	// survive the reload
 	page.MustReload().MustWaitLoad()
-	res := page.MustEval(`exposedFunc({k: 'ok'})`)
+	res := page.MustEval(`() => exposedFunc({k: 'ok'})`)
 	t.Eq("ok", res.Str())
 
 	stop()
@@ -105,7 +99,7 @@ func (t T) PageExpose() {
 		stop()
 	})
 	t.Panic(func() {
-		page.MustReload().MustWaitLoad().MustEval(`exposedFunc()`)
+		page.MustReload().MustWaitLoad().MustEval(`() => exposedFunc()`)
 	})
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
@@ -122,7 +116,7 @@ func (t T) PageExpose() {
 }
 
 func (t T) Release() {
-	res, err := t.page.Evaluate(rod.Eval(`document`).ByObject())
+	res, err := t.page.Evaluate(rod.Eval(`() => document`).ByObject())
 	t.E(err)
 	t.page.MustRelease(res)
 }
@@ -136,7 +130,7 @@ func (t T) PromiseLeak() {
 	p := t.page.MustNavigate(t.blank())
 
 	utils.All(func() {
-		_, err := p.Eval(`new Promise(r => setTimeout(() => r(location.href), 1000))`)
+		_, err := p.Eval(`() => new Promise(r => setTimeout(() => r(location.href), 1000))`)
 		t.Is(err, cdp.ErrCtxDestroyed)
 	}, func() {
 		utils.Sleep(0.3)
@@ -151,7 +145,7 @@ func (t T) ObjectLeak() {
 
 	p := t.page.MustNavigate(t.blank())
 
-	obj := p.MustEvaluate(rod.Eval("{a:1}").ByObject())
+	obj := p.MustEvaluate(rod.Eval("() => ({a:1})").ByObject())
 	p.MustReload().MustWaitLoad()
 	t.Panic(func() {
 		p.MustEvaluate(rod.Eval(`obj => obj`, obj))
@@ -189,9 +183,9 @@ func (t T) ConcurrentEval() {
 
 	start := time.Now()
 	utils.All(func() {
-		list <- p.MustEval(`new Promise(r => setTimeout(r, 1000, 2))`).Int()
+		list <- p.MustEval(`() => new Promise(r => setTimeout(r, 1000, 2))`).Int()
 	}, func() {
-		list <- p.MustEval(`new Promise(r => setTimeout(r, 500, 1))`).Int()
+		list <- p.MustEval(`() => new Promise(r => setTimeout(r, 500, 1))`).Int()
 	})()
 	duration := time.Since(start)
 
@@ -220,11 +214,11 @@ func (t T) PageIframeReload() {
 
 func (t T) PageObjCrossNavigation() {
 	p := t.page.MustNavigate(t.blank())
-	obj := p.MustEvaluate(rod.Eval(`{}`).ByObject())
+	obj := p.MustEvaluate(rod.Eval(`() => ({})`).ByObject())
 
 	t.page.MustNavigate(t.blank())
 
-	_, err := p.Evaluate(rod.Eval(`1`).This(obj))
+	_, err := p.Evaluate(rod.Eval(`() => 1`).This(obj))
 	t.Is(err, &rod.ErrObjectNotFound{})
 	t.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
 }
@@ -240,5 +234,5 @@ func (t T) EvalOptionsString() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
-	t.Eq(rod.Eval(`this.parentElement`).This(el.Object).String(), "this.parentElement() button")
+	t.Eq(rod.Eval(`() => this.parentElement`).This(el.Object).String(), "() => this.parentElement() button")
 }

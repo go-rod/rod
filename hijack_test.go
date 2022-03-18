@@ -213,7 +213,7 @@ func (t T) HijackFailRequest() {
 
 	t.page.MustNavigate(s.URL("/page")).MustWaitLoad()
 
-	t.page.MustWait(`document.title === 'Failed to fetch'`)
+	t.page.MustWait(`() => document.title === 'Failed to fetch'`)
 
 	{ // test error log
 		t.mc.stub(1, proto.FetchFailRequest{}, func(send StubSend) (gson.JSON, error) {

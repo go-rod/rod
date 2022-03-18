@@ -177,9 +177,9 @@ func (t T) WaitInteractable() {
 func (t T) Hover() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
-	el.MustEval(`this.onmouseenter = () => this.dataset['a'] = 1`)
+	el.MustEval(`() => this.onmouseenter = () => this.dataset['a'] = 1`)
 	el.MustHover()
-	t.Eq("1", el.MustEval(`this.dataset['a']`).String())
+	t.Eq("1", el.MustEval(`() => this.dataset['a']`).String())
 
 	t.mc.stubErr(1, proto.DOMScrollIntoViewIfNeeded{})
 	t.Err(el.Hover())
@@ -197,7 +197,7 @@ func (t T) Hover() {
 func (t T) ElementMoveMouseOut() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
-	btn.MustEval(`this.onmouseout = () => this.setAttribute('name', 'mouse moved.')`)
+	btn.MustEval(`() => this.onmouseout = () => this.setAttribute('name', 'mouse moved.')`)
 	t.Eq("mouse moved.", *btn.MustHover().MustMoveMouseOut().MustAttribute("name"))
 
 	t.mc.stubErr(1, proto.DOMGetContentQuads{})
@@ -227,7 +227,7 @@ func (t T) Iframes() {
 	el := frame02.MustElement("button")
 	el.MustClick()
 
-	t.Eq(frame01.MustEval(`testIsolation()`).Str(), "ok")
+	t.Eq(frame01.MustEval(`() => testIsolation()`).Str(), "ok")
 	t.True(frame02.MustHas("[a=ok]"))
 }
 
@@ -429,7 +429,7 @@ func (t T) SelectQuery() {
 	err := el.Select([]string{`[value="c"]`}, true, rod.SelectorTypeCSSSector)
 	t.E(err)
 
-	t.Eq(2, el.MustEval("this.selectedIndex").Int())
+	t.Eq(2, el.MustEval("() => this.selectedIndex").Int())
 }
 
 func (t T) SelectOptions() {
@@ -520,7 +520,7 @@ func (t T) SetFiles() {
 		slash("fixtures/alert.html"),
 	)
 
-	list := el.MustEval("Array.from(this.files).map(f => f.name)").Arr()
+	list := el.MustEval("() => Array.from(this.files).map(f => f.name)").Arr()
 	t.Len(list, 2)
 	t.Eq("alert.html", list[1].String())
 }
@@ -544,9 +544,9 @@ func (t T) WaitInvisible() {
 
 	go func() {
 		utils.Sleep(0.03)
-		h4.MustEval(`this.remove()`)
+		h4.MustEval(`() => this.remove()`)
 		utils.Sleep(0.03)
-		btn.MustEval(`this.style.visibility = 'hidden'`)
+		btn.MustEval(`() => this.style.visibility = 'hidden'`)
 	}()
 
 	h4.MustWaitInvisible()
@@ -568,7 +568,7 @@ func (t T) WaitWritable() {
 func (t T) WaitStable() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
-	el.MustEval(`this.classList.add("play")`)
+	el.MustEval(`() => this.classList.add("play")`)
 	start := time.Now()
 	el.MustWaitStable()
 	t.Gt(time.Since(start), time.Second)
@@ -596,7 +596,7 @@ func (t T) WaitStable() {
 func (t T) WaitStableRAP() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
-	el.MustEval(`this.classList.add("play")`)
+	el.MustEval(`() => this.classList.add("play")`)
 	start := time.Now()
 	t.E(el.WaitStableRAF())
 	t.Gt(time.Since(start), time.Second)
@@ -723,7 +723,7 @@ func (t T) FnErr() {
 	t.True(errors.As(err, &e))
 	t.Eq(proto.RuntimeRemoteObjectSubtypeError, e.Exception.Subtype)
 
-	_, err = el.ElementByJS(rod.Eval("foo()"))
+	_, err = el.ElementByJS(rod.Eval("() => foo()"))
 	t.Err(err)
 	t.Has(err.Error(), "ReferenceError: foo is not defined")
 	t.True(errors.Is(err, &rod.ErrEval{}))
@@ -749,9 +749,9 @@ func (t T) ElementOthers() {
 	el.MustScrollIntoView()
 	t.Eq("submit", el.MustElement("[type=submit]").MustText())
 	t.Eq("<input type=\"submit\" value=\"submit\">", el.MustElement("[type=submit]").MustHTML())
-	el.MustWait(`true`)
-	t.Eq("form", el.MustElementByJS(`this`).MustDescribe().LocalName)
-	t.Len(el.MustElementsByJS(`[]`), 0)
+	el.MustWait(`() => true`)
+	t.Eq("form", el.MustElementByJS(`() => this`).MustDescribe().LocalName)
+	t.Len(el.MustElementsByJS(`() => []`), 0)
 }
 
 func (t T) ElementEqual() {

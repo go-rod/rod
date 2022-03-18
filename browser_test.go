@@ -163,7 +163,7 @@ func (t T) BrowserWaitEvent() {
 func (t T) BrowserCrash() {
 	browser := rod.New().Context(t.Context()).MustConnect()
 	page := browser.MustPage()
-	js := `new Promise(r => setTimeout(r, 10000))`
+	js := `() => new Promise(r => setTimeout(r, 10000))`
 
 	go t.Panic(func() {
 		page.MustEval(js)

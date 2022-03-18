@@ -172,9 +172,9 @@ func (t T) PageRace() {
 	p.Race().ElementR("button", "02").MustHandle(func(e *rod.Element) { t.Eq("02", e.MustText()) }).MustDo()
 	t.Eq("02", p.Race().ElementR("button", "02").MustDo().MustText())
 
-	p.Race().MustElementByJS("document.querySelector('button')", nil).
+	p.Race().MustElementByJS("() => document.querySelector('button')", nil).
 		MustHandle(func(e *rod.Element) { t.Eq("01", e.MustText()) }).MustDo()
-	t.Eq("01", p.Race().MustElementByJS("document.querySelector('button')", nil).MustDo().MustText())
+	t.Eq("01", p.Race().MustElementByJS("() => document.querySelector('button')", nil).MustDo().MustText())
 
 	el, err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
 		Element("not-exists").MustHandle(func(e *rod.Element) {}).
@@ -184,7 +184,7 @@ func (t T) PageRace() {
 	t.Err(err)
 	t.Nil(el)
 
-	el, err = p.Race().MustElementByJS(`notExists()`, nil).Do()
+	el, err = p.Race().MustElementByJS(`() => notExists()`, nil).Do()
 	t.Err(err)
 	t.Nil(el)
 }
@@ -194,9 +194,9 @@ func (t T) PageRaceRetryInHandle() {
 	p.Race().Element("div").MustHandle(func(e *rod.Element) {
 		go func() {
 			utils.Sleep(0.5)
-			e.MustElement("button").MustEval(`this.innerText = '04'`)
+			e.MustElement("button").MustEval(`() => this.innerText = '04'`)
 		}()
-		e.MustElement("button").MustWait("this.innerText === '04'")
+		e.MustElement("button").MustWait("() => this.innerText === '04'")
 	}).MustDo()
 }
 
@@ -254,7 +254,7 @@ func (t T) ElementsFromElement() {
 func (t T) ElementParent() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/input.html"))
 	el := p.MustElement("input").MustParent()
-	t.Eq("FORM", el.MustEval(`this.tagName`).String())
+	t.Eq("FORM", el.MustEval(`() => this.tagName`).String())
 }
 
 func (t T) ElementParents() {
@@ -300,9 +300,9 @@ func (t T) ElementTracing() {
 func (t T) PageElementByJS() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
 
-	t.Eq(p.MustElementByJS(`document.querySelector('button')`).MustText(), "click me")
+	t.Eq(p.MustElementByJS(`() => document.querySelector('button')`).MustText(), "click me")
 
-	_, err := p.ElementByJS(rod.Eval(`1`))
+	_, err := p.ElementByJS(rod.Eval(`() => 1`))
 	t.Is(err, &rod.ErrExpectElement{})
 	t.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
@@ -310,18 +310,18 @@ func (t T) PageElementByJS() {
 func (t T) PageElementsByJS() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/selector.html")).MustWaitLoad()
 
-	t.Len(p.MustElementsByJS("document.querySelectorAll('button')"), 4)
+	t.Len(p.MustElementsByJS("() => document.querySelectorAll('button')"), 4)
 
-	_, err := p.ElementsByJS(rod.Eval(`[1]`))
+	_, err := p.ElementsByJS(rod.Eval(`() => [1]`))
 	t.Is(err, &rod.ErrExpectElements{})
 	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-	_, err = p.ElementsByJS(rod.Eval(`1`))
+	_, err = p.ElementsByJS(rod.Eval(`() => 1`))
 	t.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
-	_, err = p.ElementsByJS(rod.Eval(`foo()`))
+	_, err = p.ElementsByJS(rod.Eval(`() => foo()`))
 	t.Err(err)
 
 	t.mc.stubErr(1, proto.RuntimeGetProperties{})
-	_, err = p.ElementsByJS(rod.Eval(`[document.body]`))
+	_, err = p.ElementsByJS(rod.Eval(`() => [document.body]`))
 	t.Err(err)
 
 	t.mc.stubErr(4, proto.RuntimeCallFunctionOn{})

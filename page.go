@@ -173,14 +173,14 @@ func (p *Page) Navigate(url string) error {
 // NavigateBack history.
 func (p *Page) NavigateBack() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(Eval(`history.back()`).ByUser())
+	_, err := p.Evaluate(Eval(`() => history.back()`).ByUser())
 	return err
 }
 
 // NavigateForward history.
 func (p *Page) NavigateForward() error {
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(Eval(`history.forward()`).ByUser())
+	_, err := p.Evaluate(Eval(`() => history.forward()`).ByUser())
 	return err
 }
 
@@ -194,7 +194,7 @@ func (p *Page) Reload() error {
 	})
 
 	// Not using cdp API because it doesn't work for iframe
-	_, err := p.Evaluate(Eval(`location.reload()`).ByUser())
+	_, err := p.Evaluate(Eval(`() => location.reload()`).ByUser())
 	if err != nil {
 		return err
 	}
@@ -542,7 +542,7 @@ func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 // Doc: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
 func (p *Page) WaitRepaint() error {
 	// we use root here because iframe doesn't trigger requestAnimationFrame
-	_, err := p.root.Eval(`new Promise(r => requestAnimationFrame(r))`)
+	_, err := p.root.Eval(`() => new Promise(r => requestAnimationFrame(r))`)
 	return err
 }
 

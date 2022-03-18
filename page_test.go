@@ -146,7 +146,7 @@ func (t T) PageCloseCancel() {
 	}()
 	t.Eq(page.Close().Error(), "page close canceled")
 
-	page.MustEval(`window.onbeforeunload = null`)
+	page.MustEval(`() => window.onbeforeunload = null`)
 	page.MustClose()
 }
 
@@ -159,7 +159,7 @@ func (t T) DisableDomain() {
 }
 
 func (t T) PageContext() {
-	t.page.Timeout(time.Hour).CancelTimeout().MustEval(`1`)
+	t.page.Timeout(time.Hour).CancelTimeout().MustEval(`() => 1`)
 }
 
 func (t T) PageActivate() {
@@ -186,8 +186,8 @@ func (t T) Window() {
 	page.MustWindowMinimize()
 	page.MustWindowNormal()
 	page.MustSetWindow(0, 0, 1211, 611)
-	t.Eq(1211, page.MustEval(`window.innerWidth`).Int())
-	t.Eq(611, page.MustEval(`window.innerHeight`).Int())
+	t.Eq(1211, page.MustEval(`() => window.innerWidth`).Int())
+	t.Eq(611, page.MustEval(`() => window.innerHeight`).Int())
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.BrowserGetWindowForTarget{})
@@ -206,12 +206,12 @@ func (t T) Window() {
 func (t T) SetViewport() {
 	page := t.newPage(t.blank())
 	page.MustSetViewport(317, 419, 0, false)
-	res := page.MustEval(`[window.innerWidth, window.innerHeight]`)
+	res := page.MustEval(`() => [window.innerWidth, window.innerHeight]`)
 	t.Eq(317, res.Get("0").Int())
 	t.Eq(419, res.Get("1").Int())
 
 	page2 := t.newPage(t.blank())
-	res = page2.MustEval(`[window.innerWidth, window.innerHeight]`)
+	res = page2.MustEval(`() => [window.innerWidth, window.innerHeight]`)
 	t.Neq(int(317), res.Get("0").Int())
 }
 
@@ -271,7 +271,7 @@ func (t T) SetDocumentContent() {
 func (t T) EmulateDevice() {
 	page := t.newPage(t.blank())
 	page.MustEmulate(devices.IPhone6or7or8)
-	res := page.MustEval(`[window.innerWidth, window.innerHeight, navigator.userAgent]`)
+	res := page.MustEval(`() => [window.innerWidth, window.innerHeight, navigator.userAgent]`)
 
 	// TODO: this seems like a bug of chromium
 	{
@@ -304,14 +304,14 @@ func (t T) PageCloseErr() {
 func (t T) PageAddScriptTag() {
 	p := t.page.MustNavigate(t.blank()).MustWaitLoad()
 
-	res := p.MustAddScriptTag(t.srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
+	res := p.MustAddScriptTag(t.srcFile("fixtures/add-script-tag.js")).MustEval(`() => count()`)
 	t.Eq(0, res.Int())
 
-	res = p.MustAddScriptTag(t.srcFile("fixtures/add-script-tag.js")).MustEval(`count()`)
+	res = p.MustAddScriptTag(t.srcFile("fixtures/add-script-tag.js")).MustEval(`() => count()`)
 	t.Eq(1, res.Int())
 
 	t.E(p.AddScriptTag("", `let ok = 'yes'`))
-	res = p.MustEval(`ok`)
+	res = p.MustEval(`() => ok`)
 	t.Eq("yes", res.String())
 }
 
@@ -319,14 +319,14 @@ func (t T) PageAddStyleTag() {
 	p := t.page.MustNavigate(t.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	res := p.MustAddStyleTag(t.srcFile("fixtures/add-style-tag.css")).
-		MustElement("h4").MustEval(`getComputedStyle(this).color`)
+		MustElement("h4").MustEval(`() => getComputedStyle(this).color`)
 	t.Eq("rgb(255, 0, 0)", res.String())
 
 	p.MustAddStyleTag(t.srcFile("fixtures/add-style-tag.css"))
 	t.Len(p.MustElements("link"), 1)
 
 	t.E(p.AddStyleTag("", "h4 { color: green; }"))
-	res = p.MustElement("h4").MustEval(`getComputedStyle(this).color`)
+	res = p.MustElement("h4").MustEval(`() => getComputedStyle(this).color`)
 	t.Eq("rgb(0, 128, 0)", res.String())
 }
 
@@ -340,12 +340,12 @@ func (t T) PageWaitOpen() {
 	newPage := wait()
 	defer newPage.MustClose()
 
-	t.Eq("new page", newPage.MustEval("window.a").String())
+	t.Eq("new page", newPage.MustEval("() => window.a").String())
 }
 
 func (t T) PageWait() {
 	page := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
-	page.MustWait(`document.querySelector('button') !== null`)
+	page.MustWait(`() => document.querySelector('button') !== null`)
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
@@ -561,7 +561,7 @@ func (t T) MouseDrag() {
 	mouse.MustUp("left")
 
 	utils.Sleep(0.3)
-	t.Eq(page.MustEval(`dragTrack`).Str(), " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80")
+	t.Eq(page.MustEval(`() => dragTrack`).Str(), " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80")
 }
 
 func (t T) NativeDrag(got.Skip) { // devtools doesn't support to use mouse event to simulate it for now
@@ -601,7 +601,7 @@ func (t T) Touch() {
 	p.MoveTo(50, 60)
 	touch.MustMove(p).MustCancel()
 
-	page.MustWait(`touchTrack == ' start 10 20 end start 30 40 end start 30 40 move 50 60 cancel'`)
+	page.MustWait(`() => touchTrack == ' start 10 20 end start 30 40 end start 30 40 move 50 60 cancel'`)
 
 	t.Panic(func() {
 		t.mc.stubErr(1, proto.InputDispatchTouchEvent{})
@@ -635,12 +635,12 @@ func (t T) ScreenshotFullPage() {
 	data := p.MustScreenshotFullPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	t.E(err)
-	res := p.MustEval(`({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	res := p.MustEval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
 	t.Eq(res.Get("w").Int(), img.Bounds().Dx())
 	t.Eq(res.Get("h").Int(), img.Bounds().Dy())
 
 	// after the full page screenshot the window size should be the same as before
-	res = p.MustEval(`({w: innerWidth, h: innerHeight})`)
+	res = p.MustEval(`() => ({w: innerWidth, h: innerHeight})`)
 	t.Eq(1280, res.Get("w").Int())
 	t.Eq(800, res.Get("h").Int())
 
@@ -707,14 +707,14 @@ func (t T) PageScroll() {
 	p.Mouse.MustScroll(100, 190)
 	t.E(p.Mouse.Scroll(200, 300, 5))
 
-	p.MustWait(`pageXOffset > 200 && pageYOffset > 300`)
+	p.MustWait(`() => pageXOffset > 200 && pageYOffset > 300`)
 }
 
 func (t T) PageConsoleLog() {
 	p := t.newPage(t.blank()).MustWaitLoad()
 	e := &proto.RuntimeConsoleAPICalled{}
 	wait := p.WaitEvent(e)
-	p.MustEval(`console.log(1, {b: ['test']})`)
+	p.MustEval(`() => console.log(1, {b: ['test']})`)
 	wait()
 	t.Eq("test", p.MustObjectToJSON(e.Args[1]).Get("b.0").String())
 	t.Eq(`1 map[b:[test]]`, p.MustObjectsToJSON(e.Args).Join(" "))

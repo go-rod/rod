@@ -286,53 +286,6 @@ func mustToJSONForDev(value interface{}) string {
 	return buf.String()
 }
 
-// detect if a js string is a function definition
-var regFn = regexp.MustCompile(`\A\s*function\s*\(`)
-
-// detect if a js string is a function definition
-// Samples:
-//
-// function () {}
-// a => {}
-// (a, b, c) =>
-// ({a: b}, ...list) => {}
-func detectJSFunction(js string) bool {
-	if regFn.MatchString(js) {
-		return true
-	}
-
-	// The algorithm is pretty simple, the braces before "=>" must be balanced.
-	// Such as "foo(() => {})", there are 2 "(", but only 1 ")".
-	// Here we use a simple state machine.
-
-	balanced := true
-	last := ' '
-	for _, r := range js {
-		if r == '(' {
-			if balanced {
-				balanced = false
-			} else {
-				return false
-			}
-		}
-		if r == ')' {
-			if balanced {
-				return false
-			}
-			balanced = true
-		}
-
-		if last == '=' {
-			if r == '>' {
-				return balanced
-			}
-			return false
-		}
-		last = r
-	}
-	return false
-}
-
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
 var regDataURI = regexp.MustCompile(`\Adata:(.+?)?(;base64)?,`)
 
