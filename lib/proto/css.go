@@ -388,6 +388,9 @@ type CSSCSSSupports struct {
 	// Text Supports rule text.
 	Text string `json:"text"`
 
+	// Active Whether the supports condition is satisfied.
+	Active bool `json:"active"`
+
 	// Range (optional) The associated rule header range in the enclosing stylesheet (if
 	// available).
 	Range *CSSSourceRange `json:"range,omitempty"`
