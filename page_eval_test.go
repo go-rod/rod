@@ -33,6 +33,10 @@ func (t T) PageEval() {
 		(a, b) => a + b
 	`, 1, 2).Int())
 
+	t.Eq(page.MustEval(`function() {
+		return 11
+	}`).Int(), 11)
+
 	t.Eq(page.MustEval(`	 ; () => 1; `).Int(), 1)
 
 	// reuse obj
