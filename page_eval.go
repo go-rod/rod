@@ -109,7 +109,7 @@ func (e *EvalOptions) ByPromise() *EvalOptions {
 }
 
 func (e *EvalOptions) formatToJSFunc() string {
-	js := strings.TrimSpace(e.JS)
+	js := strings.Trim(e.JS, "\t\n\v\f\r ;")
 	return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 }
 

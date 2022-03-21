@@ -33,6 +33,8 @@ func (t T) PageEval() {
 		(a, b) => a + b
 	`, 1, 2).Int())
 
+	t.Eq(page.MustEval(`	 ; () => 1; `).Int(), 1)
+
 	// reuse obj
 	obj := page.MustEvaluate(rod.Eval(`() => () => 'ok'`).ByObject())
 	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
