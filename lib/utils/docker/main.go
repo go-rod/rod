@@ -1,6 +1,6 @@
-// The .github/workflows/docker.yml will use it as an github action
-// Then run this:
-//   DOCKER_TOKEN=your_token go run ./lib/utils/docker refs/heads/master
+// The .github/workflows/docker.yml uses it as an github action
+// and run it like this:
+//   DOCKER_TOKEN=$TOKEN go run ./lib/utils/docker $GITHUB_REF
 package main
 
 import (
