@@ -1,0 +1,57 @@
+name: Test Mac
+on:
+  push:
+    branches:
+      - '**'
+
+  pull_request:
+
+jobs:
+  test-mac:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - uses: actions/checkout@v2
+
+      - run: go test -race -timeout-each=2m
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: cdp-log-macos
+          path: tmp/cdp-log
+
+  test-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - uses: actions/checkout@v2
+
+      - run: go test -race -timeout-each=2m
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: cdp-log-windows
+          path: tmp/cdp-log
+
+  test-old-go:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.13
+
+      - uses: actions/checkout@v2
+
+      # As long as the build works we don't have to run tests.
+      - run: go build ./lib/examples/translator
