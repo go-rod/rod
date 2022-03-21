@@ -825,8 +825,10 @@ func (t T) PageUseNonExistSession() {
 }
 
 func (t T) PageElementFromObjectErr() {
-	p := t.newPage(t.srcFile("./fixtures/click.html"))
-	utils.Sleep(0.1)
+	p := t.newPage()
+	wait := p.WaitNavigation(proto.PageLifecycleEventNameLoad)
+	p.MustNavigate(t.srcFile("./fixtures/click.html"))
+	wait()
 	res, err := proto.DOMGetNodeForLocation{X: 10, Y: 10}.Call(p)
 	t.E(err)
 
