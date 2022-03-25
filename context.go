@@ -101,7 +101,7 @@ func (el *Element) GetContext() context.Context {
 	return el.ctx
 }
 
-// Timeout returns a clone with the specified timeout context.Context chained sub-operations
+// Timeout returns a clone with the specified total timeout of all chained sub-operations
 func (el *Element) Timeout(d time.Duration) *Element {
 	ctx, cancel := context.WithTimeout(el.ctx, d)
 	return el.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{el.ctx, cancel}))
