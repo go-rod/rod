@@ -25,7 +25,7 @@ func (b *Browser) GetContext() context.Context {
 	return b.ctx
 }
 
-// Timeout returns a clone with the specified timeout context.Context chained sub-operations
+// Timeout returns a clone with the specified total timeout of all chained sub-operations
 func (b *Browser) Timeout(d time.Duration) *Browser {
 	ctx, cancel := context.WithTimeout(b.ctx, d)
 	return b.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{b.ctx, cancel}))
@@ -63,7 +63,7 @@ func (p *Page) GetContext() context.Context {
 	return p.ctx
 }
 
-// Timeout returns a clone with the specified timeout context.Context chained sub-operations
+// Timeout returns a clone with the specified total timeout of all chained sub-operations
 func (p *Page) Timeout(d time.Duration) *Page {
 	ctx, cancel := context.WithTimeout(p.ctx, d)
 	return p.Context(context.WithValue(ctx, timeoutContextKey{}, &timeoutContextVal{p.ctx, cancel}))
