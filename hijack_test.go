@@ -6,6 +6,7 @@ import (
 	"mime"
 	"net/http"
 	"sync"
+	"testing"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
@@ -13,8 +14,10 @@ import (
 	"github.com/ysmood/gson"
 )
 
-func (t T) Hijack() {
-	s := t.Serve()
+func TestHijack(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
 
 	// to simulate a backend server
 	s.Route("/", slash("fixtures/fetch.html"))
@@ -23,21 +26,21 @@ func (t T) Hijack() {
 			panic("wrong http method")
 		}
 
-		t.Eq("header", r.Header.Get("Test"))
+		g.Eq("header", r.Header.Get("Test"))
 
 		b, err := ioutil.ReadAll(r.Body)
-		t.E(err)
-		t.Eq("a", string(b))
+		g.E(err)
+		g.Eq("a", string(b))
 
-		t.HandleHTTP(".html", "test")(w, r)
+		g.HandleHTTP(".html", "test")(w, r)
 	})
 	s.Route("/b", "", "b")
 
-	router := t.page.HijackRequests()
+	router := g.page.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
-		r := ctx.Request.SetContext(t.Context())
+		r := ctx.Request.SetContext(g.Context())
 		r.Req().Header.Set("Test", "header") // override request header
 		r.SetBody([]byte("test"))            // override request body
 		r.SetBody(123)                       // override request body
@@ -49,25 +52,25 @@ func (t T) Hijack() {
 
 		ctx.CustomState = &MyState{10}
 
-		t.Eq(http.MethodPost, r.Method())
-		t.Eq(s.URL("/a"), r.URL().String())
+		g.Eq(http.MethodPost, r.Method())
+		g.Eq(s.URL("/a"), r.URL().String())
 
-		t.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
-		t.Is(ctx.Request.IsNavigation(), false)
-		t.Has(ctx.Request.Header("Origin"), s.URL())
-		t.Len(ctx.Request.Headers(), 6)
-		t.True(ctx.Request.JSONBody().Nil())
+		g.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
+		g.Is(ctx.Request.IsNavigation(), false)
+		g.Has(ctx.Request.Header("Origin"), s.URL())
+		g.Len(ctx.Request.Headers(), 6)
+		g.True(ctx.Request.JSONBody().Nil())
 
 		// send request load response from real destination as the default value to hijack
 		ctx.MustLoadResponse()
 
-		t.Eq(200, ctx.Response.Payload().ResponseCode)
+		g.Eq(200, ctx.Response.Payload().ResponseCode)
 
 		// override status code
 		ctx.Response.Payload().ResponseCode = http.StatusCreated
 
-		t.Eq("4", ctx.Response.Headers().Get("Content-Length"))
-		t.Has(ctx.Response.Headers().Get("Content-Type"), "text/html; charset=utf-8")
+		g.Eq("4", ctx.Response.Headers().Get("Content-Length"))
+		g.Has(ctx.Response.Headers().Get("Content-Type"), "text/html; charset=utf-8")
 
 		// override response header
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
@@ -79,7 +82,7 @@ func (t T) Hijack() {
 			"text": "test",
 		})
 
-		t.Eq("{\"text\":\"test\"}", ctx.Response.Body())
+		g.Eq("{\"text\":\"test\"}", ctx.Response.Body())
 	})
 
 	router.MustAdd(s.URL("/b"), func(ctx *rod.Hijack) {
@@ -94,16 +97,18 @@ func (t T) Hijack() {
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL())
+	g.page.MustNavigate(s.URL())
 
-	t.Eq("201 test key=val", t.page.MustElement("#a").MustText())
-	t.Eq("b", t.page.MustElement("#b").MustText())
+	g.Eq("201 test key=val", g.page.MustElement("#a").MustText())
+	g.Eq("b", g.page.MustElement("#b").MustText())
 }
 
-func (t T) HijackContinue() {
-	s := t.Serve().Route("/", ".html", `<body>ok</body>`)
+func TestHijackContinue(t *testing.T) {
+	g := setup(t)
 
-	router := t.page.HijackRequests()
+	s := g.Serve().Route("/", ".html", `<body>ok</body>`)
+
+	router := g.page.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
@@ -115,14 +120,16 @@ func (t T) HijackContinue() {
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL("/a"))
+	g.page.MustNavigate(s.URL("/a"))
 
-	t.Eq("ok", t.page.MustElement("body").MustText())
+	g.Eq("ok", g.page.MustElement("body").MustText())
 	wg.Wait()
 }
 
-func (t T) HijackMockWholeResponse() {
-	router := t.page.HijackRequests()
+func TestHijackMockWholeResponse(t *testing.T) {
+	g := setup(t)
+
+	router := g.page.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd("*", func(ctx *rod.Hijack) {
@@ -132,15 +139,17 @@ func (t T) HijackMockWholeResponse() {
 
 	go router.Run()
 
-	t.page.MustNavigate("http://test.com")
+	g.page.MustNavigate("http://test.com")
 
-	t.Eq("ok", t.page.MustElement("body").MustText())
+	g.Eq("ok", g.page.MustElement("body").MustText())
 }
 
-func (t T) HijackSkip() {
-	s := t.Serve()
+func TestHijackSkip(t *testing.T) {
+	g := setup(t)
 
-	router := t.page.HijackRequests()
+	s := g.Serve()
+
+	router := g.page.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
@@ -156,15 +165,17 @@ func (t T) HijackSkip() {
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL("/a"))
+	g.page.MustNavigate(s.URL("/a"))
 
 	wg.Wait()
 }
 
-func (t T) HijackOnErrorLog() {
-	s := t.Serve().Route("/", ".html", `<body>ok</body>`)
+func TestHijackOnErrorLog(t *testing.T) {
+	g := setup(t)
 
-	router := t.page.HijackRequests()
+	s := g.Serve().Route("/", ".html", `<body>ok</body>`)
+
+	router := g.page.HijackRequests()
 	defer router.MustStop()
 
 	wg := &sync.WaitGroup{}
@@ -181,20 +192,22 @@ func (t T) HijackOnErrorLog() {
 
 	go router.Run()
 
-	t.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (gson.JSON, error) {
 		return gson.New(nil), errors.New("err")
 	})
 
 	go func() {
-		_ = t.page.Context(t.Context()).Navigate(s.URL("/a"))
+		_ = g.page.Context(g.Context()).Navigate(s.URL("/a"))
 	}()
 	wg.Wait()
 
-	t.Eq(err.Error(), "err")
+	g.Eq(err.Error(), "err")
 }
 
-func (t T) HijackFailRequest() {
-	s := t.Serve().Route("/page", ".html", `<html>
+func TestHijackFailRequest(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve().Route("/page", ".html", `<html>
 	<body></body>
 	<script>
 		fetch('/a').catch(async (err) => {
@@ -202,7 +215,7 @@ func (t T) HijackFailRequest() {
 		})
 	</script></html>`)
 
-	router := t.browser.HijackRequests()
+	router := g.browser.HijackRequests()
 	defer router.MustStop()
 
 	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) {
@@ -211,21 +224,23 @@ func (t T) HijackFailRequest() {
 
 	go router.Run()
 
-	t.page.MustNavigate(s.URL("/page")).MustWaitLoad()
+	g.page.MustNavigate(s.URL("/page")).MustWaitLoad()
 
-	t.page.MustWait(`() => document.title === 'Failed to fetch'`)
+	g.page.MustWait(`() => document.title === 'Failed to fetch'`)
 
 	{ // test error log
-		t.mc.stub(1, proto.FetchFailRequest{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.FetchFailRequest{}, func(send StubSend) (gson.JSON, error) {
 			_, _ = send()
 			return gson.JSON{}, errors.New("err")
 		})
-		_ = t.page.Navigate(s.URL("/a"))
+		_ = g.page.Navigate(s.URL("/a"))
 	}
 }
 
-func (t T) HijackLoadResponseErr() {
-	p := t.newPage().Context(t.Context())
+func TestHijackLoadResponseErr(t *testing.T) {
+	g := setup(t)
+
+	p := g.newPage().Context(g.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -233,11 +248,11 @@ func (t T) HijackLoadResponseErr() {
 	wg.Add(1)
 
 	router.MustAdd("http://test.com/a", func(ctx *rod.Hijack) {
-		t.Err(ctx.LoadResponse(&http.Client{
+		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{err: errors.New("err")},
 		}, true))
 
-		t.Err(ctx.LoadResponse(&http.Client{
+		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{res: &http.Response{
 				StatusCode: 200,
 				Body:       ioutil.NopCloser(&MockReader{err: errors.New("err")}),
@@ -256,10 +271,12 @@ func (t T) HijackLoadResponseErr() {
 	wg.Wait()
 }
 
-func (t T) HijackResponseErr() {
-	s := t.Serve().Route("/", ".html", `ok`)
+func TestHijackResponseErr(t *testing.T) {
+	g := setup(t)
 
-	p := t.newPage().Context(t.Context())
+	s := g.Serve().Route("/", ".html", `ok`)
+
+	p := g.newPage().Context(g.Context())
 	router := p.HijackRequests()
 	defer router.MustStop()
 
@@ -268,12 +285,12 @@ func (t T) HijackResponseErr() {
 
 	router.MustAdd(s.URL("/a"), func(ctx *rod.Hijack) { // to ignore favicon
 		ctx.OnError = func(err error) {
-			t.Err(err)
+			g.Err(err)
 			wg.Done()
 		}
 
 		ctx.MustLoadResponse()
-		t.mc.stub(1, proto.FetchFulfillRequest{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.FetchFulfillRequest{}, func(send StubSend) (gson.JSON, error) {
 			res, _ := send()
 			return res, errors.New("err")
 		})
@@ -286,8 +303,10 @@ func (t T) HijackResponseErr() {
 	wg.Wait()
 }
 
-func (t T) HandleAuth() {
-	s := t.Serve()
+func TestHandleAuth(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
 
 	// mock the server
 	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
@@ -298,24 +317,24 @@ func (t T) HandleAuth() {
 			return
 		}
 
-		t.Eq("a", u)
-		t.Eq("b", p)
-		t.HandleHTTP(".html", `<p>ok</p>`)(w, r)
+		g.Eq("a", u)
+		g.Eq("b", p)
+		g.HandleHTTP(".html", `<p>ok</p>`)(w, r)
 	})
 	s.Route("/err", ".html", "err page")
 
-	go t.browser.MustHandleAuth("a", "b")()
+	go g.browser.MustHandleAuth("a", "b")()
 
-	page := t.newPage(s.URL("/a"))
+	page := g.newPage(s.URL("/a"))
 	page.MustElementR("p", "ok")
 
-	wait := t.browser.HandleAuth("a", "b")
+	wait := g.browser.HandleAuth("a", "b")
 	var page2 *rod.Page
 	wait2 := utils.All(func() {
-		page2, _ = t.browser.Page(proto.TargetCreateTarget{URL: s.URL("/err")})
+		page2, _ = g.browser.Page(proto.TargetCreateTarget{URL: s.URL("/err")})
 	})
-	t.mc.stubErr(1, proto.FetchContinueRequest{})
-	t.Err(wait())
+	g.mc.stubErr(1, proto.FetchContinueRequest{})
+	g.Err(wait())
 	wait2()
 	page2.MustClose()
 }

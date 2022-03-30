@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"testing"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -10,77 +11,87 @@ import (
 	"github.com/ysmood/gson"
 )
 
-func (t T) PageEvalOnNewDocument() {
-	p := t.newPage()
+func TestPageEvalOnNewDocument(t *testing.T) {
+	g := setup(t)
+
+	p := g.newPage()
 
 	p.MustEvalOnNewDocument(`window.rod = 'ok'`)
 
 	// to activate the script
-	p.MustNavigate(t.blank())
+	p.MustNavigate(g.blank())
 
-	t.Eq(p.MustEval("() => rod").String(), "ok")
+	g.Eq(p.MustEval("() => rod").String(), "ok")
 
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
 		p.MustEvalOnNewDocument(`1`)
 	})
 }
 
-func (t T) PageEval() {
-	page := t.page.MustNavigate(t.blank())
+func TestPageEval(t *testing.T) {
+	g := setup(t)
 
-	t.Eq(3, page.MustEval(`
+	page := g.page.MustNavigate(g.blank())
+
+	g.Eq(3, page.MustEval(`
 		(a, b) => a + b
 	`, 1, 2).Int())
 
-	t.Eq(page.MustEval(`function() {
+	g.Eq(page.MustEval(`function() {
 		return 11
 	}`).Int(), 11)
 
-	t.Eq(page.MustEval(`	 ; () => 1; `).Int(), 1)
+	g.Eq(page.MustEval(`	 ; () => 1; `).Int(), 1)
 
 	// reuse obj
 	obj := page.MustEvaluate(rod.Eval(`() => () => 'ok'`).ByObject())
-	t.Eq("ok", page.MustEval(`f => f()`, obj).Str())
+	g.Eq("ok", page.MustEval(`f => f()`, obj).Str())
 
 	_, err := page.Eval(`10`)
-	t.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
+	g.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
 }
 
-func (t T) PageEvaluateRetry() {
-	page := t.page.MustNavigate(t.blank())
+func TestPageEvaluateRetry(t *testing.T) {
+	g := setup(t)
 
-	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
-		t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+	page := g.page.MustNavigate(g.blank())
+
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
 			return gson.New(nil), cdp.ErrCtxNotFound
 		})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
-	t.Eq(1, page.MustEval(`() => 1`).Int())
+	g.Eq(1, page.MustEval(`() => 1`).Int())
 }
 
-func (t T) PageUpdateJSCtxIDErr() {
-	page := t.page.MustNavigate(t.srcFile("./fixtures/click-iframe.html"))
+func TestPageUpdateJSCtxIDErr(t *testing.T) {
+	g := setup(t)
 
-	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
-		t.mc.stubErr(1, proto.RuntimeEvaluate{})
+	page := g.page.MustNavigate(g.srcFile("./fixtures/click-iframe.html"))
+
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stubErr(1, proto.RuntimeEvaluate{})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
-	t.Err(page.Eval(`() => 1`))
+	g.Err(page.Eval(`() => 1`))
 
 	frame := page.MustElement("iframe").MustFrame()
 
 	frame.MustReload()
-	t.mc.stubErr(1, proto.DOMDescribeNode{})
-	t.Err(frame.Element(`button`))
+	g.mc.stubErr(1, proto.DOMDescribeNode{})
+	g.Err(frame.Element(`button`))
 
 	frame.MustReload()
-	t.mc.stubErr(1, proto.DOMResolveNode{})
-	t.Err(frame.Element(`button`))
+	g.mc.stubErr(1, proto.DOMResolveNode{})
+	g.Err(frame.Element(`button`))
 }
 
-func (t T) PageExpose() {
-	page := t.newPage(t.blank()).MustWaitLoad()
+func TestPageExpose(t *testing.T) {
+	g := setup(t)
+
+	page := g.newPage(g.blank()).MustWaitLoad()
 
 	stop := page.MustExpose("exposedFunc", func(g gson.JSON) (interface{}, error) {
 		return g.Get("k").Str(), nil
@@ -88,103 +99,115 @@ func (t T) PageExpose() {
 
 	utils.All(func() {
 		res := page.MustEval(`() => exposedFunc({k: 'a'})`)
-		t.Eq("a", res.Str())
+		g.Eq("a", res.Str())
 	}, func() {
 		res := page.MustEval(`() => exposedFunc({k: 'b'})`)
-		t.Eq("b", res.Str())
+		g.Eq("b", res.Str())
 	})()
 
 	// survive the reload
 	page.MustReload().MustWaitLoad()
 	res := page.MustEval(`() => exposedFunc({k: 'ok'})`)
-	t.Eq("ok", res.Str())
+	g.Eq("ok", res.Str())
 
 	stop()
 
-	t.Panic(func() {
+	g.Panic(func() {
 		stop()
 	})
-	t.Panic(func() {
+	g.Panic(func() {
 		page.MustReload().MustWaitLoad().MustEval(`() => exposedFunc()`)
 	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		page.MustExpose("exposedFunc", nil)
 	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.RuntimeAddBinding{})
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeAddBinding{})
 		page.MustExpose("exposedFunc2", nil)
 	})
-	t.Panic(func() {
-		t.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.PageAddScriptToEvaluateOnNewDocument{})
 		page.MustExpose("exposedFunc", nil)
 	})
 }
 
-func (t T) Release() {
-	res, err := t.page.Evaluate(rod.Eval(`() => document`).ByObject())
-	t.E(err)
-	t.page.MustRelease(res)
+func TestRelease(t *testing.T) {
+	g := setup(t)
+
+	res, err := g.page.Evaluate(rod.Eval(`() => document`).ByObject())
+	g.E(err)
+	g.page.MustRelease(res)
 }
 
-func (t T) PromiseLeak() {
+func TestPromiseLeak(t *testing.T) {
+	g := setup(t)
+
 	/*
 		Perform a slow action then navigate the page to another url,
 		we can see the slow operation will still be executed.
 	*/
 
-	p := t.page.MustNavigate(t.blank())
+	p := g.page.MustNavigate(g.blank())
 
 	utils.All(func() {
 		_, err := p.Eval(`() => new Promise(r => setTimeout(() => r(location.href), 1000))`)
-		t.Is(err, cdp.ErrCtxDestroyed)
+		g.Is(err, cdp.ErrCtxDestroyed)
 	}, func() {
 		utils.Sleep(0.3)
-		p.MustNavigate(t.blank())
+		p.MustNavigate(g.blank())
 	})()
 }
 
-func (t T) ObjectLeak() {
+func TestObjectLeak(t *testing.T) {
+	g := setup(t)
+
 	/*
 		Seems like it won't leak
 	*/
 
-	p := t.page.MustNavigate(t.blank())
+	p := g.page.MustNavigate(g.blank())
 
 	obj := p.MustEvaluate(rod.Eval("() => ({a:1})").ByObject())
 	p.MustReload().MustWaitLoad()
-	t.Panic(func() {
+	g.Panic(func() {
 		p.MustEvaluate(rod.Eval(`obj => obj`, obj))
 	})
 }
 
-func (t T) PageObjectErr() {
-	t.Panic(func() {
-		t.page.MustObjectToJSON(&proto.RuntimeRemoteObject{
+func TestPageObjectErr(t *testing.T) {
+	g := setup(t)
+
+	g.Panic(func() {
+		g.page.MustObjectToJSON(&proto.RuntimeRemoteObject{
 			ObjectID: "not-exists",
 		})
 	})
-	t.Panic(func() {
-		t.page.MustElementFromNode(&proto.DOMNode{NodeID: -1})
+	g.Panic(func() {
+		g.page.MustElementFromNode(&proto.DOMNode{NodeID: -1})
 	})
-	t.Panic(func() {
-		node := t.page.MustNavigate(t.blank()).MustElement(`body`).MustDescribe()
-		t.mc.stubErr(1, proto.DOMResolveNode{})
-		t.page.MustElementFromNode(node)
+	g.Panic(func() {
+		node := g.page.MustNavigate(g.blank()).MustElement(`body`).MustDescribe()
+		g.mc.stubErr(1, proto.DOMResolveNode{})
+		g.page.MustElementFromNode(node)
 	})
 }
 
-func (t T) GetJSHelperRetry() {
-	t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+func TestGetJSHelperRetry(t *testing.T) {
+	g := setup(t)
 
-	t.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+	g.page.MustNavigate(g.srcFile("fixtures/click.html"))
+
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
 		return gson.JSON{}, cdp.ErrCtxNotFound
 	})
-	t.page.MustElements("button")
+	g.page.MustElements("button")
 }
 
-func (t T) ConcurrentEval() {
-	p := t.page.MustNavigate(t.blank())
+func TestConcurrentEval(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.blank())
 	list := make(chan int, 2)
 
 	start := time.Now()
@@ -195,50 +218,60 @@ func (t T) ConcurrentEval() {
 	})()
 	duration := time.Since(start)
 
-	t.Lt(duration, 1500*time.Millisecond)
-	t.Gt(duration, 1000*time.Millisecond)
-	t.Eq([]int{<-list, <-list}, []int{1, 2})
+	g.Lt(duration, 1500*time.Millisecond)
+	g.Gt(duration, 1000*time.Millisecond)
+	g.Eq([]int{<-list, <-list}, []int{1, 2})
 }
 
-func (t T) PageSlowRender() {
-	p := t.page.MustNavigate(t.srcFile("./fixtures/slow-render.html"))
-	t.Eq(p.MustElement("div").MustText(), "ok")
+func TestPageSlowRender(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("./fixtures/slow-render.html"))
+	g.Eq(p.MustElement("div").MustText(), "ok")
 }
 
-func (t T) PageIframeReload() {
-	p := t.page.MustNavigate(t.srcFile("./fixtures/click-iframe.html"))
+func TestPageIframeReload(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("./fixtures/click-iframe.html"))
 	frame := p.MustElement("iframe").MustFrame()
 	btn := frame.MustElement("button")
-	t.Eq(btn.MustText(), "click me")
+	g.Eq(btn.MustText(), "click me")
 
 	frame.MustReload()
 	btn = frame.MustElement("button")
-	t.Eq(btn.MustText(), "click me")
+	g.Eq(btn.MustText(), "click me")
 
-	t.Has(*p.MustElement("iframe").MustAttribute("src"), "click.html")
+	g.Has(*p.MustElement("iframe").MustAttribute("src"), "click.html")
 }
 
-func (t T) PageObjCrossNavigation() {
-	p := t.page.MustNavigate(t.blank())
+func TestPageObjCrossNavigation(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.blank())
 	obj := p.MustEvaluate(rod.Eval(`() => ({})`).ByObject())
 
-	t.page.MustNavigate(t.blank())
+	g.page.MustNavigate(g.blank())
 
 	_, err := p.Evaluate(rod.Eval(`() => 1`).This(obj))
-	t.Is(err, &rod.ErrObjectNotFound{})
-	t.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
+	g.Is(err, &rod.ErrObjectNotFound{})
+	g.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
 }
 
-func (t T) EnsureJSHelperErr() {
-	p := t.page.MustNavigate(t.blank())
+func TestEnsureJSHelperErr(t *testing.T) {
+	g := setup(t)
 
-	t.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
-	t.Err(p.Elements(`button`))
+	p := g.page.MustNavigate(g.blank())
+
+	g.mc.stubErr(2, proto.RuntimeCallFunctionOn{})
+	g.Err(p.Elements(`button`))
 }
 
-func (t T) EvalOptionsString() {
-	p := t.page.MustNavigate(t.srcFile("fixtures/click.html"))
+func TestEvalOptionsString(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
 	el := p.MustElement("button")
 
-	t.Eq(rod.Eval(`() => this.parentElement`).This(el.Object).String(), "() => this.parentElement() button")
+	g.Eq(rod.Eval(`() => this.parentElement`).This(el.Object).String(), "() => this.parentElement() button")
 }

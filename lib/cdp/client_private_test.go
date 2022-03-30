@@ -11,13 +11,7 @@ import (
 	"github.com/ysmood/got"
 )
 
-func Test(t *testing.T) {
-	got.Each(t, T{})
-}
-
-type T struct {
-	got.G
-}
+var setup = got.Setup(nil)
 
 type MockWebSocket struct {
 	send func([]byte) error
@@ -37,18 +31,22 @@ func (c *MockWebSocket) Read() ([]byte, error) {
 	return c.read()
 }
 
-func (t T) CancelCall() {
+func TestCancelCall(t *testing.T) {
+	g := setup(t)
+
 	cdp := New("")
 	go func() {
 		<-cdp.chReq
 	}()
-	cdp.ctx = t.Context()
-	_, err := cdp.Call(t.Timeout(0), "", "", nil)
-	t.Err(err)
+	cdp.ctx = g.Context()
+	_, err := cdp.Call(g.Timeout(0), "", "", nil)
+	g.Err(err)
 }
 
-func (t T) ReqErr() {
-	ctx := t.Context()
+func TestReqErr(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	cdp := New("")
 	cdp.ctx = ctx
 	cdp.close = ctx.Cancel
@@ -56,19 +54,23 @@ func (t T) ReqErr() {
 		send: func([]byte) error { return errors.New("err") },
 	}
 
-	_, err := cdp.Call(t.Context(), "", "", nil)
-	t.Err(err)
+	_, err := cdp.Call(g.Context(), "", "", nil)
+	g.Err(err)
 }
 
-func (t T) CancelBeforeSend() {
+func TestCancelBeforeSend(t *testing.T) {
+	g := setup(t)
+
 	cdp := New("")
-	cdp.ctx = t.Context()
-	_, err := cdp.Call(t.Timeout(0), "", "", nil)
-	t.Eq(err, context.DeadlineExceeded)
+	cdp.ctx = g.Context()
+	_, err := cdp.Call(g.Timeout(0), "", "", nil)
+	g.Eq(err, context.DeadlineExceeded)
 }
 
-func (t T) CancelBeforeCallback() {
-	ctx := t.Context()
+func TestCancelBeforeCallback(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	cdp := New("")
 	cdp.ws = &MockWebSocket{
 		read: func() ([]byte, error) {
@@ -84,11 +86,13 @@ func (t T) CancelBeforeCallback() {
 	cdp.MustConnect(ctx)
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	t.Eq(err.Error(), "context canceled")
+	g.Eq(err.Error(), "context canceled")
 }
 
-func (t T) CancelOnReadRes() {
-	ctx := t.Context()
+func TestCancelOnReadRes(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	cdp := New("")
 	cdp.ws = &MockWebSocket{
 		send: func(bytes []byte) error {
@@ -106,11 +110,13 @@ func (t T) CancelOnReadRes() {
 	cdp.MustConnect(ctx)
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	t.Err(err)
+	g.Err(err)
 }
 
-func (t T) CallAfterBrowserDone() {
-	ctx := t.Context()
+func TestCallAfterBrowserDone(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	cdp := New("")
 	cdp.ws = &MockWebSocket{
 		send: func(bytes []byte) error { return io.EOF },
@@ -120,13 +126,15 @@ func (t T) CallAfterBrowserDone() {
 	utils.Sleep(0.1)
 
 	_, err := cdp.Call(ctx, "", "", nil)
-	t.Err(err)
-	t.Is(err, io.EOF)
-	t.Eq(err.Error(), "cdp connection closed: EOF")
+	g.Err(err)
+	g.Is(err, io.EOF)
+	g.Eq(err.Error(), "cdp connection closed: EOF")
 }
 
-func (t T) CancelOnReadEvent() {
-	ctx, cancel := context.WithCancel(t.Context())
+func TestCancelOnReadEvent(t *testing.T) {
+	g := setup(t)
+
+	ctx, cancel := context.WithCancel(g.Context())
 	cdp := New("")
 	cdp.ws = &MockWebSocket{
 		send: func(bytes []byte) error {
@@ -139,21 +147,25 @@ func (t T) CancelOnReadEvent() {
 	}
 	cdp.MustConnect(ctx)
 
-	_, err := cdp.Call(t.Context(), "", "", nil)
-	t.Err(err)
+	_, err := cdp.Call(g.Context(), "", "", nil)
+	g.Err(err)
 }
 
-func (t T) TestError() {
-	t.Is(&Error{Code: -123}, &Error{Code: -123})
+func TestTestError(t *testing.T) {
+	g := setup(t)
+
+	g.Is(&Error{Code: -123}, &Error{Code: -123})
 }
 
-func (t T) PendingRequests() {
+func TestPendingRequests(t *testing.T) {
+	g := setup(t)
+
 	pending := newPendingRequests()
 
 	err := pending.add(1, newPendingRequest())
-	t.Nil(err)
+	g.Nil(err)
 	err = pending.add(2, newPendingRequest())
-	t.Nil(err)
+	g.Nil(err)
 	pending.fulfill(1, &Response{})
 
 	// resolving something where no-one is waiting is fine
@@ -165,12 +177,12 @@ func (t T) PendingRequests() {
 	pending.close(errors.New("this will be ignored"))
 
 	err = pending.add(3, newPendingRequest())
-	t.Is(err, io.EOF)
-	t.Err(err)
+	g.Is(err, io.EOF)
+	g.Err(err)
 
 	pending = newPendingRequests()
 	pending.close(nil)
 	err = pending.add(3, newPendingRequest())
-	t.Err(err)
-	t.Eq(err.Error(), "browser has shut down")
+	g.Err(err)
+	g.Eq(err.Error(), "browser has shut down")
 }

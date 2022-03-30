@@ -6,37 +6,40 @@ import (
 	"errors"
 	"net"
 	"net/url"
+	"testing"
 	"time"
 )
 
-func (t T) WebSocketErr() {
+func TestWebSocketErr(t *testing.T) {
+	g := setup(t)
+
 	ws := WebSocket{}
-	t.Err(ws.Connect(t.Context(), "://", nil))
+	g.Err(ws.Connect(g.Context(), "://", nil))
 
 	ws.Dialer = &net.Dialer{}
 	ws.initDialer(nil)
 
 	u, err := url.Parse("wss://no-exist")
-	t.E(err)
+	g.E(err)
 	ws.Dialer = nil
 	ws.initDialer(u)
 
 	mc := &MockConn{}
 	ws.conn = mc
-	t.Err(ws.Send([]byte("test")))
+	g.Err(ws.Send([]byte("test")))
 
 	mc.errOnCount = 1
 	mc.frame = []byte{0, 127, 1}
 	ws.r = bufio.NewReader(mc)
-	t.Err(ws.Read())
+	g.Err(ws.Read())
 
-	t.Err(ws.handshake(t.Timeout(0), nil, nil))
+	g.Err(ws.handshake(g.Timeout(0), nil, nil))
 
 	mc.errOnCount = 1
-	t.Err(ws.handshake(t.Context(), u, nil))
+	g.Err(ws.handshake(g.Context(), u, nil))
 
 	tls := &tlsDialer{}
-	t.Err(tls.DialContext(context.Background(), "", ""))
+	g.Err(tls.DialContext(context.Background(), "", ""))
 }
 
 type MockConn struct {
