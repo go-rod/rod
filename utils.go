@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"runtime/debug"
 	"sync"
 	"time"
 
@@ -204,15 +205,11 @@ func (sr *StreamReader) Close() error {
 	return proto.IOClose{Handle: sr.handle}.Call(sr.c)
 }
 
-// Try try fn with recover, return the panic as value
+// Try try fn with recover, return the panic as rod.ErrTry
 func Try(fn func()) (err error) {
 	defer func() {
 		if val := recover(); val != nil {
-			var ok bool
-			err, ok = val.(error)
-			if !ok {
-				err = &ErrTry{val}
-			}
+			err = &ErrTry{val, string(debug.Stack())}
 		}
 	}()
 

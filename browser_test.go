@@ -268,8 +268,12 @@ func TestTestTry(t *testing.T) {
 	var errVal *rod.ErrTry
 	g.True(errors.As(err, &errVal))
 	g.Is(err, &rod.ErrTry{})
+	g.Eq(errVal.Unwrap().Error(), "1")
 	g.Eq(1, errVal.Value)
-	g.Eq(errVal.Error(), "error value: 1")
+	g.Has(errVal.Error(), "error value: 1\ngoroutine")
+
+	errVal = rod.Try(func() { panic(errors.New("t")) }).(*rod.ErrTry)
+	g.Eq(errVal.Unwrap().Error(), "t")
 }
 
 func TestBrowserOthers(t *testing.T) {
