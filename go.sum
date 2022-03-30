@@ -1,7 +1,7 @@
 github.com/ysmood/goob v0.3.1 h1:qMp5364BGS1DLJVrAqUxTF6KOFt0YDot8GC70u/0jbI=
 github.com/ysmood/goob v0.3.1/go.mod h1:S3lq113Y91y1UBf1wj1pFOxeahvfKkCk6mTWTWbDdWs=
-github.com/ysmood/got v0.19.0 h1:AdsvaOIzsfRS+wqVvjUvIbK7MhuQI4qAmO2W6v/74Ko=
-github.com/ysmood/got v0.19.0/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
+github.com/ysmood/got v0.19.1 h1:EuONavT9bfly3VunaA+Dt3lBMnQgUFlbUi8dWaz+ddw=
+github.com/ysmood/got v0.19.1/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
 github.com/ysmood/gotrace v0.4.0 h1:NkiFGkr8AXxkEosLFudsvw5aGoBY5N7wFPOI4ZSCkb4=
 github.com/ysmood/gotrace v0.4.0/go.mod h1:TzhIG7nHDry5//eYZDYcTzuJLYQIkykJzCRIo4/dzQM=
 github.com/ysmood/gson v0.7.0 h1:oQhY2FQtfy3+bgaNeqopd7NGAB6Me+UpG0n7oO4VDko=
