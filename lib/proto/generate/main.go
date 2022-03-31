@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -235,7 +236,7 @@ func (d *definition) formatTests() (code string) {
 // The "a_" prefixed files won't removed, other go files will be removed before the generation
 func cleanup() {
 	d := filepath.Join("lib", "proto")
-	list, err := os.ReadDir(d)
+	list, err := ioutil.ReadDir(d)
 	utils.E(err)
 
 	for _, f := range list {

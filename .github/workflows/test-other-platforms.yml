@@ -1,10 +1,14 @@
 name: Test Other Platforms
+
 on:
   push:
     branches:
       - '**'
 
   pull_request:
+
+env:
+  GODEBUG: tracebackancestors=1000
 
 jobs:
   test-mac:

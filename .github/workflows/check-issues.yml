@@ -1,4 +1,5 @@
 name: Check Issues
+
 on:
   issues:
     types: [opened]

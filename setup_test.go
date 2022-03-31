@@ -50,7 +50,7 @@ func TestMain(m *testing.M) {
 
 	testerPool.cleanup()
 
-	if err := gotrace.Check(0); err != nil {
+	if err := gotrace.Check(0, gotrace.IgnoreFuncs("internal/poll.runtime_pollWait")); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -111,11 +111,6 @@ func (tp TesterPool) new() *G {
 
 // get a tester
 func (tp TesterPool) get(t *testing.T) G {
-	parallel := tp.parallel > 1
-	if parallel {
-		t.Parallel()
-	}
-
 	tester := <-tp.pool
 	if tester == nil {
 		tester = tp.new()
@@ -126,7 +121,7 @@ func (tp TesterPool) get(t *testing.T) G {
 	tester.mc.t = t
 	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()[5:]+".log"))
 
-	tester.checkLeaking(!parallel)
+	tester.checkLeaking()
 	tester.PanicAfter(*TimeoutEach)
 
 	return *tester
@@ -173,10 +168,8 @@ func (g G) newPage(u ...string) *rod.Page {
 	return p
 }
 
-func (g G) checkLeaking(checkGoroutine bool) {
-	if checkGoroutine {
-		gotrace.CheckTest(g.Testable, 0)
-	}
+func (g G) checkLeaking() {
+	gotrace.CheckLeak(g.Testable, 0, gotrace.IgnoreCurrent())
 
 	g.Cleanup(func() {
 		if g.Failed() {

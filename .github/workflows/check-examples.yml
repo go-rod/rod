@@ -1,4 +1,5 @@
 name: Check Examples
+
 on:
   schedule:
     - cron: '23 3 * * *'

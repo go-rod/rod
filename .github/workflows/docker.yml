@@ -4,6 +4,7 @@
 # For the usage of the image, check lib/examples/launch-managed .
 
 name: Release docker image
+
 on: [push, pull_request]
 
 jobs:
