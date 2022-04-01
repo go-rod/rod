@@ -59,8 +59,8 @@ type Browser struct {
 }
 
 // New creates a controller.
-// DefaultDevice is set to devices.LaptopWithMDPIScreen.Landescape() . You can use
-// NoDefaultDevice to disable it.
+// DefaultDevice to emulate is set to devices.LaptopWithMDPIScreen.Landescape(), it can make the actual view area
+// smaller than the browser window on headful mode, you can use NoDefaultDevice to disable it.
 func New() *Browser {
 	return (&Browser{
 		ctx:           context.Background(),
@@ -128,7 +128,8 @@ func (b *Browser) Client(c CDPClient) *Browser {
 	return b
 }
 
-// DefaultDevice sets the default device for new page in the future. Default is devices.LaptopWithMDPIScreen .
+// DefaultDevice sets the default device for new page to emulate in the future.
+// Default is devices.LaptopWithMDPIScreen .
 // Set it to devices.Clear to disable it.
 func (b *Browser) DefaultDevice(d devices.Device) *Browser {
 	b.defaultDevice = d
