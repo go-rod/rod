@@ -3,20 +3,25 @@ package utils_test
 import (
 	"context"
 	"io"
+	"testing"
 	"time"
 
 	"github.com/go-rod/rod/lib/utils"
 )
 
-func (t T) BackoffSleeperWakeNow() {
-	t.E(utils.BackoffSleeper(0, 0, nil)(t.Context()))
+func TestBackoffSleeperWakeNow(t *testing.T) {
+	g := setup(t)
+
+	g.E(utils.BackoffSleeper(0, 0, nil)(g.Context()))
 }
 
-func (t T) Retry() {
+func TestRetry(t *testing.T) {
+	g := setup(t)
+
 	count := 0
 	s1 := utils.BackoffSleeper(1, 5, nil)
 
-	err := utils.Retry(t.Context(), s1, func() (bool, error) {
+	err := utils.Retry(g.Context(), s1, func() (bool, error) {
 		if count > 5 {
 			return true, io.EOF
 		}
@@ -24,11 +29,13 @@ func (t T) Retry() {
 		return false, nil
 	})
 
-	t.Eq(err.Error(), io.EOF.Error())
+	g.Eq(err.Error(), io.EOF.Error())
 }
 
-func (t T) RetryCancel() {
-	ctx := t.Context()
+func TestRetryCancel(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	go ctx.Cancel()
 	s := utils.BackoffSleeper(time.Second, time.Second, nil)
 
@@ -36,24 +43,30 @@ func (t T) RetryCancel() {
 		return false, nil
 	})
 
-	t.Eq(err.Error(), context.Canceled.Error())
+	g.Eq(err.Error(), context.Canceled.Error())
 }
 
-func (t T) CountSleeperErr() {
-	ctx := t.Context()
+func TestCountSleeperErr(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	s := utils.CountSleeper(5)
 	for i := 0; i < 5; i++ {
 		_ = s(ctx)
 	}
-	t.Err(s(ctx))
+	g.Err(s(ctx))
 }
 
-func (t T) CountSleeperCancel() {
+func TestCountSleeperCancel(t *testing.T) {
+	g := setup(t)
+
 	s := utils.CountSleeper(5)
-	t.Eq(s(t.Timeout(0)), context.DeadlineExceeded)
+	g.Eq(s(g.Timeout(0)), context.DeadlineExceeded)
 }
 
-func (t T) EachSleepers() {
+func TestEachSleepers(t *testing.T) {
+	g := setup(t)
+
 	s1 := utils.BackoffSleeper(1, 5, nil)
 	s2 := utils.CountSleeper(5)
 	s := utils.EachSleepers(s1, s2)
@@ -62,11 +75,13 @@ func (t T) EachSleepers() {
 		return false, nil
 	})
 
-	t.Is(err, &utils.ErrMaxSleepCount{})
-	t.Eq(err.Error(), "max sleep count 5 exceeded")
+	g.Is(err, &utils.ErrMaxSleepCount{})
+	g.Eq(err.Error(), "max sleep count 5 exceeded")
 }
 
-func (t T) RaceSleepers() {
+func TestRaceSleepers(t *testing.T) {
+	g := setup(t)
+
 	s1 := utils.BackoffSleeper(1, 5, nil)
 	s2 := utils.CountSleeper(5)
 	s := utils.RaceSleepers(s1, s2)
@@ -75,6 +90,6 @@ func (t T) RaceSleepers() {
 		return false, nil
 	})
 
-	t.Is(err, &utils.ErrMaxSleepCount{})
-	t.Eq(err.Error(), "max sleep count 5 exceeded")
+	g.Is(err, &utils.ErrMaxSleepCount{})
+	g.Eq(err.Error(), "max sleep count 5 exceeded")
 }

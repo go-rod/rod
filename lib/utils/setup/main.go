@@ -10,15 +10,9 @@ import (
 func main() {
 	log.Println("setup project...")
 
-	goDeps()
-
 	nodejsDeps()
 
 	genDockerIgnore()
-}
-
-func goDeps() {
-	utils.Exec("go", "install", "github.com/ysmood/golangci-lint@latest")
 }
 
 func nodejsDeps() {

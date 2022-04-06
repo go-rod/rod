@@ -21,23 +21,19 @@ import (
 	"github.com/ysmood/got"
 )
 
-type T struct {
-	got.G
+var setup = got.Setup(nil)
+
+func TestDownloadHosts(t *testing.T) {
+	g := setup(t)
+
+	g.Has(launcher.HostGoogle(launcher.DefaultRevision), "https://storage.googleapis.com/chromium-browser-snapshots")
+	g.Has(launcher.HostNPM(launcher.DefaultRevision), "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots")
 }
 
-func Test(t *testing.T) {
-	launcher.NewBrowser().MustGet() // preload browser to local
+func TestDownload(t *testing.T) {
+	g := setup(t)
 
-	got.Each(t, T{})
-}
-
-func (t T) DownloadHosts() {
-	t.Has(launcher.HostGoogle(launcher.DefaultRevision), "https://storage.googleapis.com/chromium-browser-snapshots")
-	t.Has(launcher.HostNPM(launcher.DefaultRevision), "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots")
-}
-
-func (t T) Download() {
-	s := t.Serve()
+	s := g.Serve()
 	s.Mux.HandleFunc("/fast/", func(rw http.ResponseWriter, r *http.Request) {
 		buf := bytes.NewBuffer(nil)
 		zw := zip.NewWriter(buf)
@@ -46,15 +42,15 @@ func (t T) Download() {
 		h := &zip.FileHeader{Name: "to/"}
 		h.SetMode(0755)
 		_, err := zw.CreateHeader(h)
-		t.E(err)
+		g.E(err)
 
 		// file "file.txt"
 		w, err := zw.CreateHeader(&zip.FileHeader{Name: "to/file.txt"})
-		t.E(err)
-		b := []byte(t.Srand(2 * 1024 * 1024))
-		t.E(w.Write(b))
+		g.E(err)
+		b := []byte(g.RandStr(2 * 1024 * 1024))
+		g.E(w.Write(b))
 
-		t.E(zw.Close())
+		g.E(zw.Close())
 
 		rw.Header().Add("Content-Length", fmt.Sprintf("%d", buf.Len()))
 		_, _ = io.Copy(rw, buf)
@@ -72,16 +68,20 @@ func (t T) Download() {
 	b.Logger = ioutil.Discard
 	defer cancel()
 	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
-	b.Dir = filepath.Join("tmp", "browser-from-mirror", t.Srand(16))
-	t.E(b.Download())
-	t.Nil(os.Stat(b.Dir))
+	b.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
+	g.E(b.Download())
+	g.Nil(os.Stat(b.Dir))
 }
 
-func (t T) BrowserGet() {
-	t.Nil(os.Stat(launcher.NewBrowser().MustGet()))
+func TestBrowserGet(t *testing.T) {
+	g := setup(t)
+
+	g.Nil(os.Stat(launcher.NewBrowser().MustGet()))
 }
 
-func (t T) Launch() {
+func TestLaunch(t *testing.T) {
+	g := setup(t)
+
 	defaults.Proxy = "test.com"
 	defer func() { defaults.ResetWithEnv("") }()
 
@@ -89,49 +89,51 @@ func (t T) Launch() {
 	defer l.Kill()
 
 	u := l.MustLaunch()
-	t.Regex(`\Aws://.+\z`, u)
+	g.Regex(`\Aws://.+\z`, u)
 
 	parsed, _ := url.Parse(u)
 
 	{ // test GetWebSocketDebuggerURL
 		for _, prefix := range []string{"", ":", "127.0.0.1:", "ws://127.0.0.1:"} {
 			u2 := launcher.MustResolveURL(prefix + parsed.Port())
-			t.Regex(u, u2)
+			g.Regex(u, u2)
 		}
 
 		_, err := launcher.ResolveURL("")
-		t.Err(err)
+		g.Err(err)
 	}
 
 	{
 		_, err := launcher.NewManaged("")
-		t.Err(err)
+		g.Err(err)
 
 		_, err = launcher.NewManaged("1://")
-		t.Err(err)
+		g.Err(err)
 
 		_, err = launcher.NewManaged("ws://not-exists")
-		t.Err(err)
+		g.Err(err)
 	}
 }
 
-func (t T) LaunchUserMode() {
+func TestLaunchUserMode(t *testing.T) {
+	g := setup(t)
+
 	l := launcher.NewUserMode()
 	defer l.Kill()
 
 	l.Kill() // empty kill should do nothing
 
 	has := l.Has("not-exists")
-	t.False(has)
+	g.False(has)
 
 	l.Append("test-append", "a")
 	f := l.Get("test-append")
-	t.Eq("a", f)
+	g.Eq("a", f)
 
 	dir := l.Get(flags.UserDataDir)
 	port := 58472
 
-	url := l.Context(t.Context()).Delete("test").Bin("").
+	url := l.Context(g.Context()).Delete("test").Bin("").
 		Revision(launcher.DefaultRevision).
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
@@ -145,30 +147,36 @@ func (t T) LaunchUserMode() {
 		Env("TZ=Asia/Tokyo").
 		MustLaunch()
 
-	t.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
+	g.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
 }
 
-func (t T) UserModeErr() {
+func TestUserModeErr(t *testing.T) {
+	g := setup(t)
+
 	_, err := launcher.NewUserMode().RemoteDebuggingPort(48277).Bin("not-exists").Launch()
-	t.Err(err)
+	g.Err(err)
 
 	_, err = launcher.NewUserMode().RemoteDebuggingPort(58217).Bin("echo").Launch()
-	t.Err(err)
+	g.Err(err)
 }
 
-func (t T) GetWebSocketDebuggerURLErr() {
+func TestGetWebSocketDebuggerURLErr(t *testing.T) {
+	g := setup(t)
+
 	_, err := launcher.ResolveURL("1://")
-	t.Err(err)
+	g.Err(err)
 }
 
-func (t T) LaunchErr() {
-	t.Panic(func() {
+func TestLaunchErr(t *testing.T) {
+	g := setup(t)
+
+	g.Panic(func() {
 		launcher.New().Bin("not-exists").MustLaunch()
 	})
-	t.Panic(func() {
+	g.Panic(func() {
 		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
-	t.Panic(func() {
+	g.Panic(func() {
 		launcher.New().Client()
 	})
 	{
@@ -190,12 +198,14 @@ func newBrowser() (*launcher.Browser, func()) {
 
 var testProfileDir = flag.Bool("test-profile-dir", false, "set it to test profile dir")
 
-func (t T) ProfileDir() {
+func TestProfileDir(t *testing.T) {
+	g := setup(t)
+
 	url := launcher.New().Headless(false).
 		ProfileDir("").ProfileDir("test-profile-dir")
 
 	if !*testProfileDir {
-		t.Skip("It's not CI friendly, so we skip it!")
+		g.Skip("It's not CI friendly, so we skip it!")
 	}
 
 	url.MustLaunch()
@@ -203,6 +213,6 @@ func (t T) ProfileDir() {
 	userDataDir := url.Get(flags.UserDataDir)
 	file, err := os.Stat(filepath.Join(userDataDir, "test-profile-dir"))
 
-	t.E(err)
-	t.True(file.IsDir())
+	g.E(err)
+	g.True(file.IsDir())
 }

@@ -818,6 +818,12 @@ func (el *Element) MustSetFiles(paths ...string) *Element {
 	return el
 }
 
+// MustSetDocumentContent is similar to Page.SetDocumentContent
+func (p *Page) MustSetDocumentContent(html string) *Page {
+	p.e(p.SetDocumentContent(html))
+	return p
+}
+
 // MustText is similar to Element.Text
 func (el *Element) MustText() string {
 	s, err := el.Text()

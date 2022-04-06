@@ -12,15 +12,24 @@ import (
 // ErrTry error
 type ErrTry struct {
 	Value interface{}
+	Stack string
 }
 
 func (e *ErrTry) Error() string {
-	return fmt.Sprintf("error value: %#v", e.Value)
+	return fmt.Sprintf("error value: %#v\n%s", e.Value, e.Stack)
 }
 
 // Is interface
 func (e *ErrTry) Is(err error) bool {
 	return reflect.TypeOf(e) == reflect.TypeOf(err)
+}
+
+// Unwrap stdlib interface
+func (e *ErrTry) Unwrap() error {
+	if err, ok := e.Value.(error); ok {
+		return err
+	}
+	return fmt.Errorf("%v", e.Value)
 }
 
 // ErrExpectElement error

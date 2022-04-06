@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -92,7 +93,7 @@ func main() {
 	path := "./lib/proto"
 	utils.Exec("gofmt", "-s", "-w", path)
 	utils.Exec(
-		"golangci-lint", "--",
+		"go", "run", "github.com/ysmood/golangci-lint@v0.5.0", "--",
 		"run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path,
 	)
 }
@@ -235,7 +236,7 @@ func (d *definition) formatTests() (code string) {
 // The "a_" prefixed files won't removed, other go files will be removed before the generation
 func cleanup() {
 	d := filepath.Join("lib", "proto")
-	list, err := os.ReadDir(d)
+	list, err := ioutil.ReadDir(d)
 	utils.E(err)
 
 	for _, f := range list {

@@ -15,35 +15,35 @@ import (
 	"github.com/ysmood/got"
 )
 
-type T struct {
-	got.G
-}
+var setup = got.Setup(nil)
 
-func Test(t *testing.T) {
-	got.Each(t, T{})
-}
+func TestTestLog(t *testing.T) {
+	g := setup(t)
 
-func (t T) TestLog() {
 	var res []interface{}
 	lg := utils.Log(func(msg ...interface{}) { res = append(res, msg[0]) })
 	lg.Println("ok")
-	t.Eq(res[0], "ok")
+	g.Eq(res[0], "ok")
 
 	utils.LoggerQuiet.Println()
 
 	utils.MultiLogger(lg, lg).Println("ok")
-	t.Eq(res, []interface{}{"ok", "ok", "ok"})
+	g.Eq(res, []interface{}{"ok", "ok", "ok"})
 }
 
-func (t T) TestE() {
+func TestTestE(t *testing.T) {
+	g := setup(t)
+
 	utils.E(nil)
 
-	t.Panic(func() {
+	g.Panic(func() {
 		utils.E(errors.New("err"))
 	})
 }
 
-func (t T) STemplate() {
+func TestSTemplate(t *testing.T) {
+	g := setup(t)
+
 	out := utils.S(
 		"{{.a}} {{.b}} {{.c.A}} {{d}}",
 		"a", "<value>",
@@ -53,22 +53,28 @@ func (t T) STemplate() {
 			return "ok"
 		},
 	)
-	t.Eq("<value> 10 ok ok", out)
+	g.Eq("<value> 10 ok ok", out)
 }
 
-func (t T) GenerateRandomString() {
+func TestGenerateRandomString(t *testing.T) {
+	g := setup(t)
+
 	v := utils.RandString(10)
 	raw, _ := hex.DecodeString(v)
-	t.Len(raw, 10)
+	g.Len(raw, 10)
 }
 
-func (t T) Mkdir() {
-	p := filepath.Join(t.Testable.(*testing.T).TempDir(), "t")
-	t.E(utils.Mkdir(p))
+func TestMkdir(t *testing.T) {
+	g := setup(t)
+
+	p := filepath.Join(g.Testable.(*testing.T).TempDir(), "t")
+	g.E(utils.Mkdir(p))
 }
 
-func (t T) OutputString() {
-	p := "tmp/" + t.Srand(16)
+func TestOutputString(t *testing.T) {
+	g := setup(t)
+
+	p := "tmp/" + g.RandStr(16)
 
 	_ = utils.OutputFile(p, p)
 
@@ -78,11 +84,13 @@ func (t T) OutputString() {
 		panic(err)
 	}
 
-	t.Eq(s, p)
+	g.Eq(s, p)
 }
 
-func (t T) OutputBytes() {
-	p := "tmp/" + t.Srand(16)
+func TestOutputBytes(t *testing.T) {
+	g := setup(t)
+
+	p := "tmp/" + g.RandStr(16)
 
 	_ = utils.OutputFile(p, []byte("test"))
 
@@ -92,11 +100,13 @@ func (t T) OutputBytes() {
 		panic(err)
 	}
 
-	t.Eq(s, "test")
+	g.Eq(s, "test")
 }
 
-func (t T) OutputStream() {
-	p := "tmp/" + t.Srand(16)
+func TestOutputStream(t *testing.T) {
+	g := setup(t)
+
+	p := "tmp/" + g.RandStr(16)
 	b := bytes.NewBufferString("test")
 
 	_ = utils.OutputFile(p, b)
@@ -107,52 +117,66 @@ func (t T) OutputStream() {
 		panic(err)
 	}
 
-	t.Eq("test", s)
+	g.Eq("test", s)
 }
 
-func (t T) OutputJSONErr() {
-	p := "tmp/" + t.Srand(16)
+func TestOutputJSONErr(t *testing.T) {
+	g := setup(t)
 
-	t.Panic(func() {
+	p := "tmp/" + g.RandStr(16)
+
+	g.Panic(func() {
 		_ = utils.OutputFile(p, make(chan struct{}))
 	})
 }
 
-func (t T) Sleep() {
+func TestSleep(t *testing.T) {
 	utils.Sleep(0.01)
 }
 
-func (t T) All() {
-	c := t.Count(3)
+func TestAll(t *testing.T) {
+	g := setup(t)
+
+	c := g.Count(3)
 	utils.All(c, c, c)()
 }
 
-func (t T) Pause() {
+func TestPause(t *testing.T) {
 	go utils.Pause()
 }
 
-func (t T) MustToJSON() {
-	t.Eq(utils.Dump("a", 10), `"a" 10`)
-	t.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
+func TestMustToJSON(t *testing.T) {
+	g := setup(t)
+
+	g.Eq(utils.Dump("a", 10), `"a" 10`)
+	g.Eq(`{"a":1}`, utils.MustToJSON(map[string]int{"a": 1}))
 }
 
-func (t T) FileExists() {
-	t.Eq(false, utils.FileExists("."))
-	t.Eq(true, utils.FileExists("utils.go"))
-	t.Eq(false, utils.FileExists(t.Srand(16)))
+func TestFileExists(t *testing.T) {
+	g := setup(t)
+
+	g.Eq(false, utils.FileExists("."))
+	g.Eq(true, utils.FileExists("utils.go"))
+	g.Eq(false, utils.FileExists(g.RandStr(16)))
 }
 
-func (t T) ExecErr() {
-	t.Panic(func() {
+func TestExecErr(t *testing.T) {
+	g := setup(t)
+
+	g.Panic(func() {
 		utils.ExecLine("")
 	})
 }
 
-func (t T) EscapeGoString() {
-	t.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
+func TestEscapeGoString(t *testing.T) {
+	g := setup(t)
+
+	g.Eq("`` + \"`\" + `test` + \"`\" + ``", utils.EscapeGoString("`test`"))
 }
 
-func (t T) IdleCounter() {
+func TestIdleCounter(t *testing.T) {
+	g := setup(t)
+
 	utils.All(func() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 
@@ -164,15 +188,15 @@ func (t T) IdleCounter() {
 			ct.Done()
 		}()
 
-		ctx := t.Context()
+		ctx := g.Context()
 
 		start := time.Now()
 		ct.Wait(ctx)
 		d := time.Since(start)
-		t.Gt(d, 400*time.Millisecond)
-		t.Lt(d, 450*time.Millisecond)
+		g.Gt(d, 400*time.Millisecond)
+		g.Lt(d, 450*time.Millisecond)
 
-		t.Panic(func() {
+		g.Panic(func() {
 			ct.Done()
 		})
 
@@ -181,26 +205,28 @@ func (t T) IdleCounter() {
 	}, func() {
 		ct := utils.NewIdleCounter(100 * time.Millisecond)
 		start := time.Now()
-		ct.Wait(t.Context())
-		t.Lt(time.Since(start), 150*time.Millisecond)
+		ct.Wait(g.Context())
+		g.Lt(time.Since(start), 150*time.Millisecond)
 	}, func() {
 		ct := utils.NewIdleCounter(0)
 		start := time.Now()
-		ct.Wait(t.Context())
-		t.Lt(time.Since(start), 10*time.Millisecond)
+		ct.Wait(g.Context())
+		g.Lt(time.Since(start), 10*time.Millisecond)
 	})()
 }
 
-func (t T) CropImage() {
+func TestCropImage(t *testing.T) {
+	g := setup(t)
+
 	img := image.NewNRGBA(image.Rect(0, 0, 100, 100))
 
-	t.Err(utils.CropImage(nil, 0, 0, 0, 0, 0))
+	g.Err(utils.CropImage(nil, 0, 0, 0, 0, 0))
 
 	bin := bytes.NewBuffer(nil)
-	t.E(png.Encode(bin, img))
-	t.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
+	g.E(png.Encode(bin, img))
+	g.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
 
 	bin = bytes.NewBuffer(nil)
-	t.E(jpeg.Encode(bin, img, &jpeg.Options{Quality: 80}))
-	t.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
+	g.E(jpeg.Encode(bin, img, &jpeg.Options{Quality: 80}))
+	g.E(utils.CropImage(bin.Bytes(), 0, 10, 10, 30, 30))
 }

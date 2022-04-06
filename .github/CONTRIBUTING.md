@@ -40,18 +40,10 @@ The `cdp` requests of each test will be recorded and output to folder `tmp/cdp-l
 [artifacts](https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts) so that we can download
 them for debugging.
 
-### Filter tests
-
-Use regex: `go test -run /^Click$`.
-
-Test a specific package: `go test ./lib/launcher`.
-
-Run all tests: `go test ./...`
-
 ### Disable headless mode
 
 ```bash
-rod=show,trace,slow=2s go test -run /Click
+rod=show,trace,slow=2s go test
 ```
 
 Check type `defaults.ResetWithEnv` for how it works.
@@ -98,7 +90,7 @@ There are several helper functions for it:
 
 1. Run lint in the container: `go run ./lib/utils/lint`
 
-1. Run tests in the container: `go test -run /Click`
+1. Run tests in the container: `go test`
 
 1. After you exit the container with `exit`, you can restart it by: `docker start -i rod`
 

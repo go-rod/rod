@@ -1,4 +1,10 @@
-name: Docker
+# When git master branch changes it will build a image based on the master branch, the tag of the image will be latest.
+# When a git semver tag is pushed it will build a image based on it, the tag will be the same as git's.
+# It will do nothing on other git events.
+# For the usage of the image, check lib/examples/launch-managed .
+
+name: Release docker image
+
 on: [push, pull_request]
 
 jobs:

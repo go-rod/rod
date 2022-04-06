@@ -43,13 +43,13 @@ func Example() {
 	fmt.Println("Found", len(page.MustElements("input")), "input elements")
 
 	// Eval js on the page
-	page.MustEval(`console.log("hello world")`)
+	page.MustEval(`() => console.log("hello world")`)
 
 	// Pass parameters as json objects to the js function. This MustEval will result 3
 	fmt.Println("1 + 2 =", page.MustEval(`(a, b) => a + b`, 1, 2).Int())
 
 	// When eval on an element, "this" in the js is the current DOM element.
-	fmt.Println(page.MustElement("title").MustEval(`this.innerText`).String())
+	fmt.Println(page.MustElement("title").MustEval(`() => this.innerText`).String())
 
 	// Output:
 	// Git is the most widely used version control system.
@@ -433,7 +433,7 @@ func Example_handle_events() {
 		}
 	}
 
-	page.MustEval(`console.log("hello", "world")`)
+	page.MustEval(`() => console.log("hello", "world")`)
 
 	<-done
 
@@ -483,7 +483,7 @@ func Example_hijack_requests() {
 
 	go router.Run()
 
-	browser.MustPage("https://go-rod.github.io").MustWait(`document.title === 'hi'`)
+	browser.MustPage("https://go-rod.github.io").MustWait(`() => document.title === 'hi'`)
 
 	fmt.Println("done")
 
@@ -494,7 +494,7 @@ func Example_hijack_requests() {
 func Example_eval_reuse_remote_object() {
 	page := rod.New().MustConnect().MustPage()
 
-	fn := page.MustEvaluate(rod.Eval(`Math.random`).ByObject())
+	fn := page.MustEvaluate(rod.Eval(`() => Math.random`).ByObject())
 
 	res := page.MustEval(`f => f()`, fn)
 
@@ -580,7 +580,7 @@ func Example_load_extension() {
 
 	page := rod.New().ControlURL(u).MustConnect().MustPage("http://mdn.dev")
 
-	page.MustWait(`document.title === 'test-extension'`)
+	page.MustWait(`() => document.title === 'test-extension'`)
 
 	fmt.Println("ok")
 

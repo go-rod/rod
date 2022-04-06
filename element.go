@@ -58,7 +58,7 @@ func (el *Element) Focus() error {
 		return err
 	}
 
-	_, err = el.Evaluate(Eval(`this.focus()`).ByUser())
+	_, err = el.Evaluate(Eval(`() => this.focus()`).ByUser())
 	return err
 }
 
@@ -143,7 +143,7 @@ func (el *Element) Tap() error {
 // The cursor can be mouse, finger, stylus, etc.
 // If not interactable err will be ErrNotInteractable, such as when covered by a modal,
 func (el *Element) Interactable() (pt *proto.Point, err error) {
-	noPointerEvents, err := el.Eval(`getComputedStyle(this).pointerEvents === 'none'`)
+	noPointerEvents, err := el.Eval(`() => getComputedStyle(this).pointerEvents === 'none'`)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 		return
 	}
 
-	scroll, err := el.page.root.Eval(`{ x: window.scrollX, y: window.scrollY }`)
+	scroll, err := el.page.root.Eval(`() => ({ x: window.scrollX, y: window.scrollY })`)
 	if err != nil {
 		return
 	}
@@ -302,7 +302,7 @@ func (el *Element) InputTime(t time.Time) error {
 
 // Blur is similar to the method Blur
 func (el *Element) Blur() error {
-	_, err := el.Evaluate(Eval("this.blur()").ByUser())
+	_, err := el.Evaluate(Eval("() => this.blur()").ByUser())
 	return err
 }
 
@@ -591,14 +591,14 @@ func (el *Element) WaitVisible() error {
 // Doc for readonly: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly
 func (el *Element) WaitEnabled() error {
 	defer el.tryTrace(TraceTypeWait, "enabled")()
-	return el.Wait(Eval(`!this.disabled`))
+	return el.Wait(Eval(`() => !this.disabled`))
 }
 
 // WaitWritable until the element is not readonly.
 // Doc for disabled: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
 func (el *Element) WaitWritable() error {
 	defer el.tryTrace(TraceTypeWait, "writable")()
-	return el.Wait(Eval(`!this.readonly`))
+	return el.Wait(Eval(`() => !this.readonly`))
 }
 
 // WaitInvisible until the element invisible
@@ -633,7 +633,7 @@ func (el *Element) Resource() ([]byte, error) {
 
 // BackgroundImage returns the css background-image of the element
 func (el *Element) BackgroundImage() ([]byte, error) {
-	res, err := el.Eval(`window.getComputedStyle(this).backgroundImage.replace(/^url\("/, '').replace(/"\)$/, '')`)
+	res, err := el.Eval(`() => window.getComputedStyle(this).backgroundImage.replace(/^url\("/, '').replace(/"\)$/, '')`)
 	if err != nil {
 		return nil, err
 	}
@@ -684,7 +684,7 @@ func (el *Element) Release() error {
 
 // Remove the element from the page
 func (el *Element) Remove() error {
-	_, err := el.Eval(`this.remove()`)
+	_, err := el.Eval(`() => this.remove()`)
 	if err != nil {
 		return err
 	}
@@ -696,9 +696,9 @@ func (el *Element) Call(ctx context.Context, sessionID, methodName string, param
 	return el.page.Call(ctx, sessionID, methodName, params)
 }
 
-// Eval js on the page. For more info check the Element.Evaluate
+// Eval is a shortcut for Element.Evaluate with AwaitPromise, ByValue and AutoExp set to true.
 func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return el.Evaluate(Eval(js, params...))
+	return el.Evaluate(Eval(js, params...).ByPromise())
 }
 
 // Evaluate is just a shortcut of Page.Evaluate with This set to current element.

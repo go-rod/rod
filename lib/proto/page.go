@@ -116,6 +116,9 @@ const (
 	// PagePermissionsPolicyFeatureAutoplay enum const
 	PagePermissionsPolicyFeatureAutoplay PagePermissionsPolicyFeature = "autoplay"
 
+	// PagePermissionsPolicyFeatureBrowsingTopics enum const
+	PagePermissionsPolicyFeatureBrowsingTopics PagePermissionsPolicyFeature = "browsing-topics"
+
 	// PagePermissionsPolicyFeatureCamera enum const
 	PagePermissionsPolicyFeatureCamera PagePermissionsPolicyFeature = "camera"
 
@@ -235,6 +238,9 @@ const (
 
 	// PagePermissionsPolicyFeatureIdleDetection enum const
 	PagePermissionsPolicyFeatureIdleDetection PagePermissionsPolicyFeature = "idle-detection"
+
+	// PagePermissionsPolicyFeatureInterestCohort enum const
+	PagePermissionsPolicyFeatureInterestCohort PagePermissionsPolicyFeature = "interest-cohort"
 
 	// PagePermissionsPolicyFeatureJoinAdInterestGroup enum const
 	PagePermissionsPolicyFeatureJoinAdInterestGroup PagePermissionsPolicyFeature = "join-ad-interest-group"
@@ -1071,6 +1077,9 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonActivationNavigationsDisallowedForBug1234857 enum const
 	PageBackForwardCacheNotRestoredReasonActivationNavigationsDisallowedForBug1234857 PageBackForwardCacheNotRestoredReason = "ActivationNavigationsDisallowedForBug1234857"
+
+	// PageBackForwardCacheNotRestoredReasonErrorDocument enum const
+	PageBackForwardCacheNotRestoredReasonErrorDocument PageBackForwardCacheNotRestoredReason = "ErrorDocument"
 
 	// PageBackForwardCacheNotRestoredReasonWebSocket enum const
 	PageBackForwardCacheNotRestoredReasonWebSocket PageBackForwardCacheNotRestoredReason = "WebSocket"

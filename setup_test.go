@@ -22,7 +22,7 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
-	"github.com/ysmood/gotrace/pkg/testleak"
+	"github.com/ysmood/gotrace"
 	"github.com/ysmood/gson"
 )
 
@@ -38,15 +38,29 @@ func init() {
 	launcher.NewBrowser().MustGet() // preload browser to local
 }
 
-// entry point for all tests
-func Test(t *testing.T) {
-	testleak.Check(t, 0)
+var testerPool TesterPool
 
-	got.Each(t, newTesterPool(t).get)
+func TestMain(m *testing.M) {
+	testerPool = newTesterPool()
+
+	code := m.Run()
+	if code != 0 {
+		os.Exit(code)
+	}
+
+	testerPool.cleanup()
+
+	if err := gotrace.Check(0, gotrace.IgnoreFuncs("internal/poll.runtime_pollWait")); err != nil {
+		log.Fatal(err)
+	}
 }
 
-// T is a tester. Testers are thread-safe, they shouldn't race each other.
-type T struct {
+var setup = func(t *testing.T) G {
+	return testerPool.get(t)
+}
+
+// G is a tester. Testers are thread-safe, they shouldn't race each other.
+type G struct {
 	got.G
 
 	mc      *MockClient
@@ -54,36 +68,32 @@ type T struct {
 	page    *rod.Page
 }
 
-type TesterPool chan *T
+type TesterPool struct {
+	pool     chan *G
+	parallel int
+}
 
-func newTesterPool(t *testing.T) TesterPool {
+func newTesterPool() TesterPool {
 	parallel := got.Parallel()
 	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
 	}
 	fmt.Println("parallel test", parallel)
 
-	cp := TesterPool(make(chan *T, parallel))
-
-	t.Cleanup(func() {
-		go func() {
-			for i := 0; i < parallel; i++ {
-				if t := <-cp; t != nil {
-					t.browser.MustClose()
-				}
-			}
-		}()
-	})
+	cp := TesterPool{
+		pool:     make(chan *G, parallel),
+		parallel: parallel,
+	}
 
 	for i := 0; i < parallel; i++ {
-		cp <- nil
+		cp.pool <- nil
 	}
 
 	return cp
 }
 
 // new tester
-func (cp TesterPool) new() *T {
+func (tp TesterPool) new() *G {
 	u := launcher.New().MustLaunch()
 
 	mc := newMockClient(u)
@@ -92,7 +102,7 @@ func (cp TesterPool) new() *T {
 
 	page := browser.MustPage()
 
-	return &T{
+	return &G{
 		mc:      mc,
 		browser: browser,
 		page:    page,
@@ -100,83 +110,84 @@ func (cp TesterPool) new() *T {
 }
 
 // get a tester
-func (cp TesterPool) get(t *testing.T) T {
-	parallel := got.Parallel() != 1
-	if parallel {
-		t.Parallel()
-	}
-
-	tester := <-cp
+func (tp TesterPool) get(t *testing.T) G {
+	tester := <-tp.pool
 	if tester == nil {
-		tester = cp.new()
+		tester = tp.new()
 	}
-	t.Cleanup(func() { cp <- tester })
+	t.Cleanup(func() { tp.pool <- tester })
 
 	tester.G = got.New(t)
 	tester.mc.t = t
 	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()[5:]+".log"))
 
-	tester.checkLeaking(!parallel)
+	tester.checkLeaking()
 	tester.PanicAfter(*TimeoutEach)
 
 	return *tester
 }
 
-func (t T) enableCDPLog() {
-	t.mc.principal.Logger(rod.DefaultLogger)
+func (tp TesterPool) cleanup() {
+	for i := 0; i < tp.parallel; i++ {
+		if t := <-testerPool.pool; t != nil {
+			t.browser.MustClose()
+		}
+	}
 }
 
-func (t T) dump(args ...interface{}) {
-	t.Log(utils.Dump(args))
+func (g G) enableCDPLog() {
+	g.mc.principal.Logger(rod.DefaultLogger)
 }
 
-func (t T) blank() string {
-	return t.srcFile("./fixtures/blank.html")
+func (g G) dump(args ...interface{}) {
+	g.Log(utils.Dump(args))
+}
+
+func (g G) blank() string {
+	return g.srcFile("./fixtures/blank.html")
 }
 
 // Get abs file path from fixtures folder, such as "file:///a/b/click.html".
 // Usually the path can be used for html src attribute like:
 //     <img src="file:///a/b">
-func (t T) srcFile(path string) string {
-	t.Helper()
+func (g G) srcFile(path string) string {
+	g.Helper()
 	f, err := filepath.Abs(slash(path))
-	t.E(err)
+	g.E(err)
 	return "file://" + f
 }
 
-func (t T) newPage(u ...string) *rod.Page {
-	t.Helper()
-	p := t.browser.MustPage(u...)
-	t.Cleanup(func() {
-		if !t.Failed() {
+func (g G) newPage(u ...string) *rod.Page {
+	g.Helper()
+	p := g.browser.MustPage(u...)
+	g.Cleanup(func() {
+		if !g.Failed() {
 			p.MustClose()
 		}
 	})
 	return p
 }
 
-func (t T) checkLeaking(checkGoroutine bool) {
-	if checkGoroutine {
-		testleak.Check(t.Testable.(*testing.T), 0)
-	}
+func (g G) checkLeaking() {
+	gotrace.CheckLeak(g.Testable, 0, gotrace.IgnoreCurrent())
 
-	t.Cleanup(func() {
-		if t.Failed() {
+	g.Cleanup(func() {
+		if g.Failed() {
 			return
 		}
 
-		res, err := proto.TargetGetTargets{}.Call(t.browser)
-		t.E(err)
+		res, err := proto.TargetGetTargets{}.Call(g.browser)
+		g.E(err)
 		if len(res.TargetInfos) > 2 { // don't account the init about:blank
-			t.Logf("leaking pages: %v", utils.Dump(res.TargetInfos))
+			g.Logf("leaking pages: %v", utils.Dump(res.TargetInfos))
 		}
 
-		if t.browser.LoadState(t.page.SessionID, proto.FetchEnable{}) {
-			t.Logf("leaking FetchEnable")
-			t.FailNow()
+		if g.browser.LoadState(g.page.SessionID, proto.FetchEnable{}) {
+			g.Logf("leaking FetchEnable")
+			g.FailNow()
 		}
 
-		t.mc.setCall(nil)
+		g.mc.setCall(nil)
 	})
 }
 
@@ -338,9 +349,9 @@ func (mr *MockReader) Read(p []byte) (n int, err error) {
 	return 0, mr.err
 }
 
-func (t T) LintIgnore(got.Skip) {
+func (g G) LintIgnore(got.Skip) {
 	_ = rod.Try(func() {
-		tt := T{}
+		tt := G{}
 		tt.dump()
 		tt.enableCDPLog()
 

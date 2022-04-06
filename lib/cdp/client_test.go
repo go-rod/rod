@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -20,20 +21,20 @@ import (
 
 var loud = flag.Bool("loud", false, "log everything")
 
-func Test(t *testing.T) {
+func TestMain(m *testing.M) {
 	if !*loud {
 		log.SetOutput(ioutil.Discard)
 	}
 
-	got.Each(t, T{})
+	os.Exit(m.Run())
 }
 
-type T struct {
-	got.G
-}
+var setup = got.Setup(nil)
 
-func (t T) Basic() {
-	ctx := t.Context()
+func TestBasic(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 
 	url := launcher.New().MustLaunch()
 
@@ -51,12 +52,12 @@ func (t T) Basic() {
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
-	t.E(err)
+	g.E(err)
 
 	res, err := client.Call(ctx, "", "Target.createTarget", map[string]string{
 		"url": "file://" + file,
 	})
-	t.E(err)
+	g.E(err)
 
 	targetID := gson.New(res).Get("targetId").String()
 
@@ -64,19 +65,19 @@ func (t T) Basic() {
 		"targetId": targetID,
 		"flatten":  true, // if it's not set no response will return
 	})
-	t.E(err)
+	g.E(err)
 
 	sessionID := gson.New(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
-	t.E(err)
+	g.E(err)
 
 	_, err = client.Call(ctx, "", "Target.attachToTarget", map[string]interface{}{
 		"targetId": "abc",
 	})
-	t.Err(err)
+	g.Err(err)
 
-	timeout := t.Context()
+	timeout := g.Context()
 
 	sleeper := func() utils.Sleeper {
 		return utils.BackoffSleeper(30*time.Millisecond, 3*time.Second, nil)
@@ -88,9 +89,9 @@ func (t T) Basic() {
 	_, err = client.Call(tmpCtx, sessionID, "Runtime.evaluate", map[string]interface{}{
 		"expression": `10`,
 	})
-	t.Eq(err.Error(), context.Canceled.Error())
+	g.Eq(err.Error(), context.Canceled.Error())
 
-	t.E(utils.Retry(timeout, sleeper(), func() (bool, error) {
+	g.E(utils.Retry(timeout, sleeper(), func() (bool, error) {
 		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
 			"expression": `document.querySelector('iframe')`,
 		})
@@ -101,19 +102,19 @@ func (t T) Basic() {
 	res, err = client.Call(ctx, sessionID, "DOM.describeNode", map[string]interface{}{
 		"objectId": gson.New(res).Get("result.objectId").String(),
 	})
-	t.E(err)
+	g.E(err)
 
 	frameID := gson.New(res).Get("node.frameId").String()
 
-	timeout = t.Context()
+	timeout = g.Context()
 
-	t.E(utils.Retry(timeout, sleeper(), func() (bool, error) {
+	g.E(utils.Retry(timeout, sleeper(), func() (bool, error) {
 		// we might need to recreate the world because world can be
 		// destroyed after the frame is reloaded
 		res, err = client.Call(ctx, sessionID, "Page.createIsolatedWorld", map[string]interface{}{
 			"frameId": frameID,
 		})
-		t.E(err)
+		g.E(err)
 
 		res, err = client.Call(ctx, sessionID, "Runtime.evaluate", map[string]interface{}{
 			"contextId":  gson.New(res).Get("executionContextId").Int(),
@@ -126,29 +127,34 @@ func (t T) Basic() {
 	res, err = client.Call(ctx, sessionID, "DOM.getOuterHTML", map[string]interface{}{
 		"objectId": gson.New(res).Get("result.objectId").String(),
 	})
-	t.E(err)
+	g.E(err)
 
-	t.Eq("<h4>it works</h4>", gson.New(res).Get("outerHTML").String())
+	g.Eq("<h4>it works</h4>", gson.New(res).Get("outerHTML").String())
 }
 
-func (t T) TestError() {
+func TestTestError(t *testing.T) {
+	g := setup(t)
+
 	cdpErr := cdp.Error{10, "err", "data"}
-	t.Eq(cdpErr.Error(), "{10 err data}")
+	g.Eq(cdpErr.Error(), "{10 err data}")
 
-	t.Panic(func() {
-		cdp.New("").MustConnect(t.Context())
+	g.Panic(func() {
+		cdp.New("").MustConnect(g.Context())
 	})
 }
 
-func (t T) NewWithLogger() {
+func TestNewWithLogger(t *testing.T) {
+	g := setup(t)
 
-	t.Panic(func() {
-		cdp.New("").MustConnect(t.Context())
+	g.Panic(func() {
+		cdp.New("").MustConnect(g.Context())
 	})
 }
 
-func (t T) Crash() {
-	ctx := t.Context()
+func TestCrash(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
 	l := launcher.New()
 
 	client := cdp.New(l.MustLaunch()).Logger(utils.LoggerQuiet).MustConnect(ctx)
@@ -159,12 +165,12 @@ func (t T) Crash() {
 	}()
 
 	file, err := filepath.Abs(filepath.FromSlash("fixtures/iframe.html"))
-	t.E(err)
+	g.E(err)
 
 	res, err := client.Call(ctx, "", "Target.createTarget", map[string]interface{}{
 		"url": "file://" + file,
 	})
-	t.E(err)
+	g.E(err)
 
 	targetID := gson.New(res).Get("targetId").String()
 
@@ -172,12 +178,12 @@ func (t T) Crash() {
 		"targetId": targetID,
 		"flatten":  true,
 	})
-	t.E(err)
+	g.E(err)
 
 	sessionID := gson.New(res).Get("sessionId").String()
 
 	_, err = client.Call(ctx, sessionID, "Page.enable", nil)
-	t.E(err)
+	g.E(err)
 
 	go func() {
 		utils.Sleep(2)
@@ -188,6 +194,6 @@ func (t T) Crash() {
 		"expression":   `new Promise(() => {})`,
 		"awaitPromise": true,
 	})
-	t.Is(err, cdp.ErrConnClosed)
-	t.Eq(err.Error(), "cdp connection closed: EOF")
+	g.Is(err, cdp.ErrConnClosed)
+	g.Eq(err.Error(), "cdp connection closed: EOF")
 }

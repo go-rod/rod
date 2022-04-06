@@ -26,20 +26,15 @@ type EvalOptions struct {
 	// ThisObj represents the "this" object in the JS
 	ThisObj *proto.RuntimeRemoteObject
 
-	// JS code to eval. It can be an expression or function definition. If it's a function definition
-	// the function will be executed with the JSArgs. Such as
-	//     1 + 2
-	// is the same as
-	//     () => 1 + 2
-	// or
-	//     function() {
-	//         return 1 + 2
-	//     }
+	// JS function definition to execute.
 	JS string
 
-	// JSArgs represents the arguments in the JS if the JS is a function definition.
+	// JSArgs represents the arguments that will be passed to JS.
 	// If an argument is *proto.RuntimeRemoteObject type, the corresponding remote object will be used.
 	// Or it will be passed as a plain JSON value.
+	// When an arg in the args is a *js.Function, the arg will be cached on the page's js context.
+	// When the arg.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.
+	// Useful when you need to eval a huge js expression many times.
 	JSArgs []interface{}
 
 	// Whether execution should be treated as initiated by user in the UI.
@@ -47,10 +42,6 @@ type EvalOptions struct {
 }
 
 // Eval creates a EvalOptions with ByValue set to true.
-//
-// When an arg in the args is a *js.Function, the arg will be cached on the page's js context.
-// When the arg.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.
-// Useful when you need to eval a huge js expression many times.
 func Eval(js string, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue:      true,
@@ -66,7 +57,7 @@ func evalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue: true,
 		JSArgs:  append([]interface{}{fn}, args...),
-		JS:      `(f, ...args) => f.apply(this, args)`,
+		JS:      `function (f, ...args) { return f.apply(this, args) }`,
 	}
 }
 
@@ -118,16 +109,13 @@ func (e *EvalOptions) ByPromise() *EvalOptions {
 }
 
 func (e *EvalOptions) formatToJSFunc() string {
-	js := strings.TrimSpace(e.JS)
-	if detectJSFunction(js) {
-		return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
-	}
-	return fmt.Sprintf(`function() { return %s }`, js)
+	js := strings.Trim(e.JS, "\t\n\v\f\r ;")
+	return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 }
 
-// Eval is just a shortcut for Page.Evaluate with AwaitPromise set true.
-func (p *Page) Eval(js string, jsArgs ...interface{}) (*proto.RuntimeRemoteObject, error) {
-	return p.Evaluate(Eval(js, jsArgs...).ByPromise())
+// Eval is a shortcut for Page.Evaluate with AwaitPromise, ByValue set to true.
+func (p *Page) Eval(js string, args ...interface{}) (*proto.RuntimeRemoteObject, error) {
+	return p.Evaluate(Eval(js, args...).ByPromise())
 }
 
 // Evaluate js on the page.
@@ -202,13 +190,12 @@ func (p *Page) Expose(name string, fn func(gson.JSON) (interface{}, error)) (sto
 		return
 	}
 
-	code := fmt.Sprintf(`(%s)("%s", "%s")`, js.ExposeFunc.Definition, name, bind)
-
-	_, err = p.Evaluate(Eval(code))
+	_, err = p.Evaluate(Eval(js.ExposeFunc.Definition, name, bind))
 	if err != nil {
 		return
 	}
 
+	code := fmt.Sprintf(`(%s)("%s", "%s")`, js.ExposeFunc.Definition, name, bind)
 	remove, err := p.EvalOnNewDocument(code)
 	if err != nil {
 		return

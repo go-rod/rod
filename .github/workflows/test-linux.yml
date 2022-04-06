@@ -1,4 +1,5 @@
 name: Test Linux
+
 on:
   push:
     branches:
@@ -8,6 +9,9 @@ on:
 
   schedule:
     - cron: '17 5 * * *'
+
+env:
+  GODEBUG: tracebackancestors=1000
 
 jobs:
   test-linux:
