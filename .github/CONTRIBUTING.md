@@ -6,6 +6,10 @@ At the early stage of this project, we will use a simple model to promote member
 Maintainers will have all the permissions of this project, only the first 2 maintainers are granted by the owner, the standard is whether the member is good enough to review others' code, then we will start to elect
 new maintainers by voting in the public issue. If no one votes down and 2/3 votes up then an election passes.
 
+## Contribute Doc
+
+Check [here](https://github.com/go-rod/go-rod.github.io/blob/master/contribute-doc.md).
+
 ## Terminology
 
 When we talk about type in the doc we use [gopls](https://github.com/golang/tools/tree/master/gopls) symbol query syntax. For example, when we say `rod.Page.PDF`, you can run the below to locate the file and line of it:
@@ -14,7 +18,7 @@ When we talk about type in the doc we use [gopls](https://github.com/golang/tool
 gopls workspace_symbol -matcher=fuzzy rod.Page.PDF$
 ```
 
-- `cdp`: It's the short for Chrome Devtools Protocol
+- `cdp`: It's short for Chrome Devtools Protocol
 
 ## How it works
 

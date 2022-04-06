@@ -44,7 +44,6 @@ Please read [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/s
 
 We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/orgs/go-rod/projects/1).
 
-If you want to contribute code for this project please read the [Contributor Guide](.github/CONTRIBUTING.md).
+If you want to contribute please read the [Contributor Guide](.github/CONTRIBUTING.md).
 
 [discord room]: https://discord.gg/CpevuvY
-[中文文档]: https://go-rod.github.io/i18n/zh-CN
