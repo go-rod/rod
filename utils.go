@@ -158,7 +158,7 @@ var _ io.ReadCloser = &StreamReader{}
 
 // StreamReader for browser data stream
 type StreamReader struct {
-	Offset int
+	Offset *int
 
 	c      proto.Client
 	handle proto.IOStreamHandle

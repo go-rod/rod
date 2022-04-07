@@ -149,10 +149,20 @@ func (d *definition) format() (code string) {
 		for _, prop := range d.props {
 			tag := jsonTag(prop.originName, prop.optional)
 
+			t := prop.typeName
+			if prop.optional {
+				switch prop.typeName {
+				case "float64", "int":
+					if !strings.Contains(prop.comment(), "(default: 0)") {
+						t = "*" + t
+					}
+				}
+			}
+
 			code += utils.S(`
 			{{.comment}}
 			{{.name}} {{.type}} {{.tag}}
-			`, "comment", prop.comment(), "name", prop.name, "type", prop.typeName, "tag", tag)
+			`, "comment", prop.comment(), "name", prop.name, "type", t, "tag", tag)
 		}
 
 		code += "}\n"

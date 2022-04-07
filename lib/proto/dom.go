@@ -176,7 +176,7 @@ type DOMNode struct {
 	NodeValue string `json:"nodeValue"`
 
 	// ChildNodeCount (optional) Child count for `Container` nodes.
-	ChildNodeCount int `json:"childNodeCount,omitempty"`
+	ChildNodeCount *int `json:"childNodeCount,omitempty"`
 
 	// Children (optional) Child nodes of this node when requested with children.
 	Children []*DOMNode `json:"children,omitempty"`
@@ -257,7 +257,7 @@ type DOMRGBA struct {
 	B int `json:"b"`
 
 	// A (optional) The alpha component, in the [0-1] range (default: 1).
-	A float64 `json:"a,omitempty"`
+	A *float64 `json:"a,omitempty"`
 }
 
 // DOMQuad An array of quad vertices, x immediately followed by y for each point, points clock-wise.
@@ -397,7 +397,7 @@ type DOMDescribeNode struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int `json:"depth,omitempty"`
+	Depth *int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
@@ -611,7 +611,7 @@ type DOMGetDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int `json:"depth,omitempty"`
+	Depth *int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
@@ -641,7 +641,7 @@ type DOMGetFlattenedDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int `json:"depth,omitempty"`
+	Depth *int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the subtree
 	// (default is false).
@@ -1084,7 +1084,7 @@ type DOMRequestChildNodes struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
 	// entire subtree or provide an integer larger than 0.
-	Depth int `json:"depth,omitempty"`
+	Depth *int `json:"depth,omitempty"`
 
 	// Pierce (optional) Whether or not iframes and shadow roots should be traversed when returning the sub-tree
 	// (default is false).

@@ -84,10 +84,10 @@ type ConsoleConsoleMessage struct {
 	URL string `json:"url,omitempty"`
 
 	// Line (optional) Line number in the resource that generated this message (1-based).
-	Line int `json:"line,omitempty"`
+	Line *int `json:"line,omitempty"`
 
 	// Column (optional) Column number in the resource that generated this message (1-based).
-	Column int `json:"column,omitempty"`
+	Column *int `json:"column,omitempty"`
 }
 
 // ConsoleClearMessages Does nothing.

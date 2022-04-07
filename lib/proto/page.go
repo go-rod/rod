@@ -527,7 +527,7 @@ type PageFrameResource struct {
 	LastModified TimeSinceEpoch `json:"lastModified,omitempty"`
 
 	// ContentSize (optional) Resource content size.
-	ContentSize float64 `json:"contentSize,omitempty"`
+	ContentSize *float64 `json:"contentSize,omitempty"`
 
 	// Failed (optional) True if the resource failed to load.
 	Failed bool `json:"failed,omitempty"`
@@ -731,7 +731,7 @@ type PageVisualViewport struct {
 	Scale float64 `json:"scale"`
 
 	// Zoom (optional) Page zoom factor (CSS to device independent pixels ratio).
-	Zoom float64 `json:"zoom,omitempty"`
+	Zoom *float64 `json:"zoom,omitempty"`
 }
 
 // PageViewport Viewport for capturing screenshot.
@@ -792,10 +792,10 @@ type PageScriptFontFamilies struct {
 type PageFontSizes struct {
 
 	// Standard (optional) Default standard font size.
-	Standard int `json:"standard,omitempty"`
+	Standard *int `json:"standard,omitempty"`
 
 	// Fixed (optional) Default fixed font size.
-	Fixed int `json:"fixed,omitempty"`
+	Fixed *int `json:"fixed,omitempty"`
 }
 
 // PageClientNavigationReason (experimental) ...
@@ -1424,7 +1424,7 @@ type PageCaptureScreenshot struct {
 	Format PageCaptureScreenshotFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100] (jpeg only).
-	Quality int `json:"quality,omitempty"`
+	Quality *int `json:"quality,omitempty"`
 
 	// Clip (optional) Capture the screenshot of a given region only.
 	Clip *PageViewport `json:"clip,omitempty"`
@@ -1949,25 +1949,25 @@ type PagePrintToPDF struct {
 	PrintBackground bool `json:"printBackground,omitempty"`
 
 	// Scale (optional) Scale of the webpage rendering. Defaults to 1.
-	Scale float64 `json:"scale,omitempty"`
+	Scale *float64 `json:"scale,omitempty"`
 
 	// PaperWidth (optional) Paper width in inches. Defaults to 8.5 inches.
-	PaperWidth float64 `json:"paperWidth,omitempty"`
+	PaperWidth *float64 `json:"paperWidth,omitempty"`
 
 	// PaperHeight (optional) Paper height in inches. Defaults to 11 inches.
-	PaperHeight float64 `json:"paperHeight,omitempty"`
+	PaperHeight *float64 `json:"paperHeight,omitempty"`
 
 	// MarginTop (optional) Top margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginTop float64 `json:"marginTop,omitempty"`
+	MarginTop *float64 `json:"marginTop,omitempty"`
 
 	// MarginBottom (optional) Bottom margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginBottom float64 `json:"marginBottom,omitempty"`
+	MarginBottom *float64 `json:"marginBottom,omitempty"`
 
 	// MarginLeft (optional) Left margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginLeft float64 `json:"marginLeft,omitempty"`
+	MarginLeft *float64 `json:"marginLeft,omitempty"`
 
 	// MarginRight (optional) Right margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginRight float64 `json:"marginRight,omitempty"`
+	MarginRight *float64 `json:"marginRight,omitempty"`
 
 	// PageRanges (optional) Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means
 	// print all pages.
@@ -2216,19 +2216,19 @@ type PageSetDeviceMetricsOverride struct {
 	Mobile bool `json:"mobile"`
 
 	// Scale (optional) Scale to apply to resulting view image.
-	Scale float64 `json:"scale,omitempty"`
+	Scale *float64 `json:"scale,omitempty"`
 
 	// ScreenWidth (optional) Overriding screen width value in pixels (minimum 0, maximum 10000000).
-	ScreenWidth int `json:"screenWidth,omitempty"`
+	ScreenWidth *int `json:"screenWidth,omitempty"`
 
 	// ScreenHeight (optional) Overriding screen height value in pixels (minimum 0, maximum 10000000).
-	ScreenHeight int `json:"screenHeight,omitempty"`
+	ScreenHeight *int `json:"screenHeight,omitempty"`
 
 	// PositionX (optional) Overriding view X position on screen in pixels (minimum 0, maximum 10000000).
-	PositionX int `json:"positionX,omitempty"`
+	PositionX *int `json:"positionX,omitempty"`
 
 	// PositionY (optional) Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).
-	PositionY int `json:"positionY,omitempty"`
+	PositionY *int `json:"positionY,omitempty"`
 
 	// DontSetVisibleSize (optional) Do not set visible view size, rely upon explicit setVisibleSize call.
 	DontSetVisibleSize bool `json:"dontSetVisibleSize,omitempty"`
@@ -2360,13 +2360,13 @@ func (m PageSetDownloadBehavior) Call(c Client) error {
 type PageSetGeolocationOverride struct {
 
 	// Latitude (optional) Mock latitude
-	Latitude float64 `json:"latitude,omitempty"`
+	Latitude *float64 `json:"latitude,omitempty"`
 
 	// Longitude (optional) Mock longitude
-	Longitude float64 `json:"longitude,omitempty"`
+	Longitude *float64 `json:"longitude,omitempty"`
 
 	// Accuracy (optional) Mock accuracy
-	Accuracy float64 `json:"accuracy,omitempty"`
+	Accuracy *float64 `json:"accuracy,omitempty"`
 }
 
 // ProtoReq name
@@ -2439,16 +2439,16 @@ type PageStartScreencast struct {
 	Format PageStartScreencastFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100].
-	Quality int `json:"quality,omitempty"`
+	Quality *int `json:"quality,omitempty"`
 
 	// MaxWidth (optional) Maximum screenshot width.
-	MaxWidth int `json:"maxWidth,omitempty"`
+	MaxWidth *int `json:"maxWidth,omitempty"`
 
 	// MaxHeight (optional) Maximum screenshot height.
-	MaxHeight int `json:"maxHeight,omitempty"`
+	MaxHeight *int `json:"maxHeight,omitempty"`
 
 	// EveryNthFrame (optional) Send every n-th frame.
-	EveryNthFrame int `json:"everyNthFrame,omitempty"`
+	EveryNthFrame *int `json:"everyNthFrame,omitempty"`
 }
 
 // ProtoReq name

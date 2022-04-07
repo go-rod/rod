@@ -99,13 +99,13 @@ type LayerTreeLayer struct {
 	Transform []float64 `json:"transform,omitempty"`
 
 	// AnchorX (optional) Transform anchor point X, absent if no transform specified
-	AnchorX float64 `json:"anchorX,omitempty"`
+	AnchorX *float64 `json:"anchorX,omitempty"`
 
 	// AnchorY (optional) Transform anchor point Y, absent if no transform specified
-	AnchorY float64 `json:"anchorY,omitempty"`
+	AnchorY *float64 `json:"anchorY,omitempty"`
 
 	// AnchorZ (optional) Transform anchor point Z, absent if no transform specified
-	AnchorZ float64 `json:"anchorZ,omitempty"`
+	AnchorZ *float64 `json:"anchorZ,omitempty"`
 
 	// PaintCount Indicates how many time this layer has painted.
 	PaintCount int `json:"paintCount"`
@@ -230,10 +230,10 @@ type LayerTreeProfileSnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 
 	// MinRepeatCount (optional) The maximum number of times to replay the snapshot (1, if not specified).
-	MinRepeatCount int `json:"minRepeatCount,omitempty"`
+	MinRepeatCount *int `json:"minRepeatCount,omitempty"`
 
 	// MinDuration (optional) The minimum duration (in seconds) to replay the snapshot.
-	MinDuration float64 `json:"minDuration,omitempty"`
+	MinDuration *float64 `json:"minDuration,omitempty"`
 
 	// ClipRect (optional) The clip rectangle to apply when replaying the snapshot.
 	ClipRect *DOMRect `json:"clipRect,omitempty"`
@@ -277,13 +277,13 @@ type LayerTreeReplaySnapshot struct {
 	SnapshotID LayerTreeSnapshotID `json:"snapshotId"`
 
 	// FromStep (optional) The first step to replay from (replay from the very start if not specified).
-	FromStep int `json:"fromStep,omitempty"`
+	FromStep *int `json:"fromStep,omitempty"`
 
 	// ToStep (optional) The last step to replay to (replay till the end if not specified).
-	ToStep int `json:"toStep,omitempty"`
+	ToStep *int `json:"toStep,omitempty"`
 
 	// Scale (optional) The scale to apply while replaying (defaults to 1).
-	Scale float64 `json:"scale,omitempty"`
+	Scale *float64 `json:"scale,omitempty"`
 }
 
 // ProtoReq name

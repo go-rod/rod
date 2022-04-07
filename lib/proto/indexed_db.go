@@ -78,13 +78,13 @@ type IndexedDBKey struct {
 	Type IndexedDBKeyType `json:"type"`
 
 	// Number (optional) Number value.
-	Number float64 `json:"number,omitempty"`
+	Number *float64 `json:"number,omitempty"`
 
 	// String (optional) String value.
 	String string `json:"string,omitempty"`
 
 	// Date (optional) Date value.
-	Date float64 `json:"date,omitempty"`
+	Date *float64 `json:"date,omitempty"`
 
 	// Array (optional) Array value.
 	Array []*IndexedDBKey `json:"array,omitempty"`

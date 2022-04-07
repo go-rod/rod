@@ -200,10 +200,10 @@ func TestWindow(t *testing.T) {
 
 	bounds := page.MustGetWindow()
 	defer page.MustSetWindow(
-		bounds.Left,
-		bounds.Top,
-		bounds.Width,
-		bounds.Height,
+		*bounds.Left,
+		*bounds.Top,
+		*bounds.Width,
+		*bounds.Height,
 	)
 
 	page.MustWindowMaximize()

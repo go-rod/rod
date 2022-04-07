@@ -24,10 +24,10 @@ type SystemInfoGPUDevice struct {
 	DeviceID float64 `json:"deviceId"`
 
 	// SubSysID (optional) Sub sys ID of the GPU, only available on Windows.
-	SubSysID float64 `json:"subSysId,omitempty"`
+	SubSysID *float64 `json:"subSysId,omitempty"`
 
 	// Revision (optional) Revision of the GPU, only available on Windows.
-	Revision float64 `json:"revision,omitempty"`
+	Revision *float64 `json:"revision,omitempty"`
 
 	// VendorString String description of the GPU vendor, if the PCI ID is not available.
 	VendorString string `json:"vendorString"`

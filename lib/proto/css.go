@@ -362,7 +362,7 @@ type CSSMediaQueryExpression struct {
 	ValueRange *CSSSourceRange `json:"valueRange,omitempty"`
 
 	// ComputedLength (optional) Computed length of media query expression (if applicable).
-	ComputedLength float64 `json:"computedLength,omitempty"`
+	ComputedLength *float64 `json:"computedLength,omitempty"`
 }
 
 // CSSCSSContainerQuery (experimental) CSS container query rule descriptor.

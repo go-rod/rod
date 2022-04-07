@@ -181,7 +181,7 @@ type HeapProfilerStartSampling struct {
 
 	// SamplingInterval (optional) Average sample interval in bytes. Poisson distribution is used for the intervals. The
 	// default value is 32768 bytes.
-	SamplingInterval float64 `json:"samplingInterval,omitempty"`
+	SamplingInterval *float64 `json:"samplingInterval,omitempty"`
 }
 
 // ProtoReq name

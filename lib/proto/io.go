@@ -37,10 +37,10 @@ type IORead struct {
 
 	// Offset (optional) Seek to the specified offset before reading (if not specificed, proceed with offset
 	// following the last read). Some types of streams may only support sequential reads.
-	Offset int `json:"offset,omitempty"`
+	Offset *int `json:"offset,omitempty"`
 
 	// Size (optional) Maximum number of bytes to read (left upon the agent discretion if not specified).
-	Size int `json:"size,omitempty"`
+	Size *int `json:"size,omitempty"`
 }
 
 // ProtoReq name

@@ -214,7 +214,7 @@ type TracingStart struct {
 	Options string `json:"options,omitempty"`
 
 	// BufferUsageReportingInterval (optional) If set, the agent will issue bufferUsage events at this interval, specified in milliseconds
-	BufferUsageReportingInterval float64 `json:"bufferUsageReportingInterval,omitempty"`
+	BufferUsageReportingInterval *float64 `json:"bufferUsageReportingInterval,omitempty"`
 
 	// TransferMode (optional) Whether to report trace events as series of dataCollected events or to save trace to a
 	// stream (defaults to `ReportEvents`).
@@ -253,14 +253,14 @@ type TracingBufferUsage struct {
 
 	// PercentFull (optional) A number in range [0..1] that indicates the used size of event buffer as a fraction of its
 	// total size.
-	PercentFull float64 `json:"percentFull,omitempty"`
+	PercentFull *float64 `json:"percentFull,omitempty"`
 
 	// EventCount (optional) An approximate number of events in the trace log.
-	EventCount float64 `json:"eventCount,omitempty"`
+	EventCount *float64 `json:"eventCount,omitempty"`
 
 	// Value (optional) A number in range [0..1] that indicates the used size of event buffer as a fraction of its
 	// total size.
-	Value float64 `json:"value,omitempty"`
+	Value *float64 `json:"value,omitempty"`
 }
 
 // ProtoEvent name

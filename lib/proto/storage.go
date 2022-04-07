@@ -259,7 +259,7 @@ type StorageOverrideQuotaForOrigin struct {
 	// the specified origin. If this is called multiple times with different
 	// origins, the override will be maintained for each origin until it is
 	// disabled (called without a quotaSize).
-	QuotaSize float64 `json:"quotaSize,omitempty"`
+	QuotaSize *float64 `json:"quotaSize,omitempty"`
 }
 
 // ProtoReq name

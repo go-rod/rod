@@ -79,7 +79,7 @@ type PerformanceTimelineTimelineEvent struct {
 	Time TimeSinceEpoch `json:"time"`
 
 	// Duration (optional) Event duration, if applicable.
-	Duration float64 `json:"duration,omitempty"`
+	Duration *float64 `json:"duration,omitempty"`
 
 	// LcpDetails (optional) ...
 	LcpDetails *PerformanceTimelineLargestContentfulPaint `json:"lcpDetails,omitempty"`

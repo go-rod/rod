@@ -18,7 +18,7 @@ type ProfilerProfileNode struct {
 	CallFrame *RuntimeCallFrame `json:"callFrame"`
 
 	// HitCount (optional) Number of samples where this node was on top of the call stack.
-	HitCount int `json:"hitCount,omitempty"`
+	HitCount *int `json:"hitCount,omitempty"`
 
 	// Children (optional) Child node ids.
 	Children []int `json:"children,omitempty"`

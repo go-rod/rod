@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/gson"
 )
 
 // Keyboard represents the keyboard on a page, it's always related the main frame
@@ -134,7 +135,7 @@ func (m *Mouse) Move(x, y float64, steps int) error {
 			X:         toX,
 			Y:         toY,
 			Button:    button,
-			Buttons:   buttons,
+			Buttons:   gson.Int(buttons),
 			Modifiers: m.page.Keyboard.getModifiers(),
 		}.Call(m.page)
 		if err != nil {
@@ -179,7 +180,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 			X:         m.x,
 			Y:         m.y,
 			Button:    button,
-			Buttons:   buttons,
+			Buttons:   gson.Int(buttons),
 			Modifiers: m.page.Keyboard.getModifiers(),
 			DeltaX:    stepX,
 			DeltaY:    stepY,
@@ -204,7 +205,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int) error {
 	err := proto.InputDispatchMouseEvent{
 		Type:       proto.InputDispatchMouseEventTypeMousePressed,
 		Button:     button,
-		Buttons:    buttons,
+		Buttons:    gson.Int(buttons),
 		ClickCount: clicks,
 		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,
@@ -235,7 +236,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 	err := proto.InputDispatchMouseEvent{
 		Type:       proto.InputDispatchMouseEventTypeMouseReleased,
 		Button:     button,
-		Buttons:    buttons,
+		Buttons:    gson.Int(buttons),
 		ClickCount: clicks,
 		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,

@@ -2,6 +2,7 @@ package devices
 
 import (
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/gson"
 )
 
 // Device represents a emulated device.
@@ -77,7 +78,7 @@ func (device Device) TouchEmulation() *proto.EmulationSetTouchEmulationEnabled {
 
 	return &proto.EmulationSetTouchEmulationEnabled{
 		Enabled:        has(device.Capabilities, "touch"),
-		MaxTouchPoints: 5,
+		MaxTouchPoints: gson.Int(5),
 	}
 }
 

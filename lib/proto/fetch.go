@@ -253,7 +253,7 @@ type FetchContinueResponse struct {
 	RequestID FetchRequestID `json:"requestId"`
 
 	// ResponseCode (optional) An HTTP response code. If absent, original response code will be used.
-	ResponseCode int `json:"responseCode,omitempty"`
+	ResponseCode *int `json:"responseCode,omitempty"`
 
 	// ResponsePhrase (optional) A textual representation of responseCode.
 	// If absent, a standard phrase matching responseCode is used.
@@ -378,7 +378,7 @@ type FetchRequestPaused struct {
 	ResponseErrorReason NetworkErrorReason `json:"responseErrorReason,omitempty"`
 
 	// ResponseStatusCode (optional) Response code if intercepted at response stage.
-	ResponseStatusCode int `json:"responseStatusCode,omitempty"`
+	ResponseStatusCode *int `json:"responseStatusCode,omitempty"`
 
 	// ResponseStatusText (optional) Response status text if intercepted at response stage.
 	ResponseStatusText string `json:"responseStatusText,omitempty"`

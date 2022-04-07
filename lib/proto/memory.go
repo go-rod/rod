@@ -149,7 +149,7 @@ func (m MemorySimulatePressureNotification) Call(c Client) error {
 type MemoryStartSampling struct {
 
 	// SamplingInterval (optional) Average number of bytes between samples.
-	SamplingInterval int `json:"samplingInterval,omitempty"`
+	SamplingInterval *int `json:"samplingInterval,omitempty"`
 
 	// SuppressRandomness (optional) Do not randomize intervals between samples.
 	SuppressRandomness bool `json:"suppressRandomness,omitempty"`

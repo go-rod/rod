@@ -429,7 +429,7 @@ type AccessibilityGetFullAXTree struct {
 
 	// Depth (optional) The maximum depth at which descendants of the root node should be retrieved.
 	// If omitted, the full tree is returned.
-	Depth int `json:"depth,omitempty"`
+	Depth *int `json:"depth,omitempty"`
 
 	// FrameID (optional) The frame for whose document the AX tree should be retrieved.
 	// If omitted, the root frame is used.

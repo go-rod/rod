@@ -37,16 +37,16 @@ const (
 type BrowserBounds struct {
 
 	// Left (optional) The offset from the left edge of the screen to the window in pixels.
-	Left int `json:"left,omitempty"`
+	Left *int `json:"left,omitempty"`
 
 	// Top (optional) The offset from the top edge of the screen to the window in pixels.
-	Top int `json:"top,omitempty"`
+	Top *int `json:"top,omitempty"`
 
 	// Width (optional) The window width in pixels.
-	Width int `json:"width,omitempty"`
+	Width *int `json:"width,omitempty"`
 
 	// Height (optional) The window height in pixels.
-	Height int `json:"height,omitempty"`
+	Height *int `json:"height,omitempty"`
 
 	// WindowState (optional) The window state. Default to normal.
 	WindowState BrowserWindowState `json:"windowState,omitempty"`

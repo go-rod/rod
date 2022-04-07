@@ -31,7 +31,7 @@ type DebuggerLocation struct {
 	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber (optional) Column number in the script (0-based).
-	ColumnNumber int `json:"columnNumber,omitempty"`
+	ColumnNumber *int `json:"columnNumber,omitempty"`
 }
 
 // DebuggerScriptPosition (experimental) Location in the source code.
@@ -177,7 +177,7 @@ type DebuggerBreakLocation struct {
 	LineNumber int `json:"lineNumber"`
 
 	// ColumnNumber (optional) Column number in the script (0-based).
-	ColumnNumber int `json:"columnNumber,omitempty"`
+	ColumnNumber *int `json:"columnNumber,omitempty"`
 
 	// Type (optional) ...
 	Type DebuggerBreakLocationType `json:"type,omitempty"`
@@ -268,7 +268,7 @@ type DebuggerEnable struct {
 
 	// MaxScriptsCacheSize (experimental) (optional) The maximum size in bytes of collected scripts (not referenced by other heap objects)
 	// the debugger can hold. Puts no limit if parameter is omitted.
-	MaxScriptsCacheSize float64 `json:"maxScriptsCacheSize,omitempty"`
+	MaxScriptsCacheSize *float64 `json:"maxScriptsCacheSize,omitempty"`
 }
 
 // ProtoReq name
@@ -707,7 +707,7 @@ type DebuggerSetBreakpointByURL struct {
 	ScriptHash string `json:"scriptHash,omitempty"`
 
 	// ColumnNumber (optional) Offset in the line to set breakpoint at.
-	ColumnNumber int `json:"columnNumber,omitempty"`
+	ColumnNumber *int `json:"columnNumber,omitempty"`
 
 	// Condition (optional) Expression to use as a breakpoint condition. When specified, debugger will only stop on the
 	// breakpoint if this expression evaluates to true.
@@ -1093,13 +1093,13 @@ type DebuggerScriptFailedToParse struct {
 	IsModule bool `json:"isModule,omitempty"`
 
 	// Length (optional) This script length.
-	Length int `json:"length,omitempty"`
+	Length *int `json:"length,omitempty"`
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
 
 	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
-	CodeOffset int `json:"codeOffset,omitempty"`
+	CodeOffset *int `json:"codeOffset,omitempty"`
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`
@@ -1157,13 +1157,13 @@ type DebuggerScriptParsed struct {
 	IsModule bool `json:"isModule,omitempty"`
 
 	// Length (optional) This script length.
-	Length int `json:"length,omitempty"`
+	Length *int `json:"length,omitempty"`
 
 	// StackTrace (experimental) (optional) JavaScript top stack frame of where the script parsed event was triggered if available.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
 
 	// CodeOffset (experimental) (optional) If the scriptLanguage is WebAssembly, the code section offset in the module.
-	CodeOffset int `json:"codeOffset,omitempty"`
+	CodeOffset *int `json:"codeOffset,omitempty"`
 
 	// ScriptLanguage (experimental) (optional) The language of the script.
 	ScriptLanguage DebuggerScriptLanguage `json:"scriptLanguage,omitempty"`

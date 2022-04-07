@@ -696,7 +696,7 @@ type NetworkResponse struct {
 	RemoteIPAddress string `json:"remoteIPAddress,omitempty"`
 
 	// RemotePort (optional) Remote port.
-	RemotePort int `json:"remotePort,omitempty"`
+	RemotePort *int `json:"remotePort,omitempty"`
 
 	// FromDiskCache (optional) Specifies that the request was served from the disk cache.
 	FromDiskCache bool `json:"fromDiskCache,omitempty"`
@@ -829,11 +829,11 @@ type NetworkInitiator struct {
 
 	// LineNumber (optional) Initiator line number, set for Parser type or for Script type (when script is importing
 	// module) (0-based).
-	LineNumber float64 `json:"lineNumber,omitempty"`
+	LineNumber *float64 `json:"lineNumber,omitempty"`
 
 	// ColumnNumber (optional) Initiator column number, set for Parser type or for Script type (when script is importing
 	// module) (0-based).
-	ColumnNumber float64 `json:"columnNumber,omitempty"`
+	ColumnNumber *float64 `json:"columnNumber,omitempty"`
 
 	// RequestID (optional) Set if another request triggered this request (e.g. preflight).
 	RequestID NetworkRequestID `json:"requestId,omitempty"`
@@ -1069,7 +1069,7 @@ type NetworkCookieParam struct {
 	// SourcePort (experimental) (optional) Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
 	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
 	// This is a temporary ability and it will be removed in the future.
-	SourcePort int `json:"sourcePort,omitempty"`
+	SourcePort *int `json:"sourcePort,omitempty"`
 
 	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
 	// of the request to the endpoint that set the cookie.
@@ -1243,7 +1243,7 @@ type NetworkSignedExchangeError struct {
 	Message string `json:"message"`
 
 	// SignatureIndex (optional) The index of the signature which caused the error.
-	SignatureIndex int `json:"signatureIndex,omitempty"`
+	SignatureIndex *int `json:"signatureIndex,omitempty"`
 
 	// ErrorField (optional) The field which caused the error.
 	ErrorField NetworkSignedExchangeErrorField `json:"errorField,omitempty"`
@@ -1482,13 +1482,13 @@ type NetworkLoadNetworkResourcePageResult struct {
 	Success bool `json:"success"`
 
 	// NetError (optional) Optional values used for error reporting.
-	NetError float64 `json:"netError,omitempty"`
+	NetError *float64 `json:"netError,omitempty"`
 
 	// NetErrorName (optional) ...
 	NetErrorName string `json:"netErrorName,omitempty"`
 
 	// HTTPStatusCode (optional) ...
-	HTTPStatusCode float64 `json:"httpStatusCode,omitempty"`
+	HTTPStatusCode *float64 `json:"httpStatusCode,omitempty"`
 
 	// Stream (optional) If successful, one of the following two fields holds the result.
 	Stream IOStreamHandle `json:"stream,omitempty"`
@@ -1739,13 +1739,13 @@ func (m NetworkEmulateNetworkConditions) Call(c Client) error {
 type NetworkEnable struct {
 
 	// MaxTotalBufferSize (experimental) (optional) Buffer size in bytes to use when preserving network payloads (XHRs, etc).
-	MaxTotalBufferSize int `json:"maxTotalBufferSize,omitempty"`
+	MaxTotalBufferSize *int `json:"maxTotalBufferSize,omitempty"`
 
 	// MaxResourceBufferSize (experimental) (optional) Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
-	MaxResourceBufferSize int `json:"maxResourceBufferSize,omitempty"`
+	MaxResourceBufferSize *int `json:"maxResourceBufferSize,omitempty"`
 
 	// MaxPostDataSize (optional) Longest post body size (in bytes) that would be included in requestWillBeSent notification
-	MaxPostDataSize int `json:"maxPostDataSize,omitempty"`
+	MaxPostDataSize *int `json:"maxPostDataSize,omitempty"`
 }
 
 // ProtoReq name
@@ -2073,7 +2073,7 @@ type NetworkSetCookie struct {
 	// SourcePort (experimental) (optional) Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified port.
 	// An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
 	// This is a temporary ability and it will be removed in the future.
-	SourcePort int `json:"sourcePort,omitempty"`
+	SourcePort *int `json:"sourcePort,omitempty"`
 
 	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
 	// of the request to the endpoint that set the cookie.
@@ -2390,7 +2390,7 @@ type NetworkRequestIntercepted struct {
 
 	// ResponseStatusCode (optional) Response code if intercepted at response stage or if redirect occurred while intercepting
 	// request or auth retry occurred.
-	ResponseStatusCode int `json:"responseStatusCode,omitempty"`
+	ResponseStatusCode *int `json:"responseStatusCode,omitempty"`
 
 	// ResponseHeaders (optional) Response headers if intercepted at the response stage or if redirect occurred while
 	// intercepting request or auth retry occurred.
@@ -2829,7 +2829,7 @@ type NetworkTrustTokenOperationDone struct {
 	IssuerOrigin string `json:"issuerOrigin,omitempty"`
 
 	// IssuedTokenCount (optional) The number of obtained Trust Tokens on a successful "Issuance" operation.
-	IssuedTokenCount int `json:"issuedTokenCount,omitempty"`
+	IssuedTokenCount *int `json:"issuedTokenCount,omitempty"`
 }
 
 // ProtoEvent name

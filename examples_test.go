@@ -16,6 +16,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 // This example opens https://github.com/, searches for "git",
@@ -213,7 +214,7 @@ func Example_page_screenshot() {
 	// customization version
 	img, _ := page.Screenshot(true, &proto.PageCaptureScreenshot{
 		Format:  proto.PageCaptureScreenshotFormatJpeg,
-		Quality: 90,
+		Quality: gson.Int(90),
 		Clip: &proto.PageViewport{
 			X:      0,
 			Y:      0,
@@ -234,8 +235,8 @@ func Example_page_pdf() {
 
 	// customized version
 	pdf, _ := page.PDF(&proto.PagePrintToPDF{
-		PaperWidth:  8.5,
-		PaperHeight: 11,
+		PaperWidth:  gson.Num(8.5),
+		PaperHeight: gson.Num(11),
 		PageRanges:  "1-3",
 	})
 	_ = utils.OutputFile("my.pdf", pdf)

@@ -50,7 +50,7 @@ type DOMSnapshotDOMNode struct {
 
 	// LayoutNodeIndex (optional) The index of the node's related layout tree node in the `layoutTreeNodes` array returned by
 	// `getSnapshot`, if any.
-	LayoutNodeIndex int `json:"layoutNodeIndex,omitempty"`
+	LayoutNodeIndex *int `json:"layoutNodeIndex,omitempty"`
 
 	// DocumentURL (optional) Document URL that `Document` or `FrameOwner` node points to.
 	DocumentURL string `json:"documentURL,omitempty"`
@@ -75,7 +75,7 @@ type DOMSnapshotDOMNode struct {
 
 	// ContentDocumentIndex (optional) The index of a frame owner element's content document in the `domNodes` array returned by
 	// `getSnapshot`, if any.
-	ContentDocumentIndex int `json:"contentDocumentIndex,omitempty"`
+	ContentDocumentIndex *int `json:"contentDocumentIndex,omitempty"`
 
 	// PseudoType (optional) Type of a pseudo element node.
 	PseudoType DOMPseudoType `json:"pseudoType,omitempty"`
@@ -98,10 +98,10 @@ type DOMSnapshotDOMNode struct {
 	OriginURL string `json:"originURL,omitempty"`
 
 	// ScrollOffsetX (optional) Scroll offsets, set when this node is a Document.
-	ScrollOffsetX float64 `json:"scrollOffsetX,omitempty"`
+	ScrollOffsetX *float64 `json:"scrollOffsetX,omitempty"`
 
 	// ScrollOffsetY (optional) ...
-	ScrollOffsetY float64 `json:"scrollOffsetY,omitempty"`
+	ScrollOffsetY *float64 `json:"scrollOffsetY,omitempty"`
 }
 
 // DOMSnapshotInlineTextBox Details of post layout rendered text positions. The exact layout should not be regarded as
@@ -136,12 +136,12 @@ type DOMSnapshotLayoutTreeNode struct {
 	InlineTextNodes []*DOMSnapshotInlineTextBox `json:"inlineTextNodes,omitempty"`
 
 	// StyleIndex (optional) Index into the `computedStyles` array returned by `getSnapshot`.
-	StyleIndex int `json:"styleIndex,omitempty"`
+	StyleIndex *int `json:"styleIndex,omitempty"`
 
 	// PaintOrder (optional) Global paint order index, which is determined by the stacking order of the nodes. Nodes
 	// that are painted together will have the same index. Only provided if includePaintOrder in
 	// getSnapshot was true.
-	PaintOrder int `json:"paintOrder,omitempty"`
+	PaintOrder *int `json:"paintOrder,omitempty"`
 
 	// IsStackingContext (optional) Set to true to indicate the element begins a new stacking context.
 	IsStackingContext bool `json:"isStackingContext,omitempty"`
@@ -237,16 +237,16 @@ type DOMSnapshotDocumentSnapshot struct {
 	TextBoxes *DOMSnapshotTextBoxSnapshot `json:"textBoxes"`
 
 	// ScrollOffsetX (optional) Horizontal scroll offset.
-	ScrollOffsetX float64 `json:"scrollOffsetX,omitempty"`
+	ScrollOffsetX *float64 `json:"scrollOffsetX,omitempty"`
 
 	// ScrollOffsetY (optional) Vertical scroll offset.
-	ScrollOffsetY float64 `json:"scrollOffsetY,omitempty"`
+	ScrollOffsetY *float64 `json:"scrollOffsetY,omitempty"`
 
 	// ContentWidth (optional) Document content width.
-	ContentWidth float64 `json:"contentWidth,omitempty"`
+	ContentWidth *float64 `json:"contentWidth,omitempty"`
 
 	// ContentHeight (optional) Document content height.
-	ContentHeight float64 `json:"contentHeight,omitempty"`
+	ContentHeight *float64 `json:"contentHeight,omitempty"`
 }
 
 // DOMSnapshotNodeTreeSnapshot Table containing nodes.

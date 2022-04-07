@@ -456,7 +456,7 @@ type AuditsTrustedWebActivityIssueDetails struct {
 	ViolationType AuditsTwaQualityEnforcementViolationType `json:"violationType"`
 
 	// HTTPStatusCode (optional) ...
-	HTTPStatusCode int `json:"httpStatusCode,omitempty"`
+	HTTPStatusCode *int `json:"httpStatusCode,omitempty"`
 
 	// PackageName (optional) The package name of the Trusted Web Activity client app. This field is
 	// only used when violation type is kDigitalAssetLinks.
@@ -904,7 +904,7 @@ type AuditsGetEncodedResponse struct {
 	Encoding AuditsGetEncodedResponseEncoding `json:"encoding"`
 
 	// Quality (optional) The quality of the encoding (0-1). (defaults to 1)
-	Quality float64 `json:"quality,omitempty"`
+	Quality *float64 `json:"quality,omitempty"`
 
 	// SizeOnly (optional) Whether to only return the size information (defaults to false).
 	SizeOnly bool `json:"sizeOnly,omitempty"`

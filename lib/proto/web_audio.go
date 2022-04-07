@@ -370,10 +370,10 @@ type WebAudioNodesConnected struct {
 	DestinationID WebAudioGraphObjectID `json:"destinationId"`
 
 	// SourceOutputIndex (optional) ...
-	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
+	SourceOutputIndex *float64 `json:"sourceOutputIndex,omitempty"`
 
 	// DestinationInputIndex (optional) ...
-	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
+	DestinationInputIndex *float64 `json:"destinationInputIndex,omitempty"`
 }
 
 // ProtoEvent name
@@ -394,10 +394,10 @@ type WebAudioNodesDisconnected struct {
 	DestinationID WebAudioGraphObjectID `json:"destinationId"`
 
 	// SourceOutputIndex (optional) ...
-	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
+	SourceOutputIndex *float64 `json:"sourceOutputIndex,omitempty"`
 
 	// DestinationInputIndex (optional) ...
-	DestinationInputIndex float64 `json:"destinationInputIndex,omitempty"`
+	DestinationInputIndex *float64 `json:"destinationInputIndex,omitempty"`
 }
 
 // ProtoEvent name
@@ -418,7 +418,7 @@ type WebAudioNodeParamConnected struct {
 	DestinationID WebAudioGraphObjectID `json:"destinationId"`
 
 	// SourceOutputIndex (optional) ...
-	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
+	SourceOutputIndex *float64 `json:"sourceOutputIndex,omitempty"`
 }
 
 // ProtoEvent name
@@ -439,7 +439,7 @@ type WebAudioNodeParamDisconnected struct {
 	DestinationID WebAudioGraphObjectID `json:"destinationId"`
 
 	// SourceOutputIndex (optional) ...
-	SourceOutputIndex float64 `json:"sourceOutputIndex,omitempty"`
+	SourceOutputIndex *float64 `json:"sourceOutputIndex,omitempty"`
 }
 
 // ProtoEvent name

@@ -186,10 +186,10 @@ type CacheStorageRequestEntries struct {
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
 	// SkipCount (optional) Number of records to skip.
-	SkipCount int `json:"skipCount,omitempty"`
+	SkipCount *int `json:"skipCount,omitempty"`
 
 	// PageSize (optional) Number of records to fetch.
-	PageSize int `json:"pageSize,omitempty"`
+	PageSize *int `json:"pageSize,omitempty"`
 
 	// PathFilter (optional) If present, only return the entries containing this substring in the path
 	PathFilter string `json:"pathFilter,omitempty"`

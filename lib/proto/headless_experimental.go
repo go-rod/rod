@@ -28,7 +28,7 @@ type HeadlessExperimentalScreenshotParams struct {
 	Format HeadlessExperimentalScreenshotParamsFormat `json:"format,omitempty"`
 
 	// Quality (optional) Compression quality from range [0..100] (jpeg only).
-	Quality int `json:"quality,omitempty"`
+	Quality *int `json:"quality,omitempty"`
 }
 
 // HeadlessExperimentalBeginFrame Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
@@ -39,11 +39,11 @@ type HeadlessExperimentalBeginFrame struct {
 
 	// FrameTimeTicks (optional) Timestamp of this BeginFrame in Renderer TimeTicks (milliseconds of uptime). If not set,
 	// the current time will be used.
-	FrameTimeTicks float64 `json:"frameTimeTicks,omitempty"`
+	FrameTimeTicks *float64 `json:"frameTimeTicks,omitempty"`
 
 	// Interval (optional) The interval between BeginFrames that is reported to the compositor, in milliseconds.
 	// Defaults to a 60 frames/second interval, i.e. about 16.666 milliseconds.
-	Interval float64 `json:"interval,omitempty"`
+	Interval *float64 `json:"interval,omitempty"`
 
 	// NoDisplayUpdates (optional) Whether updates should not be committed and drawn onto the display. False by default. If
 	// true, only side effects of the BeginFrame will be run, such as layout and animations, but

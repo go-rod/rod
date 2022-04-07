@@ -73,26 +73,6 @@ func (t T) TimeCodec() {
 	t.Eq(raw, data)
 }
 
-func (t T) NormalizeInputDispatchMouseEvent() {
-	e := proto.InputDispatchMouseEvent{
-		Type: proto.InputDispatchMouseEventTypeMouseWheel,
-	}
-
-	data, err := json.Marshal(e)
-	t.E(err)
-
-	t.Eq(`{"type":"mouseWheel","x":0,"y":0,"deltaX":0,"deltaY":0}`, string(data))
-
-	ee := proto.InputDispatchMouseEvent{
-		Type: proto.InputDispatchMouseEventTypeMouseMoved,
-	}
-
-	data, err = json.Marshal(ee)
-	t.E(err)
-
-	t.Eq(`{"type":"mouseMoved","x":0,"y":0}`, string(data))
-}
-
 func (t T) Rect() {
 	rect := proto.DOMQuad{
 		336, 382, 361, 382, 361, 421, 336, 412,

@@ -253,10 +253,10 @@ func (p *Page) MustGetWindow() *proto.BrowserBounds {
 // MustSetWindow is similar to Page.SetWindow
 func (p *Page) MustSetWindow(left, top, width, height int) *Page {
 	p.e(p.SetWindow(&proto.BrowserBounds{
-		Left:        left,
-		Top:         top,
-		Width:       width,
-		Height:      height,
+		Left:        gson.Int(left),
+		Top:         gson.Int(top),
+		Width:       gson.Int(width),
+		Height:      gson.Int(height),
 		WindowState: proto.BrowserWindowStateNormal,
 	}))
 	return p

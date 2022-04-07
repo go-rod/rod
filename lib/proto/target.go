@@ -253,10 +253,10 @@ type TargetCreateTarget struct {
 	URL string `json:"url"`
 
 	// Width (optional) Frame width in DIP (headless chrome only).
-	Width int `json:"width,omitempty"`
+	Width *int `json:"width,omitempty"`
 
 	// Height (optional) Frame height in DIP (headless chrome only).
-	Height int `json:"height,omitempty"`
+	Height *int `json:"height,omitempty"`
 
 	// BrowserContextID (experimental) (optional) The browser context to create the page in.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`

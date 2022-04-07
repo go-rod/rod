@@ -61,4 +61,11 @@ func patch(json gson.JSON) {
 		"description": "Cookie expiration date",
 		"name":        "expires",
 	})
+
+	// deltaX and deltaY are not optional for mouseWheel events
+	j, _ = json.Gets("domains", k("domain", "Input"), "commands", k("name", "dispatchMouseEvent"), "parameters")
+	jj, _ := j.Gets(k("name", "deltaX"))
+	jj.Del("optional")
+	jj, _ = j.Gets(k("name", "deltaY"))
+	jj.Del("optional")
 }

@@ -101,7 +101,7 @@ type LogLogEntry struct {
 	URL string `json:"url,omitempty"`
 
 	// LineNumber (optional) Line number in the resource.
-	LineNumber int `json:"lineNumber,omitempty"`
+	LineNumber *int `json:"lineNumber,omitempty"`
 
 	// StackTrace (optional) JavaScript stack trace.
 	StackTrace *RuntimeStackTrace `json:"stackTrace,omitempty"`
