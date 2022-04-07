@@ -1,10 +1,10 @@
 github.com/ysmood/goob v0.3.1 h1:qMp5364BGS1DLJVrAqUxTF6KOFt0YDot8GC70u/0jbI=
 github.com/ysmood/goob v0.3.1/go.mod h1:S3lq113Y91y1UBf1wj1pFOxeahvfKkCk6mTWTWbDdWs=
-github.com/ysmood/got v0.20.3 h1:xhTrZQx/LWNC1u3KvLzZ62r0GCDykbLsZ3jjMTgfuX0=
-github.com/ysmood/got v0.20.3/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
+github.com/ysmood/got v0.23.0 h1:WUk6abT2QPjTsi/f0NpIlkpXUVla4tsPPDBjytFDWBw=
+github.com/ysmood/got v0.23.0/go.mod h1:pE1l4LOwOBhQg6A/8IAatkGp7uZjnalzrZolnlhhMgY=
 github.com/ysmood/gotrace v0.6.0 h1:SyI1d4jclswLhg7SWTL6os3L1WOKeNn/ZtzVQF8QmdY=
 github.com/ysmood/gotrace v0.6.0/go.mod h1:TzhIG7nHDry5//eYZDYcTzuJLYQIkykJzCRIo4/dzQM=
-github.com/ysmood/gson v0.7.0 h1:oQhY2FQtfy3+bgaNeqopd7NGAB6Me+UpG0n7oO4VDko=
-github.com/ysmood/gson v0.7.0/go.mod h1:3Kzs5zDl21g5F/BlLTNcuAGAYLKt2lV5G8D1zF3RNmg=
+github.com/ysmood/gson v0.7.1 h1:zKL2MTGtynxdBdlZjyGsvEOZ7dkxaY5TH6QhAbTgz0Q=
+github.com/ysmood/gson v0.7.1/go.mod h1:3Kzs5zDl21g5F/BlLTNcuAGAYLKt2lV5G8D1zF3RNmg=
 github.com/ysmood/leakless v0.7.0 h1:XCGdaPExyoreoQd+H5qgxM3ReNbSPFsEXpSKwbXbwQw=
 github.com/ysmood/leakless v0.7.0/go.mod h1:R8iAXPRaG97QJwqxs74RdwzcRHT1SWCGTNqY8q0JvMQ=
