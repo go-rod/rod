@@ -111,6 +111,10 @@ func (tp TesterPool) new() *G {
 
 // get a tester
 func (tp TesterPool) get(t *testing.T) G {
+	if got.Parallel() != 1 {
+		t.Parallel()
+	}
+
 	tester := <-tp.pool
 	if tester == nil {
 		tester = tp.new()
@@ -169,7 +173,7 @@ func (g G) newPage(u ...string) *rod.Page {
 }
 
 func (g G) checkLeaking() {
-	gotrace.CheckLeak(g.Testable, 0, gotrace.IgnoreCurrent())
+	gotrace.CheckLeak(g.Testable, 0, gotrace.IgnoreCurrent(), gotrace.IgnoreNonChildren())
 
 	g.Cleanup(func() {
 		if g.Failed() {

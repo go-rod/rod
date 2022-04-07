@@ -26,5 +26,7 @@ RUN curl -L $golang > golang.tar.gz && \
 
 ENV PATH="/usr/local/lib/.node/bin:/usr/local/lib/go/bin:/root/go/bin/:${PATH}"
 
+ENV GODEBUG="tracebackancestors=1000"
+
 # setup global git ignore
 RUN git config --global core.excludesfile ~/.gitignore_global

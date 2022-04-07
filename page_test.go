@@ -25,7 +25,7 @@ import (
 func TestGetPageBrowser(t *testing.T) {
 	g := setup(t)
 
-	g.Equal(g.page.Browser(), g.browser)
+	g.Eq(g.page.Browser().BrowserContextID, g.browser.BrowserContextID)
 }
 
 func TestGetPageURL(t *testing.T) {
