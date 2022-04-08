@@ -15,6 +15,7 @@ import (
 
 const registry = "ghcr.io"
 const image = registry + "/go-rod/rod"
+const devImage = image + ":dev"
 
 var token = os.Getenv("DOCKER_TOKEN")
 
@@ -43,35 +44,48 @@ func releaseLatest() {
 	login()
 	test()
 	utils.Exec("docker", "push", image)
+	utils.Exec("docker", "push", devImage)
 }
 
 func releaseWithVer(ver string) {
 	login()
+
+	verImage := image + ":" + ver
+
 	utils.Exec("docker", "pull", image)
-	utils.Exec("docker", "tag", image, image+":"+ver)
-	utils.Exec("docker", "push", image+":"+ver)
+	utils.Exec("docker", "tag", image, verImage)
+	utils.Exec("docker", "push", verImage)
+
+	utils.Exec("docker", "pull", devImage)
+	utils.Exec("docker", "tag", devImage, verImage+"-dev")
+	utils.Exec("docker", "push", verImage+"-dev")
 }
 
 func test() {
-	utils.Exec("docker", "build", "-t", image, description(), "-f=lib/docker/Dockerfile", ".")
-	utils.Exec("docker", "build", "-t=dev", "-f=lib/docker/dev.Dockerfile", ".")
+	utils.Exec("docker", "build", "-t", image, description(false), "-f=lib/docker/Dockerfile", ".")
+	utils.Exec("docker", "build", "-t", devImage, description(true), "-f=lib/docker/dev.Dockerfile", ".")
 
 	wd, err := os.Getwd()
 	utils.E(err)
 
 	utils.Exec("docker", "run", image, "rod-manager", "-h")
-	utils.Exec("docker", "run", "-v", fmt.Sprintf("%s:/t", wd), "-w=/t", "dev", "go", "test")
+	utils.Exec("docker", "run", "-v", fmt.Sprintf("%s:/t", wd), "-w=/t", devImage, "go", "test")
 }
 
 func login() {
 	utils.Exec("docker", "login", registry, "-u=rod-robot", "-p="+token)
 }
 
-func description() string {
+func description(dev bool) string {
 	b, err := exec.Command("git", "rev-parse", "HEAD").CombinedOutput()
 	utils.E(err)
 
 	sha := strings.TrimSpace(string(b))
 
-	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + sha + "/lib/docker/Dockerfile"
+	f := "Dockerfile"
+	if dev {
+		f = "dev." + f
+	}
+
+	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + sha + "/lib/docker/" + f
 }
