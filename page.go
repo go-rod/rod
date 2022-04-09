@@ -13,6 +13,7 @@ import (
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/goob"
 	"github.com/ysmood/gson"
 )
 
@@ -21,8 +22,9 @@ var _ proto.Client = &Page{}
 var _ proto.Contextable = &Page{}
 var _ proto.Sessionable = &Page{}
 
-// Page represents the webpage
-// We try to hold as less states as possible
+// Page represents the webpage.
+// We try to hold as less states as possible.
+// When a page is closed by Rod or not all the ongoing operations an events on it will abort.
 type Page struct {
 	// TargetID is a unique ID for a remote page.
 	// It's usually used in events sent from the browser to tell which page an event belongs to.
@@ -42,11 +44,15 @@ type Page struct {
 
 	ctx context.Context
 
+	// Used to abort all ongoing actions when a page closes.
+	sessionCancel func()
+
 	root *Page
 
 	sleeper func() utils.Sleeper
 
 	browser *Browser
+	event   *goob.Observable
 
 	// devices
 	Mouse    *Mouse
@@ -282,7 +288,7 @@ func (p *Page) StopLoading() error {
 	return proto.PageStopLoading{}.Call(p)
 }
 
-// Close tries to close page, running its beforeunload hooks, if any.
+// Close tries to close page, running its beforeunload hooks, if has any.
 func (p *Page) Close() error {
 	p.browser.targetsLock.Lock()
 	defer p.browser.targetsLock.Unlock()
@@ -708,27 +714,49 @@ func (p *Page) Call(ctx context.Context, sessionID, methodName string, params in
 // Event of the page
 func (p *Page) Event() <-chan *Message {
 	dst := make(chan *Message)
-	p, cancel := p.WithCancel()
-	messages := p.browser.Context(p.ctx).Event()
 
 	go func() {
 		defer close(dst)
-		defer cancel()
-		for m := range messages {
-			detached := proto.TargetDetachedFromTarget{}
-			if m.Load(&detached) && detached.SessionID == p.SessionID {
+		s := p.event.Subscribe(p.ctx)
+		for {
+			select {
+			case <-p.ctx.Done():
 				return
-			}
-
-			if m.SessionID == p.SessionID {
+			case msg, ok := <-s:
+				if !ok {
+					return
+				}
 				select {
 				case <-p.ctx.Done():
 					return
-				case dst <- m:
+				case dst <- msg.(*Message):
 				}
 			}
 		}
 	}()
 
 	return dst
+}
+
+func (p *Page) initEvents() {
+	p.event = goob.New(p.ctx)
+
+	go func() {
+		for msg := range p.browser.Context(p.ctx).Event() {
+			detached := proto.TargetDetachedFromTarget{}
+			destroyed := proto.TargetTargetDestroyed{}
+
+			if (msg.Load(&detached) && detached.SessionID == p.SessionID) ||
+				(msg.Load(destroyed) && destroyed.TargetID == p.TargetID) {
+				p.sessionCancel()
+				return
+			}
+
+			if msg.SessionID != p.SessionID {
+				continue
+			}
+
+			p.event.Publish(msg)
+		}
+	}()
 }

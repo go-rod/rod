@@ -943,3 +943,14 @@ func TestPageElementFromObjectErr(t *testing.T) {
 	g.mc.stubErr(1, proto.RuntimeEvaluate{})
 	g.Err(p.ElementFromObject(obj.Object))
 }
+
+func TestPageActionAfterClose(t *testing.T) {
+	g := setup(t)
+
+	p := g.browser.MustPage(g.blank())
+
+	p.MustClose()
+
+	_, err := p.Element("nonexists")
+	g.Is(err, context.Canceled)
+}

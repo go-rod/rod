@@ -250,12 +250,14 @@ func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params
 
 // PageFromSession is used for low-level debugging
 func (b *Browser) PageFromSession(sessionID proto.TargetSessionID) *Page {
+	sessionCtx, cancel := context.WithCancel(b.ctx)
 	return &Page{
-		e:         b.e,
-		ctx:       b.ctx,
-		sleeper:   b.sleeper,
-		browser:   b,
-		SessionID: sessionID,
+		e:             b.e,
+		ctx:           sessionCtx,
+		sessionCancel: cancel,
+		sleeper:       b.sleeper,
+		browser:       b,
+		SessionID:     sessionID,
 	}
 }
 
@@ -277,17 +279,20 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 		return nil, err
 	}
 
+	sessionCtx, cancel := context.WithCancel(b.ctx)
+
 	page = &Page{
-		e:           b.e,
-		ctx:         b.ctx,
-		sleeper:     b.sleeper,
-		browser:     b,
-		TargetID:    targetID,
-		SessionID:   session.SessionID,
-		FrameID:     proto.PageFrameID(targetID),
-		jsCtxLock:   &sync.Mutex{},
-		jsCtxID:     new(proto.RuntimeRemoteObjectID),
-		helpersLock: &sync.Mutex{},
+		e:             b.e,
+		ctx:           sessionCtx,
+		sessionCancel: cancel,
+		sleeper:       b.sleeper,
+		browser:       b,
+		TargetID:      targetID,
+		SessionID:     session.SessionID,
+		FrameID:       proto.PageFrameID(targetID),
+		jsCtxLock:     &sync.Mutex{},
+		jsCtxID:       new(proto.RuntimeRemoteObjectID),
+		helpersLock:   &sync.Mutex{},
 	}
 
 	page.root = page
@@ -303,6 +308,8 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	}
 
 	b.cachePage(page)
+
+	page.initEvents()
 
 	// If we don't enable it, it will cause a lot of unexpected browser behavior.
 	// Such as proto.PageAddScriptToEvaluateOnNewDocument won't work.
@@ -408,10 +415,9 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 
 // Event of the browser
 func (b *Browser) Event() <-chan *Message {
-	src := b.event.Subscribe()
+	src := b.event.Subscribe(b.ctx)
 	dst := make(chan *Message)
 	go func() {
-		defer b.event.Unsubscribe(src)
 		defer close(dst)
 		for {
 			select {
@@ -433,10 +439,9 @@ func (b *Browser) Event() <-chan *Message {
 }
 
 func (b *Browser) initEvents() {
-	b.event = goob.New()
+	b.event = goob.New(b.ctx)
 
 	go func() {
-		defer b.event.Close()
 		for e := range b.client.Event() {
 			b.event.Publish(&Message{
 				SessionID: proto.TargetSessionID(e.SessionID),

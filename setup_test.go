@@ -100,7 +100,14 @@ func (tp TesterPool) new() *G {
 
 	browser := rod.New().Client(mc).MustConnect().MustIgnoreCertErrors(false)
 
-	page := browser.MustPage()
+	pages := browser.MustPages()
+
+	var page *rod.Page
+	if pages.Empty() {
+		page = browser.MustPage()
+	} else {
+		page = pages.First()
+	}
 
 	return &G{
 		mc:      mc,

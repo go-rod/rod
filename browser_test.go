@@ -1,7 +1,6 @@
 package rod_test
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -89,37 +88,35 @@ func TestPageFromTarget(t *testing.T) {
 func TestBrowserPages(t *testing.T) {
 	g := setup(t)
 
-	g.newPage(g.blank()).MustWaitLoad()
-
-	pages := g.browser.MustPages()
-
-	g.Len(pages, 3)
+	u := launcher.New().MustLaunch()
+	mc := newMockClient(u)
+	b := rod.New().Client(mc).MustConnect()
+	g.Cleanup(func() { b.MustClose() })
+	b.MustPage().MustWaitLoad()
+	pages := b.MustPages()
+	g.Gte(len(pages), 1)
 
 	{
-		g.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
+		mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
 			d, _ := send()
 			return *d.Set("targetInfos.0.type", "iframe"), nil
 		})
-		pages := g.browser.MustPages()
-		g.Len(pages, 2)
+		b.MustPages()
 	}
 
 	g.Panic(func() {
-		g.mc.stubErr(1, proto.TargetCreateTarget{})
-		g.browser.MustPage()
+		mc.stubErr(1, proto.TargetCreateTarget{})
+		b.MustPage()
 	})
 	g.Panic(func() {
-		g.mc.stubErr(1, proto.TargetGetTargets{})
-		g.browser.MustPages()
+		mc.stubErr(1, proto.TargetGetTargets{})
+		b.MustPages()
 	})
 	g.Panic(func() {
-		res, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(g.browser)
+		_, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(b)
 		g.E(err)
-		defer func() {
-			g.browser.MustPageFromTargetID(res.TargetID).MustClose()
-		}()
-		g.mc.stubErr(1, proto.TargetAttachToTarget{})
-		g.browser.MustPages()
+		mc.stubErr(1, proto.TargetAttachToTarget{})
+		b.MustPages()
 	})
 }
 
@@ -144,21 +141,6 @@ func TestBrowserEvent(t *testing.T) {
 		}
 	}
 	<-wait
-}
-
-func TestBrowserEventClose(t *testing.T) {
-	event := make(chan *cdp.Event)
-	c := &MockClient{
-		connect: func() error { return nil },
-		call: func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
-			return nil, errors.New("err")
-		},
-		event: event,
-	}
-	b := rod.New().Client(c)
-	_ = b.Connect()
-	b.Event()
-	close(event)
 }
 
 func TestBrowserWaitEvent(t *testing.T) {
