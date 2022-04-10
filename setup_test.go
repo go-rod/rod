@@ -130,7 +130,7 @@ func (tp TesterPool) get(t *testing.T) G {
 
 	tester.G = got.New(t)
 	tester.mc.t = t
-	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()[5:]+".log"))
+	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()+".log"))
 
 	tester.checkLeaking()
 	tester.PanicAfter(*TimeoutEach)
