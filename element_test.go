@@ -370,10 +370,6 @@ func TestInput(t *testing.T) {
 		el.MustInput("")
 	})
 	g.Panic(func() {
-		g.mc.stubErr(7, proto.RuntimeCallFunctionOn{})
-		el.MustInput("")
-	})
-	g.Panic(func() {
 		g.mc.stubErr(1, proto.InputInsertText{})
 		el.MustInput("")
 	})

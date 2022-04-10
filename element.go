@@ -267,11 +267,7 @@ func (el *Element) Input(text string) error {
 	}
 
 	err = el.page.Keyboard.InsertText(text)
-	if err != nil {
-		return err
-	}
-
-	_, err = el.Evaluate(evalHelper(js.InputEvent).ByUser())
+	_, _ = el.Evaluate(evalHelper(js.InputEvent).ByUser())
 	return err
 }
 
