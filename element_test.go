@@ -635,7 +635,10 @@ func TestWaitStable(t *testing.T) {
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
-	el.MustEval(`() => this.classList.add("play")`)
+	go func() {
+		utils.Sleep(1)
+		el.MustEval(`() => this.classList.remove("play")`)
+	}()
 	start := time.Now()
 	el.MustWaitStable()
 	g.Gt(time.Since(start), time.Second)
@@ -665,7 +668,10 @@ func TestWaitStableRAP(t *testing.T) {
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/wait-stable.html"))
 	el := p.MustElement("button")
-	el.MustEval(`() => this.classList.add("play")`)
+	go func() {
+		utils.Sleep(1)
+		el.MustEval(`() => this.classList.remove("play")`)
+	}()
 	start := time.Now()
 	g.E(el.WaitStableRAF())
 	g.Gt(time.Since(start), time.Second)
