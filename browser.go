@@ -48,6 +48,7 @@ type Browser struct {
 
 	defaultDevice devices.Device
 
+	controlURL  string
 	client      CDPClient
 	event       *goob.Observable // all the browser events from cdp client
 	targetsLock *sync.Mutex
@@ -65,6 +66,7 @@ func New() *Browser {
 	return (&Browser{
 		ctx:           context.Background(),
 		sleeper:       DefaultSleeper,
+		controlURL:    defaults.URL,
 		slowMotion:    defaults.Slow,
 		trace:         defaults.Trace,
 		monitor:       defaults.Monitor,
@@ -90,11 +92,7 @@ func (b *Browser) Incognito() (*Browser, error) {
 
 // ControlURL set the url to remote control browser.
 func (b *Browser) ControlURL(url string) *Browser {
-	if url == "" {
-		b.client = nil
-	} else {
-		b.client = cdp.New(url)
-	}
+	b.controlURL = url
 	return b
 }
 
@@ -145,7 +143,7 @@ func (b *Browser) NoDefaultDevice() *Browser {
 // If fails to connect, try to launch a local browser, if local browser not found try to download one.
 func (b *Browser) Connect() error {
 	if b.client == nil {
-		u := defaults.URL
+		u := b.controlURL
 		if u == "" {
 			var err error
 			u, err = launcher.New().Context(b.ctx).Launch()
@@ -153,26 +151,21 @@ func (b *Browser) Connect() error {
 				return err
 			}
 		}
-		b.client = cdp.New(u)
-	}
 
-	err := b.client.Connect(b.ctx)
-	if err != nil {
-		return err
+		c, err := cdp.StartWithURL(b.ctx, u, nil)
+		if err != nil {
+			return err
+		}
+		b.client = c
 	}
 
 	b.initEvents()
-
-	err = proto.TargetSetDiscoverTargets{Discover: true}.Call(b)
-	if err != nil {
-		return err
-	}
 
 	if b.monitor != "" {
 		launcher.Open(b.ServeMonitor(b.monitor))
 	}
 
-	return nil
+	return proto.TargetSetDiscoverTargets{Discover: true}.Call(b)
 }
 
 // Close the browser

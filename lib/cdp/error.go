@@ -57,26 +57,3 @@ var ErrNoContentQuads = &Error{
 	Code:    -32000,
 	Message: "Could not compute content quads.",
 }
-
-// ErrConnClosed type
-var ErrConnClosed = &errConnClosed{}
-
-type errConnClosed struct {
-	details error
-}
-
-// Error stdlib interface
-func (e *errConnClosed) Error() string {
-	return fmt.Sprintf("cdp connection closed: %v", e.details)
-}
-
-// Is stdlib interface
-func (e errConnClosed) Is(target error) bool {
-	_, ok := target.(*errConnClosed)
-	return ok
-}
-
-// Unwrap stdlib interface
-func (e errConnClosed) Unwrap() error {
-	return e.details
-}

@@ -104,7 +104,7 @@ func TestGetURLErr(t *testing.T) {
 	g.Eq("[launcher] Failed to get the debug url: err", err.Error())
 }
 
-func TestRemoteLaunch(t *testing.T) {
+func TestManaged(t *testing.T) {
 	g := setup(t)
 
 	ctx := g.Timeout(5 * time.Second)
@@ -114,11 +114,10 @@ func TestRemoteLaunch(t *testing.T) {
 	s.Mux.Handle("/", rl)
 
 	l := MustNewManaged(s.URL()).KeepUserDataDir().Delete(flags.KeepUserDataDir)
-	client := l.Client()
-	b := client.MustConnect(ctx)
-	g.E(b.Call(ctx, "", "Browser.getVersion", nil))
+	c := l.MustClient()
+	g.E(c.Call(ctx, "", "Browser.getVersion", nil))
 	utils.Sleep(1)
-	_, _ = b.Call(ctx, "", "Browser.crash", nil)
+	_, _ = c.Call(ctx, "", "Browser.crash", nil)
 	dir := l.Get(flags.UserDataDir)
 
 	for ctx.Err() == nil {
@@ -130,8 +129,9 @@ func TestRemoteLaunch(t *testing.T) {
 	}
 	g.Err(os.Stat(dir))
 
-	err := MustNewManaged(s.URL()).Bin("go").Client().Connect(ctx).(*cdp.ErrBadHandshake)
-	g.Eq(err.Body, "not allowed rod-bin path: go")
+	u, h := MustNewManaged(s.URL()).Bin("go").ClientHeader()
+	_, err := cdp.StartWithURL(ctx, u, h)
+	g.Eq(err.(*cdp.ErrBadHandshake).Body, "not allowed rod-bin path: go")
 }
 
 func TestLaunchErrs(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/go-rod/rod/lib/cdp"
@@ -26,6 +27,27 @@ func TestWebSocketLargePayload(t *testing.T) {
 	})
 	g.E(err)
 	g.Gt(res, 2*1024*1024) // 2MB
+}
+
+func ConcurrentCall(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Context()
+	client, id := newPage(ctx, g)
+
+	wg := sync.WaitGroup{}
+	for i := 0; i < 30; i++ {
+		wg.Add(1)
+		go func() {
+			res, err := client.Call(ctx, id, "Runtime.evaluate", map[string]interface{}{
+				"expression": `10`,
+			})
+			g.Nil(err)
+			g.Eq(string(res), "{\"result\":{\"type\":\"number\",\"value\":10,\"description\":\"10\"}}")
+			wg.Done()
+		}()
+	}
+	wg.Wait()
 }
 
 func TestWebSocketHeader(t *testing.T) {
@@ -55,7 +77,7 @@ func newPage(ctx context.Context, g got.G) (*cdp.Client, string) {
 	l := launcher.New()
 	g.Cleanup(l.Kill)
 
-	client := cdp.New(l.MustLaunch()).MustConnect(ctx)
+	client := cdp.New().Start(cdp.MustConnectWS(l.MustLaunch()))
 
 	go func() {
 		for range client.Event() {

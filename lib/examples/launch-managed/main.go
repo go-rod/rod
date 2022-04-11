@@ -25,7 +25,7 @@ func main() {
 	// Launch with headful mode
 	l.Headless(false).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16")
 
-	browser := rod.New().Client(l.Client()).MustConnect()
+	browser := rod.New().Client(l.MustClient()).MustConnect()
 
 	// You may want to start a server to watch the screenshots of the remote browser.
 	launcher.Open(browser.ServeMonitor(""))

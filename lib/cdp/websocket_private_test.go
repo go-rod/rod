@@ -6,9 +6,14 @@ import (
 	"errors"
 	"net"
 	"net/url"
+	"sync"
 	"testing"
 	"time"
+
+	"github.com/ysmood/got"
 )
+
+var setup = got.Setup(nil)
 
 func TestWebSocketErr(t *testing.T) {
 	g := setup(t)
@@ -33,6 +38,11 @@ func TestWebSocketErr(t *testing.T) {
 	ws.r = bufio.NewReader(mc)
 	g.Err(ws.Read())
 
+	mc.errOnCount = 1
+	mc.frame = []byte{0}
+	ws.r = bufio.NewReader(mc)
+	g.Err(ws.Read())
+
 	g.Err(ws.handshake(g.Timeout(0), nil, nil))
 
 	mc.errOnCount = 1
@@ -43,28 +53,39 @@ func TestWebSocketErr(t *testing.T) {
 }
 
 type MockConn struct {
+	sync.Mutex
 	errOnCount int
 	frame      []byte
 }
 
-func (c *MockConn) Read(b []byte) (n int, err error) {
+func (c *MockConn) checkErr(d int) error {
+	c.Lock()
+	defer c.Unlock()
+
 	if c.errOnCount == 0 {
-		return 0, errors.New("err")
+		return errors.New("err")
 	}
-	c.errOnCount--
+	c.errOnCount += d
+	return nil
+}
+
+func (c *MockConn) Read(b []byte) (int, error) {
+	if err := c.checkErr(-1); err != nil {
+		return 0, err
+	}
+
 	return copy(b, c.frame), nil
 }
 
-func (c *MockConn) Write(b []byte) (n int, err error) {
-	if c.errOnCount == 0 {
-		return 0, errors.New("err")
+func (c *MockConn) Write(b []byte) (int, error) {
+	if err := c.checkErr(-1); err != nil {
+		return 0, err
 	}
-	c.errOnCount--
 	return len(b), nil
 }
 
 func (c *MockConn) Close() error {
-	return nil
+	return c.checkErr(0)
 }
 
 func (c *MockConn) LocalAddr() net.Addr {

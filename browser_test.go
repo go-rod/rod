@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -172,7 +171,7 @@ func TestBrowserCrash(t *testing.T) {
 	utils.Sleep(0.3)
 
 	_, err := page.Eval(js)
-	g.Is(err, cdp.ErrConnClosed)
+	g.Has(err.Error(), "use of closed network connection")
 }
 
 func TestBrowserCall(t *testing.T) {
@@ -389,16 +388,7 @@ func TestBrowserConnectErr(t *testing.T) {
 	g := setup(t)
 
 	g.Panic(func() {
-		c := &MockClient{connect: func() error { return errors.New("err") }}
-		rod.New().Client(c).MustConnect()
-	})
-	g.Panic(func() {
-		ch := make(chan *cdp.Event)
-		defer close(ch)
-
-		c := &MockClient{connect: func() error { return nil }, event: ch}
-		c.stubErr(1, proto.TargetSetDiscoverTargets{})
-		rod.New().Client(c).MustConnect()
+		rod.New().ControlURL(g.RandStr(16)).MustConnect()
 	})
 }
 

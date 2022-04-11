@@ -3,34 +3,28 @@ package cdp
 import (
 	"bufio"
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
+	"sync"
 )
-
-// Dialer interface for WebSocket connection
-type Dialer interface {
-	DialContext(ctx context.Context, network, address string) (net.Conn, error)
-}
 
 var _ WebSocketable = &WebSocket{}
 
 // WebSocket client for chromium. It only implements a subset of WebSocket protocol.
+// Both the Read and Write are thread-safe.
 // Limitation: https://bugs.chromium.org/p/chromium/issues/detail?id=1069431
 // Ref: https://tools.ietf.org/html/rfc6455
 type WebSocket struct {
 	// Dialer is usually used for proxy
 	Dialer Dialer
 
-	close  func()
-	conn   net.Conn
-	r      *bufio.Reader
-	header [18]byte // Send is thread-safe, so we can safely share a header for all frames
-	mask   []byte
+	lock sync.Mutex
+	conn net.Conn
+	r    *bufio.Reader
 }
 
 // Connect to browser
@@ -38,9 +32,6 @@ func (ws *WebSocket) Connect(ctx context.Context, wsURL string, header http.Head
 	if ws.conn != nil {
 		panic("duplicated connection: " + wsURL)
 	}
-
-	ctx, cancel := context.WithCancel(ctx)
-	ws.close = cancel
 
 	u, err := url.Parse(wsURL)
 	if err != nil {
@@ -54,16 +45,14 @@ func (ws *WebSocket) Connect(ctx context.Context, wsURL string, header http.Head
 		return err
 	}
 
-	go func() {
-		<-ctx.Done()
-		_ = conn.Close()
-	}()
-
-	ws.initConstants()
-
 	ws.conn = conn
 	ws.r = bufio.NewReader(conn)
 	return ws.handshake(ctx, u, header)
+}
+
+// Close the underlying connection.
+func (ws *WebSocket) Close() error {
+	return ws.conn.Close()
 }
 
 func (ws *WebSocket) initDialer(u *url.URL) {
@@ -81,58 +70,77 @@ func (ws *WebSocket) initDialer(u *url.URL) {
 	}
 }
 
-func (ws *WebSocket) initConstants() {
-	// FIN is alway true, Opcode is always text frame.
-	ws.header = [18]byte{0b1000_0001}
-
-	ws.mask = []byte{0, 1, 2, 3}
-}
-
 // Send a message to browser.
 // Because we use zero-copy design, it will modify the content of the msg.
 // It won't allocate new memory.
 func (ws *WebSocket) Send(msg []byte) error {
-	ws.header[1] = 0b1000_0000
+	err := ws.send(msg)
+	if err != nil {
+		_ = ws.Close()
+	}
+	return err
+}
+
+func (ws *WebSocket) send(msg []byte) error {
+	// FIN is alway true, Opcode is always text frame.
+	header := [18]byte{0b1000_0001, 0b1000_0000}
+	mask := []byte{0, 1, 2, 3}
 
 	size := len(msg)
 	fieldLen := 0
 	switch {
 	case size <= 125:
-		ws.header[1] |= byte(size)
+		header[1] |= byte(size)
 	case size < 65536:
-		ws.header[1] |= 126
+		header[1] |= 126
 		fieldLen = 2
 	default:
-		ws.header[1] |= 127
+		header[1] |= 127
 		fieldLen = 8
 	}
 
 	var i int
 	for i = 0; i < fieldLen; i++ {
 		digit := (fieldLen - i - 1) * 8
-		ws.header[i+2] = byte((size >> digit) & 0xff)
+		header[i+2] = byte((size >> digit) & 0xff)
 	}
 
-	copy(ws.header[i+2:], ws.mask)
-	_, err := ws.conn.Write(ws.header[:i+6])
-	if err != nil {
-		return ws.checkClose(err)
-	}
+	copy(header[i+2:], mask)
 
 	for i := range msg {
-		msg[i] = msg[i] ^ ws.mask[i%4]
+		msg[i] = msg[i] ^ mask[i%4]
 	}
 
-	_, err = ws.conn.Write(msg)
-	return ws.checkClose(err)
+	data := make([]byte, i+6+len(msg))
+	copy(data, header[:i+6])
+	copy(data[i+6:], msg)
+
+	_, err := ws.conn.Write(data)
+	return err
 }
 
 // Read a message from browser
 func (ws *WebSocket) Read() ([]byte, error) {
-	_, _ = ws.r.ReadByte()
+	b, err := ws.read()
+	if err != nil {
+		_ = ws.Close()
+		return nil, err
+	}
+	return b, nil
+}
+
+func (ws *WebSocket) read() ([]byte, error) {
+	ws.lock.Lock()
+	defer ws.lock.Unlock()
+
+	_, err := ws.r.ReadByte()
+	if err != nil {
+		return nil, err
+	}
+
 	b, err := ws.r.ReadByte()
 	if err != nil {
-		return nil, ws.checkClose(err)
+		return nil, err
 	}
 
 	size := 0
@@ -151,7 +159,7 @@ func (ws *WebSocket) Read() ([]byte, error) {
 	for i := 0; i < fieldLen; i++ {
 		b, err := ws.r.ReadByte()
 		if err != nil {
-			return nil, ws.checkClose(err)
+			return nil, err
 		}
 
 		size = size<<8 + int(b)
@@ -159,7 +167,7 @@ func (ws *WebSocket) Read() ([]byte, error) {
 
 	data := make([]byte, size)
 	_, err = io.ReadFull(ws.r, data)
-	return data, ws.checkClose(err)
+	return data, err
 }
 
 // ErrBadHandshake type
@@ -193,12 +201,12 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 
 	err := req.Write(ws.conn)
 	if err != nil {
-		return ws.checkClose(err)
+		return err
 	}
 
 	res, err := http.ReadResponse(ws.r, req)
 	if err != nil {
-		return ws.checkClose(err)
+		return err
 	}
 	defer func() { _ = res.Body.Close() }()
 
@@ -212,18 +220,4 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 	}
 
 	return nil
-}
-
-func (ws *WebSocket) checkClose(err error) error {
-	if err != nil {
-		ws.close()
-	}
-	return err
-}
-
-// TODO: replace it with tls.Dialer once golang v1.15 is widely used.
-type tlsDialer struct{}
-
-func (d *tlsDialer) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
-	return tls.Dial(network, address, nil)
 }

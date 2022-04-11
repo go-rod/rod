@@ -24,7 +24,6 @@ import (
 
 // CDPClient is usually used to make rod side-effect free. Such as proxy all IO of rod.
 type CDPClient interface {
-	Connect(ctx context.Context) error
 	Event() <-chan *cdp.Event
 	Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 }

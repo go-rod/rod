@@ -227,7 +227,6 @@ type MockClient struct {
 	log       *log.Logger
 	principal *cdp.Client
 	call      Call
-	connect   func() error
 	event     <-chan *cdp.Event
 }
 
@@ -242,16 +241,9 @@ func newMockClient(u string) *MockClient {
 	log := log.New(f, "", log.Ltime)
 	utils.E(err)
 
-	client := cdp.New(u).Logger(utils.MultiLogger(defaults.CDP, log))
+	client := cdp.New().Logger(utils.MultiLogger(defaults.CDP, log)).Start(cdp.MustConnectWS(u))
 
 	return &MockClient{id: id, principal: client, log: log}
-}
-
-func (mc *MockClient) Connect(ctx context.Context) error {
-	if mc.connect != nil {
-		return mc.connect()
-	}
-	return mc.principal.Connect(ctx)
 }
 
 func (mc *MockClient) Event() <-chan *cdp.Event {

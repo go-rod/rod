@@ -177,7 +177,7 @@ func TestLaunchErr(t *testing.T) {
 		launcher.New().Headless(false).Bin("not-exists").MustLaunch()
 	})
 	g.Panic(func() {
-		launcher.New().Client()
+		launcher.New().ClientHeader()
 	})
 	{
 		l := launcher.New().XVFB()

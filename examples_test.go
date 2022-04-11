@@ -590,15 +590,15 @@ func Example_load_extension() {
 }
 
 func Example_log_cdp_traffic() {
-	cdp := cdp.New(launcher.New().MustLaunch()).
-
+	cdp := cdp.New().
 		// Here we can customize how to log the requests, responses, and events transferred between Rod and the browser.
-		Logger(utils.Log(func(msg ...interface{}) {
-			// Such as use some fancy lib like github.com/davecgh/go-spew/spew to make the output more readable:
-			//     spew.Println(msg)
-			// Here we use %#v as an example.
-			fmt.Printf("%#v\n", msg)
-		}))
+		Logger(utils.Log(func(args ...interface{}) {
+			switch v := args[0].(type) {
+			case *cdp.Request:
+				fmt.Printf("id: %d", v.ID)
+			}
+		})).
+		Start(cdp.MustConnectWS(launcher.New().MustLaunch()))
 
 	rod.New().Client(cdp).MustConnect().MustPage("http://mdn.dev")
 }

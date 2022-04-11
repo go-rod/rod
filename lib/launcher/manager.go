@@ -67,12 +67,18 @@ func (l *Launcher) JSON() []byte {
 	return utils.MustToJSONBytes(l)
 }
 
-// Client for launching browser remotely, such as browser from a docker container.
-func (l *Launcher) Client() *cdp.Client {
+// MustClient for launching browser remotely via the launcher.Manager.
+func (l *Launcher) MustClient() *cdp.Client {
+	u, h := l.ClientHeader()
+	return cdp.MustStartWithURL(l.ctx, u, h)
+}
+
+// ClientHeader for launching browser remotely via the launcher.Manager.
+func (l *Launcher) ClientHeader() (string, http.Header) {
 	l.mustManaged()
 	header := http.Header{}
 	header.Add(string(HeaderName), utils.MustToJSON(l))
-	return cdp.New(l.serviceURL).Header(header)
+	return l.serviceURL, header
 }
 
 func (l *Launcher) mustManaged() {
