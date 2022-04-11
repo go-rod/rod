@@ -133,7 +133,6 @@ func (tp TesterPool) get(t *testing.T) G {
 	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()+".log"))
 
 	tester.checkLeaking()
-	tester.PanicAfter(*TimeoutEach)
 
 	return *tester
 }
@@ -180,7 +179,13 @@ func (g G) newPage(u ...string) *rod.Page {
 }
 
 func (g G) checkLeaking() {
-	gotrace.CheckLeak(g.Testable, 0, gotrace.IgnoreCurrent(), gotrace.IgnoreNonChildren())
+	ig := gotrace.CombineIgnores(gotrace.IgnoreCurrent(), gotrace.IgnoreNonChildren())
+	gotrace.CheckLeak(g.Testable, 0, ig)
+
+	g.DoAfter(*TimeoutEach, func() {
+		t := gotrace.Get(true).Filter(ig).String()
+		panic(fmt.Sprintf("%s timeout after %v\nrunning goroutines: %s", g.Name(), *TimeoutEach, t))
+	})
 
 	g.Cleanup(func() {
 		if g.Failed() {
