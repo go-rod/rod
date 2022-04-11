@@ -19,7 +19,6 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/got"
 )
 
 func TestGetPageBrowser(t *testing.T) {
@@ -635,7 +634,10 @@ func TestMouseDrag(t *testing.T) {
 	g.Eq(page.MustEval(`() => dragTrack`).Str(), " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80")
 }
 
-func (g G) NativeDrag(got.Skip) { // devtools doesn't support to use mouse event to simulate it for now
+func TestNativeDrag(t *testing.T) { // devtools doesn't support to use mouse event to simulate it for now
+	t.Skip()
+
+	g := setup(t)
 	page := g.page.MustNavigate(g.srcFile("fixtures/drag.html"))
 	mouse := page.Mouse
 

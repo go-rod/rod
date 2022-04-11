@@ -16,7 +16,6 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/got"
 	"github.com/ysmood/gson"
 )
 
@@ -456,7 +455,10 @@ func TestBrowserPool(t *testing.T) {
 	})
 }
 
-func (g G) OldBrowser(got.Skip) {
+func TestOldBrowser(t *testing.T) {
+	t.Skip()
+
+	g := setup(t)
 	u := launcher.New().Revision(686378).MustLaunch()
 	b := rod.New().ControlURL(u).MustConnect()
 	g.Cleanup(b.MustClose)

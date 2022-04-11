@@ -360,7 +360,9 @@ func (mr *MockReader) Read(p []byte) (n int, err error) {
 	return 0, mr.err
 }
 
-func (g G) LintIgnore(got.Skip) {
+func TestLintIgnore(t *testing.T) {
+	t.Skip()
+
 	_ = rod.Try(func() {
 		tt := G{}
 		tt.dump()
