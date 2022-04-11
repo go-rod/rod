@@ -20,7 +20,7 @@ func main() {
 
 	utils.ExecLine("npx -yq -- prettier@2.5.1 --loglevel=error --config=lib/utils/lint/prettier.yml --write --ignore-path=.gitignore .")
 
-	utils.ExecLine("go run github.com/ysmood/golangci-lint@v0.5.0")
+	utils.ExecLine("go run github.com/ysmood/golangci-lint@latest")
 
 	lintMustPrefix()
 
