@@ -87,16 +87,12 @@ func TestPageFromTarget(t *testing.T) {
 func TestBrowserPages(t *testing.T) {
 	g := setup(t)
 
-	u := launcher.New().MustLaunch()
-	mc := newMockClient(u)
-	b := rod.New().Client(mc).MustConnect()
-	g.Cleanup(func() { b.MustClose() })
-	b.MustPage().MustWaitLoad()
+	b := g.browser
 	pages := b.MustPages()
 	g.Gte(len(pages), 1)
 
 	{
-		mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.TargetGetTargets{}, func(send StubSend) (gson.JSON, error) {
 			d, _ := send()
 			return *d.Set("targetInfos.0.type", "iframe"), nil
 		})
@@ -104,17 +100,17 @@ func TestBrowserPages(t *testing.T) {
 	}
 
 	g.Panic(func() {
-		mc.stubErr(1, proto.TargetCreateTarget{})
+		g.mc.stubErr(1, proto.TargetCreateTarget{})
 		b.MustPage()
 	})
 	g.Panic(func() {
-		mc.stubErr(1, proto.TargetGetTargets{})
+		g.mc.stubErr(1, proto.TargetGetTargets{})
 		b.MustPages()
 	})
 	g.Panic(func() {
 		_, err := proto.TargetCreateTarget{URL: "about:blank"}.Call(b)
 		g.E(err)
-		mc.stubErr(1, proto.TargetAttachToTarget{})
+		g.mc.stubErr(1, proto.TargetAttachToTarget{})
 		b.MustPages()
 	})
 }

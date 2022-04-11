@@ -9,7 +9,6 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
-	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -28,10 +27,7 @@ func TestPageElements(t *testing.T) {
 func TestPagesQuery(t *testing.T) {
 	g := setup(t)
 
-	u := launcher.New().MustLaunch()
-	mc := newMockClient(u)
-	b := rod.New().Client(mc).MustConnect()
-	g.Cleanup(func() { b.MustClose() })
+	b := g.browser
 
 	b.MustPage(g.srcFile("fixtures/click.html")).MustWaitLoad()
 	pages := b.MustPages()
@@ -49,11 +45,11 @@ func TestPagesQuery(t *testing.T) {
 	})
 
 	g.Panic(func() {
-		mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		pages.MustFind("button")
 	})
 	g.Panic(func() {
-		mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		pages.MustFindByURL("____")
 	})
 }

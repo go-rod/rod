@@ -192,10 +192,13 @@ func (g G) checkLeaking() {
 			return
 		}
 
+		// close all other pages other than g.page
 		res, err := proto.TargetGetTargets{}.Call(g.browser)
 		g.E(err)
-		if len(res.TargetInfos) > 2 { // don't account the init about:blank
-			g.Logf("leaking pages: %v", utils.Dump(res.TargetInfos))
+		for _, info := range res.TargetInfos {
+			if info.TargetID != g.page.TargetID {
+				g.E(proto.TargetCloseTarget{TargetID: info.TargetID}.Call(g.browser))
+			}
 		}
 
 		if g.browser.LoadState(g.page.SessionID, proto.FetchEnable{}) {
