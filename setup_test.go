@@ -182,8 +182,14 @@ func (g G) checkLeaking() {
 	ig := gotrace.CombineIgnores(gotrace.IgnoreCurrent(), gotrace.IgnoreNonChildren())
 	gotrace.CheckLeak(g.Testable, 0, ig)
 
+	self := gotrace.Get(false)[0]
 	g.DoAfter(*TimeoutEach, func() {
-		t := gotrace.Get(true).Filter(ig).String()
+		t := gotrace.Get(true).Filter(func(t *gotrace.Trace) bool {
+			if t.GoroutineID == self.GoroutineID {
+				return false
+			}
+			return ig(t)
+		}).String()
 		panic(fmt.Sprintf("%s timeout after %v\nrunning goroutines: %s", g.Name(), *TimeoutEach, t))
 	})
 
