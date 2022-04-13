@@ -32,6 +32,11 @@ func TestIncognito(t *testing.T) {
 
 	g.True(g.page.MustNavigate(g.blank()).MustEval(`k => localStorage[k]`, k).Nil())
 	g.Eq(page.MustEval(`k => localStorage[k]`, k).Str(), "1") // localStorage can only store string
+
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.TargetCreateBrowserContext{})
+		g.browser.MustIncognito()
+	})
 }
 
 func TestBrowserResetControlURL(t *testing.T) {
@@ -48,14 +53,15 @@ func TestDefaultDevice(t *testing.T) {
 		ua = r.Header.Get("User-Agent")
 	})
 
-	g.browser.DefaultDevice(devices.IPhoneX)
-	defer g.browser.DefaultDevice(devices.LaptopWithMDPIScreen.Landescape())
+	// TODO: https://github.com/golang/go/issues/51459
+	b := *g.browser
+	b.DefaultDevice(devices.IPhoneX)
 
-	g.newPage(s.URL("/t"))
+	b.MustPage(s.URL("/t")).MustClose()
 	g.Eq(ua, devices.IPhoneX.UserAgentEmulation().UserAgent)
 
-	g.browser.NoDefaultDevice()
-	g.newPage(s.URL("/t"))
+	b.NoDefaultDevice()
+	b.MustPage(s.URL("/t")).MustClose()
 	g.Neq(ua, devices.IPhoneX.UserAgentEmulation().UserAgent)
 }
 
@@ -256,18 +262,12 @@ func TestBrowserOthers(t *testing.T) {
 	g := setup(t)
 
 	g.browser.Timeout(time.Second).CancelTimeout().MustGetCookies()
-
-	g.Panic(func() {
-		b, cancel := g.browser.WithCancel()
-		cancel()
-		b.MustIncognito()
-	})
 }
 
 func TestBinarySize(t *testing.T) {
 	g := setup(t)
 
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS == "windows" || utils.InContainer {
 		g.SkipNow()
 	}
 

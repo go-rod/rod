@@ -214,12 +214,12 @@ func TestConcurrentEval(t *testing.T) {
 	utils.All(func() {
 		list <- p.MustEval(`() => new Promise(r => setTimeout(r, 1000, 2))`).Int()
 	}, func() {
-		list <- p.MustEval(`() => new Promise(r => setTimeout(r, 500, 1))`).Int()
+		list <- p.MustEval(`() => new Promise(r => setTimeout(r, 1000, 1))`).Int()
 	})()
 	duration := time.Since(start)
 
-	g.Lt(duration, 1500*time.Millisecond)
 	g.Gt(duration, 1000*time.Millisecond)
+	g.Lt(duration, 2000*time.Millisecond)
 	g.Eq([]int{<-list, <-list}, []int{1, 2})
 }
 
