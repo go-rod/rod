@@ -298,7 +298,7 @@ func (l *Launcher) StartURL(u string) *Launcher {
 func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
 	for k, v := range l.Flags {
-		if k == "" {
+		if k == flags.Arguments {
 			continue
 		}
 
@@ -319,7 +319,7 @@ func (l *Launcher) FormatArgs() []string {
 		}
 		execArgs = append(execArgs, str)
 	}
-	return append(execArgs, l.Flags[""]...)
+	return append(execArgs, l.Flags[flags.Arguments]...)
 }
 
 // Logger to handle stdout and stderr from browser.

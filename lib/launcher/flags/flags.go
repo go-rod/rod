@@ -38,4 +38,9 @@ const (
 
 	// KeepUserDataDir flag
 	KeepUserDataDir Flag = "rod-keep-user-data-dir"
+
+	// Arguments for the command. Such as
+	//     chrome-bin http://a.com http://b.com
+	// The "http://a.com" and "http://b.com" are the arguments
+	Arguments Flag = ""
 )
