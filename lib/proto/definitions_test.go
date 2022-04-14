@@ -2649,6 +2649,11 @@ func (t T) PageBackForwardCacheNotUsed() {
 	e.ProtoEvent()
 }
 
+func (t T) PagePrerenderAttemptCompleted() {
+	e := proto.PagePrerenderAttemptCompleted{}
+	e.ProtoEvent()
+}
+
 func (t T) PageLoadEventFired() {
 	e := proto.PageLoadEventFired{}
 	e.ProtoEvent()

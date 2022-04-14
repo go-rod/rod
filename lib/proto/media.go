@@ -2,6 +2,10 @@
 
 package proto
 
+import (
+	"github.com/ysmood/gson"
+)
+
 /*
 
 Media
@@ -72,29 +76,36 @@ type MediaPlayerEvent struct {
 	Value string `json:"value"`
 }
 
-// MediaPlayerErrorType enum
-type MediaPlayerErrorType string
+// MediaPlayerErrorSourceLocation Represents logged source line numbers reported in an error.
+// NOTE: file and line are from chromium c++ implementation code, not js.
+type MediaPlayerErrorSourceLocation struct {
 
-const (
-	// MediaPlayerErrorTypePipelineError enum const
-	MediaPlayerErrorTypePipelineError MediaPlayerErrorType = "pipeline_error"
+	// File ...
+	File string `json:"file"`
 
-	// MediaPlayerErrorTypeMediaError enum const
-	MediaPlayerErrorTypeMediaError MediaPlayerErrorType = "media_error"
-)
+	// Line ...
+	Line int `json:"line"`
+}
 
 // MediaPlayerError Corresponds to kMediaError
 type MediaPlayerError struct {
 
-	// Type ...
-	Type MediaPlayerErrorType `json:"type"`
+	// ErrorType ...
+	ErrorType string `json:"errorType"`
 
-	// ErrorCode When this switches to using media::Status instead of PipelineStatus
-	// we can remove "errorCode" and replace it with the fields from
-	// a Status instance. This also seems like a duplicate of the error
-	// level enum - there is a todo bug to have that level removed and
-	// use this instead. (crbug.com/1068454)
-	ErrorCode string `json:"errorCode"`
+	// Code Code is the numeric enum entry for a specific set of error codes, such
+	// as PipelineStatusCodes in media/base/pipeline_status.h
+	Code int `json:"code"`
+
+	// Stack A trace of where this error was caused / where it passed through.
+	Stack []*MediaPlayerErrorSourceLocation `json:"stack"`
+
+	// Cause Errors potentially have a root cause error, ie, a DecoderError might be
+	// caused by an WindowsError
+	Cause []*MediaPlayerError `json:"cause"`
+
+	// Data Extra data attached to an error, such as an HRESULT, Video Codec, etc.
+	Data map[string]gson.JSON `json:"data"`
 }
 
 // MediaEnable Enables the Media domain

@@ -773,9 +773,6 @@ type PageFontFamilies struct {
 
 	// Fantasy (optional) The fantasy font-family.
 	Fantasy string `json:"fantasy,omitempty"`
-
-	// Pictograph (optional) The pictograph font-family.
-	Pictograph string `json:"pictograph,omitempty"`
 }
 
 // PageScriptFontFamilies (experimental) Font families collection for a script.
@@ -1081,6 +1078,9 @@ const (
 	// PageBackForwardCacheNotRestoredReasonErrorDocument enum const
 	PageBackForwardCacheNotRestoredReasonErrorDocument PageBackForwardCacheNotRestoredReason = "ErrorDocument"
 
+	// PageBackForwardCacheNotRestoredReasonFencedFramesEmbedder enum const
+	PageBackForwardCacheNotRestoredReasonFencedFramesEmbedder PageBackForwardCacheNotRestoredReason = "FencedFramesEmbedder"
+
 	// PageBackForwardCacheNotRestoredReasonWebSocket enum const
 	PageBackForwardCacheNotRestoredReasonWebSocket PageBackForwardCacheNotRestoredReason = "WebSocket"
 
@@ -1333,6 +1333,14 @@ type PageBackForwardCacheNotRestoredExplanationTree struct {
 	// Children Array of children frame
 	Children []*PageBackForwardCacheNotRestoredExplanationTree `json:"children"`
 }
+
+// PagePrerenderFinalStatus List of FinalStatus reasons for Prerender2.
+type PagePrerenderFinalStatus string
+
+const (
+	// PagePrerenderFinalStatusActivated enum const
+	PagePrerenderFinalStatusActivated PagePrerenderFinalStatus = "Activated"
+)
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
@@ -1747,13 +1755,13 @@ func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error
 // PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
 type PageGetLayoutMetricsResult struct {
 
-	// LayoutViewport (deprecated) Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
+	// LayoutViewport (deprecated) Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
 	LayoutViewport *PageLayoutViewport `json:"layoutViewport"`
 
-	// VisualViewport (deprecated) Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
+	// VisualViewport (deprecated) Deprecated metrics relating to the visual viewport. Is in device pixels. Use `cssVisualViewport` instead.
 	VisualViewport *PageVisualViewport `json:"visualViewport"`
 
-	// ContentSize (deprecated) Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
+	// ContentSize (deprecated) Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
 	ContentSize *DOMRect `json:"contentSize"`
 
 	// CSSLayoutViewport Metrics relating to the layout viewport in CSS pixels.
@@ -3063,6 +3071,24 @@ type PageBackForwardCacheNotUsed struct {
 // ProtoEvent name
 func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
 	return "Page.backForwardCacheNotUsed"
+}
+
+// PagePrerenderAttemptCompleted Fired when a prerender attempt is completed.
+type PagePrerenderAttemptCompleted struct {
+
+	// InitiatingFrameID The frame id of the frame initiating prerendering.
+	InitiatingFrameID PageFrameID `json:"initiatingFrameId"`
+
+	// PrerenderingURL ...
+	PrerenderingURL string `json:"prerenderingUrl"`
+
+	// FinalStatus ...
+	FinalStatus PagePrerenderFinalStatus `json:"finalStatus"`
+}
+
+// ProtoEvent name
+func (evt PagePrerenderAttemptCompleted) ProtoEvent() string {
+	return "Page.prerenderAttemptCompleted"
 }
 
 // PageLoadEventFired ...

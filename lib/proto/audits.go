@@ -528,35 +528,17 @@ const (
 	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID enum const
 	AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID AuditsAttributionReportingIssueType = "InvalidAttributionSourceEventId"
 
-	// AuditsAttributionReportingIssueTypeInvalidAttributionData enum const
-	AuditsAttributionReportingIssueTypeInvalidAttributionData AuditsAttributionReportingIssueType = "InvalidAttributionData"
-
 	// AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin enum const
 	AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionSourceUntrustworthyOrigin"
 
 	// AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin enum const
 	AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionUntrustworthyOrigin"
 
-	// AuditsAttributionReportingIssueTypeAttributionTriggerDataTooLarge enum const
-	AuditsAttributionReportingIssueTypeAttributionTriggerDataTooLarge AuditsAttributionReportingIssueType = "AttributionTriggerDataTooLarge"
-
-	// AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge enum const
-	AuditsAttributionReportingIssueTypeAttributionEventSourceTriggerDataTooLarge AuditsAttributionReportingIssueType = "AttributionEventSourceTriggerDataTooLarge"
-
 	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry enum const
 	AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry AuditsAttributionReportingIssueType = "InvalidAttributionSourceExpiry"
 
 	// AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority enum const
 	AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority AuditsAttributionReportingIssueType = "InvalidAttributionSourcePriority"
-
-	// AuditsAttributionReportingIssueTypeInvalidEventSourceTriggerData enum const
-	AuditsAttributionReportingIssueTypeInvalidEventSourceTriggerData AuditsAttributionReportingIssueType = "InvalidEventSourceTriggerData"
-
-	// AuditsAttributionReportingIssueTypeInvalidTriggerPriority enum const
-	AuditsAttributionReportingIssueTypeInvalidTriggerPriority AuditsAttributionReportingIssueType = "InvalidTriggerPriority"
-
-	// AuditsAttributionReportingIssueTypeInvalidTriggerDedupKey enum const
-	AuditsAttributionReportingIssueTypeInvalidTriggerDedupKey AuditsAttributionReportingIssueType = "InvalidTriggerDedupKey"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -628,6 +610,17 @@ type AuditsGenericIssueDetails struct {
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 
+// AuditsDeprecationIssueType ...
+type AuditsDeprecationIssueType string
+
+const (
+	// AuditsDeprecationIssueTypeDeprecationExample enum const
+	AuditsDeprecationIssueTypeDeprecationExample AuditsDeprecationIssueType = "DeprecationExample"
+
+	// AuditsDeprecationIssueTypeUntranslated enum const
+	AuditsDeprecationIssueTypeUntranslated AuditsDeprecationIssueType = "Untranslated"
+)
+
 // AuditsDeprecationIssueDetails This issue tracks information needed to print a deprecation message.
 // The formatting is inherited from the old console.log version, see more at:
 // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
@@ -648,8 +641,11 @@ type AuditsDeprecationIssueDetails struct {
 	// https://www.chromestatus.com/feature/5684870116278272 for more details."
 	Message string `json:"message,omitempty"`
 
-	// DeprecationType (deprecated) The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
-	DeprecationType string `json:"deprecationType"`
+	// DeprecationType (deprecated) (optional) The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
+	DeprecationType string `json:"deprecationType,omitempty"`
+
+	// Type ...
+	Type AuditsDeprecationIssueType `json:"type"`
 }
 
 // AuditsClientHintIssueReason ...
@@ -682,6 +678,21 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonTooManyRequests enum const
 	AuditsFederatedAuthRequestIssueReasonTooManyRequests AuditsFederatedAuthRequestIssueReason = "TooManyRequests"
+
+	// AuditsFederatedAuthRequestIssueReasonManifestListHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonManifestListHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ManifestListHttpNotFound"
+
+	// AuditsFederatedAuthRequestIssueReasonManifestListNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonManifestListNoResponse AuditsFederatedAuthRequestIssueReason = "ManifestListNoResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonManifestListInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonManifestListInvalidResponse AuditsFederatedAuthRequestIssueReason = "ManifestListInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonManifestNotInManifestList enum const
+	AuditsFederatedAuthRequestIssueReasonManifestNotInManifestList AuditsFederatedAuthRequestIssueReason = "ManifestNotInManifestList"
+
+	// AuditsFederatedAuthRequestIssueReasonManifestListTooBig enum const
+	AuditsFederatedAuthRequestIssueReasonManifestListTooBig AuditsFederatedAuthRequestIssueReason = "ManifestListTooBig"
 
 	// AuditsFederatedAuthRequestIssueReasonManifestHTTPNotFound enum const
 	AuditsFederatedAuthRequestIssueReasonManifestHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ManifestHttpNotFound"
