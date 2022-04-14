@@ -3,7 +3,7 @@
 package defaults
 
 import (
-	"io/ioutil"
+	"flag"
 	"log"
 	"os"
 	"regexp"
@@ -15,52 +15,52 @@ import (
 )
 
 // Trace is the default of rod.Browser.Trace .
-// Env name is "trace".
+// Option name is "trace".
 var Trace bool
 
 // Slow is the default of rod.Browser.Slowmotion .
 // The format is same as https://golang.org/pkg/time/#ParseDuration
-// Env name is "slow".
+// Option name is "slow".
 var Slow time.Duration
 
 // Monitor is the default of rod.Browser.ServeMonitor .
-// Env name is "monitor".
+// Option name is "monitor".
 var Monitor string
 
 // Show is the default of launcher.Launcher.Headless .
-// Env name is "show".
+// Option name is "show".
 var Show bool
 
 // Devtools is the default of launcher.Launcher.Devtools .
-// Env name is "devtools".
+// Option name is "devtools".
 var Devtools bool
 
 // Dir is the default of launcher.Launcher.UserDataDir .
-// Env name is "dir".
+// Option name is "dir".
 var Dir string
 
 // Port is the default of launcher.Launcher.RemoteDebuggingPort .
-// Env name is "port".
+// Option name is "port".
 var Port string
 
 // Bin is the default of launcher.Launcher.Bin .
-// Env name is "bin".
+// Option name is "bin".
 var Bin string
 
 // Proxy is the default of launcher.Launcher.Proxy
-// Env name is "trace".
+// Option name is "trace".
 var Proxy string
 
 // LockPort is the default of launcher.Browser.LockPort
-// Env name is "lock".
+// Option name is "lock".
 var LockPort int
 
-// URL is the default of cdp.Client.New .
-// Env name is "url".
+// URL is the default websocket url for remote control a browser.
+// Option name is "url".
 var URL string
 
 // CDP is the default of cdp.Client.Logger
-// Env name is "cdp".
+// Option name is "cdp".
 var CDP utils.Logger
 
 // Reset all flags to their init values.
@@ -132,39 +132,46 @@ var envParsers = map[string]func(string){
 
 // Parse the flags
 func init() {
-	ResetWithEnv("")
+	ResetWith("")
 }
 
-// ResetWithEnv set the default value of options used by rod.
+// ResetWith options and "-rod" command line flag.
 // It will be called in an init() , so you don't have to call it manually.
-// The followings will be parsed and merged, later overrides previous:
+// It will try to load the cli flag "-rod" and then the options, the later override the former.
+// If you want to disable the global cli argument flag, set env DISABLE_ROD_FLAG.
+// Values are separated by commas, key and value are separated by "=". For example:
 //
-//     os.Open(".rod")
-//     os.Getenv("rod")
-//     env
+//     go run main.go -rod=show
+//     go run main.go -rod show,trace,slow=1s,monitor
+//     go run main.go --rod="slow=1s,dir=path/has /space,monitor=:9223"
 //
-// Values are separated by commas, key and value are separated by "=",
-// For example, on unix-like OS:
-//
-//    rod="show,trace,slow=1s,monitor" go run main.go
-//
-//    rod="slow=1s,dir=path/has /space,monitor=:9223" go run main.go
-//
-// An example of ".rod" file content:
-//
-//    slow=1s
-//    dir=path/has /space
-//    monitor=:9223
-//
-func ResetWithEnv(env string) {
+func ResetWith(options string) {
 	Reset()
 
-	b, _ := ioutil.ReadFile(".rod")
-	parse(string(b))
+	if _, has := os.LookupEnv("DISABLE_ROD_FLAG"); !has {
+		if !flag.Parsed() {
+			flag.String("rod", "", `Set the default value of options used by rod.`)
+		}
 
-	parse(os.Getenv("rod"))
+		parseFlag(os.Args)
+	}
 
-	parse(env)
+	parse(options)
+}
+
+func parseFlag(args []string) {
+	reg := regexp.MustCompile(`^--?rod$`)
+	regEq := regexp.MustCompile(`^--?rod=(.*)$`)
+	opts := ""
+	for i, arg := range args {
+		if reg.MatchString(arg) {
+			opts = args[i+1]
+		} else if m := regEq.FindStringSubmatch(arg); len(m) == 2 {
+			opts = m[1]
+		}
+	}
+
+	parse(opts)
 }
 
 // parse options and set them globally

@@ -73,7 +73,7 @@ func TestLaunchOptions(t *testing.T) {
 
 	// restore
 	defer func() {
-		defaults.ResetWithEnv("")
+		defaults.ResetWith("")
 		inContainer = utils.InContainer
 	}()
 

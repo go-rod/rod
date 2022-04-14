@@ -83,7 +83,7 @@ func TestLaunch(t *testing.T) {
 	g := setup(t)
 
 	defaults.Proxy = "test.com"
-	defer func() { defaults.ResetWithEnv("") }()
+	defer func() { defaults.ResetWith("") }()
 
 	l := launcher.New()
 	defer l.Kill()
