@@ -714,10 +714,10 @@ func (p *Page) Call(ctx context.Context, sessionID, methodName string, params in
 // Event of the page
 func (p *Page) Event() <-chan *Message {
 	dst := make(chan *Message)
+	s := p.event.Subscribe(p.ctx)
 
 	go func() {
 		defer close(dst)
-		s := p.event.Subscribe(p.ctx)
 		for {
 			select {
 			case <-p.ctx.Done():
@@ -740,9 +740,10 @@ func (p *Page) Event() <-chan *Message {
 
 func (p *Page) initEvents() {
 	p.event = goob.New(p.ctx)
+	event := p.browser.Context(p.ctx).Event()
 
 	go func() {
-		for msg := range p.browser.Context(p.ctx).Event() {
+		for msg := range event {
 			detached := proto.TargetDetachedFromTarget{}
 			destroyed := proto.TargetTargetDestroyed{}
 
