@@ -66,10 +66,11 @@ func main() {
 	path := "./lib/devices/list.go"
 	utils.E(utils.OutputFile(path, code))
 
-	utils.Exec("gofmt", "-s", "-w", path)
+	utils.Exec("gofmt -s -w", path)
 	utils.Exec(
-		"go", "run", "github.com/ysmood/golangci-lint@latest", "--",
-		"run", "--no-config", "--fix", "--disable-all", "-E", "gofmt,goimports,misspell", path,
+		"go run github.com/ysmood/golangci-lint@latest -- "+
+			"run --no-config --fix --disable-all -E gofmt,goimports,misspell",
+		path,
 	)
 }
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
 	"regexp"
 	"strings"
 
@@ -35,7 +34,7 @@ func main() {
 
 	utils.E(utils.OutputFile("lib/js/helper.go", out))
 
-	utils.Exec("gofmt", "-s", "-w", "lib/js/helper.go")
+	utils.Exec("gofmt -s -w lib/js/helper.go")
 }
 
 var regDeps = regexp.MustCompile(`\Wfunctions.(\w+)`)
@@ -57,10 +56,7 @@ func fnName(name string) string {
 }
 
 func getList() gson.JSON {
-	code, err := exec.Command("npx", "-yq", "--", "uglify-js@3.14.5", "-c", "-m", "--", "lib/js/helper.js").CombinedOutput()
-	if err != nil {
-		panic(string(code))
-	}
+	code := utils.ExecLine(false, "npx -ys -- uglify-js@3.14.5 -c -m -- lib/js/helper.js")
 
 	script := fmt.Sprintf(`
 		%s
@@ -76,10 +72,9 @@ func getList() gson.JSON {
 		console.log(JSON.stringify(list))
 	`, string(code))
 
-	b, err := exec.Command("node", "-e", script).CombinedOutput()
-	if err != nil {
-		panic(string(b))
-	}
+	tmp := "tmp/helper.js"
 
-	return gson.New(b)
+	utils.E(utils.OutputFile(tmp, script))
+
+	return gson.NewFrom(utils.ExecLine(false, "node", tmp))
 }

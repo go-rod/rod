@@ -12,10 +12,12 @@ import (
 	"image/png"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strings"
 	"sync"
 	"text/template"
@@ -253,28 +255,52 @@ func FileExists(path string) bool {
 	return true
 }
 
-// Exec command
-func Exec(name string, args ...string) {
-	fmt.Println()
-	fmt.Println("[[exec]]:")
-	fmt.Println(name, strings.Join(args, " "))
+var regSpace = regexp.MustCompile(`\s`)
 
-	cmd := exec.Command(name, args...)
-	SetCmdStdPipe(cmd)
-	E(cmd.Run())
+// Exec command
+func Exec(line string, rest ...string) string {
+	return ExecLine(true, line, rest...)
 }
 
 // ExecLine of command
-func ExecLine(line string) {
-	args := strings.Split(line, " ")
-	Exec(args[0], args[1:]...)
+func ExecLine(std bool, line string, rest ...string) string {
+	args := rest
+	if line != "" {
+		args = append(regSpace.Split(line, -1), rest...)
+	}
+
+	log.Printf("[exec] %s", FormatCLIArgs(args))
+
+	buf := bytes.NewBuffer(nil)
+
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stderr = buf
+	cmd.Stdout = buf
+
+	if std {
+		cmd.Stdin = os.Stdin
+		cmd.Stderr = io.MultiWriter(buf, os.Stderr)
+		cmd.Stdout = io.MultiWriter(buf, os.Stdout)
+	}
+
+	if err := cmd.Run(); err != nil {
+		panic(fmt.Sprintf("%v\n%v", err, buf.String()))
+	}
+
+	return buf.String()
 }
 
-// SetCmdStdPipe command
-func SetCmdStdPipe(cmd *exec.Cmd) {
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+// FormatCLIArgs into one line string
+func FormatCLIArgs(args []string) string {
+	list := []string{}
+	for _, arg := range args {
+		if regSpace.MatchString(arg) {
+			list = append(list, fmt.Sprintf("%#v", arg))
+		} else {
+			list = append(list, arg)
+		}
+	}
+	return strings.Join(list, " ")
 }
 
 // EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change

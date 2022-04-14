@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 
@@ -43,8 +42,8 @@ func main() {
 func releaseLatest() {
 	login()
 	test()
-	utils.Exec("docker", "push", image)
-	utils.Exec("docker", "push", devImage)
+	utils.Exec("docker push", image)
+	utils.Exec("docker push", devImage)
 }
 
 func releaseWithVer(ver string) {
@@ -52,35 +51,32 @@ func releaseWithVer(ver string) {
 
 	verImage := image + ":" + ver
 
-	utils.Exec("docker", "pull", image)
-	utils.Exec("docker", "tag", image, verImage)
-	utils.Exec("docker", "push", verImage)
+	utils.Exec("docker pull", image)
+	utils.Exec("docker tag", image, verImage)
+	utils.Exec("docker push", verImage)
 
-	utils.Exec("docker", "pull", devImage)
-	utils.Exec("docker", "tag", devImage, verImage+"-dev")
-	utils.Exec("docker", "push", verImage+"-dev")
+	utils.Exec("docker pull", devImage)
+	utils.Exec("docker tag", devImage, verImage+"-dev")
+	utils.Exec("docker push", verImage+"-dev")
 }
 
 func test() {
-	utils.Exec("docker", "build", "-t", image, description(false), "-f=lib/docker/Dockerfile", ".")
-	utils.Exec("docker", "build", "-t", devImage, description(true), "-f=lib/docker/dev.Dockerfile", ".")
+	utils.Exec("docker build -f=lib/docker/Dockerfile -t", image, description(false), ".")
+	utils.Exec("docker build -f=lib/docker/dev.Dockerfile -t", devImage, description(true), ".")
 
 	wd, err := os.Getwd()
 	utils.E(err)
 
-	utils.Exec("docker", "run", image, "rod-manager", "-h")
-	utils.Exec("docker", "run", "-v", fmt.Sprintf("%s:/t", wd), "-w=/t", devImage, "go", "test")
+	utils.Exec("docker run", image, "rod-manager", "-h")
+	utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), devImage, "go", "test")
 }
 
 func login() {
-	utils.Exec("docker", "login", registry, "-u=rod-robot", "-p="+token)
+	utils.Exec("docker login -u=rod-robot", "-p", token, registry)
 }
 
 func description(dev bool) string {
-	b, err := exec.Command("git", "rev-parse", "HEAD").CombinedOutput()
-	utils.E(err)
-
-	sha := strings.TrimSpace(string(b))
+	sha := strings.TrimSpace(utils.ExecLine(false, "git", "rev-parse", "HEAD"))
 
 	f := "Dockerfile"
 	if dev {

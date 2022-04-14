@@ -21,7 +21,7 @@ func nodejsDeps() {
 		log.Fatalln("please install Node.js: https://nodejs.org")
 	}
 
-	utils.Exec("npm", "i", "-q", "--no-audit", "--no-fund", "--silent", "eslint-plugin-html")
+	utils.Exec("npm i -s eslint-plugin-html")
 }
 
 func genDockerIgnore() {

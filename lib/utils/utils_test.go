@@ -160,12 +160,27 @@ func TestFileExists(t *testing.T) {
 	g.Eq(false, utils.FileExists(g.RandStr(16)))
 }
 
+func TestExec(t *testing.T) {
+	g := setup(t)
+
+	g.Has(utils.Exec("go version"), "go version")
+}
+
 func TestExecErr(t *testing.T) {
 	g := setup(t)
 
 	g.Panic(func() {
-		utils.ExecLine("")
+		utils.Exec("")
 	})
+	g.Panic(func() {
+		utils.Exec(g.RandStr(16))
+	})
+}
+
+func TestFormatCLIArgs(t *testing.T) {
+	g := setup(t)
+
+	g.Eq(utils.FormatCLIArgs([]string{"ab c", "abc"}), `"ab c" abc`)
 }
 
 func TestEscapeGoString(t *testing.T) {
