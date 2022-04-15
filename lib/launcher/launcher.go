@@ -68,9 +68,6 @@ func New() *Launcher {
 		// TODO: about the "site-per-process" see https://github.com/puppeteer/puppeteer/issues/2548
 		"disable-features": {"site-per-process", "TranslateUI"},
 
-		// hide the navigator.webdriver
-		"disable-blink-features": {"AutomationControlled"},
-
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
 		"disable-backgrounding-occluded-windows":             nil,
@@ -137,6 +134,17 @@ func NewUserMode() *Launcher {
 		parser:  NewURLParser(),
 		logger:  ioutil.Discard,
 	}
+}
+
+// NewAppMode is a preset to run the browser like a native application.
+func NewAppMode(u string) *Launcher {
+	l := New()
+	l.Set(flags.App, u).
+		Set(flags.Env, "GOOGLE_API_KEY=no").
+		Headless(false).
+		Delete("no-startup-window").
+		Delete("enable-automation")
+	return l
 }
 
 // Context sets the context

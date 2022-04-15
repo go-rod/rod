@@ -12,6 +12,9 @@ const (
 	// Headless mode. Whether to run browser in headless mode. A mode without visible UI.
 	Headless Flag = "headless"
 
+	// App flag
+	App Flag = "app"
+
 	// RemoteDebuggingPort flag
 	RemoteDebuggingPort Flag = "remote-debugging-port"
 

@@ -160,6 +160,14 @@ func TestUserModeErr(t *testing.T) {
 	g.Err(err)
 }
 
+func TestAppMode(t *testing.T) {
+	g := setup(t)
+
+	l := launcher.NewAppMode("http://example.com")
+
+	g.Eq(l.Get(flags.App), "http://example.com")
+}
+
 func TestGetWebSocketDebuggerURLErr(t *testing.T) {
 	g := setup(t)
 
