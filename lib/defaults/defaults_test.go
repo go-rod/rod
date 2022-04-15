@@ -66,6 +66,9 @@ func TestParseFlag(t *testing.T) {
 
 	Reset()
 
+	parseFlag([]string{"-rod"})
+	g.False(Show)
+
 	parseFlag([]string{"-rod=show"})
 	g.True(Show)
 

@@ -164,7 +164,7 @@ func parseFlag(args []string) {
 	regEq := regexp.MustCompile(`^--?rod=(.*)$`)
 	opts := ""
 	for i, arg := range args {
-		if reg.MatchString(arg) {
+		if reg.MatchString(arg) && i+1 < len(args) {
 			opts = args[i+1]
 		} else if m := regEq.FindStringSubmatch(arg); len(m) == 2 {
 			opts = m[1]
