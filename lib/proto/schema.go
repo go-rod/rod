@@ -33,7 +33,7 @@ func (m SchemaGetDomains) Call(c Client) (*SchemaGetDomainsResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// SchemaGetDomainsResult Returns supported domains.
+// SchemaGetDomainsResult ...
 type SchemaGetDomainsResult struct {
 
 	// Domains List of supported domains.

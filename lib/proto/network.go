@@ -1550,7 +1550,7 @@ func (m NetworkCanClearBrowserCache) Call(c Client) (*NetworkCanClearBrowserCach
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkCanClearBrowserCacheResult (deprecated) Tells whether clearing browser cache is supported.
+// NetworkCanClearBrowserCacheResult (deprecated) ...
 type NetworkCanClearBrowserCacheResult struct {
 
 	// Result True if browser cache can be cleared.
@@ -1570,7 +1570,7 @@ func (m NetworkCanClearBrowserCookies) Call(c Client) (*NetworkCanClearBrowserCo
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkCanClearBrowserCookiesResult (deprecated) Tells whether clearing browser cookies is supported.
+// NetworkCanClearBrowserCookiesResult (deprecated) ...
 type NetworkCanClearBrowserCookiesResult struct {
 
 	// Result True if browser cookies can be cleared.
@@ -1592,7 +1592,7 @@ func (m NetworkCanEmulateNetworkConditions) Call(c Client) (*NetworkCanEmulateNe
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkCanEmulateNetworkConditionsResult (deprecated) Tells whether emulation of network conditions is supported.
+// NetworkCanEmulateNetworkConditionsResult (deprecated) ...
 type NetworkCanEmulateNetworkConditionsResult struct {
 
 	// Result True if emulation of network conditions is supported.
@@ -1770,8 +1770,7 @@ func (m NetworkGetAllCookies) Call(c Client) (*NetworkGetAllCookiesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetAllCookiesResult Returns all browser cookies. Depending on the backend support, will return detailed cookie
-// information in the `cookies` field.
+// NetworkGetAllCookiesResult ...
 type NetworkGetAllCookiesResult struct {
 
 	// Cookies Array of cookie objects.
@@ -1794,7 +1793,7 @@ func (m NetworkGetCertificate) Call(c Client) (*NetworkGetCertificateResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetCertificateResult (experimental) Returns the DER-encoded certificate.
+// NetworkGetCertificateResult (experimental) ...
 type NetworkGetCertificateResult struct {
 
 	// TableNames ...
@@ -1820,8 +1819,7 @@ func (m NetworkGetCookies) Call(c Client) (*NetworkGetCookiesResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetCookiesResult Returns all browser cookies for the current URL. Depending on the backend support, will return
-// detailed cookie information in the `cookies` field.
+// NetworkGetCookiesResult ...
 type NetworkGetCookiesResult struct {
 
 	// Cookies Array of cookie objects.
@@ -1844,7 +1842,7 @@ func (m NetworkGetResponseBody) Call(c Client) (*NetworkGetResponseBodyResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetResponseBodyResult Returns content served for the given request.
+// NetworkGetResponseBodyResult ...
 type NetworkGetResponseBodyResult struct {
 
 	// Body Response body.
@@ -1870,7 +1868,7 @@ func (m NetworkGetRequestPostData) Call(c Client) (*NetworkGetRequestPostDataRes
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetRequestPostDataResult Returns post data sent with the request. Returns an error when no data was sent with the request.
+// NetworkGetRequestPostDataResult ...
 type NetworkGetRequestPostDataResult struct {
 
 	// PostData Request body string, omitting files from multipart requests
@@ -1895,7 +1893,7 @@ func (m NetworkGetResponseBodyForInterception) Call(c Client) (*NetworkGetRespon
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetResponseBodyForInterceptionResult (experimental) Returns content served for the given currently intercepted request.
+// NetworkGetResponseBodyForInterceptionResult (experimental) ...
 type NetworkGetResponseBodyForInterceptionResult struct {
 
 	// Body Response body.
@@ -1926,10 +1924,7 @@ func (m NetworkTakeResponseBodyForInterceptionAsStream) Call(c Client) (*Network
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkTakeResponseBodyForInterceptionAsStreamResult (experimental) Returns a handle to the stream representing the response body. Note that after this command,
-// the intercepted request can't be continued as is -- you either need to cancel it or to provide
-// the response body. The stream only supports sequential read, IO.read will fail if the position
-// is specified.
+// NetworkTakeResponseBodyForInterceptionAsStreamResult (experimental) ...
 type NetworkTakeResponseBodyForInterceptionAsStreamResult struct {
 
 	// Stream ...
@@ -1978,7 +1973,7 @@ func (m NetworkSearchInResponseBody) Call(c Client) (*NetworkSearchInResponseBod
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkSearchInResponseBodyResult (experimental) Searches for given string in response content.
+// NetworkSearchInResponseBodyResult (experimental) ...
 type NetworkSearchInResponseBodyResult struct {
 
 	// Result List of search matches.
@@ -2090,7 +2085,7 @@ func (m NetworkSetCookie) Call(c Client) (*NetworkSetCookieResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkSetCookieResult Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
+// NetworkSetCookieResult ...
 type NetworkSetCookieResult struct {
 
 	// Success (deprecated) Always set to true. If an error occurs, the response indicates protocol error.
@@ -2201,7 +2196,7 @@ func (m NetworkGetSecurityIsolationStatus) Call(c Client) (*NetworkGetSecurityIs
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetSecurityIsolationStatusResult (experimental) Returns information about the COEP/COOP isolation status.
+// NetworkGetSecurityIsolationStatusResult (experimental) ...
 type NetworkGetSecurityIsolationStatusResult struct {
 
 	// Status ...
@@ -2247,7 +2242,7 @@ func (m NetworkLoadNetworkResource) Call(c Client) (*NetworkLoadNetworkResourceR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkLoadNetworkResourceResult (experimental) Fetches the resource and returns the content.
+// NetworkLoadNetworkResourceResult (experimental) ...
 type NetworkLoadNetworkResourceResult struct {
 
 	// Resource ...

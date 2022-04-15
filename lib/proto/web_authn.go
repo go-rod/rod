@@ -169,7 +169,7 @@ func (m WebAuthnAddVirtualAuthenticator) Call(c Client) (*WebAuthnAddVirtualAuth
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// WebAuthnAddVirtualAuthenticatorResult Creates and adds a virtual authenticator.
+// WebAuthnAddVirtualAuthenticatorResult ...
 type WebAuthnAddVirtualAuthenticatorResult struct {
 
 	// AuthenticatorID ...
@@ -231,8 +231,7 @@ func (m WebAuthnGetCredential) Call(c Client) (*WebAuthnGetCredentialResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// WebAuthnGetCredentialResult Returns a single credential stored in the given virtual authenticator that
-// matches the credential ID.
+// WebAuthnGetCredentialResult ...
 type WebAuthnGetCredentialResult struct {
 
 	// Credential ...
@@ -255,7 +254,7 @@ func (m WebAuthnGetCredentials) Call(c Client) (*WebAuthnGetCredentialsResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// WebAuthnGetCredentialsResult Returns all the credentials stored in the given virtual authenticator.
+// WebAuthnGetCredentialsResult ...
 type WebAuthnGetCredentialsResult struct {
 
 	// Credentials ...

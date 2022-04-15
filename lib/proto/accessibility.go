@@ -416,7 +416,7 @@ func (m AccessibilityGetPartialAXTree) Call(c Client) (*AccessibilityGetPartialA
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetPartialAXTreeResult (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
+// AccessibilityGetPartialAXTreeResult (experimental) ...
 type AccessibilityGetPartialAXTreeResult struct {
 
 	// Nodes The `Accessibility.AXNode` for this DOM node, if it exists, plus its ancestors, siblings and
@@ -445,7 +445,7 @@ func (m AccessibilityGetFullAXTree) Call(c Client) (*AccessibilityGetFullAXTreeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetFullAXTreeResult (experimental) Fetches the entire accessibility tree for the root Document
+// AccessibilityGetFullAXTreeResult (experimental) ...
 type AccessibilityGetFullAXTreeResult struct {
 
 	// Nodes ...
@@ -470,8 +470,7 @@ func (m AccessibilityGetRootAXNode) Call(c Client) (*AccessibilityGetRootAXNodeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetRootAXNodeResult (experimental) Fetches the root node.
-// Requires `enable()` to have been called previously.
+// AccessibilityGetRootAXNodeResult (experimental) ...
 type AccessibilityGetRootAXNodeResult struct {
 
 	// Node ...
@@ -503,8 +502,7 @@ func (m AccessibilityGetAXNodeAndAncestors) Call(c Client) (*AccessibilityGetAXN
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetAXNodeAndAncestorsResult (experimental) Fetches a node and all ancestors up to and including the root.
-// Requires `enable()` to have been called previously.
+// AccessibilityGetAXNodeAndAncestorsResult (experimental) ...
 type AccessibilityGetAXNodeAndAncestorsResult struct {
 
 	// Nodes ...
@@ -532,8 +530,7 @@ func (m AccessibilityGetChildAXNodes) Call(c Client) (*AccessibilityGetChildAXNo
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityGetChildAXNodesResult (experimental) Fetches a particular accessibility node by AXNodeId.
-// Requires `enable()` to have been called previously.
+// AccessibilityGetChildAXNodesResult (experimental) ...
 type AccessibilityGetChildAXNodesResult struct {
 
 	// Nodes ...
@@ -572,11 +569,7 @@ func (m AccessibilityQueryAXTree) Call(c Client) (*AccessibilityQueryAXTreeResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AccessibilityQueryAXTreeResult (experimental) Query a DOM node's accessibility subtree for accessible name and role.
-// This command computes the name and role for all nodes in the subtree, including those that are
-// ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
-// node is specified, or the DOM node does not exist, the command returns an error. If neither
-// `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
+// AccessibilityQueryAXTreeResult (experimental) ...
 type AccessibilityQueryAXTreeResult struct {
 
 	// Nodes A list of `Accessibility.AXNode` matching the specified attributes,

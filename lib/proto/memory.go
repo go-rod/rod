@@ -189,8 +189,7 @@ func (m MemoryGetAllTimeSamplingProfile) Call(c Client) (*MemoryGetAllTimeSampli
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// MemoryGetAllTimeSamplingProfileResult Retrieve native memory allocations profile
-// collected since renderer process startup.
+// MemoryGetAllTimeSamplingProfileResult ...
 type MemoryGetAllTimeSamplingProfileResult struct {
 
 	// Profile ...
@@ -211,8 +210,7 @@ func (m MemoryGetBrowserSamplingProfile) Call(c Client) (*MemoryGetBrowserSampli
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// MemoryGetBrowserSamplingProfileResult Retrieve native memory allocations profile
-// collected since browser process startup.
+// MemoryGetBrowserSamplingProfileResult ...
 type MemoryGetBrowserSamplingProfileResult struct {
 
 	// Profile ...
@@ -233,8 +231,7 @@ func (m MemoryGetSamplingProfile) Call(c Client) (*MemoryGetSamplingProfileResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// MemoryGetSamplingProfileResult Retrieve native memory allocations profile collected since last
-// `startSampling` call.
+// MemoryGetSamplingProfileResult ...
 type MemoryGetSamplingProfileResult struct {
 
 	// Profile ...

@@ -142,7 +142,7 @@ func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TracingGetCategoriesResult Gets supported tracing categories.
+// TracingGetCategoriesResult ...
 type TracingGetCategoriesResult struct {
 
 	// Categories A list of supported tracing categories.
@@ -183,7 +183,7 @@ func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TracingRequestMemoryDumpResult Request a global memory dump.
+// TracingRequestMemoryDumpResult ...
 type TracingRequestMemoryDumpResult struct {
 
 	// DumpGUID GUID of the resulting global memory dump.

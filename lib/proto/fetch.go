@@ -298,12 +298,7 @@ func (m FetchGetResponseBody) Call(c Client) (*FetchGetResponseBodyResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// FetchGetResponseBodyResult Causes the body of the response to be received from the server and
-// returned as a single string. May only be issued for a request that
-// is paused in the Response stage and is mutually exclusive with
-// takeResponseBodyForInterceptionAsStream. Calling other methods that
-// affect the request or disabling fetch domain before body is received
-// results in an undefined behavior.
+// FetchGetResponseBodyResult ...
 type FetchGetResponseBodyResult struct {
 
 	// Body Response body.
@@ -338,16 +333,7 @@ func (m FetchTakeResponseBodyAsStream) Call(c Client) (*FetchTakeResponseBodyAsS
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// FetchTakeResponseBodyAsStreamResult Returns a handle to the stream representing the response body.
-// The request must be paused in the HeadersReceived stage.
-// Note that after this command the request can't be continued
-// as is -- client either needs to cancel it or to provide the
-// response body.
-// The stream only supports sequential read, IO.read will fail if the position
-// is specified.
-// This method is mutually exclusive with getResponseBody.
-// Calling other methods that affect the request or disabling fetch
-// domain before body is received results in an undefined behavior.
+// FetchTakeResponseBodyAsStreamResult ...
 type FetchTakeResponseBodyAsStreamResult struct {
 
 	// Stream ...

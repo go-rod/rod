@@ -168,8 +168,7 @@ func (m ProfilerGetBestEffortCoverage) Call(c Client) (*ProfilerGetBestEffortCov
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// ProfilerGetBestEffortCoverageResult Collect coverage data for the current isolate. The coverage data may be incomplete due to
-// garbage collection.
+// ProfilerGetBestEffortCoverageResult ...
 type ProfilerGetBestEffortCoverageResult struct {
 
 	// Result Coverage data for the current isolate.
@@ -227,9 +226,7 @@ func (m ProfilerStartPreciseCoverage) Call(c Client) (*ProfilerStartPreciseCover
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// ProfilerStartPreciseCoverageResult Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code
-// coverage may be incomplete. Enabling prevents running optimized code and resets execution
-// counters.
+// ProfilerStartPreciseCoverageResult ...
 type ProfilerStartPreciseCoverageResult struct {
 
 	// Timestamp Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
@@ -307,8 +304,7 @@ func (m ProfilerTakePreciseCoverage) Call(c Client) (*ProfilerTakePreciseCoverag
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// ProfilerTakePreciseCoverageResult Collect coverage data for the current isolate, and resets execution counters. Precise code
-// coverage needs to have started.
+// ProfilerTakePreciseCoverageResult ...
 type ProfilerTakePreciseCoverageResult struct {
 
 	// Result Coverage data for the current isolate.
@@ -331,7 +327,7 @@ func (m ProfilerTakeTypeProfile) Call(c Client) (*ProfilerTakeTypeProfileResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// ProfilerTakeTypeProfileResult (experimental) Collect type profile.
+// ProfilerTakeTypeProfileResult (experimental) ...
 type ProfilerTakeTypeProfileResult struct {
 
 	// Result Type profile for all scripts since startTypeProfile() was turned on.

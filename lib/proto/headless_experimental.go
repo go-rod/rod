@@ -65,10 +65,7 @@ func (m HeadlessExperimentalBeginFrame) Call(c Client) (*HeadlessExperimentalBeg
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// HeadlessExperimentalBeginFrameResult Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
-// screenshot from the resulting frame. Requires that the target was created with enabled
-// BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
-// https://goo.gl/3zHXhB for more background.
+// HeadlessExperimentalBeginFrameResult ...
 type HeadlessExperimentalBeginFrameResult struct {
 
 	// HasDamage Whether the BeginFrame resulted in damage and, thus, a new frame was committed to the

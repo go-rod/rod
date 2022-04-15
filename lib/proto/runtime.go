@@ -713,7 +713,7 @@ func (m RuntimeAwaitPromise) Call(c Client) (*RuntimeAwaitPromiseResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeAwaitPromiseResult Add handler to promise with given promise object id.
+// RuntimeAwaitPromiseResult ...
 type RuntimeAwaitPromiseResult struct {
 
 	// Result Promise result. Will contain rejected value if promise was rejected.
@@ -779,8 +779,7 @@ func (m RuntimeCallFunctionOn) Call(c Client) (*RuntimeCallFunctionOnResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeCallFunctionOnResult Calls function with given declaration on the given object. Object group of the result is
-// inherited from the target object.
+// RuntimeCallFunctionOnResult ...
 type RuntimeCallFunctionOnResult struct {
 
 	// Result Call result.
@@ -816,7 +815,7 @@ func (m RuntimeCompileScript) Call(c Client) (*RuntimeCompileScriptResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeCompileScriptResult Compiles expression.
+// RuntimeCompileScriptResult ...
 type RuntimeCompileScriptResult struct {
 
 	// ScriptID (optional) Id of the script.
@@ -942,7 +941,7 @@ func (m RuntimeEvaluate) Call(c Client) (*RuntimeEvaluateResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeEvaluateResult Evaluates expression on global object.
+// RuntimeEvaluateResult ...
 type RuntimeEvaluateResult struct {
 
 	// Result Evaluation result.
@@ -965,7 +964,7 @@ func (m RuntimeGetIsolateID) Call(c Client) (*RuntimeGetIsolateIDResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeGetIsolateIDResult (experimental) Returns the isolate id.
+// RuntimeGetIsolateIDResult (experimental) ...
 type RuntimeGetIsolateIDResult struct {
 
 	// ID The isolate id.
@@ -986,8 +985,7 @@ func (m RuntimeGetHeapUsage) Call(c Client) (*RuntimeGetHeapUsageResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeGetHeapUsageResult (experimental) Returns the JavaScript heap usage.
-// It is the total usage of the corresponding isolate not scoped to a particular Runtime.
+// RuntimeGetHeapUsageResult (experimental) ...
 type RuntimeGetHeapUsageResult struct {
 
 	// UsedSize Used heap size in bytes.
@@ -1028,8 +1026,7 @@ func (m RuntimeGetProperties) Call(c Client) (*RuntimeGetPropertiesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeGetPropertiesResult Returns properties of a given object. Object group of the result is inherited from the target
-// object.
+// RuntimeGetPropertiesResult ...
 type RuntimeGetPropertiesResult struct {
 
 	// Result Object properties.
@@ -1061,7 +1058,7 @@ func (m RuntimeGlobalLexicalScopeNames) Call(c Client) (*RuntimeGlobalLexicalSco
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeGlobalLexicalScopeNamesResult Returns all let, const and class variables from global scope.
+// RuntimeGlobalLexicalScopeNamesResult ...
 type RuntimeGlobalLexicalScopeNamesResult struct {
 
 	// Names ...
@@ -1176,7 +1173,7 @@ func (m RuntimeRunScript) Call(c Client) (*RuntimeRunScriptResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeRunScriptResult Runs script with given id in a given context.
+// RuntimeRunScriptResult ...
 type RuntimeRunScriptResult struct {
 
 	// Result Run result.
@@ -1321,11 +1318,7 @@ func (m RuntimeGetExceptionDetails) Call(c Client) (*RuntimeGetExceptionDetailsR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// RuntimeGetExceptionDetailsResult (experimental) This method tries to lookup and populate exception details for a
-// JavaScript Error object.
-// Note that the stackTrace portion of the resulting exceptionDetails will
-// only be populated if the Runtime domain was enabled at the time when the
-// Error was thrown.
+// RuntimeGetExceptionDetailsResult (experimental) ...
 type RuntimeGetExceptionDetailsResult struct {
 
 	// ExceptionDetails (optional) ...

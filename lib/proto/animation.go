@@ -151,7 +151,7 @@ func (m AnimationGetCurrentTime) Call(c Client) (*AnimationGetCurrentTimeResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AnimationGetCurrentTimeResult Returns the current time of the an animation.
+// AnimationGetCurrentTimeResult ...
 type AnimationGetCurrentTimeResult struct {
 
 	// CurrentTime Current time of the page.
@@ -171,7 +171,7 @@ func (m AnimationGetPlaybackRate) Call(c Client) (*AnimationGetPlaybackRateResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AnimationGetPlaybackRateResult Gets the playback rate of the document timeline.
+// AnimationGetPlaybackRateResult ...
 type AnimationGetPlaybackRateResult struct {
 
 	// PlaybackRate Playback rate for animations on page.
@@ -209,7 +209,7 @@ func (m AnimationResolveAnimation) Call(c Client) (*AnimationResolveAnimationRes
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AnimationResolveAnimationResult Gets the remote object of the Animation.
+// AnimationResolveAnimationResult ...
 type AnimationResolveAnimationResult struct {
 
 	// RemoteObject Corresponding remote object.

@@ -269,7 +269,7 @@ func (m IndexedDBRequestData) Call(c Client) (*IndexedDBRequestDataResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IndexedDBRequestDataResult Requests data from object store or index.
+// IndexedDBRequestDataResult ...
 type IndexedDBRequestDataResult struct {
 
 	// ObjectStoreDataEntries Array of object store data entries.
@@ -301,7 +301,7 @@ func (m IndexedDBGetMetadata) Call(c Client) (*IndexedDBGetMetadataResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IndexedDBGetMetadataResult Gets metadata of an object store
+// IndexedDBGetMetadataResult ...
 type IndexedDBGetMetadataResult struct {
 
 	// EntriesCount the entries count
@@ -332,7 +332,7 @@ func (m IndexedDBRequestDatabase) Call(c Client) (*IndexedDBRequestDatabaseResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IndexedDBRequestDatabaseResult Requests database with given name in given frame.
+// IndexedDBRequestDatabaseResult ...
 type IndexedDBRequestDatabaseResult struct {
 
 	// DatabaseWithObjectStores Database with an array of object stores.
@@ -355,7 +355,7 @@ func (m IndexedDBRequestDatabaseNames) Call(c Client) (*IndexedDBRequestDatabase
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IndexedDBRequestDatabaseNamesResult Requests database names for given security origin.
+// IndexedDBRequestDatabaseNamesResult ...
 type IndexedDBRequestDatabaseNamesResult struct {
 
 	// DatabaseNames Database names for origin.

@@ -52,7 +52,7 @@ func (m IORead) Call(c Client) (*IOReadResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IOReadResult Read a chunk of the stream
+// IOReadResult ...
 type IOReadResult struct {
 
 	// Base64Encoded (optional) Set if the data is base64-encoded
@@ -81,7 +81,7 @@ func (m IOResolveBlob) Call(c Client) (*IOResolveBlobResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// IOResolveBlobResult Return UUID of Blob object specified by a remote object id.
+// IOResolveBlobResult ...
 type IOResolveBlobResult struct {
 
 	// UUID UUID of the specified Blob.

@@ -141,7 +141,7 @@ func (m CacheStorageRequestCacheNames) Call(c Client) (*CacheStorageRequestCache
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CacheStorageRequestCacheNamesResult Requests cache names.
+// CacheStorageRequestCacheNamesResult ...
 type CacheStorageRequestCacheNamesResult struct {
 
 	// Caches Caches for the security origin.
@@ -172,7 +172,7 @@ func (m CacheStorageRequestCachedResponse) Call(c Client) (*CacheStorageRequestC
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CacheStorageRequestCachedResponseResult Fetches cache entry.
+// CacheStorageRequestCachedResponseResult ...
 type CacheStorageRequestCachedResponseResult struct {
 
 	// Response Response read from the cache.
@@ -204,7 +204,7 @@ func (m CacheStorageRequestEntries) Call(c Client) (*CacheStorageRequestEntriesR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CacheStorageRequestEntriesResult Requests data from cache.
+// CacheStorageRequestEntriesResult ...
 type CacheStorageRequestEntriesResult struct {
 
 	// CacheDataEntries Array of object store data entries.

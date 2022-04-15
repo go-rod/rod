@@ -1358,7 +1358,7 @@ func (m PageAddScriptToEvaluateOnLoad) Call(c Client) (*PageAddScriptToEvaluateO
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
+// PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) ...
 type PageAddScriptToEvaluateOnLoadResult struct {
 
 	// Identifier Identifier of the added script.
@@ -1392,7 +1392,7 @@ func (m PageAddScriptToEvaluateOnNewDocument) Call(c Client) (*PageAddScriptToEv
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageAddScriptToEvaluateOnNewDocumentResult Evaluates given script in every frame upon creation (before loading frame's scripts).
+// PageAddScriptToEvaluateOnNewDocumentResult ...
 type PageAddScriptToEvaluateOnNewDocumentResult struct {
 
 	// Identifier Identifier of the added script.
@@ -1453,7 +1453,7 @@ func (m PageCaptureScreenshot) Call(c Client) (*PageCaptureScreenshotResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageCaptureScreenshotResult Capture page screenshot.
+// PageCaptureScreenshotResult ...
 type PageCaptureScreenshotResult struct {
 
 	// Data Base64-encoded image data.
@@ -1485,8 +1485,7 @@ func (m PageCaptureSnapshot) Call(c Client) (*PageCaptureSnapshotResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageCaptureSnapshotResult (experimental) Returns a snapshot of the page as a string. For MHTML format, the serialization includes
-// iframes, shadow DOM, external resources, and element-inline styles.
+// PageCaptureSnapshotResult (experimental) ...
 type PageCaptureSnapshotResult struct {
 
 	// Data Serialized page data.
@@ -1554,7 +1553,7 @@ func (m PageCreateIsolatedWorld) Call(c Client) (*PageCreateIsolatedWorldResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageCreateIsolatedWorldResult Creates an isolated world for the given frame.
+// PageCreateIsolatedWorldResult ...
 type PageCreateIsolatedWorldResult struct {
 
 	// ExecutionContextID Execution context of the isolated world.
@@ -1686,8 +1685,7 @@ func (m PageGetAppID) Call(c Client) (*PageGetAppIDResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetAppIDResult (experimental) Returns the unique (PWA) app id.
-// Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
+// PageGetAppIDResult (experimental) ...
 type PageGetAppIDResult struct {
 
 	// AppID (optional) App id, either from manifest's id attribute or computed from start_url
@@ -1711,8 +1709,7 @@ func (m PageGetCookies) Call(c Client) (*PageGetCookiesResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetCookiesResult (deprecated) (experimental) Returns all browser cookies. Depending on the backend support, will return detailed cookie
-// information in the `cookies` field.
+// PageGetCookiesResult (deprecated) (experimental) ...
 type PageGetCookiesResult struct {
 
 	// Cookies Array of cookie objects.
@@ -1732,7 +1729,7 @@ func (m PageGetFrameTree) Call(c Client) (*PageGetFrameTreeResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetFrameTreeResult Returns present frame tree structure.
+// PageGetFrameTreeResult ...
 type PageGetFrameTreeResult struct {
 
 	// FrameTree Present frame tree structure.
@@ -1752,7 +1749,7 @@ func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetLayoutMetricsResult Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
+// PageGetLayoutMetricsResult ...
 type PageGetLayoutMetricsResult struct {
 
 	// LayoutViewport (deprecated) Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
@@ -1787,7 +1784,7 @@ func (m PageGetNavigationHistory) Call(c Client) (*PageGetNavigationHistoryResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetNavigationHistoryResult Returns navigation history for the current page.
+// PageGetNavigationHistoryResult ...
 type PageGetNavigationHistoryResult struct {
 
 	// CurrentIndex Index of the current navigation history entry.
@@ -1828,7 +1825,7 @@ func (m PageGetResourceContent) Call(c Client) (*PageGetResourceContentResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetResourceContentResult (experimental) Returns content of the given resource.
+// PageGetResourceContentResult (experimental) ...
 type PageGetResourceContentResult struct {
 
 	// Content Resource content.
@@ -1851,7 +1848,7 @@ func (m PageGetResourceTree) Call(c Client) (*PageGetResourceTreeResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetResourceTreeResult (experimental) Returns present frame / resource tree structure.
+// PageGetResourceTreeResult (experimental) ...
 type PageGetResourceTreeResult struct {
 
 	// FrameTree Present frame / resource tree structure.
@@ -1905,7 +1902,7 @@ func (m PageNavigate) Call(c Client) (*PageNavigateResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageNavigateResult Navigates current page to the given URL.
+// PageNavigateResult ...
 type PageNavigateResult struct {
 
 	// FrameID Frame id that has navigated (or failed to navigate)
@@ -2016,7 +2013,7 @@ func (m PagePrintToPDF) Call(c Client) (*PagePrintToPDFResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PagePrintToPDFResult Print page as PDF.
+// PagePrintToPDFResult ...
 type PagePrintToPDFResult struct {
 
 	// Data Base64-encoded pdf data. Empty if |returnAsStream| is specified.
@@ -2122,7 +2119,7 @@ func (m PageSearchInResource) Call(c Client) (*PageSearchInResourceResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageSearchInResourceResult (experimental) Searches for given string in resource content.
+// PageSearchInResourceResult (experimental) ...
 type PageSearchInResourceResult struct {
 
 	// Result List of search matches.
@@ -2175,7 +2172,7 @@ func (m PageGetPermissionsPolicyState) Call(c Client) (*PageGetPermissionsPolicy
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetPermissionsPolicyStateResult (experimental) Get Permissions Policy state on given frame.
+// PageGetPermissionsPolicyStateResult (experimental) ...
 type PageGetPermissionsPolicyStateResult struct {
 
 	// States ...
@@ -2198,7 +2195,7 @@ func (m PageGetOriginTrials) Call(c Client) (*PageGetOriginTrialsResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetOriginTrialsResult (experimental) Get Origin Trials on given frame.
+// PageGetOriginTrialsResult (experimental) ...
 type PageGetOriginTrialsResult struct {
 
 	// OriginTrials ...

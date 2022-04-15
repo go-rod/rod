@@ -97,7 +97,7 @@ func (m PerformanceGetMetrics) Call(c Client) (*PerformanceGetMetricsResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PerformanceGetMetricsResult Retrieve current values of run-time metrics.
+// PerformanceGetMetricsResult ...
 type PerformanceGetMetricsResult struct {
 
 	// Metrics Current values for run-time metrics.

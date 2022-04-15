@@ -175,6 +175,11 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 		}
 	}
 
+	desc := schema.Get("description").Str()
+	if !isCommand && schema.Has("returns") {
+		desc = "..."
+	}
+
 	list = append(list, &definition{
 		domain:       domain,
 		cdpType:      cdpType,
@@ -182,7 +187,7 @@ func parseStruct(domain *domain, cdpType cdpType, name string, isCommand bool, s
 		typeName:     typeName(domain, schema),
 		name:         domain.name + symbol(name),
 		originName:   name,
-		description:  schema.Get("description").Str(),
+		description:  desc,
 		optional:     schema.Get("optional").Bool(),
 		deprecated:   schema.Get("deprecated").Bool(),
 		experimental: schema.Get("experimental").Bool(),

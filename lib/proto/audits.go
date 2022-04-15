@@ -930,8 +930,7 @@ func (m AuditsGetEncodedResponse) Call(c Client) (*AuditsGetEncodedResponseResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// AuditsGetEncodedResponseResult Returns the response body and size if it were re-encoded with the specified settings. Only
-// applies to images.
+// AuditsGetEncodedResponseResult ...
 type AuditsGetEncodedResponseResult struct {
 
 	// Body (optional) The encoded body as a base64 string. Omitted if sizeOnly is true.

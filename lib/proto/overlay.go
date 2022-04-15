@@ -428,7 +428,7 @@ func (m OverlayGetHighlightObjectForTest) Call(c Client) (*OverlayGetHighlightOb
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// OverlayGetHighlightObjectForTestResult For testing.
+// OverlayGetHighlightObjectForTestResult ...
 type OverlayGetHighlightObjectForTestResult struct {
 
 	// Highlight Highlight data for the node.
@@ -453,7 +453,7 @@ func (m OverlayGetGridHighlightObjectsForTest) Call(c Client) (*OverlayGetGridHi
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// OverlayGetGridHighlightObjectsForTestResult For Persistent Grid testing.
+// OverlayGetGridHighlightObjectsForTestResult ...
 type OverlayGetGridHighlightObjectsForTestResult struct {
 
 	// Highlights Grid Highlight data for the node ids provided.
@@ -478,7 +478,7 @@ func (m OverlayGetSourceOrderHighlightObjectForTest) Call(c Client) (*OverlayGet
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// OverlayGetSourceOrderHighlightObjectForTestResult For Source Order Viewer testing.
+// OverlayGetSourceOrderHighlightObjectForTestResult ...
 type OverlayGetSourceOrderHighlightObjectForTestResult struct {
 
 	// Highlight Source order highlight data for the node id provided.

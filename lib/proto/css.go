@@ -554,8 +554,7 @@ func (m CSSAddRule) Call(c Client) (*CSSAddRuleResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSAddRuleResult Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
-// position specified by `location`.
+// CSSAddRuleResult ...
 type CSSAddRuleResult struct {
 
 	// Rule The newly created rule.
@@ -578,7 +577,7 @@ func (m CSSCollectClassNames) Call(c Client) (*CSSCollectClassNamesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSCollectClassNamesResult Returns all class names from specified stylesheet.
+// CSSCollectClassNamesResult ...
 type CSSCollectClassNamesResult struct {
 
 	// ClassNames Class name list.
@@ -601,7 +600,7 @@ func (m CSSCreateStyleSheet) Call(c Client) (*CSSCreateStyleSheetResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSCreateStyleSheetResult Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
+// CSSCreateStyleSheetResult ...
 type CSSCreateStyleSheetResult struct {
 
 	// StyleSheetID Identifier of the created "via-inspector" stylesheet.
@@ -702,7 +701,7 @@ func (m CSSGetComputedStyleForNode) Call(c Client) (*CSSGetComputedStyleForNodeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetComputedStyleForNodeResult Returns the computed style for a DOM node identified by `nodeId`.
+// CSSGetComputedStyleForNodeResult ...
 type CSSGetComputedStyleForNodeResult struct {
 
 	// ComputedStyle Computed style for the specified DOM node.
@@ -726,8 +725,7 @@ func (m CSSGetInlineStylesForNode) Call(c Client) (*CSSGetInlineStylesForNodeRes
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetInlineStylesForNodeResult Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
-// attributes) for a DOM node identified by `nodeId`.
+// CSSGetInlineStylesForNodeResult ...
 type CSSGetInlineStylesForNodeResult struct {
 
 	// InlineStyle (optional) Inline style for the specified DOM node.
@@ -753,7 +751,7 @@ func (m CSSGetMatchedStylesForNode) Call(c Client) (*CSSGetMatchedStylesForNodeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetMatchedStylesForNodeResult Returns requested styles for a DOM node identified by `nodeId`.
+// CSSGetMatchedStylesForNodeResult ...
 type CSSGetMatchedStylesForNodeResult struct {
 
 	// InlineStyle (optional) Inline style for the specified DOM node.
@@ -791,7 +789,7 @@ func (m CSSGetMediaQueries) Call(c Client) (*CSSGetMediaQueriesResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetMediaQueriesResult Returns all media queries parsed by the rendering engine.
+// CSSGetMediaQueriesResult ...
 type CSSGetMediaQueriesResult struct {
 
 	// Medias ...
@@ -815,8 +813,7 @@ func (m CSSGetPlatformFontsForNode) Call(c Client) (*CSSGetPlatformFontsForNodeR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetPlatformFontsForNodeResult Requests information about platform fonts which we used to render child TextNodes in the given
-// node.
+// CSSGetPlatformFontsForNodeResult ...
 type CSSGetPlatformFontsForNodeResult struct {
 
 	// Fonts Usage statistics for every employed platform font.
@@ -839,7 +836,7 @@ func (m CSSGetStyleSheetText) Call(c Client) (*CSSGetStyleSheetTextResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetStyleSheetTextResult Returns the current textual content for a stylesheet.
+// CSSGetStyleSheetTextResult ...
 type CSSGetStyleSheetTextResult struct {
 
 	// Text The stylesheet text.
@@ -865,10 +862,7 @@ func (m CSSGetLayersForNode) Call(c Client) (*CSSGetLayersForNodeResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSGetLayersForNodeResult (experimental) Returns all layers parsed by the rendering engine for the tree scope of a node.
-// Given a DOM element identified by nodeId, getLayersForNode returns the root
-// layer for the nearest ancestor document or shadow root. The layer root contains
-// the full layer tree for the tree scope and their ordering.
+// CSSGetLayersForNodeResult (experimental) ...
 type CSSGetLayersForNodeResult struct {
 
 	// RootLayer ...
@@ -908,7 +902,7 @@ func (m CSSTakeComputedStyleUpdates) Call(c Client) (*CSSTakeComputedStyleUpdate
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSTakeComputedStyleUpdatesResult (experimental) Polls the next batch of computed style updates.
+// CSSTakeComputedStyleUpdatesResult (experimental) ...
 type CSSTakeComputedStyleUpdatesResult struct {
 
 	// NodeIds The list of node Ids that have their tracked computed styles updated
@@ -961,7 +955,7 @@ func (m CSSSetKeyframeKey) Call(c Client) (*CSSSetKeyframeKeyResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetKeyframeKeyResult Modifies the keyframe rule key text.
+// CSSSetKeyframeKeyResult ...
 type CSSSetKeyframeKeyResult struct {
 
 	// KeyText The resulting key text after modification.
@@ -990,7 +984,7 @@ func (m CSSSetMediaText) Call(c Client) (*CSSSetMediaTextResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetMediaTextResult Modifies the rule selector.
+// CSSSetMediaTextResult ...
 type CSSSetMediaTextResult struct {
 
 	// Media The resulting CSS media rule after modification.
@@ -1019,7 +1013,7 @@ func (m CSSSetContainerQueryText) Call(c Client) (*CSSSetContainerQueryTextResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetContainerQueryTextResult (experimental) Modifies the expression of a container query.
+// CSSSetContainerQueryTextResult (experimental) ...
 type CSSSetContainerQueryTextResult struct {
 
 	// ContainerQuery The resulting CSS container query rule after modification.
@@ -1048,7 +1042,7 @@ func (m CSSSetSupportsText) Call(c Client) (*CSSSetSupportsTextResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetSupportsTextResult (experimental) Modifies the expression of a supports at-rule.
+// CSSSetSupportsTextResult (experimental) ...
 type CSSSetSupportsTextResult struct {
 
 	// Supports The resulting CSS Supports rule after modification.
@@ -1077,7 +1071,7 @@ func (m CSSSetRuleSelector) Call(c Client) (*CSSSetRuleSelectorResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetRuleSelectorResult Modifies the rule selector.
+// CSSSetRuleSelectorResult ...
 type CSSSetRuleSelectorResult struct {
 
 	// SelectorList The resulting selector list after modification.
@@ -1103,7 +1097,7 @@ func (m CSSSetStyleSheetText) Call(c Client) (*CSSSetStyleSheetTextResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetStyleSheetTextResult Sets the new stylesheet text.
+// CSSSetStyleSheetTextResult ...
 type CSSSetStyleSheetTextResult struct {
 
 	// SourceMapURL (optional) URL of source map associated with script (if any).
@@ -1126,7 +1120,7 @@ func (m CSSSetStyleTexts) Call(c Client) (*CSSSetStyleTextsResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSSetStyleTextsResult Applies specified style edits one after another in the given order.
+// CSSSetStyleTextsResult ...
 type CSSSetStyleTextsResult struct {
 
 	// Styles The resulting styles after modification.
@@ -1159,8 +1153,7 @@ func (m CSSStopRuleUsageTracking) Call(c Client) (*CSSStopRuleUsageTrackingResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSStopRuleUsageTrackingResult Stop tracking rule usage and return the list of rules that were used since last call to
-// `takeCoverageDelta` (or since start of coverage instrumentation)
+// CSSStopRuleUsageTrackingResult ...
 type CSSStopRuleUsageTrackingResult struct {
 
 	// RuleUsage ...
@@ -1181,8 +1174,7 @@ func (m CSSTakeCoverageDelta) Call(c Client) (*CSSTakeCoverageDeltaResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// CSSTakeCoverageDeltaResult Obtain list of rules that became used since last call to this method (or since start of coverage
-// instrumentation)
+// CSSTakeCoverageDeltaResult ...
 type CSSTakeCoverageDeltaResult struct {
 
 	// Coverage ...

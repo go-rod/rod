@@ -373,7 +373,7 @@ func (m BrowserGetVersion) Call(c Client) (*BrowserGetVersionResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetVersionResult Returns version information.
+// BrowserGetVersionResult ...
 type BrowserGetVersionResult struct {
 
 	// ProtocolVersion Protocol version.
@@ -406,8 +406,7 @@ func (m BrowserGetBrowserCommandLine) Call(c Client) (*BrowserGetBrowserCommandL
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetBrowserCommandLineResult (experimental) Returns the command line switches for the browser process if, and only if
-// --enable-automation is on the commandline.
+// BrowserGetBrowserCommandLineResult (experimental) ...
 type BrowserGetBrowserCommandLineResult struct {
 
 	// Arguments Commandline parameters
@@ -435,7 +434,7 @@ func (m BrowserGetHistograms) Call(c Client) (*BrowserGetHistogramsResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetHistogramsResult (experimental) Get Chrome histograms.
+// BrowserGetHistogramsResult (experimental) ...
 type BrowserGetHistogramsResult struct {
 
 	// Histograms Histograms.
@@ -461,7 +460,7 @@ func (m BrowserGetHistogram) Call(c Client) (*BrowserGetHistogramResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetHistogramResult (experimental) Get a Chrome histogram by name.
+// BrowserGetHistogramResult (experimental) ...
 type BrowserGetHistogramResult struct {
 
 	// Histogram Histogram.
@@ -484,7 +483,7 @@ func (m BrowserGetWindowBounds) Call(c Client) (*BrowserGetWindowBoundsResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetWindowBoundsResult (experimental) Get position and size of the browser window.
+// BrowserGetWindowBoundsResult (experimental) ...
 type BrowserGetWindowBoundsResult struct {
 
 	// Bounds Bounds information of the window. When window state is 'minimized', the restored window
@@ -508,7 +507,7 @@ func (m BrowserGetWindowForTarget) Call(c Client) (*BrowserGetWindowForTargetRes
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// BrowserGetWindowForTargetResult (experimental) Get the browser window that contains the devtools target.
+// BrowserGetWindowForTargetResult (experimental) ...
 type BrowserGetWindowForTargetResult struct {
 
 	// WindowID Browser window id.

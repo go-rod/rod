@@ -182,7 +182,7 @@ func (m SystemInfoGetInfo) Call(c Client) (*SystemInfoGetInfoResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// SystemInfoGetInfoResult Returns information about the system.
+// SystemInfoGetInfoResult ...
 type SystemInfoGetInfoResult struct {
 
 	// Gpu Information about the GPUs on the system.
@@ -214,7 +214,7 @@ func (m SystemInfoGetProcessInfo) Call(c Client) (*SystemInfoGetProcessInfoResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// SystemInfoGetProcessInfoResult Returns information about all running processes.
+// SystemInfoGetProcessInfoResult ...
 type SystemInfoGetProcessInfoResult struct {
 
 	// ProcessInfo An array of process info blocks.

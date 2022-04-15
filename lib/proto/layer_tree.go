@@ -143,7 +143,7 @@ func (m LayerTreeCompositingReasons) Call(c Client) (*LayerTreeCompositingReason
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// LayerTreeCompositingReasonsResult Provides the reasons why the given layer was composited.
+// LayerTreeCompositingReasonsResult ...
 type LayerTreeCompositingReasonsResult struct {
 
 	// CompositingReasons (deprecated) A list of strings specifying reasons for the given layer to become composited.
@@ -193,7 +193,7 @@ func (m LayerTreeLoadSnapshot) Call(c Client) (*LayerTreeLoadSnapshotResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// LayerTreeLoadSnapshotResult Returns the snapshot identifier.
+// LayerTreeLoadSnapshotResult ...
 type LayerTreeLoadSnapshotResult struct {
 
 	// SnapshotID The id of the snapshot.
@@ -216,7 +216,7 @@ func (m LayerTreeMakeSnapshot) Call(c Client) (*LayerTreeMakeSnapshotResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// LayerTreeMakeSnapshotResult Returns the layer snapshot identifier.
+// LayerTreeMakeSnapshotResult ...
 type LayerTreeMakeSnapshotResult struct {
 
 	// SnapshotID The id of the layer snapshot.
@@ -295,7 +295,7 @@ func (m LayerTreeReplaySnapshot) Call(c Client) (*LayerTreeReplaySnapshotResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// LayerTreeReplaySnapshotResult Replays the layer snapshot and returns the resulting bitmap.
+// LayerTreeReplaySnapshotResult ...
 type LayerTreeReplaySnapshotResult struct {
 
 	// DataURL A data: URL for resulting image.
@@ -318,7 +318,7 @@ func (m LayerTreeSnapshotCommandLog) Call(c Client) (*LayerTreeSnapshotCommandLo
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// LayerTreeSnapshotCommandLogResult Replays the layer snapshot and returns canvas log.
+// LayerTreeSnapshotCommandLogResult ...
 type LayerTreeSnapshotCommandLogResult struct {
 
 	// CommandLog The array of canvas function calls.

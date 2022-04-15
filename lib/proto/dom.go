@@ -343,7 +343,7 @@ func (m DOMCollectClassNamesFromSubtree) Call(c Client) (*DOMCollectClassNamesFr
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMCollectClassNamesFromSubtreeResult (experimental) Collects class names for the node with given id and all of it's child nodes.
+// DOMCollectClassNamesFromSubtreeResult (experimental) ...
 type DOMCollectClassNamesFromSubtreeResult struct {
 
 	// ClassNames Class name list.
@@ -374,8 +374,7 @@ func (m DOMCopyTo) Call(c Client) (*DOMCopyToResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMCopyToResult (experimental) Creates a deep copy of the specified node and places it into the target container before the
-// given anchor.
+// DOMCopyToResult (experimental) ...
 type DOMCopyToResult struct {
 
 	// NodeID Id of the node clone.
@@ -413,8 +412,7 @@ func (m DOMDescribeNode) Call(c Client) (*DOMDescribeNodeResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMDescribeNodeResult Describes node given its id, does not require domain to be enabled. Does not start tracking any
-// objects, can be used for automation.
+// DOMDescribeNodeResult ...
 type DOMDescribeNodeResult struct {
 
 	// Node Node description.
@@ -539,7 +537,7 @@ func (m DOMGetAttributes) Call(c Client) (*DOMGetAttributesResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetAttributesResult Returns attributes for the specified node.
+// DOMGetAttributesResult ...
 type DOMGetAttributesResult struct {
 
 	// Attributes An interleaved array of node attribute names and values.
@@ -568,7 +566,7 @@ func (m DOMGetBoxModel) Call(c Client) (*DOMGetBoxModelResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetBoxModelResult Returns boxes for the given node.
+// DOMGetBoxModelResult ...
 type DOMGetBoxModelResult struct {
 
 	// Model Box model for the node.
@@ -598,8 +596,7 @@ func (m DOMGetContentQuads) Call(c Client) (*DOMGetContentQuadsResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetContentQuadsResult (experimental) Returns quads that describe node position on the page. This method
-// might return multiple quads for inline nodes.
+// DOMGetContentQuadsResult (experimental) ...
 type DOMGetContentQuadsResult struct {
 
 	// Quads Quads that describe node layout relative to viewport.
@@ -627,7 +624,7 @@ func (m DOMGetDocument) Call(c Client) (*DOMGetDocumentResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetDocumentResult Returns the root DOM node (and optionally the subtree) to the caller.
+// DOMGetDocumentResult ...
 type DOMGetDocumentResult struct {
 
 	// Root Resulting node.
@@ -657,9 +654,7 @@ func (m DOMGetFlattenedDocument) Call(c Client) (*DOMGetFlattenedDocumentResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetFlattenedDocumentResult (deprecated) Returns the root DOM node (and optionally the subtree) to the caller.
-// Deprecated, as it is not designed to work well with the rest of the DOM agent.
-// Use DOMSnapshot.captureSnapshot instead.
+// DOMGetFlattenedDocumentResult (deprecated) ...
 type DOMGetFlattenedDocumentResult struct {
 
 	// Nodes Resulting node.
@@ -689,7 +684,7 @@ func (m DOMGetNodesForSubtreeByStyle) Call(c Client) (*DOMGetNodesForSubtreeBySt
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetNodesForSubtreeByStyleResult (experimental) Finds nodes with a given computed style in a subtree.
+// DOMGetNodesForSubtreeByStyleResult (experimental) ...
 type DOMGetNodesForSubtreeByStyleResult struct {
 
 	// NodeIds Resulting nodes.
@@ -722,8 +717,7 @@ func (m DOMGetNodeForLocation) Call(c Client) (*DOMGetNodeForLocationResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetNodeForLocationResult Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
-// either returned or not.
+// DOMGetNodeForLocationResult ...
 type DOMGetNodeForLocationResult struct {
 
 	// BackendNodeID Resulting node.
@@ -758,7 +752,7 @@ func (m DOMGetOuterHTML) Call(c Client) (*DOMGetOuterHTMLResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetOuterHTMLResult Returns node's HTML markup.
+// DOMGetOuterHTMLResult ...
 type DOMGetOuterHTMLResult struct {
 
 	// OuterHTML Outer HTML markup.
@@ -781,7 +775,7 @@ func (m DOMGetRelayoutBoundary) Call(c Client) (*DOMGetRelayoutBoundaryResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetRelayoutBoundaryResult (experimental) Returns the id of the nearest ancestor that is a relayout boundary.
+// DOMGetRelayoutBoundaryResult (experimental) ...
 type DOMGetRelayoutBoundaryResult struct {
 
 	// NodeID Relayout boundary node id for the given node.
@@ -811,8 +805,7 @@ func (m DOMGetSearchResults) Call(c Client) (*DOMGetSearchResultsResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetSearchResultsResult (experimental) Returns search results from given `fromIndex` to given `toIndex` from the search with the given
-// identifier.
+// DOMGetSearchResultsResult (experimental) ...
 type DOMGetSearchResultsResult struct {
 
 	// NodeIds Ids of the search result nodes.
@@ -890,7 +883,7 @@ func (m DOMMoveTo) Call(c Client) (*DOMMoveToResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMMoveToResult Moves node into the new container, places it before the given anchor.
+// DOMMoveToResult ...
 type DOMMoveToResult struct {
 
 	// NodeID New id of the moved node.
@@ -917,8 +910,7 @@ func (m DOMPerformSearch) Call(c Client) (*DOMPerformSearchResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMPerformSearchResult (experimental) Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
-// `cancelSearch` to end this search session.
+// DOMPerformSearchResult (experimental) ...
 type DOMPerformSearchResult struct {
 
 	// SearchID Unique search session identifier.
@@ -944,7 +936,7 @@ func (m DOMPushNodeByPathToFrontend) Call(c Client) (*DOMPushNodeByPathToFronten
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMPushNodeByPathToFrontendResult (experimental) Requests that the node is sent to the caller given its path. // FIXME, use XPath
+// DOMPushNodeByPathToFrontendResult (experimental) ...
 type DOMPushNodeByPathToFrontendResult struct {
 
 	// NodeID Id of the node for given path.
@@ -969,7 +961,7 @@ func (m DOMPushNodesByBackendIdsToFrontend) Call(c Client) (*DOMPushNodesByBacke
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMPushNodesByBackendIdsToFrontendResult (experimental) Requests that a batch of nodes is sent to the caller given their backend node ids.
+// DOMPushNodesByBackendIdsToFrontendResult (experimental) ...
 type DOMPushNodesByBackendIdsToFrontendResult struct {
 
 	// NodeIds The array of ids of pushed nodes that correspond to the backend ids specified in
@@ -996,7 +988,7 @@ func (m DOMQuerySelector) Call(c Client) (*DOMQuerySelectorResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMQuerySelectorResult Executes `querySelector` on a given node.
+// DOMQuerySelectorResult ...
 type DOMQuerySelectorResult struct {
 
 	// NodeID Query selector result.
@@ -1022,7 +1014,7 @@ func (m DOMQuerySelectorAll) Call(c Client) (*DOMQuerySelectorAllResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMQuerySelectorAllResult Executes `querySelectorAll` on a given node.
+// DOMQuerySelectorAllResult ...
 type DOMQuerySelectorAllResult struct {
 
 	// NodeIds Query selector result.
@@ -1117,9 +1109,7 @@ func (m DOMRequestNode) Call(c Client) (*DOMRequestNodeResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMRequestNodeResult Requests that the node is sent to the caller given the JavaScript node object reference. All
-// nodes that form the path from the node to the root are also sent to the client as a series of
-// `setChildNodes` notifications.
+// DOMRequestNodeResult ...
 type DOMRequestNodeResult struct {
 
 	// NodeID Node id for given object.
@@ -1151,7 +1141,7 @@ func (m DOMResolveNode) Call(c Client) (*DOMResolveNodeResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMResolveNodeResult Resolves the JavaScript node object for a given NodeId or BackendNodeId.
+// DOMResolveNodeResult ...
 type DOMResolveNodeResult struct {
 
 	// Object JavaScript object wrapper for given node.
@@ -1257,7 +1247,7 @@ func (m DOMGetNodeStackTraces) Call(c Client) (*DOMGetNodeStackTracesResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetNodeStackTracesResult (experimental) Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
+// DOMGetNodeStackTracesResult (experimental) ...
 type DOMGetNodeStackTracesResult struct {
 
 	// Creation (optional) Creation stack trace, if available.
@@ -1281,8 +1271,7 @@ func (m DOMGetFileInfo) Call(c Client) (*DOMGetFileInfoResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetFileInfoResult (experimental) Returns file information for the given
-// File wrapper.
+// DOMGetFileInfoResult (experimental) ...
 type DOMGetFileInfoResult struct {
 
 	// Path ...
@@ -1324,7 +1313,7 @@ func (m DOMSetNodeName) Call(c Client) (*DOMSetNodeNameResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMSetNodeNameResult Sets node name for a node with given id.
+// DOMSetNodeNameResult ...
 type DOMSetNodeNameResult struct {
 
 	// NodeID New node's id.
@@ -1395,7 +1384,7 @@ func (m DOMGetFrameOwner) Call(c Client) (*DOMGetFrameOwnerResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetFrameOwnerResult (experimental) Returns iframe node that owns iframe with the given domain.
+// DOMGetFrameOwnerResult (experimental) ...
 type DOMGetFrameOwnerResult struct {
 
 	// BackendNodeID Resulting node.
@@ -1426,9 +1415,7 @@ func (m DOMGetContainerForNode) Call(c Client) (*DOMGetContainerForNodeResult, e
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetContainerForNodeResult (experimental) Returns the container of the given node based on container query conditions.
-// If containerName is given, it will find the nearest container with a matching name;
-// otherwise it will find the nearest container regardless of its container name.
+// DOMGetContainerForNodeResult (experimental) ...
 type DOMGetContainerForNodeResult struct {
 
 	// NodeID (optional) The container node for the given node, or null if not found.
@@ -1454,8 +1441,7 @@ func (m DOMGetQueryingDescendantsForContainer) Call(c Client) (*DOMGetQueryingDe
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMGetQueryingDescendantsForContainerResult (experimental) Returns the descendants of a container query container that have
-// container queries against this container.
+// DOMGetQueryingDescendantsForContainerResult (experimental) ...
 type DOMGetQueryingDescendantsForContainerResult struct {
 
 	// NodeIds Descendant nodes with container queries against the given container.

@@ -116,7 +116,7 @@ func (m TargetAttachToTarget) Call(c Client) (*TargetAttachToTargetResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetAttachToTargetResult Attaches to the target with given id.
+// TargetAttachToTargetResult ...
 type TargetAttachToTargetResult struct {
 
 	// SessionID Id assigned to the session.
@@ -136,7 +136,7 @@ func (m TargetAttachToBrowserTarget) Call(c Client) (*TargetAttachToBrowserTarge
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetAttachToBrowserTargetResult (experimental) Attaches to the browser target, only uses flat sessionId mode.
+// TargetAttachToBrowserTargetResult (experimental) ...
 type TargetAttachToBrowserTargetResult struct {
 
 	// SessionID Id assigned to the session.
@@ -159,7 +159,7 @@ func (m TargetCloseTarget) Call(c Client) (*TargetCloseTargetResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetCloseTargetResult Closes the target. If the target is a page that gets closed too.
+// TargetCloseTargetResult ...
 type TargetCloseTargetResult struct {
 
 	// Success (deprecated) Always set to true. If an error occurs, the response indicates protocol error.
@@ -218,8 +218,7 @@ func (m TargetCreateBrowserContext) Call(c Client) (*TargetCreateBrowserContextR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetCreateBrowserContextResult (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
-// one.
+// TargetCreateBrowserContextResult (experimental) ...
 type TargetCreateBrowserContextResult struct {
 
 	// BrowserContextID The id of the context created.
@@ -239,7 +238,7 @@ func (m TargetGetBrowserContexts) Call(c Client) (*TargetGetBrowserContextsResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetGetBrowserContextsResult (experimental) Returns all browser contexts created with `Target.createBrowserContext` method.
+// TargetGetBrowserContextsResult (experimental) ...
 type TargetGetBrowserContextsResult struct {
 
 	// BrowserContextIds An array of browser context ids.
@@ -282,7 +281,7 @@ func (m TargetCreateTarget) Call(c Client) (*TargetCreateTargetResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetCreateTargetResult Creates a new page.
+// TargetCreateTargetResult ...
 type TargetCreateTargetResult struct {
 
 	// TargetID The id of the page opened.
@@ -339,7 +338,7 @@ func (m TargetGetTargetInfo) Call(c Client) (*TargetGetTargetInfoResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetGetTargetInfoResult (experimental) Returns information about a target.
+// TargetGetTargetInfoResult (experimental) ...
 type TargetGetTargetInfoResult struct {
 
 	// TargetInfo ...
@@ -359,7 +358,7 @@ func (m TargetGetTargets) Call(c Client) (*TargetGetTargetsResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetGetTargetsResult Retrieves a list of available targets.
+// TargetGetTargetsResult ...
 type TargetGetTargetsResult struct {
 
 	// TargetInfos The list of targets.

@@ -94,7 +94,7 @@ func (m DOMDebuggerGetEventListeners) Call(c Client) (*DOMDebuggerGetEventListen
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DOMDebuggerGetEventListenersResult Returns event listeners of the given object.
+// DOMDebuggerGetEventListenersResult ...
 type DOMDebuggerGetEventListenersResult struct {
 
 	// Listeners Array of relevant listeners.

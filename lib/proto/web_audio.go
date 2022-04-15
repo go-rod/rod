@@ -230,7 +230,7 @@ func (m WebAudioGetRealtimeData) Call(c Client) (*WebAudioGetRealtimeDataResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// WebAudioGetRealtimeDataResult Fetch the realtime data from the registered contexts.
+// WebAudioGetRealtimeDataResult ...
 type WebAudioGetRealtimeDataResult struct {
 
 	// RealtimeData ...

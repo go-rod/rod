@@ -157,7 +157,7 @@ func (m EmulationCanEmulate) Call(c Client) (*EmulationCanEmulateResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// EmulationCanEmulateResult Tells whether emulation is supported.
+// EmulationCanEmulateResult ...
 type EmulationCanEmulateResult struct {
 
 	// Result True if emulation is supported.
@@ -599,8 +599,7 @@ func (m EmulationSetVirtualTimePolicy) Call(c Client) (*EmulationSetVirtualTimeP
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// EmulationSetVirtualTimePolicyResult (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
-// the current virtual time policy.  Note this supersedes any previous time budget.
+// EmulationSetVirtualTimePolicyResult (experimental) ...
 type EmulationSetVirtualTimePolicyResult struct {
 
 	// VirtualTimeTicksBase Absolute timestamp at which virtual time was first enabled (up time in milliseconds).

@@ -174,7 +174,7 @@ func (m StorageGetCookies) Call(c Client) (*StorageGetCookiesResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// StorageGetCookiesResult Returns all browser cookies.
+// StorageGetCookiesResult ...
 type StorageGetCookiesResult struct {
 
 	// Cookies Array of cookie objects.
@@ -230,7 +230,7 @@ func (m StorageGetUsageAndQuota) Call(c Client) (*StorageGetUsageAndQuotaResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// StorageGetUsageAndQuotaResult Returns usage and quota in bytes.
+// StorageGetUsageAndQuotaResult ...
 type StorageGetUsageAndQuotaResult struct {
 
 	// Usage Storage usage (bytes).
@@ -350,8 +350,7 @@ func (m StorageGetTrustTokens) Call(c Client) (*StorageGetTrustTokensResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// StorageGetTrustTokensResult (experimental) Returns the number of stored Trust Tokens per issuer for the
-// current browsing context.
+// StorageGetTrustTokensResult (experimental) ...
 type StorageGetTrustTokensResult struct {
 
 	// Tokens ...
@@ -375,8 +374,7 @@ func (m StorageClearTrustTokens) Call(c Client) (*StorageClearTrustTokensResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// StorageClearTrustTokensResult (experimental) Removes all Trust Tokens issued by the provided issuerOrigin.
-// Leaves other stored data, including the issuer's Redemption Records, intact.
+// StorageClearTrustTokensResult (experimental) ...
 type StorageClearTrustTokensResult struct {
 
 	// DidDeleteTokens True if any tokens were deleted, false otherwise.
@@ -402,7 +400,7 @@ func (m StorageGetInterestGroupDetails) Call(c Client) (*StorageGetInterestGroup
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// StorageGetInterestGroupDetailsResult (experimental) Gets details for a named interest group.
+// StorageGetInterestGroupDetailsResult (experimental) ...
 type StorageGetInterestGroupDetailsResult struct {
 
 	// Details ...

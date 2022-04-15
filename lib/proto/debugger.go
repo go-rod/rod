@@ -280,8 +280,7 @@ func (m DebuggerEnable) Call(c Client) (*DebuggerEnableResult, error) {
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerEnableResult Enables debugger for the given page. Clients should not assume that the debugging has been
-// enabled until the result for this command is received.
+// DebuggerEnableResult ...
 type DebuggerEnableResult struct {
 
 	// DebuggerID (experimental) Unique identifier of the debugger.
@@ -331,7 +330,7 @@ func (m DebuggerEvaluateOnCallFrame) Call(c Client) (*DebuggerEvaluateOnCallFram
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerEvaluateOnCallFrameResult Evaluates expression on a given call frame.
+// DebuggerEvaluateOnCallFrameResult ...
 type DebuggerEvaluateOnCallFrameResult struct {
 
 	// Result Object wrapper for the evaluation result.
@@ -365,8 +364,7 @@ func (m DebuggerGetPossibleBreakpoints) Call(c Client) (*DebuggerGetPossibleBrea
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerGetPossibleBreakpointsResult Returns possible locations for breakpoint. scriptId in start and end range locations should be
-// the same.
+// DebuggerGetPossibleBreakpointsResult ...
 type DebuggerGetPossibleBreakpointsResult struct {
 
 	// Locations List of the possible breakpoint locations.
@@ -389,7 +387,7 @@ func (m DebuggerGetScriptSource) Call(c Client) (*DebuggerGetScriptSourceResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerGetScriptSourceResult Returns source for the script with given id.
+// DebuggerGetScriptSourceResult ...
 type DebuggerGetScriptSourceResult struct {
 
 	// ScriptSource Script source (empty in case of Wasm bytecode).
@@ -415,7 +413,7 @@ func (m DebuggerGetWasmBytecode) Call(c Client) (*DebuggerGetWasmBytecodeResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerGetWasmBytecodeResult (deprecated) This command is deprecated. Use getScriptSource instead.
+// DebuggerGetWasmBytecodeResult (deprecated) ...
 type DebuggerGetWasmBytecodeResult struct {
 
 	// Bytecode Script source.
@@ -438,7 +436,7 @@ func (m DebuggerGetStackTrace) Call(c Client) (*DebuggerGetStackTraceResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerGetStackTraceResult (experimental) Returns stack trace with given `stackTraceId`.
+// DebuggerGetStackTraceResult (experimental) ...
 type DebuggerGetStackTraceResult struct {
 
 	// StackTrace ...
@@ -503,7 +501,7 @@ func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerRestartFrameResult (deprecated) Restarts particular call frame from the beginning.
+// DebuggerRestartFrameResult (deprecated) ...
 type DebuggerRestartFrameResult struct {
 
 	// CallFrames New stack trace.
@@ -560,7 +558,7 @@ func (m DebuggerSearchInContent) Call(c Client) (*DebuggerSearchInContentResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSearchInContentResult Searches for given string in script content.
+// DebuggerSearchInContentResult ...
 type DebuggerSearchInContentResult struct {
 
 	// Result List of search matches.
@@ -641,7 +639,7 @@ func (m DebuggerSetBreakpoint) Call(c Client) (*DebuggerSetBreakpointResult, err
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSetBreakpointResult Sets JavaScript breakpoint at a given location.
+// DebuggerSetBreakpointResult ...
 type DebuggerSetBreakpointResult struct {
 
 	// BreakpointID Id of the created breakpoint for further reference.
@@ -680,7 +678,7 @@ func (m DebuggerSetInstrumentationBreakpoint) Call(c Client) (*DebuggerSetInstru
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSetInstrumentationBreakpointResult Sets instrumentation breakpoint.
+// DebuggerSetInstrumentationBreakpointResult ...
 type DebuggerSetInstrumentationBreakpointResult struct {
 
 	// BreakpointID Id of the created breakpoint for further reference.
@@ -723,10 +721,7 @@ func (m DebuggerSetBreakpointByURL) Call(c Client) (*DebuggerSetBreakpointByURLR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSetBreakpointByURLResult Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
-// command is issued, all existing parsed scripts will have breakpoints resolved and returned in
-// `locations` property. Further matching script parsing will result in subsequent
-// `breakpointResolved` events issued. This logical breakpoint will survive page reloads.
+// DebuggerSetBreakpointByURLResult ...
 type DebuggerSetBreakpointByURLResult struct {
 
 	// BreakpointID Id of the created breakpoint for further reference.
@@ -760,9 +755,7 @@ func (m DebuggerSetBreakpointOnFunctionCall) Call(c Client) (*DebuggerSetBreakpo
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSetBreakpointOnFunctionCallResult (experimental) Sets JavaScript breakpoint before each call to the given function.
-// If another function was created from the same source as a given one,
-// calling it will also trigger the breakpoint.
+// DebuggerSetBreakpointOnFunctionCallResult (experimental) ...
 type DebuggerSetBreakpointOnFunctionCallResult struct {
 
 	// BreakpointID Id of the created breakpoint for further reference.
@@ -852,7 +845,7 @@ func (m DebuggerSetScriptSource) Call(c Client) (*DebuggerSetScriptSourceResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerSetScriptSourceResult Edits JavaScript source live.
+// DebuggerSetScriptSourceResult ...
 type DebuggerSetScriptSourceResult struct {
 
 	// CallFrames (optional) New stack trace in case editing has happened while VM was stopped.
