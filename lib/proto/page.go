@@ -134,11 +134,17 @@ const (
 	// PagePermissionsPolicyFeatureChEct enum const
 	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-etc"
 
+	// PagePermissionsPolicyFeatureChPartitionedCookies enum const
+	PagePermissionsPolicyFeatureChPartitionedCookies PagePermissionsPolicyFeature = "ch-partitioned-cookies"
+
 	// PagePermissionsPolicyFeatureChPrefersColorScheme enum const
 	PagePermissionsPolicyFeatureChPrefersColorScheme PagePermissionsPolicyFeature = "ch-prefers-color-scheme"
 
 	// PagePermissionsPolicyFeatureChRtt enum const
 	PagePermissionsPolicyFeatureChRtt PagePermissionsPolicyFeature = "ch-rtt"
+
+	// PagePermissionsPolicyFeatureChSaveData enum const
+	PagePermissionsPolicyFeatureChSaveData PagePermissionsPolicyFeature = "ch-save-data"
 
 	// PagePermissionsPolicyFeatureChUa enum const
 	PagePermissionsPolicyFeatureChUa PagePermissionsPolicyFeature = "ch-ua"
@@ -184,9 +190,6 @@ const (
 
 	// PagePermissionsPolicyFeatureChWidth enum const
 	PagePermissionsPolicyFeatureChWidth PagePermissionsPolicyFeature = "ch-width"
-
-	// PagePermissionsPolicyFeatureChPartitionedCookies enum const
-	PagePermissionsPolicyFeatureChPartitionedCookies PagePermissionsPolicyFeature = "ch-partitioned-cookies"
 
 	// PagePermissionsPolicyFeatureClipboardRead enum const
 	PagePermissionsPolicyFeatureClipboardRead PagePermissionsPolicyFeature = "clipboard-read"
