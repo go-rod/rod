@@ -139,13 +139,15 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 			utils.E(err)
 			defer func() { _ = res.Body.Close() }()
 
-			buf := make([]byte, 64*1024) // a TCP packet won't be larger than 64KB
-			_, err = res.Body.Read(buf)
-			utils.E(err)
+			if res.StatusCode < 400 {
+				buf := make([]byte, 64*1024) // a TCP packet won't be larger than 64KB
+				_, err = res.Body.Read(buf)
+				utils.E(err)
 
-			setURL.Do(func() {
-				fastest = u
-			})
+				setURL.Do(func() {
+					fastest = u
+				})
+			}
 		}()
 	}
 
