@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -115,6 +116,7 @@ func (lc *Browser) Download() (err error) {
 
 	u, err := lc.fastestHost()
 	utils.E(err)
+	utils.E(os.RemoveAll(lc.Destination()))
 	return lc.download(lc.Context, u)
 }
 
@@ -224,7 +226,16 @@ func (lc *Browser) MustGet() string {
 // Exists returns true if the browser executable path exists.
 func (lc *Browser) Exists() bool {
 	_, err := os.Stat(lc.Destination())
-	return err == nil
+	if err != nil {
+		return false
+	}
+
+	cmd := exec.Command(lc.Destination(), "--version")
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		return false
+	}
+	return regexp.MustCompile(`\d+.\d+.\d+.\d+`).Match(b)
 }
 
 // LookPath searches for the browser executable from often used paths on current operating system.
