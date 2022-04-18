@@ -31,6 +31,7 @@ var hostConf = map[string]struct {
 	"darwin_amd64":  {"Mac", "chrome-mac.zip"},
 	"darwin_arm64":  {"Mac_Arm", "chrome-mac.zip"},
 	"linux_amd64":   {"Linux_x64", "chrome-linux.zip"},
+	"linux_arm64":   {"chromium", "chromium-linux-arm64.zip"},
 	"windows_386":   {"Win", "chrome-win.zip"},
 	"windows_amd64": {"Win_x64", "chrome-win.zip"},
 }[runtime.GOOS+"_"+runtime.GOARCH]
