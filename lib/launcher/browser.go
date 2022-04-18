@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -55,6 +56,18 @@ func HostNPM(revision int) string {
 	)
 }
 
+// HostPlaywright to download browser
+func HostPlaywright(revision int) string {
+	rev := RevisionPlaywright
+	if !(runtime.GOOS == "linux" && runtime.GOARCH == "arm64") {
+		rev = revision
+	}
+	return fmt.Sprintf(
+		"https://playwright.azureedge.net/builds/chromium/%d/chromium-linux-arm64.zip",
+		rev,
+	)
+}
+
 // DefaultBrowserDir for downloaded browser. For unix is "$HOME/.cache/rod/browser",
 // for Windows it's "%APPDATA%\rod\browser"
 var DefaultBrowserDir = filepath.Join(map[string]string{
@@ -87,8 +100,8 @@ type Browser struct {
 func NewBrowser() *Browser {
 	return &Browser{
 		Context:  context.Background(),
-		Revision: DefaultRevision,
-		Hosts:    []Host{HostGoogle, HostNPM},
+		Revision: RevisionDefault,
+		Hosts:    []Host{HostGoogle, HostNPM, HostPlaywright},
 		Dir:      DefaultBrowserDir,
 		Logger:   os.Stdout,
 		LockPort: defaults.LockPort,
@@ -129,13 +142,17 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 	ctx, cancel := context.WithCancel(lc.Context)
 	defer cancel()
 
+	wg := sync.WaitGroup{}
 	for _, host := range lc.Hosts {
 		u := host(lc.Revision)
+
+		lc.Logger.Println("check", u)
+		wg.Add(1)
 
 		go func() {
 			defer func() {
 				_ = recover()
-				cancel()
+				wg.Done()
 			}()
 
 			q, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
@@ -152,12 +169,12 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 
 				setURL.Do(func() {
 					fastest = u
+					cancel()
 				})
 			}
 		}()
 	}
-
-	<-ctx.Done()
+	wg.Wait()
 
 	return
 }

@@ -27,8 +27,9 @@ var setup = got.Setup(nil)
 func TestDownloadHosts(t *testing.T) {
 	g := setup(t)
 
-	g.Has(launcher.HostGoogle(launcher.DefaultRevision), "https://storage.googleapis.com/chromium-browser-snapshots")
-	g.Has(launcher.HostNPM(launcher.DefaultRevision), "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots")
+	g.Has(launcher.HostGoogle(launcher.RevisionDefault), "https://storage.googleapis.com/chromium-browser-snapshots")
+	g.Has(launcher.HostNPM(launcher.RevisionDefault), "https://registry.npmmirror.com/-/binary/chromium-browser-snapshots")
+	g.Has(launcher.HostPlaywright(launcher.RevisionDefault), "https://playwright.azureedge.net/")
 }
 
 func TestDownload(t *testing.T) {
