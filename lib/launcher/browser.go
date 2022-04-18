@@ -1,6 +1,7 @@
 package launcher
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -224,9 +225,20 @@ func (lc *Browser) MustGet() string {
 }
 
 // Exists returns true if the browser executable path exists.
+// If the executable is malformed it will return false.
 func (lc *Browser) Exists() bool {
 	_, err := os.Stat(lc.Destination())
-	return err == nil
+	if err != nil {
+		return false
+	}
+
+	cmd := exec.Command(lc.Destination(), "--headless", "--no-sandbox",
+		"--disable-gpu", "--dump-dom", "about:blank")
+	b, err := cmd.CombinedOutput()
+	if err != nil {
+		return false
+	}
+	return bytes.Contains(b, []byte(`<html><head></head><body></body></html>`))
 }
 
 // LookPath searches for the browser executable from often used paths on current operating system.

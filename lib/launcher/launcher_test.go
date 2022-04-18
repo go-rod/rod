@@ -18,6 +18,7 @@ import (
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/got"
 )
 
@@ -223,4 +224,17 @@ func TestProfileDir(t *testing.T) {
 
 	g.E(err)
 	g.True(file.IsDir())
+}
+
+func TestBrowserExists(t *testing.T) {
+	g := setup(t)
+
+	b := launcher.NewBrowser()
+	b.Revision = 0
+	g.False(b.Exists())
+
+	// fake a broken executable
+	g.E(utils.Mkdir(b.Destination()))
+	g.Cleanup(func() { _ = os.RemoveAll(b.Destination()) })
+	g.False(b.Exists())
 }
