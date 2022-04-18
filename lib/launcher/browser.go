@@ -55,6 +55,16 @@ func HostNPM(revision int) string {
 	)
 }
 
+// HostPlaywright to download browser
+func HostPlaywright(revision int) string {
+	return fmt.Sprintf(
+		"https://playwright.azureedge.net/builds/%s/%d/%s",
+		hostConf.urlPrefix,
+		revision,
+		hostConf.zipName,
+	)
+}
+
 // DefaultBrowserDir for downloaded browser. For unix is "$HOME/.cache/rod/browser",
 // for Windows it's "%APPDATA%\rod\browser"
 var DefaultBrowserDir = filepath.Join(map[string]string{
@@ -88,7 +98,7 @@ func NewBrowser() *Browser {
 	return &Browser{
 		Context:  context.Background(),
 		Revision: DefaultRevision,
-		Hosts:    []Host{HostGoogle, HostNPM},
+		Hosts:    []Host{HostGoogle, HostNPM, HostPlaywright},
 		Dir:      DefaultBrowserDir,
 		Logger:   os.Stdout,
 		LockPort: defaults.LockPort,
