@@ -2,7 +2,6 @@ package launcher
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -61,7 +60,7 @@ func TestToWS(t *testing.T) {
 func TestUnzip(t *testing.T) {
 	g := setup(t)
 
-	g.Err(unzip(ioutil.Discard, "", ""))
+	g.Err(unzip(utils.LoggerQuiet, "", ""))
 }
 
 func TestLaunchOptions(t *testing.T) {
@@ -144,7 +143,7 @@ func TestLaunchErrs(t *testing.T) {
 	s := g.Serve()
 	s.Route("/", "", nil)
 	l = New().Bin("")
-	l.browser.Logger = ioutil.Discard
+	l.browser.Logger = utils.LoggerQuiet
 	l.browser.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
 	l.browser.Hosts = []Host{HostTest(s.URL())}
 	_, err = l.Launch()
@@ -154,7 +153,7 @@ func TestLaunchErrs(t *testing.T) {
 func TestProgresser(t *testing.T) {
 	g := setup(t)
 
-	p := progresser{size: 100, logger: ioutil.Discard}
+	p := progresser{size: 100, logger: utils.LoggerQuiet}
 
 	g.E(p.Write(make([]byte, 100)))
 	g.E(p.Write(make([]byte, 100)))
@@ -179,7 +178,7 @@ func TestBrowserDownloadErr(t *testing.T) {
 	g := setup(t)
 
 	b := NewBrowser()
-	b.Logger = ioutil.Discard
+	b.Logger = utils.LoggerQuiet
 	malURL := "https://npm.taobao.org/mirrors/chromium-browser-snapshots//869685/"
 	g.Has(b.download(g.Context(), malURL).Error(), "failed to download the browser: 200")
 }

@@ -262,6 +262,8 @@ func Exec(line string, rest ...string) string {
 	return ExecLine(true, line, rest...)
 }
 
+var execLogger = log.New(os.Stdout, "[exec]", log.LstdFlags)
+
 // ExecLine of command
 func ExecLine(std bool, line string, rest ...string) string {
 	args := rest
@@ -269,7 +271,7 @@ func ExecLine(std bool, line string, rest ...string) string {
 		args = append(regSpace.Split(line, -1), rest...)
 	}
 
-	log.Printf("[exec] %s", FormatCLIArgs(args))
+	execLogger.Println(FormatCLIArgs(args))
 
 	buf := bytes.NewBuffer(nil)
 

@@ -90,7 +90,7 @@ type Browser struct {
 	Dir string
 
 	// Log to print output
-	Logger io.Writer
+	Logger utils.Logger
 
 	// LockPort a tcp port to prevent race downloading. Default is 2968 .
 	LockPort int
@@ -103,7 +103,7 @@ func NewBrowser() *Browser {
 		Revision: RevisionDefault,
 		Hosts:    []Host{HostGoogle, HostNPM, HostPlaywright},
 		Dir:      DefaultBrowserDir,
-		Logger:   os.Stdout,
+		Logger:   log.New(os.Stdout, "[launcher.Browser]", log.LstdFlags),
 		LockPort: defaults.LockPort,
 	}
 }
@@ -131,13 +131,15 @@ func (lc *Browser) Download() (err error) {
 	utils.E(err)
 
 	if u == "" {
-		panic(fmt.Errorf("[launcher] Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os"))
+		panic(fmt.Errorf("Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os"))
 	}
 
 	return lc.download(lc.Context, u)
 }
 
 func (lc *Browser) fastestHost() (fastest string, err error) {
+	lc.Logger.Println("try to find the fastest host to download the browser binary")
+
 	setURL := sync.Once{}
 	ctx, cancel := context.WithCancel(lc.Context)
 	defer cancel()
@@ -180,7 +182,7 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 }
 
 func (lc *Browser) download(ctx context.Context, u string) error {
-	_, _ = fmt.Fprintln(lc.Logger, "Download:", u)
+	lc.Logger.Println("Download:", u)
 
 	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
 

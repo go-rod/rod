@@ -67,7 +67,7 @@ func TestDownload(t *testing.T) {
 	})
 
 	b, cancel := newBrowser()
-	b.Logger = ioutil.Discard
+	b.Logger = utils.LoggerQuiet
 	defer cancel()
 	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
 	b.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
@@ -82,8 +82,9 @@ func TestBrowserGet(t *testing.T) {
 
 	b := launcher.NewBrowser()
 	b.Revision = 0
+	b.Logger = utils.LoggerQuiet
 	_, err := b.Get()
-	g.Eq(err.Error(), "[launcher] Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os")
+	g.Eq(err.Error(), "Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os")
 }
 
 func TestLaunch(t *testing.T) {
@@ -141,7 +142,7 @@ func TestLaunchUserMode(t *testing.T) {
 	port := 58472
 
 	url := l.Context(g.Context()).Delete("test").Bin("").
-		Revision(launcher.DefaultRevision).
+		Revision(launcher.RevisionDefault).
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
@@ -205,7 +206,7 @@ func newBrowser() (*launcher.Browser, func()) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	b := launcher.NewBrowser()
 	if !testing.Verbose() {
-		b.Logger = ioutil.Discard
+		b.Logger = utils.LoggerQuiet
 	}
 	b.Context = ctx
 	return b, cancel

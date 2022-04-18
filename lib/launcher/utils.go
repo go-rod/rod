@@ -17,7 +17,7 @@ var inContainer = utils.InContainer
 type progresser struct {
 	size   int
 	count  int
-	logger io.Writer
+	logger utils.Logger
 	last   time.Time
 }
 
@@ -25,13 +25,13 @@ func (p *progresser) Write(b []byte) (n int, err error) {
 	n = len(b)
 
 	if p.count == 0 {
-		_, _ = fmt.Fprint(p.logger, "Progress:")
+		p.logger.Println("Progress:")
 	}
 
 	p.count += n
 
 	if p.count == p.size {
-		_, _ = fmt.Fprintln(p.logger, " 100%")
+		p.logger.Println("100%")
 		return
 	}
 
@@ -40,7 +40,7 @@ func (p *progresser) Write(b []byte) (n int, err error) {
 	}
 
 	p.last = time.Now()
-	_, _ = fmt.Fprintf(p.logger, " %02d%%", p.count*100/p.size)
+	p.logger.Println(fmt.Sprintf("%02d%%", p.count*100/p.size))
 
 	return
 }
@@ -65,15 +65,14 @@ func toWS(u url.URL) *url.URL {
 	return &newURL
 }
 
-func unzip(logger io.Writer, from, to string) (err error) {
+func unzip(logger utils.Logger, from, to string) (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = e.(error)
 		}
 	}()
 
-	_, _ = fmt.Fprintln(logger, "Unzip to:", to)
-	defer func() { _, _ = fmt.Fprintln(logger) }()
+	logger.Println("Unzip to:", to)
 
 	zr, err := zip.OpenReader(from)
 	utils.E(err)
