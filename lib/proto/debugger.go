@@ -85,6 +85,12 @@ type DebuggerCallFrame struct {
 
 	// ReturnValue (optional) The value being returned, if the function is at return point.
 	ReturnValue *RuntimeRemoteObject `json:"returnValue,omitempty"`
+
+	// CanBeRestarted (experimental) (optional) Valid only while the VM is paused and indicates whether this frame
+	// can be restarted or not. Note that a `true` value here does not
+	// guarantee that Debugger#restartFrame with this CallFrameId will be
+	// successful, but it is very likely.
+	CanBeRestarted bool `json:"canBeRestarted,omitempty"`
 }
 
 // DebuggerScopeType enum

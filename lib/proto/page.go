@@ -251,6 +251,9 @@ const (
 	// PagePermissionsPolicyFeatureKeyboardMap enum const
 	PagePermissionsPolicyFeatureKeyboardMap PagePermissionsPolicyFeature = "keyboard-map"
 
+	// PagePermissionsPolicyFeatureLocalFonts enum const
+	PagePermissionsPolicyFeatureLocalFonts PagePermissionsPolicyFeature = "local-fonts"
+
 	// PagePermissionsPolicyFeatureMagnetometer enum const
 	PagePermissionsPolicyFeatureMagnetometer PagePermissionsPolicyFeature = "magnetometer"
 
@@ -967,9 +970,6 @@ const (
 	// PageBackForwardCacheNotRestoredReasonRendererProcessCrashed enum const
 	PageBackForwardCacheNotRestoredReasonRendererProcessCrashed PageBackForwardCacheNotRestoredReason = "RendererProcessCrashed"
 
-	// PageBackForwardCacheNotRestoredReasonGrantedMediaStreamAccess enum const
-	PageBackForwardCacheNotRestoredReasonGrantedMediaStreamAccess PageBackForwardCacheNotRestoredReason = "GrantedMediaStreamAccess"
-
 	// PageBackForwardCacheNotRestoredReasonSchedulerTrackedFeatureUsed enum const
 	PageBackForwardCacheNotRestoredReasonSchedulerTrackedFeatureUsed PageBackForwardCacheNotRestoredReason = "SchedulerTrackedFeatureUsed"
 
@@ -1047,9 +1047,6 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonBackForwardCacheDisabledForDelegate enum const
 	PageBackForwardCacheNotRestoredReasonBackForwardCacheDisabledForDelegate PageBackForwardCacheNotRestoredReason = "BackForwardCacheDisabledForDelegate"
-
-	// PageBackForwardCacheNotRestoredReasonOptInUnloadHeaderNotPresent enum const
-	PageBackForwardCacheNotRestoredReasonOptInUnloadHeaderNotPresent PageBackForwardCacheNotRestoredReason = "OptInUnloadHeaderNotPresent"
 
 	// PageBackForwardCacheNotRestoredReasonUnloadHandlerExistsInMainFrame enum const
 	PageBackForwardCacheNotRestoredReasonUnloadHandlerExistsInMainFrame PageBackForwardCacheNotRestoredReason = "UnloadHandlerExistsInMainFrame"
@@ -1977,13 +1974,15 @@ type PagePrintToPDF struct {
 	// MarginRight (optional) Right margin in inches. Defaults to 1cm (~0.4 inches).
 	MarginRight *float64 `json:"marginRight,omitempty"`
 
-	// PageRanges (optional) Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means
-	// print all pages.
+	// PageRanges (optional) Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are
+	// printed in the document order, not in the order specified, and no
+	// more than once.
+	// Defaults to empty string, which implies the entire document is printed.
+	// The page numbers are quietly capped to actual page count of the
+	// document, and ranges beyond the end of the document are ignored.
+	// If this results in no pages to print, an error is reported.
+	// It is an error to specify a range with start greater than end.
 	PageRanges string `json:"pageRanges,omitempty"`
-
-	// IgnoreInvalidPageRanges (optional) Whether to silently ignore invalid but successfully parsed page ranges, such as '3-2'.
-	// Defaults to false.
-	IgnoreInvalidPageRanges bool `json:"ignoreInvalidPageRanges,omitempty"`
 
 	// HeaderTemplate (optional) HTML template for the print header. Should be valid HTML markup with following
 	// classes used to inject printing values into them:

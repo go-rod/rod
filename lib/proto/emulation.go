@@ -128,6 +128,12 @@ type EmulationUserAgentMetadata struct {
 
 	// Mobile ...
 	Mobile bool `json:"mobile"`
+
+	// Bitness (optional) ...
+	Bitness string `json:"bitness,omitempty"`
+
+	// Wow64 (optional) ...
+	Wow64 bool `json:"wow64,omitempty"`
 }
 
 // EmulationDisabledImageType (experimental) Enum of image types that can be disabled.
