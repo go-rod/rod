@@ -116,6 +116,11 @@ func (lc *Browser) Download() (err error) {
 
 	u, err := lc.fastestHost()
 	utils.E(err)
+
+	if u == "" {
+		panic(fmt.Errorf("[launcher] Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os"))
+	}
+
 	return lc.download(lc.Context, u)
 }
 

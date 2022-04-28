@@ -78,6 +78,11 @@ func TestBrowserGet(t *testing.T) {
 	g := setup(t)
 
 	g.Nil(os.Stat(launcher.NewBrowser().MustGet()))
+
+	b := launcher.NewBrowser()
+	b.Revision = 0
+	_, err := b.Get()
+	g.Eq(err.Error(), "[launcher] Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os")
 }
 
 func TestLaunch(t *testing.T) {
