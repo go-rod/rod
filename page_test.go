@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
@@ -920,11 +921,9 @@ func TestPagePool(t *testing.T) {
 func TestPageUseNonExistSession(t *testing.T) {
 	g := setup(t)
 
-	// TODO: chrome bug that hangs for closing non-exist session id
-	// Related chrome ticket: https://bugs.chromium.org/p/chromium/issues/detail?id=1151822
-	p := g.browser.PageFromSession("nonexist").Timeout(300 * time.Millisecond)
+	p := g.browser.PageFromSession("nonexist")
 	err := proto.PageClose{}.Call(p)
-	g.Is(err, context.DeadlineExceeded)
+	g.Eq(err, cdp.ErrSessionNotFound)
 }
 
 func TestPageElementFromObjectErr(t *testing.T) {
@@ -949,10 +948,23 @@ func TestPageElementFromObjectErr(t *testing.T) {
 func TestPageActionAfterClose(t *testing.T) {
 	g := setup(t)
 
-	p := g.browser.MustPage(g.blank())
+	{
+		p := g.browser.MustPage(g.blank())
 
-	p.MustClose()
+		p.MustClose()
 
-	_, err := p.Element("nonexists")
-	g.Is(err, context.Canceled)
+		_, err := p.Element("nonexists")
+		g.Eq(err, context.Canceled)
+	}
+
+	{
+		p := g.browser.MustPage(g.blank())
+		go func() {
+			utils.Sleep(1)
+			p.MustClose()
+		}()
+
+		_, err := p.Eval(`() => new Promise(r => {})`)
+		g.Eq(err, context.Canceled)
+	}
 }
