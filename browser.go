@@ -432,10 +432,12 @@ func (b *Browser) Event() <-chan *Message {
 }
 
 func (b *Browser) initEvents() {
-	b.event = goob.New(b.ctx)
+	ctx, cancel := context.WithCancel(b.ctx)
+	b.event = goob.New(ctx)
 	event := b.client.Event()
 
 	go func() {
+		defer cancel()
 		for e := range event {
 			b.event.Publish(&Message{
 				SessionID: proto.TargetSessionID(e.SessionID),

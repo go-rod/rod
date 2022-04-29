@@ -452,3 +452,18 @@ func TestOldBrowser(t *testing.T) {
 	g.E(err)
 	g.Eq(res.Revision, "@19d4547535ab5aba70b4730443f84e8153052174")
 }
+
+func TestBrowserLostConnection(t *testing.T) {
+	g := setup(t)
+
+	l := launcher.New()
+	p := rod.New().ControlURL(l.MustLaunch()).MustConnect().MustPage(g.blank())
+
+	go func() {
+		utils.Sleep(1)
+		l.Kill()
+	}()
+
+	_, err := p.Eval(`() => new Promise(r => {})`)
+	g.Err(err)
+}
