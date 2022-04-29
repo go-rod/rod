@@ -239,10 +239,10 @@ func TestPageRaceRetryInHandle(t *testing.T) {
 func TestPageElementX(t *testing.T) {
 	g := setup(t)
 
-	g.page.MustNavigate(g.srcFile("fixtures/click.html"))
+	g.page.MustNavigate(g.srcFile("fixtures/selector.html"))
 	g.page.MustElement("body")
-	name := g.page.MustElementX("//*[contains(text(), 'click')]").MustDescribe().LocalName
-	g.Eq("button", name)
+	txt := g.page.MustElementX("//div").MustElementX("./button").MustText()
+	g.Eq(txt, "02")
 }
 
 func TestPageElementsX(t *testing.T) {
