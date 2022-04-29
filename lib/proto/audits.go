@@ -617,6 +617,21 @@ const (
 	// AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard enum const
 	AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard AuditsDeprecationIssueType = "AuthorizationCoveredByWildcard"
 
+	// AuditsDeprecationIssueTypeBatteryStatusInsecureOrigin enum const
+	AuditsDeprecationIssueTypeBatteryStatusInsecureOrigin AuditsDeprecationIssueType = "BatteryStatusInsecureOrigin"
+
+	// AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline enum const
+	AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline AuditsDeprecationIssueType = "CanRequestURLHTTPContainingNewline"
+
+	// AuditsDeprecationIssueTypeChromeLoadTimesConnectionInfo enum const
+	AuditsDeprecationIssueTypeChromeLoadTimesConnectionInfo AuditsDeprecationIssueType = "ChromeLoadTimesConnectionInfo"
+
+	// AuditsDeprecationIssueTypeChromeLoadTimesFirstPaintAfterLoadTime enum const
+	AuditsDeprecationIssueTypeChromeLoadTimesFirstPaintAfterLoadTime AuditsDeprecationIssueType = "ChromeLoadTimesFirstPaintAfterLoadTime"
+
+	// AuditsDeprecationIssueTypeChromeLoadTimesWasAlternateProtocolAvailable enum const
+	AuditsDeprecationIssueTypeChromeLoadTimesWasAlternateProtocolAvailable AuditsDeprecationIssueType = "ChromeLoadTimesWasAlternateProtocolAvailable"
+
 	// AuditsDeprecationIssueTypeCookieWithTruncatingChar enum const
 	AuditsDeprecationIssueTypeCookieWithTruncatingChar AuditsDeprecationIssueType = "CookieWithTruncatingChar"
 
@@ -629,11 +644,20 @@ const (
 	// AuditsDeprecationIssueTypeCrossOriginWindowConfirm enum const
 	AuditsDeprecationIssueTypeCrossOriginWindowConfirm AuditsDeprecationIssueType = "CrossOriginWindowConfirm"
 
+	// AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton enum const
+	AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton AuditsDeprecationIssueType = "CSSSelectorInternalMediaControlsOverlayCastButton"
+
+	// AuditsDeprecationIssueTypeCustomCursorIntersectsViewport enum const
+	AuditsDeprecationIssueTypeCustomCursorIntersectsViewport AuditsDeprecationIssueType = "CustomCursorIntersectsViewport"
+
 	// AuditsDeprecationIssueTypeDeprecationExample enum const
 	AuditsDeprecationIssueTypeDeprecationExample AuditsDeprecationIssueType = "DeprecationExample"
 
 	// AuditsDeprecationIssueTypeDocumentDomainSettingWithoutOriginAgentClusterHeader enum const
 	AuditsDeprecationIssueTypeDocumentDomainSettingWithoutOriginAgentClusterHeader AuditsDeprecationIssueType = "DocumentDomainSettingWithoutOriginAgentClusterHeader"
+
+	// AuditsDeprecationIssueTypeEventPath enum const
+	AuditsDeprecationIssueTypeEventPath AuditsDeprecationIssueType = "EventPath"
 
 	// AuditsDeprecationIssueTypeGeolocationInsecureOrigin enum const
 	AuditsDeprecationIssueTypeGeolocationInsecureOrigin AuditsDeprecationIssueType = "GeolocationInsecureOrigin"
@@ -643,6 +667,12 @@ const (
 
 	// AuditsDeprecationIssueTypeGetUserMediaInsecureOrigin enum const
 	AuditsDeprecationIssueTypeGetUserMediaInsecureOrigin AuditsDeprecationIssueType = "GetUserMediaInsecureOrigin"
+
+	// AuditsDeprecationIssueTypeHostCandidateAttributeGetter enum const
+	AuditsDeprecationIssueTypeHostCandidateAttributeGetter AuditsDeprecationIssueType = "HostCandidateAttributeGetter"
+
+	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
+	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
 
 	// AuditsDeprecationIssueTypeLegacyConstraintGoogCPUOveruseDetection enum const
 	AuditsDeprecationIssueTypeLegacyConstraintGoogCPUOveruseDetection AuditsDeprecationIssueType = "LegacyConstraintGoogCpuOveruseDetection"
@@ -659,11 +689,32 @@ const (
 	// AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected enum const
 	AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected AuditsDeprecationIssueType = "LocalCSSFileExtensionRejected"
 
+	// AuditsDeprecationIssueTypeMediaElementAudioSourceNode enum const
+	AuditsDeprecationIssueTypeMediaElementAudioSourceNode AuditsDeprecationIssueType = "MediaElementAudioSourceNode"
+
+	// AuditsDeprecationIssueTypeMediaSourceAbortRemove enum const
+	AuditsDeprecationIssueTypeMediaSourceAbortRemove AuditsDeprecationIssueType = "MediaSourceAbortRemove"
+
+	// AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered enum const
+	AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered AuditsDeprecationIssueType = "MediaSourceDurationTruncatingBuffered"
+
+	// AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission enum const
+	AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission AuditsDeprecationIssueType = "NoSysexWebMIDIWithoutPermission"
+
 	// AuditsDeprecationIssueTypeNotificationInsecureOrigin enum const
 	AuditsDeprecationIssueTypeNotificationInsecureOrigin AuditsDeprecationIssueType = "NotificationInsecureOrigin"
 
+	// AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe enum const
+	AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe AuditsDeprecationIssueType = "NotificationPermissionRequestedIframe"
+
 	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
 	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
+
+	// AuditsDeprecationIssueTypePaymentRequestBasicCard enum const
+	AuditsDeprecationIssueTypePaymentRequestBasicCard AuditsDeprecationIssueType = "PaymentRequestBasicCard"
+
+	// AuditsDeprecationIssueTypePaymentRequestShowWithoutGesture enum const
+	AuditsDeprecationIssueTypePaymentRequestShowWithoutGesture AuditsDeprecationIssueType = "PaymentRequestShowWithoutGesture"
 
 	// AuditsDeprecationIssueTypePictureSourceSrc enum const
 	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"
@@ -673,6 +724,33 @@ const (
 
 	// AuditsDeprecationIssueTypePrefixedRequestAnimationFrame enum const
 	AuditsDeprecationIssueTypePrefixedRequestAnimationFrame AuditsDeprecationIssueType = "PrefixedRequestAnimationFrame"
+
+	// AuditsDeprecationIssueTypePrefixedStorageInfo enum const
+	AuditsDeprecationIssueTypePrefixedStorageInfo AuditsDeprecationIssueType = "PrefixedStorageInfo"
+
+	// AuditsDeprecationIssueTypePrefixedVideoDisplayingFullscreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoDisplayingFullscreen AuditsDeprecationIssueType = "PrefixedVideoDisplayingFullscreen"
+
+	// AuditsDeprecationIssueTypePrefixedVideoEnterFullscreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoEnterFullscreen AuditsDeprecationIssueType = "PrefixedVideoEnterFullscreen"
+
+	// AuditsDeprecationIssueTypePrefixedVideoEnterFullScreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoEnterFullScreen AuditsDeprecationIssueType = "PrefixedVideoEnterFullScreen"
+
+	// AuditsDeprecationIssueTypePrefixedVideoExitFullscreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoExitFullscreen AuditsDeprecationIssueType = "PrefixedVideoExitFullscreen"
+
+	// AuditsDeprecationIssueTypePrefixedVideoExitFullScreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoExitFullScreen AuditsDeprecationIssueType = "PrefixedVideoExitFullScreen"
+
+	// AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen enum const
+	AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen AuditsDeprecationIssueType = "PrefixedVideoSupportsFullscreen"
+
+	// AuditsDeprecationIssueTypeRangeExpand enum const
+	AuditsDeprecationIssueTypeRangeExpand AuditsDeprecationIssueType = "RangeExpand"
+
+	// AuditsDeprecationIssueTypeRequestedSubresourceWithEmbeddedCredentials enum const
+	AuditsDeprecationIssueTypeRequestedSubresourceWithEmbeddedCredentials AuditsDeprecationIssueType = "RequestedSubresourceWithEmbeddedCredentials"
 
 	// AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpFalse enum const
 	AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpFalse AuditsDeprecationIssueType = "RTCConstraintEnableDtlsSrtpFalse"
@@ -686,14 +764,23 @@ const (
 	// AuditsDeprecationIssueTypeRTCPeerConnectionLegacyCreateWithMediaConstraints enum const
 	AuditsDeprecationIssueTypeRTCPeerConnectionLegacyCreateWithMediaConstraints AuditsDeprecationIssueType = "RTCPeerConnectionLegacyCreateWithMediaConstraints"
 
+	// AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB enum const
+	AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB AuditsDeprecationIssueType = "RTCPeerConnectionSdpSemanticsPlanB"
+
+	// AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate enum const
+	AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate AuditsDeprecationIssueType = "RtcpMuxPolicyNegotiate"
+
 	// AuditsDeprecationIssueTypeRTPDataChannel enum const
 	AuditsDeprecationIssueTypeRTPDataChannel AuditsDeprecationIssueType = "RTPDataChannel"
+
+	// AuditsDeprecationIssueTypeSelectionAddRangeIntersect enum const
+	AuditsDeprecationIssueTypeSelectionAddRangeIntersect AuditsDeprecationIssueType = "SelectionAddRangeIntersect"
 
 	// AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation enum const
 	AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation AuditsDeprecationIssueType = "SharedArrayBufferConstructedWithoutIsolation"
 
-	// AuditsDeprecationIssueTypeUntranslated enum const
-	AuditsDeprecationIssueTypeUntranslated AuditsDeprecationIssueType = "Untranslated"
+	// AuditsDeprecationIssueTypeTextToSpeechDisallowedByAutoplay enum const
+	AuditsDeprecationIssueTypeTextToSpeechDisallowedByAutoplay AuditsDeprecationIssueType = "TextToSpeech_DisallowedByAutoplay"
 
 	// AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation enum const
 	AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation AuditsDeprecationIssueType = "V8SharedArrayBufferConstructedInExtensionWithoutIsolation"
@@ -706,13 +793,13 @@ const (
 
 	// AuditsDeprecationIssueTypeXMLHTTPRequestSynchronousInNonWorkerOutsideBeforeUnload enum const
 	AuditsDeprecationIssueTypeXMLHTTPRequestSynchronousInNonWorkerOutsideBeforeUnload AuditsDeprecationIssueType = "XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload"
+
+	// AuditsDeprecationIssueTypeXRSupportsSession enum const
+	AuditsDeprecationIssueTypeXRSupportsSession AuditsDeprecationIssueType = "XRSupportsSession"
 )
 
 // AuditsDeprecationIssueDetails This issue tracks information needed to print a deprecation message.
-// The formatting is inherited from the old console.log version, see more at:
-// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
-// TODO(crbug.com/1264960): Re-work format to add i18n support per:
-// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
 type AuditsDeprecationIssueDetails struct {
 
 	// AffectedFrame (optional) ...
@@ -720,16 +807,6 @@ type AuditsDeprecationIssueDetails struct {
 
 	// SourceCodeLocation ...
 	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
-
-	// Message (deprecated) (optional) The content of an untranslated deprecation issue,
-	// e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
-	// around January 2022. Please use Web Storage or Indexed Database
-	// instead. This standard was abandoned in January, 1970. See
-	// https://www.chromestatus.com/feature/5684870116278272 for more details."
-	Message string `json:"message,omitempty"`
-
-	// DeprecationType (deprecated) (optional) The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
-	DeprecationType string `json:"deprecationType,omitempty"`
 
 	// Type ...
 	Type AuditsDeprecationIssueType `json:"type"`

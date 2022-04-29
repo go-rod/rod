@@ -779,6 +779,9 @@ type PageFontFamilies struct {
 
 	// Fantasy (optional) The fantasy font-family.
 	Fantasy string `json:"fantasy,omitempty"`
+
+	// Math (optional) The math font-family.
+	Math string `json:"math,omitempty"`
 }
 
 // PageScriptFontFamilies (experimental) Font families collection for a script.
