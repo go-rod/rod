@@ -122,7 +122,7 @@ var (
 	Nexus4 = Device{
 		Title:          "Nexus 4",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -141,7 +141,7 @@ var (
 	Nexus5 = Device{
 		Title:          "Nexus 5",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -160,7 +160,7 @@ var (
 	Nexus5X = Device{
 		Title:          "Nexus 5X",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 5X Build/OPR4.170623.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -179,7 +179,7 @@ var (
 	Nexus6 = Device{
 		Title:          "Nexus 6",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6 Build/N6F26U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -198,7 +198,7 @@ var (
 	Nexus6P = Device{
 		Title:          "Nexus 6P",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Nexus 6P Build/OPP3.170518.006) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -217,7 +217,7 @@ var (
 	Pixel2 = Device{
 		Title:          "Pixel 2",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -236,7 +236,7 @@ var (
 	Pixel2XL = Device{
 		Title:          "Pixel 2 XL",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -255,7 +255,7 @@ var (
 	LGOptimusL70 = Device{
 		Title:          "LG Optimus L70",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; LGMS323 Build/KOT49I.MS32310c) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 1,
@@ -369,7 +369,7 @@ var (
 	GalaxyS5 = Device{
 		Title:          "Galaxy S5",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -502,7 +502,7 @@ var (
 	Nexus10 = Device{
 		Title:          "Nexus 10",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 10 Build/MOB31T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -521,7 +521,7 @@ var (
 	Nexus7 = Device{
 		Title:          "Nexus 7",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -635,7 +635,7 @@ var (
 	MotoG4 = Device{
 		Title:          "Moto G4",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 6.0.1; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,
@@ -654,7 +654,7 @@ var (
 	SurfaceDuo = Device{
 		Title:          "Surface Duo",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 2,
@@ -673,7 +673,7 @@ var (
 	GalaxyFold = Device{
 		Title:          "Galaxy Fold",
 		Capabilities:   []string{"touch", "mobile"},
-		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
+		UserAgent:      "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36",
 		AcceptLanguage: "en",
 		Screen: Screen{
 			DevicePixelRatio: 3,

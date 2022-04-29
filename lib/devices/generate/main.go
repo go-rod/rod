@@ -109,6 +109,7 @@ func getUserAgent(val gson.JSON) string {
 	if ua == "" {
 		return "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
 	}
+	ua = strings.ReplaceAll(ua, "%s", "87.0.4280.88")
 	return ua
 }
 
