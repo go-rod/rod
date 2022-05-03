@@ -617,9 +617,6 @@ const (
 	// AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard enum const
 	AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard AuditsDeprecationIssueType = "AuthorizationCoveredByWildcard"
 
-	// AuditsDeprecationIssueTypeBatteryStatusInsecureOrigin enum const
-	AuditsDeprecationIssueTypeBatteryStatusInsecureOrigin AuditsDeprecationIssueType = "BatteryStatusInsecureOrigin"
-
 	// AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline enum const
 	AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline AuditsDeprecationIssueType = "CanRequestURLHTTPContainingNewline"
 
