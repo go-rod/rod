@@ -27,7 +27,7 @@ func main() {
 }
 
 func checkGitClean() {
-	out := utils.Exec("git status --porcelain")
+	out := utils.ExecLine(false, "git status --porcelain")
 	if out != "" {
 		panic("Please run \"go generate\" on local and git commit the changes:\n" + out)
 	}

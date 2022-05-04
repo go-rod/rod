@@ -766,7 +766,9 @@ type RuntimeCallFunctionOn struct {
 	// ThrowOnSideEffect (experimental) (optional) Whether to throw an exception if side effect cannot be ruled out during evaluation.
 	ThrowOnSideEffect bool `json:"throwOnSideEffect,omitempty"`
 
-	// GenerateWebDriverValue (experimental) (optional) Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+	// GenerateWebDriverValue (experimental) (optional) Whether the result should contain `webDriverValue`, serialized according to
+	// https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
+	// resulting `objectId` is still provided.
 	GenerateWebDriverValue bool `json:"generateWebDriverValue,omitempty"`
 }
 

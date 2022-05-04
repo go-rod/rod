@@ -782,9 +782,6 @@ const (
 	// AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation enum const
 	AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation AuditsDeprecationIssueType = "V8SharedArrayBufferConstructedInExtensionWithoutIsolation"
 
-	// AuditsDeprecationIssueTypeWebCodecsVideoFrameDefaultTimestamp enum const
-	AuditsDeprecationIssueTypeWebCodecsVideoFrameDefaultTimestamp AuditsDeprecationIssueType = "WebCodecsVideoFrameDefaultTimestamp"
-
 	// AuditsDeprecationIssueTypeXHRJSONEncodingDetection enum const
 	AuditsDeprecationIssueTypeXHRJSONEncodingDetection AuditsDeprecationIssueType = "XHRJSONEncodingDetection"
 

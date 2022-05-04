@@ -1076,7 +1076,7 @@ type DebuggerScriptFailedToParse struct {
 	// ExecutionContextID Specifies script creation context.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 
-	// Hash Content hash of the script.
+	// Hash Content hash of the script, SHA-256.
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
@@ -1137,7 +1137,7 @@ type DebuggerScriptParsed struct {
 	// ExecutionContextID Specifies script creation context.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 
-	// Hash Content hash of the script.
+	// Hash Content hash of the script, SHA-256.
 	Hash string `json:"hash"`
 
 	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
