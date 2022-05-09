@@ -153,7 +153,10 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 
 		go func() {
 			defer func() {
-				_ = recover()
+				err := recover()
+				if err != nil {
+					lc.Logger.Println("check result:", err)
+				}
 				wg.Done()
 			}()
 
@@ -164,7 +167,7 @@ func (lc *Browser) fastestHost() (fastest string, err error) {
 			utils.E(err)
 			defer func() { _ = res.Body.Close() }()
 
-			if res.StatusCode < 400 {
+			if res.StatusCode == http.StatusOK {
 				buf := make([]byte, 64*1024) // a TCP packet won't be larger than 64KB
 				_, err = res.Body.Read(buf)
 				utils.E(err)
