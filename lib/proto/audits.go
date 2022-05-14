@@ -525,20 +525,14 @@ const (
 	// AuditsAttributionReportingIssueTypePermissionPolicyDisabled enum const
 	AuditsAttributionReportingIssueTypePermissionPolicyDisabled AuditsAttributionReportingIssueType = "PermissionPolicyDisabled"
 
-	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID enum const
-	AuditsAttributionReportingIssueTypeInvalidAttributionSourceEventID AuditsAttributionReportingIssueType = "InvalidAttributionSourceEventId"
-
 	// AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin enum const
 	AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionSourceUntrustworthyOrigin"
 
 	// AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin enum const
 	AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionUntrustworthyOrigin"
 
-	// AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry enum const
-	AuditsAttributionReportingIssueTypeInvalidAttributionSourceExpiry AuditsAttributionReportingIssueType = "InvalidAttributionSourceExpiry"
-
-	// AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority enum const
-	AuditsAttributionReportingIssueTypeInvalidAttributionSourcePriority AuditsAttributionReportingIssueType = "InvalidAttributionSourcePriority"
+	// AuditsAttributionReportingIssueTypeInvalidHeader enum const
+	AuditsAttributionReportingIssueTypeInvalidHeader AuditsAttributionReportingIssueType = "InvalidHeader"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -671,17 +665,8 @@ const (
 	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
 	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
 
-	// AuditsDeprecationIssueTypeLegacyConstraintGoogCPUOveruseDetection enum const
-	AuditsDeprecationIssueTypeLegacyConstraintGoogCPUOveruseDetection AuditsDeprecationIssueType = "LegacyConstraintGoogCpuOveruseDetection"
-
 	// AuditsDeprecationIssueTypeLegacyConstraintGoogIPv6 enum const
 	AuditsDeprecationIssueTypeLegacyConstraintGoogIPv6 AuditsDeprecationIssueType = "LegacyConstraintGoogIPv6"
-
-	// AuditsDeprecationIssueTypeLegacyConstraintGoogScreencastMinBitrate enum const
-	AuditsDeprecationIssueTypeLegacyConstraintGoogScreencastMinBitrate AuditsDeprecationIssueType = "LegacyConstraintGoogScreencastMinBitrate"
-
-	// AuditsDeprecationIssueTypeLegacyConstraintGoogSuspendBelowMinBitrate enum const
-	AuditsDeprecationIssueTypeLegacyConstraintGoogSuspendBelowMinBitrate AuditsDeprecationIssueType = "LegacyConstraintGoogSuspendBelowMinBitrate"
 
 	// AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected enum const
 	AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected AuditsDeprecationIssueType = "LocalCSSFileExtensionRejected"
@@ -758,9 +743,6 @@ const (
 	// AuditsDeprecationIssueTypeRTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics enum const
 	AuditsDeprecationIssueTypeRTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics AuditsDeprecationIssueType = "RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics"
 
-	// AuditsDeprecationIssueTypeRTCPeerConnectionLegacyCreateWithMediaConstraints enum const
-	AuditsDeprecationIssueTypeRTCPeerConnectionLegacyCreateWithMediaConstraints AuditsDeprecationIssueType = "RTCPeerConnectionLegacyCreateWithMediaConstraints"
-
 	// AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB enum const
 	AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB AuditsDeprecationIssueType = "RTCPeerConnectionSdpSemanticsPlanB"
 
@@ -769,9 +751,6 @@ const (
 
 	// AuditsDeprecationIssueTypeRTPDataChannel enum const
 	AuditsDeprecationIssueTypeRTPDataChannel AuditsDeprecationIssueType = "RTPDataChannel"
-
-	// AuditsDeprecationIssueTypeSelectionAddRangeIntersect enum const
-	AuditsDeprecationIssueTypeSelectionAddRangeIntersect AuditsDeprecationIssueType = "SelectionAddRangeIntersect"
 
 	// AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation enum const
 	AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation AuditsDeprecationIssueType = "SharedArrayBufferConstructedWithoutIsolation"

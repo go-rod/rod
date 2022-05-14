@@ -355,6 +355,8 @@ var types = map[string]reflect.Type{
 	"DOMStorage.getDOMStorageItemsResult":              reflect.TypeOf(DOMStorageGetDOMStorageItemsResult{}),
 	"DOMStorage.removeDOMStorageItem":                  reflect.TypeOf(DOMStorageRemoveDOMStorageItem{}),
 	"DOMStorage.setDOMStorageItem":                     reflect.TypeOf(DOMStorageSetDOMStorageItem{}),
+	"DOMStorage.getStorageKeyForFrame":                 reflect.TypeOf(DOMStorageGetStorageKeyForFrame{}),
+	"DOMStorage.getStorageKeyForFrameResult":           reflect.TypeOf(DOMStorageGetStorageKeyForFrameResult{}),
 	"DOMStorage.domStorageItemAdded":                   reflect.TypeOf(DOMStorageDomStorageItemAdded{}),
 	"DOMStorage.domStorageItemRemoved":                 reflect.TypeOf(DOMStorageDomStorageItemRemoved{}),
 	"DOMStorage.domStorageItemUpdated":                 reflect.TypeOf(DOMStorageDomStorageItemUpdated{}),

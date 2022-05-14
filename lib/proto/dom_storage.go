@@ -10,11 +10,17 @@ Query and modify DOM storage.
 
 */
 
+// DOMStorageSerializedStorageKey ...
+type DOMStorageSerializedStorageKey string
+
 // DOMStorageStorageID DOM Storage identifier.
 type DOMStorageStorageID struct {
 
-	// SecurityOrigin Security origin for the storage.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) Security origin for the storage.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Represents a key by which DOM Storage keys its CachedStorageAreas
+	StorageKey DOMStorageSerializedStorageKey `json:"storageKey,omitempty"`
 
 	// IsLocalStorage Whether the storage is local storage (not session storage).
 	IsLocalStorage bool `json:"isLocalStorage"`
@@ -122,6 +128,29 @@ func (m DOMStorageSetDOMStorageItem) ProtoReq() string { return "DOMStorage.setD
 // Call sends the request
 func (m DOMStorageSetDOMStorageItem) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// DOMStorageGetStorageKeyForFrame ...
+type DOMStorageGetStorageKeyForFrame struct {
+
+	// FrameID ...
+	FrameID PageFrameID `json:"frameId"`
+}
+
+// ProtoReq name
+func (m DOMStorageGetStorageKeyForFrame) ProtoReq() string { return "DOMStorage.getStorageKeyForFrame" }
+
+// Call the request
+func (m DOMStorageGetStorageKeyForFrame) Call(c Client) (*DOMStorageGetStorageKeyForFrameResult, error) {
+	var res DOMStorageGetStorageKeyForFrameResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMStorageGetStorageKeyForFrameResult ...
+type DOMStorageGetStorageKeyForFrameResult struct {
+
+	// StorageKey ...
+	StorageKey DOMStorageSerializedStorageKey `json:"storageKey"`
 }
 
 // DOMStorageDomStorageItemAdded ...

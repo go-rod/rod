@@ -1343,6 +1343,102 @@ type PagePrerenderFinalStatus string
 const (
 	// PagePrerenderFinalStatusActivated enum const
 	PagePrerenderFinalStatusActivated PagePrerenderFinalStatus = "Activated"
+
+	// PagePrerenderFinalStatusDestroyed enum const
+	PagePrerenderFinalStatusDestroyed PagePrerenderFinalStatus = "Destroyed"
+
+	// PagePrerenderFinalStatusLowEndDevice enum const
+	PagePrerenderFinalStatusLowEndDevice PagePrerenderFinalStatus = "LowEndDevice"
+
+	// PagePrerenderFinalStatusCrossOriginRedirect enum const
+	PagePrerenderFinalStatusCrossOriginRedirect PagePrerenderFinalStatus = "CrossOriginRedirect"
+
+	// PagePrerenderFinalStatusCrossOriginNavigation enum const
+	PagePrerenderFinalStatusCrossOriginNavigation PagePrerenderFinalStatus = "CrossOriginNavigation"
+
+	// PagePrerenderFinalStatusInvalidSchemeRedirect enum const
+	PagePrerenderFinalStatusInvalidSchemeRedirect PagePrerenderFinalStatus = "InvalidSchemeRedirect"
+
+	// PagePrerenderFinalStatusInvalidSchemeNavigation enum const
+	PagePrerenderFinalStatusInvalidSchemeNavigation PagePrerenderFinalStatus = "InvalidSchemeNavigation"
+
+	// PagePrerenderFinalStatusInProgressNavigation enum const
+	PagePrerenderFinalStatusInProgressNavigation PagePrerenderFinalStatus = "InProgressNavigation"
+
+	// PagePrerenderFinalStatusNavigationRequestBlockedByCsp enum const
+	PagePrerenderFinalStatusNavigationRequestBlockedByCsp PagePrerenderFinalStatus = "NavigationRequestBlockedByCsp"
+
+	// PagePrerenderFinalStatusMainFrameNavigation enum const
+	PagePrerenderFinalStatusMainFrameNavigation PagePrerenderFinalStatus = "MainFrameNavigation"
+
+	// PagePrerenderFinalStatusMojoBinderPolicy enum const
+	PagePrerenderFinalStatusMojoBinderPolicy PagePrerenderFinalStatus = "MojoBinderPolicy"
+
+	// PagePrerenderFinalStatusRendererProcessCrashed enum const
+	PagePrerenderFinalStatusRendererProcessCrashed PagePrerenderFinalStatus = "RendererProcessCrashed"
+
+	// PagePrerenderFinalStatusRendererProcessKilled enum const
+	PagePrerenderFinalStatusRendererProcessKilled PagePrerenderFinalStatus = "RendererProcessKilled"
+
+	// PagePrerenderFinalStatusDownload enum const
+	PagePrerenderFinalStatusDownload PagePrerenderFinalStatus = "Download"
+
+	// PagePrerenderFinalStatusTriggerDestroyed enum const
+	PagePrerenderFinalStatusTriggerDestroyed PagePrerenderFinalStatus = "TriggerDestroyed"
+
+	// PagePrerenderFinalStatusNavigationNotCommitted enum const
+	PagePrerenderFinalStatusNavigationNotCommitted PagePrerenderFinalStatus = "NavigationNotCommitted"
+
+	// PagePrerenderFinalStatusNavigationBadHTTPStatus enum const
+	PagePrerenderFinalStatusNavigationBadHTTPStatus PagePrerenderFinalStatus = "NavigationBadHttpStatus"
+
+	// PagePrerenderFinalStatusClientCertRequested enum const
+	PagePrerenderFinalStatusClientCertRequested PagePrerenderFinalStatus = "ClientCertRequested"
+
+	// PagePrerenderFinalStatusNavigationRequestNetworkError enum const
+	PagePrerenderFinalStatusNavigationRequestNetworkError PagePrerenderFinalStatus = "NavigationRequestNetworkError"
+
+	// PagePrerenderFinalStatusMaxNumOfRunningPrerendersExceeded enum const
+	PagePrerenderFinalStatusMaxNumOfRunningPrerendersExceeded PagePrerenderFinalStatus = "MaxNumOfRunningPrerendersExceeded"
+
+	// PagePrerenderFinalStatusCancelAllHostsForTesting enum const
+	PagePrerenderFinalStatusCancelAllHostsForTesting PagePrerenderFinalStatus = "CancelAllHostsForTesting"
+
+	// PagePrerenderFinalStatusDidFailLoad enum const
+	PagePrerenderFinalStatusDidFailLoad PagePrerenderFinalStatus = "DidFailLoad"
+
+	// PagePrerenderFinalStatusStop enum const
+	PagePrerenderFinalStatusStop PagePrerenderFinalStatus = "Stop"
+
+	// PagePrerenderFinalStatusSslCertificateError enum const
+	PagePrerenderFinalStatusSslCertificateError PagePrerenderFinalStatus = "SslCertificateError"
+
+	// PagePrerenderFinalStatusLoginAuthRequested enum const
+	PagePrerenderFinalStatusLoginAuthRequested PagePrerenderFinalStatus = "LoginAuthRequested"
+
+	// PagePrerenderFinalStatusUaChangeRequiresReload enum const
+	PagePrerenderFinalStatusUaChangeRequiresReload PagePrerenderFinalStatus = "UaChangeRequiresReload"
+
+	// PagePrerenderFinalStatusBlockedByClient enum const
+	PagePrerenderFinalStatusBlockedByClient PagePrerenderFinalStatus = "BlockedByClient"
+
+	// PagePrerenderFinalStatusAudioOutputDeviceRequested enum const
+	PagePrerenderFinalStatusAudioOutputDeviceRequested PagePrerenderFinalStatus = "AudioOutputDeviceRequested"
+
+	// PagePrerenderFinalStatusMixedContent enum const
+	PagePrerenderFinalStatusMixedContent PagePrerenderFinalStatus = "MixedContent"
+
+	// PagePrerenderFinalStatusTriggerBackgrounded enum const
+	PagePrerenderFinalStatusTriggerBackgrounded PagePrerenderFinalStatus = "TriggerBackgrounded"
+
+	// PagePrerenderFinalStatusEmbedderTriggeredAndSameOriginRedirected enum const
+	PagePrerenderFinalStatusEmbedderTriggeredAndSameOriginRedirected PagePrerenderFinalStatus = "EmbedderTriggeredAndSameOriginRedirected"
+
+	// PagePrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected enum const
+	PagePrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected PagePrerenderFinalStatus = "EmbedderTriggeredAndCrossOriginRedirected"
+
+	// PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed enum const
+	PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed PagePrerenderFinalStatus = "EmbedderTriggeredAndDestroyed"
 )
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.

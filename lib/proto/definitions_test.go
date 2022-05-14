@@ -1073,6 +1073,12 @@ func (t T) DOMStorageSetDOMStorageItem() {
 	t.Nil(err)
 }
 
+func (t T) DOMStorageGetStorageKeyForFrame() {
+	c := &Client{}
+	_, err := proto.DOMStorageGetStorageKeyForFrame{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMStorageDomStorageItemAdded() {
 	e := proto.DOMStorageDomStorageItemAdded{}
 	e.ProtoEvent()

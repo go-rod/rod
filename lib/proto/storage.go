@@ -8,6 +8,9 @@ Storage
 
 */
 
+// StorageSerializedStorageKey ...
+type StorageSerializedStorageKey string
+
 // StorageStorageType Enum of possible storage types.
 type StorageStorageType string
 

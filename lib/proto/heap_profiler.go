@@ -236,11 +236,14 @@ type HeapProfilerStopTrackingHeapObjects struct {
 	// when the tracking is stopped.
 	ReportProgress bool `json:"reportProgress,omitempty"`
 
-	// TreatGlobalObjectsAsRoots (optional) ...
+	// TreatGlobalObjectsAsRoots (deprecated) (optional) Deprecated in favor of `exposeInternals`.
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 
 	// CaptureNumericValue (optional) If true, numerical values are included in the snapshot
 	CaptureNumericValue bool `json:"captureNumericValue,omitempty"`
+
+	// ExposeInternals (experimental) (optional) If true, exposes internals of the snapshot.
+	ExposeInternals bool `json:"exposeInternals,omitempty"`
 }
 
 // ProtoReq name
@@ -259,11 +262,15 @@ type HeapProfilerTakeHeapSnapshot struct {
 	// ReportProgress (optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken.
 	ReportProgress bool `json:"reportProgress,omitempty"`
 
-	// TreatGlobalObjectsAsRoots (optional) If true, a raw snapshot without artificial roots will be generated
+	// TreatGlobalObjectsAsRoots (deprecated) (optional) If true, a raw snapshot without artificial roots will be generated.
+	// Deprecated in favor of `exposeInternals`.
 	TreatGlobalObjectsAsRoots bool `json:"treatGlobalObjectsAsRoots,omitempty"`
 
 	// CaptureNumericValue (optional) If true, numerical values are included in the snapshot
 	CaptureNumericValue bool `json:"captureNumericValue,omitempty"`
+
+	// ExposeInternals (experimental) (optional) If true, exposes internals of the snapshot.
+	ExposeInternals bool `json:"exposeInternals,omitempty"`
 }
 
 // ProtoReq name

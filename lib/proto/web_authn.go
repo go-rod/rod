@@ -131,6 +131,13 @@ type WebAuthnCredential struct {
 // WebAuthnEnable Enable the WebAuthn domain and start intercepting credential storage and
 // retrieval with a virtual authenticator.
 type WebAuthnEnable struct {
+
+	// EnableUI (optional) Whether to enable the WebAuthn user interface. Enabling the UI is
+	// recommended for debugging and demo purposes, as it is closer to the real
+	// experience. Disabling the UI is recommended for automated testing.
+	// Supported at the embedder's discretion if UI is available.
+	// Defaults to false.
+	EnableUI bool `json:"enableUI,omitempty"`
 }
 
 // ProtoReq name
