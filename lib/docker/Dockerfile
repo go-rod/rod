@@ -45,5 +45,7 @@ ENTRYPOINT ["dumb-init", "--"]
 COPY --from=go /root/.cache/rod /root/.cache/rod
 RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome-linux/chrome /usr/bin/chrome
 
+RUN touch /.dockerenv
+
 COPY --from=go /rod/rod-manager /usr/bin/
 CMD rod-manager
