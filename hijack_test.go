@@ -1,12 +1,14 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
 	"io/ioutil"
 	"mime"
 	"net/http"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
@@ -124,6 +126,44 @@ func TestHijackContinue(t *testing.T) {
 
 	g.Eq("ok", g.page.MustElement("body").MustText())
 	wg.Wait()
+}
+
+func TestHijackMockWholeResponseEmptyBody(t *testing.T) {
+	g := setup(t)
+
+	router := g.page.HijackRequests()
+	defer router.MustStop()
+
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		ctx.Response.SetBody("")
+	})
+
+	go router.Run()
+
+	// needs to timeout or will hang when "omitempty" does not get removed from body in fulfillRequest
+	timed := g.page.Timeout(2 * time.Second)
+	timed.MustNavigate("http://test.com")
+
+	g.Eq("", g.page.MustElement("body").MustText())
+}
+
+func TestHijackMockWholeResponseNoBody(t *testing.T) {
+	g := setup(t)
+
+	router := g.page.HijackRequests()
+	defer router.MustStop()
+
+	// intercept and reply without setting a body
+	router.MustAdd("*", func(ctx *rod.Hijack) {
+		// we don't set any body here
+	})
+
+	go router.Run()
+
+	// has to timeout as it will lock up the browser reading the reply.
+	timed := g.page.Timeout(2 * time.Second)
+	err := timed.Navigate("http://test.com")
+	g.True(errors.Is(err, context.DeadlineExceeded))
 }
 
 func TestHijackMockWholeResponse(t *testing.T) {
