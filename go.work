@@ -4,4 +4,5 @@ use (
 	.
 	./lib/examples/custom-websocket
 	./lib/examples/e2e-testing
+	./lib/utils/check-issue
 )

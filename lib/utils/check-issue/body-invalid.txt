@@ -1,0 +1,32 @@
+**Rod Version:** v0.0.0
+
+## The code to demonstrate your question
+
+```
+test
+```
+
+```go
+package rod_test
+
+import (
+    "testing
+)
+
+func TestLab(t *testing.T) {
+    g := setup(t)
+    g.Eq(1, 1)
+}
+```
+
+## What you expected to see
+
+Such as what you want to do.
+
+## What you instead got 
+
+Such as what error you see.
+
+## What have you tried to solve the question
+
+Such as after modifying some source code of Rod you are able to get rid of the problem.

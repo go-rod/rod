@@ -5,6 +5,5 @@ tmp/
 .git
 .dockerignore
 *.out
-rod.test
-package-lock.json
-package.json
+*.test
+*.json

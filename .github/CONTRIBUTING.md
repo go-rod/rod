@@ -36,7 +36,7 @@ Object model:
 
 ## Run tests
 
-No magic, just `go test`.
+No magic, just `go test`. Read the test template [lab_test.go](../lab_test.go) to get started.
 
 The entry point of tests is [setup_test.go](../setup_test.go). All the test helpers are defined in it.
 
