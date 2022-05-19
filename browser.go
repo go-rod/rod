@@ -521,3 +521,8 @@ func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillB
 		return start
 	}
 }
+
+// Version info of the browser
+func (b *Browser) Version() (*proto.BrowserGetVersionResult, error) {
+	return proto.BrowserGetVersion{}.Call(b)
+}

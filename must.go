@@ -131,6 +131,13 @@ func (b *Browser) MustWaitDownload() func() []byte {
 	}
 }
 
+// MustVersion is similar to Browser.Version.
+func (b *Browser) MustVersion() *proto.BrowserGetVersionResult {
+	v, err := b.Version()
+	b.e(err)
+	return v
+}
+
 // MustFind is similar to Browser.Find
 func (ps Pages) MustFind(selector string) *Page {
 	p, err := ps.Find(selector)
