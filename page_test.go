@@ -212,9 +212,12 @@ func TestWindow(t *testing.T) {
 	page.MustWindowNormal()
 	page.MustWindowMinimize()
 	page.MustWindowNormal()
+
 	page.MustSetWindow(0, 0, 1211, 611)
-	g.Eq(1211, page.MustEval(`() => window.innerWidth`).Int())
-	g.Eq(611, page.MustEval(`() => window.innerHeight`).Int())
+	w, err := proto.BrowserGetWindowForTarget{}.Call(page)
+	g.E(err)
+	g.Eq(w.Bounds.Width, 1211)
+	g.Eq(w.Bounds.Height, 611)
 
 	g.Panic(func() {
 		g.mc.stubErr(1, proto.BrowserGetWindowForTarget{})

@@ -141,8 +141,8 @@ func TestHijackMockWholeResponseEmptyBody(t *testing.T) {
 	go router.Run()
 
 	// needs to timeout or will hang when "omitempty" does not get removed from body in fulfillRequest
-	timed := g.page.Timeout(2 * time.Second)
-	timed.MustNavigate("http://test.com")
+	timed := g.page.Timeout(time.Second)
+	timed.MustNavigate(g.Serve().Route("/", ".txt", "OK").URL())
 
 	g.Eq("", g.page.MustElement("body").MustText())
 }
@@ -161,9 +161,8 @@ func TestHijackMockWholeResponseNoBody(t *testing.T) {
 	go router.Run()
 
 	// has to timeout as it will lock up the browser reading the reply.
-	timed := g.page.Timeout(2 * time.Second)
-	err := timed.Navigate("http://test.com")
-	g.True(errors.Is(err, context.DeadlineExceeded))
+	err := g.page.Timeout(time.Second).Navigate(g.Serve().Route("/", "").URL())
+	g.Is(err, context.DeadlineExceeded)
 }
 
 func TestHijackMockWholeResponse(t *testing.T) {
