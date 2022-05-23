@@ -679,6 +679,23 @@ func (m EmulationSetDisabledImageTypes) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// EmulationSetHardwareConcurrencyOverride (experimental) ...
+type EmulationSetHardwareConcurrencyOverride struct {
+
+	// HardwareConcurrency Hardware concurrency to report
+	HardwareConcurrency int `json:"hardwareConcurrency"`
+}
+
+// ProtoReq name
+func (m EmulationSetHardwareConcurrencyOverride) ProtoReq() string {
+	return "Emulation.setHardwareConcurrencyOverride"
+}
+
+// Call sends the request
+func (m EmulationSetHardwareConcurrencyOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
 type EmulationSetUserAgentOverride struct {
 

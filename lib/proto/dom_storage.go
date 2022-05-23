@@ -130,29 +130,6 @@ func (m DOMStorageSetDOMStorageItem) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// DOMStorageGetStorageKeyForFrame ...
-type DOMStorageGetStorageKeyForFrame struct {
-
-	// FrameID ...
-	FrameID PageFrameID `json:"frameId"`
-}
-
-// ProtoReq name
-func (m DOMStorageGetStorageKeyForFrame) ProtoReq() string { return "DOMStorage.getStorageKeyForFrame" }
-
-// Call the request
-func (m DOMStorageGetStorageKeyForFrame) Call(c Client) (*DOMStorageGetStorageKeyForFrameResult, error) {
-	var res DOMStorageGetStorageKeyForFrameResult
-	return &res, call(m.ProtoReq(), m, &res, c)
-}
-
-// DOMStorageGetStorageKeyForFrameResult ...
-type DOMStorageGetStorageKeyForFrameResult struct {
-
-	// StorageKey ...
-	StorageKey DOMStorageSerializedStorageKey `json:"storageKey"`
-}
-
 // DOMStorageDomStorageItemAdded ...
 type DOMStorageDomStorageItemAdded struct {
 

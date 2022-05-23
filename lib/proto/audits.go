@@ -638,9 +638,6 @@ const (
 	// AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton enum const
 	AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton AuditsDeprecationIssueType = "CSSSelectorInternalMediaControlsOverlayCastButton"
 
-	// AuditsDeprecationIssueTypeCustomCursorIntersectsViewport enum const
-	AuditsDeprecationIssueTypeCustomCursorIntersectsViewport AuditsDeprecationIssueType = "CustomCursorIntersectsViewport"
-
 	// AuditsDeprecationIssueTypeDeprecationExample enum const
 	AuditsDeprecationIssueTypeDeprecationExample AuditsDeprecationIssueType = "DeprecationExample"
 
@@ -671,9 +668,6 @@ const (
 	// AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected enum const
 	AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected AuditsDeprecationIssueType = "LocalCSSFileExtensionRejected"
 
-	// AuditsDeprecationIssueTypeMediaElementAudioSourceNode enum const
-	AuditsDeprecationIssueTypeMediaElementAudioSourceNode AuditsDeprecationIssueType = "MediaElementAudioSourceNode"
-
 	// AuditsDeprecationIssueTypeMediaSourceAbortRemove enum const
 	AuditsDeprecationIssueTypeMediaSourceAbortRemove AuditsDeprecationIssueType = "MediaSourceAbortRemove"
 
@@ -694,9 +688,6 @@ const (
 
 	// AuditsDeprecationIssueTypePaymentRequestBasicCard enum const
 	AuditsDeprecationIssueTypePaymentRequestBasicCard AuditsDeprecationIssueType = "PaymentRequestBasicCard"
-
-	// AuditsDeprecationIssueTypePaymentRequestShowWithoutGesture enum const
-	AuditsDeprecationIssueTypePaymentRequestShowWithoutGesture AuditsDeprecationIssueType = "PaymentRequestShowWithoutGesture"
 
 	// AuditsDeprecationIssueTypePictureSourceSrc enum const
 	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"

@@ -491,11 +491,35 @@ func (m DebuggerRemoveBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// DebuggerRestartFrame (deprecated) Restarts particular call frame from the beginning.
+// DebuggerRestartFrameMode enum
+type DebuggerRestartFrameMode string
+
+const (
+	// DebuggerRestartFrameModeStepInto enum const
+	DebuggerRestartFrameModeStepInto DebuggerRestartFrameMode = "StepInto"
+)
+
+// DebuggerRestartFrame Restarts particular call frame from the beginning. The old, deprecated
+// behavior of `restartFrame` is to stay paused and allow further CDP commands
+// after a restart was scheduled. This can cause problems with restarting, so
+// we now continue execution immediately after it has been scheduled until we
+// reach the beginning of the restarted frame.
+//
+// To stay back-wards compatible, `restartFrame` now expects a `mode`
+// parameter to be present. If the `mode` parameter is missing, `restartFrame`
+// errors out.
+//
+// The various return values are deprecated and `callFrames` is always empty.
+// Use the call frames from the `Debugger#paused` events instead, that fires
+// once V8 pauses at the beginning of the restarted function.
 type DebuggerRestartFrame struct {
 
 	// CallFrameID Call frame identifier to evaluate on.
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
+
+	// Mode (experimental) (optional) The `mode` parameter must be present and set to 'StepInto', otherwise
+	// `restartFrame` will error out.
+	Mode DebuggerRestartFrameMode `json:"mode,omitempty"`
 }
 
 // ProtoReq name
@@ -507,16 +531,16 @@ func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// DebuggerRestartFrameResult (deprecated) ...
+// DebuggerRestartFrameResult ...
 type DebuggerRestartFrameResult struct {
 
-	// CallFrames New stack trace.
+	// CallFrames (deprecated) New stack trace.
 	CallFrames []*DebuggerCallFrame `json:"callFrames"`
 
-	// AsyncStackTrace (optional) Async stack trace, if any.
+	// AsyncStackTrace (deprecated) (optional) Async stack trace, if any.
 	AsyncStackTrace *RuntimeStackTrace `json:"asyncStackTrace,omitempty"`
 
-	// AsyncStackTraceID (experimental) (optional) Async stack trace, if any.
+	// AsyncStackTraceID (deprecated) (optional) Async stack trace, if any.
 	AsyncStackTraceID *RuntimeStackTraceID `json:"asyncStackTraceId,omitempty"`
 }
 

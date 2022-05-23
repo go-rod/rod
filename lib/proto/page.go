@@ -116,6 +116,9 @@ const (
 	// PagePermissionsPolicyFeatureAutoplay enum const
 	PagePermissionsPolicyFeatureAutoplay PagePermissionsPolicyFeature = "autoplay"
 
+	// PagePermissionsPolicyFeatureBluetooth enum const
+	PagePermissionsPolicyFeatureBluetooth PagePermissionsPolicyFeature = "bluetooth"
+
 	// PagePermissionsPolicyFeatureBrowsingTopics enum const
 	PagePermissionsPolicyFeatureBrowsingTopics PagePermissionsPolicyFeature = "browsing-topics"
 
@@ -2007,7 +2010,8 @@ type PageNavigateResult struct {
 	// FrameID Frame id that has navigated (or failed to navigate)
 	FrameID PageFrameID `json:"frameId"`
 
-	// LoaderID (optional) Loader identifier.
+	// LoaderID (optional) Loader identifier. This is omitted in case of same-document navigation,
+	// as the previously committed loaderId would not change.
 	LoaderID NetworkLoaderID `json:"loaderId,omitempty"`
 
 	// ErrorText (optional) User friendly error message, present if and only if navigation has failed.
