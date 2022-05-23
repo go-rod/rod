@@ -242,6 +242,9 @@ type DOMNode struct {
 
 	// CompatibilityMode (optional) ...
 	CompatibilityMode DOMCompatibilityMode `json:"compatibilityMode,omitempty"`
+
+	// AssignedSlot (optional) ...
+	AssignedSlot *DOMBackendNode `json:"assignedSlot,omitempty"`
 }
 
 // DOMRGBA A structure holding an RGBA color.

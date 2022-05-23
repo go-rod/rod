@@ -1073,12 +1073,6 @@ func (t T) DOMStorageSetDOMStorageItem() {
 	t.Nil(err)
 }
 
-func (t T) DOMStorageGetStorageKeyForFrame() {
-	c := &Client{}
-	_, err := proto.DOMStorageGetStorageKeyForFrame{}.Call(c)
-	t.Nil(err)
-}
-
 func (t T) DOMStorageDomStorageItemAdded() {
 	e := proto.DOMStorageDomStorageItemAdded{}
 	e.ProtoEvent()
@@ -1293,6 +1287,12 @@ func (t T) EmulationSetVisibleSize() {
 func (t T) EmulationSetDisabledImageTypes() {
 	c := &Client{}
 	err := proto.EmulationSetDisabledImageTypes{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetHardwareConcurrencyOverride() {
+	c := &Client{}
+	err := proto.EmulationSetHardwareConcurrencyOverride{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2866,6 +2866,12 @@ func (t T) ServiceWorkerWorkerRegistrationUpdated() {
 func (t T) ServiceWorkerWorkerVersionUpdated() {
 	e := proto.ServiceWorkerWorkerVersionUpdated{}
 	e.ProtoEvent()
+}
+
+func (t T) StorageGetStorageKeyForFrame() {
+	c := &Client{}
+	_, err := proto.StorageGetStorageKeyForFrame{}.Call(c)
+	t.Nil(err)
 }
 
 func (t T) StorageClearDataForOrigin() {
