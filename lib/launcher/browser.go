@@ -275,6 +275,11 @@ func LookPath() (found string, has bool) {
 			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 			"/Applications/Chromium.app/Contents/MacOS/Chromium",
 			"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+			"/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+			"/usr/bin/google-chrome-stable",
+			"/usr/bin/google-chrome",
+			"/usr/bin/chromium",
+			"/usr/bin/chromium-browser",
 		},
 		"linux": {
 			"chrome",
@@ -284,9 +289,14 @@ func LookPath() (found string, has bool) {
 			"/usr/bin/microsoft-edge",
 			"chromium",
 			"chromium-browser",
+			"/usr/bin/google-chrome-stable",
+			"/usr/bin/chromium",
+			"/usr/bin/chromium-browser",
+			"/snap/bin/chromium",
 		},
 		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
 			`Google\Chrome\Application\chrome.exe`,
+			`Chromium\Application\chrome.exe`,
 			`Microsoft\Edge\Application\msedge.exe`,
 		)...),
 	}[runtime.GOOS]
