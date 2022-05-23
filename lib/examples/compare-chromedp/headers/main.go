@@ -2,24 +2,17 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/go-rod/rod"
 )
 
-var flagPort = flag.Int("port", 8544, "port")
-
 // This example demonstrates how to set a HTTP header on requests.
 func main() {
-	flag.Parse()
-
-	// run server
-	go headerServer(fmt.Sprintf(":%d", *flagPort))
-
-	host := fmt.Sprintf("http://localhost:%d", *flagPort)
+	host := headerServer()
 
 	page := rod.New().MustConnect().MustPage(host)
 
@@ -31,17 +24,19 @@ func main() {
 }
 
 // headerServer is a simple HTTP server that displays the passed headers in the html.
-func headerServer(addr string) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		buf, err := json.MarshalIndent(req.Header, "", "  ")
-		if err != nil {
-			http.Error(res, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		_, _ = fmt.Fprintf(res, indexHTML, string(buf))
-	})
-	_ = http.ListenAndServe(addr, mux)
+func headerServer() string {
+	l, _ := net.Listen("tcp4", "127.0.0.1:0")
+	go func() {
+		_ = http.Serve(l, http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+			buf, err := json.MarshalIndent(req.Header, "", "  ")
+			if err != nil {
+				http.Error(res, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			_, _ = fmt.Fprintf(res, indexHTML, string(buf))
+		}))
+	}()
+	return "http://" + l.Addr().String()
 }
 
 const indexHTML = `<!doctype html>

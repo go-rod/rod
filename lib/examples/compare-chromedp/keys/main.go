@@ -1,33 +1,23 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 )
 
-var flagPort = flag.Int("port", 8544, "port")
-
 // This example demonstrates how to send key events to an element.
 func main() {
-
-	flag.Parse()
-
-	// run server
-	go testServer(fmt.Sprintf(":%d", *flagPort))
-
-	host := fmt.Sprintf("http://localhost:%d", *flagPort)
-
-	page := rod.New().MustConnect().MustPage(host)
+	page := rod.New().MustConnect().MustPage(testServer())
 
 	val1 := page.MustElement("#input1").MustText()
-	val2 := page.MustElement("#textarea1").MustInput("\\b\\b\\n\\naoeu\\n\\ntest1\\n\\nblah2\\n\\n\\t\\t\\t\\b\\bother box!\\t\\ntest4").MustText()
+	val2 := page.MustElement("#textarea1").MustInput("\b\b\n\naoeu\n\ntest1\n\nblah2\n\n\t\t\t\b\bother box!\t\ntest4").MustText()
 	val3 := page.MustElement("#input2").MustInput("test3").MustText()
-	val4 := page.MustElement("#select1").MustPress(input.ArrowDown).MustPress(input.ArrowDown).MustEval("() => this.value")
+	val4 := page.MustElement("#select1").MustType(input.ArrowDown, input.ArrowDown).MustProperty("value").Str()
 
 	log.Printf("#input1 value: %s", val1)
 	log.Printf("#textarea1 value: %s", val2)
@@ -36,12 +26,14 @@ func main() {
 }
 
 // testServer is a simple HTTP server that displays elements and inputs
-func testServer(addr string) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
-		_, _ = fmt.Fprint(res, indexHTML)
-	})
-	_ = http.ListenAndServe(addr, mux)
+func testServer() string {
+	l, _ := net.Listen("tcp4", "127.0.0.1:0")
+	go func() {
+		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_, _ = fmt.Fprint(w, indexHTML)
+		}))
+	}()
+	return "http://" + l.Addr().String()
 }
 
 const indexHTML = `<!doctype html>

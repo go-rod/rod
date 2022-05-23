@@ -1,23 +1,16 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/go-rod/rod"
 )
 
-var flagPort = flag.Int("port", 8544, "port")
-
 func main() {
-	flag.Parse()
-
-	// run server
-	go testServer(fmt.Sprintf(":%d", *flagPort))
-
-	page := rod.New().MustConnect().MustPage(fmt.Sprintf("http://localhost:%d", *flagPort))
+	page := rod.New().MustConnect().MustPage(testServer())
 	page.MustEval(makeVisibleScript)
 
 	log.Printf("waiting 3s for box to become visible")
@@ -36,12 +29,14 @@ const (
 )
 
 // testServer is a simple HTTP server that serves a static html page.
-func testServer(addr string) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
-		_, _ = fmt.Fprint(res, indexHTML)
-	})
-	_ = http.ListenAndServe(addr, mux)
+func testServer() string {
+	l, _ := net.Listen("tcp4", "127.0.0.1:0")
+	go func() {
+		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_, _ = fmt.Fprint(w, indexHTML)
+		}))
+	}()
+	return "http://" + l.Addr().String()
 }
 
 const indexHTML = `<!doctype html>

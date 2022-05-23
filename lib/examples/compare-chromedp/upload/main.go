@@ -1,26 +1,21 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 
 	"github.com/go-rod/rod"
 )
 
-var flagPort = flag.Int("port", 8544, "port")
-
 // This example demonstrates how to upload a file on a form.
 func main() {
-	flag.Parse()
+	host := uploadServer()
 
-	// start upload server
-	go uploadServer(fmt.Sprintf(":%d", *flagPort))
-
-	page := rod.New().MustConnect().MustPage(fmt.Sprintf("http://localhost:%d", *flagPort))
+	page := rod.New().MustConnect().MustPage(host)
 
 	page.MustElement(`input[name="upload"]`).MustSetFiles("./main.go")
 	page.MustElement(`input[name="submit"]`).MustClick()
@@ -41,7 +36,7 @@ func size(file string) int {
 	return int(fi.Size())
 }
 
-func uploadServer(addr string) {
+func uploadServer() string {
 	// create http server and result channel
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -63,7 +58,9 @@ func uploadServer(addr string) {
 
 		_, _ = fmt.Fprintf(res, resultHTML, len(buf))
 	})
-	_ = http.ListenAndServe(addr, mux)
+	l, _ := net.Listen("tcp4", "127.0.0.1:0")
+	go func() { _ = http.Serve(l, mux) }()
+	return "http://" + l.Addr().String()
 }
 
 const (
