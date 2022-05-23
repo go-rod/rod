@@ -12,6 +12,7 @@ import (
 	"github.com/ysmood/gson"
 
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -206,15 +207,25 @@ func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
 
-// Press is similar with Keyboard.Press.
+// Type is similar with Keyboard.Type.
 // Before the action, it will try to scroll to the element and focus on it.
-func (el *Element) Press(keys ...rune) error {
+func (el *Element) Type(keys ...input.Key) error {
 	err := el.Focus()
 	if err != nil {
 		return err
 	}
+	return el.page.Keyboard.Type(keys...)
+}
 
-	return el.page.Keyboard.Press(keys...)
+// KeyActions is similar with Page.KeyActions.
+// Before the action, it will try to scroll to the element and focus on it.
+func (el *Element) KeyActions() (*KeyActions, error) {
+	err := el.Focus()
+	if err != nil {
+		return nil, err
+	}
+
+	return el.page.KeyActions(), nil
 }
 
 // SelectText selects the text that matches the regular expression.
@@ -266,7 +277,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	err = el.page.Keyboard.InsertText(text)
+	err = el.page.InsertText(text)
 	_, _ = el.Evaluate(evalHelper(js.InputEvent).ByUser())
 	return err
 }

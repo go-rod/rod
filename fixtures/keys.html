@@ -1,11 +1,18 @@
 <html>
-  <body></body>
+  <body style="font-family: monospace"></body>
   <script>
-    window.onkeydown = (e) => {
-      document.body.setAttribute('event', 'key-down-' + e.key)
+    let rec = (name) => (e) => {
+      let list = []
+      e.ctrlKey ? list.push('ctrl') : 0
+      e.altKey ? list.push('alt') : 0
+      e.shiftKey ? list.push('shift') : 0
+      e.metaKey ? list.push('meta') : 0
+      document.body.innerText += `${name} ${JSON.stringify(e.key)} ${e.code} ${
+        e.keyCode
+      } modifiers(${list.join(',')})\n`
     }
-    window.onkeyup = (e) => {
-      document.body.setAttribute('event', 'key-up-' + e.key)
-    }
+
+    window.onkeydown = rec('↓')
+    window.onkeyup = rec('↑')
   </script>
 </html>

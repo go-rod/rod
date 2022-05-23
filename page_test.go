@@ -17,7 +17,6 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/devices"
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -566,128 +565,6 @@ func TestAlert(t *testing.T) {
 	handle(true, "")
 }
 
-func TestMouse(t *testing.T) {
-	g := setup(t)
-
-	page := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
-	page.MustElement("button")
-	mouse := page.Mouse
-
-	mouse.MustScroll(0, 10)
-	mouse.MustMove(140, 160)
-	mouse.MustDown("left")
-	mouse.MustUp("left")
-
-	g.True(page.MustHas("[a=ok]"))
-
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		mouse.MustScroll(0, 10)
-	})
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		mouse.MustDown(proto.InputMouseButtonLeft)
-	})
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		mouse.MustUp(proto.InputMouseButtonLeft)
-	})
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		mouse.MustClick(proto.InputMouseButtonLeft)
-	})
-}
-
-func TestMouseHoldMultiple(t *testing.T) {
-	g := setup(t)
-
-	p := g.page.MustNavigate(g.blank())
-
-	p.Mouse.MustDown("left")
-	defer p.Mouse.MustUp("left")
-	p.Mouse.MustDown("right")
-	defer p.Mouse.MustUp("right")
-}
-
-func TestMouseClick(t *testing.T) {
-	g := setup(t)
-
-	g.browser.SlowMotion(1)
-	defer func() { g.browser.SlowMotion(0) }()
-
-	page := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
-	page.MustElement("button")
-	mouse := page.Mouse
-	mouse.MustMove(140, 160)
-	mouse.MustClick("left")
-	g.True(page.MustHas("[a=ok]"))
-}
-
-func TestMouseDrag(t *testing.T) {
-	g := setup(t)
-
-	page := g.newPage().MustNavigate(g.srcFile("fixtures/drag.html")).MustWaitLoad()
-	mouse := page.Mouse
-
-	mouse.MustMove(3, 3)
-	mouse.MustDown("left")
-	g.E(mouse.Move(60, 80, 3))
-	mouse.MustUp("left")
-
-	utils.Sleep(0.3)
-	g.Eq(page.MustEval(`() => dragTrack`).Str(), " move 3 3 down 3 3 move 22 28 move 41 54 move 60 80 up 60 80")
-}
-
-func TestNativeDrag(t *testing.T) { // devtools doesn't support to use mouse event to simulate it for now
-	t.Skip()
-
-	g := setup(t)
-	page := g.page.MustNavigate(g.srcFile("fixtures/drag.html"))
-	mouse := page.Mouse
-
-	pt := page.MustElement("#draggable").MustShape().OnePointInside()
-	toY := page.MustElement(".dropzone:nth-child(2)").MustShape().OnePointInside().Y
-
-	page.Overlay(pt.X, pt.Y, 10, 10, "from")
-	page.Overlay(pt.X, toY, 10, 10, "to")
-
-	mouse.MustMove(pt.X, pt.Y)
-	mouse.MustDown("left")
-	g.E(mouse.Move(pt.X, toY, 5))
-	page.MustScreenshot("")
-	mouse.MustUp("left")
-
-	page.MustElement(".dropzone:nth-child(2) #draggable")
-}
-
-func TestTouch(t *testing.T) {
-	g := setup(t)
-
-	page := g.newPage().MustEmulate(devices.IPad)
-
-	wait := page.WaitNavigation(proto.PageLifecycleEventNameLoad)
-	page.MustNavigate(g.srcFile("fixtures/touch.html"))
-	wait()
-
-	touch := page.Touch
-
-	touch.MustTap(10, 20)
-
-	p := &proto.InputTouchPoint{X: 30, Y: 40}
-
-	touch.MustStart(p).MustEnd()
-	touch.MustStart(p)
-	p.MoveTo(50, 60)
-	touch.MustMove(p).MustCancel()
-
-	page.MustWait(`() => touchTrack == ' start 10 20 end start 30 40 end start 30 40 move 50 60 cancel'`)
-
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchTouchEvent{})
-		touch.MustTap(1, 2)
-	})
-}
-
 func TestPageScreenshot(t *testing.T) {
 	g := setup(t)
 
@@ -750,55 +627,6 @@ func TestScreenshotFullPageInit(t *testing.T) {
 
 	// should not panic
 	p.MustScreenshotFullPage()
-}
-
-func TestPageInput(t *testing.T) {
-	g := setup(t)
-
-	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
-
-	el := p.MustElement("input")
-	el.MustFocus()
-	p.Keyboard.MustPress('A')
-	p.Keyboard.MustInsertText(" Test")
-	p.Keyboard.MustPress(input.Tab)
-
-	g.Eq("A Test", el.MustText())
-
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchKeyEvent{})
-		p.Keyboard.MustDown('a')
-	})
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.InputDispatchKeyEvent{})
-		p.Keyboard.MustUp('a')
-	})
-	g.Panic(func() {
-		g.mc.stubErr(3, proto.InputDispatchKeyEvent{})
-		p.Keyboard.MustPress('a')
-	})
-}
-
-func TestPageInputDate(t *testing.T) {
-	g := setup(t)
-
-	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
-	p.MustElement("[type=date]").MustInput("12")
-}
-
-func TestPageScroll(t *testing.T) {
-	g := setup(t)
-
-	p := g.page.MustNavigate(g.srcFile("fixtures/scroll.html")).MustWaitLoad()
-
-	p.Mouse.MustMove(30, 30)
-	p.Mouse.MustClick(proto.InputMouseButtonLeft)
-
-	p.Mouse.MustScroll(0, 10)
-	p.Mouse.MustScroll(100, 190)
-	g.E(p.Mouse.Scroll(200, 300, 5))
-
-	p.MustWait(`() => pageXOffset > 200 && pageYOffset > 300`)
 }
 
 func TestPageConsoleLog(t *testing.T) {

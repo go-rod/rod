@@ -132,7 +132,7 @@ func TestPageExpose(t *testing.T) {
 	})
 }
 
-func TestRelease(t *testing.T) {
+func TestObjectRelease(t *testing.T) {
 	g := setup(t)
 
 	res, err := g.page.Evaluate(rod.Eval(`() => document`).ByObject())

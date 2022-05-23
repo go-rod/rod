@@ -4,11 +4,11 @@ import "github.com/go-rod/rod/lib/proto"
 
 // MouseKeys is the map for mouse keys
 var MouseKeys = map[proto.InputMouseButton]int{
-	"left":    1,
-	"right":   2,
-	"middle":  4,
-	"back":    8,
-	"forward": 16,
+	proto.InputMouseButtonLeft:    1,
+	proto.InputMouseButtonRight:   2,
+	proto.InputMouseButtonMiddle:  4,
+	proto.InputMouseButtonBack:    8,
+	proto.InputMouseButtonForward: 16,
 }
 
 // EncodeMouseButton into button flag

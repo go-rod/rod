@@ -32,7 +32,7 @@ func Example() {
 	page := browser.MustPage("https://github.com")
 
 	// We use css selector to get the search input element and input "git"
-	page.MustElement("input").MustInput("git").MustPress(input.Enter)
+	page.MustElement("input").MustInput("git").MustType(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
 	text := page.MustElement(".codesearch-results p").MustText()
@@ -91,7 +91,7 @@ func Example_disable_headless_to_debug() {
 
 	page := browser.MustPage("https://github.com/")
 
-	page.MustElement("input").MustInput("git").MustPress(input.Enter)
+	page.MustElement("input").MustInput("git").MustType(input.Enter)
 
 	text := page.MustElement(".codesearch-results p").MustText()
 
@@ -253,7 +253,7 @@ func Example_race_selectors() {
 	page := browser.MustPage("https://leetcode.com/accounts/login/")
 
 	page.MustElement("#id_login").MustInput(username)
-	page.MustElement("#id_password").MustInput(password).MustPress(input.Enter)
+	page.MustElement("#id_password").MustInput(password).MustType(input.Enter)
 
 	// It will keep retrying until one selector has found a match
 	elm := page.Race().Element(".nav-user-icon-base").MustHandle(func(e *rod.Element) {

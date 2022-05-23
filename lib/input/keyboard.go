@@ -1,97 +1,137 @@
 package input
 
 import (
-	"runtime"
-
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/gson"
 )
 
-// Key contains information for generating a key press based off the unicode
-// value.
-//
-// Example data for the following runes:
-// 									'\r'  '\n'  | ','  '<'    | 'a'   'A'  | '\u0a07'
-// 									_____________________________________________________
-type Key struct {
-	// Code is the key code:
-	// 								"Enter"     | "Comma"     | "KeyA"     | "MediaStop"
-	Code string
+// Modifier values
+const (
+	ModifierAlt     = 1
+	ModifierControl = 2
+	ModifierMeta    = 4
+	ModifierShift   = 8
+)
 
-	// Key is the key value:
-	// 								"Enter"     | ","   "<"   | "a"   "A"  | "MediaStop"
-	Key string
+// Key symbol
+type Key rune
 
-	// Text is the text for printable keys:
-	// 								"\r"  "\r"  | ","   "<"   | "a"   "A"  | ""
-	Text string
+// keyMap for key description
+var keyMap = map[Key]KeyInfo{}
 
-	// Unmodified is the unmodified text for printable keys:
-	// 								"\r"  "\r"  | ","   ","   | "a"   "a"  | ""
-	Unmodified string
+// keyMapShifted for shifted key description
+var keyMapShifted = map[Key]KeyInfo{}
 
-	// Native is the native scan code.
-	// 								0x13  0x13  | 0xbc  0xbc  | 0x61  0x41 | 0x00ae
-	Native int
+var keyShiftedMap = map[Key]Key{}
 
-	// Windows is the windows scan code.
-	// 								0x13  0x13  | 0xbc  0xbc  | 0x61  0x41 | 0xe024
-	Windows int
+// AddKey to KeyMap
+func AddKey(key string, shiftedKey string, code string, keyCode int, location int) Key {
+	if len(key) == 1 {
+		r := Key(key[0])
+		if _, has := keyMap[r]; !has {
+			keyMap[r] = KeyInfo{key, code, keyCode, location}
 
-	// Shift indicates whether or not the Shift modifier should be sent.
-	// 								false false | false true  | false true | false
-	Shift bool
+			if len(shiftedKey) == 1 {
+				rs := Key(shiftedKey[0])
+				keyMapShifted[rs] = KeyInfo{shiftedKey, code, keyCode, location}
+				keyShiftedMap[r] = rs
+			}
+			return r
+		}
+	}
 
-	// Print indicates whether or not the character is a printable character
-	// (ie, should a "char" event be generated).
-	// 								true  true  | true  true  | true  true | false
-	Print bool
+	k := Key(keyCode + (location+1)*256)
+	keyMap[k] = KeyInfo{key, code, keyCode, location}
+
+	return k
 }
 
-// Encode encodes a keyDown, char, and keyUp sequence for the specified rune.
-func Encode(r rune) []*proto.InputDispatchKeyEvent {
-	// force \n -> \r
-	if r == '\n' {
-		r = '\r'
+// Info of the key
+func (k Key) Info() KeyInfo {
+	if k, has := keyMap[k]; has {
+		return k
+	}
+	if k, has := keyMapShifted[k]; has {
+		return k
 	}
 
-	// if not known key, encode as unidentified
-	v := Keys[r]
+	panic("key not defined")
+}
 
-	// create
-	keyDown := proto.InputDispatchKeyEvent{
-		Type:                  "keyDown",
-		Key:                   v.Key,
-		Code:                  v.Code,
-		NativeVirtualKeyCode:  v.Native,
-		WindowsVirtualKeyCode: v.Windows,
+// KeyInfo of a key
+// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+type KeyInfo struct {
+	// Here's the value for Shift key on the keyboard
+
+	Key      string // Shift
+	Code     string // ShiftLeft
+	KeyCode  int    // 16
+	Location int    // 1
+}
+
+// Shift returns the shifted key, such as shifted "1" is "!".
+func (k Key) Shift() (Key, bool) {
+	s, has := keyShiftedMap[k]
+	return s, has
+}
+
+// Printable returns true if the key is printable
+func (k Key) Printable() bool {
+	return len(k.Info().Key) == 1
+}
+
+// Modifier returns the modifier value of the key
+func (k Key) Modifier() int {
+	switch k.Info().KeyCode {
+	case 18:
+		return ModifierAlt
+	case 17:
+		return ModifierControl
+	case 91, 92:
+		return ModifierMeta
+	case 16:
+		return ModifierShift
 	}
-	if runtime.GOOS == "darwin" {
-		keyDown.NativeVirtualKeyCode = 0
-	}
-	if v.Shift {
-		keyDown.Modifiers |= 8
-	}
+	return 0
+}
 
-	keyUp := keyDown
-	keyUp.Type = "keyUp"
-
-	// printable, so create char event
-	if v.Print {
-		keyChar := keyDown
-		keyChar.Type = "char"
-		keyChar.Text = v.Text
-		keyChar.UnmodifiedText = v.Unmodified
-
-		// the virtual key code for char events for printable characters will
-		// be different than the defined keycode when not shifted...
-		//
-		// specifically, it always sends the ascii value as the scan code,
-		// which is available as the rune.
-		keyChar.NativeVirtualKeyCode = int(r)
-		keyChar.WindowsVirtualKeyCode = int(r)
-
-		return []*proto.InputDispatchKeyEvent{&keyDown, &keyChar, &keyUp}
+// Encode general key event
+func (k Key) Encode(t proto.InputDispatchKeyEventType, modifiers int) *proto.InputDispatchKeyEvent {
+	tp := t
+	if t == proto.InputDispatchKeyEventTypeKeyDown && !k.Printable() {
+		tp = proto.InputDispatchKeyEventTypeRawKeyDown
 	}
 
-	return []*proto.InputDispatchKeyEvent{&keyDown, &keyUp}
+	info := k.Info()
+	l := gson.Int(info.Location)
+	keypad := false
+	if info.Location == 3 {
+		l = nil
+		keypad = true
+	}
+
+	txt := ""
+	if k.Printable() {
+		txt = info.Key
+	}
+
+	var cmd []string
+	if IsMac {
+		cmd = macCommands[info.Key]
+	}
+
+	e := &proto.InputDispatchKeyEvent{
+		Type:                  tp,
+		WindowsVirtualKeyCode: info.KeyCode,
+		Code:                  info.Code,
+		Key:                   info.Key,
+		Text:                  txt,
+		UnmodifiedText:        txt,
+		Location:              l,
+		IsKeypad:              keypad,
+		Modifiers:             modifiers,
+		Commands:              cmd,
+	}
+
+	return e
 }

@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/devices"
+	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -620,28 +621,21 @@ func (m *Mouse) MustClick(button proto.InputMouseButton) *Mouse {
 	return m
 }
 
-// MustDown is similar to Keyboard.Down
-func (k *Keyboard) MustDown(key rune) *Keyboard {
-	k.page.e(k.Down(key))
+// MustType is similar to Keyboard.Type
+func (k *Keyboard) MustType(key ...input.Key) *Keyboard {
+	k.page.e(k.Type(key...))
 	return k
 }
 
-// MustUp is similar to Keyboard.Up
-func (k *Keyboard) MustUp(key rune) *Keyboard {
-	k.page.e(k.Up(key))
-	return k
+// MustDo is similar to KeyActions.Do
+func (ka *KeyActions) MustDo() {
+	ka.keyboard.page.e(ka.Do())
 }
 
-// MustPress is similar to Keyboard.Press
-func (k *Keyboard) MustPress(key rune) *Keyboard {
-	k.page.e(k.Press(key))
-	return k
-}
-
-// MustInsertText is similar to Keyboard.InsertText
-func (k *Keyboard) MustInsertText(text string) *Keyboard {
-	k.page.e(k.InsertText(text))
-	return k
+// MustInsertText is similar to Page.InsertText
+func (p *Page) MustInsertText(text string) *Page {
+	p.e(p.InsertText(text))
+	return p
 }
 
 // MustStart is similar to Touch.Start
@@ -749,10 +743,17 @@ func (el *Element) MustWaitInteractable() *Element {
 	return el
 }
 
-// MustPress is similar to Element.Press
-func (el *Element) MustPress(keys ...rune) *Element {
-	el.e(el.Press(keys...))
+// MustType is similar to Element.Type
+func (el *Element) MustType(keys ...input.Key) *Element {
+	el.e(el.Type(keys...))
 	return el
+}
+
+// MustKeyActions is similar to Element.KeyActions
+func (el *Element) MustKeyActions() *KeyActions {
+	ka, err := el.KeyActions()
+	el.e(err)
+	return ka
 }
 
 // MustSelectText is similar to Element.SelectText
