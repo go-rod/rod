@@ -765,6 +765,7 @@ func (p *Page) initEvents() {
 	}()
 }
 
+// ScreenCastRecord listen PageScreenCastFrame and convert it directly into AVI Movie
 func (p *Page) ScreenCastRecord(videoAVIPath string, framePerSecond int) (string, error) {
 	browserBound, errorBrowserBound := p.GetWindow()
 
@@ -779,14 +780,27 @@ func (p *Page) ScreenCastRecord(videoAVIPath string, framePerSecond int) (string
 	}
 
 	go p.EachEvent(func(e *proto.PageScreencastFrame) {
-		proto.PageScreencastFrameAck{
+		errProto := proto.PageScreencastFrameAck{
 			SessionID: e.SessionID,
 		}.Call(p)
 
-		aviWriter.AddFrame(e.Data)
+		if errProto != nil {
+			panic(errProto)
+		}
+
+		errFrame := aviWriter.AddFrame(e.Data)
+
+		if errFrame != nil {
+			panic(errFrame)
+		}
 	})()
 
-	workingDirectory, _ := os.Getwd()
+	workingDirectory, errorWD := os.Getwd()
+
+	if errorWD != nil {
+		return "", errorWD
+	}
+
 	matches, errorGlob := filepath.Glob(workingDirectory + "/*.idx_")
 
 	if errorGlob != nil {
@@ -804,18 +818,28 @@ func (p *Page) ScreenCastRecord(videoAVIPath string, framePerSecond int) (string
 	return videoAVIPath, nil
 }
 
-func (p *Page) ScreenCastStart(JPEGQuality int, framePerSecond int) bool {
-	proto.PageStartScreencast{
+// ScreenCastStart start listening ScreenCastRecord
+func (p *Page) ScreenCastStart(JPEGQuality int, framePerSecond int) (bool, error) {
+	err := proto.PageStartScreencast{
 		Format:        "jpeg",
 		Quality:       &JPEGQuality,
 		EveryNthFrame: &framePerSecond,
 	}.Call(p)
 
-	return true
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func (p *Page) ScreenCastStop() bool {
-	proto.PageStopScreencast{}.Call(p)
+// ScreenCastStop stop listening ScreenCastRecord
+func (p *Page) ScreenCastStop() (bool, error) {
+	err := proto.PageStopScreencast{}.Call(p)
 
-	return true
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }

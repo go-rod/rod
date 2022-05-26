@@ -982,14 +982,36 @@ func TestPageScreenCast(t *testing.T) {
 
 		p := b.MustPage(g.blank()).MustWaitLoad()
 
-		p.ScreenCastRecord("sample.avi", 6) // Only support .avi video file & frame per second
-		p.ScreenCastStart(100, 1)           // Image quality & frame per second
+		// ScreenCastRecord listen PageScreenCastFrame and convert it directly into AVI Movie
+		_, errorRecord := p.ScreenCastRecord("sample.avi", 2) // Only support .avi video file & frame per second
 
-		p.Navigate("https://google.com")
+		if errorRecord != nil {
+			t.Fail()
+		}
+		// ScreenCastStart start listening ScreenCastRecord
+		_, errorStart := p.ScreenCastStart(100, 1) // Image quality & frame per second
+
+		if errorStart != nil {
+			t.Fail()
+		}
+
+		errorNavigate := p.Navigate("https://google.com")
+
+		if errorNavigate != nil {
+			t.Fail()
+		}
 
 		time.Sleep(3 * time.Second)
 
-		p.ScreenCastStop()
+		// ScreenCastStop stop listening ScreenCastRecord
+		_, errorStop := p.ScreenCastStop()
+
+		if errorStop != nil {
+			t.Fail()
+		}
+
 		p.MustClose()
+
+		g.Skip()
 	}
 }
