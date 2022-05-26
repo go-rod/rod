@@ -740,9 +740,6 @@ const (
 	// AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate enum const
 	AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate AuditsDeprecationIssueType = "RtcpMuxPolicyNegotiate"
 
-	// AuditsDeprecationIssueTypeRTPDataChannel enum const
-	AuditsDeprecationIssueTypeRTPDataChannel AuditsDeprecationIssueType = "RTPDataChannel"
-
 	// AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation enum const
 	AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation AuditsDeprecationIssueType = "SharedArrayBufferConstructedWithoutIsolation"
 
