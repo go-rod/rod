@@ -971,3 +971,25 @@ func TestPageActionAfterClose(t *testing.T) {
 		g.Eq(err, context.Canceled)
 	}
 }
+
+func TestPageScreenCast(t *testing.T) {
+	g := setup(t)
+
+	{
+		b := rod.New().MustConnect()
+
+		defer b.MustClose()
+
+		p := b.MustPage(g.blank()).MustWaitLoad()
+
+		p.ScreenCastRecord("sample.avi", 6) // Only support .avi video file & frame per second
+		p.ScreenCastStart(100, 1)           // Image quality & frame per second
+
+		p.Navigate("https://google.com")
+
+		time.Sleep(3 * time.Second)
+
+		p.ScreenCastStop()
+		p.MustClose()
+	}
+}

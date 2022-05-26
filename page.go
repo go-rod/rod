@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -13,6 +15,7 @@ import (
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/icza/mjpeg"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/gson"
 )
@@ -760,4 +763,59 @@ func (p *Page) initEvents() {
 			p.event.Publish(msg)
 		}
 	}()
+}
+
+func (p *Page) ScreenCastRecord(videoAVIPath string, framePerSecond int) (string, error) {
+	browserBound, errorBrowserBound := p.GetWindow()
+
+	if errorBrowserBound != nil {
+		return "", errorBrowserBound
+	}
+
+	aviWriter, errorLoad := mjpeg.New(videoAVIPath, int32(*browserBound.Width), int32(*browserBound.Height), int32(framePerSecond))
+
+	if errorLoad != nil {
+		return "", errorLoad
+	}
+
+	go p.EachEvent(func(e *proto.PageScreencastFrame) {
+		proto.PageScreencastFrameAck{
+			SessionID: e.SessionID,
+		}.Call(p)
+
+		aviWriter.AddFrame(e.Data)
+	})()
+
+	workingDirectory, _ := os.Getwd()
+	matches, errorGlob := filepath.Glob(workingDirectory + "/*.idx_")
+
+	if errorGlob != nil {
+		return "", errorGlob
+	}
+
+	for _, name := range matches {
+		errRemove := os.Remove(name)
+
+		if errRemove != nil {
+			return "", errRemove
+		}
+	}
+
+	return videoAVIPath, nil
+}
+
+func (p *Page) ScreenCastStart(JPEGQuality int, framePerSecond int) bool {
+	proto.PageStartScreencast{
+		Format:        "jpeg",
+		Quality:       &JPEGQuality,
+		EveryNthFrame: &framePerSecond,
+	}.Call(p)
+
+	return true
+}
+
+func (p *Page) ScreenCastStop() bool {
+	proto.PageStopScreencast{}.Call(p)
+
+	return true
 }
