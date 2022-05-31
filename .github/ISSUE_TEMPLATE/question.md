@@ -36,13 +36,13 @@ func TestLab(t *testing.T) {
 }
 ```
 
+## What you got
+
+Such as what error you see.
+
 ## What you expected to see
 
 Such as what you want to do.
-
-## What you instead got
-
-Such as what error you see.
 
 ## What have you tried to solve the question
 

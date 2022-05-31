@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/ysmood/got"
@@ -8,6 +9,8 @@ import (
 
 func TestBasic(t *testing.T) {
 	g := got.T(t)
+
+	_ = os.Setenv("ROD_GITHUB_ROBOT", "1234")
 
 	body := g.Read(g.Open(false, "body-invalid.txt")).String()
 
@@ -17,14 +20,16 @@ func TestBasic(t *testing.T) {
 		"Please fix the format of your markdown:\n"+
 		"\n"+
 		"```txt\n"+
-		"stdin:5 MD040/fenced-code-language Fenced code blocks should have a language specified [Context: \"```\"]\n"+
-		"stdin:26:24 MD009/no-trailing-spaces Trailing spaces [Expected: 0 or 2; Actual: 1]\n"+
+		"5 MD040/fenced-code-language Fenced code blocks should have a language specified [Context: \"```\"]\n"+
+		"26:24 MD009/no-trailing-spaces Trailing spaces [Expected: 0 or 2; Actual: 1]\n"+
 		"```\n"+
 		"\n"+
 		"Please fix the golang code in your markdown:\n"+
 		"\n"+
-		"```@@ go markdown error @@\n"+
-		"4:5: invalid import path: \"testing (and 1 more errors)\n"+
+		"```txt\n"+
+		"@@ golang markdown block 1 @@\n"+
+		"4:5: invalid import path: \"testing\n"+
+		"4:5: string literal not terminated\n"+
 		"```")
 
 	body = g.Read(g.Open(false, "body.txt")).String()
