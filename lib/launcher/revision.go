@@ -3,7 +3,7 @@
 package launcher
 
 // RevisionDefault for chromium
-const RevisionDefault = 1007582
+const RevisionDefault = 1010848
 
 // RevisionPlaywright for arm linux
 const RevisionPlaywright = 1005

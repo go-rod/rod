@@ -667,6 +667,7 @@ var types = map[string]reflect.Type{
 	"Overlay.screenshotRequested":                           reflect.TypeOf(OverlayScreenshotRequested{}),
 	"Overlay.inspectModeCanceled":                           reflect.TypeOf(OverlayInspectModeCanceled{}),
 	"Page.AdFrameStatus":                                    reflect.TypeOf(PageAdFrameStatus{}),
+	"Page.AdScriptId":                                       reflect.TypeOf(PageAdScriptID{}),
 	"Page.PermissionsPolicyBlockLocator":                    reflect.TypeOf(PagePermissionsPolicyBlockLocator{}),
 	"Page.PermissionsPolicyFeatureState":                    reflect.TypeOf(PagePermissionsPolicyFeatureState{}),
 	"Page.OriginTrialToken":                                 reflect.TypeOf(PageOriginTrialToken{}),

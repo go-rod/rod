@@ -51,6 +51,18 @@ type PageAdFrameStatus struct {
 	Explanations []PageAdFrameExplanation `json:"explanations,omitempty"`
 }
 
+// PageAdScriptID (experimental) Identifies the bottom-most script which caused the frame to be labelled
+// as an ad.
+type PageAdScriptID struct {
+
+	// ScriptID Script Id of the bottom-most script which caused the frame to be labelled
+	// as an ad.
+	ScriptID RuntimeScriptID `json:"scriptId"`
+
+	// DebuggerID Id of adScriptId's debugger.
+	DebuggerID RuntimeUniqueDebuggerID `json:"debuggerId"`
+}
+
 // PageSecureContextType (experimental) Indicates whether the frame is a secure context and why it is the case.
 type PageSecureContextType string
 
@@ -136,9 +148,6 @@ const (
 
 	// PagePermissionsPolicyFeatureChEct enum const
 	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-etc"
-
-	// PagePermissionsPolicyFeatureChPartitionedCookies enum const
-	PagePermissionsPolicyFeatureChPartitionedCookies PagePermissionsPolicyFeature = "ch-partitioned-cookies"
 
 	// PagePermissionsPolicyFeatureChPrefersColorScheme enum const
 	PagePermissionsPolicyFeatureChPrefersColorScheme PagePermissionsPolicyFeature = "ch-prefers-color-scheme"
@@ -1242,9 +1251,6 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonContentWebUSB enum const
 	PageBackForwardCacheNotRestoredReasonContentWebUSB PageBackForwardCacheNotRestoredReason = "ContentWebUSB"
-
-	// PageBackForwardCacheNotRestoredReasonContentMediaSession enum const
-	PageBackForwardCacheNotRestoredReasonContentMediaSession PageBackForwardCacheNotRestoredReason = "ContentMediaSession"
 
 	// PageBackForwardCacheNotRestoredReasonContentMediaSessionService enum const
 	PageBackForwardCacheNotRestoredReasonContentMediaSessionService PageBackForwardCacheNotRestoredReason = "ContentMediaSessionService"
@@ -2827,6 +2833,10 @@ type PageFrameAttached struct {
 
 	// Stack (optional) JavaScript stack trace of when frame was attached, only set if frame initiated from script.
 	Stack *RuntimeStackTrace `json:"stack,omitempty"`
+
+	// AdScriptID (experimental) (optional) Identifies the bottom-most script which caused the frame to be labelled
+	// as an ad. Only sent if frame is labelled as an ad and id is available.
+	AdScriptID *PageAdScriptID `json:"adScriptId,omitempty"`
 }
 
 // ProtoEvent name
