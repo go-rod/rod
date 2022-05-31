@@ -137,9 +137,6 @@ const (
 	// PagePermissionsPolicyFeatureChEct enum const
 	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-etc"
 
-	// PagePermissionsPolicyFeatureChPartitionedCookies enum const
-	PagePermissionsPolicyFeatureChPartitionedCookies PagePermissionsPolicyFeature = "ch-partitioned-cookies"
-
 	// PagePermissionsPolicyFeatureChPrefersColorScheme enum const
 	PagePermissionsPolicyFeatureChPrefersColorScheme PagePermissionsPolicyFeature = "ch-prefers-color-scheme"
 
@@ -1242,9 +1239,6 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonContentWebUSB enum const
 	PageBackForwardCacheNotRestoredReasonContentWebUSB PageBackForwardCacheNotRestoredReason = "ContentWebUSB"
-
-	// PageBackForwardCacheNotRestoredReasonContentMediaSession enum const
-	PageBackForwardCacheNotRestoredReasonContentMediaSession PageBackForwardCacheNotRestoredReason = "ContentMediaSession"
 
 	// PageBackForwardCacheNotRestoredReasonContentMediaSessionService enum const
 	PageBackForwardCacheNotRestoredReasonContentMediaSessionService PageBackForwardCacheNotRestoredReason = "ContentMediaSessionService"
