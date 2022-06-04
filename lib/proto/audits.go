@@ -536,7 +536,7 @@ const (
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
-// Explainer: https://github.com/WICG/conversion-measurement-api
+// Explainer: https://github.com/WICG/attribution-reporting-api
 type AuditsAttributionReportingIssueDetails struct {
 
 	// ViolationType ...
@@ -685,9 +685,6 @@ const (
 
 	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
 	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
-
-	// AuditsDeprecationIssueTypePaymentRequestBasicCard enum const
-	AuditsDeprecationIssueTypePaymentRequestBasicCard AuditsDeprecationIssueType = "PaymentRequestBasicCard"
 
 	// AuditsDeprecationIssueTypePictureSourceSrc enum const
 	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"

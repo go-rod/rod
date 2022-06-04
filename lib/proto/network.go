@@ -1348,14 +1348,17 @@ const (
 	// NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopups enum const
 	NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopups NetworkCrossOriginOpenerPolicyValue = "SameOriginAllowPopups"
 
+	// NetworkCrossOriginOpenerPolicyValueRestrictProperties enum const
+	NetworkCrossOriginOpenerPolicyValueRestrictProperties NetworkCrossOriginOpenerPolicyValue = "RestrictProperties"
+
 	// NetworkCrossOriginOpenerPolicyValueUnsafeNone enum const
 	NetworkCrossOriginOpenerPolicyValueUnsafeNone NetworkCrossOriginOpenerPolicyValue = "UnsafeNone"
 
 	// NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep enum const
 	NetworkCrossOriginOpenerPolicyValueSameOriginPlusCoep NetworkCrossOriginOpenerPolicyValue = "SameOriginPlusCoep"
 
-	// NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopupsPlusCoep enum const
-	NetworkCrossOriginOpenerPolicyValueSameOriginAllowPopupsPlusCoep NetworkCrossOriginOpenerPolicyValue = "SameOriginAllowPopupsPlusCoep"
+	// NetworkCrossOriginOpenerPolicyValueRestrictPropertiesPlusCoep enum const
+	NetworkCrossOriginOpenerPolicyValueRestrictPropertiesPlusCoep NetworkCrossOriginOpenerPolicyValue = "RestrictPropertiesPlusCoep"
 )
 
 // NetworkCrossOriginOpenerPolicyStatus (experimental) ...
