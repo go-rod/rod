@@ -1,5 +1,4 @@
 //go:generate go run ./lib/utils/setup
-//go:generate go run ./lib/launcher/revision
 //go:generate go run ./lib/proto/generate
 //go:generate go run ./lib/js/generate
 //go:generate go run ./lib/assets/generate
