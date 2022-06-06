@@ -158,10 +158,8 @@ func (p *Page) Navigate(url string) error {
 		url = "about:blank"
 	}
 
-	err := p.StopLoading()
-	if err != nil {
-		return err
-	}
+	// try to stop loading
+	_ = p.StopLoading()
 
 	res, err := proto.PageNavigate{URL: url}.Call(p)
 	if err != nil {

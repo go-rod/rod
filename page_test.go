@@ -670,13 +670,19 @@ func TestPagePDF(t *testing.T) {
 	})
 }
 
-func TestPageNavigateErr(t *testing.T) {
+func TestPageNavigateDNSErr(t *testing.T) {
 	g := setup(t)
+	p := g.newPage()
 
 	// dns error
-	err := g.page.Navigate("http://" + g.RandStr(16))
+	err := p.Navigate("http://" + g.RandStr(16))
 	g.Is(err, &rod.ErrNavigation{})
 	g.Is(err.Error(), "navigation failed: net::ERR_NAME_NOT_RESOLVED")
+	p.MustNavigate("about:blank")
+}
+
+func TestPageNavigateErr(t *testing.T) {
+	g := setup(t)
 
 	s := g.Serve()
 
@@ -691,10 +697,6 @@ func TestPageNavigateErr(t *testing.T) {
 	g.page.MustNavigate(s.URL("/404"))
 	g.page.MustNavigate(s.URL("/500"))
 
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.PageStopLoading{})
-		g.page.MustNavigate(g.blank())
-	})
 	g.Panic(func() {
 		g.mc.stubErr(1, proto.PageNavigate{})
 		g.page.MustNavigate(g.blank())
