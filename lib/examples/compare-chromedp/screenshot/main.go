@@ -15,7 +15,7 @@ func main() {
 	browser := rod.New().MustConnect()
 
 	// capture screenshot of an element
-	browser.MustPage("https://google.com").MustElement("#main").MustScreenshot("elementScreenshot.png")
+	browser.MustPage("https://google.com").MustElement("body div").MustScreenshot("elementScreenshot.png")
 
 	// capture entire browser viewport, returning jpg with quality=90
 	buf, err := browser.MustPage("https://brank.as/").Screenshot(true, &proto.PageCaptureScreenshot{

@@ -7,7 +7,7 @@ import (
 	"github.com/go-rod/rod"
 )
 
-var flagDevToolWsURL = flag.String("devtools-ws-url", "", "DevTools WebSsocket URL")
+var flagDevToolWsURL = flag.String("devtools-ws-url", "", "DevTools WebSocket URL")
 
 // This example demonstrates how to connect to an existing Chrome DevTools
 // instance using a remote WebSocket URL.
