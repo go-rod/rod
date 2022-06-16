@@ -19,9 +19,9 @@ assignees: ''
 
 1. Use your code to replace the content of function `TestLab` in file `lab_test.go`.
 
-1. Test your code with: `go test -run TestLab`.
+1. Test your code with: `go test -run TestLab`, make sure it fails as expected.
 
-1. Replace this section with your entire `lab_test.go` content, like below:
+1. Replace the content under "The code to demonstrate your question" with the entire `lab_test.go` content, like below:
 
 ```go
 package rod_test
@@ -32,7 +32,7 @@ import (
 
 func TestLab(t *testing.T) {
     g := setup(t)
-    g.Eq(1, 1)
+    g.Eq(1, 2) // the test should fail, here 1 doesn't equal 2
 }
 ```
 
