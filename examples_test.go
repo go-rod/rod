@@ -63,7 +63,7 @@ func Example() {
 // Rod provides a lot of debug options, you can set them with setter methods or use environment variables.
 // Doc for environment variables: https://pkg.go.dev/github.com/go-rod/rod/lib/defaults
 func Example_disable_headless_to_debug() {
-	// Headless runs the browser on foreground, you can also use env "rod=show"
+	// Headless runs the browser on foreground, you can also use flag "-rod=show"
 	// Devtools opens the tab in each new tab opened automatically
 	l := launcher.New().
 		Headless(false).
@@ -84,7 +84,7 @@ func Example_disable_headless_to_debug() {
 
 	// ServeMonitor plays screenshots of each tab. This feature is extremely
 	// useful when debugging with headless mode.
-	// You can also enable it with env rod=monitor
+	// You can also enable it with flag "-rod=monitor"
 	launcher.Open(browser.ServeMonitor(""))
 
 	defer browser.MustClose()
