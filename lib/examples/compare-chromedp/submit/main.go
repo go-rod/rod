@@ -14,7 +14,7 @@ func main() {
 
 	page.MustElement(`input[name=q]`).MustWaitVisible().MustInput("chromedp").MustType(input.Enter)
 
-	res := page.MustElementR("a", "chromedp").MustParent().MustNext().MustText()
+	res := page.MustElementR("a", "chromedp").MustParent().MustParent().MustNext().MustText()
 
 	log.Printf("got: `%s`", strings.TrimSpace(res))
 }
