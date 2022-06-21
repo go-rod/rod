@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -363,6 +364,14 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 		metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
 		if err != nil {
 			return nil, err
+		}
+
+		if metrics == nil {
+			return nil, errors.New("can not read metrics")
+		}
+
+		if metrics.CSSContentSize == nil {
+			return nil, errors.New("can not read css content size")
 		}
 
 		oldView := proto.EmulationSetDeviceMetricsOverride{}
