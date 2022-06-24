@@ -44,12 +44,12 @@ type WebSocketable interface {
 
 // Client is a devtools protocol connection instance.
 type Client struct {
+	count uint64
+
 	ws WebSocketable
 
 	pending sync.Map    // pending requests
 	event   chan *Event // events from browser
-
-	count uint64
 
 	logger utils.Logger
 }
