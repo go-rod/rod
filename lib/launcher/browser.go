@@ -86,7 +86,7 @@ type Browser struct {
 	// Revision of the browser to use
 	Revision int
 
-	// Dir to download broweser.
+	// Dir to download browser.
 	Dir string
 
 	// Log to print output
