@@ -48,7 +48,7 @@ var Port string
 var Bin string
 
 // Proxy is the default of launcher.Launcher.Proxy
-// Option name is "trace".
+// Option name is "proxy".
 var Proxy string
 
 // LockPort is the default of launcher.Browser.LockPort
