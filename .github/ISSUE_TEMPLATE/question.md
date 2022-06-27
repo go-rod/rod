@@ -21,7 +21,8 @@ assignees: ''
 
 1. Test your code with: `go test -run TestLab`, make sure it fails as expected.
 
-1. Replace the content under "The code to demonstrate your question" with the entire `lab_test.go` content, like below:
+1. Replace **all the content** under "The code to demonstrate your question"
+   with the entire `lab_test.go` content, like below:
 
 ```go
 package rod_test
