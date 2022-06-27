@@ -145,7 +145,7 @@ func TestLaunchUserMode(t *testing.T) {
 	dir := l.Get(flags.UserDataDir)
 	port := 58472
 
-	url := l.Context(g.Context()).Delete("test").Bin("").
+	l = l.Context(g.Context()).Delete("test").Bin("").
 		Revision(launcher.RevisionDefault).
 		Logger(ioutil.Discard).
 		Leakless(false).Leakless(true).
@@ -156,8 +156,18 @@ func TestLaunchUserMode(t *testing.T) {
 		Proxy("test.com").
 		UserDataDir("test").UserDataDir(dir).
 		WorkingDir("").
-		Env("TZ=Asia/Tokyo").
-		MustLaunch()
+		Env(append(os.Environ(), "TZ=Asia/Tokyo")...)
+
+	g.Eq(l.FormatArgs(), []string /* len=6 cap=8 */ {
+		"--headless",
+		`--no-startup-window`,           /* len=19 */
+		`--proxy-server=test.com`,       /* len=23 */
+		`--remote-debugging-port=58472`, /* len=29 */
+		"--test-append=a",
+		"about:blank",
+	})
+
+	url := l.MustLaunch()
 
 	g.Eq(url, launcher.NewUserMode().RemoteDebuggingPort(port).MustLaunch())
 }
