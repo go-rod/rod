@@ -670,12 +670,11 @@ func TestPagePDF(t *testing.T) {
 	})
 }
 
-func TestPageNavigateDNSErr(t *testing.T) {
+func TestPageNavigateNetworkErr(t *testing.T) {
 	g := setup(t)
 	p := g.newPage()
 
-	// dns error
-	err := p.Navigate("http://" + g.RandStr(16))
+	err := p.Navigate("http://127.0.0.1:1")
 	g.Is(err, &rod.ErrNavigation{})
 	g.Is(err.Error(), "navigation failed: net::ERR_NAME_NOT_RESOLVED")
 	p.MustNavigate("about:blank")
