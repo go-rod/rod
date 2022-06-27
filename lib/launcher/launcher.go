@@ -158,6 +158,9 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 
 // Set a command line argument to launch the browser.
 func (l *Launcher) Set(name flags.Flag, values ...string) *Launcher {
+	if strings.Contains(string(name), "=") {
+		panic("flag name should not contain '='")
+	}
 	l.Flags[l.normalizeFlag(name)] = values
 	return l
 }

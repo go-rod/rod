@@ -121,6 +121,10 @@ func TestLaunch(t *testing.T) {
 		_, err = launcher.NewManaged("ws://not-exists")
 		g.Err(err)
 	}
+
+	{
+		g.Panic(func() { launcher.New().Set("a=b") })
+	}
 }
 
 func TestLaunchUserMode(t *testing.T) {
