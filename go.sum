@@ -1,3 +1,5 @@
+github.com/icza/mjpeg v0.0.0-20210726201846-5ff75d3c479f h1:907GjB0sqx3+XKOz5tSeAi8Z9ED7WwQU9hXoclDp+jg=
+github.com/icza/mjpeg v0.0.0-20210726201846-5ff75d3c479f/go.mod h1:Eja3x31oRrEOzl6ihhsxY23gXaTYWLP3Gwj5nMAJ7m0=
 github.com/ysmood/goob v0.4.0 h1:HsxXhyLBeGzWXnqVKtmT9qM7EuVs/XOgkX7T6r1o1AQ=
 github.com/ysmood/goob v0.4.0/go.mod h1:u6yx7ZhS4Exf2MwciFr6nIM8knHQIE22lFpWHnfql18=
 github.com/ysmood/got v0.31.2 h1:+aNBkkXrVqZ0UJfeiOfuGbKq3kiJarjNl371Nxz6zLA=

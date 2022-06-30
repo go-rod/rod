@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
 	"math"
 	"net/http"
@@ -799,5 +800,45 @@ func TestPageActionAfterClose(t *testing.T) {
 
 		_, err := p.Eval(`() => new Promise(r => {})`)
 		g.Eq(err, context.Canceled)
+	}
+}
+
+//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenCast$ github.com/TommyLeng/go-rod -v -count=1
+func TestPageScreenCast(t *testing.T) {
+	g := setup(t)
+
+	{
+		b := rod.New().MustConnect()
+
+		defer b.MustClose()
+
+		p := b.MustPage(g.blank()).MustWaitLoad()
+
+		// ScreenCastRecord listen PageScreenCastFrame and convert it directly into AVI Movie
+		aviWriter, errorRecord := p.ScreenCastRecord("sample.avi", 2) // Only support .avi video file & frame per second
+		if errorRecord != nil {
+			t.Fatal(errorRecord)
+		}
+
+		// ScreenCastStart start listening ScreenCastRecord
+		errorStart := p.ScreenCastStart(100, 20) // Image quality & frame per second
+		if errorStart != nil {
+			t.Fatal(errorStart)
+		}
+
+		p.Navigate("https://member.bbtb.dev")
+
+		fmt.Println("sleep 10 seconds")
+		time.Sleep(10 * time.Second)
+
+		// ScreenCastStop stop listening ScreenCastRecord
+		errorStop := p.ScreenCastStop(*aviWriter)
+		if errorStop != nil {
+			t.Fatal(errorStop)
+		}
+
+		p.MustClose()
+
+		g.Skip()
 	}
 }
