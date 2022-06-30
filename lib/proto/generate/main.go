@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/go-rod/rod/lib/utils"
+	"github.com/TommyLeng/go-rod/lib/utils"
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 		package proto_test
 
 		import (
-			"github.com/go-rod/rod/lib/proto"
+			"github.com/TommyLeng/go-rod/lib/proto"
 		)
 	`
 

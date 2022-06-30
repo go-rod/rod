@@ -5,7 +5,7 @@ package main
 import (
 	"testing"
 
-	"github.com/go-rod/rod"
+	"github.com/TommyLeng/go-rod"
 	"github.com/ysmood/got"
 )
 

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-rod/rod/lib/utils"
+	"github.com/TommyLeng/go-rod/lib/utils"
 )
 
 func lintMustPrefix() {

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-rod/rod/lib/utils"
+	"github.com/TommyLeng/go-rod/lib/utils"
 )
 
 func main() {
