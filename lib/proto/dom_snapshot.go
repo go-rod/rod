@@ -291,6 +291,10 @@ type DOMSnapshotNodeTreeSnapshot struct {
 	// PseudoType (optional) Type of a pseudo element node.
 	PseudoType *DOMSnapshotRareStringData `json:"pseudoType,omitempty"`
 
+	// PseudoIdentifier (optional) Pseudo element identifier for this node. Only present if there is a
+	// valid pseudoType.
+	PseudoIdentifier *DOMSnapshotRareStringData `json:"pseudoIdentifier,omitempty"`
+
 	// IsClickable (optional) Whether this DOM node responds to mouse clicks. This includes nodes that have had click
 	// event listeners attached via JavaScript as well as anchor tags that naturally navigate when
 	// clicked.

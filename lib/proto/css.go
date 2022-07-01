@@ -43,6 +43,9 @@ type CSSPseudoElementMatches struct {
 	// PseudoType Pseudo element type.
 	PseudoType DOMPseudoType `json:"pseudoType"`
 
+	// PseudoIdentifier (optional) Pseudo element custom ident.
+	PseudoIdentifier string `json:"pseudoIdentifier,omitempty"`
+
 	// Matches Matches of CSS rules applicable to the pseudo style.
 	Matches []*CSSRuleMatch `json:"matches"`
 }
@@ -187,6 +190,10 @@ type CSSCSSRule struct {
 	// Layers (experimental) (optional) Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
 	// with the innermost layer and going outwards.
 	Layers []*CSSCSSLayer `json:"layers,omitempty"`
+
+	// Scopes (experimental) (optional) @scope CSS at-rule array.
+	// The array enumerates @scope at-rules starting with the innermost one, going outwards.
+	Scopes []*CSSCSSScope `json:"scopes,omitempty"`
 }
 
 // CSSRuleUsage CSS coverage information.
@@ -399,6 +406,20 @@ type CSSCSSSupports struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
 }
 
+// CSSCSSScope (experimental) CSS Scope at-rule descriptor.
+type CSSCSSScope struct {
+
+	// Text Scope rule text.
+	Text string `json:"text"`
+
+	// Range (optional) The associated rule header range in the enclosing stylesheet (if
+	// available).
+	Range *CSSSourceRange `json:"range,omitempty"`
+
+	// StyleSheetID (optional) Identifier of the stylesheet containing this object (if exists).
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
+}
+
 // CSSCSSLayer (experimental) CSS Layer at-rule descriptor.
 type CSSCSSLayer struct {
 
@@ -477,6 +498,9 @@ type CSSFontFace struct {
 
 	// FontStretch The font-stretch.
 	FontStretch string `json:"fontStretch"`
+
+	// FontDisplay The font-display.
+	FontDisplay string `json:"fontDisplay"`
 
 	// UnicodeRange The unicode-range.
 	UnicodeRange string `json:"unicodeRange"`

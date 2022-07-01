@@ -211,6 +211,10 @@ type DOMNode struct {
 	// PseudoType (optional) Pseudo element type for this node.
 	PseudoType DOMPseudoType `json:"pseudoType,omitempty"`
 
+	// PseudoIdentifier (optional) Pseudo element identifier for this node. Only present if there is a
+	// valid pseudoType.
+	PseudoIdentifier string `json:"pseudoIdentifier,omitempty"`
+
 	// ShadowRootType (optional) Shadow root type.
 	ShadowRootType DOMShadowRootType `json:"shadowRootType,omitempty"`
 
@@ -1024,6 +1028,28 @@ type DOMQuerySelectorAllResult struct {
 	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
+// DOMGetTopLayerElements (experimental) Returns NodeIds of current top layer elements.
+// Top layer is rendered closest to the user within a viewport, therefore its elements always
+// appear on top of all other content.
+type DOMGetTopLayerElements struct {
+}
+
+// ProtoReq name
+func (m DOMGetTopLayerElements) ProtoReq() string { return "DOM.getTopLayerElements" }
+
+// Call the request
+func (m DOMGetTopLayerElements) Call(c Client) (*DOMGetTopLayerElementsResult, error) {
+	var res DOMGetTopLayerElementsResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMGetTopLayerElementsResult (experimental) ...
+type DOMGetTopLayerElementsResult struct {
+
+	// NodeIds NodeIds of top layer elements
+	NodeIds []DOMNodeID `json:"nodeIds"`
+}
+
 // DOMRedo (experimental) Re-does the last undone action.
 type DOMRedo struct {
 }
@@ -1596,6 +1622,15 @@ type DOMPseudoElementAdded struct {
 // ProtoEvent name
 func (evt DOMPseudoElementAdded) ProtoEvent() string {
 	return "DOM.pseudoElementAdded"
+}
+
+// DOMTopLayerElementsUpdated (experimental) Called when top layer elements are changed.
+type DOMTopLayerElementsUpdated struct {
+}
+
+// ProtoEvent name
+func (evt DOMTopLayerElementsUpdated) ProtoEvent() string {
+	return "DOM.topLayerElementsUpdated"
 }
 
 // DOMPseudoElementRemoved (experimental) Called when a pseudo element is removed from an element.
