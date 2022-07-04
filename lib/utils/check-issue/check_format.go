@@ -32,7 +32,8 @@ func checkGoCode(body string) error {
 	errs := []string{}
 	i := 0
 	for _, m := range reg.FindAllStringSubmatch(body, -1) {
-		_, err := parser.ParseFile(token.NewFileSet(), "", m[1], parser.AllErrors)
+		code := formatCode(m[1])
+		_, err := parser.ParseFile(token.NewFileSet(), "", code, parser.AllErrors)
 		if list, ok := err.(scanner.ErrorList); ok {
 			i++
 			errs = append(errs, fmt.Sprintf("@@ golang markdown block %d @@", i))
@@ -47,4 +48,27 @@ func checkGoCode(body string) error {
 	}
 
 	return nil
+}
+
+func formatCode(code string) string {
+	code = strings.TrimSpace(code)
+	if strings.HasPrefix(code, "package ") {
+	} else if strings.Contains(code, "func ") {
+		code = "package main\n" + vars(code) + code
+	} else {
+		code = "package main\n" + vars(code) + "func main() {\n" + code + "\n}"
+	}
+
+	return code
+}
+
+func vars(code string) string {
+	vars := ""
+	if strings.Contains(code, "page.") && !strings.Contains(code, "page :=") {
+		vars += "var page *rod.Page\n"
+	}
+	if strings.Contains(code, "browser.") && !strings.Contains(code, "browser :=") {
+		vars += "var browser *rod.Browser\n"
+	}
+	return vars
 }

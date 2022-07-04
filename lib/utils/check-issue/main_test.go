@@ -21,15 +21,15 @@ func TestBasic(t *testing.T) {
 		"\n"+
 		"```txt\n"+
 		"5 MD040/fenced-code-language Fenced code blocks should have a language specified [Context: \"```\"]\n"+
-		"26:24 MD009/no-trailing-spaces Trailing spaces [Expected: 0 or 2; Actual: 1]\n"+
+		"20:24 MD009/no-trailing-spaces Trailing spaces [Expected: 0 or 2; Actual: 1]\n"+
 		"```\n"+
 		"\n"+
 		"Please fix the golang code in your markdown:\n"+
 		"\n"+
 		"```txt\n"+
 		"@@ golang markdown block 1 @@\n"+
-		"4:5: invalid import path: \"testing\n"+
-		"4:5: string literal not terminated\n"+
+		"4:15: expected ';', found 'EOF'\n"+
+		"4:15: expected '}', found 'EOF'\n"+
 		"```")
 
 	body = g.Read(g.Open(false, "body.txt")).String()
