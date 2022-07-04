@@ -7,6 +7,8 @@ import (
 // This is the template to demonstrate how to test Rod.
 func TestLab(t *testing.T) {
 	g := setup(t)
+	g.cancelTimeout() // Cancel timeout protection
+
 	browser, page := g.browser, g.page
 
 	// You can use the pre-launched g.browser for testing

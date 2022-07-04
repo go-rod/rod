@@ -63,9 +63,10 @@ var setup = func(t *testing.T) G {
 type G struct {
 	got.G
 
-	mc      *MockClient
-	browser *rod.Browser
-	page    *rod.Page
+	mc            *MockClient
+	browser       *rod.Browser
+	page          *rod.Page
+	cancelTimeout func()
 }
 
 type TesterPool struct {
@@ -178,19 +179,20 @@ func (g G) newPage(u ...string) *rod.Page {
 	return p
 }
 
-func (g G) checkLeaking() {
+func (g *G) checkLeaking() {
 	ig := gotrace.CombineIgnores(gotrace.IgnoreCurrent(), gotrace.IgnoreNonChildren())
 	gotrace.CheckLeak(g.Testable, 0, ig)
 
 	self := gotrace.Get(false)[0]
-	g.DoAfter(*TimeoutEach, func() {
+	g.cancelTimeout = g.DoAfter(*TimeoutEach, func() {
 		t := gotrace.Get(true).Filter(func(t *gotrace.Trace) bool {
 			if t.GoroutineID == self.GoroutineID {
 				return false
 			}
 			return ig(t)
 		}).String()
-		panic(fmt.Sprintf("%s timeout after %v\nrunning goroutines: %s", g.Name(), *TimeoutEach, t))
+		panic(fmt.Sprintf(`[rod_test.TimeoutEach] %s timeout after %v
+running goroutines: %s`, g.Name(), *TimeoutEach, t))
 	})
 
 	g.Cleanup(func() {
