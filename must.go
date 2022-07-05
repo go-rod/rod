@@ -867,7 +867,7 @@ func (el *Element) MustWaitStable() *Element {
 
 // MustWait is similar to Element.Wait
 func (el *Element) MustWait(js string, params ...interface{}) *Element {
-	el.e(el.Wait(Eval(js, params)))
+	el.e(el.Wait(Eval(js, params...)))
 	return el
 }
 
