@@ -90,22 +90,22 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 
 	for i, vf := range vfs {
 		if i > 0 {
-			dur := float64(vf.Timestamp.Sub(vfs[i-1].Timestamp).Nanoseconds())/float64(time.Second) + vf.AccumDurationInSecond
-			fc := (dur * float64(fps)) + vf.FrameCntRemaining
+			dur := float64(vf.Timestamp.Sub(vfs[i-1].Timestamp).Nanoseconds())/float64(time.Second) + vfs[i-1].AccumDurationInSecond
+			fc := (dur * float64(fps)) + vfs[i-1].FrameCntRemaining
 			fci := float64(int64(fc))
 			vfs[i-1].DurationInSecond = dur
 			vfs[i-1].FrameCnt = fci
 
 			// if frame count = 0, save the duration to current frame's AccumDurationInSecond
 			if fci == float64(0) {
-				vf.AccumDurationInSecond += dur
+				vfs[i].AccumDurationInSecond += dur
 				continue
 			}
 
 			fcr := fc - fci
 			// save the remaining frame count portion to current frame
 			if fcr > 0 {
-				vf.FrameCntRemaining += fcr
+				vfs[i].FrameCntRemaining += fcr
 			}
 		}
 	}
