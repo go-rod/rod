@@ -853,6 +853,12 @@ func (m DebuggerSetReturnValue) Call(c Client) error {
 }
 
 // DebuggerSetScriptSource Edits JavaScript source live.
+//
+// In general, functions that are currently on the stack can not be edited with
+// a single exception: If the edited function is the top-most stack frame and
+// that is the only activation of that function on the stack. In this case
+// the live edit will be successful and a `Debugger.restartFrame` for the
+// top-most function is automatically triggered.
 type DebuggerSetScriptSource struct {
 
 	// ScriptID Id of the script to edit.
@@ -864,6 +870,10 @@ type DebuggerSetScriptSource struct {
 	// DryRun (optional) If true the change will not actually be applied. Dry run may be used to get result
 	// description without actually modifying the code.
 	DryRun bool `json:"dryRun,omitempty"`
+
+	// AllowTopFrameEditing (experimental) (optional) If true, then `scriptSource` is allowed to change the function on top of the stack
+	// as long as the top-most stack frame is the only activation of that function.
+	AllowTopFrameEditing bool `json:"allowTopFrameEditing,omitempty"`
 }
 
 // ProtoReq name
@@ -875,22 +885,44 @@ func (m DebuggerSetScriptSource) Call(c Client) (*DebuggerSetScriptSourceResult,
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
+// DebuggerSetScriptSourceResultStatus enum
+type DebuggerSetScriptSourceResultStatus string
+
+const (
+	// DebuggerSetScriptSourceResultStatusOk enum const
+	DebuggerSetScriptSourceResultStatusOk DebuggerSetScriptSourceResultStatus = "Ok"
+
+	// DebuggerSetScriptSourceResultStatusCompileError enum const
+	DebuggerSetScriptSourceResultStatusCompileError DebuggerSetScriptSourceResultStatus = "CompileError"
+
+	// DebuggerSetScriptSourceResultStatusBlockedByActiveGenerator enum const
+	DebuggerSetScriptSourceResultStatusBlockedByActiveGenerator DebuggerSetScriptSourceResultStatus = "BlockedByActiveGenerator"
+
+	// DebuggerSetScriptSourceResultStatusBlockedByActiveFunction enum const
+	DebuggerSetScriptSourceResultStatusBlockedByActiveFunction DebuggerSetScriptSourceResultStatus = "BlockedByActiveFunction"
+)
+
 // DebuggerSetScriptSourceResult ...
 type DebuggerSetScriptSourceResult struct {
 
-	// CallFrames (optional) New stack trace in case editing has happened while VM was stopped.
+	// CallFrames (deprecated) (optional) New stack trace in case editing has happened while VM was stopped.
 	CallFrames []*DebuggerCallFrame `json:"callFrames,omitempty"`
 
-	// StackChanged (optional) Whether current call stack  was modified after applying the changes.
+	// StackChanged (deprecated) (optional) Whether current call stack  was modified after applying the changes.
 	StackChanged bool `json:"stackChanged,omitempty"`
 
-	// AsyncStackTrace (optional) Async stack trace, if any.
+	// AsyncStackTrace (deprecated) (optional) Async stack trace, if any.
 	AsyncStackTrace *RuntimeStackTrace `json:"asyncStackTrace,omitempty"`
 
-	// AsyncStackTraceID (experimental) (optional) Async stack trace, if any.
+	// AsyncStackTraceID (deprecated) (optional) Async stack trace, if any.
 	AsyncStackTraceID *RuntimeStackTraceID `json:"asyncStackTraceId,omitempty"`
 
-	// ExceptionDetails (optional) Exception details if any.
+	// Status (experimental) Whether the operation was successful or not. Only `Ok` denotes a
+	// successful live edit while the other enum variants denote why
+	// the live edit failed.
+	Status DebuggerSetScriptSourceResultStatus `json:"status"`
+
+	// ExceptionDetails (optional) Exception details if any. Only present when `status` is `CompileError`.
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
 }
 

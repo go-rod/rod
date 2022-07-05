@@ -230,6 +230,9 @@ const (
 	// PagePermissionsPolicyFeatureExecutionWhileNotRendered enum const
 	PagePermissionsPolicyFeatureExecutionWhileNotRendered PagePermissionsPolicyFeature = "execution-while-not-rendered"
 
+	// PagePermissionsPolicyFeatureFederatedCredentials enum const
+	PagePermissionsPolicyFeatureFederatedCredentials PagePermissionsPolicyFeature = "federated-credentials"
+
 	// PagePermissionsPolicyFeatureFocusWithoutUserActivation enum const
 	PagePermissionsPolicyFeatureFocusWithoutUserActivation PagePermissionsPolicyFeature = "focus-without-user-activation"
 
@@ -336,6 +339,9 @@ const (
 
 	// PagePermissionsPolicyBlockReasonInFencedFrameTree enum const
 	PagePermissionsPolicyBlockReasonInFencedFrameTree PagePermissionsPolicyBlockReason = "InFencedFrameTree"
+
+	// PagePermissionsPolicyBlockReasonInIsolatedApp enum const
+	PagePermissionsPolicyBlockReasonInIsolatedApp PagePermissionsPolicyBlockReason = "InIsolatedApp"
 )
 
 // PagePermissionsPolicyBlockLocator (experimental) ...
@@ -2810,11 +2816,11 @@ type PageFileChooserOpened struct {
 	// FrameID (experimental) Id of the frame containing input node.
 	FrameID PageFrameID `json:"frameId"`
 
-	// BackendNodeID (experimental) Input node id.
-	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
-
 	// Mode Input mode.
 	Mode PageFileChooserOpenedMode `json:"mode"`
+
+	// BackendNodeID (experimental) (optional) Input node id. Only present for file choosers opened via an <input type="file"> element.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
 }
 
 // ProtoEvent name

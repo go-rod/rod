@@ -659,6 +659,9 @@ const (
 	// AuditsDeprecationIssueTypeHostCandidateAttributeGetter enum const
 	AuditsDeprecationIssueTypeHostCandidateAttributeGetter AuditsDeprecationIssueType = "HostCandidateAttributeGetter"
 
+	// AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent enum const
+	AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent AuditsDeprecationIssueType = "IdentityInCanMakePaymentEvent"
+
 	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
 	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
 
@@ -685,6 +688,9 @@ const (
 
 	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
 	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
+
+	// AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext enum const
+	AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext AuditsDeprecationIssueType = "OpenWebDatabaseInsecureContext"
 
 	// AuditsDeprecationIssueTypePictureSourceSrc enum const
 	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"

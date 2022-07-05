@@ -751,6 +751,12 @@ func (t T) DOMQuerySelectorAll() {
 	t.Nil(err)
 }
 
+func (t T) DOMGetTopLayerElements() {
+	c := &Client{}
+	_, err := proto.DOMGetTopLayerElements{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMRedo() {
 	c := &Client{}
 	err := proto.DOMRedo{}.Call(c)
@@ -918,6 +924,11 @@ func (t T) DOMInlineStyleInvalidated() {
 
 func (t T) DOMPseudoElementAdded() {
 	e := proto.DOMPseudoElementAdded{}
+	e.ProtoEvent()
+}
+
+func (t T) DOMTopLayerElementsUpdated() {
+	e := proto.DOMTopLayerElementsUpdated{}
 	e.ProtoEvent()
 }
 
