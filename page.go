@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"strconv"
 	"sync"
 	"time"
 
@@ -14,7 +13,6 @@ import (
 	"github.com/TommyLeng/go-rod/lib/js"
 	"github.com/TommyLeng/go-rod/lib/proto"
 	"github.com/TommyLeng/go-rod/lib/utils"
-	"github.com/icza/mjpeg"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/gson"
 )
@@ -760,85 +758,4 @@ func (p *Page) initEvents() {
 			p.event.Publish(msg)
 		}
 	}()
-}
-
-var frameCount = 0
-
-// ScreenCastRecord listen PageScreenCastFrame and convert it directly into AVI Movie
-func (p *Page) ScreenCastRecord(videoAVIPath string, framePerSecond int) (*mjpeg.AviWriter, error) {
-	browserBound, errorBrowserBound := p.GetWindow()
-
-	if errorBrowserBound != nil {
-		return nil, errorBrowserBound
-	}
-
-	aviWriter, errorLoad := mjpeg.New(videoAVIPath, int32(*browserBound.Width), int32(*browserBound.Height), int32(framePerSecond))
-
-	if errorLoad != nil {
-		return nil, errorLoad
-	}
-
-	go p.EachEvent(func(e *proto.PageScreencastFrame) {
-		fmt.Println("A frameCount: ", frameCount)
-		temporaryFilePath := "frame-" + strconv.Itoa(frameCount) + ".jpeg"
-		_ = utils.OutputFile(temporaryFilePath, e.Data)
-
-		fmt.Println("B frameCount: ", frameCount)
-		errProto := proto.PageScreencastFrameAck{
-			SessionID: e.SessionID,
-		}.Call(p)
-
-		fmt.Println("C frameCount: ", frameCount)
-		if errProto != nil {
-			panic(errProto)
-		}
-		frameCount += 1
-
-		/*
-			errFrame := aviWriter.AddFrame(e.Data)
-			if errFrame != nil {
-				panic(errFrame)
-			}
-		*/
-
-	})()
-
-	/*
-		workingDirectory, errorWD := os.Getwd()
-		if errorWD != nil {
-			return nil, errorWD
-		}
-
-		matches, errorGlob := filepath.Glob(workingDirectory + "/*.idx_")
-		if errorGlob != nil {
-			return nil, errorGlob
-		}
-
-		for _, name := range matches {
-			errRemove := os.Remove(name)
-			if errRemove != nil {
-				return nil, errRemove
-			}
-		}
-	*/
-
-	return &aviWriter, nil
-}
-
-func (p *Page) ScreenCastStart(JPEGQuality int, framePerSecond int) error {
-	return proto.PageStartScreencast{
-		Format:        proto.PageStartScreencastFormatJpeg,
-		Quality:       &JPEGQuality,
-		EveryNthFrame: &framePerSecond,
-	}.Call(p)
-}
-
-func (p *Page) ScreenCastStop(aviWriter mjpeg.AviWriter) error {
-	err := proto.PageStopScreencast{}.Call(p)
-	if err != nil {
-		return err
-	}
-	aviWriter.Close()
-
-	return nil
 }
