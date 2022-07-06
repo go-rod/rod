@@ -13,12 +13,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TommyLeng/go-rod"
-	"github.com/TommyLeng/go-rod/lib/cdp"
-	"github.com/TommyLeng/go-rod/lib/defaults"
-	"github.com/TommyLeng/go-rod/lib/devices"
-	"github.com/TommyLeng/go-rod/lib/proto"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/devices"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 func TestGetPageBrowser(t *testing.T) {
@@ -565,7 +565,7 @@ func TestAlert(t *testing.T) {
 	handle(true, "")
 }
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenshot$ github.com/TommyLeng/go-rod -v -count=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenshot$ github.com/go-rod/rod -v -count=1
 func TestPageScreenshot(t *testing.T) {
 	g := setup(t)
 
