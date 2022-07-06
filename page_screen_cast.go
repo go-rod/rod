@@ -93,6 +93,8 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 
 	//screen cast frames may not has the same fps, so convert to our fps
 	for i, vf := range vfs {
+		fmt.Printf("frame %d, data %d, timestamp %v\n", i, len(vf.Data), vf.Timestamp)
+		
 		if i > 0 {
 			dur := float64(vf.Timestamp.Sub(vfs[i-1].Timestamp).Nanoseconds())/float64(time.Second) + vfs[i-1].AccumDurationInSecond
 			fc := (dur * float64(fps)) + vfs[i-1].FrameCntRemaining
