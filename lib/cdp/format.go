@@ -3,7 +3,7 @@ package cdp
 import (
 	"fmt"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 func (req Request) String() string {

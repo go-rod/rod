@@ -6,7 +6,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 func main() {

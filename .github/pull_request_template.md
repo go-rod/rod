@@ -1,6 +1,6 @@
 # Development guide
 
-[Link](https://github.com/TommyLeng/go-rod/blob/master/.github/CONTRIBUTING.md)
+[Link](https://github.com/go-rod/rod/blob/master/.github/CONTRIBUTING.md)
 
 ## Test on local before making the PR
 

@@ -17,9 +17,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TommyLeng/go-rod/lib/cdp"
-	"github.com/TommyLeng/go-rod/lib/proto"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // CDPClient is usually used to make rod side-effect free. Such as proxy all IO of rod.

@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TommyLeng/go-rod/lib/devices"
-	"github.com/TommyLeng/go-rod/lib/js"
-	"github.com/TommyLeng/go-rod/lib/proto"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/devices"
+	"github.com/go-rod/rod/lib/js"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/goob"
 	"github.com/ysmood/gson"
 )

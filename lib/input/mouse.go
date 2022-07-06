@@ -1,6 +1,6 @@
 package input
 
-import "github.com/TommyLeng/go-rod/lib/proto"
+import "github.com/go-rod/rod/lib/proto"
 
 // MouseKeys is the map for mouse keys
 var MouseKeys = map[proto.InputMouseButton]int{

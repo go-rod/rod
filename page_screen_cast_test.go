@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TommyLeng/go-rod"
-	"github.com/TommyLeng/go-rod/lib/proto"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/proto"
 )
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenCastAvi$ github.com/TommyLeng/go-rod -v -count=1 -parallel=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenCastAvi$ github.com/go-rod/rod -v -count=1 -parallel=1
 func TestPageScreenCastAvi(t *testing.T) {
 	//g := setup(t)
 
@@ -56,7 +56,7 @@ func TestPageScreenCastAvi(t *testing.T) {
 	}
 }
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastAvi2$ github.com/TommyLeng/go-rod -v -count=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastAvi2$ github.com/go-rod/rod -v -count=1
 func TestPageScreenCastAvi2(t *testing.T) {
 	//g := setup(t)
 
@@ -97,7 +97,7 @@ func TestPageScreenCastAvi2(t *testing.T) {
 }
 
 //Direct put data from screen cast event to ffmpeg stdin, but the result is not good, the video is not smooth and it is more than 10 seconds
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastDirectMp4$ github.com/TommyLeng/go-rod -v -count=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastDirectMp4$ github.com/go-rod/rod -v -count=1
 func TestPageScreenCastDirectMp4(t *testing.T) {
 	//g := setup(t)
 
@@ -168,7 +168,7 @@ func TestPageScreenCastDirectMp4(t *testing.T) {
 	browser.MustClose()
 }
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4UsingPipe$ github.com/TommyLeng/go-rod -v -count=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4UsingPipe$ github.com/go-rod/rod -v -count=1
 func TestPageScreenCastMp4UsingPipe(t *testing.T) {
 	//g := setup(t)
 
@@ -205,7 +205,7 @@ func TestPageScreenCastMp4UsingPipe(t *testing.T) {
 	browser.MustClose()
 }
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4$ github.com/TommyLeng/go-rod -v -count=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4$ github.com/go-rod/rod -v -count=1
 func TestPageScreenCastMp4(t *testing.T) {
 	//g := setup(t)
 

@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 func main() {

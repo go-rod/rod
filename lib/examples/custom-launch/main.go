@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/TommyLeng/go-rod"
-	"github.com/TommyLeng/go-rod/lib/launcher"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 func main() {
 	l := launcher.New()
 
-	// For more info: https://pkg.go.dev/github.com/TommyLeng/go-rod/lib/launcher
+	// For more info: https://pkg.go.dev/github.com/go-rod/rod/lib/launcher
 	u := l.MustLaunch()
 
 	browser := rod.New().ControlURL(u).MustConnect()

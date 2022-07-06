@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 var flagDevToolWsURL = flag.String("devtools-ws-url", "", "DevTools WebSocket URL")

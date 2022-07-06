@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"syscall"
 
-	"github.com/TommyLeng/go-rod/lib/launcher/flags"
+	"github.com/go-rod/rod/lib/launcher/flags"
 )
 
 func killGroup(pid int) {

@@ -7,7 +7,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 // This example demonstrates how to set a HTTP header on requests.

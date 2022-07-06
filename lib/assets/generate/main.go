@@ -3,7 +3,7 @@ package main
 import (
 	"path/filepath"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 var slash = filepath.FromSlash

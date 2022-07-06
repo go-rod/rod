@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 const registry = "ghcr.io"
@@ -83,5 +83,5 @@ func description(dev bool) string {
 		f = "dev." + f
 	}
 
-	return `--label=org.opencontainers.image.description=https://github.com/TommyLeng/go-rod/blob/` + sha + "/lib/docker/" + f
+	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + sha + "/lib/docker/" + f
 }

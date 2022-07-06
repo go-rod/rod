@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 // This example demonstrates how to upload a file on a form.

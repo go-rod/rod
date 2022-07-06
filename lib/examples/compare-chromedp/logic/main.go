@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 )
 
 // On awesome-go page, finding the specified section sect,

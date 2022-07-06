@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
 )
 
@@ -55,7 +55,7 @@ func main() {
 		package devices
 
 		import (
-			"github.com/TommyLeng/go-rod/lib/devices"
+			"github.com/go-rod/rod/lib/devices"
 		)
 
 		var (

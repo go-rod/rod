@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/TommyLeng/go-rod"
+	"github.com/go-rod/rod"
 	"github.com/ysmood/gotrace"
 )
 
@@ -26,7 +26,7 @@ func yourCodeHere() {
 
 /*
 goroutine 7 [select]:
-github.com/TommyLeng/go-rod.(*Page).MustElement(0xc00037e000, 0xc00063a0f0, 0x1, 0x1, 0x0)
+github.com/go-rod/rod.(*Page).MustElement(0xc00037e000, 0xc00063a0f0, 0x1, 0x1, 0x0)
 	rod/must.go:425 +0x4d
 created by main.yourCodeHere
 	rod/lib/examples/debug-deadlock/main.go:22 +0xb8

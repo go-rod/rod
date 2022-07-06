@@ -7,8 +7,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/TommyLeng/go-rod/lib/defaults"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/defaults"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Request to send to browser

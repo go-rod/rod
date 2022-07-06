@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TommyLeng/go-rod/lib/proto"
+	"github.com/go-rod/rod/lib/proto"
 	"github.com/icza/mjpeg"
 )
 

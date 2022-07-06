@@ -1,6 +1,6 @@
 package main
 
-import "github.com/TommyLeng/go-rod/lib/utils"
+import "github.com/go-rod/rod/lib/utils"
 
 func main() {
 	utils.Exec("go run github.com/ysmood/golangci-lint@latest")

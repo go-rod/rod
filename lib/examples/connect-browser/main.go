@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/TommyLeng/go-rod"
-	"github.com/TommyLeng/go-rod/lib/launcher"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 // To manually launch a browser

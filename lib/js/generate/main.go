@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
 )
 

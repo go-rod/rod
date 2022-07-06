@@ -1,4 +1,4 @@
-module github.com/TommyLeng/go-rod/lib/examples/custom-websocket
+module github.com/go-rod/rod/lib/examples/custom-websocket
 
 go 1.18
 

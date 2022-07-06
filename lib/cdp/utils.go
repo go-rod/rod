@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 // Dialer interface for WebSocket connection

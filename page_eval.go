@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TommyLeng/go-rod/lib/cdp"
-	"github.com/TommyLeng/go-rod/lib/js"
-	"github.com/TommyLeng/go-rod/lib/proto"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/cdp"
+	"github.com/go-rod/rod/lib/js"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
 )
 

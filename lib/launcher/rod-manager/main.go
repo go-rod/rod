@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/TommyLeng/go-rod/lib/launcher"
-	"github.com/TommyLeng/go-rod/lib/utils"
+	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/utils"
 )
 
 var addr = flag.String("address", ":7317", "the address to listen to")

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/TommyLeng/go-rod"
-	"github.com/TommyLeng/go-rod/lib/devices"
+	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/devices"
 )
 
 func main() {

@@ -13,7 +13,7 @@ assignees: ''
 1. Clone Rod to your local and cd to the repository:
 
    ```bash
-   git clone https://github.com/TommyLeng/go-rod
+   git clone https://github.com/go-rod/rod
    cd rod
    ```
 
