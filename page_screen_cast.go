@@ -91,6 +91,12 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 		return vfs[i].Timestamp.Before(vfs[y].Timestamp)
 	})
 
+	//since screen cast event will not trigger if the page didn't change
+	//So I need to append a stop frame so that it can copy the last frame data to fill the time
+	vfs = append(vfs, VideoFrame{
+		Timestamp: time.Now(),
+	})
+
 	//screen cast frames may not has the same fps, so convert to our fps
 	for i, vf := range vfs {
 		fmt.Printf("frame %d, data %d, timestamp %v\n", i, len(vf.Data), vf.Timestamp)
@@ -221,6 +227,12 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string) e
 		return vfs[i].Timestamp.Before(vfs[y].Timestamp)
 	})
 
+	//since screen cast event will not trigger if the page didn't change
+	//So I need to append a stop frame so that it can copy the last frame data to fill the time
+	vfs = append(vfs, VideoFrame{
+		Timestamp: time.Now(),
+	})
+	
 	//screen cast frames may not has the same fps, so convert to 50 fps, we feel better when make use 50 fps
 	for i, vf := range vfs {
 		if i > 0 {

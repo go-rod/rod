@@ -17,35 +17,45 @@ func TestPageScreenCastAvi(t *testing.T) {
 	g := setup(t)
 
 	{
-		b := rod.New().MustConnect()
-		p := b.MustPage("https://dayspedia.com/time/online/").MustWaitLoad()
+		browser := rod.New().MustConnect()
+		page := browser.MustPage("http://www.google.com").MustWaitLoad()
 
 		videoFrames := []rod.VideoFrame{}
 		fps := 50
 
 		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
-		aviWriter, err := p.ScreenCastRecordAvi("sample.avi", &videoFrames, fps) // Only support .avi video file & frame per second
+		aviWriter, err := page.ScreenCastRecordAvi("sample.avi", &videoFrames, fps) // Only support .avi video file & frame per second
 		if err != nil {
 			g.Fatal(err)
 		}
 
 		// ScreenCastStart start listening ScreenCastRecord
-		err = p.ScreenCastStart(50) // Image quality
+		err = page.ScreenCastStart(50) // Image quality
 		if err != nil {
 			g.Fatal(err)
 		}
 
 		fmt.Println("sleep 10 seconds start: ", time.Now())
-		time.Sleep(10 * time.Second)
+		time.Sleep(6 * time.Second)
+		
+		page.Navigate("https://dayspedia.com/time/online/")
+		page.MustWaitNavigation()
+		page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
+
+		page.Navigate("http://www.google.com")
+		page.MustWaitNavigation()
+		page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
 
 		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into avi file
-		err = p.ScreenCastStopAvi(aviWriter, &videoFrames, fps)
+		err = page.ScreenCastStopAvi(aviWriter, &videoFrames, fps)
 		if err != nil {
 			g.Fatal(err)
 		}
 
-		p.MustClose()
-		b.MustClose()
+		page.MustClose()
+		browser.MustClose()
 	}
 }
 
@@ -135,8 +145,7 @@ func TestPageScreenCastMp4(t *testing.T) {
 
 	{
 		browser := rod.New().MustConnect()
-
-		page := browser.MustPage("https://dayspedia.com/time/online/").MustWaitLoad()
+		page := browser.MustPage("http://www.google.com").MustWaitLoad()
 
 		videoFrames := []rod.VideoFrame{}
 
@@ -152,8 +161,18 @@ func TestPageScreenCastMp4(t *testing.T) {
 			g.Fatal(err)
 		}
 
-		fmt.Println("sleep 10 seconds")
-		time.Sleep(10 * time.Second)
+		fmt.Println("sleep 10 seconds start: ", time.Now())
+		time.Sleep(6 * time.Second)
+		
+		page.Navigate("https://dayspedia.com/time/online/")
+		page.MustWaitNavigation()
+		page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
+
+		page.Navigate("http://www.google.com")
+		page.MustWaitNavigation()
+		page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
 
 		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
 		err = page.ScreenCastStopMp4(&videoFrames, "output.mp4")
