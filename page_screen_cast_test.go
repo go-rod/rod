@@ -37,7 +37,7 @@ func TestPageScreenCastAvi(t *testing.T) {
 
 		fmt.Println("sleep 10 seconds start: ", time.Now())
 		time.Sleep(6 * time.Second)
-		
+
 		page.Navigate("https://dayspedia.com/time/online/")
 		page.MustWaitNavigation()
 		page.MustWaitLoad()
@@ -162,7 +162,7 @@ func TestPageScreenCastMp4(t *testing.T) {
 
 		fmt.Println("sleep 10 seconds start: ", time.Now())
 		time.Sleep(6 * time.Second)
-		
+
 		page.Navigate("https://dayspedia.com/time/online/")
 		page.MustWaitNavigation()
 		page.MustWaitLoad()
@@ -180,6 +180,92 @@ func TestPageScreenCastMp4(t *testing.T) {
 		}
 
 		page.MustClose()
+		browser.MustClose()
+	}
+}
+
+//Test concurrent capture mp4 from several browser
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestConcurrentCaptureMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
+func TestConcurrentCaptureMp4(t *testing.T) {
+	g := setup(t)
+
+	{
+		browser := rod.New().MustConnect()
+
+		type PageScreenCastInfo struct {
+			Page        *rod.Page
+			VideoFrames *[]rod.VideoFrame
+		}
+
+		pageMap := map[string]PageScreenCastInfo{}
+
+		page1 := browser.MustPage("https://www.timeanddate.com/worldclock/hong-kong/hong-kong").MustWaitLoad()
+		page2 := browser.MustPage("https://www.timeanddate.com/worldclock/japan/tokyo").MustWaitLoad()
+
+		pageMap["1"] = PageScreenCastInfo{
+			Page: page1,
+			VideoFrames: &[]rod.VideoFrame{},
+		}
+		pageMap["2"] = PageScreenCastInfo{
+			Page: page2,
+			VideoFrames: &[]rod.VideoFrame{},
+		}
+
+		fps := 25
+
+		var err error
+
+		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
+		err = pageMap["1"].Page.ScreenCastRecordMp4(pageMap["1"].VideoFrames)
+		if err != nil {
+			g.Fatal(err)
+		}
+		err = pageMap["2"].Page.ScreenCastRecordMp4(pageMap["2"].VideoFrames)
+		if err != nil {
+			g.Fatal(err)
+		}
+
+		// ScreenCastStart start listening ScreenCastRecord
+		err = pageMap["1"].Page.ScreenCastStart(100)
+		if err != nil {
+			g.Fatal(err)
+		}
+		err = pageMap["2"].Page.ScreenCastStart(100)
+		if err != nil {
+			g.Fatal(err)
+		}
+
+		fmt.Println("sleep 10 seconds start: ", time.Now())
+		time.Sleep(6 * time.Second)
+
+		pageMap["1"].Page.Navigate("https://dayspedia.com/time/online/")
+		pageMap["2"].Page.Navigate("https://dayspedia.com/time/online/")
+		pageMap["1"].Page.MustWaitNavigation()
+		pageMap["2"].Page.MustWaitNavigation()
+		pageMap["1"].Page.MustWaitLoad()
+		pageMap["2"].Page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
+
+		pageMap["1"].Page.Navigate("https://www.timeanddate.com/worldclock/hong-kong/hong-kong")
+		pageMap["2"].Page.Navigate("https://www.timeanddate.com/worldclock/japan/tokyo")
+		pageMap["1"].Page.MustWaitNavigation()
+		pageMap["2"].Page.MustWaitNavigation()
+		pageMap["1"].Page.MustWaitLoad()
+		pageMap["2"].Page.MustWaitLoad()
+		time.Sleep(4 * time.Second)
+
+		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
+		err = pageMap["1"].Page.ScreenCastStopMp4(pageMap["1"].VideoFrames, "output_1.mp4", fps)
+		if err != nil {
+			g.Fatal(err)
+		}
+		err = pageMap["2"].Page.ScreenCastStopMp4(pageMap["2"].VideoFrames, "output_2.mp4", fps)
+		if err != nil {
+			g.Fatal(err)
+		}
+
+		pageMap["1"].Page.MustClose()
+		pageMap["2"].Page.MustClose()
 		browser.MustClose()
 	}
 }
