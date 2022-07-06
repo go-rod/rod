@@ -136,9 +136,7 @@ func TestPageScreenCastDirectPipeMp4(t *testing.T) {
 }
 
 //Best approach I found to capture mp4
-//But I dunno why I cannot change frame rate to 50 fps, it still make use 25 fps, so I speed the video up using setpts=0.5*PTS in ffmpeg in order to achieve 50 fps
-//So it hardcode 50 fps, please help to modify if u know why
-//It sort the data from screen cast event, and insert frames base on 50 fps
+//It sort the data from screen cast event, and insert frames base on the input fps in ScreenCastStopMp4
 //GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
 func TestPageScreenCastMp4(t *testing.T) {
 	g := setup(t)
