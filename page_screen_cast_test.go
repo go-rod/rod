@@ -21,7 +21,7 @@ func TestPageScreenCastAvi(t *testing.T) {
 		page := browser.MustPage("http://www.google.com").MustWaitLoad()
 
 		videoFrames := []rod.VideoFrame{}
-		fps := 50
+		fps := 100
 
 		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
 		aviWriter, err := page.ScreenCastRecordAvi("sample.avi", &videoFrames, fps) // Only support .avi video file & frame per second
@@ -148,6 +148,7 @@ func TestPageScreenCastMp4(t *testing.T) {
 		page := browser.MustPage("http://www.google.com").MustWaitLoad()
 
 		videoFrames := []rod.VideoFrame{}
+		fps := 25
 
 		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
 		err := page.ScreenCastRecordMp4(&videoFrames)
@@ -175,7 +176,7 @@ func TestPageScreenCastMp4(t *testing.T) {
 		time.Sleep(4 * time.Second)
 
 		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
-		err = page.ScreenCastStopMp4(&videoFrames, "output.mp4")
+		err = page.ScreenCastStopMp4(&videoFrames, "output.mp4", fps)
 		if err != nil {
 			g.Fatal(err)
 		}

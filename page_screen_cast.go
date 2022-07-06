@@ -13,6 +13,10 @@ import (
 	"github.com/icza/mjpeg"
 )
 
+//prevent video non stop recording, memory may not enough
+//if fps = 50, 10000 max frame mean you can capture 200s second video
+const MaxVideoFrame = 10000 
+
 type VideoFrame struct {
 	Data                  []byte
 	Timestamp             time.Time
@@ -35,6 +39,11 @@ func (p *Page) ScreenCastRecordAvi(videoAVIPath string, videoFrames *[]VideoFram
 	}
 
 	go p.EachEvent(func(e *proto.PageScreencastFrame) {
+		if len(*videoFrames) >= MaxVideoFrame {
+			fmt.Println("Max video frames reach")
+			return 
+		}
+		
 		err := proto.PageScreencastFrameAck{
 			SessionID: e.SessionID,
 		}.Call(p)
@@ -143,6 +152,11 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 // ScreenCastRecord listen PageScreenCastFrame and convert it directly into MP4 using ffmpeg
 func (p *Page) ScreenCastRecordMp4(videoFrames *[]VideoFrame) error {
 	go p.EachEvent(func(e *proto.PageScreencastFrame) {
+		if len(*videoFrames) >= MaxVideoFrame {
+			fmt.Println("Max video frames reach")
+			return 
+		}
+
 		err := proto.PageScreencastFrameAck{
 			SessionID: e.SessionID,
 		}.Call(p)
@@ -213,14 +227,13 @@ func (p *Page) ScreenCastStopMp4UsingPipe(videoFrames *[]VideoFrame, outputFile 
 }
 
 // use ffmpeg to create mp4
-func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string) error {
+func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string, fps int) error {
 	err := proto.PageStopScreencast{}.Call(p)
 	if err != nil {
 		return err
 	}
 
 	vfs := *videoFrames
-	fps := 50
 	fpsStr := strconv.FormatInt(int64(fps), 10)
 
 	sort.Slice(vfs, func(i int, y int) bool {
@@ -232,8 +245,8 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string) e
 	vfs = append(vfs, VideoFrame{
 		Timestamp: time.Now(),
 	})
-	
-	//screen cast frames may not has the same fps, so convert to 50 fps, we feel better when make use 50 fps
+
+	//screen cast frames may not has the same fps, so convert to our fps
 	for i, vf := range vfs {
 		if i > 0 {
 			dur := float64(vf.Timestamp.Sub(vfs[i-1].Timestamp).Nanoseconds())/float64(time.Second) + vfs[i-1].AccumDurationInSecond
@@ -258,18 +271,17 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string) e
 
 	//cat $(find . -maxdepth 1 -name '*.png' -print | sort | tail -10) | ffmpeg -framerate 25 -i - -vf format=yuv420p -movflags +faststart output.mp4
 
-	// I dunno why I cannot change frame rate to 50 fps, it still make use 25 fps, so I speed the video up using setpts=0.5*PTS in order to achieve 50 fps
 	cmd := exec.Command("ffmpeg", "-y", // Yes to all
+		"-framerate", fpsStr,
 		"-i", "pipe:0", // take stdin as input
-		//"-framerate", fpsStr,
-		"-r", fpsStr,
-		"-filter:v", "setpts=0.5*PTS",
+		//"-r", fpsStr,
+		//"-filter:v", "setpts=0.5*PTS",
 		//"-f", "image2pipe", //not working
 		//"-f", "rawvideo",
 		//"-filter:v", "fps=" + fpsStr,
 		//"-c:v", "libx264",
-		//"-vf", "format=yuv420p",
-		//"-movflags", "+faststart",
+		"-vf", "format=yuv420p",
+		"-movflags", "+faststart",
 		outputFile, // output
 	)
 	cmd.Stderr = os.Stderr // bind log stream to stderr
