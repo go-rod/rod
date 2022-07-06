@@ -529,7 +529,7 @@ func TestPageEvent(t *testing.T) {
 			break
 		}
 	}
-	utils.Sleep(0.1)
+	utils.Sleep(0.3)
 	ctx.Cancel()
 
 	go func() {
