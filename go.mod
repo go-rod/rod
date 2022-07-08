@@ -7,5 +7,5 @@ require (
 	github.com/ysmood/got v0.31.2
 	github.com/ysmood/gotrace v0.6.0
 	github.com/ysmood/gson v0.7.1
-	github.com/ysmood/leakless v0.7.0
+	github.com/ysmood/leakless v0.8.0
 )
