@@ -574,18 +574,7 @@ func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
 
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
-	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
-		res, err := el.Evaluate(opts.This(el.Object))
-		if err != nil {
-			return true, err
-		}
-
-		if res.Value.Bool() {
-			return true, nil
-		}
-
-		return false, nil
-	})
+	return el.page.Context(el.ctx).Sleeper(el.sleeper).Wait(opts.This(el.Object))
 }
 
 // WaitVisible until the element is visible

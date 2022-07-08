@@ -781,7 +781,7 @@ func TestElementEqual(t *testing.T) {
 	g.False(el1.MustEqual(el3))
 }
 
-func TestElementMustWait(t *testing.T) {
+func TestElementWait(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/describe.html"))
