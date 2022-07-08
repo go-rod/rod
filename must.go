@@ -59,9 +59,9 @@ func (b *Browser) MustClose() {
 
 // MustIncognito is similar to Browser.Incognito
 func (b *Browser) MustIncognito() *Browser {
-	b, err := b.Incognito()
+	p, err := b.Incognito()
 	b.e(err)
-	return b
+	return p
 }
 
 // MustPage is similar to Browser.Page.
