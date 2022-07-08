@@ -444,7 +444,7 @@ func (p *Page) MustEvaluate(opts *EvalOptions) *proto.RuntimeRemoteObject {
 
 // MustWait is similar to Page.Wait
 func (p *Page) MustWait(js string, params ...interface{}) *Page {
-	p.e(p.Wait(nil, js, params))
+	p.e(p.Wait(Eval(js, params...)))
 	return p
 }
 

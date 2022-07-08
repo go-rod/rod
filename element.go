@@ -575,7 +575,7 @@ func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
 	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
-		res, err := el.Evaluate(opts.ByPromise().This(el.Object))
+		res, err := el.Evaluate(opts.This(el.Object))
 		if err != nil {
 			return true, err
 		}
