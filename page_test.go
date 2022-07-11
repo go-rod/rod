@@ -565,7 +565,6 @@ func TestAlert(t *testing.T) {
 	handle(true, "")
 }
 
-//GODEBUG="tracebackancestors=1000" go test -timeout 30s -run ^TestPageScreenshot$ github.com/go-rod/rod -v -count=1
 func TestPageScreenshot(t *testing.T) {
 	g := setup(t)
 
