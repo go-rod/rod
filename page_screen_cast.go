@@ -2,7 +2,6 @@ package rod
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"sort"
@@ -13,10 +12,11 @@ import (
 	"github.com/icza/mjpeg"
 )
 
-//prevent video non stop recording, memory may not enough
-//if fps = 50, 10000 max frame mean you can capture 200s second video
-const MaxVideoFrame = 10000 
+//MaxVideoFrame prevent video non stop recording, memory may not enough
+//if fps = 50, 20000 max frame mean you can capture 400s second video
+const MaxVideoFrame = 20000
 
+//VideoFrame store the data from screen cast event
 type VideoFrame struct {
 	Data                  []byte
 	Timestamp             time.Time
@@ -26,7 +26,7 @@ type VideoFrame struct {
 	FrameCntRemaining     float64
 }
 
-// ScreenCastRecord listen PageScreenCastFrame and convert it directly into AVI Movie
+//ScreenCastRecordAvi listen PageScreenCastFrame and convert it directly into AVI Movie
 func (p *Page) ScreenCastRecordAvi(videoAVIPath string, videoFrames *[]VideoFrame, fps int) (*mjpeg.AviWriter, error) {
 	browserBound, err := p.GetWindow()
 	if err != nil {
@@ -41,9 +41,9 @@ func (p *Page) ScreenCastRecordAvi(videoAVIPath string, videoFrames *[]VideoFram
 	go p.EachEvent(func(e *proto.PageScreencastFrame) {
 		if len(*videoFrames) >= MaxVideoFrame {
 			fmt.Println("Max video frames reach")
-			return 
+			return
 		}
-		
+
 		err := proto.PageScreencastFrameAck{
 			SessionID: e.SessionID,
 		}.Call(p)
@@ -57,28 +57,10 @@ func (p *Page) ScreenCastRecordAvi(videoAVIPath string, videoFrames *[]VideoFram
 		})
 	})()
 
-	/*
-		workingDirectory, errorWD := os.Getwd()
-		if errorWD != nil {
-			return nil, errorWD
-		}
-
-		matches, errorGlob := filepath.Glob(workingDirectory + "/*.idx_")
-		if errorGlob != nil {
-			return nil, errorGlob
-		}
-
-		for _, name := range matches {
-			errRemove := os.Remove(name)
-			if errRemove != nil {
-				return nil, errRemove
-			}
-		}
-	*/
-
 	return &aviWriter, nil
 }
 
+//ScreenCastStart start screen cast event for video recording
 func (p *Page) ScreenCastStart(JPEGQuality int) error {
 	everyNthFrame := 1
 	return proto.PageStartScreencast{
@@ -88,6 +70,7 @@ func (p *Page) ScreenCastStart(JPEGQuality int) error {
 	}.Call(p)
 }
 
+//ScreenCastStopAvi stop screen cast event and save videoframes data in an avi video file
 func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]VideoFrame, fps int) error {
 	err := proto.PageStopScreencast{}.Call(p)
 	if err != nil {
@@ -108,8 +91,7 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 
 	//screen cast frames may not has the same fps, so convert to our fps
 	for i, vf := range vfs {
-		fmt.Printf("frame %d, data %d, timestamp %v\n", i, len(vf.Data), vf.Timestamp)
-		
+		//fmt.Printf("frame %d, data %d, timestamp %v\n", i, len(vf.Data), vf.Timestamp)
 		if i > 0 {
 			dur := float64(vf.Timestamp.Sub(vfs[i-1].Timestamp).Nanoseconds())/float64(time.Second) + vfs[i-1].AccumDurationInSecond
 			fc := (dur * float64(fps)) + vfs[i-1].FrameCntRemaining
@@ -133,28 +115,34 @@ func (p *Page) ScreenCastStopAvi(aviWriter *mjpeg.AviWriter, videoFrames *[]Vide
 
 	total := 0
 	aw := *aviWriter
-	for j, vf := range vfs {
-		fmt.Printf("frame %d, data %d, duration %v,\t\tdurationAcc %v,\t\tframeCnt %v\t\tframeCntR %v\n", j, len(vf.Data), vf.DurationInSecond, vf.AccumDurationInSecond, vf.FrameCnt, vf.FrameCntRemaining)
+	for _, vf := range vfs {
+		//fmt.Printf("frame %d, data %d, duration %v,\t\tdurationAcc %v,\t\tframeCnt %v\t\tframeCntR %v\n", j, len(vf.Data), vf.DurationInSecond, vf.AccumDurationInSecond, vf.FrameCnt, vf.FrameCntRemaining)
 		if vf.FrameCnt > 0 {
 			for i := int64(0); i < int64(vf.FrameCnt); i++ {
-				aw.AddFrame(vf.Data)
-				total += 1
+				err = aw.AddFrame(vf.Data)
+				if err != nil {
+					return err
+				}
+				total++
 			}
 		}
 	}
-	aw.Close()
+	err = aw.Close()
+	if err != nil {
+		return err
+	}
 
 	fmt.Println("totalFrameCnt: ", total)
 
 	return nil
 }
 
-// ScreenCastRecord listen PageScreenCastFrame and convert it directly into MP4 using ffmpeg
+//ScreenCastRecordMp4 listen PageScreenCastFrame and convert it directly into MP4 using ffmpeg
 func (p *Page) ScreenCastRecordMp4(videoFrames *[]VideoFrame) error {
 	go p.EachEvent(func(e *proto.PageScreencastFrame) {
 		if len(*videoFrames) >= MaxVideoFrame {
 			fmt.Println("Max video frames reach")
-			return 
+			return
 		}
 
 		err := proto.PageScreencastFrameAck{
@@ -173,60 +161,7 @@ func (p *Page) ScreenCastRecordMp4(videoFrames *[]VideoFrame) error {
 	return nil
 }
 
-// use ffmpeg to create mp4 directly using pipe
-func (p *Page) ScreenCastStopMp4UsingPipe(videoFrames *[]VideoFrame, outputFile string, fps int) error {
-	err := proto.PageStopScreencast{}.Call(p)
-	if err != nil {
-		return err
-	}
-
-	vfs := *videoFrames
-
-	sort.Slice(vfs, func(i int, y int) bool {
-		return vfs[i].Timestamp.Before(vfs[y].Timestamp)
-	})
-
-	pr, pw := io.Pipe()
-
-	//cat $(find . -maxdepth 1 -name '*.png' -print | sort | tail -10) | ffmpeg -framerate 25 -i - -vf format=yuv420p -movflags +faststart output.mp4
-
-	cmd := exec.Command("ffmpeg", "-y", // Yes to all
-		"-i", "pipe:0", // take stdin as input
-		//"-filter:v", "fps=25",
-		"-vf", "format=yuv420p",
-		//"-movflags", "+faststart",
-		outputFile, // output
-	)
-	cmd.Stderr = os.Stderr // bind log stream to stderr
-	cmd.Stdin = pr
-
-	err = cmd.Start() // Start a process on another goroutine
-	if err != nil {
-		return err
-	}
-
-	for _, v := range vfs {
-		pw.Write(v.Data)
-	}
-
-	err = pw.Close()
-	if err != nil {
-		return err
-	}
-	err = pr.Close() // close the stdin, or ffmpeg will wait forever
-	if err != nil {
-		return err
-	}
-
-	err = cmd.Wait() // wait until ffmpeg finish
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// use ffmpeg to create mp4
+//ScreenCastStopMp4 stop screen cast event and use ffmpeg to create mp4 from videoFrame data
 func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string, fps int) error {
 	err := proto.PageStopScreencast{}.Call(p)
 	if err != nil {
@@ -234,7 +169,6 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string, f
 	}
 
 	vfs := *videoFrames
-	fpsStr := strconv.FormatInt(int64(fps), 10)
 
 	sort.Slice(vfs, func(i int, y int) bool {
 		return vfs[i].Timestamp.Before(vfs[y].Timestamp)
@@ -271,16 +205,14 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string, f
 
 	//cat $(find . -maxdepth 1 -name '*.png' -print | sort | tail -10) | ffmpeg -framerate 25 -i - -vf format=yuv420p -movflags +faststart output.mp4
 
-	cmd := exec.Command("ffmpeg", "-y", // Yes to all
-		"-framerate", fpsStr,
+	cmd := exec.Command("ffmpeg",
+		"-y", // Yes to all
+		"-f", "image2pipe",
+		"-r", strconv.Itoa(fps),
 		"-i", "pipe:0", // take stdin as input
-		//"-r", fpsStr,
-		//"-filter:v", "setpts=0.5*PTS",
-		//"-f", "image2pipe", //not working
-		//"-f", "rawvideo",
-		//"-filter:v", "fps=" + fpsStr,
-		//"-c:v", "libx264",
+		"-an",
 		"-vf", "format=yuv420p",
+		"-vsync", "1",
 		"-movflags", "+faststart",
 		outputFile, // output
 	)
@@ -297,15 +229,15 @@ func (p *Page) ScreenCastStopMp4(videoFrames *[]VideoFrame, outputFile string, f
 	}
 
 	total := 0
-	for j, vf := range vfs {
-		fmt.Printf("frame %d, data %d, duration %v,\t\tdurationAcc %v,\t\tframeCnt %v\t\tframeCntR %v\n", j, len(vf.Data), vf.DurationInSecond, vf.AccumDurationInSecond, vf.FrameCnt, vf.FrameCntRemaining)
+	for _, vf := range vfs {
+		//fmt.Printf("frame %d, data %d, duration %v,\t\tdurationAcc %v,\t\tframeCnt %v\t\tframeCntR %v\n", j, len(vf.Data), vf.DurationInSecond, vf.AccumDurationInSecond, vf.FrameCnt, vf.FrameCntRemaining)
 		if vf.FrameCnt > 0 {
 			for i := int64(0); i < int64(vf.FrameCnt); i++ {
 				_, err = stdin.Write(vf.Data)
 				if err != nil {
 					return err
 				}
-				total += 1
+				total++
 			}
 		}
 	}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style> 
+body{margin:0;}
+#rotating-section{ 
+				position:relative;
+				background:#1CB0EC  top center no-repeat fixed;
+				height:600px;
+				overflow:hidden;
+				}
+.rect1,.rect2,.rect3,.rect4{
+		position:absolute;
+		width:100px;
+		height:100px;
+		bottom:-150px;
+		background:#fff;
+		-webkit-animation: mymove2 4s linear infinite;
+}
+
+.rect1{left:50%;}
+.rect2{left:10%;-webkit-animation-delay:0.3s;}
+.rect3{left:25%;-webkit-animation-delay:2s;}
+.rect4{left:85%;-webkit-animation-delay:1s;}
+
+
+.rect5,.rect6,.rect7,.rect8{
+		position:absolute;
+		width:50px;
+		height:50px;
+		background:#fff;
+		bottom:-150px;
+		-webkit-animation: mymove2 4s linear infinite;	
+}
+
+.rect5{left:0%;}
+.rect6{left:15%;-webkit-animation-delay:2.2s;}
+.rect7{left:45%;-webkit-animation-delay:0.8s;}
+.rect8{left:77%;-webkit-animation-delay:1.4s;}
+
+
+.rect9,.rect10{
+		position:absolute;
+		width:300px;
+		height:300px;
+		background:#fff;
+		bottom:-300px;
+		border-radius:50%;
+		-webkit-animation: mymove3 7s linear infinite;	
+}
+
+.rect9{left:3%;}
+.rect10{left:95%;-webkit-animation-delay:0s;}
+
+.rect13,.rect14{
+		position:absolute;
+		width:0px;
+		height:0px;
+		border:solid 40px transparent;
+		border-bottom:solid 40px #fff;
+		bottom:-150px;
+		-webkit-animation: mymove4 4s linear infinite;
+}
+
+
+.rect13{left:45%;border-bottom:solid 65px #fff;-webkit-animation-delay:0.6s;}
+.rect14{left:72%;border-bottom:solid 120px #fff;-webkit-animation:mymove5 6s liner infinte;-webkit-animation-delay:1s;}
+
+
+.rect11,.rect12{
+		position:absolute;
+		width:0px;
+		height:0px;
+		border:solid 40px transparent;
+		border-bottom:solid 40px #fff;
+		bottom:-150px;
+		-webkit-animation: mymove5 4s linear infinite;
+}
+
+.rect11{left:30%;}
+.rect12{left:65%;border-bottom:solid 60px #fff;-webkit-animation-delay:1.3s;}
+
+.rect15{
+		position:absolute;
+		width:300px;
+		height:300px;
+		background:#fff;
+		bottom:-400px;
+		-webkit-animation: mymove3 6s linear infinite;
+}
+
+.rect15{left:55%;}
+
+
+.rect17{
+		position:absolute;
+		width:150px;
+		height:150px;
+		background:#fff;
+		bottom:-400px;
+	}
+
+@-webkit-keyframes mymove2{
+	
+	0%{	transform:rortate(0deg);opacity:1;}
+	100%{transform:rotate(540deg);opacity:0;bottom:340px;}
+	}
+
+@-webkit-keyframes mymove3{
+	
+	0%{	transform:rortate(0deg);opacity:1;}
+	100%{transform:rotate(720deg);opacity:0;bottom:540px;}
+	}
+
+@-webkit-keyframes mymove4{	
+	0%{	transform:rortate(0deg);opacity:1;}
+	100%{transform:rotate(720deg);opacity:0;bottom:540px;}
+	}
+
+@-webkit-keyframes mymove5{	
+	0%{	opacity:1;}
+	100%{opacity:0;bottom:540px;}
+	}
+</style>
+</head>
+<body>
+
+<h1 id="demo"></h1>
+
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+    
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
+
+<div></div>
+
+<section id="rotating-section">
+    <div id="rotating-animation">
+        <div>
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+            <div class="rect6"></div>
+            <div class="rect7"></div>
+            <div class="rect8"></div>
+            <div class="rect9"></div>
+            <div class="rect10"></div>
+            <div class="rect11"></div>
+            <div class="rect12"></div>
+            <div class="rect13"></div>
+            <div class="rect14"></div>
+            <div class="rect15"></div>
+            <div class="rect16"></div>
+            <div class="rect17"></div>
+            <div class="rect18"></div>
+            <div class="rect19"></div>
+            <div class="rect20"></div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+

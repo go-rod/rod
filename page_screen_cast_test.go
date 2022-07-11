@@ -2,9 +2,9 @@ package rod_test
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
+	"strconv"
 	"testing"
 	"time"
 
@@ -12,260 +12,204 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
+//Not recommend to us avi because the file is very large, just in case you do not want to install ffmpeg
 //GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastAvi$ github.com/go-rod/rod -v -count=1 -parallel=1
 func TestPageScreenCastAvi(t *testing.T) {
 	g := setup(t)
 
-	{
-		browser := rod.New().MustConnect()
-		page := browser.MustPage("http://www.google.com").MustWaitLoad()
+	page := g.page.MustNavigate(g.srcFile("./fixtures/timer.html"))
 
-		videoFrames := []rod.VideoFrame{}
-		fps := 100
+	time.Sleep(5 * time.Second)
 
-		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
-		aviWriter, err := page.ScreenCastRecordAvi("sample.avi", &videoFrames, fps) // Only support .avi video file & frame per second
-		if err != nil {
-			g.Fatal(err)
-		}
+	videoFrames := []rod.VideoFrame{}
+	fps := 50
+	time.Sleep(5 * time.Second)
 
-		// ScreenCastStart start listening ScreenCastRecord
-		err = page.ScreenCastStart(50) // Image quality
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		fmt.Println("sleep 10 seconds start: ", time.Now())
-		time.Sleep(6 * time.Second)
-
-		page.Navigate("https://dayspedia.com/time/online/")
-		page.MustWaitNavigation()
-		page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		page.Navigate("http://www.google.com")
-		page.MustWaitNavigation()
-		page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into avi file
-		err = page.ScreenCastStopAvi(aviWriter, &videoFrames, fps)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		page.MustClose()
-		browser.MustClose()
+	// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
+	aviWriter, err := page.ScreenCastRecordAvi("output.avi", &videoFrames, fps) // Only support .avi video file & frame per second
+	if err != nil {
+		g.Fatal(err)
 	}
+
+	// ScreenCastStart start listening ScreenCastRecord
+	err = page.ScreenCastStart(50) // Image quality
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	fmt.Println("sleep 10 seconds start: ", time.Now())
+	time.Sleep(10 * time.Second)
+
+	err = page.Navigate(g.srcFile("./fixtures/blank.html"))
+	if err != nil {
+		g.Fatal(err)
+	}
+	page.MustWaitNavigation()
+	page.MustWaitLoad()
+	time.Sleep(4 * time.Second)
+
+	// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into avi file
+	err = page.ScreenCastStopAvi(aviWriter, &videoFrames, fps)
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	page.MustClose()
 }
 
-//Direct put data from screen cast event to ffmpeg stdin,
-//but the result is not good, the video is not smooth, sometimes fast, sometimes slow, sometimes it is more than 10 seconds
-//and we dun know the frame rate from the screen cast event, so the video duration may be longer / shorter than we expect, we may need to change the -r argument in ffmpeg
-//and screen cast event didn't send data on sequence, it cause the video sometimes shift backward & forward a little bit
-//but using pipe can save memory
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastDirectPipeMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
-func TestPageScreenCastDirectPipeMp4(t *testing.T) {
+//Direct put data from screen cast event to ffmpeg stdin, this approach can save memory
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastDirectMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
+func TestPageScreenCastDirectMp4(t *testing.T) {
 	g := setup(t)
 
-	{
-		browser := rod.New().MustConnect()
+	page := g.page.MustNavigate(g.srcFile("./fixtures/timer.html"))
 
-		page := browser.MustPage("https://dayspedia.com/time/online/").MustWaitLoad()
+	time.Sleep(5 * time.Second)
+	fps := 50
 
-		pr, pw := io.Pipe()
+	dataCh := make(chan []byte, 12)
 
-		go page.EachEvent(func(e *proto.PageScreencastFrame) {
-			err := proto.PageScreencastFrameAck{
-				SessionID: e.SessionID,
-			}.Call(page)
-			if err != nil {
-				fmt.Println("ScreencastFrameAck err:", err)
-			}
-			pw.Write(e.Data)
-		})()
+	//cat $(find . -maxdepth 1 -name '*.png' -print | sort | tail -10) | ffmpeg -framerate 25 -i - -vf format=yuv420p -movflags +faststart output.mp4
 
-		//cat $(find . -maxdepth 1 -name '*.png' -print | sort | tail -10) | ffmpeg -framerate 25 -i - -vf format=yuv420p -movflags +faststart output.mp4
-		cmd := exec.Command("ffmpeg", "-y", // Yes to all
-			"-i", "pipe:0", // take stdin as input
-			"-r", "60",
-			"-vf", "format=yuv420p",
-			"-movflags", "+faststart",
-			"output.mp4", // output
-		)
-		cmd.Stderr = os.Stderr // bind log stream to stderr
-		cmd.Stdin = pr
+	cmd := exec.Command("ffmpeg",
+		"-y", // Yes to all
+		"-f", "image2pipe",
+		"-r", strconv.Itoa(fps),
+		"-i", "pipe:0", // take stdin as input
+		"-an",
+		"-vf", "format=yuv420p",
+		"-vsync", "1",
+		"-movflags", "+faststart",
+		"output_direct_pipe.mp4", // output
+	)
 
-		err := cmd.Start() // Start a process on another goroutine
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		everyNthFrame := 1
-		qty := 50
-		proto.PageStartScreencast{
-			Format:        proto.PageStartScreencastFormatJpeg,
-			Quality:       &qty,
-			EveryNthFrame: &everyNthFrame,
-		}.Call(page)
-
-		time.Sleep(10 * time.Second)
-
-		err = proto.PageStopScreencast{}.Call(page)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		err = pw.Close()
-		if err != nil {
-			g.Fatal(err)
-		}
-		err = pr.Close() // close the stdin, or ffmpeg will wait forever
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		err = cmd.Wait() // wait until ffmpeg finish
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		page.MustClose()
-		browser.MustClose()
+	cmd.Stderr = os.Stderr // bind log stream to stderr
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		g.Fatal(err)
 	}
+
+	err = cmd.Start() // Start a process on another goroutine
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	go page.EachEvent(func(e *proto.PageScreencastFrame) {
+		err := proto.PageScreencastFrameAck{
+			SessionID: e.SessionID,
+		}.Call(page)
+		if err != nil {
+			g.Fatalf("ScreencastFrameAck err:", err)
+		}
+		dataCh <- e.Data
+	})()
+
+	timer := time.NewTicker(time.Second / time.Duration(fps))
+	go func() {
+		var data []byte
+		for {
+			select {
+			case d, ok := <-dataCh:
+				if !ok {
+					return
+				}
+				data = d
+			case <-timer.C:
+				if len(data) > 0 {
+					//pw.Write(data)
+					_, err = stdin.Write(data)
+					if err != nil {
+						//may have write err due to stdin closed
+						return
+					}
+				}
+			}
+		}
+	}()
+
+	everyNthFrame := 1
+	qty := 100
+	err = proto.PageStartScreencast{
+		Format:        proto.PageStartScreencastFormatJpeg,
+		Quality:       &qty,
+		EveryNthFrame: &everyNthFrame,
+	}.Call(page)
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	time.Sleep(15 * time.Second)
+
+	err = page.Navigate(g.srcFile("./fixtures/blank.html"))
+	if err != nil {
+		g.Fatal(err)
+	}
+	page.MustWaitNavigation()
+	page.MustWaitLoad()
+	time.Sleep(4 * time.Second)
+
+	err = proto.PageStopScreencast{}.Call(page)
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	timer.Stop()
+	time.Sleep(2 * time.Second)
+	close(dataCh)
+
+	err = stdin.Close() // close the stdin, or ffmpeg will wait forever
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	err = cmd.Wait() // wait until ffmpeg finish
+	if err != nil {
+		g.Log(err)
+	}
+
+	page.MustClose()
 }
 
-//Best approach I found to capture mp4
+//Best approach I found to capture mp4 if you focus on video quality
 //It sort the data from screen cast event, and insert frames base on the input fps in ScreenCastStopMp4
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
+//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestPageScreenCastMp4$ github.com/go-rod/rod -v -count=1
 func TestPageScreenCastMp4(t *testing.T) {
 	g := setup(t)
 
-	{
-		browser := rod.New().MustConnect()
-		page := browser.MustPage("http://www.google.com").MustWaitLoad()
+	page := g.page.MustNavigate(g.srcFile("./fixtures/timer.html"))
 
-		videoFrames := []rod.VideoFrame{}
-		fps := 25
+	time.Sleep(5 * time.Second)
+	videoFrames := []rod.VideoFrame{}
+	fps := 50
 
-		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
-		err := page.ScreenCastRecordMp4(&videoFrames)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		// ScreenCastStart start listening ScreenCastRecord
-		err = page.ScreenCastStart(100) // Image quality & frame per second
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		fmt.Println("sleep 10 seconds start: ", time.Now())
-		time.Sleep(6 * time.Second)
-
-		page.Navigate("https://dayspedia.com/time/online/")
-		page.MustWaitNavigation()
-		page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		page.Navigate("http://www.google.com")
-		page.MustWaitNavigation()
-		page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
-		err = page.ScreenCastStopMp4(&videoFrames, "output.mp4", fps)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		page.MustClose()
-		browser.MustClose()
+	// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
+	err := page.ScreenCastRecordMp4(&videoFrames)
+	if err != nil {
+		g.Fatal(err)
 	}
-}
 
-//Test concurrent capture mp4 from several browser
-//GODEBUG="tracebackancestors=1000" go test -timeout 60s -run ^TestConcurrentCaptureMp4$ github.com/go-rod/rod -v -count=1 -parallel=1
-func TestConcurrentCaptureMp4(t *testing.T) {
-	g := setup(t)
-
-	{
-		browser := rod.New().MustConnect()
-
-		type PageScreenCastInfo struct {
-			Page        *rod.Page
-			VideoFrames *[]rod.VideoFrame
-		}
-
-		pageMap := map[string]PageScreenCastInfo{}
-
-		page1 := browser.MustPage("https://www.timeanddate.com/worldclock/hong-kong/hong-kong").MustWaitLoad()
-		page2 := browser.MustPage("https://www.timeanddate.com/worldclock/japan/tokyo").MustWaitLoad()
-
-		pageMap["1"] = PageScreenCastInfo{
-			Page: page1,
-			VideoFrames: &[]rod.VideoFrame{},
-		}
-		pageMap["2"] = PageScreenCastInfo{
-			Page: page2,
-			VideoFrames: &[]rod.VideoFrame{},
-		}
-
-		fps := 25
-
-		var err error
-
-		// ScreenCastRecord listen PageScreenCastFrame and save data into videoFrames
-		err = pageMap["1"].Page.ScreenCastRecordMp4(pageMap["1"].VideoFrames)
-		if err != nil {
-			g.Fatal(err)
-		}
-		err = pageMap["2"].Page.ScreenCastRecordMp4(pageMap["2"].VideoFrames)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		// ScreenCastStart start listening ScreenCastRecord
-		err = pageMap["1"].Page.ScreenCastStart(100)
-		if err != nil {
-			g.Fatal(err)
-		}
-		err = pageMap["2"].Page.ScreenCastStart(100)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		fmt.Println("sleep 10 seconds start: ", time.Now())
-		time.Sleep(6 * time.Second)
-
-		pageMap["1"].Page.Navigate("https://dayspedia.com/time/online/")
-		pageMap["2"].Page.Navigate("https://dayspedia.com/time/online/")
-		pageMap["1"].Page.MustWaitNavigation()
-		pageMap["2"].Page.MustWaitNavigation()
-		pageMap["1"].Page.MustWaitLoad()
-		pageMap["2"].Page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		pageMap["1"].Page.Navigate("https://www.timeanddate.com/worldclock/hong-kong/hong-kong")
-		pageMap["2"].Page.Navigate("https://www.timeanddate.com/worldclock/japan/tokyo")
-		pageMap["1"].Page.MustWaitNavigation()
-		pageMap["2"].Page.MustWaitNavigation()
-		pageMap["1"].Page.MustWaitLoad()
-		pageMap["2"].Page.MustWaitLoad()
-		time.Sleep(4 * time.Second)
-
-		// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
-		err = pageMap["1"].Page.ScreenCastStopMp4(pageMap["1"].VideoFrames, "output_1.mp4", fps)
-		if err != nil {
-			g.Fatal(err)
-		}
-		err = pageMap["2"].Page.ScreenCastStopMp4(pageMap["2"].VideoFrames, "output_2.mp4", fps)
-		if err != nil {
-			g.Fatal(err)
-		}
-
-		pageMap["1"].Page.MustClose()
-		pageMap["2"].Page.MustClose()
-		browser.MustClose()
+	// ScreenCastStart start listening ScreenCastRecord
+	err = page.ScreenCastStart(100) // Image quality & frame per second
+	if err != nil {
+		g.Fatal(err)
 	}
+
+	fmt.Println("sleep 15 seconds")
+	time.Sleep(15 * time.Second)
+
+	err = page.Navigate(g.srcFile("./fixtures/blank.html"))
+	if err != nil {
+		g.Fatal(err)
+	}
+	page.MustWaitNavigation()
+	page.MustWaitLoad()
+	time.Sleep(4 * time.Second)
+
+	// ScreenCastStop stop listening ScreenCastRecord and convert the videoFrames data into mp4 file
+	err = page.ScreenCastStopMp4(&videoFrames, "output_use_buffer.mp4", fps)
+	if err != nil {
+		g.Fatal(err)
+	}
+
+	page.MustClose()
 }
