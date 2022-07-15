@@ -52,6 +52,10 @@ func TestPageEval(t *testing.T) {
 
 	_, err := page.Eval(`10`)
 	g.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
+
+	_, err = page.Eval(`() => notExist()`)
+	g.Is(err, &rod.ErrEval{})
+	g.Has(err.Error(), `eval js error: ReferenceError: notExist is not defined`)
 }
 
 func TestPageEvaluateRetry(t *testing.T) {
