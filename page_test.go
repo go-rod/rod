@@ -136,7 +136,8 @@ func TestPageHTML(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/click.html")).MustWaitLoad()
-	g.Has(p.MustHTML(), "<head>")
+	p.MustElement("button").MustClick()
+	g.Has(p.MustHTML(), `a="ok"`)
 
 	g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	g.Err(p.HTML())
