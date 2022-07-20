@@ -183,6 +183,7 @@ func TestPageContext(t *testing.T) {
 	g := setup(t)
 
 	g.page.Timeout(time.Hour).CancelTimeout().MustEval(`() => 1`)
+	_, _ = g.page.Timeout(time.Second).Timeout(time.Hour).CancelTimeout().Element("not-exist")
 }
 
 func TestPageActivate(t *testing.T) {
