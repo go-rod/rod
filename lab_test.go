@@ -15,6 +15,6 @@ func TestLab(t *testing.T) {
 	g.Eq(browser.MustVersion().ProtocolVersion, "1.3")
 
 	// You can also use the pre-created g.page for testing
-	page.MustNavigate(g.blank())
+	page.MustNavigate(g.blank()).MustWaitLoad()
 	g.Has(page.MustInfo().URL, "blank.html")
 }
