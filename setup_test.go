@@ -209,7 +209,7 @@ running goroutines: %s`, g.Name(), *TimeoutEach, t))
 			}
 		}
 
-		if g.browser.LoadState(g.page.SessionID, proto.FetchEnable{}) {
+		if g.browser.LoadState(g.page.SessionID, &proto.FetchEnable{}) {
 			g.Logf("leaking FetchEnable")
 			g.FailNow()
 		}
