@@ -15,7 +15,7 @@ func TestBasic(t *testing.T) {
 	body := g.Read(g.Open(false, "body-invalid.txt")).String()
 
 	g.Eq(check(body), ""+
-		"Please add a valid `**Rod Version:** v0.0.0` to your issue. Current version is <nil>\n"+
+		"Please add a valid `Rod Version: v0.0.0` to your issue. Current version is <nil>\n"+
 		"\n"+
 		"Please fix the format of your markdown:\n"+
 		"\n"+
