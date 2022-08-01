@@ -1,5 +1,5 @@
 // Package defaults of commonly used options parsed from environment.
-// Check ResetWithEnv for details.
+// Check ResetWith for details.
 package defaults
 
 import (
