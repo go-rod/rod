@@ -70,6 +70,24 @@ type TargetTargetInfo struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
+// TargetFilterEntry (experimental) A filter used by target query/discovery/auto-attach operations.
+type TargetFilterEntry struct {
+
+	// Exclude (optional) If set, causes exclusion of mathcing targets from the list.
+	Exclude bool `json:"exclude,omitempty"`
+
+	// Type (optional) If not present, matches any type.
+	Type string `json:"type,omitempty"`
+}
+
+// TargetTargetFilter (experimental) The entries in TargetFilter are matched sequentially against targets and
+// the first entry that matches determines if the target is included or not,
+// depending on the value of `exclude` field in the entry.
+// If filter is not specified, the one assumed is
+// [{type: "browser", exclude: true}, {type: "tab", exclude: true}, {}]
+// (i.e. include everything but `browser` and `tab`).
+type TargetTargetFilter []*TargetFilterEntry
+
 // TargetRemoteLocation (experimental) ...
 type TargetRemoteLocation struct {
 
@@ -347,6 +365,11 @@ type TargetGetTargetInfoResult struct {
 
 // TargetGetTargets Retrieves a list of available targets.
 type TargetGetTargets struct {
+
+	// Filter (experimental) (optional) Only targets matching filter will be reported. If filter is not specified
+	// and target discovery is currently enabled, a filter used for target discovery
+	// is used for consistency.
+	Filter TargetTargetFilter `json:"filter,omitempty"`
 }
 
 // ProtoReq name
@@ -406,6 +429,9 @@ type TargetSetAutoAttach struct {
 	// We plan to make this the default, deprecate non-flattened mode,
 	// and eventually retire it. See crbug.com/991325.
 	Flatten bool `json:"flatten,omitempty"`
+
+	// Filter (experimental) (optional) Only targets matching filter will be attached.
+	Filter TargetTargetFilter `json:"filter,omitempty"`
 }
 
 // ProtoReq name
@@ -429,6 +455,9 @@ type TargetAutoAttachRelated struct {
 	// WaitForDebuggerOnStart Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
 	// to run paused targets.
 	WaitForDebuggerOnStart bool `json:"waitForDebuggerOnStart"`
+
+	// Filter (experimental) (optional) Only targets matching filter will be attached.
+	Filter TargetTargetFilter `json:"filter,omitempty"`
 }
 
 // ProtoReq name
@@ -445,6 +474,10 @@ type TargetSetDiscoverTargets struct {
 
 	// Discover Whether to discover available targets.
 	Discover bool `json:"discover"`
+
+	// Filter (experimental) (optional) Only targets matching filter will be attached. If `discover` is false,
+	// `filter` must be omitted or empty.
+	Filter TargetTargetFilter `json:"filter,omitempty"`
 }
 
 // ProtoReq name

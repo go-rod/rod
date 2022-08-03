@@ -440,6 +440,12 @@ func (t T) CSSSetSupportsText() {
 	t.Nil(err)
 }
 
+func (t T) CSSSetScopeText() {
+	c := &Client{}
+	_, err := proto.CSSSetScopeText{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSSetRuleSelector() {
 	c := &Client{}
 	_, err := proto.CSSSetRuleSelector{}.Call(c)
@@ -2891,6 +2897,12 @@ func (t T) StorageClearDataForOrigin() {
 	t.Nil(err)
 }
 
+func (t T) StorageClearDataForStorageKey() {
+	c := &Client{}
+	err := proto.StorageClearDataForStorageKey{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageGetCookies() {
 	c := &Client{}
 	_, err := proto.StorageGetCookies{}.Call(c)
@@ -2933,6 +2945,12 @@ func (t T) StorageTrackIndexedDBForOrigin() {
 	t.Nil(err)
 }
 
+func (t T) StorageTrackIndexedDBForStorageKey() {
+	c := &Client{}
+	err := proto.StorageTrackIndexedDBForStorageKey{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageUntrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackCacheStorageForOrigin{}.Call(c)
@@ -2942,6 +2960,12 @@ func (t T) StorageUntrackCacheStorageForOrigin() {
 func (t T) StorageUntrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackIndexedDBForOrigin{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageUntrackIndexedDBForStorageKey() {
+	c := &Client{}
+	err := proto.StorageUntrackIndexedDBForStorageKey{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3511,6 +3535,18 @@ func (t T) DebuggerGetPossibleBreakpoints() {
 func (t T) DebuggerGetScriptSource() {
 	c := &Client{}
 	_, err := proto.DebuggerGetScriptSource{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DebuggerDisassembleWasmModule() {
+	c := &Client{}
+	_, err := proto.DebuggerDisassembleWasmModule{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DebuggerNextWasmDisassemblyChunk() {
+	c := &Client{}
+	_, err := proto.DebuggerNextWasmDisassemblyChunk{}.Call(c)
 	t.Nil(err)
 }
 

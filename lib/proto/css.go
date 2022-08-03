@@ -798,6 +798,9 @@ type CSSGetMatchedStylesForNodeResult struct {
 
 	// CSSKeyframesRules (optional) A list of CSS keyframed animations matching this node.
 	CSSKeyframesRules []*CSSCSSKeyframesRule `json:"cssKeyframesRules,omitempty"`
+
+	// ParentLayoutNodeID (experimental) (optional) Id of the first parent element that does not have display: contents.
+	ParentLayoutNodeID DOMNodeID `json:"parentLayoutNodeId,omitempty"`
 }
 
 // CSSGetMediaQueries Returns all media queries parsed by the rendering engine.
@@ -1071,6 +1074,35 @@ type CSSSetSupportsTextResult struct {
 
 	// Supports The resulting CSS Supports rule after modification.
 	Supports *CSSCSSSupports `json:"supports"`
+}
+
+// CSSSetScopeText (experimental) Modifies the expression of a scope at-rule.
+type CSSSetScopeText struct {
+
+	// StyleSheetID ...
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
+
+	// Range ...
+	Range *CSSSourceRange `json:"range"`
+
+	// Text ...
+	Text string `json:"text"`
+}
+
+// ProtoReq name
+func (m CSSSetScopeText) ProtoReq() string { return "CSS.setScopeText" }
+
+// Call the request
+func (m CSSSetScopeText) Call(c Client) (*CSSSetScopeTextResult, error) {
+	var res CSSSetScopeTextResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// CSSSetScopeTextResult (experimental) ...
+type CSSSetScopeTextResult struct {
+
+	// Scope The resulting CSS Scope rule after modification.
+	Scope *CSSCSSScope `json:"scope"`
 }
 
 // CSSSetRuleSelector Modifies the rule selector.

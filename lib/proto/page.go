@@ -302,6 +302,9 @@ const (
 	// PagePermissionsPolicyFeatureSharedAutofill enum const
 	PagePermissionsPolicyFeatureSharedAutofill PagePermissionsPolicyFeature = "shared-autofill"
 
+	// PagePermissionsPolicyFeatureSharedStorage enum const
+	PagePermissionsPolicyFeatureSharedStorage PagePermissionsPolicyFeature = "shared-storage"
+
 	// PagePermissionsPolicyFeatureStorageAccessAPI enum const
 	PagePermissionsPolicyFeatureStorageAccessAPI PagePermissionsPolicyFeature = "storage-access-api"
 
@@ -1454,6 +1457,12 @@ const (
 
 	// PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed enum const
 	PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed PagePrerenderFinalStatus = "EmbedderTriggeredAndDestroyed"
+
+	// PagePrerenderFinalStatusMemoryLimitExceeded enum const
+	PagePrerenderFinalStatusMemoryLimitExceeded PagePrerenderFinalStatus = "MemoryLimitExceeded"
+
+	// PagePrerenderFinalStatusFailToGetMemoryUsage enum const
+	PagePrerenderFinalStatusFailToGetMemoryUsage PagePrerenderFinalStatus = "FailToGetMemoryUsage"
 )
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
