@@ -57,9 +57,3 @@ var ErrNodeNotFoundAtPos = &Error{
 	Code:    -32000,
 	Message: "No node found at given location",
 }
-
-// ErrNoContentQuads type
-var ErrNoContentQuads = &Error{
-	Code:    -32000,
-	Message: "Could not compute content quads.",
-}

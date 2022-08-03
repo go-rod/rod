@@ -155,11 +155,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 
 	shape, err := el.Shape()
 	if err != nil {
-		// such as when css is "display: none"
-		if errors.Is(err, cdp.ErrNoContentQuads) {
-			err = &ErrInvisibleShape{el}
-		}
-		return
+		return nil, err
 	}
 
 	pt = shape.OnePointInside()
