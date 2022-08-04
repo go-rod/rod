@@ -341,6 +341,15 @@ func (p *Page) MustHandleDialog() (wait func() *proto.PageJavascriptDialogOpenin
 	}
 }
 
+// MustHandleFileDialog is similar to Page.HandleFileDialog
+func (p *Page) MustHandleFileDialog() func(...string) {
+	setFiles, err := p.HandleFileDialog()
+	p.e(err)
+	return func(paths ...string) {
+		p.e(setFiles(paths))
+	}
+}
+
 // MustScreenshot is similar to Screenshot.
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshot(toFile ...string) []byte {

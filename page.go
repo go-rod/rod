@@ -354,6 +354,32 @@ func (p *Page) HandleDialog() (
 		}
 }
 
+// HandleFileDialog return a functions that waits for the next file chooser dialog pops up and returns the element
+// for the event.
+func (p *Page) HandleFileDialog() (func([]string) error, error) {
+	err := proto.PageSetInterceptFileChooserDialog{Enabled: true}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	var e proto.PageFileChooserOpened
+	w := p.WaitEvent(&e)
+
+	return func(paths []string) error {
+		w()
+
+		err := proto.PageSetInterceptFileChooserDialog{Enabled: false}.Call(p)
+		if err != nil {
+			return err
+		}
+
+		return proto.DOMSetFileInputFiles{
+			Files:         utils.AbsolutePaths(paths),
+			BackendNodeID: e.BackendNodeID,
+		}.Call(p)
+	}, nil
+}
+
 // Screenshot captures the screenshot of current page.
 func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
 	if req == nil {

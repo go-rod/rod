@@ -71,6 +71,13 @@ func TestMkdir(t *testing.T) {
 	g.E(utils.Mkdir(p))
 }
 
+func TestAbsolutePaths(t *testing.T) {
+	g := setup(t)
+
+	p := utils.AbsolutePaths([]string{"utils.go"})
+	g.Has(p[0], filepath.FromSlash("/utils.go"))
+}
+
 func TestOutputString(t *testing.T) {
 	g := setup(t)
 
