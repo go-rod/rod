@@ -230,13 +230,11 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 
 	h.Response.payload.ResponseCode = res.StatusCode
 
-	list := []string{}
 	for k, vs := range res.Header {
 		for _, v := range vs {
-			list = append(list, k, v)
+			h.Response.SetHeader(k, v)
 		}
 	}
-	h.Response.SetHeader(list...)
 
 	if loadBody {
 		b, err := ioutil.ReadAll(res.Body)
