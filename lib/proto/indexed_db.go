@@ -366,8 +366,12 @@ type IndexedDBRequestDatabaseResult struct {
 // IndexedDBRequestDatabaseNames Requests database names for given security origin.
 type IndexedDBRequestDatabaseNames struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 }
 
 // ProtoReq name

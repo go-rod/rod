@@ -61,6 +61,9 @@ const (
 
 	// AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext enum const
 	AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext AuditsCookieExclusionReason = "ExcludeSamePartyCrossPartyContext"
+
+	// AuditsCookieExclusionReasonExcludeDomainNonASCII enum const
+	AuditsCookieExclusionReasonExcludeDomainNonASCII AuditsCookieExclusionReason = "ExcludeDomainNonASCII"
 )
 
 // AuditsCookieWarningReason ...
@@ -93,6 +96,9 @@ const (
 
 	// AuditsCookieWarningReasonWarnAttributeValueExceedsMaxSize enum const
 	AuditsCookieWarningReasonWarnAttributeValueExceedsMaxSize AuditsCookieWarningReason = "WarnAttributeValueExceedsMaxSize"
+
+	// AuditsCookieWarningReasonWarnDomainNonASCII enum const
+	AuditsCookieWarningReasonWarnDomainNonASCII AuditsCookieWarningReason = "WarnDomainNonASCII"
 )
 
 // AuditsCookieOperation ...
@@ -539,6 +545,18 @@ const (
 
 	// AuditsAttributionReportingIssueTypeInvalidEligibleHeader enum const
 	AuditsAttributionReportingIssueTypeInvalidEligibleHeader AuditsAttributionReportingIssueType = "InvalidEligibleHeader"
+
+	// AuditsAttributionReportingIssueTypeTooManyConcurrentRequests enum const
+	AuditsAttributionReportingIssueTypeTooManyConcurrentRequests AuditsAttributionReportingIssueType = "TooManyConcurrentRequests"
+
+	// AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders enum const
+	AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders AuditsAttributionReportingIssueType = "SourceAndTriggerHeaders"
+
+	// AuditsAttributionReportingIssueTypeSourceIgnored enum const
+	AuditsAttributionReportingIssueTypeSourceIgnored AuditsAttributionReportingIssueType = "SourceIgnored"
+
+	// AuditsAttributionReportingIssueTypeTriggerIgnored enum const
+	AuditsAttributionReportingIssueTypeTriggerIgnored AuditsAttributionReportingIssueType = "TriggerIgnored"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -857,9 +875,6 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidResponse enum const
 	AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidResponse AuditsFederatedAuthRequestIssueReason = "ClientMetadataInvalidResponse"
-
-	// AuditsFederatedAuthRequestIssueReasonClientMetadataMissingPrivacyPolicyURL enum const
-	AuditsFederatedAuthRequestIssueReasonClientMetadataMissingPrivacyPolicyURL AuditsFederatedAuthRequestIssueReason = "ClientMetadataMissingPrivacyPolicyUrl"
 
 	// AuditsFederatedAuthRequestIssueReasonDisabledInSettings enum const
 	AuditsFederatedAuthRequestIssueReasonDisabledInSettings AuditsFederatedAuthRequestIssueReason = "DisabledInSettings"

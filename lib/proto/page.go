@@ -314,6 +314,9 @@ const (
 	// PagePermissionsPolicyFeatureTrustTokenRedemption enum const
 	PagePermissionsPolicyFeatureTrustTokenRedemption PagePermissionsPolicyFeature = "trust-token-redemption"
 
+	// PagePermissionsPolicyFeatureUnload enum const
+	PagePermissionsPolicyFeatureUnload PagePermissionsPolicyFeature = "unload"
+
 	// PagePermissionsPolicyFeatureUsb enum const
 	PagePermissionsPolicyFeatureUsb PagePermissionsPolicyFeature = "usb"
 
@@ -3200,7 +3203,7 @@ func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
 	return "Page.backForwardCacheNotUsed"
 }
 
-// PagePrerenderAttemptCompleted Fired when a prerender attempt is completed.
+// PagePrerenderAttemptCompleted (experimental) Fired when a prerender attempt is completed.
 type PagePrerenderAttemptCompleted struct {
 
 	// InitiatingFrameID The frame id of the frame initiating prerendering.
@@ -3211,6 +3214,10 @@ type PagePrerenderAttemptCompleted struct {
 
 	// FinalStatus ...
 	FinalStatus PagePrerenderFinalStatus `json:"finalStatus"`
+
+	// ReasonDetails (optional) This is used to give users more information about the cancellation details,
+	// and this will be formatted for display.
+	ReasonDetails string `json:"reasonDetails,omitempty"`
 }
 
 // ProtoEvent name
