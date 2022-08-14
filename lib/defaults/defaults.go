@@ -149,7 +149,7 @@ func ResetWith(options string) {
 	Reset()
 
 	if _, has := os.LookupEnv("DISABLE_ROD_FLAG"); !has {
-		if !flag.Parsed() {
+		if !flag.Parsed() && flag.Lookup("rod") == nil {
 			flag.String("rod", "", `Set the default value of options used by rod.`)
 		}
 
