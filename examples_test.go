@@ -298,14 +298,14 @@ func Example_wait_for_request() {
 	wait := page.MustWaitRequestIdle()
 
 	// This will trigger the search ajax request
-	page.MustElement("#search_form_input_homepage").MustClick().MustInput("lisp")
+	page.MustElement("#searchbox_input").MustClick().MustInput("lisp")
 
 	// Wait until there's no active requests
 	wait()
 
 	// We want to make sure that after waiting, there are some autocomplete
 	// suggestions available.
-	fmt.Println(len(page.MustElements(".search__autocomplete .acp")) > 0)
+	fmt.Println(len(page.MustElements("[class*=searchbox_suggestion]")) > 0)
 
 	// Output: true
 }
