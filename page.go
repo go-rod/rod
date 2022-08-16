@@ -564,7 +564,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.Evaluate(evalHelper(js.WaitIdle, timeout.Seconds()).ByPromise())
+	_, err = p.Evaluate(evalHelper(js.WaitIdle, timeout.Milliseconds()).ByPromise())
 	return err
 }
 
