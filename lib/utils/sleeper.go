@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	mr "math/rand"
-	"reflect"
 	"sync"
 	"time"
 )
@@ -30,9 +29,7 @@ func (e *ErrMaxSleepCount) Error() string {
 }
 
 // Is interface
-func (e *ErrMaxSleepCount) Is(err error) bool {
-	return reflect.TypeOf(e) == reflect.TypeOf(err)
-}
+func (e *ErrMaxSleepCount) Is(err error) bool { _, ok := err.(*ErrMaxSleepCount); return ok }
 
 // CountSleeper wakes immediately. When counts to the max returns *ErrMaxSleepCount
 func CountSleeper(max int) Sleeper {
