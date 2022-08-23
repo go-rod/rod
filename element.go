@@ -194,10 +194,9 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 // A 4-gon is not necessary a rectangle. 4-gons can be apart from each other.
 // For example, we use 2 4-gons to describe the shape below:
 //
-//       ____________          ____________
-//      /        ___/    =    /___________/    +     _________
-//     /________/                                   /________/
-//
+//	  ____________          ____________
+//	 /        ___/    =    /___________/    +     _________
+//	/________/                                   /________/
 func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
@@ -700,4 +699,14 @@ func (el *Element) Equal(elm *Element) (bool, error) {
 
 func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
+}
+
+// GetXPath returns the xpath of the element
+func (el *Element) GetXPath(optimized bool) (string, error) {
+	script := "(optimized) => { class Step { value; optimized; constructor(value, optimized) { this.value = value; this.optimized = optimized || false; } toString() { return this.value; } } const xPathValue = function xPathValue(node, optimized) { let ownValue; const ownIndex = xPathIndex(node); if (ownIndex === -1) { return null; } switch (node.nodeType) { case Node.ELEMENT_NODE: if (optimized && node.id) { return new Step(`//*[@id='${node.id}']`, true); } ownValue = node.localName; break; case Node.ATTRIBUTE_NODE: ownValue = `@${node.nodeName}`; break; case Node.TEXT_NODE: case Node.CDATA_SECTION_NODE: ownValue = 'text()'; break; case Node.PROCESSING_INSTRUCTION_NODE: ownValue = 'processing-instruction()'; break; case Node.COMMENT_NODE: ownValue = 'comment()'; break; case Node.DOCUMENT_NODE: ownValue = ''; break; default: ownValue = ''; break; } if (ownIndex > 0) { ownValue += `[${ownIndex}]`; } return new Step(ownValue, node.nodeType === Node.DOCUMENT_NODE); }; const xPathIndex = function xPathIndex(node) { function areNodesSimilar(left, right) { if (left === right) { return true; } if (left.nodeType === Node.ELEMENT_NODE && right.nodeType === Node.ELEMENT_NODE) { return left.localName === right.localName; } if (left.nodeType === right.nodeType) { return true; } const leftType = left.nodeType === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType; const rightType = right.nodeType === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : right.nodeType; return leftType === rightType; } const parentNode = node.parentNode; const siblings = parentNode ? parentNode.children : null; if (!siblings) { return 0; } let hasSameNamedElements; for (let i = 0; i < siblings.length; ++i) { if (areNodesSimilar(node, siblings[i]) && !(siblings[i] === node)) { hasSameNamedElements = true; break; } } if (!hasSameNamedElements) { return 0; } let ownIndex = 1; for (let i = 0; i < siblings.length; ++i) { if (areNodesSimilar(node, siblings[i])) { if (siblings[i] === node) { return ownIndex; } ++ownIndex; } } return -1; }; const node = this; if (node.nodeType === Node.DOCUMENT_NODE) { return '/'; } const steps = []; let contextNode = node; while (contextNode) { const step = xPathValue(contextNode, optimized); if (!step) { break; } steps.push(step); if (step.optimized) { break; } contextNode = contextNode.parentNode; } steps.reverse(); return (steps.length && steps[0].optimized ? '' : '/') + steps.join('/');}"
+	res, err := el.Eval(script, optimized)
+	if err != nil {
+		return "", err
+	}
+	return res.Value.Str(), nil
 }
