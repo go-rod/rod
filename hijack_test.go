@@ -491,7 +491,8 @@ func TestHijackOnceDisableFetchError(t *testing.T) {
 	g.page.MustNavigate(s.URL())
 	err := rod.Try(wait)
 	g.Err(err)
-	new(proto.FetchDisable).Call(g.page)
+	err = new(proto.FetchDisable).Call(g.page)
+	g.E(err)
 
 	g.Eq("200 test", g.page.MustElement("#a").MustText())
 	g.Eq("", g.page.MustElement("#err").MustText())
