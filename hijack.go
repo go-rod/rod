@@ -168,7 +168,7 @@ type HijackOnce struct {
 	disable *proto.FetchDisable
 }
 
-// Set pattern and resourceType
+// Set pattern and resourceType.
 func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
 	return h.SetPattern(&proto.FetchRequestPattern{
 		URLPattern:   pattern,
@@ -176,7 +176,7 @@ func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType)
 	})
 }
 
-// SetPattern set pattern directly
+// SetPattern set pattern directly.
 func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
 	h.enable = &proto.FetchEnable{
 		Patterns: []*proto.FetchRequestPattern{pattern},
@@ -186,13 +186,22 @@ func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) *HijackOnce 
 
 // Start hijack.
 func (h *HijackOnce) Start(handler func(*Hijack)) (func() error, error) {
-	err := h.enableFetch()
+	if h.enable == nil {
+		return nil, errors.New("hijack pattern not set")
+	}
+	err := h.enable.Call(h.page)
 	if err != nil {
 		return nil, err
 	}
 
 	wait := h.page.EachEvent(func(e *proto.FetchRequestPaused) bool {
-		err = h.handle(e, handler)
+		ctx := NewHijack(h.page.ctx, h.page.browser, e)
+		if handler != nil {
+			handler(ctx)
+		} else {
+			ctx.ContinueRequest(&proto.FetchContinueRequest{})
+		}
+		err = ctx.Finish(e, h.page)
 		return true
 	})
 
@@ -215,21 +224,6 @@ func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
 		err := wait()
 		h.page.e(err)
 	}
-}
-
-func (h *HijackOnce) enableFetch() error {
-	if h.enable == nil {
-		return errors.New("hijack pattern not set")
-	}
-	return h.enable.Call(h.page)
-}
-
-func (h *HijackOnce) handle(e *proto.FetchRequestPaused, fn func(*Hijack)) error {
-	hijack := NewHijack(h.page.ctx, h.page.browser, e)
-	if fn != nil {
-		fn(hijack)
-	}
-	return hijack.Finish(e, h.page)
 }
 
 // NewHijack creates hijack context.

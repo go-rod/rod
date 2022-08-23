@@ -411,10 +411,11 @@ func TestHijackOnce(t *testing.T) {
 	})
 
 	g.page.MustNavigate(s.URL())
-	wait()
+	err := rod.Try(wait)
+	g.E(err)
 
-	g.Eq("200 test", g.page.MustElement("#a").MustText())
 	g.Eq("", g.page.MustElement("#err").MustText())
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
 }
 
 func TestHijackOnceNotSet(t *testing.T) {
@@ -461,10 +462,34 @@ func TestHijackOnceStageResponse(t *testing.T) {
 	})
 
 	g.page.MustNavigate(s.URL())
-	wait()
+	err := rod.Try(wait)
+	g.E(err)
 
-	g.Eq("200 test", g.page.MustElement("#a").MustText())
 	g.Eq("", g.page.MustElement("#err").MustText())
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
+}
+
+func TestHijackOnceNilHandler(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
+
+	// to simulate a backend server
+	s.Route("/", slash("fixtures/hijack.html"))
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+		g.HandleHTTP(".json", `{"text":"test"}`)(w, r)
+	})
+
+	once := g.page.HijackOnce()
+	once.Set(s.URL("/a"), proto.NetworkResourceTypeXHR)
+	wait := once.MustStart(nil)
+
+	g.page.MustNavigate(s.URL())
+	err := rod.Try(wait)
+	g.E(err)
+
+	g.Eq("", g.page.MustElement("#err").MustText())
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
 }
 
 func TestHijackOnceDisableFetchError(t *testing.T) {
@@ -491,9 +516,10 @@ func TestHijackOnceDisableFetchError(t *testing.T) {
 	g.page.MustNavigate(s.URL())
 	err := rod.Try(wait)
 	g.Err(err)
+
 	err = new(proto.FetchDisable).Call(g.page)
 	g.E(err)
 
-	g.Eq("200 test", g.page.MustElement("#a").MustText())
 	g.Eq("", g.page.MustElement("#err").MustText())
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
 }

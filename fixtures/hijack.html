@@ -15,6 +15,7 @@
         createDiv('a', `${res.status} ${data.text}`)
         createDiv('err', '')
       } catch (error) {
+        createDiv('a', "")
         createDiv('err', `${error}`)
       }
     }
