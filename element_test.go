@@ -798,6 +798,16 @@ func TestElementWait(t *testing.T) {
 	g.Eq(e1.MustText(), "xxxxxxxx")
 }
 
+func TestShapeInIframe(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/click-iframe.html"))
+	pt := p.MustElement("iframe").MustFrame().MustElement("button").MustShape().OnePointInside()
+
+	g.InDelta(pt.X, 238, 1)
+	g.InDelta(pt.Y, 287, 1)
+}
+
 func TestElementFromPointErr(t *testing.T) {
 	g := setup(t)
 
