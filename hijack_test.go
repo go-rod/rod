@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"io/ioutil"
 	"mime"
@@ -392,98 +393,32 @@ func TestHijackOnce(t *testing.T) {
 	s := g.Serve()
 
 	// to simulate a backend server
-	s.Route("/", slash("fixtures/fetch.html"))
+	s.Route("/", slash("fixtures/hijack.html"))
 	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			panic("wrong http method")
-		}
-
-		g.Eq("header", r.Header.Get("Test"))
-
 		b, err := ioutil.ReadAll(r.Body)
 		g.E(err)
-		g.Eq("a", string(b))
+		g.Eq("test", string(b))
 
-		g.HandleHTTP(".html", "test")(w, r)
+		g.HandleHTTP(".txt", "a")(w, r)
 	})
-	s.Route("/b", "", "b")
 
 	once := g.page.HijackOnce()
 	once.Set(s.URL("/a"), proto.NetworkResourceTypeXHR)
 	wait := once.MustStart(func(ctx *rod.Hijack) {
-		r := ctx.Request.SetContext(g.Context())
-		r.Req().Header.Set("Test", "header") // override request header
-		r.SetBody([]byte("test"))            // override request body
-		r.SetBody(123)                       // override request body
-		r.SetBody(r.Body())                  // override request body
-
-		type MyState struct {
-			Val int
-		}
-
-		ctx.CustomState = &MyState{10}
-
-		g.Eq(http.MethodPost, r.Method())
-		g.Eq(s.URL("/a"), r.URL().String())
-
-		g.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
-		g.Is(ctx.Request.IsNavigation(), false)
-		g.Has(ctx.Request.Header("Origin"), s.URL())
-		g.Len(ctx.Request.Headers(), 6)
-		g.True(ctx.Request.JSONBody().Nil())
-
-		// send request load response from real destination as the default value to hijack
+		ctx.Request.SetBody("test")
 		ctx.MustLoadResponse()
-
-		g.Eq(200, ctx.Response.Payload().ResponseCode)
-
-		// override status code
-		ctx.Response.Payload().ResponseCode = http.StatusCreated
-
-		g.Eq("4", ctx.Response.Headers().Get("Content-Length"))
-		g.Has(ctx.Response.Headers().Get("Content-Type"), "text/html; charset=utf-8")
-
-		// override response header
-		ctx.Response.SetHeader("Set-Cookie", "key=val")
-
-		// override response body
-		ctx.Response.SetBody([]byte("test"))
-		ctx.Response.SetBody("test")
-		ctx.Response.SetBody(map[string]string{
-			"text": "test",
-		})
-
-		g.Eq("{\"text\":\"test\"}", ctx.Response.Body())
+		ctx.Response.SetBody(`{"text":"test"}`)
 	})
 
 	g.page.MustNavigate(s.URL())
 	wait()
 
-	g.Eq("201 test key=val", g.page.MustElement("#a").MustText())
-	g.Eq("b", g.page.MustElement("#b").MustText())
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
+	g.Eq("", g.page.MustElement("#err").MustText())
 }
 
 func TestHijackOnceNotSet(t *testing.T) {
 	g := setup(t)
-
-	s := g.Serve()
-
-	// to simulate a backend server
-	s.Route("/", slash("fixtures/fetch.html"))
-	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			panic("wrong http method")
-		}
-
-		g.Eq("header", r.Header.Get("Test"))
-
-		b, err := ioutil.ReadAll(r.Body)
-		g.E(err)
-		g.Eq("a", string(b))
-
-		g.HandleHTTP(".html", "test")(w, r)
-	})
-	s.Route("/b", "", "b")
 
 	once := g.page.HijackOnce()
 	err := rod.Try(func() {
@@ -492,4 +427,42 @@ func TestHijackOnceNotSet(t *testing.T) {
 		})
 	})
 	g.Err(err)
+}
+
+func TestHijackOnceStageResponse(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
+
+	// to simulate a backend server
+	s.Route("/", slash("fixtures/hijack.html"))
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+		g.HandleHTTP(".txt", "test")(w, r)
+	})
+
+	once := g.page.HijackOnce()
+	once.SetPattern(&proto.FetchRequestPattern{
+		URLPattern:   s.URL("/a"),
+		ResourceType: proto.NetworkResourceTypeXHR,
+		RequestStage: proto.FetchRequestStageResponse,
+	})
+	wait := once.MustStart(func(ctx *rod.Hijack) {
+		getBody := &proto.FetchGetResponseBody{
+			RequestID: ctx.Event.RequestID,
+		}
+		r, err := getBody.Call(g.page)
+		g.E(err)
+
+		body, err := base64.StdEncoding.DecodeString(r.Body)
+		g.E(err)
+		g.Eq("test", string(body))
+
+		ctx.Response.SetBody(`{"text":"test"}`)
+	})
+
+	g.page.MustNavigate(s.URL())
+	wait()
+
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
+	g.Eq("", g.page.MustElement("#err").MustText())
 }
