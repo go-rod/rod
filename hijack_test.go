@@ -466,3 +466,33 @@ func TestHijackOnceStageResponse(t *testing.T) {
 	g.Eq("200 test", g.page.MustElement("#a").MustText())
 	g.Eq("", g.page.MustElement("#err").MustText())
 }
+
+func TestHijackOnceDisableFetchError(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
+
+	// to simulate a backend server
+	s.Route("/", slash("fixtures/hijack.html"))
+	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+		g.HandleHTTP(".json", `{"text":"test"}`)(w, r)
+	})
+
+	ctx := g.page.GetContext()
+	ctx, cancel := context.WithCancel(ctx)
+
+	once := g.page.Context(ctx).HijackOnce()
+	once.Set(s.URL("/a"), proto.NetworkResourceTypeXHR)
+	wait := once.MustStart(func(ctx *rod.Hijack) {
+		ctx.ContinueRequest(&proto.FetchContinueRequest{})
+		cancel()
+	})
+
+	g.page.MustNavigate(s.URL())
+	err := rod.Try(wait)
+	g.Err(err)
+	new(proto.FetchDisable).Call(g.page)
+
+	g.Eq("200 test", g.page.MustElement("#a").MustText())
+	g.Eq("", g.page.MustElement("#err").MustText())
+}
