@@ -430,6 +430,22 @@ func TestHijackOnceNotSet(t *testing.T) {
 	g.Err(err)
 }
 
+func TestHijackOnceEnableError(t *testing.T) {
+	g := setup(t)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	once := g.page.Context(ctx).HijackOnce()
+	once.Set("a", proto.NetworkResourceTypeXHR)
+	err := rod.Try(func() {
+		_ = once.MustStart(func(ctx *rod.Hijack) {
+			panic("should not come to here")
+		})
+	})
+	g.Err(err)
+}
+
 func TestHijackOnceStageResponse(t *testing.T) {
 	g := setup(t)
 
