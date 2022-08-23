@@ -3,6 +3,7 @@ package rod
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -23,10 +24,17 @@ func (b *Browser) HijackRequests() *HijackRouter {
 // When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
 // but such as 304 Not Modified will still work as expected.
 // The entire process of hijacking one request:
-//    browser --req-> rod ---> server ---> rod --res-> browser
+//
+//	browser --req-> rod ---> server ---> rod --res-> browser
+//
 // The --req-> and --res-> are the parts that can be modified.
 func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()
+}
+
+// hijack request once.
+func (p *Page) HijackOnce() *HijackOnce {
+	return NewHijackOnce(p)
 }
 
 // HijackRouter context
@@ -66,7 +74,7 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 	r.run = r.browser.Context(eventCtx).eachEvent(sessionID, func(e *proto.FetchRequestPaused) bool {
 		go func() {
-			ctx := r.new(eventCtx, e)
+			ctx := NewHijack(eventCtx, r.browser, e)
 			for _, h := range r.handlers {
 				if !h.regexp.MatchString(e.Request.URL) {
 					continue
@@ -74,30 +82,11 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 				h.handler(ctx)
 
-				if ctx.continueRequest != nil {
-					ctx.continueRequest.RequestID = e.RequestID
-					err := ctx.continueRequest.Call(r.client)
-					if err != nil {
-						ctx.OnError(err)
-					}
-					return
-				}
-
-				if ctx.Skip {
+				err := ctx.Finish(e, r.client)
+				if err == ErrHijackSkipped {
 					continue
 				}
-
-				if ctx.Response.fail.ErrorReason != "" {
-					err := ctx.Response.fail.Call(r.client)
-					if err != nil {
-						ctx.OnError(err)
-					}
-					return
-				}
-
-				err := ctx.Response.payload.Call(r.client)
 				if err != nil {
-					ctx.OnError(err)
 					return
 				}
 			}
@@ -116,7 +105,10 @@ func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceTyp
 		ResourceType: resourceType,
 	})
 
-	reg := regexp.MustCompile(proto.PatternToReg(pattern))
+	reg, err := regexp.Compile(proto.PatternToReg(pattern))
+	if err != nil {
+		return err
+	}
 
 	r.handlers = append(r.handlers, &hijackHandler{
 		pattern: pattern,
@@ -143,42 +135,6 @@ func (r *HijackRouter) Remove(pattern string) error {
 	return r.enable.Call(r.client)
 }
 
-// new context
-func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hijack {
-	headers := http.Header{}
-	for k, v := range e.Request.Headers {
-		headers[k] = []string{v.String()}
-	}
-
-	u, _ := url.Parse(e.Request.URL)
-
-	req := &http.Request{
-		Method: e.Request.Method,
-		URL:    u,
-		Body:   ioutil.NopCloser(strings.NewReader(e.Request.PostData)),
-		Header: headers,
-	}
-
-	return &Hijack{
-		Request: &HijackRequest{
-			event: e,
-			req:   req.WithContext(ctx),
-		},
-		Response: &HijackResponse{
-			payload: &proto.FetchFulfillRequest{
-				ResponseCode: 200,
-				RequestID:    e.RequestID,
-			},
-			fail: &proto.FetchFailRequest{
-				RequestID: e.RequestID,
-			},
-		},
-		OnError: func(err error) {},
-
-		browser: r.browser,
-	}
-}
-
 // Run the router, after you call it, you shouldn't add new handler to it.
 func (r *HijackRouter) Run() {
 	r.run()
@@ -197,8 +153,99 @@ type hijackHandler struct {
 	handler func(*Hijack)
 }
 
+// new hijack from page
+func NewHijackOnce(page *Page) *HijackOnce {
+	return &HijackOnce{
+		page:    page,
+		disable: &proto.FetchDisable{},
+	}
+}
+
+// hijack once
+type HijackOnce struct {
+	page    *Page
+	enable  *proto.FetchEnable
+	disable *proto.FetchDisable
+}
+
+// set pattern and resourceType
+func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
+	return h.SetPattern(&proto.FetchRequestPattern{
+		URLPattern:   pattern,
+		ResourceType: resourceType,
+	})
+}
+
+// Set pattern directly
+func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
+	h.enable = &proto.FetchEnable{
+		Patterns: []*proto.FetchRequestPattern{pattern},
+	}
+	return h
+}
+
+// Start hijack.
+func (h *HijackOnce) Start(handler func(*Hijack)) (func() error, error) {
+	err := h.enableFetch()
+	if err != nil {
+		return nil, err
+	}
+
+	wait := h.page.EachEvent(func(e *proto.FetchRequestPaused) bool {
+		err = h.handle(e, handler)
+		return true
+	})
+
+	return func() error {
+		wait()
+		errD := h.disable.Call(h.page)
+		if errD != nil {
+			return errD
+		}
+		return err
+	}, nil
+}
+
+// Start hijack.
+// It will panic when receive an error.
+func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
+	wait, err := h.Start(handler)
+	h.page.e(err)
+	return func() {
+		err := wait()
+		h.page.e(err)
+	}
+}
+
+func (h *HijackOnce) enableFetch() error {
+	if h.enable == nil {
+		return errors.New("hijack pattern not set")
+	}
+	return h.enable.Call(h.page)
+}
+
+func (h *HijackOnce) handle(e *proto.FetchRequestPaused, fn func(*Hijack)) error {
+	hijack := NewHijack(h.page.ctx, h.page.browser, e)
+	if fn != nil {
+		fn(hijack)
+	}
+	return hijack.Finish(e, h.page)
+}
+
+// new hijack context
+func NewHijack(ctx context.Context, b *Browser, e *proto.FetchRequestPaused) *Hijack {
+	return &Hijack{
+		Event:    e,
+		Request:  NewHijackRequest(e).SetContext(ctx),
+		Response: NewHijackResponse(e),
+		OnError:  func(err error) {},
+		browser:  b,
+	}
+}
+
 // Hijack context
 type Hijack struct {
+	Event    *proto.FetchRequestPaused
 	Request  *HijackRequest
 	Response *HijackResponse
 	OnError  func(error)
@@ -247,6 +294,61 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	return nil
 }
 
+// Finish hijack. It's designed for scalability. Most users do not need to call this method.
+func (h *Hijack) Finish(e *proto.FetchRequestPaused, c proto.Client) error {
+	switch {
+	case h.continueRequest != nil:
+		h.continueRequest.RequestID = e.RequestID
+		err := h.continueRequest.Call(c)
+		h.handleErr(err)
+		return err
+
+	case h.Skip:
+		return ErrHijackSkipped
+
+	case h.Response.fail.ErrorReason != "":
+		err := h.Response.fail.Call(c)
+		h.handleErr(err)
+		return err
+
+	default:
+		err := h.Response.payload.Call(c)
+		h.handleErr(err)
+		return err
+	}
+}
+
+func (h *Hijack) handleErr(err error) {
+	if err != nil && h.OnError != nil {
+		h.OnError(err)
+	}
+}
+
+// new hijack request from event FetchRequestPaused.
+func NewHijackRequest(e *proto.FetchRequestPaused) *HijackRequest {
+	return &HijackRequest{
+		event: e,
+		req:   RequestFromEvent(e),
+	}
+}
+
+// new request from event FetchRequestPaused.
+func RequestFromEvent(e *proto.FetchRequestPaused) *http.Request {
+	headers := http.Header{}
+	for k, v := range e.Request.Headers {
+		headers[k] = []string{v.String()}
+	}
+
+	u, _ := url.Parse(e.Request.URL)
+
+	return &http.Request{
+		Method: e.Request.Method,
+		URL:    u,
+		Body:   ioutil.NopCloser(strings.NewReader(e.Request.PostData)),
+		Header: headers,
+	}
+}
+
 // HijackRequest context
 type HijackRequest struct {
 	event *proto.FetchRequestPaused
@@ -289,12 +391,12 @@ func (ctx *HijackRequest) JSONBody() gson.JSON {
 	return gson.NewFrom(ctx.Body())
 }
 
-// Req returns the underlaying http.Request instance that will be used to send the request.
+// Req returns the underlying http.Request instance that will be used to send the request.
 func (ctx *HijackRequest) Req() *http.Request {
 	return ctx.req
 }
 
-// SetContext of the underlaying http.Request instance
+// SetContext of the underlying http.Request instance
 func (ctx *HijackRequest) SetContext(c context.Context) *HijackRequest {
 	ctx.req = ctx.req.WithContext(c)
 	return ctx
@@ -321,6 +423,19 @@ func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 // IsNavigation determines whether the request is a navigation request
 func (ctx *HijackRequest) IsNavigation() bool {
 	return ctx.Type() == proto.NetworkResourceTypeDocument
+}
+
+// new hijack response from event FetchRequestPaused.
+func NewHijackResponse(e *proto.FetchRequestPaused) *HijackResponse {
+	return &HijackResponse{
+		payload: &proto.FetchFulfillRequest{
+			ResponseCode: 200,
+			RequestID:    e.RequestID,
+		},
+		fail: &proto.FetchFailRequest{
+			RequestID: e.RequestID,
+		},
+	}
 }
 
 // HijackResponse context

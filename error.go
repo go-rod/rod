@@ -2,6 +2,7 @@ package rod
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/go-rod/rod/lib/proto"
@@ -181,3 +182,6 @@ type ErrPageNotFound struct {
 func (e *ErrPageNotFound) Error() string {
 	return "cannot find page"
 }
+
+// hijack skipped
+var ErrHijackSkipped = errors.New("hijack skipped")
