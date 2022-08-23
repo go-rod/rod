@@ -32,7 +32,7 @@ func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()
 }
 
-// hijack request once.
+// HijackOnce hijack request once.
 func (p *Page) HijackOnce() *HijackOnce {
 	return NewHijackOnce(p)
 }
@@ -153,7 +153,7 @@ type hijackHandler struct {
 	handler func(*Hijack)
 }
 
-// new hijack from page
+// NewHijackOnce create hijack from page.
 func NewHijackOnce(page *Page) *HijackOnce {
 	return &HijackOnce{
 		page:    page,
@@ -161,14 +161,14 @@ func NewHijackOnce(page *Page) *HijackOnce {
 	}
 }
 
-// hijack once
+// HijackOnce is a one-time hijack.
 type HijackOnce struct {
 	page    *Page
 	enable  *proto.FetchEnable
 	disable *proto.FetchDisable
 }
 
-// set pattern and resourceType
+// Set pattern and resourceType
 func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
 	return h.SetPattern(&proto.FetchRequestPattern{
 		URLPattern:   pattern,
@@ -176,7 +176,7 @@ func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType)
 	})
 }
 
-// Set pattern directly
+// SetPattern set pattern directly
 func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
 	h.enable = &proto.FetchEnable{
 		Patterns: []*proto.FetchRequestPattern{pattern},
@@ -206,7 +206,7 @@ func (h *HijackOnce) Start(handler func(*Hijack)) (func() error, error) {
 	}, nil
 }
 
-// Start hijack.
+// MustStart starts hijack.
 // It will panic when receive an error.
 func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
 	wait, err := h.Start(handler)
@@ -232,7 +232,7 @@ func (h *HijackOnce) handle(e *proto.FetchRequestPaused, fn func(*Hijack)) error
 	return hijack.Finish(e, h.page)
 }
 
-// new hijack context
+// NewHijack creates hijack context.
 func NewHijack(ctx context.Context, b *Browser, e *proto.FetchRequestPaused) *Hijack {
 	return &Hijack{
 		Event:    e,
@@ -324,7 +324,7 @@ func (h *Hijack) handleErr(err error) {
 	}
 }
 
-// new hijack request from event FetchRequestPaused.
+// NewHijackRequest creates hijack request from event FetchRequestPaused.
 func NewHijackRequest(e *proto.FetchRequestPaused) *HijackRequest {
 	return &HijackRequest{
 		event: e,
@@ -332,7 +332,7 @@ func NewHijackRequest(e *proto.FetchRequestPaused) *HijackRequest {
 	}
 }
 
-// new request from event FetchRequestPaused.
+// RequestFromEvent creates request from event FetchRequestPaused.
 func RequestFromEvent(e *proto.FetchRequestPaused) *http.Request {
 	headers := http.Header{}
 	for k, v := range e.Request.Headers {
@@ -425,7 +425,7 @@ func (ctx *HijackRequest) IsNavigation() bool {
 	return ctx.Type() == proto.NetworkResourceTypeDocument
 }
 
-// new hijack response from event FetchRequestPaused.
+// NewHijackResponse creates hijack response from event FetchRequestPaused.
 func NewHijackResponse(e *proto.FetchRequestPaused) *HijackResponse {
 	return &HijackResponse{
 		payload: &proto.FetchFulfillRequest{

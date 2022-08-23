@@ -183,5 +183,5 @@ func (e *ErrPageNotFound) Error() string {
 	return "cannot find page"
 }
 
-// hijack skipped
+// ErrHijackSkipped triggered at hijack skipped
 var ErrHijackSkipped = errors.New("hijack skipped")
