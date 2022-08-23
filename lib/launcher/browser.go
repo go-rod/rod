@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -205,7 +204,7 @@ func (lc *Browser) download(ctx context.Context, u string) error {
 	size, _ := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
 
 	if res.StatusCode >= 400 || size < 1024*1024 {
-		b, err := ioutil.ReadAll(res.Body)
+		b, err := io.ReadAll(res.Body)
 		utils.E(err)
 		err = errors.New("failed to download the browser")
 		return fmt.Errorf("%w: %d %s", err, res.StatusCode, string(b))

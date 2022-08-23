@@ -11,7 +11,6 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -135,12 +134,12 @@ func OutputFile(p string, data interface{}) error {
 		bin = MustToJSONBytes(data)
 	}
 
-	return ioutil.WriteFile(p, bin, 0664)
+	return os.WriteFile(p, bin, 0664)
 }
 
 // ReadString reads file as string
 func ReadString(p string) (string, error) {
-	bin, err := ioutil.ReadFile(p)
+	bin, err := os.ReadFile(p)
 	return string(bin), err
 }
 

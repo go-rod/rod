@@ -3,7 +3,7 @@ package rod_test
 import (
 	"context"
 	"errors"
-	"io/ioutil"
+	"io"
 	"mime"
 	"net/http"
 	"sync"
@@ -30,7 +30,7 @@ func TestHijack(t *testing.T) {
 
 		g.Eq("header", r.Header.Get("Test"))
 
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := io.ReadAll(r.Body)
 		g.E(err)
 		g.Eq("a", string(b))
 
@@ -297,7 +297,7 @@ func TestHijackLoadResponseErr(t *testing.T) {
 		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{res: &http.Response{
 				StatusCode: 200,
-				Body:       ioutil.NopCloser(&MockReader{err: errors.New("err")}),
+				Body:       io.NopCloser(&MockReader{err: errors.New("err")}),
 			}},
 		}, true))
 

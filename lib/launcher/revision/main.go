@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -123,7 +123,7 @@ func fetch(u string) string {
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
 
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := io.ReadAll(res.Body)
 	utils.E(err)
 	return string(b)
 }
