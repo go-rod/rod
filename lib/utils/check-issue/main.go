@@ -8,7 +8,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -69,7 +69,7 @@ func sendComment(id int, msg string) {
 
 	q := req(fmt.Sprintf("/repos/go-rod/rod/issues/%d/comments", id))
 	q.Method = http.MethodPost
-	q.Body = ioutil.NopCloser(bytes.NewBuffer(utils.MustToJSONBytes(map[string]string{"body": msg})))
+	q.Body = io.NopCloser(bytes.NewBuffer(utils.MustToJSONBytes(map[string]string{"body": msg})))
 	res, err := http.DefaultClient.Do(q)
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
@@ -111,7 +111,7 @@ func req(u string) *http.Request {
 
 func resE(res *http.Response) {
 	if res.StatusCode >= 400 {
-		str, err := ioutil.ReadAll(res.Body)
+		str, err := io.ReadAll(res.Body)
 		utils.E(err)
 		panic(string(str))
 	}

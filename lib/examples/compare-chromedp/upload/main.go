@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -50,7 +50,7 @@ func uploadServer() string {
 		}
 		defer func() { _ = f.Close() }()
 
-		buf, err := ioutil.ReadAll(f)
+		buf, err := io.ReadAll(f)
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusBadRequest)
 			return

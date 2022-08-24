@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -212,7 +211,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 
 	if res.StatusCode != http.StatusSwitchingProtocols ||
 		res.Header.Get("Sec-Websocket-Accept") != "Q67D9eATKx531lK8F7u2rqQNnNI=" {
-		body, _ := ioutil.ReadAll(res.Body)
+		body, _ := io.ReadAll(res.Body)
 		return &ErrBadHandshake{
 			Status: res.Status,
 			Body:   string(body),

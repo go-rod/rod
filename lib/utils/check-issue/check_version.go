@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"regexp"
 
@@ -28,7 +28,7 @@ func currentVer() string {
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
 
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	utils.E(err)
 
 	currentVer := gson.New(data).Get("0.name").Str()

@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/go-rod/rod"
@@ -43,6 +43,6 @@ func post(path, body string) gson.JSON {
 	if res != nil {
 		defer func() { _ = res.Body.Close() }()
 	}
-	data, _ := ioutil.ReadAll(res.Body)
+	data, _ := io.ReadAll(res.Body)
 	return gson.New(data)
 }

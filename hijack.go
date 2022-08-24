@@ -3,7 +3,7 @@ package rod
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -23,7 +23,9 @@ func (b *Browser) HijackRequests() *HijackRouter {
 // When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
 // but such as 304 Not Modified will still work as expected.
 // The entire process of hijacking one request:
-//    browser --req-> rod ---> server ---> rod --res-> browser
+//
+//	browser --req-> rod ---> server ---> rod --res-> browser
+//
 // The --req-> and --res-> are the parts that can be modified.
 func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()
@@ -155,7 +157,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 	req := &http.Request{
 		Method: e.Request.Method,
 		URL:    u,
-		Body:   ioutil.NopCloser(strings.NewReader(e.Request.PostData)),
+		Body:   io.NopCloser(strings.NewReader(e.Request.PostData)),
 		Header: headers,
 	}
 
@@ -237,7 +239,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	}
 
 	if loadBody {
-		b, err := ioutil.ReadAll(res.Body)
+		b, err := io.ReadAll(res.Body)
 		if err != nil {
 			return err
 		}
@@ -313,7 +315,7 @@ func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 		b = utils.MustToJSONBytes(body)
 	}
 
-	ctx.req.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+	ctx.req.Body = io.NopCloser(bytes.NewBuffer(b))
 
 	return ctx
 }
