@@ -8,7 +8,9 @@ import (
 
 // TimeSinceEpoch UTC time in seconds, counted from January 1, 1970.
 // To convert a time.Time to TimeSinceEpoch, for example:
-//     proto.TimeSinceEpoch(time.Now().Unix())
+//
+//	proto.TimeSinceEpoch(time.Now().Unix())
+//
 // For session cookie, the value should be -1.
 type TimeSinceEpoch float64
 

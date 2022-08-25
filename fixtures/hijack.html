@@ -1,0 +1,24 @@
+<html>
+  <body></body>
+  <script>
+    const createDiv = (id, data) => {
+      const div = document.createElement('div')
+      div.innerText = data
+      div.id = id
+      document.body.appendChild(div)
+    }
+
+    const main = async () => {
+      try {
+        const res = await fetch('/a')
+        const data = await res.json()
+        createDiv('a', `${res.status} ${data.text}`)
+        createDiv('err', '')
+      } catch (error) {
+        createDiv('a', '')
+        createDiv('err', `${error}`)
+      }
+    }
+    main()
+  </script>
+</html>
