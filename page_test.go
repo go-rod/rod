@@ -615,13 +615,6 @@ func TestPageScreenshot(t *testing.T) {
 		g.mc.stubErr(1, proto.PageCaptureScreenshot{})
 		p.MustScreenshot()
 	})
-
-	g.Panic(func() {
-		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
-			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
-		})
-		p.MustScreenshot()
-	})
 }
 
 func TestScreenshotFullPage(t *testing.T) {
@@ -653,6 +646,13 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 	g.Panic(func() {
 		g.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		p.MustScreenshotFullPage()
+	})
+
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
+		})
 		p.MustScreenshotFullPage()
 	})
 }
