@@ -1,4 +1,4 @@
-**Rod Version:** v0.0.0
+Rod Version: v0.0.0
 
 ## The code to demonstrate your question
 
@@ -7,16 +7,10 @@ test
 ```
 
 ```go
-package rod_test
-
-import (
-    "testing
-)
-
 func TestLab(t *testing.T) {
     g := setup(t)
     g.Eq(1, 1)
-}
+
 ```
 
 ## What you expected to see

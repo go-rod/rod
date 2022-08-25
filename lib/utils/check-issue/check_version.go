@@ -11,10 +11,10 @@ import (
 )
 
 func checkVersion(body string) error {
-	m := regexp.MustCompile(`\*\*Rod Version:\*\* v[0-9.]+`).FindString(body)
-	if m == "" || m == "**Rod Version:** v0.0.0" {
+	m := regexp.MustCompile(`Rod Version: v[0-9.]+`).FindString(body)
+	if m == "" || m == "Rod Version: v0.0.0" {
 		return fmt.Errorf(
-			"Please add a valid `**Rod Version:** v0.0.0` to your issue. Current version is %s",
+			"Please add a valid `Rod Version: v0.0.0` to your issue. Current version is %s",
 			currentVer(),
 		)
 	}

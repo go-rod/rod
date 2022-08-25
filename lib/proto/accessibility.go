@@ -341,6 +341,9 @@ type AccessibilityAXNode struct {
 	// Role (optional) This `Node`'s role, whether explicit or implicit.
 	Role *AccessibilityAXValue `json:"role,omitempty"`
 
+	// ChromeRole (optional) This `Node`'s Chrome raw role.
+	ChromeRole *AccessibilityAXValue `json:"chromeRole,omitempty"`
+
 	// Name (optional) The accessible name for this `Node`.
 	Name *AccessibilityAXValue `json:"name,omitempty"`
 

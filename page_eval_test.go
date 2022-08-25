@@ -38,6 +38,8 @@ func TestPageEval(t *testing.T) {
 		(a, b) => a + b
 	`, 1, 2).Int())
 
+	g.Eq(10, page.MustEval(`(a, b, c, d) => a + b + c + d`, 1, 2, 3, 4).Int())
+
 	g.Eq(page.MustEval(`function() {
 		return 11
 	}`).Int(), 11)
@@ -50,6 +52,10 @@ func TestPageEval(t *testing.T) {
 
 	_, err := page.Eval(`10`)
 	g.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
+
+	_, err = page.Eval(`() => notExist()`)
+	g.Is(err, &rod.ErrEval{})
+	g.Has(err.Error(), `eval js error: ReferenceError: notExist is not defined`)
 }
 
 func TestPageEvaluateRetry(t *testing.T) {

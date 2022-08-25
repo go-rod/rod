@@ -43,6 +43,9 @@ type CSSPseudoElementMatches struct {
 	// PseudoType Pseudo element type.
 	PseudoType DOMPseudoType `json:"pseudoType"`
 
+	// PseudoIdentifier (optional) Pseudo element custom ident.
+	PseudoIdentifier string `json:"pseudoIdentifier,omitempty"`
+
 	// Matches Matches of CSS rules applicable to the pseudo style.
 	Matches []*CSSRuleMatch `json:"matches"`
 }
@@ -187,6 +190,10 @@ type CSSCSSRule struct {
 	// Layers (experimental) (optional) Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
 	// with the innermost layer and going outwards.
 	Layers []*CSSCSSLayer `json:"layers,omitempty"`
+
+	// Scopes (experimental) (optional) @scope CSS at-rule array.
+	// The array enumerates @scope at-rules starting with the innermost one, going outwards.
+	Scopes []*CSSCSSScope `json:"scopes,omitempty"`
 }
 
 // CSSRuleUsage CSS coverage information.
@@ -399,6 +406,20 @@ type CSSCSSSupports struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
 }
 
+// CSSCSSScope (experimental) CSS Scope at-rule descriptor.
+type CSSCSSScope struct {
+
+	// Text Scope rule text.
+	Text string `json:"text"`
+
+	// Range (optional) The associated rule header range in the enclosing stylesheet (if
+	// available).
+	Range *CSSSourceRange `json:"range,omitempty"`
+
+	// StyleSheetID (optional) Identifier of the stylesheet containing this object (if exists).
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
+}
+
 // CSSCSSLayer (experimental) CSS Layer at-rule descriptor.
 type CSSCSSLayer struct {
 
@@ -477,6 +498,9 @@ type CSSFontFace struct {
 
 	// FontStretch The font-stretch.
 	FontStretch string `json:"fontStretch"`
+
+	// FontDisplay The font-display.
+	FontDisplay string `json:"fontDisplay"`
 
 	// UnicodeRange The unicode-range.
 	UnicodeRange string `json:"unicodeRange"`
@@ -774,6 +798,9 @@ type CSSGetMatchedStylesForNodeResult struct {
 
 	// CSSKeyframesRules (optional) A list of CSS keyframed animations matching this node.
 	CSSKeyframesRules []*CSSCSSKeyframesRule `json:"cssKeyframesRules,omitempty"`
+
+	// ParentLayoutNodeID (experimental) (optional) Id of the first parent element that does not have display: contents.
+	ParentLayoutNodeID DOMNodeID `json:"parentLayoutNodeId,omitempty"`
 }
 
 // CSSGetMediaQueries Returns all media queries parsed by the rendering engine.
@@ -1047,6 +1074,35 @@ type CSSSetSupportsTextResult struct {
 
 	// Supports The resulting CSS Supports rule after modification.
 	Supports *CSSCSSSupports `json:"supports"`
+}
+
+// CSSSetScopeText (experimental) Modifies the expression of a scope at-rule.
+type CSSSetScopeText struct {
+
+	// StyleSheetID ...
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
+
+	// Range ...
+	Range *CSSSourceRange `json:"range"`
+
+	// Text ...
+	Text string `json:"text"`
+}
+
+// ProtoReq name
+func (m CSSSetScopeText) ProtoReq() string { return "CSS.setScopeText" }
+
+// Call the request
+func (m CSSSetScopeText) Call(c Client) (*CSSSetScopeTextResult, error) {
+	var res CSSSetScopeTextResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// CSSSetScopeTextResult (experimental) ...
+type CSSSetScopeTextResult struct {
+
+	// Scope The resulting CSS Scope rule after modification.
+	Scope *CSSCSSScope `json:"scope"`
 }
 
 // CSSSetRuleSelector Modifies the rule selector.

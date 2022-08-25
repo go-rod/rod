@@ -103,6 +103,17 @@ func Mkdir(path string) error {
 	return os.MkdirAll(path, 0775)
 }
 
+// AbsolutePaths returns absolute paths of files in current working directory
+func AbsolutePaths(paths []string) []string {
+	absPaths := []string{}
+	for _, p := range paths {
+		absPath, err := filepath.Abs(p)
+		E(err)
+		absPaths = append(absPaths, absPath)
+	}
+	return absPaths
+}
+
 // OutputFile auto creates file if not exists, it will try to detect the data type and
 // auto output binary, string or json
 func OutputFile(p string, data interface{}) error {

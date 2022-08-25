@@ -111,7 +111,7 @@ func has(list []int, i int) bool {
 }
 
 func getFromPlaywright() int {
-	pv := strings.TrimSpace(utils.ExecLine(false, "npm -s show playwright version"))
+	pv := strings.TrimSpace(utils.ExecLine(false, "npm --no-update-notifier -s show playwright version"))
 	out := fetch(fmt.Sprintf("https://raw.githubusercontent.com/microsoft/playwright/v%s/packages/playwright-core/browsers.json", pv))
 	rev, err := strconv.ParseInt(gson.NewFrom(out).Get("browsers.0.revision").Str(), 10, 32)
 	utils.E(err)

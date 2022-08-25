@@ -61,6 +61,9 @@ const (
 
 	// AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext enum const
 	AuditsCookieExclusionReasonExcludeSamePartyCrossPartyContext AuditsCookieExclusionReason = "ExcludeSamePartyCrossPartyContext"
+
+	// AuditsCookieExclusionReasonExcludeDomainNonASCII enum const
+	AuditsCookieExclusionReasonExcludeDomainNonASCII AuditsCookieExclusionReason = "ExcludeDomainNonASCII"
 )
 
 // AuditsCookieWarningReason ...
@@ -93,6 +96,9 @@ const (
 
 	// AuditsCookieWarningReasonWarnAttributeValueExceedsMaxSize enum const
 	AuditsCookieWarningReasonWarnAttributeValueExceedsMaxSize AuditsCookieWarningReason = "WarnAttributeValueExceedsMaxSize"
+
+	// AuditsCookieWarningReasonWarnDomainNonASCII enum const
+	AuditsCookieWarningReasonWarnDomainNonASCII AuditsCookieWarningReason = "WarnDomainNonASCII"
 )
 
 // AuditsCookieOperation ...
@@ -525,14 +531,32 @@ const (
 	// AuditsAttributionReportingIssueTypePermissionPolicyDisabled enum const
 	AuditsAttributionReportingIssueTypePermissionPolicyDisabled AuditsAttributionReportingIssueType = "PermissionPolicyDisabled"
 
-	// AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin enum const
-	AuditsAttributionReportingIssueTypeAttributionSourceUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionSourceUntrustworthyOrigin"
+	// AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin enum const
+	AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin AuditsAttributionReportingIssueType = "UntrustworthyReportingOrigin"
 
-	// AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin enum const
-	AuditsAttributionReportingIssueTypeAttributionUntrustworthyOrigin AuditsAttributionReportingIssueType = "AttributionUntrustworthyOrigin"
+	// AuditsAttributionReportingIssueTypeInsecureContext enum const
+	AuditsAttributionReportingIssueTypeInsecureContext AuditsAttributionReportingIssueType = "InsecureContext"
 
 	// AuditsAttributionReportingIssueTypeInvalidHeader enum const
 	AuditsAttributionReportingIssueTypeInvalidHeader AuditsAttributionReportingIssueType = "InvalidHeader"
+
+	// AuditsAttributionReportingIssueTypeInvalidRegisterTriggerHeader enum const
+	AuditsAttributionReportingIssueTypeInvalidRegisterTriggerHeader AuditsAttributionReportingIssueType = "InvalidRegisterTriggerHeader"
+
+	// AuditsAttributionReportingIssueTypeInvalidEligibleHeader enum const
+	AuditsAttributionReportingIssueTypeInvalidEligibleHeader AuditsAttributionReportingIssueType = "InvalidEligibleHeader"
+
+	// AuditsAttributionReportingIssueTypeTooManyConcurrentRequests enum const
+	AuditsAttributionReportingIssueTypeTooManyConcurrentRequests AuditsAttributionReportingIssueType = "TooManyConcurrentRequests"
+
+	// AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders enum const
+	AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders AuditsAttributionReportingIssueType = "SourceAndTriggerHeaders"
+
+	// AuditsAttributionReportingIssueTypeSourceIgnored enum const
+	AuditsAttributionReportingIssueTypeSourceIgnored AuditsAttributionReportingIssueType = "SourceIgnored"
+
+	// AuditsAttributionReportingIssueTypeTriggerIgnored enum const
+	AuditsAttributionReportingIssueTypeTriggerIgnored AuditsAttributionReportingIssueType = "TriggerIgnored"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -541,9 +565,6 @@ type AuditsAttributionReportingIssueDetails struct {
 
 	// ViolationType ...
 	ViolationType AuditsAttributionReportingIssueType `json:"violationType"`
-
-	// Frame (optional) ...
-	Frame *AuditsAffectedFrame `json:"frame,omitempty"`
 
 	// Request (optional) ...
 	Request *AuditsAffectedRequest `json:"request,omitempty"`
@@ -647,6 +668,9 @@ const (
 	// AuditsDeprecationIssueTypeEventPath enum const
 	AuditsDeprecationIssueTypeEventPath AuditsDeprecationIssueType = "EventPath"
 
+	// AuditsDeprecationIssueTypeExpectCTHeader enum const
+	AuditsDeprecationIssueTypeExpectCTHeader AuditsDeprecationIssueType = "ExpectCTHeader"
+
 	// AuditsDeprecationIssueTypeGeolocationInsecureOrigin enum const
 	AuditsDeprecationIssueTypeGeolocationInsecureOrigin AuditsDeprecationIssueType = "GeolocationInsecureOrigin"
 
@@ -658,6 +682,9 @@ const (
 
 	// AuditsDeprecationIssueTypeHostCandidateAttributeGetter enum const
 	AuditsDeprecationIssueTypeHostCandidateAttributeGetter AuditsDeprecationIssueType = "HostCandidateAttributeGetter"
+
+	// AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent enum const
+	AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent AuditsDeprecationIssueType = "IdentityInCanMakePaymentEvent"
 
 	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
 	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
@@ -674,6 +701,12 @@ const (
 	// AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered enum const
 	AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered AuditsDeprecationIssueType = "MediaSourceDurationTruncatingBuffered"
 
+	// AuditsDeprecationIssueTypeNavigateEventRestoreScroll enum const
+	AuditsDeprecationIssueTypeNavigateEventRestoreScroll AuditsDeprecationIssueType = "NavigateEventRestoreScroll"
+
+	// AuditsDeprecationIssueTypeNavigateEventTransitionWhile enum const
+	AuditsDeprecationIssueTypeNavigateEventTransitionWhile AuditsDeprecationIssueType = "NavigateEventTransitionWhile"
+
 	// AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission enum const
 	AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission AuditsDeprecationIssueType = "NoSysexWebMIDIWithoutPermission"
 
@@ -685,6 +718,15 @@ const (
 
 	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
 	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
+
+	// AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext enum const
+	AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext AuditsDeprecationIssueType = "OpenWebDatabaseInsecureContext"
+
+	// AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement enum const
+	AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement AuditsDeprecationIssueType = "OverflowVisibleOnReplacedElement"
+
+	// AuditsDeprecationIssueTypePersistentQuotaType enum const
+	AuditsDeprecationIssueTypePersistentQuotaType AuditsDeprecationIssueType = "PersistentQuotaType"
 
 	// AuditsDeprecationIssueTypePictureSourceSrc enum const
 	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"
@@ -833,9 +875,6 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidResponse enum const
 	AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidResponse AuditsFederatedAuthRequestIssueReason = "ClientMetadataInvalidResponse"
-
-	// AuditsFederatedAuthRequestIssueReasonClientMetadataMissingPrivacyPolicyURL enum const
-	AuditsFederatedAuthRequestIssueReasonClientMetadataMissingPrivacyPolicyURL AuditsFederatedAuthRequestIssueReason = "ClientMetadataMissingPrivacyPolicyUrl"
 
 	// AuditsFederatedAuthRequestIssueReasonDisabledInSettings enum const
 	AuditsFederatedAuthRequestIssueReasonDisabledInSettings AuditsFederatedAuthRequestIssueReason = "DisabledInSettings"

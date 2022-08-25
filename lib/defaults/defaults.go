@@ -1,5 +1,5 @@
 // Package defaults of commonly used options parsed from environment.
-// Check ResetWithEnv for details.
+// Check ResetWith for details.
 package defaults
 
 import (
@@ -48,7 +48,7 @@ var Port string
 var Bin string
 
 // Proxy is the default of launcher.Launcher.Proxy
-// Option name is "trace".
+// Option name is "proxy".
 var Proxy string
 
 // LockPort is the default of launcher.Browser.LockPort
@@ -149,7 +149,7 @@ func ResetWith(options string) {
 	Reset()
 
 	if _, has := os.LookupEnv("DISABLE_ROD_FLAG"); !has {
-		if !flag.Parsed() {
+		if !flag.Parsed() && flag.Lookup("rod") == nil {
 			flag.String("rod", "", `Set the default value of options used by rod.`)
 		}
 

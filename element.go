@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"path/filepath"
 	"reflect"
 	"strings"
 	"time"
@@ -155,11 +154,7 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 
 	shape, err := el.Shape()
 	if err != nil {
-		// such as when css is "display: none"
-		if errors.Is(err, cdp.ErrNoContentQuads) {
-			err = &ErrInvisibleShape{el}
-		}
-		return
+		return nil, err
 	}
 
 	pt = shape.OnePointInside()
@@ -373,12 +368,7 @@ func (el *Element) Property(name string) (gson.JSON, error) {
 
 // SetFiles of the current file input element
 func (el *Element) SetFiles(paths []string) error {
-	absPaths := []string{}
-	for _, p := range paths {
-		absPath, err := filepath.Abs(p)
-		utils.E(err)
-		absPaths = append(absPaths, absPath)
-	}
+	absPaths := utils.AbsolutePaths(paths)
 
 	defer el.tryTrace(TraceTypeInput, fmt.Sprintf("set files: %v", absPaths))()
 	el.page.browser.trySlowmotion()
@@ -574,18 +564,7 @@ func (el *Element) WaitInteractable() (pt *proto.Point, err error) {
 
 // Wait until the js returns true
 func (el *Element) Wait(opts *EvalOptions) error {
-	return utils.Retry(el.ctx, el.sleeper(), func() (bool, error) {
-		res, err := el.Evaluate(opts.ByPromise().This(el.Object))
-		if err != nil {
-			return true, err
-		}
-
-		if res.Value.Bool() {
-			return true, nil
-		}
-
-		return false, nil
-	})
+	return el.page.Context(el.ctx).Sleeper(el.sleeper).Wait(opts.This(el.Object))
 }
 
 // WaitVisible until the element is visible

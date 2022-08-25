@@ -355,6 +355,32 @@ func (p *Page) HandleDialog() (
 		}
 }
 
+// HandleFileDialog return a functions that waits for the next file chooser dialog pops up and returns the element
+// for the event.
+func (p *Page) HandleFileDialog() (func([]string) error, error) {
+	err := proto.PageSetInterceptFileChooserDialog{Enabled: true}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	var e proto.PageFileChooserOpened
+	w := p.WaitEvent(&e)
+
+	return func(paths []string) error {
+		w()
+
+		err := proto.PageSetInterceptFileChooserDialog{Enabled: false}.Call(p)
+		if err != nil {
+			return err
+		}
+
+		return proto.DOMSetFileInputFiles{
+			Files:         utils.AbsolutePaths(paths),
+			BackendNodeID: e.BackendNodeID,
+		}.Call(p)
+	}, nil
+}
+
 // Screenshot captures the screenshot of current page.
 func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
 	if req == nil {
@@ -547,7 +573,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 // WaitIdle waits until the next window.requestIdleCallback is called.
 func (p *Page) WaitIdle(timeout time.Duration) (err error) {
-	_, err = p.Evaluate(evalHelper(js.WaitIdle, timeout.Seconds()).ByPromise())
+	_, err = p.Evaluate(evalHelper(js.WaitIdle, timeout.Milliseconds()).ByPromise())
 	return err
 }
 
@@ -599,10 +625,8 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 }
 
 // Wait until the js returns true
-func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interface{}) error {
+func (p *Page) Wait(opts *EvalOptions) error {
 	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
-		opts := Eval(js, params...).ByPromise().This(this)
-
 		res, err := p.Evaluate(opts)
 		if err != nil {
 			return true, err
@@ -614,7 +638,7 @@ func (p *Page) Wait(this *proto.RuntimeRemoteObject, js string, params []interfa
 
 // WaitElementsMoreThan Wait until there are more than <num> <selector> elements.
 func (p *Page) WaitElementsMoreThan(selector string, num int) error {
-	return p.Wait(nil, `(s, n) => document.querySelectorAll(s).length > n`, []interface{}{selector, num})
+	return p.Wait(Eval(`(s, n) => document.querySelectorAll(s).length > n`, selector, num))
 }
 
 // ObjectToJSON by object id

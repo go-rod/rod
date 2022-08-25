@@ -184,6 +184,24 @@ func (m StorageClearDataForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// StorageClearDataForStorageKey Clears storage for storage key.
+type StorageClearDataForStorageKey struct {
+
+	// StorageKey Storage key.
+	StorageKey string `json:"storageKey"`
+
+	// StorageTypes Comma separated list of StorageType to clear.
+	StorageTypes string `json:"storageTypes"`
+}
+
+// ProtoReq name
+func (m StorageClearDataForStorageKey) ProtoReq() string { return "Storage.clearDataForStorageKey" }
+
+// Call sends the request
+func (m StorageClearDataForStorageKey) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageGetCookies Returns all browser cookies.
 type StorageGetCookies struct {
 
@@ -328,6 +346,23 @@ func (m StorageTrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// StorageTrackIndexedDBForStorageKey Registers storage key to be notified when an update occurs to its IndexedDB.
+type StorageTrackIndexedDBForStorageKey struct {
+
+	// StorageKey Storage key.
+	StorageKey string `json:"storageKey"`
+}
+
+// ProtoReq name
+func (m StorageTrackIndexedDBForStorageKey) ProtoReq() string {
+	return "Storage.trackIndexedDBForStorageKey"
+}
+
+// Call sends the request
+func (m StorageTrackIndexedDBForStorageKey) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageUntrackCacheStorageForOrigin Unregisters origin from receiving notifications for cache storage.
 type StorageUntrackCacheStorageForOrigin struct {
 
@@ -359,6 +394,23 @@ func (m StorageUntrackIndexedDBForOrigin) ProtoReq() string {
 
 // Call sends the request
 func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageUntrackIndexedDBForStorageKey Unregisters storage key from receiving notifications for IndexedDB.
+type StorageUntrackIndexedDBForStorageKey struct {
+
+	// StorageKey Storage key.
+	StorageKey string `json:"storageKey"`
+}
+
+// ProtoReq name
+func (m StorageUntrackIndexedDBForStorageKey) ProtoReq() string {
+	return "Storage.untrackIndexedDBForStorageKey"
+}
+
+// Call sends the request
+func (m StorageUntrackIndexedDBForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -481,6 +533,9 @@ type StorageIndexedDBContentUpdated struct {
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
+	// StorageKey Storage key to update.
+	StorageKey string `json:"storageKey"`
+
 	// DatabaseName Database to update.
 	DatabaseName string `json:"databaseName"`
 
@@ -498,6 +553,9 @@ type StorageIndexedDBListUpdated struct {
 
 	// Origin Origin to update.
 	Origin string `json:"origin"`
+
+	// StorageKey Storage key to update.
+	StorageKey string `json:"storageKey"`
 }
 
 // ProtoEvent name

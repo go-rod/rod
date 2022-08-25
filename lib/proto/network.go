@@ -46,6 +46,9 @@ const (
 	// NetworkResourceTypeFetch enum const
 	NetworkResourceTypeFetch NetworkResourceType = "Fetch"
 
+	// NetworkResourceTypePrefetch enum const
+	NetworkResourceTypePrefetch NetworkResourceType = "Prefetch"
+
 	// NetworkResourceTypeEventSource enum const
 	NetworkResourceTypeEventSource NetworkResourceType = "EventSource"
 
@@ -438,6 +441,14 @@ type NetworkSecurityDetails struct {
 
 	// CertificateTransparencyCompliance Whether the request complied with Certificate Transparency policy
 	CertificateTransparencyCompliance NetworkCertificateTransparencyCompliance `json:"certificateTransparencyCompliance"`
+
+	// ServerSignatureAlgorithm (optional) The signature algorithm used by the server in the TLS server signature,
+	// represented as a TLS SignatureScheme code point. Omitted if not
+	// applicable or not known.
+	ServerSignatureAlgorithm *int `json:"serverSignatureAlgorithm,omitempty"`
+
+	// EncryptedClientHello Whether the connection used Encrypted ClientHello
+	EncryptedClientHello bool `json:"encryptedClientHello"`
 }
 
 // NetworkCertificateTransparencyCompliance Whether the request complied with Certificate Transparency policy.

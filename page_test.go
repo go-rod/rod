@@ -136,7 +136,8 @@ func TestPageHTML(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/click.html")).MustWaitLoad()
-	g.Has(p.MustHTML(), "<head>")
+	p.MustElement("button").MustClick()
+	g.Has(p.MustHTML(), `a="ok"`)
 
 	g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 	g.Err(p.HTML())
@@ -182,6 +183,7 @@ func TestPageContext(t *testing.T) {
 	g := setup(t)
 
 	g.page.Timeout(time.Hour).CancelTimeout().MustEval(`() => 1`)
+	_, _ = g.page.Timeout(time.Second).Timeout(time.Hour).CancelTimeout().Element("not-exist")
 }
 
 func TestPageActivate(t *testing.T) {
@@ -529,7 +531,7 @@ func TestPageEvent(t *testing.T) {
 			break
 		}
 	}
-	utils.Sleep(0.1)
+	utils.Sleep(0.3)
 	ctx.Cancel()
 
 	go func() {
@@ -563,6 +565,33 @@ func TestAlert(t *testing.T) {
 	e := wait()
 	g.Eq(e.Message, "clicked")
 	handle(true, "")
+}
+
+func TestPageHandleFileDialog(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
+	el := p.MustElement(`[type=file]`)
+
+	setFiles := p.MustHandleFileDialog()
+	el.MustClick()
+	setFiles(slash("fixtures/click.html"), slash("fixtures/alert.html"))
+
+	list := el.MustEval("() => Array.from(this.files).map(f => f.name)").Arr()
+	g.Len(list, 2)
+	g.Eq("alert.html", list[1].String())
+
+	{
+		g.mc.stubErr(1, proto.PageSetInterceptFileChooserDialog{})
+		g.Err(p.HandleFileDialog())
+	}
+	{
+		g.mc.stubErr(2, proto.PageSetInterceptFileChooserDialog{})
+		setFiles, _ := p.HandleFileDialog()
+		el.MustClick()
+		g.Err(setFiles([]string{slash("fixtures/click.html")}))
+		g.E(proto.PageSetInterceptFileChooserDialog{Enabled: false}.Call(p))
+	}
 }
 
 func TestPageScreenshot(t *testing.T) {
@@ -670,12 +699,11 @@ func TestPagePDF(t *testing.T) {
 	})
 }
 
-func TestPageNavigateDNSErr(t *testing.T) {
+func TestPageNavigateNetworkErr(t *testing.T) {
 	g := setup(t)
 	p := g.newPage()
 
-	// dns error
-	err := p.Navigate("http://" + g.RandStr(16))
+	err := p.Navigate("http://127.0.0.1:1")
 	g.Is(err, &rod.ErrNavigation{})
 	g.Is(err.Error(), "navigation failed: net::ERR_NAME_NOT_RESOLVED")
 	p.MustNavigate("about:blank")

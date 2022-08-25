@@ -59,9 +59,9 @@ func (b *Browser) MustClose() {
 
 // MustIncognito is similar to Browser.Incognito
 func (b *Browser) MustIncognito() *Browser {
-	b, err := b.Incognito()
+	p, err := b.Incognito()
 	b.e(err)
-	return b
+	return p
 }
 
 // MustPage is similar to Browser.Page.
@@ -341,6 +341,15 @@ func (p *Page) MustHandleDialog() (wait func() *proto.PageJavascriptDialogOpenin
 	}
 }
 
+// MustHandleFileDialog is similar to Page.HandleFileDialog
+func (p *Page) MustHandleFileDialog() func(...string) {
+	setFiles, err := p.HandleFileDialog()
+	p.e(err)
+	return func(paths ...string) {
+		p.e(setFiles(paths))
+	}
+}
+
 // MustScreenshot is similar to Screenshot.
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshot(toFile ...string) []byte {
@@ -444,7 +453,7 @@ func (p *Page) MustEvaluate(opts *EvalOptions) *proto.RuntimeRemoteObject {
 
 // MustWait is similar to Page.Wait
 func (p *Page) MustWait(js string, params ...interface{}) *Page {
-	p.e(p.Wait(nil, js, params))
+	p.e(p.Wait(Eval(js, params...)))
 	return p
 }
 
@@ -867,7 +876,7 @@ func (el *Element) MustWaitStable() *Element {
 
 // MustWait is similar to Element.Wait
 func (el *Element) MustWait(js string, params ...interface{}) *Element {
-	el.e(el.Wait(Eval(js, params)))
+	el.e(el.Wait(Eval(js, params...)))
 	return el
 }
 

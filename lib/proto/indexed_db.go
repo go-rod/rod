@@ -149,8 +149,12 @@ type IndexedDBKeyPath struct {
 // IndexedDBClearObjectStore Clears all entries from an object store.
 type IndexedDBClearObjectStore struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -170,8 +174,12 @@ func (m IndexedDBClearObjectStore) Call(c Client) error {
 // IndexedDBDeleteDatabase Deletes a database.
 type IndexedDBDeleteDatabase struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -188,8 +196,12 @@ func (m IndexedDBDeleteDatabase) Call(c Client) error {
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store
 type IndexedDBDeleteObjectStoreEntries struct {
 
-	// SecurityOrigin ...
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName ...
 	DatabaseName string `json:"databaseName"`
@@ -238,8 +250,12 @@ func (m IndexedDBEnable) Call(c Client) error {
 // IndexedDBRequestData Requests data from object store or index.
 type IndexedDBRequestData struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -282,8 +298,12 @@ type IndexedDBRequestDataResult struct {
 // IndexedDBGetMetadata Gets metadata of an object store
 type IndexedDBGetMetadata struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -316,8 +336,12 @@ type IndexedDBGetMetadataResult struct {
 // IndexedDBRequestDatabase Requests database with given name in given frame.
 type IndexedDBRequestDatabase struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -342,8 +366,12 @@ type IndexedDBRequestDatabaseResult struct {
 // IndexedDBRequestDatabaseNames Requests database names for given security origin.
 type IndexedDBRequestDatabaseNames struct {
 
-	// SecurityOrigin Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin,omitempty"`
+
+	// StorageKey (optional) Storage key.
+	StorageKey string `json:"storageKey,omitempty"`
 }
 
 // ProtoReq name

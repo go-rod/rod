@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/go-rod/rod/lib/defaults"
@@ -158,6 +159,9 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 
 // Set a command line argument to launch the browser.
 func (l *Launcher) Set(name flags.Flag, values ...string) *Launcher {
+	if strings.Contains(string(name), "=") {
+		panic("flag name should not contain '='")
+	}
 	l.Flags[l.normalizeFlag(name)] = values
 	return l
 }
@@ -291,8 +295,8 @@ func (l *Launcher) WorkingDir(path string) *Launcher {
 }
 
 // Env to launch the browser process. The default value is os.Environ().
-// Usually you use it to set the timezone env. Such as Env("TZ=America/New_York").
-// Timezone list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+// Usually you use it to set the timezone env. Such as:
+//     Env(append(os.Environ(), "TZ=Asia/Tokyo")...)
 func (l *Launcher) Env(env ...string) *Launcher {
 	return l.Set(flags.Env, env...)
 }
@@ -327,7 +331,10 @@ func (l *Launcher) FormatArgs() []string {
 		}
 		execArgs = append(execArgs, str)
 	}
-	return append(execArgs, l.Flags[flags.Arguments]...)
+
+	execArgs = append(execArgs, l.Flags[flags.Arguments]...)
+	sort.Strings(execArgs)
+	return execArgs
 }
 
 // Logger to handle stdout and stderr from browser.

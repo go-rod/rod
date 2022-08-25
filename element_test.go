@@ -781,6 +781,33 @@ func TestElementEqual(t *testing.T) {
 	g.False(el1.MustEqual(el3))
 }
 
+func TestElementWait(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/describe.html"))
+	e1 := p.MustElement("body > ul > li")
+	g.Eq(e1.MustText(), "coffee")
+
+	params := []interface{}{1, 3, 4}
+	go func() {
+		utils.Sleep(0.3)
+		e1.MustEval(`(a, b, c) => this.innerText = 'x'.repeat(a + b + c)`, params...)
+	}()
+
+	e1.MustWait(`(a, b, c) => this.innerText.length === (a + b + c)`, params...)
+	g.Eq(e1.MustText(), "xxxxxxxx")
+}
+
+func TestShapeInIframe(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/click-iframe.html"))
+	pt := p.MustElement("iframe").MustFrame().MustElement("button").MustShape().OnePointInside()
+
+	g.InDelta(pt.X, 238, 1)
+	g.InDelta(pt.Y, 287, 1)
+}
+
 func TestElementFromPointErr(t *testing.T) {
 	g := setup(t)
 

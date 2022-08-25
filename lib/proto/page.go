@@ -230,6 +230,9 @@ const (
 	// PagePermissionsPolicyFeatureExecutionWhileNotRendered enum const
 	PagePermissionsPolicyFeatureExecutionWhileNotRendered PagePermissionsPolicyFeature = "execution-while-not-rendered"
 
+	// PagePermissionsPolicyFeatureFederatedCredentials enum const
+	PagePermissionsPolicyFeatureFederatedCredentials PagePermissionsPolicyFeature = "federated-credentials"
+
 	// PagePermissionsPolicyFeatureFocusWithoutUserActivation enum const
 	PagePermissionsPolicyFeatureFocusWithoutUserActivation PagePermissionsPolicyFeature = "focus-without-user-activation"
 
@@ -299,6 +302,9 @@ const (
 	// PagePermissionsPolicyFeatureSharedAutofill enum const
 	PagePermissionsPolicyFeatureSharedAutofill PagePermissionsPolicyFeature = "shared-autofill"
 
+	// PagePermissionsPolicyFeatureSharedStorage enum const
+	PagePermissionsPolicyFeatureSharedStorage PagePermissionsPolicyFeature = "shared-storage"
+
 	// PagePermissionsPolicyFeatureStorageAccessAPI enum const
 	PagePermissionsPolicyFeatureStorageAccessAPI PagePermissionsPolicyFeature = "storage-access-api"
 
@@ -307,6 +313,9 @@ const (
 
 	// PagePermissionsPolicyFeatureTrustTokenRedemption enum const
 	PagePermissionsPolicyFeatureTrustTokenRedemption PagePermissionsPolicyFeature = "trust-token-redemption"
+
+	// PagePermissionsPolicyFeatureUnload enum const
+	PagePermissionsPolicyFeatureUnload PagePermissionsPolicyFeature = "unload"
 
 	// PagePermissionsPolicyFeatureUsb enum const
 	PagePermissionsPolicyFeatureUsb PagePermissionsPolicyFeature = "usb"
@@ -336,6 +345,9 @@ const (
 
 	// PagePermissionsPolicyBlockReasonInFencedFrameTree enum const
 	PagePermissionsPolicyBlockReasonInFencedFrameTree PagePermissionsPolicyBlockReason = "InFencedFrameTree"
+
+	// PagePermissionsPolicyBlockReasonInIsolatedApp enum const
+	PagePermissionsPolicyBlockReasonInIsolatedApp PagePermissionsPolicyBlockReason = "InIsolatedApp"
 )
 
 // PagePermissionsPolicyBlockLocator (experimental) ...
@@ -1448,6 +1460,12 @@ const (
 
 	// PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed enum const
 	PagePrerenderFinalStatusEmbedderTriggeredAndDestroyed PagePrerenderFinalStatus = "EmbedderTriggeredAndDestroyed"
+
+	// PagePrerenderFinalStatusMemoryLimitExceeded enum const
+	PagePrerenderFinalStatusMemoryLimitExceeded PagePrerenderFinalStatus = "MemoryLimitExceeded"
+
+	// PagePrerenderFinalStatusFailToGetMemoryUsage enum const
+	PagePrerenderFinalStatusFailToGetMemoryUsage PagePrerenderFinalStatus = "FailToGetMemoryUsage"
 )
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -2810,11 +2828,11 @@ type PageFileChooserOpened struct {
 	// FrameID (experimental) Id of the frame containing input node.
 	FrameID PageFrameID `json:"frameId"`
 
-	// BackendNodeID (experimental) Input node id.
-	BackendNodeID DOMBackendNodeID `json:"backendNodeId"`
-
 	// Mode Input mode.
 	Mode PageFileChooserOpenedMode `json:"mode"`
+
+	// BackendNodeID (experimental) (optional) Input node id. Only present for file choosers opened via an <input type="file"> element.
+	BackendNodeID DOMBackendNodeID `json:"backendNodeId,omitempty"`
 }
 
 // ProtoEvent name
@@ -3185,7 +3203,7 @@ func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
 	return "Page.backForwardCacheNotUsed"
 }
 
-// PagePrerenderAttemptCompleted Fired when a prerender attempt is completed.
+// PagePrerenderAttemptCompleted (experimental) Fired when a prerender attempt is completed.
 type PagePrerenderAttemptCompleted struct {
 
 	// InitiatingFrameID The frame id of the frame initiating prerendering.
@@ -3196,6 +3214,10 @@ type PagePrerenderAttemptCompleted struct {
 
 	// FinalStatus ...
 	FinalStatus PagePrerenderFinalStatus `json:"finalStatus"`
+
+	// ReasonDetails (optional) This is used to give users more information about the cancellation details,
+	// and this will be formatted for display.
+	ReasonDetails string `json:"reasonDetails,omitempty"`
 }
 
 // ProtoEvent name

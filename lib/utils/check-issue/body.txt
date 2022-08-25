@@ -6,7 +6,7 @@ labels: question
 assignees: ''
 ---
 
-**Rod Version:** v1.0.0
+Rod Version: v1.0.0
 
 ## The code to demonstrate your question
 
@@ -24,12 +24,6 @@ assignees: ''
 1. Replace this section with your entire `lab_test.go` content, like below:
 
 ```go
-package rod_test
-
-import (
-    "testing"
-)
-
 func TestLab(t *testing.T) {
     g := setup(t)
     g.Eq(1, 1)
