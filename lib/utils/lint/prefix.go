@@ -40,7 +40,6 @@ func lintMustPrefix() {
 				lintErr = true
 			}
 		}
-		break
 	}
 
 	if lintErr {
