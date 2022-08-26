@@ -703,7 +703,7 @@ func (el *Element) id() proto.RuntimeRemoteObjectID {
 
 // GetXPath returns the xpath of the element
 func (el *Element) GetXPath(optimized bool) (string, error) {
-	str, err := el.Evaluate(evalHelper(js.GetXPath))
+	str, err := el.Evaluate(evalHelper(js.GetXPath, optimized))
 	if err != nil {
 		return "", err
 	}
