@@ -1072,6 +1072,36 @@ func (r *HijackRouter) MustStop() {
 	r.browser.e(r.Stop())
 }
 
+// MustSet pattern and resourceType. Panic when failed.
+func (h *HijackOnce) MustSet(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
+	err := h.Set(pattern, resourceType)
+	h.page.e(err)
+	return h
+}
+
+// MustSetPattern directly. Panic when failed.
+func (h *HijackOnce) MustSetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
+	err := h.SetPattern(pattern)
+	h.page.e(err)
+	return h
+}
+
+// MustStart starts hijack. Panic when failed.
+// You must call Stop or MustStop after hijack finished.
+func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
+	wait := h.Start(handler)
+	return func() {
+		err := wait()
+		h.page.e(err)
+	}
+}
+
+// MustStop hijack. Panic when failed.
+func (h *HijackOnce) MustStop() {
+	err := h.Stop()
+	h.page.e(err)
+}
+
 // MustLoadResponse is similar to Hijack.LoadResponse
 func (h *Hijack) MustLoadResponse() {
 	h.browser.e(h.LoadResponse(http.DefaultClient, true))

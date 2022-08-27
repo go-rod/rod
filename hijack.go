@@ -184,20 +184,6 @@ func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) error {
 	return h.enable.Call(h.page)
 }
 
-// MustSet pattern and resourceType. Panic when failed.
-func (h *HijackOnce) MustSet(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
-	err := h.Set(pattern, resourceType)
-	h.page.e(err)
-	return h
-}
-
-// MustSetPattern directly. Panic when failed.
-func (h *HijackOnce) MustSetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
-	err := h.SetPattern(pattern)
-	h.page.e(err)
-	return h
-}
-
 // Start hijack.
 // You must call Stop or MustStop after hijack finished.
 func (h *HijackOnce) Start(handler func(*Hijack)) func() error {
@@ -226,28 +212,12 @@ func (h *HijackOnce) Start(handler func(*Hijack)) func() error {
 	}
 }
 
-// MustStart starts hijack. Panic when failed.
-// You must call Stop or MustStop after hijack finished.
-func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
-	wait := h.Start(handler)
-	return func() {
-		err := wait()
-		h.page.e(err)
-	}
-}
-
 // Stop hijack.
 func (h *HijackOnce) Stop() error {
 	if h.cancel != nil {
 		h.cancel()
 	}
 	return h.disable.Call(h.page)
-}
-
-// MustStop hijack. Panic when failed.
-func (h *HijackOnce) MustStop() {
-	err := h.Stop()
-	h.page.e(err)
 }
 
 // NewHijack creates hijack context.
