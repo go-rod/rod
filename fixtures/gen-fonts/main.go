@@ -2,6 +2,7 @@
 // Use the google translate to translate "test" into all the languages, print the result into a html page.
 // By reviewing the generated pdf we can find out what font is missing for a specific language.
 
+// Package main ...
 package main
 
 import (

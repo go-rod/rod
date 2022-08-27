@@ -1,3 +1,4 @@
+// Package flags ...
 package flags
 
 // Flag name of a command line argument of the browser, also known as command line flag or switch.
