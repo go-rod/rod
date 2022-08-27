@@ -157,7 +157,8 @@ func (ka *KeyActions) Do() (err error) {
 }
 
 // Make sure there's at least one release after the presses, such as:
-//     p1,p2,p1,r1 => p1,p2,p1,r1,r2
+//
+//	p1,p2,p1,r1 => p1,p2,p1,r1,r2
 func (ka *KeyActions) balance() []KeyAction {
 	actions := ka.Actions
 

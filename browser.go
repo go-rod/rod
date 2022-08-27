@@ -482,7 +482,8 @@ func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
 
 // WaitDownload returns a helper to get the next download file.
 // The file path will be:
-//     filepath.Join(dir, info.GUID)
+//
+//	filepath.Join(dir, info.GUID)
 func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillBegin) {
 	var oldDownloadBehavior proto.BrowserSetDownloadBehavior
 	has := b.LoadState("", &oldDownloadBehavior)

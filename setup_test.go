@@ -170,7 +170,8 @@ func (g G) blank() string {
 
 // Get abs file path from fixtures folder, such as "file:///a/b/click.html".
 // Usually the path can be used for html src attribute like:
-//     <img src="file:///a/b">
+//
+//	<img src="file:///a/b">
 func (g G) srcFile(path string) string {
 	g.Helper()
 	f, err := filepath.Abs(slash(path))
@@ -299,11 +300,11 @@ func (mc *MockClient) resetCall() {
 // Use it to find out which cdp call to intercept. Put a print like log.Println("*****") after the cdp call you want to intercept.
 // The output of the test should has something like:
 //
-//     [stubCounter] begin
-//     [stubCounter] 1, proto.DOMResolveNode{}
-//     [stubCounter] 1, proto.RuntimeCallFunctionOn{}
-//     [stubCounter] 2, proto.RuntimeCallFunctionOn{}
-//     01:49:43 *****
+//	[stubCounter] begin
+//	[stubCounter] 1, proto.DOMResolveNode{}
+//	[stubCounter] 1, proto.RuntimeCallFunctionOn{}
+//	[stubCounter] 2, proto.RuntimeCallFunctionOn{}
+//	01:49:43 *****
 //
 // So the 3rd call is the one we want to intercept, then you can use the output with s.at or s.errorAt.
 func (mc *MockClient) stubCounter() {
