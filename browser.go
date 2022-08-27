@@ -4,6 +4,7 @@
 //go:generate go run ./lib/assets/generate
 //go:generate go run ./lib/utils/lint
 
+// Package rod is a high-level driver directly based on DevTools Protocol.
 package rod
 
 import (
@@ -482,7 +483,8 @@ func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
 
 // WaitDownload returns a helper to get the next download file.
 // The file path will be:
-//     filepath.Join(dir, info.GUID)
+//
+//	filepath.Join(dir, info.GUID)
 func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillBegin) {
 	var oldDownloadBehavior proto.BrowserSetDownloadBehavior
 	has := b.LoadState("", &oldDownloadBehavior)

@@ -1,3 +1,4 @@
+// Package input ...
 package input
 
 import (
