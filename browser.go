@@ -4,6 +4,7 @@
 //go:generate go run ./lib/assets/generate
 //go:generate go run ./lib/utils/lint
 
+// Package rod is a high-level driver directly based on DevTools Protocol.
 package rod
 
 import (

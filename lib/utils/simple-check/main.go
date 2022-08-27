@@ -1,3 +1,4 @@
+// Package main ...
 package main
 
 import "github.com/go-rod/rod/lib/utils"
