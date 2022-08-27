@@ -23,7 +23,9 @@ func (b *Browser) HijackRequests() *HijackRouter {
 // When use Fetch domain outside the router should be stopped. Enabling hijacking disables page caching,
 // but such as 304 Not Modified will still work as expected.
 // The entire process of hijacking one request:
-//    browser --req-> rod ---> server ---> rod --res-> browser
+//
+//	browser --req-> rod ---> server ---> rod --res-> browser
+//
 // The --req-> and --res-> are the parts that can be modified.
 func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()

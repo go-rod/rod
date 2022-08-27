@@ -141,10 +141,9 @@ func init() {
 // If you want to disable the global cli argument flag, set env DISABLE_ROD_FLAG.
 // Values are separated by commas, key and value are separated by "=". For example:
 //
-//     go run main.go -rod=show
-//     go run main.go -rod show,trace,slow=1s,monitor
-//     go run main.go --rod="slow=1s,dir=path/has /space,monitor=:9223"
-//
+//	go run main.go -rod=show
+//	go run main.go -rod show,trace,slow=1s,monitor
+//	go run main.go --rod="slow=1s,dir=path/has /space,monitor=:9223"
 func ResetWith(options string) {
 	Reset()
 

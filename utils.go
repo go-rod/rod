@@ -68,7 +68,9 @@ var DefaultLogger = log.New(os.Stdout, "[rod] ", log.LstdFlags)
 
 // DefaultSleeper generates the default sleeper for retry, it uses backoff to grow the interval.
 // The growth looks like:
-//     A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
+//
+//	A(0) = 100ms, A(n) = A(n-1) * random[1.9, 2.1), A(n) < 1s
+//
 // Why the default is not RequestAnimationFrame or DOM change events is because of if a retry never
 // ends it can easily flood the program. But you can always easily config it into what you want.
 var DefaultSleeper = func() utils.Sleeper {

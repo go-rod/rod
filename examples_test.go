@@ -456,7 +456,9 @@ func Example_download_file() {
 // Shows how to intercept requests and modify
 // both the request and the response.
 // The entire process of hijacking one request:
-//    browser --req-> rod ---> server ---> rod --res-> browser
+//
+//	browser --req-> rod ---> server ---> rod --res-> browser
+//
 // The --req-> and --res-> are the parts that can be modified.
 func Example_hijack_requests() {
 	browser := rod.New().MustConnect()

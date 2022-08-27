@@ -331,11 +331,10 @@ func (p *Page) Close() error {
 // Because modal dialog will block js, usually you have to trigger the dialog in another goroutine.
 // For example:
 //
-//     wait, handle := page.MustHandleDialog()
-//     go page.MustElement("button").MustClick()
-//     wait()
-//     handle(true, "")
-//
+//	wait, handle := page.MustHandleDialog()
+//	go page.MustElement("button").MustClick()
+//	wait()
+//	handle(true, "")
 func (p *Page) HandleDialog() (
 	wait func() *proto.PageJavascriptDialogOpening,
 	handle func(*proto.PageHandleJavaScriptDialog) error,
@@ -474,19 +473,18 @@ func (p *Page) WaitOpen() func() (*Page, error) {
 // EachEvent of the specified event types, if any callback returns true the wait function will resolve,
 // The type of each callback is (? means optional):
 //
-//     func(proto.Event, proto.TargetSessionID?) bool?
+//	func(proto.Event, proto.TargetSessionID?) bool?
 //
 // You can listen to multiple event types at the same time like:
 //
-//     browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
+//	browser.EachEvent(func(a *proto.A) {}, func(b *proto.B) {})
 //
 // Such as subscribe the events to know when the navigation is complete or when the page is rendered.
 // Here's an example to dismiss all dialogs/alerts on the page:
 //
-//      go page.EachEvent(func(e *proto.PageJavascriptDialogOpening) {
-//          _ = proto.PageHandleJavaScriptDialog{ Accept: false, PromptText: ""}.Call(page)
-//      })()
-//
+//	go page.EachEvent(func(e *proto.PageJavascriptDialogOpening) {
+//	    _ = proto.PageHandleJavaScriptDialog{ Accept: false, PromptText: ""}.Call(page)
+//	})()
 func (p *Page) EachEvent(callbacks ...interface{}) (wait func()) {
 	return p.browser.Context(p.ctx).eachEvent(p.SessionID, callbacks...)
 }

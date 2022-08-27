@@ -296,7 +296,8 @@ func (l *Launcher) WorkingDir(path string) *Launcher {
 
 // Env to launch the browser process. The default value is os.Environ().
 // Usually you use it to set the timezone env. Such as:
-//     Env(append(os.Environ(), "TZ=Asia/Tokyo")...)
+//
+//	Env(append(os.Environ(), "TZ=Asia/Tokyo")...)
 func (l *Launcher) Env(env ...string) *Launcher {
 	return l.Set(flags.Env, env...)
 }
