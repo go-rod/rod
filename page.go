@@ -5,10 +5,12 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
 
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
@@ -296,9 +298,17 @@ func (p *Page) Close() error {
 	defer cancel()
 	messages := p.browser.Context(ctx).Event()
 
-	err := proto.PageClose{}.Call(p)
-	if err != nil {
-		return err
+	for {
+		err := proto.PageClose{}.Call(p)
+		if errors.Is(err, cdp.ErrNotAttachedToActivePage) {
+			// TODO: I don't know why chromium doesn't allow to close a page while it's navigating.
+			// Looks like a bug in chromium.
+			utils.Sleep(0.1)
+			continue
+		} else if err != nil {
+			return err
+		}
+		break
 	}
 
 	for msg := range messages {
