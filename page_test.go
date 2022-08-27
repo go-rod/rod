@@ -341,6 +341,16 @@ func TestPageCloseErr(t *testing.T) {
 	})
 }
 
+func TestPageCloseWhenNotAttached(t *testing.T) {
+	g := setup(t)
+
+	p := g.browser.MustPage(g.blank())
+
+	_ = p.Navigate("http://not-exists")
+
+	g.E(p.Close())
+}
+
 func TestPageAddScriptTag(t *testing.T) {
 	g := setup(t)
 

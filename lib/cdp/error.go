@@ -57,3 +57,9 @@ var ErrNodeNotFoundAtPos = &Error{
 	Code:    -32000,
 	Message: "No node found at given location",
 }
+
+// ErrNotAttachedToActivePage type
+var ErrNotAttachedToActivePage = &Error{
+	Code:    -32000,
+	Message: "Not attached to an active page",
+}
