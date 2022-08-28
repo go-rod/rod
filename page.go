@@ -400,6 +400,10 @@ func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]by
 			return nil, err
 		}
 
+		if metrics.CSSContentSize == nil {
+			return nil, errors.New("failed to get css content size")
+		}
+
 		oldView := proto.EmulationSetDeviceMetricsOverride{}
 		set := p.LoadState(&oldView)
 		view := oldView
