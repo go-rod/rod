@@ -883,4 +883,12 @@ func TestElementGetXPath(t *testing.T) {
 	el := p.MustElement("textarea")
 	xpath := el.MustGetXPath(true)
 	g.Eq(xpath, "/html/body/form/textarea")
+
+	xpath = el.MustGetXPath(false)
+	g.Eq(xpath, "/html/body/form/textarea")
+
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustGetXPath(true)
+	})
 }
