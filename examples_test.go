@@ -292,20 +292,20 @@ func Example_wait_for_request() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
 
-	page := browser.MustPage("https://duckduckgo.com/")
+	page := browser.MustPage("https://www.wikipedia.org/").MustWaitLoad()
 
 	// Start to analyze request events
 	wait := page.MustWaitRequestIdle()
 
 	// This will trigger the search ajax request
-	page.MustElement("#searchbox_input").MustClick().MustInput("lisp")
+	page.MustElement("#searchInput").MustClick().MustInput("lisp")
 
 	// Wait until there's no active requests
 	wait()
 
 	// We want to make sure that after waiting, there are some autocomplete
 	// suggestions available.
-	fmt.Println(len(page.MustElements("[class*=searchbox_suggestion]")) > 0)
+	fmt.Println(len(page.MustElements(".suggestion-link")) > 0)
 
 	// Output: true
 }
@@ -456,7 +456,9 @@ func Example_download_file() {
 // Shows how to intercept requests and modify
 // both the request and the response.
 // The entire process of hijacking one request:
-//    browser --req-> rod ---> server ---> rod --res-> browser
+//
+//	browser --req-> rod ---> server ---> rod --res-> browser
+//
 // The --req-> and --res-> are the parts that can be modified.
 func Example_hijack_requests() {
 	browser := rod.New().MustConnect()

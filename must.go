@@ -1119,3 +1119,10 @@ func (el *Element) MustMoveMouseOut() *Element {
 	el.e(el.MoveMouseOut())
 	return el
 }
+
+// MustGetXPath is similar to Element.GetXPath
+func (el *Element) MustGetXPath(optimized bool) string {
+	xpath, err := el.GetXPath(optimized)
+	el.e(err)
+	return xpath
+}

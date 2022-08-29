@@ -19,6 +19,7 @@ import (
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func TestGetPageBrowser(t *testing.T) {
@@ -340,6 +341,16 @@ func TestPageCloseErr(t *testing.T) {
 	})
 }
 
+func TestPageCloseWhenNotAttached(t *testing.T) {
+	g := setup(t)
+
+	p := g.browser.MustPage(g.blank())
+
+	_ = p.Navigate("http://not-exists")
+
+	g.E(p.Close())
+}
+
 func TestPageAddScriptTag(t *testing.T) {
 	g := setup(t)
 
@@ -645,6 +656,13 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 	g.Panic(func() {
 		g.mc.stubErr(1, proto.EmulationSetDeviceMetricsOverride{})
+		p.MustScreenshotFullPage()
+	})
+
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
+		})
 		p.MustScreenshotFullPage()
 	})
 }

@@ -1,3 +1,4 @@
+// Package main ...
 package main
 
 import (
@@ -8,7 +9,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
-//This example demonstrates how to fill out and submit a form.
+// This example demonstrates how to fill out and submit a form.
 func main() {
 	page := rod.New().MustConnect().MustPage("https://github.com/search")
 

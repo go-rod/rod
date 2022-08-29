@@ -875,3 +875,20 @@ func TestElementErrors(t *testing.T) {
 	err = el.Context(ctx).Release()
 	g.Err(err)
 }
+
+func TestElementGetXPath(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
+	el := p.MustElement("textarea")
+	xpath := el.MustGetXPath(true)
+	g.Eq(xpath, "/html/body/form/textarea")
+
+	xpath = el.MustGetXPath(false)
+	g.Eq(xpath, "/html/body/form/textarea")
+
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustGetXPath(true)
+	})
+}

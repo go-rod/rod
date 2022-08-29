@@ -194,10 +194,9 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 // A 4-gon is not necessary a rectangle. 4-gons can be apart from each other.
 // For example, we use 2 4-gons to describe the shape below:
 //
-//       ____________          ____________
-//      /        ___/    =    /___________/    +     _________
-//     /________/                                   /________/
-//
+//	  ____________          ____________
+//	 /        ___/    =    /___________/    +     _________
+//	/________/                                   /________/
 func (el *Element) Shape() (*proto.DOMGetContentQuadsResult, error) {
 	return proto.DOMGetContentQuads{ObjectID: el.id()}.Call(el)
 }
@@ -700,4 +699,13 @@ func (el *Element) Equal(elm *Element) (bool, error) {
 
 func (el *Element) id() proto.RuntimeRemoteObjectID {
 	return el.Object.ObjectID
+}
+
+// GetXPath returns the xpath of the element
+func (el *Element) GetXPath(optimized bool) (string, error) {
+	str, err := el.Evaluate(evalHelper(js.GetXPath, optimized))
+	if err != nil {
+		return "", err
+	}
+	return str.Value.String(), nil
 }

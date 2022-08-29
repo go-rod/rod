@@ -95,14 +95,13 @@ var _ http.Handler = &Manager{}
 // pass to the browser when launch it remotely.
 // The work flow looks like:
 //
-//     |      Machine X       |                             Machine Y                                    |
-//     | NewManaged("a.com") -|-> http.ListenAndServe("a.com", launcher.NewManager()) --> launch browser |
+//	|      Machine X       |                             Machine Y                                    |
+//	| NewManaged("a.com") -|-> http.ListenAndServe("a.com", launcher.NewManager()) --> launch browser |
 //
-//     1. X send a http request to Y, Y respond default Launcher settings based the OS of Y.
-//     2. X start a websocket connect to Y with the Launcher settings
-//     3. Y launches a browser with the Launcher settings X
-//     4. Y transparently proxy the websocket connect between X and the launched browser
-//
+//	1. X send a http request to Y, Y respond default Launcher settings based the OS of Y.
+//	2. X start a websocket connect to Y with the Launcher settings
+//	3. Y launches a browser with the Launcher settings X
+//	4. Y transparently proxy the websocket connect between X and the launched browser
 type Manager struct {
 	// Logger for key events
 	Logger utils.Logger
