@@ -493,34 +493,6 @@ func TestHijackOnceNotSet(t *testing.T) {
 	g.Err(err)
 }
 
-func TestHijackOnceSetError(t *testing.T) {
-	g := setup(t)
-
-	p, cancel := g.page.WithCancel()
-	cancel()
-
-	once := p.HijackOnce().Set("", "")
-	wait := once.Start(nil)
-
-	err := wait()
-	once.MustStop()
-	g.Err(err)
-}
-
-func TestHijackOnceSetPatternError(t *testing.T) {
-	g := setup(t)
-
-	p, cancel := g.page.WithCancel()
-	cancel()
-
-	once := p.HijackOnce().SetPattern(&proto.FetchRequestPattern{})
-	wait := once.Start(nil)
-
-	err := wait()
-	once.MustStop()
-	g.Err(err)
-}
-
 func TestHijackOnceMustStart(t *testing.T) {
 	g := setup(t)
 

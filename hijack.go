@@ -197,11 +197,11 @@ func (h *HijackOnce) Start(handler HijackFunc) func() error {
 	p, cancel := h.page.WithCancel()
 	h.cancel = cancel
 
-	err := h.enable.Call(p)
-	if err != nil {
-		return func() error { return err }
-	}
+	// We don't know request is actually send when p.ctx is done.
+	// So the answer of Call can't be trust.
+	_ = h.enable.Call(p)
 
+	var err error
 	wait := p.EachEvent(func(e *proto.FetchRequestPaused) bool {
 		ctx := NewHijack(p.ctx, p.browser, e)
 		if handler != nil {
