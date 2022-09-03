@@ -1056,7 +1056,7 @@ func (el *Element) MustElementsByJS(js string, params ...interface{}) Elements {
 }
 
 // MustAdd is similar to HijackRouter.Add
-func (r *HijackRouter) MustAdd(pattern string, handler func(*Hijack)) *HijackRouter {
+func (r *HijackRouter) MustAdd(pattern string, handler HijackFunc) *HijackRouter {
 	r.browser.e(r.Add(pattern, "", handler))
 	return r
 }
@@ -1072,23 +1072,9 @@ func (r *HijackRouter) MustStop() {
 	r.browser.e(r.Stop())
 }
 
-// MustSet pattern and resourceType. Panic when failed.
-func (h *HijackOnce) MustSet(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
-	err := h.Set(pattern, resourceType)
-	h.page.e(err)
-	return h
-}
-
-// MustSetPattern directly. Panic when failed.
-func (h *HijackOnce) MustSetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
-	err := h.SetPattern(pattern)
-	h.page.e(err)
-	return h
-}
-
 // MustStart starts hijack. Panic when failed.
-// You must call Stop or MustStop after hijack finished.
-func (h *HijackOnce) MustStart(handler func(*Hijack)) func() {
+// You must call Stop or MustStop after call this method.
+func (h *HijackOnce) MustStart(handler HijackFunc) func() {
 	wait := h.Start(handler)
 	return func() {
 		err := wait()

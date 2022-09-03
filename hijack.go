@@ -33,7 +33,7 @@ func (p *Page) HijackRequests() *HijackRouter {
 
 // HijackOnce hijack request once.
 func (p *Page) HijackOnce() *HijackOnce {
-	return NewHijackOnce(p)
+	return newHijackOnce(p)
 }
 
 // HijackRouter context
@@ -98,7 +98,7 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 
 // Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
 // You can add new handler even after the "Run" is called.
-func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceType, handler func(*Hijack)) error {
+func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceType, handler HijackFunc) error {
 	r.enable.Patterns = append(r.enable.Patterns, &proto.FetchRequestPattern{
 		URLPattern:   pattern,
 		ResourceType: resourceType,
@@ -149,11 +149,14 @@ func (r *HijackRouter) Stop() error {
 type hijackHandler struct {
 	pattern string
 	regexp  *regexp.Regexp
-	handler func(*Hijack)
+	handler HijackFunc
 }
 
-// NewHijackOnce create hijack from page.
-func NewHijackOnce(page *Page) *HijackOnce {
+// HijackFunc is type of hijack handler function.
+type HijackFunc = func(ctx *Hijack)
+
+// newHijackOnce create hijack from page.
+func newHijackOnce(page *Page) *HijackOnce {
 	return &HijackOnce{
 		page:    page,
 		disable: &proto.FetchDisable{},
@@ -169,7 +172,7 @@ type HijackOnce struct {
 }
 
 // Set pattern and resourceType.
-func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType) error {
+func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType) *HijackOnce {
 	return h.SetPattern(&proto.FetchRequestPattern{
 		URLPattern:   pattern,
 		ResourceType: resourceType,
@@ -177,16 +180,16 @@ func (h *HijackOnce) Set(pattern string, resourceType proto.NetworkResourceType)
 }
 
 // SetPattern directly.
-func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) error {
+func (h *HijackOnce) SetPattern(pattern *proto.FetchRequestPattern) *HijackOnce {
 	h.enable = &proto.FetchEnable{
 		Patterns: []*proto.FetchRequestPattern{pattern},
 	}
-	return h.enable.Call(h.page)
+	return h
 }
 
 // Start hijack.
-// You must call Stop or MustStop after hijack finished.
-func (h *HijackOnce) Start(handler func(*Hijack)) func() error {
+// You must call Stop or MustStop after call this method.
+func (h *HijackOnce) Start(handler HijackFunc) func() error {
 	if h.enable == nil {
 		panic("hijack pattern not set")
 	}
@@ -194,7 +197,11 @@ func (h *HijackOnce) Start(handler func(*Hijack)) func() error {
 	p, cancel := h.page.WithCancel()
 	h.cancel = cancel
 
-	var err error
+	err := h.enable.Call(p)
+	if err != nil {
+		return func() error { return err }
+	}
+
 	wait := p.EachEvent(func(e *proto.FetchRequestPaused) bool {
 		ctx := NewHijack(p.ctx, p.browser, e)
 		if handler != nil {
@@ -221,6 +228,7 @@ func (h *HijackOnce) Stop() error {
 }
 
 // NewHijack creates hijack context.
+// You can use Hijack outside rod.
 func NewHijack(ctx context.Context, b *Browser, e *proto.FetchRequestPaused) *Hijack {
 	return &Hijack{
 		Event:    e,
