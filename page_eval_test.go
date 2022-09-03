@@ -281,3 +281,24 @@ func TestEvalOptionsString(t *testing.T) {
 
 	g.Eq(rod.Eval(`() => this.parentElement`).This(el.Object).String(), "() => this.parentElement() button")
 }
+
+func TestEvalObjectReferenceChainIsTooLong(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.blank())
+
+	obj, err := p.Evaluate(&rod.EvalOptions{
+		JS: `() => {
+			let a = {b: 1}
+			a.c = a
+			return a
+		}`,
+	})
+	g.E(err)
+
+	_, err = p.Eval(`a => a`, obj)
+	g.Eq(err.Error(), "{-32000 Object reference chain is too long }")
+
+	val := p.MustEval(`a => a.c.c.c.c.b`, obj)
+	g.Eq(val.Int(), 1)
+}
