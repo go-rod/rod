@@ -503,7 +503,7 @@ func TestHijackOnceSetError(t *testing.T) {
 	wait := once.Start(nil)
 
 	err := wait()
-	once.Stop()
+	once.MustStop()
 	g.Err(err)
 }
 
@@ -517,7 +517,7 @@ func TestHijackOnceSetPatternError(t *testing.T) {
 	wait := once.Start(nil)
 
 	err := wait()
-	once.Stop()
+	once.MustStop()
 	g.Err(err)
 }
 
