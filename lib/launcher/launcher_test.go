@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 	"time"
@@ -252,10 +253,15 @@ func TestBrowserExists(t *testing.T) {
 
 	b := launcher.NewBrowser()
 	b.Revision = 0
-	g.False(b.Exists())
+	g.Err(b.Validate())
 
-	// fake a broken executable
-	g.E(utils.Mkdir(b.Destination()))
+	g.E(utils.Mkdir(filepath.Base(b.Destination())))
 	g.Cleanup(func() { _ = os.RemoveAll(b.Destination()) })
-	g.False(b.Exists())
+
+	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-exit-err").CombinedOutput())
+	g.Has(b.Validate().Error(), "failed to run the browser")
+
+	g.E(utils.Mkdir(filepath.Base(b.Destination())))
+	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-empty").CombinedOutput())
+	g.Eq(b.Validate().Error(), "the browser executable doesn't support headless mode")
 }
