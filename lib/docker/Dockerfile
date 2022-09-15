@@ -3,7 +3,7 @@
 #
 
 # build rod-manager
-FROM golang AS go
+FROM golang as go
 
 ARG goproxy="https://proxy.golang.org,direct"
 
@@ -13,13 +13,20 @@ RUN go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
 
-FROM ubuntu:bionic
+FROM ubuntu:jammy
+
+COPY --from=go /root/.cache/rod /root/.cache/rod
+RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome-linux/chrome /usr/bin/chrome
+
+RUN touch /.dockerenv
+
+COPY --from=go /rod/rod-manager /usr/bin/
 
 ARG apt_sources="http://archive.ubuntu.com"
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install --no-install-recommends -y \
+    apt-get -qq update && \
+    apt-get -qq install --no-install-recommends -y \
     # chromium dependencies
     libnss3 \
     libxss1 \
@@ -42,10 +49,4 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
 # processs reaper
 ENTRYPOINT ["dumb-init", "--"]
 
-COPY --from=go /root/.cache/rod /root/.cache/rod
-RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome-linux/chrome /usr/bin/chrome
-
-RUN touch /.dockerenv
-
-COPY --from=go /rod/rod-manager /usr/bin/
 CMD rod-manager

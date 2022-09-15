@@ -8,17 +8,19 @@ name: Release docker image
 on: [push, pull_request]
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  docker-amd:
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.18
+          go-version: 1.19
+
+      - uses: docker/setup-qemu-action@v2
 
       - uses: actions/checkout@v2
 
-      - run: go run ./lib/utils/docker $GITHUB_REF
+      - run: go run ./lib/docker $GITHUB_REF
         env:
           DOCKER_TOKEN: ${{secrets.ROD_GITHUB_ROBOT}}
 
@@ -32,3 +34,20 @@ jobs:
         with:
           name: cdp-log-docker
           path: tmp/cdp-log
+
+  docker-arm:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - uses: docker/setup-qemu-action@v2
+
+      - uses: actions/checkout@v2
+
+      - run: go run ./lib/docker $GITHUB_REF
+        env:
+          DOCKER_TOKEN: ${{secrets.ROD_GITHUB_ROBOT}}
+          ARCH: arm
