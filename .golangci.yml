@@ -22,6 +22,6 @@ issues:
       linters:
         - gofmt
 
-    - source: "io/ioutil"
+    - source: 'io/ioutil'
       linters:
         - staticcheck
