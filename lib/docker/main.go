@@ -76,19 +76,19 @@ func releaseWithVer(ver string) {
 
 func test() {
 	// build amd64 images
-	utils.Exec("docker build --platform linux/amd64 -f=lib/docker/Dockerfile -t", imageAMD, description(false), ".")
-	utils.Exec("docker build --platform linux/amd64 -f=lib/docker/dev.Dockerfile -t", imageAMDDev, description(true), ".")
+	// utils.Exec("docker build --platform linux/amd64 -f=lib/docker/Dockerfile -t", imageAMD, description(false), ".")
+	// utils.Exec("docker build --platform linux/amd64 -f=lib/docker/dev.Dockerfile -t", imageAMDDev, description(true), ".")
 
 	// build arm64 images
 	utils.Exec("docker build --platform linux/arm64 -f=lib/docker/Dockerfile -t", imageARM, description(false), ".")
 	utils.Exec("docker build --platform linux/arm64 -f=lib/docker/dev.Dockerfile -t", imageARMDev, description(true), ".")
 
-	wd, err := os.Getwd()
-	utils.E(err)
-
-	utils.Exec("docker run", imageAMD, "rod-manager", "-h")
+	// utils.Exec("docker run", imageAMD, "rod-manager", "-h")
 	utils.Exec("docker run", imageARM, "rod-manager", "-h")
-	utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), imageAMDDev, "go", "test")
+
+	// wd, err := os.Getwd()
+	// utils.E(err)
+	// utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), imageAMDDev, "go", "test")
 }
 
 func login() {
