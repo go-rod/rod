@@ -21,7 +21,7 @@ const imageAMDDev = image + ":amd64-dev"
 const imageARM = image + ":arm64"
 const imageARMDev = image + ":arm64-dev"
 
-const archAMD = "linux/amd"
+// const archAMD = "linux/amd"
 const archARM = "linux/arm64/v8"
 
 var token = os.Getenv("DOCKER_TOKEN")

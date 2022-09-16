@@ -134,7 +134,10 @@ func (lc *Browser) Download() (err error) {
 		panic(fmt.Errorf("Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os"))
 	}
 
-	return lc.download(lc.Context, u)
+	err = lc.download(lc.Context, u)
+	utils.E(err)
+
+	return lc.Validate()
 }
 
 func (lc *Browser) fastestHost() (fastest string, err error) {
@@ -237,7 +240,7 @@ func (lc *Browser) httpClient() *http.Client {
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.LockPort)()
 
-	if lc.Exists() {
+	if lc.Validate() == nil {
 		return lc.Destination(), nil
 	}
 
@@ -251,21 +254,25 @@ func (lc *Browser) MustGet() string {
 	return p
 }
 
-// Exists returns true if the browser executable path exists.
-// If the executable is malformed it will return false.
-func (lc *Browser) Exists() bool {
+// Validate returns nil if the browser executable valid.
+// If the executable is malformed it will return error.
+func (lc *Browser) Validate() error {
 	_, err := os.Stat(lc.Destination())
 	if err != nil {
-		return false
+		return err
 	}
 
 	cmd := exec.Command(lc.Destination(), "--headless", "--no-sandbox",
 		"--disable-gpu", "--dump-dom", "about:blank")
 	b, err := cmd.CombinedOutput()
 	if err != nil {
-		return false
+		return err
 	}
-	return bytes.Contains(b, []byte(`<html><head></head><body></body></html>`))
+	if !bytes.Contains(b, []byte(`<html><head></head><body></body></html>`)) {
+		return errors.New("the browser executable doesn't support headless mode")
+	}
+
+	return nil
 }
 
 // LookPath searches for the browser executable from often used paths on current operating system.

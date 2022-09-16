@@ -21,3 +21,7 @@ issues:
       source: "// \\+build !windows"
       linters:
         - gofmt
+
+    - source: "io/ioutil"
+      linters:
+        - staticcheck
