@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"regexp"
 	"strings"
 
@@ -95,7 +96,10 @@ func test() {
 }
 
 func login() {
-	utils.Exec("docker login -u=rod-robot", "-p", token, registry)
+	cmd := exec.Command("docker", "login", "-u=rod-robot", "-p", token, registry)
+	out, err := cmd.CombinedOutput()
+	utils.E(err)
+	utils.E(os.Stdout.Write(out))
 }
 
 func description(dev bool) string {
