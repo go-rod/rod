@@ -266,7 +266,7 @@ func (lc *Browser) Validate() error {
 		"--disable-gpu", "--dump-dom", "about:blank")
 	b, err := cmd.CombinedOutput()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to run the browser: %w\n%s", err, b)
 	}
 	if !bytes.Contains(b, []byte(`<html><head></head><body></body></html>`)) {
 		return errors.New("the browser executable doesn't support headless mode")
