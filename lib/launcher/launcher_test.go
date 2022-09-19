@@ -252,10 +252,10 @@ func TestBrowserExists(t *testing.T) {
 
 	b := launcher.NewBrowser()
 	b.Revision = 0
-	g.False(b.Exists())
+	g.Nil(b.Validate())
 
 	// fake a broken executable
 	g.E(utils.Mkdir(b.Destination()))
 	g.Cleanup(func() { _ = os.RemoveAll(b.Destination()) })
-	g.False(b.Exists())
+	g.Nil(b.Validate())
 }

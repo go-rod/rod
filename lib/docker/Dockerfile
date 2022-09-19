@@ -13,7 +13,7 @@ RUN go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
 
-FROM ubuntu:bionic
+FROM ubuntu:jammy
 
 ARG apt_sources="http://archive.ubuntu.com"
 
