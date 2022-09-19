@@ -291,12 +291,12 @@ func (ctx *HijackRequest) JSONBody() gson.JSON {
 	return gson.NewFrom(ctx.Body())
 }
 
-// Req returns the underlaying http.Request instance that will be used to send the request.
+// Req returns the underlying http.Request instance that will be used to send the request.
 func (ctx *HijackRequest) Req() *http.Request {
 	return ctx.req
 }
 
-// SetContext of the underlaying http.Request instance
+// SetContext of the underlying http.Request instance
 func (ctx *HijackRequest) SetContext(c context.Context) *HijackRequest {
 	ctx.req = ctx.req.WithContext(c)
 	return ctx

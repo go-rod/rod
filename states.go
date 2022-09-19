@@ -40,7 +40,7 @@ func (b *Browser) set(sessionID proto.TargetSessionID, methodName string, params
 	}
 }
 
-// LoadState into the method, seesionID can be empty.
+// LoadState into the method, sessionID can be empty.
 func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Request) (has bool) {
 	data, has := b.states.Load(b.key(sessionID, method.ProtoReq()))
 	if has {
