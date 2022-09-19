@@ -60,7 +60,7 @@ type Browser struct {
 }
 
 // New creates a controller.
-// DefaultDevice to emulate is set to devices.LaptopWithMDPIScreen.Landescape(), it can make the actual view area
+// DefaultDevice to emulate is set to devices.LaptopWithMDPIScreen.Landscape(), it can make the actual view area
 // smaller than the browser window on headful mode, you can use NoDefaultDevice to disable it.
 func New() *Browser {
 	return (&Browser{

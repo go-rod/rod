@@ -293,7 +293,7 @@ func (p *Page) Search(query string) (*SearchResult, error) {
 		// It's unnecessary to ask the user to explicitly call it.
 		//
 		// When the id is zero, it means the proto.DOMDocumentUpdated has fired which will
-		// invlidate all the existing NodeID. We have to call proto.DOMGetDocument
+		// invalidate all the existing NodeID. We have to call proto.DOMGetDocument
 		// to reset the remote browser's tracker.
 		if id == 0 {
 			_, _ = proto.DOMGetDocument{}.Call(p)
