@@ -8,6 +8,7 @@ name: Release docker image
 on: [push, pull_request]
 
 jobs:
+  # TODO: we should merge job docker-amd and job docker-arm once the github actions fix their issue with cross-platform building.
   docker-amd:
     runs-on: ubuntu-22.04
 

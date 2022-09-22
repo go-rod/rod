@@ -41,39 +41,47 @@ func releaseLatest(at archType) {
 	login()
 	test(at)
 
-	utils.Exec("docker push", at.tag())
 	utils.Exec("docker push", at.tagDev())
+	utils.Exec("docker push", at.tag())
 }
 
 func releaseWithVer(ver string, at archType) {
 	login()
 
-	utils.Exec("docker manifest create", registry, archAmd.tag(), archArm.tag())
-	utils.Exec("docker manifest push", registry)
+	verImageDev := registry + ":" + ver + "-dev"
+	utils.Exec("docker manifest create", verImageDev, archAmd.tagDev(), archArm.tagDev())
+	utils.Exec("docker manifest push", verImageDev)
+
+	verImage := registry + ":" + ver
+	utils.Exec("docker manifest create", verImage, archAmd.tag(), archArm.tag())
+	utils.Exec("docker manifest push", verImage)
 
 	registryDev := registry + ":dev"
 	utils.Exec("docker manifest create", registryDev, archAmd.tagDev(), archArm.tagDev())
 	utils.Exec("docker manifest push", registryDev)
 
-	verImage := registry + ":" + ver
-	verImageDev := registry + ":" + ver + "-dev"
-
-	utils.Exec("docker manifest create", verImage, archAmd.tag(), archArm.tag())
-	utils.Exec("docker manifest push", verImage)
-
-	utils.Exec("docker manifest create", verImageDev, archAmd.tagDev(), archArm.tagDev())
-	utils.Exec("docker manifest push", verImageDev)
+	utils.Exec("docker manifest create", registry, archAmd.tag(), archArm.tag())
+	utils.Exec("docker manifest push", registry)
 }
 
 func test(at archType) {
 	utils.Exec("docker build -f=lib/docker/Dockerfile", "--platform", at.platform(), "-t", at.tag(), description(false), ".")
-	utils.Exec("docker build -f=lib/docker/dev.Dockerfile", "--platform", at.platform(), "-t", at.tagDev(), description(true), ".")
+	utils.Exec("docker build -f=lib/docker/dev.Dockerfile",
+		"--platform", at.platform(),
+		"--build-arg", "golang="+at.golang(),
+		"--build-arg", "nodejs="+at.nodejs(),
+		"-t", at.tagDev(),
+		description(true), ".",
+	)
 
 	utils.Exec("docker run", at.tag(), "rod-manager", "-h")
 
-	wd, err := os.Getwd()
-	utils.E(err)
-	utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), at.tagDev(), "go", "test")
+	// TODO: arm cross execution for chromium doesn't work well on github actions.
+	if at != archArm {
+		wd, err := os.Getwd()
+		utils.E(err)
+		utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), at.tagDev(), "go", "test")
+	}
 }
 
 func login() {
@@ -83,15 +91,16 @@ func login() {
 	utils.E(os.Stdout.Write(out))
 }
 
+var headSha = strings.TrimSpace(utils.ExecLine(false, "git", "rev-parse", "HEAD"))
+
 func description(dev bool) string {
-	sha := strings.TrimSpace(utils.ExecLine(false, "git", "rev-parse", "HEAD"))
 
 	f := "Dockerfile"
 	if dev {
 		f = "dev." + f
 	}
 
-	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + sha + "/lib/docker/" + f
+	return `--label=org.opencontainers.image.description=https://github.com/go-rod/rod/blob/` + headSha + "/lib/docker/" + f
 }
 
 const registry = "ghcr.io/go-rod/rod"
@@ -137,5 +146,23 @@ func (at archType) tagDev() string {
 		return registry + ":arm-dev"
 	default:
 		return registry + ":amd-dev"
+	}
+}
+
+func (at archType) golang() string {
+	switch at {
+	case archArm:
+		return "https://go.dev/dl/go1.19.1.linux-arm64.tar.gz"
+	default:
+		return "https://go.dev/dl/go1.19.1.linux-amd64.tar.gz"
+	}
+}
+
+func (at archType) nodejs() string {
+	switch at {
+	case archArm:
+		return "https://nodejs.org/dist/v16.17.0/node-v16.17.0-linux-arm64.tar.xz"
+	default:
+		return "https://nodejs.org/dist/v16.17.0/node-v16.17.0-linux-x64.tar.xz"
 	}
 }

@@ -4,8 +4,8 @@
 
 FROM ghcr.io/go-rod/rod
 
-ARG node="https://nodejs.org/dist/v16.14.2/node-v16.14.2-linux-x64.tar.xz"
-ARG golang="https://go.dev/dl/go1.18.linux-amd64.tar.gz"
+ARG nodejs
+ARG golang
 ARG apt_sources="http://archive.ubuntu.com"
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
@@ -13,7 +13,7 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
     rm -rf /var/lib/apt/lists/*
 
 # install nodejs
-RUN curl -L $node > node.tar.xz && \
+RUN curl -L $nodejs > node.tar.xz && \
     tar -xf node.tar.xz && \
     mv node-* /usr/local/lib/.node && \
     rm node.tar.xz
