@@ -233,7 +233,7 @@ func (lc *Browser) httpClient() *http.Client {
 }
 
 // Get is a smart helper to get the browser executable path.
-// If Destination doesn't exists it will download the browser to Destination.
+// If Destination is not valid it will auto download the browser to Destination.
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.LockPort)()
 
@@ -263,6 +263,11 @@ func (lc *Browser) Validate() error {
 		"--disable-gpu", "--dump-dom", "about:blank")
 	b, err := cmd.CombinedOutput()
 	if err != nil {
+		if strings.Contains(string(b), "error while loading shared libraries") {
+			// When the os is missing some dependencies for chromium we treat it as valid binary.
+			return nil
+		}
+
 		return fmt.Errorf("failed to run the browser: %w\n%s", err, b)
 	}
 	if !bytes.Contains(b, []byte(`<html><head></head><body></body></html>`)) {
