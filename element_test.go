@@ -689,11 +689,11 @@ func TestUseReleasedElement(t *testing.T) {
 	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
 	btn := p.MustElement("button")
 	btn.MustRelease()
-	g.Err(btn.Click("left"))
+	g.Err(btn.Click("left", 1))
 
 	btn = p.MustElement("button")
 	g.E(proto.RuntimeReleaseObject{ObjectID: btn.Object.ObjectID}.Call(p))
-	g.Is(btn.Click("left"), cdp.ErrObjNotFound)
+	g.Is(btn.Click("left", 1), cdp.ErrObjNotFound)
 }
 
 func TestElementRemove(t *testing.T) {

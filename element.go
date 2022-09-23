@@ -100,7 +100,7 @@ func (el *Element) MoveMouseOut() error {
 // Click will press then release the button just like a human.
 // Before the action, it will try to scroll to the element, hover the mouse over it,
 // wait until the it's interactable and enabled.
-func (el *Element) Click(button proto.InputMouseButton) error {
+func (el *Element) Click(button proto.InputMouseButton, clickCount int) error {
 	err := el.Hover()
 	if err != nil {
 		return err
@@ -113,7 +113,7 @@ func (el *Element) Click(button proto.InputMouseButton) error {
 
 	defer el.tryTrace(TraceTypeInput, string(button)+" click")()
 
-	return el.page.Mouse.Click(button)
+	return el.page.Mouse.Click(button, clickCount)
 }
 
 // Tap will scroll to the button and tap it just like a human.

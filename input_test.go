@@ -169,6 +169,18 @@ func TestMouseClick(t *testing.T) {
 	g.True(page.MustHas("[a=ok]"))
 }
 
+func TestMouseDoubleClick(t *testing.T) {
+	g := setup(t)
+
+	g.browser.SlowMotion(1)
+	defer func() { g.browser.SlowMotion(0) }()
+
+	page := g.page.MustNavigate(g.srcFile("fixtures/double-click.html"))
+	el := page.MustElement("button")
+	el.MustDoubleClick()
+	g.Eq(el.MustText(), "ok")
+}
+
 func TestMouseDrag(t *testing.T) {
 	g := setup(t)
 

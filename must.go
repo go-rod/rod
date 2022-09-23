@@ -626,7 +626,7 @@ func (m *Mouse) MustUp(button proto.InputMouseButton) *Mouse {
 
 // MustClick is similar to Mouse.Click
 func (m *Mouse) MustClick(button proto.InputMouseButton) *Mouse {
-	m.page.e(m.Click(button))
+	m.page.e(m.Click(button, 1))
 	return m
 }
 
@@ -726,7 +726,13 @@ func (el *Element) MustHover() *Element {
 
 // MustClick is similar to Element.Click
 func (el *Element) MustClick() *Element {
-	el.e(el.Click(proto.InputMouseButtonLeft))
+	el.e(el.Click(proto.InputMouseButtonLeft, 1))
+	return el
+}
+
+// MustDoubleClick is similar to Element.Click
+func (el *Element) MustDoubleClick() *Element {
+	el.e(el.Click(proto.InputMouseButtonLeft, 2))
 	return el
 }
 

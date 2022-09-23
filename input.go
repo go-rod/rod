@@ -294,7 +294,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 }
 
 // Down holds the button down
-func (m *Mouse) Down(button proto.InputMouseButton, clicks int) error {
+func (m *Mouse) Down(button proto.InputMouseButton, clickCount int) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -306,7 +306,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int) error {
 		Type:       proto.InputDispatchMouseEventTypeMousePressed,
 		Button:     button,
 		Buttons:    gson.Int(buttons),
-		ClickCount: clicks,
+		ClickCount: clickCount,
 		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,
 		Y:          m.y,
@@ -319,7 +319,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clicks int) error {
 }
 
 // Up releases the button
-func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
+func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -337,7 +337,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 		Type:       proto.InputDispatchMouseEventTypeMouseReleased,
 		Button:     button,
 		Buttons:    gson.Int(buttons),
-		ClickCount: clicks,
+		ClickCount: clickCount,
 		Modifiers:  m.page.Keyboard.getModifiers(),
 		X:          m.x,
 		Y:          m.y,
@@ -350,15 +350,15 @@ func (m *Mouse) Up(button proto.InputMouseButton, clicks int) error {
 }
 
 // Click the button. It's the combination of Mouse.Down and Mouse.Up
-func (m *Mouse) Click(button proto.InputMouseButton) error {
+func (m *Mouse) Click(button proto.InputMouseButton, clickCount int) error {
 	m.page.browser.trySlowmotion()
 
-	err := m.Down(button, 1)
+	err := m.Down(button, clickCount)
 	if err != nil {
 		return err
 	}
 
-	return m.Up(button, 1)
+	return m.Up(button, clickCount)
 }
 
 // Touch presents a touch device, such as a hand with fingers, each finger is a proto.InputTouchPoint.
