@@ -600,9 +600,9 @@ func (rc *RaceContext) MustDo() *Element {
 	return el
 }
 
-// MustMove is similar to Mouse.Move
-func (m *Mouse) MustMove(x, y float64) *Mouse {
-	m.page.e(m.Move(x, y, 0))
+// MustMoveTo is similar to Mouse.Move
+func (m *Mouse) MustMoveTo(x, y float64) *Mouse {
+	m.page.e(m.MoveTo(proto.NewPoint(x, y)))
 	return m
 }
 

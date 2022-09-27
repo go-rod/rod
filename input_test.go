@@ -120,7 +120,7 @@ func TestMouse(t *testing.T) {
 	mouse := page.Mouse
 
 	mouse.MustScroll(0, 10)
-	mouse.MustMove(140, 160)
+	mouse.MustMoveTo(140, 160)
 	mouse.MustDown("left")
 	mouse.MustUp("left")
 
@@ -164,7 +164,7 @@ func TestMouseClick(t *testing.T) {
 	page := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
 	page.MustElement("button")
 	mouse := page.Mouse
-	mouse.MustMove(140, 160)
+	mouse.MustMoveTo(140, 160)
 	mouse.MustClick("left")
 	g.True(page.MustHas("[a=ok]"))
 }
@@ -187,9 +187,9 @@ func TestMouseDrag(t *testing.T) {
 	page := g.newPage().MustNavigate(g.srcFile("fixtures/drag.html")).MustWaitLoad()
 	mouse := page.Mouse
 
-	mouse.MustMove(3, 3)
+	mouse.MustMoveTo(3, 3)
 	mouse.MustDown("left")
-	g.E(mouse.Move(60, 80, 3))
+	g.E(mouse.MoveLinear(proto.NewPoint(60, 80), 3))
 	mouse.MustUp("left")
 
 	utils.Sleep(0.3)
@@ -201,7 +201,7 @@ func TestMouseScroll(t *testing.T) {
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/scroll.html")).MustWaitLoad()
 
-	p.Mouse.MustMove(30, 30)
+	p.Mouse.MustMoveTo(30, 30)
 	p.Mouse.MustClick(proto.InputMouseButtonLeft)
 
 	p.Mouse.MustScroll(0, 10)
@@ -211,12 +211,25 @@ func TestMouseScroll(t *testing.T) {
 	p.MustWait(`() => pageXOffset > 200 && pageYOffset > 300`)
 }
 
+func TestMouseMoveLinear(t *testing.T) {
+	g := setup(t)
+
+	page := g.newPage().MustNavigate(g.srcFile("fixtures/mouse-move.html")).MustWaitLoad()
+	mouse := page.Mouse
+
+	mouse.MustMoveTo(1, 2)
+	g.E(mouse.MoveLinear(proto.NewPoint(3, 4), 3))
+
+	utils.Sleep(0.3)
+	g.Eq(page.MustEval(`() => moveTrack`).Str(), " move 1 2 move 1 2 move 2 3 move 3 4")
+}
+
 func TestMouseMoveErr(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
-	g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-	g.Err(p.Mouse.Move(10, 10, 1))
+	g.mc.stubErr(2, proto.InputDispatchMouseEvent{})
+	g.Err(p.Mouse.MoveLinear(proto.NewPoint(10, 10), 3))
 }
 
 func TestNativeDrag(t *testing.T) { // devtools doesn't support to use mouse event to simulate it for now
@@ -232,9 +245,9 @@ func TestNativeDrag(t *testing.T) { // devtools doesn't support to use mouse eve
 	page.Overlay(pt.X, pt.Y, 10, 10, "from")
 	page.Overlay(pt.X, toY, 10, 10, "to")
 
-	mouse.MustMove(pt.X, pt.Y)
+	mouse.MustMoveTo(pt.X, pt.Y)
 	mouse.MustDown("left")
-	g.E(mouse.Move(pt.X, toY, 5))
+	g.E(mouse.MoveLinear(proto.NewPoint(pt.X, toY), 5))
 	page.MustScreenshot("")
 	mouse.MustUp("left")
 

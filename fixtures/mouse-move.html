@@ -1,0 +1,14 @@
+<html>
+  <body>
+    <div style="height: 500px"></div>
+  </body>
+
+  <script>
+    window.moveTrack = ''
+
+    document.onmousemove = (e) => {
+      if (e.clientX === 0 && e.clientY === 0) return
+      window.moveTrack += ' move ' + e.clientX + ' ' + e.clientY
+    }
+  </script>
+</html>

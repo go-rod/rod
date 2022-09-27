@@ -77,7 +77,7 @@ func TestTrace(t *testing.T) {
 	g.Eq(el, msg[2])
 
 	g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
-	_ = p.Mouse.Move(10, 10, 1)
+	_ = p.Mouse.MoveTo(proto.NewPoint(10, 10))
 }
 
 func TestTraceLogs(t *testing.T) {

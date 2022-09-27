@@ -45,6 +45,26 @@ type Point struct {
 	Y float64 `json:"y"`
 }
 
+// NewPoint instance
+func NewPoint(x, y float64) Point {
+	return Point{x, y}
+}
+
+// Add v to p and returns a new Point
+func (p Point) Add(v Point) Point {
+	return NewPoint(p.X+v.X, p.Y+v.Y)
+}
+
+// Minus v from p and returns a new Point
+func (p Point) Minus(v Point) Point {
+	return NewPoint(p.X-v.X, p.Y-v.Y)
+}
+
+// Scale p with s and returns a new Point
+func (p Point) Scale(s float64) Point {
+	return NewPoint(p.X*s, p.Y*s)
+}
+
 // Len is the number of vertices
 func (q DOMQuad) Len() int {
 	return len(q) / 2

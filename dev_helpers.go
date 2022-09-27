@@ -228,7 +228,7 @@ func (m *Mouse) initMouseTracer() {
 }
 
 func (m *Mouse) updateMouseTracer() bool {
-	res, err := m.page.Evaluate(evalHelper(js.UpdateMouseTracer, m.id, m.x, m.y))
+	res, err := m.page.Evaluate(evalHelper(js.UpdateMouseTracer, m.id, m.pos.X, m.pos.Y))
 	if err != nil {
 		return true
 	}

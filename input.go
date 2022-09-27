@@ -198,8 +198,7 @@ type Mouse struct {
 
 	id string // mouse svg dom element id
 
-	x float64
-	y float64
+	pos proto.Point
 
 	// the buttons is currently being pressed, reflects the press order
 	buttons []proto.InputMouseButton
@@ -210,51 +209,80 @@ func (p *Page) newMouse() *Page {
 	return p
 }
 
-// Move to the absolute position with specified steps
-func (m *Mouse) Move(x, y float64, steps int) error {
+// Position of current cursor
+func (m *Mouse) Position() proto.Point {
+	m.Lock()
+	defer m.Unlock()
+	return m.pos
+}
+
+// MoveTo the absolute position
+func (m *Mouse) MoveTo(p proto.Point) error {
 	m.Lock()
 	defer m.Unlock()
 
-	if steps < 1 {
-		steps = 1
-	}
-
-	stepX := (x - m.x) / float64(steps)
-	stepY := (y - m.y) / float64(steps)
-
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	for i := 0; i < steps; i++ {
-		m.page.browser.trySlowmotion()
+	m.page.browser.trySlowmotion()
 
-		toX := m.x + stepX
-		toY := m.y + stepY
+	err := proto.InputDispatchMouseEvent{
+		Type:      proto.InputDispatchMouseEventTypeMouseMoved,
+		X:         p.X,
+		Y:         p.Y,
+		Button:    button,
+		Buttons:   gson.Int(buttons),
+		Modifiers: m.page.Keyboard.getModifiers(),
+	}.Call(m.page)
+	if err != nil {
+		return err
+	}
 
-		err := proto.InputDispatchMouseEvent{
-			Type:      proto.InputDispatchMouseEventTypeMouseMoved,
-			X:         toX,
-			Y:         toY,
-			Button:    button,
-			Buttons:   gson.Int(buttons),
-			Modifiers: m.page.Keyboard.getModifiers(),
-		}.Call(m.page)
-		if err != nil {
-			return err
-		}
+	// to make sure set only when call is successful
+	m.pos = p
 
-		// to make sure set only when call is successful
-		m.x = toX
-		m.y = toY
-
-		if m.page.browser.trace {
-			if !m.updateMouseTracer() {
-				m.initMouseTracer()
-				m.updateMouseTracer()
-			}
+	if m.page.browser.trace {
+		if !m.updateMouseTracer() {
+			m.initMouseTracer()
+			m.updateMouseTracer()
 		}
 	}
 
 	return nil
+}
+
+// MoveAlong the guide function.
+// Every time the guide function is called it should return the next mouse position, return true to stop.
+// Read the source code of [Mouse.MoveLinear] as an example to use this method.
+func (m *Mouse) MoveAlong(guide func() (proto.Point, bool)) error {
+	for {
+		p, stop := guide()
+		if stop {
+			return m.MoveTo(p)
+		}
+
+		err := m.MoveTo(p)
+		if err != nil {
+			return err
+		}
+	}
+}
+
+// MoveLinear to the absolute position with the given steps.
+// Such as move from (0,0) to (6,6) with 3 steps, the mouse will first move to (2,2) then (4,4) then (6,6).
+func (m *Mouse) MoveLinear(to proto.Point, steps int) error {
+	p := m.Position()
+	step := to.Minus(p).Scale(1 / float64(steps))
+	count := 0
+
+	return m.MoveAlong(func() (proto.Point, bool) {
+		count++
+		if count == steps {
+			return to, true
+		}
+
+		p = p.Add(step)
+		return p, false
+	})
 }
 
 // Scroll the relative offset with specified steps
@@ -277,13 +305,13 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	for i := 0; i < steps; i++ {
 		err := proto.InputDispatchMouseEvent{
 			Type:      proto.InputDispatchMouseEventTypeMouseWheel,
-			X:         m.x,
-			Y:         m.y,
 			Button:    button,
 			Buttons:   gson.Int(buttons),
 			Modifiers: m.page.Keyboard.getModifiers(),
 			DeltaX:    stepX,
 			DeltaY:    stepY,
+			X:         m.pos.X,
+			Y:         m.pos.Y,
 		}.Call(m.page)
 		if err != nil {
 			return err
@@ -308,8 +336,8 @@ func (m *Mouse) Down(button proto.InputMouseButton, clickCount int) error {
 		Buttons:    gson.Int(buttons),
 		ClickCount: clickCount,
 		Modifiers:  m.page.Keyboard.getModifiers(),
-		X:          m.x,
-		Y:          m.y,
+		X:          m.pos.X,
+		Y:          m.pos.Y,
 	}.Call(m.page)
 	if err != nil {
 		return err
@@ -339,8 +367,8 @@ func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 		Buttons:    gson.Int(buttons),
 		ClickCount: clickCount,
 		Modifiers:  m.page.Keyboard.getModifiers(),
-		X:          m.x,
-		Y:          m.y,
+		X:          m.pos.X,
+		Y:          m.pos.Y,
 	}.Call(m.page)
 	if err != nil {
 		return err
