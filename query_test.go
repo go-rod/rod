@@ -210,6 +210,9 @@ func TestPageRace(t *testing.T) {
 		MustHandle(func(e *rod.Element) { g.Eq("01", e.MustText()) }).MustDo()
 	g.Eq("01", p.Race().MustElementByJS("() => document.querySelector('button')", nil).MustDo().MustText())
 
+	p.Race().Search("button").MustHandle(func(e *rod.Element) { g.Eq("01", e.MustText()) }).MustDo()
+	g.Eq("01", p.Race().Search("button").MustDo().MustText())
+
 	raceFunc := func(p *rod.Page) (*rod.Element, error) {
 		el := p.MustElement("button")
 		g.Eq("01", el.MustText())
@@ -242,6 +245,17 @@ func TestPageRaceRetryInHandle(t *testing.T) {
 		}()
 		e.MustElement("button").MustWait("() => this.innerText === '04'")
 	}).MustDo()
+}
+
+func TestPageRaceSearchCrossIframe(t *testing.T) {
+	g := setup(t)
+	g.srcFile("fixtures/selector.html")
+	p := g.page.MustNavigate(g.srcFile("fixtures/iframe.html"))
+
+	race := p.Race()
+	race.Element("not exist").MustHandle(func(e *rod.Element) { panic("element not exist") })
+	race.Search("span").MustHandle(func(e *rod.Element) { g.Eq("01", e.MustText()) })
+	race.MustDo()
 }
 
 func TestPageElementX(t *testing.T) {
