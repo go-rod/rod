@@ -177,10 +177,10 @@ func TestURLParserErr(t *testing.T) {
 func TestBrowserDownloadErr(t *testing.T) {
 	g := setup(t)
 
+	r := g.Serve().Route("/", "", "")
 	b := NewBrowser()
 	b.Logger = utils.LoggerQuiet
-	malURL := "https://npm.taobao.org/mirrors/chromium-browser-snapshots//869685/"
-	g.Has(b.download(g.Context(), malURL).Error(), "failed to download the browser: 200")
+	g.Has(b.download(g.Context(), r.URL()).Error(), "failed to download the browser: 200")
 }
 
 func TestTestOpen(t *testing.T) {
