@@ -344,9 +344,16 @@ func TestPageCloseErr(t *testing.T) {
 func TestPageCloseWhenNotAttached(t *testing.T) {
 	g := setup(t)
 
+	r := g.Serve()
+	r.Mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hj, _ := w.(http.Hijacker)
+		h, _, _ := hj.Hijack()
+		_ = h.Close()
+	}))
+
 	p := g.browser.MustPage(g.blank())
 
-	_ = p.Navigate("http://not-exists")
+	_ = p.Navigate(r.URL())
 
 	g.E(p.Close())
 }
