@@ -301,7 +301,7 @@ func (p *Page) Close() error {
 	for {
 		err := proto.PageClose{}.Call(p)
 		if errors.Is(err, cdp.ErrNotAttachedToActivePage) {
-			// TODO: I don't know why chromium doesn't allow to close a page while it's navigating.
+			// TODO: I don't know why chromium doesn't allow us to close a page while it's navigating.
 			// Looks like a bug in chromium.
 			utils.Sleep(0.1)
 			continue
