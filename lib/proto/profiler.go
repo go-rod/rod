@@ -100,36 +100,6 @@ type ProfilerScriptCoverage struct {
 	Functions []*ProfilerFunctionCoverage `json:"functions"`
 }
 
-// ProfilerTypeObject (experimental) Describes a type collected during runtime.
-type ProfilerTypeObject struct {
-
-	// Name Name of a type collected with type profiling.
-	Name string `json:"name"`
-}
-
-// ProfilerTypeProfileEntry (experimental) Source offset and types for a parameter or return value.
-type ProfilerTypeProfileEntry struct {
-
-	// Offset Source offset of the parameter or end of function for return values.
-	Offset int `json:"offset"`
-
-	// Types The types for this parameter or return value.
-	Types []*ProfilerTypeObject `json:"types"`
-}
-
-// ProfilerScriptTypeProfile (experimental) Type profile data collected during runtime for a JavaScript script.
-type ProfilerScriptTypeProfile struct {
-
-	// ScriptID JavaScript script id.
-	ScriptID RuntimeScriptID `json:"scriptId"`
-
-	// URL JavaScript script name or url.
-	URL string `json:"url"`
-
-	// Entries Type profile entries for parameters and return values of the functions in the script.
-	Entries []*ProfilerTypeProfileEntry `json:"entries"`
-}
-
 // ProfilerDisable ...
 type ProfilerDisable struct {
 }
@@ -233,18 +203,6 @@ type ProfilerStartPreciseCoverageResult struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
-// ProfilerStartTypeProfile (experimental) Enable type profile.
-type ProfilerStartTypeProfile struct {
-}
-
-// ProtoReq name
-func (m ProfilerStartTypeProfile) ProtoReq() string { return "Profiler.startTypeProfile" }
-
-// Call sends the request
-func (m ProfilerStartTypeProfile) Call(c Client) error {
-	return call(m.ProtoReq(), m, nil, c)
-}
-
 // ProfilerStop ...
 type ProfilerStop struct {
 }
@@ -278,18 +236,6 @@ func (m ProfilerStopPreciseCoverage) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// ProfilerStopTypeProfile (experimental) Disable type profile. Disabling releases type profile data collected so far.
-type ProfilerStopTypeProfile struct {
-}
-
-// ProtoReq name
-func (m ProfilerStopTypeProfile) ProtoReq() string { return "Profiler.stopTypeProfile" }
-
-// Call sends the request
-func (m ProfilerStopTypeProfile) Call(c Client) error {
-	return call(m.ProtoReq(), m, nil, c)
-}
-
 // ProfilerTakePreciseCoverage Collect coverage data for the current isolate, and resets execution counters. Precise code
 // coverage needs to have started.
 type ProfilerTakePreciseCoverage struct {
@@ -312,26 +258,6 @@ type ProfilerTakePreciseCoverageResult struct {
 
 	// Timestamp Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
 	Timestamp float64 `json:"timestamp"`
-}
-
-// ProfilerTakeTypeProfile (experimental) Collect type profile.
-type ProfilerTakeTypeProfile struct {
-}
-
-// ProtoReq name
-func (m ProfilerTakeTypeProfile) ProtoReq() string { return "Profiler.takeTypeProfile" }
-
-// Call the request
-func (m ProfilerTakeTypeProfile) Call(c Client) (*ProfilerTakeTypeProfileResult, error) {
-	var res ProfilerTakeTypeProfileResult
-	return &res, call(m.ProtoReq(), m, &res, c)
-}
-
-// ProfilerTakeTypeProfileResult (experimental) ...
-type ProfilerTakeTypeProfileResult struct {
-
-	// Result Type profile for all scripts since startTypeProfile() was turned on.
-	Result []*ProfilerScriptTypeProfile `json:"result"`
 }
 
 // ProfilerConsoleProfileFinished ...

@@ -211,7 +211,9 @@ type FetchContinueRequest struct {
 	// PostData (optional) If set, overrides the post data in the request.
 	PostData []byte `json:"postData,omitempty"`
 
-	// Headers (optional) If set, overrides the request headers.
+	// Headers (optional) If set, overrides the request headers. Note that the overrides do not
+	// extend to subsequent redirect hops, if a redirect happens. Another override
+	// may be applied to a different request produced by a redirect.
 	Headers []*FetchHeaderEntry `json:"headers,omitempty"`
 
 	// InterceptResponse (experimental) (optional) If set, overrides response interception behavior for this request.
@@ -374,7 +376,11 @@ type FetchRequestPaused struct {
 
 	// NetworkID (optional) If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,
 	// then this networkId will be the same as the requestId present in the requestWillBeSent event.
-	NetworkID FetchRequestID `json:"networkId,omitempty"`
+	NetworkID NetworkRequestID `json:"networkId,omitempty"`
+
+	// RedirectedRequestID (experimental) (optional) If the request is due to a redirect response from the server, the id of the request that
+	// has caused the redirect.
+	RedirectedRequestID FetchRequestID `json:"redirectedRequestId,omitempty"`
 }
 
 // ProtoEvent name

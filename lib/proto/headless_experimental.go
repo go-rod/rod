@@ -19,6 +19,9 @@ const (
 
 	// HeadlessExperimentalScreenshotParamsFormatPng enum const
 	HeadlessExperimentalScreenshotParamsFormatPng HeadlessExperimentalScreenshotParamsFormat = "png"
+
+	// HeadlessExperimentalScreenshotParamsFormatWebp enum const
+	HeadlessExperimentalScreenshotParamsFormatWebp HeadlessExperimentalScreenshotParamsFormat = "webp"
 )
 
 // HeadlessExperimentalScreenshotParams Encoding options for a screenshot.
@@ -29,6 +32,9 @@ type HeadlessExperimentalScreenshotParams struct {
 
 	// Quality (optional) Compression quality from range [0..100] (jpeg only).
 	Quality *int `json:"quality,omitempty"`
+
+	// OptimizeForSpeed (optional) Optimize image encoding for speed, not for resulting size (defaults to false)
+	OptimizeForSpeed bool `json:"optimizeForSpeed,omitempty"`
 }
 
 // HeadlessExperimentalBeginFrame Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a

@@ -1546,7 +1546,7 @@ type DOMChildNodeInserted struct {
 	// ParentNodeID Id of the node that has changed.
 	ParentNodeID DOMNodeID `json:"parentNodeId"`
 
-	// PreviousNodeID If of the previous siblint.
+	// PreviousNodeID Id of the previous sibling.
 	PreviousNodeID DOMNodeID `json:"previousNodeId"`
 
 	// Node Inserted node data.

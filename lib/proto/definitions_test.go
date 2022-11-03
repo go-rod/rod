@@ -2320,6 +2320,12 @@ func (t T) PageGetAppID() {
 	t.Nil(err)
 }
 
+func (t T) PageGetAdScriptID() {
+	c := &Client{}
+	_, err := proto.PageGetAdScriptID{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) PageGetCookies() {
 	c := &Client{}
 	_, err := proto.PageGetCookies{}.Call(c)
@@ -2993,6 +2999,24 @@ func (t T) StorageSetInterestGroupTracking() {
 	t.Nil(err)
 }
 
+func (t T) StorageGetSharedStorageMetadata() {
+	c := &Client{}
+	_, err := proto.StorageGetSharedStorageMetadata{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageGetSharedStorageEntries() {
+	c := &Client{}
+	_, err := proto.StorageGetSharedStorageEntries{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSetSharedStorageTracking() {
+	c := &Client{}
+	err := proto.StorageSetSharedStorageTracking{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	e.ProtoEvent()
@@ -3015,6 +3039,11 @@ func (t T) StorageIndexedDBListUpdated() {
 
 func (t T) StorageInterestGroupAccessed() {
 	e := proto.StorageInterestGroupAccessed{}
+	e.ProtoEvent()
+}
+
+func (t T) StorageSharedStorageAccessed() {
+	e := proto.StorageSharedStorageAccessed{}
 	e.ProtoEvent()
 }
 
@@ -3852,12 +3881,6 @@ func (t T) ProfilerStartPreciseCoverage() {
 	t.Nil(err)
 }
 
-func (t T) ProfilerStartTypeProfile() {
-	c := &Client{}
-	err := proto.ProfilerStartTypeProfile{}.Call(c)
-	t.Nil(err)
-}
-
 func (t T) ProfilerStop() {
 	c := &Client{}
 	_, err := proto.ProfilerStop{}.Call(c)
@@ -3870,21 +3893,9 @@ func (t T) ProfilerStopPreciseCoverage() {
 	t.Nil(err)
 }
 
-func (t T) ProfilerStopTypeProfile() {
-	c := &Client{}
-	err := proto.ProfilerStopTypeProfile{}.Call(c)
-	t.Nil(err)
-}
-
 func (t T) ProfilerTakePreciseCoverage() {
 	c := &Client{}
 	_, err := proto.ProfilerTakePreciseCoverage{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) ProfilerTakeTypeProfile() {
-	c := &Client{}
-	_, err := proto.ProfilerTakeTypeProfile{}.Call(c)
 	t.Nil(err)
 }
 

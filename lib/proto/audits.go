@@ -531,6 +531,9 @@ const (
 	// AuditsAttributionReportingIssueTypePermissionPolicyDisabled enum const
 	AuditsAttributionReportingIssueTypePermissionPolicyDisabled AuditsAttributionReportingIssueType = "PermissionPolicyDisabled"
 
+	// AuditsAttributionReportingIssueTypePermissionPolicyNotDelegated enum const
+	AuditsAttributionReportingIssueTypePermissionPolicyNotDelegated AuditsAttributionReportingIssueType = "PermissionPolicyNotDelegated"
+
 	// AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin enum const
 	AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin AuditsAttributionReportingIssueType = "UntrustworthyReportingOrigin"
 
@@ -689,9 +692,6 @@ const (
 	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
 	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
 
-	// AuditsDeprecationIssueTypeLegacyConstraintGoogIPv6 enum const
-	AuditsDeprecationIssueTypeLegacyConstraintGoogIPv6 AuditsDeprecationIssueType = "LegacyConstraintGoogIPv6"
-
 	// AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected enum const
 	AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected AuditsDeprecationIssueType = "LocalCSSFileExtensionRejected"
 
@@ -700,12 +700,6 @@ const (
 
 	// AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered enum const
 	AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered AuditsDeprecationIssueType = "MediaSourceDurationTruncatingBuffered"
-
-	// AuditsDeprecationIssueTypeNavigateEventRestoreScroll enum const
-	AuditsDeprecationIssueTypeNavigateEventRestoreScroll AuditsDeprecationIssueType = "NavigateEventRestoreScroll"
-
-	// AuditsDeprecationIssueTypeNavigateEventTransitionWhile enum const
-	AuditsDeprecationIssueTypeNavigateEventTransitionWhile AuditsDeprecationIssueType = "NavigateEventTransitionWhile"
 
 	// AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission enum const
 	AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission AuditsDeprecationIssueType = "NoSysexWebMIDIWithoutPermission"
@@ -724,6 +718,12 @@ const (
 
 	// AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement enum const
 	AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement AuditsDeprecationIssueType = "OverflowVisibleOnReplacedElement"
+
+	// AuditsDeprecationIssueTypePaymentInstruments enum const
+	AuditsDeprecationIssueTypePaymentInstruments AuditsDeprecationIssueType = "PaymentInstruments"
+
+	// AuditsDeprecationIssueTypePaymentRequestCSPViolation enum const
+	AuditsDeprecationIssueTypePaymentRequestCSPViolation AuditsDeprecationIssueType = "PaymentRequestCSPViolation"
 
 	// AuditsDeprecationIssueTypePersistentQuotaType enum const
 	AuditsDeprecationIssueTypePersistentQuotaType AuditsDeprecationIssueType = "PersistentQuotaType"
@@ -837,8 +837,8 @@ type AuditsFederatedAuthRequestIssueDetails struct {
 type AuditsFederatedAuthRequestIssueReason string
 
 const (
-	// AuditsFederatedAuthRequestIssueReasonApprovalDeclined enum const
-	AuditsFederatedAuthRequestIssueReasonApprovalDeclined AuditsFederatedAuthRequestIssueReason = "ApprovalDeclined"
+	// AuditsFederatedAuthRequestIssueReasonShouldEmbargo enum const
+	AuditsFederatedAuthRequestIssueReasonShouldEmbargo AuditsFederatedAuthRequestIssueReason = "ShouldEmbargo"
 
 	// AuditsFederatedAuthRequestIssueReasonTooManyRequests enum const
 	AuditsFederatedAuthRequestIssueReasonTooManyRequests AuditsFederatedAuthRequestIssueReason = "TooManyRequests"
@@ -911,6 +911,9 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonCanceled enum const
 	AuditsFederatedAuthRequestIssueReasonCanceled AuditsFederatedAuthRequestIssueReason = "Canceled"
+
+	// AuditsFederatedAuthRequestIssueReasonRpPageNotVisible enum const
+	AuditsFederatedAuthRequestIssueReasonRpPageNotVisible AuditsFederatedAuthRequestIssueReason = "RpPageNotVisible"
 )
 
 // AuditsClientHintIssueDetails This issue tracks client hints related issues. It's used to deprecate old

@@ -670,6 +670,35 @@ const (
 	NetworkTrustTokenOperationTypeSigning NetworkTrustTokenOperationType = "Signing"
 )
 
+// NetworkAlternateProtocolUsage (experimental) The reason why Chrome uses a specific transport protocol for HTTP semantics.
+type NetworkAlternateProtocolUsage string
+
+const (
+	// NetworkAlternateProtocolUsageAlternativeJobWonWithoutRace enum const
+	NetworkAlternateProtocolUsageAlternativeJobWonWithoutRace NetworkAlternateProtocolUsage = "alternativeJobWonWithoutRace"
+
+	// NetworkAlternateProtocolUsageAlternativeJobWonRace enum const
+	NetworkAlternateProtocolUsageAlternativeJobWonRace NetworkAlternateProtocolUsage = "alternativeJobWonRace"
+
+	// NetworkAlternateProtocolUsageMainJobWonRace enum const
+	NetworkAlternateProtocolUsageMainJobWonRace NetworkAlternateProtocolUsage = "mainJobWonRace"
+
+	// NetworkAlternateProtocolUsageMappingMissing enum const
+	NetworkAlternateProtocolUsageMappingMissing NetworkAlternateProtocolUsage = "mappingMissing"
+
+	// NetworkAlternateProtocolUsageBroken enum const
+	NetworkAlternateProtocolUsageBroken NetworkAlternateProtocolUsage = "broken"
+
+	// NetworkAlternateProtocolUsageDNSAlpnH3JobWonWithoutRace enum const
+	NetworkAlternateProtocolUsageDNSAlpnH3JobWonWithoutRace NetworkAlternateProtocolUsage = "dnsAlpnH3JobWonWithoutRace"
+
+	// NetworkAlternateProtocolUsageDNSAlpnH3JobWonRace enum const
+	NetworkAlternateProtocolUsageDNSAlpnH3JobWonRace NetworkAlternateProtocolUsage = "dnsAlpnH3JobWonRace"
+
+	// NetworkAlternateProtocolUsageUnspecifiedReason enum const
+	NetworkAlternateProtocolUsageUnspecifiedReason NetworkAlternateProtocolUsage = "unspecifiedReason"
+)
+
 // NetworkResponse HTTP response data.
 type NetworkResponse struct {
 
@@ -735,6 +764,9 @@ type NetworkResponse struct {
 
 	// Protocol (optional) Protocol used to fetch this request.
 	Protocol string `json:"protocol,omitempty"`
+
+	// AlternateProtocolUsage (experimental) (optional) The reason why Chrome uses a specific transport protocol for HTTP semantics.
+	AlternateProtocolUsage NetworkAlternateProtocolUsage `json:"alternateProtocolUsage,omitempty"`
 
 	// SecurityState Security state of the request resource.
 	SecurityState SecuritySecurityState `json:"securityState"`

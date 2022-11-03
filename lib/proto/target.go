@@ -68,6 +68,10 @@ type TargetTargetInfo struct {
 
 	// BrowserContextID (experimental) (optional) ...
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
+
+	// Subtype (experimental) (optional) Provides additional details for specific target types. For example, for
+	// the type of "page", this may be set to "portal" or "prerender".
+	Subtype string `json:"subtype,omitempty"`
 }
 
 // TargetFilterEntry (experimental) A filter used by target query/discovery/auto-attach operations.
