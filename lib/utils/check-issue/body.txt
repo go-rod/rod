@@ -17,14 +17,14 @@ Rod Version: v1.0.0
    cd rod
    ```
 
-1. Use your code to replace the content of function `TestLab` in file `lab_test.go`.
+1. Use your code to replace the content of function `TestRod` in file `rod_test.go`.
 
-1. Test your code with: `go test -run TestLab`.
+1. Test your code with: `go test -run TestRod`.
 
-1. Replace this section with your entire `lab_test.go` content, like below:
+1. Replace this section with your entire `rod_test.go` content, like below:
 
 ```go
-func TestLab(t *testing.T) {
+func TestRod(t *testing.T) {
     g := setup(t)
     g.Eq(1, 1)
 }

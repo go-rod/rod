@@ -168,6 +168,10 @@ func (g G) blank() string {
 	return g.srcFile("./fixtures/blank.html")
 }
 
+func (g G) html(content string) string {
+	return g.Serve().Route("/", "", content).URL()
+}
+
 // Get abs file path from fixtures folder, such as "file:///a/b/click.html".
 // Usually the path can be used for html src attribute like:
 //

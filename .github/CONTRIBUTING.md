@@ -42,7 +42,7 @@ First, set this environment variable:
 export GODEBUG="tracebackancestors=1000"
 ```
 
-Then, no magic, just `go test`. Read the test template [lab_test.go](../lab_test.go) to get started.
+Then, no magic, just `go test`. Read the test template [rod_test.go](../rod_test.go) to get started.
 
 The entry point of tests is [setup_test.go](../setup_test.go). All the test helpers are defined in it.
 

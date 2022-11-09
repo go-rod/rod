@@ -7,7 +7,7 @@ test
 ```
 
 ```go
-func TestLab(t *testing.T) {
+func TestRod(t *testing.T) {
     g := setup(t)
     g.Eq(1, 1)
 
