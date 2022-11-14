@@ -3,11 +3,13 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/go-rod/rod.svg)](https://pkg.go.dev/github.com/go-rod/rod)
 [![Discord Chat](https://img.shields.io/discord/719933559456006165.svg)][discord room]
 
-## [Documentation](https://go-rod.github.io/) | [API reference](https://pkg.go.dev/github.com/go-rod/rod?tab=doc) | [中文 API 参考文档](https://github.com/go-rod/go-rod-chinese) | [Management](https://github.com/orgs/go-rod/projects/1) | [FAQ](https://go-rod.github.io/#/faq/README)
+## [Documentation](https://go-rod.github.io/) | [API reference](https://pkg.go.dev/github.com/go-rod/rod?tab=doc) | [FAQ](https://go-rod.github.io/#/faq/README)
 
 Rod is a high-level driver directly based on [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol).
 It's designed for web automation and scraping for both high-level and low-level use, senior developers can use the low-level packages and functions to easily
 customize or build up their own version of Rod, the high-level functions are just examples to build a default version of Rod.
+
+[中文 API 文档](https://pkg.go.dev/github.com/go-rod/go-rod-chinese)
 
 ## Features
 
@@ -42,7 +44,7 @@ Your help is more than welcome! Even just open an issue to ask a question may gr
 
 Please read [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html) before you ask questions.
 
-We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/orgs/go-rod/projects/1).
+We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/go-rod/rod/projects).
 
 If you want to contribute please read the [Contributor Guide](.github/CONTRIBUTING.md).
 
