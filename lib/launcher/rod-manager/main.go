@@ -36,7 +36,7 @@ func main() {
 	}
 
 	if !*quiet {
-		fmt.Println("rod-manager listening on:", l.Addr().String())
+		fmt.Println("[rod-manager] listening on:", l.Addr().String())
 	}
 
 	srv := &http.Server{Handler: m}

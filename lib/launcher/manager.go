@@ -90,7 +90,7 @@ func (l *Launcher) mustManaged() {
 var _ http.Handler = &Manager{}
 
 // Manager is used to launch browsers via http server on another machine.
-// The reason why we have Manager is after we launcher a browser, we can't dynamicall change its
+// The reason why we have Manager is after we launcher a browser, we can't dynamically change its
 // CLI arguments, such as "--headless". The Manager allows us to decide what CLI arguments to
 // pass to the browser when launch it remotely.
 // The work flow looks like:
@@ -133,7 +133,7 @@ func NewManager() *Manager {
 			for f, allowed := range allowedPath {
 				p := l.Get(f)
 				if p != "" && !strings.HasPrefix(p, allowed) {
-					b := []byte(fmt.Sprintf("not allowed %s path: %s", f, p))
+					b := []byte(fmt.Sprintf("[rod-manager] not allowed %s path: %s (use --allow-all to disable the protection)", f, p))
 					w.Header().Add("Content-Length", fmt.Sprintf("%d", len(b)))
 					w.WriteHeader(http.StatusBadRequest)
 					utils.E(w.Write(b))

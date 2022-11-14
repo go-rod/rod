@@ -16,6 +16,7 @@ func main() {
 	//
 	//     docker run -p 7317:7317 ghcr.io/go-rod/rod
 	//
+	// For available CLI flags run: docker run ghcr.io/go-rod/rod rod-manager -h
 	// For more information, check the doc of launcher.Manager
 	l := launcher.MustNewManaged("")
 
