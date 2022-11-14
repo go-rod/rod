@@ -284,7 +284,7 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set(flags.RemoteDebuggingPort, fmt.Sprintf("%d", port))
 }
 
-// Proxy switch. When disabled leakless will be disabled.
+// Proxy for the browser
 func (l *Launcher) Proxy(host string) *Launcher {
 	return l.Set(flags.ProxyServer, host)
 }
