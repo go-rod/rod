@@ -105,7 +105,7 @@ func newTesterPool() TesterPool {
 
 // new tester
 func (tp TesterPool) new() *G {
-	u := launcher.New().MustLaunch()
+	u := launcher.New().Set("proxy-bypass-list", "<-loopback>").MustLaunch()
 
 	mc := newMockClient(u)
 
