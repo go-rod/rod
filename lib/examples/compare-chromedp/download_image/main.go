@@ -9,13 +9,13 @@ import (
 )
 
 func main() {
-	urlstr := "https://avatars.githubusercontent.com/u/33149672"
+	u := "https://avatars.githubusercontent.com/u/33149672"
 
 	browser := rod.New().MustConnect()
 
-	page := browser.MustPage(urlstr).MustWaitLoad()
+	page := browser.MustPage(u).MustWaitLoad()
 
-	b, err := page.GetResource(urlstr)
+	b, err := page.GetResource(u)
 	if err != nil {
 		log.Fatal(err)
 	}

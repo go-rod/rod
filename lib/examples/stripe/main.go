@@ -32,14 +32,14 @@ func getRedirectURL() string {
 
 	return post(
 		"/payment_intents",
-		"amount=100&currency=usd&payment_method_data[type]=card&confirm=true&return_url=https%3A%2F%2Fmdn.dev"+
+		"amount=100&currency=usd&payment_method_data[type]=card&confirm=true&return_url=https%3A%2F%2Fmdn.dev"+ // cSpell:ignore Fmdn
 			"&payment_method_data[card][token]="+token,
 	).Get("next_action.redirect_to_url.url").Str()
 }
 
 func post(path, body string) gson.JSON {
 	req, _ := http.NewRequest(http.MethodPost, "https://api.stripe.com/v1"+path, bytes.NewBufferString(body))
-	req.Header.Add("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc")
+	req.Header.Add("Authorization", "Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc") // cSpell:ignore Darjt
 	res, _ := http.DefaultClient.Do(req)
 	if res != nil {
 		defer func() { _ = res.Body.Close() }()

@@ -16,6 +16,7 @@ func main() {
 	page := rod.New().MustConnect().MustPage(testServer())
 
 	val1 := page.MustElement("#input1").MustText()
+	// cSpell:ignore naoeu
 	val2 := page.MustElement("#textarea1").MustInput("\b\b\n\naoeu\n\ntest1\n\nblah2\n\n\t\t\t\b\bother box!\t\ntest4").MustText()
 	val3 := page.MustElement("#input2").MustInput("test3").MustText()
 	val4 := page.MustElement("#select1").MustType(input.ArrowDown, input.ArrowDown).MustProperty("value").Str()

@@ -6,7 +6,6 @@ linters:
     - gofmt
     - revive
     - gocyclo
-    - misspell
     - bodyclose
 
 gocyclo:

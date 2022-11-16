@@ -147,7 +147,7 @@ const (
 	PagePermissionsPolicyFeatureChDownlink PagePermissionsPolicyFeature = "ch-downlink"
 
 	// PagePermissionsPolicyFeatureChEct enum const
-	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-etc"
+	PagePermissionsPolicyFeatureChEct PagePermissionsPolicyFeature = "ch-ect"
 
 	// PagePermissionsPolicyFeatureChPrefersColorScheme enum const
 	PagePermissionsPolicyFeatureChPrefersColorScheme PagePermissionsPolicyFeature = "ch-prefers-color-scheme"

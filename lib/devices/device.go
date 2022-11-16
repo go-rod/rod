@@ -31,8 +31,8 @@ type ScreenSize struct {
 	Height int
 }
 
-// Landescape clones the device and set it to landscape mode
-func (device Device) Landescape() Device {
+// Landscape clones the device and set it to landscape mode
+func (device Device) Landscape() Device {
 	d := device
 	d.landscape = true
 	return d

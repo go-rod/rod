@@ -66,7 +66,7 @@ func (el *Element) Focus() error {
 // window if it's not already within the visible area.
 func (el *Element) ScrollIntoView() error {
 	defer el.tryTrace(TraceTypeInput, "scroll into view")()
-	el.page.browser.trySlowmotion()
+	el.page.browser.trySlowMotion()
 
 	err := el.WaitStableRAF()
 	if err != nil {
@@ -190,9 +190,9 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 	return
 }
 
-// Shape of the DOM element content. The shape is a group of 4-sides polygons (4-gons).
-// A 4-gon is not necessary a rectangle. 4-gons can be apart from each other.
-// For example, we use 2 4-gons to describe the shape below:
+// Shape of the DOM element content. The shape is a group of 4-sides polygons.
+// A 4-sides polygon is not necessary a rectangle. 4-sides polygons can be apart from each other.
+// For example, we use 2 4-sides polygons to describe the shape below:
 //
 //	  ____________          ____________
 //	 /        ___/    =    /___________/    +     _________
@@ -231,7 +231,7 @@ func (el *Element) SelectText(regex string) error {
 	}
 
 	defer el.tryTrace(TraceTypeInput, "select text: "+regex)()
-	el.page.browser.trySlowmotion()
+	el.page.browser.trySlowMotion()
 
 	_, err = el.Evaluate(evalHelper(js.SelectText, regex).ByUser())
 	return err
@@ -246,7 +246,7 @@ func (el *Element) SelectAllText() error {
 	}
 
 	defer el.tryTrace(TraceTypeInput, "select all text")()
-	el.page.browser.trySlowmotion()
+	el.page.browser.trySlowMotion()
 
 	_, err = el.Evaluate(evalHelper(js.SelectAllText).ByUser())
 	return err
@@ -317,7 +317,7 @@ func (el *Element) Select(selectors []string, selected bool, t SelectorType) err
 	}
 
 	defer el.tryTrace(TraceTypeInput, fmt.Sprintf(`select "%s"`, strings.Join(selectors, "; ")))()
-	el.page.browser.trySlowmotion()
+	el.page.browser.trySlowMotion()
 
 	res, err := el.Evaluate(evalHelper(js.Select, selectors, selected, t).ByUser())
 	if err != nil {
@@ -370,7 +370,7 @@ func (el *Element) SetFiles(paths []string) error {
 	absPaths := utils.AbsolutePaths(paths)
 
 	defer el.tryTrace(TraceTypeInput, fmt.Sprintf("set files: %v", absPaths))()
-	el.page.browser.trySlowmotion()
+	el.page.browser.trySlowMotion()
 
 	err := proto.DOMSetFileInputFiles{
 		Files:    absPaths,

@@ -390,11 +390,11 @@ func (p *Page) HandleFileDialog() (func([]string) error, error) {
 }
 
 // Screenshot captures the screenshot of current page.
-func (p *Page) Screenshot(fullpage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
+func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]byte, error) {
 	if req == nil {
 		req = &proto.PageCaptureScreenshot{}
 	}
-	if fullpage {
+	if fullPage {
 		metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
 		if err != nil {
 			return nil, err
@@ -536,15 +536,15 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 
 	p, cancel := p.WithCancel()
 	match := genRegMatcher(includes, excludes)
-	waitlist := map[proto.NetworkRequestID]string{}
+	waitList := map[proto.NetworkRequestID]string{}
 	idleCounter := utils.NewIdleCounter(d)
 	update := p.tryTraceReq(includes, excludes)
 	update(nil)
 
 	checkDone := func(id proto.NetworkRequestID) {
-		if _, has := waitlist[id]; has {
-			delete(waitlist, id)
-			update(waitlist)
+		if _, has := waitList[id]; has {
+			delete(waitList, id)
+			update(waitList)
 			idleCounter.Done()
 		}
 	}
@@ -553,9 +553,9 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 		if match(sent.Request.URL) {
 			// Redirect will send multiple NetworkRequestWillBeSent events with the same RequestID,
 			// we should filter them out.
-			if _, has := waitlist[sent.RequestID]; !has {
-				waitlist[sent.RequestID] = sent.Request.URL
-				update(waitlist)
+			if _, has := waitList[sent.RequestID]; !has {
+				waitList[sent.RequestID] = sent.Request.URL
+				update(waitList)
 				idleCounter.Add()
 			}
 		}

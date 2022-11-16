@@ -74,7 +74,7 @@ func Example_disable_headless_to_debug() {
 	url := l.MustLaunch()
 
 	// Trace shows verbose debug information for each action executed
-	// Slowmotion is a debug related function that waits 2 seconds between
+	// SlowMotion is a debug related function that waits 2 seconds between
 	// each action, making it easier to inspect what your code is doing.
 	browser := rod.New().
 		ControlURL(url).
@@ -100,7 +100,7 @@ func Example_disable_headless_to_debug() {
 	utils.Pause() // pause goroutine
 }
 
-// Rod use https://golang.org/pkg/context to handle cancelations for IO blocking operations, most times it's timeout.
+// Rod use https://golang.org/pkg/context to handle cancellations for IO blocking operations, most times it's timeout.
 // Context will be recursively passed to all sub-methods.
 // For example, methods like Page.Context(ctx) will return a clone of the page with the ctx,
 // all the methods of the returned page will use the ctx if they have IO blocking operations.

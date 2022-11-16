@@ -70,7 +70,7 @@ func main() {
 	utils.Exec("gofmt -s -w", path)
 	utils.Exec(
 		"go run github.com/ysmood/golangci-lint@latest -- "+
-			"run --no-config --fix --disable-all -E gofmt,goimports,misspell",
+			"run --no-config --fix --disable-all -E gofmt,goimports",
 		path,
 	)
 }

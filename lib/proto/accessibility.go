@@ -435,7 +435,7 @@ type AccessibilityGetFullAXTree struct {
 	Depth *int `json:"depth,omitempty"`
 
 	// FrameID (optional) The frame for whose document the AX tree should be retrieved.
-	// If omitted, the root frame is used.
+	// If omited, the root frame is used.
 	FrameID PageFrameID `json:"frameId,omitempty"`
 }
 

@@ -307,7 +307,7 @@ func (l *Launcher) StartURL(u string) *Launcher {
 	return l.Set("", u)
 }
 
-// FormatArgs returns the formated arg list for cli
+// FormatArgs returns the formatted arg list for cli
 func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
 	for k, v := range l.Flags {

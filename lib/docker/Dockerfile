@@ -39,14 +39,14 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
     fonts-liberation fonts-noto-color-emoji fonts-noto-cjk \
     # timezone
     tzdata \
-    # processs reaper
+    # process reaper
     dumb-init \
     # headful mode support, for example: $ xvfb-run chromium-browser --remote-debugging-port=9222
     xvfb \
     # cleanup
     && rm -rf /var/lib/apt/lists/*
 
-# processs reaper
+# process reaper
 ENTRYPOINT ["dumb-init", "--"]
 
 CMD rod-manager

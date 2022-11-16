@@ -71,7 +71,7 @@ func New() *Browser {
 		trace:         defaults.Trace,
 		monitor:       defaults.Monitor,
 		logger:        DefaultLogger,
-		defaultDevice: devices.LaptopWithMDPIScreen.Landescape(),
+		defaultDevice: devices.LaptopWithMDPIScreen.Landscape(),
 		targetsLock:   &sync.Mutex{},
 		states:        &sync.Map{},
 	}).WithPanic(utils.Panic)

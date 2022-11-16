@@ -14,7 +14,7 @@ func Sleep(seconds float64) {
 	time.Sleep(d)
 }
 
-// Sleeper sleeps the current gouroutine for sometime, returns the reason to wake, if ctx is done release resource
+// Sleeper sleeps the current goroutine for sometime, returns the reason to wake, if ctx is done release resource
 type Sleeper func(context.Context) error
 
 // ErrMaxSleepCount type

@@ -44,7 +44,7 @@ func (k *Keyboard) modifiers() int {
 // use method like Page.InsertText .
 func (k *Keyboard) Press(key input.Key) error {
 	defer k.page.tryTrace(TraceTypeInput, "press key: "+key.Info().Code)()
-	k.page.browser.trySlowmotion()
+	k.page.browser.trySlowMotion()
 
 	k.Lock()
 	defer k.Unlock()
@@ -184,7 +184,7 @@ func (ka *KeyActions) balance() []KeyAction {
 // InsertText is like pasting text into the page
 func (p *Page) InsertText(text string) error {
 	defer p.tryTrace(TraceTypeInput, "insert text "+text)()
-	p.browser.trySlowmotion()
+	p.browser.trySlowMotion()
 
 	err := proto.InputInsertText{Text: text}.Call(p)
 	return err
@@ -223,7 +223,7 @@ func (m *Mouse) MoveTo(p proto.Point) error {
 
 	button, buttons := input.EncodeMouseButton(m.buttons)
 
-	m.page.browser.trySlowmotion()
+	m.page.browser.trySlowMotion()
 
 	err := proto.InputDispatchMouseEvent{
 		Type:      proto.InputDispatchMouseEventTypeMouseMoved,
@@ -291,7 +291,7 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	defer m.Unlock()
 
 	defer m.page.tryTrace(TraceTypeInput, fmt.Sprintf("scroll (%.2f, %.2f)", offsetX, offsetY))()
-	m.page.browser.trySlowmotion()
+	m.page.browser.trySlowMotion()
 
 	if steps < 1 {
 		steps = 1
@@ -379,7 +379,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 
 // Click the button. It's the combination of Mouse.Down and Mouse.Up
 func (m *Mouse) Click(button proto.InputMouseButton, clickCount int) error {
-	m.page.browser.trySlowmotion()
+	m.page.browser.trySlowMotion()
 
 	err := m.Down(button, clickCount)
 	if err != nil {
@@ -444,7 +444,7 @@ func (t *Touch) Cancel() error {
 // Tap dispatches a touchstart and touchend event.
 func (t *Touch) Tap(x, y float64) error {
 	defer t.page.tryTrace(TraceTypeInput, "touch")()
-	t.page.browser.trySlowmotion()
+	t.page.browser.trySlowMotion()
 
 	p := &proto.InputTouchPoint{X: x, Y: y}
 

@@ -18,7 +18,7 @@ import (
 // Option name is "trace".
 var Trace bool
 
-// Slow is the default of rod.Browser.Slowmotion .
+// Slow is the default of rod.Browser.SlowMotion .
 // The format is same as https://golang.org/pkg/time/#ParseDuration
 // Option name is "slow".
 var Slow time.Duration

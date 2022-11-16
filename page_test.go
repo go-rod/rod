@@ -802,7 +802,7 @@ func TestPagePool(t *testing.T) {
 func TestPageUseNonExistSession(t *testing.T) {
 	g := setup(t)
 
-	p := g.browser.PageFromSession("nonexist")
+	p := g.browser.PageFromSession("not-exist")
 	err := proto.PageClose{}.Call(p)
 	g.Eq(err, cdp.ErrSessionNotFound)
 }
@@ -834,7 +834,7 @@ func TestPageActionAfterClose(t *testing.T) {
 
 		p.MustClose()
 
-		_, err := p.Element("nonexists")
+		_, err := p.Element("not-exists")
 		g.Eq(err, context.Canceled)
 	}
 

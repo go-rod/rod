@@ -19,7 +19,7 @@ func TestErr(t *testing.T) {
 	as.True(v.Mobile)
 	as.True(touch.Enabled)
 
-	v = devices.LaptopWithMDPIScreen.Landescape().MetricsEmulation()
+	v = devices.LaptopWithMDPIScreen.Landscape().MetricsEmulation()
 	touch = devices.LaptopWithMDPIScreen.TouchEmulation()
 	as.Eq(1280, v.Width)
 	as.Eq(90, v.ScreenOrientation.Angle)
