@@ -298,6 +298,9 @@ func ExecLine(std bool, line string, rest ...string) string {
 	}
 
 	if err := cmd.Run(); err != nil {
+		if std {
+			panic(err)
+		}
 		panic(fmt.Sprintf("%v\n%v", err, buf.String()))
 	}
 
