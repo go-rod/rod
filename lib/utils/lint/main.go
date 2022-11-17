@@ -2,20 +2,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/go-rod/rod/lib/utils"
 )
 
 func main() {
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	}()
-
 	utils.Exec("npx -ys -- cspell@6.14.2 --no-progress **")
 
 	utils.Exec("npx -ys -- eslint@8.7.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")

@@ -182,6 +182,9 @@ func TestExecErr(t *testing.T) {
 	g.Panic(func() {
 		utils.Exec(g.RandStr(16))
 	})
+	g.Panic(func() {
+		utils.ExecLine(false, "", "")
+	})
 }
 
 func TestFormatCLIArgs(t *testing.T) {

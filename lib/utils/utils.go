@@ -27,6 +27,11 @@ import (
 	"github.com/ysmood/gson"
 )
 
+// TestEnvs for testing
+var TestEnvs = map[string]string{
+	"GODEBUG": "tracebackancestors=100",
+}
+
 // InContainer will be true if is inside container environment, such as docker
 var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv")
 
@@ -274,7 +279,7 @@ func Exec(line string, rest ...string) string {
 	return ExecLine(true, line, rest...)
 }
 
-var execLogger = log.New(os.Stdout, "[exec]", log.LstdFlags)
+var execLogger = log.New(os.Stdout, "[exec] ", 0)
 
 // ExecLine of command
 func ExecLine(std bool, line string, rest ...string) string {

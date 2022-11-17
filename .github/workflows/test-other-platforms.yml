@@ -7,9 +7,6 @@ on:
 
   pull_request:
 
-env:
-  GODEBUG: tracebackancestors=1000
-
 jobs:
   test-mac:
     runs-on: macos-latest
@@ -21,7 +18,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: go test -timeout-each=2m
+      - run: go run ./lib/utils/ci-test -timeout-each=2m
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
@@ -39,7 +36,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: go test -timeout-each=2m
+      - run: go run ./lib/utils/ci-test -timeout-each=2m
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
