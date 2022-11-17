@@ -80,7 +80,7 @@ func test(at archType) {
 	if at != archArm {
 		wd, err := os.Getwd()
 		utils.E(err)
-		utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), at.tagDev(), "go", "test")
+		utils.Exec("docker run -w=/t -v", fmt.Sprintf("%s:/t", wd), at.tagDev(), "go", "run", "./lib/utils/ci-test")
 	}
 }
 

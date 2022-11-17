@@ -36,10 +36,10 @@ Object model:
 
 ## Run tests
 
-First, set this environment variable:
+First, launch a test shell for rod:
 
 ```bash
-export GODEBUG="tracebackancestors=1000"
+go run ./lib/utils/shell
 ```
 
 Then, no magic, just `go test`. Read the test template [rod_test.go](../rod_test.go) to get started.
