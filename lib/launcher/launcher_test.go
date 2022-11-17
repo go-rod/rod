@@ -4,6 +4,9 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"crypto"
+	"crypto/x509"
+	"encoding/pem"
 	"flag"
 	"fmt"
 	"io"
@@ -13,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -266,4 +270,56 @@ func TestBrowserValid(t *testing.T) {
 
 	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-lib-missing").CombinedOutput())
 	g.Nil(b.Validate())
+}
+
+func TestIgnoreCert(t *testing.T) {
+	g := setup(t)
+
+	// https://travistidwell.com/jsencrypt/demo/
+	testData := []string{
+		`-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgF9pr2zok5bivQIEUN7Y58a9uB1o
+sroMt3hxNfzOh/G+sXgYPPoEl2/Ys/2zbvym7Ze0eGbb6FrV8aueg89TPTNWAKlN
+N49q6S3zLG1WmI2rVYz4LtPgpg1YR9FQRIg4Ll0C02daufXgvUBGjIARH19FTw6P
+61kEhnEQxUHhdAqbAgMBAAE=
+-----END PUBLIC KEY-----
+		`,
+		`-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvBTz/TOYc66qB97OyYenSHk4T
+hAUKX5RUWZ/80o0zyJoo1dfrrwW9PlT5o4DlGMs0NSbtJ8RMQRTLZwL/zxXjiEMv
+dKFs2OrefYKANTc0e2XAtQAm3Is5Ro8AF1S4Fk+eZXr2yZtBRKXvhJ/A2bilVoSn
+fmQnyBe7dVU43NXfrQIDAQAB
+-----END PUBLIC KEY-----
+		`,
+	}
+
+	keys := make([]crypto.PublicKey, 0, len(testData))
+
+	for _, pubPEM := range testData {
+		block, _ := pem.Decode([]byte(pubPEM))
+		if block == nil {
+			g.Fatal("failed to parse PEM block containing the public key")
+		}
+
+		pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			g.Fatalf("failed to parse DER encoded public key: " + err.Error())
+		}
+
+		keys = append(keys, pub)
+	}
+
+	l := launcher.New()
+
+	err := l.IgnoreCerts(keys)
+	if err != nil {
+		g.Fatalf("IgnoreCerts: %s", err)
+	}
+
+	expected := strings.Join([]string{
+		"+ZqfrXb+V/36nZecO59bghHlNhiHTzImjYLnNWGUd1I=",
+		"llpTCSqZ2/IKsMg4tz+o1mCkXIOdKcM6sKu9kC6o7S4=",
+	}, ",")
+
+	g.Eq(expected, l.Get("ignore-certificate-errors-spki-list"))
 }
