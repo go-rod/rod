@@ -254,7 +254,7 @@ func (l *Launcher) Devtools(autoOpenForTabs bool) *Launcher {
 	return l.Delete("auto-open-devtools-for-tabs")
 }
 
-// IgnoreCert configure the Chrome's ignore-certificate-errors-spki-list argument with the public keys.
+// IgnoreCerts configure the Chrome's ignore-certificate-errors-spki-list argument with the public keys.
 func (l *Launcher) IgnoreCerts(pks []crypto.PublicKey) error {
 	spkis := make([]string, 0, len(pks))
 
