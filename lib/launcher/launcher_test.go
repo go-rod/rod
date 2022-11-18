@@ -316,10 +316,10 @@ fmQnyBe7dVU43NXfrQIDAQAB
 		g.Fatalf("IgnoreCerts: %s", err)
 	}
 
-	expected := strings.Join([]string{
+	expected := "--ignore-certificate-errors-spki-list=" + strings.Join([]string{
 		"+ZqfrXb+V/36nZecO59bghHlNhiHTzImjYLnNWGUd1I=",
 		"llpTCSqZ2/IKsMg4tz+o1mCkXIOdKcM6sKu9kC6o7S4=",
 	}, ",")
 
-	g.Eq(expected, l.Get("ignore-certificate-errors-spki-list"))
+	g.Has(l.FormatArgs(), expected)
 }

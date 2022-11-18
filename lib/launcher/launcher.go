@@ -266,8 +266,7 @@ func (l *Launcher) IgnoreCerts(pks []crypto.PublicKey) error {
 		spkis = append(spkis, string(spki))
 	}
 
-	spkiArg := strings.Join(spkis, ",")
-	l.Set("ignore-certificate-errors-spki-list", spkiArg)
+	l.Set("ignore-certificate-errors-spki-list", spkis...)
 
 	return nil
 }
