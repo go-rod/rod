@@ -272,7 +272,7 @@ func TestBrowserValid(t *testing.T) {
 	g.Nil(b.Validate())
 }
 
-func TestIgnoreCert(t *testing.T) {
+func TestIgnoreCerts(t *testing.T) {
 	g := setup(t)
 
 	// https://travistidwell.com/jsencrypt/demo/
@@ -323,4 +323,15 @@ fmQnyBe7dVU43NXfrQIDAQAB
 	}, ",")
 
 	g.Has(l.FormatArgs(), expected)
+}
+
+func TestIgnoreCerts_InvalidCert(t *testing.T) {
+	g := setup(t)
+
+	l := launcher.New()
+
+	err := l.IgnoreCerts([]crypto.PublicKey{nil})
+	if err == nil {
+		g.Fatalf("IgnoreCerts: %s", err)
+	}
 }
