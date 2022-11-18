@@ -4,9 +4,6 @@ package launcher
 import (
 	"context"
 	"crypto"
-	"crypto/sha256"
-	"crypto/x509"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -273,21 +270,6 @@ func (l *Launcher) IgnoreCerts(pks []crypto.PublicKey) error {
 	l.Set("ignore-certificate-errors-spki-list", spkiArg)
 
 	return nil
-}
-
-// certSPKI generates the SPKI of a certificate public key
-// https://blog.afoolishmanifesto.com/posts/golang-self-signed-and-pinned-certs/
-func certSPKI(pk crypto.PublicKey) ([]byte, error) {
-	pubDER, err := x509.MarshalPKIXPublicKey(pk)
-	if err != nil {
-		return nil, fmt.Errorf("x509.MarshalPKIXPublicKey: %w", err)
-	}
-
-	sum := sha256.Sum256(pubDER)
-	pin := make([]byte, base64.StdEncoding.EncodedLen(len(sum)))
-	base64.StdEncoding.Encode(pin, sum[:])
-
-	return pin, nil
 }
 
 // UserDataDir is where the browser will look for all of its state, such as cookie and cache.
