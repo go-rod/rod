@@ -299,7 +299,7 @@ fmQnyBe7dVU43NXfrQIDAQAB
 		block, _ := pem.Decode([]byte(pubPEM))
 		if block == nil {
 			g.Fatal("failed to parse PEM block containing the public key")
-			return // no-op because g.Fatal calls t.FailNow() but `staticheck` doesn't know it
+			return // no-op because g.Fatal calls t.FailNow() but `staticcheck` doesn't know it
 		}
 
 		pub, err := x509.ParsePKIXPublicKey(block.Bytes)
