@@ -2,6 +2,10 @@ package launcher
 
 import (
 	"archive/zip"
+	"crypto"
+	"crypto/sha256"
+	"crypto/x509"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/url"
@@ -109,4 +113,19 @@ func unzip(logger utils.Logger, from, to string) (err error) {
 	}
 
 	return zr.Close()
+}
+
+// certSPKI generates the SPKI of a certificate public key
+// https://blog.afoolishmanifesto.com/posts/golang-self-signed-and-pinned-certs/
+func certSPKI(pk crypto.PublicKey) ([]byte, error) {
+	pubDER, err := x509.MarshalPKIXPublicKey(pk)
+	if err != nil {
+		return nil, fmt.Errorf("x509.MarshalPKIXPublicKey: %w", err)
+	}
+
+	sum := sha256.Sum256(pubDER)
+	pin := make([]byte, base64.StdEncoding.EncodedLen(len(sum)))
+	base64.StdEncoding.Encode(pin, sum[:])
+
+	return pin, nil
 }
