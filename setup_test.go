@@ -141,7 +141,7 @@ func (tp TesterPool) get(t *testing.T) G {
 
 	tester.G = got.New(t)
 	tester.mc.t = t
-	tester.mc.log.SetOutput(tester.Open(true, LogDir, tester.mc.id, t.Name()+".log"))
+	tester.mc.log.SetOutput(tester.Open(true, filepath.Join(LogDir, tester.mc.id, t.Name()+".log")))
 
 	tester.checkLeaking()
 
