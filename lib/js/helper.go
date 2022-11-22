@@ -4,7 +4,7 @@ package js
 // Element ...
 var Element = &Function{
 	Name:         "element",
-	Definition:   `function(e){const t=functions.selectable(this);return t.querySelector(e)}`,
+	Definition:   `function(e){const t=functions.selectable(this);if(result=t.querySelectorAll(e),1<result.length)throw"selector should match only one element: "+e;return result[0]||null}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -80,9 +80,9 @@ var Overlay = &Function{
         left: ${t}px;
         top: ${n}px;
         height: ${r}px;
-        width: ${i}px;` + "`" + `,i*r==0&&(s.style.border="none"),o){const a=document.createElement("div");a.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
+        width: ${i}px;` + "`" + `,i*r==0&&(s.style.border="none"),o){const l=document.createElement("div");l.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
         box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;
-        top: ${r}px;` + "`" + `,a.innerHTML=o,s.appendChild(a),document.body.parentElement.appendChild(s),window.innerHeight<a.offsetHeight+n+r&&(a.style.top=-a.offsetHeight-2+"px"),window.innerWidth<a.offsetWidth+t&&(a.style.left=window.innerWidth-a.offsetWidth-t+"px")}else document.body.parentElement.appendChild(s)}`,
+        top: ${r}px;` + "`" + `,l.innerHTML=o,s.appendChild(l),document.body.parentElement.appendChild(s),window.innerHeight<l.offsetHeight+n+r&&(l.style.top=-l.offsetHeight-2+"px"),window.innerWidth<l.offsetWidth+t&&(l.style.left=window.innerWidth-l.offsetWidth-t+"px")}else document.body.parentElement.appendChild(s)}`,
 	Dependencies: []*Function{WaitLoad},
 }
 

@@ -233,7 +233,7 @@ func TestPageSlowRender(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("./fixtures/slow-render.html"))
-	g.Eq(p.MustElement("div").MustText(), "ok")
+	g.Eq(p.MustElement("div:first-child").MustText(), "ok")
 }
 
 func TestPageIframeReload(t *testing.T) {

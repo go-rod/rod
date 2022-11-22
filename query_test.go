@@ -438,3 +438,12 @@ func TestElementsOthers(t *testing.T) {
 	g.Nil(list.First())
 	g.Nil(list.Last())
 }
+
+func TestElementMultipleResultErr(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/selector.html"))
+
+	_, err := p.Element("button")
+	g.Eq(err.Error(), `eval js error:  selector should match only one element: button`)
+}
