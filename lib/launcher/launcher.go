@@ -268,9 +268,6 @@ func (l *Launcher) IgnoreCerts(pks []crypto.PublicKey) error {
 
 	l.Set("ignore-certificate-errors-spki-list", spkis...)
 
-	// Configure the browser proxy to skip certificate validation
-	l.browser.ignoreProxyCertificates = true
-
 	return nil
 }
 

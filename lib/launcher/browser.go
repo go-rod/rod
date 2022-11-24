@@ -100,8 +100,8 @@ type Browser struct {
 	// Proxy to use (http/socks5). Default is nil.
 	proxyURL *url.URL
 
-	// ignore proxy certificate validation
-	ignoreProxyCertificates bool
+	// IgnoreCerts skips proxy certificate validation
+	IgnoreCerts bool
 }
 
 // NewBrowser with default values
@@ -250,7 +250,7 @@ func (lc *Browser) httpClient() *http.Client {
 	transport := &http.Transport{
 		DisableKeepAlives: true,
 	}
-	if lc.ignoreProxyCertificates {
+	if lc.IgnoreCerts {
 		transport.TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: true,
 		}

@@ -346,3 +346,10 @@ func TestIgnoreCerts_InvalidCert(t *testing.T) {
 		g.Fatalf("IgnoreCerts: %s", err)
 	}
 }
+
+func TestIgnoreCerts_BrowserProxySkipValidation(t *testing.T) {
+	g := setup(t)
+	b := launcher.NewBrowser()
+	// certificate validation skip is disabled by default
+	g.False(b.IgnoreCerts)
+}
