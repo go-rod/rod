@@ -99,6 +99,9 @@ type Browser struct {
 
 	// Proxy to use (http/socks5). Default is nil.
 	proxyURL *url.URL
+
+	// ignore proxy certificate validation
+	ignoreProxyCertificates bool
 }
 
 // NewBrowser with default values
@@ -246,9 +249,11 @@ func (lc *Browser) download(ctx context.Context, u string) error {
 func (lc *Browser) httpClient() *http.Client {
 	transport := &http.Transport{
 		DisableKeepAlives: true,
-		TLSClientConfig: &tls.Config{
+	}
+	if lc.ignoreProxyCertificates {
+		transport.TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: true,
-		},
+		}
 	}
 	if lc.proxyURL != nil {
 		transport.Proxy = http.ProxyURL(lc.proxyURL)
