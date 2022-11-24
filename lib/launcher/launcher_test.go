@@ -12,6 +12,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -74,8 +76,17 @@ func TestDownload(t *testing.T) {
 	b, cancel := newBrowser()
 	b.Logger = utils.LoggerQuiet
 	defer cancel()
+
 	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
 	b.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
+	g.E(b.Download())
+	g.Nil(os.Stat(b.Dir))
+
+	// download chrome with a proxy
+	_ = os.RemoveAll(b.Dir)
+	p := httptest.NewServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
+	defer p.Close()
+	g.E(b.Proxy(p.URL))
 	g.E(b.Download())
 	g.Nil(os.Stat(b.Dir))
 }
