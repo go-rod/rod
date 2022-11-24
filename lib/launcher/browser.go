@@ -97,7 +97,7 @@ type Browser struct {
 	// LockPort a tcp port to prevent race downloading. Default is 2968 .
 	LockPort int
 
-	// Proxy to use (http/socks5)
+	// Proxy to use (http/socks5). Default is nil.
 	proxyURL *url.URL
 }
 
@@ -142,7 +142,7 @@ func (lc *Browser) Download() (err error) {
 	return lc.download(lc.Context, u)
 }
 
-// SetHttpClient for the browser instance
+// Proxy sets the proxy for chrome download
 func (lc *Browser) Proxy(URL string) error {
 	proxyURL, err := url.Parse(URL)
 	if err != nil {
