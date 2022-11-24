@@ -83,10 +83,13 @@ func TestDownload(t *testing.T) {
 	g.Nil(os.Stat(b.Dir))
 
 	// download chrome with a proxy
-	_ = os.RemoveAll(b.Dir)
-	p := httptest.NewServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
+	// should fail with self signed certificate
+	p := httptest.NewTLSServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
 	defer p.Close()
 	g.E(b.Proxy(p.URL))
+	g.NotNil(b.Download())
+	// should instead be successful with ignore certificate
+	b.IgnoreCerts = true
 	g.E(b.Download())
 	g.Nil(os.Stat(b.Dir))
 }
