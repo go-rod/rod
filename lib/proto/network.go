@@ -959,6 +959,9 @@ const (
 	// NetworkSetCookieBlockedReasonUserPreferences enum const
 	NetworkSetCookieBlockedReasonUserPreferences NetworkSetCookieBlockedReason = "UserPreferences"
 
+	// NetworkSetCookieBlockedReasonThirdPartyBlockedInFirstPartySet enum const
+	NetworkSetCookieBlockedReasonThirdPartyBlockedInFirstPartySet NetworkSetCookieBlockedReason = "ThirdPartyBlockedInFirstPartySet"
+
 	// NetworkSetCookieBlockedReasonSyntaxError enum const
 	NetworkSetCookieBlockedReasonSyntaxError NetworkSetCookieBlockedReason = "SyntaxError"
 
@@ -1023,6 +1026,9 @@ const (
 
 	// NetworkCookieBlockedReasonUserPreferences enum const
 	NetworkCookieBlockedReasonUserPreferences NetworkCookieBlockedReason = "UserPreferences"
+
+	// NetworkCookieBlockedReasonThirdPartyBlockedInFirstPartySet enum const
+	NetworkCookieBlockedReasonThirdPartyBlockedInFirstPartySet NetworkCookieBlockedReason = "ThirdPartyBlockedInFirstPartySet"
 
 	// NetworkCookieBlockedReasonUnknownError enum const
 	NetworkCookieBlockedReasonUnknownError NetworkCookieBlockedReason = "UnknownError"
@@ -2768,6 +2774,9 @@ type NetworkRequestWillBeSentExtraInfo struct {
 
 	// ClientSecurityState (optional) The client security state set for the request.
 	ClientSecurityState *NetworkClientSecurityState `json:"clientSecurityState,omitempty"`
+
+	// SiteHasCookieInOtherPartition (optional) Whether the site has partitioned cookies stored in a partition different than the current one.
+	SiteHasCookieInOtherPartition bool `json:"siteHasCookieInOtherPartition,omitempty"`
 }
 
 // ProtoEvent name

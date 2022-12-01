@@ -1348,11 +1348,6 @@ func (t T) HeadlessExperimentalEnable() {
 	t.Nil(err)
 }
 
-func (t T) HeadlessExperimentalNeedsBeginFramesChanged() {
-	e := proto.HeadlessExperimentalNeedsBeginFramesChanged{}
-	e.ProtoEvent()
-}
-
 func (t T) IOClose() {
 	c := &Client{}
 	err := proto.IOClose{}.Call(c)
@@ -2945,6 +2940,12 @@ func (t T) StorageTrackCacheStorageForOrigin() {
 	t.Nil(err)
 }
 
+func (t T) StorageTrackCacheStorageForStorageKey() {
+	c := &Client{}
+	err := proto.StorageTrackCacheStorageForStorageKey{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageTrackIndexedDBForOrigin() {
 	c := &Client{}
 	err := proto.StorageTrackIndexedDBForOrigin{}.Call(c)
@@ -2960,6 +2961,12 @@ func (t T) StorageTrackIndexedDBForStorageKey() {
 func (t T) StorageUntrackCacheStorageForOrigin() {
 	c := &Client{}
 	err := proto.StorageUntrackCacheStorageForOrigin{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageUntrackCacheStorageForStorageKey() {
+	c := &Client{}
+	err := proto.StorageUntrackCacheStorageForStorageKey{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3008,6 +3015,24 @@ func (t T) StorageGetSharedStorageMetadata() {
 func (t T) StorageGetSharedStorageEntries() {
 	c := &Client{}
 	_, err := proto.StorageGetSharedStorageEntries{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSetSharedStorageEntry() {
+	c := &Client{}
+	err := proto.StorageSetSharedStorageEntry{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageDeleteSharedStorageEntry() {
+	c := &Client{}
+	err := proto.StorageDeleteSharedStorageEntry{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageClearSharedStorageEntries() {
+	c := &Client{}
+	err := proto.StorageClearSharedStorageEntries{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3420,6 +3445,12 @@ func (t T) WebAuthnDisable() {
 func (t T) WebAuthnAddVirtualAuthenticator() {
 	c := &Client{}
 	_, err := proto.WebAuthnAddVirtualAuthenticator{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) WebAuthnSetResponseOverrideBits() {
+	c := &Client{}
+	err := proto.WebAuthnSetResponseOverrideBits{}.Call(c)
 	t.Nil(err)
 }
 

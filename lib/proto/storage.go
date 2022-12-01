@@ -475,6 +475,23 @@ func (m StorageTrackCacheStorageForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// StorageTrackCacheStorageForStorageKey Registers storage key to be notified when an update occurs to its cache storage list.
+type StorageTrackCacheStorageForStorageKey struct {
+
+	// StorageKey Storage key.
+	StorageKey string `json:"storageKey"`
+}
+
+// ProtoReq name
+func (m StorageTrackCacheStorageForStorageKey) ProtoReq() string {
+	return "Storage.trackCacheStorageForStorageKey"
+}
+
+// Call sends the request
+func (m StorageTrackCacheStorageForStorageKey) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageTrackIndexedDBForOrigin Registers origin to be notified when an update occurs to its IndexedDB.
 type StorageTrackIndexedDBForOrigin struct {
 
@@ -521,6 +538,23 @@ func (m StorageUntrackCacheStorageForOrigin) ProtoReq() string {
 
 // Call sends the request
 func (m StorageUntrackCacheStorageForOrigin) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageUntrackCacheStorageForStorageKey Unregisters storage key from receiving notifications for cache storage.
+type StorageUntrackCacheStorageForStorageKey struct {
+
+	// StorageKey Storage key.
+	StorageKey string `json:"storageKey"`
+}
+
+// ProtoReq name
+func (m StorageUntrackCacheStorageForStorageKey) ProtoReq() string {
+	return "Storage.untrackCacheStorageForStorageKey"
+}
+
+// Call sends the request
+func (m StorageUntrackCacheStorageForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
@@ -690,6 +724,66 @@ type StorageGetSharedStorageEntriesResult struct {
 	Entries []*StorageSharedStorageEntry `json:"entries"`
 }
 
+// StorageSetSharedStorageEntry (experimental) Sets entry with `key` and `value` for a given origin's shared storage.
+type StorageSetSharedStorageEntry struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+
+	// Key ...
+	Key string `json:"key"`
+
+	// Value ...
+	Value string `json:"value"`
+
+	// IgnoreIfPresent (optional) If `ignoreIfPresent` is included and true, then only sets the entry if
+	// `key` doesn't already exist.
+	IgnoreIfPresent bool `json:"ignoreIfPresent,omitempty"`
+}
+
+// ProtoReq name
+func (m StorageSetSharedStorageEntry) ProtoReq() string { return "Storage.setSharedStorageEntry" }
+
+// Call sends the request
+func (m StorageSetSharedStorageEntry) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageDeleteSharedStorageEntry (experimental) Deletes entry for `key` (if it exists) for a given origin's shared storage.
+type StorageDeleteSharedStorageEntry struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+
+	// Key ...
+	Key string `json:"key"`
+}
+
+// ProtoReq name
+func (m StorageDeleteSharedStorageEntry) ProtoReq() string { return "Storage.deleteSharedStorageEntry" }
+
+// Call sends the request
+func (m StorageDeleteSharedStorageEntry) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageClearSharedStorageEntries (experimental) Clears all entries for a given origin's shared storage.
+type StorageClearSharedStorageEntries struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+}
+
+// ProtoReq name
+func (m StorageClearSharedStorageEntries) ProtoReq() string {
+	return "Storage.clearSharedStorageEntries"
+}
+
+// Call sends the request
+func (m StorageClearSharedStorageEntries) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageSetSharedStorageTracking (experimental) Enables/disables issuing of sharedStorageAccessed events.
 type StorageSetSharedStorageTracking struct {
 
@@ -711,6 +805,9 @@ type StorageCacheStorageContentUpdated struct {
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
+	// StorageKey Storage key to update.
+	StorageKey string `json:"storageKey"`
+
 	// CacheName Name of cache in origin.
 	CacheName string `json:"cacheName"`
 }
@@ -725,6 +822,9 @@ type StorageCacheStorageListUpdated struct {
 
 	// Origin Origin to update.
 	Origin string `json:"origin"`
+
+	// StorageKey Storage key to update.
+	StorageKey string `json:"storageKey"`
 }
 
 // ProtoEvent name

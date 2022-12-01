@@ -886,6 +886,9 @@ const (
 	// DebuggerSetPauseOnExceptionsStateNone enum const
 	DebuggerSetPauseOnExceptionsStateNone DebuggerSetPauseOnExceptionsState = "none"
 
+	// DebuggerSetPauseOnExceptionsStateCaught enum const
+	DebuggerSetPauseOnExceptionsStateCaught DebuggerSetPauseOnExceptionsState = "caught"
+
 	// DebuggerSetPauseOnExceptionsStateUncaught enum const
 	DebuggerSetPauseOnExceptionsStateUncaught DebuggerSetPauseOnExceptionsState = "uncaught"
 
@@ -893,8 +896,8 @@ const (
 	DebuggerSetPauseOnExceptionsStateAll DebuggerSetPauseOnExceptionsState = "all"
 )
 
-// DebuggerSetPauseOnExceptions Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or
-// no exceptions. Initial pause on exceptions state is `none`.
+// DebuggerSetPauseOnExceptions Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,
+// or caught exceptions, no exceptions. Initial pause on exceptions state is `none`.
 type DebuggerSetPauseOnExceptions struct {
 
 	// State Pause on exceptions mode.

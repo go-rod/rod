@@ -284,7 +284,7 @@ func TestBinarySize(t *testing.T) {
 	stat, err := os.Stat("tmp/translator")
 	g.E(err)
 
-	g.Lte(float64(stat.Size())/1024/1024, 10.4) // mb
+	g.Lte(float64(stat.Size())/1024/1024, 10.5) // mb
 }
 
 func TestBrowserCookies(t *testing.T) {

@@ -64,6 +64,9 @@ const (
 
 	// AuditsCookieExclusionReasonExcludeDomainNonASCII enum const
 	AuditsCookieExclusionReasonExcludeDomainNonASCII AuditsCookieExclusionReason = "ExcludeDomainNonASCII"
+
+	// AuditsCookieExclusionReasonExcludeThirdPartyCookieBlockedInFirstPartySet enum const
+	AuditsCookieExclusionReasonExcludeThirdPartyCookieBlockedInFirstPartySet AuditsCookieExclusionReason = "ExcludeThirdPartyCookieBlockedInFirstPartySet"
 )
 
 // AuditsCookieWarningReason ...

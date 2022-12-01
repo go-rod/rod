@@ -391,6 +391,12 @@ type CSSCSSContainerQuery struct {
 
 	// Name (optional) Optional name for the container.
 	Name string `json:"name,omitempty"`
+
+	// PhysicalAxes (optional) Optional physical axes queried for the container.
+	PhysicalAxes DOMPhysicalAxes `json:"physicalAxes,omitempty"`
+
+	// LogicalAxes (optional) Optional logical axes queried for the container.
+	LogicalAxes DOMLogicalAxes `json:"logicalAxes,omitempty"`
 }
 
 // CSSCSSSupports (experimental) CSS Supports at-rule descriptor.

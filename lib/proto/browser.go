@@ -86,6 +86,12 @@ const (
 	// BrowserPermissionTypeGeolocation enum const
 	BrowserPermissionTypeGeolocation BrowserPermissionType = "geolocation"
 
+	// BrowserPermissionTypeIdleDetection enum const
+	BrowserPermissionTypeIdleDetection BrowserPermissionType = "idleDetection"
+
+	// BrowserPermissionTypeLocalFonts enum const
+	BrowserPermissionTypeLocalFonts BrowserPermissionType = "localFonts"
+
 	// BrowserPermissionTypeMidi enum const
 	BrowserPermissionTypeMidi BrowserPermissionType = "midi"
 
@@ -110,20 +116,23 @@ const (
 	// BrowserPermissionTypeSensors enum const
 	BrowserPermissionTypeSensors BrowserPermissionType = "sensors"
 
+	// BrowserPermissionTypeStorageAccess enum const
+	BrowserPermissionTypeStorageAccess BrowserPermissionType = "storageAccess"
+
 	// BrowserPermissionTypeVideoCapture enum const
 	BrowserPermissionTypeVideoCapture BrowserPermissionType = "videoCapture"
 
 	// BrowserPermissionTypeVideoCapturePanTiltZoom enum const
 	BrowserPermissionTypeVideoCapturePanTiltZoom BrowserPermissionType = "videoCapturePanTiltZoom"
 
-	// BrowserPermissionTypeIdleDetection enum const
-	BrowserPermissionTypeIdleDetection BrowserPermissionType = "idleDetection"
-
 	// BrowserPermissionTypeWakeLockScreen enum const
 	BrowserPermissionTypeWakeLockScreen BrowserPermissionType = "wakeLockScreen"
 
 	// BrowserPermissionTypeWakeLockSystem enum const
 	BrowserPermissionTypeWakeLockSystem BrowserPermissionType = "wakeLockSystem"
+
+	// BrowserPermissionTypeWindowManagement enum const
+	BrowserPermissionTypeWindowManagement BrowserPermissionType = "windowManagement"
 )
 
 // BrowserPermissionSetting (experimental) ...
@@ -135,9 +144,6 @@ const (
 
 	// BrowserPermissionSettingDenied enum const
 	BrowserPermissionSettingDenied BrowserPermissionSetting = "denied"
-
-	// BrowserPermissionSettingPrompt enum const
-	BrowserPermissionSettingPrompt BrowserPermissionSetting = "prompt"
 )
 
 // BrowserPermissionDescriptor (experimental) Definition of PermissionDescriptor defined in the Permissions API:

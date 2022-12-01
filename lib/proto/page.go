@@ -2788,11 +2788,14 @@ const (
 	// PageSetSPCTransactionModeModeNone enum const
 	PageSetSPCTransactionModeModeNone PageSetSPCTransactionModeMode = "none"
 
-	// PageSetSPCTransactionModeModeAutoaccept enum const
-	PageSetSPCTransactionModeModeAutoaccept PageSetSPCTransactionModeMode = "autoaccept"
+	// PageSetSPCTransactionModeModeAutoAccept enum const
+	PageSetSPCTransactionModeModeAutoAccept PageSetSPCTransactionModeMode = "autoAccept"
 
-	// PageSetSPCTransactionModeModeAutoreject enum const
-	PageSetSPCTransactionModeModeAutoreject PageSetSPCTransactionModeMode = "autoreject"
+	// PageSetSPCTransactionModeModeAutoReject enum const
+	PageSetSPCTransactionModeModeAutoReject PageSetSPCTransactionModeMode = "autoReject"
+
+	// PageSetSPCTransactionModeModeAutoOptOut enum const
+	PageSetSPCTransactionModeModeAutoOptOut PageSetSPCTransactionModeMode = "autoOptOut"
 )
 
 // PageSetSPCTransactionMode (experimental) Sets the Secure Payment Confirmation transaction mode.
