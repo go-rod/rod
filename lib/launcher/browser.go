@@ -3,12 +3,14 @@ package launcher
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -94,6 +96,12 @@ type Browser struct {
 
 	// LockPort a tcp port to prevent race downloading. Default is 2968 .
 	LockPort int
+
+	// Proxy to use (http/socks5). Default is nil.
+	proxyURL *url.URL
+
+	// IgnoreCerts skips proxy certificate validation
+	IgnoreCerts bool
 }
 
 // NewBrowser with default values
@@ -135,6 +143,16 @@ func (lc *Browser) Download() (err error) {
 	}
 
 	return lc.download(lc.Context, u)
+}
+
+// Proxy sets the proxy for chrome download
+func (lc *Browser) Proxy(URL string) error {
+	proxyURL, err := url.Parse(URL)
+	if err != nil {
+		return err
+	}
+	lc.proxyURL = proxyURL
+	return err
 }
 
 func (lc *Browser) fastestHost() (fastest string, err error) {
@@ -229,7 +247,18 @@ func (lc *Browser) download(ctx context.Context, u string) error {
 }
 
 func (lc *Browser) httpClient() *http.Client {
-	return &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
+	transport := &http.Transport{
+		DisableKeepAlives: true,
+	}
+	if lc.IgnoreCerts {
+		transport.TLSClientConfig = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
+	if lc.proxyURL != nil {
+		transport.Proxy = http.ProxyURL(lc.proxyURL)
+	}
+	return &http.Client{Transport: transport}
 }
 
 // Get is a smart helper to get the browser executable path.

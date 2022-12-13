@@ -12,6 +12,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -74,8 +76,24 @@ func TestDownload(t *testing.T) {
 	b, cancel := newBrowser()
 	b.Logger = utils.LoggerQuiet
 	defer cancel()
+
 	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
 	b.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
+	g.E(b.Download())
+	g.Nil(os.Stat(b.Dir))
+
+	// download chrome with a proxy
+	// should fail with self signed certificate
+	p := httptest.NewTLSServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
+	defer p.Close()
+	// invalid proxy URL should trigger an error
+	err := b.Proxy(`invalid.escaping%%2`)
+	g.Eq(err.Error(), `parse "invalid.escaping%%2": invalid URL escape "%%2"`)
+
+	g.E(b.Proxy(p.URL))
+	g.NotNil(b.Download())
+	// should instead be successful with ignore certificate
+	b.IgnoreCerts = true
 	g.E(b.Download())
 	g.Nil(os.Stat(b.Dir))
 }
@@ -334,4 +352,11 @@ func TestIgnoreCerts_InvalidCert(t *testing.T) {
 	if err == nil {
 		g.Fatalf("IgnoreCerts: %s", err)
 	}
+}
+
+func TestIgnoreCerts_BrowserProxySkipValidation(t *testing.T) {
+	g := setup(t)
+	b := launcher.NewBrowser()
+	// certificate validation skip is disabled by default
+	g.False(b.IgnoreCerts)
 }

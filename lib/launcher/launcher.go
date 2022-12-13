@@ -304,6 +304,7 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 
 // Proxy for the browser
 func (l *Launcher) Proxy(host string) *Launcher {
+	_ = l.browser.Proxy(host)
 	return l.Set(flags.ProxyServer, host)
 }
 
