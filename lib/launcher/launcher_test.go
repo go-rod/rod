@@ -86,6 +86,10 @@ func TestDownload(t *testing.T) {
 	// should fail with self signed certificate
 	p := httptest.NewTLSServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
 	defer p.Close()
+	// invalid proxy URL should trigger an error
+	err := b.Proxy(`invalid.escaping%%2`)
+	g.Eq(err.Error(), `parse "invalid.escaping%%2": invalid URL escape "%%2"`)
+
 	g.E(b.Proxy(p.URL))
 	g.NotNil(b.Download())
 	// should instead be successful with ignore certificate
