@@ -153,6 +153,15 @@ func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	return req.Call(p)
 }
 
+// SetBlockedURLs For some requests that do not want to be triggered, such as some dangerous operations, delete, quit logout, etc.
+// Wildcards ('*') are allowed,such as ["*/api/logout/*","delete",]
+func (p *Page) SetBlockedURLs(urls []string) error {
+	if urls == nil {
+		return proto.NetworkSetBlockedURLs{}.Call(p)
+	}
+	return proto.NetworkSetBlockedURLs{Urls: urls}.Call(p)
+}
+
 // Navigate to the url. If the url is empty, "about:blank" will be used.
 // It will return immediately after the server responds the http header.
 func (p *Page) Navigate(url string) error {
