@@ -80,9 +80,9 @@ func TestSetBlockedURLs(t *testing.T) {
 	page := g.newPage()
 	var urlsPattern = []string{}
 	page.EnableDomain(proto.NetworkEnable{})
-	err := page.MustSetBlockedURLs(urlsPattern...)
+	page.MustSetBlockedURLs(urlsPattern...)
 	urlsPattern = append(urlsPattern, "*.js")
-	err = page.MustSetBlockedURLs(urlsPattern...)
+	err := page.MustSetBlockedURLs(urlsPattern...)
 	if err != nil {
 		fmt.Println(err)
 	}
