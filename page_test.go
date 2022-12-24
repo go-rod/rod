@@ -74,6 +74,20 @@ func TestSetCookies(t *testing.T) {
 	})
 }
 
+func TestSetBlockedURLs(t *testing.T) {
+	g := setup(t)
+	page := g.newPage()
+	var urlsPattern = []string{"/globe/flag.obj", "*/data/data.json*"}
+	page.EnableDomain(proto.NetworkEnable{})
+	page.SetBlockedURLs(urlsPattern)
+	go page.EachEvent(
+		func(e *proto.NetworkLoadingFailed) {
+			g.Eq(e.BlockedReason, proto.NetworkBlockedReasonInspector)
+		},
+	)
+	page.MustNavigate("https://github.com")
+}
+
 func TestSetExtraHeaders(t *testing.T) {
 	g := setup(t)
 
