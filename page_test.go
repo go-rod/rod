@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
 	"math"
 	"net/http"
@@ -79,7 +80,10 @@ func TestSetBlockedURLs(t *testing.T) {
 	page := g.newPage()
 	var urlsPattern = []string{"/globe/flag.obj", "*/data/data.json*"}
 	page.EnableDomain(proto.NetworkEnable{})
-	page.SetBlockedURLs(urlsPattern)
+	err := page.SetBlockedURLs(urlsPattern)
+	if err != nil {
+		fmt.Println(err)
+	}
 	go page.EachEvent(
 		func(e *proto.NetworkLoadingFailed) {
 			g.Eq(e.BlockedReason, proto.NetworkBlockedReasonInspector)
