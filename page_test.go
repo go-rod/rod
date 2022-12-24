@@ -78,9 +78,11 @@ func TestSetCookies(t *testing.T) {
 func TestSetBlockedURLs(t *testing.T) {
 	g := setup(t)
 	page := g.newPage()
-	var urlsPattern = []string{"/globe/flag.obj", "*/data/data.json*"}
+	var urlsPattern = []string{}
 	page.EnableDomain(proto.NetworkEnable{})
-	err := page.SetBlockedURLs(urlsPattern)
+	err := page.MustSetBlockedURLs(urlsPattern...)
+	urlsPattern = append(urlsPattern, "*.js")
+	err = page.MustSetBlockedURLs(urlsPattern...)
 	if err != nil {
 		fmt.Println(err)
 	}
