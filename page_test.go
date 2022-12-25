@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
 	"math"
 	"net/http"
@@ -72,6 +73,25 @@ func TestSetCookies(t *testing.T) {
 		g.mc.stubErr(1, proto.NetworkGetCookies{})
 		page.MustCookies()
 	})
+}
+
+func TestSetBlockedURLs(t *testing.T) {
+	g := setup(t)
+	page := g.newPage()
+	var urlsPattern = []string{}
+	page.EnableDomain(proto.NetworkEnable{})
+	page.MustSetBlockedURLs(urlsPattern...)
+	urlsPattern = append(urlsPattern, "*.js")
+	err := page.MustSetBlockedURLs(urlsPattern...)
+	if err != nil {
+		fmt.Println(err)
+	}
+	go page.EachEvent(
+		func(e *proto.NetworkLoadingFailed) {
+			g.Eq(e.BlockedReason, proto.NetworkBlockedReasonInspector)
+		},
+	)
+	page.MustNavigate("https://github.com")
 }
 
 func TestSetExtraHeaders(t *testing.T) {

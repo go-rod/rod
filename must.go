@@ -221,6 +221,12 @@ func (p *Page) MustSetUserAgent(req *proto.NetworkSetUserAgentOverride) *Page {
 	return p
 }
 
+// MustSetBlockedURLs is similar to Page.SetBlockedURLs
+func (p *Page) MustSetBlockedURLs(urls ...string) *Page {
+	p.e(p.SetBlockedURLs(urls))
+	return p
+}
+
 // MustNavigate is similar to Page.Navigate
 func (p *Page) MustNavigate(url string) *Page {
 	p.e(p.Navigate(url))
