@@ -2841,6 +2841,9 @@ const (
 	// NetworkTrustTokenOperationDoneStatusUnavailable enum const
 	NetworkTrustTokenOperationDoneStatusUnavailable NetworkTrustTokenOperationDoneStatus = "Unavailable"
 
+	// NetworkTrustTokenOperationDoneStatusUnauthorized enum const
+	NetworkTrustTokenOperationDoneStatusUnauthorized NetworkTrustTokenOperationDoneStatus = "Unauthorized"
+
 	// NetworkTrustTokenOperationDoneStatusBadResponse enum const
 	NetworkTrustTokenOperationDoneStatusBadResponse NetworkTrustTokenOperationDoneStatus = "BadResponse"
 

@@ -143,9 +143,6 @@ const (
 	// EmulationDisabledImageTypeAvif enum const
 	EmulationDisabledImageTypeAvif EmulationDisabledImageType = "avif"
 
-	// EmulationDisabledImageTypeJxl enum const
-	EmulationDisabledImageTypeJxl EmulationDisabledImageType = "jxl"
-
 	// EmulationDisabledImageTypeWebp enum const
 	EmulationDisabledImageTypeWebp EmulationDisabledImageType = "webp"
 )

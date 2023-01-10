@@ -292,6 +292,9 @@ type TargetCreateTarget struct {
 	// Background (optional) Whether to create the target in background or foreground (chrome-only,
 	// false by default).
 	Background bool `json:"background,omitempty"`
+
+	// ForTab (experimental) (optional) Whether to create the target of type "tab".
+	ForTab bool `json:"forTab,omitempty"`
 }
 
 // ProtoReq name

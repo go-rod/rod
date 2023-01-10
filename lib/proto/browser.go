@@ -144,6 +144,9 @@ const (
 
 	// BrowserPermissionSettingDenied enum const
 	BrowserPermissionSettingDenied BrowserPermissionSetting = "denied"
+
+	// BrowserPermissionSettingPrompt enum const
+	BrowserPermissionSettingPrompt BrowserPermissionSetting = "prompt"
 )
 
 // BrowserPermissionDescriptor (experimental) Definition of PermissionDescriptor defined in the Permissions API:

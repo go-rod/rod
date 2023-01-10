@@ -619,6 +619,9 @@ type AuditsGenericIssueErrorType string
 const (
 	// AuditsGenericIssueErrorTypeCrossOriginPortalPostMessageError enum const
 	AuditsGenericIssueErrorTypeCrossOriginPortalPostMessageError AuditsGenericIssueErrorType = "CrossOriginPortalPostMessageError"
+
+	// AuditsGenericIssueErrorTypeFormLabelForNameError enum const
+	AuditsGenericIssueErrorTypeFormLabelForNameError AuditsGenericIssueErrorType = "FormLabelForNameError"
 )
 
 // AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
@@ -629,6 +632,9 @@ type AuditsGenericIssueDetails struct {
 
 	// FrameID (optional) ...
 	FrameID PageFrameID `json:"frameId,omitempty"`
+
+	// ViolatingNodeID (optional) ...
+	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId,omitempty"`
 }
 
 // AuditsDeprecationIssueType ...
@@ -846,29 +852,29 @@ const (
 	// AuditsFederatedAuthRequestIssueReasonTooManyRequests enum const
 	AuditsFederatedAuthRequestIssueReasonTooManyRequests AuditsFederatedAuthRequestIssueReason = "TooManyRequests"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestListHTTPNotFound enum const
-	AuditsFederatedAuthRequestIssueReasonManifestListHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ManifestListHttpNotFound"
+	// AuditsFederatedAuthRequestIssueReasonWellKnownHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownHTTPNotFound AuditsFederatedAuthRequestIssueReason = "WellKnownHttpNotFound"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestListNoResponse enum const
-	AuditsFederatedAuthRequestIssueReasonManifestListNoResponse AuditsFederatedAuthRequestIssueReason = "ManifestListNoResponse"
+	// AuditsFederatedAuthRequestIssueReasonWellKnownNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownNoResponse AuditsFederatedAuthRequestIssueReason = "WellKnownNoResponse"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestListInvalidResponse enum const
-	AuditsFederatedAuthRequestIssueReasonManifestListInvalidResponse AuditsFederatedAuthRequestIssueReason = "ManifestListInvalidResponse"
+	// AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse AuditsFederatedAuthRequestIssueReason = "WellKnownInvalidResponse"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestNotInManifestList enum const
-	AuditsFederatedAuthRequestIssueReasonManifestNotInManifestList AuditsFederatedAuthRequestIssueReason = "ManifestNotInManifestList"
+	// AuditsFederatedAuthRequestIssueReasonConfigNotInWellKnown enum const
+	AuditsFederatedAuthRequestIssueReasonConfigNotInWellKnown AuditsFederatedAuthRequestIssueReason = "ConfigNotInWellKnown"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestListTooBig enum const
-	AuditsFederatedAuthRequestIssueReasonManifestListTooBig AuditsFederatedAuthRequestIssueReason = "ManifestListTooBig"
+	// AuditsFederatedAuthRequestIssueReasonWellKnownTooBig enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownTooBig AuditsFederatedAuthRequestIssueReason = "WellKnownTooBig"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestHTTPNotFound enum const
-	AuditsFederatedAuthRequestIssueReasonManifestHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ManifestHttpNotFound"
+	// AuditsFederatedAuthRequestIssueReasonConfigHTTPNotFound enum const
+	AuditsFederatedAuthRequestIssueReasonConfigHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ConfigHttpNotFound"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestNoResponse enum const
-	AuditsFederatedAuthRequestIssueReasonManifestNoResponse AuditsFederatedAuthRequestIssueReason = "ManifestNoResponse"
+	// AuditsFederatedAuthRequestIssueReasonConfigNoResponse enum const
+	AuditsFederatedAuthRequestIssueReasonConfigNoResponse AuditsFederatedAuthRequestIssueReason = "ConfigNoResponse"
 
-	// AuditsFederatedAuthRequestIssueReasonManifestInvalidResponse enum const
-	AuditsFederatedAuthRequestIssueReasonManifestInvalidResponse AuditsFederatedAuthRequestIssueReason = "ManifestInvalidResponse"
+	// AuditsFederatedAuthRequestIssueReasonConfigInvalidResponse enum const
+	AuditsFederatedAuthRequestIssueReasonConfigInvalidResponse AuditsFederatedAuthRequestIssueReason = "ConfigInvalidResponse"
 
 	// AuditsFederatedAuthRequestIssueReasonClientMetadataHTTPNotFound enum const
 	AuditsFederatedAuthRequestIssueReasonClientMetadataHTTPNotFound AuditsFederatedAuthRequestIssueReason = "ClientMetadataHttpNotFound"

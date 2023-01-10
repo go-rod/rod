@@ -367,3 +367,33 @@ func (m WebAuthnSetAutomaticPresenceSimulation) ProtoReq() string {
 func (m WebAuthnSetAutomaticPresenceSimulation) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
+
+// WebAuthnCredentialAdded Triggered when a credential is added to an authenticator.
+type WebAuthnCredentialAdded struct {
+
+	// AuthenticatorID ...
+	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
+
+	// Credential ...
+	Credential *WebAuthnCredential `json:"credential"`
+}
+
+// ProtoEvent name
+func (evt WebAuthnCredentialAdded) ProtoEvent() string {
+	return "WebAuthn.credentialAdded"
+}
+
+// WebAuthnCredentialAsserted Triggered when a credential is used in a webauthn assertion.
+type WebAuthnCredentialAsserted struct {
+
+	// AuthenticatorID ...
+	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
+
+	// Credential ...
+	Credential *WebAuthnCredential `json:"credential"`
+}
+
+// ProtoEvent name
+func (evt WebAuthnCredentialAsserted) ProtoEvent() string {
+	return "WebAuthn.credentialAsserted"
+}

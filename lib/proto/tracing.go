@@ -272,8 +272,8 @@ func (evt TracingBufferUsage) ProtoEvent() string {
 	return "Tracing.bufferUsage"
 }
 
-// TracingDataCollected Contains an bucket of collected trace events. When tracing is stopped collected events will be
-// send as a sequence of dataCollected events followed by tracingComplete event.
+// TracingDataCollected Contains a bucket of collected trace events. When tracing is stopped collected events will be
+// sent as a sequence of dataCollected events followed by tracingComplete event.
 type TracingDataCollected struct {
 
 	// Value ...

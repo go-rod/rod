@@ -3036,6 +3036,12 @@ func (t T) StorageClearSharedStorageEntries() {
 	t.Nil(err)
 }
 
+func (t T) StorageResetSharedStorageBudget() {
+	c := &Client{}
+	err := proto.StorageResetSharedStorageBudget{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageSetSharedStorageTracking() {
 	c := &Client{}
 	err := proto.StorageSetSharedStorageTracking{}.Call(c)
@@ -3075,6 +3081,12 @@ func (t T) StorageSharedStorageAccessed() {
 func (t T) SystemInfoGetInfo() {
 	c := &Client{}
 	_, err := proto.SystemInfoGetInfo{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) SystemInfoGetFeatureState() {
+	c := &Client{}
+	_, err := proto.SystemInfoGetFeatureState{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3500,6 +3512,16 @@ func (t T) WebAuthnSetAutomaticPresenceSimulation() {
 	c := &Client{}
 	err := proto.WebAuthnSetAutomaticPresenceSimulation{}.Call(c)
 	t.Nil(err)
+}
+
+func (t T) WebAuthnCredentialAdded() {
+	e := proto.WebAuthnCredentialAdded{}
+	e.ProtoEvent()
+}
+
+func (t T) WebAuthnCredentialAsserted() {
+	e := proto.WebAuthnCredentialAsserted{}
+	e.ProtoEvent()
 }
 
 func (t T) MediaEnable() {

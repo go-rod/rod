@@ -89,6 +89,9 @@ const (
 	// StorageInterestGroupAccessTypeUpdate enum const
 	StorageInterestGroupAccessTypeUpdate StorageInterestGroupAccessType = "update"
 
+	// StorageInterestGroupAccessTypeLoaded enum const
+	StorageInterestGroupAccessTypeLoaded StorageInterestGroupAccessType = "loaded"
+
 	// StorageInterestGroupAccessTypeBid enum const
 	StorageInterestGroupAccessTypeBid StorageInterestGroupAccessType = "bid"
 
@@ -781,6 +784,21 @@ func (m StorageClearSharedStorageEntries) ProtoReq() string {
 
 // Call sends the request
 func (m StorageClearSharedStorageEntries) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageResetSharedStorageBudget (experimental) Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
+type StorageResetSharedStorageBudget struct {
+
+	// OwnerOrigin ...
+	OwnerOrigin string `json:"ownerOrigin"`
+}
+
+// ProtoReq name
+func (m StorageResetSharedStorageBudget) ProtoReq() string { return "Storage.resetSharedStorageBudget" }
+
+// Call sends the request
+func (m StorageResetSharedStorageBudget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

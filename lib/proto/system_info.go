@@ -201,6 +201,29 @@ type SystemInfoGetInfoResult struct {
 	CommandLine string `json:"commandLine"`
 }
 
+// SystemInfoGetFeatureState Returns information about the feature state.
+type SystemInfoGetFeatureState struct {
+
+	// FeatureState ...
+	FeatureState string `json:"featureState"`
+}
+
+// ProtoReq name
+func (m SystemInfoGetFeatureState) ProtoReq() string { return "SystemInfo.getFeatureState" }
+
+// Call the request
+func (m SystemInfoGetFeatureState) Call(c Client) (*SystemInfoGetFeatureStateResult, error) {
+	var res SystemInfoGetFeatureStateResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// SystemInfoGetFeatureStateResult ...
+type SystemInfoGetFeatureStateResult struct {
+
+	// FeatureEnabled ...
+	FeatureEnabled bool `json:"featureEnabled"`
+}
+
 // SystemInfoGetProcessInfo Returns information about all running processes.
 type SystemInfoGetProcessInfo struct {
 }
