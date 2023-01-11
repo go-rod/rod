@@ -18,6 +18,7 @@ import (
 )
 
 var (
+	// ErrNoShadowRoot is calling ShadowRoot on an Element with no shadow root
 	ErrNoShadowRoot = errors.New("element has no shadow root")
 )
 
