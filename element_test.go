@@ -284,6 +284,10 @@ func TestShadowDOM(t *testing.T) {
 		g.mc.stubErr(1, proto.DOMResolveNode{})
 		el.MustShadowRoot()
 	})
+
+	elNoShadow := p.MustElement("script")
+	_, err := elNoShadow.ShadowRoot()
+	g.True((&rod.ErrNoShadowRoot{}).Is(err))
 }
 
 func TestInputTime(t *testing.T) {

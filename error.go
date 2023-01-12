@@ -181,3 +181,16 @@ type ErrPageNotFound struct {
 func (e *ErrPageNotFound) Error() string {
 	return "cannot find page"
 }
+
+// ErrNoShadowRoot error
+type ErrNoShadowRoot struct {
+	*Element
+}
+
+// Error ...
+func (e *ErrNoShadowRoot) Error() string {
+	return fmt.Sprintf("element has no shadow root: %s", e.String())
+}
+
+// Is interface
+func (e *ErrNoShadowRoot) Is(err error) bool { _, ok := err.(*ErrNoShadowRoot); return ok }

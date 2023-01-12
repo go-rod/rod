@@ -17,11 +17,6 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-var (
-	// ErrNoShadowRoot is calling ShadowRoot on an Element with no shadow root
-	ErrNoShadowRoot = errors.New("element has no shadow root")
-)
-
 // Element implements these interfaces
 var _ proto.Client = &Element{}
 var _ proto.Contextable = &Element{}
@@ -408,7 +403,7 @@ func (el *Element) ShadowRoot() (*Element, error) {
 
 	// though now it's an array, w3c changed the spec of it to be a single.
 	if len(node.ShadowRoots) == 0 {
-		return nil, ErrNoShadowRoot
+		return nil, &ErrNoShadowRoot{el}
 	}
 	id := node.ShadowRoots[0].BackendNodeID
 
