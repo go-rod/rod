@@ -36,5 +36,17 @@ func main() {
 		browser.MustPage("https://mdn.dev/").MustEval("() => document.title"),
 	)
 
+	// Launch another browser with the same docker container.
+	ll := launcher.MustNewManaged("")
+
+	// You can set different flags for each browser.
+	ll.Set("disable-sync").Delete("disable-sync")
+
+	anotherBrowser := rod.New().Client(ll.MustClient()).MustConnect()
+
+	fmt.Println(
+		anotherBrowser.MustPage("https://go-rod.github.io").MustEval("() => document.title"),
+	)
+
 	utils.Pause()
 }
