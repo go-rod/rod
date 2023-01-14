@@ -402,6 +402,9 @@ func (el *Element) ShadowRoot() (*Element, error) {
 	}
 
 	// though now it's an array, w3c changed the spec of it to be a single.
+	if len(node.ShadowRoots) == 0 {
+		return nil, &ErrNoShadowRoot{el}
+	}
 	id := node.ShadowRoots[0].BackendNodeID
 
 	shadowNode, err := proto.DOMResolveNode{BackendNodeID: id}.Call(el)
