@@ -644,10 +644,10 @@ const (
 // are specified in third_party/blink/renderer/core/fetch/trust_token.idl.
 type NetworkTrustTokenParams struct {
 
-	// Type ...
-	Type NetworkTrustTokenOperationType `json:"type"`
+	// Operation ...
+	Operation NetworkTrustTokenOperationType `json:"operation"`
 
-	// RefreshPolicy Only set for "token-redemption" type and determine whether
+	// RefreshPolicy Only set for "token-redemption" operation and determine whether
 	// to request a fresh SRR or use a still valid cached SRR.
 	RefreshPolicy NetworkTrustTokenParamsRefreshPolicy `json:"refreshPolicy"`
 
@@ -1808,8 +1808,9 @@ func (m NetworkEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// NetworkGetAllCookies Returns all browser cookies. Depending on the backend support, will return detailed cookie
+// NetworkGetAllCookies (deprecated) Returns all browser cookies. Depending on the backend support, will return detailed cookie
 // information in the `cookies` field.
+// Deprecated. Use Storage.getCookies instead.
 type NetworkGetAllCookies struct {
 }
 
@@ -1822,7 +1823,7 @@ func (m NetworkGetAllCookies) Call(c Client) (*NetworkGetAllCookiesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// NetworkGetAllCookiesResult ...
+// NetworkGetAllCookiesResult (deprecated) ...
 type NetworkGetAllCookiesResult struct {
 
 	// Cookies Array of cookie objects.

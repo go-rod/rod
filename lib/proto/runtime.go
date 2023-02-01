@@ -766,6 +766,14 @@ type RuntimeCallFunctionOn struct {
 	// ThrowOnSideEffect (experimental) (optional) Whether to throw an exception if side effect cannot be ruled out during evaluation.
 	ThrowOnSideEffect bool `json:"throwOnSideEffect,omitempty"`
 
+	// UniqueContextID (experimental) (optional) An alternative way to specify the execution context to call function on.
+	// Compared to contextId that may be reused across processes, this is guaranteed to be
+	// system-unique, so it can be used to prevent accidental function call
+	// in context different than intended (e.g. as a result of navigation across process
+	// boundaries).
+	// This is mutually exclusive with `executionContextId`.
+	UniqueContextID string `json:"uniqueContextId,omitempty"`
+
 	// GenerateWebDriverValue (experimental) (optional) Whether the result should contain `webDriverValue`, serialized according to
 	// https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
 	// resulting `objectId` is still provided.
@@ -1480,8 +1488,11 @@ func (evt RuntimeExecutionContextCreated) ProtoEvent() string {
 // RuntimeExecutionContextDestroyed Issued when execution context is destroyed.
 type RuntimeExecutionContextDestroyed struct {
 
-	// ExecutionContextID Id of the destroyed context
+	// ExecutionContextID (deprecated) Id of the destroyed context
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
+
+	// ExecutionContextUniqueID (experimental) Unique Id of the destroyed context
+	ExecutionContextUniqueID string `json:"executionContextUniqueId"`
 }
 
 // ProtoEvent name

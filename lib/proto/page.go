@@ -293,6 +293,9 @@ const (
 	// PagePermissionsPolicyFeaturePictureInPicture enum const
 	PagePermissionsPolicyFeaturePictureInPicture PagePermissionsPolicyFeature = "picture-in-picture"
 
+	// PagePermissionsPolicyFeaturePrivateAggregation enum const
+	PagePermissionsPolicyFeaturePrivateAggregation PagePermissionsPolicyFeature = "private-aggregation"
+
 	// PagePermissionsPolicyFeaturePublickeyCredentialsGet enum const
 	PagePermissionsPolicyFeaturePublickeyCredentialsGet PagePermissionsPolicyFeature = "publickey-credentials-get"
 
@@ -310,6 +313,9 @@ const (
 
 	// PagePermissionsPolicyFeatureSharedStorage enum const
 	PagePermissionsPolicyFeatureSharedStorage PagePermissionsPolicyFeature = "shared-storage"
+
+	// PagePermissionsPolicyFeatureSharedStorageSelectURL enum const
+	PagePermissionsPolicyFeatureSharedStorageSelectURL PagePermissionsPolicyFeature = "shared-storage-select-url"
 
 	// PagePermissionsPolicyFeatureSmartCard enum const
 	PagePermissionsPolicyFeatureSmartCard PagePermissionsPolicyFeature = "smart-card"
@@ -334,6 +340,9 @@ const (
 
 	// PagePermissionsPolicyFeatureWebShare enum const
 	PagePermissionsPolicyFeatureWebShare PagePermissionsPolicyFeature = "web-share"
+
+	// PagePermissionsPolicyFeatureWindowManagement enum const
+	PagePermissionsPolicyFeatureWindowManagement PagePermissionsPolicyFeature = "window-management"
 
 	// PagePermissionsPolicyFeatureWindowPlacement enum const
 	PagePermissionsPolicyFeatureWindowPlacement PagePermissionsPolicyFeature = "window-placement"
@@ -1517,6 +1526,21 @@ const (
 
 	// PagePrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess enum const
 	PagePrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess PagePrerenderFinalStatus = "ActivationNavigationDestroyedBeforeSuccess"
+
+	// PagePrerenderFinalStatusTabClosedByUserGesture enum const
+	PagePrerenderFinalStatusTabClosedByUserGesture PagePrerenderFinalStatus = "TabClosedByUserGesture"
+
+	// PagePrerenderFinalStatusTabClosedWithoutUserGesture enum const
+	PagePrerenderFinalStatusTabClosedWithoutUserGesture PagePrerenderFinalStatus = "TabClosedWithoutUserGesture"
+
+	// PagePrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed enum const
+	PagePrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed PagePrerenderFinalStatus = "PrimaryMainFrameRendererProcessCrashed"
+
+	// PagePrerenderFinalStatusPrimaryMainFrameRendererProcessKilled enum const
+	PagePrerenderFinalStatusPrimaryMainFrameRendererProcessKilled PagePrerenderFinalStatus = "PrimaryMainFrameRendererProcessKilled"
+
+	// PagePrerenderFinalStatusActivationFramePolicyNotCompatible enum const
+	PagePrerenderFinalStatusActivationFramePolicyNotCompatible PagePrerenderFinalStatus = "ActivationFramePolicyNotCompatible"
 )
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.

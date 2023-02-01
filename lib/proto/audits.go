@@ -622,6 +622,12 @@ const (
 
 	// AuditsGenericIssueErrorTypeFormLabelForNameError enum const
 	AuditsGenericIssueErrorTypeFormLabelForNameError AuditsGenericIssueErrorType = "FormLabelForNameError"
+
+	// AuditsGenericIssueErrorTypeFormDuplicateIDForInputError enum const
+	AuditsGenericIssueErrorTypeFormDuplicateIDForInputError AuditsGenericIssueErrorType = "FormDuplicateIdForInputError"
+
+	// AuditsGenericIssueErrorTypeFormInputWithNoLabelError enum const
+	AuditsGenericIssueErrorTypeFormInputWithNoLabelError AuditsGenericIssueErrorType = "FormInputWithNoLabelError"
 )
 
 // AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
@@ -718,6 +724,9 @@ const (
 
 	// AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe enum const
 	AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe AuditsDeprecationIssueType = "NotificationPermissionRequestedIframe"
+
+	// AuditsDeprecationIssueTypeObsoleteCreateImageBitmapImageOrientationNone enum const
+	AuditsDeprecationIssueTypeObsoleteCreateImageBitmapImageOrientationNone AuditsDeprecationIssueType = "ObsoleteCreateImageBitmapImageOrientationNone"
 
 	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
 	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
@@ -861,6 +870,9 @@ const (
 	// AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse enum const
 	AuditsFederatedAuthRequestIssueReasonWellKnownInvalidResponse AuditsFederatedAuthRequestIssueReason = "WellKnownInvalidResponse"
 
+	// AuditsFederatedAuthRequestIssueReasonWellKnownListEmpty enum const
+	AuditsFederatedAuthRequestIssueReasonWellKnownListEmpty AuditsFederatedAuthRequestIssueReason = "WellKnownListEmpty"
+
 	// AuditsFederatedAuthRequestIssueReasonConfigNotInWellKnown enum const
 	AuditsFederatedAuthRequestIssueReasonConfigNotInWellKnown AuditsFederatedAuthRequestIssueReason = "ConfigNotInWellKnown"
 
@@ -902,6 +914,9 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonAccountsInvalidResponse enum const
 	AuditsFederatedAuthRequestIssueReasonAccountsInvalidResponse AuditsFederatedAuthRequestIssueReason = "AccountsInvalidResponse"
+
+	// AuditsFederatedAuthRequestIssueReasonAccountsListEmpty enum const
+	AuditsFederatedAuthRequestIssueReasonAccountsListEmpty AuditsFederatedAuthRequestIssueReason = "AccountsListEmpty"
 
 	// AuditsFederatedAuthRequestIssueReasonIDTokenHTTPNotFound enum const
 	AuditsFederatedAuthRequestIssueReasonIDTokenHTTPNotFound AuditsFederatedAuthRequestIssueReason = "IdTokenHttpNotFound"

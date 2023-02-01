@@ -89,6 +89,11 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 	// Defaults to false.
 	HasMinPinLength bool `json:"hasMinPinLength,omitempty"`
 
+	// HasPrf (optional) If set to true, the authenticator will support the prf extension.
+	// https://w3c.github.io/webauthn/#prf-extension
+	// Defaults to false.
+	HasPrf bool `json:"hasPrf,omitempty"`
+
 	// AutomaticPresenceSimulation (optional) If set to true, tests of user presence will succeed immediately.
 	// Otherwise, they will not be resolved. Defaults to true.
 	AutomaticPresenceSimulation bool `json:"automaticPresenceSimulation,omitempty"`

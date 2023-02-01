@@ -119,6 +119,9 @@ const (
 	// BrowserPermissionTypeStorageAccess enum const
 	BrowserPermissionTypeStorageAccess BrowserPermissionType = "storageAccess"
 
+	// BrowserPermissionTypeTopLevelStorageAccess enum const
+	BrowserPermissionTypeTopLevelStorageAccess BrowserPermissionType = "topLevelStorageAccess"
+
 	// BrowserPermissionTypeVideoCapture enum const
 	BrowserPermissionTypeVideoCapture BrowserPermissionType = "videoCapture"
 
