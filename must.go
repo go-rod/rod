@@ -834,6 +834,13 @@ func (el *Element) MustProperty(name string) gson.JSON {
 	return prop
 }
 
+// MustDisabled is similar to Element.Disabled
+func (el *Element) MustDisabled() bool {
+	disabled, err := el.Disabled()
+	el.e(err)
+	return disabled
+}
+
 // MustContainsElement is similar to Element.ContainsElement
 func (el *Element) MustContainsElement(target *Element) bool {
 	contains, err := el.ContainsElement(target)

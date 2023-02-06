@@ -365,6 +365,15 @@ func (el *Element) Property(name string) (gson.JSON, error) {
 	return prop.Value, nil
 }
 
+// Disabled checks if the element is disabled.
+func (el *Element) Disabled() (bool, error) {
+	prop, err := el.Property("disabled")
+	if err != nil {
+		return false, err
+	}
+	return prop.Bool(), nil
+}
+
 // SetFiles of the current file input element
 func (el *Element) SetFiles(paths []string) error {
 	absPaths := utils.AbsolutePaths(paths)

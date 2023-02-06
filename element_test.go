@@ -490,6 +490,21 @@ func TestProperty(t *testing.T) {
 	})
 }
 
+func TestDisabled(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
+
+	g.False(p.MustElement("#EnabledButton").MustDisabled())
+	g.True(p.MustElement("#DisabledButton").MustDisabled())
+
+	g.Panic(func() {
+		el := p.MustElement("#EnabledButton")
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustDisabled()
+	})
+}
+
 func TestSetFiles(t *testing.T) {
 	g := setup(t)
 
