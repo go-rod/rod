@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
@@ -473,4 +474,11 @@ func TestBrowserLostConnection(t *testing.T) {
 
 	_, err := p.Eval(`() => new Promise(r => {})`)
 	g.Err(err)
+}
+
+func TestBrowserConnectConflict(t *testing.T) {
+	g := setup(t)
+	g.Panic(func() {
+		rod.New().Client(&cdp.Client{}).ControlURL("test").MustConnect()
+	})
 }

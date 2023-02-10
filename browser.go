@@ -157,6 +157,8 @@ func (b *Browser) Connect() error {
 			return err
 		}
 		b.client = c
+	} else if b.controlURL != "" {
+		panic("Browser.Client and Browser.ControlURL can't be set at the same time")
 	}
 
 	b.initEvents()
