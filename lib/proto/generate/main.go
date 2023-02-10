@@ -93,9 +93,9 @@ func main() {
 
 	path := "./lib/proto"
 	utils.Exec("gofmt -s -w", path)
+	utils.Exec("go run golang.org/x/tools/cmd/goimports@latest -w", path)
 	utils.Exec(
-		"go run github.com/ysmood/golangci-lint@latest -- "+
-			"run --no-config --fix --disable-all -E gofmt,goimports",
+		"go run github.com/ysmood/golangci-lint@latest -- run --fix",
 		path,
 	)
 }
@@ -237,7 +237,7 @@ func (d *definition) formatTests() (code string) {
 		return utils.S(`
 		func (t T) {{.name}}() {
 			e := proto.{{.name}}{}
-			e.ProtoEvent()
+			t.Regex("", e.ProtoEvent())
 		}
 		`, "name", d.name)
 	}

@@ -20,6 +20,7 @@
         "backgrounding",
         "backoff",
         "beforeunload",
+        "bodyclose",
         "breakpad",
         "Chromedp",
         "codesearch",
@@ -42,6 +43,7 @@
         "Geolocation",
         "getent",
         "gobwas",
+        "gocyclo",
         "GODEBUG",
         "gofmt",
         "goimports",
@@ -55,6 +57,7 @@
         "iframe",
         "iframes",
         "Interactable",
+        "ioutil",
         "keychain",
         "KHTML",
         "ldflags",
@@ -89,7 +92,10 @@
         "Sessionable",
         "Smood",
         "Socketable",
+        "spki",
+        "spkis",
         "srgb",
+        "staticcheck",
         "stdlib",
         "tlid",
         "touchend",
@@ -106,10 +112,7 @@
         "wsutil",
         "xlink",
         "XVFB",
-        "ysmood",
-        "spki",
-        "spkis",
-        "staticcheck"
+        "ysmood"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.
