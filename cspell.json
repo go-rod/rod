@@ -102,6 +102,7 @@
         "touchstart",
         "tracebackancestors",
         "trimpath",
+        "termux",
         "Typedarray",
         "tzdata",
         "Unserializable",

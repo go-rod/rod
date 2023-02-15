@@ -331,6 +331,7 @@ func LookPath() (found string, has bool) {
 			"/usr/bin/chromium",
 			"/usr/bin/chromium-browser",
 			"/snap/bin/chromium",
+			"/data/data/com.termux/files/usr/bin/chromium-browser",
 		},
 		"windows": append([]string{"chrome", "edge"}, expandWindowsExePaths(
 			`Google\Chrome\Application\chrome.exe`,
