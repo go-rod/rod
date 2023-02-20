@@ -158,12 +158,12 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 	return l
 }
 
-// Set a command line argument to launch the browser.
+// Set a command line argument when launching the browser. Be careful the first argument is a flag name,
+// it shouldn't contain values. The values the will be joined with comma.
+// You can use the [Launcher.FormatArgs] to debug the final CLI arguments.
 func (l *Launcher) Set(name flags.Flag, values ...string) *Launcher {
-	if strings.Contains(string(name), "=") {
-		panic("flag name should not contain '='")
-	}
-	l.Flags[l.normalizeFlag(name)] = values
+	name.Check()
+	l.Flags[name.NormalizeFlag()] = values
 	return l
 }
 
@@ -183,7 +183,7 @@ func (l *Launcher) Has(name flags.Flag) bool {
 
 // GetFlags from settings
 func (l *Launcher) GetFlags(name flags.Flag) ([]string, bool) {
-	flag, has := l.Flags[l.normalizeFlag(name)]
+	flag, has := l.Flags[name.NormalizeFlag()]
 	return flag, has
 }
 
@@ -198,7 +198,7 @@ func (l *Launcher) Append(name flags.Flag, values ...string) *Launcher {
 
 // Delete a flag
 func (l *Launcher) Delete(name flags.Flag) *Launcher {
-	delete(l.Flags, l.normalizeFlag(name))
+	delete(l.Flags, name.NormalizeFlag())
 	return l
 }
 
@@ -487,8 +487,4 @@ func (l *Launcher) Cleanup() {
 
 	dir := l.Get(flags.UserDataDir)
 	_ = os.RemoveAll(dir)
-}
-
-func (l *Launcher) normalizeFlag(name flags.Flag) flags.Flag {
-	return flags.Flag(strings.TrimLeft(string(name), "-"))
 }
