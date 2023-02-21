@@ -77,7 +77,6 @@ func New() *Launcher {
 		"disable-client-side-phishing-detection":             nil,
 		"disable-component-extensions-with-background-pages": nil,
 		"disable-default-apps":                               nil,
-		"disable-dev-shm-usage":                              nil,
 		"disable-hang-monitor":                               nil,
 		"disable-ipc-flooding-protection":                    nil,
 		"disable-popup-blocking":                             nil,
