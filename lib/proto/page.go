@@ -1541,6 +1541,18 @@ const (
 
 	// PagePrerenderFinalStatusActivationFramePolicyNotCompatible enum const
 	PagePrerenderFinalStatusActivationFramePolicyNotCompatible PagePrerenderFinalStatus = "ActivationFramePolicyNotCompatible"
+
+	// PagePrerenderFinalStatusPreloadingDisabled enum const
+	PagePrerenderFinalStatusPreloadingDisabled PagePrerenderFinalStatus = "PreloadingDisabled"
+
+	// PagePrerenderFinalStatusBatterySaverEnabled enum const
+	PagePrerenderFinalStatusBatterySaverEnabled PagePrerenderFinalStatus = "BatterySaverEnabled"
+
+	// PagePrerenderFinalStatusActivatedDuringMainFrameNavigation enum const
+	PagePrerenderFinalStatusActivatedDuringMainFrameNavigation PagePrerenderFinalStatus = "ActivatedDuringMainFrameNavigation"
+
+	// PagePrerenderFinalStatusPreloadingUnsupportedByWebContents enum const
+	PagePrerenderFinalStatusPreloadingUnsupportedByWebContents PagePrerenderFinalStatus = "PreloadingUnsupportedByWebContents"
 )
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
@@ -2853,6 +2865,36 @@ func (m PageSetSPCTransactionMode) ProtoReq() string { return "Page.setSPCTransa
 
 // Call sends the request
 func (m PageSetSPCTransactionMode) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// PageSetRPHRegistrationModeMode enum
+type PageSetRPHRegistrationModeMode string
+
+const (
+	// PageSetRPHRegistrationModeModeNone enum const
+	PageSetRPHRegistrationModeModeNone PageSetRPHRegistrationModeMode = "none"
+
+	// PageSetRPHRegistrationModeModeAutoaccept enum const
+	PageSetRPHRegistrationModeModeAutoaccept PageSetRPHRegistrationModeMode = "autoaccept"
+
+	// PageSetRPHRegistrationModeModeAutoreject enum const
+	PageSetRPHRegistrationModeModeAutoreject PageSetRPHRegistrationModeMode = "autoreject"
+)
+
+// PageSetRPHRegistrationMode (experimental) Extensions for Custom Handlers API:
+// https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+type PageSetRPHRegistrationMode struct {
+
+	// Mode ...
+	Mode PageSetRPHRegistrationModeMode `json:"mode"`
+}
+
+// ProtoReq name
+func (m PageSetRPHRegistrationMode) ProtoReq() string { return "Page.setRPHRegistrationMode" }
+
+// Call sends the request
+func (m PageSetRPHRegistrationMode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

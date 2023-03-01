@@ -628,6 +628,24 @@ const (
 
 	// AuditsGenericIssueErrorTypeFormInputWithNoLabelError enum const
 	AuditsGenericIssueErrorTypeFormInputWithNoLabelError AuditsGenericIssueErrorType = "FormInputWithNoLabelError"
+
+	// AuditsGenericIssueErrorTypeFormAutocompleteAttributeEmptyError enum const
+	AuditsGenericIssueErrorTypeFormAutocompleteAttributeEmptyError AuditsGenericIssueErrorType = "FormAutocompleteAttributeEmptyError"
+
+	// AuditsGenericIssueErrorTypeFormEmptyIDAndNameAttributesForInputError enum const
+	AuditsGenericIssueErrorTypeFormEmptyIDAndNameAttributesForInputError AuditsGenericIssueErrorType = "FormEmptyIdAndNameAttributesForInputError"
+
+	// AuditsGenericIssueErrorTypeFormAriaLabelledByToNonExistingID enum const
+	AuditsGenericIssueErrorTypeFormAriaLabelledByToNonExistingID AuditsGenericIssueErrorType = "FormAriaLabelledByToNonExistingId"
+
+	// AuditsGenericIssueErrorTypeFormInputAssignedAutocompleteValueToIDOrNameAttributeError enum const
+	AuditsGenericIssueErrorTypeFormInputAssignedAutocompleteValueToIDOrNameAttributeError AuditsGenericIssueErrorType = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError"
+
+	// AuditsGenericIssueErrorTypeFormLabelHasNeitherForNorNestedInput enum const
+	AuditsGenericIssueErrorTypeFormLabelHasNeitherForNorNestedInput AuditsGenericIssueErrorType = "FormLabelHasNeitherForNorNestedInput"
+
+	// AuditsGenericIssueErrorTypeFormLabelForMatchesNonExistingIDError enum const
+	AuditsGenericIssueErrorTypeFormLabelForMatchesNonExistingIDError AuditsGenericIssueErrorType = "FormLabelForMatchesNonExistingIdError"
 )
 
 // AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
@@ -775,6 +793,9 @@ const (
 
 	// AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen enum const
 	AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen AuditsDeprecationIssueType = "PrefixedVideoSupportsFullscreen"
+
+	// AuditsDeprecationIssueTypePrivacySandboxExtensionsAPI enum const
+	AuditsDeprecationIssueTypePrivacySandboxExtensionsAPI AuditsDeprecationIssueType = "PrivacySandboxExtensionsAPI"
 
 	// AuditsDeprecationIssueTypeRangeExpand enum const
 	AuditsDeprecationIssueTypeRangeExpand AuditsDeprecationIssueType = "RangeExpand"

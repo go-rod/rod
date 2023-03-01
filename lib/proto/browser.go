@@ -433,7 +433,7 @@ type BrowserGetHistograms struct {
 	// all histograms.
 	Query string `json:"query,omitempty"`
 
-	// Delta (optional) If true, retrieve delta since last call.
+	// Delta (optional) If true, retrieve delta since last delta call.
 	Delta bool `json:"delta,omitempty"`
 }
 
@@ -459,7 +459,7 @@ type BrowserGetHistogram struct {
 	// Name Requested histogram name.
 	Name string `json:"name"`
 
-	// Delta (optional) If true, retrieve delta since last call.
+	// Delta (optional) If true, retrieve delta since last delta call.
 	Delta bool `json:"delta,omitempty"`
 }
 

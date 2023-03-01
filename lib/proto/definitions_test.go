@@ -2555,6 +2555,12 @@ func (t T) PageSetSPCTransactionMode() {
 	t.Nil(err)
 }
 
+func (t T) PageSetRPHRegistrationMode() {
+	c := &Client{}
+	err := proto.PageSetRPHRegistrationMode{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) PageGenerateTestReport() {
 	c := &Client{}
 	err := proto.PageGenerateTestReport{}.Call(c)
@@ -2985,12 +2991,6 @@ func (t T) StorageUntrackIndexedDBForStorageKey() {
 func (t T) StorageGetTrustTokens() {
 	c := &Client{}
 	_, err := proto.StorageGetTrustTokens{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) StorageClearTrustTokens() {
-	c := &Client{}
-	_, err := proto.StorageClearTrustTokens{}.Call(c)
 	t.Nil(err)
 }
 

@@ -2813,6 +2813,13 @@ type NetworkResponseReceivedExtraInfo struct {
 	// HeadersText (optional) Raw response header text as it was received over the wire. The raw text may not always be
 	// available, such as in the case of HTTP/2 or QUIC.
 	HeadersText string `json:"headersText,omitempty"`
+
+	// CookiePartitionKey (optional) The cookie partition key that will be used to store partitioned cookies set in this response.
+	// Only sent when partitioned cookies are enabled.
+	CookiePartitionKey string `json:"cookiePartitionKey,omitempty"`
+
+	// CookiePartitionKeyOpaque (optional) True if partitioned cookies are enabled, but the partition key is not serializeable to string.
+	CookiePartitionKeyOpaque bool `json:"cookiePartitionKeyOpaque,omitempty"`
 }
 
 // ProtoEvent name
