@@ -500,7 +500,7 @@ func (el *Element) ElementX(xPath string) (*Element, error) {
 
 // ElementByJS returns the element from the return value of the js
 func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
-	e, err := el.page.Sleeper(NotFoundSleeper).ElementByJS(opts.This(el.Object))
+	e, err := el.page.Context(el.ctx).Sleeper(NotFoundSleeper).ElementByJS(opts.This(el.Object))
 	if err != nil {
 		return nil, err
 	}
