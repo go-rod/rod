@@ -237,6 +237,16 @@ func TestElementContext(t *testing.T) {
 	el.Sleeper(rod.DefaultSleeper).MustClick()
 }
 
+func TestElementCancelContext(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
+	el := p.Timeout(time.Second).MustElement("button")
+	el = el.CancelTimeout()
+	utils.Sleep(1.1)
+	el.MustClick()
+}
+
 func TestIframes(t *testing.T) {
 	g := setup(t)
 

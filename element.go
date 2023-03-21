@@ -84,7 +84,7 @@ func (el *Element) Hover() error {
 		return err
 	}
 
-	return el.page.Mouse.MoveTo(*pt)
+	return el.page.Context(el.ctx).Mouse.MoveTo(*pt)
 }
 
 // MoveMouseOut of the current element
@@ -113,7 +113,7 @@ func (el *Element) Click(button proto.InputMouseButton, clickCount int) error {
 
 	defer el.tryTrace(TraceTypeInput, string(button)+" click")()
 
-	return el.page.Mouse.Click(button, clickCount)
+	return el.page.Context(el.ctx).Mouse.Click(button, clickCount)
 }
 
 // Tap will scroll to the button and tap it just like a human.
@@ -136,7 +136,7 @@ func (el *Element) Tap() error {
 
 	defer el.tryTrace(TraceTypeInput, "tap")()
 
-	return el.page.Touch.Tap(pt.X, pt.Y)
+	return el.page.Context(el.ctx).Touch.Tap(pt.X, pt.Y)
 }
 
 // Interactable checks if the element is interactable with cursor.
@@ -163,12 +163,12 @@ func (el *Element) Interactable() (pt *proto.Point, err error) {
 		return
 	}
 
-	scroll, err := el.page.root.Eval(`() => ({ x: window.scrollX, y: window.scrollY })`)
+	scroll, err := el.page.root.Context(el.ctx).Eval(`() => ({ x: window.scrollX, y: window.scrollY })`)
 	if err != nil {
 		return
 	}
 
-	elAtPoint, err := el.page.ElementFromPoint(
+	elAtPoint, err := el.page.Context(el.ctx).ElementFromPoint(
 		int(pt.X)+scroll.Value.Get("x").Int(),
 		int(pt.Y)+scroll.Value.Get("y").Int(),
 	)
@@ -208,7 +208,7 @@ func (el *Element) Type(keys ...input.Key) error {
 	if err != nil {
 		return err
 	}
-	return el.page.Keyboard.Type(keys...)
+	return el.page.Context(el.ctx).Keyboard.Type(keys...)
 }
 
 // KeyActions is similar with Page.KeyActions.
@@ -219,7 +219,7 @@ func (el *Element) KeyActions() (*KeyActions, error) {
 		return nil, err
 	}
 
-	return el.page.KeyActions(), nil
+	return el.page.Context(el.ctx).KeyActions(), nil
 }
 
 // SelectText selects the text that matches the regular expression.
@@ -271,7 +271,7 @@ func (el *Element) Input(text string) error {
 		return err
 	}
 
-	err = el.page.InsertText(text)
+	err = el.page.Context(el.ctx).InsertText(text)
 	_, _ = el.Evaluate(evalHelper(js.InputEvent).ByUser())
 	return err
 }
@@ -421,7 +421,7 @@ func (el *Element) ShadowRoot() (*Element, error) {
 		return nil, err
 	}
 
-	return el.page.ElementFromObject(shadowNode.Object)
+	return el.page.Context(el.ctx).ElementFromObject(shadowNode.Object)
 }
 
 // Frame creates a page instance that represents the iframe
@@ -532,9 +532,10 @@ func (el *Element) WaitStableRAF() error {
 	defer el.tryTrace(TraceTypeWait, "stable RAF")()
 
 	var shape *proto.DOMGetContentQuadsResult
+	page := el.page.Context(el.ctx)
 
 	for {
-		err = el.page.WaitRepaint()
+		err = page.WaitRepaint()
 		if err != nil {
 			return err
 		}
@@ -625,7 +626,7 @@ func (el *Element) Resource() ([]byte, error) {
 		return nil, err
 	}
 
-	return el.page.GetResource(src.Value.String())
+	return el.page.Context(el.ctx).GetResource(src.Value.String())
 }
 
 // BackgroundImage returns the css background-image of the element
@@ -637,7 +638,7 @@ func (el *Element) BackgroundImage() ([]byte, error) {
 
 	u := res.Value.Str()
 
-	return el.page.GetResource(u)
+	return el.page.Context(el.ctx).GetResource(u)
 }
 
 // Screenshot of the area of the element
@@ -652,7 +653,7 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 		Format:  format,
 	}
 
-	bin, err := el.page.Screenshot(false, opts)
+	bin, err := el.page.Context(el.ctx).Screenshot(false, opts)
 	if err != nil {
 		return nil, err
 	}
