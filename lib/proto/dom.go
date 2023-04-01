@@ -639,6 +639,7 @@ type DOMGetContentQuadsResult struct {
 }
 
 // DOMGetDocument Returns the root DOM node (and optionally the subtree) to the caller.
+// Implicitly enables the DOM domain events for the current target.
 type DOMGetDocument struct {
 
 	// Depth (optional) The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the

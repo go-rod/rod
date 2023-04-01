@@ -48,6 +48,9 @@ const (
 	// StorageStorageTypeSharedStorage enum const
 	StorageStorageTypeSharedStorage StorageStorageType = "shared_storage"
 
+	// StorageStorageTypeStorageBuckets enum const
+	StorageStorageTypeStorageBuckets StorageStorageType = "storage_buckets"
+
 	// StorageStorageTypeAll enum const
 	StorageStorageTypeAll StorageStorageType = "all"
 
@@ -288,6 +291,45 @@ type StorageSharedStorageAccessParams struct {
 	// Present only for SharedStorageAccessType.documentSet and
 	// SharedStorageAccessType.workletSet.
 	IgnoreIfPresent bool `json:"ignoreIfPresent,omitempty"`
+}
+
+// StorageStorageBucketsDurability ...
+type StorageStorageBucketsDurability string
+
+const (
+	// StorageStorageBucketsDurabilityRelaxed enum const
+	StorageStorageBucketsDurabilityRelaxed StorageStorageBucketsDurability = "relaxed"
+
+	// StorageStorageBucketsDurabilityStrict enum const
+	StorageStorageBucketsDurabilityStrict StorageStorageBucketsDurability = "strict"
+)
+
+// StorageStorageBucketInfo ...
+type StorageStorageBucketInfo struct {
+
+	// StorageKey ...
+	StorageKey StorageSerializedStorageKey `json:"storageKey"`
+
+	// ID ...
+	ID string `json:"id"`
+
+	// Name ...
+	Name string `json:"name"`
+
+	// IsDefault ...
+	IsDefault bool `json:"isDefault"`
+
+	// Expiration ...
+	Expiration TimeSinceEpoch `json:"expiration"`
+
+	// Quota Storage quota (bytes).
+	Quota float64 `json:"quota"`
+
+	// Persistent ...
+	Persistent bool `json:"persistent"`
+
+	// Durability ...
+	Durability StorageStorageBucketsDurability `json:"durability"`
 }
 
 // StorageGetStorageKeyForFrame Returns a storage key given a frame id.
@@ -616,6 +658,30 @@ type StorageGetTrustTokensResult struct {
 	Tokens []*StorageTrustTokens `json:"tokens"`
 }
 
+// StorageClearTrustTokens (experimental) Removes all Trust Tokens issued by the provided issuerOrigin.
+// Leaves other stored data, including the issuer's Redemption Records, intact.
+type StorageClearTrustTokens struct {
+
+	// IssuerOrigin ...
+	IssuerOrigin string `json:"issuerOrigin"`
+}
+
+// ProtoReq name
+func (m StorageClearTrustTokens) ProtoReq() string { return "Storage.clearTrustTokens" }
+
+// Call the request
+func (m StorageClearTrustTokens) Call(c Client) (*StorageClearTrustTokensResult, error) {
+	var res StorageClearTrustTokensResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// StorageClearTrustTokensResult (experimental) ...
+type StorageClearTrustTokensResult struct {
+
+	// DidDeleteTokens True if any tokens were deleted, false otherwise.
+	DidDeleteTokens bool `json:"didDeleteTokens"`
+}
+
 // StorageGetInterestGroupDetails (experimental) Gets details for a named interest group.
 type StorageGetInterestGroupDetails struct {
 
@@ -793,6 +859,42 @@ func (m StorageSetSharedStorageTracking) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
+// StorageSetStorageBucketTracking (experimental) Set tracking for a storage key's buckets.
+type StorageSetStorageBucketTracking struct {
+
+	// StorageKey ...
+	StorageKey string `json:"storageKey"`
+
+	// Enable ...
+	Enable bool `json:"enable"`
+}
+
+// ProtoReq name
+func (m StorageSetStorageBucketTracking) ProtoReq() string { return "Storage.setStorageBucketTracking" }
+
+// Call sends the request
+func (m StorageSetStorageBucketTracking) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// StorageDeleteStorageBucket (experimental) Deletes the Storage Bucket with the given storage key and bucket name.
+type StorageDeleteStorageBucket struct {
+
+	// StorageKey ...
+	StorageKey string `json:"storageKey"`
+
+	// BucketName ...
+	BucketName string `json:"bucketName"`
+}
+
+// ProtoReq name
+func (m StorageDeleteStorageBucket) ProtoReq() string { return "Storage.deleteStorageBucket" }
+
+// Call sends the request
+func (m StorageDeleteStorageBucket) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
 type StorageCacheStorageContentUpdated struct {
 
@@ -907,4 +1009,28 @@ type StorageSharedStorageAccessed struct {
 // ProtoEvent name
 func (evt StorageSharedStorageAccessed) ProtoEvent() string {
 	return "Storage.sharedStorageAccessed"
+}
+
+// StorageStorageBucketCreatedOrUpdated ...
+type StorageStorageBucketCreatedOrUpdated struct {
+
+	// Bucket ...
+	Bucket *StorageStorageBucketInfo `json:"bucket"`
+}
+
+// ProtoEvent name
+func (evt StorageStorageBucketCreatedOrUpdated) ProtoEvent() string {
+	return "Storage.storageBucketCreatedOrUpdated"
+}
+
+// StorageStorageBucketDeleted ...
+type StorageStorageBucketDeleted struct {
+
+	// BucketID ...
+	BucketID string `json:"bucketId"`
+}
+
+// ProtoEvent name
+func (evt StorageStorageBucketDeleted) ProtoEvent() string {
+	return "Storage.storageBucketDeleted"
 }

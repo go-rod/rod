@@ -406,7 +406,7 @@ type AccessibilityGetPartialAXTree struct {
 	// ObjectID (optional) JavaScript object id of the node wrapper to get the partial accessibility tree for.
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
 
-	// FetchRelatives (optional) Whether to fetch this nodes ancestors, siblings and children. Defaults to true.
+	// FetchRelatives (optional) Whether to fetch this node's ancestors, siblings and children. Defaults to true.
 	FetchRelatives bool `json:"fetchRelatives,omitempty"`
 }
 

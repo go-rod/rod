@@ -2679,11 +2679,6 @@ func (t T) PageBackForwardCacheNotUsed() {
 	t.Regex("", e.ProtoEvent())
 }
 
-func (t T) PagePrerenderAttemptCompleted() {
-	e := proto.PagePrerenderAttemptCompleted{}
-	t.Regex("", e.ProtoEvent())
-}
-
 func (t T) PageLoadEventFired() {
 	e := proto.PageLoadEventFired{}
 	t.Regex("", e.ProtoEvent())
@@ -2994,6 +2989,12 @@ func (t T) StorageGetTrustTokens() {
 	t.Nil(err)
 }
 
+func (t T) StorageClearTrustTokens() {
+	c := &Client{}
+	_, err := proto.StorageClearTrustTokens{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageGetInterestGroupDetails() {
 	c := &Client{}
 	_, err := proto.StorageGetInterestGroupDetails{}.Call(c)
@@ -3048,6 +3049,18 @@ func (t T) StorageSetSharedStorageTracking() {
 	t.Nil(err)
 }
 
+func (t T) StorageSetStorageBucketTracking() {
+	c := &Client{}
+	err := proto.StorageSetStorageBucketTracking{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageDeleteStorageBucket() {
+	c := &Client{}
+	err := proto.StorageDeleteStorageBucket{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	t.Regex("", e.ProtoEvent())
@@ -3075,6 +3088,16 @@ func (t T) StorageInterestGroupAccessed() {
 
 func (t T) StorageSharedStorageAccessed() {
 	e := proto.StorageSharedStorageAccessed{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) StorageStorageBucketCreatedOrUpdated() {
+	e := proto.StorageStorageBucketCreatedOrUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) StorageStorageBucketDeleted() {
+	e := proto.StorageStorageBucketDeleted{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -3558,6 +3581,112 @@ func (t T) MediaPlayerErrorsRaised() {
 
 func (t T) MediaPlayersCreated() {
 	e := proto.MediaPlayersCreated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) DeviceAccessEnable() {
+	c := &Client{}
+	err := proto.DeviceAccessEnable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DeviceAccessDisable() {
+	c := &Client{}
+	err := proto.DeviceAccessDisable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DeviceAccessSelectPrompt() {
+	c := &Client{}
+	err := proto.DeviceAccessSelectPrompt{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DeviceAccessCancelPrompt() {
+	c := &Client{}
+	err := proto.DeviceAccessCancelPrompt{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) DeviceAccessDeviceRequestPrompted() {
+	e := proto.DeviceAccessDeviceRequestPrompted{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadEnable() {
+	c := &Client{}
+	err := proto.PreloadEnable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PreloadDisable() {
+	c := &Client{}
+	err := proto.PreloadDisable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PreloadRuleSetUpdated() {
+	e := proto.PreloadRuleSetUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadRuleSetRemoved() {
+	e := proto.PreloadRuleSetRemoved{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadPrerenderAttemptCompleted() {
+	e := proto.PreloadPrerenderAttemptCompleted{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadPrefetchStatusUpdated() {
+	e := proto.PreloadPrefetchStatusUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadPrerenderStatusUpdated() {
+	e := proto.PreloadPrerenderStatusUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PreloadPreloadingAttemptSourcesUpdated() {
+	e := proto.PreloadPreloadingAttemptSourcesUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) FedCmEnable() {
+	c := &Client{}
+	err := proto.FedCmEnable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmDisable() {
+	c := &Client{}
+	err := proto.FedCmDisable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmSelectAccount() {
+	c := &Client{}
+	err := proto.FedCmSelectAccount{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmDismissDialog() {
+	c := &Client{}
+	err := proto.FedCmDismissDialog{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmResetCooldown() {
+	c := &Client{}
+	err := proto.FedCmResetCooldown{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmDialogShown() {
+	e := proto.FedCmDialogShown{}
 	t.Regex("", e.ProtoEvent())
 }
 

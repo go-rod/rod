@@ -295,7 +295,7 @@ type IndexedDBRequestDataResult struct {
 	HasMore bool `json:"hasMore"`
 }
 
-// IndexedDBGetMetadata Gets metadata of an object store
+// IndexedDBGetMetadata Gets metadata of an object store.
 type IndexedDBGetMetadata struct {
 
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.

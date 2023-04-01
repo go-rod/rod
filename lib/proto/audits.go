@@ -534,9 +534,6 @@ const (
 	// AuditsAttributionReportingIssueTypePermissionPolicyDisabled enum const
 	AuditsAttributionReportingIssueTypePermissionPolicyDisabled AuditsAttributionReportingIssueType = "PermissionPolicyDisabled"
 
-	// AuditsAttributionReportingIssueTypePermissionPolicyNotDelegated enum const
-	AuditsAttributionReportingIssueTypePermissionPolicyNotDelegated AuditsAttributionReportingIssueType = "PermissionPolicyNotDelegated"
-
 	// AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin enum const
 	AuditsAttributionReportingIssueTypeUntrustworthyReportingOrigin AuditsAttributionReportingIssueType = "UntrustworthyReportingOrigin"
 
@@ -563,6 +560,21 @@ const (
 
 	// AuditsAttributionReportingIssueTypeTriggerIgnored enum const
 	AuditsAttributionReportingIssueTypeTriggerIgnored AuditsAttributionReportingIssueType = "TriggerIgnored"
+
+	// AuditsAttributionReportingIssueTypeOsSourceIgnored enum const
+	AuditsAttributionReportingIssueTypeOsSourceIgnored AuditsAttributionReportingIssueType = "OsSourceIgnored"
+
+	// AuditsAttributionReportingIssueTypeOsTriggerIgnored enum const
+	AuditsAttributionReportingIssueTypeOsTriggerIgnored AuditsAttributionReportingIssueType = "OsTriggerIgnored"
+
+	// AuditsAttributionReportingIssueTypeInvalidRegisterOsSourceHeader enum const
+	AuditsAttributionReportingIssueTypeInvalidRegisterOsSourceHeader AuditsAttributionReportingIssueType = "InvalidRegisterOsSourceHeader"
+
+	// AuditsAttributionReportingIssueTypeInvalidRegisterOsTriggerHeader enum const
+	AuditsAttributionReportingIssueTypeInvalidRegisterOsTriggerHeader AuditsAttributionReportingIssueType = "InvalidRegisterOsTriggerHeader"
+
+	// AuditsAttributionReportingIssueTypeWebAndOsHeaders enum const
+	AuditsAttributionReportingIssueTypeWebAndOsHeaders AuditsAttributionReportingIssueType = "WebAndOsHeaders"
 )
 
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
@@ -646,6 +658,9 @@ const (
 
 	// AuditsGenericIssueErrorTypeFormLabelForMatchesNonExistingIDError enum const
 	AuditsGenericIssueErrorTypeFormLabelForMatchesNonExistingIDError AuditsGenericIssueErrorType = "FormLabelForMatchesNonExistingIdError"
+
+	// AuditsGenericIssueErrorTypeFormInputHasWrongButWellIntendedAutocompleteValueError enum const
+	AuditsGenericIssueErrorTypeFormInputHasWrongButWellIntendedAutocompleteValueError AuditsGenericIssueErrorType = "FormInputHasWrongButWellIntendedAutocompleteValueError"
 )
 
 // AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
@@ -659,183 +674,10 @@ type AuditsGenericIssueDetails struct {
 
 	// ViolatingNodeID (optional) ...
 	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId,omitempty"`
+
+	// ViolatingNodeAttribute (optional) ...
+	ViolatingNodeAttribute string `json:"violatingNodeAttribute,omitempty"`
 }
-
-// AuditsDeprecationIssueType ...
-type AuditsDeprecationIssueType string
-
-const (
-	// AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard enum const
-	AuditsDeprecationIssueTypeAuthorizationCoveredByWildcard AuditsDeprecationIssueType = "AuthorizationCoveredByWildcard"
-
-	// AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline enum const
-	AuditsDeprecationIssueTypeCanRequestURLHTTPContainingNewline AuditsDeprecationIssueType = "CanRequestURLHTTPContainingNewline"
-
-	// AuditsDeprecationIssueTypeChromeLoadTimesConnectionInfo enum const
-	AuditsDeprecationIssueTypeChromeLoadTimesConnectionInfo AuditsDeprecationIssueType = "ChromeLoadTimesConnectionInfo"
-
-	// AuditsDeprecationIssueTypeChromeLoadTimesFirstPaintAfterLoadTime enum const
-	AuditsDeprecationIssueTypeChromeLoadTimesFirstPaintAfterLoadTime AuditsDeprecationIssueType = "ChromeLoadTimesFirstPaintAfterLoadTime"
-
-	// AuditsDeprecationIssueTypeChromeLoadTimesWasAlternateProtocolAvailable enum const
-	AuditsDeprecationIssueTypeChromeLoadTimesWasAlternateProtocolAvailable AuditsDeprecationIssueType = "ChromeLoadTimesWasAlternateProtocolAvailable"
-
-	// AuditsDeprecationIssueTypeCookieWithTruncatingChar enum const
-	AuditsDeprecationIssueTypeCookieWithTruncatingChar AuditsDeprecationIssueType = "CookieWithTruncatingChar"
-
-	// AuditsDeprecationIssueTypeCrossOriginAccessBasedOnDocumentDomain enum const
-	AuditsDeprecationIssueTypeCrossOriginAccessBasedOnDocumentDomain AuditsDeprecationIssueType = "CrossOriginAccessBasedOnDocumentDomain"
-
-	// AuditsDeprecationIssueTypeCrossOriginWindowAlert enum const
-	AuditsDeprecationIssueTypeCrossOriginWindowAlert AuditsDeprecationIssueType = "CrossOriginWindowAlert"
-
-	// AuditsDeprecationIssueTypeCrossOriginWindowConfirm enum const
-	AuditsDeprecationIssueTypeCrossOriginWindowConfirm AuditsDeprecationIssueType = "CrossOriginWindowConfirm"
-
-	// AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton enum const
-	AuditsDeprecationIssueTypeCSSSelectorInternalMediaControlsOverlayCastButton AuditsDeprecationIssueType = "CSSSelectorInternalMediaControlsOverlayCastButton"
-
-	// AuditsDeprecationIssueTypeDeprecationExample enum const
-	AuditsDeprecationIssueTypeDeprecationExample AuditsDeprecationIssueType = "DeprecationExample"
-
-	// AuditsDeprecationIssueTypeDocumentDomainSettingWithoutOriginAgentClusterHeader enum const
-	AuditsDeprecationIssueTypeDocumentDomainSettingWithoutOriginAgentClusterHeader AuditsDeprecationIssueType = "DocumentDomainSettingWithoutOriginAgentClusterHeader"
-
-	// AuditsDeprecationIssueTypeEventPath enum const
-	AuditsDeprecationIssueTypeEventPath AuditsDeprecationIssueType = "EventPath"
-
-	// AuditsDeprecationIssueTypeExpectCTHeader enum const
-	AuditsDeprecationIssueTypeExpectCTHeader AuditsDeprecationIssueType = "ExpectCTHeader"
-
-	// AuditsDeprecationIssueTypeGeolocationInsecureOrigin enum const
-	AuditsDeprecationIssueTypeGeolocationInsecureOrigin AuditsDeprecationIssueType = "GeolocationInsecureOrigin"
-
-	// AuditsDeprecationIssueTypeGeolocationInsecureOriginDeprecatedNotRemoved enum const
-	AuditsDeprecationIssueTypeGeolocationInsecureOriginDeprecatedNotRemoved AuditsDeprecationIssueType = "GeolocationInsecureOriginDeprecatedNotRemoved"
-
-	// AuditsDeprecationIssueTypeGetUserMediaInsecureOrigin enum const
-	AuditsDeprecationIssueTypeGetUserMediaInsecureOrigin AuditsDeprecationIssueType = "GetUserMediaInsecureOrigin"
-
-	// AuditsDeprecationIssueTypeHostCandidateAttributeGetter enum const
-	AuditsDeprecationIssueTypeHostCandidateAttributeGetter AuditsDeprecationIssueType = "HostCandidateAttributeGetter"
-
-	// AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent enum const
-	AuditsDeprecationIssueTypeIdentityInCanMakePaymentEvent AuditsDeprecationIssueType = "IdentityInCanMakePaymentEvent"
-
-	// AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest enum const
-	AuditsDeprecationIssueTypeInsecurePrivateNetworkSubresourceRequest AuditsDeprecationIssueType = "InsecurePrivateNetworkSubresourceRequest"
-
-	// AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected enum const
-	AuditsDeprecationIssueTypeLocalCSSFileExtensionRejected AuditsDeprecationIssueType = "LocalCSSFileExtensionRejected"
-
-	// AuditsDeprecationIssueTypeMediaSourceAbortRemove enum const
-	AuditsDeprecationIssueTypeMediaSourceAbortRemove AuditsDeprecationIssueType = "MediaSourceAbortRemove"
-
-	// AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered enum const
-	AuditsDeprecationIssueTypeMediaSourceDurationTruncatingBuffered AuditsDeprecationIssueType = "MediaSourceDurationTruncatingBuffered"
-
-	// AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission enum const
-	AuditsDeprecationIssueTypeNoSysexWebMIDIWithoutPermission AuditsDeprecationIssueType = "NoSysexWebMIDIWithoutPermission"
-
-	// AuditsDeprecationIssueTypeNotificationInsecureOrigin enum const
-	AuditsDeprecationIssueTypeNotificationInsecureOrigin AuditsDeprecationIssueType = "NotificationInsecureOrigin"
-
-	// AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe enum const
-	AuditsDeprecationIssueTypeNotificationPermissionRequestedIframe AuditsDeprecationIssueType = "NotificationPermissionRequestedIframe"
-
-	// AuditsDeprecationIssueTypeObsoleteCreateImageBitmapImageOrientationNone enum const
-	AuditsDeprecationIssueTypeObsoleteCreateImageBitmapImageOrientationNone AuditsDeprecationIssueType = "ObsoleteCreateImageBitmapImageOrientationNone"
-
-	// AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite enum const
-	AuditsDeprecationIssueTypeObsoleteWebRtcCipherSuite AuditsDeprecationIssueType = "ObsoleteWebRtcCipherSuite"
-
-	// AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext enum const
-	AuditsDeprecationIssueTypeOpenWebDatabaseInsecureContext AuditsDeprecationIssueType = "OpenWebDatabaseInsecureContext"
-
-	// AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement enum const
-	AuditsDeprecationIssueTypeOverflowVisibleOnReplacedElement AuditsDeprecationIssueType = "OverflowVisibleOnReplacedElement"
-
-	// AuditsDeprecationIssueTypePaymentInstruments enum const
-	AuditsDeprecationIssueTypePaymentInstruments AuditsDeprecationIssueType = "PaymentInstruments"
-
-	// AuditsDeprecationIssueTypePaymentRequestCSPViolation enum const
-	AuditsDeprecationIssueTypePaymentRequestCSPViolation AuditsDeprecationIssueType = "PaymentRequestCSPViolation"
-
-	// AuditsDeprecationIssueTypePersistentQuotaType enum const
-	AuditsDeprecationIssueTypePersistentQuotaType AuditsDeprecationIssueType = "PersistentQuotaType"
-
-	// AuditsDeprecationIssueTypePictureSourceSrc enum const
-	AuditsDeprecationIssueTypePictureSourceSrc AuditsDeprecationIssueType = "PictureSourceSrc"
-
-	// AuditsDeprecationIssueTypePrefixedCancelAnimationFrame enum const
-	AuditsDeprecationIssueTypePrefixedCancelAnimationFrame AuditsDeprecationIssueType = "PrefixedCancelAnimationFrame"
-
-	// AuditsDeprecationIssueTypePrefixedRequestAnimationFrame enum const
-	AuditsDeprecationIssueTypePrefixedRequestAnimationFrame AuditsDeprecationIssueType = "PrefixedRequestAnimationFrame"
-
-	// AuditsDeprecationIssueTypePrefixedStorageInfo enum const
-	AuditsDeprecationIssueTypePrefixedStorageInfo AuditsDeprecationIssueType = "PrefixedStorageInfo"
-
-	// AuditsDeprecationIssueTypePrefixedVideoDisplayingFullscreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoDisplayingFullscreen AuditsDeprecationIssueType = "PrefixedVideoDisplayingFullscreen"
-
-	// AuditsDeprecationIssueTypePrefixedVideoEnterFullscreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoEnterFullscreen AuditsDeprecationIssueType = "PrefixedVideoEnterFullscreen"
-
-	// AuditsDeprecationIssueTypePrefixedVideoEnterFullScreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoEnterFullScreen AuditsDeprecationIssueType = "PrefixedVideoEnterFullScreen"
-
-	// AuditsDeprecationIssueTypePrefixedVideoExitFullscreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoExitFullscreen AuditsDeprecationIssueType = "PrefixedVideoExitFullscreen"
-
-	// AuditsDeprecationIssueTypePrefixedVideoExitFullScreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoExitFullScreen AuditsDeprecationIssueType = "PrefixedVideoExitFullScreen"
-
-	// AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen enum const
-	AuditsDeprecationIssueTypePrefixedVideoSupportsFullscreen AuditsDeprecationIssueType = "PrefixedVideoSupportsFullscreen"
-
-	// AuditsDeprecationIssueTypePrivacySandboxExtensionsAPI enum const
-	AuditsDeprecationIssueTypePrivacySandboxExtensionsAPI AuditsDeprecationIssueType = "PrivacySandboxExtensionsAPI"
-
-	// AuditsDeprecationIssueTypeRangeExpand enum const
-	AuditsDeprecationIssueTypeRangeExpand AuditsDeprecationIssueType = "RangeExpand"
-
-	// AuditsDeprecationIssueTypeRequestedSubresourceWithEmbeddedCredentials enum const
-	AuditsDeprecationIssueTypeRequestedSubresourceWithEmbeddedCredentials AuditsDeprecationIssueType = "RequestedSubresourceWithEmbeddedCredentials"
-
-	// AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpFalse enum const
-	AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpFalse AuditsDeprecationIssueType = "RTCConstraintEnableDtlsSrtpFalse"
-
-	// AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpTrue enum const
-	AuditsDeprecationIssueTypeRTCConstraintEnableDtlsSrtpTrue AuditsDeprecationIssueType = "RTCConstraintEnableDtlsSrtpTrue"
-
-	// AuditsDeprecationIssueTypeRTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics enum const
-	AuditsDeprecationIssueTypeRTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics AuditsDeprecationIssueType = "RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics"
-
-	// AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB enum const
-	AuditsDeprecationIssueTypeRTCPeerConnectionSdpSemanticsPlanB AuditsDeprecationIssueType = "RTCPeerConnectionSdpSemanticsPlanB"
-
-	// AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate enum const
-	AuditsDeprecationIssueTypeRtcpMuxPolicyNegotiate AuditsDeprecationIssueType = "RtcpMuxPolicyNegotiate"
-
-	// AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation enum const
-	AuditsDeprecationIssueTypeSharedArrayBufferConstructedWithoutIsolation AuditsDeprecationIssueType = "SharedArrayBufferConstructedWithoutIsolation"
-
-	// AuditsDeprecationIssueTypeTextToSpeechDisallowedByAutoplay enum const
-	AuditsDeprecationIssueTypeTextToSpeechDisallowedByAutoplay AuditsDeprecationIssueType = "TextToSpeech_DisallowedByAutoplay"
-
-	// AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation enum const
-	AuditsDeprecationIssueTypeV8SharedArrayBufferConstructedInExtensionWithoutIsolation AuditsDeprecationIssueType = "V8SharedArrayBufferConstructedInExtensionWithoutIsolation"
-
-	// AuditsDeprecationIssueTypeXHRJSONEncodingDetection enum const
-	AuditsDeprecationIssueTypeXHRJSONEncodingDetection AuditsDeprecationIssueType = "XHRJSONEncodingDetection"
-
-	// AuditsDeprecationIssueTypeXMLHTTPRequestSynchronousInNonWorkerOutsideBeforeUnload enum const
-	AuditsDeprecationIssueTypeXMLHTTPRequestSynchronousInNonWorkerOutsideBeforeUnload AuditsDeprecationIssueType = "XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload"
-
-	// AuditsDeprecationIssueTypeXRSupportsSession enum const
-	AuditsDeprecationIssueTypeXRSupportsSession AuditsDeprecationIssueType = "XRSupportsSession"
-)
 
 // AuditsDeprecationIssueDetails This issue tracks information needed to print a deprecation message.
 // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
@@ -847,8 +689,8 @@ type AuditsDeprecationIssueDetails struct {
 	// SourceCodeLocation ...
 	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
 
-	// Type ...
-	Type AuditsDeprecationIssueType `json:"type"`
+	// Type One of the deprecation names from third_party/blink/renderer/core/frame/deprecation/deprecation.json5
+	Type string `json:"type"`
 }
 
 // AuditsClientHintIssueReason ...

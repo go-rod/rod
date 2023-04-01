@@ -422,11 +422,14 @@ const (
 	// EmulationSetEmulatedVisionDeficiencyTypeNone enum const
 	EmulationSetEmulatedVisionDeficiencyTypeNone EmulationSetEmulatedVisionDeficiencyType = "none"
 
-	// EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia enum const
-	EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia EmulationSetEmulatedVisionDeficiencyType = "achromatopsia"
-
 	// EmulationSetEmulatedVisionDeficiencyTypeBlurredVision enum const
 	EmulationSetEmulatedVisionDeficiencyTypeBlurredVision EmulationSetEmulatedVisionDeficiencyType = "blurredVision"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeReducedContrast enum const
+	EmulationSetEmulatedVisionDeficiencyTypeReducedContrast EmulationSetEmulatedVisionDeficiencyType = "reducedContrast"
+
+	// EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia enum const
+	EmulationSetEmulatedVisionDeficiencyTypeAchromatopsia EmulationSetEmulatedVisionDeficiencyType = "achromatopsia"
 
 	// EmulationSetEmulatedVisionDeficiencyTypeDeuteranopia enum const
 	EmulationSetEmulatedVisionDeficiencyTypeDeuteranopia EmulationSetEmulatedVisionDeficiencyType = "deuteranopia"
@@ -441,7 +444,8 @@ const (
 // EmulationSetEmulatedVisionDeficiency (experimental) Emulates the given vision deficiency.
 type EmulationSetEmulatedVisionDeficiency struct {
 
-	// Type Vision deficiency to emulate.
+	// Type Vision deficiency to emulate. Order: best-effort emulations come first, followed by any
+	// physiologically accurate emulations for medically recognized color vision deficiencies.
 	Type EmulationSetEmulatedVisionDeficiencyType `json:"type"`
 }
 

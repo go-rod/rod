@@ -975,6 +975,9 @@ const (
 
 	// DebuggerSetScriptSourceResultStatusBlockedByActiveFunction enum const
 	DebuggerSetScriptSourceResultStatusBlockedByActiveFunction DebuggerSetScriptSourceResultStatus = "BlockedByActiveFunction"
+
+	// DebuggerSetScriptSourceResultStatusBlockedByTopLevelEsModuleChange enum const
+	DebuggerSetScriptSourceResultStatusBlockedByTopLevelEsModuleChange DebuggerSetScriptSourceResultStatus = "BlockedByTopLevelEsModuleChange"
 )
 
 // DebuggerSetScriptSourceResult ...
@@ -1142,6 +1145,9 @@ const (
 
 	// DebuggerPausedReasonXHR enum const
 	DebuggerPausedReasonXHR DebuggerPausedReason = "XHR"
+
+	// DebuggerPausedReasonStep enum const
+	DebuggerPausedReasonStep DebuggerPausedReason = "step"
 )
 
 // DebuggerPaused Fired when the virtual machine stopped on breakpoint or exception or any other stop criteria.

@@ -952,6 +952,23 @@ type PageCompilationCacheParams struct {
 	Eager bool `json:"eager,omitempty"`
 }
 
+// PageAutoResponseMode (experimental) Enum of possible auto-reponse for permisison / prompt dialogs.
+type PageAutoResponseMode string
+
+const (
+	// PageAutoResponseModeNone enum const
+	PageAutoResponseModeNone PageAutoResponseMode = "none"
+
+	// PageAutoResponseModeAutoAccept enum const
+	PageAutoResponseModeAutoAccept PageAutoResponseMode = "autoAccept"
+
+	// PageAutoResponseModeAutoReject enum const
+	PageAutoResponseModeAutoReject PageAutoResponseMode = "autoReject"
+
+	// PageAutoResponseModeAutoOptOut enum const
+	PageAutoResponseModeAutoOptOut PageAutoResponseMode = "autoOptOut"
+)
+
 // PageNavigationType (experimental) The type of a frameNavigated event.
 type PageNavigationType string
 
@@ -1382,179 +1399,6 @@ type PageBackForwardCacheNotRestoredExplanationTree struct {
 	Children []*PageBackForwardCacheNotRestoredExplanationTree `json:"children"`
 }
 
-// PagePrerenderFinalStatus List of FinalStatus reasons for Prerender2.
-type PagePrerenderFinalStatus string
-
-const (
-	// PagePrerenderFinalStatusActivated enum const
-	PagePrerenderFinalStatusActivated PagePrerenderFinalStatus = "Activated"
-
-	// PagePrerenderFinalStatusDestroyed enum const
-	PagePrerenderFinalStatusDestroyed PagePrerenderFinalStatus = "Destroyed"
-
-	// PagePrerenderFinalStatusLowEndDevice enum const
-	PagePrerenderFinalStatusLowEndDevice PagePrerenderFinalStatus = "LowEndDevice"
-
-	// PagePrerenderFinalStatusInvalidSchemeRedirect enum const
-	PagePrerenderFinalStatusInvalidSchemeRedirect PagePrerenderFinalStatus = "InvalidSchemeRedirect"
-
-	// PagePrerenderFinalStatusInvalidSchemeNavigation enum const
-	PagePrerenderFinalStatusInvalidSchemeNavigation PagePrerenderFinalStatus = "InvalidSchemeNavigation"
-
-	// PagePrerenderFinalStatusInProgressNavigation enum const
-	PagePrerenderFinalStatusInProgressNavigation PagePrerenderFinalStatus = "InProgressNavigation"
-
-	// PagePrerenderFinalStatusNavigationRequestBlockedByCsp enum const
-	PagePrerenderFinalStatusNavigationRequestBlockedByCsp PagePrerenderFinalStatus = "NavigationRequestBlockedByCsp"
-
-	// PagePrerenderFinalStatusMainFrameNavigation enum const
-	PagePrerenderFinalStatusMainFrameNavigation PagePrerenderFinalStatus = "MainFrameNavigation"
-
-	// PagePrerenderFinalStatusMojoBinderPolicy enum const
-	PagePrerenderFinalStatusMojoBinderPolicy PagePrerenderFinalStatus = "MojoBinderPolicy"
-
-	// PagePrerenderFinalStatusRendererProcessCrashed enum const
-	PagePrerenderFinalStatusRendererProcessCrashed PagePrerenderFinalStatus = "RendererProcessCrashed"
-
-	// PagePrerenderFinalStatusRendererProcessKilled enum const
-	PagePrerenderFinalStatusRendererProcessKilled PagePrerenderFinalStatus = "RendererProcessKilled"
-
-	// PagePrerenderFinalStatusDownload enum const
-	PagePrerenderFinalStatusDownload PagePrerenderFinalStatus = "Download"
-
-	// PagePrerenderFinalStatusTriggerDestroyed enum const
-	PagePrerenderFinalStatusTriggerDestroyed PagePrerenderFinalStatus = "TriggerDestroyed"
-
-	// PagePrerenderFinalStatusNavigationNotCommitted enum const
-	PagePrerenderFinalStatusNavigationNotCommitted PagePrerenderFinalStatus = "NavigationNotCommitted"
-
-	// PagePrerenderFinalStatusNavigationBadHTTPStatus enum const
-	PagePrerenderFinalStatusNavigationBadHTTPStatus PagePrerenderFinalStatus = "NavigationBadHttpStatus"
-
-	// PagePrerenderFinalStatusClientCertRequested enum const
-	PagePrerenderFinalStatusClientCertRequested PagePrerenderFinalStatus = "ClientCertRequested"
-
-	// PagePrerenderFinalStatusNavigationRequestNetworkError enum const
-	PagePrerenderFinalStatusNavigationRequestNetworkError PagePrerenderFinalStatus = "NavigationRequestNetworkError"
-
-	// PagePrerenderFinalStatusMaxNumOfRunningPrerendersExceeded enum const
-	PagePrerenderFinalStatusMaxNumOfRunningPrerendersExceeded PagePrerenderFinalStatus = "MaxNumOfRunningPrerendersExceeded"
-
-	// PagePrerenderFinalStatusCancelAllHostsForTesting enum const
-	PagePrerenderFinalStatusCancelAllHostsForTesting PagePrerenderFinalStatus = "CancelAllHostsForTesting"
-
-	// PagePrerenderFinalStatusDidFailLoad enum const
-	PagePrerenderFinalStatusDidFailLoad PagePrerenderFinalStatus = "DidFailLoad"
-
-	// PagePrerenderFinalStatusStop enum const
-	PagePrerenderFinalStatusStop PagePrerenderFinalStatus = "Stop"
-
-	// PagePrerenderFinalStatusSslCertificateError enum const
-	PagePrerenderFinalStatusSslCertificateError PagePrerenderFinalStatus = "SslCertificateError"
-
-	// PagePrerenderFinalStatusLoginAuthRequested enum const
-	PagePrerenderFinalStatusLoginAuthRequested PagePrerenderFinalStatus = "LoginAuthRequested"
-
-	// PagePrerenderFinalStatusUaChangeRequiresReload enum const
-	PagePrerenderFinalStatusUaChangeRequiresReload PagePrerenderFinalStatus = "UaChangeRequiresReload"
-
-	// PagePrerenderFinalStatusBlockedByClient enum const
-	PagePrerenderFinalStatusBlockedByClient PagePrerenderFinalStatus = "BlockedByClient"
-
-	// PagePrerenderFinalStatusAudioOutputDeviceRequested enum const
-	PagePrerenderFinalStatusAudioOutputDeviceRequested PagePrerenderFinalStatus = "AudioOutputDeviceRequested"
-
-	// PagePrerenderFinalStatusMixedContent enum const
-	PagePrerenderFinalStatusMixedContent PagePrerenderFinalStatus = "MixedContent"
-
-	// PagePrerenderFinalStatusTriggerBackgrounded enum const
-	PagePrerenderFinalStatusTriggerBackgrounded PagePrerenderFinalStatus = "TriggerBackgrounded"
-
-	// PagePrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected enum const
-	PagePrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected PagePrerenderFinalStatus = "EmbedderTriggeredAndCrossOriginRedirected"
-
-	// PagePrerenderFinalStatusMemoryLimitExceeded enum const
-	PagePrerenderFinalStatusMemoryLimitExceeded PagePrerenderFinalStatus = "MemoryLimitExceeded"
-
-	// PagePrerenderFinalStatusFailToGetMemoryUsage enum const
-	PagePrerenderFinalStatusFailToGetMemoryUsage PagePrerenderFinalStatus = "FailToGetMemoryUsage"
-
-	// PagePrerenderFinalStatusDataSaverEnabled enum const
-	PagePrerenderFinalStatusDataSaverEnabled PagePrerenderFinalStatus = "DataSaverEnabled"
-
-	// PagePrerenderFinalStatusHasEffectiveURL enum const
-	PagePrerenderFinalStatusHasEffectiveURL PagePrerenderFinalStatus = "HasEffectiveUrl"
-
-	// PagePrerenderFinalStatusActivatedBeforeStarted enum const
-	PagePrerenderFinalStatusActivatedBeforeStarted PagePrerenderFinalStatus = "ActivatedBeforeStarted"
-
-	// PagePrerenderFinalStatusInactivePageRestriction enum const
-	PagePrerenderFinalStatusInactivePageRestriction PagePrerenderFinalStatus = "InactivePageRestriction"
-
-	// PagePrerenderFinalStatusStartFailed enum const
-	PagePrerenderFinalStatusStartFailed PagePrerenderFinalStatus = "StartFailed"
-
-	// PagePrerenderFinalStatusTimeoutBackgrounded enum const
-	PagePrerenderFinalStatusTimeoutBackgrounded PagePrerenderFinalStatus = "TimeoutBackgrounded"
-
-	// PagePrerenderFinalStatusCrossSiteRedirect enum const
-	PagePrerenderFinalStatusCrossSiteRedirect PagePrerenderFinalStatus = "CrossSiteRedirect"
-
-	// PagePrerenderFinalStatusCrossSiteNavigation enum const
-	PagePrerenderFinalStatusCrossSiteNavigation PagePrerenderFinalStatus = "CrossSiteNavigation"
-
-	// PagePrerenderFinalStatusSameSiteCrossOriginRedirect enum const
-	PagePrerenderFinalStatusSameSiteCrossOriginRedirect PagePrerenderFinalStatus = "SameSiteCrossOriginRedirect"
-
-	// PagePrerenderFinalStatusSameSiteCrossOriginNavigation enum const
-	PagePrerenderFinalStatusSameSiteCrossOriginNavigation PagePrerenderFinalStatus = "SameSiteCrossOriginNavigation"
-
-	// PagePrerenderFinalStatusSameSiteCrossOriginRedirectNotOptIn enum const
-	PagePrerenderFinalStatusSameSiteCrossOriginRedirectNotOptIn PagePrerenderFinalStatus = "SameSiteCrossOriginRedirectNotOptIn"
-
-	// PagePrerenderFinalStatusSameSiteCrossOriginNavigationNotOptIn enum const
-	PagePrerenderFinalStatusSameSiteCrossOriginNavigationNotOptIn PagePrerenderFinalStatus = "SameSiteCrossOriginNavigationNotOptIn"
-
-	// PagePrerenderFinalStatusActivationNavigationParameterMismatch enum const
-	PagePrerenderFinalStatusActivationNavigationParameterMismatch PagePrerenderFinalStatus = "ActivationNavigationParameterMismatch"
-
-	// PagePrerenderFinalStatusActivatedInBackground enum const
-	PagePrerenderFinalStatusActivatedInBackground PagePrerenderFinalStatus = "ActivatedInBackground"
-
-	// PagePrerenderFinalStatusEmbedderHostDisallowed enum const
-	PagePrerenderFinalStatusEmbedderHostDisallowed PagePrerenderFinalStatus = "EmbedderHostDisallowed"
-
-	// PagePrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess enum const
-	PagePrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess PagePrerenderFinalStatus = "ActivationNavigationDestroyedBeforeSuccess"
-
-	// PagePrerenderFinalStatusTabClosedByUserGesture enum const
-	PagePrerenderFinalStatusTabClosedByUserGesture PagePrerenderFinalStatus = "TabClosedByUserGesture"
-
-	// PagePrerenderFinalStatusTabClosedWithoutUserGesture enum const
-	PagePrerenderFinalStatusTabClosedWithoutUserGesture PagePrerenderFinalStatus = "TabClosedWithoutUserGesture"
-
-	// PagePrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed enum const
-	PagePrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed PagePrerenderFinalStatus = "PrimaryMainFrameRendererProcessCrashed"
-
-	// PagePrerenderFinalStatusPrimaryMainFrameRendererProcessKilled enum const
-	PagePrerenderFinalStatusPrimaryMainFrameRendererProcessKilled PagePrerenderFinalStatus = "PrimaryMainFrameRendererProcessKilled"
-
-	// PagePrerenderFinalStatusActivationFramePolicyNotCompatible enum const
-	PagePrerenderFinalStatusActivationFramePolicyNotCompatible PagePrerenderFinalStatus = "ActivationFramePolicyNotCompatible"
-
-	// PagePrerenderFinalStatusPreloadingDisabled enum const
-	PagePrerenderFinalStatusPreloadingDisabled PagePrerenderFinalStatus = "PreloadingDisabled"
-
-	// PagePrerenderFinalStatusBatterySaverEnabled enum const
-	PagePrerenderFinalStatusBatterySaverEnabled PagePrerenderFinalStatus = "BatterySaverEnabled"
-
-	// PagePrerenderFinalStatusActivatedDuringMainFrameNavigation enum const
-	PagePrerenderFinalStatusActivatedDuringMainFrameNavigation PagePrerenderFinalStatus = "ActivatedDuringMainFrameNavigation"
-
-	// PagePrerenderFinalStatusPreloadingUnsupportedByWebContents enum const
-	PagePrerenderFinalStatusPreloadingUnsupportedByWebContents PagePrerenderFinalStatus = "PreloadingUnsupportedByWebContents"
-)
-
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
 
@@ -1867,7 +1711,7 @@ type PageGetInstallabilityErrorsResult struct {
 	InstallabilityErrors []*PageInstallabilityError `json:"installabilityErrors"`
 }
 
-// PageGetManifestIcons (experimental) ...
+// PageGetManifestIcons (deprecated) (experimental) Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
 type PageGetManifestIcons struct {
 }
 
@@ -1880,7 +1724,7 @@ func (m PageGetManifestIcons) Call(c Client) (*PageGetManifestIconsResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// PageGetManifestIconsResult (experimental) ...
+// PageGetManifestIconsResult (deprecated) (experimental) ...
 type PageGetManifestIconsResult struct {
 
 	// PrimaryIcon (optional) ...
@@ -2835,29 +2679,12 @@ func (m PageClearCompilationCache) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// PageSetSPCTransactionModeMode enum
-type PageSetSPCTransactionModeMode string
-
-const (
-	// PageSetSPCTransactionModeModeNone enum const
-	PageSetSPCTransactionModeModeNone PageSetSPCTransactionModeMode = "none"
-
-	// PageSetSPCTransactionModeModeAutoAccept enum const
-	PageSetSPCTransactionModeModeAutoAccept PageSetSPCTransactionModeMode = "autoAccept"
-
-	// PageSetSPCTransactionModeModeAutoReject enum const
-	PageSetSPCTransactionModeModeAutoReject PageSetSPCTransactionModeMode = "autoReject"
-
-	// PageSetSPCTransactionModeModeAutoOptOut enum const
-	PageSetSPCTransactionModeModeAutoOptOut PageSetSPCTransactionModeMode = "autoOptOut"
-)
-
 // PageSetSPCTransactionMode (experimental) Sets the Secure Payment Confirmation transaction mode.
 // https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
 type PageSetSPCTransactionMode struct {
 
 	// Mode ...
-	Mode PageSetSPCTransactionModeMode `json:"mode"`
+	Mode PageAutoResponseMode `json:"mode"`
 }
 
 // ProtoReq name
@@ -2868,26 +2695,12 @@ func (m PageSetSPCTransactionMode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// PageSetRPHRegistrationModeMode enum
-type PageSetRPHRegistrationModeMode string
-
-const (
-	// PageSetRPHRegistrationModeModeNone enum const
-	PageSetRPHRegistrationModeModeNone PageSetRPHRegistrationModeMode = "none"
-
-	// PageSetRPHRegistrationModeModeAutoaccept enum const
-	PageSetRPHRegistrationModeModeAutoaccept PageSetRPHRegistrationModeMode = "autoaccept"
-
-	// PageSetRPHRegistrationModeModeAutoreject enum const
-	PageSetRPHRegistrationModeModeAutoreject PageSetRPHRegistrationModeMode = "autoreject"
-)
-
 // PageSetRPHRegistrationMode (experimental) Extensions for Custom Handlers API:
 // https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
 type PageSetRPHRegistrationMode struct {
 
 	// Mode ...
-	Mode PageSetRPHRegistrationModeMode `json:"mode"`
+	Mode PageAutoResponseMode `json:"mode"`
 }
 
 // ProtoReq name
@@ -3345,28 +3158,6 @@ type PageBackForwardCacheNotUsed struct {
 // ProtoEvent name
 func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
 	return "Page.backForwardCacheNotUsed"
-}
-
-// PagePrerenderAttemptCompleted (experimental) Fired when a prerender attempt is completed.
-type PagePrerenderAttemptCompleted struct {
-
-	// InitiatingFrameID The frame id of the frame initiating prerendering.
-	InitiatingFrameID PageFrameID `json:"initiatingFrameId"`
-
-	// PrerenderingURL ...
-	PrerenderingURL string `json:"prerenderingUrl"`
-
-	// FinalStatus ...
-	FinalStatus PagePrerenderFinalStatus `json:"finalStatus"`
-
-	// DisallowedAPIMethod (optional) This is used to give users more information about the name of the API call
-	// that is incompatible with prerender and has caused the cancellation of the attempt
-	DisallowedAPIMethod string `json:"disallowedApiMethod,omitempty"`
-}
-
-// ProtoEvent name
-func (evt PagePrerenderAttemptCompleted) ProtoEvent() string {
-	return "Page.prerenderAttemptCompleted"
 }
 
 // PageLoadEventFired ...

@@ -169,6 +169,9 @@ type CSSCSSRule struct {
 	// SelectorList Rule selector data.
 	SelectorList *CSSSelectorList `json:"selectorList"`
 
+	// NestingSelectors (experimental) (optional) Array of selectors from ancestor style rules, sorted by distance from the current rule.
+	NestingSelectors []string `json:"nestingSelectors,omitempty"`
+
 	// Origin Parent stylesheet's origin.
 	Origin CSSStyleSheetOrigin `json:"origin"`
 
@@ -525,6 +528,30 @@ type CSSFontFace struct {
 	FontVariationAxes []*CSSFontVariationAxis `json:"fontVariationAxes,omitempty"`
 }
 
+// CSSCSSTryRule CSS try rule representation.
+type CSSCSSTryRule struct {
+
+	// StyleSheetID (optional) The css style sheet identifier (absent for user agent stylesheet and user-specified
+	// stylesheet rules) this rule came from.
+	StyleSheetID CSSStyleSheetID `json:"styleSheetId,omitempty"`
+
+	// Origin Parent stylesheet's origin.
+	Origin CSSStyleSheetOrigin `json:"origin"`
+
+	// Style (optional) Associated style declaration.
+	Style *CSSCSSStyle `json:"style,omitempty"`
+}
+
+// CSSCSSPositionFallbackRule CSS position-fallback rule representation.
+type CSSCSSPositionFallbackRule struct {
+
+	// Name ...
+	Name *CSSValue `json:"name"`
+
+	// TryRules List of keyframes.
+	TryRules []*CSSCSSTryRule `json:"tryRules"`
+}
+
 // CSSCSSKeyframesRule CSS keyframes rule representation.
 type CSSCSSKeyframesRule struct {
 
@@ -809,6 +836,9 @@ type CSSGetMatchedStylesForNodeResult struct {
 	// CSSKeyframesRules (optional) A list of CSS keyframed animations matching this node.
 	CSSKeyframesRules []*CSSCSSKeyframesRule `json:"cssKeyframesRules,omitempty"`
 
+	// CSSPositionFallbackRules (optional) A list of CSS position fallbacks matching this node.
+	CSSPositionFallbackRules []*CSSCSSPositionFallbackRule `json:"cssPositionFallbackRules,omitempty"`
+
 	// ParentLayoutNodeID (experimental) (optional) Id of the first parent element that does not have display: contents.
 	ParentLayoutNodeID DOMNodeID `json:"parentLayoutNodeId,omitempty"`
 }
@@ -942,7 +972,7 @@ func (m CSSTakeComputedStyleUpdates) Call(c Client) (*CSSTakeComputedStyleUpdate
 // CSSTakeComputedStyleUpdatesResult (experimental) ...
 type CSSTakeComputedStyleUpdatesResult struct {
 
-	// NodeIds The list of node Ids that have their tracked computed styles updated
+	// NodeIds The list of node Ids that have their tracked computed styles updated.
 	NodeIds []DOMNodeID `json:"nodeIds"`
 }
 
@@ -1206,7 +1236,7 @@ func (m CSSStartRuleUsageTracking) Call(c Client) error {
 }
 
 // CSSStopRuleUsageTracking Stop tracking rule usage and return the list of rules that were used since last call to
-// `takeCoverageDelta` (or since start of coverage instrumentation)
+// `takeCoverageDelta` (or since start of coverage instrumentation).
 type CSSStopRuleUsageTracking struct {
 }
 
@@ -1227,7 +1257,7 @@ type CSSStopRuleUsageTrackingResult struct {
 }
 
 // CSSTakeCoverageDelta Obtain list of rules that became used since last call to this method (or since start of coverage
-// instrumentation)
+// instrumentation).
 type CSSTakeCoverageDelta struct {
 }
 
@@ -1266,7 +1296,7 @@ func (m CSSSetLocalFontsEnabled) Call(c Client) error {
 }
 
 // CSSFontsUpdated Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
-// web font
+// web font.
 type CSSFontsUpdated struct {
 
 	// Font (optional) The web font that has loaded.
