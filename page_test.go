@@ -3,6 +3,8 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"errors"
+	"fmt"
 	"image/png"
 	"math"
 	"net/http"
@@ -441,7 +443,15 @@ func TestPageWaitNavigation(t *testing.T) {
 	s := g.Serve().Route("/", "")
 	wait := g.page.MustWaitNavigation()
 	g.page.MustNavigate(s.URL())
-	wait()
+	err := wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 }
 
 func TestPageWaitRequestIdle(t *testing.T) {
@@ -783,20 +793,52 @@ func TestPageNavigation(t *testing.T) {
 
 	wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
 	p.MustNavigate(g.srcFile("fixtures/click.html"))
-	wait()
+	err := wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 
 	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
 	p.MustNavigate(g.srcFile("fixtures/selector.html"))
-	wait()
+	err = wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 
 	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
 	p.MustNavigateBack()
-	wait()
+	err = wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 	g.Regex("fixtures/click.html$", p.MustInfo().URL)
 
 	wait = p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
 	p.MustNavigateForward()
-	wait()
+	err = wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 	g.Regex("fixtures/selector.html$", p.MustInfo().URL)
 
 	g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
@@ -829,7 +871,15 @@ func TestPageElementFromObjectErr(t *testing.T) {
 	p := g.newPage()
 	wait := p.WaitNavigation(proto.PageLifecycleEventNameLoad)
 	p.MustNavigate(g.srcFile("./fixtures/click.html"))
-	wait()
+	err := wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 	res, err := proto.DOMGetNodeForLocation{X: 10, Y: 10}.Call(p)
 	g.E(err)
 

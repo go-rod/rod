@@ -1,6 +1,9 @@
 package rod_test
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/go-rod/rod/lib/devices"
@@ -261,7 +264,15 @@ func TestTouch(t *testing.T) {
 
 	wait := page.WaitNavigation(proto.PageLifecycleEventNameLoad)
 	page.MustNavigate(g.srcFile("fixtures/touch.html"))
-	wait()
+	err := wait()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
 
 	touch := page.Touch
 

@@ -521,17 +521,23 @@ func (p *Page) WaitEvent(e proto.Event) (wait func()) {
 
 // WaitNavigation wait for a page lifecycle event when navigating.
 // Usually you will wait for proto.PageLifecycleEventNameNetworkAlmostIdle
-func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
+func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() error {
 	_ = proto.PageSetLifecycleEventsEnabled{Enabled: true}.Call(p)
 
 	wait := p.EachEvent(func(e *proto.PageLifecycleEvent) bool {
 		return e.Name == name
 	})
 
-	return func() {
+	return func() error {
 		defer p.tryTrace(TraceTypeWait, "navigation", name)()
-		wait()
+		select {
+		case <-p.ctx.Done():
+			return p.ctx.Err()
+		default:
+			wait()
+		}
 		_ = proto.PageSetLifecycleEventsEnabled{Enabled: false}.Call(p)
+		return nil
 	}
 }
 
