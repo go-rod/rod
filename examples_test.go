@@ -141,6 +141,33 @@ func Example_context_and_timeout() {
 	}
 }
 
+// Show how to judge whether wait is cancelled or timed out
+func Example_context_and_EachEvent() {
+	page := rod.New().MustConnect().MustPage("https://github.com")
+
+	page, cancel := page.WithCancel()
+
+	go func() {
+		time.Sleep(time.Second)
+		cancel()
+	}()
+
+	// It's a blocking method, it will wait until the context is cancelled
+	page.EachEvent(func(e *proto.PageLifecycleEvent) {})()
+
+	// If ctx error isn't nil =,then according to kind of
+	// ctx.Error to handle case.
+	err := page.GetContext().Err()
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			fmt.Println("wait is canceled")
+		}
+		if errors.Is(err, context.DeadlineExceeded) {
+			fmt.Println("wait is timeout")
+		}
+	}
+}
+
 // We use "Must" prefixed functions to write example code. But in production you may want to use
 // the no-prefix version of them.
 // About why we use "Must" as the prefix, it's similar to https://golang.org/pkg/regexp/#MustCompile
