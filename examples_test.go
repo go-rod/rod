@@ -141,6 +141,27 @@ func Example_context_and_timeout() {
 	}
 }
 
+func Example_context_and_EachEvent() {
+	browser := rod.New().MustConnect()
+	defer browser.MustClose()
+
+	page := browser.MustPage("https://github.com").MustWaitLoad()
+
+	page, cancel := page.WithCancel()
+
+	go func() {
+		time.Sleep(time.Second)
+		cancel()
+	}()
+
+	// It's a blocking method, it will wait until the context is cancelled
+	page.EachEvent(func(e *proto.PageLifecycleEvent) {})()
+
+	if page.GetContext().Err() == context.Canceled {
+		fmt.Println("cancelled")
+	}
+}
+
 // We use "Must" prefixed functions to write example code. But in production you may want to use
 // the no-prefix version of them.
 // About why we use "Must" as the prefix, it's similar to https://golang.org/pkg/regexp/#MustCompile
