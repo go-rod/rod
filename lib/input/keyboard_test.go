@@ -6,7 +6,6 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/ysmood/got"
-	"github.com/ysmood/got/lib/gop"
 	"github.com/ysmood/gson"
 )
 
@@ -132,6 +131,8 @@ func TestMac(t *testing.T) {
 	input.IsMac = true
 	defer func() { input.IsMac = old }()
 
+	zero := 0
+
 	g.Eq(input.ArrowDown.Encode(proto.InputDispatchKeyEventTypeKeyDown, 0), &proto.InputDispatchKeyEvent{
 		Type:                  "rawKeyDown",
 		Code:                  "ArrowDown",
@@ -140,7 +141,7 @@ func TestMac(t *testing.T) {
 		AutoRepeat:            false,
 		IsKeypad:              false,
 		IsSystemKey:           false,
-		Location:              gop.Ptr(0).(*int),
+		Location:              &zero,
 		Commands: []string{
 			"moveDown",
 		},
