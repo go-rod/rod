@@ -22,7 +22,7 @@ var _ proto.Client = &Client{}
 var _ proto.Sessionable = &Client{}
 var _ proto.Contextable = &Client{}
 
-func (c *Client) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
+func (c *Client) Call(_ context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	c.sessionID = sessionID
 	c.methodName = methodName
 	c.params = params

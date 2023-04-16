@@ -565,6 +565,7 @@ func TestPageEvent(t *testing.T) {
 
 	go func() {
 		for range p.Event() {
+			utils.Noop()
 		}
 	}()
 	p.MustClose()
@@ -579,6 +580,7 @@ func TestPageStopEventAfterDetach(t *testing.T) {
 		p.MustClose()
 	}()
 	for range p.Event() {
+		utils.Noop()
 	}
 }
 

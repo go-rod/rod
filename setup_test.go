@@ -379,7 +379,7 @@ type MockReader struct {
 	err error
 }
 
-func (mr *MockReader) Read(p []byte) (n int, err error) {
+func (mr *MockReader) Read(_ []byte) (n int, err error) {
 	return 0, mr.err
 }
 

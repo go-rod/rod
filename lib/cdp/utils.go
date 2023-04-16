@@ -17,7 +17,7 @@ type Dialer interface {
 // TODO: replace it with tls.Dialer once golang v1.15 is widely used.
 type tlsDialer struct{}
 
-func (d *tlsDialer) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
+func (d *tlsDialer) DialContext(_ context.Context, network, address string) (net.Conn, error) {
 	return tls.Dial(network, address, nil)
 }
 

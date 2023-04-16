@@ -35,6 +35,9 @@ var TestEnvs = map[string]string{
 // InContainer will be true if is inside container environment, such as docker
 var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv")
 
+// Noop does nothing
+func Noop() {}
+
 // Logger interface
 type Logger interface {
 	// Same as fmt.Printf

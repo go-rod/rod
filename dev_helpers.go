@@ -47,10 +47,10 @@ const (
 // ServeMonitor starts the monitor server.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
 func (b *Browser) ServeMonitor(host string) string {
-	url, mux, close := serve(host)
+	u, mux, closeSvr := serve(host)
 	go func() {
 		<-b.ctx.Done()
-		utils.E(close())
+		utils.E(closeSvr())
 	}()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +89,7 @@ func (b *Browser) ServeMonitor(host string) string {
 		utils.E(w.Write(p.MustScreenshot()))
 	})
 
-	return url
+	return u
 }
 
 // check method and sleep if needed

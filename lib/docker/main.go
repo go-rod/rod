@@ -31,7 +31,7 @@ func main() {
 	if master {
 		releaseLatest(at)
 	} else if ver != "" {
-		releaseWithVer(ver, at)
+		releaseWithVer(ver)
 	} else {
 		test(at)
 	}
@@ -45,7 +45,7 @@ func releaseLatest(at archType) {
 	utils.Exec("docker push", at.tag())
 }
 
-func releaseWithVer(ver string, at archType) {
+func releaseWithVer(ver string) {
 	login()
 
 	verImageDev := registry + ":" + ver + "-dev"

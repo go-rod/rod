@@ -40,7 +40,7 @@ func TestIncognito(t *testing.T) {
 	})
 }
 
-func TestBrowserResetControlURL(t *testing.T) {
+func TestBrowserResetControlURL(_ *testing.T) {
 	rod.New().ControlURL("test").ControlURL("")
 }
 
@@ -439,7 +439,7 @@ func TestBrowserConnectFailure(t *testing.T) {
 	}
 }
 
-func TestBrowserPool(t *testing.T) {
+func TestBrowserPool(_ *testing.T) {
 	pool := rod.NewBrowserPool(3)
 	create := func() *rod.Browser { return rod.New().MustConnect() }
 	b := pool.Get(create)

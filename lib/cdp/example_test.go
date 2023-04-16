@@ -23,6 +23,7 @@ func ExampleClient() {
 	go func() {
 		for range client.Event() {
 			// you must consume the events
+			utils.Noop()
 		}
 	}()
 

@@ -96,14 +96,14 @@ func (c *MockConn) RemoteAddr() net.Addr {
 	return nil
 }
 
-func (c *MockConn) SetDeadline(t time.Time) error {
+func (c *MockConn) SetDeadline(_ time.Time) error {
 	return nil
 }
 
-func (c *MockConn) SetReadDeadline(t time.Time) error {
+func (c *MockConn) SetReadDeadline(_ time.Time) error {
 	return nil
 }
 
-func (c *MockConn) SetWriteDeadline(t time.Time) error {
+func (c *MockConn) SetWriteDeadline(_ time.Time) error {
 	return nil
 }

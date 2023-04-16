@@ -183,7 +183,7 @@ func TestBrowserDownloadErr(t *testing.T) {
 	g.Has(b.download(g.Context(), r.URL()).Error(), "failed to download the browser: 200")
 }
 
-func TestTestOpen(t *testing.T) {
+func TestTestOpen(_ *testing.T) {
 	openExec = func(name string, arg ...string) *exec.Cmd {
 		cmd := exec.Command("not-exists")
 		cmd.Process = &os.Process{}

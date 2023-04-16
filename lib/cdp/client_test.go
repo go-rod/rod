@@ -34,6 +34,7 @@ func TestBasic(t *testing.T) {
 
 	go func() {
 		for range client.Event() {
+			utils.Noop()
 		}
 	}()
 
@@ -139,6 +140,7 @@ func TestCrash(t *testing.T) {
 
 	go func() {
 		for range client.Event() {
+			utils.Noop()
 		}
 	}()
 

@@ -137,7 +137,7 @@ func TestOutputJSONErr(t *testing.T) {
 	})
 }
 
-func TestSleep(t *testing.T) {
+func TestSleep(_ *testing.T) {
 	utils.Sleep(0.01)
 }
 
@@ -148,7 +148,7 @@ func TestAll(t *testing.T) {
 	utils.All(c, c, c)()
 }
 
-func TestPause(t *testing.T) {
+func TestPause(_ *testing.T) {
 	go utils.Pause()
 }
 
