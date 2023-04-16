@@ -3,24 +3,18 @@ package launcher_test
 import (
 	"archive/zip"
 	"bytes"
-	"context"
 	"crypto"
 	"crypto/x509"
 	"encoding/pem"
 	"flag"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
@@ -40,74 +34,29 @@ func TestDownloadHosts(t *testing.T) {
 }
 
 func TestDownload(t *testing.T) {
-	g := setup(t)
+	g := got.T(t)
+
+	buf := bytes.NewBuffer(nil)
+	z := zip.NewWriter(buf)
+	f, _ := z.Create(filepath.FromSlash("a/b/c.txt"))
+	_, _ = f.Write([]byte(g.RandStr(500 * 1024)))
+	_ = z.Close()
 
 	s := g.Serve()
-	s.Mux.HandleFunc("/fast/", func(rw http.ResponseWriter, r *http.Request) {
-		buf := bytes.NewBuffer(nil)
-		zw := zip.NewWriter(buf)
-
-		// folder "to"
-		h := &zip.FileHeader{Name: "to/"}
-		h.SetMode(0755)
-		_, err := zw.CreateHeader(h)
-		g.E(err)
-
-		// file "file.txt"
-		w, err := zw.CreateHeader(&zip.FileHeader{Name: "to/file.txt"})
-		g.E(err)
-		b := []byte(g.RandStr(2 * 1024 * 1024))
-		g.E(w.Write(b))
-
-		g.E(zw.Close())
-
-		rw.Header().Add("Content-Length", fmt.Sprintf("%d", buf.Len()))
-		_, _ = io.Copy(rw, buf)
-	})
-	s.Mux.HandleFunc("/slow/", func(rw http.ResponseWriter, r *http.Request) {
-		t := time.NewTimer(3 * time.Second)
-		select {
-		case <-t.C:
-		case <-r.Context().Done():
-			t.Stop()
-		}
-	})
-
-	b, cancel := newBrowser()
-	b.Logger = utils.LoggerQuiet
-	defer cancel()
-
-	b.Hosts = []launcher.Host{launcher.HostTest(s.URL("/slow")), launcher.HostTest(s.URL("/fast"))}
-	b.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
-	g.E(b.Download())
-	g.Nil(os.Stat(b.Dir))
-
-	// download chrome with a proxy
-	// should fail with self signed certificate
-	p := httptest.NewTLSServer(&httputil.ReverseProxy{Director: func(_ *http.Request) {}})
-	defer p.Close()
-	// invalid proxy URL should trigger an error
-	err := b.Proxy(`invalid.escaping%%2`)
-	g.Eq(err.Error(), `parse "invalid.escaping%%2": invalid URL escape "%%2"`)
-
-	g.E(b.Proxy(p.URL))
-	g.NotNil(b.Download())
-	// should instead be successful with ignore certificate
-	b.IgnoreCerts = true
-	g.E(b.Download())
-	g.Nil(os.Stat(b.Dir))
-}
-
-func TestBrowserGet(t *testing.T) {
-	g := setup(t)
-
-	g.Nil(os.Stat(launcher.NewBrowser().MustGet()))
+	s.Route("/", ".zip", buf.Bytes())
 
 	b := launcher.NewBrowser()
-	b.Revision = 0
+	b.Revision = 1
 	b.Logger = utils.LoggerQuiet
-	_, err := b.Get()
-	g.Eq(err.Error(), "Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os")
+	b.Hosts = []launcher.Host{func(_ int) string {
+		return s.URL("/a.zip")
+	}}
+
+	g.Cleanup(func() { _ = os.RemoveAll(b.Dir()) })
+
+	b.MustGet()
+
+	g.PathExists(b.Dir())
 }
 
 func TestLaunch(t *testing.T) {
@@ -239,16 +188,6 @@ func TestLaunchErr(t *testing.T) {
 	}
 }
 
-func newBrowser() (*launcher.Browser, func()) {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	b := launcher.NewBrowser()
-	if !testing.Verbose() {
-		b.Logger = utils.LoggerQuiet
-	}
-	b.Context = ctx
-	return b, cancel
-}
-
 var testProfileDir = flag.Bool("test-profile-dir", false, "set it to test profile dir")
 
 func TestProfileDir(t *testing.T) {
@@ -277,16 +216,16 @@ func TestBrowserValid(t *testing.T) {
 	b.Revision = 0
 	g.Err(b.Validate())
 
-	g.E(utils.Mkdir(filepath.Dir(b.Destination())))
-	g.Cleanup(func() { _ = os.RemoveAll(b.Destination()) })
+	g.E(utils.Mkdir(filepath.Dir(b.BinPath())))
+	g.Cleanup(func() { _ = os.RemoveAll(b.Dir()) })
 
-	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-exit-err").CombinedOutput())
+	g.E(exec.Command("go", "build", "-o", b.BinPath(), "./fixtures/chrome-exit-err").CombinedOutput())
 	g.Has(b.Validate().Error(), "failed to run the browser")
 
-	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-empty").CombinedOutput())
+	g.E(exec.Command("go", "build", "-o", b.BinPath(), "./fixtures/chrome-empty").CombinedOutput())
 	g.Eq(b.Validate().Error(), "the browser executable doesn't support headless mode")
 
-	g.E(exec.Command("go", "build", "-o", b.Destination(), "./fixtures/chrome-lib-missing").CombinedOutput())
+	g.E(exec.Command("go", "build", "-o", b.BinPath(), "./fixtures/chrome-lib-missing").CombinedOutput())
 	g.Nil(b.Validate())
 }
 
@@ -354,9 +293,20 @@ func TestIgnoreCerts_InvalidCert(t *testing.T) {
 	}
 }
 
-func TestIgnoreCerts_BrowserProxySkipValidation(t *testing.T) {
+func TestBrowserDownloadErr(t *testing.T) {
 	g := setup(t)
 	b := launcher.NewBrowser()
-	// certificate validation skip is disabled by default
-	g.False(b.IgnoreCerts)
+	b.Logger = utils.LoggerQuiet
+	b.HTTPClient = http.DefaultClient
+	b.Hosts = []launcher.Host{}
+	g.Err(b.Download())
+
+	s := g.Serve()
+	s.Route("/download", ".txt", "ok")
+
+	b = launcher.NewBrowser()
+	b.Hosts = []launcher.Host{func(_ int) string {
+		return s.URL("/download/file")
+	}}
+	g.Err(b.Download())
 }

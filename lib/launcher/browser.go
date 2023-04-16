@@ -3,24 +3,19 @@ package launcher
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/fetchup"
 	"github.com/ysmood/leakless"
 )
 
@@ -88,8 +83,8 @@ type Browser struct {
 	// Revision of the browser to use
 	Revision int
 
-	// Dir to download browser.
-	Dir string
+	// RootDir to download different browser versions.
+	RootDir string
 
 	// Log to print output
 	Logger utils.Logger
@@ -97,11 +92,8 @@ type Browser struct {
 	// LockPort a tcp port to prevent race downloading. Default is 2968 .
 	LockPort int
 
-	// Proxy to use (http/socks5). Default is nil.
-	proxyURL *url.URL
-
-	// IgnoreCerts skips proxy certificate validation
-	IgnoreCerts bool
+	// HTTPClient to download the browser
+	HTTPClient *http.Client
 }
 
 // NewBrowser with default values
@@ -110,155 +102,50 @@ func NewBrowser() *Browser {
 		Context:  context.Background(),
 		Revision: RevisionDefault,
 		Hosts:    []Host{HostGoogle, HostNPM, HostPlaywright},
-		Dir:      DefaultBrowserDir,
+		RootDir:  DefaultBrowserDir,
 		Logger:   log.New(os.Stdout, "[launcher.Browser]", log.LstdFlags),
 		LockPort: defaults.LockPort,
 	}
 }
 
-// Destination of the downloaded browser executable
-func (lc *Browser) Destination() string {
+// Dir to download the browser
+func (lc *Browser) Dir() string {
+	return filepath.Join(lc.RootDir, fmt.Sprintf("chromium-%d", lc.Revision))
+}
+
+// BinPath to download the browser executable
+func (lc *Browser) BinPath() string {
 	bin := map[string]string{
-		"darwin":  fmt.Sprintf("chromium-%d/chrome-mac/Chromium.app/Contents/MacOS/Chromium", lc.Revision),
-		"linux":   fmt.Sprintf("chromium-%d/chrome-linux/chrome", lc.Revision),
-		"windows": fmt.Sprintf("chromium-%d/chrome-win/chrome.exe", lc.Revision),
+		"darwin":  "Chromium.app/Contents/MacOS/Chromium",
+		"linux":   "chrome",
+		"windows": "chrome.exe",
 	}[runtime.GOOS]
 
-	return filepath.Join(lc.Dir, bin)
+	return filepath.Join(lc.Dir(), filepath.FromSlash(bin))
 }
 
 // Download browser from the fastest host. It will race downloading a TCP packet from each host and use the fastest host.
-func (lc *Browser) Download() (err error) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = e.(error)
-		}
-	}()
-
-	u, err := lc.fastestHost()
-	utils.E(err)
-
-	if u == "" {
-		panic(fmt.Errorf("Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os"))
-	}
-
-	return lc.download(lc.Context, u)
-}
-
-// Proxy sets the proxy for chrome download
-func (lc *Browser) Proxy(URL string) error {
-	proxyURL, err := url.Parse(URL)
-	if err != nil {
-		return err
-	}
-	lc.proxyURL = proxyURL
-	return err
-}
-
-func (lc *Browser) fastestHost() (fastest string, err error) {
-	lc.Logger.Println("try to find the fastest host to download the browser binary")
-
-	setURL := sync.Once{}
-	ctx, cancel := context.WithCancel(lc.Context)
-	defer cancel()
-
-	wg := sync.WaitGroup{}
+func (lc *Browser) Download() error {
+	us := []string{}
 	for _, host := range lc.Hosts {
-		u := host(lc.Revision)
-
-		lc.Logger.Println("check", u)
-		wg.Add(1)
-
-		go func() {
-			defer func() {
-				err := recover()
-				if err != nil {
-					lc.Logger.Println("check result:", err)
-				}
-				wg.Done()
-			}()
-
-			q, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
-			utils.E(err)
-
-			res, err := lc.httpClient().Do(q)
-			utils.E(err)
-			defer func() { _ = res.Body.Close() }()
-
-			if res.StatusCode == http.StatusOK {
-				buf := make([]byte, 64*1024) // a TCP packet won't be larger than 64KB
-				_, err = res.Body.Read(buf)
-				utils.E(err)
-
-				setURL.Do(func() {
-					fastest = u
-					cancel()
-				})
-			}
-		}()
-	}
-	wg.Wait()
-
-	return
-}
-
-func (lc *Browser) download(ctx context.Context, u string) error {
-	lc.Logger.Println("Download:", u)
-
-	zipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d.zip", lc.Revision))
-
-	err := utils.Mkdir(lc.Dir)
-	utils.E(err)
-
-	zipFile, err := os.Create(zipPath)
-	utils.E(err)
-
-	q, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
-	utils.E(err)
-
-	res, err := lc.httpClient().Do(q)
-	utils.E(err)
-	defer func() { _ = res.Body.Close() }()
-
-	size, _ := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
-
-	if res.StatusCode >= 400 || size < 1024*1024 {
-		b, err := ioutil.ReadAll(res.Body)
-		utils.E(err)
-		err = errors.New("failed to download the browser")
-		return fmt.Errorf("%w: %d %s", err, res.StatusCode, string(b))
+		us = append(us, host(lc.Revision))
 	}
 
-	progress := &progresser{
-		size:   int(size),
-		logger: lc.Logger,
+	dir := lc.Dir()
+
+	fu := fetchup.New(dir, us...)
+	fu.Ctx = lc.Context
+	fu.Logger = lc.Logger
+	if lc.HTTPClient != nil {
+		fu.HttpClient = lc.HTTPClient
 	}
 
-	_, err = io.Copy(io.MultiWriter(progress, zipFile), res.Body)
-	utils.E(err)
-
-	err = zipFile.Close()
-	utils.E(err)
-
-	unzipPath := filepath.Join(lc.Dir, fmt.Sprintf("chromium-%d", lc.Revision))
-	_ = os.RemoveAll(unzipPath)
-	utils.E(unzip(lc.Logger, zipPath, unzipPath))
-	return os.Remove(zipPath)
-}
-
-func (lc *Browser) httpClient() *http.Client {
-	transport := &http.Transport{
-		DisableKeepAlives: true,
+	err := fu.Fetch()
+	if err != nil {
+		return fmt.Errorf("Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os : %w", err)
 	}
-	if lc.IgnoreCerts {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true,
-		}
-	}
-	if lc.proxyURL != nil {
-		transport.Proxy = http.ProxyURL(lc.proxyURL)
-	}
-	return &http.Client{Transport: transport}
+
+	return fetchup.StripFirstDir(dir)
 }
 
 // Get is a smart helper to get the browser executable path.
@@ -267,10 +154,13 @@ func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.LockPort)()
 
 	if lc.Validate() == nil {
-		return lc.Destination(), nil
+		return lc.BinPath(), nil
 	}
 
-	return lc.Destination(), lc.Download()
+	// Try to cleanup before downloading
+	_ = os.RemoveAll(lc.Dir())
+
+	return lc.BinPath(), lc.Download()
 }
 
 // MustGet is similar with Get
@@ -283,12 +173,12 @@ func (lc *Browser) MustGet() string {
 // Validate returns nil if the browser executable valid.
 // If the executable is malformed it will return error.
 func (lc *Browser) Validate() error {
-	_, err := os.Stat(lc.Destination())
+	_, err := os.Stat(lc.BinPath())
 	if err != nil {
 		return err
 	}
 
-	cmd := exec.Command(lc.Destination(), "--headless", "--no-sandbox",
+	cmd := exec.Command(lc.BinPath(), "--headless", "--no-sandbox",
 		"--disable-gpu", "--dump-dom", "about:blank")
 	b, err := cmd.CombinedOutput()
 	if err != nil {

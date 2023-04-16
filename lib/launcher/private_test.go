@@ -31,12 +31,6 @@ func HostTest(host string) Host {
 
 var setup = got.Setup(nil)
 
-func TestMain(m *testing.M) {
-	NewBrowser().MustGet() // preload browser to local
-
-	os.Exit(m.Run())
-}
-
 func TestToHTTP(t *testing.T) {
 	g := setup(t)
 
@@ -55,12 +49,6 @@ func TestToWS(t *testing.T) {
 
 	u, _ = url.Parse("http://a.com")
 	g.Eq("ws", toWS(*u).Scheme)
-}
-
-func TestUnzip(t *testing.T) {
-	g := setup(t)
-
-	g.Err(unzip(utils.LoggerQuiet, "", ""))
 }
 
 func TestLaunchOptions(t *testing.T) {
@@ -144,20 +132,10 @@ func TestLaunchErrs(t *testing.T) {
 	s.Route("/", "", nil)
 	l = New().Bin("")
 	l.browser.Logger = utils.LoggerQuiet
-	l.browser.Dir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
+	l.browser.RootDir = filepath.Join("tmp", "browser-from-mirror", g.RandStr(16))
 	l.browser.Hosts = []Host{HostTest(s.URL())}
 	_, err = l.Launch()
 	g.Err(err)
-}
-
-func TestProgresser(t *testing.T) {
-	g := setup(t)
-
-	p := progresser{size: 100, logger: utils.LoggerQuiet}
-
-	g.E(p.Write(make([]byte, 100)))
-	g.E(p.Write(make([]byte, 100)))
-	g.E(p.Write(make([]byte, 100)))
 }
 
 func TestURLParserErr(t *testing.T) {
@@ -172,15 +150,6 @@ func TestURLParserErr(t *testing.T) {
 
 	u.Buffer = "/tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory"
 	g.Eq(u.Err().Error(), "[launcher] Failed to launch the browser, the doc might help https://go-rod.github.io/#/compatibility?id=os: /tmp/rod/chromium-818858/chrome-linux/chrome: error while loading shared libraries: libgobject-2.0.so.0: cannot open shared object file: No such file or directory")
-}
-
-func TestBrowserDownloadErr(t *testing.T) {
-	g := setup(t)
-
-	r := g.Serve().Route("/", "", "")
-	b := NewBrowser()
-	b.Logger = utils.LoggerQuiet
-	g.Has(b.download(g.Context(), r.URL()).Error(), "failed to download the browser: 200")
 }
 
 func TestTestOpen(_ *testing.T) {
