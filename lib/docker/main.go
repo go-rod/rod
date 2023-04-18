@@ -1,7 +1,7 @@
 // The .github/workflows/docker.yml uses it as an github action
 // and run it like this:
 //
-//	DOCKER_TOKEN=$TOKEN go run ./lib/utils/docker $GITHUB_REF
+//	GITHUB_TOKEN=$TOKEN go run ./lib/utils/docker $GITHUB_REF
 package main
 
 import (
@@ -85,7 +85,7 @@ func test(at archType) {
 }
 
 func login() {
-	cmd := exec.Command("docker", "login", "-u=rod-robot", "-p", os.Getenv("DOCKER_TOKEN"), registry)
+	cmd := exec.Command("docker", "login", "-u=rod-robot", "-p", os.Getenv("GITHUB_TOKEN"), registry)
 	out, err := cmd.CombinedOutput()
 	utils.E(err)
 	utils.E(os.Stdout.Write(out))

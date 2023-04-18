@@ -10,7 +10,7 @@ import (
 func TestBasic(t *testing.T) {
 	g := got.T(t)
 
-	_ = os.Setenv("ROD_GITHUB_ROBOT", "1234")
+	_ = os.Setenv("GITHUB_TOKEN", "1234")
 
 	body := g.Read(g.Open(false, "body-invalid.txt")).String()
 

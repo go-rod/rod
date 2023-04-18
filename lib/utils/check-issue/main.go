@@ -1,7 +1,7 @@
 // The .github/workflows/check-issues.yml will use it as an github action
 // To test it locally, you can generate a personal github token: https://github.com/settings/tokens
 // Then run this:
-//   ROD_GITHUB_ROBOT=your_token go run ./lib/utils/check-issue
+//   GITHUB_TOKEN=your_token go run ./lib/utils/check-issue
 
 package main
 
@@ -98,7 +98,7 @@ func deleteComments(id int) {
 }
 
 func req(u string) *http.Request {
-	token := os.Getenv("ROD_GITHUB_ROBOT")
+	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		panic("missing github token")
 	}

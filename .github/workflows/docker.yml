@@ -7,6 +7,9 @@ name: Release docker image
 
 on: [push, pull_request]
 
+permissions:
+  packages: write
+
 jobs:
   # TODO: we should merge job docker-amd and job docker-arm once the github actions fix their issue with cross-platform building.
   docker-amd:
@@ -23,7 +26,7 @@ jobs:
 
       - run: go run ./lib/docker $GITHUB_REF
         env:
-          DOCKER_TOKEN: ${{secrets.ROD_GITHUB_ROBOT}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - uses: actions/upload-artifact@v2
         with:
@@ -50,5 +53,5 @@ jobs:
 
       - run: go run ./lib/docker $GITHUB_REF
         env:
-          DOCKER_TOKEN: ${{secrets.ROD_GITHUB_ROBOT}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           ARCH: arm
