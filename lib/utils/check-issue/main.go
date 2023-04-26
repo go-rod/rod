@@ -85,7 +85,7 @@ func deleteComments(id int) {
 	list := gson.New(res.Body)
 
 	for _, c := range list.Arr() {
-		if c.Get("user.login").Str() == "rod-robot" &&
+		if c.Get("user.login").Str() == "github-actions[bot]" &&
 			strings.Contains(c.Get("body").Str(), "[check-issue]") {
 			iid := c.Get("id").Int()
 			q := req(fmt.Sprintf("/repos/go-rod/rod/issues/comments/%d", iid))
