@@ -301,7 +301,7 @@ func (el *Element) InputTime(t time.Time) error {
 	return err
 }
 
-// Blur removes focus from the element. 
+// Blur removes focus from the element.
 func (el *Element) Blur() error {
 	_, err := el.Evaluate(Eval("() => this.blur()").ByUser())
 	return err
