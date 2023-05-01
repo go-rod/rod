@@ -538,8 +538,8 @@ type CSSCSSTryRule struct {
 	// Origin Parent stylesheet's origin.
 	Origin CSSStyleSheetOrigin `json:"origin"`
 
-	// Style (optional) Associated style declaration.
-	Style *CSSCSSStyle `json:"style,omitempty"`
+	// Style Associated style declaration.
+	Style *CSSCSSStyle `json:"style"`
 }
 
 // CSSCSSPositionFallbackRule CSS position-fallback rule representation.

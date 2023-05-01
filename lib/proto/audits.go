@@ -549,9 +549,6 @@ const (
 	// AuditsAttributionReportingIssueTypeInvalidEligibleHeader enum const
 	AuditsAttributionReportingIssueTypeInvalidEligibleHeader AuditsAttributionReportingIssueType = "InvalidEligibleHeader"
 
-	// AuditsAttributionReportingIssueTypeTooManyConcurrentRequests enum const
-	AuditsAttributionReportingIssueTypeTooManyConcurrentRequests AuditsAttributionReportingIssueType = "TooManyConcurrentRequests"
-
 	// AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders enum const
 	AuditsAttributionReportingIssueTypeSourceAndTriggerHeaders AuditsAttributionReportingIssueType = "SourceAndTriggerHeaders"
 
@@ -691,6 +688,17 @@ type AuditsDeprecationIssueDetails struct {
 
 	// Type One of the deprecation names from third_party/blink/renderer/core/frame/deprecation/deprecation.json5
 	Type string `json:"type"`
+}
+
+// AuditsBounceTrackingIssueDetails This issue warns about sites in the redirect chain of a finished navigation
+// that may be flagged as trackers and have their state cleared if they don't
+// receive a user interaction. Note that in this context 'site' means eTLD+1.
+// For example, if the URL `https://example.test:80/bounce` was in the
+// redirect chain, the site reported would be `example.test`.
+type AuditsBounceTrackingIssueDetails struct {
+
+	// TrackingSites ...
+	TrackingSites []string `json:"trackingSites"`
 }
 
 // AuditsClientHintIssueReason ...
@@ -867,6 +875,9 @@ const (
 
 	// AuditsInspectorIssueCodeFederatedAuthRequestIssue enum const
 	AuditsInspectorIssueCodeFederatedAuthRequestIssue AuditsInspectorIssueCode = "FederatedAuthRequestIssue"
+
+	// AuditsInspectorIssueCodeBounceTrackingIssue enum const
+	AuditsInspectorIssueCodeBounceTrackingIssue AuditsInspectorIssueCode = "BounceTrackingIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -921,6 +932,9 @@ type AuditsInspectorIssueDetails struct {
 
 	// FederatedAuthRequestIssueDetails (optional) ...
 	FederatedAuthRequestIssueDetails *AuditsFederatedAuthRequestIssueDetails `json:"federatedAuthRequestIssueDetails,omitempty"`
+
+	// BounceTrackingIssueDetails (optional) ...
+	BounceTrackingIssueDetails *AuditsBounceTrackingIssueDetails `json:"bounceTrackingIssueDetails,omitempty"`
 }
 
 // AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.
