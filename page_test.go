@@ -509,15 +509,17 @@ func TestPageWaitRequestIdle(t *testing.T) {
 func TestPageWaitStable(t *testing.T) {
 	g := setup(t)
 
-	_ = g.page.MustNavigate("https://preview.pro.antdv.com/dashboard/workplace")
+	s := g.Serve()
+	_ = g.page.MustNavigate(s.URL("/web2.0/login"))
 
-	// Sleep for 10s to login
+	// Sleep 10s to login
 	time.Sleep(10 * time.Second)
-	p2 := g.page.MustNavigate("https://preview.pro.antdv.com/dashboard/workplace")
-	err := p2.WaitStable(time.Millisecond*800, 1)
-	if err != nil {
-		g.Err(err)
-	}
+
+	// this url must wait login page login successfully,and this page is rendered with javascript
+	p2 := g.page.MustNavigate(s.URL("/web2.0/dashboard/workplace"))
+
+	// wait for p2 loading and rending complete
+	p2.MustWaitStable()
 }
 
 func TestPageWaitIdle(t *testing.T) {

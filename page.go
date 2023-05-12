@@ -614,7 +614,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 // `simThreshold` is the similarity threshold,it's scope in [0,1].
 // Be careful,d is not the max wait timeout, it's the least stable time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
-func (p *Page) WaitStable(d time.Duration, simThreshold float32) error {
+func (p *Page) WaitStable(d time.Duration, similarity float32) error {
 	err := p.WaitLoad()
 	if err != nil {
 		return err
@@ -646,8 +646,8 @@ func (p *Page) WaitStable(d time.Duration, simThreshold float32) error {
 		ys := lcs.NewWords(currentDomSnapshot.Strings)
 		diff := xs.YadLCS(p.ctx, ys)
 
-		similarity := float32(len(diff)) / float32(len(ys))
-		if similarity >= simThreshold {
+		sim := float32(len(diff)) / float32(len(ys))
+		if sim >= similarity {
 			break
 		}
 

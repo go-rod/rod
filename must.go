@@ -412,6 +412,12 @@ func (p *Page) MustWaitIdle() *Page {
 	return p
 }
 
+// MustWaitStable is similar to Page.WaitStable
+func (p *Page) MustWaitStable() *Page {
+	p.e(p.WaitStable(800*time.Millisecond, 1))
+	return p
+}
+
 // MustWaitLoad is similar to Page.WaitLoad
 func (p *Page) MustWaitLoad() *Page {
 	p.e(p.WaitLoad())
