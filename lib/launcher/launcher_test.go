@@ -16,7 +16,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/launcher/flags"
@@ -97,26 +96,6 @@ func TestLaunch(t *testing.T) {
 
 	{
 		g.Panic(func() { launcher.New().Set("a=b") })
-	}
-}
-
-func TestLaunchClient(t *testing.T) {
-	g := setup(t)
-
-	l, err := launcher.NewManaged("https://127.0.0.1:7317")
-	if err != nil {
-		g.Err(err)
-	}
-
-	cdpClient, err := l.Client()
-	if err != nil {
-		g.Err(err)
-	}
-
-	browser := rod.New()
-	err = browser.Client(cdpClient).Connect()
-	if err != nil {
-		g.Err(err)
 	}
 }
 

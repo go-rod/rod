@@ -162,3 +162,20 @@ func TestTestOpen(_ *testing.T) {
 
 	Open("about:blank")
 }
+
+func TestLaunchClient(t *testing.T) {
+	g := setup(t)
+
+	ctx := g.Timeout(5 * time.Second)
+
+	s := got.New(g).Serve()
+	rl := NewManager()
+	s.Mux.Handle("/", rl)
+
+	l := MustNewManaged(s.URL()).KeepUserDataDir().Delete(flags.KeepUserDataDir)
+	c, err := l.Client()
+	if err != nil {
+		g.Err(err)
+	}
+	g.E(c.Call(ctx, "", "Browser.getVersion", nil))
+}
