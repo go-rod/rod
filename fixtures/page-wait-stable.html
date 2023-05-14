@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PageWaitStable</title>
+	<style>
+		/* 进度条的样式 */
+		progress[value] {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 10px;
+            background-color: #ddd;
+        }
+        progress[value]::-webkit-progress-bar {
+            background-color: #ddd;
+        }
+        progress[value]::-webkit-progress-value {
+            background-color: #0078ff;
+        }
+		/* loading 动画的样式 */
+		.loading {
+			display: block;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 9999;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- 进度条 -->
+	<progress id="progressBar" value="0" max="100"></progress>
+
+	<!-- loading 动画 -->
+	<div id="loading" class="loading">
+		<img src="path-to-loading-gif" alt="loading" />
+	</div>
+
+	<!-- Your other HTML content here -->
+
+	<!-- 页面加载完成时的弹窗 -->
+	<div id="popup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background-color:#fff;padding:20px;border-radius:10px;box-shadow:2px 2px 10px #888;">
+		<h1 style="text-align:center;">Page loading and rendering complete</h1>
+	</div>
+
+	<script>
+		/* 页面加载时触发的函数 */
+		window.onload = function() {
+			/* 获取进度条和 loading 动画元素 */
+			var progressBar = document.getElementById('progressBar');
+			var loading = document.getElementById('loading');
+			var popup = document.getElementById('popup');
+			var progress = 0;
+			/* 定时器，每 50ms 触发一次 */
+			var timer = setInterval(function() {
+				/* 如果进度条已满，则隐藏 loading 动画，并显示弹窗 */
+				if (progress === 100) {
+					clearInterval(timer);
+					loading.style.display = 'none';
+					popup.style.display = 'block';					
+				} 
+				/* 否则，增加进度，更新进度条 */
+				else {
+					progress += 1;
+					progressBar.value = progress;
+				}
+			}, 50);
+		};
+	</script>
+</body>
+</html>

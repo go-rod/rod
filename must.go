@@ -365,6 +365,13 @@ func (p *Page) MustScreenshot(toFile ...string) []byte {
 	return bin
 }
 
+// MustCaptureDOMSnapshot is similar to CaptureDOMSnapshot.
+func (p *Page) MustCaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSnapshotResult) {
+	domSnapshot, err := p.CaptureDOMSnapshot()
+	p.e(err)
+	return domSnapshot
+}
+
 // MustScreenshotFullPage is similar to ScreenshotFullPage.
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
