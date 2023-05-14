@@ -16,6 +16,7 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/goob"
+	"github.com/ysmood/got/lib/lcs"
 	"github.com/ysmood/gson"
 )
 
@@ -442,6 +443,30 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
+// CaptureDOMSnapshot Returns a document snapshot, including the full DOM tree of the root node
+// (including iframes, template contents, and imported documents) in a flattened array,
+// as well as layout and white-listed computed style information for the nodes.
+// Shadow DOM in the returned DOM tree is flattened.
+// `Documents` The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.
+// `Strings` Shared string table that all string properties refer to with indexes.
+// Normally use `Strings` is enough.
+func (p *Page) CaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSnapshotResult, err error) {
+	_ = proto.DOMSnapshotEnable{}.Call(p)
+
+	snapshot, err := proto.DOMSnapshotCaptureSnapshot{
+		ComputedStyles:                 []string{},
+		IncludePaintOrder:              true,
+		IncludeDOMRects:                true,
+		IncludeBlendedBackgroundColors: true,
+		IncludeTextColorOpacities:      true,
+	}.Call(p)
+
+	if err != nil {
+		return nil, err
+	}
+	return snapshot, nil
+}
+
 // PDF prints page as PDF
 func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 	req.TransferMode = proto.PagePrintToPDFTransferModeReturnAsStream
@@ -582,6 +607,53 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 		}()
 		wait()
 	}
+}
+
+// WaitStable like "Element.WaitStable". WaitStable polling the changes
+// of the DOM tree in `d` duration,until the similarity equal or more than simThreshold.
+// `simThreshold` is the similarity threshold,it's scope in [0,1].
+// Be careful,d is not the max wait timeout, it's the least stable time.
+// If you want to set a timeout you can use the "Page.Timeout" function.
+func (p *Page) WaitStable(d time.Duration, similarity float32) error {
+	err := p.WaitLoad()
+	if err != nil {
+		return err
+	}
+
+	defer p.tryTrace(TraceTypeWait, "stable")
+
+	domSnapshot, err := p.CaptureDOMSnapshot()
+	if err != nil {
+		return err
+	}
+
+	t := time.NewTicker(d)
+	defer t.Stop()
+
+	for {
+		select {
+		case <-t.C:
+		case <-p.ctx.Done():
+			return p.ctx.Err()
+		}
+
+		currentDomSnapshot, err := p.CaptureDOMSnapshot()
+		if err != nil {
+			return err
+		}
+
+		xs := lcs.NewWords(domSnapshot.Strings)
+		ys := lcs.NewWords(currentDomSnapshot.Strings)
+		diff := xs.YadLCS(p.ctx, ys)
+
+		sim := float32(len(diff)) / float32(len(ys))
+		if sim >= similarity {
+			break
+		}
+
+		domSnapshot = currentDomSnapshot
+	}
+	return nil
 }
 
 // WaitIdle waits until the next window.requestIdleCallback is called.

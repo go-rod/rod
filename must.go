@@ -365,6 +365,13 @@ func (p *Page) MustScreenshot(toFile ...string) []byte {
 	return bin
 }
 
+// MustCaptureDOMSnapshot is similar to CaptureDOMSnapshot.
+func (p *Page) MustCaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSnapshotResult) {
+	domSnapshot, err := p.CaptureDOMSnapshot()
+	p.e(err)
+	return domSnapshot
+}
+
 // MustScreenshotFullPage is similar to ScreenshotFullPage.
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
@@ -409,6 +416,12 @@ func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
 // MustWaitIdle is similar to Page.WaitIdle
 func (p *Page) MustWaitIdle() *Page {
 	p.e(p.WaitIdle(time.Minute))
+	return p
+}
+
+// MustWaitStable is similar to Page.WaitStable
+func (p *Page) MustWaitStable() *Page {
+	p.e(p.WaitStable(800*time.Millisecond, 1))
 	return p
 }
 

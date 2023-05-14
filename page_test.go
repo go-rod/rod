@@ -506,6 +506,56 @@ func TestPageWaitRequestIdle(t *testing.T) {
 	})
 }
 
+func TestPageCaptureDOMSnapshot(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
+	domSnapshot := p.MustCaptureDOMSnapshot()
+	g.Is(domSnapshot.Strings, []string{})
+
+	timeOutPage := p.Timeout(1 * time.Second)
+	utils.Sleep(1)
+	snapshot, err := timeOutPage.CaptureDOMSnapshot()
+	g.Is(err, context.DeadlineExceeded)
+	g.Nil(snapshot)
+
+}
+
+func TestPageWaitStable(t *testing.T) {
+	g := setup(t)
+
+	// for waitLoad failed
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		g.page.MustWaitStable()
+	})
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+	// wait for p loading and rending complete
+	p.MustWaitStable()
+
+	// for waitStable timeout
+	timeOutPage := p.Timeout(1 * time.Second)
+	err := timeOutPage.WaitStable(2*time.Second, 1)
+	g.Is(err, context.DeadlineExceeded)
+
+	{
+		g.Panic(func() {
+			p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+			g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
+			p.MustWaitStable()
+		})
+	}
+
+	{
+		g.Panic(func() {
+			p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+			g.mc.stubErr(2, proto.DOMSnapshotCaptureSnapshot{})
+			p.MustWaitStable()
+		})
+	}
+}
+
 func TestPageWaitIdle(t *testing.T) {
 	g := setup(t)
 
