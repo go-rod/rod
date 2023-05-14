@@ -67,10 +67,16 @@ func (l *Launcher) JSON() []byte {
 	return utils.MustToJSONBytes(l)
 }
 
-// MustClient for launching browser remotely via the launcher.Manager.
+// MustClient similar to Launcher.Client
 func (l *Launcher) MustClient() *cdp.Client {
 	u, h := l.ClientHeader()
 	return cdp.MustStartWithURL(l.ctx, u, h)
+}
+
+// Client for launching browser remotely via the launcher.Manager.
+func (l *Launcher) Client() (*cdp.Client, error) {
+	u, h := l.ClientHeader()
+	return cdp.StartWithURL(l.ctx, u, h)
 }
 
 // ClientHeader for launching browser remotely via the launcher.Manager.
