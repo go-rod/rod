@@ -19,7 +19,7 @@ func main() {
 
 	fmt.Println("Event:", event)
 
-	master := regexp.MustCompile(`^refs/heads/master$`).MatchString(event)
+	isMain := regexp.MustCompile(`^refs/heads/main$`).MatchString(event)
 	m := regexp.MustCompile(`^refs/tags/(v[0-9]+\.[0-9]+\.[0-9]+)$`).FindStringSubmatch(event)
 	ver := ""
 	if len(m) > 1 {
@@ -28,7 +28,7 @@ func main() {
 
 	at := getArchType()
 
-	if master {
+	if isMain {
 		releaseLatest(at)
 	} else if ver != "" {
 		releaseWithVer(ver)

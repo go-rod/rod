@@ -8,7 +8,7 @@ new maintainers by voting in the public issue. If no one votes down and 2/3 vote
 
 ## Contribute Doc
 
-Check [here](https://github.com/go-rod/go-rod.github.io/blob/master/contribute-doc.md).
+Check [here](https://github.com/go-rod/go-rod.github.io/blob/main/contribute-doc.md).
 
 ## Terminology
 
