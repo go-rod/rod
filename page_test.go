@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"github.com/go-rod/rod/lib/launcher"
 	"image/png"
 	"math"
 	"net/http"
@@ -80,14 +81,14 @@ func TestSetBlockedURLs(t *testing.T) {
 	var urlsPattern = []string{}
 	page.EnableDomain(proto.NetworkEnable{})
 	page.MustSetBlockedURLs(urlsPattern...)
-	urlsPattern = append(urlsPattern, "*.js")
+	urlsPattern = append(urlsPattern, "*.com")
 	page.MustSetBlockedURLs(urlsPattern...)
-	go page.EachEvent(
+	go page.Context(g.Context()).EachEvent(
 		func(e *proto.NetworkLoadingFailed) {
 			g.Eq(e.BlockedReason, proto.NetworkBlockedReasonInspector)
 		},
-	)
-	page.MustNavigate("https://github.com")
+	)()
+	page.MustNavigate("https://example.com")
 }
 
 func TestSetExtraHeaders(t *testing.T) {
@@ -892,6 +893,50 @@ func TestPageElementFromObjectErr(t *testing.T) {
 
 	g.mc.stubErr(1, proto.RuntimeEvaluate{})
 	g.Err(p.ElementFromObject(obj.Object))
+}
+
+func TestPageTriggerFavicon(t *testing.T) {
+	g := setup(t)
+
+	// test browser in no-headless mode with an error
+	{
+		path, _ := launcher.LookPath()
+		u := launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).Headless(false).MustLaunch()
+
+		browser := rod.New().ControlURL(u).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
+		page := browser.MustPage("https://example.com")
+		err := page.TriggerFavicon()
+		g.Eq(err.Error(), "browser is no-headless")
+		browser.Close()
+	}
+
+	// test browser in headless mode to trigger favicon request
+	{
+		page := g.page
+		page.EnableDomain(proto.NetworkEnable{})
+		page.MustNavigate("https://github.com")
+		page.MustWaitIdle()
+		go page.Context(g.Context()).EachEvent(
+			func(e *proto.NetworkRequestWillBeSent) {
+				if e.Request.URL == "https://github.githubassets.com/favicons/favicon.png" {
+					g.Eq(e.Request.URL, "https://github.githubassets.com/favicons/favicon.png")
+					return
+				}
+				return
+			},
+		)()
+		page.MustTriggerFavicon()
+	}
+
+	// test browser in headless mode to trigger favicon request with an error
+	{
+		g.Panic(func() {
+			p := g.page.MustNavigate("https://example.com")
+			g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+			p.MustTriggerFavicon()
+		})
+	}
+
 }
 
 func TestPageActionAfterClose(t *testing.T) {

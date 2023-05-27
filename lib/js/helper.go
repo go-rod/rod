@@ -25,14 +25,14 @@ var ElementX = &Function{
 // ElementsX ...
 var ElementsX = &Function{
 	Name:         "elementsX",
-	Definition:   `function(e){var t,n=functions.selectable(this);const i=document.evaluate(e,n,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),r=[];for(;t=i.iterateNext();)r.push(t);return r}`,
+	Definition:   `function(e){var t,n=functions.selectable(this);const r=document.evaluate(e,n,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[];for(;t=r.iterateNext();)i.push(t);return i}`,
 	Dependencies: []*Function{Selectable},
 }
 
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){var n=t.match(/(\/?)(.+)\1([a-z]*)/i),i=n[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(n[3])?new RegExp(t):new RegExp(n[2],n[3]);const r=functions.selectable(this);e=Array.from(r.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return e||null}`,
+	Definition:   `function(e,t){var n=t.match(/(\/?)(.+)\1([a-z]*)/i),r=n[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(n[3])?new RegExp(t):new RegExp(n[2],n[3]);const i=functions.selectable(this);e=Array.from(i.querySelectorAll(e)).find(e=>r.test(functions.text.call(e)));return e||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
@@ -53,14 +53,14 @@ var ContainsElement = &Function{
 // InitMouseTracer ...
 var InitMouseTracer = &Function{
 	Name:         "initMouseTracer",
-	Definition:   `async function(e,t){if(await functions.waitLoad(),!document.getElementById(e)){const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.parentElement.appendChild(i)}}`,
+	Definition:   `async function(e,t){if(await functions.waitLoad(),!document.getElementById(e)){const n=document.createElement("div");n.innerHTML=t;const r=n.lastChild;r.id=e,r.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",r.removeAttribute("width"),r.removeAttribute("height"),document.body.parentElement.appendChild(r)}}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 // UpdateMouseTracer ...
 var UpdateMouseTracer = &Function{
 	Name:         "updateMouseTracer",
-	Definition:   `function(e,t,n){const i=document.getElementById(e);return!!i&&(i.style.left=t-2+"px",i.style.top=n-3+"px",!0)}`,
+	Definition:   `function(e,t,n){const r=document.getElementById(e);return!!r&&(r.style.left=t-2+"px",r.style.top=n-3+"px",!0)}`,
 	Dependencies: []*Function{},
 }
 
@@ -74,22 +74,22 @@ var Rect = &Function{
 // Overlay ...
 var Overlay = &Function{
 	Name: "overlay",
-	Definition: `async function(e,t,n,i,r,o){await functions.waitLoad();const s=document.createElement("div");if(s.id=e,s.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;
+	Definition: `async function(e,t,n,r,i,o){await functions.waitLoad();const s=document.createElement("div");if(s.id=e,s.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;
         border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;
         box-sizing: border-box;
         left: ${t}px;
         top: ${n}px;
-        height: ${r}px;
-        width: ${i}px;` + "`" + `,i*r==0&&(s.style.border="none"),o){const a=document.createElement("div");a.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
+        height: ${i}px;
+        width: ${r}px;` + "`" + `,r*i==0&&(s.style.border="none"),o){const a=document.createElement("div");a.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
         box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;
-        top: ${r}px;` + "`" + `,a.innerHTML=o,s.appendChild(a),document.body.parentElement.appendChild(s),window.innerHeight<a.offsetHeight+n+r&&(a.style.top=-a.offsetHeight-2+"px"),window.innerWidth<a.offsetWidth+t&&(a.style.left=window.innerWidth-a.offsetWidth-t+"px")}else document.body.parentElement.appendChild(s)}`,
+        top: ${i}px;` + "`" + `,a.innerHTML=o,s.appendChild(a),document.body.parentElement.appendChild(s),window.innerHeight<a.offsetHeight+n+i&&(a.style.top=-a.offsetHeight-2+"px"),window.innerWidth<a.offsetWidth+t&&(a.style.left=window.innerWidth-a.offsetWidth-t+"px")}else document.body.parentElement.appendChild(s)}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 // ElementOverlay ...
 var ElementOverlay = &Function{
 	Name:         "elementOverlay",
-	Definition:   `async function(n,e){const i=100,r=functions.tag(this);let o=r.getBoundingClientRect();await functions.overlay(n,o.left,o.top,o.width,o.height,e);const s=()=>{const e=document.getElementById(n);var t;null!==e&&(t=r.getBoundingClientRect(),o.left===t.left&&o.top===t.top&&o.width===t.width&&o.height===t.height||(e.style.left=t.left+"px",e.style.top=t.top+"px",e.style.width=t.width+"px",e.style.height=t.height+"px",o=t),setTimeout(s,i))};setTimeout(s,i)}`,
+	Definition:   `async function(n,e){const r=100,i=functions.tag(this);let o=i.getBoundingClientRect();await functions.overlay(n,o.left,o.top,o.width,o.height,e);const s=()=>{const e=document.getElementById(n);var t;null!==e&&(t=i.getBoundingClientRect(),o.left===t.left&&o.top===t.top&&o.width===t.width&&o.height===t.height||(e.style.left=t.left+"px",e.style.top=t.top+"px",e.style.width=t.width+"px",e.style.height=t.height+"px",o=t),setTimeout(s,r))};setTimeout(s,r)}`,
 	Dependencies: []*Function{Tag, Overlay},
 }
 
@@ -124,7 +124,7 @@ var InputEvent = &Function{
 // InputTime ...
 var InputTime = &Function{
 	Name:         "inputTime",
-	Definition:   `function(e){const t=new Date(e);var e=e=>e.toString().padStart(2,"0"),n=t.getFullYear(),i=e(t.getMonth()+1),r=e(t.getDate()),o=e(t.getHours()),s=e(t.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${i}-` + "`" + `+r;break;case"datetime-local":this.value=n+` + "`" + `-${i}-${r}T${o}:` + "`" + `+s;break;case"month":this.value=i;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
+	Definition:   `function(e){const t=new Date(e);var e=e=>e.toString().padStart(2,"0"),n=t.getFullYear(),r=e(t.getMonth()+1),i=e(t.getDate()),o=e(t.getHours()),s=e(t.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${r}-` + "`" + `+i;break;case"datetime-local":this.value=n+` + "`" + `-${r}-${i}T${o}:` + "`" + `+s;break;case"month":this.value=r;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
 	Dependencies: []*Function{InputEvent},
 }
 
@@ -132,6 +132,13 @@ var InputTime = &Function{
 var SelectText = &Function{
 	Name:         "selectText",
 	Definition:   `function(e){e=this.value.match(new RegExp(e));e&&this.setSelectionRange(e.index,e.index+e[0].length)}`,
+	Dependencies: []*Function{},
+}
+
+// TriggerFavicon ...
+var TriggerFavicon = &Function{
+	Name:         "triggerFavicon",
+	Definition:   `function(){return new Promise((e,t)=>{var n=document.querySelector("link[rel~=icon]"),n=n&&n.href||"/favicon.ico",n=new URL(n,window.location).toString();const r=new XMLHttpRequest;r.open("GET",n),r.ontimeout=function(){t({errorType:"timeout_error",xhr:r})},r.onreadystatechange=function(){4===r.readyState&&(200<=r.status&&r.status<300||304===r.status?e(r.responseText):t({errorType:"status_error",xhr:r,status:r.status,statusText:r.statusText}))},r.onerror=function(){t({errorType:"onerror",xhr:r,status:r.status,statusText:r.statusText})},r.send()})}`,
 	Dependencies: []*Function{},
 }
 
@@ -145,7 +152,7 @@ var SelectAllText = &Function{
 // Select ...
 var Select = &Function{
 	Name:         "select",
-	Definition:   `function(e,n,t){let i;switch(t){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(t=>e=>e.matches(t));break;default:i=e.map(t=>e=>e.innerText.includes(t))}const r=Array.from(this.options);let o=!1;return i.forEach(e=>{const t=r.find(e);t&&(t.selected=n,o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
+	Definition:   `function(e,n,t){let r;switch(t){case"regex":r=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":r=e.map(t=>e=>e.matches(t));break;default:r=e.map(t=>e=>e.innerText.includes(t))}const i=Array.from(this.options);let o=!1;return r.forEach(e=>{const t=i.find(e);t&&(t.selected=n,o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
 	Dependencies: []*Function{},
 }
 
@@ -180,14 +187,14 @@ var Resource = &Function{
 // AddScriptTag ...
 var AddScriptTag = &Function{
 	Name:         "addScriptTag",
-	Definition:   `function(i,r,o){if(!document.getElementById(i))return new Promise((e,t)=>{var n=document.createElement("script");r?(n.src=r,n.onload=e):(n.type="text/javascript",n.text=o,e()),n.id=i,n.onerror=t,document.head.appendChild(n)})}`,
+	Definition:   `function(r,i,o){if(!document.getElementById(r))return new Promise((e,t)=>{var n=document.createElement("script");i?(n.src=i,n.onload=e):(n.type="text/javascript",n.text=o,e()),n.id=r,n.onerror=t,document.head.appendChild(n)})}`,
 	Dependencies: []*Function{},
 }
 
 // AddStyleTag ...
 var AddStyleTag = &Function{
 	Name:         "addStyleTag",
-	Definition:   `function(i,r,o){if(!document.getElementById(i))return new Promise((e,t)=>{var n;r?((n=document.createElement("link")).rel="stylesheet",n.href=r):((n=document.createElement("style")).type="text/css",n.appendChild(document.createTextNode(o)),e()),n.id=i,n.onload=e,n.onerror=t,document.head.appendChild(n)})}`,
+	Definition:   `function(r,i,o){if(!document.getElementById(r))return new Promise((e,t)=>{var n;i?((n=document.createElement("link")).rel="stylesheet",n.href=i):((n=document.createElement("style")).type="text/css",n.appendChild(document.createTextNode(o)),e()),n.id=r,n.onload=e,n.onerror=t,document.head.appendChild(n)})}`,
 	Dependencies: []*Function{},
 }
 
@@ -208,13 +215,13 @@ var Tag = &Function{
 // ExposeFunc ...
 var ExposeFunc = &Function{
 	Name:         "exposeFunc",
-	Definition:   `function(e,t){let o=0;window[e]=e=>new Promise((n,i)=>{const r=t+"_cb"+o++;window[r]=(e,t)=>{delete window[r],t?i(t):n(e)},window[t](JSON.stringify({req:e,cb:r}))})}`,
+	Definition:   `function(e,t){let o=0;window[e]=e=>new Promise((n,r)=>{const i=t+"_cb"+o++;window[i]=(e,t)=>{delete window[i],t?r(t):n(e)},window[t](JSON.stringify({req:e,cb:i}))})}`,
 	Dependencies: []*Function{},
 }
 
 // GetXPath ...
 var GetXPath = &Function{
 	Name:         "getXPath",
-	Definition:   `function(e){class r{constructor(e,t){this.value=e,this.optimized=t||!1}toString(){return this.value}}function o(t){function n(e,t){return e===t||(e.nodeType===Node.ELEMENT_NODE&&t.nodeType===Node.ELEMENT_NODE?e.localName===t.localName:e.nodeType===t.nodeType||(e.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:e.nodeType)===(t.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:t.nodeType))}var e=t.parentNode,i=e?e.children:null;if(!i)return 0;let r;for(let e=0;e<i.length;++e)if(n(t,i[e])&&i[e]!==t){r=!0;break}if(!r)return 0;let o=1;for(let e=0;e<i.length;++e)if(n(t,i[e])){if(i[e]===t)return o;++o}return-1}if(this.nodeType===Node.DOCUMENT_NODE)return"/";const t=[];let n=this;for(;n;){var i=function(e,t){let n;var i=o(e);if(-1===i)return null;switch(e.nodeType){case Node.ELEMENT_NODE:if(t&&e.id)return new r(` + "`" + `//*[@id='${e.id}']` + "`" + `,!0);n=e.localName;break;case Node.ATTRIBUTE_NODE:n="@"+e.nodeName;break;case Node.TEXT_NODE:case Node.CDATA_SECTION_NODE:n="text()";break;case Node.PROCESSING_INSTRUCTION_NODE:n="processing-instruction()";break;case Node.COMMENT_NODE:n="comment()";break;default:Node.DOCUMENT_NODE;n=""}return 0<i&&(n+=` + "`" + `[${i}]` + "`" + `),new r(n,e.nodeType===Node.DOCUMENT_NODE)}(n,e);if(!i)break;if(t.push(i),i.optimized)break;n=n.parentNode}return t.reverse(),(t.length&&t[0].optimized?"":"/")+t.join("/")}`,
+	Definition:   `function(e){class i{constructor(e,t){this.value=e,this.optimized=t||!1}toString(){return this.value}}function o(t){function n(e,t){return e===t||(e.nodeType===Node.ELEMENT_NODE&&t.nodeType===Node.ELEMENT_NODE?e.localName===t.localName:e.nodeType===t.nodeType||(e.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:e.nodeType)===(t.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:t.nodeType))}var e=t.parentNode,r=e?e.children:null;if(!r)return 0;let i;for(let e=0;e<r.length;++e)if(n(t,r[e])&&r[e]!==t){i=!0;break}if(!i)return 0;let o=1;for(let e=0;e<r.length;++e)if(n(t,r[e])){if(r[e]===t)return o;++o}return-1}if(this.nodeType===Node.DOCUMENT_NODE)return"/";const t=[];let n=this;for(;n;){var r=function(e,t){let n;var r=o(e);if(-1===r)return null;switch(e.nodeType){case Node.ELEMENT_NODE:if(t&&e.id)return new i(` + "`" + `//*[@id='${e.id}']` + "`" + `,!0);n=e.localName;break;case Node.ATTRIBUTE_NODE:n="@"+e.nodeName;break;case Node.TEXT_NODE:case Node.CDATA_SECTION_NODE:n="text()";break;case Node.PROCESSING_INSTRUCTION_NODE:n="processing-instruction()";break;case Node.COMMENT_NODE:n="comment()";break;default:Node.DOCUMENT_NODE;n=""}return 0<r&&(n+=` + "`" + `[${r}]` + "`" + `),new i(n,e.nodeType===Node.DOCUMENT_NODE)}(n,e);if(!r)break;if(t.push(r),r.optimized)break;n=n.parentNode}return t.reverse(),(t.length&&t[0].optimized?"":"/")+t.join("/")}`,
 	Dependencies: []*Function{},
 }
