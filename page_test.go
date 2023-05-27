@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"sync"
 	"testing"
@@ -901,9 +902,14 @@ func TestPageTriggerFavicon(t *testing.T) {
 	// test browser in no-headless mode with an error
 	{
 		path, _ := launcher.LookPath()
-		u := launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false).MustLaunch()
+		var u *launcher.Launcher
+		if runtime.GOOS == "darwin" {
+			u = launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).Headless(false)
+		} else {
+			u = launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false)
+		}
 
-		browser := rod.New().ControlURL(u).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
+		browser := rod.New().ControlURL(u.MustLaunch()).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
 		page := browser.MustPage("https://example.com")
 		err := page.TriggerFavicon()
 		g.Eq(err.Error(), "browser is no-headless")
