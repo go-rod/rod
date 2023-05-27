@@ -920,6 +920,8 @@ func TestPageTriggerFavicon(t *testing.T) {
 	{
 		page := g.page
 		page.EnableDomain(proto.NetworkEnable{})
+		defer page.DisableDomain(proto.NetworkDisable{})()
+
 		page.MustNavigate("https://github.com")
 		page.MustWaitIdle()
 		go page.Context(g.Context()).EachEvent(
