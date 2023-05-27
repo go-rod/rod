@@ -920,9 +920,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 			func(e *proto.NetworkRequestWillBeSent) {
 				if e.Request.URL == "https://github.githubassets.com/favicons/favicon.png" {
 					g.Eq(e.Request.URL, "https://github.githubassets.com/favicons/favicon.png")
-					return
 				}
-				return
 			},
 		)()
 		page.MustTriggerFavicon()
