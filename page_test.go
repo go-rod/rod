@@ -907,7 +907,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 		page := browser.MustPage("https://example.com")
 		err := page.TriggerFavicon()
 		g.Eq(err.Error(), "browser is no-headless")
-		browser.Close()
+		g.Eq(browser.Close(), nil)
 	}
 
 	// test browser in headless mode to trigger favicon request
