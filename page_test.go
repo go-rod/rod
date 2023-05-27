@@ -901,7 +901,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 	// test browser in no-headless mode with an error
 	{
 		path, _ := launcher.LookPath()
-		u := launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).Headless(false).MustLaunch()
+		u := launcher.New().Set("proxy-bypass-list", "<-loopback>").Bin(path).XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false).MustLaunch()
 
 		browser := rod.New().ControlURL(u).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
 		page := browser.MustPage("https://example.com")
