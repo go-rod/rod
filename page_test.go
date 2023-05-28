@@ -167,6 +167,13 @@ func TestMustWaitElementsMoreThan(t *testing.T) {
 	g.Gt(len(p.MustElements("li")), 5)
 }
 
+func TestMustWaitElementsLessThan(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/wait_elements.html")).MustWaitElementsLessThan("li", 7)
+	g.Lt(len(p.MustElements("li")), 7)
+}
+
 func TestPageCloseCancel(t *testing.T) {
 	g := setup(t)
 
