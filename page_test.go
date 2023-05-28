@@ -82,14 +82,14 @@ func TestSetBlockedURLs(t *testing.T) {
 	var urlsPattern = []string{}
 	page.EnableDomain(proto.NetworkEnable{})
 	page.MustSetBlockedURLs(urlsPattern...)
-	urlsPattern = append(urlsPattern, "*.com")
+	urlsPattern = append(urlsPattern, "*.js")
 	page.MustSetBlockedURLs(urlsPattern...)
-	go page.Context(g.Context()).EachEvent(
+	go page.EachEvent(
 		func(e *proto.NetworkLoadingFailed) {
 			g.Eq(e.BlockedReason, proto.NetworkBlockedReasonInspector)
 		},
-	)()
-	page.MustNavigate("https://example.com")
+	)
+	page.MustNavigate("https://github.com")
 }
 
 func TestSetExtraHeaders(t *testing.T) {
