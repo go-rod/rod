@@ -726,6 +726,11 @@ func (p *Page) WaitElementsMoreThan(selector string, num int) error {
 	return p.Wait(Eval(`(s, n) => document.querySelectorAll(s).length > n`, selector, num))
 }
 
+// WaitElementsLessThan Wait until there are less than <num> <selector> elements.
+func (p *Page) WaitElementsLessThan(selector string, num int) error {
+	return p.Wait(Eval(`(s, n) => document.querySelectorAll(s).length < n`, selector, num))
+}
+
 // ObjectToJSON by object id
 func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 	if obj.ObjectID == "" {
