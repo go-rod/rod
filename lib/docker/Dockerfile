@@ -16,7 +16,7 @@ RUN go run ./lib/utils/get-browser
 FROM ubuntu:jammy
 
 COPY --from=go /root/.cache/rod /root/.cache/rod
-RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome-linux/chrome /usr/bin/chrome
+RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome /usr/bin/chrome
 
 RUN touch /.dockerenv
 
