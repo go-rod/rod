@@ -635,10 +635,6 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 // Be careful,d is not the max wait timeout, it's the least stable time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
 func (p *Page) WaitStable(d time.Duration, similarity float32) error {
-	err := p.WaitLoad()
-	if err != nil {
-		return err
-	}
 
 	defer p.tryTrace(TraceTypeWait, "stable")
 
