@@ -25,8 +25,8 @@ COPY --from=go /rod/rod-manager /usr/bin/
 ARG apt_sources="http://archive.ubuntu.com"
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
-    apt-get -qq update && \
-    apt-get -qq install --no-install-recommends -y \
+    apt-get update > /dev/null && \
+    apt-get install --no-install-recommends -y \
     # chromium dependencies
     libnss3 \
     libxss1 \
@@ -43,8 +43,9 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
     dumb-init \
     # headful mode support, for example: $ xvfb-run chromium-browser --remote-debugging-port=9222
     xvfb \
+    > /dev/null && \
     # cleanup
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 # process reaper
 ENTRYPOINT ["dumb-init", "--"]
