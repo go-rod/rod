@@ -523,7 +523,7 @@ func TestPageCaptureDOMSnapshot(t *testing.T) {
 
 func TestPageWaitStable(t *testing.T) {
 	g := setup(t)
-  
+
 	p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
 	// wait for p loading and rending complete
 	p.MustWaitStable()
