@@ -9,7 +9,8 @@ ARG golang
 ARG apt_sources="http://archive.ubuntu.com"
 
 RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list && \
-    apt-get -qq update && apt-get -qq install --no-install-recommends -y git curl xz-utils build-essential && \
+    apt-get update > /dev/null && \
+    apt-get install --no-install-recommends -y git curl xz-utils build-essential > /dev/null && \
     rm -rf /var/lib/apt/lists/*
 
 # install nodejs
