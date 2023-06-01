@@ -56,8 +56,6 @@ func fnName(name string) string {
 }
 
 func getList() gson.JSON {
-	utils.Exec("npx -ys -- eslint@8.7.0 --config=lib/utils/lint/eslint.yml --ext=.js,.html --fix --ignore-path=.gitignore .")
-
 	code := utils.ExecLine(false, "npx -ys -- uglify-js@3.14.5 -c -m -- lib/js/helper.js")
 
 	script := fmt.Sprintf(`
