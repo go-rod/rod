@@ -138,7 +138,7 @@ var SelectText = &Function{
 // TriggerFavicon ...
 var TriggerFavicon = &Function{
 	Name:         "triggerFavicon",
-	Definition:   `function(){return new Promise((e,t)=>{var n=document.querySelector("link[rel~=icon]"),n=n&&n.href||"/favicon.ico",n=new URL(n,window.location).toString();const r=new XMLHttpRequest;r.open("GET",n),r.ontimeout=function(){t({errorType:"timeout_error",xhr:r})},r.onreadystatechange=function(){4===r.readyState&&(200<=r.status&&r.status<300||304===r.status?e(r.responseText):t({errorType:"status_error",xhr:r,status:r.status,statusText:r.statusText}))},r.onerror=function(){t({errorType:"onerror",xhr:r,status:r.status,statusText:r.statusText})},r.send()})}`,
+	Definition:   `function(){return new Promise((e,t)=>{var n=document.querySelector("link[rel~=icon]"),n=n&&n.href||"/favicon.ico",n=new URL(n,window.location).toString();const r=new XMLHttpRequest;r.open("GET",n),r.ontimeout=function(){t({errorType:"timeout_error",xhr:r})},r.onreadystatechange=function(){4===r.readyState&&(200<=r.status&&r.status<300||304===r.status?e(r.responseText):t({errorType:"status_error",xhr:r,status:r.status,statusText:r.statusText,responseText:r.responseText}))},r.onerror=function(){t({errorType:"onerror",xhr:r,status:r.status,statusText:r.statusText,responseText:r.responseText})},r.send()})}`,
 	Dependencies: []*Function{},
 }
 
