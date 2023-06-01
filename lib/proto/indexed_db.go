@@ -10,7 +10,6 @@ IndexedDB
 
 // IndexedDBDatabaseWithObjectStores Database with an array of object stores.
 type IndexedDBDatabaseWithObjectStores struct {
-
 	// Name Database name.
 	Name string `json:"name"`
 
@@ -24,7 +23,6 @@ type IndexedDBDatabaseWithObjectStores struct {
 
 // IndexedDBObjectStore Object store.
 type IndexedDBObjectStore struct {
-
 	// Name Object store name.
 	Name string `json:"name"`
 
@@ -40,7 +38,6 @@ type IndexedDBObjectStore struct {
 
 // IndexedDBObjectStoreIndex Object store index.
 type IndexedDBObjectStoreIndex struct {
-
 	// Name Index name.
 	Name string `json:"name"`
 
@@ -73,7 +70,6 @@ const (
 
 // IndexedDBKey Key.
 type IndexedDBKey struct {
-
 	// Type Key type.
 	Type IndexedDBKeyType `json:"type"`
 
@@ -92,7 +88,6 @@ type IndexedDBKey struct {
 
 // IndexedDBKeyRange Key range.
 type IndexedDBKeyRange struct {
-
 	// Lower (optional) Lower bound.
 	Lower *IndexedDBKey `json:"lower,omitempty"`
 
@@ -108,7 +103,6 @@ type IndexedDBKeyRange struct {
 
 // IndexedDBDataEntry Data entry.
 type IndexedDBDataEntry struct {
-
 	// Key Key object.
 	Key *RuntimeRemoteObject `json:"key"`
 
@@ -135,7 +129,6 @@ const (
 
 // IndexedDBKeyPath Key path.
 type IndexedDBKeyPath struct {
-
 	// Type Key path type.
 	Type IndexedDBKeyPathType `json:"type"`
 
@@ -148,7 +141,6 @@ type IndexedDBKeyPath struct {
 
 // IndexedDBClearObjectStore Clears all entries from an object store.
 type IndexedDBClearObjectStore struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -173,7 +165,6 @@ func (m IndexedDBClearObjectStore) Call(c Client) error {
 
 // IndexedDBDeleteDatabase Deletes a database.
 type IndexedDBDeleteDatabase struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -195,7 +186,6 @@ func (m IndexedDBDeleteDatabase) Call(c Client) error {
 
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store
 type IndexedDBDeleteObjectStoreEntries struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -224,8 +214,7 @@ func (m IndexedDBDeleteObjectStoreEntries) Call(c Client) error {
 }
 
 // IndexedDBDisable Disables events from backend.
-type IndexedDBDisable struct {
-}
+type IndexedDBDisable struct{}
 
 // ProtoReq name
 func (m IndexedDBDisable) ProtoReq() string { return "IndexedDB.disable" }
@@ -236,8 +225,7 @@ func (m IndexedDBDisable) Call(c Client) error {
 }
 
 // IndexedDBEnable Enables events from backend.
-type IndexedDBEnable struct {
-}
+type IndexedDBEnable struct{}
 
 // ProtoReq name
 func (m IndexedDBEnable) ProtoReq() string { return "IndexedDB.enable" }
@@ -249,7 +237,6 @@ func (m IndexedDBEnable) Call(c Client) error {
 
 // IndexedDBRequestData Requests data from object store or index.
 type IndexedDBRequestData struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -287,7 +274,6 @@ func (m IndexedDBRequestData) Call(c Client) (*IndexedDBRequestDataResult, error
 
 // IndexedDBRequestDataResult ...
 type IndexedDBRequestDataResult struct {
-
 	// ObjectStoreDataEntries Array of object store data entries.
 	ObjectStoreDataEntries []*IndexedDBDataEntry `json:"objectStoreDataEntries"`
 
@@ -297,7 +283,6 @@ type IndexedDBRequestDataResult struct {
 
 // IndexedDBGetMetadata Gets metadata of an object store.
 type IndexedDBGetMetadata struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -323,7 +308,6 @@ func (m IndexedDBGetMetadata) Call(c Client) (*IndexedDBGetMetadataResult, error
 
 // IndexedDBGetMetadataResult ...
 type IndexedDBGetMetadataResult struct {
-
 	// EntriesCount the entries count
 	EntriesCount float64 `json:"entriesCount"`
 
@@ -335,7 +319,6 @@ type IndexedDBGetMetadataResult struct {
 
 // IndexedDBRequestDatabase Requests database with given name in given frame.
 type IndexedDBRequestDatabase struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -358,14 +341,12 @@ func (m IndexedDBRequestDatabase) Call(c Client) (*IndexedDBRequestDatabaseResul
 
 // IndexedDBRequestDatabaseResult ...
 type IndexedDBRequestDatabaseResult struct {
-
 	// DatabaseWithObjectStores Database with an array of object stores.
 	DatabaseWithObjectStores *IndexedDBDatabaseWithObjectStores `json:"databaseWithObjectStores"`
 }
 
 // IndexedDBRequestDatabaseNames Requests database names for given security origin.
 type IndexedDBRequestDatabaseNames struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -385,7 +366,6 @@ func (m IndexedDBRequestDatabaseNames) Call(c Client) (*IndexedDBRequestDatabase
 
 // IndexedDBRequestDatabaseNamesResult ...
 type IndexedDBRequestDatabaseNamesResult struct {
-
 	// DatabaseNames Database names for origin.
 	DatabaseNames []string `json:"databaseNames"`
 }

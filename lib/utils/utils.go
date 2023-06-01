@@ -109,7 +109,7 @@ func RandString(len int) string {
 
 // Mkdir makes dir recursively
 func Mkdir(path string) error {
-	return os.MkdirAll(path, 0775)
+	return os.MkdirAll(path, 0o775)
 }
 
 // AbsolutePaths returns absolute paths of files in current working directory
@@ -137,14 +137,14 @@ func OutputFile(p string, data interface{}) error {
 	case string:
 		bin = []byte(t)
 	case io.Reader:
-		f, _ := os.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0664)
+		f, _ := os.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o664)
 		_, err := io.Copy(f, t)
 		return err
 	default:
 		bin = MustToJSONBytes(data)
 	}
 
-	return ioutil.WriteFile(p, bin, 0664)
+	return ioutil.WriteFile(p, bin, 0o664)
 }
 
 // ReadString reads file as string
@@ -263,7 +263,6 @@ func MustToJSON(data interface{}) string {
 // FileExists checks if file exists, only for file, not for dir
 func FileExists(path string) bool {
 	info, err := os.Stat(path)
-
 	if err != nil {
 		return false
 	}

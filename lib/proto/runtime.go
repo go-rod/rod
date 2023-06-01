@@ -98,7 +98,6 @@ const (
 // RuntimeWebDriverValue Represents the value serialiazed by the WebDriver BiDi specification
 // https://w3c.github.io/webdriver-bidi.
 type RuntimeWebDriverValue struct {
-
 	// Type ...
 	Type RuntimeWebDriverValueType `json:"type"`
 
@@ -209,7 +208,6 @@ const (
 
 // RuntimeRemoteObject Mirror object referencing original JavaScript object.
 type RuntimeRemoteObject struct {
-
 	// Type Object type.
 	Type RuntimeRemoteObjectType `json:"type"`
 
@@ -246,7 +244,6 @@ type RuntimeRemoteObject struct {
 
 // RuntimeCustomPreview (experimental) ...
 type RuntimeCustomPreview struct {
-
 	// Header The JSON-stringified result of formatter.header(object, config) call.
 	// It contains json ML array that represents RemoteObject.
 	Header string `json:"header"`
@@ -350,7 +347,6 @@ const (
 
 // RuntimeObjectPreview (experimental) Object containing abbreviated remote object value.
 type RuntimeObjectPreview struct {
-
 	// Type Object type.
 	Type RuntimeObjectPreviewType `json:"type"`
 
@@ -466,7 +462,6 @@ const (
 
 // RuntimePropertyPreview (experimental) ...
 type RuntimePropertyPreview struct {
-
 	// Name Property name.
 	Name string `json:"name"`
 
@@ -485,7 +480,6 @@ type RuntimePropertyPreview struct {
 
 // RuntimeEntryPreview (experimental) ...
 type RuntimeEntryPreview struct {
-
 	// Key (optional) Preview of the key. Specified for map-like collection entries.
 	Key *RuntimeObjectPreview `json:"key,omitempty"`
 
@@ -495,7 +489,6 @@ type RuntimeEntryPreview struct {
 
 // RuntimePropertyDescriptor Object property descriptor.
 type RuntimePropertyDescriptor struct {
-
 	// Name Property name or symbol description.
 	Name string `json:"name"`
 
@@ -533,7 +526,6 @@ type RuntimePropertyDescriptor struct {
 
 // RuntimeInternalPropertyDescriptor Object internal property descriptor. This property isn't normally visible in JavaScript code.
 type RuntimeInternalPropertyDescriptor struct {
-
 	// Name Conventional property name.
 	Name string `json:"name"`
 
@@ -543,7 +535,6 @@ type RuntimeInternalPropertyDescriptor struct {
 
 // RuntimePrivatePropertyDescriptor (experimental) Object private field descriptor.
 type RuntimePrivatePropertyDescriptor struct {
-
 	// Name Private property name.
 	Name string `json:"name"`
 
@@ -562,7 +553,6 @@ type RuntimePrivatePropertyDescriptor struct {
 // RuntimeCallArgument Represents function call argument. Either remote object id `objectId`, primitive `value`,
 // unserializable primitive value or neither of (for undefined) them should be specified.
 type RuntimeCallArgument struct {
-
 	// Value (optional) Primitive value or serializable javascript object.
 	Value gson.JSON `json:"value,omitempty"`
 
@@ -578,7 +568,6 @@ type RuntimeExecutionContextID int
 
 // RuntimeExecutionContextDescription Description of an isolated world.
 type RuntimeExecutionContextDescription struct {
-
 	// ID Unique id of the execution context. It can be used to specify in which execution context
 	// script evaluation should be performed.
 	ID RuntimeExecutionContextID `json:"id"`
@@ -601,7 +590,6 @@ type RuntimeExecutionContextDescription struct {
 // RuntimeExceptionDetails Detailed information about exception (or error) that was thrown during script compilation or
 // execution.
 type RuntimeExceptionDetails struct {
-
 	// ExceptionID Exception id.
 	ExceptionID int `json:"exceptionId"`
 
@@ -643,7 +631,6 @@ type RuntimeTimeDelta float64
 
 // RuntimeCallFrame Stack entry for runtime errors and assertions.
 type RuntimeCallFrame struct {
-
 	// FunctionName JavaScript function name.
 	FunctionName string `json:"functionName"`
 
@@ -662,7 +649,6 @@ type RuntimeCallFrame struct {
 
 // RuntimeStackTrace Call frames for assertions or error messages.
 type RuntimeStackTrace struct {
-
 	// Description (optional) String label of this stack trace. For async traces this may be a name of the function that
 	// initiated the async call.
 	Description string `json:"description,omitempty"`
@@ -683,7 +669,6 @@ type RuntimeUniqueDebuggerID string
 // RuntimeStackTraceID (experimental) If `debuggerId` is set stack trace comes from another debugger and can be resolved there. This
 // allows to track cross-debugger calls. See `Runtime.StackTrace` and `Debugger.paused` for usages.
 type RuntimeStackTraceID struct {
-
 	// ID ...
 	ID string `json:"id"`
 
@@ -693,7 +678,6 @@ type RuntimeStackTraceID struct {
 
 // RuntimeAwaitPromise Add handler to promise with given promise object id.
 type RuntimeAwaitPromise struct {
-
 	// PromiseObjectID Identifier of the promise.
 	PromiseObjectID RuntimeRemoteObjectID `json:"promiseObjectId"`
 
@@ -715,7 +699,6 @@ func (m RuntimeAwaitPromise) Call(c Client) (*RuntimeAwaitPromiseResult, error) 
 
 // RuntimeAwaitPromiseResult ...
 type RuntimeAwaitPromiseResult struct {
-
 	// Result Promise result. Will contain rejected value if promise was rejected.
 	Result *RuntimeRemoteObject `json:"result"`
 
@@ -726,7 +709,6 @@ type RuntimeAwaitPromiseResult struct {
 // RuntimeCallFunctionOn Calls function with given declaration on the given object. Object group of the result is
 // inherited from the target object.
 type RuntimeCallFunctionOn struct {
-
 	// FunctionDeclaration Declaration of the function to call.
 	FunctionDeclaration string `json:"functionDeclaration"`
 
@@ -791,7 +773,6 @@ func (m RuntimeCallFunctionOn) Call(c Client) (*RuntimeCallFunctionOnResult, err
 
 // RuntimeCallFunctionOnResult ...
 type RuntimeCallFunctionOnResult struct {
-
 	// Result Call result.
 	Result *RuntimeRemoteObject `json:"result"`
 
@@ -801,7 +782,6 @@ type RuntimeCallFunctionOnResult struct {
 
 // RuntimeCompileScript Compiles expression.
 type RuntimeCompileScript struct {
-
 	// Expression Expression to compile.
 	Expression string `json:"expression"`
 
@@ -827,7 +807,6 @@ func (m RuntimeCompileScript) Call(c Client) (*RuntimeCompileScriptResult, error
 
 // RuntimeCompileScriptResult ...
 type RuntimeCompileScriptResult struct {
-
 	// ScriptID (optional) Id of the script.
 	ScriptID RuntimeScriptID `json:"scriptId,omitempty"`
 
@@ -836,8 +815,7 @@ type RuntimeCompileScriptResult struct {
 }
 
 // RuntimeDisable Disables reporting of execution contexts creation.
-type RuntimeDisable struct {
-}
+type RuntimeDisable struct{}
 
 // ProtoReq name
 func (m RuntimeDisable) ProtoReq() string { return "Runtime.disable" }
@@ -848,8 +826,7 @@ func (m RuntimeDisable) Call(c Client) error {
 }
 
 // RuntimeDiscardConsoleEntries Discards collected exceptions and console API calls.
-type RuntimeDiscardConsoleEntries struct {
-}
+type RuntimeDiscardConsoleEntries struct{}
 
 // ProtoReq name
 func (m RuntimeDiscardConsoleEntries) ProtoReq() string { return "Runtime.discardConsoleEntries" }
@@ -862,8 +839,7 @@ func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
 // RuntimeEnable Enables reporting of execution contexts creation by means of `executionContextCreated` event.
 // When the reporting gets enabled the event will be sent immediately for each existing execution
 // context.
-type RuntimeEnable struct {
-}
+type RuntimeEnable struct{}
 
 // ProtoReq name
 func (m RuntimeEnable) ProtoReq() string { return "Runtime.enable" }
@@ -875,7 +851,6 @@ func (m RuntimeEnable) Call(c Client) error {
 
 // RuntimeEvaluate Evaluates expression on global object.
 type RuntimeEvaluate struct {
-
 	// Expression Expression to evaluate.
 	Expression string `json:"expression"`
 
@@ -953,7 +928,6 @@ func (m RuntimeEvaluate) Call(c Client) (*RuntimeEvaluateResult, error) {
 
 // RuntimeEvaluateResult ...
 type RuntimeEvaluateResult struct {
-
 	// Result Evaluation result.
 	Result *RuntimeRemoteObject `json:"result"`
 
@@ -962,8 +936,7 @@ type RuntimeEvaluateResult struct {
 }
 
 // RuntimeGetIsolateID (experimental) Returns the isolate id.
-type RuntimeGetIsolateID struct {
-}
+type RuntimeGetIsolateID struct{}
 
 // ProtoReq name
 func (m RuntimeGetIsolateID) ProtoReq() string { return "Runtime.getIsolateId" }
@@ -976,15 +949,13 @@ func (m RuntimeGetIsolateID) Call(c Client) (*RuntimeGetIsolateIDResult, error) 
 
 // RuntimeGetIsolateIDResult (experimental) ...
 type RuntimeGetIsolateIDResult struct {
-
 	// ID The isolate id.
 	ID string `json:"id"`
 }
 
 // RuntimeGetHeapUsage (experimental) Returns the JavaScript heap usage.
 // It is the total usage of the corresponding isolate not scoped to a particular Runtime.
-type RuntimeGetHeapUsage struct {
-}
+type RuntimeGetHeapUsage struct{}
 
 // ProtoReq name
 func (m RuntimeGetHeapUsage) ProtoReq() string { return "Runtime.getHeapUsage" }
@@ -997,7 +968,6 @@ func (m RuntimeGetHeapUsage) Call(c Client) (*RuntimeGetHeapUsageResult, error) 
 
 // RuntimeGetHeapUsageResult (experimental) ...
 type RuntimeGetHeapUsageResult struct {
-
 	// UsedSize Used heap size in bytes.
 	UsedSize float64 `json:"usedSize"`
 
@@ -1008,7 +978,6 @@ type RuntimeGetHeapUsageResult struct {
 // RuntimeGetProperties Returns properties of a given object. Object group of the result is inherited from the target
 // object.
 type RuntimeGetProperties struct {
-
 	// ObjectID Identifier of the object to return properties for.
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 
@@ -1038,7 +1007,6 @@ func (m RuntimeGetProperties) Call(c Client) (*RuntimeGetPropertiesResult, error
 
 // RuntimeGetPropertiesResult ...
 type RuntimeGetPropertiesResult struct {
-
 	// Result Object properties.
 	Result []*RuntimePropertyDescriptor `json:"result"`
 
@@ -1054,7 +1022,6 @@ type RuntimeGetPropertiesResult struct {
 
 // RuntimeGlobalLexicalScopeNames Returns all let, const and class variables from global scope.
 type RuntimeGlobalLexicalScopeNames struct {
-
 	// ExecutionContextID (optional) Specifies in which execution context to lookup global scope variables.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
@@ -1070,14 +1037,12 @@ func (m RuntimeGlobalLexicalScopeNames) Call(c Client) (*RuntimeGlobalLexicalSco
 
 // RuntimeGlobalLexicalScopeNamesResult ...
 type RuntimeGlobalLexicalScopeNamesResult struct {
-
 	// Names ...
 	Names []string `json:"names"`
 }
 
 // RuntimeQueryObjects ...
 type RuntimeQueryObjects struct {
-
 	// PrototypeObjectID Identifier of the prototype to return objects for.
 	PrototypeObjectID RuntimeRemoteObjectID `json:"prototypeObjectId"`
 
@@ -1096,14 +1061,12 @@ func (m RuntimeQueryObjects) Call(c Client) (*RuntimeQueryObjectsResult, error) 
 
 // RuntimeQueryObjectsResult ...
 type RuntimeQueryObjectsResult struct {
-
 	// Objects Array with objects.
 	Objects *RuntimeRemoteObject `json:"objects"`
 }
 
 // RuntimeReleaseObject Releases remote object with given id.
 type RuntimeReleaseObject struct {
-
 	// ObjectID Identifier of the object to release.
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
@@ -1118,7 +1081,6 @@ func (m RuntimeReleaseObject) Call(c Client) error {
 
 // RuntimeReleaseObjectGroup Releases all remote objects that belong to a given group.
 type RuntimeReleaseObjectGroup struct {
-
 	// ObjectGroup Symbolic object group name.
 	ObjectGroup string `json:"objectGroup"`
 }
@@ -1132,8 +1094,7 @@ func (m RuntimeReleaseObjectGroup) Call(c Client) error {
 }
 
 // RuntimeRunIfWaitingForDebugger Tells inspected instance to run if it was waiting for debugger to attach.
-type RuntimeRunIfWaitingForDebugger struct {
-}
+type RuntimeRunIfWaitingForDebugger struct{}
 
 // ProtoReq name
 func (m RuntimeRunIfWaitingForDebugger) ProtoReq() string { return "Runtime.runIfWaitingForDebugger" }
@@ -1145,7 +1106,6 @@ func (m RuntimeRunIfWaitingForDebugger) Call(c Client) error {
 
 // RuntimeRunScript Runs script with given id in a given context.
 type RuntimeRunScript struct {
-
 	// ScriptID Id of the script to run.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -1185,7 +1145,6 @@ func (m RuntimeRunScript) Call(c Client) (*RuntimeRunScriptResult, error) {
 
 // RuntimeRunScriptResult ...
 type RuntimeRunScriptResult struct {
-
 	// Result Run result.
 	Result *RuntimeRemoteObject `json:"result"`
 
@@ -1195,7 +1154,6 @@ type RuntimeRunScriptResult struct {
 
 // RuntimeSetAsyncCallStackDepth Enables or disables async call stacks tracking.
 type RuntimeSetAsyncCallStackDepth struct {
-
 	// MaxDepth Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
 	// call stacks (default).
 	MaxDepth int `json:"maxDepth"`
@@ -1211,7 +1169,6 @@ func (m RuntimeSetAsyncCallStackDepth) Call(c Client) error {
 
 // RuntimeSetCustomObjectFormatterEnabled (experimental) ...
 type RuntimeSetCustomObjectFormatterEnabled struct {
-
 	// Enabled ...
 	Enabled bool `json:"enabled"`
 }
@@ -1228,7 +1185,6 @@ func (m RuntimeSetCustomObjectFormatterEnabled) Call(c Client) error {
 
 // RuntimeSetMaxCallStackSizeToCapture (experimental) ...
 type RuntimeSetMaxCallStackSizeToCapture struct {
-
 	// Size ...
 	Size int `json:"size"`
 }
@@ -1245,8 +1201,7 @@ func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
 
 // RuntimeTerminateExecution (experimental) Terminate current or next JavaScript execution.
 // Will cancel the termination when the outer-most script execution ends.
-type RuntimeTerminateExecution struct {
-}
+type RuntimeTerminateExecution struct{}
 
 // ProtoReq name
 func (m RuntimeTerminateExecution) ProtoReq() string { return "Runtime.terminateExecution" }
@@ -1263,7 +1218,6 @@ func (m RuntimeTerminateExecution) Call(c Client) error {
 // in case of any other input, function throws an exception.
 // Each binding function call produces Runtime.bindingCalled notification.
 type RuntimeAddBinding struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -1295,7 +1249,6 @@ func (m RuntimeAddBinding) Call(c Client) error {
 // RuntimeRemoveBinding (experimental) This method does not remove binding function from global object but
 // unsubscribes current runtime agent from Runtime.bindingCalled notifications.
 type RuntimeRemoveBinding struct {
-
 	// Name ...
 	Name string `json:"name"`
 }
@@ -1314,7 +1267,6 @@ func (m RuntimeRemoveBinding) Call(c Client) error {
 // only be populated if the Runtime domain was enabled at the time when the
 // Error was thrown.
 type RuntimeGetExceptionDetails struct {
-
 	// ErrorObjectID The error object for which to resolve the exception details.
 	ErrorObjectID RuntimeRemoteObjectID `json:"errorObjectId"`
 }
@@ -1330,14 +1282,12 @@ func (m RuntimeGetExceptionDetails) Call(c Client) (*RuntimeGetExceptionDetailsR
 
 // RuntimeGetExceptionDetailsResult (experimental) ...
 type RuntimeGetExceptionDetailsResult struct {
-
 	// ExceptionDetails (optional) ...
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails,omitempty"`
 }
 
 // RuntimeBindingCalled (experimental) Notification is issued every time when binding is called.
 type RuntimeBindingCalled struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -1414,7 +1364,6 @@ const (
 
 // RuntimeConsoleAPICalled Issued when console API was called.
 type RuntimeConsoleAPICalled struct {
-
 	// Type Type of the call.
 	Type RuntimeConsoleAPICalledType `json:"type"`
 
@@ -1445,7 +1394,6 @@ func (evt RuntimeConsoleAPICalled) ProtoEvent() string {
 
 // RuntimeExceptionRevoked Issued when unhandled exception was revoked.
 type RuntimeExceptionRevoked struct {
-
 	// Reason Reason describing why exception was revoked.
 	Reason string `json:"reason"`
 
@@ -1460,7 +1408,6 @@ func (evt RuntimeExceptionRevoked) ProtoEvent() string {
 
 // RuntimeExceptionThrown Issued when exception was thrown and unhandled.
 type RuntimeExceptionThrown struct {
-
 	// Timestamp Timestamp of the exception.
 	Timestamp RuntimeTimestamp `json:"timestamp"`
 
@@ -1475,7 +1422,6 @@ func (evt RuntimeExceptionThrown) ProtoEvent() string {
 
 // RuntimeExecutionContextCreated Issued when new execution context is created.
 type RuntimeExecutionContextCreated struct {
-
 	// Context A newly created execution context.
 	Context *RuntimeExecutionContextDescription `json:"context"`
 }
@@ -1487,7 +1433,6 @@ func (evt RuntimeExecutionContextCreated) ProtoEvent() string {
 
 // RuntimeExecutionContextDestroyed Issued when execution context is destroyed.
 type RuntimeExecutionContextDestroyed struct {
-
 	// ExecutionContextID (deprecated) Id of the destroyed context
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 
@@ -1501,8 +1446,7 @@ func (evt RuntimeExecutionContextDestroyed) ProtoEvent() string {
 }
 
 // RuntimeExecutionContextsCleared Issued when all executionContexts were cleared in browser
-type RuntimeExecutionContextsCleared struct {
-}
+type RuntimeExecutionContextsCleared struct{}
 
 // ProtoEvent name
 func (evt RuntimeExecutionContextsCleared) ProtoEvent() string {
@@ -1512,7 +1456,6 @@ func (evt RuntimeExecutionContextsCleared) ProtoEvent() string {
 // RuntimeInspectRequested Issued when object should be inspected (for example, as a result of inspect() command line API
 // call).
 type RuntimeInspectRequested struct {
-
 	// Object ...
 	Object *RuntimeRemoteObject `json:"object"`
 

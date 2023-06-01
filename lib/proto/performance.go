@@ -10,7 +10,6 @@ Performance
 
 // PerformanceMetric Run-time execution metric.
 type PerformanceMetric struct {
-
 	// Name Metric name.
 	Name string `json:"name"`
 
@@ -19,8 +18,7 @@ type PerformanceMetric struct {
 }
 
 // PerformanceDisable Disable collecting and reporting metrics.
-type PerformanceDisable struct {
-}
+type PerformanceDisable struct{}
 
 // ProtoReq name
 func (m PerformanceDisable) ProtoReq() string { return "Performance.disable" }
@@ -43,7 +41,6 @@ const (
 
 // PerformanceEnable Enable collecting and reporting metrics.
 type PerformanceEnable struct {
-
 	// TimeDomain (optional) Time domain to use for collecting and reporting duration metrics.
 	TimeDomain PerformanceEnableTimeDomain `json:"timeDomain,omitempty"`
 }
@@ -71,7 +68,6 @@ const (
 // Note that this must be called before enabling metrics collection. Calling
 // this method while metrics collection is enabled returns an error.
 type PerformanceSetTimeDomain struct {
-
 	// TimeDomain Time domain
 	TimeDomain PerformanceSetTimeDomainTimeDomain `json:"timeDomain"`
 }
@@ -85,8 +81,7 @@ func (m PerformanceSetTimeDomain) Call(c Client) error {
 }
 
 // PerformanceGetMetrics Retrieve current values of run-time metrics.
-type PerformanceGetMetrics struct {
-}
+type PerformanceGetMetrics struct{}
 
 // ProtoReq name
 func (m PerformanceGetMetrics) ProtoReq() string { return "Performance.getMetrics" }
@@ -99,14 +94,12 @@ func (m PerformanceGetMetrics) Call(c Client) (*PerformanceGetMetricsResult, err
 
 // PerformanceGetMetricsResult ...
 type PerformanceGetMetricsResult struct {
-
 	// Metrics Current values for run-time metrics.
 	Metrics []*PerformanceMetric `json:"metrics"`
 }
 
 // PerformanceMetrics Current values of the metrics.
 type PerformanceMetrics struct {
-
 	// Metrics Current values of the metrics.
 	Metrics []*PerformanceMetric `json:"metrics"`
 

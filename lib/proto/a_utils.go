@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
-var regAsterisk = regexp.MustCompile(`([^\\])\*`)
-var regBackSlash = regexp.MustCompile(`([^\\])\?`)
+var (
+	regAsterisk  = regexp.MustCompile(`([^\\])\*`)
+	regBackSlash = regexp.MustCompile(`([^\\])\?`)
+)
 
 // PatternToReg FetchRequestPattern.URLPattern to regular expression
 func PatternToReg(pattern string) string {

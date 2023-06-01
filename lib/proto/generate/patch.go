@@ -75,5 +75,4 @@ func patch(json gson.JSON) {
 	j, _ = json.Gets("domains", k("domain", "Fetch"), "commands", k("name", "fulfillRequest"), "parameters")
 	jj, _ = j.Gets(k("name", "body"))
 	jj.Del("optional")
-
 }

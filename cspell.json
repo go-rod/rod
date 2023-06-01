@@ -36,6 +36,7 @@
         "dropzone",
         "duckduckgo",
         "enctype",
+        "errcheck",
         "evenodd",
         "excludesfile",
         "fetchup",
@@ -47,6 +48,7 @@
         "gocyclo",
         "GODEBUG",
         "gofmt",
+        "gofumpt",
         "goimports",
         "golangci",
         "goob",
@@ -76,6 +78,7 @@
         "MDPI",
         "MITM",
         "mitmproxy",
+        "mvdan",
         "Noto",
         "Numpad",
         "onbeforeunload",
@@ -87,6 +90,7 @@
         "progresser",
         "proto",
         "proxyauth",
+        "Rects",
         "repost",
         "sattributes",
         "schildren",
@@ -114,8 +118,7 @@
         "wsutil",
         "xlink",
         "XVFB",
-        "ysmood",
-        "Rects"
+        "ysmood"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.

@@ -86,7 +86,6 @@ func TestOutputString(t *testing.T) {
 	_ = utils.OutputFile(p, p)
 
 	s, err := utils.ReadString(p)
-
 	if err != nil {
 		panic(err)
 	}
@@ -102,7 +101,6 @@ func TestOutputBytes(t *testing.T) {
 	_ = utils.OutputFile(p, []byte("test"))
 
 	s, err := utils.ReadString(p)
-
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +117,6 @@ func TestOutputStream(t *testing.T) {
 	_ = utils.OutputFile(p, b)
 
 	s, err := utils.ReadString(p)
-
 	if err != nil {
 		panic(err)
 	}

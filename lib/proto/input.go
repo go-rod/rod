@@ -10,7 +10,6 @@ Input
 
 // InputTouchPoint ...
 type InputTouchPoint struct {
-
 	// X X coordinate of the event relative to the main frame's viewport in CSS pixels.
 	X float64 `json:"x"`
 
@@ -85,7 +84,6 @@ const (
 
 // InputDragDataItem (experimental) ...
 type InputDragDataItem struct {
-
 	// MIMEType Mime type of the dragged data.
 	MIMEType string `json:"mimeType"`
 
@@ -103,7 +101,6 @@ type InputDragDataItem struct {
 
 // InputDragData (experimental) ...
 type InputDragData struct {
-
 	// Items ...
 	Items []*InputDragDataItem `json:"items"`
 
@@ -133,7 +130,6 @@ const (
 
 // InputDispatchDragEvent (experimental) Dispatches a drag event into the page.
 type InputDispatchDragEvent struct {
-
 	// Type Type of the drag event.
 	Type InputDispatchDragEventType `json:"type"`
 
@@ -179,7 +175,6 @@ const (
 
 // InputDispatchKeyEvent Dispatches a key event to the page.
 type InputDispatchKeyEvent struct {
-
 	// Type Type of the key event.
 	Type InputDispatchKeyEventType `json:"type"`
 
@@ -244,7 +239,6 @@ func (m InputDispatchKeyEvent) Call(c Client) error {
 // InputInsertText (experimental) This method emulates inserting text that doesn't come from a key press,
 // for example an emoji keyboard or an IME.
 type InputInsertText struct {
-
 	// Text The text to insert.
 	Text string `json:"text"`
 }
@@ -261,7 +255,6 @@ func (m InputInsertText) Call(c Client) error {
 // Use imeCommitComposition to commit the final text.
 // Use imeSetComposition with empty string as text to cancel composition.
 type InputImeSetComposition struct {
-
 	// Text The text to insert
 	Text string `json:"text"`
 
@@ -316,7 +309,6 @@ const (
 
 // InputDispatchMouseEvent Dispatches a mouse event to the page.
 type InputDispatchMouseEvent struct {
-
 	// Type Type of the mouse event.
 	Type InputDispatchMouseEventType `json:"type"`
 
@@ -396,7 +388,6 @@ const (
 
 // InputDispatchTouchEvent Dispatches a touch event to the page.
 type InputDispatchTouchEvent struct {
-
 	// Type Type of the touch event. TouchEnd and TouchCancel must not contain any touch points, while
 	// TouchStart and TouchMove must contains at least one.
 	Type InputDispatchTouchEventType `json:"type"`
@@ -441,7 +432,6 @@ const (
 
 // InputEmulateTouchFromMouseEvent (experimental) Emulates touch event from the mouse event parameters.
 type InputEmulateTouchFromMouseEvent struct {
-
 	// Type Type of the mouse event.
 	Type InputEmulateTouchFromMouseEventType `json:"type"`
 
@@ -481,7 +471,6 @@ func (m InputEmulateTouchFromMouseEvent) Call(c Client) error {
 
 // InputSetIgnoreInputEvents Ignores input events (useful while auditing page).
 type InputSetIgnoreInputEvents struct {
-
 	// Ignore Ignores input events processing when set to true.
 	Ignore bool `json:"ignore"`
 }
@@ -497,7 +486,6 @@ func (m InputSetIgnoreInputEvents) Call(c Client) error {
 // InputSetInterceptDrags (experimental) Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
 // Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
 type InputSetInterceptDrags struct {
-
 	// Enabled ...
 	Enabled bool `json:"enabled"`
 }
@@ -512,7 +500,6 @@ func (m InputSetInterceptDrags) Call(c Client) error {
 
 // InputSynthesizePinchGesture (experimental) Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
 type InputSynthesizePinchGesture struct {
-
 	// X X coordinate of the start of the gesture in CSS pixels.
 	X float64 `json:"x"`
 
@@ -540,7 +527,6 @@ func (m InputSynthesizePinchGesture) Call(c Client) error {
 
 // InputSynthesizeScrollGesture (experimental) Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
 type InputSynthesizeScrollGesture struct {
-
 	// X X coordinate of the start of the gesture in CSS pixels.
 	X float64 `json:"x"`
 
@@ -591,7 +577,6 @@ func (m InputSynthesizeScrollGesture) Call(c Client) error {
 
 // InputSynthesizeTapGesture (experimental) Synthesizes a tap gesture over a time period by issuing appropriate touch events.
 type InputSynthesizeTapGesture struct {
-
 	// X X coordinate of the start of the gesture in CSS pixels.
 	X float64 `json:"x"`
 
@@ -620,7 +605,6 @@ func (m InputSynthesizeTapGesture) Call(c Client) error {
 // InputDragIntercepted (experimental) Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
 // restore normal drag and drop behavior.
 type InputDragIntercepted struct {
-
 	// Data ...
 	Data *InputDragData `json:"data"`
 }

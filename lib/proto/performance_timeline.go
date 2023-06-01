@@ -13,7 +13,6 @@ https://w3c.github.io/performance-timeline/#dom-performanceobserver.
 
 // PerformanceTimelineLargestContentfulPaint See https://github.com/WICG/LargestContentfulPaint and largest_contentful_paint.idl
 type PerformanceTimelineLargestContentfulPaint struct {
-
 	// RenderTime ...
 	RenderTime TimeSinceEpoch `json:"renderTime"`
 
@@ -35,7 +34,6 @@ type PerformanceTimelineLargestContentfulPaint struct {
 
 // PerformanceTimelineLayoutShiftAttribution ...
 type PerformanceTimelineLayoutShiftAttribution struct {
-
 	// PreviousRect ...
 	PreviousRect *DOMRect `json:"previousRect"`
 
@@ -48,7 +46,6 @@ type PerformanceTimelineLayoutShiftAttribution struct {
 
 // PerformanceTimelineLayoutShift See https://wicg.github.io/layout-instability/#sec-layout-shift and layout_shift.idl
 type PerformanceTimelineLayoutShift struct {
-
 	// Value Score increment produced by this event.
 	Value float64 `json:"value"`
 
@@ -64,7 +61,6 @@ type PerformanceTimelineLayoutShift struct {
 
 // PerformanceTimelineTimelineEvent ...
 type PerformanceTimelineTimelineEvent struct {
-
 	// FrameID Identifies the frame that this event is related to. Empty for non-frame targets.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -91,7 +87,6 @@ type PerformanceTimelineTimelineEvent struct {
 // PerformanceTimelineEnable Previously buffered events would be reported before method returns.
 // See also: timelineEventAdded
 type PerformanceTimelineEnable struct {
-
 	// EventTypes The types of event to report, as specified in
 	// https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
 	// The specified filter overrides any previous filters, passing empty
@@ -110,7 +105,6 @@ func (m PerformanceTimelineEnable) Call(c Client) error {
 
 // PerformanceTimelineTimelineEventAdded Sent when a performance timeline event is added. See reportPerformanceTimeline method.
 type PerformanceTimelineTimelineEventAdded struct {
-
 	// Event ...
 	Event *PerformanceTimelineTimelineEvent `json:"event"`
 }

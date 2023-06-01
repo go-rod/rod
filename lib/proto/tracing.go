@@ -34,7 +34,6 @@ const (
 
 // TracingTraceConfig ...
 type TracingTraceConfig struct {
-
 	// RecordMode (optional) Controls how the trace buffer stores data.
 	RecordMode TracingTraceConfigRecordMode `json:"recordMode,omitempty"`
 
@@ -122,8 +121,7 @@ const (
 )
 
 // TracingEnd Stop trace events collection.
-type TracingEnd struct {
-}
+type TracingEnd struct{}
 
 // ProtoReq name
 func (m TracingEnd) ProtoReq() string { return "Tracing.end" }
@@ -134,8 +132,7 @@ func (m TracingEnd) Call(c Client) error {
 }
 
 // TracingGetCategories Gets supported tracing categories.
-type TracingGetCategories struct {
-}
+type TracingGetCategories struct{}
 
 // ProtoReq name
 func (m TracingGetCategories) ProtoReq() string { return "Tracing.getCategories" }
@@ -148,14 +145,12 @@ func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error
 
 // TracingGetCategoriesResult ...
 type TracingGetCategoriesResult struct {
-
 	// Categories A list of supported tracing categories.
 	Categories []string `json:"categories"`
 }
 
 // TracingRecordClockSyncMarker Record a clock sync marker in the trace.
 type TracingRecordClockSyncMarker struct {
-
 	// SyncID The ID of this clock sync marker
 	SyncID string `json:"syncId"`
 }
@@ -170,7 +165,6 @@ func (m TracingRecordClockSyncMarker) Call(c Client) error {
 
 // TracingRequestMemoryDump Request a global memory dump.
 type TracingRequestMemoryDump struct {
-
 	// Deterministic (optional) Enables more deterministic results by forcing garbage collection
 	Deterministic bool `json:"deterministic,omitempty"`
 
@@ -189,7 +183,6 @@ func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResul
 
 // TracingRequestMemoryDumpResult ...
 type TracingRequestMemoryDumpResult struct {
-
 	// DumpGUID GUID of the resulting global memory dump.
 	DumpGUID string `json:"dumpGuid"`
 
@@ -210,7 +203,6 @@ const (
 
 // TracingStart Start trace events collection.
 type TracingStart struct {
-
 	// Categories (deprecated) (optional) Category/tag filter
 	Categories string `json:"categories,omitempty"`
 
@@ -254,7 +246,6 @@ func (m TracingStart) Call(c Client) error {
 
 // TracingBufferUsage ...
 type TracingBufferUsage struct {
-
 	// PercentFull (optional) A number in range [0..1] that indicates the used size of event buffer as a fraction of its
 	// total size.
 	PercentFull *float64 `json:"percentFull,omitempty"`
@@ -275,7 +266,6 @@ func (evt TracingBufferUsage) ProtoEvent() string {
 // TracingDataCollected Contains a bucket of collected trace events. When tracing is stopped collected events will be
 // sent as a sequence of dataCollected events followed by tracingComplete event.
 type TracingDataCollected struct {
-
 	// Value ...
 	Value []map[string]gson.JSON `json:"value"`
 }
@@ -288,7 +278,6 @@ func (evt TracingDataCollected) ProtoEvent() string {
 // TracingTracingComplete Signals that tracing is stopped and there is no trace buffers pending flush, all data were
 // delivered via dataCollected events.
 type TracingTracingComplete struct {
-
 	// DataLossOccurred Indicates whether some trace data is known to have been lost, e.g. because the trace ring
 	// buffer wrapped around.
 	DataLossOccurred bool `json:"dataLossOccurred"`

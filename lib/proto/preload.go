@@ -13,7 +13,6 @@ type PreloadRuleSetID string
 
 // PreloadRuleSet Corresponds to SpeculationRuleSet
 type PreloadRuleSet struct {
-
 	// ID ...
 	ID PreloadRuleSetID `json:"id"`
 
@@ -80,7 +79,6 @@ const (
 // same-origin main frame navigations during the attempt, but the attempt is
 // still keyed with the initial URL.
 type PreloadPreloadingAttemptKey struct {
-
 	// LoaderID ...
 	LoaderID NetworkLoaderID `json:"loaderId"`
 
@@ -100,7 +98,6 @@ type PreloadPreloadingAttemptKey struct {
 // attempt (in the case of attempts triggered by a document rule). It is
 // possible for mulitple rule sets and links to trigger a single attempt.
 type PreloadPreloadingAttemptSource struct {
-
 	// Key ...
 	Key *PreloadPreloadingAttemptKey `json:"key"`
 
@@ -315,8 +312,7 @@ const (
 )
 
 // PreloadEnable ...
-type PreloadEnable struct {
-}
+type PreloadEnable struct{}
 
 // ProtoReq name
 func (m PreloadEnable) ProtoReq() string { return "Preload.enable" }
@@ -327,8 +323,7 @@ func (m PreloadEnable) Call(c Client) error {
 }
 
 // PreloadDisable ...
-type PreloadDisable struct {
-}
+type PreloadDisable struct{}
 
 // ProtoReq name
 func (m PreloadDisable) ProtoReq() string { return "Preload.disable" }
@@ -340,7 +335,6 @@ func (m PreloadDisable) Call(c Client) error {
 
 // PreloadRuleSetUpdated Upsert. Currently, it is only emitted when a rule set added.
 type PreloadRuleSetUpdated struct {
-
 	// RuleSet ...
 	RuleSet *PreloadRuleSet `json:"ruleSet"`
 }
@@ -352,7 +346,6 @@ func (evt PreloadRuleSetUpdated) ProtoEvent() string {
 
 // PreloadRuleSetRemoved ...
 type PreloadRuleSetRemoved struct {
-
 	// ID ...
 	ID PreloadRuleSetID `json:"id"`
 }
@@ -364,7 +357,6 @@ func (evt PreloadRuleSetRemoved) ProtoEvent() string {
 
 // PreloadPrerenderAttemptCompleted Fired when a prerender attempt is completed.
 type PreloadPrerenderAttemptCompleted struct {
-
 	// Key ...
 	Key *PreloadPreloadingAttemptKey `json:"key"`
 
@@ -389,7 +381,6 @@ func (evt PreloadPrerenderAttemptCompleted) ProtoEvent() string {
 
 // PreloadPrefetchStatusUpdated Fired when a prefetch attempt is updated.
 type PreloadPrefetchStatusUpdated struct {
-
 	// Key ...
 	Key *PreloadPreloadingAttemptKey `json:"key"`
 
@@ -410,7 +401,6 @@ func (evt PreloadPrefetchStatusUpdated) ProtoEvent() string {
 
 // PreloadPrerenderStatusUpdated Fired when a prerender attempt is updated.
 type PreloadPrerenderStatusUpdated struct {
-
 	// Key ...
 	Key *PreloadPreloadingAttemptKey `json:"key"`
 
@@ -431,7 +421,6 @@ func (evt PreloadPrerenderStatusUpdated) ProtoEvent() string {
 
 // PreloadPreloadingAttemptSourcesUpdated Send a list of sources for all preloading attempts in a document.
 type PreloadPreloadingAttemptSourcesUpdated struct {
-
 	// LoaderID ...
 	LoaderID NetworkLoaderID `json:"loaderId"`
 

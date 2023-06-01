@@ -92,7 +92,7 @@ func main() {
 	utils.E(utils.OutputFile(filepath.FromSlash("lib/proto/definitions_test.go"), testsCode))
 
 	path := "./lib/proto"
-	utils.Exec("gofmt -s -w", path)
+	utils.Exec("gofumpt -w", path)
 	utils.Exec("go run golang.org/x/tools/cmd/goimports@latest -w", path)
 	utils.Exec(
 		"go run github.com/ysmood/golangci-lint@latest -- run --fix",

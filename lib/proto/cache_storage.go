@@ -36,7 +36,6 @@ const (
 
 // CacheStorageDataEntry Data entry.
 type CacheStorageDataEntry struct {
-
 	// RequestURL Request URL.
 	RequestURL string `json:"requestURL"`
 
@@ -64,7 +63,6 @@ type CacheStorageDataEntry struct {
 
 // CacheStorageCache Cache identifier.
 type CacheStorageCache struct {
-
 	// CacheID An opaque unique id of the cache.
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
@@ -80,7 +78,6 @@ type CacheStorageCache struct {
 
 // CacheStorageHeader ...
 type CacheStorageHeader struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -90,14 +87,12 @@ type CacheStorageHeader struct {
 
 // CacheStorageCachedResponse Cached response
 type CacheStorageCachedResponse struct {
-
 	// Body Entry content, base64-encoded.
 	Body []byte `json:"body"`
 }
 
 // CacheStorageDeleteCache Deletes a cache.
 type CacheStorageDeleteCache struct {
-
 	// CacheID Id of cache for deletion.
 	CacheID CacheStorageCacheID `json:"cacheId"`
 }
@@ -112,7 +107,6 @@ func (m CacheStorageDeleteCache) Call(c Client) error {
 
 // CacheStorageDeleteEntry Deletes a cache entry.
 type CacheStorageDeleteEntry struct {
-
 	// CacheID Id of cache where the entry will be deleted.
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
@@ -130,7 +124,6 @@ func (m CacheStorageDeleteEntry) Call(c Client) error {
 
 // CacheStorageRequestCacheNames Requests cache names.
 type CacheStorageRequestCacheNames struct {
-
 	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
@@ -150,14 +143,12 @@ func (m CacheStorageRequestCacheNames) Call(c Client) (*CacheStorageRequestCache
 
 // CacheStorageRequestCacheNamesResult ...
 type CacheStorageRequestCacheNamesResult struct {
-
 	// Caches Caches for the security origin.
 	Caches []*CacheStorageCache `json:"caches"`
 }
 
 // CacheStorageRequestCachedResponse Fetches cache entry.
 type CacheStorageRequestCachedResponse struct {
-
 	// CacheID Id of cache that contains the entry.
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
@@ -181,14 +172,12 @@ func (m CacheStorageRequestCachedResponse) Call(c Client) (*CacheStorageRequestC
 
 // CacheStorageRequestCachedResponseResult ...
 type CacheStorageRequestCachedResponseResult struct {
-
 	// Response Response read from the cache.
 	Response *CacheStorageCachedResponse `json:"response"`
 }
 
 // CacheStorageRequestEntries Requests data from cache.
 type CacheStorageRequestEntries struct {
-
 	// CacheID ID of cache to get entries from.
 	CacheID CacheStorageCacheID `json:"cacheId"`
 
@@ -213,7 +202,6 @@ func (m CacheStorageRequestEntries) Call(c Client) (*CacheStorageRequestEntriesR
 
 // CacheStorageRequestEntriesResult ...
 type CacheStorageRequestEntriesResult struct {
-
 	// CacheDataEntries Array of object store data entries.
 	CacheDataEntries []*CacheStorageDataEntry `json:"cacheDataEntries"`
 

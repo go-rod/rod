@@ -18,9 +18,11 @@ import (
 )
 
 // Element implements these interfaces
-var _ proto.Client = &Element{}
-var _ proto.Contextable = &Element{}
-var _ proto.Sessionable = &Element{}
+var (
+	_ proto.Client      = &Element{}
+	_ proto.Contextable = &Element{}
+	_ proto.Sessionable = &Element{}
+)
 
 // Element represents the DOM element
 type Element struct {

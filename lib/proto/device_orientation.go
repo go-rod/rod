@@ -9,8 +9,7 @@ DeviceOrientation
 */
 
 // DeviceOrientationClearDeviceOrientationOverride Clears the overridden Device Orientation.
-type DeviceOrientationClearDeviceOrientationOverride struct {
-}
+type DeviceOrientationClearDeviceOrientationOverride struct{}
 
 // ProtoReq name
 func (m DeviceOrientationClearDeviceOrientationOverride) ProtoReq() string {
@@ -24,7 +23,6 @@ func (m DeviceOrientationClearDeviceOrientationOverride) Call(c Client) error {
 
 // DeviceOrientationSetDeviceOrientationOverride Overrides the Device Orientation.
 type DeviceOrientationSetDeviceOrientationOverride struct {
-
 	// Alpha Mock alpha
 	Alpha float64 `json:"alpha"`
 

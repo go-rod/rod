@@ -10,7 +10,6 @@ import (
 const Version = "v1.3"
 
 var types = map[string]reflect.Type{
-
 	"Accessibility.AXValueSource":                           reflect.TypeOf(AccessibilityAXValueSource{}),
 	"Accessibility.AXRelatedNode":                           reflect.TypeOf(AccessibilityAXRelatedNode{}),
 	"Accessibility.AXProperty":                              reflect.TypeOf(AccessibilityAXProperty{}),

@@ -40,7 +40,6 @@ const (
 // MediaPlayerMessage Have one type per entry in MediaLogRecord::Type
 // Corresponds to kMessage
 type MediaPlayerMessage struct {
-
 	// Level Keep in sync with MediaLogMessageLevel
 	// We are currently keeping the message level 'error' separate from the
 	// PlayerError type because right now they represent different things,
@@ -58,7 +57,6 @@ type MediaPlayerMessage struct {
 
 // MediaPlayerProperty Corresponds to kMediaPropertyChange
 type MediaPlayerProperty struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -68,7 +66,6 @@ type MediaPlayerProperty struct {
 
 // MediaPlayerEvent Corresponds to kMediaEventTriggered
 type MediaPlayerEvent struct {
-
 	// Timestamp ...
 	Timestamp MediaTimestamp `json:"timestamp"`
 
@@ -79,7 +76,6 @@ type MediaPlayerEvent struct {
 // MediaPlayerErrorSourceLocation Represents logged source line numbers reported in an error.
 // NOTE: file and line are from chromium c++ implementation code, not js.
 type MediaPlayerErrorSourceLocation struct {
-
 	// File ...
 	File string `json:"file"`
 
@@ -89,7 +85,6 @@ type MediaPlayerErrorSourceLocation struct {
 
 // MediaPlayerError Corresponds to kMediaError
 type MediaPlayerError struct {
-
 	// ErrorType ...
 	ErrorType string `json:"errorType"`
 
@@ -109,8 +104,7 @@ type MediaPlayerError struct {
 }
 
 // MediaEnable Enables the Media domain
-type MediaEnable struct {
-}
+type MediaEnable struct{}
 
 // ProtoReq name
 func (m MediaEnable) ProtoReq() string { return "Media.enable" }
@@ -121,8 +115,7 @@ func (m MediaEnable) Call(c Client) error {
 }
 
 // MediaDisable Disables the Media domain.
-type MediaDisable struct {
-}
+type MediaDisable struct{}
 
 // ProtoReq name
 func (m MediaDisable) ProtoReq() string { return "Media.disable" }
@@ -135,7 +128,6 @@ func (m MediaDisable) Call(c Client) error {
 // MediaPlayerPropertiesChanged This can be called multiple times, and can be used to set / override /
 // remove player properties. A null propValue indicates removal.
 type MediaPlayerPropertiesChanged struct {
-
 	// PlayerID ...
 	PlayerID MediaPlayerID `json:"playerId"`
 
@@ -151,7 +143,6 @@ func (evt MediaPlayerPropertiesChanged) ProtoEvent() string {
 // MediaPlayerEventsAdded Send events as a list, allowing them to be batched on the browser for less
 // congestion. If batched, events must ALWAYS be in chronological order.
 type MediaPlayerEventsAdded struct {
-
 	// PlayerID ...
 	PlayerID MediaPlayerID `json:"playerId"`
 
@@ -166,7 +157,6 @@ func (evt MediaPlayerEventsAdded) ProtoEvent() string {
 
 // MediaPlayerMessagesLogged Send a list of any messages that need to be delivered.
 type MediaPlayerMessagesLogged struct {
-
 	// PlayerID ...
 	PlayerID MediaPlayerID `json:"playerId"`
 
@@ -181,7 +171,6 @@ func (evt MediaPlayerMessagesLogged) ProtoEvent() string {
 
 // MediaPlayerErrorsRaised Send a list of any errors that need to be delivered.
 type MediaPlayerErrorsRaised struct {
-
 	// PlayerID ...
 	PlayerID MediaPlayerID `json:"playerId"`
 
@@ -198,7 +187,6 @@ func (evt MediaPlayerErrorsRaised) ProtoEvent() string {
 // a list of active players. If an agent is restored, it will receive the full
 // list of player ids and all events again.
 type MediaPlayersCreated struct {
-
 	// Players ...
 	Players []MediaPlayerID `json:"players"`
 }

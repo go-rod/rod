@@ -91,8 +91,10 @@ func MustResolveURL(u string) string {
 	return u
 }
 
-var regPort = regexp.MustCompile(`^\:?(\d+)$`)
-var regProtocol = regexp.MustCompile(`^\w+://`)
+var (
+	regPort     = regexp.MustCompile(`^\:?(\d+)$`)
+	regProtocol = regexp.MustCompile(`^\w+://`)
+)
 
 // ResolveURL by requesting the u, it will try best to normalize the u.
 // The format of u can be "9222", ":9222", "host:9222", "ws://host:9222", "wss://host:9222",

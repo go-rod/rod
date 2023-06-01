@@ -29,7 +29,6 @@ const (
 
 // EmulationScreenOrientation Screen orientation.
 type EmulationScreenOrientation struct {
-
 	// Type Orientation type.
 	Type EmulationScreenOrientationType `json:"type"`
 
@@ -50,7 +49,6 @@ const (
 
 // EmulationDisplayFeature ...
 type EmulationDisplayFeature struct {
-
 	// Orientation Orientation of a display feature in relation to screen
 	Orientation EmulationDisplayFeatureOrientation `json:"orientation"`
 
@@ -66,7 +64,6 @@ type EmulationDisplayFeature struct {
 
 // EmulationMediaFeature ...
 type EmulationMediaFeature struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -93,7 +90,6 @@ const (
 
 // EmulationUserAgentBrandVersion (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
 type EmulationUserAgentBrandVersion struct {
-
 	// Brand ...
 	Brand string `json:"brand"`
 
@@ -104,7 +100,6 @@ type EmulationUserAgentBrandVersion struct {
 // EmulationUserAgentMetadata (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
 // Missing optional values will be filled in by the target with what it would normally use.
 type EmulationUserAgentMetadata struct {
-
 	// Brands (optional) Brands appearing in Sec-CH-UA.
 	Brands []*EmulationUserAgentBrandVersion `json:"brands,omitempty"`
 
@@ -148,8 +143,7 @@ const (
 )
 
 // EmulationCanEmulate Tells whether emulation is supported.
-type EmulationCanEmulate struct {
-}
+type EmulationCanEmulate struct{}
 
 // ProtoReq name
 func (m EmulationCanEmulate) ProtoReq() string { return "Emulation.canEmulate" }
@@ -162,14 +156,12 @@ func (m EmulationCanEmulate) Call(c Client) (*EmulationCanEmulateResult, error) 
 
 // EmulationCanEmulateResult ...
 type EmulationCanEmulateResult struct {
-
 	// Result True if emulation is supported.
 	Result bool `json:"result"`
 }
 
 // EmulationClearDeviceMetricsOverride Clears the overridden device metrics.
-type EmulationClearDeviceMetricsOverride struct {
-}
+type EmulationClearDeviceMetricsOverride struct{}
 
 // ProtoReq name
 func (m EmulationClearDeviceMetricsOverride) ProtoReq() string {
@@ -182,8 +174,7 @@ func (m EmulationClearDeviceMetricsOverride) Call(c Client) error {
 }
 
 // EmulationClearGeolocationOverride Clears the overridden Geolocation Position and Error.
-type EmulationClearGeolocationOverride struct {
-}
+type EmulationClearGeolocationOverride struct{}
 
 // ProtoReq name
 func (m EmulationClearGeolocationOverride) ProtoReq() string {
@@ -196,8 +187,7 @@ func (m EmulationClearGeolocationOverride) Call(c Client) error {
 }
 
 // EmulationResetPageScaleFactor (experimental) Requests that page scale factor is reset to initial values.
-type EmulationResetPageScaleFactor struct {
-}
+type EmulationResetPageScaleFactor struct{}
 
 // ProtoReq name
 func (m EmulationResetPageScaleFactor) ProtoReq() string { return "Emulation.resetPageScaleFactor" }
@@ -209,7 +199,6 @@ func (m EmulationResetPageScaleFactor) Call(c Client) error {
 
 // EmulationSetFocusEmulationEnabled (experimental) Enables or disables simulating a focused and active page.
 type EmulationSetFocusEmulationEnabled struct {
-
 	// Enabled Whether to enable to disable focus emulation.
 	Enabled bool `json:"enabled"`
 }
@@ -226,7 +215,6 @@ func (m EmulationSetFocusEmulationEnabled) Call(c Client) error {
 
 // EmulationSetAutoDarkModeOverride (experimental) Automatically render all web contents using a dark theme.
 type EmulationSetAutoDarkModeOverride struct {
-
 	// Enabled (optional) Whether to enable or disable automatic dark mode.
 	// If not specified, any existing override will be cleared.
 	Enabled bool `json:"enabled,omitempty"`
@@ -244,7 +232,6 @@ func (m EmulationSetAutoDarkModeOverride) Call(c Client) error {
 
 // EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
 type EmulationSetCPUThrottlingRate struct {
-
 	// Rate Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
 	Rate float64 `json:"rate"`
 }
@@ -260,7 +247,6 @@ func (m EmulationSetCPUThrottlingRate) Call(c Client) error {
 // EmulationSetDefaultBackgroundColorOverride Sets or clears an override of the default background color of the frame. This override is used
 // if the content does not specify one.
 type EmulationSetDefaultBackgroundColorOverride struct {
-
 	// Color (optional) RGBA of the default background color. If not specified, any existing override will be
 	// cleared.
 	Color *DOMRGBA `json:"color,omitempty"`
@@ -280,7 +266,6 @@ func (m EmulationSetDefaultBackgroundColorOverride) Call(c Client) error {
 // window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
 // query results).
 type EmulationSetDeviceMetricsOverride struct {
-
 	// Width Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 	Width int `json:"width"`
 
@@ -336,7 +321,6 @@ func (m EmulationSetDeviceMetricsOverride) Call(c Client) error {
 
 // EmulationSetScrollbarsHidden (experimental) ...
 type EmulationSetScrollbarsHidden struct {
-
 	// Hidden Whether scrollbars should be always hidden.
 	Hidden bool `json:"hidden"`
 }
@@ -351,7 +335,6 @@ func (m EmulationSetScrollbarsHidden) Call(c Client) error {
 
 // EmulationSetDocumentCookieDisabled (experimental) ...
 type EmulationSetDocumentCookieDisabled struct {
-
 	// Disabled Whether document.coookie API should be disabled.
 	Disabled bool `json:"disabled"`
 }
@@ -379,7 +362,6 @@ const (
 
 // EmulationSetEmitTouchEventsForMouse (experimental) ...
 type EmulationSetEmitTouchEventsForMouse struct {
-
 	// Enabled Whether touch emulation based on mouse input should be enabled.
 	Enabled bool `json:"enabled"`
 
@@ -399,7 +381,6 @@ func (m EmulationSetEmitTouchEventsForMouse) Call(c Client) error {
 
 // EmulationSetEmulatedMedia Emulates the given media type or media feature for CSS media queries.
 type EmulationSetEmulatedMedia struct {
-
 	// Media (optional) Media type to emulate. Empty string disables the override.
 	Media string `json:"media,omitempty"`
 
@@ -443,7 +424,6 @@ const (
 
 // EmulationSetEmulatedVisionDeficiency (experimental) Emulates the given vision deficiency.
 type EmulationSetEmulatedVisionDeficiency struct {
-
 	// Type Vision deficiency to emulate. Order: best-effort emulations come first, followed by any
 	// physiologically accurate emulations for medically recognized color vision deficiencies.
 	Type EmulationSetEmulatedVisionDeficiencyType `json:"type"`
@@ -462,7 +442,6 @@ func (m EmulationSetEmulatedVisionDeficiency) Call(c Client) error {
 // EmulationSetGeolocationOverride Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
 // unavailable.
 type EmulationSetGeolocationOverride struct {
-
 	// Latitude (optional) Mock latitude
 	Latitude *float64 `json:"latitude,omitempty"`
 
@@ -483,7 +462,6 @@ func (m EmulationSetGeolocationOverride) Call(c Client) error {
 
 // EmulationSetIdleOverride (experimental) Overrides the Idle state.
 type EmulationSetIdleOverride struct {
-
 	// IsUserActive Mock isUserActive
 	IsUserActive bool `json:"isUserActive"`
 
@@ -500,8 +478,7 @@ func (m EmulationSetIdleOverride) Call(c Client) error {
 }
 
 // EmulationClearIdleOverride (experimental) Clears Idle state overrides.
-type EmulationClearIdleOverride struct {
-}
+type EmulationClearIdleOverride struct{}
 
 // ProtoReq name
 func (m EmulationClearIdleOverride) ProtoReq() string { return "Emulation.clearIdleOverride" }
@@ -513,7 +490,6 @@ func (m EmulationClearIdleOverride) Call(c Client) error {
 
 // EmulationSetNavigatorOverrides (deprecated) (experimental) Overrides value returned by the javascript navigator object.
 type EmulationSetNavigatorOverrides struct {
-
 	// Platform The platform navigator.platform should return.
 	Platform string `json:"platform"`
 }
@@ -528,7 +504,6 @@ func (m EmulationSetNavigatorOverrides) Call(c Client) error {
 
 // EmulationSetPageScaleFactor (experimental) Sets a specified page scale factor.
 type EmulationSetPageScaleFactor struct {
-
 	// PageScaleFactor Page scale factor.
 	PageScaleFactor float64 `json:"pageScaleFactor"`
 }
@@ -543,7 +518,6 @@ func (m EmulationSetPageScaleFactor) Call(c Client) error {
 
 // EmulationSetScriptExecutionDisabled Switches script execution in the page.
 type EmulationSetScriptExecutionDisabled struct {
-
 	// Value Whether script execution should be disabled in the page.
 	Value bool `json:"value"`
 }
@@ -560,7 +534,6 @@ func (m EmulationSetScriptExecutionDisabled) Call(c Client) error {
 
 // EmulationSetTouchEmulationEnabled Enables touch on platforms which do not support them.
 type EmulationSetTouchEmulationEnabled struct {
-
 	// Enabled Whether the touch event emulation should be enabled.
 	Enabled bool `json:"enabled"`
 
@@ -581,7 +554,6 @@ func (m EmulationSetTouchEmulationEnabled) Call(c Client) error {
 // EmulationSetVirtualTimePolicy (experimental) Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
 // the current virtual time policy.  Note this supersedes any previous time budget.
 type EmulationSetVirtualTimePolicy struct {
-
 	// Policy ...
 	Policy EmulationVirtualTimePolicy `json:"policy"`
 
@@ -608,14 +580,12 @@ func (m EmulationSetVirtualTimePolicy) Call(c Client) (*EmulationSetVirtualTimeP
 
 // EmulationSetVirtualTimePolicyResult (experimental) ...
 type EmulationSetVirtualTimePolicyResult struct {
-
 	// VirtualTimeTicksBase Absolute timestamp at which virtual time was first enabled (up time in milliseconds).
 	VirtualTimeTicksBase float64 `json:"virtualTimeTicksBase"`
 }
 
 // EmulationSetLocaleOverride (experimental) Overrides default host system locale with the specified one.
 type EmulationSetLocaleOverride struct {
-
 	// Locale (optional) ICU style C locale (e.g. "en_US"). If not specified or empty, disables the override and
 	// restores default host system locale.
 	Locale string `json:"locale,omitempty"`
@@ -631,7 +601,6 @@ func (m EmulationSetLocaleOverride) Call(c Client) error {
 
 // EmulationSetTimezoneOverride (experimental) Overrides default host system timezone with the specified one.
 type EmulationSetTimezoneOverride struct {
-
 	// TimezoneID The timezone identifier. If empty, disables the override and
 	// restores default host system timezone.
 	TimezoneID string `json:"timezoneId"`
@@ -649,7 +618,6 @@ func (m EmulationSetTimezoneOverride) Call(c Client) error {
 // (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported
 // on Android.
 type EmulationSetVisibleSize struct {
-
 	// Width Frame width (DIP).
 	Width int `json:"width"`
 
@@ -667,7 +635,6 @@ func (m EmulationSetVisibleSize) Call(c Client) error {
 
 // EmulationSetDisabledImageTypes (experimental) ...
 type EmulationSetDisabledImageTypes struct {
-
 	// ImageTypes Image types to disable.
 	ImageTypes []EmulationDisabledImageType `json:"imageTypes"`
 }
@@ -682,7 +649,6 @@ func (m EmulationSetDisabledImageTypes) Call(c Client) error {
 
 // EmulationSetHardwareConcurrencyOverride (experimental) ...
 type EmulationSetHardwareConcurrencyOverride struct {
-
 	// HardwareConcurrency Hardware concurrency to report
 	HardwareConcurrency int `json:"hardwareConcurrency"`
 }
@@ -699,7 +665,6 @@ func (m EmulationSetHardwareConcurrencyOverride) Call(c Client) error {
 
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
 type EmulationSetUserAgentOverride struct {
-
 	// UserAgent User agent to use.
 	UserAgent string `json:"userAgent"`
 
@@ -723,7 +688,6 @@ func (m EmulationSetUserAgentOverride) Call(c Client) error {
 
 // EmulationSetAutomationOverride (experimental) Allows overriding the automation flag.
 type EmulationSetAutomationOverride struct {
-
 	// Enabled Whether the override should be enabled.
 	Enabled bool `json:"enabled"`
 }
@@ -737,8 +701,7 @@ func (m EmulationSetAutomationOverride) Call(c Client) error {
 }
 
 // EmulationVirtualTimeBudgetExpired (experimental) Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
-type EmulationVirtualTimeBudgetExpired struct {
-}
+type EmulationVirtualTimeBudgetExpired struct{}
 
 // ProtoEvent name
 func (evt EmulationVirtualTimeBudgetExpired) ProtoEvent() string {

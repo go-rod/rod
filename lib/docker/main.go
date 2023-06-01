@@ -94,7 +94,6 @@ func login() {
 var headSha = strings.TrimSpace(utils.ExecLine(false, "git", "rev-parse", "HEAD"))
 
 func description(dev bool) string {
-
 	f := "Dockerfile"
 	if dev {
 		f = "dev." + f

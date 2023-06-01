@@ -33,7 +33,7 @@ var LogDir = slash(fmt.Sprintf("tmp/cdp-log/%s", time.Now().Format("2006-01-02_1
 func init() {
 	got.DefaultFlags("timeout=5m", "run=/")
 
-	utils.E(os.MkdirAll(slash("tmp/cdp-log"), 0755))
+	utils.E(os.MkdirAll(slash("tmp/cdp-log"), 0o755))
 
 	launcher.NewBrowser().MustGet() // preload browser to local
 }
@@ -253,7 +253,7 @@ func newMockClient(u string) *MockClient {
 	id := fmt.Sprintf("%02d", atomic.AddInt32(&mockClientCount, 1))
 
 	// create init log file
-	utils.E(os.MkdirAll(filepath.Join(LogDir, id), 0755))
+	utils.E(os.MkdirAll(filepath.Join(LogDir, id), 0o755))
 	f, err := os.Create(filepath.Join(LogDir, id, "_.log"))
 	log := log.New(f, "", log.Ltime)
 	utils.E(err)

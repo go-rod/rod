@@ -35,7 +35,6 @@ const (
 
 // BrowserBounds (experimental) Browser window bounds information
 type BrowserBounds struct {
-
 	// Left (optional) The offset from the left edge of the screen to the window in pixels.
 	Left *int `json:"left,omitempty"`
 
@@ -155,7 +154,6 @@ const (
 // BrowserPermissionDescriptor (experimental) Definition of PermissionDescriptor defined in the Permissions API:
 // https://w3c.github.io/permissions/#dictdef-permissiondescriptor.
 type BrowserPermissionDescriptor struct {
-
 	// Name Name of permission.
 	// See https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl for valid permission names.
 	Name string `json:"name"`
@@ -187,7 +185,6 @@ const (
 
 // BrowserBucket (experimental) Chrome histogram bucket.
 type BrowserBucket struct {
-
 	// Low Minimum value (inclusive).
 	Low int `json:"low"`
 
@@ -200,7 +197,6 @@ type BrowserBucket struct {
 
 // BrowserHistogram (experimental) Chrome histogram.
 type BrowserHistogram struct {
-
 	// Name Name.
 	Name string `json:"name"`
 
@@ -216,7 +212,6 @@ type BrowserHistogram struct {
 
 // BrowserSetPermission (experimental) Set permission settings for given origin.
 type BrowserSetPermission struct {
-
 	// Permission Descriptor of permission to override.
 	Permission *BrowserPermissionDescriptor `json:"permission"`
 
@@ -240,7 +235,6 @@ func (m BrowserSetPermission) Call(c Client) error {
 
 // BrowserGrantPermissions (experimental) Grant specific permissions to the given origin and reject all others.
 type BrowserGrantPermissions struct {
-
 	// Permissions ...
 	Permissions []BrowserPermissionType `json:"permissions"`
 
@@ -261,7 +255,6 @@ func (m BrowserGrantPermissions) Call(c Client) error {
 
 // BrowserResetPermissions (experimental) Reset all permission management for all origins.
 type BrowserResetPermissions struct {
-
 	// BrowserContextID (optional) BrowserContext to reset permissions. When omitted, default browser context is used.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
@@ -293,7 +286,6 @@ const (
 
 // BrowserSetDownloadBehavior (experimental) Set the behavior when downloading a file.
 type BrowserSetDownloadBehavior struct {
-
 	// Behavior Whether to allow all or deny all download requests, or use default Chrome behavior if
 	// available (otherwise deny). |allowAndName| allows download and names files according to
 	// their dowmload guids.
@@ -320,7 +312,6 @@ func (m BrowserSetDownloadBehavior) Call(c Client) error {
 
 // BrowserCancelDownload (experimental) Cancel a download if in progress
 type BrowserCancelDownload struct {
-
 	// GUID Global unique identifier of the download.
 	GUID string `json:"guid"`
 
@@ -337,8 +328,7 @@ func (m BrowserCancelDownload) Call(c Client) error {
 }
 
 // BrowserClose Close browser gracefully.
-type BrowserClose struct {
-}
+type BrowserClose struct{}
 
 // ProtoReq name
 func (m BrowserClose) ProtoReq() string { return "Browser.close" }
@@ -349,8 +339,7 @@ func (m BrowserClose) Call(c Client) error {
 }
 
 // BrowserCrash (experimental) Crashes browser on the main thread.
-type BrowserCrash struct {
-}
+type BrowserCrash struct{}
 
 // ProtoReq name
 func (m BrowserCrash) ProtoReq() string { return "Browser.crash" }
@@ -361,8 +350,7 @@ func (m BrowserCrash) Call(c Client) error {
 }
 
 // BrowserCrashGpuProcess (experimental) Crashes GPU process.
-type BrowserCrashGpuProcess struct {
-}
+type BrowserCrashGpuProcess struct{}
 
 // ProtoReq name
 func (m BrowserCrashGpuProcess) ProtoReq() string { return "Browser.crashGpuProcess" }
@@ -373,8 +361,7 @@ func (m BrowserCrashGpuProcess) Call(c Client) error {
 }
 
 // BrowserGetVersion Returns version information.
-type BrowserGetVersion struct {
-}
+type BrowserGetVersion struct{}
 
 // ProtoReq name
 func (m BrowserGetVersion) ProtoReq() string { return "Browser.getVersion" }
@@ -387,7 +374,6 @@ func (m BrowserGetVersion) Call(c Client) (*BrowserGetVersionResult, error) {
 
 // BrowserGetVersionResult ...
 type BrowserGetVersionResult struct {
-
 	// ProtocolVersion Protocol version.
 	ProtocolVersion string `json:"protocolVersion"`
 
@@ -406,8 +392,7 @@ type BrowserGetVersionResult struct {
 
 // BrowserGetBrowserCommandLine (experimental) Returns the command line switches for the browser process if, and only if
 // --enable-automation is on the commandline.
-type BrowserGetBrowserCommandLine struct {
-}
+type BrowserGetBrowserCommandLine struct{}
 
 // ProtoReq name
 func (m BrowserGetBrowserCommandLine) ProtoReq() string { return "Browser.getBrowserCommandLine" }
@@ -420,14 +405,12 @@ func (m BrowserGetBrowserCommandLine) Call(c Client) (*BrowserGetBrowserCommandL
 
 // BrowserGetBrowserCommandLineResult (experimental) ...
 type BrowserGetBrowserCommandLineResult struct {
-
 	// Arguments Commandline parameters
 	Arguments []string `json:"arguments"`
 }
 
 // BrowserGetHistograms (experimental) Get Chrome histograms.
 type BrowserGetHistograms struct {
-
 	// Query (optional) Requested substring in name. Only histograms which have query as a
 	// substring in their name are extracted. An empty or absent query returns
 	// all histograms.
@@ -448,14 +431,12 @@ func (m BrowserGetHistograms) Call(c Client) (*BrowserGetHistogramsResult, error
 
 // BrowserGetHistogramsResult (experimental) ...
 type BrowserGetHistogramsResult struct {
-
 	// Histograms Histograms.
 	Histograms []*BrowserHistogram `json:"histograms"`
 }
 
 // BrowserGetHistogram (experimental) Get a Chrome histogram by name.
 type BrowserGetHistogram struct {
-
 	// Name Requested histogram name.
 	Name string `json:"name"`
 
@@ -474,14 +455,12 @@ func (m BrowserGetHistogram) Call(c Client) (*BrowserGetHistogramResult, error) 
 
 // BrowserGetHistogramResult (experimental) ...
 type BrowserGetHistogramResult struct {
-
 	// Histogram Histogram.
 	Histogram *BrowserHistogram `json:"histogram"`
 }
 
 // BrowserGetWindowBounds (experimental) Get position and size of the browser window.
 type BrowserGetWindowBounds struct {
-
 	// WindowID Browser window id.
 	WindowID BrowserWindowID `json:"windowId"`
 }
@@ -497,7 +476,6 @@ func (m BrowserGetWindowBounds) Call(c Client) (*BrowserGetWindowBoundsResult, e
 
 // BrowserGetWindowBoundsResult (experimental) ...
 type BrowserGetWindowBoundsResult struct {
-
 	// Bounds Bounds information of the window. When window state is 'minimized', the restored window
 	// position and size are returned.
 	Bounds *BrowserBounds `json:"bounds"`
@@ -505,7 +483,6 @@ type BrowserGetWindowBoundsResult struct {
 
 // BrowserGetWindowForTarget (experimental) Get the browser window that contains the devtools target.
 type BrowserGetWindowForTarget struct {
-
 	// TargetID (optional) Devtools agent host id. If called as a part of the session, associated targetId is used.
 	TargetID TargetTargetID `json:"targetId,omitempty"`
 }
@@ -521,7 +498,6 @@ func (m BrowserGetWindowForTarget) Call(c Client) (*BrowserGetWindowForTargetRes
 
 // BrowserGetWindowForTargetResult (experimental) ...
 type BrowserGetWindowForTargetResult struct {
-
 	// WindowID Browser window id.
 	WindowID BrowserWindowID `json:"windowId"`
 
@@ -532,7 +508,6 @@ type BrowserGetWindowForTargetResult struct {
 
 // BrowserSetWindowBounds (experimental) Set position and/or size of the browser window.
 type BrowserSetWindowBounds struct {
-
 	// WindowID Browser window id.
 	WindowID BrowserWindowID `json:"windowId"`
 
@@ -551,7 +526,6 @@ func (m BrowserSetWindowBounds) Call(c Client) error {
 
 // BrowserSetDockTile (experimental) Set dock tile details, platform-specific.
 type BrowserSetDockTile struct {
-
 	// BadgeLabel (optional) ...
 	BadgeLabel string `json:"badgeLabel,omitempty"`
 
@@ -569,7 +543,6 @@ func (m BrowserSetDockTile) Call(c Client) error {
 
 // BrowserExecuteBrowserCommand (experimental) Invoke custom browser commands used by telemetry.
 type BrowserExecuteBrowserCommand struct {
-
 	// CommandID ...
 	CommandID BrowserBrowserCommandID `json:"commandId"`
 }
@@ -584,7 +557,6 @@ func (m BrowserExecuteBrowserCommand) Call(c Client) error {
 
 // BrowserDownloadWillBegin (experimental) Fired when page is about to start a download.
 type BrowserDownloadWillBegin struct {
-
 	// FrameID Id of the frame that caused the download to begin.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -619,7 +591,6 @@ const (
 
 // BrowserDownloadProgress (experimental) Fired when download makes progress. Last call has |done| == true.
 type BrowserDownloadProgress struct {
-
 	// GUID Global unique identifier of the download.
 	GUID string `json:"guid"`
 

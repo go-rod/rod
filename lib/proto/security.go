@@ -53,7 +53,6 @@ const (
 
 // SecurityCertificateSecurityState (experimental) Details about the security state of the page certificate.
 type SecurityCertificateSecurityState struct {
-
 	// Protocol Protocol name (e.g. "TLS 1.2" or "QUIC").
 	Protocol string `json:"protocol"`
 
@@ -122,7 +121,6 @@ const (
 
 // SecuritySafetyTipInfo (experimental) ...
 type SecuritySafetyTipInfo struct {
-
 	// SafetyTipStatus Describes whether the page triggers any safety tips or reputation warnings. Default is unknown.
 	SafetyTipStatus SecuritySafetyTipStatus `json:"safetyTipStatus"`
 
@@ -132,7 +130,6 @@ type SecuritySafetyTipInfo struct {
 
 // SecurityVisibleSecurityState (experimental) Security state information about the page.
 type SecurityVisibleSecurityState struct {
-
 	// SecurityState The security level of the page.
 	SecurityState SecuritySecurityState `json:"securityState"`
 
@@ -148,7 +145,6 @@ type SecurityVisibleSecurityState struct {
 
 // SecuritySecurityStateExplanation An explanation of an factor contributing to the security state.
 type SecuritySecurityStateExplanation struct {
-
 	// SecurityState Security state representing the severity of the factor being explained.
 	SecurityState SecuritySecurityState `json:"securityState"`
 
@@ -173,7 +169,6 @@ type SecuritySecurityStateExplanation struct {
 
 // SecurityInsecureContentStatus (deprecated) Information about insecure content on the page.
 type SecurityInsecureContentStatus struct {
-
 	// RanMixedContent Always false.
 	RanMixedContent bool `json:"ranMixedContent"`
 
@@ -209,8 +204,7 @@ const (
 )
 
 // SecurityDisable Disables tracking security state changes.
-type SecurityDisable struct {
-}
+type SecurityDisable struct{}
 
 // ProtoReq name
 func (m SecurityDisable) ProtoReq() string { return "Security.disable" }
@@ -221,8 +215,7 @@ func (m SecurityDisable) Call(c Client) error {
 }
 
 // SecurityEnable Enables tracking security state changes.
-type SecurityEnable struct {
-}
+type SecurityEnable struct{}
 
 // ProtoReq name
 func (m SecurityEnable) ProtoReq() string { return "Security.enable" }
@@ -234,7 +227,6 @@ func (m SecurityEnable) Call(c Client) error {
 
 // SecuritySetIgnoreCertificateErrors (experimental) Enable/disable whether all certificate errors should be ignored.
 type SecuritySetIgnoreCertificateErrors struct {
-
 	// Ignore If true, all certificate errors will be ignored.
 	Ignore bool `json:"ignore"`
 }
@@ -251,7 +243,6 @@ func (m SecuritySetIgnoreCertificateErrors) Call(c Client) error {
 
 // SecurityHandleCertificateError (deprecated) Handles a certificate error that fired a certificateError event.
 type SecurityHandleCertificateError struct {
-
 	// EventID The ID of the event.
 	EventID int `json:"eventId"`
 
@@ -270,7 +261,6 @@ func (m SecurityHandleCertificateError) Call(c Client) error {
 // SecuritySetOverrideCertificateErrors (deprecated) Enable/disable overriding certificate errors. If enabled, all certificate error events need to
 // be handled by the DevTools client and should be answered with `handleCertificateError` commands.
 type SecuritySetOverrideCertificateErrors struct {
-
 	// Override If true, certificate errors will be overridden.
 	Override bool `json:"override"`
 }
@@ -290,7 +280,6 @@ func (m SecuritySetOverrideCertificateErrors) Call(c Client) error {
 // certificate error has been allowed internally. Only one client per target should override
 // certificate errors at the same time.
 type SecurityCertificateError struct {
-
 	// EventID The ID of the event.
 	EventID int `json:"eventId"`
 
@@ -308,7 +297,6 @@ func (evt SecurityCertificateError) ProtoEvent() string {
 
 // SecurityVisibleSecurityStateChanged (experimental) The security state of the page changed.
 type SecurityVisibleSecurityStateChanged struct {
-
 	// VisibleSecurityState Security state information about the page.
 	VisibleSecurityState *SecurityVisibleSecurityState `json:"visibleSecurityState"`
 }
@@ -320,7 +308,6 @@ func (evt SecurityVisibleSecurityStateChanged) ProtoEvent() string {
 
 // SecuritySecurityStateChanged (deprecated) The security state of the page changed. No longer being sent.
 type SecuritySecurityStateChanged struct {
-
 	// SecurityState Security state.
 	SecurityState SecuritySecurityState `json:"securityState"`
 

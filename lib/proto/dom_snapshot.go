@@ -12,7 +12,6 @@ This domain facilitates obtaining document snapshots with DOM, layout, and style
 
 // DOMSnapshotDOMNode A Node in the DOM tree.
 type DOMSnapshotDOMNode struct {
-
 	// NodeType `Node`'s nodeType.
 	NodeType int `json:"nodeType"`
 
@@ -107,7 +106,6 @@ type DOMSnapshotDOMNode struct {
 // DOMSnapshotInlineTextBox Details of post layout rendered text positions. The exact layout should not be regarded as
 // stable and may change between versions.
 type DOMSnapshotInlineTextBox struct {
-
 	// BoundingBox The bounding box in document coordinates. Note that scroll offset of the document is ignored.
 	BoundingBox *DOMRect `json:"boundingBox"`
 
@@ -122,7 +120,6 @@ type DOMSnapshotInlineTextBox struct {
 
 // DOMSnapshotLayoutTreeNode Details of an element in the DOM tree with a LayoutObject.
 type DOMSnapshotLayoutTreeNode struct {
-
 	// DomNodeIndex The index of the related DOM node in the `domNodes` array returned by `getSnapshot`.
 	DomNodeIndex int `json:"domNodeIndex"`
 
@@ -149,14 +146,12 @@ type DOMSnapshotLayoutTreeNode struct {
 
 // DOMSnapshotComputedStyle A subset of the full ComputedStyle as defined by the request whitelist.
 type DOMSnapshotComputedStyle struct {
-
 	// Properties Name/value pairs of computed style properties.
 	Properties []*DOMSnapshotNameValue `json:"properties"`
 }
 
 // DOMSnapshotNameValue A name/value pair.
 type DOMSnapshotNameValue struct {
-
 	// Name Attribute/property name.
 	Name string `json:"name"`
 
@@ -172,7 +167,6 @@ type DOMSnapshotArrayOfStrings []DOMSnapshotStringIndex
 
 // DOMSnapshotRareStringData Data that is only present on rare nodes.
 type DOMSnapshotRareStringData struct {
-
 	// Index ...
 	Index []int `json:"index"`
 
@@ -182,14 +176,12 @@ type DOMSnapshotRareStringData struct {
 
 // DOMSnapshotRareBooleanData ...
 type DOMSnapshotRareBooleanData struct {
-
 	// Index ...
 	Index []int `json:"index"`
 }
 
 // DOMSnapshotRareIntegerData ...
 type DOMSnapshotRareIntegerData struct {
-
 	// Index ...
 	Index []int `json:"index"`
 
@@ -202,7 +194,6 @@ type DOMSnapshotRectangle []float64
 
 // DOMSnapshotDocumentSnapshot Document snapshot.
 type DOMSnapshotDocumentSnapshot struct {
-
 	// DocumentURL Document URL that `Document` or `FrameOwner` node points to.
 	DocumentURL DOMSnapshotStringIndex `json:"documentURL"`
 
@@ -251,7 +242,6 @@ type DOMSnapshotDocumentSnapshot struct {
 
 // DOMSnapshotNodeTreeSnapshot Table containing nodes.
 type DOMSnapshotNodeTreeSnapshot struct {
-
 	// ParentIndex (optional) Parent node index.
 	ParentIndex []int `json:"parentIndex,omitempty"`
 
@@ -309,7 +299,6 @@ type DOMSnapshotNodeTreeSnapshot struct {
 
 // DOMSnapshotLayoutTreeSnapshot Table of details of an element in the DOM tree with a LayoutObject.
 type DOMSnapshotLayoutTreeSnapshot struct {
-
 	// NodeIndex Index of the corresponding node in the `NodeTreeSnapshot` array returned by `captureSnapshot`.
 	NodeIndex []int `json:"nodeIndex"`
 
@@ -349,7 +338,6 @@ type DOMSnapshotLayoutTreeSnapshot struct {
 // DOMSnapshotTextBoxSnapshot Table of details of the post layout rendered text positions. The exact layout should not be regarded as
 // stable and may change between versions.
 type DOMSnapshotTextBoxSnapshot struct {
-
 	// LayoutIndex Index of the layout tree node that owns this box collection.
 	LayoutIndex []int `json:"layoutIndex"`
 
@@ -366,8 +354,7 @@ type DOMSnapshotTextBoxSnapshot struct {
 }
 
 // DOMSnapshotDisable Disables DOM snapshot agent for the given page.
-type DOMSnapshotDisable struct {
-}
+type DOMSnapshotDisable struct{}
 
 // ProtoReq name
 func (m DOMSnapshotDisable) ProtoReq() string { return "DOMSnapshot.disable" }
@@ -378,8 +365,7 @@ func (m DOMSnapshotDisable) Call(c Client) error {
 }
 
 // DOMSnapshotEnable Enables DOM snapshot agent for the given page.
-type DOMSnapshotEnable struct {
-}
+type DOMSnapshotEnable struct{}
 
 // ProtoReq name
 func (m DOMSnapshotEnable) ProtoReq() string { return "DOMSnapshot.enable" }
@@ -394,7 +380,6 @@ func (m DOMSnapshotEnable) Call(c Client) error {
 // white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
 // flattened.
 type DOMSnapshotGetSnapshot struct {
-
 	// ComputedStyleWhitelist Whitelist of computed styles to return.
 	ComputedStyleWhitelist []string `json:"computedStyleWhitelist"`
 
@@ -419,7 +404,6 @@ func (m DOMSnapshotGetSnapshot) Call(c Client) (*DOMSnapshotGetSnapshotResult, e
 
 // DOMSnapshotGetSnapshotResult (deprecated) ...
 type DOMSnapshotGetSnapshotResult struct {
-
 	// DomNodes The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.
 	DomNodes []*DOMSnapshotDOMNode `json:"domNodes"`
 
@@ -435,7 +419,6 @@ type DOMSnapshotGetSnapshotResult struct {
 // white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
 // flattened.
 type DOMSnapshotCaptureSnapshot struct {
-
 	// ComputedStyles Whitelist of computed styles to return.
 	ComputedStyles []string `json:"computedStyles"`
 
@@ -467,7 +450,6 @@ func (m DOMSnapshotCaptureSnapshot) Call(c Client) (*DOMSnapshotCaptureSnapshotR
 
 // DOMSnapshotCaptureSnapshotResult ...
 type DOMSnapshotCaptureSnapshotResult struct {
-
 	// Documents The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.
 	Documents []*DOMSnapshotDocumentSnapshot `json:"documents"`
 

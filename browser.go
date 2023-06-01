@@ -23,8 +23,10 @@ import (
 )
 
 // Browser implements these interfaces
-var _ proto.Client = &Browser{}
-var _ proto.Contextable = &Browser{}
+var (
+	_ proto.Client      = &Browser{}
+	_ proto.Contextable = &Browser{}
+)
 
 // Browser represents the browser.
 // It doesn't depends on file system, it should work with remote browser seamlessly.

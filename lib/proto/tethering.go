@@ -12,7 +12,6 @@ The Tethering domain defines methods and events for browser port binding.
 
 // TetheringBind Request browser port binding.
 type TetheringBind struct {
-
 	// Port Port number to bind.
 	Port int `json:"port"`
 }
@@ -27,7 +26,6 @@ func (m TetheringBind) Call(c Client) error {
 
 // TetheringUnbind Request browser port unbinding.
 type TetheringUnbind struct {
-
 	// Port Port number to unbind.
 	Port int `json:"port"`
 }
@@ -42,7 +40,6 @@ func (m TetheringUnbind) Call(c Client) error {
 
 // TetheringAccepted Informs that port was successfully bound and got a specified connection id.
 type TetheringAccepted struct {
-
 	// Port Port number that was successfully bound.
 	Port int `json:"port"`
 

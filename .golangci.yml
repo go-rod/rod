@@ -3,7 +3,7 @@ run:
 
 linters:
   enable:
-    - gofmt
+    - gofumpt
     - revive
     - gocyclo
     - bodyclose
@@ -19,7 +19,13 @@ issues:
     - path: lib/launcher/os_unix.go
       source: "// \\+build !windows"
       linters:
-        - gofmt
+        - gofumpt
+
+    # To support old golang version
+    - path: lib/launcher/os_windows.go
+      source: "// \\+build windows"
+      linters:
+        - gofumpt
 
     - source: 'io/ioutil'
       linters:

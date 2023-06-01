@@ -70,7 +70,6 @@ const (
 
 // ConsoleConsoleMessage Console message.
 type ConsoleConsoleMessage struct {
-
 	// Source Message source.
 	Source ConsoleConsoleMessageSource `json:"source"`
 
@@ -91,8 +90,7 @@ type ConsoleConsoleMessage struct {
 }
 
 // ConsoleClearMessages Does nothing.
-type ConsoleClearMessages struct {
-}
+type ConsoleClearMessages struct{}
 
 // ProtoReq name
 func (m ConsoleClearMessages) ProtoReq() string { return "Console.clearMessages" }
@@ -103,8 +101,7 @@ func (m ConsoleClearMessages) Call(c Client) error {
 }
 
 // ConsoleDisable Disables console domain, prevents further console messages from being reported to the client.
-type ConsoleDisable struct {
-}
+type ConsoleDisable struct{}
 
 // ProtoReq name
 func (m ConsoleDisable) ProtoReq() string { return "Console.disable" }
@@ -116,8 +113,7 @@ func (m ConsoleDisable) Call(c Client) error {
 
 // ConsoleEnable Enables console domain, sends the messages collected so far to the client by means of the
 // `messageAdded` notification.
-type ConsoleEnable struct {
-}
+type ConsoleEnable struct{}
 
 // ProtoReq name
 func (m ConsoleEnable) ProtoReq() string { return "Console.enable" }
@@ -129,7 +125,6 @@ func (m ConsoleEnable) Call(c Client) error {
 
 // ConsoleMessageAdded Issued when new console message is added.
 type ConsoleMessageAdded struct {
-
 	// Message Console message that has been added.
 	Message *ConsoleConsoleMessage `json:"message"`
 }

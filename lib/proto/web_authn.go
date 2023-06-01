@@ -58,7 +58,6 @@ const (
 
 // WebAuthnVirtualAuthenticatorOptions ...
 type WebAuthnVirtualAuthenticatorOptions struct {
-
 	// Protocol ...
 	Protocol WebAuthnAuthenticatorProtocol `json:"protocol"`
 
@@ -105,7 +104,6 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 
 // WebAuthnCredential ...
 type WebAuthnCredential struct {
-
 	// CredentialID ...
 	CredentialID []byte `json:"credentialId"`
 
@@ -136,7 +134,6 @@ type WebAuthnCredential struct {
 // WebAuthnEnable Enable the WebAuthn domain and start intercepting credential storage and
 // retrieval with a virtual authenticator.
 type WebAuthnEnable struct {
-
 	// EnableUI (optional) Whether to enable the WebAuthn user interface. Enabling the UI is
 	// recommended for debugging and demo purposes, as it is closer to the real
 	// experience. Disabling the UI is recommended for automated testing.
@@ -154,8 +151,7 @@ func (m WebAuthnEnable) Call(c Client) error {
 }
 
 // WebAuthnDisable Disable the WebAuthn domain.
-type WebAuthnDisable struct {
-}
+type WebAuthnDisable struct{}
 
 // ProtoReq name
 func (m WebAuthnDisable) ProtoReq() string { return "WebAuthn.disable" }
@@ -167,7 +163,6 @@ func (m WebAuthnDisable) Call(c Client) error {
 
 // WebAuthnAddVirtualAuthenticator Creates and adds a virtual authenticator.
 type WebAuthnAddVirtualAuthenticator struct {
-
 	// Options ...
 	Options *WebAuthnVirtualAuthenticatorOptions `json:"options"`
 }
@@ -183,14 +178,12 @@ func (m WebAuthnAddVirtualAuthenticator) Call(c Client) (*WebAuthnAddVirtualAuth
 
 // WebAuthnAddVirtualAuthenticatorResult ...
 type WebAuthnAddVirtualAuthenticatorResult struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
 // WebAuthnSetResponseOverrideBits Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not present.
 type WebAuthnSetResponseOverrideBits struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -217,7 +210,6 @@ func (m WebAuthnSetResponseOverrideBits) Call(c Client) error {
 
 // WebAuthnRemoveVirtualAuthenticator Removes the given authenticator.
 type WebAuthnRemoveVirtualAuthenticator struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
@@ -234,7 +226,6 @@ func (m WebAuthnRemoveVirtualAuthenticator) Call(c Client) error {
 
 // WebAuthnAddCredential Adds the credential to the specified authenticator.
 type WebAuthnAddCredential struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -253,7 +244,6 @@ func (m WebAuthnAddCredential) Call(c Client) error {
 // WebAuthnGetCredential Returns a single credential stored in the given virtual authenticator that
 // matches the credential ID.
 type WebAuthnGetCredential struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -272,14 +262,12 @@ func (m WebAuthnGetCredential) Call(c Client) (*WebAuthnGetCredentialResult, err
 
 // WebAuthnGetCredentialResult ...
 type WebAuthnGetCredentialResult struct {
-
 	// Credential ...
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
 // WebAuthnGetCredentials Returns all the credentials stored in the given virtual authenticator.
 type WebAuthnGetCredentials struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
@@ -295,14 +283,12 @@ func (m WebAuthnGetCredentials) Call(c Client) (*WebAuthnGetCredentialsResult, e
 
 // WebAuthnGetCredentialsResult ...
 type WebAuthnGetCredentialsResult struct {
-
 	// Credentials ...
 	Credentials []*WebAuthnCredential `json:"credentials"`
 }
 
 // WebAuthnRemoveCredential Removes a credential from the authenticator.
 type WebAuthnRemoveCredential struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -320,7 +306,6 @@ func (m WebAuthnRemoveCredential) Call(c Client) error {
 
 // WebAuthnClearCredentials Clears all the credentials from the specified device.
 type WebAuthnClearCredentials struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
@@ -336,7 +321,6 @@ func (m WebAuthnClearCredentials) Call(c Client) error {
 // WebAuthnSetUserVerified Sets whether User Verification succeeds or fails for an authenticator.
 // The default is true.
 type WebAuthnSetUserVerified struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -355,7 +339,6 @@ func (m WebAuthnSetUserVerified) Call(c Client) error {
 // WebAuthnSetAutomaticPresenceSimulation Sets whether tests of user presence will succeed immediately (if true) or fail to resolve (if false) for an authenticator.
 // The default is true.
 type WebAuthnSetAutomaticPresenceSimulation struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -375,7 +358,6 @@ func (m WebAuthnSetAutomaticPresenceSimulation) Call(c Client) error {
 
 // WebAuthnCredentialAdded Triggered when a credential is added to an authenticator.
 type WebAuthnCredentialAdded struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 
@@ -390,7 +372,6 @@ func (evt WebAuthnCredentialAdded) ProtoEvent() string {
 
 // WebAuthnCredentialAsserted Triggered when a credential is used in a webauthn assertion.
 type WebAuthnCredentialAsserted struct {
-
 	// AuthenticatorID ...
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 

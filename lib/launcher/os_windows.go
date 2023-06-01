@@ -23,6 +23,6 @@ func terminateProcess(pid int) {
 		return
 	}
 
-	syscall.TerminateProcess(handle, 0)
-	syscall.CloseHandle(handle)
+	_ = syscall.TerminateProcess(handle, 0)
+	_ = syscall.CloseHandle(handle)
 }

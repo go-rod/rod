@@ -131,7 +131,6 @@ const (
 
 // AccessibilityAXValueSource A single source for a computed AX property.
 type AccessibilityAXValueSource struct {
-
 	// Type What type of source this is.
 	Type AccessibilityAXValueSourceType `json:"type"`
 
@@ -162,7 +161,6 @@ type AccessibilityAXValueSource struct {
 
 // AccessibilityAXRelatedNode ...
 type AccessibilityAXRelatedNode struct {
-
 	// BackendDOMNodeID The BackendNodeId of the related DOM node.
 	BackendDOMNodeID DOMBackendNodeID `json:"backendDOMNodeId"`
 
@@ -175,7 +173,6 @@ type AccessibilityAXRelatedNode struct {
 
 // AccessibilityAXProperty ...
 type AccessibilityAXProperty struct {
-
 	// Name The name of this property.
 	Name AccessibilityAXPropertyName `json:"name"`
 
@@ -185,7 +182,6 @@ type AccessibilityAXProperty struct {
 
 // AccessibilityAXValue A single computed AX property.
 type AccessibilityAXValue struct {
-
 	// Type The type of this value.
 	Type AccessibilityAXValueType `json:"type"`
 
@@ -328,7 +324,6 @@ const (
 
 // AccessibilityAXNode A node in the accessibility tree.
 type AccessibilityAXNode struct {
-
 	// NodeID Unique identifier for this node.
 	NodeID AccessibilityAXNodeID `json:"nodeId"`
 
@@ -370,8 +365,7 @@ type AccessibilityAXNode struct {
 }
 
 // AccessibilityDisable Disables the accessibility domain.
-type AccessibilityDisable struct {
-}
+type AccessibilityDisable struct{}
 
 // ProtoReq name
 func (m AccessibilityDisable) ProtoReq() string { return "Accessibility.disable" }
@@ -383,8 +377,7 @@ func (m AccessibilityDisable) Call(c Client) error {
 
 // AccessibilityEnable Enables the accessibility domain which causes `AXNodeId`s to remain consistent between method calls.
 // This turns on accessibility for the page, which can impact performance until accessibility is disabled.
-type AccessibilityEnable struct {
-}
+type AccessibilityEnable struct{}
 
 // ProtoReq name
 func (m AccessibilityEnable) ProtoReq() string { return "Accessibility.enable" }
@@ -396,7 +389,6 @@ func (m AccessibilityEnable) Call(c Client) error {
 
 // AccessibilityGetPartialAXTree (experimental) Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
 type AccessibilityGetPartialAXTree struct {
-
 	// NodeID (optional) Identifier of the node to get the partial accessibility tree for.
 	NodeID DOMNodeID `json:"nodeId,omitempty"`
 
@@ -421,7 +413,6 @@ func (m AccessibilityGetPartialAXTree) Call(c Client) (*AccessibilityGetPartialA
 
 // AccessibilityGetPartialAXTreeResult (experimental) ...
 type AccessibilityGetPartialAXTreeResult struct {
-
 	// Nodes The `Accessibility.AXNode` for this DOM node, if it exists, plus its ancestors, siblings and
 	// children, if requested.
 	Nodes []*AccessibilityAXNode `json:"nodes"`
@@ -429,7 +420,6 @@ type AccessibilityGetPartialAXTreeResult struct {
 
 // AccessibilityGetFullAXTree (experimental) Fetches the entire accessibility tree for the root Document
 type AccessibilityGetFullAXTree struct {
-
 	// Depth (optional) The maximum depth at which descendants of the root node should be retrieved.
 	// If omitted, the full tree is returned.
 	Depth *int `json:"depth,omitempty"`
@@ -450,7 +440,6 @@ func (m AccessibilityGetFullAXTree) Call(c Client) (*AccessibilityGetFullAXTreeR
 
 // AccessibilityGetFullAXTreeResult (experimental) ...
 type AccessibilityGetFullAXTreeResult struct {
-
 	// Nodes ...
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
@@ -458,7 +447,6 @@ type AccessibilityGetFullAXTreeResult struct {
 // AccessibilityGetRootAXNode (experimental) Fetches the root node.
 // Requires `enable()` to have been called previously.
 type AccessibilityGetRootAXNode struct {
-
 	// FrameID (optional) The frame in whose document the node resides.
 	// If omitted, the root frame is used.
 	FrameID PageFrameID `json:"frameId,omitempty"`
@@ -475,7 +463,6 @@ func (m AccessibilityGetRootAXNode) Call(c Client) (*AccessibilityGetRootAXNodeR
 
 // AccessibilityGetRootAXNodeResult (experimental) ...
 type AccessibilityGetRootAXNodeResult struct {
-
 	// Node ...
 	Node *AccessibilityAXNode `json:"node"`
 }
@@ -483,7 +470,6 @@ type AccessibilityGetRootAXNodeResult struct {
 // AccessibilityGetAXNodeAndAncestors (experimental) Fetches a node and all ancestors up to and including the root.
 // Requires `enable()` to have been called previously.
 type AccessibilityGetAXNodeAndAncestors struct {
-
 	// NodeID (optional) Identifier of the node to get.
 	NodeID DOMNodeID `json:"nodeId,omitempty"`
 
@@ -507,7 +493,6 @@ func (m AccessibilityGetAXNodeAndAncestors) Call(c Client) (*AccessibilityGetAXN
 
 // AccessibilityGetAXNodeAndAncestorsResult (experimental) ...
 type AccessibilityGetAXNodeAndAncestorsResult struct {
-
 	// Nodes ...
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
@@ -515,7 +500,6 @@ type AccessibilityGetAXNodeAndAncestorsResult struct {
 // AccessibilityGetChildAXNodes (experimental) Fetches a particular accessibility node by AXNodeId.
 // Requires `enable()` to have been called previously.
 type AccessibilityGetChildAXNodes struct {
-
 	// ID ...
 	ID AccessibilityAXNodeID `json:"id"`
 
@@ -535,7 +519,6 @@ func (m AccessibilityGetChildAXNodes) Call(c Client) (*AccessibilityGetChildAXNo
 
 // AccessibilityGetChildAXNodesResult (experimental) ...
 type AccessibilityGetChildAXNodesResult struct {
-
 	// Nodes ...
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }
@@ -546,7 +529,6 @@ type AccessibilityGetChildAXNodesResult struct {
 // node is specified, or the DOM node does not exist, the command returns an error. If neither
 // `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
 type AccessibilityQueryAXTree struct {
-
 	// NodeID (optional) Identifier of the node for the root to query.
 	NodeID DOMNodeID `json:"nodeId,omitempty"`
 
@@ -574,7 +556,6 @@ func (m AccessibilityQueryAXTree) Call(c Client) (*AccessibilityQueryAXTreeResul
 
 // AccessibilityQueryAXTreeResult (experimental) ...
 type AccessibilityQueryAXTreeResult struct {
-
 	// Nodes A list of `Accessibility.AXNode` matching the specified attributes,
 	// including nodes that are ignored for accessibility.
 	Nodes []*AccessibilityAXNode `json:"nodes"`
@@ -583,7 +564,6 @@ type AccessibilityQueryAXTreeResult struct {
 // AccessibilityLoadComplete (experimental) The loadComplete event mirrors the load complete event sent by the browser to assistive
 // technology when the web page has finished loading.
 type AccessibilityLoadComplete struct {
-
 	// Root New document root node.
 	Root *AccessibilityAXNode `json:"root"`
 }
@@ -595,7 +575,6 @@ func (evt AccessibilityLoadComplete) ProtoEvent() string {
 
 // AccessibilityNodesUpdated (experimental) The nodesUpdated event is sent every time a previously requested node has changed the in tree.
 type AccessibilityNodesUpdated struct {
-
 	// Nodes Updated node data.
 	Nodes []*AccessibilityAXNode `json:"nodes"`
 }

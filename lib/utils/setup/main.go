@@ -11,9 +11,15 @@ import (
 func main() {
 	log.Println("setup project...")
 
+	golangDeps()
+
 	nodejsDeps()
 
 	genDockerIgnore()
+}
+
+func golangDeps() {
+	utils.Exec("go install mvdan.cc/gofumpt@latest")
 }
 
 func nodejsDeps() {

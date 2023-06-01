@@ -15,7 +15,6 @@ breakpoint set.
 
 // EventBreakpointsSetInstrumentationBreakpoint Sets breakpoint on particular native event.
 type EventBreakpointsSetInstrumentationBreakpoint struct {
-
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`
 }
@@ -32,7 +31,6 @@ func (m EventBreakpointsSetInstrumentationBreakpoint) Call(c Client) error {
 
 // EventBreakpointsRemoveInstrumentationBreakpoint Removes breakpoint on particular native event.
 type EventBreakpointsRemoveInstrumentationBreakpoint struct {
-
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`
 }

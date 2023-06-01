@@ -13,7 +13,6 @@ type HeapProfilerHeapSnapshotObjectID string
 
 // HeapProfilerSamplingHeapProfileNode Sampling Heap Profile node. Holds callsite information, allocation statistics and child nodes.
 type HeapProfilerSamplingHeapProfileNode struct {
-
 	// CallFrame Function location.
 	CallFrame *RuntimeCallFrame `json:"callFrame"`
 
@@ -29,7 +28,6 @@ type HeapProfilerSamplingHeapProfileNode struct {
 
 // HeapProfilerSamplingHeapProfileSample A single sample from a sampling profile.
 type HeapProfilerSamplingHeapProfileSample struct {
-
 	// Size Allocation size in bytes attributed to the sample.
 	Size float64 `json:"size"`
 
@@ -43,7 +41,6 @@ type HeapProfilerSamplingHeapProfileSample struct {
 
 // HeapProfilerSamplingHeapProfile Sampling profile.
 type HeapProfilerSamplingHeapProfile struct {
-
 	// Head ...
 	Head *HeapProfilerSamplingHeapProfileNode `json:"head"`
 
@@ -54,7 +51,6 @@ type HeapProfilerSamplingHeapProfile struct {
 // HeapProfilerAddInspectedHeapObject Enables console to refer to the node with given id via $x (see Command Line API for more details
 // $x functions).
 type HeapProfilerAddInspectedHeapObject struct {
-
 	// HeapObjectID Heap snapshot object id to be accessible by means of $x command line API.
 	HeapObjectID HeapProfilerHeapSnapshotObjectID `json:"heapObjectId"`
 }
@@ -70,8 +66,7 @@ func (m HeapProfilerAddInspectedHeapObject) Call(c Client) error {
 }
 
 // HeapProfilerCollectGarbage ...
-type HeapProfilerCollectGarbage struct {
-}
+type HeapProfilerCollectGarbage struct{}
 
 // ProtoReq name
 func (m HeapProfilerCollectGarbage) ProtoReq() string { return "HeapProfiler.collectGarbage" }
@@ -82,8 +77,7 @@ func (m HeapProfilerCollectGarbage) Call(c Client) error {
 }
 
 // HeapProfilerDisable ...
-type HeapProfilerDisable struct {
-}
+type HeapProfilerDisable struct{}
 
 // ProtoReq name
 func (m HeapProfilerDisable) ProtoReq() string { return "HeapProfiler.disable" }
@@ -94,8 +88,7 @@ func (m HeapProfilerDisable) Call(c Client) error {
 }
 
 // HeapProfilerEnable ...
-type HeapProfilerEnable struct {
-}
+type HeapProfilerEnable struct{}
 
 // ProtoReq name
 func (m HeapProfilerEnable) ProtoReq() string { return "HeapProfiler.enable" }
@@ -107,7 +100,6 @@ func (m HeapProfilerEnable) Call(c Client) error {
 
 // HeapProfilerGetHeapObjectID ...
 type HeapProfilerGetHeapObjectID struct {
-
 	// ObjectID Identifier of the object to get heap object id for.
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
@@ -123,14 +115,12 @@ func (m HeapProfilerGetHeapObjectID) Call(c Client) (*HeapProfilerGetHeapObjectI
 
 // HeapProfilerGetHeapObjectIDResult ...
 type HeapProfilerGetHeapObjectIDResult struct {
-
 	// HeapSnapshotObjectID Id of the heap snapshot object corresponding to the passed remote object id.
 	HeapSnapshotObjectID HeapProfilerHeapSnapshotObjectID `json:"heapSnapshotObjectId"`
 }
 
 // HeapProfilerGetObjectByHeapObjectID ...
 type HeapProfilerGetObjectByHeapObjectID struct {
-
 	// ObjectID ...
 	ObjectID HeapProfilerHeapSnapshotObjectID `json:"objectId"`
 
@@ -151,14 +141,12 @@ func (m HeapProfilerGetObjectByHeapObjectID) Call(c Client) (*HeapProfilerGetObj
 
 // HeapProfilerGetObjectByHeapObjectIDResult ...
 type HeapProfilerGetObjectByHeapObjectIDResult struct {
-
 	// Result Evaluation result.
 	Result *RuntimeRemoteObject `json:"result"`
 }
 
 // HeapProfilerGetSamplingProfile ...
-type HeapProfilerGetSamplingProfile struct {
-}
+type HeapProfilerGetSamplingProfile struct{}
 
 // ProtoReq name
 func (m HeapProfilerGetSamplingProfile) ProtoReq() string { return "HeapProfiler.getSamplingProfile" }
@@ -171,14 +159,12 @@ func (m HeapProfilerGetSamplingProfile) Call(c Client) (*HeapProfilerGetSampling
 
 // HeapProfilerGetSamplingProfileResult ...
 type HeapProfilerGetSamplingProfileResult struct {
-
 	// Profile Return the sampling profile being collected.
 	Profile *HeapProfilerSamplingHeapProfile `json:"profile"`
 }
 
 // HeapProfilerStartSampling ...
 type HeapProfilerStartSampling struct {
-
 	// SamplingInterval (optional) Average sample interval in bytes. Poisson distribution is used for the intervals. The
 	// default value is 32768 bytes.
 	SamplingInterval *float64 `json:"samplingInterval,omitempty"`
@@ -212,7 +198,6 @@ func (m HeapProfilerStartSampling) Call(c Client) error {
 
 // HeapProfilerStartTrackingHeapObjects ...
 type HeapProfilerStartTrackingHeapObjects struct {
-
 	// TrackAllocations (optional) ...
 	TrackAllocations bool `json:"trackAllocations,omitempty"`
 }
@@ -228,8 +213,7 @@ func (m HeapProfilerStartTrackingHeapObjects) Call(c Client) error {
 }
 
 // HeapProfilerStopSampling ...
-type HeapProfilerStopSampling struct {
-}
+type HeapProfilerStopSampling struct{}
 
 // ProtoReq name
 func (m HeapProfilerStopSampling) ProtoReq() string { return "HeapProfiler.stopSampling" }
@@ -242,14 +226,12 @@ func (m HeapProfilerStopSampling) Call(c Client) (*HeapProfilerStopSamplingResul
 
 // HeapProfilerStopSamplingResult ...
 type HeapProfilerStopSamplingResult struct {
-
 	// Profile Recorded sampling heap profile.
 	Profile *HeapProfilerSamplingHeapProfile `json:"profile"`
 }
 
 // HeapProfilerStopTrackingHeapObjects ...
 type HeapProfilerStopTrackingHeapObjects struct {
-
 	// ReportProgress (optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken
 	// when the tracking is stopped.
 	ReportProgress bool `json:"reportProgress,omitempty"`
@@ -276,7 +258,6 @@ func (m HeapProfilerStopTrackingHeapObjects) Call(c Client) error {
 
 // HeapProfilerTakeHeapSnapshot ...
 type HeapProfilerTakeHeapSnapshot struct {
-
 	// ReportProgress (optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken.
 	ReportProgress bool `json:"reportProgress,omitempty"`
 
@@ -301,7 +282,6 @@ func (m HeapProfilerTakeHeapSnapshot) Call(c Client) error {
 
 // HeapProfilerAddHeapSnapshotChunk ...
 type HeapProfilerAddHeapSnapshotChunk struct {
-
 	// Chunk ...
 	Chunk string `json:"chunk"`
 }
@@ -313,7 +293,6 @@ func (evt HeapProfilerAddHeapSnapshotChunk) ProtoEvent() string {
 
 // HeapProfilerHeapStatsUpdate If heap objects tracking has been started then backend may send update for one or more fragments
 type HeapProfilerHeapStatsUpdate struct {
-
 	// StatsUpdate An array of triplets. Each triplet describes a fragment. The first integer is the fragment
 	// index, the second integer is a total count of objects for the fragment, the third integer is
 	// a total size of the objects for the fragment.
@@ -329,7 +308,6 @@ func (evt HeapProfilerHeapStatsUpdate) ProtoEvent() string {
 // seen object id and corresponding timestamp. If the were changes in the heap since last event
 // then one or more heapStatsUpdate events will be sent before a new lastSeenObjectId event.
 type HeapProfilerLastSeenObjectID struct {
-
 	// LastSeenObjectID ...
 	LastSeenObjectID int `json:"lastSeenObjectId"`
 
@@ -344,7 +322,6 @@ func (evt HeapProfilerLastSeenObjectID) ProtoEvent() string {
 
 // HeapProfilerReportHeapSnapshotProgress ...
 type HeapProfilerReportHeapSnapshotProgress struct {
-
 	// Done ...
 	Done int `json:"done"`
 
@@ -361,8 +338,7 @@ func (evt HeapProfilerReportHeapSnapshotProgress) ProtoEvent() string {
 }
 
 // HeapProfilerResetProfiles ...
-type HeapProfilerResetProfiles struct {
-}
+type HeapProfilerResetProfiles struct{}
 
 // ProtoEvent name
 func (evt HeapProfilerResetProfiles) ProtoEvent() string {

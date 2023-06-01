@@ -58,7 +58,6 @@ const RevisionPlaywright = {{.playwright}}
 	)
 
 	utils.E(utils.OutputFile(filepath.FromSlash("lib/launcher/revision.go"), out))
-
 }
 
 func getList(path string) []string {
