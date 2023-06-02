@@ -79,7 +79,7 @@ func TestSetCookies(t *testing.T) {
 func TestSetBlockedURLs(t *testing.T) {
 	g := setup(t)
 	page := g.newPage()
-	var urlsPattern = []string{}
+	urlsPattern := []string{}
 	page.EnableDomain(proto.NetworkEnable{})
 	page.MustSetBlockedURLs(urlsPattern...)
 	urlsPattern = append(urlsPattern, "*.js")
@@ -520,7 +520,6 @@ func TestPageCaptureDOMSnapshot(t *testing.T) {
 	snapshot, err := timeOutPage.CaptureDOMSnapshot()
 	g.Is(err, context.DeadlineExceeded)
 	g.Nil(snapshot)
-
 }
 
 func TestPageWaitStable(t *testing.T) {

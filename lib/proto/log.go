@@ -81,7 +81,6 @@ const (
 
 // LogLogEntry Log entry.
 type LogLogEntry struct {
-
 	// Source Log entry source.
 	Source LogLogEntrySource `json:"source"`
 
@@ -144,7 +143,6 @@ const (
 
 // LogViolationSetting Violation configuration setting.
 type LogViolationSetting struct {
-
 	// Name Violation type.
 	Name LogViolationSettingName `json:"name"`
 
@@ -153,8 +151,7 @@ type LogViolationSetting struct {
 }
 
 // LogClear Clears the log.
-type LogClear struct {
-}
+type LogClear struct{}
 
 // ProtoReq name
 func (m LogClear) ProtoReq() string { return "Log.clear" }
@@ -165,8 +162,7 @@ func (m LogClear) Call(c Client) error {
 }
 
 // LogDisable Disables log domain, prevents further log entries from being reported to the client.
-type LogDisable struct {
-}
+type LogDisable struct{}
 
 // ProtoReq name
 func (m LogDisable) ProtoReq() string { return "Log.disable" }
@@ -178,8 +174,7 @@ func (m LogDisable) Call(c Client) error {
 
 // LogEnable Enables log domain, sends the entries collected so far to the client by means of the
 // `entryAdded` notification.
-type LogEnable struct {
-}
+type LogEnable struct{}
 
 // ProtoReq name
 func (m LogEnable) ProtoReq() string { return "Log.enable" }
@@ -191,7 +186,6 @@ func (m LogEnable) Call(c Client) error {
 
 // LogStartViolationsReport start violation reporting.
 type LogStartViolationsReport struct {
-
 	// Config Configuration for violations.
 	Config []*LogViolationSetting `json:"config"`
 }
@@ -205,8 +199,7 @@ func (m LogStartViolationsReport) Call(c Client) error {
 }
 
 // LogStopViolationsReport Stop violation reporting.
-type LogStopViolationsReport struct {
-}
+type LogStopViolationsReport struct{}
 
 // ProtoReq name
 func (m LogStopViolationsReport) ProtoReq() string { return "Log.stopViolationsReport" }
@@ -218,7 +211,6 @@ func (m LogStopViolationsReport) Call(c Client) error {
 
 // LogEntryAdded Issued when new message was logged.
 type LogEntryAdded struct {
-
 	// Entry The entry.
 	Entry *LogLogEntry `json:"entry"`
 }

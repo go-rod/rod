@@ -12,7 +12,6 @@ Audits domain allows investigation of page violations and possible improvements.
 
 // AuditsAffectedCookie Information about a cookie that is affected by an inspector issue.
 type AuditsAffectedCookie struct {
-
 	// Name The following three properties uniquely identify a cookie
 	Name string `json:"name"`
 
@@ -25,7 +24,6 @@ type AuditsAffectedCookie struct {
 
 // AuditsAffectedRequest Information about a request that is affected by an inspector issue.
 type AuditsAffectedRequest struct {
-
 	// RequestID The unique request id.
 	RequestID NetworkRequestID `json:"requestId"`
 
@@ -35,7 +33,6 @@ type AuditsAffectedRequest struct {
 
 // AuditsAffectedFrame Information about the frame affected by an inspector issue.
 type AuditsAffectedFrame struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -119,7 +116,6 @@ const (
 // time finding a specific cookie. With this, we can convey specific error
 // information without the cookie.
 type AuditsCookieIssueDetails struct {
-
 	// Cookie (optional) If AffectedCookie is not set then rawCookieLine contains the raw
 	// Set-Cookie header string. This hints at a problem where the
 	// cookie line is syntactically or semantically malformed in a way
@@ -251,7 +247,6 @@ const (
 
 // AuditsMixedContentIssueDetails ...
 type AuditsMixedContentIssueDetails struct {
-
 	// ResourceType (optional) The type of resource causing the mixed content issue (css, js, iframe,
 	// form,...). Marked as optional because it is mapped to from
 	// blink::mojom::RequestContextType, which will be replaced
@@ -300,7 +295,6 @@ const (
 // code. Currently only used for COEP/COOP, but may be extended to include
 // some CSP errors in the future.
 type AuditsBlockedByResponseIssueDetails struct {
-
 	// Request ...
 	Request *AuditsAffectedRequest `json:"request"`
 
@@ -341,7 +335,6 @@ const (
 
 // AuditsHeavyAdIssueDetails ...
 type AuditsHeavyAdIssueDetails struct {
-
 	// Resolution The resolution status, either blocking the content or warning.
 	Resolution AuditsHeavyAdResolutionStatus `json:"resolution"`
 
@@ -377,7 +370,6 @@ const (
 
 // AuditsSourceCodeLocation ...
 type AuditsSourceCodeLocation struct {
-
 	// ScriptID (optional) ...
 	ScriptID RuntimeScriptID `json:"scriptId,omitempty"`
 
@@ -393,7 +385,6 @@ type AuditsSourceCodeLocation struct {
 
 // AuditsContentSecurityPolicyIssueDetails ...
 type AuditsContentSecurityPolicyIssueDetails struct {
-
 	// BlockedURL (optional) The url not included in allowed sources.
 	BlockedURL string `json:"blockedURL,omitempty"`
 
@@ -430,7 +421,6 @@ const (
 // AuditsSharedArrayBufferIssueDetails Details for a issue arising from an SAB being instantiated in, or
 // transferred to a context that is not cross-origin isolated.
 type AuditsSharedArrayBufferIssueDetails struct {
-
 	// SourceCodeLocation ...
 	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
 
@@ -457,7 +447,6 @@ const (
 
 // AuditsTrustedWebActivityIssueDetails ...
 type AuditsTrustedWebActivityIssueDetails struct {
-
 	// URL The url that triggers the violation.
 	URL string `json:"url"`
 
@@ -478,7 +467,6 @@ type AuditsTrustedWebActivityIssueDetails struct {
 
 // AuditsLowTextContrastIssueDetails ...
 type AuditsLowTextContrastIssueDetails struct {
-
 	// ViolatingNodeID ...
 	ViolatingNodeID DOMBackendNodeID `json:"violatingNodeId"`
 
@@ -504,7 +492,6 @@ type AuditsLowTextContrastIssueDetails struct {
 // AuditsCorsIssueDetails Details for a CORS related issue, e.g. a warning or error related to
 // CORS RFC1918 enforcement.
 type AuditsCorsIssueDetails struct {
-
 	// CorsErrorStatus ...
 	CorsErrorStatus *NetworkCorsErrorStatus `json:"corsErrorStatus"`
 
@@ -577,7 +564,6 @@ const (
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
 // Explainer: https://github.com/WICG/attribution-reporting-api
 type AuditsAttributionReportingIssueDetails struct {
-
 	// ViolationType ...
 	ViolationType AuditsAttributionReportingIssueType `json:"violationType"`
 
@@ -594,7 +580,6 @@ type AuditsAttributionReportingIssueDetails struct {
 // AuditsQuirksModeIssueDetails Details for issues about documents in Quirks Mode
 // or Limited Quirks Mode that affects page layouting.
 type AuditsQuirksModeIssueDetails struct {
-
 	// IsLimitedQuirksMode If false, it means the document's mode is "quirks"
 	// instead of "limited-quirks".
 	IsLimitedQuirksMode bool `json:"isLimitedQuirksMode"`
@@ -614,7 +599,6 @@ type AuditsQuirksModeIssueDetails struct {
 
 // AuditsNavigatorUserAgentIssueDetails ...
 type AuditsNavigatorUserAgentIssueDetails struct {
-
 	// URL ...
 	URL string `json:"url"`
 
@@ -662,7 +646,6 @@ const (
 
 // AuditsGenericIssueDetails Depending on the concrete errorType, different properties are set.
 type AuditsGenericIssueDetails struct {
-
 	// ErrorType Issues with the same errorType are aggregated in the frontend.
 	ErrorType AuditsGenericIssueErrorType `json:"errorType"`
 
@@ -679,7 +662,6 @@ type AuditsGenericIssueDetails struct {
 // AuditsDeprecationIssueDetails This issue tracks information needed to print a deprecation message.
 // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
 type AuditsDeprecationIssueDetails struct {
-
 	// AffectedFrame (optional) ...
 	AffectedFrame *AuditsAffectedFrame `json:"affectedFrame,omitempty"`
 
@@ -696,7 +678,6 @@ type AuditsDeprecationIssueDetails struct {
 // For example, if the URL `https://example.test:80/bounce` was in the
 // redirect chain, the site reported would be `example.test`.
 type AuditsBounceTrackingIssueDetails struct {
-
 	// TrackingSites ...
 	TrackingSites []string `json:"trackingSites"`
 }
@@ -714,7 +695,6 @@ const (
 
 // AuditsFederatedAuthRequestIssueDetails ...
 type AuditsFederatedAuthRequestIssueDetails struct {
-
 	// FederatedAuthRequestIssueReason ...
 	FederatedAuthRequestIssueReason AuditsFederatedAuthRequestIssueReason `json:"federatedAuthRequestIssueReason"`
 }
@@ -814,7 +794,6 @@ const (
 // AuditsClientHintIssueDetails This issue tracks client hints related issues. It's used to deprecate old
 // features, encourage the use of new ones, and provide general guidance.
 type AuditsClientHintIssueDetails struct {
-
 	// SourceCodeLocation ...
 	SourceCodeLocation *AuditsSourceCodeLocation `json:"sourceCodeLocation"`
 
@@ -884,7 +863,6 @@ const (
 // specific to the kind of issue. When adding a new issue code, please also
 // add a new optional field to this type.
 type AuditsInspectorIssueDetails struct {
-
 	// CookieIssueDetails (optional) ...
 	CookieIssueDetails *AuditsCookieIssueDetails `json:"cookieIssueDetails,omitempty"`
 
@@ -943,7 +921,6 @@ type AuditsIssueID string
 
 // AuditsInspectorIssue An inspector issue reported from the back-end.
 type AuditsInspectorIssue struct {
-
 	// Code ...
 	Code AuditsInspectorIssueCode `json:"code"`
 
@@ -972,7 +949,6 @@ const (
 // AuditsGetEncodedResponse Returns the response body and size if it were re-encoded with the specified settings. Only
 // applies to images.
 type AuditsGetEncodedResponse struct {
-
 	// RequestID Identifier of the network request to get content for.
 	RequestID NetworkRequestID `json:"requestId"`
 
@@ -997,7 +973,6 @@ func (m AuditsGetEncodedResponse) Call(c Client) (*AuditsGetEncodedResponseResul
 
 // AuditsGetEncodedResponseResult ...
 type AuditsGetEncodedResponseResult struct {
-
 	// Body (optional) The encoded body as a base64 string. Omitted if sizeOnly is true.
 	Body []byte `json:"body,omitempty"`
 
@@ -1009,8 +984,7 @@ type AuditsGetEncodedResponseResult struct {
 }
 
 // AuditsDisable Disables issues domain, prevents further issues from being reported to the client.
-type AuditsDisable struct {
-}
+type AuditsDisable struct{}
 
 // ProtoReq name
 func (m AuditsDisable) ProtoReq() string { return "Audits.disable" }
@@ -1022,8 +996,7 @@ func (m AuditsDisable) Call(c Client) error {
 
 // AuditsEnable Enables issues domain, sends the issues collected so far to the client by means of the
 // `issueAdded` event.
-type AuditsEnable struct {
-}
+type AuditsEnable struct{}
 
 // ProtoReq name
 func (m AuditsEnable) ProtoReq() string { return "Audits.enable" }
@@ -1036,7 +1009,6 @@ func (m AuditsEnable) Call(c Client) error {
 // AuditsCheckContrast Runs the contrast check for the target page. Found issues are reported
 // using Audits.issueAdded event.
 type AuditsCheckContrast struct {
-
 	// ReportAAA (optional) Whether to report WCAG AAA level issues. Default is false.
 	ReportAAA bool `json:"reportAAA,omitempty"`
 }
@@ -1051,7 +1023,6 @@ func (m AuditsCheckContrast) Call(c Client) error {
 
 // AuditsIssueAdded ...
 type AuditsIssueAdded struct {
-
 	// Issue ...
 	Issue *AuditsInspectorIssue `json:"issue"`
 }

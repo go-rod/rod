@@ -13,7 +13,6 @@ functionalities.
 
 // CastSink ...
 type CastSink struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -31,7 +30,6 @@ type CastSink struct {
 // Also starts observing for issue messages. When an issue is added or removed,
 // an |issueUpdated| event is fired.
 type CastEnable struct {
-
 	// PresentationURL (optional) ...
 	PresentationURL string `json:"presentationUrl,omitempty"`
 }
@@ -45,8 +43,7 @@ func (m CastEnable) Call(c Client) error {
 }
 
 // CastDisable Stops observing for sinks and issues.
-type CastDisable struct {
-}
+type CastDisable struct{}
 
 // ProtoReq name
 func (m CastDisable) ProtoReq() string { return "Cast.disable" }
@@ -59,7 +56,6 @@ func (m CastDisable) Call(c Client) error {
 // CastSetSinkToUse Sets a sink to be used when the web page requests the browser to choose a
 // sink via Presentation API, Remote Playback API, or Cast SDK.
 type CastSetSinkToUse struct {
-
 	// SinkName ...
 	SinkName string `json:"sinkName"`
 }
@@ -74,7 +70,6 @@ func (m CastSetSinkToUse) Call(c Client) error {
 
 // CastStartDesktopMirroring Starts mirroring the desktop to the sink.
 type CastStartDesktopMirroring struct {
-
 	// SinkName ...
 	SinkName string `json:"sinkName"`
 }
@@ -89,7 +84,6 @@ func (m CastStartDesktopMirroring) Call(c Client) error {
 
 // CastStartTabMirroring Starts mirroring the tab to the sink.
 type CastStartTabMirroring struct {
-
 	// SinkName ...
 	SinkName string `json:"sinkName"`
 }
@@ -104,7 +98,6 @@ func (m CastStartTabMirroring) Call(c Client) error {
 
 // CastStopCasting Stops the active Cast session on the sink.
 type CastStopCasting struct {
-
 	// SinkName ...
 	SinkName string `json:"sinkName"`
 }
@@ -120,7 +113,6 @@ func (m CastStopCasting) Call(c Client) error {
 // CastSinksUpdated This is fired whenever the list of available sinks changes. A sink is a
 // device or a software surface that you can cast to.
 type CastSinksUpdated struct {
-
 	// Sinks ...
 	Sinks []*CastSink `json:"sinks"`
 }
@@ -133,7 +125,6 @@ func (evt CastSinksUpdated) ProtoEvent() string {
 // CastIssueUpdated This is fired whenever the outstanding issue/error message changes.
 // |issueMessage| is empty if there is no issue.
 type CastIssueUpdated struct {
-
 	// IssueMessage ...
 	IssueMessage string `json:"issueMessage"`
 }

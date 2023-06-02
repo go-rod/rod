@@ -54,8 +54,7 @@ func (e *ErrExpectElements) Error() string {
 func (e *ErrExpectElements) Is(err error) bool { _, ok := err.(*ErrExpectElements); return ok }
 
 // ErrElementNotFound error
-type ErrElementNotFound struct {
-}
+type ErrElementNotFound struct{}
 
 func (e *ErrElementNotFound) Error() string {
 	return "cannot find element"
@@ -106,8 +105,7 @@ func (e *ErrNavigation) Error() string {
 func (e *ErrNavigation) Is(err error) bool { _, ok := err.(*ErrNavigation); return ok }
 
 // ErrPageCloseCanceled error
-type ErrPageCloseCanceled struct {
-}
+type ErrPageCloseCanceled struct{}
 
 func (e *ErrPageCloseCanceled) Error() string {
 	return "page close canceled"
@@ -175,8 +173,7 @@ func (e *ErrNoPointerEvents) Unwrap() error {
 func (e *ErrNoPointerEvents) Is(err error) bool { _, ok := err.(*ErrNoPointerEvents); return ok }
 
 // ErrPageNotFound error
-type ErrPageNotFound struct {
-}
+type ErrPageNotFound struct{}
 
 func (e *ErrPageNotFound) Error() string {
 	return "cannot find page"

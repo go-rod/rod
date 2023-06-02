@@ -43,7 +43,6 @@ const (
 
 // PageAdFrameStatus (experimental) Indicates whether a frame has been identified as an ad and why.
 type PageAdFrameStatus struct {
-
 	// AdFrameType ...
 	AdFrameType PageAdFrameType `json:"adFrameType"`
 
@@ -54,7 +53,6 @@ type PageAdFrameStatus struct {
 // PageAdScriptID (experimental) Identifies the bottom-most script which caused the frame to be labelled
 // as an ad.
 type PageAdScriptID struct {
-
 	// ScriptID Script Id of the bottom-most script which caused the frame to be labelled
 	// as an ad.
 	ScriptID RuntimeScriptID `json:"scriptId"`
@@ -370,7 +368,6 @@ const (
 
 // PagePermissionsPolicyBlockLocator (experimental) ...
 type PagePermissionsPolicyBlockLocator struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 
@@ -380,7 +377,6 @@ type PagePermissionsPolicyBlockLocator struct {
 
 // PagePermissionsPolicyFeatureState (experimental) ...
 type PagePermissionsPolicyFeatureState struct {
-
 	// Feature ...
 	Feature PagePermissionsPolicyFeature `json:"feature"`
 
@@ -463,7 +459,6 @@ const (
 
 // PageOriginTrialToken (experimental) ...
 type PageOriginTrialToken struct {
-
 	// Origin ...
 	Origin string `json:"origin"`
 
@@ -485,7 +480,6 @@ type PageOriginTrialToken struct {
 
 // PageOriginTrialTokenWithStatus (experimental) ...
 type PageOriginTrialTokenWithStatus struct {
-
 	// RawTokenText ...
 	RawTokenText string `json:"rawTokenText"`
 
@@ -499,7 +493,6 @@ type PageOriginTrialTokenWithStatus struct {
 
 // PageOriginTrial (experimental) ...
 type PageOriginTrial struct {
-
 	// TrialName ...
 	TrialName string `json:"trialName"`
 
@@ -512,7 +505,6 @@ type PageOriginTrial struct {
 
 // PageFrame Information about the Frame on the page.
 type PageFrame struct {
-
 	// ID Frame unique identifier.
 	ID PageFrameID `json:"id"`
 
@@ -561,7 +553,6 @@ type PageFrame struct {
 
 // PageFrameResource (experimental) Information about the Resource on the page.
 type PageFrameResource struct {
-
 	// URL Resource URL.
 	URL string `json:"url"`
 
@@ -586,7 +577,6 @@ type PageFrameResource struct {
 
 // PageFrameResourceTree (experimental) Information about the Frame hierarchy along with their cached resources.
 type PageFrameResourceTree struct {
-
 	// Frame Frame information for this tree item.
 	Frame *PageFrame `json:"frame"`
 
@@ -599,7 +589,6 @@ type PageFrameResourceTree struct {
 
 // PageFrameTree Information about the Frame hierarchy.
 type PageFrameTree struct {
-
 	// Frame Frame information for this tree item.
 	Frame *PageFrame `json:"frame"`
 
@@ -656,7 +645,6 @@ const (
 
 // PageNavigationEntry Navigation history entry.
 type PageNavigationEntry struct {
-
 	// ID Unique id of the navigation history entry.
 	ID int `json:"id"`
 
@@ -675,7 +663,6 @@ type PageNavigationEntry struct {
 
 // PageScreencastFrameMetadata (experimental) Screencast frame metadata.
 type PageScreencastFrameMetadata struct {
-
 	// OffsetTop Top offset in DIP.
 	OffsetTop float64 `json:"offsetTop"`
 
@@ -717,7 +704,6 @@ const (
 
 // PageAppManifestError Error while paring app manifest.
 type PageAppManifestError struct {
-
 	// Message Error message.
 	Message string `json:"message"`
 
@@ -733,14 +719,12 @@ type PageAppManifestError struct {
 
 // PageAppManifestParsedProperties (experimental) Parsed app manifest properties.
 type PageAppManifestParsedProperties struct {
-
 	// Scope Computed scope value
 	Scope string `json:"scope"`
 }
 
 // PageLayoutViewport Layout viewport position and dimensions.
 type PageLayoutViewport struct {
-
 	// PageX Horizontal offset relative to the document (CSS pixels).
 	PageX int `json:"pageX"`
 
@@ -756,7 +740,6 @@ type PageLayoutViewport struct {
 
 // PageVisualViewport Visual viewport position, dimensions, and scale.
 type PageVisualViewport struct {
-
 	// OffsetX Horizontal offset relative to the layout viewport (CSS pixels).
 	OffsetX float64 `json:"offsetX"`
 
@@ -784,7 +767,6 @@ type PageVisualViewport struct {
 
 // PageViewport Viewport for capturing screenshot.
 type PageViewport struct {
-
 	// X X offset in device independent pixels (dip).
 	X float64 `json:"x"`
 
@@ -803,7 +785,6 @@ type PageViewport struct {
 
 // PageFontFamilies (experimental) Generic font families collection.
 type PageFontFamilies struct {
-
 	// Standard (optional) The standard font-family.
 	Standard string `json:"standard,omitempty"`
 
@@ -828,7 +809,6 @@ type PageFontFamilies struct {
 
 // PageScriptFontFamilies (experimental) Font families collection for a script.
 type PageScriptFontFamilies struct {
-
 	// Script Name of the script which these font families are defined for.
 	Script string `json:"script"`
 
@@ -838,7 +818,6 @@ type PageScriptFontFamilies struct {
 
 // PageFontSizes (experimental) Default font sizes.
 type PageFontSizes struct {
-
 	// Standard (optional) Default standard font size.
 	Standard *int `json:"standard,omitempty"`
 
@@ -894,7 +873,6 @@ const (
 
 // PageInstallabilityErrorArgument (experimental) ...
 type PageInstallabilityErrorArgument struct {
-
 	// Name Argument name (e.g. name:'minimum-icon-size-in-pixels').
 	Name string `json:"name"`
 
@@ -904,7 +882,6 @@ type PageInstallabilityErrorArgument struct {
 
 // PageInstallabilityError (experimental) The installability error
 type PageInstallabilityError struct {
-
 	// ErrorID The error id (e.g. 'manifest-missing-suitable-icon').
 	ErrorID string `json:"errorId"`
 
@@ -943,7 +920,6 @@ const (
 
 // PageCompilationCacheParams (experimental) Per-script compilation cache parameters for `Page.produceCompilationCache`
 type PageCompilationCacheParams struct {
-
 	// URL The URL of the script to produce a compilation cache entry for.
 	URL string `json:"url"`
 
@@ -1373,7 +1349,6 @@ const (
 
 // PageBackForwardCacheNotRestoredExplanation (experimental) ...
 type PageBackForwardCacheNotRestoredExplanation struct {
-
 	// Type Type of the reason
 	Type PageBackForwardCacheNotRestoredReasonType `json:"type"`
 
@@ -1388,7 +1363,6 @@ type PageBackForwardCacheNotRestoredExplanation struct {
 
 // PageBackForwardCacheNotRestoredExplanationTree (experimental) ...
 type PageBackForwardCacheNotRestoredExplanationTree struct {
-
 	// URL URL of each frame
 	URL string `json:"url"`
 
@@ -1401,7 +1375,6 @@ type PageBackForwardCacheNotRestoredExplanationTree struct {
 
 // PageAddScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use addScriptToEvaluateOnNewDocument instead.
 type PageAddScriptToEvaluateOnLoad struct {
-
 	// ScriptSource ...
 	ScriptSource string `json:"scriptSource"`
 }
@@ -1417,14 +1390,12 @@ func (m PageAddScriptToEvaluateOnLoad) Call(c Client) (*PageAddScriptToEvaluateO
 
 // PageAddScriptToEvaluateOnLoadResult (deprecated) (experimental) ...
 type PageAddScriptToEvaluateOnLoadResult struct {
-
 	// Identifier Identifier of the added script.
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
 // PageAddScriptToEvaluateOnNewDocument Evaluates given script in every frame upon creation (before loading frame's scripts).
 type PageAddScriptToEvaluateOnNewDocument struct {
-
 	// Source ...
 	Source string `json:"source"`
 
@@ -1451,14 +1422,12 @@ func (m PageAddScriptToEvaluateOnNewDocument) Call(c Client) (*PageAddScriptToEv
 
 // PageAddScriptToEvaluateOnNewDocumentResult ...
 type PageAddScriptToEvaluateOnNewDocumentResult struct {
-
 	// Identifier Identifier of the added script.
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
 
 // PageBringToFront Brings page to front (activates tab).
-type PageBringToFront struct {
-}
+type PageBringToFront struct{}
 
 // ProtoReq name
 func (m PageBringToFront) ProtoReq() string { return "Page.bringToFront" }
@@ -1484,7 +1453,6 @@ const (
 
 // PageCaptureScreenshot Capture page screenshot.
 type PageCaptureScreenshot struct {
-
 	// Format (optional) Image compression format (defaults to png).
 	Format PageCaptureScreenshotFormat `json:"format,omitempty"`
 
@@ -1515,7 +1483,6 @@ func (m PageCaptureScreenshot) Call(c Client) (*PageCaptureScreenshotResult, err
 
 // PageCaptureScreenshotResult ...
 type PageCaptureScreenshotResult struct {
-
 	// Data Base64-encoded image data.
 	Data []byte `json:"data"`
 }
@@ -1531,7 +1498,6 @@ const (
 // PageCaptureSnapshot (experimental) Returns a snapshot of the page as a string. For MHTML format, the serialization includes
 // iframes, shadow DOM, external resources, and element-inline styles.
 type PageCaptureSnapshot struct {
-
 	// Format (optional) Format (defaults to mhtml).
 	Format PageCaptureSnapshotFormat `json:"format,omitempty"`
 }
@@ -1547,14 +1513,12 @@ func (m PageCaptureSnapshot) Call(c Client) (*PageCaptureSnapshotResult, error) 
 
 // PageCaptureSnapshotResult (experimental) ...
 type PageCaptureSnapshotResult struct {
-
 	// Data Serialized page data.
 	Data string `json:"data"`
 }
 
 // PageClearDeviceMetricsOverride (deprecated) (experimental) Clears the overridden device metrics.
-type PageClearDeviceMetricsOverride struct {
-}
+type PageClearDeviceMetricsOverride struct{}
 
 // ProtoReq name
 func (m PageClearDeviceMetricsOverride) ProtoReq() string { return "Page.clearDeviceMetricsOverride" }
@@ -1565,8 +1529,7 @@ func (m PageClearDeviceMetricsOverride) Call(c Client) error {
 }
 
 // PageClearDeviceOrientationOverride (deprecated) (experimental) Clears the overridden Device Orientation.
-type PageClearDeviceOrientationOverride struct {
-}
+type PageClearDeviceOrientationOverride struct{}
 
 // ProtoReq name
 func (m PageClearDeviceOrientationOverride) ProtoReq() string {
@@ -1579,8 +1542,7 @@ func (m PageClearDeviceOrientationOverride) Call(c Client) error {
 }
 
 // PageClearGeolocationOverride (deprecated) Clears the overridden Geolocation Position and Error.
-type PageClearGeolocationOverride struct {
-}
+type PageClearGeolocationOverride struct{}
 
 // ProtoReq name
 func (m PageClearGeolocationOverride) ProtoReq() string { return "Page.clearGeolocationOverride" }
@@ -1592,7 +1554,6 @@ func (m PageClearGeolocationOverride) Call(c Client) error {
 
 // PageCreateIsolatedWorld Creates an isolated world for the given frame.
 type PageCreateIsolatedWorld struct {
-
 	// FrameID Id of the frame in which the isolated world should be created.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -1615,14 +1576,12 @@ func (m PageCreateIsolatedWorld) Call(c Client) (*PageCreateIsolatedWorldResult,
 
 // PageCreateIsolatedWorldResult ...
 type PageCreateIsolatedWorldResult struct {
-
 	// ExecutionContextID Execution context of the isolated world.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
 // PageDeleteCookie (deprecated) (experimental) Deletes browser cookie with given name, domain and path.
 type PageDeleteCookie struct {
-
 	// CookieName Name of the cookie to remove.
 	CookieName string `json:"cookieName"`
 
@@ -1639,8 +1598,7 @@ func (m PageDeleteCookie) Call(c Client) error {
 }
 
 // PageDisable Disables page domain notifications.
-type PageDisable struct {
-}
+type PageDisable struct{}
 
 // ProtoReq name
 func (m PageDisable) ProtoReq() string { return "Page.disable" }
@@ -1651,8 +1609,7 @@ func (m PageDisable) Call(c Client) error {
 }
 
 // PageEnable Enables page domain notifications.
-type PageEnable struct {
-}
+type PageEnable struct{}
 
 // ProtoReq name
 func (m PageEnable) ProtoReq() string { return "Page.enable" }
@@ -1663,8 +1620,7 @@ func (m PageEnable) Call(c Client) error {
 }
 
 // PageGetAppManifest ...
-type PageGetAppManifest struct {
-}
+type PageGetAppManifest struct{}
 
 // ProtoReq name
 func (m PageGetAppManifest) ProtoReq() string { return "Page.getAppManifest" }
@@ -1677,7 +1633,6 @@ func (m PageGetAppManifest) Call(c Client) (*PageGetAppManifestResult, error) {
 
 // PageGetAppManifestResult ...
 type PageGetAppManifestResult struct {
-
 	// URL Manifest location.
 	URL string `json:"url"`
 
@@ -1692,8 +1647,7 @@ type PageGetAppManifestResult struct {
 }
 
 // PageGetInstallabilityErrors (experimental) ...
-type PageGetInstallabilityErrors struct {
-}
+type PageGetInstallabilityErrors struct{}
 
 // ProtoReq name
 func (m PageGetInstallabilityErrors) ProtoReq() string { return "Page.getInstallabilityErrors" }
@@ -1706,14 +1660,12 @@ func (m PageGetInstallabilityErrors) Call(c Client) (*PageGetInstallabilityError
 
 // PageGetInstallabilityErrorsResult (experimental) ...
 type PageGetInstallabilityErrorsResult struct {
-
 	// InstallabilityErrors ...
 	InstallabilityErrors []*PageInstallabilityError `json:"installabilityErrors"`
 }
 
 // PageGetManifestIcons (deprecated) (experimental) Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
-type PageGetManifestIcons struct {
-}
+type PageGetManifestIcons struct{}
 
 // ProtoReq name
 func (m PageGetManifestIcons) ProtoReq() string { return "Page.getManifestIcons" }
@@ -1726,15 +1678,13 @@ func (m PageGetManifestIcons) Call(c Client) (*PageGetManifestIconsResult, error
 
 // PageGetManifestIconsResult (deprecated) (experimental) ...
 type PageGetManifestIconsResult struct {
-
 	// PrimaryIcon (optional) ...
 	PrimaryIcon []byte `json:"primaryIcon,omitempty"`
 }
 
 // PageGetAppID (experimental) Returns the unique (PWA) app id.
 // Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
-type PageGetAppID struct {
-}
+type PageGetAppID struct{}
 
 // ProtoReq name
 func (m PageGetAppID) ProtoReq() string { return "Page.getAppId" }
@@ -1747,7 +1697,6 @@ func (m PageGetAppID) Call(c Client) (*PageGetAppIDResult, error) {
 
 // PageGetAppIDResult (experimental) ...
 type PageGetAppIDResult struct {
-
 	// AppID (optional) App id, either from manifest's id attribute or computed from start_url
 	AppID string `json:"appId,omitempty"`
 
@@ -1757,7 +1706,6 @@ type PageGetAppIDResult struct {
 
 // PageGetAdScriptID (experimental) ...
 type PageGetAdScriptID struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -1773,7 +1721,6 @@ func (m PageGetAdScriptID) Call(c Client) (*PageGetAdScriptIDResult, error) {
 
 // PageGetAdScriptIDResult (experimental) ...
 type PageGetAdScriptIDResult struct {
-
 	// AdScriptID (optional) Identifies the bottom-most script which caused the frame to be labelled
 	// as an ad. Only sent if frame is labelled as an ad and id is available.
 	AdScriptID *PageAdScriptID `json:"adScriptId,omitempty"`
@@ -1782,8 +1729,7 @@ type PageGetAdScriptIDResult struct {
 // PageGetCookies (deprecated) (experimental) Returns all browser cookies for the page and all of its subframes. Depending
 // on the backend support, will return detailed cookie information in the
 // `cookies` field.
-type PageGetCookies struct {
-}
+type PageGetCookies struct{}
 
 // ProtoReq name
 func (m PageGetCookies) ProtoReq() string { return "Page.getCookies" }
@@ -1796,14 +1742,12 @@ func (m PageGetCookies) Call(c Client) (*PageGetCookiesResult, error) {
 
 // PageGetCookiesResult (deprecated) (experimental) ...
 type PageGetCookiesResult struct {
-
 	// Cookies Array of cookie objects.
 	Cookies []*NetworkCookie `json:"cookies"`
 }
 
 // PageGetFrameTree Returns present frame tree structure.
-type PageGetFrameTree struct {
-}
+type PageGetFrameTree struct{}
 
 // ProtoReq name
 func (m PageGetFrameTree) ProtoReq() string { return "Page.getFrameTree" }
@@ -1816,14 +1760,12 @@ func (m PageGetFrameTree) Call(c Client) (*PageGetFrameTreeResult, error) {
 
 // PageGetFrameTreeResult ...
 type PageGetFrameTreeResult struct {
-
 	// FrameTree Present frame tree structure.
 	FrameTree *PageFrameTree `json:"frameTree"`
 }
 
 // PageGetLayoutMetrics Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
-type PageGetLayoutMetrics struct {
-}
+type PageGetLayoutMetrics struct{}
 
 // ProtoReq name
 func (m PageGetLayoutMetrics) ProtoReq() string { return "Page.getLayoutMetrics" }
@@ -1836,7 +1778,6 @@ func (m PageGetLayoutMetrics) Call(c Client) (*PageGetLayoutMetricsResult, error
 
 // PageGetLayoutMetricsResult ...
 type PageGetLayoutMetricsResult struct {
-
 	// LayoutViewport (deprecated) Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
 	LayoutViewport *PageLayoutViewport `json:"layoutViewport"`
 
@@ -1857,8 +1798,7 @@ type PageGetLayoutMetricsResult struct {
 }
 
 // PageGetNavigationHistory Returns navigation history for the current page.
-type PageGetNavigationHistory struct {
-}
+type PageGetNavigationHistory struct{}
 
 // ProtoReq name
 func (m PageGetNavigationHistory) ProtoReq() string { return "Page.getNavigationHistory" }
@@ -1871,7 +1811,6 @@ func (m PageGetNavigationHistory) Call(c Client) (*PageGetNavigationHistoryResul
 
 // PageGetNavigationHistoryResult ...
 type PageGetNavigationHistoryResult struct {
-
 	// CurrentIndex Index of the current navigation history entry.
 	CurrentIndex int `json:"currentIndex"`
 
@@ -1880,8 +1819,7 @@ type PageGetNavigationHistoryResult struct {
 }
 
 // PageResetNavigationHistory Resets navigation history for the current page.
-type PageResetNavigationHistory struct {
-}
+type PageResetNavigationHistory struct{}
 
 // ProtoReq name
 func (m PageResetNavigationHistory) ProtoReq() string { return "Page.resetNavigationHistory" }
@@ -1893,7 +1831,6 @@ func (m PageResetNavigationHistory) Call(c Client) error {
 
 // PageGetResourceContent (experimental) Returns content of the given resource.
 type PageGetResourceContent struct {
-
 	// FrameID Frame id to get resource for.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -1912,7 +1849,6 @@ func (m PageGetResourceContent) Call(c Client) (*PageGetResourceContentResult, e
 
 // PageGetResourceContentResult (experimental) ...
 type PageGetResourceContentResult struct {
-
 	// Content Resource content.
 	Content string `json:"content"`
 
@@ -1921,8 +1857,7 @@ type PageGetResourceContentResult struct {
 }
 
 // PageGetResourceTree (experimental) Returns present frame / resource tree structure.
-type PageGetResourceTree struct {
-}
+type PageGetResourceTree struct{}
 
 // ProtoReq name
 func (m PageGetResourceTree) ProtoReq() string { return "Page.getResourceTree" }
@@ -1935,14 +1870,12 @@ func (m PageGetResourceTree) Call(c Client) (*PageGetResourceTreeResult, error) 
 
 // PageGetResourceTreeResult (experimental) ...
 type PageGetResourceTreeResult struct {
-
 	// FrameTree Present frame / resource tree structure.
 	FrameTree *PageFrameResourceTree `json:"frameTree"`
 }
 
 // PageHandleJavaScriptDialog Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 type PageHandleJavaScriptDialog struct {
-
 	// Accept Whether to accept or dismiss the dialog.
 	Accept bool `json:"accept"`
 
@@ -1961,7 +1894,6 @@ func (m PageHandleJavaScriptDialog) Call(c Client) error {
 
 // PageNavigate Navigates current page to the given URL.
 type PageNavigate struct {
-
 	// URL URL to navigate the page to.
 	URL string `json:"url"`
 
@@ -1989,7 +1921,6 @@ func (m PageNavigate) Call(c Client) (*PageNavigateResult, error) {
 
 // PageNavigateResult ...
 type PageNavigateResult struct {
-
 	// FrameID Frame id that has navigated (or failed to navigate)
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2003,7 +1934,6 @@ type PageNavigateResult struct {
 
 // PageNavigateToHistoryEntry Navigates current page to the given history entry.
 type PageNavigateToHistoryEntry struct {
-
 	// EntryID Unique id of the entry to navigate to.
 	EntryID int `json:"entryId"`
 }
@@ -2029,7 +1959,6 @@ const (
 
 // PagePrintToPDF Print page as PDF.
 type PagePrintToPDF struct {
-
 	// Landscape (optional) Paper orientation. Defaults to false.
 	Landscape bool `json:"landscape,omitempty"`
 
@@ -2103,7 +2032,6 @@ func (m PagePrintToPDF) Call(c Client) (*PagePrintToPDFResult, error) {
 
 // PagePrintToPDFResult ...
 type PagePrintToPDFResult struct {
-
 	// Data Base64-encoded pdf data. Empty if |returnAsStream| is specified.
 	Data []byte `json:"data"`
 
@@ -2113,7 +2041,6 @@ type PagePrintToPDFResult struct {
 
 // PageReload Reloads given page optionally ignoring the cache.
 type PageReload struct {
-
 	// IgnoreCache (optional) If true, browser cache is ignored (as if the user pressed Shift+refresh).
 	IgnoreCache bool `json:"ignoreCache,omitempty"`
 
@@ -2132,7 +2059,6 @@ func (m PageReload) Call(c Client) error {
 
 // PageRemoveScriptToEvaluateOnLoad (deprecated) (experimental) Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
 type PageRemoveScriptToEvaluateOnLoad struct {
-
 	// Identifier ...
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
@@ -2149,7 +2075,6 @@ func (m PageRemoveScriptToEvaluateOnLoad) Call(c Client) error {
 
 // PageRemoveScriptToEvaluateOnNewDocument Removes given script from the list.
 type PageRemoveScriptToEvaluateOnNewDocument struct {
-
 	// Identifier ...
 	Identifier PageScriptIdentifier `json:"identifier"`
 }
@@ -2166,7 +2091,6 @@ func (m PageRemoveScriptToEvaluateOnNewDocument) Call(c Client) error {
 
 // PageScreencastFrameAck (experimental) Acknowledges that a screencast frame has been received by the frontend.
 type PageScreencastFrameAck struct {
-
 	// SessionID Frame number.
 	SessionID int `json:"sessionId"`
 }
@@ -2181,7 +2105,6 @@ func (m PageScreencastFrameAck) Call(c Client) error {
 
 // PageSearchInResource (experimental) Searches for given string in resource content.
 type PageSearchInResource struct {
-
 	// FrameID Frame id for resource to search in.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2209,14 +2132,12 @@ func (m PageSearchInResource) Call(c Client) (*PageSearchInResourceResult, error
 
 // PageSearchInResourceResult (experimental) ...
 type PageSearchInResourceResult struct {
-
 	// Result List of search matches.
 	Result []*DebuggerSearchMatch `json:"result"`
 }
 
 // PageSetAdBlockingEnabled (experimental) Enable Chrome's experimental ad filter on all sites.
 type PageSetAdBlockingEnabled struct {
-
 	// Enabled Whether to block ads.
 	Enabled bool `json:"enabled"`
 }
@@ -2231,7 +2152,6 @@ func (m PageSetAdBlockingEnabled) Call(c Client) error {
 
 // PageSetBypassCSP (experimental) Enable page Content Security Policy by-passing.
 type PageSetBypassCSP struct {
-
 	// Enabled Whether to bypass page CSP.
 	Enabled bool `json:"enabled"`
 }
@@ -2246,7 +2166,6 @@ func (m PageSetBypassCSP) Call(c Client) error {
 
 // PageGetPermissionsPolicyState (experimental) Get Permissions Policy state on given frame.
 type PageGetPermissionsPolicyState struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -2262,14 +2181,12 @@ func (m PageGetPermissionsPolicyState) Call(c Client) (*PageGetPermissionsPolicy
 
 // PageGetPermissionsPolicyStateResult (experimental) ...
 type PageGetPermissionsPolicyStateResult struct {
-
 	// States ...
 	States []*PagePermissionsPolicyFeatureState `json:"states"`
 }
 
 // PageGetOriginTrials (experimental) Get Origin Trials on given frame.
 type PageGetOriginTrials struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -2285,7 +2202,6 @@ func (m PageGetOriginTrials) Call(c Client) (*PageGetOriginTrialsResult, error) 
 
 // PageGetOriginTrialsResult (experimental) ...
 type PageGetOriginTrialsResult struct {
-
 	// OriginTrials ...
 	OriginTrials []*PageOriginTrial `json:"originTrials"`
 }
@@ -2294,7 +2210,6 @@ type PageGetOriginTrialsResult struct {
 // window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
 // query results).
 type PageSetDeviceMetricsOverride struct {
-
 	// Width Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 	Width int `json:"width"`
 
@@ -2343,7 +2258,6 @@ func (m PageSetDeviceMetricsOverride) Call(c Client) error {
 
 // PageSetDeviceOrientationOverride (deprecated) (experimental) Overrides the Device Orientation.
 type PageSetDeviceOrientationOverride struct {
-
 	// Alpha Mock alpha
 	Alpha float64 `json:"alpha"`
 
@@ -2366,7 +2280,6 @@ func (m PageSetDeviceOrientationOverride) Call(c Client) error {
 
 // PageSetFontFamilies (experimental) Set generic font families.
 type PageSetFontFamilies struct {
-
 	// FontFamilies Specifies font families to set. If a font family is not specified, it won't be changed.
 	FontFamilies *PageFontFamilies `json:"fontFamilies"`
 
@@ -2384,7 +2297,6 @@ func (m PageSetFontFamilies) Call(c Client) error {
 
 // PageSetFontSizes (experimental) Set default font sizes.
 type PageSetFontSizes struct {
-
 	// FontSizes Specifies font sizes to set. If a font size is not specified, it won't be changed.
 	FontSizes *PageFontSizes `json:"fontSizes"`
 }
@@ -2399,7 +2311,6 @@ func (m PageSetFontSizes) Call(c Client) error {
 
 // PageSetDocumentContent Sets given markup as the document's HTML.
 type PageSetDocumentContent struct {
-
 	// FrameID Frame id to set HTML for.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2431,7 +2342,6 @@ const (
 
 // PageSetDownloadBehavior (deprecated) (experimental) Set the behavior when downloading a file.
 type PageSetDownloadBehavior struct {
-
 	// Behavior Whether to allow all or deny all download requests, or use default Chrome behavior if
 	// available (otherwise deny).
 	Behavior PageSetDownloadBehaviorBehavior `json:"behavior"`
@@ -2451,7 +2361,6 @@ func (m PageSetDownloadBehavior) Call(c Client) error {
 // PageSetGeolocationOverride (deprecated) Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
 // unavailable.
 type PageSetGeolocationOverride struct {
-
 	// Latitude (optional) Mock latitude
 	Latitude *float64 `json:"latitude,omitempty"`
 
@@ -2472,7 +2381,6 @@ func (m PageSetGeolocationOverride) Call(c Client) error {
 
 // PageSetLifecycleEventsEnabled (experimental) Controls whether page will emit lifecycle events.
 type PageSetLifecycleEventsEnabled struct {
-
 	// Enabled If true, starts emitting lifecycle events.
 	Enabled bool `json:"enabled"`
 }
@@ -2498,7 +2406,6 @@ const (
 
 // PageSetTouchEmulationEnabled (deprecated) (experimental) Toggles mouse event-based touch event emulation.
 type PageSetTouchEmulationEnabled struct {
-
 	// Enabled Whether the touch event emulation should be enabled.
 	Enabled bool `json:"enabled"`
 
@@ -2527,7 +2434,6 @@ const (
 
 // PageStartScreencast (experimental) Starts sending each frame using the `screencastFrame` event.
 type PageStartScreencast struct {
-
 	// Format (optional) Image compression format.
 	Format PageStartScreencastFormat `json:"format,omitempty"`
 
@@ -2553,8 +2459,7 @@ func (m PageStartScreencast) Call(c Client) error {
 }
 
 // PageStopLoading Force the page stop all navigations and pending resource fetches.
-type PageStopLoading struct {
-}
+type PageStopLoading struct{}
 
 // ProtoReq name
 func (m PageStopLoading) ProtoReq() string { return "Page.stopLoading" }
@@ -2565,8 +2470,7 @@ func (m PageStopLoading) Call(c Client) error {
 }
 
 // PageCrash (experimental) Crashes renderer on the IO thread, generates minidumps.
-type PageCrash struct {
-}
+type PageCrash struct{}
 
 // ProtoReq name
 func (m PageCrash) ProtoReq() string { return "Page.crash" }
@@ -2577,8 +2481,7 @@ func (m PageCrash) Call(c Client) error {
 }
 
 // PageClose (experimental) Tries to close page, running its beforeunload hooks, if any.
-type PageClose struct {
-}
+type PageClose struct{}
 
 // ProtoReq name
 func (m PageClose) ProtoReq() string { return "Page.close" }
@@ -2603,7 +2506,6 @@ const (
 // It will transition the page to the given state according to:
 // https://github.com/WICG/web-lifecycle/
 type PageSetWebLifecycleState struct {
-
 	// State Target lifecycle state
 	State PageSetWebLifecycleStateState `json:"state"`
 }
@@ -2617,8 +2519,7 @@ func (m PageSetWebLifecycleState) Call(c Client) error {
 }
 
 // PageStopScreencast (experimental) Stops sending each frame in the `screencastFrame`.
-type PageStopScreencast struct {
-}
+type PageStopScreencast struct{}
 
 // ProtoReq name
 func (m PageStopScreencast) ProtoReq() string { return "Page.stopScreencast" }
@@ -2635,7 +2536,6 @@ func (m PageStopScreencast) Call(c Client) error {
 // produced upon backend discretion, based on internal heuristics.
 // See also: `Page.compilationCacheProduced`.
 type PageProduceCompilationCache struct {
-
 	// Scripts ...
 	Scripts []*PageCompilationCacheParams `json:"scripts"`
 }
@@ -2651,7 +2551,6 @@ func (m PageProduceCompilationCache) Call(c Client) error {
 // PageAddCompilationCache (experimental) Seeds compilation cache for given url. Compilation cache does not survive
 // cross-process navigation.
 type PageAddCompilationCache struct {
-
 	// URL ...
 	URL string `json:"url"`
 
@@ -2668,8 +2567,7 @@ func (m PageAddCompilationCache) Call(c Client) error {
 }
 
 // PageClearCompilationCache (experimental) Clears seeded compilation cache.
-type PageClearCompilationCache struct {
-}
+type PageClearCompilationCache struct{}
 
 // ProtoReq name
 func (m PageClearCompilationCache) ProtoReq() string { return "Page.clearCompilationCache" }
@@ -2682,7 +2580,6 @@ func (m PageClearCompilationCache) Call(c Client) error {
 // PageSetSPCTransactionMode (experimental) Sets the Secure Payment Confirmation transaction mode.
 // https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
 type PageSetSPCTransactionMode struct {
-
 	// Mode ...
 	Mode PageAutoResponseMode `json:"mode"`
 }
@@ -2698,7 +2595,6 @@ func (m PageSetSPCTransactionMode) Call(c Client) error {
 // PageSetRPHRegistrationMode (experimental) Extensions for Custom Handlers API:
 // https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
 type PageSetRPHRegistrationMode struct {
-
 	// Mode ...
 	Mode PageAutoResponseMode `json:"mode"`
 }
@@ -2713,7 +2609,6 @@ func (m PageSetRPHRegistrationMode) Call(c Client) error {
 
 // PageGenerateTestReport (experimental) Generates a report for testing.
 type PageGenerateTestReport struct {
-
 	// Message Message to be displayed in the report.
 	Message string `json:"message"`
 
@@ -2730,8 +2625,7 @@ func (m PageGenerateTestReport) Call(c Client) error {
 }
 
 // PageWaitForDebugger (experimental) Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
-type PageWaitForDebugger struct {
-}
+type PageWaitForDebugger struct{}
 
 // ProtoReq name
 func (m PageWaitForDebugger) ProtoReq() string { return "Page.waitForDebugger" }
@@ -2745,7 +2639,6 @@ func (m PageWaitForDebugger) Call(c Client) error {
 // When file chooser interception is enabled, native file chooser dialog is not shown.
 // Instead, a protocol event `Page.fileChooserOpened` is emitted.
 type PageSetInterceptFileChooserDialog struct {
-
 	// Enabled ...
 	Enabled bool `json:"enabled"`
 }
@@ -2762,7 +2655,6 @@ func (m PageSetInterceptFileChooserDialog) Call(c Client) error {
 
 // PageDomContentEventFired ...
 type PageDomContentEventFired struct {
-
 	// Timestamp ...
 	Timestamp MonotonicTime `json:"timestamp"`
 }
@@ -2785,7 +2677,6 @@ const (
 
 // PageFileChooserOpened Emitted only when `page.interceptFileChooser` is enabled.
 type PageFileChooserOpened struct {
-
 	// FrameID (experimental) Id of the frame containing input node.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2803,7 +2694,6 @@ func (evt PageFileChooserOpened) ProtoEvent() string {
 
 // PageFrameAttached Fired when frame has been attached to its parent.
 type PageFrameAttached struct {
-
 	// FrameID Id of the frame that has been attached.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2821,7 +2711,6 @@ func (evt PageFrameAttached) ProtoEvent() string {
 
 // PageFrameClearedScheduledNavigation (deprecated) Fired when frame no longer has a scheduled navigation.
 type PageFrameClearedScheduledNavigation struct {
-
 	// FrameID Id of the frame that has cleared its scheduled navigation.
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -2844,7 +2733,6 @@ const (
 
 // PageFrameDetached Fired when frame has been detached from its parent.
 type PageFrameDetached struct {
-
 	// FrameID Id of the frame that has been detached.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2859,7 +2747,6 @@ func (evt PageFrameDetached) ProtoEvent() string {
 
 // PageFrameNavigated Fired once navigation of the frame has completed. Frame is now associated with the new loader.
 type PageFrameNavigated struct {
-
 	// Frame Frame object.
 	Frame *PageFrame `json:"frame"`
 
@@ -2874,7 +2761,6 @@ func (evt PageFrameNavigated) ProtoEvent() string {
 
 // PageDocumentOpened (experimental) Fired when opening document to write to.
 type PageDocumentOpened struct {
-
 	// Frame Frame object.
 	Frame *PageFrame `json:"frame"`
 }
@@ -2885,8 +2771,7 @@ func (evt PageDocumentOpened) ProtoEvent() string {
 }
 
 // PageFrameResized (experimental) ...
-type PageFrameResized struct {
-}
+type PageFrameResized struct{}
 
 // ProtoEvent name
 func (evt PageFrameResized) ProtoEvent() string {
@@ -2896,7 +2781,6 @@ func (evt PageFrameResized) ProtoEvent() string {
 // PageFrameRequestedNavigation (experimental) Fired when a renderer-initiated navigation is requested.
 // Navigation may still be cancelled after the event is issued.
 type PageFrameRequestedNavigation struct {
-
 	// FrameID Id of the frame that is being navigated.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2917,7 +2801,6 @@ func (evt PageFrameRequestedNavigation) ProtoEvent() string {
 
 // PageFrameScheduledNavigation (deprecated) Fired when frame schedules a potential navigation.
 type PageFrameScheduledNavigation struct {
-
 	// FrameID Id of the frame that has scheduled a navigation.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -2939,7 +2822,6 @@ func (evt PageFrameScheduledNavigation) ProtoEvent() string {
 
 // PageFrameStartedLoading (experimental) Fired when frame has started loading.
 type PageFrameStartedLoading struct {
-
 	// FrameID Id of the frame that has started loading.
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -2951,7 +2833,6 @@ func (evt PageFrameStartedLoading) ProtoEvent() string {
 
 // PageFrameStoppedLoading (experimental) Fired when frame has stopped loading.
 type PageFrameStoppedLoading struct {
-
 	// FrameID Id of the frame that has stopped loading.
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -2964,7 +2845,6 @@ func (evt PageFrameStoppedLoading) ProtoEvent() string {
 // PageDownloadWillBegin (deprecated) (experimental) Fired when page is about to start a download.
 // Deprecated. Use Browser.downloadWillBegin instead.
 type PageDownloadWillBegin struct {
-
 	// FrameID Id of the frame that caused download to begin.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -3000,7 +2880,6 @@ const (
 // PageDownloadProgress (deprecated) (experimental) Fired when download makes progress. Last call has |done| == true.
 // Deprecated. Use Browser.downloadProgress instead.
 type PageDownloadProgress struct {
-
 	// GUID Global unique identifier of the download.
 	GUID string `json:"guid"`
 
@@ -3020,8 +2899,7 @@ func (evt PageDownloadProgress) ProtoEvent() string {
 }
 
 // PageInterstitialHidden Fired when interstitial page was hidden
-type PageInterstitialHidden struct {
-}
+type PageInterstitialHidden struct{}
 
 // ProtoEvent name
 func (evt PageInterstitialHidden) ProtoEvent() string {
@@ -3029,8 +2907,7 @@ func (evt PageInterstitialHidden) ProtoEvent() string {
 }
 
 // PageInterstitialShown Fired when interstitial page was shown
-type PageInterstitialShown struct {
-}
+type PageInterstitialShown struct{}
 
 // ProtoEvent name
 func (evt PageInterstitialShown) ProtoEvent() string {
@@ -3040,7 +2917,6 @@ func (evt PageInterstitialShown) ProtoEvent() string {
 // PageJavascriptDialogClosed Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been
 // closed.
 type PageJavascriptDialogClosed struct {
-
 	// Result Whether dialog was confirmed.
 	Result bool `json:"result"`
 
@@ -3056,7 +2932,6 @@ func (evt PageJavascriptDialogClosed) ProtoEvent() string {
 // PageJavascriptDialogOpening Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
 // open.
 type PageJavascriptDialogOpening struct {
-
 	// URL Frame url.
 	URL string `json:"url"`
 
@@ -3117,7 +2992,6 @@ const (
 
 // PageLifecycleEvent Fired for top level page lifecycle events such as navigation, load, paint, etc.
 type PageLifecycleEvent struct {
-
 	// FrameID Id of the frame.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -3141,7 +3015,6 @@ func (evt PageLifecycleEvent) ProtoEvent() string {
 // main-frame history navigation where the document changes (non-same-document navigations),
 // when bfcache navigation fails.
 type PageBackForwardCacheNotUsed struct {
-
 	// LoaderID The loader id for the associated navgation.
 	LoaderID NetworkLoaderID `json:"loaderId"`
 
@@ -3162,7 +3035,6 @@ func (evt PageBackForwardCacheNotUsed) ProtoEvent() string {
 
 // PageLoadEventFired ...
 type PageLoadEventFired struct {
-
 	// Timestamp ...
 	Timestamp MonotonicTime `json:"timestamp"`
 }
@@ -3174,7 +3046,6 @@ func (evt PageLoadEventFired) ProtoEvent() string {
 
 // PageNavigatedWithinDocument (experimental) Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
 type PageNavigatedWithinDocument struct {
-
 	// FrameID Id of the frame.
 	FrameID PageFrameID `json:"frameId"`
 
@@ -3189,7 +3060,6 @@ func (evt PageNavigatedWithinDocument) ProtoEvent() string {
 
 // PageScreencastFrame (experimental) Compressed image data requested by the `startScreencast`.
 type PageScreencastFrame struct {
-
 	// Data Base64-encoded compressed image.
 	Data []byte `json:"data"`
 
@@ -3207,7 +3077,6 @@ func (evt PageScreencastFrame) ProtoEvent() string {
 
 // PageScreencastVisibilityChanged (experimental) Fired when the page with currently enabled screencast was shown or hidden `.
 type PageScreencastVisibilityChanged struct {
-
 	// Visible True if the page is visible.
 	Visible bool `json:"visible"`
 }
@@ -3220,7 +3089,6 @@ func (evt PageScreencastVisibilityChanged) ProtoEvent() string {
 // PageWindowOpen Fired when a new window is going to be opened, via window.open(), link click, form submission,
 // etc.
 type PageWindowOpen struct {
-
 	// URL The URL for the new window.
 	URL string `json:"url"`
 
@@ -3242,7 +3110,6 @@ func (evt PageWindowOpen) ProtoEvent() string {
 // PageCompilationCacheProduced (experimental) Issued for every compilation cache generated. Is only available
 // if Page.setGenerateCompilationCache is enabled.
 type PageCompilationCacheProduced struct {
-
 	// URL ...
 	URL string `json:"url"`
 

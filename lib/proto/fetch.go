@@ -28,7 +28,6 @@ const (
 
 // FetchRequestPattern ...
 type FetchRequestPattern struct {
-
 	// URLPattern (optional) Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
 	// backslash. Omitting is equivalent to `"*"`.
 	URLPattern string `json:"urlPattern,omitempty"`
@@ -42,7 +41,6 @@ type FetchRequestPattern struct {
 
 // FetchHeaderEntry Response HTTP header entry
 type FetchHeaderEntry struct {
-
 	// Name ...
 	Name string `json:"name"`
 
@@ -63,7 +61,6 @@ const (
 
 // FetchAuthChallenge Authorization challenge for HTTP status code 401 or 407.
 type FetchAuthChallenge struct {
-
 	// Source (optional) Source of the authentication challenge.
 	Source FetchAuthChallengeSource `json:"source,omitempty"`
 
@@ -93,7 +90,6 @@ const (
 
 // FetchAuthChallengeResponse Response to an AuthChallenge.
 type FetchAuthChallengeResponse struct {
-
 	// Response The decision on what to do in response to the authorization challenge.  Default means
 	// deferring to the default behavior of the net stack, which will likely either the Cancel
 	// authentication or display a popup dialog box.
@@ -109,8 +105,7 @@ type FetchAuthChallengeResponse struct {
 }
 
 // FetchDisable Disables the fetch domain.
-type FetchDisable struct {
-}
+type FetchDisable struct{}
 
 // ProtoReq name
 func (m FetchDisable) ProtoReq() string { return "Fetch.disable" }
@@ -123,7 +118,6 @@ func (m FetchDisable) Call(c Client) error {
 // FetchEnable Enables issuing of requestPaused events. A request will be paused until client
 // calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
 type FetchEnable struct {
-
 	// Patterns (optional) If specified, only requests matching any of these patterns will produce
 	// fetchRequested event and will be paused until clients response. If not set,
 	// all requests will be affected.
@@ -144,7 +138,6 @@ func (m FetchEnable) Call(c Client) error {
 
 // FetchFailRequest Causes the request to fail with specified reason.
 type FetchFailRequest struct {
-
 	// RequestID An id the client received in requestPaused event.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -162,7 +155,6 @@ func (m FetchFailRequest) Call(c Client) error {
 
 // FetchFulfillRequest Provides response to the request.
 type FetchFulfillRequest struct {
-
 	// RequestID An id the client received in requestPaused event.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -198,7 +190,6 @@ func (m FetchFulfillRequest) Call(c Client) error {
 
 // FetchContinueRequest Continues the request, optionally modifying some of its parameters.
 type FetchContinueRequest struct {
-
 	// RequestID An id the client received in requestPaused event.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -230,7 +221,6 @@ func (m FetchContinueRequest) Call(c Client) error {
 
 // FetchContinueWithAuth Continues a request supplying authChallengeResponse following authRequired event.
 type FetchContinueWithAuth struct {
-
 	// RequestID An id the client received in authRequired event.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -250,7 +240,6 @@ func (m FetchContinueWithAuth) Call(c Client) error {
 // response headers. If either responseCode or headers are modified, all of them
 // must be present.
 type FetchContinueResponse struct {
-
 	// RequestID An id the client received in requestPaused event.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -286,7 +275,6 @@ func (m FetchContinueResponse) Call(c Client) error {
 // affect the request or disabling fetch domain before body is received
 // results in an undefined behavior.
 type FetchGetResponseBody struct {
-
 	// RequestID Identifier for the intercepted request to get body for.
 	RequestID FetchRequestID `json:"requestId"`
 }
@@ -302,7 +290,6 @@ func (m FetchGetResponseBody) Call(c Client) (*FetchGetResponseBodyResult, error
 
 // FetchGetResponseBodyResult ...
 type FetchGetResponseBodyResult struct {
-
 	// Body Response body.
 	Body string `json:"body"`
 
@@ -321,7 +308,6 @@ type FetchGetResponseBodyResult struct {
 // Calling other methods that affect the request or disabling fetch
 // domain before body is received results in an undefined behavior.
 type FetchTakeResponseBodyAsStream struct {
-
 	// RequestID ...
 	RequestID FetchRequestID `json:"requestId"`
 }
@@ -337,7 +323,6 @@ func (m FetchTakeResponseBodyAsStream) Call(c Client) (*FetchTakeResponseBodyAsS
 
 // FetchTakeResponseBodyAsStreamResult ...
 type FetchTakeResponseBodyAsStreamResult struct {
-
 	// Stream ...
 	Stream IOStreamHandle `json:"stream"`
 }
@@ -349,7 +334,6 @@ type FetchTakeResponseBodyAsStreamResult struct {
 // and responseStatusCode -- the request is at the response stage if either
 // of these fields is present and in the request stage otherwise.
 type FetchRequestPaused struct {
-
 	// RequestID Each request the page makes will have a unique id.
 	RequestID FetchRequestID `json:"requestId"`
 
@@ -391,7 +375,6 @@ func (evt FetchRequestPaused) ProtoEvent() string {
 // FetchAuthRequired Issued when the domain is enabled with handleAuthRequests set to true.
 // The request is paused until client responds with continueWithAuth.
 type FetchAuthRequired struct {
-
 	// RequestID Each request the page makes will have a unique id.
 	RequestID FetchRequestID `json:"requestId"`
 

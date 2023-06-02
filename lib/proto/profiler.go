@@ -10,7 +10,6 @@ Profiler
 
 // ProfilerProfileNode Profile node. Holds callsite information, execution statistics and child nodes.
 type ProfilerProfileNode struct {
-
 	// ID Unique id of the node.
 	ID int `json:"id"`
 
@@ -33,7 +32,6 @@ type ProfilerProfileNode struct {
 
 // ProfilerProfile Profile.
 type ProfilerProfile struct {
-
 	// Nodes The list of profile nodes. First item is the root node.
 	Nodes []*ProfilerProfileNode `json:"nodes"`
 
@@ -53,7 +51,6 @@ type ProfilerProfile struct {
 
 // ProfilerPositionTickInfo Specifies a number of samples attributed to a certain source position.
 type ProfilerPositionTickInfo struct {
-
 	// Line Source line number (1-based).
 	Line int `json:"line"`
 
@@ -63,7 +60,6 @@ type ProfilerPositionTickInfo struct {
 
 // ProfilerCoverageRange Coverage data for a source range.
 type ProfilerCoverageRange struct {
-
 	// StartOffset JavaScript script source offset for the range start.
 	StartOffset int `json:"startOffset"`
 
@@ -76,7 +72,6 @@ type ProfilerCoverageRange struct {
 
 // ProfilerFunctionCoverage Coverage data for a JavaScript function.
 type ProfilerFunctionCoverage struct {
-
 	// FunctionName JavaScript function name.
 	FunctionName string `json:"functionName"`
 
@@ -89,7 +84,6 @@ type ProfilerFunctionCoverage struct {
 
 // ProfilerScriptCoverage Coverage data for a JavaScript script.
 type ProfilerScriptCoverage struct {
-
 	// ScriptID JavaScript script id.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -101,8 +95,7 @@ type ProfilerScriptCoverage struct {
 }
 
 // ProfilerDisable ...
-type ProfilerDisable struct {
-}
+type ProfilerDisable struct{}
 
 // ProtoReq name
 func (m ProfilerDisable) ProtoReq() string { return "Profiler.disable" }
@@ -113,8 +106,7 @@ func (m ProfilerDisable) Call(c Client) error {
 }
 
 // ProfilerEnable ...
-type ProfilerEnable struct {
-}
+type ProfilerEnable struct{}
 
 // ProtoReq name
 func (m ProfilerEnable) ProtoReq() string { return "Profiler.enable" }
@@ -126,8 +118,7 @@ func (m ProfilerEnable) Call(c Client) error {
 
 // ProfilerGetBestEffortCoverage Collect coverage data for the current isolate. The coverage data may be incomplete due to
 // garbage collection.
-type ProfilerGetBestEffortCoverage struct {
-}
+type ProfilerGetBestEffortCoverage struct{}
 
 // ProtoReq name
 func (m ProfilerGetBestEffortCoverage) ProtoReq() string { return "Profiler.getBestEffortCoverage" }
@@ -140,14 +131,12 @@ func (m ProfilerGetBestEffortCoverage) Call(c Client) (*ProfilerGetBestEffortCov
 
 // ProfilerGetBestEffortCoverageResult ...
 type ProfilerGetBestEffortCoverageResult struct {
-
 	// Result Coverage data for the current isolate.
 	Result []*ProfilerScriptCoverage `json:"result"`
 }
 
 // ProfilerSetSamplingInterval Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 type ProfilerSetSamplingInterval struct {
-
 	// Interval New sampling interval in microseconds.
 	Interval int `json:"interval"`
 }
@@ -161,8 +150,7 @@ func (m ProfilerSetSamplingInterval) Call(c Client) error {
 }
 
 // ProfilerStart ...
-type ProfilerStart struct {
-}
+type ProfilerStart struct{}
 
 // ProtoReq name
 func (m ProfilerStart) ProtoReq() string { return "Profiler.start" }
@@ -176,7 +164,6 @@ func (m ProfilerStart) Call(c Client) error {
 // coverage may be incomplete. Enabling prevents running optimized code and resets execution
 // counters.
 type ProfilerStartPreciseCoverage struct {
-
 	// CallCount (optional) Collect accurate call counts beyond simple 'covered' or 'not covered'.
 	CallCount bool `json:"callCount,omitempty"`
 
@@ -198,14 +185,12 @@ func (m ProfilerStartPreciseCoverage) Call(c Client) (*ProfilerStartPreciseCover
 
 // ProfilerStartPreciseCoverageResult ...
 type ProfilerStartPreciseCoverageResult struct {
-
 	// Timestamp Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
 	Timestamp float64 `json:"timestamp"`
 }
 
 // ProfilerStop ...
-type ProfilerStop struct {
-}
+type ProfilerStop struct{}
 
 // ProtoReq name
 func (m ProfilerStop) ProtoReq() string { return "Profiler.stop" }
@@ -218,15 +203,13 @@ func (m ProfilerStop) Call(c Client) (*ProfilerStopResult, error) {
 
 // ProfilerStopResult ...
 type ProfilerStopResult struct {
-
 	// Profile Recorded profile.
 	Profile *ProfilerProfile `json:"profile"`
 }
 
 // ProfilerStopPreciseCoverage Disable precise code coverage. Disabling releases unnecessary execution count records and allows
 // executing optimized code.
-type ProfilerStopPreciseCoverage struct {
-}
+type ProfilerStopPreciseCoverage struct{}
 
 // ProtoReq name
 func (m ProfilerStopPreciseCoverage) ProtoReq() string { return "Profiler.stopPreciseCoverage" }
@@ -238,8 +221,7 @@ func (m ProfilerStopPreciseCoverage) Call(c Client) error {
 
 // ProfilerTakePreciseCoverage Collect coverage data for the current isolate, and resets execution counters. Precise code
 // coverage needs to have started.
-type ProfilerTakePreciseCoverage struct {
-}
+type ProfilerTakePreciseCoverage struct{}
 
 // ProtoReq name
 func (m ProfilerTakePreciseCoverage) ProtoReq() string { return "Profiler.takePreciseCoverage" }
@@ -252,7 +234,6 @@ func (m ProfilerTakePreciseCoverage) Call(c Client) (*ProfilerTakePreciseCoverag
 
 // ProfilerTakePreciseCoverageResult ...
 type ProfilerTakePreciseCoverageResult struct {
-
 	// Result Coverage data for the current isolate.
 	Result []*ProfilerScriptCoverage `json:"result"`
 
@@ -262,7 +243,6 @@ type ProfilerTakePreciseCoverageResult struct {
 
 // ProfilerConsoleProfileFinished ...
 type ProfilerConsoleProfileFinished struct {
-
 	// ID ...
 	ID string `json:"id"`
 
@@ -283,7 +263,6 @@ func (evt ProfilerConsoleProfileFinished) ProtoEvent() string {
 
 // ProfilerConsoleProfileStarted Sent when new profile recording is started using console.profile() call.
 type ProfilerConsoleProfileStarted struct {
-
 	// ID ...
 	ID string `json:"id"`
 
@@ -304,7 +283,6 @@ func (evt ProfilerConsoleProfileStarted) ProtoEvent() string {
 // coverage has been started. This event can be trigged by the embedder to, for example,
 // trigger collection of coverage data immediately at a certain point in time.
 type ProfilerPreciseCoverageDeltaUpdate struct {
-
 	// Timestamp Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
 	Timestamp float64 `json:"timestamp"`
 

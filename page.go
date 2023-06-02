@@ -21,9 +21,11 @@ import (
 )
 
 // Page implements these interfaces
-var _ proto.Client = &Page{}
-var _ proto.Contextable = &Page{}
-var _ proto.Sessionable = &Page{}
+var (
+	_ proto.Client      = &Page{}
+	_ proto.Contextable = &Page{}
+	_ proto.Sessionable = &Page{}
+)
 
 // Page represents the webpage.
 // We try to hold as less states as possible.
@@ -480,7 +482,6 @@ func (p *Page) CaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSnapsh
 		IncludeBlendedBackgroundColors: true,
 		IncludeTextColorOpacities:      true,
 	}.Call(p)
-
 	if err != nil {
 		return nil, err
 	}
@@ -635,7 +636,6 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 // Be careful,d is not the max wait timeout, it's the least stable time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
 func (p *Page) WaitStable(d time.Duration, similarity float32) error {
-
 	defer p.tryTrace(TraceTypeWait, "stable")
 
 	domSnapshot, err := p.CaptureDOMSnapshot()

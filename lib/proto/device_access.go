@@ -16,7 +16,6 @@ type DeviceAccessDeviceID string
 
 // DeviceAccessPromptDevice Device information displayed in a user prompt to select a device.
 type DeviceAccessPromptDevice struct {
-
 	// ID ...
 	ID DeviceAccessDeviceID `json:"id"`
 
@@ -25,8 +24,7 @@ type DeviceAccessPromptDevice struct {
 }
 
 // DeviceAccessEnable Enable events in this domain.
-type DeviceAccessEnable struct {
-}
+type DeviceAccessEnable struct{}
 
 // ProtoReq name
 func (m DeviceAccessEnable) ProtoReq() string { return "DeviceAccess.enable" }
@@ -37,8 +35,7 @@ func (m DeviceAccessEnable) Call(c Client) error {
 }
 
 // DeviceAccessDisable Disable events in this domain.
-type DeviceAccessDisable struct {
-}
+type DeviceAccessDisable struct{}
 
 // ProtoReq name
 func (m DeviceAccessDisable) ProtoReq() string { return "DeviceAccess.disable" }
@@ -50,7 +47,6 @@ func (m DeviceAccessDisable) Call(c Client) error {
 
 // DeviceAccessSelectPrompt Select a device in response to a DeviceAccess.deviceRequestPrompted event.
 type DeviceAccessSelectPrompt struct {
-
 	// ID ...
 	ID DeviceAccessRequestID `json:"id"`
 
@@ -68,7 +64,6 @@ func (m DeviceAccessSelectPrompt) Call(c Client) error {
 
 // DeviceAccessCancelPrompt Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
 type DeviceAccessCancelPrompt struct {
-
 	// ID ...
 	ID DeviceAccessRequestID `json:"id"`
 }
@@ -84,7 +79,6 @@ func (m DeviceAccessCancelPrompt) Call(c Client) error {
 // DeviceAccessDeviceRequestPrompted A device request opened a user prompt to select a device. Respond with the
 // selectPrompt or cancelPrompt command.
 type DeviceAccessDeviceRequestPrompted struct {
-
 	// ID ...
 	ID DeviceAccessRequestID `json:"id"`
 

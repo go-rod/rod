@@ -17,7 +17,6 @@ type DatabaseDatabaseID string
 
 // DatabaseDatabase Database object.
 type DatabaseDatabase struct {
-
 	// ID Database ID.
 	ID DatabaseDatabaseID `json:"id"`
 
@@ -33,7 +32,6 @@ type DatabaseDatabase struct {
 
 // DatabaseError Database error.
 type DatabaseError struct {
-
 	// Message Error message.
 	Message string `json:"message"`
 
@@ -42,8 +40,7 @@ type DatabaseError struct {
 }
 
 // DatabaseDisable Disables database tracking, prevents database events from being sent to the client.
-type DatabaseDisable struct {
-}
+type DatabaseDisable struct{}
 
 // ProtoReq name
 func (m DatabaseDisable) ProtoReq() string { return "Database.disable" }
@@ -54,8 +51,7 @@ func (m DatabaseDisable) Call(c Client) error {
 }
 
 // DatabaseEnable Enables database tracking, database events will now be delivered to the client.
-type DatabaseEnable struct {
-}
+type DatabaseEnable struct{}
 
 // ProtoReq name
 func (m DatabaseEnable) ProtoReq() string { return "Database.enable" }
@@ -67,7 +63,6 @@ func (m DatabaseEnable) Call(c Client) error {
 
 // DatabaseExecuteSQL ...
 type DatabaseExecuteSQL struct {
-
 	// DatabaseID ...
 	DatabaseID DatabaseDatabaseID `json:"databaseId"`
 
@@ -86,7 +81,6 @@ func (m DatabaseExecuteSQL) Call(c Client) (*DatabaseExecuteSQLResult, error) {
 
 // DatabaseExecuteSQLResult ...
 type DatabaseExecuteSQLResult struct {
-
 	// ColumnNames (optional) ...
 	ColumnNames []string `json:"columnNames,omitempty"`
 
@@ -99,7 +93,6 @@ type DatabaseExecuteSQLResult struct {
 
 // DatabaseGetDatabaseTableNames ...
 type DatabaseGetDatabaseTableNames struct {
-
 	// DatabaseID ...
 	DatabaseID DatabaseDatabaseID `json:"databaseId"`
 }
@@ -115,14 +108,12 @@ func (m DatabaseGetDatabaseTableNames) Call(c Client) (*DatabaseGetDatabaseTable
 
 // DatabaseGetDatabaseTableNamesResult ...
 type DatabaseGetDatabaseTableNamesResult struct {
-
 	// TableNames ...
 	TableNames []string `json:"tableNames"`
 }
 
 // DatabaseAddDatabase ...
 type DatabaseAddDatabase struct {
-
 	// Database ...
 	Database *DatabaseDatabase `json:"database"`
 }

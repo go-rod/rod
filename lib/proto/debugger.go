@@ -23,7 +23,6 @@ type DebuggerCallFrameID string
 
 // DebuggerLocation Location in the source code.
 type DebuggerLocation struct {
-
 	// ScriptID Script identifier as reported in the `Debugger.scriptParsed`.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -36,7 +35,6 @@ type DebuggerLocation struct {
 
 // DebuggerScriptPosition (experimental) Location in the source code.
 type DebuggerScriptPosition struct {
-
 	// LineNumber ...
 	LineNumber int `json:"lineNumber"`
 
@@ -46,7 +44,6 @@ type DebuggerScriptPosition struct {
 
 // DebuggerLocationRange (experimental) Location range within one script.
 type DebuggerLocationRange struct {
-
 	// ScriptID ...
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -59,7 +56,6 @@ type DebuggerLocationRange struct {
 
 // DebuggerCallFrame JavaScript call frame. Array of call frames form the call stack.
 type DebuggerCallFrame struct {
-
 	// CallFrameID Call frame identifier. This identifier is only valid while the virtual machine is paused.
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 
@@ -130,7 +126,6 @@ const (
 
 // DebuggerScope Scope description.
 type DebuggerScope struct {
-
 	// Type Scope type.
 	Type DebuggerScopeType `json:"type"`
 
@@ -151,7 +146,6 @@ type DebuggerScope struct {
 
 // DebuggerSearchMatch Search match for resource.
 type DebuggerSearchMatch struct {
-
 	// LineNumber Line number in resource content.
 	LineNumber float64 `json:"lineNumber"`
 
@@ -175,7 +169,6 @@ const (
 
 // DebuggerBreakLocation ...
 type DebuggerBreakLocation struct {
-
 	// ScriptID Script identifier as reported in the `Debugger.scriptParsed`.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -191,7 +184,6 @@ type DebuggerBreakLocation struct {
 
 // DebuggerWasmDisassemblyChunk (experimental) ...
 type DebuggerWasmDisassemblyChunk struct {
-
 	// Lines The next chunk of disassembled lines.
 	Lines []string `json:"lines"`
 
@@ -229,7 +221,6 @@ const (
 
 // DebuggerDebugSymbols Debug symbols available for a wasm script.
 type DebuggerDebugSymbols struct {
-
 	// Type Type of the debug symbols.
 	Type DebuggerDebugSymbolsType `json:"type"`
 
@@ -250,7 +241,6 @@ const (
 
 // DebuggerContinueToLocation Continues execution until specific location is reached.
 type DebuggerContinueToLocation struct {
-
 	// Location Location to continue to.
 	Location *DebuggerLocation `json:"location"`
 
@@ -267,8 +257,7 @@ func (m DebuggerContinueToLocation) Call(c Client) error {
 }
 
 // DebuggerDisable Disables debugger for given page.
-type DebuggerDisable struct {
-}
+type DebuggerDisable struct{}
 
 // ProtoReq name
 func (m DebuggerDisable) ProtoReq() string { return "Debugger.disable" }
@@ -281,7 +270,6 @@ func (m DebuggerDisable) Call(c Client) error {
 // DebuggerEnable Enables debugger for the given page. Clients should not assume that the debugging has been
 // enabled until the result for this command is received.
 type DebuggerEnable struct {
-
 	// MaxScriptsCacheSize (experimental) (optional) The maximum size in bytes of collected scripts (not referenced by other heap objects)
 	// the debugger can hold. Puts no limit if parameter is omitted.
 	MaxScriptsCacheSize *float64 `json:"maxScriptsCacheSize,omitempty"`
@@ -298,14 +286,12 @@ func (m DebuggerEnable) Call(c Client) (*DebuggerEnableResult, error) {
 
 // DebuggerEnableResult ...
 type DebuggerEnableResult struct {
-
 	// DebuggerID (experimental) Unique identifier of the debugger.
 	DebuggerID RuntimeUniqueDebuggerID `json:"debuggerId"`
 }
 
 // DebuggerEvaluateOnCallFrame Evaluates expression on a given call frame.
 type DebuggerEvaluateOnCallFrame struct {
-
 	// CallFrameID Call frame identifier to evaluate on.
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 
@@ -348,7 +334,6 @@ func (m DebuggerEvaluateOnCallFrame) Call(c Client) (*DebuggerEvaluateOnCallFram
 
 // DebuggerEvaluateOnCallFrameResult ...
 type DebuggerEvaluateOnCallFrameResult struct {
-
 	// Result Object wrapper for the evaluation result.
 	Result *RuntimeRemoteObject `json:"result"`
 
@@ -359,7 +344,6 @@ type DebuggerEvaluateOnCallFrameResult struct {
 // DebuggerGetPossibleBreakpoints Returns possible locations for breakpoint. scriptId in start and end range locations should be
 // the same.
 type DebuggerGetPossibleBreakpoints struct {
-
 	// Start Start of range to search possible breakpoint locations in.
 	Start *DebuggerLocation `json:"start"`
 
@@ -382,14 +366,12 @@ func (m DebuggerGetPossibleBreakpoints) Call(c Client) (*DebuggerGetPossibleBrea
 
 // DebuggerGetPossibleBreakpointsResult ...
 type DebuggerGetPossibleBreakpointsResult struct {
-
 	// Locations List of the possible breakpoint locations.
 	Locations []*DebuggerBreakLocation `json:"locations"`
 }
 
 // DebuggerGetScriptSource Returns source for the script with given id.
 type DebuggerGetScriptSource struct {
-
 	// ScriptID Id of the script to get source for.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
@@ -405,7 +387,6 @@ func (m DebuggerGetScriptSource) Call(c Client) (*DebuggerGetScriptSourceResult,
 
 // DebuggerGetScriptSourceResult ...
 type DebuggerGetScriptSourceResult struct {
-
 	// ScriptSource Script source (empty in case of Wasm bytecode).
 	ScriptSource string `json:"scriptSource"`
 
@@ -415,7 +396,6 @@ type DebuggerGetScriptSourceResult struct {
 
 // DebuggerDisassembleWasmModule (experimental) ...
 type DebuggerDisassembleWasmModule struct {
-
 	// ScriptID Id of the script to disassemble
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
@@ -431,7 +411,6 @@ func (m DebuggerDisassembleWasmModule) Call(c Client) (*DebuggerDisassembleWasmM
 
 // DebuggerDisassembleWasmModuleResult (experimental) ...
 type DebuggerDisassembleWasmModuleResult struct {
-
 	// StreamID (optional) For large modules, return a stream from which additional chunks of
 	// disassembly can be read successively.
 	StreamID string `json:"streamId,omitempty"`
@@ -452,7 +431,6 @@ type DebuggerDisassembleWasmModuleResult struct {
 // and return an empty chunk. Any subsequent calls for the now invalid stream
 // will return errors.
 type DebuggerNextWasmDisassemblyChunk struct {
-
 	// StreamID ...
 	StreamID string `json:"streamId"`
 }
@@ -470,14 +448,12 @@ func (m DebuggerNextWasmDisassemblyChunk) Call(c Client) (*DebuggerNextWasmDisas
 
 // DebuggerNextWasmDisassemblyChunkResult (experimental) ...
 type DebuggerNextWasmDisassemblyChunkResult struct {
-
 	// Chunk The next chunk of disassembly.
 	Chunk *DebuggerWasmDisassemblyChunk `json:"chunk"`
 }
 
 // DebuggerGetWasmBytecode (deprecated) This command is deprecated. Use getScriptSource instead.
 type DebuggerGetWasmBytecode struct {
-
 	// ScriptID Id of the Wasm script to get source for.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 }
@@ -493,14 +469,12 @@ func (m DebuggerGetWasmBytecode) Call(c Client) (*DebuggerGetWasmBytecodeResult,
 
 // DebuggerGetWasmBytecodeResult (deprecated) ...
 type DebuggerGetWasmBytecodeResult struct {
-
 	// Bytecode Script source.
 	Bytecode []byte `json:"bytecode"`
 }
 
 // DebuggerGetStackTrace (experimental) Returns stack trace with given `stackTraceId`.
 type DebuggerGetStackTrace struct {
-
 	// StackTraceID ...
 	StackTraceID *RuntimeStackTraceID `json:"stackTraceId"`
 }
@@ -516,14 +490,12 @@ func (m DebuggerGetStackTrace) Call(c Client) (*DebuggerGetStackTraceResult, err
 
 // DebuggerGetStackTraceResult (experimental) ...
 type DebuggerGetStackTraceResult struct {
-
 	// StackTrace ...
 	StackTrace *RuntimeStackTrace `json:"stackTrace"`
 }
 
 // DebuggerPause Stops on the next JavaScript statement.
-type DebuggerPause struct {
-}
+type DebuggerPause struct{}
 
 // ProtoReq name
 func (m DebuggerPause) ProtoReq() string { return "Debugger.pause" }
@@ -535,7 +507,6 @@ func (m DebuggerPause) Call(c Client) error {
 
 // DebuggerPauseOnAsyncCall (deprecated) (experimental) ...
 type DebuggerPauseOnAsyncCall struct {
-
 	// ParentStackTraceID Debugger will pause when async call with given stack trace is started.
 	ParentStackTraceID *RuntimeStackTraceID `json:"parentStackTraceId"`
 }
@@ -550,7 +521,6 @@ func (m DebuggerPauseOnAsyncCall) Call(c Client) error {
 
 // DebuggerRemoveBreakpoint Removes JavaScript breakpoint.
 type DebuggerRemoveBreakpoint struct {
-
 	// BreakpointID ...
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
@@ -585,7 +555,6 @@ const (
 // Use the call frames from the `Debugger#paused` events instead, that fires
 // once V8 pauses at the beginning of the restarted function.
 type DebuggerRestartFrame struct {
-
 	// CallFrameID Call frame identifier to evaluate on.
 	CallFrameID DebuggerCallFrameID `json:"callFrameId"`
 
@@ -605,7 +574,6 @@ func (m DebuggerRestartFrame) Call(c Client) (*DebuggerRestartFrameResult, error
 
 // DebuggerRestartFrameResult ...
 type DebuggerRestartFrameResult struct {
-
 	// CallFrames (deprecated) New stack trace.
 	CallFrames []*DebuggerCallFrame `json:"callFrames"`
 
@@ -618,7 +586,6 @@ type DebuggerRestartFrameResult struct {
 
 // DebuggerResume Resumes JavaScript execution.
 type DebuggerResume struct {
-
 	// TerminateOnResume (optional) Set to true to terminate execution upon resuming execution. In contrast
 	// to Runtime.terminateExecution, this will allows to execute further
 	// JavaScript (i.e. via evaluation) until execution of the paused code
@@ -637,7 +604,6 @@ func (m DebuggerResume) Call(c Client) error {
 
 // DebuggerSearchInContent Searches for given string in script content.
 type DebuggerSearchInContent struct {
-
 	// ScriptID Id of the script to search in.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -662,14 +628,12 @@ func (m DebuggerSearchInContent) Call(c Client) (*DebuggerSearchInContentResult,
 
 // DebuggerSearchInContentResult ...
 type DebuggerSearchInContentResult struct {
-
 	// Result List of search matches.
 	Result []*DebuggerSearchMatch `json:"result"`
 }
 
 // DebuggerSetAsyncCallStackDepth Enables or disables async call stacks tracking.
 type DebuggerSetAsyncCallStackDepth struct {
-
 	// MaxDepth Maximum depth of async call stacks. Setting to `0` will effectively disable collecting async
 	// call stacks (default).
 	MaxDepth int `json:"maxDepth"`
@@ -687,7 +651,6 @@ func (m DebuggerSetAsyncCallStackDepth) Call(c Client) error {
 // scripts with url matching one of the patterns. VM will try to leave blackboxed script by
 // performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
 type DebuggerSetBlackboxPatterns struct {
-
 	// Patterns Array of regexps that will be used to check script url for blackbox state.
 	Patterns []string `json:"patterns"`
 }
@@ -705,7 +668,6 @@ func (m DebuggerSetBlackboxPatterns) Call(c Client) error {
 // Positions array contains positions where blackbox state is changed. First interval isn't
 // blackboxed. Array should be sorted.
 type DebuggerSetBlackboxedRanges struct {
-
 	// ScriptID Id of the script.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -723,7 +685,6 @@ func (m DebuggerSetBlackboxedRanges) Call(c Client) error {
 
 // DebuggerSetBreakpoint Sets JavaScript breakpoint at a given location.
 type DebuggerSetBreakpoint struct {
-
 	// Location Location to set breakpoint in.
 	Location *DebuggerLocation `json:"location"`
 
@@ -743,7 +704,6 @@ func (m DebuggerSetBreakpoint) Call(c Client) (*DebuggerSetBreakpointResult, err
 
 // DebuggerSetBreakpointResult ...
 type DebuggerSetBreakpointResult struct {
-
 	// BreakpointID Id of the created breakpoint for further reference.
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 
@@ -764,7 +724,6 @@ const (
 
 // DebuggerSetInstrumentationBreakpoint Sets instrumentation breakpoint.
 type DebuggerSetInstrumentationBreakpoint struct {
-
 	// Instrumentation Instrumentation name.
 	Instrumentation DebuggerSetInstrumentationBreakpointInstrumentation `json:"instrumentation"`
 }
@@ -782,7 +741,6 @@ func (m DebuggerSetInstrumentationBreakpoint) Call(c Client) (*DebuggerSetInstru
 
 // DebuggerSetInstrumentationBreakpointResult ...
 type DebuggerSetInstrumentationBreakpointResult struct {
-
 	// BreakpointID Id of the created breakpoint for further reference.
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
@@ -792,7 +750,6 @@ type DebuggerSetInstrumentationBreakpointResult struct {
 // `locations` property. Further matching script parsing will result in subsequent
 // `breakpointResolved` events issued. This logical breakpoint will survive page reloads.
 type DebuggerSetBreakpointByURL struct {
-
 	// LineNumber Line number to set breakpoint at.
 	LineNumber int `json:"lineNumber"`
 
@@ -825,7 +782,6 @@ func (m DebuggerSetBreakpointByURL) Call(c Client) (*DebuggerSetBreakpointByURLR
 
 // DebuggerSetBreakpointByURLResult ...
 type DebuggerSetBreakpointByURLResult struct {
-
 	// BreakpointID Id of the created breakpoint for further reference.
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 
@@ -837,7 +793,6 @@ type DebuggerSetBreakpointByURLResult struct {
 // If another function was created from the same source as a given one,
 // calling it will also trigger the breakpoint.
 type DebuggerSetBreakpointOnFunctionCall struct {
-
 	// ObjectID Function object id.
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 
@@ -859,14 +814,12 @@ func (m DebuggerSetBreakpointOnFunctionCall) Call(c Client) (*DebuggerSetBreakpo
 
 // DebuggerSetBreakpointOnFunctionCallResult (experimental) ...
 type DebuggerSetBreakpointOnFunctionCallResult struct {
-
 	// BreakpointID Id of the created breakpoint for further reference.
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 }
 
 // DebuggerSetBreakpointsActive Activates / deactivates all breakpoints on the page.
 type DebuggerSetBreakpointsActive struct {
-
 	// Active New value for breakpoints active state.
 	Active bool `json:"active"`
 }
@@ -899,7 +852,6 @@ const (
 // DebuggerSetPauseOnExceptions Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,
 // or caught exceptions, no exceptions. Initial pause on exceptions state is `none`.
 type DebuggerSetPauseOnExceptions struct {
-
 	// State Pause on exceptions mode.
 	State DebuggerSetPauseOnExceptionsState `json:"state"`
 }
@@ -914,7 +866,6 @@ func (m DebuggerSetPauseOnExceptions) Call(c Client) error {
 
 // DebuggerSetReturnValue (experimental) Changes return value in top frame. Available only at return break position.
 type DebuggerSetReturnValue struct {
-
 	// NewValue New return value.
 	NewValue *RuntimeCallArgument `json:"newValue"`
 }
@@ -935,7 +886,6 @@ func (m DebuggerSetReturnValue) Call(c Client) error {
 // the live edit will be successful and a `Debugger.restartFrame` for the
 // top-most function is automatically triggered.
 type DebuggerSetScriptSource struct {
-
 	// ScriptID Id of the script to edit.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -982,7 +932,6 @@ const (
 
 // DebuggerSetScriptSourceResult ...
 type DebuggerSetScriptSourceResult struct {
-
 	// CallFrames (deprecated) (optional) New stack trace in case editing has happened while VM was stopped.
 	CallFrames []*DebuggerCallFrame `json:"callFrames,omitempty"`
 
@@ -1006,7 +955,6 @@ type DebuggerSetScriptSourceResult struct {
 
 // DebuggerSetSkipAllPauses Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
 type DebuggerSetSkipAllPauses struct {
-
 	// Skip New value for skip pauses state.
 	Skip bool `json:"skip"`
 }
@@ -1022,7 +970,6 @@ func (m DebuggerSetSkipAllPauses) Call(c Client) error {
 // DebuggerSetVariableValue Changes value of variable in a callframe. Object-based scopes are not supported and must be
 // mutated manually.
 type DebuggerSetVariableValue struct {
-
 	// ScopeNumber 0-based number of scope as was listed in scope chain. Only 'local', 'closure' and 'catch'
 	// scope types are allowed. Other scopes could be manipulated manually.
 	ScopeNumber int `json:"scopeNumber"`
@@ -1047,7 +994,6 @@ func (m DebuggerSetVariableValue) Call(c Client) error {
 
 // DebuggerStepInto Steps into the function call.
 type DebuggerStepInto struct {
-
 	// BreakOnAsyncCall (experimental) (optional) Debugger will pause on the execution of the first async task which was scheduled
 	// before next pause.
 	BreakOnAsyncCall bool `json:"breakOnAsyncCall,omitempty"`
@@ -1065,8 +1011,7 @@ func (m DebuggerStepInto) Call(c Client) error {
 }
 
 // DebuggerStepOut Steps out of the function call.
-type DebuggerStepOut struct {
-}
+type DebuggerStepOut struct{}
 
 // ProtoReq name
 func (m DebuggerStepOut) ProtoReq() string { return "Debugger.stepOut" }
@@ -1078,7 +1023,6 @@ func (m DebuggerStepOut) Call(c Client) error {
 
 // DebuggerStepOver Steps over the statement.
 type DebuggerStepOver struct {
-
 	// SkipList (experimental) (optional) The skipList specifies location ranges that should be skipped on step over.
 	SkipList []*DebuggerLocationRange `json:"skipList,omitempty"`
 }
@@ -1093,7 +1037,6 @@ func (m DebuggerStepOver) Call(c Client) error {
 
 // DebuggerBreakpointResolved Fired when breakpoint is resolved to an actual script and location.
 type DebuggerBreakpointResolved struct {
-
 	// BreakpointID Breakpoint unique identifier.
 	BreakpointID DebuggerBreakpointID `json:"breakpointId"`
 
@@ -1152,7 +1095,6 @@ const (
 
 // DebuggerPaused Fired when the virtual machine stopped on breakpoint or exception or any other stop criteria.
 type DebuggerPaused struct {
-
 	// CallFrames Call stack the virtual machine stopped on.
 	CallFrames []*DebuggerCallFrame `json:"callFrames"`
 
@@ -1181,8 +1123,7 @@ func (evt DebuggerPaused) ProtoEvent() string {
 }
 
 // DebuggerResumed Fired when the virtual machine resumed execution.
-type DebuggerResumed struct {
-}
+type DebuggerResumed struct{}
 
 // ProtoEvent name
 func (evt DebuggerResumed) ProtoEvent() string {
@@ -1191,7 +1132,6 @@ func (evt DebuggerResumed) ProtoEvent() string {
 
 // DebuggerScriptFailedToParse Fired when virtual machine fails to parse the script.
 type DebuggerScriptFailedToParse struct {
-
 	// ScriptID Identifier of the script parsed.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 
@@ -1252,7 +1192,6 @@ func (evt DebuggerScriptFailedToParse) ProtoEvent() string {
 // DebuggerScriptParsed Fired when virtual machine parses script. This event is also fired for all known and uncollected
 // scripts upon enabling debugger.
 type DebuggerScriptParsed struct {
-
 	// ScriptID Identifier of the script parsed.
 	ScriptID RuntimeScriptID `json:"scriptId"`
 

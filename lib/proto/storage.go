@@ -60,7 +60,6 @@ const (
 
 // StorageUsageForType Usage for a storage type.
 type StorageUsageForType struct {
-
 	// StorageType Name of storage type.
 	StorageType StorageStorageType `json:"storageType"`
 
@@ -71,7 +70,6 @@ type StorageUsageForType struct {
 // StorageTrustTokens (experimental) Pair of issuer origin and number of available (signed, but not used) Trust
 // Tokens from that issuer.
 type StorageTrustTokens struct {
-
 	// IssuerOrigin ...
 	IssuerOrigin string `json:"issuerOrigin"`
 
@@ -104,7 +102,6 @@ const (
 
 // StorageInterestGroupAd Ad advertising element inside an interest group.
 type StorageInterestGroupAd struct {
-
 	// RenderURL ...
 	RenderURL string `json:"renderUrl"`
 
@@ -114,7 +111,6 @@ type StorageInterestGroupAd struct {
 
 // StorageInterestGroupDetails The full details of an interest group.
 type StorageInterestGroupDetails struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 
@@ -207,7 +203,6 @@ const (
 
 // StorageSharedStorageEntry Struct for a single key-value pair in an origin's shared storage.
 type StorageSharedStorageEntry struct {
-
 	// Key ...
 	Key string `json:"key"`
 
@@ -217,7 +212,6 @@ type StorageSharedStorageEntry struct {
 
 // StorageSharedStorageMetadata Details for an origin's shared storage.
 type StorageSharedStorageMetadata struct {
-
 	// CreationTime ...
 	CreationTime TimeSinceEpoch `json:"creationTime"`
 
@@ -230,7 +224,6 @@ type StorageSharedStorageMetadata struct {
 
 // StorageSharedStorageReportingMetadata Pair of reporting metadata details for a candidate URL for `selectURL()`.
 type StorageSharedStorageReportingMetadata struct {
-
 	// EventType ...
 	EventType string `json:"eventType"`
 
@@ -240,7 +233,6 @@ type StorageSharedStorageReportingMetadata struct {
 
 // StorageSharedStorageURLWithMetadata Bundles a candidate URL with its reporting metadata.
 type StorageSharedStorageURLWithMetadata struct {
-
 	// URL Spec of candidate URL.
 	URL string `json:"url"`
 
@@ -251,7 +243,6 @@ type StorageSharedStorageURLWithMetadata struct {
 // StorageSharedStorageAccessParams Bundles the parameters for shared storage access events whose
 // presence/absence can vary according to SharedStorageAccessType.
 type StorageSharedStorageAccessParams struct {
-
 	// ScriptSourceURL (optional) Spec of the module script URL.
 	// Present only for SharedStorageAccessType.documentAddModule.
 	ScriptSourceURL string `json:"scriptSourceUrl,omitempty"`
@@ -306,7 +297,6 @@ const (
 
 // StorageStorageBucketInfo ...
 type StorageStorageBucketInfo struct {
-
 	// StorageKey ...
 	StorageKey StorageSerializedStorageKey `json:"storageKey"`
 
@@ -334,7 +324,6 @@ type StorageStorageBucketInfo struct {
 
 // StorageGetStorageKeyForFrame Returns a storage key given a frame id.
 type StorageGetStorageKeyForFrame struct {
-
 	// FrameID ...
 	FrameID PageFrameID `json:"frameId"`
 }
@@ -350,14 +339,12 @@ func (m StorageGetStorageKeyForFrame) Call(c Client) (*StorageGetStorageKeyForFr
 
 // StorageGetStorageKeyForFrameResult ...
 type StorageGetStorageKeyForFrameResult struct {
-
 	// StorageKey ...
 	StorageKey StorageSerializedStorageKey `json:"storageKey"`
 }
 
 // StorageClearDataForOrigin Clears storage for origin.
 type StorageClearDataForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 
@@ -375,7 +362,6 @@ func (m StorageClearDataForOrigin) Call(c Client) error {
 
 // StorageClearDataForStorageKey Clears storage for storage key.
 type StorageClearDataForStorageKey struct {
-
 	// StorageKey Storage key.
 	StorageKey string `json:"storageKey"`
 
@@ -393,7 +379,6 @@ func (m StorageClearDataForStorageKey) Call(c Client) error {
 
 // StorageGetCookies Returns all browser cookies.
 type StorageGetCookies struct {
-
 	// BrowserContextID (optional) Browser context to use when called on the browser endpoint.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
@@ -409,14 +394,12 @@ func (m StorageGetCookies) Call(c Client) (*StorageGetCookiesResult, error) {
 
 // StorageGetCookiesResult ...
 type StorageGetCookiesResult struct {
-
 	// Cookies Array of cookie objects.
 	Cookies []*NetworkCookie `json:"cookies"`
 }
 
 // StorageSetCookies Sets given cookies.
 type StorageSetCookies struct {
-
 	// Cookies Cookies to be set.
 	Cookies []*NetworkCookieParam `json:"cookies"`
 
@@ -434,7 +417,6 @@ func (m StorageSetCookies) Call(c Client) error {
 
 // StorageClearCookies Clears cookies.
 type StorageClearCookies struct {
-
 	// BrowserContextID (optional) Browser context to use when called on the browser endpoint.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
@@ -449,7 +431,6 @@ func (m StorageClearCookies) Call(c Client) error {
 
 // StorageGetUsageAndQuota Returns usage and quota in bytes.
 type StorageGetUsageAndQuota struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 }
@@ -465,7 +446,6 @@ func (m StorageGetUsageAndQuota) Call(c Client) (*StorageGetUsageAndQuotaResult,
 
 // StorageGetUsageAndQuotaResult ...
 type StorageGetUsageAndQuotaResult struct {
-
 	// Usage Storage usage (bytes).
 	Usage float64 `json:"usage"`
 
@@ -481,7 +461,6 @@ type StorageGetUsageAndQuotaResult struct {
 
 // StorageOverrideQuotaForOrigin (experimental) Override quota for the specified origin
 type StorageOverrideQuotaForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 
@@ -505,7 +484,6 @@ func (m StorageOverrideQuotaForOrigin) Call(c Client) error {
 
 // StorageTrackCacheStorageForOrigin Registers origin to be notified when an update occurs to its cache storage list.
 type StorageTrackCacheStorageForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 }
@@ -522,7 +500,6 @@ func (m StorageTrackCacheStorageForOrigin) Call(c Client) error {
 
 // StorageTrackCacheStorageForStorageKey Registers storage key to be notified when an update occurs to its cache storage list.
 type StorageTrackCacheStorageForStorageKey struct {
-
 	// StorageKey Storage key.
 	StorageKey string `json:"storageKey"`
 }
@@ -539,7 +516,6 @@ func (m StorageTrackCacheStorageForStorageKey) Call(c Client) error {
 
 // StorageTrackIndexedDBForOrigin Registers origin to be notified when an update occurs to its IndexedDB.
 type StorageTrackIndexedDBForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 }
@@ -554,7 +530,6 @@ func (m StorageTrackIndexedDBForOrigin) Call(c Client) error {
 
 // StorageTrackIndexedDBForStorageKey Registers storage key to be notified when an update occurs to its IndexedDB.
 type StorageTrackIndexedDBForStorageKey struct {
-
 	// StorageKey Storage key.
 	StorageKey string `json:"storageKey"`
 }
@@ -571,7 +546,6 @@ func (m StorageTrackIndexedDBForStorageKey) Call(c Client) error {
 
 // StorageUntrackCacheStorageForOrigin Unregisters origin from receiving notifications for cache storage.
 type StorageUntrackCacheStorageForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 }
@@ -588,7 +562,6 @@ func (m StorageUntrackCacheStorageForOrigin) Call(c Client) error {
 
 // StorageUntrackCacheStorageForStorageKey Unregisters storage key from receiving notifications for cache storage.
 type StorageUntrackCacheStorageForStorageKey struct {
-
 	// StorageKey Storage key.
 	StorageKey string `json:"storageKey"`
 }
@@ -605,7 +578,6 @@ func (m StorageUntrackCacheStorageForStorageKey) Call(c Client) error {
 
 // StorageUntrackIndexedDBForOrigin Unregisters origin from receiving notifications for IndexedDB.
 type StorageUntrackIndexedDBForOrigin struct {
-
 	// Origin Security origin.
 	Origin string `json:"origin"`
 }
@@ -622,7 +594,6 @@ func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
 
 // StorageUntrackIndexedDBForStorageKey Unregisters storage key from receiving notifications for IndexedDB.
 type StorageUntrackIndexedDBForStorageKey struct {
-
 	// StorageKey Storage key.
 	StorageKey string `json:"storageKey"`
 }
@@ -639,8 +610,7 @@ func (m StorageUntrackIndexedDBForStorageKey) Call(c Client) error {
 
 // StorageGetTrustTokens (experimental) Returns the number of stored Trust Tokens per issuer for the
 // current browsing context.
-type StorageGetTrustTokens struct {
-}
+type StorageGetTrustTokens struct{}
 
 // ProtoReq name
 func (m StorageGetTrustTokens) ProtoReq() string { return "Storage.getTrustTokens" }
@@ -653,7 +623,6 @@ func (m StorageGetTrustTokens) Call(c Client) (*StorageGetTrustTokensResult, err
 
 // StorageGetTrustTokensResult (experimental) ...
 type StorageGetTrustTokensResult struct {
-
 	// Tokens ...
 	Tokens []*StorageTrustTokens `json:"tokens"`
 }
@@ -661,7 +630,6 @@ type StorageGetTrustTokensResult struct {
 // StorageClearTrustTokens (experimental) Removes all Trust Tokens issued by the provided issuerOrigin.
 // Leaves other stored data, including the issuer's Redemption Records, intact.
 type StorageClearTrustTokens struct {
-
 	// IssuerOrigin ...
 	IssuerOrigin string `json:"issuerOrigin"`
 }
@@ -677,14 +645,12 @@ func (m StorageClearTrustTokens) Call(c Client) (*StorageClearTrustTokensResult,
 
 // StorageClearTrustTokensResult (experimental) ...
 type StorageClearTrustTokensResult struct {
-
 	// DidDeleteTokens True if any tokens were deleted, false otherwise.
 	DidDeleteTokens bool `json:"didDeleteTokens"`
 }
 
 // StorageGetInterestGroupDetails (experimental) Gets details for a named interest group.
 type StorageGetInterestGroupDetails struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 
@@ -703,14 +669,12 @@ func (m StorageGetInterestGroupDetails) Call(c Client) (*StorageGetInterestGroup
 
 // StorageGetInterestGroupDetailsResult (experimental) ...
 type StorageGetInterestGroupDetailsResult struct {
-
 	// Details ...
 	Details *StorageInterestGroupDetails `json:"details"`
 }
 
 // StorageSetInterestGroupTracking (experimental) Enables/Disables issuing of interestGroupAccessed events.
 type StorageSetInterestGroupTracking struct {
-
 	// Enable ...
 	Enable bool `json:"enable"`
 }
@@ -725,7 +689,6 @@ func (m StorageSetInterestGroupTracking) Call(c Client) error {
 
 // StorageGetSharedStorageMetadata (experimental) Gets metadata for an origin's shared storage.
 type StorageGetSharedStorageMetadata struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 }
@@ -741,14 +704,12 @@ func (m StorageGetSharedStorageMetadata) Call(c Client) (*StorageGetSharedStorag
 
 // StorageGetSharedStorageMetadataResult (experimental) ...
 type StorageGetSharedStorageMetadataResult struct {
-
 	// Metadata ...
 	Metadata *StorageSharedStorageMetadata `json:"metadata"`
 }
 
 // StorageGetSharedStorageEntries (experimental) Gets the entries in an given origin's shared storage.
 type StorageGetSharedStorageEntries struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 }
@@ -764,14 +725,12 @@ func (m StorageGetSharedStorageEntries) Call(c Client) (*StorageGetSharedStorage
 
 // StorageGetSharedStorageEntriesResult (experimental) ...
 type StorageGetSharedStorageEntriesResult struct {
-
 	// Entries ...
 	Entries []*StorageSharedStorageEntry `json:"entries"`
 }
 
 // StorageSetSharedStorageEntry (experimental) Sets entry with `key` and `value` for a given origin's shared storage.
 type StorageSetSharedStorageEntry struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 
@@ -796,7 +755,6 @@ func (m StorageSetSharedStorageEntry) Call(c Client) error {
 
 // StorageDeleteSharedStorageEntry (experimental) Deletes entry for `key` (if it exists) for a given origin's shared storage.
 type StorageDeleteSharedStorageEntry struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 
@@ -814,7 +772,6 @@ func (m StorageDeleteSharedStorageEntry) Call(c Client) error {
 
 // StorageClearSharedStorageEntries (experimental) Clears all entries for a given origin's shared storage.
 type StorageClearSharedStorageEntries struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 }
@@ -831,7 +788,6 @@ func (m StorageClearSharedStorageEntries) Call(c Client) error {
 
 // StorageResetSharedStorageBudget (experimental) Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
 type StorageResetSharedStorageBudget struct {
-
 	// OwnerOrigin ...
 	OwnerOrigin string `json:"ownerOrigin"`
 }
@@ -846,7 +802,6 @@ func (m StorageResetSharedStorageBudget) Call(c Client) error {
 
 // StorageSetSharedStorageTracking (experimental) Enables/disables issuing of sharedStorageAccessed events.
 type StorageSetSharedStorageTracking struct {
-
 	// Enable ...
 	Enable bool `json:"enable"`
 }
@@ -861,7 +816,6 @@ func (m StorageSetSharedStorageTracking) Call(c Client) error {
 
 // StorageSetStorageBucketTracking (experimental) Set tracking for a storage key's buckets.
 type StorageSetStorageBucketTracking struct {
-
 	// StorageKey ...
 	StorageKey string `json:"storageKey"`
 
@@ -879,7 +833,6 @@ func (m StorageSetStorageBucketTracking) Call(c Client) error {
 
 // StorageDeleteStorageBucket (experimental) Deletes the Storage Bucket with the given storage key and bucket name.
 type StorageDeleteStorageBucket struct {
-
 	// StorageKey ...
 	StorageKey string `json:"storageKey"`
 
@@ -897,7 +850,6 @@ func (m StorageDeleteStorageBucket) Call(c Client) error {
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
 type StorageCacheStorageContentUpdated struct {
-
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
@@ -915,7 +867,6 @@ func (evt StorageCacheStorageContentUpdated) ProtoEvent() string {
 
 // StorageCacheStorageListUpdated A cache has been added/deleted.
 type StorageCacheStorageListUpdated struct {
-
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
@@ -930,7 +881,6 @@ func (evt StorageCacheStorageListUpdated) ProtoEvent() string {
 
 // StorageIndexedDBContentUpdated The origin's IndexedDB object store has been modified.
 type StorageIndexedDBContentUpdated struct {
-
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
@@ -951,7 +901,6 @@ func (evt StorageIndexedDBContentUpdated) ProtoEvent() string {
 
 // StorageIndexedDBListUpdated The origin's IndexedDB database list has been modified.
 type StorageIndexedDBListUpdated struct {
-
 	// Origin Origin to update.
 	Origin string `json:"origin"`
 
@@ -966,7 +915,6 @@ func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 
 // StorageInterestGroupAccessed One of the interest groups was accessed by the associated page.
 type StorageInterestGroupAccessed struct {
-
 	// AccessTime ...
 	AccessTime TimeSinceEpoch `json:"accessTime"`
 
@@ -988,7 +936,6 @@ func (evt StorageInterestGroupAccessed) ProtoEvent() string {
 // StorageSharedStorageAccessed Shared storage was accessed by the associated page.
 // The following parameters are included in all events.
 type StorageSharedStorageAccessed struct {
-
 	// AccessTime Time of the access.
 	AccessTime TimeSinceEpoch `json:"accessTime"`
 
@@ -1013,7 +960,6 @@ func (evt StorageSharedStorageAccessed) ProtoEvent() string {
 
 // StorageStorageBucketCreatedOrUpdated ...
 type StorageStorageBucketCreatedOrUpdated struct {
-
 	// Bucket ...
 	Bucket *StorageStorageBucketInfo `json:"bucket"`
 }
@@ -1025,7 +971,6 @@ func (evt StorageStorageBucketCreatedOrUpdated) ProtoEvent() string {
 
 // StorageStorageBucketDeleted ...
 type StorageStorageBucketDeleted struct {
-
 	// BucketID ...
 	BucketID string `json:"bucketId"`
 }

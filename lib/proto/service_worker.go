@@ -13,7 +13,6 @@ type ServiceWorkerRegistrationID string
 
 // ServiceWorkerServiceWorkerRegistration ServiceWorker registration.
 type ServiceWorkerServiceWorkerRegistration struct {
-
 	// RegistrationID ...
 	RegistrationID ServiceWorkerRegistrationID `json:"registrationId"`
 
@@ -66,7 +65,6 @@ const (
 
 // ServiceWorkerServiceWorkerVersion ServiceWorker version.
 type ServiceWorkerServiceWorkerVersion struct {
-
 	// VersionID ...
 	VersionID string `json:"versionId"`
 
@@ -98,7 +96,6 @@ type ServiceWorkerServiceWorkerVersion struct {
 
 // ServiceWorkerServiceWorkerErrorMessage ServiceWorker error message.
 type ServiceWorkerServiceWorkerErrorMessage struct {
-
 	// ErrorMessage ...
 	ErrorMessage string `json:"errorMessage"`
 
@@ -120,7 +117,6 @@ type ServiceWorkerServiceWorkerErrorMessage struct {
 
 // ServiceWorkerDeliverPushMessage ...
 type ServiceWorkerDeliverPushMessage struct {
-
 	// Origin ...
 	Origin string `json:"origin"`
 
@@ -140,8 +136,7 @@ func (m ServiceWorkerDeliverPushMessage) Call(c Client) error {
 }
 
 // ServiceWorkerDisable ...
-type ServiceWorkerDisable struct {
-}
+type ServiceWorkerDisable struct{}
 
 // ProtoReq name
 func (m ServiceWorkerDisable) ProtoReq() string { return "ServiceWorker.disable" }
@@ -153,7 +148,6 @@ func (m ServiceWorkerDisable) Call(c Client) error {
 
 // ServiceWorkerDispatchSyncEvent ...
 type ServiceWorkerDispatchSyncEvent struct {
-
 	// Origin ...
 	Origin string `json:"origin"`
 
@@ -177,7 +171,6 @@ func (m ServiceWorkerDispatchSyncEvent) Call(c Client) error {
 
 // ServiceWorkerDispatchPeriodicSyncEvent ...
 type ServiceWorkerDispatchPeriodicSyncEvent struct {
-
 	// Origin ...
 	Origin string `json:"origin"`
 
@@ -199,8 +192,7 @@ func (m ServiceWorkerDispatchPeriodicSyncEvent) Call(c Client) error {
 }
 
 // ServiceWorkerEnable ...
-type ServiceWorkerEnable struct {
-}
+type ServiceWorkerEnable struct{}
 
 // ProtoReq name
 func (m ServiceWorkerEnable) ProtoReq() string { return "ServiceWorker.enable" }
@@ -212,7 +204,6 @@ func (m ServiceWorkerEnable) Call(c Client) error {
 
 // ServiceWorkerInspectWorker ...
 type ServiceWorkerInspectWorker struct {
-
 	// VersionID ...
 	VersionID string `json:"versionId"`
 }
@@ -227,7 +218,6 @@ func (m ServiceWorkerInspectWorker) Call(c Client) error {
 
 // ServiceWorkerSetForceUpdateOnPageLoad ...
 type ServiceWorkerSetForceUpdateOnPageLoad struct {
-
 	// ForceUpdateOnPageLoad ...
 	ForceUpdateOnPageLoad bool `json:"forceUpdateOnPageLoad"`
 }
@@ -244,7 +234,6 @@ func (m ServiceWorkerSetForceUpdateOnPageLoad) Call(c Client) error {
 
 // ServiceWorkerSkipWaiting ...
 type ServiceWorkerSkipWaiting struct {
-
 	// ScopeURL ...
 	ScopeURL string `json:"scopeURL"`
 }
@@ -259,7 +248,6 @@ func (m ServiceWorkerSkipWaiting) Call(c Client) error {
 
 // ServiceWorkerStartWorker ...
 type ServiceWorkerStartWorker struct {
-
 	// ScopeURL ...
 	ScopeURL string `json:"scopeURL"`
 }
@@ -273,8 +261,7 @@ func (m ServiceWorkerStartWorker) Call(c Client) error {
 }
 
 // ServiceWorkerStopAllWorkers ...
-type ServiceWorkerStopAllWorkers struct {
-}
+type ServiceWorkerStopAllWorkers struct{}
 
 // ProtoReq name
 func (m ServiceWorkerStopAllWorkers) ProtoReq() string { return "ServiceWorker.stopAllWorkers" }
@@ -286,7 +273,6 @@ func (m ServiceWorkerStopAllWorkers) Call(c Client) error {
 
 // ServiceWorkerStopWorker ...
 type ServiceWorkerStopWorker struct {
-
 	// VersionID ...
 	VersionID string `json:"versionId"`
 }
@@ -301,7 +287,6 @@ func (m ServiceWorkerStopWorker) Call(c Client) error {
 
 // ServiceWorkerUnregister ...
 type ServiceWorkerUnregister struct {
-
 	// ScopeURL ...
 	ScopeURL string `json:"scopeURL"`
 }
@@ -316,7 +301,6 @@ func (m ServiceWorkerUnregister) Call(c Client) error {
 
 // ServiceWorkerUpdateRegistration ...
 type ServiceWorkerUpdateRegistration struct {
-
 	// ScopeURL ...
 	ScopeURL string `json:"scopeURL"`
 }
@@ -331,7 +315,6 @@ func (m ServiceWorkerUpdateRegistration) Call(c Client) error {
 
 // ServiceWorkerWorkerErrorReported ...
 type ServiceWorkerWorkerErrorReported struct {
-
 	// ErrorMessage ...
 	ErrorMessage *ServiceWorkerServiceWorkerErrorMessage `json:"errorMessage"`
 }
@@ -343,7 +326,6 @@ func (evt ServiceWorkerWorkerErrorReported) ProtoEvent() string {
 
 // ServiceWorkerWorkerRegistrationUpdated ...
 type ServiceWorkerWorkerRegistrationUpdated struct {
-
 	// Registrations ...
 	Registrations []*ServiceWorkerServiceWorkerRegistration `json:"registrations"`
 }
@@ -355,7 +337,6 @@ func (evt ServiceWorkerWorkerRegistrationUpdated) ProtoEvent() string {
 
 // ServiceWorkerWorkerVersionUpdated ...
 type ServiceWorkerWorkerVersionUpdated struct {
-
 	// Versions ...
 	Versions []*ServiceWorkerServiceWorkerVersion `json:"versions"`
 }

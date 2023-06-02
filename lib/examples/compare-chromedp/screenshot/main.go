@@ -27,7 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile("fullScreenshot.png", buf, 0644)
+	err = ioutil.WriteFile("fullScreenshot.png", buf, 0o644)
 	if err != nil {
 		panic(err)
 	}

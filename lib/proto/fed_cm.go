@@ -24,7 +24,6 @@ const (
 
 // FedCmAccount Corresponds to IdentityRequestAccount
 type FedCmAccount struct {
-
 	// AccountID ...
 	AccountID string `json:"accountId"`
 
@@ -58,7 +57,6 @@ type FedCmAccount struct {
 
 // FedCmEnable ...
 type FedCmEnable struct {
-
 	// DisableRejectionDelay (optional) Allows callers to disable the promise rejection delay that would
 	// normally happen, if this is unimportant to what's being tested.
 	// (step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
@@ -74,8 +72,7 @@ func (m FedCmEnable) Call(c Client) error {
 }
 
 // FedCmDisable ...
-type FedCmDisable struct {
-}
+type FedCmDisable struct{}
 
 // ProtoReq name
 func (m FedCmDisable) ProtoReq() string { return "FedCm.disable" }
@@ -87,7 +84,6 @@ func (m FedCmDisable) Call(c Client) error {
 
 // FedCmSelectAccount ...
 type FedCmSelectAccount struct {
-
 	// DialogID ...
 	DialogID string `json:"dialogId"`
 
@@ -105,7 +101,6 @@ func (m FedCmSelectAccount) Call(c Client) error {
 
 // FedCmDismissDialog ...
 type FedCmDismissDialog struct {
-
 	// DialogID ...
 	DialogID string `json:"dialogId"`
 
@@ -123,8 +118,7 @@ func (m FedCmDismissDialog) Call(c Client) error {
 
 // FedCmResetCooldown Resets the cooldown time, if any, to allow the next FedCM call to show
 // a dialog even if one was recently dismissed by the user.
-type FedCmResetCooldown struct {
-}
+type FedCmResetCooldown struct{}
 
 // ProtoReq name
 func (m FedCmResetCooldown) ProtoReq() string { return "FedCm.resetCooldown" }
@@ -136,7 +130,6 @@ func (m FedCmResetCooldown) Call(c Client) error {
 
 // FedCmDialogShown ...
 type FedCmDialogShown struct {
-
 	// DialogID ...
 	DialogID string `json:"dialogId"`
 

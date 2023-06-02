@@ -37,7 +37,6 @@ const (
 
 // BackgroundServiceEventMetadata A key-value pair for additional event information to pass along.
 type BackgroundServiceEventMetadata struct {
-
 	// Key ...
 	Key string `json:"key"`
 
@@ -47,7 +46,6 @@ type BackgroundServiceEventMetadata struct {
 
 // BackgroundServiceBackgroundServiceEvent ...
 type BackgroundServiceBackgroundServiceEvent struct {
-
 	// Timestamp Timestamp of the event (in seconds).
 	Timestamp TimeSinceEpoch `json:"timestamp"`
 
@@ -75,7 +73,6 @@ type BackgroundServiceBackgroundServiceEvent struct {
 
 // BackgroundServiceStartObserving Enables event updates for the service.
 type BackgroundServiceStartObserving struct {
-
 	// Service ...
 	Service BackgroundServiceServiceName `json:"service"`
 }
@@ -90,7 +87,6 @@ func (m BackgroundServiceStartObserving) Call(c Client) error {
 
 // BackgroundServiceStopObserving Disables event updates for the service.
 type BackgroundServiceStopObserving struct {
-
 	// Service ...
 	Service BackgroundServiceServiceName `json:"service"`
 }
@@ -105,7 +101,6 @@ func (m BackgroundServiceStopObserving) Call(c Client) error {
 
 // BackgroundServiceSetRecording Set the recording state for the service.
 type BackgroundServiceSetRecording struct {
-
 	// ShouldRecord ...
 	ShouldRecord bool `json:"shouldRecord"`
 
@@ -123,7 +118,6 @@ func (m BackgroundServiceSetRecording) Call(c Client) error {
 
 // BackgroundServiceClearEvents Clears all stored data for the service.
 type BackgroundServiceClearEvents struct {
-
 	// Service ...
 	Service BackgroundServiceServiceName `json:"service"`
 }
@@ -138,7 +132,6 @@ func (m BackgroundServiceClearEvents) Call(c Client) error {
 
 // BackgroundServiceRecordingStateChanged Called when the recording state for the service has been updated.
 type BackgroundServiceRecordingStateChanged struct {
-
 	// IsRecording ...
 	IsRecording bool `json:"isRecording"`
 
@@ -154,7 +147,6 @@ func (evt BackgroundServiceRecordingStateChanged) ProtoEvent() string {
 // BackgroundServiceBackgroundServiceEventReceived Called with all existing backgroundServiceEvents when enabled, and all new
 // events afterwards if enabled and recording.
 type BackgroundServiceBackgroundServiceEventReceived struct {
-
 	// BackgroundServiceEvent ...
 	BackgroundServiceEvent *BackgroundServiceBackgroundServiceEvent `json:"backgroundServiceEvent"`
 }

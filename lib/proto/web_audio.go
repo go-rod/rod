@@ -83,7 +83,6 @@ const (
 
 // WebAudioContextRealtimeData Fields in AudioContext that change in real-time.
 type WebAudioContextRealtimeData struct {
-
 	// CurrentTime The current context time in second in BaseAudioContext.
 	CurrentTime float64 `json:"currentTime"`
 
@@ -101,7 +100,6 @@ type WebAudioContextRealtimeData struct {
 
 // WebAudioBaseAudioContext Protocol object for BaseAudioContext
 type WebAudioBaseAudioContext struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -126,7 +124,6 @@ type WebAudioBaseAudioContext struct {
 
 // WebAudioAudioListener Protocol object for AudioListener
 type WebAudioAudioListener struct {
-
 	// ListenerID ...
 	ListenerID WebAudioGraphObjectID `json:"listenerId"`
 
@@ -136,7 +133,6 @@ type WebAudioAudioListener struct {
 
 // WebAudioAudioNode Protocol object for AudioNode
 type WebAudioAudioNode struct {
-
 	// NodeID ...
 	NodeID WebAudioGraphObjectID `json:"nodeId"`
 
@@ -164,7 +160,6 @@ type WebAudioAudioNode struct {
 
 // WebAudioAudioParam Protocol object for AudioParam
 type WebAudioAudioParam struct {
-
 	// ParamID ...
 	ParamID WebAudioGraphObjectID `json:"paramId"`
 
@@ -191,8 +186,7 @@ type WebAudioAudioParam struct {
 }
 
 // WebAudioEnable Enables the WebAudio domain and starts sending context lifetime events.
-type WebAudioEnable struct {
-}
+type WebAudioEnable struct{}
 
 // ProtoReq name
 func (m WebAudioEnable) ProtoReq() string { return "WebAudio.enable" }
@@ -203,8 +197,7 @@ func (m WebAudioEnable) Call(c Client) error {
 }
 
 // WebAudioDisable Disables the WebAudio domain.
-type WebAudioDisable struct {
-}
+type WebAudioDisable struct{}
 
 // ProtoReq name
 func (m WebAudioDisable) ProtoReq() string { return "WebAudio.disable" }
@@ -216,7 +209,6 @@ func (m WebAudioDisable) Call(c Client) error {
 
 // WebAudioGetRealtimeData Fetch the realtime data from the registered contexts.
 type WebAudioGetRealtimeData struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
@@ -232,14 +224,12 @@ func (m WebAudioGetRealtimeData) Call(c Client) (*WebAudioGetRealtimeDataResult,
 
 // WebAudioGetRealtimeDataResult ...
 type WebAudioGetRealtimeDataResult struct {
-
 	// RealtimeData ...
 	RealtimeData *WebAudioContextRealtimeData `json:"realtimeData"`
 }
 
 // WebAudioContextCreated Notifies that a new BaseAudioContext has been created.
 type WebAudioContextCreated struct {
-
 	// Context ...
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
@@ -251,7 +241,6 @@ func (evt WebAudioContextCreated) ProtoEvent() string {
 
 // WebAudioContextWillBeDestroyed Notifies that an existing BaseAudioContext will be destroyed.
 type WebAudioContextWillBeDestroyed struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 }
@@ -263,7 +252,6 @@ func (evt WebAudioContextWillBeDestroyed) ProtoEvent() string {
 
 // WebAudioContextChanged Notifies that existing BaseAudioContext has changed some properties (id stays the same)..
 type WebAudioContextChanged struct {
-
 	// Context ...
 	Context *WebAudioBaseAudioContext `json:"context"`
 }
@@ -275,7 +263,6 @@ func (evt WebAudioContextChanged) ProtoEvent() string {
 
 // WebAudioAudioListenerCreated Notifies that the construction of an AudioListener has finished.
 type WebAudioAudioListenerCreated struct {
-
 	// Listener ...
 	Listener *WebAudioAudioListener `json:"listener"`
 }
@@ -287,7 +274,6 @@ func (evt WebAudioAudioListenerCreated) ProtoEvent() string {
 
 // WebAudioAudioListenerWillBeDestroyed Notifies that a new AudioListener has been created.
 type WebAudioAudioListenerWillBeDestroyed struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -302,7 +288,6 @@ func (evt WebAudioAudioListenerWillBeDestroyed) ProtoEvent() string {
 
 // WebAudioAudioNodeCreated Notifies that a new AudioNode has been created.
 type WebAudioAudioNodeCreated struct {
-
 	// Node ...
 	Node *WebAudioAudioNode `json:"node"`
 }
@@ -314,7 +299,6 @@ func (evt WebAudioAudioNodeCreated) ProtoEvent() string {
 
 // WebAudioAudioNodeWillBeDestroyed Notifies that an existing AudioNode has been destroyed.
 type WebAudioAudioNodeWillBeDestroyed struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -329,7 +313,6 @@ func (evt WebAudioAudioNodeWillBeDestroyed) ProtoEvent() string {
 
 // WebAudioAudioParamCreated Notifies that a new AudioParam has been created.
 type WebAudioAudioParamCreated struct {
-
 	// Param ...
 	Param *WebAudioAudioParam `json:"param"`
 }
@@ -341,7 +324,6 @@ func (evt WebAudioAudioParamCreated) ProtoEvent() string {
 
 // WebAudioAudioParamWillBeDestroyed Notifies that an existing AudioParam has been destroyed.
 type WebAudioAudioParamWillBeDestroyed struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -359,7 +341,6 @@ func (evt WebAudioAudioParamWillBeDestroyed) ProtoEvent() string {
 
 // WebAudioNodesConnected Notifies that two AudioNodes are connected.
 type WebAudioNodesConnected struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -383,7 +364,6 @@ func (evt WebAudioNodesConnected) ProtoEvent() string {
 
 // WebAudioNodesDisconnected Notifies that AudioNodes are disconnected. The destination can be null, and it means all the outgoing connections from the source are disconnected.
 type WebAudioNodesDisconnected struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -407,7 +387,6 @@ func (evt WebAudioNodesDisconnected) ProtoEvent() string {
 
 // WebAudioNodeParamConnected Notifies that an AudioNode is connected to an AudioParam.
 type WebAudioNodeParamConnected struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 
@@ -428,7 +407,6 @@ func (evt WebAudioNodeParamConnected) ProtoEvent() string {
 
 // WebAudioNodeParamDisconnected Notifies that an AudioNode is disconnected to an AudioParam.
 type WebAudioNodeParamDisconnected struct {
-
 	// ContextID ...
 	ContextID WebAudioGraphObjectID `json:"contextId"`
 

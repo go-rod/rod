@@ -21,7 +21,6 @@ const (
 
 // MemorySamplingProfileNode Heap profile sample.
 type MemorySamplingProfileNode struct {
-
 	// Size Size of the sampled allocation.
 	Size float64 `json:"size"`
 
@@ -34,7 +33,6 @@ type MemorySamplingProfileNode struct {
 
 // MemorySamplingProfile Array of heap profile samples.
 type MemorySamplingProfile struct {
-
 	// Samples ...
 	Samples []*MemorySamplingProfileNode `json:"samples"`
 
@@ -44,7 +42,6 @@ type MemorySamplingProfile struct {
 
 // MemoryModule Executable module information
 type MemoryModule struct {
-
 	// Name Name of the module.
 	Name string `json:"name"`
 
@@ -60,8 +57,7 @@ type MemoryModule struct {
 }
 
 // MemoryGetDOMCounters ...
-type MemoryGetDOMCounters struct {
-}
+type MemoryGetDOMCounters struct{}
 
 // ProtoReq name
 func (m MemoryGetDOMCounters) ProtoReq() string { return "Memory.getDOMCounters" }
@@ -74,7 +70,6 @@ func (m MemoryGetDOMCounters) Call(c Client) (*MemoryGetDOMCountersResult, error
 
 // MemoryGetDOMCountersResult ...
 type MemoryGetDOMCountersResult struct {
-
 	// Documents ...
 	Documents int `json:"documents"`
 
@@ -86,8 +81,7 @@ type MemoryGetDOMCountersResult struct {
 }
 
 // MemoryPrepareForLeakDetection ...
-type MemoryPrepareForLeakDetection struct {
-}
+type MemoryPrepareForLeakDetection struct{}
 
 // ProtoReq name
 func (m MemoryPrepareForLeakDetection) ProtoReq() string { return "Memory.prepareForLeakDetection" }
@@ -98,8 +92,7 @@ func (m MemoryPrepareForLeakDetection) Call(c Client) error {
 }
 
 // MemoryForciblyPurgeJavaScriptMemory Simulate OomIntervention by purging V8 memory.
-type MemoryForciblyPurgeJavaScriptMemory struct {
-}
+type MemoryForciblyPurgeJavaScriptMemory struct{}
 
 // ProtoReq name
 func (m MemoryForciblyPurgeJavaScriptMemory) ProtoReq() string {
@@ -113,7 +106,6 @@ func (m MemoryForciblyPurgeJavaScriptMemory) Call(c Client) error {
 
 // MemorySetPressureNotificationsSuppressed Enable/disable suppressing memory pressure notifications in all processes.
 type MemorySetPressureNotificationsSuppressed struct {
-
 	// Suppressed If true, memory pressure notifications will be suppressed.
 	Suppressed bool `json:"suppressed"`
 }
@@ -130,7 +122,6 @@ func (m MemorySetPressureNotificationsSuppressed) Call(c Client) error {
 
 // MemorySimulatePressureNotification Simulate a memory pressure notification in all processes.
 type MemorySimulatePressureNotification struct {
-
 	// Level Memory pressure level of the notification.
 	Level MemoryPressureLevel `json:"level"`
 }
@@ -147,7 +138,6 @@ func (m MemorySimulatePressureNotification) Call(c Client) error {
 
 // MemoryStartSampling Start collecting native memory profile.
 type MemoryStartSampling struct {
-
 	// SamplingInterval (optional) Average number of bytes between samples.
 	SamplingInterval *int `json:"samplingInterval,omitempty"`
 
@@ -164,8 +154,7 @@ func (m MemoryStartSampling) Call(c Client) error {
 }
 
 // MemoryStopSampling Stop collecting native memory profile.
-type MemoryStopSampling struct {
-}
+type MemoryStopSampling struct{}
 
 // ProtoReq name
 func (m MemoryStopSampling) ProtoReq() string { return "Memory.stopSampling" }
@@ -177,8 +166,7 @@ func (m MemoryStopSampling) Call(c Client) error {
 
 // MemoryGetAllTimeSamplingProfile Retrieve native memory allocations profile
 // collected since renderer process startup.
-type MemoryGetAllTimeSamplingProfile struct {
-}
+type MemoryGetAllTimeSamplingProfile struct{}
 
 // ProtoReq name
 func (m MemoryGetAllTimeSamplingProfile) ProtoReq() string { return "Memory.getAllTimeSamplingProfile" }
@@ -191,15 +179,13 @@ func (m MemoryGetAllTimeSamplingProfile) Call(c Client) (*MemoryGetAllTimeSampli
 
 // MemoryGetAllTimeSamplingProfileResult ...
 type MemoryGetAllTimeSamplingProfileResult struct {
-
 	// Profile ...
 	Profile *MemorySamplingProfile `json:"profile"`
 }
 
 // MemoryGetBrowserSamplingProfile Retrieve native memory allocations profile
 // collected since browser process startup.
-type MemoryGetBrowserSamplingProfile struct {
-}
+type MemoryGetBrowserSamplingProfile struct{}
 
 // ProtoReq name
 func (m MemoryGetBrowserSamplingProfile) ProtoReq() string { return "Memory.getBrowserSamplingProfile" }
@@ -212,15 +198,13 @@ func (m MemoryGetBrowserSamplingProfile) Call(c Client) (*MemoryGetBrowserSampli
 
 // MemoryGetBrowserSamplingProfileResult ...
 type MemoryGetBrowserSamplingProfileResult struct {
-
 	// Profile ...
 	Profile *MemorySamplingProfile `json:"profile"`
 }
 
 // MemoryGetSamplingProfile Retrieve native memory allocations profile collected since last
 // `startSampling` call.
-type MemoryGetSamplingProfile struct {
-}
+type MemoryGetSamplingProfile struct{}
 
 // ProtoReq name
 func (m MemoryGetSamplingProfile) ProtoReq() string { return "Memory.getSamplingProfile" }
@@ -233,7 +217,6 @@ func (m MemoryGetSamplingProfile) Call(c Client) (*MemoryGetSamplingProfileResul
 
 // MemoryGetSamplingProfileResult ...
 type MemoryGetSamplingProfileResult struct {
-
 	// Profile ...
 	Profile *MemorySamplingProfile `json:"profile"`
 }

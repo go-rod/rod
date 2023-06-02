@@ -13,9 +13,11 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-var addr = flag.String("address", ":7317", "the address to listen to")
-var quiet = flag.Bool("quiet", false, "silence the log")
-var allowAllPath = flag.Bool("allow-all", false, "allow all path set by the client")
+var (
+	addr         = flag.String("address", ":7317", "the address to listen to")
+	quiet        = flag.Bool("quiet", false, "silence the log")
+	allowAllPath = flag.Bool("allow-all", false, "allow all path set by the client")
+)
 
 func main() {
 	flag.Parse()

@@ -9,8 +9,7 @@ Inspector
 */
 
 // InspectorDisable Disables inspector domain notifications.
-type InspectorDisable struct {
-}
+type InspectorDisable struct{}
 
 // ProtoReq name
 func (m InspectorDisable) ProtoReq() string { return "Inspector.disable" }
@@ -21,8 +20,7 @@ func (m InspectorDisable) Call(c Client) error {
 }
 
 // InspectorEnable Enables inspector domain notifications.
-type InspectorEnable struct {
-}
+type InspectorEnable struct{}
 
 // ProtoReq name
 func (m InspectorEnable) ProtoReq() string { return "Inspector.enable" }
@@ -34,7 +32,6 @@ func (m InspectorEnable) Call(c Client) error {
 
 // InspectorDetached Fired when remote debugging connection is about to be terminated. Contains detach reason.
 type InspectorDetached struct {
-
 	// Reason The reason why connection has been terminated.
 	Reason string `json:"reason"`
 }
@@ -45,8 +42,7 @@ func (evt InspectorDetached) ProtoEvent() string {
 }
 
 // InspectorTargetCrashed Fired when debugging target has crashed
-type InspectorTargetCrashed struct {
-}
+type InspectorTargetCrashed struct{}
 
 // ProtoEvent name
 func (evt InspectorTargetCrashed) ProtoEvent() string {
@@ -54,8 +50,7 @@ func (evt InspectorTargetCrashed) ProtoEvent() string {
 }
 
 // InspectorTargetReloadedAfterCrash Fired when debugging target has reloaded after crash
-type InspectorTargetReloadedAfterCrash struct {
-}
+type InspectorTargetReloadedAfterCrash struct{}
 
 // ProtoEvent name
 func (evt InspectorTargetReloadedAfterCrash) ProtoEvent() string {

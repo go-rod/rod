@@ -26,7 +26,6 @@ const (
 
 // HeadlessExperimentalScreenshotParams Encoding options for a screenshot.
 type HeadlessExperimentalScreenshotParams struct {
-
 	// Format (optional) Image compression format (defaults to png).
 	Format HeadlessExperimentalScreenshotParamsFormat `json:"format,omitempty"`
 
@@ -42,7 +41,6 @@ type HeadlessExperimentalScreenshotParams struct {
 // BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
 // https://goo.gle/chrome-headless-rendering for more background.
 type HeadlessExperimentalBeginFrame struct {
-
 	// FrameTimeTicks (optional) Timestamp of this BeginFrame in Renderer TimeTicks (milliseconds of uptime). If not set,
 	// the current time will be used.
 	FrameTimeTicks *float64 `json:"frameTimeTicks,omitempty"`
@@ -73,7 +71,6 @@ func (m HeadlessExperimentalBeginFrame) Call(c Client) (*HeadlessExperimentalBeg
 
 // HeadlessExperimentalBeginFrameResult ...
 type HeadlessExperimentalBeginFrameResult struct {
-
 	// HasDamage Whether the BeginFrame resulted in damage and, thus, a new frame was committed to the
 	// display. Reported for diagnostic uses, may be removed in the future.
 	HasDamage bool `json:"hasDamage"`
@@ -83,8 +80,7 @@ type HeadlessExperimentalBeginFrameResult struct {
 }
 
 // HeadlessExperimentalDisable (deprecated) Disables headless events for the target.
-type HeadlessExperimentalDisable struct {
-}
+type HeadlessExperimentalDisable struct{}
 
 // ProtoReq name
 func (m HeadlessExperimentalDisable) ProtoReq() string { return "HeadlessExperimental.disable" }
@@ -95,8 +91,7 @@ func (m HeadlessExperimentalDisable) Call(c Client) error {
 }
 
 // HeadlessExperimentalEnable (deprecated) Enables headless events for the target.
-type HeadlessExperimentalEnable struct {
-}
+type HeadlessExperimentalEnable struct{}
 
 // ProtoReq name
 func (m HeadlessExperimentalEnable) ProtoReq() string { return "HeadlessExperimental.enable" }

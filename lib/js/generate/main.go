@@ -34,7 +34,7 @@ func main() {
 
 	utils.E(utils.OutputFile("lib/js/helper.go", out))
 
-	utils.Exec("gofmt -s -w lib/js/helper.go")
+	utils.Exec("gofumpt -w lib/js/helper.go")
 }
 
 var regDeps = regexp.MustCompile(`\Wfunctions.(\w+)`)

@@ -38,7 +38,6 @@ const (
 
 // DOMDebuggerEventListener Object event listener.
 type DOMDebuggerEventListener struct {
-
 	// Type `EventListener`'s type.
 	Type string `json:"type"`
 
@@ -72,7 +71,6 @@ type DOMDebuggerEventListener struct {
 
 // DOMDebuggerGetEventListeners Returns event listeners of the given object.
 type DOMDebuggerGetEventListeners struct {
-
 	// ObjectID Identifier of the object to return listeners for.
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 
@@ -96,14 +94,12 @@ func (m DOMDebuggerGetEventListeners) Call(c Client) (*DOMDebuggerGetEventListen
 
 // DOMDebuggerGetEventListenersResult ...
 type DOMDebuggerGetEventListenersResult struct {
-
 	// Listeners Array of relevant listeners.
 	Listeners []*DOMDebuggerEventListener `json:"listeners"`
 }
 
 // DOMDebuggerRemoveDOMBreakpoint Removes DOM breakpoint that was set using `setDOMBreakpoint`.
 type DOMDebuggerRemoveDOMBreakpoint struct {
-
 	// NodeID Identifier of the node to remove breakpoint from.
 	NodeID DOMNodeID `json:"nodeId"`
 
@@ -121,7 +117,6 @@ func (m DOMDebuggerRemoveDOMBreakpoint) Call(c Client) error {
 
 // DOMDebuggerRemoveEventListenerBreakpoint Removes breakpoint on particular DOM event.
 type DOMDebuggerRemoveEventListenerBreakpoint struct {
-
 	// EventName Event name.
 	EventName string `json:"eventName"`
 
@@ -141,7 +136,6 @@ func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(c Client) error {
 
 // DOMDebuggerRemoveInstrumentationBreakpoint (experimental) Removes breakpoint on particular native event.
 type DOMDebuggerRemoveInstrumentationBreakpoint struct {
-
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`
 }
@@ -158,7 +152,6 @@ func (m DOMDebuggerRemoveInstrumentationBreakpoint) Call(c Client) error {
 
 // DOMDebuggerRemoveXHRBreakpoint Removes breakpoint from XMLHttpRequest.
 type DOMDebuggerRemoveXHRBreakpoint struct {
-
 	// URL Resource URL substring.
 	URL string `json:"url"`
 }
@@ -173,7 +166,6 @@ func (m DOMDebuggerRemoveXHRBreakpoint) Call(c Client) error {
 
 // DOMDebuggerSetBreakOnCSPViolation (experimental) Sets breakpoint on particular CSP violations.
 type DOMDebuggerSetBreakOnCSPViolation struct {
-
 	// ViolationTypes CSP Violations to stop upon.
 	ViolationTypes []DOMDebuggerCSPViolationType `json:"violationTypes"`
 }
@@ -190,7 +182,6 @@ func (m DOMDebuggerSetBreakOnCSPViolation) Call(c Client) error {
 
 // DOMDebuggerSetDOMBreakpoint Sets breakpoint on particular operation with DOM.
 type DOMDebuggerSetDOMBreakpoint struct {
-
 	// NodeID Identifier of the node to set breakpoint on.
 	NodeID DOMNodeID `json:"nodeId"`
 
@@ -208,7 +199,6 @@ func (m DOMDebuggerSetDOMBreakpoint) Call(c Client) error {
 
 // DOMDebuggerSetEventListenerBreakpoint Sets breakpoint on particular DOM event.
 type DOMDebuggerSetEventListenerBreakpoint struct {
-
 	// EventName DOM Event name to stop on (any DOM event will do).
 	EventName string `json:"eventName"`
 
@@ -229,7 +219,6 @@ func (m DOMDebuggerSetEventListenerBreakpoint) Call(c Client) error {
 
 // DOMDebuggerSetInstrumentationBreakpoint (experimental) Sets breakpoint on particular native event.
 type DOMDebuggerSetInstrumentationBreakpoint struct {
-
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`
 }
@@ -246,7 +235,6 @@ func (m DOMDebuggerSetInstrumentationBreakpoint) Call(c Client) error {
 
 // DOMDebuggerSetXHRBreakpoint Sets breakpoint on XMLHttpRequest.
 type DOMDebuggerSetXHRBreakpoint struct {
-
 	// URL Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
 	URL string `json:"url"`
 }
