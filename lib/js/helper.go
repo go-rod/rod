@@ -4,7 +4,7 @@ package js
 // Element ...
 var Element = &Function{
 	Name:         "element",
-	Definition:   `function(e){const t=functions.selectable(this);return t.querySelector(e)}`,
+	Definition:   `function(e){return functions.selectable(this).querySelector(e)}`,
 	Dependencies: []*Function{Selectable},
 }
 
@@ -25,21 +25,21 @@ var ElementX = &Function{
 // ElementsX ...
 var ElementsX = &Function{
 	Name:         "elementsX",
-	Definition:   `function(e){var t,n=functions.selectable(this);const i=document.evaluate(e,n,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),r=[];for(;t=i.iterateNext();)r.push(t);return r}`,
+	Definition:   `function(e){for(var t,n=functions.selectable(this),i=document.evaluate(e,n,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),r=[];t=i.iterateNext();)r.push(t);return r}`,
 	Dependencies: []*Function{Selectable},
 }
 
 // ElementR ...
 var ElementR = &Function{
 	Name:         "elementR",
-	Definition:   `function(e,t){var n=t.match(/(\/?)(.+)\1([a-z]*)/i),i=n[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(n[3])?new RegExp(t):new RegExp(n[2],n[3]);const r=functions.selectable(this);e=Array.from(r.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return e||null}`,
+	Definition:   `function(e,t){var n=t.match(/(\/?)(.+)\1([a-z]*)/i),i=n[3]&&!/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(n[3])?new RegExp(t):new RegExp(n[2],n[3]),t=functions.selectable(this),n=Array.from(t.querySelectorAll(e)).find(e=>i.test(functions.text.call(e)));return n||null}`,
 	Dependencies: []*Function{Selectable, Text},
 }
 
 // Parents ...
 var Parents = &Function{
 	Name:         "parents",
-	Definition:   `function(e){let t=this.parentElement;const n=[];for(;t;)t.matches(e)&&n.push(t),t=t.parentElement;return n}`,
+	Definition:   `function(e){let t=this.parentElement;for(var n=[];t;)t.matches(e)&&n.push(t),t=t.parentElement;return n}`,
 	Dependencies: []*Function{},
 }
 
@@ -53,14 +53,14 @@ var ContainsElement = &Function{
 // InitMouseTracer ...
 var InitMouseTracer = &Function{
 	Name:         "initMouseTracer",
-	Definition:   `async function(e,t){if(await functions.waitLoad(),!document.getElementById(e)){const n=document.createElement("div");n.innerHTML=t;const i=n.lastChild;i.id=e,i.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",i.removeAttribute("width"),i.removeAttribute("height"),document.body.parentElement.appendChild(i)}}`,
+	Definition:   `async function(e,t){var n;await functions.waitLoad(),document.getElementById(e)||((n=document.createElement("div")).innerHTML=t,(t=n.lastChild).id=e,t.style="position: absolute; z-index: 2147483647; width: 17px; pointer-events: none;",t.removeAttribute("width"),t.removeAttribute("height"),document.body.parentElement.appendChild(t))}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 // UpdateMouseTracer ...
 var UpdateMouseTracer = &Function{
 	Name:         "updateMouseTracer",
-	Definition:   `function(e,t,n){const i=document.getElementById(e);return!!i&&(i.style.left=t-2+"px",i.style.top=n-3+"px",!0)}`,
+	Definition:   `function(e,t,n){e=document.getElementById(e);return!!e&&(e.style.left=t-2+"px",e.style.top=n-3+"px",!0)}`,
 	Dependencies: []*Function{},
 }
 
@@ -74,22 +74,22 @@ var Rect = &Function{
 // Overlay ...
 var Overlay = &Function{
 	Name: "overlay",
-	Definition: `async function(e,t,n,i,r,o){await functions.waitLoad();const s=document.createElement("div");if(s.id=e,s.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;
+	Definition: `async function(e,t,n,i,r,o){await functions.waitLoad();var s=document.createElement("div");s.id=e,s.style=` + "`" + `position: fixed; z-index:2147483647; border: 2px dashed red;
         border-radius: 3px; box-shadow: #5f3232 0 0 3px; pointer-events: none;
         box-sizing: border-box;
         left: ${t}px;
         top: ${n}px;
         height: ${r}px;
-        width: ${i}px;` + "`" + `,i*r==0&&(s.style.border="none"),o){const a=document.createElement("div");a.style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
+        width: ${i}px;` + "`" + `,i*r==0&&(s.style.border="none"),o?((e=document.createElement("div")).style=` + "`" + `position: absolute; color: #cc26d6; font-size: 12px; background: #ffffffeb;
         box-shadow: #333 0 0 3px; padding: 2px 5px; border-radius: 3px; white-space: nowrap;
-        top: ${r}px;` + "`" + `,a.innerHTML=o,s.appendChild(a),document.body.parentElement.appendChild(s),window.innerHeight<a.offsetHeight+n+r&&(a.style.top=-a.offsetHeight-2+"px"),window.innerWidth<a.offsetWidth+t&&(a.style.left=window.innerWidth-a.offsetWidth-t+"px")}else document.body.parentElement.appendChild(s)}`,
+        top: ${r}px;` + "`" + `,e.innerHTML=o,s.appendChild(e),document.body.parentElement.appendChild(s),window.innerHeight<e.offsetHeight+n+r&&(e.style.top=-e.offsetHeight-2+"px"),window.innerWidth<e.offsetWidth+t&&(e.style.left=window.innerWidth-e.offsetWidth-t+"px")):document.body.parentElement.appendChild(s)}`,
 	Dependencies: []*Function{WaitLoad},
 }
 
 // ElementOverlay ...
 var ElementOverlay = &Function{
 	Name:         "elementOverlay",
-	Definition:   `async function(n,e){const i=100,r=functions.tag(this);let o=r.getBoundingClientRect();await functions.overlay(n,o.left,o.top,o.width,o.height,e);const s=()=>{const e=document.getElementById(n);var t;null!==e&&(t=r.getBoundingClientRect(),o.left===t.left&&o.top===t.top&&o.width===t.width&&o.height===t.height||(e.style.left=t.left+"px",e.style.top=t.top+"px",e.style.width=t.width+"px",e.style.height=t.height+"px",o=t),setTimeout(s,i))};setTimeout(s,i)}`,
+	Definition:   `async function(n,e){const i=100,r=functions.tag(this);let o=r.getBoundingClientRect();await functions.overlay(n,o.left,o.top,o.width,o.height,e);const s=()=>{var e,t=document.getElementById(n);null!==t&&(e=r.getBoundingClientRect(),o.left===e.left&&o.top===e.top&&o.width===e.width&&o.height===e.height||(t.style.left=e.left+"px",t.style.top=e.top+"px",t.style.width=e.width+"px",t.style.height=e.height+"px",o=e),setTimeout(s,i))};setTimeout(s,i)}`,
 	Dependencies: []*Function{Tag, Overlay},
 }
 
@@ -124,7 +124,7 @@ var InputEvent = &Function{
 // InputTime ...
 var InputTime = &Function{
 	Name:         "inputTime",
-	Definition:   `function(e){const t=new Date(e);var e=e=>e.toString().padStart(2,"0"),n=t.getFullYear(),i=e(t.getMonth()+1),r=e(t.getDate()),o=e(t.getHours()),s=e(t.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${i}-` + "`" + `+r;break;case"datetime-local":this.value=n+` + "`" + `-${i}-${r}T${o}:` + "`" + `+s;break;case"month":this.value=i;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
+	Definition:   `function(e){var e=new Date(e),t=e=>e.toString().padStart(2,"0"),n=e.getFullYear(),i=t(e.getMonth()+1),r=t(e.getDate()),o=t(e.getHours()),s=t(e.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${i}-` + "`" + `+r;break;case"datetime-local":this.value=n+` + "`" + `-${i}-${r}T${o}:` + "`" + `+s;break;case"month":this.value=i;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
 	Dependencies: []*Function{InputEvent},
 }
 
@@ -145,14 +145,14 @@ var SelectAllText = &Function{
 // Select ...
 var Select = &Function{
 	Name:         "select",
-	Definition:   `function(e,n,t){let i;switch(t){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(t=>e=>e.matches(t));break;default:i=e.map(t=>e=>e.innerText.includes(t))}const r=Array.from(this.options);let o=!1;return i.forEach(e=>{const t=r.find(e);t&&(t.selected=n,o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
+	Definition:   `function(e,t,n){let i;switch(n){case"regex":i=e.map(e=>{const t=new RegExp(e);return e=>t.test(e.innerText)});break;case"css-selector":i=e.map(t=>e=>e.matches(t));break;default:i=e.map(t=>e=>e.innerText.includes(t))}const r=Array.from(this.options);let o=!1;return i.forEach(e=>{e=r.find(e);e&&(e.selected=t,o=!0)}),this.dispatchEvent(new Event("input",{bubbles:!0})),this.dispatchEvent(new Event("change",{bubbles:!0})),o}`,
 	Dependencies: []*Function{},
 }
 
 // Visible ...
 var Visible = &Function{
 	Name:         "visible",
-	Definition:   `function(){const e=functions.tag(this);var t=e.getBoundingClientRect(),n=window.getComputedStyle(e);return"none"!==n.display&&"hidden"!==n.visibility&&!!(t.top||t.bottom||t.width||t.height)}`,
+	Definition:   `function(){var e=functions.tag(this),t=e.getBoundingClientRect(),e=window.getComputedStyle(e);return"none"!==e.display&&"hidden"!==e.visibility&&!!(t.top||t.bottom||t.width||t.height)}`,
 	Dependencies: []*Function{Tag},
 }
 
@@ -215,6 +215,6 @@ var ExposeFunc = &Function{
 // GetXPath ...
 var GetXPath = &Function{
 	Name:         "getXPath",
-	Definition:   `function(e){class r{constructor(e,t){this.value=e,this.optimized=t||!1}toString(){return this.value}}function o(t){function n(e,t){return e===t||(e.nodeType===Node.ELEMENT_NODE&&t.nodeType===Node.ELEMENT_NODE?e.localName===t.localName:e.nodeType===t.nodeType||(e.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:e.nodeType)===(t.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:t.nodeType))}var e=t.parentNode,i=e?e.children:null;if(!i)return 0;let r;for(let e=0;e<i.length;++e)if(n(t,i[e])&&i[e]!==t){r=!0;break}if(!r)return 0;let o=1;for(let e=0;e<i.length;++e)if(n(t,i[e])){if(i[e]===t)return o;++o}return-1}if(this.nodeType===Node.DOCUMENT_NODE)return"/";const t=[];let n=this;for(;n;){var i=function(e,t){let n;var i=o(e);if(-1===i)return null;switch(e.nodeType){case Node.ELEMENT_NODE:if(t&&e.id)return new r(` + "`" + `//*[@id='${e.id}']` + "`" + `,!0);n=e.localName;break;case Node.ATTRIBUTE_NODE:n="@"+e.nodeName;break;case Node.TEXT_NODE:case Node.CDATA_SECTION_NODE:n="text()";break;case Node.PROCESSING_INSTRUCTION_NODE:n="processing-instruction()";break;case Node.COMMENT_NODE:n="comment()";break;default:Node.DOCUMENT_NODE;n=""}return 0<i&&(n+=` + "`" + `[${i}]` + "`" + `),new r(n,e.nodeType===Node.DOCUMENT_NODE)}(n,e);if(!i)break;if(t.push(i),i.optimized)break;n=n.parentNode}return t.reverse(),(t.length&&t[0].optimized?"":"/")+t.join("/")}`,
+	Definition:   `function(e){class r{constructor(e,t){this.value=e,this.optimized=t||!1}toString(){return this.value}}function o(t){function n(e,t){return e===t||(e.nodeType===Node.ELEMENT_NODE&&t.nodeType===Node.ELEMENT_NODE?e.localName===t.localName:e.nodeType===t.nodeType||(e.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:e.nodeType)===(t.nodeType===Node.CDATA_SECTION_NODE?Node.TEXT_NODE:t.nodeType))}var e=t.parentNode,i=e?e.children:null;if(!i)return 0;let r;for(let e=0;e<i.length;++e)if(n(t,i[e])&&i[e]!==t){r=!0;break}if(!r)return 0;let o=1;for(let e=0;e<i.length;++e)if(n(t,i[e])){if(i[e]===t)return o;++o}return-1}if(this.nodeType===Node.DOCUMENT_NODE)return"/";var t=[];let n=this;for(;n;){var i=function(e,t){let n;var i=o(e);if(-1===i)return null;switch(e.nodeType){case Node.ELEMENT_NODE:if(t&&e.id)return new r(` + "`" + `//*[@id='${e.id}']` + "`" + `,!0);n=e.localName;break;case Node.ATTRIBUTE_NODE:n="@"+e.nodeName;break;case Node.TEXT_NODE:case Node.CDATA_SECTION_NODE:n="text()";break;case Node.PROCESSING_INSTRUCTION_NODE:n="processing-instruction()";break;case Node.COMMENT_NODE:n="comment()";break;default:Node.DOCUMENT_NODE;n=""}return 0<i&&(n+=` + "`" + `[${i}]` + "`" + `),new r(n,e.nodeType===Node.DOCUMENT_NODE)}(n,e);if(!i)break;if(t.push(i),i.optimized)break;n=n.parentNode}return t.reverse(),(t.length&&t[0].optimized?"":"/")+t.join("/")}`,
 	Dependencies: []*Function{},
 }
