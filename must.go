@@ -372,6 +372,12 @@ func (p *Page) MustCaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSn
 	return domSnapshot
 }
 
+// MustTriggerFavicon is similar to TriggerFavicon.
+func (p *Page) MustTriggerFavicon() *Page {
+	p.e(p.TriggerFavicon())
+	return p
+}
+
 // MustScreenshotFullPage is similar to ScreenshotFullPage.
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
 func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {

@@ -350,6 +350,25 @@ func (p *Page) Close() error {
 	return nil
 }
 
+// TriggerFavicon supports when browser in headless mode
+// to trigger favicon's request. Pay attention to this
+// function only supported when browser in headless mode,
+// if you call it in no-headless mode, it will raise an error
+// with the message "browser is no-headless".
+func (p *Page) TriggerFavicon() error {
+	// check if browser whether in headless mode
+	// if not in headless mode then raise error
+	if !p.browser.isHeadless() {
+		return errors.New("browser is no-headless")
+	}
+
+	_, err := p.Evaluate(evalHelper(js.TriggerFavicon).ByPromise())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // HandleDialog accepts or dismisses next JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 // Because modal dialog will block js, usually you have to trigger the dialog in another goroutine.
 // For example:

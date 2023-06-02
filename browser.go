@@ -10,6 +10,7 @@ package rod
 import (
 	"context"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -457,6 +458,16 @@ func (b *Browser) pageInfo(id proto.TargetTargetID) (*proto.TargetTargetInfo, er
 		return nil, err
 	}
 	return res.TargetInfo, nil
+}
+
+func (b *Browser) isHeadless() (enabled bool) {
+	res, _ := proto.BrowserGetBrowserCommandLine{}.Call(b)
+	for _, v := range res.Arguments {
+		if strings.Contains(v, "headless") {
+			return true
+		}
+	}
+	return false
 }
 
 // IgnoreCertErrors switch. If enabled, all certificate errors will be ignored.

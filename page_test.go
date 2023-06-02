@@ -8,10 +8,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/go-rod/rod/lib/launcher"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -885,6 +888,54 @@ func TestPageElementFromObjectErr(t *testing.T) {
 
 	g.mc.stubErr(1, proto.RuntimeEvaluate{})
 	g.Err(p.ElementFromObject(obj.Object))
+}
+
+func TestPageTriggerFavicon(t *testing.T) {
+	g := setup(t)
+
+	// test browser in no-headless mode with an error
+	{
+		var l *launcher.Launcher
+		if runtime.GOOS == "darwin" {
+			l = launcher.New().Set("proxy-bypass-list", "<-loopback>").Headless(false)
+		} else {
+			l = launcher.New().Set("proxy-bypass-list", "<-loopback>").XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false)
+		}
+
+		browser := rod.New().ControlURL(l.MustLaunch()).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
+		defer browser.MustClose()
+
+		page := browser.MustPage("https://example.com")
+		err := page.TriggerFavicon()
+		g.Eq(err.Error(), "browser is no-headless")
+	}
+
+	// test browser in headless mode to trigger favicon request
+	{
+		page := g.page
+		page.EnableDomain(proto.NetworkEnable{})
+		defer page.DisableDomain(proto.NetworkDisable{})()
+
+		page.MustNavigate("https://github.com")
+		page.MustWaitIdle()
+		go page.Context(g.Context()).EachEvent(
+			func(e *proto.NetworkRequestWillBeSent) {
+				if e.Request.URL == "https://github.githubassets.com/favicons/favicon.png" {
+					g.Eq(e.Request.URL, "https://github.githubassets.com/favicons/favicon.png")
+				}
+			},
+		)()
+		page.MustTriggerFavicon()
+	}
+
+	// test browser in headless mode to trigger favicon request with an error
+	{
+		g.Panic(func() {
+			p := g.page.MustNavigate("https://example.com")
+			g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+			p.MustTriggerFavicon()
+		})
+	}
 }
 
 func TestPageActionAfterClose(t *testing.T) {
