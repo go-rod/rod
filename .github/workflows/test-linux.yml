@@ -29,7 +29,7 @@ jobs:
 
       - run: go run ./lib/utils/ci-test -race -coverprofile=coverage.out ./...
 
-      - run: go run ./lib/utils/check-cov
+      - run: go run github.com/ysmood/got/cmd/check-cov@latest
 
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}

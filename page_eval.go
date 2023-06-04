@@ -57,7 +57,7 @@ func evalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue: true,
 		JSArgs:  append([]interface{}{fn}, args...),
-		JS:      `function (f, ...args) { return f.apply(this, args) }`,
+		JS:      fmt.Sprintf(`function (f /* %s */, ...args) { return f.apply(this, args) }`, fn.Name),
 	}
 }
 

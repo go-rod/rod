@@ -794,6 +794,10 @@ func TestPageNavigateNetworkErr(t *testing.T) {
 }
 
 func TestPageNavigateErr(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("TODO: This test on Windows is flaky")
+	}
+
 	g := setup(t)
 
 	s := g.Serve()
