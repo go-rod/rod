@@ -912,7 +912,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 
 	// test browser in headless mode to trigger favicon request
 	{
-		page := g.page
+		page := g.newPage()
 		page.MustNavigate("https://github.com")
 		page.MustWaitIdle()
 		go page.Context(g.Context()).EachEvent(
@@ -928,7 +928,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 	// test browser in headless mode to trigger favicon request with an error
 	{
 		g.Panic(func() {
-			p := g.page.MustNavigate("https://example.com")
+			p := g.newPage().MustNavigate("https://example.com")
 			g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 			p.MustTriggerFavicon()
 		})
