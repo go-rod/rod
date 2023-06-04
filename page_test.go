@@ -913,9 +913,6 @@ func TestPageTriggerFavicon(t *testing.T) {
 	// test browser in headless mode to trigger favicon request
 	{
 		page := g.page
-		page.EnableDomain(proto.NetworkEnable{})
-		defer page.DisableDomain(proto.NetworkDisable{})()
-
 		page.MustNavigate("https://github.com")
 		page.MustWaitIdle()
 		go page.Context(g.Context()).EachEvent(
