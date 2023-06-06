@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"image/png"
 	"math"
 	"net/http"
@@ -13,8 +14,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/go-rod/rod/lib/launcher"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
@@ -896,33 +895,31 @@ func TestPageElementFromObjectErr(t *testing.T) {
 
 func TestPageTriggerFavicon(t *testing.T) {
 	g := setup(t)
-
+	s := g.Serve()
 	// test browser in no-headless mode with an error
 	{
-		var l *launcher.Launcher
-		if runtime.GOOS == "darwin" {
-			l = launcher.New().Headless(false)
-		} else {
-			l = launcher.New().XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false)
-		}
-
-		browser := rod.New().ControlURL(l.MustLaunch()).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
-		defer browser.MustClose()
-
-		page := browser.MustPage("https://example.com")
+		page := g.newPage()
+		page.MustNavigate(s.URL())
+		g.mc.stub(1, proto.BrowserGetBrowserCommandLine{}, func(send StubSend) (gson.JSON, error) {
+			commandLine := proto.BrowserGetBrowserCommandLineResult{Arguments: []string{""}}
+			return gson.New(commandLine), nil
+		})
 		err := page.TriggerFavicon()
 		g.Eq(err.Error(), "browser is no-headless")
 	}
 
 	// test browser in headless mode to trigger favicon request
 	{
+		faviconURL := fmt.Sprintf(s.HostURL.String(), "/favicon.ico")
+		s.Route("/test", "")
+		s.Route("/favicon.ico", "./fixtures/favicon.ico")
 		page := g.newPage()
-		page.MustNavigate("https://github.com")
+		page.MustNavigate(s.URL("/test"))
 		page.MustWaitIdle()
 		go page.Context(g.Context()).EachEvent(
 			func(e *proto.NetworkRequestWillBeSent) {
-				if e.Request.URL == "https://github.githubassets.com/favicons/favicon.png" {
-					g.Eq(e.Request.URL, "https://github.githubassets.com/favicons/favicon.png")
+				if e.Request.URL == faviconURL {
+					g.Eq(e.Request.URL, faviconURL)
 				}
 			},
 		)()
@@ -931,9 +928,9 @@ func TestPageTriggerFavicon(t *testing.T) {
 
 	// test browser in headless mode to trigger favicon request with an error
 	{
+		p := g.newPage().MustNavigate(s.URL())
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 		g.Panic(func() {
-			p := g.newPage().MustNavigate("https://example.com")
-			g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
 			p.MustTriggerFavicon()
 		})
 	}
