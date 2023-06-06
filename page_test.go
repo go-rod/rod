@@ -903,7 +903,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 		if runtime.GOOS == "darwin" {
 			l = launcher.New().Headless(false)
 		} else {
-			l = launcher.New().Set("proxy-bypass-list", "<-loopback>").XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false)
+			l = launcher.New().XVFB("--server-num=5", "--server-args=-screen 0 1600x900x16").Headless(false)
 		}
 
 		browser := rod.New().ControlURL(l.MustLaunch()).MustConnect().MustIgnoreCertErrors(false).Context(g.Context())
