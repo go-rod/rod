@@ -912,7 +912,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 	{
 		faviconURL := fmt.Sprintf(s.HostURL.String(), "/favicon.ico")
 		s.Route("/test", "")
-		s.Route("/favicon.ico", "./fixtures/favicon.ico")
+		s.Route("/favicon.ico", filepath.FromSlash("./fixtures/icon.png"))
 		page := g.newPage()
 		page.MustNavigate(s.URL("/test"))
 		page.MustWaitIdle()
