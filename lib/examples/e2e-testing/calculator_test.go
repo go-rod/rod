@@ -3,11 +3,13 @@ package main
 
 import "testing"
 
-// test case: 1 + 2 = 3
+const appURL = "https://go-rod.github.io/calculator/"
+
+// test case: 1 + 2 = 3.
 func TestAdd(t *testing.T) {
 	g := setup(t)
 
-	p := g.page("https://ahfarmer.github.io/calculator")
+	p := g.page(appURL)
 
 	p.MustElementR("button", "1").MustClick()
 	p.MustElementR("button", `^\+$`).MustClick()
@@ -18,11 +20,11 @@ func TestAdd(t *testing.T) {
 	g.Eq(p.MustElement(".component-display").MustText(), "3")
 }
 
-// test case: 2 * 3 = 6
+// test case: 2 * 3 = 6.
 func TestMultiple(t *testing.T) {
 	g := setup(t)
 
-	p := g.page("https://ahfarmer.github.io/calculator")
+	p := g.page(appURL)
 
 	// use for-loop to click each button
 	for _, regex := range []string{"2", "x", "3", "="} {

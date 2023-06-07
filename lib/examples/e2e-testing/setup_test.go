@@ -9,14 +9,14 @@ import (
 	"github.com/ysmood/got"
 )
 
-// test context
+// test context.
 type G struct {
 	got.G
 
 	browser *rod.Browser
 }
 
-// setup for tests
+// setup for tests.
 var setup = func() func(t *testing.T) G {
 	browser := rod.New().MustConnect()
 
@@ -27,7 +27,7 @@ var setup = func() func(t *testing.T) G {
 	}
 }()
 
-// a helper function to create an incognito page
+// a helper function to create an incognito page.
 func (g G) page(url string) *rod.Page {
 	page := g.browser.MustIncognito().MustPage(url)
 	g.Cleanup(page.MustClose)
