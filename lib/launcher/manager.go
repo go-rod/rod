@@ -23,6 +23,11 @@ const (
 func MustNewManaged(serviceURL string) *Launcher {
 	l, err := NewManaged(serviceURL)
 	utils.E(err)
+
+	// TODO: remove this after we have a better way to handle this
+	// The latest chromium in docker will crash pages that use http2
+	l.Set("disable-http2")
+
 	return l
 }
 
