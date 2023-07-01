@@ -6,4 +6,4 @@ package launcher
 const RevisionDefault = 1131003
 
 // RevisionPlaywright for arm linux
-const RevisionPlaywright = 1064
+const RevisionPlaywright = 1067
