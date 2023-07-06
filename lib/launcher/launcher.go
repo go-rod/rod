@@ -70,6 +70,7 @@ func New() *Launcher {
 		// TODO: about the "site-per-process" see https://github.com/puppeteer/puppeteer/issues/2548
 		"disable-features": {"site-per-process", "TranslateUI"},
 
+		"disable-dev-shm-usage":                              nil,
 		"disable-background-networking":                      nil,
 		"disable-background-timer-throttling":                nil,
 		"disable-backgrounding-occluded-windows":             nil,

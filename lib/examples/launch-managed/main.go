@@ -14,7 +14,7 @@ func main() {
 	// to connect to a running browser check the "../connect-browser" example.
 	// Rod provides a docker image for beginners, run the below to start a launcher.Manager:
 	//
-	//     docker run -p 7317:7317 --shm-size=500mb ghcr.io/go-rod/rod
+	//     docker run -p 7317:7317 ghcr.io/go-rod/rod
 	//
 	// For available CLI flags run: docker run ghcr.io/go-rod/rod rod-manager -h
 	// For more information, check the doc of launcher.Manager
