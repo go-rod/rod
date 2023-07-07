@@ -29,13 +29,16 @@ func Example() {
 	defer browser.MustClose()
 
 	// Create a new page
-	page := browser.MustPage("https://github.com")
+	page := browser.MustPage("https://github.com").MustWaitStable()
+
+	// Trigger the search input with hotkey "/"
+	page.Keyboard.MustType(input.Slash)
 
 	// We use css selector to get the search input element and input "git"
-	page.MustElement("input").MustInput("git").MustType(input.Enter)
+	page.MustElement("#query-builder-test").MustInput("git").MustType(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
-	text := page.MustElement(".codesearch-results p").MustText()
+	text := page.MustElementR("span", "most widely used").MustText()
 
 	fmt.Println(text)
 
@@ -54,9 +57,9 @@ func Example() {
 
 	// Output:
 	// Git is the most widely used version control system.
-	// Found 5 input elements
+	// Found 11 input elements
 	// 1 + 2 = 3
-	// Search · git · GitHub
+	// Repository search results · GitHub
 }
 
 // Shows how to disable headless mode and debug.
@@ -361,8 +364,8 @@ func Example_customize_retry_strategy() {
 	fmt.Println(el.MustProperty("name"))
 
 	// Output:
-	// q
-	// q
+	// type
+	// type
 }
 
 // Shows how we can further customize the browser with the launcher library.
