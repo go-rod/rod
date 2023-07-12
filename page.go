@@ -584,7 +584,9 @@ func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 // Be careful, d is not the max wait timeout, it's the least idle time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
 // Use the includes and excludes regexp list to filter the requests by their url.
-func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) func() {
+func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, excludeTypes []proto.NetworkResourceType) func() {
+	defer p.tryTrace(TraceTypeWait, "request-idle")()
+
 	if len(includes) == 0 {
 		includes = []string{""}
 	}
@@ -605,6 +607,12 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	}
 
 	wait := p.EachEvent(func(sent *proto.NetworkRequestWillBeSent) {
+		for _, t := range excludeTypes {
+			if sent.Type == t {
+				return
+			}
+		}
+
 		if match(sent.Request.URL) {
 			// Redirect will send multiple NetworkRequestWillBeSent events with the same RequestID,
 			// we should filter them out.

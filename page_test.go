@@ -465,7 +465,8 @@ func TestPageWaitRequestIdle(t *testing.T) {
 		rw.WriteHeader(http.StatusFound)
 	})
 	s.Route("/r4", "")
-	s.Route("/", ".html", `<html></html>`)
+	s.Route("/img.jpg", ".jpg", "img")
+	s.Route("/", ".html", `<html><body></body></html>`)
 
 	page := g.newPage(s.URL()).MustWaitLoad()
 
@@ -473,6 +474,7 @@ func TestPageWaitRequestIdle(t *testing.T) {
 		fetch('/r2').then(r => r.text())
 		fetch('/r1')
 		fetch('/r3')
+		document.body.innerHTML = '<img src="/img.jpg" />'
 	}`
 
 	waitReq := ""

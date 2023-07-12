@@ -416,7 +416,13 @@ func (p *Page) MustWaitNavigation() func() {
 
 // MustWaitRequestIdle is similar to Page.WaitRequestIdle
 func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
-	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes)
+	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes, []proto.NetworkResourceType{
+		proto.NetworkResourceTypeWebSocket,
+		proto.NetworkResourceTypeEventSource,
+		proto.NetworkResourceTypeMedia,
+		proto.NetworkResourceTypeImage,
+		proto.NetworkResourceTypeFont,
+	})
 }
 
 // MustWaitIdle is similar to Page.WaitIdle
