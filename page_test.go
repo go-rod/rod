@@ -525,14 +525,16 @@ func TestPageCaptureDOMSnapshot(t *testing.T) {
 func TestPageWaitStable(t *testing.T) {
 	g := setup(t)
 
-	p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
-	// wait for p loading and rending complete
-	p.MustWaitStable()
+	{
+		p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+		p.MustWaitStable()
+	}
 
-	// for waitStable timeout
-	timeOutPage := p.Timeout(1 * time.Second)
-	err := timeOutPage.WaitStable(2*time.Second, 1)
-	g.Is(err, context.DeadlineExceeded)
+	{
+		p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+		err := p.Timeout(time.Second).WaitStable(time.Second, 0)
+		g.Is(err, context.DeadlineExceeded)
+	}
 
 	{
 		g.Panic(func() {

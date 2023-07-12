@@ -629,13 +629,11 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string) fun
 	}
 }
 
-// WaitStable like "Element.WaitStable". WaitStable polling the changes
-// of the DOM tree in `d` duration,until the similarity equal or more than simThreshold.
-// `simThreshold` is the similarity threshold,it's scope in [0,1].
-// Be careful,d is not the max wait timeout, it's the least stable time.
+// WaitStable waits until the change of the DOM tree is less or equal than diff percent for d duration.
+// Be careful, d is not the max wait timeout, it's the least stable time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
-func (p *Page) WaitStable(d time.Duration, similarity float32) error {
-	defer p.tryTrace(TraceTypeWait, "stable")
+func (p *Page) WaitStable(d time.Duration, diff float64) error {
+	defer p.tryTrace(TraceTypeWait, "stable")()
 
 	domSnapshot, err := p.CaptureDOMSnapshot()
 	if err != nil {
@@ -659,10 +657,10 @@ func (p *Page) WaitStable(d time.Duration, similarity float32) error {
 
 		xs := lcs.NewWords(domSnapshot.Strings)
 		ys := lcs.NewWords(currentDomSnapshot.Strings)
-		diff := xs.YadLCS(p.ctx, ys)
+		lcs := xs.YadLCS(p.ctx, ys)
 
-		sim := float32(len(diff)) / float32(len(ys))
-		if sim >= similarity {
+		df := 1 - float64(len(lcs))/float64(len(ys))
+		if df <= diff {
 			break
 		}
 

@@ -427,7 +427,7 @@ func (p *Page) MustWaitIdle() *Page {
 
 // MustWaitStable is similar to Page.WaitStable
 func (p *Page) MustWaitStable() *Page {
-	p.e(p.WaitStable(800*time.Millisecond, 1))
+	p.e(p.WaitStable(time.Second, 0))
 	return p
 }
 
