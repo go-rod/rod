@@ -524,17 +524,17 @@ func TestPageCaptureDOMSnapshot(t *testing.T) {
 	g.Nil(snapshot)
 }
 
-func TestPageWaitStable(t *testing.T) {
+func TestPageWaitDOMStable(t *testing.T) {
 	g := setup(t)
 
 	{
 		p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
-		p.MustWaitStable()
+		p.MustWaitDOMStable()
 	}
 
 	{
 		p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
-		err := p.Timeout(time.Second).WaitStable(time.Second, 0)
+		err := p.Timeout(time.Second).WaitDOMStable(time.Second, 0)
 		g.Is(err, context.DeadlineExceeded)
 	}
 
@@ -542,7 +542,7 @@ func TestPageWaitStable(t *testing.T) {
 		g.Panic(func() {
 			p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
 			g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
-			p.MustWaitStable()
+			p.MustWaitDOMStable()
 		})
 	}
 
@@ -550,9 +550,16 @@ func TestPageWaitStable(t *testing.T) {
 		g.Panic(func() {
 			p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
 			g.mc.stubErr(2, proto.DOMSnapshotCaptureSnapshot{})
-			p.MustWaitStable()
+			p.MustWaitDOMStable()
 		})
 	}
+}
+
+func TestPageWaitStable(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
+	p.MustWaitStable()
 }
 
 func TestPageWaitIdle(t *testing.T) {

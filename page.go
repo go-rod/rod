@@ -587,6 +587,16 @@ func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, excludeTypes []proto.NetworkResourceType) func() {
 	defer p.tryTrace(TraceTypeWait, "request-idle")()
 
+	if excludeTypes == nil {
+		excludeTypes = []proto.NetworkResourceType{
+			proto.NetworkResourceTypeWebSocket,
+			proto.NetworkResourceTypeEventSource,
+			proto.NetworkResourceTypeMedia,
+			proto.NetworkResourceTypeImage,
+			proto.NetworkResourceTypeFont,
+		}
+	}
+
 	if len(includes) == 0 {
 		includes = []string{""}
 	}
@@ -637,11 +647,11 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, exc
 	}
 }
 
-// WaitStable waits until the change of the DOM tree is less or equal than diff percent for d duration.
+// WaitDOMStable waits until the change of the DOM tree is less or equal than diff percent for d duration.
 // Be careful, d is not the max wait timeout, it's the least stable time.
 // If you want to set a timeout you can use the "Page.Timeout" function.
-func (p *Page) WaitStable(d time.Duration, diff float64) error {
-	defer p.tryTrace(TraceTypeWait, "stable")()
+func (p *Page) WaitDOMStable(d time.Duration, diff float64) error {
+	defer p.tryTrace(TraceTypeWait, "dom-stable")()
 
 	domSnapshot, err := p.CaptureDOMSnapshot()
 	if err != nil {
@@ -675,6 +685,30 @@ func (p *Page) WaitStable(d time.Duration, diff float64) error {
 		domSnapshot = currentDomSnapshot
 	}
 	return nil
+}
+
+// WaitStable waits until the page is stable for d duration.
+func (p *Page) WaitStable(d time.Duration) error {
+	defer p.tryTrace(TraceTypeWait, "stable")()
+
+	var err error
+	lock := sync.Mutex{}
+
+	utils.All(func() {
+		e := p.WaitLoad()
+		lock.Lock()
+		err = e
+		lock.Unlock()
+	}, func() {
+		p.WaitRequestIdle(d, nil, nil, nil)()
+	}, func() {
+		e := p.WaitDOMStable(d, 0)
+		lock.Lock()
+		err = e
+		lock.Unlock()
+	})()
+
+	return err
 }
 
 // WaitIdle waits until the next window.requestIdleCallback is called.

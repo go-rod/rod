@@ -416,13 +416,7 @@ func (p *Page) MustWaitNavigation() func() {
 
 // MustWaitRequestIdle is similar to Page.WaitRequestIdle
 func (p *Page) MustWaitRequestIdle(excludes ...string) (wait func()) {
-	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes, []proto.NetworkResourceType{
-		proto.NetworkResourceTypeWebSocket,
-		proto.NetworkResourceTypeEventSource,
-		proto.NetworkResourceTypeMedia,
-		proto.NetworkResourceTypeImage,
-		proto.NetworkResourceTypeFont,
-	})
+	return p.WaitRequestIdle(300*time.Millisecond, nil, excludes, nil)
 }
 
 // MustWaitIdle is similar to Page.WaitIdle
@@ -431,9 +425,15 @@ func (p *Page) MustWaitIdle() *Page {
 	return p
 }
 
+// MustWaitDOMStable is similar to Page.WaitDOMStable
+func (p *Page) MustWaitDOMStable() *Page {
+	p.e(p.WaitDOMStable(time.Second, 0))
+	return p
+}
+
 // MustWaitStable is similar to Page.WaitStable
 func (p *Page) MustWaitStable() *Page {
-	p.e(p.WaitStable(time.Second, 0))
+	p.e(p.WaitStable(time.Second))
 	return p
 }
 
