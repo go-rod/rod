@@ -107,7 +107,7 @@ func Example_disable_headless_to_debug() {
 // Context will be recursively passed to all sub-methods.
 // For example, methods like Page.Context(ctx) will return a clone of the page with the ctx,
 // all the methods of the returned page will use the ctx if they have IO blocking operations.
-// Page.Timeout or Page.WithCancel is just a shortcut for Page.Context.
+// [Page.Timeout] or [Page.WithCancel] is just a shortcut for Page.Context.
 // Of course, Browser or Element works the same way.
 func Example_context_and_timeout() {
 	page := rod.New().MustConnect().MustPage("https://github.com")

@@ -30,7 +30,7 @@ type EvalOptions struct {
 	JS string
 
 	// JSArgs represents the arguments that will be passed to JS.
-	// If an argument is *proto.RuntimeRemoteObject type, the corresponding remote object will be used.
+	// If an argument is *[proto.RuntimeRemoteObject] type, the corresponding remote object will be used.
 	// Or it will be passed as a plain JSON value.
 	// When an arg in the args is a *js.Function, the arg will be cached on the page's js context.
 	// When the arg.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.
@@ -41,7 +41,7 @@ type EvalOptions struct {
 	UserGesture bool
 }
 
-// Eval creates a EvalOptions with ByValue set to true.
+// Eval creates a [EvalOptions] with ByValue set to true.
 func Eval(js string, args ...interface{}) *EvalOptions {
 	return &EvalOptions{
 		ByValue:      true,
@@ -113,7 +113,7 @@ func (e *EvalOptions) formatToJSFunc() string {
 	return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
 }
 
-// Eval is a shortcut for Page.Evaluate with AwaitPromise, ByValue set to true.
+// Eval is a shortcut for [Page.Evaluate] with AwaitPromise, ByValue set to true.
 func (p *Page) Eval(js string, args ...interface{}) (*proto.RuntimeRemoteObject, error) {
 	return p.Evaluate(Eval(js, args...).ByPromise())
 }

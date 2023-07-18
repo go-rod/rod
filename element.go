@@ -696,12 +696,12 @@ func (el *Element) Call(ctx context.Context, sessionID, methodName string, param
 	return el.page.Call(ctx, sessionID, methodName, params)
 }
 
-// Eval is a shortcut for Element.Evaluate with AwaitPromise, ByValue and AutoExp set to true.
+// Eval is a shortcut for [Element.Evaluate] with AwaitPromise, ByValue and AutoExp set to true.
 func (el *Element) Eval(js string, params ...interface{}) (*proto.RuntimeRemoteObject, error) {
 	return el.Evaluate(Eval(js, params...).ByPromise())
 }
 
-// Evaluate is just a shortcut of Page.Evaluate with This set to current element.
+// Evaluate is just a shortcut of [Page.Evaluate] with This set to current element.
 func (el *Element) Evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	return el.page.Context(el.ctx).Evaluate(opts.This(el.Object))
 }

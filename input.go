@@ -377,7 +377,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 	return nil
 }
 
-// Click the button. It's the combination of Mouse.Down and Mouse.Up
+// Click the button. It's the combination of [Mouse.Down] and [Mouse.Up]
 func (m *Mouse) Click(button proto.InputMouseButton, clickCount int) error {
 	m.page.browser.trySlowMotion()
 
@@ -389,7 +389,7 @@ func (m *Mouse) Click(button proto.InputMouseButton, clickCount int) error {
 	return m.Up(button, clickCount)
 }
 
-// Touch presents a touch device, such as a hand with fingers, each finger is a proto.InputTouchPoint.
+// Touch presents a touch device, such as a hand with fingers, each finger is a [proto.InputTouchPoint].
 // Touch events is stateless, we use the struct here only as a namespace to make the API style unified.
 type Touch struct {
 	page *Page

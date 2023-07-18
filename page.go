@@ -582,7 +582,7 @@ func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 
 // WaitRequestIdle returns a wait function that waits until no request for d duration.
 // Be careful, d is not the max wait timeout, it's the least idle time.
-// If you want to set a timeout you can use the "Page.Timeout" function.
+// If you want to set a timeout you can use the [Page.Timeout] function.
 // Use the includes and excludes regexp list to filter the requests by their url.
 func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, excludeTypes []proto.NetworkResourceType) func() {
 	defer p.tryTrace(TraceTypeWait, "request-idle")()
@@ -649,7 +649,7 @@ func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, exc
 
 // WaitDOMStable waits until the change of the DOM tree is less or equal than diff percent for d duration.
 // Be careful, d is not the max wait timeout, it's the least stable time.
-// If you want to set a timeout you can use the "Page.Timeout" function.
+// If you want to set a timeout you can use the [Page.Timeout] function.
 func (p *Page) WaitDOMStable(d time.Duration, diff float64) error {
 	defer p.tryTrace(TraceTypeWait, "dom-stable")()
 
@@ -776,7 +776,7 @@ func (p *Page) Wait(opts *EvalOptions) error {
 	})
 }
 
-// WaitElementsMoreThan Wait until there are more than <num> <selector> elements.
+// WaitElementsMoreThan waits until there are more than num elements that match the selector.
 func (p *Page) WaitElementsMoreThan(selector string, num int) error {
 	return p.Wait(Eval(`(s, n) => document.querySelectorAll(s).length > n`, selector, num))
 }

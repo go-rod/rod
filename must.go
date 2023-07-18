@@ -2,7 +2,7 @@
 // Their function names are all prefixed with Must.
 // A function here is usually a wrapper for the error version with fixed default options to make it easier to use.
 //
-// For example the source code of `Element.Click` and `Element.MustClick`. `MustClick` has no argument.
+// For example the source code of [Element.Click] and [Element.MustClick]. MustClick has no argument.
 // But `Click` has a `button` argument to decide which button to click.
 // `MustClick` feels like a version of `Click` with some default behaviors.
 

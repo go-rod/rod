@@ -314,7 +314,7 @@ func (b *Browser) PageFromTarget(targetID proto.TargetTargetID) (*Page, error) {
 	return page, nil
 }
 
-// EachEvent is similar to Page.EachEvent, but catches events of the entire browser.
+// EachEvent is similar to [Page.EachEvent], but catches events of the entire browser.
 func (b *Browser) EachEvent(callbacks ...interface{}) (wait func()) {
 	return b.eachEvent("", callbacks...)
 }
