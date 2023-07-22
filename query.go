@@ -386,35 +386,35 @@ func (rc *RaceContext) ElementFunc(fn func(*Page) (*Element, error)) *RaceContex
 	return rc
 }
 
-// Element the doc is similar to MustElement
+// Element is similar to [Page.Element]
 func (rc *RaceContext) Element(selector string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.Element(selector)
 	})
 }
 
-// ElementX the doc is similar to ElementX
+// ElementX is similar to [Page.ElementX]
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementX(selector)
 	})
 }
 
-// ElementR the doc is similar to ElementR
+// ElementR is similar to [Page.ElementR]
 func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementR(selector, regex)
 	})
 }
 
-// ElementByJS the doc is similar to MustElementByJS
+// ElementByJS is similar to [Page.ElementByJS]
 func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementByJS(opts)
 	})
 }
 
-// Search the doc is similar to MustSearch
+// Search is similar to [Page.Search]
 func (rc *RaceContext) Search(query string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		res, err := p.Search(query)

@@ -30,7 +30,7 @@ type EvalOptions struct {
 	JS string
 
 	// JSArgs represents the arguments that will be passed to JS.
-	// If an argument is *[proto.RuntimeRemoteObject] type, the corresponding remote object will be used.
+	// If an argument is [*proto.RuntimeRemoteObject] type, the corresponding remote object will be used.
 	// Or it will be passed as a plain JSON value.
 	// When an arg in the args is a *js.Function, the arg will be cached on the page's js context.
 	// When the arg.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.

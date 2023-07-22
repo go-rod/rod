@@ -312,7 +312,7 @@ func (l *Launcher) WorkingDir(path string) *Launcher {
 	return l.Set(flags.WorkingDir, path)
 }
 
-// Env to launch the browser process. The default value is os.Environ().
+// Env to launch the browser process. The default value is [os.Environ]().
 // Usually you use it to set the timezone env. Such as:
 //
 //	Env(append(os.Environ(), "TZ=Asia/Tokyo")...)
@@ -357,7 +357,9 @@ func (l *Launcher) FormatArgs() []string {
 }
 
 // Logger to handle stdout and stderr from browser.
-// For example, pipe all browser output to stdout: launcher.New().Logger(os.Stdout)
+// For example, pipe all browser output to stdout:
+//
+//	launcher.New().Logger(os.Stdout)
 func (l *Launcher) Logger(w io.Writer) *Launcher {
 	l.logger = w
 	return l
@@ -372,7 +374,7 @@ func (l *Launcher) MustLaunch() string {
 
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
-// If you want to reuse sessions, such as cookies, set the UserDataDir to the same location.
+// If you want to reuse sessions, such as cookies, set the [Launcher.UserDataDir] to the same location.
 func (l *Launcher) Launch() (string, error) {
 	defer l.ctxCancel()
 

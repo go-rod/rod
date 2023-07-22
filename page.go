@@ -499,7 +499,7 @@ func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 }
 
 // GetResource content by the url. Such as image, css, html, etc.
-// Use the proto.PageGetResourceTree to list all the resources.
+// Use the [proto.PageGetResourceTree] to list all the resources.
 func (p *Page) GetResource(url string) ([]byte, error) {
 	res, err := proto.PageGetResourceContent{
 		FrameID: p.FrameID,
@@ -565,7 +565,7 @@ func (p *Page) WaitEvent(e proto.Event) (wait func()) {
 }
 
 // WaitNavigation wait for a page lifecycle event when navigating.
-// Usually you will wait for proto.PageLifecycleEventNameNetworkAlmostIdle
+// Usually you will wait for [proto.PageLifecycleEventNameNetworkAlmostIdle]
 func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 	_ = proto.PageSetLifecycleEventsEnabled{Enabled: true}.Call(p)
 
@@ -826,7 +826,7 @@ func (p *Page) ElementFromObject(obj *proto.RuntimeRemoteObject) (*Element, erro
 	}, nil
 }
 
-// ElementFromNode creates an Element from the node, NodeID or BackendNodeID must be specified.
+// ElementFromNode creates an Element from the node, [proto.DOMNodeID] or [proto.DOMBackendNodeID] must be specified.
 func (p *Page) ElementFromNode(node *proto.DOMNode) (*Element, error) {
 	res, err := proto.DOMResolveNode{
 		NodeID:        node.NodeID,
@@ -877,7 +877,7 @@ func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
 	return err
 }
 
-// Call implements the proto.Client
+// Call implements the [proto.Client]
 func (p *Page) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	return p.browser.Call(ctx, sessionID, methodName, params)
 }

@@ -19,7 +19,7 @@ import (
 	"github.com/ysmood/leakless"
 )
 
-// Host to download browser
+// Host formats a revision number to a downloadable URL for the browser.
 type Host func(revision int) string
 
 var hostConf = map[string]struct {
@@ -78,6 +78,7 @@ type Browser struct {
 	Context context.Context
 
 	// Hosts are the candidates to download the browser.
+	// Such as [HostGoogle] or [HostNPM].
 	Hosts []Host
 
 	// Revision of the browser to use
@@ -149,7 +150,7 @@ func (lc *Browser) Download() error {
 }
 
 // Get is a smart helper to get the browser executable path.
-// If Destination is not valid it will auto download the browser to Destination.
+// If [Browser.BinPath] is not valid it will auto download the browser to [Browser.BinPath].
 func (lc *Browser) Get() (string, error) {
 	defer leakless.LockPort(lc.LockPort)()
 

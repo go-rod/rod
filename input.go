@@ -41,7 +41,7 @@ func (k *Keyboard) modifiers() int {
 
 // Press the key down.
 // To input characters that are not on the keyboard, such as Chinese or Japanese, you should
-// use method like Page.InsertText .
+// use method like [Page.InsertText].
 func (k *Keyboard) Press(key input.Key) error {
 	defer k.page.tryTrace(TraceTypeInput, "press key: "+key.Info().Code)()
 	k.page.browser.trySlowMotion()
@@ -413,7 +413,7 @@ func (t *Touch) Start(points ...*proto.InputTouchPoint) error {
 	}.Call(t.page)
 }
 
-// Move touch points. Use the InputTouchPoint.ID (Touch.identifier) to track points.
+// Move touch points. Use the [proto.InputTouchPoint.ID] (Touch.identifier) to track points.
 // Doc: https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
 func (t *Touch) Move(points ...*proto.InputTouchPoint) error {
 	return proto.InputDispatchTouchEvent{
