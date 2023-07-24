@@ -158,9 +158,11 @@ func (l *Launcher) Context(ctx context.Context) *Launcher {
 	return l
 }
 
-// Set a command line argument when launching the browser. Be careful the first argument is a flag name,
-// it shouldn't contain values. The values the will be joined with comma.
+// Set a command line argument when launching the browser.
+// Be careful the first argument is a flag name, it shouldn't contain values. The values the will be joined with comma.
+// A flag can have multiple values. If no values are provided the flag will be a boolean flag.
 // You can use the [Launcher.FormatArgs] to debug the final CLI arguments.
+// List of available flags: https://peter.sh/experiments/chromium-command-line-switches
 func (l *Launcher) Set(name flags.Flag, values ...string) *Launcher {
 	name.Check()
 	l.Flags[name.NormalizeFlag()] = values
