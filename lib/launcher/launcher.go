@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync/atomic"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher/flags"
@@ -39,6 +40,8 @@ type Launcher struct {
 
 	managed    bool
 	serviceURL string
+
+	launched atomic.Bool
 }
 
 // New returns the default arguments to start browser.
@@ -377,7 +380,13 @@ func (l *Launcher) MustLaunch() string {
 // Launch a standalone temp browser instance and returns the debug url.
 // bin and profileDir are optional, set them to empty to use the default values.
 // If you want to reuse sessions, such as cookies, set the [Launcher.UserDataDir] to the same location.
+//
+// Please note launcher can only be used once.
 func (l *Launcher) Launch() (string, error) {
+	if !l.launched.CompareAndSwap(false, true) {
+		return "", ErrAlreadyLaunched
+	}
+
 	defer l.ctxCancel()
 
 	bin, err := l.getBin()

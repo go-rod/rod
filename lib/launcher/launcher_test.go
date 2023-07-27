@@ -310,3 +310,17 @@ func TestBrowserDownloadErr(t *testing.T) {
 	}}
 	g.Err(b.Download())
 }
+
+func TestLaunchMultiTimes(t *testing.T) {
+	g := setup(t)
+
+	// first time launch, success.
+	l := launcher.New()
+	u, e := l.Launch()
+	g.Neq(u, "")
+	g.E(e)
+
+	// second time launch, failed with ErrAlreadyLaunched.
+	_, e = l.Launch()
+	g.Eq(e, launcher.ErrAlreadyLaunched)
+}
