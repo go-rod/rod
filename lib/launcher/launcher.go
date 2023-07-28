@@ -41,7 +41,7 @@ type Launcher struct {
 	managed    bool
 	serviceURL string
 
-	launched atomic.Bool
+	isLaunched int32 // zero means not launched
 }
 
 // New returns the default arguments to start browser.
@@ -383,7 +383,7 @@ func (l *Launcher) MustLaunch() string {
 //
 // Please note launcher can only be used once.
 func (l *Launcher) Launch() (string, error) {
-	if !l.launched.CompareAndSwap(false, true) {
+	if l.hasLaunched() {
 		return "", ErrAlreadyLaunched
 	}
 
@@ -437,6 +437,10 @@ func (l *Launcher) Launch() (string, error) {
 	}
 
 	return ResolveURL(u)
+}
+
+func (l *Launcher) hasLaunched() bool {
+	return !atomic.CompareAndSwapInt32(&l.isLaunched, 0, 1)
 }
 
 func (l *Launcher) setupCmd(cmd *exec.Cmd) {
