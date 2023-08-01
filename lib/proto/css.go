@@ -150,6 +150,9 @@ type CSSCSSStyleSheetHeader struct {
 
 	// EndColumn Column offset of the end of the stylesheet within the resource (zero based).
 	EndColumn float64 `json:"endColumn"`
+
+	// LoadingFailed (experimental) (optional) If the style sheet was loaded from a network resource, this indicates when the resource failed to load
+	LoadingFailed bool `json:"loadingFailed,omitempty"`
 }
 
 // CSSCSSRule CSS rule representation.

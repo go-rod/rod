@@ -23,6 +23,11 @@ func main() {
 
 	revLists := [][]int{}
 	for _, os := range list {
+		// skip win32
+		if os == "Win" {
+			continue
+		}
+
 		revList := []int{}
 		for _, s := range getList(mirror + os + "/") {
 			rev, err := strconv.ParseInt(s, 10, 32)
