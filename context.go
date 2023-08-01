@@ -55,7 +55,9 @@ func (b *Browser) Sleeper(sleeper func() utils.Sleeper) *Browser {
 
 // Context returns a clone with the specified ctx for chained sub-operations
 func (p *Page) Context(ctx context.Context) *Page {
+	p.helpersLock.Lock()
 	newObj := *p
+	p.helpersLock.Unlock()
 	newObj.ctx = ctx
 	return &newObj
 }
