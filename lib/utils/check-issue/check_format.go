@@ -13,7 +13,7 @@ import (
 )
 
 func checkMarkdown(body string) error {
-	cmd := strings.Split("npx -ys -- markdownlint-cli@0.31.1 -s --disable MD041 MD034 MD013 MD047 MD010", " ")
+	cmd := strings.Split("npx -ys -- markdownlint-cli@0.31.1 -s --disable MD041 MD034 MD013 MD047 MD010 MD012", " ")
 	c := exec.Command(cmd[0], cmd[1:]...)
 	c.Stdin = bytes.NewBufferString(body)
 	b, err := c.CombinedOutput()
