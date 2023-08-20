@@ -361,6 +361,34 @@ func TestInputTime(t *testing.T) {
 	})
 }
 
+func TestInputColor(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
+
+	var el *rod.Element
+	{
+		el = p.MustElement("[type=color]")
+		el.MustInputColor("#ff6f00")
+
+		g.Eq(el.MustText(), "#ff6f00")
+		g.True(p.MustHas("[event=input-color-change]"))
+	}
+
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		el.MustInputColor("#ff6f00")
+	})
+	g.Panic(func() {
+		g.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
+		el.MustInputColor("#ff6f00")
+	})
+	g.Panic(func() {
+		g.mc.stubErr(6, proto.RuntimeCallFunctionOn{})
+		el.MustInputColor("#ff6f00")
+	})
+}
+
 func TestElementInputDate(t *testing.T) {
 	g := setup(t)
 
