@@ -131,7 +131,7 @@ var InputEvent = &Function{
 // InputTime ...
 var InputTime = &Function{
 	Name:         "inputTime",
-	Definition:   `function(e){var e=new Date(e),t=e=>e.toString().padStart(2,"0"),n=e.getFullYear(),r=t(e.getMonth()+1),i=t(e.getDate()),o=t(e.getHours()),s=t(e.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${r}-` + "`" + `+i;break;case"datetime-local":this.value=n+` + "`" + `-${r}-${i}T${o}:` + "`" + `+s;break;case"month":this.value=r;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
+	Definition:   `function(e){var e=new Date(e),t=e=>e.toString().padStart(2,"0"),n=e.getFullYear(),r=t(e.getMonth()+1),i=t(e.getDate()),o=t(e.getHours()),s=t(e.getMinutes());switch(this.type){case"date":this.value=n+` + "`" + `-${r}-` + "`" + `+i;break;case"datetime-local":this.value=n+` + "`" + `-${r}-${i}T${o}:` + "`" + `+s;break;case"month":this.value=n+"-"+r;break;case"time":this.value=o+":"+s}functions.inputEvent.call(this)}`,
 	Dependencies: []*Function{InputEvent},
 }
 
