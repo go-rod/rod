@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"image/color"
 	"image/png"
 	"os"
@@ -11,13 +12,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ysmood/gson"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"github.com/ysmood/gson"
 )
 
 func TestGetElementPage(t *testing.T) {
@@ -304,7 +306,7 @@ func TestShadowDOM(t *testing.T) {
 func TestInputTime(t *testing.T) {
 	g := setup(t)
 
-	now := time.Now()
+	now := time.Date(2006, 1, 2, 3, 4, 5, 0, time.Local)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/input.html"))
 
@@ -323,6 +325,22 @@ func TestInputTime(t *testing.T) {
 
 		g.Eq(el.MustText(), now.Format("2006-01-02T15:04"))
 		g.True(p.MustHas("[event=input-datetime-local-change]"))
+	}
+
+	{
+		el = p.MustElement("[type=time]")
+		el.MustInputTime(now)
+
+		g.Eq(el.MustText(), fmt.Sprintf("%02d:%02d", now.Hour(), now.Minute()))
+		g.True(p.MustHas("[event=input-time-change]"))
+	}
+
+	{
+		el = p.MustElement("[type=month]")
+		el.MustInputTime(now)
+
+		g.Eq(el.MustText(), now.Format("2006-01"))
+		g.True(p.MustHas("[event=input-month-change]"))
 	}
 
 	g.Panic(func() {
