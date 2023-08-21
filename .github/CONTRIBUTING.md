@@ -50,18 +50,26 @@ The `cdp` requests of each test will be recorded and output to folder `tmp/cdp-l
 [artifacts](https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts) so that we can download
 them for debugging.
 
+Usually, you only need to run the tests that you are working on, for example:
+
+```bash
+go test -run=^TestClick$
+```
+
+The above will only run TestClick.
+
 ### Disable headless mode
 
 ```bash
-rod=show,trace,slow=2s go test
+go test -rod=show
 ```
 
-Check type `defaults.ResetWithEnv` for how it works.
+Check [defaults](../lib/defaults/defaults.go) for other available options.
 
 ### Lint project
 
 You can run all commands inside Docker so that you don't have to install all the development dependencies.
-Check [Use Docker for development](#Use-Docker-for-development) for more info.
+Check [Use Docker for development](#use-docker-for-development) for more info.
 
 ```bash
 go generate # only required for first time
