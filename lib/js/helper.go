@@ -135,6 +135,13 @@ var InputTime = &Function{
 	Dependencies: []*Function{InputEvent},
 }
 
+// InputColor ...
+var InputColor = &Function{
+	Name:         "inputColor",
+	Definition:   `function(e){this.value=""+e,functions.inputEvent.call(this)}`,
+	Dependencies: []*Function{InputEvent},
+}
+
 // SelectText ...
 var SelectText = &Function{
 	Name:         "selectText",

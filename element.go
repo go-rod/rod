@@ -305,6 +305,30 @@ func (el *Element) InputTime(t time.Time) error {
 	return err
 }
 
+// InputColor focuses on the element and inputs a color string to it.
+// Before the action, it will scroll to the element, wait until it's visible, enabled and writable.
+func (el *Element) InputColor(color string) error {
+	err := el.Focus()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitEnabled()
+	if err != nil {
+		return err
+	}
+
+	err = el.WaitWritable()
+	if err != nil {
+		return err
+	}
+
+	defer el.tryTrace(TraceTypeInput, "input "+color)()
+
+	_, err = el.Evaluate(evalHelper(js.InputColor, color))
+	return err
+}
+
 // Blur removes focus from the element.
 func (el *Element) Blur() error {
 	_, err := el.Evaluate(Eval("() => this.blur()").ByUser())
