@@ -147,7 +147,7 @@ func TestSetUserAgent(t *testing.T) {
 	g.newPage().MustSetUserAgent(nil).MustNavigate(s.URL())
 	wg.Wait()
 
-	g.Eq(ua, "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
+	g.Eq(ua, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
 	g.Eq(lang, "en")
 }
 
