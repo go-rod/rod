@@ -111,7 +111,6 @@ func (r *HijackRouter) initEvents() *HijackRouter {
 }
 
 // Add a hijack handler to router, the doc of the pattern is the same as "proto.FetchRequestPattern.URLPattern".
-// You can add new handler even after the "Run" is called.
 func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceType, handler func(*Hijack)) error {
 	r.enable.Patterns = append(r.enable.Patterns, &proto.FetchRequestPattern{
 		URLPattern:   pattern,
