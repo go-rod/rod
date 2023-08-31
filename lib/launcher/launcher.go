@@ -497,7 +497,7 @@ func (l *Launcher) Kill() {
 	}
 }
 
-// Cleanup wait until the Browser exits and remove UserDataDir
+// Cleanup wait until the Browser exits and remove [flags.UserDataDir]
 func (l *Launcher) Cleanup() {
 	<-l.exit
 

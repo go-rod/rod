@@ -9,7 +9,7 @@ type Flag string
 
 // TODO: we should automatically generate all the flags here
 const (
-	// UserDataDir flag
+	// UserDataDir https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md
 	UserDataDir Flag = "user-data-dir"
 
 	// Headless mode. Whether to run browser in headless mode. A mode without visible UI.
