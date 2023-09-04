@@ -16,7 +16,7 @@ func main() {
 
 	browser := rod.New().ControlURL(u).MustConnect()
 
-	page := browser.MustPage("http://example.com")
+	page := browser.MustPage("http://example.com").MustWaitStable()
 
 	fmt.Println(page.MustInfo().Title)
 }
