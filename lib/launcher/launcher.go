@@ -371,8 +371,8 @@ func (l *Launcher) Logger(w io.Writer) *Launcher {
 }
 
 // MustLaunch is similar to Launch
-func (l *Launcher) MustLaunch() string {
-	u, err := l.Launch()
+func (l *Launcher) MustLaunch(ctx context.Context) string {
+	u, err := l.Launch(ctx)
 	utils.E(err)
 	return u
 }
@@ -382,7 +382,7 @@ func (l *Launcher) MustLaunch() string {
 // If you want to reuse sessions, such as cookies, set the [Launcher.UserDataDir] to the same location.
 //
 // Please note launcher can only be used once.
-func (l *Launcher) Launch() (string, error) {
+func (l *Launcher) Launch(ctx context.Context) (string, error) {
 	if l.hasLaunched() {
 		return "", ErrAlreadyLaunched
 	}
@@ -406,7 +406,7 @@ func (l *Launcher) Launch() (string, error) {
 		if err == nil {
 			return u, nil
 		}
-		cmd = exec.Command(bin, l.FormatArgs()...)
+		cmd = exec.CommandContext(ctx, bin, l.FormatArgs()...)
 	}
 
 	l.setupCmd(cmd)
