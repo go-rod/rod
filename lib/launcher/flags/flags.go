@@ -36,6 +36,12 @@ const (
 	// XVFB flag
 	XVFB Flag = "rod-xvfb"
 
+	// ProfileDir flag
+	ProfileDir = "profile-directory"
+
+	// Preferences flag
+	Preferences Flag = "rod-preferences"
+
 	// Leakless flag
 	Leakless Flag = "rod-leakless"
 

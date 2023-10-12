@@ -65,7 +65,7 @@ func TestLaunch(t *testing.T) {
 	defaults.Proxy = "test.com"
 	defer func() { defaults.ResetWith("") }()
 
-	l := launcher.New()
+	l := launcher.New().Preferences("")
 	defer l.Kill()
 
 	u := l.MustLaunch()

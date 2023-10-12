@@ -66,6 +66,8 @@ func New() *Launcher {
 		// enable headless by default
 		flags.Headless: nil,
 
+		flags.Preferences: {`{"plugins":{"always_open_pdf_externally": true}}`},
+
 		// to disable the init blank window
 		"no-first-run":      nil,
 		"no-startup-window": nil,
@@ -242,6 +244,11 @@ func (l *Launcher) XVFB(args ...string) *Launcher {
 	return l.Set(flags.XVFB, args...)
 }
 
+// Preferences set chromium user preferences, such as set the default search engine or disable the pdf viewer.
+func (l *Launcher) Preferences(pref string) *Launcher {
+	return l.Set(flags.Preferences, pref)
+}
+
 // Leakless switch. If enabled, the browser will be force killed after the Go process exits.
 // The doc of leakless: https://github.com/ysmood/leakless.
 func (l *Launcher) Leakless(enable bool) *Launcher {
@@ -293,9 +300,9 @@ func (l *Launcher) UserDataDir(dir string) *Launcher {
 // Related article: https://superuser.com/a/377195
 func (l *Launcher) ProfileDir(dir string) *Launcher {
 	if dir == "" {
-		l.Delete("profile-directory")
+		l.Delete(flags.ProfileDir)
 	} else {
-		l.Set("profile-directory", dir)
+		l.Set(flags.ProfileDir, dir)
 	}
 	return l
 }
@@ -394,19 +401,23 @@ func (l *Launcher) Launch() (string, error) {
 		return "", err
 	}
 
+	l.setupUserPreferences()
+
 	var ll *leakless.Launcher
 	var cmd *exec.Cmd
 
+	args := l.FormatArgs()
+
 	if l.Has(flags.Leakless) && leakless.Support() {
 		ll = leakless.New()
-		cmd = ll.Command(bin, l.FormatArgs()...)
+		cmd = ll.Command(bin, args...)
 	} else {
 		port := l.Get(flags.RemoteDebuggingPort)
 		u, err := ResolveURL(port)
 		if err == nil {
 			return u, nil
 		}
-		cmd = exec.Command(bin, l.FormatArgs()...)
+		cmd = exec.Command(bin, args...)
 	}
 
 	l.setupCmd(cmd)
@@ -441,6 +452,31 @@ func (l *Launcher) Launch() (string, error) {
 
 func (l *Launcher) hasLaunched() bool {
 	return !atomic.CompareAndSwapInt32(&l.isLaunched, 0, 1)
+}
+
+func (l *Launcher) setupUserPreferences() {
+	userDir := l.Get(flags.UserDataDir)
+	if userDir == "" {
+		return
+	}
+
+	userDir, err := filepath.Abs(userDir)
+	utils.E(err)
+
+	profile := l.Get(flags.ProfileDir)
+	if profile == "" {
+		profile = "Default"
+	}
+
+	path := filepath.Join(userDir, profile, "Preferences")
+
+	pref := l.Get(flags.Preferences)
+
+	if pref == "" {
+		pref = "{}"
+	}
+
+	utils.E(utils.OutputFile(path, pref))
 }
 
 func (l *Launcher) setupCmd(cmd *exec.Cmd) {
