@@ -3,6 +3,8 @@ package cdp
 import (
 	"bufio"
 	"context"
+	"crypto/sha1"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -183,6 +185,15 @@ func (e *ErrBadHandshake) Error() string {
 	)
 }
 
+func verifyWebSocketAccept(responseHeaders http.Header, websocketKey string) bool {
+	expectedKey := websocketKey + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+	hash := sha1.New()
+	hash.Write([]byte(expectedKey))
+	expectedAccept := base64.StdEncoding.EncodeToString(hash.Sum(nil))
+
+	return responseHeaders.Get("Sec-WebSocket-Accept") == expectedAccept
+}
+
 func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Header) error {
 	req := (&http.Request{Method: http.MethodGet, URL: u, Header: http.Header{
 		"Upgrade":               {"websocket"},
@@ -210,8 +221,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 	}
 	defer func() { _ = res.Body.Close() }()
 
-	if res.StatusCode != http.StatusSwitchingProtocols ||
-		res.Header.Get("Sec-Websocket-Accept") != "Q67D9eATKx531lK8F7u2rqQNnNI=" {
+	if res.StatusCode != http.StatusSwitchingProtocols || !verifyWebSocketAccept(res.Header, req.Header.Get("Sec-WebSocket-Key")) {
 		body, _ := ioutil.ReadAll(res.Body)
 		return &ErrBadHandshake{
 			Status: res.Status,
