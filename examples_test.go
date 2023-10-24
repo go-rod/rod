@@ -550,7 +550,7 @@ func Example_states() {
 	// true
 }
 
-// We can use PagePool to concurrently control and reuse pages.
+// We can use [rod.PagePool] to concurrently control and reuse pages.
 func ExamplePage_pool() {
 	browser := rod.New().MustConnect()
 	defer browser.MustClose()
@@ -566,6 +566,9 @@ func ExamplePage_pool() {
 
 	yourJob := func() {
 		page := pool.Get(create)
+
+		// Put the instance back to the pool after we're done,
+		// so the instance can be reused by other goroutines.
 		defer pool.Put(page)
 
 		page.MustNavigate("http://mdn.dev").MustWaitLoad()
@@ -591,6 +594,46 @@ func ExamplePage_pool() {
 	// mdn.dev
 	// mdn.dev
 	// mdn.dev
+}
+
+// We can use [rod.BrowserPool] to concurrently control and reuse browsers.
+func ExampleBrowser_pool() {
+	// Create a new browser pool with a limit of 3
+	pool := rod.NewBrowserPool(3)
+
+	// Create a function that returns a new browser instance
+	create := func() *rod.Browser {
+		browser := rod.New().MustConnect()
+		return browser
+	}
+
+	// Use the browser instances in separate goroutines
+	var wg sync.WaitGroup
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			// Get a browser instance from the pool
+			browser := pool.Get(create)
+
+			// Put the instance back to the pool after we're done,
+			// so the instance can be reused by other goroutines.
+			defer pool.Put(browser)
+
+			// Use the browser instance
+			page := browser.MustPage("https://www.google.com")
+			fmt.Println(page.MustInfo().Title)
+		}()
+	}
+
+	// Wait for all the goroutines to finish
+	wg.Wait()
+
+	// Cleanup the pool by closing all the browser instances
+	pool.Cleanup(func(p *rod.Browser) {
+		p.MustClose()
+	})
 }
 
 func Example_load_extension() {

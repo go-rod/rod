@@ -92,7 +92,7 @@ func NewPagePool(limit int) PagePool {
 	return pp
 }
 
-// Get a page from the pool. Use the PagePool.Put to make it reusable later.
+// Get a page from the pool. Use the [PagePool.Put] to make it reusable later.
 func (pp PagePool) Get(create func() *Page) *Page {
 	p := <-pp
 	if p == nil {
@@ -131,7 +131,7 @@ func NewBrowserPool(limit int) BrowserPool {
 	return pp
 }
 
-// Get a browser from the pool. Use the BrowserPool.Put to make it reusable later.
+// Get a browser from the pool. Use the [BrowserPool.Put] to make it reusable later.
 func (bp BrowserPool) Get(create func() *Browser) *Browser {
 	p := <-bp
 	if p == nil {
