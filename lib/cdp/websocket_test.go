@@ -66,8 +66,9 @@ func TestWebSocketHeader(t *testing.T) {
 
 	ws := cdp.WebSocket{}
 	err := ws.Connect(g.Context(), s.URL("/a?q=ok"), http.Header{
-		"Host": {"test.com"},
-		"Test": {"header"},
+		"Host":              {"test.com"},
+		"Test":              {"header"},
+		"Sec-WebSocket-Key": {"key"},
 	})
 	<-wait
 
