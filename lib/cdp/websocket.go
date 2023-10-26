@@ -209,6 +209,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 			req.Host = vs[0]
 		} else if k == "Sec-WebSocket-Key" && len(vs) > 0 {
 			secKey = vs[0]
+			req.Header[k] = vs
 		} else {
 			req.Header[k] = vs
 		}
