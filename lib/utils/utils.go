@@ -33,7 +33,7 @@ var TestEnvs = map[string]string{
 }
 
 // InContainer will be true if is inside container environment, such as docker
-var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv")
+var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv") || os.Getenv("KUBERNETES_SERVICE_HOST") != ""
 
 // Noop does nothing
 func Noop() {}
