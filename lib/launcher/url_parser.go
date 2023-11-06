@@ -129,5 +129,12 @@ func ResolveURL(u string) (string, error) {
 	data, err := ioutil.ReadAll(res.Body)
 	utils.E(err)
 
-	return gson.New(data).Get("webSocketDebuggerUrl").Str(), nil
+	wsURL := gson.New(data).Get("webSocketDebuggerUrl").Str()
+
+	parsedWS, err := url.Parse(wsURL)
+	utils.E(err)
+
+	parsedWS.Host = parsed.Host
+
+	return parsedWS.String(), nil
 }
