@@ -34,7 +34,7 @@ func TestRod(t *testing.T) {
 
 Such as what error you see.
 
-## What you expected to see
+## What you expect to see
 
 Such as what you want to do.
 
