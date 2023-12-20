@@ -245,6 +245,7 @@ func (l *Launcher) XVFB(args ...string) *Launcher {
 }
 
 // Preferences set chromium user preferences, such as set the default search engine or disable the pdf viewer.
+// The pref is a json string, the doc is here https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
 func (l *Launcher) Preferences(pref string) *Launcher {
 	return l.Set(flags.Preferences, pref)
 }
