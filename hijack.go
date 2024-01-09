@@ -230,6 +230,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	defer func() { _ = res.Body.Close() }()
 
 	h.Response.payload.ResponseCode = res.StatusCode
+	h.Response.RawResponse = res
 
 	for k, vs := range res.Header {
 		for _, v := range vs {
@@ -326,8 +327,9 @@ func (ctx *HijackRequest) IsNavigation() bool {
 
 // HijackResponse context
 type HijackResponse struct {
-	payload *proto.FetchFulfillRequest
-	fail    *proto.FetchFailRequest
+	payload     *proto.FetchFulfillRequest
+	RawResponse *http.Response
+	fail        *proto.FetchFailRequest
 }
 
 // Payload to respond the request from the browser.
