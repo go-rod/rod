@@ -21,7 +21,7 @@ import (
 
 // This example opens https://github.com/, searches for "git",
 // and then gets the header element which gives the description for Git.
-func Example() {
+func Example_basic() {
 	// Launch a new browser with default options, and connect to it.
 	browser := rod.New().MustConnect()
 
@@ -57,7 +57,7 @@ func Example() {
 
 	// Output:
 	// Git is the most widely used version control system.
-	// Found 11 input elements
+	// Found 10 input elements
 	// 1 + 2 = 3
 	// Repository search results · GitHub
 }
