@@ -464,6 +464,76 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
+// ScrollScreenshot Scroll screenshot does not adjust the size of the viewport, but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
+// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly.
+func (p *Page) ScrollScreenshot(req *proto.PageCaptureScreenshot) ([]byte, error) {
+	if req == nil {
+		req = &proto.PageCaptureScreenshot{}
+	}
+
+	metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+	viewpointHeight := metrics.CSSVisualViewport.ClientHeight
+	contentHeight := metrics.CSSContentSize.Height
+
+	if metrics.CSSContentSize == nil {
+		return nil, errors.New("failed to get css content size")
+	}
+
+	var scrollTop float64
+	var images []utils.ImgWithBox
+
+	for {
+		var clip *proto.PageViewport
+
+		if scrollTop+viewpointHeight > contentHeight {
+			clip = &proto.PageViewport{
+				X:      0,
+				Y:      scrollTop,
+				Width:  metrics.CSSVisualViewport.ClientWidth,
+				Height: contentHeight - scrollTop,
+				Scale:  1,
+			}
+		}
+
+		reqClone := *req
+		reqClone.Clip = clip
+		bs, err := p.Screenshot(false, &reqClone)
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, utils.ImgWithBox{Img: bs})
+
+		scrollTop += viewpointHeight
+		if scrollTop >= contentHeight {
+			break
+		}
+		err = p.Mouse.Scroll(0, viewpointHeight, 1)
+		if err != nil {
+			return nil, fmt.Errorf("scroll error: %w", err)
+		}
+
+		// TODO: How to wait for rendering to complete more gracefully?
+		time.Sleep(200 * time.Millisecond)
+	}
+
+	var imgOption *utils.ImgOption
+	if req.Quality != nil {
+		imgOption = &utils.ImgOption{
+			Quality: *req.Quality,
+		}
+	}
+	bs, err := utils.SplicePngVertical(images, req.Format, imgOption)
+	if err != nil {
+		panic(err)
+	}
+
+	return bs, nil
+}
+
 // CaptureDOMSnapshot Returns a document snapshot, including the full DOM tree of the root node
 // (including iframes, template contents, and imported documents) in a flattened array,
 // as well as layout and white-listed computed style information for the nodes.
