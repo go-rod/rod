@@ -464,11 +464,34 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
+type ScrollScreenshotOptions struct {
+	// Format (optional) Image compression format (defaults to png).
+	Format proto.PageCaptureScreenshotFormat `json:"format,omitempty"`
+
+	// Quality (optional) Compression quality from range [0..100] (jpeg only).
+	Quality *int `json:"quality,omitempty"`
+
+	// FixedTop (optional) The number of pixels to skip from the top.
+	// It is suitable for optimizing the screenshot effect when there is a fixed positioning element at the top of the page.
+	FixedTop float64
+
+	// FixedBottom (optional) The number of pixels to skip from the bottom.
+	FixedBottom float64
+
+	// WaitPreScroll wait scroll animation (default is 500ms)
+	WaitPreScroll time.Duration
+}
+
 // ScrollScreenshot Scroll screenshot does not adjust the size of the viewport, but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
-// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly.
-func (p *Page) ScrollScreenshot(req *proto.PageCaptureScreenshot) ([]byte, error) {
-	if req == nil {
-		req = &proto.PageCaptureScreenshot{}
+// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly,
+//
+//	you can set the FixedTop parameter to optimize it.
+func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
+	if opt == nil {
+		opt = &ScrollScreenshotOptions{}
+	}
+	if opt.WaitPreScroll == 0 {
+		opt.WaitPreScroll = time.Millisecond * 500
 	}
 
 	metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
@@ -488,6 +511,7 @@ func (p *Page) ScrollScreenshot(req *proto.PageCaptureScreenshot) ([]byte, error
 	for {
 		var clip *proto.PageViewport
 
+		scrollY := viewpointHeight - (opt.FixedTop + opt.FixedBottom)
 		if scrollTop+viewpointHeight > contentHeight {
 			clip = &proto.PageViewport{
 				X:      0,
@@ -496,37 +520,63 @@ func (p *Page) ScrollScreenshot(req *proto.PageCaptureScreenshot) ([]byte, error
 				Height: contentHeight - scrollTop,
 				Scale:  1,
 			}
+		} else {
+			if scrollTop == 0 {
+				clip = &proto.PageViewport{
+					X:      0,
+					Y:      scrollTop,
+					Width:  metrics.CSSVisualViewport.ClientWidth,
+					Height: scrollY,
+					Scale:  1,
+				}
+			} else {
+				clip = &proto.PageViewport{
+					X:      0,
+					Y:      scrollTop + opt.FixedTop,
+					Width:  metrics.CSSVisualViewport.ClientWidth,
+					Height: scrollY,
+					Scale:  1,
+				}
+			}
 		}
 
-		reqClone := *req
-		reqClone.Clip = clip
-		bs, err := p.Screenshot(false, &reqClone)
+		req := &proto.PageCaptureScreenshot{
+			Format:                opt.Format,
+			Quality:               opt.Quality,
+			Clip:                  clip,
+			FromSurface:           false,
+			CaptureBeyondViewport: false,
+			OptimizeForSpeed:      false,
+		}
+		bs, err := p.Screenshot(false, req)
 		if err != nil {
 			return nil, err
 		}
 
 		images = append(images, utils.ImgWithBox{Img: bs})
 
-		scrollTop += viewpointHeight
+		scrollTop += scrollY
 		if scrollTop >= contentHeight {
 			break
 		}
-		err = p.Mouse.Scroll(0, viewpointHeight, 1)
+		err = p.Mouse.Scroll(0, scrollY, 1)
 		if err != nil {
 			return nil, fmt.Errorf("scroll error: %w", err)
 		}
 
-		// TODO: How to wait for rendering to complete more gracefully?
-		time.Sleep(200 * time.Millisecond)
+		err = p.WaitStable(opt.WaitPreScroll)
+		if err != nil {
+			return nil, fmt.Errorf("waitStable error: %w", err)
+		}
 	}
 
 	var imgOption *utils.ImgOption
-	if req.Quality != nil {
+	if opt.Quality != nil {
 		imgOption = &utils.ImgOption{
-			Quality: *req.Quality,
+			Quality: *opt.Quality,
 		}
 	}
-	bs, err := utils.SplicePngVertical(images, req.Format, imgOption)
+	bs, err := utils.SplicePngVertical(images, opt.Format, imgOption)
 	if err != nil {
 		panic(err)
 	}

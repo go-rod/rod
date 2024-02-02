@@ -14,7 +14,7 @@ func main() {
 	browser := rod.New().MustConnect()
 
 	// capture entire browser viewport, returning jpg with quality=90
-	buf, err := browser.MustPage("https://desktop.github.com/").MustWaitStable().ScrollScreenshot(&proto.PageCaptureScreenshot{
+	buf, err := browser.MustPage("https://desktop.github.com/").MustWaitStable().ScrollScreenshot(&rod.ScrollScreenshotOptions{
 		Format:  proto.PageCaptureScreenshotFormatJpeg,
 		Quality: gson.Int(90),
 	})
