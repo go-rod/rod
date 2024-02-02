@@ -251,6 +251,21 @@ func Example_page_screenshot() {
 	_ = utils.OutputFile("my.jpg", img)
 }
 
+func Example_page_scroll_screenshot() {
+	browser := rod.New().MustConnect()
+
+	// capture entire browser viewport, returning jpg with quality=90
+	img, err := browser.MustPage("https://desktop.github.com/").MustWaitStable().ScrollScreenshot(&rod.ScrollScreenshotOptions{
+		Format:  proto.PageCaptureScreenshotFormatJpeg,
+		Quality: gson.Int(90),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	_ = utils.OutputFile("my.jpg", img)
+}
+
 func Example_page_pdf() {
 	page := rod.New().MustConnect().MustPage("https://github.com").MustWaitLoad()
 
