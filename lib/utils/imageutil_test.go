@@ -2,10 +2,11 @@ package utils
 
 import (
 	"bytes"
-	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/got"
 	"image"
 	"testing"
+
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/ysmood/got"
 )
 
 var setup = got.Setup(nil)

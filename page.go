@@ -464,6 +464,7 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
+// ScrollScreenshotOptions is the options for the ScrollScreenshot
 type ScrollScreenshotOptions struct {
 	// Format (optional) Image compression format (defaults to png).
 	Format proto.PageCaptureScreenshotFormat `json:"format,omitempty"`
