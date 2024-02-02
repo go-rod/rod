@@ -743,6 +743,39 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 }
 
+func TestScrollScreenshotPage(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/scroll.html"))
+	p.MustElement("button")
+	data := p.MustScrollScreenshotPage()
+	img, err := png.Decode(bytes.NewBuffer(data))
+	g.E(err)
+	res := p.MustEval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	// ScrollScreenshot do not support horizontal scrolling yet,
+	// the width should be the same as the viewport
+	g.Eq(1280, img.Bounds().Dx())
+	g.Eq(res.Get("h").Int(), img.Bounds().Dy())
+
+	// after the full page screenshot the window size should be the same as before
+	res = p.MustEval(`() => ({w: innerWidth, h: innerHeight})`)
+	g.Eq(1280, res.Get("w").Int())
+	g.Eq(800, res.Get("h").Int())
+
+	p.MustScrollScreenshotPage()
+
+	noEmulation := g.newPage(g.blank())
+	g.E(noEmulation.SetViewport(nil))
+	noEmulation.MustScrollScreenshotPage()
+
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
+		})
+		p.MustScrollScreenshotPage()
+	})
+}
+
 func TestScreenshotFullPageInit(t *testing.T) {
 	g := setup(t)
 
