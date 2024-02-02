@@ -37,11 +37,7 @@ func (p jpegProcessor) Encode(img image.Image, opt *ImgOption) ([]byte, error) {
 		jpegOpt = &jpeg.Options{Quality: opt.Quality}
 	}
 	err := jpeg.Encode(&buf, img, jpegOpt)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
+	return buf.Bytes(), err
 }
 
 func (p jpegProcessor) Decode(file io.Reader) (image.Image, error) {
@@ -53,11 +49,7 @@ type pngProcessor struct{}
 func (p pngProcessor) Encode(img image.Image, _ *ImgOption) ([]byte, error) {
 	var buf bytes.Buffer
 	err := png.Encode(&buf, img)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
+	return buf.Bytes(), err
 }
 
 func (p pngProcessor) Decode(file io.Reader) (image.Image, error) {

@@ -499,12 +499,13 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	viewpointHeight := metrics.CSSVisualViewport.ClientHeight
-	contentHeight := metrics.CSSContentSize.Height
 
-	if metrics.CSSContentSize == nil {
+	if metrics.CSSContentSize == nil || metrics.CSSVisualViewport == nil {
 		return nil, errors.New("failed to get css content size")
 	}
+
+	viewpointHeight := metrics.CSSVisualViewport.ClientHeight
+	contentHeight := metrics.CSSContentSize.Height
 
 	var scrollTop float64
 	var images []utils.ImgWithBox
@@ -549,12 +550,12 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 			CaptureBeyondViewport: false,
 			OptimizeForSpeed:      false,
 		}
-		bs, err := p.Screenshot(false, req)
+		shot, err := req.Call(p)
 		if err != nil {
 			return nil, err
 		}
 
-		images = append(images, utils.ImgWithBox{Img: bs})
+		images = append(images, utils.ImgWithBox{Img: shot.Data})
 
 		scrollTop += scrollY
 		if scrollTop >= contentHeight {
@@ -579,7 +580,7 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 	}
 	bs, err := utils.SplicePngVertical(images, opt.Format, imgOption)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return bs, nil

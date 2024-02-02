@@ -746,7 +746,7 @@ func TestScreenshotFullPage(t *testing.T) {
 func TestScrollScreenshotPage(t *testing.T) {
 	g := setup(t)
 
-	p := g.page.MustNavigate(g.srcFile("fixtures/scroll.html"))
+	p := g.page.MustNavigate(g.srcFile("fixtures/scroll-y.html"))
 	p.MustElement("button")
 	data := p.MustScrollScreenshotPage()
 	img, err := png.Decode(bytes.NewBuffer(data))
@@ -770,11 +770,44 @@ func TestScrollScreenshotPage(t *testing.T) {
 	noEmulation.MustScrollScreenshotPage()
 
 	g.Panic(func() {
+		// mock error for get CSSContentSize
+		g.mc.stubErr(1, proto.PageGetLayoutMetrics{})
+		p.MustScrollScreenshotPage()
+	})
+	g.Panic(func() {
 		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
-			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
+			return gson.New(proto.PageGetLayoutMetricsResult{
+				CSSVisualViewport: &proto.PageVisualViewport{},
+			}), nil
 		})
 		p.MustScrollScreenshotPage()
 	})
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{
+				CSSContentSize: &proto.DOMRect{},
+			}), nil
+		})
+		p.MustScrollScreenshotPage()
+	})
+	g.Panic(func() {
+		// mock error for scroll
+		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+		p.MustScrollScreenshotPage()
+	})
+
+	g.Panic(func() {
+		// mock error for Screenshot
+		g.mc.stubErr(1, proto.PageCaptureScreenshot{})
+		p.MustScrollScreenshotPage()
+	})
+
+	// test unsupported format
+	_, err = p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
+		Format:  "webp",
+		Quality: gson.Int(10),
+	})
+	g.Err(err)
 }
 
 func TestScreenshotFullPageInit(t *testing.T) {
