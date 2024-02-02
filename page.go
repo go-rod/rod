@@ -692,20 +692,17 @@ func (p *Page) WaitStable(d time.Duration) error {
 	defer p.tryTrace(TraceTypeWait, "stable")()
 
 	var err error
-	lock := sync.Mutex{}
+
+	setErr := sync.Once{}
 
 	utils.All(func() {
 		e := p.WaitLoad()
-		lock.Lock()
-		err = e
-		lock.Unlock()
+		setErr.Do(func() { err = e })
 	}, func() {
 		p.WaitRequestIdle(d, nil, nil, nil)()
 	}, func() {
 		e := p.WaitDOMStable(d, 0)
-		lock.Lock()
-		err = e
-		lock.Unlock()
+		setErr.Do(func() { err = e })
 	})()
 
 	return err

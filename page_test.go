@@ -560,6 +560,15 @@ func TestPageWaitStable(t *testing.T) {
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/page-wait-stable.html"))
 	p.MustWaitStable()
+
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		p.MustWaitStable()
+	})
+	g.Panic(func() {
+		g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
+		p.MustWaitStable()
+	})
 }
 
 func TestPageWaitIdle(t *testing.T) {
