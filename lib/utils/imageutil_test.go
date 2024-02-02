@@ -75,7 +75,8 @@ func TestSplicePngVertical(t *testing.T) {
 						X: a.Bounds().Dx(),
 						Y: 100,
 					},
-				}},
+				},
+			},
 			{Img: bBs},
 		}, format, nil)
 		g.E(err)
@@ -118,7 +119,7 @@ func TestSplicePngVertical(t *testing.T) {
 		g.E(err)
 		g.Eq(1, len(bs))
 	})
-	t.Run("unsupportedFromat", func(t *testing.T) {
+	t.Run("unsupportedFormat", func(t *testing.T) {
 		_, err := SplicePngVertical([]ImgWithBox{
 			{Img: []byte{1}},
 			{Img: []byte{1}},
@@ -166,8 +167,9 @@ func TestNewImgProcessor(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "webp",
+			name: "webP",
 			args: args{
+				/* cspell: disable-next-line */
 				format: proto.PageCaptureScreenshotFormatWebp,
 			},
 			wantErr: true,
@@ -175,7 +177,7 @@ func TestNewImgProcessor(t *testing.T) {
 	}
 
 	a := image.NewRGBA(image.Rect(0, 0, 1000, 200))
-	//errImg := image.NewRGBA(image.Rect(0, 0, 0, 0))
+	// errImg := image.NewRGBA(image.Rect(0, 0, 0, 0))
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

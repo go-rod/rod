@@ -804,7 +804,7 @@ func TestScrollScreenshotPage(t *testing.T) {
 
 	// test unsupported format
 	_, err = p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
-		Format:  "webp",
+		Format:  "webP",
 		Quality: gson.Int(10),
 	})
 	g.Err(err)
