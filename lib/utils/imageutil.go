@@ -102,7 +102,7 @@ func SplicePngVertical(files []ImgWithBox, format proto.PageCaptureScreenshotFor
 		}
 	}
 
-	croppedImg := image.NewRGBA(image.Rect(0, 0, width, height))
+	spliceImg := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	var destY int
 	for i, file := range files {
@@ -117,14 +117,14 @@ func SplicePngVertical(files []ImgWithBox, format proto.PageCaptureScreenshotFor
 		for y := start.Y; y < end.Y; y++ {
 			for x := start.X; x < end.X; x++ {
 				color := img.At(x, y)
-				croppedImg.Set(x, y-start.Y+destY, color)
+				spliceImg.Set(x, y-start.Y+destY, color)
 			}
 		}
 
 		destY += bounds.Dy()
 	}
 
-	bs, err := processor.Encode(croppedImg, opt)
+	bs, err := processor.Encode(spliceImg, opt)
 	if err != nil {
 		return nil, err
 	}

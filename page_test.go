@@ -811,9 +811,16 @@ func TestScrollScreenshotPage(t *testing.T) {
 		p.MustScrollScreenshotPage()
 	})
 
+	g.Panic(func() {
+		// mock error for WaitStable
+		g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
+		p.MustScrollScreenshotPage()
+	})
+
 	// test unsupported format
 	_, err = p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
-		Format:  "webP",
+		/* cspell: disable-next-line */
+		Format:  proto.PageCaptureScreenshotFormatWebp,
 		Quality: gson.Int(10),
 	})
 	g.Err(err)

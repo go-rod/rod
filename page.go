@@ -484,9 +484,9 @@ type ScrollScreenshotOptions struct {
 }
 
 // ScrollScreenshot Scroll screenshot does not adjust the size of the viewport, but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
-// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly,
+// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly,	you can set the FixedTop parameter to optimize it.
 //
-//	you can set the FixedTop parameter to optimize it.
+// Only support png and jpeg format yet, webP is not supported because no suitable processing library was found in golang.
 func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 	if opt == nil {
 		opt = &ScrollScreenshotOptions{}
