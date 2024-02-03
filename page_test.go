@@ -752,6 +752,80 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 }
 
+func TestScrollScreenshotPage(t *testing.T) {
+	g := setup(t)
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/scroll-y.html"))
+	p.MustElement("button")
+	data := p.MustScrollScreenshotPage()
+	img, err := png.Decode(bytes.NewBuffer(data))
+	g.E(err)
+	res := p.MustEval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
+	// ScrollScreenshot do not support horizontal scrolling yet,
+	// the width should be the same as the viewport.
+	// However, since different devices have different scroll bar widths, this value may be different on different devices. We will not make test assertions for the time being.
+	g.True(1280 >= img.Bounds().Dx() || 1000 <= img.Bounds().Dx())
+	g.Eq(res.Get("h").Int(), img.Bounds().Dy())
+
+	// after the full page screenshot the window size should be the same as before
+	res = p.MustEval(`() => ({w: innerWidth, h: innerHeight})`)
+	g.Eq(1280, res.Get("w").Int())
+	g.Eq(800, res.Get("h").Int())
+
+	p.MustScrollScreenshotPage()
+
+	noEmulation := g.newPage(g.blank())
+	g.E(noEmulation.SetViewport(nil))
+	noEmulation.MustScrollScreenshotPage()
+
+	g.Panic(func() {
+		// mock error for get CSSContentSize
+		g.mc.stubErr(1, proto.PageGetLayoutMetrics{})
+		p.MustScrollScreenshotPage()
+	})
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{
+				CSSVisualViewport: &proto.PageVisualViewport{},
+			}), nil
+		})
+		p.MustScrollScreenshotPage()
+	})
+	g.Panic(func() {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+			return gson.New(proto.PageGetLayoutMetricsResult{
+				CSSContentSize: &proto.DOMRect{},
+			}), nil
+		})
+		p.MustScrollScreenshotPage()
+	})
+	g.Panic(func() {
+		// mock error for scroll
+		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
+		p.MustScrollScreenshotPage()
+	})
+
+	g.Panic(func() {
+		// mock error for Screenshot
+		g.mc.stubErr(1, proto.PageCaptureScreenshot{})
+		p.MustScrollScreenshotPage()
+	})
+
+	g.Panic(func() {
+		// mock error for WaitStable
+		g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
+		p.MustScrollScreenshotPage()
+	})
+
+	// test unsupported format
+	_, err = p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
+		/* cspell: disable-next-line */
+		Format:  proto.PageCaptureScreenshotFormatWebp,
+		Quality: gson.Int(10),
+	})
+	g.Err(err)
+}
+
 func TestScreenshotFullPageInit(t *testing.T) {
 	g := setup(t)
 

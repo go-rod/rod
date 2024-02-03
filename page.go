@@ -464,6 +464,128 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
+// ScrollScreenshotOptions is the options for the ScrollScreenshot
+type ScrollScreenshotOptions struct {
+	// Format (optional) Image compression format (defaults to png).
+	Format proto.PageCaptureScreenshotFormat `json:"format,omitempty"`
+
+	// Quality (optional) Compression quality from range [0..100] (jpeg only).
+	Quality *int `json:"quality,omitempty"`
+
+	// FixedTop (optional) The number of pixels to skip from the top.
+	// It is suitable for optimizing the screenshot effect when there is a fixed positioning element at the top of the page.
+	FixedTop float64
+
+	// FixedBottom (optional) The number of pixels to skip from the bottom.
+	FixedBottom float64
+
+	// WaitPerScroll wait scroll animation (default is 500ms)
+	WaitPerScroll time.Duration
+}
+
+// ScrollScreenshot Scroll screenshot does not adjust the size of the viewport, but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
+// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly,	you can set the FixedTop parameter to optimize it.
+//
+// Only support png and jpeg format yet, webP is not supported because no suitable processing library was found in golang.
+func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
+	if opt == nil {
+		opt = &ScrollScreenshotOptions{}
+	}
+	if opt.WaitPerScroll == 0 {
+		opt.WaitPerScroll = time.Millisecond * 500
+	}
+
+	metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	if metrics.CSSContentSize == nil || metrics.CSSVisualViewport == nil {
+		return nil, errors.New("failed to get css content size")
+	}
+
+	viewpointHeight := metrics.CSSVisualViewport.ClientHeight
+	contentHeight := metrics.CSSContentSize.Height
+
+	var scrollTop float64
+	var images []utils.ImgWithBox
+
+	for {
+		var clip *proto.PageViewport
+
+		scrollY := viewpointHeight - (opt.FixedTop + opt.FixedBottom)
+		if scrollTop+viewpointHeight > contentHeight {
+			clip = &proto.PageViewport{
+				X:      0,
+				Y:      scrollTop,
+				Width:  metrics.CSSVisualViewport.ClientWidth,
+				Height: contentHeight - scrollTop,
+				Scale:  1,
+			}
+		} else {
+			if scrollTop == 0 {
+				clip = &proto.PageViewport{
+					X:      0,
+					Y:      scrollTop,
+					Width:  metrics.CSSVisualViewport.ClientWidth,
+					Height: scrollY,
+					Scale:  1,
+				}
+			} else {
+				clip = &proto.PageViewport{
+					X:      0,
+					Y:      scrollTop + opt.FixedTop,
+					Width:  metrics.CSSVisualViewport.ClientWidth,
+					Height: scrollY,
+					Scale:  1,
+				}
+			}
+		}
+
+		req := &proto.PageCaptureScreenshot{
+			Format:                opt.Format,
+			Quality:               opt.Quality,
+			Clip:                  clip,
+			FromSurface:           false,
+			CaptureBeyondViewport: false,
+			OptimizeForSpeed:      false,
+		}
+		shot, err := req.Call(p)
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, utils.ImgWithBox{Img: shot.Data})
+
+		scrollTop += scrollY
+		if scrollTop >= contentHeight {
+			break
+		}
+		err = p.Mouse.Scroll(0, scrollY, 1)
+		if err != nil {
+			return nil, fmt.Errorf("scroll error: %w", err)
+		}
+
+		err = p.WaitStable(opt.WaitPerScroll)
+		if err != nil {
+			return nil, fmt.Errorf("waitStable error: %w", err)
+		}
+	}
+
+	var imgOption *utils.ImgOption
+	if opt.Quality != nil {
+		imgOption = &utils.ImgOption{
+			Quality: *opt.Quality,
+		}
+	}
+	bs, err := utils.SplicePngVertical(images, opt.Format, imgOption)
+	if err != nil {
+		return nil, err
+	}
+
+	return bs, nil
+}
+
 // CaptureDOMSnapshot Returns a document snapshot, including the full DOM tree of the root node
 // (including iframes, template contents, and imported documents) in a flattened array,
 // as well as layout and white-listed computed style information for the nodes.
