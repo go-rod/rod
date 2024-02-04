@@ -48,6 +48,8 @@ type Launcher struct {
 // Headless will be enabled by default.
 // Leakless will be enabled by default.
 // UserDataDir will use OS tmp dir by default, this folder will usually be cleaned up by the OS after reboot.
+// It will auto download the browser binary according to the current platform,
+// check [Launcher.Bin] and [Launcher.Revision] for more info.
 func New() *Launcher {
 	dir := defaults.Dir
 	if dir == "" {
