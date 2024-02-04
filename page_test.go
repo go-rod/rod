@@ -3,6 +3,7 @@ package rod_test
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"image/png"
 	"math"
@@ -562,11 +563,35 @@ func TestPageWaitStable(t *testing.T) {
 	p.MustWaitStable()
 
 	g.Panic(func() {
-		g.mc.stubErr(1, proto.RuntimeCallFunctionOn{})
+		g.mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+			switch method {
+			case (proto.DOMSnapshotCaptureSnapshot{}).ProtoReq():
+				utils.Sleep(0.3)
+				return nil, errors.New("error")
+			case (proto.RuntimeCallFunctionOn{}).ProtoReq():
+				return nil, errors.New("error")
+			}
+
+			return g.mc.principal.Call(ctx, sessionID, method, params)
+		})
+		defer g.mc.resetCall()
+
 		p.MustWaitStable()
 	})
 	g.Panic(func() {
-		g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
+		g.mc.setCall(func(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
+			switch method {
+			case (proto.DOMSnapshotCaptureSnapshot{}).ProtoReq():
+				return nil, errors.New("error")
+			case (proto.RuntimeCallFunctionOn{}).ProtoReq():
+				utils.Sleep(0.3)
+				return nil, errors.New("error")
+			}
+
+			return g.mc.principal.Call(ctx, sessionID, method, params)
+		})
+		defer g.mc.resetCall()
+
 		p.MustWaitStable()
 	})
 }
