@@ -479,7 +479,7 @@ type ScrollScreenshotOptions struct {
 	// FixedBottom (optional) The number of pixels to skip from the bottom.
 	FixedBottom float64
 
-	// WaitPerScroll wait scroll animation (default is 500ms)
+	// WaitPerScroll until no animation (default is 300ms)
 	WaitPerScroll time.Duration
 }
 
@@ -492,7 +492,7 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 		opt = &ScrollScreenshotOptions{}
 	}
 	if opt.WaitPerScroll == 0 {
-		opt.WaitPerScroll = time.Millisecond * 500
+		opt.WaitPerScroll = time.Millisecond * 300
 	}
 
 	metrics, err := proto.PageGetLayoutMetrics{}.Call(p)
@@ -566,9 +566,9 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 			return nil, fmt.Errorf("scroll error: %w", err)
 		}
 
-		err = p.WaitStable(opt.WaitPerScroll)
+		err = p.WaitDOMStable(opt.WaitPerScroll, 0)
 		if err != nil {
-			return nil, fmt.Errorf("waitStable error: %w", err)
+			return nil, fmt.Errorf("WaitDOMStable error: %w", err)
 		}
 	}
 
