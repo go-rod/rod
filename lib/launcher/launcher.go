@@ -146,6 +146,7 @@ func NewUserMode() *Launcher {
 }
 
 // NewAppMode is a preset to run the browser like a native application.
+// The u should be a URL.
 func NewAppMode(u string) *Launcher {
 	l := New()
 	l.Set(flags.App, u).
