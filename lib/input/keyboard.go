@@ -6,7 +6,7 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// Modifier values
+// Modifier values.
 const (
 	ModifierAlt     = 1
 	ModifierControl = 2
@@ -14,18 +14,18 @@ const (
 	ModifierShift   = 8
 )
 
-// Key symbol
+// Key symbol.
 type Key rune
 
-// keyMap for key description
+// keyMap for key description.
 var keyMap = map[Key]KeyInfo{}
 
-// keyMapShifted for shifted key description
+// keyMapShifted for shifted key description.
 var keyMapShifted = map[Key]KeyInfo{}
 
 var keyShiftedMap = map[Key]Key{}
 
-// AddKey to KeyMap
+// AddKey to KeyMap.
 func AddKey(key string, shiftedKey string, code string, keyCode int, location int) Key {
 	if len(key) == 1 {
 		r := Key(key[0])
@@ -47,7 +47,7 @@ func AddKey(key string, shiftedKey string, code string, keyCode int, location in
 	return k
 }
 
-// Info of the key
+// Info of the key.
 func (k Key) Info() KeyInfo {
 	if k, has := keyMap[k]; has {
 		return k
@@ -76,12 +76,12 @@ func (k Key) Shift() (Key, bool) {
 	return s, has
 }
 
-// Printable returns true if the key is printable
+// Printable returns true if the key is printable.
 func (k Key) Printable() bool {
 	return len(k.Info().Key) == 1
 }
 
-// Modifier returns the modifier value of the key
+// Modifier returns the modifier value of the key.
 func (k Key) Modifier() int {
 	switch k.Info().KeyCode {
 	case 18:
@@ -96,7 +96,7 @@ func (k Key) Modifier() int {
 	return 0
 }
 
-// Encode general key event
+// Encode general key event.
 func (k Key) Encode(t proto.InputDispatchKeyEventType, modifiers int) *proto.InputDispatchKeyEvent {
 	tp := t
 	if t == proto.InputDispatchKeyEventTypeKeyDown && !k.Printable() {

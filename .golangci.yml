@@ -2,19 +2,70 @@ run:
   skip-dirs-use-default: false
 
 linters:
-  enable:
-    - gofumpt
-    - revive
-    - gocyclo
-    - bodyclose
+  enable-all: true
+  disable:
+    - gochecknoinits
+    - paralleltest
+    - wrapcheck
+    - gosec
+    - gochecknoglobals
+    - musttag
+    - varnamelen
+    - wsl
+    - nonamedreturns
+    - tagliatelle
+    - nlreturn
+    - nakedret
+    - gomnd
+    - goerr113
+    - exhaustruct
+    - godox
+    - depguard
+    - testpackage
+    - exhaustive
+    - containedctx
+    - prealloc
+    - perfsprint
+    - ireturn
+    - contextcheck
 
-gocyclo:
-  min-complexity: 15
+    # Deprecated ones:
+    - structcheck
+    - interfacer
+    - deadcode
+    - varcheck
+    - ifshort
+    - exhaustivestruct
+    - golint
+    - maligned
+    - nosnakecase
+    - scopelint
+
+linters-settings:
+  cyclop:
+    max-complexity: 15
+  gocyclo:
+    min-complexity: 15
+  nestif:
+    min-complexity: 6
+  funlen:
+    lines: 120
 
 issues:
   exclude-use-default: false
 
   exclude-rules:
+    - path: _test.go$
+      linters:
+        - lll
+        - funlen
+        - dupword
+        - goconst
+        - contextcheck
+        - errorlint
+        - testableexamples
+        - forcetypeassert
+
     # To support old golang version
     - path: lib/launcher/os_unix.go
       source: "// \\+build !windows"
@@ -30,3 +81,44 @@ issues:
     - source: 'io/ioutil'
       linters:
         - staticcheck
+
+    # Generated code
+    - path: lib/proto/
+      linters:
+        - lll
+        - gocritic
+        - dupword
+        - forcetypeassert
+    - path: lib/devices/list.go
+      linters:
+        - lll
+    - path: lib/js/helper.go
+      linters:
+        - lll
+
+    - path: /fixtures/
+      linters:
+        - forbidigo
+
+    - path: lib/examples/
+      linters:
+        - forbidigo
+        - noctx
+        - gocritic
+
+    - path: examples?_test.go$
+      linters:
+        - forbidigo
+        - noctx
+        - gocritic
+
+    - path: main.go$
+      linters:
+        - forbidigo
+        - noctx
+        - forcetypeassert
+        - lll
+
+    - path: lib/assets/
+      linters:
+        - lll

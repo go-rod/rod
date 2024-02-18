@@ -11,10 +11,10 @@ Inspector
 // InspectorDisable Disables inspector domain notifications.
 type InspectorDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m InspectorDisable) ProtoReq() string { return "Inspector.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m InspectorDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -22,10 +22,10 @@ func (m InspectorDisable) Call(c Client) error {
 // InspectorEnable Enables inspector domain notifications.
 type InspectorEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m InspectorEnable) ProtoReq() string { return "Inspector.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m InspectorEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -36,23 +36,23 @@ type InspectorDetached struct {
 	Reason string `json:"reason"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt InspectorDetached) ProtoEvent() string {
 	return "Inspector.detached"
 }
 
-// InspectorTargetCrashed Fired when debugging target has crashed
+// InspectorTargetCrashed Fired when debugging target has crashed.
 type InspectorTargetCrashed struct{}
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt InspectorTargetCrashed) ProtoEvent() string {
 	return "Inspector.targetCrashed"
 }
 
-// InspectorTargetReloadedAfterCrash Fired when debugging target has reloaded after crash
+// InspectorTargetReloadedAfterCrash Fired when debugging target has reloaded after crash.
 type InspectorTargetReloadedAfterCrash struct{}
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt InspectorTargetReloadedAfterCrash) ProtoEvent() string {
 	return "Inspector.targetReloadedAfterCrash"
 }

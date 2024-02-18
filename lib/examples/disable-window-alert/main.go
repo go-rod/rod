@@ -30,10 +30,10 @@ func main() {
 
 const testPage = `<html><script>alert("message")</script></html>`
 
-// mock a server
+// mock a server.
 func serve() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
 		utils.E(fmt.Fprint(res, testPage))
 	})
 	utils.E(http.ListenAndServe(":8080", mux))

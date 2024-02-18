@@ -9,7 +9,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Dialer interface for WebSocket connection
+// Dialer interface for WebSocket connection.
 type Dialer interface {
 	DialContext(ctx context.Context, network, address string) (net.Conn, error)
 }
@@ -21,14 +21,14 @@ func (d *tlsDialer) DialContext(_ context.Context, network, address string) (net
 	return tls.Dial(network, address, nil)
 }
 
-// MustConnectWS helper to make a websocket connection
+// MustConnectWS helper to make a websocket connection.
 func MustConnectWS(wsURL string) WebSocketable {
 	ws := &WebSocket{}
 	utils.E(ws.Connect(context.Background(), wsURL, nil))
 	return ws
 }
 
-// MustStartWithURL helper for ConnectURL
+// MustStartWithURL helper for ConnectURL.
 func MustStartWithURL(ctx context.Context, u string, h http.Header) *Client {
 	c, err := StartWithURL(ctx, u, h)
 	utils.E(err)

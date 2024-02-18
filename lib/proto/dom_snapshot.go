@@ -356,10 +356,10 @@ type DOMSnapshotTextBoxSnapshot struct {
 // DOMSnapshotDisable Disables DOM snapshot agent for the given page.
 type DOMSnapshotDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m DOMSnapshotDisable) ProtoReq() string { return "DOMSnapshot.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m DOMSnapshotDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -367,10 +367,10 @@ func (m DOMSnapshotDisable) Call(c Client) error {
 // DOMSnapshotEnable Enables DOM snapshot agent for the given page.
 type DOMSnapshotEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m DOMSnapshotEnable) ProtoReq() string { return "DOMSnapshot.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m DOMSnapshotEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -393,10 +393,10 @@ type DOMSnapshotGetSnapshot struct {
 	IncludeUserAgentShadowTree bool `json:"includeUserAgentShadowTree,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m DOMSnapshotGetSnapshot) ProtoReq() string { return "DOMSnapshot.getSnapshot" }
 
-// Call the request
+// Call the request.
 func (m DOMSnapshotGetSnapshot) Call(c Client) (*DOMSnapshotGetSnapshotResult, error) {
 	var res DOMSnapshotGetSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -439,10 +439,10 @@ type DOMSnapshotCaptureSnapshot struct {
 	IncludeTextColorOpacities bool `json:"includeTextColorOpacities,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m DOMSnapshotCaptureSnapshot) ProtoReq() string { return "DOMSnapshot.captureSnapshot" }
 
-// Call the request
+// Call the request.
 func (m DOMSnapshotCaptureSnapshot) Call(c Client) (*DOMSnapshotCaptureSnapshotResult, error) {
 	var res DOMSnapshotCaptureSnapshotResult
 	return &res, call(m.ProtoReq(), m, &res, c)

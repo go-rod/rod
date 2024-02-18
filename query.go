@@ -12,22 +12,22 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// SelectorType enum
+// SelectorType enum.
 type SelectorType string
 
 const (
-	// SelectorTypeRegex type
+	// SelectorTypeRegex type.
 	SelectorTypeRegex SelectorType = "regex"
-	// SelectorTypeCSSSector type
+	// SelectorTypeCSSSector type.
 	SelectorTypeCSSSector SelectorType = "css-selector"
-	// SelectorTypeText type
+	// SelectorTypeText type.
 	SelectorTypeText SelectorType = "text"
 )
 
-// Elements provides some helpers to deal with element list
+// Elements provides some helpers to deal with element list.
 type Elements []*Element
 
-// First returns the first element, if the list is empty returns nil
+// First returns the first element, if the list is empty returns nil.
 func (els Elements) First() *Element {
 	if els.Empty() {
 		return nil
@@ -35,7 +35,7 @@ func (els Elements) First() *Element {
 	return els[0]
 }
 
-// Last returns the last element, if the list is empty returns nil
+// Last returns the last element, if the list is empty returns nil.
 func (els Elements) Last() *Element {
 	if els.Empty() {
 		return nil
@@ -43,15 +43,15 @@ func (els Elements) Last() *Element {
 	return els[len(els)-1]
 }
 
-// Empty returns true if the list is empty
+// Empty returns true if the list is empty.
 func (els Elements) Empty() bool {
 	return len(els) == 0
 }
 
-// Pages provides some helpers to deal with page list
+// Pages provides some helpers to deal with page list.
 type Pages []*Page
 
-// First returns the first page, if the list is empty returns nil
+// First returns the first page, if the list is empty returns nil.
 func (ps Pages) First() *Page {
 	if ps.Empty() {
 		return nil
@@ -59,7 +59,7 @@ func (ps Pages) First() *Page {
 	return ps[0]
 }
 
-// Last returns the last page, if the list is empty returns nil
+// Last returns the last page, if the list is empty returns nil.
 func (ps Pages) Last() *Page {
 	if ps.Empty() {
 		return nil
@@ -67,12 +67,12 @@ func (ps Pages) Last() *Page {
 	return ps[len(ps)-1]
 }
 
-// Empty returns true if the list is empty
+// Empty returns true if the list is empty.
 func (ps Pages) Empty() bool {
 	return len(ps) == 0
 }
 
-// Find the page that has the specified element with the css selector
+// Find the page that has the specified element with the css selector.
 func (ps Pages) Find(selector string) (*Page, error) {
 	for _, page := range ps {
 		has, _, err := page.Has(selector)
@@ -83,10 +83,10 @@ func (ps Pages) Find(selector string) (*Page, error) {
 			return page, nil
 		}
 	}
-	return nil, &ErrPageNotFound{}
+	return nil, &PageNotFoundError{}
 }
 
-// FindByURL returns the page that has the url that matches the jsRegex
+// FindByURL returns the page that has the url that matches the jsRegex.
 func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 	for _, page := range ps {
 		res, err := page.Eval(`() => location.href`)
@@ -98,13 +98,13 @@ func (ps Pages) FindByURL(jsRegex string) (*Page, error) {
 			return page, nil
 		}
 	}
-	return nil, &ErrPageNotFound{}
+	return nil, &PageNotFoundError{}
 }
 
-// Has an element that matches the css selector
+// Has an element that matches the css selector.
 func (p *Page) Has(selector string) (bool, *Element, error) {
 	el, err := p.Sleeper(NotFoundSleeper).Element(selector)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	if err != nil {
@@ -113,10 +113,10 @@ func (p *Page) Has(selector string) (bool, *Element, error) {
 	return true, el.Sleeper(p.sleeper), nil
 }
 
-// HasX an element that matches the XPath selector
+// HasX an element that matches the XPath selector.
 func (p *Page) HasX(selector string) (bool, *Element, error) {
 	el, err := p.Sleeper(NotFoundSleeper).ElementX(selector)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	if err != nil {
@@ -128,7 +128,7 @@ func (p *Page) HasX(selector string) (bool, *Element, error) {
 // HasR an element that matches the css selector and its display text matches the jsRegex.
 func (p *Page) HasR(selector, jsRegex string) (bool, *Element, error) {
 	el, err := p.Sleeper(NotFoundSleeper).ElementR(selector, jsRegex)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	if err != nil {
@@ -186,23 +186,23 @@ func (p *Page) ElementByJS(opts *EvalOptions) (*Element, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-		return nil, &ErrExpectElement{res}
+		return nil, &ExpectElementError{res}
 	}
 
 	return p.ElementFromObject(res)
 }
 
-// Elements returns all elements that match the css selector
+// Elements returns all elements that match the css selector.
 func (p *Page) Elements(selector string) (Elements, error) {
 	return p.ElementsByJS(evalHelper(js.Elements, selector))
 }
 
-// ElementsX returns all elements that match the XPath selector
+// ElementsX returns all elements that match the XPath selector.
 func (p *Page) ElementsX(xpath string) (Elements, error) {
 	return p.ElementsByJS(evalHelper(js.ElementsX, xpath))
 }
 
-// ElementsByJS returns the elements from the return value of the js
+// ElementsByJS returns the elements from the return value of the js.
 func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	res, err := p.Evaluate(opts.ByObject())
 	if err != nil {
@@ -210,7 +210,7 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	}
 
 	if res.Subtype != proto.RuntimeRemoteObjectSubtypeArray {
-		return nil, &ErrExpectElements{res}
+		return nil, &ExpectElementsError{res}
 	}
 
 	defer func() { err = p.Release(res) }()
@@ -231,7 +231,7 @@ func (p *Page) ElementsByJS(opts *EvalOptions) (Elements, error) {
 		val := obj.Value
 
 		if val.Subtype != proto.RuntimeRemoteObjectSubtypeNode {
-			return nil, &ErrExpectElements{val}
+			return nil, &ExpectElementsError{val}
 		}
 
 		el, err := p.ElementFromObject(val)
@@ -287,7 +287,7 @@ func (p *Page) Search(query string) (*SearchResult, error) {
 			return true, err
 		}
 
-		id := result.NodeIds[0]
+		id := result.NodeIDs[0]
 
 		// TODO: This is definitely a bad design of cdp, hope they can optimize it in the future.
 		// It's unnecessary to ask the user to explicitly call it.
@@ -316,7 +316,7 @@ func (p *Page) Search(query string) (*SearchResult, error) {
 	return sr, nil
 }
 
-// SearchResult handler
+// SearchResult handler.
 type SearchResult struct {
 	*proto.DOMPerformSearchResult
 
@@ -340,7 +340,7 @@ func (s *SearchResult) Get(i, l int) (Elements, error) {
 
 	list := Elements{}
 
-	for _, id := range result.NodeIds {
+	for _, id := range result.NodeIDs {
 		el, err := s.page.ElementFromNode(&proto.DOMNode{NodeID: id})
 		if err != nil {
 			return nil, err
@@ -351,12 +351,12 @@ func (s *SearchResult) Get(i, l int) (Elements, error) {
 	return list, nil
 }
 
-// All returns all elements
+// All returns all elements.
 func (s *SearchResult) All() (Elements, error) {
 	return s.Get(0, s.ResultCount)
 }
 
-// Release the remote search result
+// Release the remote search result.
 func (s *SearchResult) Release() {
 	s.restore()
 	_ = proto.DOMDiscardSearchResults{SearchID: s.SearchID}.Call(s.page)
@@ -367,18 +367,18 @@ type raceBranch struct {
 	callback  func(*Element) error
 }
 
-// RaceContext stores the branches to race
+// RaceContext stores the branches to race.
 type RaceContext struct {
 	page     *Page
 	branches []*raceBranch
 }
 
-// Race creates a context to race selectors
+// Race creates a context to race selectors.
 func (p *Page) Race() *RaceContext {
 	return &RaceContext{page: p}
 }
 
-// ElementFunc takes a custom function to determine race success
+// ElementFunc takes a custom function to determine race success.
 func (rc *RaceContext) ElementFunc(fn func(*Page) (*Element, error)) *RaceContext {
 	rc.branches = append(rc.branches, &raceBranch{
 		condition: fn,
@@ -386,35 +386,35 @@ func (rc *RaceContext) ElementFunc(fn func(*Page) (*Element, error)) *RaceContex
 	return rc
 }
 
-// Element is similar to [Page.Element]
+// Element is similar to [Page.Element].
 func (rc *RaceContext) Element(selector string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.Element(selector)
 	})
 }
 
-// ElementX is similar to [Page.ElementX]
+// ElementX is similar to [Page.ElementX].
 func (rc *RaceContext) ElementX(selector string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementX(selector)
 	})
 }
 
-// ElementR is similar to [Page.ElementR]
+// ElementR is similar to [Page.ElementR].
 func (rc *RaceContext) ElementR(selector, regex string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementR(selector, regex)
 	})
 }
 
-// ElementByJS is similar to [Page.ElementByJS]
+// ElementByJS is similar to [Page.ElementByJS].
 func (rc *RaceContext) ElementByJS(opts *EvalOptions) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		return p.ElementByJS(opts)
 	})
 }
 
-// Search is similar to [Page.Search]
+// Search is similar to [Page.Search].
 func (rc *RaceContext) Search(query string) *RaceContext {
 	return rc.ElementFunc(func(p *Page) (*Element, error) {
 		res, err := p.Search(query)
@@ -434,7 +434,7 @@ func (rc *RaceContext) Handle(callback func(*Element) error) *RaceContext {
 	return rc
 }
 
-// Do the race
+// Do the race.
 func (rc *RaceContext) Do() (*Element, error) {
 	var el *Element
 	err := utils.Retry(rc.page.ctx, rc.page.sleeper(), func() (stop bool, err error) {
@@ -447,7 +447,7 @@ func (rc *RaceContext) Do() (*Element, error) {
 					err = branch.callback(el)
 				}
 				return true, err
-			} else if !errors.Is(err, &ErrElementNotFound{}) {
+			} else if !errors.Is(err, &ElementNotFoundError{}) {
 				return true, err
 			}
 		}
@@ -456,19 +456,19 @@ func (rc *RaceContext) Do() (*Element, error) {
 	return el, err
 }
 
-// Has an element that matches the css selector
+// Has an element that matches the css selector.
 func (el *Element) Has(selector string) (bool, *Element, error) {
 	el, err := el.Element(selector)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
 }
 
-// HasX an element that matches the XPath selector
+// HasX an element that matches the XPath selector.
 func (el *Element) HasX(selector string) (bool, *Element, error) {
 	el, err := el.ElementX(selector)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
@@ -477,13 +477,13 @@ func (el *Element) HasX(selector string) (bool, *Element, error) {
 // HasR returns true if a child element that matches the css selector and its text matches the jsRegex.
 func (el *Element) HasR(selector, jsRegex string) (bool, *Element, error) {
 	el, err := el.ElementR(selector, jsRegex)
-	if errors.Is(err, &ErrElementNotFound{}) {
+	if errors.Is(err, &ElementNotFoundError{}) {
 		return false, nil, nil
 	}
 	return err == nil, el, err
 }
 
-// Element returns the first child that matches the css selector
+// Element returns the first child that matches the css selector.
 func (el *Element) Element(selector string) (*Element, error) {
 	return el.ElementByJS(evalHelper(js.Element, selector))
 }
@@ -493,12 +493,12 @@ func (el *Element) ElementR(selector, jsRegex string) (*Element, error) {
 	return el.ElementByJS(evalHelper(js.ElementR, selector, jsRegex))
 }
 
-// ElementX returns the first child that matches the XPath selector
+// ElementX returns the first child that matches the XPath selector.
 func (el *Element) ElementX(xPath string) (*Element, error) {
 	return el.ElementByJS(evalHelper(js.ElementX, xPath))
 }
 
-// ElementByJS returns the element from the return value of the js
+// ElementByJS returns the element from the return value of the js.
 func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
 	e, err := el.page.Context(el.ctx).Sleeper(NotFoundSleeper).ElementByJS(opts.This(el.Object))
 	if err != nil {
@@ -507,37 +507,37 @@ func (el *Element) ElementByJS(opts *EvalOptions) (*Element, error) {
 	return e.Sleeper(el.sleeper), nil
 }
 
-// Parent returns the parent element in the DOM tree
+// Parent returns the parent element in the DOM tree.
 func (el *Element) Parent() (*Element, error) {
 	return el.ElementByJS(Eval(`() => this.parentElement`))
 }
 
-// Parents that match the selector
+// Parents that match the selector.
 func (el *Element) Parents(selector string) (Elements, error) {
 	return el.ElementsByJS(evalHelper(js.Parents, selector))
 }
 
-// Next returns the next sibling element in the DOM tree
+// Next returns the next sibling element in the DOM tree.
 func (el *Element) Next() (*Element, error) {
 	return el.ElementByJS(Eval(`() => this.nextElementSibling`))
 }
 
-// Previous returns the previous sibling element in the DOM tree
+// Previous returns the previous sibling element in the DOM tree.
 func (el *Element) Previous() (*Element, error) {
 	return el.ElementByJS(Eval(`() => this.previousElementSibling`))
 }
 
-// Elements returns all elements that match the css selector
+// Elements returns all elements that match the css selector.
 func (el *Element) Elements(selector string) (Elements, error) {
 	return el.ElementsByJS(evalHelper(js.Elements, selector))
 }
 
-// ElementsX returns all elements that match the XPath selector
+// ElementsX returns all elements that match the XPath selector.
 func (el *Element) ElementsX(xpath string) (Elements, error) {
 	return el.ElementsByJS(evalHelper(js.ElementsX, xpath))
 }
 
-// ElementsByJS returns the elements from the return value of the js
+// ElementsByJS returns the elements from the return value of the js.
 func (el *Element) ElementsByJS(opts *EvalOptions) (Elements, error) {
 	return el.page.Context(el.ctx).ElementsByJS(opts.This(el.Object))
 }

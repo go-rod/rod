@@ -739,9 +739,9 @@ func (t T) DOMPushNodeByPathToFrontend() {
 	t.Nil(err)
 }
 
-func (t T) DOMPushNodesByBackendIdsToFrontend() {
+func (t T) DOMPushNodesByBackendIDsToFrontend() {
 	c := &Client{}
-	_, err := proto.DOMPushNodesByBackendIdsToFrontend{}.Call(c)
+	_, err := proto.DOMPushNodesByBackendIDsToFrontend{}.Call(c)
 	t.Nil(err)
 }
 

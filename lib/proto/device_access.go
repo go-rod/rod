@@ -26,10 +26,10 @@ type DeviceAccessPromptDevice struct {
 // DeviceAccessEnable Enable events in this domain.
 type DeviceAccessEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m DeviceAccessEnable) ProtoReq() string { return "DeviceAccess.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m DeviceAccessEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -37,10 +37,10 @@ func (m DeviceAccessEnable) Call(c Client) error {
 // DeviceAccessDisable Disable events in this domain.
 type DeviceAccessDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m DeviceAccessDisable) ProtoReq() string { return "DeviceAccess.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m DeviceAccessDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -54,10 +54,10 @@ type DeviceAccessSelectPrompt struct {
 	DeviceID DeviceAccessDeviceID `json:"deviceId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m DeviceAccessSelectPrompt) ProtoReq() string { return "DeviceAccess.selectPrompt" }
 
-// Call sends the request
+// Call sends the request.
 func (m DeviceAccessSelectPrompt) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -68,10 +68,10 @@ type DeviceAccessCancelPrompt struct {
 	ID DeviceAccessRequestID `json:"id"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m DeviceAccessCancelPrompt) ProtoReq() string { return "DeviceAccess.cancelPrompt" }
 
-// Call sends the request
+// Call sends the request.
 func (m DeviceAccessCancelPrompt) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -86,7 +86,7 @@ type DeviceAccessDeviceRequestPrompted struct {
 	Devices []*DeviceAccessPromptDevice `json:"devices"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt DeviceAccessDeviceRequestPrompted) ProtoEvent() string {
 	return "DeviceAccess.deviceRequestPrompted"
 }

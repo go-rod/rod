@@ -33,7 +33,7 @@ const (
 func testServer() string {
 	l, _ := net.Listen("tcp4", "127.0.0.1:0")
 	go func() {
-		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			_, _ = fmt.Fprint(w, indexHTML)
 		}))
 	}()

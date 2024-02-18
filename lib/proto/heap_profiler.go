@@ -55,12 +55,12 @@ type HeapProfilerAddInspectedHeapObject struct {
 	HeapObjectID HeapProfilerHeapSnapshotObjectID `json:"heapObjectId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerAddInspectedHeapObject) ProtoReq() string {
 	return "HeapProfiler.addInspectedHeapObject"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerAddInspectedHeapObject) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -68,10 +68,10 @@ func (m HeapProfilerAddInspectedHeapObject) Call(c Client) error {
 // HeapProfilerCollectGarbage ...
 type HeapProfilerCollectGarbage struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerCollectGarbage) ProtoReq() string { return "HeapProfiler.collectGarbage" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerCollectGarbage) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -79,10 +79,10 @@ func (m HeapProfilerCollectGarbage) Call(c Client) error {
 // HeapProfilerDisable ...
 type HeapProfilerDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerDisable) ProtoReq() string { return "HeapProfiler.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -90,10 +90,10 @@ func (m HeapProfilerDisable) Call(c Client) error {
 // HeapProfilerEnable ...
 type HeapProfilerEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerEnable) ProtoReq() string { return "HeapProfiler.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -104,10 +104,10 @@ type HeapProfilerGetHeapObjectID struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerGetHeapObjectID) ProtoReq() string { return "HeapProfiler.getHeapObjectId" }
 
-// Call the request
+// Call the request.
 func (m HeapProfilerGetHeapObjectID) Call(c Client) (*HeapProfilerGetHeapObjectIDResult, error) {
 	var res HeapProfilerGetHeapObjectIDResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -128,12 +128,12 @@ type HeapProfilerGetObjectByHeapObjectID struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerGetObjectByHeapObjectID) ProtoReq() string {
 	return "HeapProfiler.getObjectByHeapObjectId"
 }
 
-// Call the request
+// Call the request.
 func (m HeapProfilerGetObjectByHeapObjectID) Call(c Client) (*HeapProfilerGetObjectByHeapObjectIDResult, error) {
 	var res HeapProfilerGetObjectByHeapObjectIDResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -148,10 +148,10 @@ type HeapProfilerGetObjectByHeapObjectIDResult struct {
 // HeapProfilerGetSamplingProfile ...
 type HeapProfilerGetSamplingProfile struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerGetSamplingProfile) ProtoReq() string { return "HeapProfiler.getSamplingProfile" }
 
-// Call the request
+// Call the request.
 func (m HeapProfilerGetSamplingProfile) Call(c Client) (*HeapProfilerGetSamplingProfileResult, error) {
 	var res HeapProfilerGetSamplingProfileResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -188,10 +188,10 @@ type HeapProfilerStartSampling struct {
 	IncludeObjectsCollectedByMinorGC bool `json:"includeObjectsCollectedByMinorGC,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerStartSampling) ProtoReq() string { return "HeapProfiler.startSampling" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerStartSampling) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -202,12 +202,12 @@ type HeapProfilerStartTrackingHeapObjects struct {
 	TrackAllocations bool `json:"trackAllocations,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerStartTrackingHeapObjects) ProtoReq() string {
 	return "HeapProfiler.startTrackingHeapObjects"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerStartTrackingHeapObjects) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -215,10 +215,10 @@ func (m HeapProfilerStartTrackingHeapObjects) Call(c Client) error {
 // HeapProfilerStopSampling ...
 type HeapProfilerStopSampling struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerStopSampling) ProtoReq() string { return "HeapProfiler.stopSampling" }
 
-// Call the request
+// Call the request.
 func (m HeapProfilerStopSampling) Call(c Client) (*HeapProfilerStopSamplingResult, error) {
 	var res HeapProfilerStopSamplingResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -246,12 +246,12 @@ type HeapProfilerStopTrackingHeapObjects struct {
 	ExposeInternals bool `json:"exposeInternals,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerStopTrackingHeapObjects) ProtoReq() string {
 	return "HeapProfiler.stopTrackingHeapObjects"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerStopTrackingHeapObjects) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -272,10 +272,10 @@ type HeapProfilerTakeHeapSnapshot struct {
 	ExposeInternals bool `json:"exposeInternals,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeapProfilerTakeHeapSnapshot) ProtoReq() string { return "HeapProfiler.takeHeapSnapshot" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeapProfilerTakeHeapSnapshot) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -286,12 +286,12 @@ type HeapProfilerAddHeapSnapshotChunk struct {
 	Chunk string `json:"chunk"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt HeapProfilerAddHeapSnapshotChunk) ProtoEvent() string {
 	return "HeapProfiler.addHeapSnapshotChunk"
 }
 
-// HeapProfilerHeapStatsUpdate If heap objects tracking has been started then backend may send update for one or more fragments
+// HeapProfilerHeapStatsUpdate If heap objects tracking has been started then backend may send update for one or more fragments.
 type HeapProfilerHeapStatsUpdate struct {
 	// StatsUpdate An array of triplets. Each triplet describes a fragment. The first integer is the fragment
 	// index, the second integer is a total count of objects for the fragment, the third integer is
@@ -299,7 +299,7 @@ type HeapProfilerHeapStatsUpdate struct {
 	StatsUpdate []int `json:"statsUpdate"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt HeapProfilerHeapStatsUpdate) ProtoEvent() string {
 	return "HeapProfiler.heapStatsUpdate"
 }
@@ -315,7 +315,7 @@ type HeapProfilerLastSeenObjectID struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt HeapProfilerLastSeenObjectID) ProtoEvent() string {
 	return "HeapProfiler.lastSeenObjectId"
 }
@@ -332,7 +332,7 @@ type HeapProfilerReportHeapSnapshotProgress struct {
 	Finished bool `json:"finished,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt HeapProfilerReportHeapSnapshotProgress) ProtoEvent() string {
 	return "HeapProfiler.reportHeapSnapshotProgress"
 }
@@ -340,7 +340,7 @@ func (evt HeapProfilerReportHeapSnapshotProgress) ProtoEvent() string {
 // HeapProfilerResetProfiles ...
 type HeapProfilerResetProfiles struct{}
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt HeapProfilerResetProfiles) ProtoEvent() string {
 	return "HeapProfiler.resetProfiles"
 }

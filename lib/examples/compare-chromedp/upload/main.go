@@ -28,7 +28,7 @@ func main() {
 	)
 }
 
-// get some info about the file
+// get some info about the file.
 func size(file string) int {
 	fi, err := os.Stat(file)
 	if err != nil {
@@ -40,7 +40,7 @@ func size(file string) int {
 func uploadServer() string {
 	// create http server and result channel
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc("/", func(res http.ResponseWriter, _ *http.Request) {
 		_, _ = fmt.Fprint(res, uploadHTML)
 	})
 	mux.HandleFunc("/upload", func(res http.ResponseWriter, req *http.Request) {

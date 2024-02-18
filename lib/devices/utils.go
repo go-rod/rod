@@ -1,6 +1,6 @@
 package devices
 
-// Clear is used to clear overrides
+// Clear is used to clear overrides.
 var Clear = Device{clear: true}
 
 func has(arr []string, str string) bool {

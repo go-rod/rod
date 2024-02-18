@@ -16,7 +16,7 @@ import (
 
 func main() {
 	// create a test server to serve the page
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = fmt.Fprint(w, `
 <html lang="en">
 <head>

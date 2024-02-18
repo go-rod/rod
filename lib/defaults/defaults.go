@@ -125,12 +125,12 @@ var envParsers = map[string]func(string){
 	"url": func(v string) {
 		URL = v
 	},
-	"cdp": func(v string) {
+	"cdp": func(_ string) {
 		CDP = log.New(log.Writer(), "[cdp] ", log.LstdFlags)
 	},
 }
 
-// Parse the flags
+// Parse the flags.
 func init() {
 	ResetWith("")
 }
@@ -173,7 +173,7 @@ func parseFlag(args []string) {
 	parse(opts)
 }
 
-// parse options and set them globally
+// parse options and set them globally.
 func parse(options string) {
 	if options == "" {
 		return

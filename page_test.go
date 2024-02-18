@@ -100,7 +100,7 @@ func TestSetExtraHeaders(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	var header http.Header
-	s.Mux.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
 		header = r.Header
 		wg.Done()
 	})
@@ -139,7 +139,7 @@ func TestSetUserAgent(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
 		ua = r.Header.Get("User-Agent")
 		lang = r.Header.Get("Accept-Language")
 		wg.Done()
@@ -365,7 +365,7 @@ func TestPageCloseWhenNotAttached(t *testing.T) {
 
 	p := g.browser.MustPage(g.blank())
 
-	g.mc.stub(1, proto.PageClose{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.PageClose{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(nil), cdp.ErrNotAttachedToActivePage
 	})
 
@@ -455,13 +455,13 @@ func TestPageWaitRequestIdle(t *testing.T) {
 	sleep := time.Second
 
 	s.Route("/r1", "")
-	s.Mux.HandleFunc("/r2", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/r2", func(w http.ResponseWriter, _ *http.Request) {
 		g.E(w.Write([]byte("part")))
 		ctx, cancel := context.WithTimeout(g.Context(), sleep)
 		defer cancel()
 		<-ctx.Done()
 	})
-	s.Mux.HandleFunc("/r3", func(rw http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/r3", func(rw http.ResponseWriter, _ *http.Request) {
 		rw.Header().Add("Location", "/r4")
 		rw.WriteHeader(http.StatusFound)
 	})
@@ -613,7 +613,7 @@ func TestPageEventSession(t *testing.T) {
 	p := g.newPage(s.URL())
 
 	p.EnableDomain(proto.NetworkEnable{})
-	go g.page.Context(g.Context()).EachEvent(func(e *proto.NetworkRequestWillBeSent) {
+	go g.page.Context(g.Context()).EachEvent(func(_ *proto.NetworkRequestWillBeSent) {
 		g.Log("should not goes to here")
 		g.Fail()
 	})()
@@ -770,7 +770,7 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 
 	g.Panic(func() {
-		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(proto.PageGetLayoutMetricsResult{}), nil
 		})
 		p.MustScreenshotFullPage()
@@ -809,7 +809,7 @@ func TestScrollScreenshotPage(t *testing.T) {
 		p.MustScrollScreenshotPage()
 	})
 	g.Panic(func() {
-		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(proto.PageGetLayoutMetricsResult{
 				CSSVisualViewport: &proto.PageVisualViewport{},
 			}), nil
@@ -817,7 +817,7 @@ func TestScrollScreenshotPage(t *testing.T) {
 		p.MustScrollScreenshotPage()
 	})
 	g.Panic(func() {
-		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(proto.PageGetLayoutMetricsResult{
 				CSSContentSize: &proto.DOMRect{},
 			}), nil
@@ -906,7 +906,7 @@ func TestPageNavigateNetworkErr(t *testing.T) {
 	p := g.newPage()
 
 	err := p.Navigate("http://127.0.0.1:1")
-	g.Is(err, &rod.ErrNavigation{})
+	g.Is(err, &rod.NavigationError{})
 	g.Is(err.Error(), "navigation failed: net::ERR_NAME_NOT_RESOLVED")
 	p.MustNavigate("about:blank")
 }
@@ -920,11 +920,11 @@ func TestPageNavigateErr(t *testing.T) {
 
 	s := g.Serve()
 
-	s.Mux.HandleFunc("/404", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(404)
+	s.Mux.HandleFunc("/404", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
 	})
-	s.Mux.HandleFunc("/500", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(500)
+	s.Mux.HandleFunc("/500", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
 	})
 
 	// will not panic
@@ -1019,7 +1019,7 @@ func TestPageTriggerFavicon(t *testing.T) {
 	{
 		page := g.newPage()
 		page.MustNavigate(s.URL())
-		g.mc.stub(1, proto.BrowserGetBrowserCommandLine{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.BrowserGetBrowserCommandLine{}, func(_ StubSend) (gson.JSON, error) {
 			commandLine := proto.BrowserGetBrowserCommandLineResult{Arguments: []string{""}}
 			return gson.New(commandLine), nil
 		})

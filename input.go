@@ -10,7 +10,7 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// Keyboard represents the keyboard on a page, it's always related the main frame
+// Keyboard represents the keyboard on a page, it's always related the main frame.
 type Keyboard struct {
 	sync.Mutex
 
@@ -54,7 +54,7 @@ func (k *Keyboard) Press(key input.Key) error {
 	return key.Encode(proto.InputDispatchKeyEventTypeKeyDown, k.modifiers()).Call(k.page)
 }
 
-// Release the key
+// Release the key.
 func (k *Keyboard) Release(key input.Key) error {
 	defer k.page.tryTrace(TraceTypeInput, "release key: "+key.Info().Code)()
 
@@ -70,7 +70,7 @@ func (k *Keyboard) Release(key input.Key) error {
 	return key.Encode(proto.InputDispatchKeyEventTypeKeyUp, k.modifiers()).Call(k.page)
 }
 
-// Type releases the key after the press
+// Type releases the key after the press.
 func (k *Keyboard) Type(keys ...input.Key) (err error) {
 	for _, key := range keys {
 		err = k.Press(key)
@@ -85,23 +85,23 @@ func (k *Keyboard) Type(keys ...input.Key) (err error) {
 	return
 }
 
-// KeyActionType enum
+// KeyActionType enum.
 type KeyActionType int
 
-// KeyActionTypes
+// KeyActionTypes.
 const (
 	KeyActionPress KeyActionType = iota
 	KeyActionRelease
 	KeyActionTypeKey
 )
 
-// KeyAction to perform
+// KeyAction to perform.
 type KeyAction struct {
 	Type KeyActionType
 	Key  input.Key
 }
 
-// KeyActions to simulate
+// KeyActions to simulate.
 type KeyActions struct {
 	keyboard *Keyboard
 
@@ -114,7 +114,7 @@ func (p *Page) KeyActions() *KeyActions {
 	return &KeyActions{keyboard: p.Keyboard}
 }
 
-// Press keys is guaranteed to have a release at the end of actions
+// Press keys is guaranteed to have a release at the end of actions.
 func (ka *KeyActions) Press(keys ...input.Key) *KeyActions {
 	for _, key := range keys {
 		ka.Actions = append(ka.Actions, KeyAction{KeyActionPress, key})
@@ -122,7 +122,7 @@ func (ka *KeyActions) Press(keys ...input.Key) *KeyActions {
 	return ka
 }
 
-// Release keys
+// Release keys.
 func (ka *KeyActions) Release(keys ...input.Key) *KeyActions {
 	for _, key := range keys {
 		ka.Actions = append(ka.Actions, KeyAction{KeyActionRelease, key})
@@ -130,7 +130,7 @@ func (ka *KeyActions) Release(keys ...input.Key) *KeyActions {
 	return ka
 }
 
-// Type will release the key immediately after the pressing
+// Type will release the key immediately after the pressing.
 func (ka *KeyActions) Type(keys ...input.Key) *KeyActions {
 	for _, key := range keys {
 		ka.Actions = append(ka.Actions, KeyAction{KeyActionTypeKey, key})
@@ -138,7 +138,7 @@ func (ka *KeyActions) Type(keys ...input.Key) *KeyActions {
 	return ka
 }
 
-// Do the actions
+// Do the actions.
 func (ka *KeyActions) Do() (err error) {
 	for _, a := range ka.balance() {
 		switch a.Type {
@@ -181,7 +181,7 @@ func (ka *KeyActions) balance() []KeyAction {
 	return actions
 }
 
-// InsertText is like pasting text into the page
+// InsertText is like pasting text into the page.
 func (p *Page) InsertText(text string) error {
 	defer p.tryTrace(TraceTypeInput, "insert text "+text)()
 	p.browser.trySlowMotion()
@@ -190,7 +190,7 @@ func (p *Page) InsertText(text string) error {
 	return err
 }
 
-// Mouse represents the mouse on a page, it's always related the main frame
+// Mouse represents the mouse on a page, it's always related the main frame.
 type Mouse struct {
 	sync.Mutex
 
@@ -209,14 +209,14 @@ func (p *Page) newMouse() *Page {
 	return p
 }
 
-// Position of current cursor
+// Position of current cursor.
 func (m *Mouse) Position() proto.Point {
 	m.Lock()
 	defer m.Unlock()
 	return m.pos
 }
 
-// MoveTo the absolute position
+// MoveTo the absolute position.
 func (m *Mouse) MoveTo(p proto.Point) error {
 	m.Lock()
 	defer m.Unlock()
@@ -285,7 +285,7 @@ func (m *Mouse) MoveLinear(to proto.Point, steps int) error {
 	})
 }
 
-// Scroll the relative offset with specified steps
+// Scroll the relative offset with specified steps.
 func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	m.Lock()
 	defer m.Unlock()
@@ -321,12 +321,12 @@ func (m *Mouse) Scroll(offsetX, offsetY float64, steps int) error {
 	return nil
 }
 
-// Down holds the button down
+// Down holds the button down.
 func (m *Mouse) Down(button proto.InputMouseButton, clickCount int) error {
 	m.Lock()
 	defer m.Unlock()
 
-	toButtons := append(m.buttons, button)
+	toButtons := append(append([]proto.InputMouseButton{}, m.buttons...), button)
 
 	_, buttons := input.EncodeMouseButton(toButtons)
 
@@ -346,7 +346,7 @@ func (m *Mouse) Down(button proto.InputMouseButton, clickCount int) error {
 	return nil
 }
 
-// Up releases the button
+// Up releases the button.
 func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 	m.Lock()
 	defer m.Unlock()
@@ -377,7 +377,7 @@ func (m *Mouse) Up(button proto.InputMouseButton, clickCount int) error {
 	return nil
 }
 
-// Click the button. It's the combination of [Mouse.Down] and [Mouse.Up]
+// Click the button. It's the combination of [Mouse.Down] and [Mouse.Up].
 func (m *Mouse) Click(button proto.InputMouseButton, clickCount int) error {
 	m.page.browser.trySlowMotion()
 
@@ -400,7 +400,7 @@ func (p *Page) newTouch() *Page {
 	return p
 }
 
-// Start a touch action
+// Start a touch action.
 func (t *Touch) Start(points ...*proto.InputTouchPoint) error {
 	// TODO: https://crbug.com/613219
 	_ = t.page.WaitRepaint()
@@ -423,7 +423,7 @@ func (t *Touch) Move(points ...*proto.InputTouchPoint) error {
 	}.Call(t.page)
 }
 
-// End touch action
+// End touch action.
 func (t *Touch) End() error {
 	return proto.InputDispatchTouchEvent{
 		Type:        proto.InputDispatchTouchEventTypeTouchEnd,
@@ -432,7 +432,7 @@ func (t *Touch) End() error {
 	}.Call(t.page)
 }
 
-// Cancel touch action
+// Cancel touch action.
 func (t *Touch) Cancel() error {
 	return proto.InputDispatchTouchEvent{
 		Type:        proto.InputDispatchTouchEventTypeTouchCancel,

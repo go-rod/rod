@@ -327,7 +327,7 @@ func TestConcurrentCall(t *testing.T) {
 	}
 }
 
-func TestMassBrowserClose(t *testing.T) {
+func TestMassBrowserClose(t *testing.T) { //nolint: tparallel
 	t.Skip()
 
 	g := setup(t)

@@ -33,7 +33,7 @@ var hostConf = map[string]struct {
 	"windows_amd64": {"Win_x64", "chrome-win.zip"},
 }[runtime.GOOS+"_"+runtime.GOARCH]
 
-// HostGoogle to download browser
+// HostGoogle to download browser.
 func HostGoogle(revision int) string {
 	return fmt.Sprintf(
 		"https://storage.googleapis.com/chromium-browser-snapshots/%s/%d/%s",
@@ -43,7 +43,7 @@ func HostGoogle(revision int) string {
 	)
 }
 
-// HostNPM to download browser
+// HostNPM to download browser.
 func HostNPM(revision int) string {
 	return fmt.Sprintf(
 		"https://registry.npmmirror.com/-/binary/chromium-browser-snapshots/%s/%d/%s",
@@ -53,7 +53,7 @@ func HostNPM(revision int) string {
 	)
 }
 
-// HostPlaywright to download browser
+// HostPlaywright to download browser.
 func HostPlaywright(revision int) string {
 	rev := RevisionPlaywright
 	if !(runtime.GOOS == "linux" && runtime.GOARCH == "arm64") {
@@ -66,14 +66,14 @@ func HostPlaywright(revision int) string {
 }
 
 // DefaultBrowserDir for downloaded browser. For unix is "$HOME/.cache/rod/browser",
-// for Windows it's "%APPDATA%\rod\browser"
+// for Windows it's "%APPDATA%\rod\browser".
 var DefaultBrowserDir = filepath.Join(map[string]string{
-	"windows": filepath.Join(os.Getenv("APPDATA")),
+	"windows": os.Getenv("APPDATA"),
 	"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
 	"linux":   filepath.Join(os.Getenv("HOME"), ".cache"),
 }[runtime.GOOS], "rod", "browser")
 
-// Browser is a helper to download browser smartly
+// Browser is a helper to download browser smartly.
 type Browser struct {
 	Context context.Context
 
@@ -97,7 +97,7 @@ type Browser struct {
 	HTTPClient *http.Client
 }
 
-// NewBrowser with default values
+// NewBrowser with default values.
 func NewBrowser() *Browser {
 	return &Browser{
 		Context:  context.Background(),
@@ -109,12 +109,12 @@ func NewBrowser() *Browser {
 	}
 }
 
-// Dir to download the browser
+// Dir to download the browser.
 func (lc *Browser) Dir() string {
 	return filepath.Join(lc.RootDir, fmt.Sprintf("chromium-%d", lc.Revision))
 }
 
-// BinPath to download the browser executable
+// BinPath to download the browser executable.
 func (lc *Browser) BinPath() string {
 	bin := map[string]string{
 		"darwin":  "Chromium.app/Contents/MacOS/Chromium",
@@ -125,7 +125,8 @@ func (lc *Browser) BinPath() string {
 	return filepath.Join(lc.Dir(), filepath.FromSlash(bin))
 }
 
-// Download browser from the fastest host. It will race downloading a TCP packet from each host and use the fastest host.
+// Download browser from the fastest host.
+// It will race downloading a TCP packet from each host and use the fastest host.
 func (lc *Browser) Download() error {
 	us := []string{}
 	for _, host := range lc.Hosts {
@@ -143,7 +144,7 @@ func (lc *Browser) Download() error {
 
 	err := fu.Fetch()
 	if err != nil {
-		return fmt.Errorf("Can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os : %w", err)
+		return fmt.Errorf("can't find a browser binary for your OS, the doc might help https://go-rod.github.io/#/compatibility?id=os : %w", err) //nolint: lll
 	}
 
 	return fetchup.StripFirstDir(dir)
@@ -164,7 +165,7 @@ func (lc *Browser) Get() (string, error) {
 	return lc.BinPath(), lc.Download()
 }
 
-// MustGet is similar with Get
+// MustGet is similar with Get.
 func (lc *Browser) MustGet() string {
 	p, err := lc.Get()
 	utils.E(err)
@@ -247,7 +248,7 @@ func LookPath() (found string, has bool) {
 	return
 }
 
-// interface for testing
+// interface for testing.
 var openExec = exec.Command
 
 // Open tries to open the url via system's default browser.

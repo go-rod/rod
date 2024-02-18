@@ -134,7 +134,6 @@ func parseDef(domain *domain, cdpType cdpType, schema gson.JSON) []*definition {
 
 	default:
 		panic("type error: " + schema.Str())
-
 	}
 
 	return list

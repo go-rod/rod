@@ -28,7 +28,7 @@ type CDPClient interface {
 	Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error)
 }
 
-// Message represents a cdp.Event
+// Message represents a cdp.Event.
 type Message struct {
 	SessionID proto.TargetSessionID
 	Method    string
@@ -63,7 +63,7 @@ func (msg *Message) Load(e proto.Event) bool {
 	return true
 }
 
-// DefaultLogger for rod
+// DefaultLogger for rod.
 var DefaultLogger = log.New(os.Stdout, "[rod] ", log.LstdFlags)
 
 // DefaultSleeper generates the default sleeper for retry, it uses backoff to grow the interval.
@@ -83,7 +83,7 @@ var DefaultSleeper = func() utils.Sleeper {
 // Reference: https://golang.org/doc/effective_go#channels
 type PagePool chan *Page
 
-// NewPagePool instance
+// NewPagePool instance.
 func NewPagePool(limit int) PagePool {
 	pp := make(chan *Page, limit)
 	for i := 0; i < limit; i++ {
@@ -101,12 +101,12 @@ func (pp PagePool) Get(create func() *Page) *Page {
 	return p
 }
 
-// Put a page back to the pool
+// Put a page back to the pool.
 func (pp PagePool) Put(p *Page) {
 	pp <- p
 }
 
-// Cleanup helper
+// Cleanup helper.
 func (pp PagePool) Cleanup(iteratee func(*Page)) {
 	for i := 0; i < cap(pp); i++ {
 		p := <-pp
@@ -122,7 +122,7 @@ func (pp PagePool) Cleanup(iteratee func(*Page)) {
 // Reference: https://golang.org/doc/effective_go#channels
 type BrowserPool chan *Browser
 
-// NewBrowserPool instance
+// NewBrowserPool instance.
 func NewBrowserPool(limit int) BrowserPool {
 	pp := make(chan *Browser, limit)
 	for i := 0; i < limit; i++ {
@@ -140,12 +140,12 @@ func (bp BrowserPool) Get(create func() *Browser) *Browser {
 	return p
 }
 
-// Put a browser back to the pool
+// Put a browser back to the pool.
 func (bp BrowserPool) Put(p *Browser) {
 	bp <- p
 }
 
-// Cleanup helper
+// Cleanup helper.
 func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
 	for i := 0; i < cap(bp); i++ {
 		p := <-bp
@@ -157,7 +157,7 @@ func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
 
 var _ io.ReadCloser = &StreamReader{}
 
-// StreamReader for browser data stream
+// StreamReader for browser data stream.
 type StreamReader struct {
 	Offset *int
 
@@ -166,7 +166,7 @@ type StreamReader struct {
 	buf    *bytes.Buffer
 }
 
-// NewStreamReader instance
+// NewStreamReader instance.
 func NewStreamReader(c proto.Client, h proto.IOStreamHandle) *StreamReader {
 	return &StreamReader{
 		c:      c,
@@ -206,11 +206,11 @@ func (sr *StreamReader) Close() error {
 	return proto.IOClose{Handle: sr.handle}.Call(sr.c)
 }
 
-// Try try fn with recover, return the panic as rod.ErrTry
+// Try try fn with recover, return the panic as rod.ErrTry.
 func Try(fn func()) (err error) {
 	defer func() {
 		if val := recover(); val != nil {
-			err = &ErrTry{val, string(debug.Stack())}
+			err = &TryError{val, string(debug.Stack())}
 		}
 	}()
 

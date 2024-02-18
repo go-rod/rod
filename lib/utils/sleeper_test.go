@@ -75,7 +75,7 @@ func TestEachSleepers(t *testing.T) {
 		return false, nil
 	})
 
-	g.Is(err, &utils.ErrMaxSleepCount{})
+	g.Is(err, &utils.MaxSleepCountError{})
 	g.Eq(err.Error(), "max sleep count 5 exceeded")
 }
 
@@ -90,6 +90,6 @@ func TestRaceSleepers(t *testing.T) {
 		return false, nil
 	})
 
-	g.Is(err, &utils.ErrMaxSleepCount{})
+	g.Is(err, &utils.MaxSleepCountError{})
 	g.Eq(err.Error(), "max sleep count 5 exceeded")
 }

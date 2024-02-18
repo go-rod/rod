@@ -15,14 +15,14 @@ This domain allows interacting with the FedCM dialog.
 type FedCmLoginState string
 
 const (
-	// FedCmLoginStateSignIn enum const
+	// FedCmLoginStateSignIn enum const.
 	FedCmLoginStateSignIn FedCmLoginState = "SignIn"
 
-	// FedCmLoginStateSignUp enum const
+	// FedCmLoginStateSignUp enum const.
 	FedCmLoginStateSignUp FedCmLoginState = "SignUp"
 )
 
-// FedCmAccount Corresponds to IdentityRequestAccount
+// FedCmAccount Corresponds to IdentityRequestAccount.
 type FedCmAccount struct {
 	// AccountID ...
 	AccountID string `json:"accountId"`
@@ -63,10 +63,10 @@ type FedCmEnable struct {
 	DisableRejectionDelay bool `json:"disableRejectionDelay,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FedCmEnable) ProtoReq() string { return "FedCm.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m FedCmEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -74,10 +74,10 @@ func (m FedCmEnable) Call(c Client) error {
 // FedCmDisable ...
 type FedCmDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m FedCmDisable) ProtoReq() string { return "FedCm.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m FedCmDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -91,10 +91,10 @@ type FedCmSelectAccount struct {
 	AccountIndex int `json:"accountIndex"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FedCmSelectAccount) ProtoReq() string { return "FedCm.selectAccount" }
 
-// Call sends the request
+// Call sends the request.
 func (m FedCmSelectAccount) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -108,10 +108,10 @@ type FedCmDismissDialog struct {
 	TriggerCooldown bool `json:"triggerCooldown,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FedCmDismissDialog) ProtoReq() string { return "FedCm.dismissDialog" }
 
-// Call sends the request
+// Call sends the request.
 func (m FedCmDismissDialog) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -120,10 +120,10 @@ func (m FedCmDismissDialog) Call(c Client) error {
 // a dialog even if one was recently dismissed by the user.
 type FedCmResetCooldown struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m FedCmResetCooldown) ProtoReq() string { return "FedCm.resetCooldown" }
 
-// Call sends the request
+// Call sends the request.
 func (m FedCmResetCooldown) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -144,7 +144,7 @@ type FedCmDialogShown struct {
 	Subtitle string `json:"subtitle,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt FedCmDialogShown) ProtoEvent() string {
 	return "FedCm.dialogShown"
 }

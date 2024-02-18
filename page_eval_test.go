@@ -54,7 +54,7 @@ func TestPageEval(t *testing.T) {
 	g.Has(err.Error(), `eval js error: TypeError: 10.apply is not a function`)
 
 	_, err = page.Eval(`() => notExist()`)
-	g.Is(err, &rod.ErrEval{})
+	g.Is(err, &rod.EvalError{})
 	g.Has(err.Error(), `eval js error: ReferenceError: notExist is not defined`)
 }
 
@@ -63,8 +63,8 @@ func TestPageEvaluateRetry(t *testing.T) {
 
 	page := g.page.MustNavigate(g.blank())
 
-	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
-		g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(_ StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(nil), cdp.ErrCtxNotFound
 		})
 		return gson.New(nil), cdp.ErrCtxNotFound
@@ -77,7 +77,7 @@ func TestPageUpdateJSCtxIDErr(t *testing.T) {
 
 	page := g.page.MustNavigate(g.srcFile("./fixtures/click-iframe.html"))
 
-	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(_ StubSend) (gson.JSON, error) {
 		g.mc.stubErr(1, proto.RuntimeEvaluate{})
 		return gson.New(nil), cdp.ErrCtxNotFound
 	})
@@ -204,7 +204,7 @@ func TestGetJSHelperRetry(t *testing.T) {
 
 	g.page.MustNavigate(g.srcFile("fixtures/click.html"))
 
-	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.RuntimeCallFunctionOn{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.JSON{}, cdp.ErrCtxNotFound
 	})
 	g.page.MustElements("button")
@@ -260,7 +260,7 @@ func TestPageObjCrossNavigation(t *testing.T) {
 	g.page.MustNavigate(g.blank())
 
 	_, err := p.Evaluate(rod.Eval(`() => 1`).This(obj))
-	g.Is(err, &rod.ErrObjectNotFound{})
+	g.Is(err, &rod.ObjectNotFoundError{})
 	g.Has(err.Error(), "cannot find object: {\"type\":\"object\"")
 }
 

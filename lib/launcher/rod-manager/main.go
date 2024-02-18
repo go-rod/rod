@@ -29,7 +29,7 @@ func main() {
 	}
 
 	if *allowAllPath {
-		m.BeforeLaunch = func(l *launcher.Launcher, rw http.ResponseWriter, r *http.Request) {}
+		m.BeforeLaunch = func(_ *launcher.Launcher, _ http.ResponseWriter, _ *http.Request) {}
 	}
 
 	l, err := net.Listen("tcp", *addr)

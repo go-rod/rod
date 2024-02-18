@@ -24,7 +24,7 @@ func main() {
 	wait()
 }
 
-// Create a card payment that requires Visa's confirmation
+// Create a card payment that requires Visa's confirmation.
 func getRedirectURL() string {
 	token := post(
 		"/tokens", "card[number]=4000000000003220&card[exp_month]=7&card[exp_year]=2025&card[cvc]=314",

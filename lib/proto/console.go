@@ -10,61 +10,61 @@ This domain is deprecated - use Runtime or Log instead.
 
 */
 
-// ConsoleConsoleMessageSource enum
+// ConsoleConsoleMessageSource enum.
 type ConsoleConsoleMessageSource string
 
 const (
-	// ConsoleConsoleMessageSourceXML enum const
+	// ConsoleConsoleMessageSourceXML enum const.
 	ConsoleConsoleMessageSourceXML ConsoleConsoleMessageSource = "xml"
 
-	// ConsoleConsoleMessageSourceJavascript enum const
+	// ConsoleConsoleMessageSourceJavascript enum const.
 	ConsoleConsoleMessageSourceJavascript ConsoleConsoleMessageSource = "javascript"
 
-	// ConsoleConsoleMessageSourceNetwork enum const
+	// ConsoleConsoleMessageSourceNetwork enum const.
 	ConsoleConsoleMessageSourceNetwork ConsoleConsoleMessageSource = "network"
 
-	// ConsoleConsoleMessageSourceConsoleAPI enum const
+	// ConsoleConsoleMessageSourceConsoleAPI enum const.
 	ConsoleConsoleMessageSourceConsoleAPI ConsoleConsoleMessageSource = "console-api"
 
-	// ConsoleConsoleMessageSourceStorage enum const
+	// ConsoleConsoleMessageSourceStorage enum const.
 	ConsoleConsoleMessageSourceStorage ConsoleConsoleMessageSource = "storage"
 
-	// ConsoleConsoleMessageSourceAppcache enum const
+	// ConsoleConsoleMessageSourceAppcache enum const.
 	ConsoleConsoleMessageSourceAppcache ConsoleConsoleMessageSource = "appcache"
 
-	// ConsoleConsoleMessageSourceRendering enum const
+	// ConsoleConsoleMessageSourceRendering enum const.
 	ConsoleConsoleMessageSourceRendering ConsoleConsoleMessageSource = "rendering"
 
-	// ConsoleConsoleMessageSourceSecurity enum const
+	// ConsoleConsoleMessageSourceSecurity enum const.
 	ConsoleConsoleMessageSourceSecurity ConsoleConsoleMessageSource = "security"
 
-	// ConsoleConsoleMessageSourceOther enum const
+	// ConsoleConsoleMessageSourceOther enum const.
 	ConsoleConsoleMessageSourceOther ConsoleConsoleMessageSource = "other"
 
-	// ConsoleConsoleMessageSourceDeprecation enum const
+	// ConsoleConsoleMessageSourceDeprecation enum const.
 	ConsoleConsoleMessageSourceDeprecation ConsoleConsoleMessageSource = "deprecation"
 
-	// ConsoleConsoleMessageSourceWorker enum const
+	// ConsoleConsoleMessageSourceWorker enum const.
 	ConsoleConsoleMessageSourceWorker ConsoleConsoleMessageSource = "worker"
 )
 
-// ConsoleConsoleMessageLevel enum
+// ConsoleConsoleMessageLevel enum.
 type ConsoleConsoleMessageLevel string
 
 const (
-	// ConsoleConsoleMessageLevelLog enum const
+	// ConsoleConsoleMessageLevelLog enum const.
 	ConsoleConsoleMessageLevelLog ConsoleConsoleMessageLevel = "log"
 
-	// ConsoleConsoleMessageLevelWarning enum const
+	// ConsoleConsoleMessageLevelWarning enum const.
 	ConsoleConsoleMessageLevelWarning ConsoleConsoleMessageLevel = "warning"
 
-	// ConsoleConsoleMessageLevelError enum const
+	// ConsoleConsoleMessageLevelError enum const.
 	ConsoleConsoleMessageLevelError ConsoleConsoleMessageLevel = "error"
 
-	// ConsoleConsoleMessageLevelDebug enum const
+	// ConsoleConsoleMessageLevelDebug enum const.
 	ConsoleConsoleMessageLevelDebug ConsoleConsoleMessageLevel = "debug"
 
-	// ConsoleConsoleMessageLevelInfo enum const
+	// ConsoleConsoleMessageLevelInfo enum const.
 	ConsoleConsoleMessageLevelInfo ConsoleConsoleMessageLevel = "info"
 )
 
@@ -92,10 +92,10 @@ type ConsoleConsoleMessage struct {
 // ConsoleClearMessages Does nothing.
 type ConsoleClearMessages struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m ConsoleClearMessages) ProtoReq() string { return "Console.clearMessages" }
 
-// Call sends the request
+// Call sends the request.
 func (m ConsoleClearMessages) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -103,10 +103,10 @@ func (m ConsoleClearMessages) Call(c Client) error {
 // ConsoleDisable Disables console domain, prevents further console messages from being reported to the client.
 type ConsoleDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m ConsoleDisable) ProtoReq() string { return "Console.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m ConsoleDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -115,10 +115,10 @@ func (m ConsoleDisable) Call(c Client) error {
 // `messageAdded` notification.
 type ConsoleEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m ConsoleEnable) ProtoReq() string { return "Console.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m ConsoleEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -129,7 +129,7 @@ type ConsoleMessageAdded struct {
 	Message *ConsoleConsoleMessage `json:"message"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt ConsoleMessageAdded) ProtoEvent() string {
 	return "Console.messageAdded"
 }

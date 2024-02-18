@@ -30,7 +30,7 @@ func Shell() (string, error) {
 		return windowsShell()
 	}
 
-	return "", errors.New("Undefined GOOS: " + runtime.GOOS)
+	return "", errors.New("undefined GOOS: " + runtime.GOOS)
 }
 
 func plan9Shell() (string, error) {
@@ -78,7 +78,7 @@ func darwinShell() (string, error) {
 	matched := re.FindStringSubmatch(string(out))
 	shell := matched[1]
 	if shell == "" {
-		return "", fmt.Errorf("Invalid output: %s", string(out))
+		return "", fmt.Errorf("invalid output: %s", string(out))
 	}
 
 	return shell, nil

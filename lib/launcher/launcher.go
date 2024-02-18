@@ -24,7 +24,7 @@ import (
 // DefaultUserDataDirPrefix ...
 var DefaultUserDataDirPrefix = filepath.Join(os.TempDir(), "rod", "user-data")
 
-// Launcher is a helper to launch browser binary smartly
+// Launcher is a helper to launch browser binary smartly.
 type Launcher struct {
 	Flags map[flags.Flag][]string `json:"flags"`
 
@@ -157,7 +157,7 @@ func NewAppMode(u string) *Launcher {
 	return l
 }
 
-// Context sets the context
+// Context sets the context.
 func (l *Launcher) Context(ctx context.Context) *Launcher {
 	ctx, cancel := context.WithCancel(ctx)
 	l.ctx = ctx
@@ -177,7 +177,7 @@ func (l *Launcher) Set(name flags.Flag, values ...string) *Launcher {
 	return l
 }
 
-// Get flag's first value
+// Get flag's first value.
 func (l *Launcher) Get(name flags.Flag) string {
 	if list, has := l.GetFlags(name); has {
 		return list[0]
@@ -185,19 +185,19 @@ func (l *Launcher) Get(name flags.Flag) string {
 	return ""
 }
 
-// Has flag or not
+// Has flag or not.
 func (l *Launcher) Has(name flags.Flag) bool {
 	_, has := l.GetFlags(name)
 	return has
 }
 
-// GetFlags from settings
+// GetFlags from settings.
 func (l *Launcher) GetFlags(name flags.Flag) ([]string, bool) {
 	flag, has := l.Flags[name.NormalizeFlag()]
 	return flag, has
 }
 
-// Append values to the flag
+// Append values to the flag.
 func (l *Launcher) Append(name flags.Flag, values ...string) *Launcher {
 	flags, has := l.GetFlags(name)
 	if !has {
@@ -206,18 +206,18 @@ func (l *Launcher) Append(name flags.Flag, values ...string) *Launcher {
 	return l.Set(name, append(flags, values...)...)
 }
 
-// Delete a flag
+// Delete a flag.
 func (l *Launcher) Delete(name flags.Flag) *Launcher {
 	delete(l.Flags, name.NormalizeFlag())
 	return l
 }
 
-// Bin of the browser binary path to launch, if the path is not empty the auto download will be disabled
+// Bin of the browser binary path to launch, if the path is not empty the auto download will be disabled.
 func (l *Launcher) Bin(path string) *Launcher {
 	return l.Set(flags.Bin, path)
 }
 
-// Revision of the browser to auto download
+// Revision of the browser to auto download.
 func (l *Launcher) Revision(rev int) *Launcher {
 	l.browser.Revision = rev
 	return l
@@ -232,7 +232,8 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 }
 
 // NoSandbox switch. Whether to run browser in no-sandbox mode.
-// Linux users may face "running as root without --no-sandbox is not supported" in some Linux/Chrome combinations. This function helps switch mode easily.
+// Linux users may face "running as root without --no-sandbox is not supported" in some Linux/Chrome combinations.
+// This function helps switch mode easily.
 // Be aware disabling sandbox is not trivial. Use at your own risk.
 // Related doc: https://bugs.chromium.org/p/chromium/issues/detail?id=638180
 func (l *Launcher) NoSandbox(enable bool) *Launcher {
@@ -248,7 +249,8 @@ func (l *Launcher) XVFB(args ...string) *Launcher {
 }
 
 // Preferences set chromium user preferences, such as set the default search engine or disable the pdf viewer.
-// The pref is a json string, the doc is here https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
+// The pref is a json string, the doc is here
+// https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
 func (l *Launcher) Preferences(pref string) *Launcher {
 	return l.Set(flags.Preferences, pref)
 }
@@ -262,7 +264,7 @@ func (l *Launcher) Leakless(enable bool) *Launcher {
 	return l.Delete(flags.Leakless)
 }
 
-// Devtools switch to auto open devtools for each tab
+// Devtools switch to auto open devtools for each tab.
 func (l *Launcher) Devtools(autoOpenForTabs bool) *Launcher {
 	if autoOpenForTabs {
 		return l.Set("auto-open-devtools-for-tabs")
@@ -318,7 +320,7 @@ func (l *Launcher) RemoteDebuggingPort(port int) *Launcher {
 	return l.Set(flags.RemoteDebuggingPort, fmt.Sprintf("%d", port))
 }
 
-// Proxy for the browser
+// Proxy for the browser.
 func (l *Launcher) Proxy(host string) *Launcher {
 	return l.Set(flags.ProxyServer, host)
 }
@@ -336,12 +338,12 @@ func (l *Launcher) Env(env ...string) *Launcher {
 	return l.Set(flags.Env, env...)
 }
 
-// StartURL to launch
+// StartURL to launch.
 func (l *Launcher) StartURL(u string) *Launcher {
 	return l.Set("", u)
 }
 
-// FormatArgs returns the formatted arg list for cli
+// FormatArgs returns the formatted arg list for cli.
 func (l *Launcher) FormatArgs() []string {
 	execArgs := []string{}
 	for k, v := range l.Flags {
@@ -381,7 +383,7 @@ func (l *Launcher) Logger(w io.Writer) *Launcher {
 	return l
 }
 
-// MustLaunch is similar to Launch
+// MustLaunch is similar to Launch.
 func (l *Launcher) MustLaunch() string {
 	u, err := l.Launch()
 	utils.E(err)
@@ -511,12 +513,12 @@ func (l *Launcher) getURL() (u string, err error) {
 	return
 }
 
-// PID returns the browser process pid
+// PID returns the browser process pid.
 func (l *Launcher) PID() int {
 	return l.pid
 }
 
-// Kill the browser process
+// Kill the browser process.
 func (l *Launcher) Kill() {
 	// TODO: If kill too fast, the browser's children processes may not be ready.
 	// Browser don't have an API to tell if the children processes are ready.
@@ -533,7 +535,7 @@ func (l *Launcher) Kill() {
 	}
 }
 
-// Cleanup wait until the Browser exits and remove [flags.UserDataDir]
+// Cleanup wait until the Browser exits and remove [flags.UserDataDir].
 func (l *Launcher) Cleanup() {
 	<-l.exit
 

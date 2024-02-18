@@ -8,186 +8,186 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// ErrTry error
-type ErrTry struct {
+// TryError error.
+type TryError struct {
 	Value interface{}
 	Stack string
 }
 
-func (e *ErrTry) Error() string {
+func (e *TryError) Error() string {
 	return fmt.Sprintf("error value: %#v\n%s", e.Value, e.Stack)
 }
 
-// Is interface
-func (e *ErrTry) Is(err error) bool { _, ok := err.(*ErrTry); return ok }
+// Is interface.
+func (e *TryError) Is(err error) bool { _, ok := err.(*TryError); return ok }
 
-// Unwrap stdlib interface
-func (e *ErrTry) Unwrap() error {
+// Unwrap stdlib interface.
+func (e *TryError) Unwrap() error {
 	if err, ok := e.Value.(error); ok {
 		return err
 	}
 	return fmt.Errorf("%v", e.Value)
 }
 
-// ErrExpectElement error
-type ErrExpectElement struct {
+// ExpectElementError error.
+type ExpectElementError struct {
 	*proto.RuntimeRemoteObject
 }
 
-func (e *ErrExpectElement) Error() string {
+func (e *ExpectElementError) Error() string {
 	return fmt.Sprintf("expect js to return an element, but got: %s", utils.MustToJSON(e))
 }
 
-// Is interface
-func (e *ErrExpectElement) Is(err error) bool { _, ok := err.(*ErrExpectElement); return ok }
+// Is interface.
+func (e *ExpectElementError) Is(err error) bool { _, ok := err.(*ExpectElementError); return ok }
 
-// ErrExpectElements error
-type ErrExpectElements struct {
+// ExpectElementsError error.
+type ExpectElementsError struct {
 	*proto.RuntimeRemoteObject
 }
 
-func (e *ErrExpectElements) Error() string {
+func (e *ExpectElementsError) Error() string {
 	return fmt.Sprintf("expect js to return an array of elements, but got: %s", utils.MustToJSON(e))
 }
 
-// Is interface
-func (e *ErrExpectElements) Is(err error) bool { _, ok := err.(*ErrExpectElements); return ok }
+// Is interface.
+func (e *ExpectElementsError) Is(err error) bool { _, ok := err.(*ExpectElementsError); return ok }
 
-// ErrElementNotFound error
-type ErrElementNotFound struct{}
+// ElementNotFoundError error.
+type ElementNotFoundError struct{}
 
-func (e *ErrElementNotFound) Error() string {
+func (e *ElementNotFoundError) Error() string {
 	return "cannot find element"
 }
 
-// NotFoundSleeper returns ErrElementNotFound on the first call
+// NotFoundSleeper returns ErrElementNotFound on the first call.
 func NotFoundSleeper() utils.Sleeper {
 	return func(context.Context) error {
-		return &ErrElementNotFound{}
+		return &ElementNotFoundError{}
 	}
 }
 
-// ErrObjectNotFound error
-type ErrObjectNotFound struct {
+// ObjectNotFoundError error.
+type ObjectNotFoundError struct {
 	*proto.RuntimeRemoteObject
 }
 
-func (e *ErrObjectNotFound) Error() string {
+func (e *ObjectNotFoundError) Error() string {
 	return fmt.Sprintf("cannot find object: %s", utils.MustToJSON(e))
 }
 
-// Is interface
-func (e *ErrObjectNotFound) Is(err error) bool { _, ok := err.(*ErrObjectNotFound); return ok }
+// Is interface.
+func (e *ObjectNotFoundError) Is(err error) bool { _, ok := err.(*ObjectNotFoundError); return ok }
 
-// ErrEval error
-type ErrEval struct {
+// EvalError error.
+type EvalError struct {
 	*proto.RuntimeExceptionDetails
 }
 
-func (e *ErrEval) Error() string {
+func (e *EvalError) Error() string {
 	exp := e.Exception
 	return fmt.Sprintf("eval js error: %s %s", exp.Description, exp.Value)
 }
 
-// Is interface
-func (e *ErrEval) Is(err error) bool { _, ok := err.(*ErrEval); return ok }
+// Is interface.
+func (e *EvalError) Is(err error) bool { _, ok := err.(*EvalError); return ok }
 
-// ErrNavigation error
-type ErrNavigation struct {
+// NavigationError error.
+type NavigationError struct {
 	Reason string
 }
 
-func (e *ErrNavigation) Error() string {
+func (e *NavigationError) Error() string {
 	return "navigation failed: " + e.Reason
 }
 
-// Is interface
-func (e *ErrNavigation) Is(err error) bool { _, ok := err.(*ErrNavigation); return ok }
+// Is interface.
+func (e *NavigationError) Is(err error) bool { _, ok := err.(*NavigationError); return ok }
 
-// ErrPageCloseCanceled error
-type ErrPageCloseCanceled struct{}
+// PageCloseCanceledError error.
+type PageCloseCanceledError struct{}
 
-func (e *ErrPageCloseCanceled) Error() string {
+func (e *PageCloseCanceledError) Error() string {
 	return "page close canceled"
 }
 
-// ErrNotInteractable error. Check the doc of Element.Interactable for details.
-type ErrNotInteractable struct{}
+// NotInteractableError error. Check the doc of Element.Interactable for details.
+type NotInteractableError struct{}
 
-func (e *ErrNotInteractable) Error() string {
+func (e *NotInteractableError) Error() string {
 	return "element is not cursor interactable"
 }
 
-// ErrInvisibleShape error.
-type ErrInvisibleShape struct {
+// InvisibleShapeError error.
+type InvisibleShapeError struct {
 	*Element
 }
 
 // Error ...
-func (e *ErrInvisibleShape) Error() string {
+func (e *InvisibleShapeError) Error() string {
 	return fmt.Sprintf("element has no visible shape or outside the viewport: %s", e.String())
 }
 
-// Is interface
-func (e *ErrInvisibleShape) Is(err error) bool { _, ok := err.(*ErrInvisibleShape); return ok }
+// Is interface.
+func (e *InvisibleShapeError) Is(err error) bool { _, ok := err.(*InvisibleShapeError); return ok }
 
 // Unwrap ...
-func (e *ErrInvisibleShape) Unwrap() error {
-	return &ErrNotInteractable{}
+func (e *InvisibleShapeError) Unwrap() error {
+	return &NotInteractableError{}
 }
 
-// ErrCovered error.
-type ErrCovered struct {
+// CoveredError error.
+type CoveredError struct {
 	*Element
 }
 
 // Error ...
-func (e *ErrCovered) Error() string {
+func (e *CoveredError) Error() string {
 	return fmt.Sprintf("element covered by: %s", e.String())
 }
 
 // Unwrap ...
-func (e *ErrCovered) Unwrap() error {
-	return &ErrNotInteractable{}
+func (e *CoveredError) Unwrap() error {
+	return &NotInteractableError{}
 }
 
-// Is interface
-func (e *ErrCovered) Is(err error) bool { _, ok := err.(*ErrCovered); return ok }
+// Is interface.
+func (e *CoveredError) Is(err error) bool { _, ok := err.(*CoveredError); return ok }
 
-// ErrNoPointerEvents error.
-type ErrNoPointerEvents struct {
+// NoPointerEventsError error.
+type NoPointerEventsError struct {
 	*Element
 }
 
 // Error ...
-func (e *ErrNoPointerEvents) Error() string {
+func (e *NoPointerEventsError) Error() string {
 	return fmt.Sprintf("element's pointer-events is none: %s", e.String())
 }
 
 // Unwrap ...
-func (e *ErrNoPointerEvents) Unwrap() error {
-	return &ErrNotInteractable{}
+func (e *NoPointerEventsError) Unwrap() error {
+	return &NotInteractableError{}
 }
 
-// Is interface
-func (e *ErrNoPointerEvents) Is(err error) bool { _, ok := err.(*ErrNoPointerEvents); return ok }
+// Is interface.
+func (e *NoPointerEventsError) Is(err error) bool { _, ok := err.(*NoPointerEventsError); return ok }
 
-// ErrPageNotFound error
-type ErrPageNotFound struct{}
+// PageNotFoundError error.
+type PageNotFoundError struct{}
 
-func (e *ErrPageNotFound) Error() string {
+func (e *PageNotFoundError) Error() string {
 	return "cannot find page"
 }
 
-// ErrNoShadowRoot error
-type ErrNoShadowRoot struct {
+// NoShadowRootError error.
+type NoShadowRootError struct {
 	*Element
 }
 
 // Error ...
-func (e *ErrNoShadowRoot) Error() string {
+func (e *NoShadowRootError) Error() string {
 	return fmt.Sprintf("element has no shadow root: %s", e.String())
 }
 
-// Is interface
-func (e *ErrNoShadowRoot) Is(err error) bool { _, ok := err.(*ErrNoShadowRoot); return ok }
+// Is interface.
+func (e *NoShadowRootError) Is(err error) bool { _, ok := err.(*NoShadowRootError); return ok }

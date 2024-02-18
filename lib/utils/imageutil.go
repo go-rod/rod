@@ -17,12 +17,12 @@ type ImgWithBox struct {
 	Box *image.Rectangle
 }
 
-// ImgOption is the option for image processing
+// ImgOption is the option for image processing.
 type ImgOption struct {
 	Quality int
 }
 
-// ImgProcessor is the interface for image processing
+// ImgProcessor is the interface for image processing.
 type ImgProcessor interface {
 	Encode(img image.Image, opt *ImgOption) ([]byte, error)
 	Decode(file io.Reader) (image.Image, error)
@@ -56,7 +56,7 @@ func (p pngProcessor) Decode(file io.Reader) (image.Image, error) {
 	return png.Decode(file)
 }
 
-// NewImgProcessor create a ImgProcessor by the format
+// NewImgProcessor create a ImgProcessor by the format.
 func NewImgProcessor(format proto.PageCaptureScreenshotFormat) (ImgProcessor, error) {
 	switch format {
 	case proto.PageCaptureScreenshotFormatJpeg:
@@ -69,7 +69,8 @@ func NewImgProcessor(format proto.PageCaptureScreenshotFormat) (ImgProcessor, er
 }
 
 // SplicePngVertical splice png vertically, if there is only one image, it will return the image directly.
-// Only support png and jpeg format yet, webP is not supported because no suitable processing library was found in golang.
+// Only support png and jpeg format yet, webP is not supported because no suitable processing
+// library was found in golang.
 func SplicePngVertical(files []ImgWithBox, format proto.PageCaptureScreenshotFormat, opt *ImgOption) ([]byte, error) {
 	if len(files) == 0 {
 		return nil, nil

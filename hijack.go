@@ -31,7 +31,7 @@ func (p *Page) HijackRequests() *HijackRouter {
 	return newHijackRouter(p.browser, p).initEvents()
 }
 
-// HijackRouter context
+// HijackRouter context.
 type HijackRouter struct {
 	run      func()
 	stop     func()
@@ -50,7 +50,7 @@ func newHijackRouter(browser *Browser, client proto.Client) *HijackRouter {
 	}
 }
 
-func (r *HijackRouter) initEvents() *HijackRouter {
+func (r *HijackRouter) initEvents() *HijackRouter { //nolint: gocognit
 	ctx := r.browser.ctx
 	if cta, ok := r.client.(proto.Contextable); ok {
 		ctx = cta.GetContext()
@@ -128,7 +128,7 @@ func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceTyp
 	return r.enable.Call(r.client)
 }
 
-// Remove handler via the pattern
+// Remove handler via the pattern.
 func (r *HijackRouter) Remove(pattern string) error {
 	patterns := []*proto.FetchRequestPattern{}
 	handlers := []*hijackHandler{}
@@ -144,7 +144,7 @@ func (r *HijackRouter) Remove(pattern string) error {
 	return r.enable.Call(r.client)
 }
 
-// new context
+// new context.
 func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hijack {
 	headers := http.Header{}
 	for k, v := range e.Request.Headers {
@@ -174,7 +174,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 				RequestID: e.RequestID,
 			},
 		},
-		OnError: func(err error) {},
+		OnError: func(_ error) {},
 
 		browser: r.browser,
 	}
@@ -185,20 +185,20 @@ func (r *HijackRouter) Run() {
 	r.run()
 }
 
-// Stop the router
+// Stop the router.
 func (r *HijackRouter) Stop() error {
 	r.stop()
 	return proto.FetchDisable{}.Call(r.client)
 }
 
-// hijackHandler to handle each request that match the regexp
+// hijackHandler to handle each request that match the regexp.
 type hijackHandler struct {
 	pattern string
 	regexp  *regexp.Regexp
 	handler func(*Hijack)
 }
 
-// Hijack context
+// Hijack context.
 type Hijack struct {
 	Request  *HijackRequest
 	Response *HijackResponse
@@ -249,34 +249,34 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	return nil
 }
 
-// HijackRequest context
+// HijackRequest context.
 type HijackRequest struct {
 	event *proto.FetchRequestPaused
 	req   *http.Request
 }
 
-// Type of the resource
+// Type of the resource.
 func (ctx *HijackRequest) Type() proto.NetworkResourceType {
 	return ctx.event.ResourceType
 }
 
-// Method of the request
+// Method of the request.
 func (ctx *HijackRequest) Method() string {
 	return ctx.event.Request.Method
 }
 
-// URL of the request
+// URL of the request.
 func (ctx *HijackRequest) URL() *url.URL {
 	u, _ := url.Parse(ctx.event.Request.URL)
 	return u
 }
 
-// Header via a key
+// Header via a key.
 func (ctx *HijackRequest) Header(key string) string {
 	return ctx.event.Request.Headers[key].String()
 }
 
-// Headers of request
+// Headers of request.
 func (ctx *HijackRequest) Headers() proto.NetworkHeaders {
 	return ctx.event.Request.Headers
 }
@@ -286,7 +286,7 @@ func (ctx *HijackRequest) Body() string {
 	return ctx.event.Request.PostData
 }
 
-// JSONBody of the request
+// JSONBody of the request.
 func (ctx *HijackRequest) JSONBody() gson.JSON {
 	return gson.NewFrom(ctx.Body())
 }
@@ -296,7 +296,7 @@ func (ctx *HijackRequest) Req() *http.Request {
 	return ctx.req
 }
 
-// SetContext of the underlying http.Request instance
+// SetContext of the underlying http.Request instance.
 func (ctx *HijackRequest) SetContext(c context.Context) *HijackRequest {
 	ctx.req = ctx.req.WithContext(c)
 	return ctx
@@ -320,12 +320,12 @@ func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 	return ctx
 }
 
-// IsNavigation determines whether the request is a navigation request
+// IsNavigation determines whether the request is a navigation request.
 func (ctx *HijackRequest) IsNavigation() bool {
 	return ctx.Type() == proto.NetworkResourceTypeDocument
 }
 
-// HijackResponse context
+// HijackResponse context.
 type HijackResponse struct {
 	payload     *proto.FetchFulfillRequest
 	RawResponse *http.Response
@@ -337,7 +337,7 @@ func (ctx *HijackResponse) Payload() *proto.FetchFulfillRequest {
 	return ctx.payload
 }
 
-// Body of the payload
+// Body of the payload.
 func (ctx *HijackResponse) Body() string {
 	return string(ctx.payload.Body)
 }
@@ -354,7 +354,7 @@ func (ctx *HijackResponse) Headers() http.Header {
 	return header
 }
 
-// SetHeader of the payload via key-value pairs
+// SetHeader of the payload via key-value pairs.
 func (ctx *HijackResponse) SetHeader(pairs ...string) *HijackResponse {
 	for i := 0; i < len(pairs); i += 2 {
 		ctx.payload.ResponseHeaders = append(ctx.payload.ResponseHeaders, &proto.FetchHeaderEntry{
@@ -378,7 +378,7 @@ func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 	return ctx
 }
 
-// Fail request
+// Fail request.
 func (ctx *HijackResponse) Fail(reason proto.NetworkErrorReason) *HijackResponse {
 	ctx.fail.ErrorReason = reason
 	return ctx

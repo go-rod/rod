@@ -18,13 +18,13 @@ type SecurityCertificateID int
 type SecurityMixedContentType string
 
 const (
-	// SecurityMixedContentTypeBlockable enum const
+	// SecurityMixedContentTypeBlockable enum const.
 	SecurityMixedContentTypeBlockable SecurityMixedContentType = "blockable"
 
-	// SecurityMixedContentTypeOptionallyBlockable enum const
+	// SecurityMixedContentTypeOptionallyBlockable enum const.
 	SecurityMixedContentTypeOptionallyBlockable SecurityMixedContentType = "optionally-blockable"
 
-	// SecurityMixedContentTypeNone enum const
+	// SecurityMixedContentTypeNone enum const.
 	SecurityMixedContentTypeNone SecurityMixedContentType = "none"
 )
 
@@ -32,28 +32,28 @@ const (
 type SecuritySecurityState string
 
 const (
-	// SecuritySecurityStateUnknown enum const
+	// SecuritySecurityStateUnknown enum const.
 	SecuritySecurityStateUnknown SecuritySecurityState = "unknown"
 
-	// SecuritySecurityStateNeutral enum const
+	// SecuritySecurityStateNeutral enum const.
 	SecuritySecurityStateNeutral SecuritySecurityState = "neutral"
 
-	// SecuritySecurityStateInsecure enum const
+	// SecuritySecurityStateInsecure enum const.
 	SecuritySecurityStateInsecure SecuritySecurityState = "insecure"
 
-	// SecuritySecurityStateSecure enum const
+	// SecuritySecurityStateSecure enum const.
 	SecuritySecurityStateSecure SecuritySecurityState = "secure"
 
-	// SecuritySecurityStateInfo enum const
+	// SecuritySecurityStateInfo enum const.
 	SecuritySecurityStateInfo SecuritySecurityState = "info"
 
-	// SecuritySecurityStateInsecureBroken enum const
+	// SecuritySecurityStateInsecureBroken enum const.
 	SecuritySecurityStateInsecureBroken SecuritySecurityState = "insecure-broken"
 )
 
 // SecurityCertificateSecurityState (experimental) Details about the security state of the page certificate.
 type SecurityCertificateSecurityState struct {
-	// Protocol Protocol name (e.g. "TLS 1.2" or "QUIC").
+	// Protocol name (e.g. "TLS 1.2" or "QUIC").
 	Protocol string `json:"protocol"`
 
 	// KeyExchange Key Exchange used by the connection, or the empty string if not applicable.
@@ -62,7 +62,7 @@ type SecurityCertificateSecurityState struct {
 	// KeyExchangeGroup (optional) (EC)DH group used by the connection, if applicable.
 	KeyExchangeGroup string `json:"keyExchangeGroup,omitempty"`
 
-	// Cipher Cipher name.
+	// Cipher name.
 	Cipher string `json:"cipher"`
 
 	// Mac (optional) TLS MAC. Note that AEAD ciphers do not have separate MACs.
@@ -112,10 +112,10 @@ type SecurityCertificateSecurityState struct {
 type SecuritySafetyTipStatus string
 
 const (
-	// SecuritySafetyTipStatusBadReputation enum const
+	// SecuritySafetyTipStatusBadReputation enum const.
 	SecuritySafetyTipStatusBadReputation SecuritySafetyTipStatus = "badReputation"
 
-	// SecuritySafetyTipStatusLookalike enum const
+	// SecuritySafetyTipStatusLookalike enum const.
 	SecuritySafetyTipStatusLookalike SecuritySafetyTipStatus = "lookalike"
 )
 
@@ -139,8 +139,8 @@ type SecurityVisibleSecurityState struct {
 	// SafetyTipInfo (optional) The type of Safety Tip triggered on the page. Note that this field will be set even if the Safety Tip UI was not actually shown.
 	SafetyTipInfo *SecuritySafetyTipInfo `json:"safetyTipInfo,omitempty"`
 
-	// SecurityStateIssueIds Array of security state issues ids.
-	SecurityStateIssueIds []string `json:"securityStateIssueIds"`
+	// SecurityStateIssueIDs Array of security state issues ids.
+	SecurityStateIssueIDs []string `json:"securityStateIssueIds"`
 }
 
 // SecuritySecurityStateExplanation An explanation of an factor contributing to the security state.
@@ -148,7 +148,7 @@ type SecuritySecurityStateExplanation struct {
 	// SecurityState Security state representing the severity of the factor being explained.
 	SecurityState SecuritySecurityState `json:"securityState"`
 
-	// Title Title describing the type of factor.
+	// Title describing the type of factor.
 	Title string `json:"title"`
 
 	// Summary Short phrase describing the type of factor.
@@ -196,20 +196,20 @@ type SecurityInsecureContentStatus struct {
 type SecurityCertificateErrorAction string
 
 const (
-	// SecurityCertificateErrorActionContinue enum const
+	// SecurityCertificateErrorActionContinue enum const.
 	SecurityCertificateErrorActionContinue SecurityCertificateErrorAction = "continue"
 
-	// SecurityCertificateErrorActionCancel enum const
+	// SecurityCertificateErrorActionCancel enum const.
 	SecurityCertificateErrorActionCancel SecurityCertificateErrorAction = "cancel"
 )
 
 // SecurityDisable Disables tracking security state changes.
 type SecurityDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m SecurityDisable) ProtoReq() string { return "Security.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m SecurityDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -217,10 +217,10 @@ func (m SecurityDisable) Call(c Client) error {
 // SecurityEnable Enables tracking security state changes.
 type SecurityEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m SecurityEnable) ProtoReq() string { return "Security.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m SecurityEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -231,12 +231,12 @@ type SecuritySetIgnoreCertificateErrors struct {
 	Ignore bool `json:"ignore"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m SecuritySetIgnoreCertificateErrors) ProtoReq() string {
 	return "Security.setIgnoreCertificateErrors"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m SecuritySetIgnoreCertificateErrors) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -250,10 +250,10 @@ type SecurityHandleCertificateError struct {
 	Action SecurityCertificateErrorAction `json:"action"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m SecurityHandleCertificateError) ProtoReq() string { return "Security.handleCertificateError" }
 
-// Call sends the request
+// Call sends the request.
 func (m SecurityHandleCertificateError) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -265,12 +265,12 @@ type SecuritySetOverrideCertificateErrors struct {
 	Override bool `json:"override"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m SecuritySetOverrideCertificateErrors) ProtoReq() string {
 	return "Security.setOverrideCertificateErrors"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m SecuritySetOverrideCertificateErrors) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -290,7 +290,7 @@ type SecurityCertificateError struct {
 	RequestURL string `json:"requestURL"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt SecurityCertificateError) ProtoEvent() string {
 	return "Security.certificateError"
 }
@@ -301,7 +301,7 @@ type SecurityVisibleSecurityStateChanged struct {
 	VisibleSecurityState *SecurityVisibleSecurityState `json:"visibleSecurityState"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt SecurityVisibleSecurityStateChanged) ProtoEvent() string {
 	return "Security.visibleSecurityStateChanged"
 }
@@ -325,7 +325,7 @@ type SecuritySecurityStateChanged struct {
 	Summary string `json:"summary,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt SecuritySecurityStateChanged) ProtoEvent() string {
 	return "Security.securityStateChanged"
 }

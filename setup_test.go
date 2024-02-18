@@ -55,10 +55,6 @@ func TestMain(m *testing.M) {
 	}
 }
 
-var setup = func(t *testing.T) G {
-	return testerPool.get(t)
-}
-
 // G is a tester. Testers are thread-safe, they shouldn't race each other.
 type G struct {
 	got.G
@@ -89,7 +85,8 @@ func newTesterPool() TesterPool {
 	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
 	}
-	fmt.Println("parallel test", parallel)
+
+	fmt.Println("parallel test", parallel) //nolint: forbidigo
 
 	cp := TesterPool{
 		pool:     make(chan *G, parallel),
@@ -103,7 +100,7 @@ func newTesterPool() TesterPool {
 	return cp
 }
 
-// new tester
+// new tester.
 func (tp TesterPool) new() *G {
 	u := launcher.New().Set("proxy-bypass-list", "<-loopback>").MustLaunch()
 
@@ -127,17 +124,18 @@ func (tp TesterPool) new() *G {
 	}
 }
 
-// get a tester
-func (tp TesterPool) get(t *testing.T) G {
+func setup(t *testing.T) G {
+	t.Helper()
+
 	if got.Parallel() != 1 {
 		t.Parallel()
 	}
 
-	tester := <-tp.pool
+	tester := <-testerPool.pool
 	if tester == nil {
-		tester = tp.new()
+		tester = testerPool.new()
 	}
-	t.Cleanup(func() { tp.pool <- tester })
+	t.Cleanup(func() { testerPool.pool <- tester })
 
 	tester.G = got.New(t)
 	tester.mc.t = t
@@ -161,7 +159,7 @@ func (g G) enableCDPLog() {
 }
 
 func (g G) dump(args ...interface{}) {
-	g.Log(utils.Dump(args))
+	g.Log(utils.Dump(args...))
 }
 
 func (g G) blank() string {
@@ -361,7 +359,7 @@ func (mc *MockClient) stub(nth int, p proto.Request, fn func(send StubSend) (gso
 // When call the cdp.Client.Call the nth time return error.
 // Use p to filter method.
 func (mc *MockClient) stubErr(nth int, p proto.Request) {
-	mc.stub(nth, p, func(send StubSend) (gson.JSON, error) {
+	mc.stub(nth, p, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(nil), errors.New("mock error")
 	})
 }

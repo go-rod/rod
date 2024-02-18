@@ -15,20 +15,20 @@ Tracing
 // TracingMemoryDumpConfig Configuration for memory dump. Used only when "memory-infra" category is enabled.
 type TracingMemoryDumpConfig map[string]gson.JSON
 
-// TracingTraceConfigRecordMode enum
+// TracingTraceConfigRecordMode enum.
 type TracingTraceConfigRecordMode string
 
 const (
-	// TracingTraceConfigRecordModeRecordUntilFull enum const
+	// TracingTraceConfigRecordModeRecordUntilFull enum const.
 	TracingTraceConfigRecordModeRecordUntilFull TracingTraceConfigRecordMode = "recordUntilFull"
 
-	// TracingTraceConfigRecordModeRecordContinuously enum const
+	// TracingTraceConfigRecordModeRecordContinuously enum const.
 	TracingTraceConfigRecordModeRecordContinuously TracingTraceConfigRecordMode = "recordContinuously"
 
-	// TracingTraceConfigRecordModeRecordAsMuchAsPossible enum const
+	// TracingTraceConfigRecordModeRecordAsMuchAsPossible enum const.
 	TracingTraceConfigRecordModeRecordAsMuchAsPossible TracingTraceConfigRecordMode = "recordAsMuchAsPossible"
 
-	// TracingTraceConfigRecordModeEchoToConsole enum const
+	// TracingTraceConfigRecordModeEchoToConsole enum const.
 	TracingTraceConfigRecordModeEchoToConsole TracingTraceConfigRecordMode = "echoToConsole"
 )
 
@@ -68,10 +68,10 @@ type TracingTraceConfig struct {
 type TracingStreamFormat string
 
 const (
-	// TracingStreamFormatJSON enum const
+	// TracingStreamFormatJSON enum const.
 	TracingStreamFormatJSON TracingStreamFormat = "json"
 
-	// TracingStreamFormatProto enum const
+	// TracingStreamFormatProto enum const.
 	TracingStreamFormatProto TracingStreamFormat = "proto"
 )
 
@@ -79,26 +79,26 @@ const (
 type TracingStreamCompression string
 
 const (
-	// TracingStreamCompressionNone enum const
+	// TracingStreamCompressionNone enum const.
 	TracingStreamCompressionNone TracingStreamCompression = "none"
 
-	// TracingStreamCompressionGzip enum const
+	// TracingStreamCompressionGzip enum const.
 	TracingStreamCompressionGzip TracingStreamCompression = "gzip"
 )
 
 // TracingMemoryDumpLevelOfDetail Details exposed when memory request explicitly declared.
 // Keep consistent with memory_dump_request_args.h and
-// memory_instrumentation.mojom
+// memory_instrumentation.mojom.
 type TracingMemoryDumpLevelOfDetail string
 
 const (
-	// TracingMemoryDumpLevelOfDetailBackground enum const
+	// TracingMemoryDumpLevelOfDetailBackground enum const.
 	TracingMemoryDumpLevelOfDetailBackground TracingMemoryDumpLevelOfDetail = "background"
 
-	// TracingMemoryDumpLevelOfDetailLight enum const
+	// TracingMemoryDumpLevelOfDetailLight enum const.
 	TracingMemoryDumpLevelOfDetailLight TracingMemoryDumpLevelOfDetail = "light"
 
-	// TracingMemoryDumpLevelOfDetailDetailed enum const
+	// TracingMemoryDumpLevelOfDetailDetailed enum const.
 	TracingMemoryDumpLevelOfDetailDetailed TracingMemoryDumpLevelOfDetail = "detailed"
 )
 
@@ -110,23 +110,23 @@ const (
 type TracingTracingBackend string
 
 const (
-	// TracingTracingBackendAuto enum const
+	// TracingTracingBackendAuto enum const.
 	TracingTracingBackendAuto TracingTracingBackend = "auto"
 
-	// TracingTracingBackendChrome enum const
+	// TracingTracingBackendChrome enum const.
 	TracingTracingBackendChrome TracingTracingBackend = "chrome"
 
-	// TracingTracingBackendSystem enum const
+	// TracingTracingBackendSystem enum const.
 	TracingTracingBackendSystem TracingTracingBackend = "system"
 )
 
 // TracingEnd Stop trace events collection.
 type TracingEnd struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m TracingEnd) ProtoReq() string { return "Tracing.end" }
 
-// Call sends the request
+// Call sends the request.
 func (m TracingEnd) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -134,10 +134,10 @@ func (m TracingEnd) Call(c Client) error {
 // TracingGetCategories Gets supported tracing categories.
 type TracingGetCategories struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m TracingGetCategories) ProtoReq() string { return "Tracing.getCategories" }
 
-// Call the request
+// Call the request.
 func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error) {
 	var res TracingGetCategoriesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -155,10 +155,10 @@ type TracingRecordClockSyncMarker struct {
 	SyncID string `json:"syncId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m TracingRecordClockSyncMarker) ProtoReq() string { return "Tracing.recordClockSyncMarker" }
 
-// Call sends the request
+// Call sends the request.
 func (m TracingRecordClockSyncMarker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -172,10 +172,10 @@ type TracingRequestMemoryDump struct {
 	LevelOfDetail TracingMemoryDumpLevelOfDetail `json:"levelOfDetail,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m TracingRequestMemoryDump) ProtoReq() string { return "Tracing.requestMemoryDump" }
 
-// Call the request
+// Call the request.
 func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResult, error) {
 	var res TracingRequestMemoryDumpResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -190,14 +190,14 @@ type TracingRequestMemoryDumpResult struct {
 	Success bool `json:"success"`
 }
 
-// TracingStartTransferMode enum
+// TracingStartTransferMode enum.
 type TracingStartTransferMode string
 
 const (
-	// TracingStartTransferModeReportEvents enum const
+	// TracingStartTransferModeReportEvents enum const.
 	TracingStartTransferModeReportEvents TracingStartTransferMode = "ReportEvents"
 
-	// TracingStartTransferModeReturnAsStream enum const
+	// TracingStartTransferModeReturnAsStream enum const.
 	TracingStartTransferModeReturnAsStream TracingStartTransferMode = "ReturnAsStream"
 )
 
@@ -236,10 +236,10 @@ type TracingStart struct {
 	TracingBackend TracingTracingBackend `json:"tracingBackend,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m TracingStart) ProtoReq() string { return "Tracing.start" }
 
-// Call sends the request
+// Call sends the request.
 func (m TracingStart) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -258,7 +258,7 @@ type TracingBufferUsage struct {
 	Value *float64 `json:"value,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt TracingBufferUsage) ProtoEvent() string {
 	return "Tracing.bufferUsage"
 }
@@ -270,7 +270,7 @@ type TracingDataCollected struct {
 	Value []map[string]gson.JSON `json:"value"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt TracingDataCollected) ProtoEvent() string {
 	return "Tracing.dataCollected"
 }
@@ -292,7 +292,7 @@ type TracingTracingComplete struct {
 	StreamCompression TracingStreamCompression `json:"streamCompression,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt TracingTracingComplete) ProtoEvent() string {
 	return "Tracing.tracingComplete"
 }

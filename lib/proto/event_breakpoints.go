@@ -19,12 +19,12 @@ type EventBreakpointsSetInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m EventBreakpointsSetInstrumentationBreakpoint) ProtoReq() string {
 	return "EventBreakpoints.setInstrumentationBreakpoint"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m EventBreakpointsSetInstrumentationBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -35,12 +35,12 @@ type EventBreakpointsRemoveInstrumentationBreakpoint struct {
 	EventName string `json:"eventName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m EventBreakpointsRemoveInstrumentationBreakpoint) ProtoReq() string {
 	return "EventBreakpoints.removeInstrumentationBreakpoint"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m EventBreakpointsRemoveInstrumentationBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }

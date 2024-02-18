@@ -28,11 +28,12 @@ func main() {
 
 	at := getArchType()
 
-	if isMain {
+	switch {
+	case isMain:
 		releaseLatest(at)
-	} else if ver != "" {
+	case ver != "":
 		releaseWithVer(ver)
-	} else {
+	default:
 		test(at)
 	}
 }

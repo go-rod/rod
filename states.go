@@ -51,12 +51,12 @@ func (b *Browser) LoadState(sessionID proto.TargetSessionID, method proto.Reques
 	return
 }
 
-// RemoveState a state
+// RemoveState a state.
 func (b *Browser) RemoveState(key interface{}) {
 	b.states.Delete(key)
 }
 
-// EnableDomain and returns a restore function to restore previous state
+// EnableDomain and returns a restore function to restore previous state.
 func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoReq()))
 
@@ -72,7 +72,7 @@ func (b *Browser) EnableDomain(sessionID proto.TargetSessionID, req proto.Reques
 	}
 }
 
-// DisableDomain and returns a restore function to restore previous state
+// DisableDomain and returns a restore function to restore previous state.
 func (b *Browser) DisableDomain(sessionID proto.TargetSessionID, req proto.Request) (restore func()) {
 	_, enabled := b.states.Load(b.key(sessionID, req.ProtoReq()))
 	domain, _ := proto.ParseMethodName(req.ProtoReq())
@@ -94,7 +94,7 @@ func (b *Browser) cachePage(page *Page) {
 
 func (b *Browser) loadCachedPage(id proto.TargetTargetID) *Page {
 	if cache, ok := b.states.Load(id); ok {
-		return cache.(*Page)
+		return cache.(*Page) //nolint: forcetypeassert
 	}
 	return nil
 }
@@ -104,12 +104,12 @@ func (p *Page) LoadState(method proto.Request) (has bool) {
 	return p.browser.LoadState(p.SessionID, method)
 }
 
-// EnableDomain and returns a restore function to restore previous state
+// EnableDomain and returns a restore function to restore previous state.
 func (p *Page) EnableDomain(method proto.Request) (restore func()) {
 	return p.browser.Context(p.ctx).EnableDomain(p.SessionID, method)
 }
 
-// DisableDomain and returns a restore function to restore previous state
+// DisableDomain and returns a restore function to restore previous state.
 func (p *Page) DisableDomain(method proto.Request) (restore func()) {
 	return p.browser.Context(p.ctx).DisableDomain(p.SessionID, method)
 }

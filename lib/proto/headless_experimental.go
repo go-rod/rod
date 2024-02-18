@@ -10,17 +10,17 @@ This domain provides experimental commands only supported in headless mode.
 
 */
 
-// HeadlessExperimentalScreenshotParamsFormat enum
+// HeadlessExperimentalScreenshotParamsFormat enum.
 type HeadlessExperimentalScreenshotParamsFormat string
 
 const (
-	// HeadlessExperimentalScreenshotParamsFormatJpeg enum const
+	// HeadlessExperimentalScreenshotParamsFormatJpeg enum const.
 	HeadlessExperimentalScreenshotParamsFormatJpeg HeadlessExperimentalScreenshotParamsFormat = "jpeg"
 
-	// HeadlessExperimentalScreenshotParamsFormatPng enum const
+	// HeadlessExperimentalScreenshotParamsFormatPng enum const.
 	HeadlessExperimentalScreenshotParamsFormatPng HeadlessExperimentalScreenshotParamsFormat = "png"
 
-	// HeadlessExperimentalScreenshotParamsFormatWebp enum const
+	// HeadlessExperimentalScreenshotParamsFormatWebp enum const.
 	HeadlessExperimentalScreenshotParamsFormatWebp HeadlessExperimentalScreenshotParamsFormat = "webp"
 )
 
@@ -60,10 +60,10 @@ type HeadlessExperimentalBeginFrame struct {
 	Screenshot *HeadlessExperimentalScreenshotParams `json:"screenshot,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeadlessExperimentalBeginFrame) ProtoReq() string { return "HeadlessExperimental.beginFrame" }
 
-// Call the request
+// Call the request.
 func (m HeadlessExperimentalBeginFrame) Call(c Client) (*HeadlessExperimentalBeginFrameResult, error) {
 	var res HeadlessExperimentalBeginFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -82,10 +82,10 @@ type HeadlessExperimentalBeginFrameResult struct {
 // HeadlessExperimentalDisable (deprecated) Disables headless events for the target.
 type HeadlessExperimentalDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeadlessExperimentalDisable) ProtoReq() string { return "HeadlessExperimental.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeadlessExperimentalDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -93,10 +93,10 @@ func (m HeadlessExperimentalDisable) Call(c Client) error {
 // HeadlessExperimentalEnable (deprecated) Enables headless events for the target.
 type HeadlessExperimentalEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m HeadlessExperimentalEnable) ProtoReq() string { return "HeadlessExperimental.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m HeadlessExperimentalEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }

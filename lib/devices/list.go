@@ -4,7 +4,7 @@ package devices
 
 var (
 
-	// IPhone4 device
+	// IPhone4 device.
 	IPhone4 = Device{
 		Title:          "iPhone 4",
 		Capabilities:   []string{"touch", "mobile"},
@@ -23,7 +23,7 @@ var (
 		},
 	}
 
-	// IPhone5orSE device
+	// IPhone5orSE device.
 	IPhone5orSE = Device{
 		Title:          "iPhone 5/SE",
 		Capabilities:   []string{"touch", "mobile"},
@@ -42,7 +42,7 @@ var (
 		},
 	}
 
-	// IPhone6or7or8 device
+	// IPhone6or7or8 device.
 	IPhone6or7or8 = Device{
 		Title:          "iPhone 6/7/8",
 		Capabilities:   []string{"touch", "mobile"},
@@ -61,7 +61,7 @@ var (
 		},
 	}
 
-	// IPhone6or7or8Plus device
+	// IPhone6or7or8Plus device.
 	IPhone6or7or8Plus = Device{
 		Title:          "iPhone 6/7/8 Plus",
 		Capabilities:   []string{"touch", "mobile"},
@@ -80,7 +80,7 @@ var (
 		},
 	}
 
-	// IPhoneX device
+	// IPhoneX device.
 	IPhoneX = Device{
 		Title:          "iPhone X",
 		Capabilities:   []string{"touch", "mobile"},
@@ -99,7 +99,7 @@ var (
 		},
 	}
 
-	// BlackBerryZ30 device
+	// BlackBerryZ30 device.
 	BlackBerryZ30 = Device{
 		Title:          "BlackBerry Z30",
 		Capabilities:   []string{"touch", "mobile"},
@@ -118,7 +118,7 @@ var (
 		},
 	}
 
-	// Nexus4 device
+	// Nexus4 device.
 	Nexus4 = Device{
 		Title:          "Nexus 4",
 		Capabilities:   []string{"touch", "mobile"},
@@ -137,7 +137,7 @@ var (
 		},
 	}
 
-	// Nexus5 device
+	// Nexus5 device.
 	Nexus5 = Device{
 		Title:          "Nexus 5",
 		Capabilities:   []string{"touch", "mobile"},
@@ -156,7 +156,7 @@ var (
 		},
 	}
 
-	// Nexus5X device
+	// Nexus5X device.
 	Nexus5X = Device{
 		Title:          "Nexus 5X",
 		Capabilities:   []string{"touch", "mobile"},
@@ -175,7 +175,7 @@ var (
 		},
 	}
 
-	// Nexus6 device
+	// Nexus6 device.
 	Nexus6 = Device{
 		Title:          "Nexus 6",
 		Capabilities:   []string{"touch", "mobile"},
@@ -194,7 +194,7 @@ var (
 		},
 	}
 
-	// Nexus6P device
+	// Nexus6P device.
 	Nexus6P = Device{
 		Title:          "Nexus 6P",
 		Capabilities:   []string{"touch", "mobile"},
@@ -213,7 +213,7 @@ var (
 		},
 	}
 
-	// Pixel2 device
+	// Pixel2 device.
 	Pixel2 = Device{
 		Title:          "Pixel 2",
 		Capabilities:   []string{"touch", "mobile"},
@@ -232,7 +232,7 @@ var (
 		},
 	}
 
-	// Pixel2XL device
+	// Pixel2XL device.
 	Pixel2XL = Device{
 		Title:          "Pixel 2 XL",
 		Capabilities:   []string{"touch", "mobile"},
@@ -251,7 +251,7 @@ var (
 		},
 	}
 
-	// LGOptimusL70 device
+	// LGOptimusL70 device.
 	LGOptimusL70 = Device{
 		Title:          "LG Optimus L70",
 		Capabilities:   []string{"touch", "mobile"},
@@ -270,7 +270,7 @@ var (
 		},
 	}
 
-	// NokiaN9 device
+	// NokiaN9 device.
 	NokiaN9 = Device{
 		Title:          "Nokia N9",
 		Capabilities:   []string{"touch", "mobile"},
@@ -289,7 +289,7 @@ var (
 		},
 	}
 
-	// NokiaLumia520 device
+	// NokiaLumia520 device.
 	NokiaLumia520 = Device{
 		Title:          "Nokia Lumia 520",
 		Capabilities:   []string{"touch", "mobile"},
@@ -308,7 +308,7 @@ var (
 		},
 	}
 
-	// MicrosoftLumia550 device
+	// MicrosoftLumia550 device.
 	MicrosoftLumia550 = Device{
 		Title:          "Microsoft Lumia 550",
 		Capabilities:   []string{"touch", "mobile"},
@@ -327,7 +327,7 @@ var (
 		},
 	}
 
-	// MicrosoftLumia950 device
+	// MicrosoftLumia950 device.
 	MicrosoftLumia950 = Device{
 		Title:          "Microsoft Lumia 950",
 		Capabilities:   []string{"touch", "mobile"},
@@ -346,7 +346,7 @@ var (
 		},
 	}
 
-	// GalaxySIII device
+	// GalaxySIII device.
 	GalaxySIII = Device{
 		Title:          "Galaxy S III",
 		Capabilities:   []string{"touch", "mobile"},
@@ -365,7 +365,7 @@ var (
 		},
 	}
 
-	// GalaxyS5 device
+	// GalaxyS5 device.
 	GalaxyS5 = Device{
 		Title:          "Galaxy S5",
 		Capabilities:   []string{"touch", "mobile"},
@@ -384,7 +384,7 @@ var (
 		},
 	}
 
-	// JioPhone2 device
+	// JioPhone2 device.
 	JioPhone2 = Device{
 		Title:          "JioPhone 2",
 		Capabilities:   []string{"touch", "mobile"},
@@ -403,7 +403,7 @@ var (
 		},
 	}
 
-	// KindleFireHDX device
+	// KindleFireHDX device.
 	KindleFireHDX = Device{
 		Title:          "Kindle Fire HDX",
 		Capabilities:   []string{"touch", "mobile"},
@@ -422,7 +422,7 @@ var (
 		},
 	}
 
-	// IPadMini device
+	// IPadMini device.
 	IPadMini = Device{
 		Title:          "iPad Mini",
 		Capabilities:   []string{"touch", "mobile"},
@@ -441,7 +441,7 @@ var (
 		},
 	}
 
-	// IPad device
+	// IPad device.
 	IPad = Device{
 		Title:          "iPad",
 		Capabilities:   []string{"touch", "mobile"},
@@ -460,7 +460,7 @@ var (
 		},
 	}
 
-	// IPadPro device
+	// IPadPro device.
 	IPadPro = Device{
 		Title:          "iPad Pro",
 		Capabilities:   []string{"touch", "mobile"},
@@ -479,7 +479,7 @@ var (
 		},
 	}
 
-	// BlackberryPlayBook device
+	// BlackberryPlayBook device.
 	BlackberryPlayBook = Device{
 		Title:          "Blackberry PlayBook",
 		Capabilities:   []string{"touch", "mobile"},
@@ -498,7 +498,7 @@ var (
 		},
 	}
 
-	// Nexus10 device
+	// Nexus10 device.
 	Nexus10 = Device{
 		Title:          "Nexus 10",
 		Capabilities:   []string{"touch", "mobile"},
@@ -517,7 +517,7 @@ var (
 		},
 	}
 
-	// Nexus7 device
+	// Nexus7 device.
 	Nexus7 = Device{
 		Title:          "Nexus 7",
 		Capabilities:   []string{"touch", "mobile"},
@@ -536,7 +536,7 @@ var (
 		},
 	}
 
-	// GalaxyNote3 device
+	// GalaxyNote3 device.
 	GalaxyNote3 = Device{
 		Title:          "Galaxy Note 3",
 		Capabilities:   []string{"touch", "mobile"},
@@ -555,7 +555,7 @@ var (
 		},
 	}
 
-	// GalaxyNoteII device
+	// GalaxyNoteII device.
 	GalaxyNoteII = Device{
 		Title:          "Galaxy Note II",
 		Capabilities:   []string{"touch", "mobile"},
@@ -574,7 +574,7 @@ var (
 		},
 	}
 
-	// LaptopWithTouch device
+	// LaptopWithTouch device.
 	LaptopWithTouch = Device{
 		Title:          "Laptop with touch",
 		Capabilities:   []string{"touch"},
@@ -593,7 +593,7 @@ var (
 		},
 	}
 
-	// LaptopWithHiDPIScreen device
+	// LaptopWithHiDPIScreen device.
 	LaptopWithHiDPIScreen = Device{
 		Title:          "Laptop with HiDPI screen",
 		Capabilities:   []string{},
@@ -612,7 +612,7 @@ var (
 		},
 	}
 
-	// LaptopWithMDPIScreen device
+	// LaptopWithMDPIScreen device.
 	LaptopWithMDPIScreen = Device{
 		Title:          "Laptop with MDPI screen",
 		Capabilities:   []string{},
@@ -631,7 +631,7 @@ var (
 		},
 	}
 
-	// MotoG4 device
+	// MotoG4 device.
 	MotoG4 = Device{
 		Title:          "Moto G4",
 		Capabilities:   []string{"touch", "mobile"},
@@ -650,7 +650,7 @@ var (
 		},
 	}
 
-	// SurfaceDuo device
+	// SurfaceDuo device.
 	SurfaceDuo = Device{
 		Title:          "Surface Duo",
 		Capabilities:   []string{"touch", "mobile"},
@@ -669,7 +669,7 @@ var (
 		},
 	}
 
-	// GalaxyFold device
+	// GalaxyFold device.
 	GalaxyFold = Device{
 		Title:          "Galaxy Fold",
 		Capabilities:   []string{"touch", "mobile"},

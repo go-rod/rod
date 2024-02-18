@@ -23,7 +23,7 @@ func getSchema() gson.JSON {
 	parsed.Scheme = "http"
 	parsed.Path = "/json/protocol"
 
-	res, err := http.Get(parsed.String())
+	res, err := http.Get(parsed.String()) //nolint: noctx
 	utils.E(err)
 	defer func() { _ = res.Body.Close() }()
 
@@ -55,7 +55,7 @@ func typeName(domain *domain, schema gson.JSON) string {
 		typeName = schema.Get("type").Str()
 	}
 
-	if typeName == "array" {
+	if typeName == "array" { //nolint: nestif
 		item := schema.Get("items")
 
 		if item.Has("type") {
@@ -118,7 +118,7 @@ func refName(domain, id string) string {
 	return domain + symbol(id)
 }
 
-// make sure golint works fine
+// make sure golint works fine.
 func symbol(n string) string {
 	if n == "" {
 		return ""
@@ -152,6 +152,8 @@ func symbol(n string) string {
 	n = replaceLower(n, "Sql")
 	n = replaceLower(n, "Eof")
 	n = replaceLower(n, "Api")
+
+	n = strings.Replace(n, "Ids", "IDs", -1)
 
 	return n
 }

@@ -27,11 +27,11 @@ func main() {
 	log.Printf("#select1 value: %s", val4)
 }
 
-// testServer is a simple HTTP server that displays elements and inputs
+// testServer is a simple HTTP server that displays elements and inputs.
 func testServer() string {
 	l, _ := net.Listen("tcp4", "127.0.0.1:0")
 	go func() {
-		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			_, _ = fmt.Fprint(w, indexHTML)
 		}))
 	}()

@@ -11,7 +11,7 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// Request to send to browser
+// Request to send to browser.
 type Request struct {
 	ID        int         `json:"id"`
 	SessionID string      `json:"sessionId,omitempty"`
@@ -19,14 +19,14 @@ type Request struct {
 	Params    interface{} `json:"params,omitempty"`
 }
 
-// Response from browser
+// Response from browser.
 type Response struct {
 	ID     int             `json:"id"`
 	Result json.RawMessage `json:"result,omitempty"`
 	Error  *Error          `json:"error,omitempty"`
 }
 
-// Event from browser
+// Event from browser.
 type Event struct {
 	SessionID string          `json:"sessionId,omitempty"`
 	Method    string          `json:"method"`
@@ -37,7 +37,7 @@ type Event struct {
 // Such as you can easily wrap gorilla/websocket and use it as the transport layer.
 type WebSocketable interface {
 	// Send text message only
-	Send([]byte) error
+	Send(data []byte) error
 	// Read returns text message only
 	Read() ([]byte, error)
 }
@@ -63,13 +63,13 @@ func New() *Client {
 }
 
 // Logger sets the logger to log all the requests, responses, and events transferred between Rod and the browser.
-// The default format for each type is in file format.go
+// The default format for each type is in file format.go.
 func (cdp *Client) Logger(l utils.Logger) *Client {
 	cdp.logger = l
 	return cdp
 }
 
-// Start to browser
+// Start to browser.
 func (cdp *Client) Start(ws WebSocketable) *Client {
 	cdp.ws = ws
 
@@ -83,7 +83,7 @@ type result struct {
 	err error
 }
 
-// Call a method and wait for its response
+// Call a method and wait for its response.
 func (cdp *Client) Call(ctx context.Context, sessionID, method string, params interface{}) ([]byte, error) {
 	req := &Request{
 		ID:        int(atomic.AddUint64(&cdp.count, 1)),
@@ -135,7 +135,7 @@ func (cdp *Client) consumeMessages() {
 		data, err := cdp.ws.Read()
 		if err != nil {
 			cdp.pending.Range(func(_, val interface{}) bool {
-				val.(func(result))(result{err: err})
+				val.(func(result))(result{err: err}) //nolint: forcetypeassert
 				return true
 			})
 			return
@@ -167,9 +167,9 @@ func (cdp *Client) consumeMessages() {
 			continue
 		}
 		if res.Error == nil {
-			val.(func(result))(result{res.Result, nil})
+			val.(func(result))(result{res.Result, nil}) //nolint: forcetypeassert
 		} else {
-			val.(func(result))(result{nil, res.Error})
+			val.(func(result))(result{nil, res.Error}) //nolint: forcetypeassert
 		}
 	}
 }

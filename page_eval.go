@@ -15,7 +15,7 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// EvalOptions for Page.Evaluate
+// EvalOptions for Page.Evaluate.
 type EvalOptions struct {
 	// If enabled the eval result will be a plain JSON value.
 	// If disabled the eval result will be a reference of a remote js object.
@@ -33,7 +33,8 @@ type EvalOptions struct {
 	// If an argument is [*proto.RuntimeRemoteObject] type, the corresponding remote object will be used.
 	// Or it will be passed as a plain JSON value.
 	// When an arg in the args is a *js.Function, the arg will be cached on the page's js context.
-	// When the arg.Name exists in the page's cache, it reuse the cache without sending the definition to the browser again.
+	// When the arg.Name exists in the page's cache, it reuse the cache without sending
+	// the definition to the browser again.
 	// Useful when you need to eval a huge js expression many times.
 	JSArgs []interface{}
 
@@ -61,7 +62,7 @@ func evalHelper(fn *js.Function, args ...interface{}) *EvalOptions {
 	}
 }
 
-// String interface
+// String interface.
 func (e *EvalOptions) String() string {
 	fn := e.JS
 	args := e.JSArgs
@@ -84,7 +85,7 @@ func (e *EvalOptions) String() string {
 	return fmt.Sprintf("%s(%s) %s", fn, paramsStr, thisStr)
 }
 
-// This set the obj as ThisObj
+// This set the obj as ThisObj.
 func (e *EvalOptions) This(obj *proto.RuntimeRemoteObject) *EvalOptions {
 	e.ThisObj = obj
 	return e
@@ -128,7 +129,7 @@ func (p *Page) Evaluate(opts *EvalOptions) (res *proto.RuntimeRemoteObject, err 
 		res, err = p.evaluate(opts)
 		if err != nil && errors.Is(err, cdp.ErrCtxNotFound) {
 			if opts.ThisObj != nil {
-				return nil, &ErrObjectNotFound{opts.ThisObj}
+				return nil, &ObjectNotFoundError{opts.ThisObj}
 			}
 
 			if backoff == nil {
@@ -174,7 +175,7 @@ func (p *Page) evaluate(opts *EvalOptions) (*proto.RuntimeRemoteObject, error) {
 	}
 
 	if res.ExceptionDetails != nil {
-		return nil, &ErrEval{res.ExceptionDetails}
+		return nil, &EvalError{res.ExceptionDetails}
 	}
 
 	return res.Result, nil
@@ -243,7 +244,7 @@ func (p *Page) formatArgs(opts *EvalOptions) ([]*proto.RuntimeCallArgument, erro
 	return formatted, nil
 }
 
-// Check the doc of EvalHelper
+// Check the doc of EvalHelper.
 func (p *Page) ensureJSHelper(fn *js.Function) (proto.RuntimeRemoteObjectID, error) {
 	jsCtxID, err := p.getJSCtxID()
 	if err != nil {
@@ -319,7 +320,7 @@ func (p *Page) setHelper(jsCtxID proto.RuntimeRemoteObjectID, name string, fnID 
 	p.helpers[jsCtxID][name] = fnID
 }
 
-// Returns the page's window object, the page can be an iframe
+// Returns the page's window object, the page can be an iframe.
 func (p *Page) getJSCtxID() (proto.RuntimeRemoteObjectID, error) {
 	p.jsCtxLock.Lock()
 	defer p.jsCtxLock.Unlock()

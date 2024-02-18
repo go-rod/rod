@@ -12,14 +12,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ysmood/gson"
-
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 func TestGetElementPage(t *testing.T) {
@@ -118,10 +117,10 @@ func TestNotInteractable(t *testing.T) {
 	}`)
 	_, err := el.Interactable()
 	g.Has(err.Error(), "element covered by: <div>")
-	g.Is(err, &rod.ErrNotInteractable{})
-	g.Is(err, &rod.ErrCovered{})
+	g.Is(err, &rod.NotInteractableError{})
+	g.Is(err, &rod.CoveredError{})
 	g.False(el.MustInteractable())
-	var ee *rod.ErrNotInteractable
+	var ee *rod.NotInteractableError
 	g.True(errors.As(err, &ee))
 	g.Eq(ee.Error(), "element is not cursor interactable")
 
@@ -148,17 +147,17 @@ func TestInteractableWithNoShape(t *testing.T) {
 
 	el := p.MustElement("#no-shape")
 	_, err := el.Interactable()
-	g.Is(err, &rod.ErrInvisibleShape{})
-	g.Is(err, &rod.ErrNotInteractable{})
+	g.Is(err, &rod.InvisibleShapeError{})
+	g.Is(err, &rod.NotInteractableError{})
 	g.Eq(err.Error(), "element has no visible shape or outside the viewport: <div#no-shape>")
 
 	el = p.MustElement("#outside")
 	_, err = el.Interactable()
-	g.Is(err, &rod.ErrInvisibleShape{})
+	g.Is(err, &rod.InvisibleShapeError{})
 
 	el = p.MustElement("#invisible")
 	_, err = el.Interactable()
-	g.Is(err, &rod.ErrInvisibleShape{})
+	g.Is(err, &rod.InvisibleShapeError{})
 }
 
 func TestNotInteractableWithNoPointerEvents(t *testing.T) {
@@ -166,8 +165,8 @@ func TestNotInteractableWithNoPointerEvents(t *testing.T) {
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/interactable.html"))
 	_, err := p.MustElementR("#no-pointer-events", "click me").Interactable()
-	g.Is(err, &rod.ErrNoPointerEvents{})
-	g.Is(err, &rod.ErrNotInteractable{})
+	g.Is(err, &rod.NoPointerEventsError{})
+	g.Is(err, &rod.NotInteractableError{})
 	g.Eq(err.Error(), "element's pointer-events is none: <span#no-pointer-events>")
 }
 
@@ -299,7 +298,7 @@ func TestShadowDOM(t *testing.T) {
 
 	elNoShadow := p.MustElement("script")
 	_, err := elNoShadow.ShadowRoot()
-	g.True((&rod.ErrNoShadowRoot{}).Is(err))
+	g.True((&rod.NoShadowRootError{}).Is(err))
 	g.Has(err.Error(), "element has no shadow root:")
 }
 
@@ -478,7 +477,7 @@ func TestSelectOptions(t *testing.T) {
 	g.Eq("", el.MustText())
 
 	// option not found error
-	g.Is(el.Select([]string{"not-exists"}, true, rod.SelectorTypeCSSSector), &rod.ErrElementNotFound{})
+	g.Is(el.Select([]string{"not-exists"}, true, rod.SelectorTypeCSSSector), &rod.ElementNotFoundError{})
 
 	{
 		g.mc.stubErr(5, proto.RuntimeCallFunctionOn{})
@@ -700,7 +699,7 @@ func TestResource(t *testing.T) {
 	el := p.MustElement("img")
 	g.Eq(len(el.MustResource()), 22661)
 
-	g.mc.stub(1, proto.PageGetResourceContent{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.PageGetResourceContent{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(proto.PageGetResourceContentResult{
 			Content:       "ok",
 			Base64Encoded: false,
@@ -806,14 +805,14 @@ func TestFnErr(t *testing.T) {
 	_, err := el.Eval("foo()")
 	g.Err(err)
 	g.Has(err.Error(), "ReferenceError: foo is not defined")
-	var e *rod.ErrEval
+	var e *rod.EvalError
 	g.True(errors.As(err, &e))
 	g.Eq(proto.RuntimeRemoteObjectSubtypeError, e.Exception.Subtype)
 
 	_, err = el.ElementByJS(rod.Eval("() => foo()"))
 	g.Err(err)
 	g.Has(err.Error(), "ReferenceError: foo is not defined")
-	g.True(errors.Is(err, &rod.ErrEval{}))
+	g.True(errors.Is(err, &rod.EvalError{}))
 }
 
 func TestElementEWithDepth(t *testing.T) {

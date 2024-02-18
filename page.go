@@ -20,7 +20,7 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// Page implements these interfaces
+// Page implements these interfaces.
 var (
 	_ proto.Client      = &Page{}
 	_ proto.Contextable = &Page{}
@@ -72,7 +72,7 @@ type Page struct {
 	helpers     map[proto.RuntimeRemoteObjectID]map[string]proto.RuntimeRemoteObjectID
 }
 
-// String interface
+// String interface.
 func (p *Page) String() string {
 	id := p.TargetID
 	if len(id) > 8 {
@@ -81,27 +81,27 @@ func (p *Page) String() string {
 	return fmt.Sprintf("<page:%s>", id)
 }
 
-// IsIframe tells if it's iframe
+// IsIframe tells if it's iframe.
 func (p *Page) IsIframe() bool {
 	return p.element != nil
 }
 
-// GetSessionID interface
+// GetSessionID interface.
 func (p *Page) GetSessionID() proto.TargetSessionID {
 	return p.SessionID
 }
 
-// Browser of the page
+// Browser of the page.
 func (p *Page) Browser() *Browser {
 	return p.browser
 }
 
-// Info of the page, such as the URL or title of the page
+// Info of the page, such as the URL or title of the page.
 func (p *Page) Info() (*proto.TargetTargetInfo, error) {
 	return p.browser.pageInfo(p.TargetID)
 }
 
-// HTML of the page
+// HTML of the page.
 func (p *Page) HTML() (string, error) {
 	el, err := p.Element("html")
 	if err != nil {
@@ -156,7 +156,8 @@ func (p *Page) SetUserAgent(req *proto.NetworkSetUserAgentOverride) error {
 	return req.Call(p)
 }
 
-// SetBlockedURLs For some requests that do not want to be triggered, such as some dangerous operations, delete, quit logout, etc.
+// SetBlockedURLs For some requests that do not want to be triggered,
+// such as some dangerous operations, delete, quit logout, etc.
 // Wildcards ('*') are allowed, such as ["*/api/logout/*","delete"].
 // NOTE: if you set empty pattern "", it will block all requests.
 func (p *Page) SetBlockedURLs(urls []string) error {
@@ -181,7 +182,7 @@ func (p *Page) Navigate(url string) error {
 		return err
 	}
 	if res.ErrorText != "" {
-		return &ErrNavigation{res.ErrorText}
+		return &NavigationError{res.ErrorText}
 	}
 
 	p.root.unsetJSCtxID()
@@ -225,7 +226,7 @@ func (p *Page) Reload() error {
 	return nil
 }
 
-// Activate (focuses) the page
+// Activate (focuses) the page.
 func (p *Page) Activate() (*Page, error) {
 	err := proto.TargetActivateTarget{TargetID: p.TargetID}.Call(p.browser)
 	return p, err
@@ -239,7 +240,7 @@ func (p *Page) getWindowID() (proto.BrowserWindowID, error) {
 	return res.WindowID, err
 }
 
-// GetWindow position and size info
+// GetWindow position and size info.
 func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -254,7 +255,7 @@ func (p *Page) GetWindow() (*proto.BrowserBounds, error) {
 	return res.Bounds, nil
 }
 
-// SetWindow location and size
+// SetWindow location and size.
 func (p *Page) SetWindow(bounds *proto.BrowserBounds) error {
 	id, err := p.getWindowID()
 	if err != nil {
@@ -265,7 +266,7 @@ func (p *Page) SetWindow(bounds *proto.BrowserBounds) error {
 	return err
 }
 
-// SetViewport overrides the values of device screen dimensions
+// SetViewport overrides the values of device screen dimensions.
 func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) error {
 	if params == nil {
 		return proto.EmulationClearDeviceMetricsOverride{}.Call(p)
@@ -273,7 +274,7 @@ func (p *Page) SetViewport(params *proto.EmulationSetDeviceMetricsOverride) erro
 	return params.Call(p)
 }
 
-// SetDocumentContent sets the page document html content
+// SetDocumentContent sets the page document html content.
 func (p *Page) SetDocumentContent(html string) error {
 	return proto.PageSetDocumentContent{
 		FrameID: p.FrameID,
@@ -344,7 +345,7 @@ func (p *Page) Close() error {
 	if success {
 		p.cleanupStates()
 	} else {
-		return &ErrPageCloseCanceled{}
+		return &PageCloseCanceledError{}
 	}
 
 	return nil
@@ -464,7 +465,7 @@ func (p *Page) Screenshot(fullPage bool, req *proto.PageCaptureScreenshot) ([]by
 	return shot.Data, nil
 }
 
-// ScrollScreenshotOptions is the options for the ScrollScreenshot
+// ScrollScreenshotOptions is the options for the ScrollScreenshot.
 type ScrollScreenshotOptions struct {
 	// Format (optional) Image compression format (defaults to png).
 	Format proto.PageCaptureScreenshotFormat `json:"format,omitempty"`
@@ -473,7 +474,8 @@ type ScrollScreenshotOptions struct {
 	Quality *int `json:"quality,omitempty"`
 
 	// FixedTop (optional) The number of pixels to skip from the top.
-	// It is suitable for optimizing the screenshot effect when there is a fixed positioning element at the top of the page.
+	// It is suitable for optimizing the screenshot effect when there is a fixed
+	// positioning element at the top of the page.
 	FixedTop float64
 
 	// FixedBottom (optional) The number of pixels to skip from the bottom.
@@ -483,10 +485,14 @@ type ScrollScreenshotOptions struct {
 	WaitPerScroll time.Duration
 }
 
-// ScrollScreenshot Scroll screenshot does not adjust the size of the viewport, but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
-// Note that this method also has a flaw: when there are elements with fixed positioning on the page (usually header navigation components), these elements will appear repeatedly,	you can set the FixedTop parameter to optimize it.
+// ScrollScreenshot Scroll screenshot does not adjust the size of the viewport,
+// but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
+// Note that this method also has a flaw: when there are elements with fixed
+// positioning on the page (usually header navigation components),
+// these elements will appear repeatedly,	you can set the FixedTop parameter to optimize it.
 //
-// Only support png and jpeg format yet, webP is not supported because no suitable processing library was found in golang.
+// Only support png and jpeg format yet, webP is not supported because no suitable processing
+// library was found in golang.
 func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 	if opt == nil {
 		opt = &ScrollScreenshotOptions{}
@@ -609,7 +615,7 @@ func (p *Page) CaptureDOMSnapshot() (domSnapshot *proto.DOMSnapshotCaptureSnapsh
 	return snapshot, nil
 }
 
-// PDF prints page as PDF
+// PDF prints page as PDF.
 func (p *Page) PDF(req *proto.PagePrintToPDF) (*StreamReader, error) {
 	req.TransferMode = proto.PagePrintToPDFTransferModeReturnAsStream
 	res, err := req.Call(p)
@@ -644,7 +650,7 @@ func (p *Page) GetResource(url string) ([]byte, error) {
 	return bin, nil
 }
 
-// WaitOpen waits for the next new page opened by the current one
+// WaitOpen waits for the next new page opened by the current one.
 func (p *Page) WaitOpen() func() (*Page, error) {
 	var targetID proto.TargetTargetID
 
@@ -687,7 +693,7 @@ func (p *Page) WaitEvent(e proto.Event) (wait func()) {
 }
 
 // WaitNavigation wait for a page lifecycle event when navigating.
-// Usually you will wait for [proto.PageLifecycleEventNameNetworkAlmostIdle]
+// Usually you will wait for [proto.PageLifecycleEventNameNetworkAlmostIdle].
 func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 	_ = proto.PageSetLifecycleEventsEnabled{Enabled: true}.Call(p)
 
@@ -706,7 +712,11 @@ func (p *Page) WaitNavigation(name proto.PageLifecycleEventName) func() {
 // Be careful, d is not the max wait timeout, it's the least idle time.
 // If you want to set a timeout you can use the [Page.Timeout] function.
 // Use the includes and excludes regexp list to filter the requests by their url.
-func (p *Page) WaitRequestIdle(d time.Duration, includes, excludes []string, excludeTypes []proto.NetworkResourceType) func() {
+func (p *Page) WaitRequestIdle(
+	d time.Duration,
+	includes, excludes []string,
+	excludeTypes []proto.NetworkResourceType,
+) func() {
 	defer p.tryTrace(TraceTypeWait, "request-idle")()
 
 	if excludeTypes == nil {
@@ -883,7 +893,7 @@ func (p *Page) EvalOnNewDocument(js string) (remove func() error, err error) {
 	return
 }
 
-// Wait until the js returns true
+// Wait until the js returns true.
 func (p *Page) Wait(opts *EvalOptions) error {
 	return utils.Retry(p.ctx, p.sleeper(), func() (bool, error) {
 		res, err := p.Evaluate(opts)
@@ -900,7 +910,7 @@ func (p *Page) WaitElementsMoreThan(selector string, num int) error {
 	return p.Wait(Eval(`(s, n) => document.querySelectorAll(s).length > n`, selector, num))
 }
 
-// ObjectToJSON by object id
+// ObjectToJSON by object id.
 func (p *Page) ObjectToJSON(obj *proto.RuntimeRemoteObject) (gson.JSON, error) {
 	if obj.ObjectID == "" {
 		return obj.Value, nil
@@ -996,12 +1006,12 @@ func (p *Page) Release(obj *proto.RuntimeRemoteObject) error {
 	return err
 }
 
-// Call implements the [proto.Client]
+// Call implements the [proto.Client].
 func (p *Page) Call(ctx context.Context, sessionID, methodName string, params interface{}) (res []byte, err error) {
 	return p.browser.Call(ctx, sessionID, methodName, params)
 }
 
-// Event of the page
+// Event of the page.
 func (p *Page) Event() <-chan *Message {
 	dst := make(chan *Message)
 	s := p.event.Subscribe(p.ctx)
@@ -1019,7 +1029,7 @@ func (p *Page) Event() <-chan *Message {
 				select {
 				case <-p.ctx.Done():
 					return
-				case dst <- msg.(*Message):
+				case dst <- msg.(*Message): //nolint: forcetypeassert
 				}
 			}
 		}

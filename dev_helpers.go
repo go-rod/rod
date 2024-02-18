@@ -19,28 +19,28 @@ import (
 	"github.com/go-rod/rod/lib/utils"
 )
 
-// TraceType for logger
+// TraceType for logger.
 type TraceType string
 
-// String interface
+// String interface.
 func (t TraceType) String() string {
 	return fmt.Sprintf("[%s]", string(t))
 }
 
 const (
-	// TraceTypeWaitRequestsIdle type
+	// TraceTypeWaitRequestsIdle type.
 	TraceTypeWaitRequestsIdle TraceType = "wait requests idle"
 
-	// TraceTypeWaitRequests type
+	// TraceTypeWaitRequests type.
 	TraceTypeWaitRequests TraceType = "wait requests"
 
-	// TraceTypeQuery type
+	// TraceTypeQuery type.
 	TraceTypeQuery TraceType = "query"
 
-	// TraceTypeWait type
+	// TraceTypeWait type.
 	TraceTypeWait TraceType = "wait"
 
-	// TraceTypeInput type
+	// TraceTypeInput type.
 	TraceTypeInput TraceType = "input"
 )
 
@@ -53,11 +53,11 @@ func (b *Browser) ServeMonitor(host string) string {
 		utils.E(closeSvr())
 	}()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		httHTML(w, assets.Monitor)
 	})
-	mux.HandleFunc("/api/pages", func(w http.ResponseWriter, r *http.Request) {
-		res, err := proto.TargetGetTargets{}.Call(b)
+	mux.HandleFunc("/api/pages", func(w http.ResponseWriter, _ *http.Request) {
+		res, err := proto.TargetGetTargets{}.Call(b) //nolint: contextcheck
 		utils.E(err)
 
 		list := []*proto.TargetTargetInfo{}
@@ -70,12 +70,12 @@ func (b *Browser) ServeMonitor(host string) string {
 		w.WriteHeader(http.StatusOK)
 		utils.E(w.Write(utils.MustToJSONBytes(list)))
 	})
-	mux.HandleFunc("/page/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/page/", func(w http.ResponseWriter, _ *http.Request) {
 		httHTML(w, assets.MonitorPage)
 	})
 	mux.HandleFunc("/api/page/", func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Path[strings.LastIndex(r.URL.Path, "/")+1:]
-		info, err := b.pageInfo(proto.TargetTargetID(id))
+		info, err := b.pageInfo(proto.TargetTargetID(id)) //nolint: contextcheck
 		utils.E(err)
 		w.WriteHeader(http.StatusOK)
 		utils.E(w.Write(utils.MustToJSONBytes(info)))
@@ -86,13 +86,13 @@ func (b *Browser) ServeMonitor(host string) string {
 		p := b.MustPageFromTargetID(target)
 
 		w.Header().Add("Content-Type", "image/png;")
-		utils.E(w.Write(p.MustScreenshot()))
+		utils.E(w.Write(p.MustScreenshot())) //nolint: contextcheck
 	})
 
 	return u
 }
 
-// check method and sleep if needed
+// check method and sleep if needed.
 func (b *Browser) trySlowMotion() {
 	if b.slowMotion == 0 {
 		return
@@ -110,7 +110,7 @@ func (p *Page) ExposeHelpers(list ...*js.Function) {
 	}))
 }
 
-// Overlay a rectangle on the main frame with specified message
+// Overlay a rectangle on the main frame with specified message.
 func (p *Page) Overlay(left, top, width, height float64, msg string) (remove func()) {
 	id := utils.RandString(8)
 
@@ -194,7 +194,7 @@ func (p *Page) tryTraceReq(includes, excludes []string) func(map[proto.NetworkRe
 	return update
 }
 
-// Overlay msg on the element
+// Overlay msg on the element.
 func (el *Element) Overlay(msg string) (removeOverlay func()) {
 	id := utils.RandString(8)
 
