@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-// Version of cdp protocol
+// Version of cdp protocol.
 const Version = "v1.3"
 
 var types = map[string]reflect.Type{
@@ -272,8 +272,8 @@ var types = map[string]reflect.Type{
 	"DOM.performSearchResult":                               reflect.TypeOf(DOMPerformSearchResult{}),
 	"DOM.pushNodeByPathToFrontend":                          reflect.TypeOf(DOMPushNodeByPathToFrontend{}),
 	"DOM.pushNodeByPathToFrontendResult":                    reflect.TypeOf(DOMPushNodeByPathToFrontendResult{}),
-	"DOM.pushNodesByBackendIdsToFrontend":                   reflect.TypeOf(DOMPushNodesByBackendIdsToFrontend{}),
-	"DOM.pushNodesByBackendIdsToFrontendResult":             reflect.TypeOf(DOMPushNodesByBackendIdsToFrontendResult{}),
+	"DOM.pushNodesByBackendIdsToFrontend":                   reflect.TypeOf(DOMPushNodesByBackendIDsToFrontend{}),
+	"DOM.pushNodesByBackendIdsToFrontendResult":             reflect.TypeOf(DOMPushNodesByBackendIDsToFrontendResult{}),
 	"DOM.querySelector":                                     reflect.TypeOf(DOMQuerySelector{}),
 	"DOM.querySelectorResult":                               reflect.TypeOf(DOMQuerySelectorResult{}),
 	"DOM.querySelectorAll":                                  reflect.TypeOf(DOMQuerySelectorAll{}),

@@ -16,7 +16,7 @@ func main() {
 	p := httptest.NewServer(newProxy())
 	defer p.Close()
 
-	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = fmt.Fprint(w, "test")
 	}))
 	defer s.Close()
@@ -48,11 +48,11 @@ func newProxy() *httputil.ReverseProxy {
 			}
 		},
 		Transport: &transport{http.DefaultTransport},
-		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
+		ErrorHandler: func(w http.ResponseWriter, _ *http.Request, err error) {
 			if err.Error() == "407" {
 				log.Println("proxy: not authorized")
 				w.Header().Add("Proxy-Authenticate", `Basic realm="Proxy Authorization"`)
-				w.WriteHeader(407)
+				w.WriteHeader(http.StatusProxyAuthRequired)
 			} else {
 				w.WriteHeader(http.StatusBadGateway)
 			}

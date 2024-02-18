@@ -23,7 +23,7 @@ import (
 	"github.com/ysmood/goob"
 )
 
-// Browser implements these interfaces
+// Browser implements these interfaces.
 var (
 	_ proto.Client      = &Browser{}
 	_ proto.Contextable = &Browser{}
@@ -81,7 +81,7 @@ func New() *Browser {
 	}).WithPanic(utils.Panic)
 }
 
-// Incognito creates a new incognito browser
+// Incognito creates a new incognito browser.
 func (b *Browser) Incognito() (*Browser, error) {
 	res, err := proto.TargetCreateBrowserContext{}.Call(b)
 	if err != nil {
@@ -100,31 +100,31 @@ func (b *Browser) ControlURL(url string) *Browser {
 	return b
 }
 
-// SlowMotion set the delay for each control action, such as the simulation of the human inputs
+// SlowMotion set the delay for each control action, such as the simulation of the human inputs.
 func (b *Browser) SlowMotion(delay time.Duration) *Browser {
 	b.slowMotion = delay
 	return b
 }
 
-// Trace enables/disables the visual tracing of the input actions on the page
+// Trace enables/disables the visual tracing of the input actions on the page.
 func (b *Browser) Trace(enable bool) *Browser {
 	b.trace = enable
 	return b
 }
 
-// Monitor address to listen if not empty. Shortcut for [Browser.ServeMonitor]
+// Monitor address to listen if not empty. Shortcut for [Browser.ServeMonitor].
 func (b *Browser) Monitor(url string) *Browser {
 	b.monitor = url
 	return b
 }
 
-// Logger overrides the default log functions for tracing
+// Logger overrides the default log functions for tracing.
 func (b *Browser) Logger(l utils.Logger) *Browser {
 	b.logger = l
 	return b
 }
 
-// Client set the cdp client
+// Client set the cdp client.
 func (b *Browser) Client(c CDPClient) *Browser {
 	b.client = c
 	return b
@@ -138,7 +138,7 @@ func (b *Browser) DefaultDevice(d devices.Device) *Browser {
 	return b
 }
 
-// NoDefaultDevice is the same as [Browser.DefaultDevice](devices.Clear)
+// NoDefaultDevice is the same as [Browser.DefaultDevice](devices.Clear).
 func (b *Browser) NoDefaultDevice() *Browser {
 	return b.DefaultDevice(devices.Clear)
 }
@@ -174,7 +174,7 @@ func (b *Browser) Connect() error {
 	return proto.TargetSetDiscoverTargets{Discover: true}.Call(b)
 }
 
-// Close the browser
+// Close the browser.
 func (b *Browser) Close() error {
 	if b.BrowserContextID == "" {
 		return proto.BrowserClose{}.Call(b)
@@ -213,7 +213,7 @@ func (b *Browser) Page(opts proto.TargetCreateTarget) (p *Page, err error) {
 	return
 }
 
-// Pages retrieves all visible pages
+// Pages retrieves all visible pages.
 func (b *Browser) Pages() (Pages, error) {
 	list, err := proto.TargetGetTargets{}.Call(b)
 	if err != nil {
@@ -247,7 +247,7 @@ func (b *Browser) Call(ctx context.Context, sessionID, methodName string, params
 	return
 }
 
-// PageFromSession is used for low-level debugging
+// PageFromSession is used for low-level debugging.
 func (b *Browser) PageFromSession(sessionID proto.TargetSessionID) *Page {
 	sessionCtx, cancel := context.WithCancel(b.ctx)
 	return &Page{
@@ -358,7 +358,7 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 	for _, cb := range callbacks {
 		cbVal := reflect.ValueOf(cb)
 		eType := cbVal.Type().In(0)
-		name := reflect.New(eType.Elem()).Interface().(proto.Event).ProtoEvent()
+		name := reflect.New(eType.Elem()).Interface().(proto.Event).ProtoEvent() //nolint: forcetypeassert
 		cbMap[name] = cbVal
 
 		// Only enabled domains will emit events to cdp client.
@@ -366,7 +366,7 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 		// We restore the domains to their previous states after the wait ends.
 		domain, _ := proto.ParseMethodName(name)
 		if req := proto.GetType(domain + ".enable"); req != nil {
-			enable := reflect.New(req).Interface().(proto.Request)
+			enable := reflect.New(req).Interface().(proto.Request) //nolint: forcetypeassert
 			restores = append(restores, b.EnableDomain(sessionID, enable))
 		}
 	}
@@ -394,7 +394,7 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 
 			if cbVal, has := cbMap[msg.Method]; has {
 				e := reflect.New(proto.GetType(msg.Method))
-				msg.Load(e.Interface().(proto.Event))
+				msg.Load(e.Interface().(proto.Event)) //nolint: forcetypeassert
 				args := []reflect.Value{e}
 				if cbVal.Type().NumIn() == 2 {
 					args = append(args, reflect.ValueOf(msg.SessionID))
@@ -410,7 +410,7 @@ func (b *Browser) eachEvent(sessionID proto.TargetSessionID, callbacks ...interf
 	}
 }
 
-// Event of the browser
+// Event of the browser.
 func (b *Browser) Event() <-chan *Message {
 	src := b.event.Subscribe(b.ctx)
 	dst := make(chan *Message)
@@ -427,7 +427,7 @@ func (b *Browser) Event() <-chan *Message {
 				select {
 				case <-b.ctx.Done():
 					return
-				case dst <- e.(*Message):
+				case dst <- e.(*Message): //nolint: forcetypeassert
 				}
 			}
 		}
@@ -476,7 +476,7 @@ func (b *Browser) IgnoreCertErrors(enable bool) error {
 	return proto.SecuritySetIgnoreCertificateErrors{Ignore: enable}.Call(b)
 }
 
-// GetCookies from the browser
+// GetCookies from the browser.
 func (b *Browser) GetCookies() ([]*proto.NetworkCookie, error) {
 	res, err := proto.StorageGetCookies{BrowserContextID: b.BrowserContextID}.Call(b)
 	if err != nil {
@@ -537,7 +537,7 @@ func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillB
 	}
 }
 
-// Version info of the browser
+// Version info of the browser.
 func (b *Browser) Version() (*proto.BrowserGetVersionResult, error) {
 	return proto.BrowserGetVersion{}.Call(b)
 }

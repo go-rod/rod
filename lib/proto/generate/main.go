@@ -44,7 +44,6 @@ func main() {
 	`
 
 	for _, domain := range parse(schema) {
-
 		code := comment + `
 
 			package proto
@@ -117,7 +116,11 @@ func (d *definition) comment() string {
 		comment = "(deprecated) " + comment
 	}
 
-	comment = symbol(d.name) + " " + comment
+	name := symbol(d.name)
+
+	if !strings.HasPrefix(strings.TrimSpace(comment), name) {
+		comment = name + " " + comment
+	}
 
 	return regexp.MustCompile(`(?m)^`).ReplaceAllString(comment, "// ")
 }
@@ -245,7 +248,7 @@ func (d *definition) formatTests() (code string) {
 	return ""
 }
 
-// The "a_" prefixed files won't removed, other go files will be removed before the generation
+// The "a_" prefixed files won't removed, other go files will be removed before the generation.
 func cleanup() {
 	d := filepath.Join("lib", "proto")
 	list, err := ioutil.ReadDir(d)

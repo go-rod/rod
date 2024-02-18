@@ -109,12 +109,12 @@ func TestSearch(t *testing.T) {
 	g.True(el.MustClick().MustMatches("[a=ok]"))
 
 	_, err := p.Sleeper(rod.NotFoundSleeper).Search("not-exists")
-	g.True(errors.Is(err, &rod.ErrElementNotFound{}))
+	g.True(errors.Is(err, &rod.ElementNotFoundError{}))
 	g.Eq(err.Error(), "cannot find element")
 
 	// when search result is not ready
 	{
-		g.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.DOMGetSearchResults{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(nil), cdp.ErrCtxNotFound
 		})
 		p.MustSearch("click me")
@@ -122,9 +122,9 @@ func TestSearch(t *testing.T) {
 
 	// when node id is zero
 	{
-		g.mc.stub(1, proto.DOMGetSearchResults{}, func(send StubSend) (gson.JSON, error) {
+		g.mc.stub(1, proto.DOMGetSearchResults{}, func(_ StubSend) (gson.JSON, error) {
 			return gson.New(proto.DOMGetSearchResultsResult{
-				NodeIds: []proto.DOMNodeID{0},
+				NodeIDs: []proto.DOMNodeID{0},
 			}), nil
 		})
 		p.MustSearch("click me")
@@ -222,9 +222,9 @@ func TestPageRace(t *testing.T) {
 	g.Eq("01", p.Race().ElementFunc(raceFunc).MustDo().MustText())
 
 	el, err := p.Sleeper(func() utils.Sleeper { return utils.CountSleeper(2) }).Race().
-		Element("not-exists").MustHandle(func(e *rod.Element) {}).
+		Element("not-exists").MustHandle(func(_ *rod.Element) {}).
 		ElementX("//not-exists").
-		ElementR("not-exists", "test").MustHandle(func(e *rod.Element) {}).
+		ElementR("not-exists", "test").MustHandle(func(_ *rod.Element) {}).
 		Do()
 	g.Err(err)
 	g.Nil(el)
@@ -253,7 +253,7 @@ func TestPageRaceSearchCrossIframe(t *testing.T) {
 	p := g.page.MustNavigate(g.srcFile("fixtures/iframe.html"))
 
 	race := p.Race()
-	race.Element("not exist").MustHandle(func(e *rod.Element) { panic("element not exist") })
+	race.Element("not exist").MustHandle(func(_ *rod.Element) { panic("element not exist") })
 	race.Search("span").MustHandle(func(e *rod.Element) { g.Eq("01", e.MustText()) })
 	race.MustDo()
 }
@@ -385,7 +385,7 @@ func TestPageElementByJS(t *testing.T) {
 	g.Eq(p.MustElementByJS(`() => document.querySelector('button')`).MustText(), "click me")
 
 	_, err := p.ElementByJS(rod.Eval(`() => 1`))
-	g.Is(err, &rod.ErrExpectElement{})
+	g.Is(err, &rod.ExpectElementError{})
 	g.Eq(err.Error(), "expect js to return an element, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 }
 
@@ -397,7 +397,7 @@ func TestPageElementsByJS(t *testing.T) {
 	g.Len(p.MustElementsByJS("() => document.querySelectorAll('button')"), 4)
 
 	_, err := p.ElementsByJS(rod.Eval(`() => [1]`))
-	g.Is(err, &rod.ErrExpectElements{})
+	g.Is(err, &rod.ExpectElementsError{})
 	g.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
 	_, err = p.ElementsByJS(rod.Eval(`() => 1`))
 	g.Eq(err.Error(), "expect js to return an array of elements, but got: {\"type\":\"number\",\"value\":1,\"description\":\"1\"}")
@@ -428,7 +428,7 @@ func TestPageElementMaxRetry(t *testing.T) {
 	page := g.page.MustNavigate(g.blank())
 	s := func() utils.Sleeper { return utils.CountSleeper(5) }
 	_, err := page.Sleeper(s).Element("not-exists")
-	g.Is(err, &utils.ErrMaxSleepCount{})
+	g.Is(err, &utils.MaxSleepCountError{})
 }
 
 func TestElementsOthers(t *testing.T) {

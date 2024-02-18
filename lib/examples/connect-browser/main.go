@@ -8,7 +8,7 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 )
 
-// To manually launch a browser
+// To manually launch a browser.
 func main() {
 	// Launch your local browser first:
 	//

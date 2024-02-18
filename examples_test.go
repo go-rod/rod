@@ -158,7 +158,7 @@ func Example_context_and_EachEvent() {
 	}()
 
 	// It's a blocking method, it will wait until the context is cancelled
-	page.EachEvent(func(e *proto.PageLifecycleEvent) {})()
+	page.EachEvent(func(_ *proto.PageLifecycleEvent) {})()
 
 	if page.GetContext().Err() == context.Canceled {
 		fmt.Println("cancelled")
@@ -173,7 +173,7 @@ func Example_error_handling() {
 
 	// We use Go's standard way to check error types, no magic.
 	check := func(err error) {
-		var evalErr *rod.ErrEval
+		var evalErr *rod.EvalError
 		if errors.Is(err, context.DeadlineExceeded) { // timeout error
 			fmt.Println("timeout err")
 		} else if errors.As(err, &evalErr) { // eval error
@@ -370,7 +370,7 @@ func Example_customize_retry_strategy() {
 	// If sleeper is nil page.ElementE will query without retrying.
 	// If nothing found it will return an error.
 	el, err := page.Sleeper(rod.NotFoundSleeper).Element("input")
-	if errors.Is(err, &rod.ErrElementNotFound{}) {
+	if errors.Is(err, &rod.ElementNotFoundError{}) {
 		fmt.Println("element not found")
 	} else if err != nil {
 		panic(err)
@@ -454,7 +454,7 @@ func Example_handle_events() {
 	if false {
 		// Subscribe events before they happen, run the "wait()" to start consuming
 		// the events. We can return an optional stop signal to unsubscribe events.
-		wait := page.EachEvent(func(e *proto.PageLoadEventFired) (stop bool) {
+		wait := page.EachEvent(func(_ *proto.PageLoadEventFired) (stop bool) {
 			return true
 		})
 		page.MustNavigate("https://mdn.dev")
@@ -532,7 +532,7 @@ func Example_hijack_requests() {
 	// Output: done
 }
 
-// Shows how to share a remote object reference between two Eval
+// Shows how to share a remote object reference between two Eval.
 func Example_eval_reuse_remote_object() {
 	page := rod.New().MustConnect().MustPage()
 

@@ -15,46 +15,46 @@ type StorageSerializedStorageKey string
 type StorageStorageType string
 
 const (
-	// StorageStorageTypeAppcache enum const
+	// StorageStorageTypeAppcache enum const.
 	StorageStorageTypeAppcache StorageStorageType = "appcache"
 
-	// StorageStorageTypeCookies enum const
+	// StorageStorageTypeCookies enum const.
 	StorageStorageTypeCookies StorageStorageType = "cookies"
 
-	// StorageStorageTypeFileSystems enum const
+	// StorageStorageTypeFileSystems enum const.
 	StorageStorageTypeFileSystems StorageStorageType = "file_systems"
 
-	// StorageStorageTypeIndexeddb enum const
+	// StorageStorageTypeIndexeddb enum const.
 	StorageStorageTypeIndexeddb StorageStorageType = "indexeddb"
 
-	// StorageStorageTypeLocalStorage enum const
+	// StorageStorageTypeLocalStorage enum const.
 	StorageStorageTypeLocalStorage StorageStorageType = "local_storage"
 
-	// StorageStorageTypeShaderCache enum const
+	// StorageStorageTypeShaderCache enum const.
 	StorageStorageTypeShaderCache StorageStorageType = "shader_cache"
 
-	// StorageStorageTypeWebsql enum const
+	// StorageStorageTypeWebsql enum const.
 	StorageStorageTypeWebsql StorageStorageType = "websql"
 
-	// StorageStorageTypeServiceWorkers enum const
+	// StorageStorageTypeServiceWorkers enum const.
 	StorageStorageTypeServiceWorkers StorageStorageType = "service_workers"
 
-	// StorageStorageTypeCacheStorage enum const
+	// StorageStorageTypeCacheStorage enum const.
 	StorageStorageTypeCacheStorage StorageStorageType = "cache_storage"
 
-	// StorageStorageTypeInterestGroups enum const
+	// StorageStorageTypeInterestGroups enum const.
 	StorageStorageTypeInterestGroups StorageStorageType = "interest_groups"
 
-	// StorageStorageTypeSharedStorage enum const
+	// StorageStorageTypeSharedStorage enum const.
 	StorageStorageTypeSharedStorage StorageStorageType = "shared_storage"
 
-	// StorageStorageTypeStorageBuckets enum const
+	// StorageStorageTypeStorageBuckets enum const.
 	StorageStorageTypeStorageBuckets StorageStorageType = "storage_buckets"
 
-	// StorageStorageTypeAll enum const
+	// StorageStorageTypeAll enum const.
 	StorageStorageTypeAll StorageStorageType = "all"
 
-	// StorageStorageTypeOther enum const
+	// StorageStorageTypeOther enum const.
 	StorageStorageTypeOther StorageStorageType = "other"
 )
 
@@ -81,22 +81,22 @@ type StorageTrustTokens struct {
 type StorageInterestGroupAccessType string
 
 const (
-	// StorageInterestGroupAccessTypeJoin enum const
+	// StorageInterestGroupAccessTypeJoin enum const.
 	StorageInterestGroupAccessTypeJoin StorageInterestGroupAccessType = "join"
 
-	// StorageInterestGroupAccessTypeLeave enum const
+	// StorageInterestGroupAccessTypeLeave enum const.
 	StorageInterestGroupAccessTypeLeave StorageInterestGroupAccessType = "leave"
 
-	// StorageInterestGroupAccessTypeUpdate enum const
+	// StorageInterestGroupAccessTypeUpdate enum const.
 	StorageInterestGroupAccessTypeUpdate StorageInterestGroupAccessType = "update"
 
-	// StorageInterestGroupAccessTypeLoaded enum const
+	// StorageInterestGroupAccessTypeLoaded enum const.
 	StorageInterestGroupAccessTypeLoaded StorageInterestGroupAccessType = "loaded"
 
-	// StorageInterestGroupAccessTypeBid enum const
+	// StorageInterestGroupAccessTypeBid enum const.
 	StorageInterestGroupAccessTypeBid StorageInterestGroupAccessType = "bid"
 
-	// StorageInterestGroupAccessTypeWin enum const
+	// StorageInterestGroupAccessTypeWin enum const.
 	StorageInterestGroupAccessTypeWin StorageInterestGroupAccessType = "win"
 )
 
@@ -152,52 +152,52 @@ type StorageInterestGroupDetails struct {
 type StorageSharedStorageAccessType string
 
 const (
-	// StorageSharedStorageAccessTypeDocumentAddModule enum const
+	// StorageSharedStorageAccessTypeDocumentAddModule enum const.
 	StorageSharedStorageAccessTypeDocumentAddModule StorageSharedStorageAccessType = "documentAddModule"
 
-	// StorageSharedStorageAccessTypeDocumentSelectURL enum const
+	// StorageSharedStorageAccessTypeDocumentSelectURL enum const.
 	StorageSharedStorageAccessTypeDocumentSelectURL StorageSharedStorageAccessType = "documentSelectURL"
 
-	// StorageSharedStorageAccessTypeDocumentRun enum const
+	// StorageSharedStorageAccessTypeDocumentRun enum const.
 	StorageSharedStorageAccessTypeDocumentRun StorageSharedStorageAccessType = "documentRun"
 
-	// StorageSharedStorageAccessTypeDocumentSet enum const
+	// StorageSharedStorageAccessTypeDocumentSet enum const.
 	StorageSharedStorageAccessTypeDocumentSet StorageSharedStorageAccessType = "documentSet"
 
-	// StorageSharedStorageAccessTypeDocumentAppend enum const
+	// StorageSharedStorageAccessTypeDocumentAppend enum const.
 	StorageSharedStorageAccessTypeDocumentAppend StorageSharedStorageAccessType = "documentAppend"
 
-	// StorageSharedStorageAccessTypeDocumentDelete enum const
+	// StorageSharedStorageAccessTypeDocumentDelete enum const.
 	StorageSharedStorageAccessTypeDocumentDelete StorageSharedStorageAccessType = "documentDelete"
 
-	// StorageSharedStorageAccessTypeDocumentClear enum const
+	// StorageSharedStorageAccessTypeDocumentClear enum const.
 	StorageSharedStorageAccessTypeDocumentClear StorageSharedStorageAccessType = "documentClear"
 
-	// StorageSharedStorageAccessTypeWorkletSet enum const
+	// StorageSharedStorageAccessTypeWorkletSet enum const.
 	StorageSharedStorageAccessTypeWorkletSet StorageSharedStorageAccessType = "workletSet"
 
-	// StorageSharedStorageAccessTypeWorkletAppend enum const
+	// StorageSharedStorageAccessTypeWorkletAppend enum const.
 	StorageSharedStorageAccessTypeWorkletAppend StorageSharedStorageAccessType = "workletAppend"
 
-	// StorageSharedStorageAccessTypeWorkletDelete enum const
+	// StorageSharedStorageAccessTypeWorkletDelete enum const.
 	StorageSharedStorageAccessTypeWorkletDelete StorageSharedStorageAccessType = "workletDelete"
 
-	// StorageSharedStorageAccessTypeWorkletClear enum const
+	// StorageSharedStorageAccessTypeWorkletClear enum const.
 	StorageSharedStorageAccessTypeWorkletClear StorageSharedStorageAccessType = "workletClear"
 
-	// StorageSharedStorageAccessTypeWorkletGet enum const
+	// StorageSharedStorageAccessTypeWorkletGet enum const.
 	StorageSharedStorageAccessTypeWorkletGet StorageSharedStorageAccessType = "workletGet"
 
-	// StorageSharedStorageAccessTypeWorkletKeys enum const
+	// StorageSharedStorageAccessTypeWorkletKeys enum const.
 	StorageSharedStorageAccessTypeWorkletKeys StorageSharedStorageAccessType = "workletKeys"
 
-	// StorageSharedStorageAccessTypeWorkletEntries enum const
+	// StorageSharedStorageAccessTypeWorkletEntries enum const.
 	StorageSharedStorageAccessTypeWorkletEntries StorageSharedStorageAccessType = "workletEntries"
 
-	// StorageSharedStorageAccessTypeWorkletLength enum const
+	// StorageSharedStorageAccessTypeWorkletLength enum const.
 	StorageSharedStorageAccessTypeWorkletLength StorageSharedStorageAccessType = "workletLength"
 
-	// StorageSharedStorageAccessTypeWorkletRemainingBudget enum const
+	// StorageSharedStorageAccessTypeWorkletRemainingBudget enum const.
 	StorageSharedStorageAccessTypeWorkletRemainingBudget StorageSharedStorageAccessType = "workletRemainingBudget"
 )
 
@@ -288,10 +288,10 @@ type StorageSharedStorageAccessParams struct {
 type StorageStorageBucketsDurability string
 
 const (
-	// StorageStorageBucketsDurabilityRelaxed enum const
+	// StorageStorageBucketsDurabilityRelaxed enum const.
 	StorageStorageBucketsDurabilityRelaxed StorageStorageBucketsDurability = "relaxed"
 
-	// StorageStorageBucketsDurabilityStrict enum const
+	// StorageStorageBucketsDurabilityStrict enum const.
 	StorageStorageBucketsDurabilityStrict StorageStorageBucketsDurability = "strict"
 )
 
@@ -328,10 +328,10 @@ type StorageGetStorageKeyForFrame struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetStorageKeyForFrame) ProtoReq() string { return "Storage.getStorageKeyForFrame" }
 
-// Call the request
+// Call the request.
 func (m StorageGetStorageKeyForFrame) Call(c Client) (*StorageGetStorageKeyForFrameResult, error) {
 	var res StorageGetStorageKeyForFrameResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -352,10 +352,10 @@ type StorageClearDataForOrigin struct {
 	StorageTypes string `json:"storageTypes"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageClearDataForOrigin) ProtoReq() string { return "Storage.clearDataForOrigin" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageClearDataForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -369,10 +369,10 @@ type StorageClearDataForStorageKey struct {
 	StorageTypes string `json:"storageTypes"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageClearDataForStorageKey) ProtoReq() string { return "Storage.clearDataForStorageKey" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageClearDataForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -383,10 +383,10 @@ type StorageGetCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetCookies) ProtoReq() string { return "Storage.getCookies" }
 
-// Call the request
+// Call the request.
 func (m StorageGetCookies) Call(c Client) (*StorageGetCookiesResult, error) {
 	var res StorageGetCookiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -400,17 +400,17 @@ type StorageGetCookiesResult struct {
 
 // StorageSetCookies Sets given cookies.
 type StorageSetCookies struct {
-	// Cookies Cookies to be set.
+	// Cookies to be set.
 	Cookies []*NetworkCookieParam `json:"cookies"`
 
 	// BrowserContextID (optional) Browser context to use when called on the browser endpoint.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageSetCookies) ProtoReq() string { return "Storage.setCookies" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageSetCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -421,10 +421,10 @@ type StorageClearCookies struct {
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageClearCookies) ProtoReq() string { return "Storage.clearCookies" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageClearCookies) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -435,10 +435,10 @@ type StorageGetUsageAndQuota struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetUsageAndQuota) ProtoReq() string { return "Storage.getUsageAndQuota" }
 
-// Call the request
+// Call the request.
 func (m StorageGetUsageAndQuota) Call(c Client) (*StorageGetUsageAndQuotaResult, error) {
 	var res StorageGetUsageAndQuotaResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -459,7 +459,7 @@ type StorageGetUsageAndQuotaResult struct {
 	UsageBreakdown []*StorageUsageForType `json:"usageBreakdown"`
 }
 
-// StorageOverrideQuotaForOrigin (experimental) Override quota for the specified origin
+// StorageOverrideQuotaForOrigin (experimental) Override quota for the specified origin.
 type StorageOverrideQuotaForOrigin struct {
 	// Origin Security origin.
 	Origin string `json:"origin"`
@@ -474,10 +474,10 @@ type StorageOverrideQuotaForOrigin struct {
 	QuotaSize *float64 `json:"quotaSize,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageOverrideQuotaForOrigin) ProtoReq() string { return "Storage.overrideQuotaForOrigin" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageOverrideQuotaForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -488,12 +488,12 @@ type StorageTrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageTrackCacheStorageForOrigin) ProtoReq() string {
 	return "Storage.trackCacheStorageForOrigin"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageTrackCacheStorageForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -504,12 +504,12 @@ type StorageTrackCacheStorageForStorageKey struct {
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageTrackCacheStorageForStorageKey) ProtoReq() string {
 	return "Storage.trackCacheStorageForStorageKey"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageTrackCacheStorageForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -520,10 +520,10 @@ type StorageTrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageTrackIndexedDBForOrigin) ProtoReq() string { return "Storage.trackIndexedDBForOrigin" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageTrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -534,12 +534,12 @@ type StorageTrackIndexedDBForStorageKey struct {
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageTrackIndexedDBForStorageKey) ProtoReq() string {
 	return "Storage.trackIndexedDBForStorageKey"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageTrackIndexedDBForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -550,12 +550,12 @@ type StorageUntrackCacheStorageForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageUntrackCacheStorageForOrigin) ProtoReq() string {
 	return "Storage.untrackCacheStorageForOrigin"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageUntrackCacheStorageForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -566,12 +566,12 @@ type StorageUntrackCacheStorageForStorageKey struct {
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageUntrackCacheStorageForStorageKey) ProtoReq() string {
 	return "Storage.untrackCacheStorageForStorageKey"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageUntrackCacheStorageForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -582,12 +582,12 @@ type StorageUntrackIndexedDBForOrigin struct {
 	Origin string `json:"origin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageUntrackIndexedDBForOrigin) ProtoReq() string {
 	return "Storage.untrackIndexedDBForOrigin"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageUntrackIndexedDBForOrigin) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -598,12 +598,12 @@ type StorageUntrackIndexedDBForStorageKey struct {
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageUntrackIndexedDBForStorageKey) ProtoReq() string {
 	return "Storage.untrackIndexedDBForStorageKey"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageUntrackIndexedDBForStorageKey) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -612,10 +612,10 @@ func (m StorageUntrackIndexedDBForStorageKey) Call(c Client) error {
 // current browsing context.
 type StorageGetTrustTokens struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetTrustTokens) ProtoReq() string { return "Storage.getTrustTokens" }
 
-// Call the request
+// Call the request.
 func (m StorageGetTrustTokens) Call(c Client) (*StorageGetTrustTokensResult, error) {
 	var res StorageGetTrustTokensResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -634,10 +634,10 @@ type StorageClearTrustTokens struct {
 	IssuerOrigin string `json:"issuerOrigin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageClearTrustTokens) ProtoReq() string { return "Storage.clearTrustTokens" }
 
-// Call the request
+// Call the request.
 func (m StorageClearTrustTokens) Call(c Client) (*StorageClearTrustTokensResult, error) {
 	var res StorageClearTrustTokensResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -658,10 +658,10 @@ type StorageGetInterestGroupDetails struct {
 	Name string `json:"name"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetInterestGroupDetails) ProtoReq() string { return "Storage.getInterestGroupDetails" }
 
-// Call the request
+// Call the request.
 func (m StorageGetInterestGroupDetails) Call(c Client) (*StorageGetInterestGroupDetailsResult, error) {
 	var res StorageGetInterestGroupDetailsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -679,10 +679,10 @@ type StorageSetInterestGroupTracking struct {
 	Enable bool `json:"enable"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageSetInterestGroupTracking) ProtoReq() string { return "Storage.setInterestGroupTracking" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageSetInterestGroupTracking) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -693,10 +693,10 @@ type StorageGetSharedStorageMetadata struct {
 	OwnerOrigin string `json:"ownerOrigin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetSharedStorageMetadata) ProtoReq() string { return "Storage.getSharedStorageMetadata" }
 
-// Call the request
+// Call the request.
 func (m StorageGetSharedStorageMetadata) Call(c Client) (*StorageGetSharedStorageMetadataResult, error) {
 	var res StorageGetSharedStorageMetadataResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -714,10 +714,10 @@ type StorageGetSharedStorageEntries struct {
 	OwnerOrigin string `json:"ownerOrigin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageGetSharedStorageEntries) ProtoReq() string { return "Storage.getSharedStorageEntries" }
 
-// Call the request
+// Call the request.
 func (m StorageGetSharedStorageEntries) Call(c Client) (*StorageGetSharedStorageEntriesResult, error) {
 	var res StorageGetSharedStorageEntriesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -745,10 +745,10 @@ type StorageSetSharedStorageEntry struct {
 	IgnoreIfPresent bool `json:"ignoreIfPresent,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageSetSharedStorageEntry) ProtoReq() string { return "Storage.setSharedStorageEntry" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageSetSharedStorageEntry) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -762,10 +762,10 @@ type StorageDeleteSharedStorageEntry struct {
 	Key string `json:"key"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageDeleteSharedStorageEntry) ProtoReq() string { return "Storage.deleteSharedStorageEntry" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageDeleteSharedStorageEntry) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -776,12 +776,12 @@ type StorageClearSharedStorageEntries struct {
 	OwnerOrigin string `json:"ownerOrigin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageClearSharedStorageEntries) ProtoReq() string {
 	return "Storage.clearSharedStorageEntries"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageClearSharedStorageEntries) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -792,10 +792,10 @@ type StorageResetSharedStorageBudget struct {
 	OwnerOrigin string `json:"ownerOrigin"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageResetSharedStorageBudget) ProtoReq() string { return "Storage.resetSharedStorageBudget" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageResetSharedStorageBudget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -806,10 +806,10 @@ type StorageSetSharedStorageTracking struct {
 	Enable bool `json:"enable"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageSetSharedStorageTracking) ProtoReq() string { return "Storage.setSharedStorageTracking" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageSetSharedStorageTracking) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -823,10 +823,10 @@ type StorageSetStorageBucketTracking struct {
 	Enable bool `json:"enable"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageSetStorageBucketTracking) ProtoReq() string { return "Storage.setStorageBucketTracking" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageSetStorageBucketTracking) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -840,17 +840,17 @@ type StorageDeleteStorageBucket struct {
 	BucketName string `json:"bucketName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m StorageDeleteStorageBucket) ProtoReq() string { return "Storage.deleteStorageBucket" }
 
-// Call sends the request
+// Call sends the request.
 func (m StorageDeleteStorageBucket) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
 // StorageCacheStorageContentUpdated A cache's contents have been modified.
 type StorageCacheStorageContentUpdated struct {
-	// Origin Origin to update.
+	// Origin to update.
 	Origin string `json:"origin"`
 
 	// StorageKey Storage key to update.
@@ -860,28 +860,28 @@ type StorageCacheStorageContentUpdated struct {
 	CacheName string `json:"cacheName"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageCacheStorageContentUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageContentUpdated"
 }
 
 // StorageCacheStorageListUpdated A cache has been added/deleted.
 type StorageCacheStorageListUpdated struct {
-	// Origin Origin to update.
+	// Origin to update.
 	Origin string `json:"origin"`
 
 	// StorageKey Storage key to update.
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageCacheStorageListUpdated) ProtoEvent() string {
 	return "Storage.cacheStorageListUpdated"
 }
 
 // StorageIndexedDBContentUpdated The origin's IndexedDB object store has been modified.
 type StorageIndexedDBContentUpdated struct {
-	// Origin Origin to update.
+	// Origin to update.
 	Origin string `json:"origin"`
 
 	// StorageKey Storage key to update.
@@ -894,21 +894,21 @@ type StorageIndexedDBContentUpdated struct {
 	ObjectStoreName string `json:"objectStoreName"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageIndexedDBContentUpdated) ProtoEvent() string {
 	return "Storage.indexedDBContentUpdated"
 }
 
 // StorageIndexedDBListUpdated The origin's IndexedDB database list has been modified.
 type StorageIndexedDBListUpdated struct {
-	// Origin Origin to update.
+	// Origin to update.
 	Origin string `json:"origin"`
 
 	// StorageKey Storage key to update.
 	StorageKey string `json:"storageKey"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageIndexedDBListUpdated) ProtoEvent() string {
 	return "Storage.indexedDBListUpdated"
 }
@@ -928,7 +928,7 @@ type StorageInterestGroupAccessed struct {
 	Name string `json:"name"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageInterestGroupAccessed) ProtoEvent() string {
 	return "Storage.interestGroupAccessed"
 }
@@ -953,7 +953,7 @@ type StorageSharedStorageAccessed struct {
 	Params *StorageSharedStorageAccessParams `json:"params"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageSharedStorageAccessed) ProtoEvent() string {
 	return "Storage.sharedStorageAccessed"
 }
@@ -964,7 +964,7 @@ type StorageStorageBucketCreatedOrUpdated struct {
 	Bucket *StorageStorageBucketInfo `json:"bucket"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageStorageBucketCreatedOrUpdated) ProtoEvent() string {
 	return "Storage.storageBucketCreatedOrUpdated"
 }
@@ -975,7 +975,7 @@ type StorageStorageBucketDeleted struct {
 	BucketID string `json:"bucketId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt StorageStorageBucketDeleted) ProtoEvent() string {
 	return "Storage.storageBucketDeleted"
 }

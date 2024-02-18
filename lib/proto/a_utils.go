@@ -10,7 +10,7 @@ var (
 	regBackSlash = regexp.MustCompile(`([^\\])\?`)
 )
 
-// PatternToReg FetchRequestPattern.URLPattern to regular expression
+// PatternToReg FetchRequestPattern.URLPattern to regular expression.
 func PatternToReg(pattern string) string {
 	if pattern == "" {
 		return ""

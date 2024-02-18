@@ -31,14 +31,14 @@ type ScreenSize struct {
 	Height int
 }
 
-// Landscape clones the device and set it to landscape mode
+// Landscape clones the device and set it to landscape mode.
 func (device Device) Landscape() Device {
 	d := device
 	d.landscape = true
 	return d
 }
 
-// MetricsEmulation config
+// MetricsEmulation config.
 func (device Device) MetricsEmulation() *proto.EmulationSetDeviceMetricsOverride {
 	if device.IsClear() {
 		return nil
@@ -69,7 +69,7 @@ func (device Device) MetricsEmulation() *proto.EmulationSetDeviceMetricsOverride
 	}
 }
 
-// TouchEmulation config
+// TouchEmulation config.
 func (device Device) TouchEmulation() *proto.EmulationSetTouchEmulationEnabled {
 	if device.IsClear() {
 		return &proto.EmulationSetTouchEmulationEnabled{
@@ -83,7 +83,7 @@ func (device Device) TouchEmulation() *proto.EmulationSetTouchEmulationEnabled {
 	}
 }
 
-// UserAgentEmulation config
+// UserAgentEmulation config.
 func (device Device) UserAgentEmulation() *proto.NetworkSetUserAgentOverride {
 	if device.IsClear() {
 		return nil
@@ -95,7 +95,7 @@ func (device Device) UserAgentEmulation() *proto.NetworkSetUserAgentOverride {
 	}
 }
 
-// IsClear type
+// IsClear type.
 func (device Device) IsClear() bool {
 	return device.clear
 }

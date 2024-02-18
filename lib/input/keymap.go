@@ -3,7 +3,7 @@ package input
 // Key names
 // Reference: https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/usKeyboardLayout.ts
 var (
-	// Functions row
+	// Functions row.
 	//
 	Escape = AddKey("Escape", "", "Escape", 27, 0)
 	F1     = AddKey("F1", "", "F1", 112, 0)
@@ -19,7 +19,7 @@ var (
 	F11    = AddKey("F11", "", "F11", 122, 0)
 	F12    = AddKey("F12", "", "F12", 123, 0)
 
-	// Numbers row
+	// Numbers row.
 	//
 	Backquote = AddKey("`", "~", "Backquote", 192, 0)
 	Digit1    = AddKey("1", "!", "Digit1", 49, 0)
@@ -37,7 +37,7 @@ var (
 	Backslash = AddKey(`\`, "|", "Backslash", 220, 0)
 	Backspace = AddKey("Backspace", "", "Backspace", 8, 0)
 
-	// First row
+	// First row.
 	//
 	Tab          = AddKey("\t", "", "Tab", 9, 0)
 	KeyQ         = AddKey("q", "Q", "KeyQ", 81, 0)
@@ -53,7 +53,7 @@ var (
 	BracketLeft  = AddKey("[", "{", "BracketLeft", 219, 0)
 	BracketRight = AddKey("]", "}", "BracketRight", 221, 0)
 
-	// Second row
+	// Second row.
 	//
 	CapsLock  = AddKey("CapsLock", "", "CapsLock", 20, 0)
 	KeyA      = AddKey("a", "A", "KeyA", 65, 0)
@@ -69,7 +69,7 @@ var (
 	Quote     = AddKey("'", `"`, "Quote", 222, 0)
 	Enter     = AddKey("\r", "", "Enter", 13, 0)
 
-	// Third row
+	// Third row.
 	//
 	ShiftLeft  = AddKey("Shift", "", "ShiftLeft", 16, 1)
 	KeyZ       = AddKey("z", "Z", "KeyZ", 90, 0)
@@ -84,7 +84,7 @@ var (
 	Slash      = AddKey("/", "?", "Slash", 191, 0)
 	ShiftRight = AddKey("Shift", "", "ShiftRight", 16, 2)
 
-	// Last row
+	// Last row.
 	//
 	ControlLeft  = AddKey("Control", "", "ControlLeft", 17, 1)
 	MetaLeft     = AddKey("Meta", "", "MetaLeft", 91, 1)
@@ -96,7 +96,7 @@ var (
 	ContextMenu  = AddKey("ContextMenu", "", "ContextMenu", 93, 0)
 	ControlRight = AddKey("Control", "", "ControlRight", 17, 2)
 
-	// Center block
+	// Center block.
 	//
 	PrintScreen = AddKey("PrintScreen", "", "PrintScreen", 44, 0)
 	ScrollLock  = AddKey("ScrollLock", "", "ScrollLock", 145, 0)
@@ -112,7 +112,7 @@ var (
 	ArrowRight  = AddKey("ArrowRight", "", "ArrowRight", 39, 0)
 	ArrowDown   = AddKey("ArrowDown", "", "ArrowDown", 40, 0)
 
-	// Numpad
+	// Numpad.
 	//
 	NumLock        = AddKey("NumLock", "", "NumLock", 144, 0)
 	NumpadDivide   = AddKey("/", "", "NumpadDivide", 111, 3)

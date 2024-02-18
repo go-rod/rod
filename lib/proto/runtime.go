@@ -21,77 +21,77 @@ other objects in their object group.
 // RuntimeScriptID Unique script identifier.
 type RuntimeScriptID string
 
-// RuntimeWebDriverValueType enum
+// RuntimeWebDriverValueType enum.
 type RuntimeWebDriverValueType string
 
 const (
-	// RuntimeWebDriverValueTypeUndefined enum const
+	// RuntimeWebDriverValueTypeUndefined enum const.
 	RuntimeWebDriverValueTypeUndefined RuntimeWebDriverValueType = "undefined"
 
-	// RuntimeWebDriverValueTypeNull enum const
+	// RuntimeWebDriverValueTypeNull enum const.
 	RuntimeWebDriverValueTypeNull RuntimeWebDriverValueType = "null"
 
-	// RuntimeWebDriverValueTypeString enum const
+	// RuntimeWebDriverValueTypeString enum const.
 	RuntimeWebDriverValueTypeString RuntimeWebDriverValueType = "string"
 
-	// RuntimeWebDriverValueTypeNumber enum const
+	// RuntimeWebDriverValueTypeNumber enum const.
 	RuntimeWebDriverValueTypeNumber RuntimeWebDriverValueType = "number"
 
-	// RuntimeWebDriverValueTypeBoolean enum const
+	// RuntimeWebDriverValueTypeBoolean enum const.
 	RuntimeWebDriverValueTypeBoolean RuntimeWebDriverValueType = "boolean"
 
-	// RuntimeWebDriverValueTypeBigint enum const
+	// RuntimeWebDriverValueTypeBigint enum const.
 	RuntimeWebDriverValueTypeBigint RuntimeWebDriverValueType = "bigint"
 
-	// RuntimeWebDriverValueTypeRegexp enum const
+	// RuntimeWebDriverValueTypeRegexp enum const.
 	RuntimeWebDriverValueTypeRegexp RuntimeWebDriverValueType = "regexp"
 
-	// RuntimeWebDriverValueTypeDate enum const
+	// RuntimeWebDriverValueTypeDate enum const.
 	RuntimeWebDriverValueTypeDate RuntimeWebDriverValueType = "date"
 
-	// RuntimeWebDriverValueTypeSymbol enum const
+	// RuntimeWebDriverValueTypeSymbol enum const.
 	RuntimeWebDriverValueTypeSymbol RuntimeWebDriverValueType = "symbol"
 
-	// RuntimeWebDriverValueTypeArray enum const
+	// RuntimeWebDriverValueTypeArray enum const.
 	RuntimeWebDriverValueTypeArray RuntimeWebDriverValueType = "array"
 
-	// RuntimeWebDriverValueTypeObject enum const
+	// RuntimeWebDriverValueTypeObject enum const.
 	RuntimeWebDriverValueTypeObject RuntimeWebDriverValueType = "object"
 
-	// RuntimeWebDriverValueTypeFunction enum const
+	// RuntimeWebDriverValueTypeFunction enum const.
 	RuntimeWebDriverValueTypeFunction RuntimeWebDriverValueType = "function"
 
-	// RuntimeWebDriverValueTypeMap enum const
+	// RuntimeWebDriverValueTypeMap enum const.
 	RuntimeWebDriverValueTypeMap RuntimeWebDriverValueType = "map"
 
-	// RuntimeWebDriverValueTypeSet enum const
+	// RuntimeWebDriverValueTypeSet enum const.
 	RuntimeWebDriverValueTypeSet RuntimeWebDriverValueType = "set"
 
-	// RuntimeWebDriverValueTypeWeakmap enum const
+	// RuntimeWebDriverValueTypeWeakmap enum const.
 	RuntimeWebDriverValueTypeWeakmap RuntimeWebDriverValueType = "weakmap"
 
-	// RuntimeWebDriverValueTypeWeakset enum const
+	// RuntimeWebDriverValueTypeWeakset enum const.
 	RuntimeWebDriverValueTypeWeakset RuntimeWebDriverValueType = "weakset"
 
-	// RuntimeWebDriverValueTypeError enum const
+	// RuntimeWebDriverValueTypeError enum const.
 	RuntimeWebDriverValueTypeError RuntimeWebDriverValueType = "error"
 
-	// RuntimeWebDriverValueTypeProxy enum const
+	// RuntimeWebDriverValueTypeProxy enum const.
 	RuntimeWebDriverValueTypeProxy RuntimeWebDriverValueType = "proxy"
 
-	// RuntimeWebDriverValueTypePromise enum const
+	// RuntimeWebDriverValueTypePromise enum const.
 	RuntimeWebDriverValueTypePromise RuntimeWebDriverValueType = "promise"
 
-	// RuntimeWebDriverValueTypeTypedarray enum const
+	// RuntimeWebDriverValueTypeTypedarray enum const.
 	RuntimeWebDriverValueTypeTypedarray RuntimeWebDriverValueType = "typedarray"
 
-	// RuntimeWebDriverValueTypeArraybuffer enum const
+	// RuntimeWebDriverValueTypeArraybuffer enum const.
 	RuntimeWebDriverValueTypeArraybuffer RuntimeWebDriverValueType = "arraybuffer"
 
-	// RuntimeWebDriverValueTypeNode enum const
+	// RuntimeWebDriverValueTypeNode enum const.
 	RuntimeWebDriverValueTypeNode RuntimeWebDriverValueType = "node"
 
-	// RuntimeWebDriverValueTypeWindow enum const
+	// RuntimeWebDriverValueTypeWindow enum const.
 	RuntimeWebDriverValueTypeWindow RuntimeWebDriverValueType = "window"
 )
 
@@ -115,94 +115,94 @@ type RuntimeRemoteObjectID string
 // `-Infinity`, and bigint literals.
 type RuntimeUnserializableValue string
 
-// RuntimeRemoteObjectType enum
+// RuntimeRemoteObjectType enum.
 type RuntimeRemoteObjectType string
 
 const (
-	// RuntimeRemoteObjectTypeObject enum const
+	// RuntimeRemoteObjectTypeObject enum const.
 	RuntimeRemoteObjectTypeObject RuntimeRemoteObjectType = "object"
 
-	// RuntimeRemoteObjectTypeFunction enum const
+	// RuntimeRemoteObjectTypeFunction enum const.
 	RuntimeRemoteObjectTypeFunction RuntimeRemoteObjectType = "function"
 
-	// RuntimeRemoteObjectTypeUndefined enum const
+	// RuntimeRemoteObjectTypeUndefined enum const.
 	RuntimeRemoteObjectTypeUndefined RuntimeRemoteObjectType = "undefined"
 
-	// RuntimeRemoteObjectTypeString enum const
+	// RuntimeRemoteObjectTypeString enum const.
 	RuntimeRemoteObjectTypeString RuntimeRemoteObjectType = "string"
 
-	// RuntimeRemoteObjectTypeNumber enum const
+	// RuntimeRemoteObjectTypeNumber enum const.
 	RuntimeRemoteObjectTypeNumber RuntimeRemoteObjectType = "number"
 
-	// RuntimeRemoteObjectTypeBoolean enum const
+	// RuntimeRemoteObjectTypeBoolean enum const.
 	RuntimeRemoteObjectTypeBoolean RuntimeRemoteObjectType = "boolean"
 
-	// RuntimeRemoteObjectTypeSymbol enum const
+	// RuntimeRemoteObjectTypeSymbol enum const.
 	RuntimeRemoteObjectTypeSymbol RuntimeRemoteObjectType = "symbol"
 
-	// RuntimeRemoteObjectTypeBigint enum const
+	// RuntimeRemoteObjectTypeBigint enum const.
 	RuntimeRemoteObjectTypeBigint RuntimeRemoteObjectType = "bigint"
 )
 
-// RuntimeRemoteObjectSubtype enum
+// RuntimeRemoteObjectSubtype enum.
 type RuntimeRemoteObjectSubtype string
 
 const (
-	// RuntimeRemoteObjectSubtypeArray enum const
+	// RuntimeRemoteObjectSubtypeArray enum const.
 	RuntimeRemoteObjectSubtypeArray RuntimeRemoteObjectSubtype = "array"
 
-	// RuntimeRemoteObjectSubtypeNull enum const
+	// RuntimeRemoteObjectSubtypeNull enum const.
 	RuntimeRemoteObjectSubtypeNull RuntimeRemoteObjectSubtype = "null"
 
-	// RuntimeRemoteObjectSubtypeNode enum const
+	// RuntimeRemoteObjectSubtypeNode enum const.
 	RuntimeRemoteObjectSubtypeNode RuntimeRemoteObjectSubtype = "node"
 
-	// RuntimeRemoteObjectSubtypeRegexp enum const
+	// RuntimeRemoteObjectSubtypeRegexp enum const.
 	RuntimeRemoteObjectSubtypeRegexp RuntimeRemoteObjectSubtype = "regexp"
 
-	// RuntimeRemoteObjectSubtypeDate enum const
+	// RuntimeRemoteObjectSubtypeDate enum const.
 	RuntimeRemoteObjectSubtypeDate RuntimeRemoteObjectSubtype = "date"
 
-	// RuntimeRemoteObjectSubtypeMap enum const
+	// RuntimeRemoteObjectSubtypeMap enum const.
 	RuntimeRemoteObjectSubtypeMap RuntimeRemoteObjectSubtype = "map"
 
-	// RuntimeRemoteObjectSubtypeSet enum const
+	// RuntimeRemoteObjectSubtypeSet enum const.
 	RuntimeRemoteObjectSubtypeSet RuntimeRemoteObjectSubtype = "set"
 
-	// RuntimeRemoteObjectSubtypeWeakmap enum const
+	// RuntimeRemoteObjectSubtypeWeakmap enum const.
 	RuntimeRemoteObjectSubtypeWeakmap RuntimeRemoteObjectSubtype = "weakmap"
 
-	// RuntimeRemoteObjectSubtypeWeakset enum const
+	// RuntimeRemoteObjectSubtypeWeakset enum const.
 	RuntimeRemoteObjectSubtypeWeakset RuntimeRemoteObjectSubtype = "weakset"
 
-	// RuntimeRemoteObjectSubtypeIterator enum const
+	// RuntimeRemoteObjectSubtypeIterator enum const.
 	RuntimeRemoteObjectSubtypeIterator RuntimeRemoteObjectSubtype = "iterator"
 
-	// RuntimeRemoteObjectSubtypeGenerator enum const
+	// RuntimeRemoteObjectSubtypeGenerator enum const.
 	RuntimeRemoteObjectSubtypeGenerator RuntimeRemoteObjectSubtype = "generator"
 
-	// RuntimeRemoteObjectSubtypeError enum const
+	// RuntimeRemoteObjectSubtypeError enum const.
 	RuntimeRemoteObjectSubtypeError RuntimeRemoteObjectSubtype = "error"
 
-	// RuntimeRemoteObjectSubtypeProxy enum const
+	// RuntimeRemoteObjectSubtypeProxy enum const.
 	RuntimeRemoteObjectSubtypeProxy RuntimeRemoteObjectSubtype = "proxy"
 
-	// RuntimeRemoteObjectSubtypePromise enum const
+	// RuntimeRemoteObjectSubtypePromise enum const.
 	RuntimeRemoteObjectSubtypePromise RuntimeRemoteObjectSubtype = "promise"
 
-	// RuntimeRemoteObjectSubtypeTypedarray enum const
+	// RuntimeRemoteObjectSubtypeTypedarray enum const.
 	RuntimeRemoteObjectSubtypeTypedarray RuntimeRemoteObjectSubtype = "typedarray"
 
-	// RuntimeRemoteObjectSubtypeArraybuffer enum const
+	// RuntimeRemoteObjectSubtypeArraybuffer enum const.
 	RuntimeRemoteObjectSubtypeArraybuffer RuntimeRemoteObjectSubtype = "arraybuffer"
 
-	// RuntimeRemoteObjectSubtypeDataview enum const
+	// RuntimeRemoteObjectSubtypeDataview enum const.
 	RuntimeRemoteObjectSubtypeDataview RuntimeRemoteObjectSubtype = "dataview"
 
-	// RuntimeRemoteObjectSubtypeWebassemblymemory enum const
+	// RuntimeRemoteObjectSubtypeWebassemblymemory enum const.
 	RuntimeRemoteObjectSubtypeWebassemblymemory RuntimeRemoteObjectSubtype = "webassemblymemory"
 
-	// RuntimeRemoteObjectSubtypeWasmvalue enum const
+	// RuntimeRemoteObjectSubtypeWasmvalue enum const.
 	RuntimeRemoteObjectSubtypeWasmvalue RuntimeRemoteObjectSubtype = "wasmvalue"
 )
 
@@ -254,94 +254,94 @@ type RuntimeCustomPreview struct {
 	BodyGetterID RuntimeRemoteObjectID `json:"bodyGetterId,omitempty"`
 }
 
-// RuntimeObjectPreviewType enum
+// RuntimeObjectPreviewType enum.
 type RuntimeObjectPreviewType string
 
 const (
-	// RuntimeObjectPreviewTypeObject enum const
+	// RuntimeObjectPreviewTypeObject enum const.
 	RuntimeObjectPreviewTypeObject RuntimeObjectPreviewType = "object"
 
-	// RuntimeObjectPreviewTypeFunction enum const
+	// RuntimeObjectPreviewTypeFunction enum const.
 	RuntimeObjectPreviewTypeFunction RuntimeObjectPreviewType = "function"
 
-	// RuntimeObjectPreviewTypeUndefined enum const
+	// RuntimeObjectPreviewTypeUndefined enum const.
 	RuntimeObjectPreviewTypeUndefined RuntimeObjectPreviewType = "undefined"
 
-	// RuntimeObjectPreviewTypeString enum const
+	// RuntimeObjectPreviewTypeString enum const.
 	RuntimeObjectPreviewTypeString RuntimeObjectPreviewType = "string"
 
-	// RuntimeObjectPreviewTypeNumber enum const
+	// RuntimeObjectPreviewTypeNumber enum const.
 	RuntimeObjectPreviewTypeNumber RuntimeObjectPreviewType = "number"
 
-	// RuntimeObjectPreviewTypeBoolean enum const
+	// RuntimeObjectPreviewTypeBoolean enum const.
 	RuntimeObjectPreviewTypeBoolean RuntimeObjectPreviewType = "boolean"
 
-	// RuntimeObjectPreviewTypeSymbol enum const
+	// RuntimeObjectPreviewTypeSymbol enum const.
 	RuntimeObjectPreviewTypeSymbol RuntimeObjectPreviewType = "symbol"
 
-	// RuntimeObjectPreviewTypeBigint enum const
+	// RuntimeObjectPreviewTypeBigint enum const.
 	RuntimeObjectPreviewTypeBigint RuntimeObjectPreviewType = "bigint"
 )
 
-// RuntimeObjectPreviewSubtype enum
+// RuntimeObjectPreviewSubtype enum.
 type RuntimeObjectPreviewSubtype string
 
 const (
-	// RuntimeObjectPreviewSubtypeArray enum const
+	// RuntimeObjectPreviewSubtypeArray enum const.
 	RuntimeObjectPreviewSubtypeArray RuntimeObjectPreviewSubtype = "array"
 
-	// RuntimeObjectPreviewSubtypeNull enum const
+	// RuntimeObjectPreviewSubtypeNull enum const.
 	RuntimeObjectPreviewSubtypeNull RuntimeObjectPreviewSubtype = "null"
 
-	// RuntimeObjectPreviewSubtypeNode enum const
+	// RuntimeObjectPreviewSubtypeNode enum const.
 	RuntimeObjectPreviewSubtypeNode RuntimeObjectPreviewSubtype = "node"
 
-	// RuntimeObjectPreviewSubtypeRegexp enum const
+	// RuntimeObjectPreviewSubtypeRegexp enum const.
 	RuntimeObjectPreviewSubtypeRegexp RuntimeObjectPreviewSubtype = "regexp"
 
-	// RuntimeObjectPreviewSubtypeDate enum const
+	// RuntimeObjectPreviewSubtypeDate enum const.
 	RuntimeObjectPreviewSubtypeDate RuntimeObjectPreviewSubtype = "date"
 
-	// RuntimeObjectPreviewSubtypeMap enum const
+	// RuntimeObjectPreviewSubtypeMap enum const.
 	RuntimeObjectPreviewSubtypeMap RuntimeObjectPreviewSubtype = "map"
 
-	// RuntimeObjectPreviewSubtypeSet enum const
+	// RuntimeObjectPreviewSubtypeSet enum const.
 	RuntimeObjectPreviewSubtypeSet RuntimeObjectPreviewSubtype = "set"
 
-	// RuntimeObjectPreviewSubtypeWeakmap enum const
+	// RuntimeObjectPreviewSubtypeWeakmap enum const.
 	RuntimeObjectPreviewSubtypeWeakmap RuntimeObjectPreviewSubtype = "weakmap"
 
-	// RuntimeObjectPreviewSubtypeWeakset enum const
+	// RuntimeObjectPreviewSubtypeWeakset enum const.
 	RuntimeObjectPreviewSubtypeWeakset RuntimeObjectPreviewSubtype = "weakset"
 
-	// RuntimeObjectPreviewSubtypeIterator enum const
+	// RuntimeObjectPreviewSubtypeIterator enum const.
 	RuntimeObjectPreviewSubtypeIterator RuntimeObjectPreviewSubtype = "iterator"
 
-	// RuntimeObjectPreviewSubtypeGenerator enum const
+	// RuntimeObjectPreviewSubtypeGenerator enum const.
 	RuntimeObjectPreviewSubtypeGenerator RuntimeObjectPreviewSubtype = "generator"
 
-	// RuntimeObjectPreviewSubtypeError enum const
+	// RuntimeObjectPreviewSubtypeError enum const.
 	RuntimeObjectPreviewSubtypeError RuntimeObjectPreviewSubtype = "error"
 
-	// RuntimeObjectPreviewSubtypeProxy enum const
+	// RuntimeObjectPreviewSubtypeProxy enum const.
 	RuntimeObjectPreviewSubtypeProxy RuntimeObjectPreviewSubtype = "proxy"
 
-	// RuntimeObjectPreviewSubtypePromise enum const
+	// RuntimeObjectPreviewSubtypePromise enum const.
 	RuntimeObjectPreviewSubtypePromise RuntimeObjectPreviewSubtype = "promise"
 
-	// RuntimeObjectPreviewSubtypeTypedarray enum const
+	// RuntimeObjectPreviewSubtypeTypedarray enum const.
 	RuntimeObjectPreviewSubtypeTypedarray RuntimeObjectPreviewSubtype = "typedarray"
 
-	// RuntimeObjectPreviewSubtypeArraybuffer enum const
+	// RuntimeObjectPreviewSubtypeArraybuffer enum const.
 	RuntimeObjectPreviewSubtypeArraybuffer RuntimeObjectPreviewSubtype = "arraybuffer"
 
-	// RuntimeObjectPreviewSubtypeDataview enum const
+	// RuntimeObjectPreviewSubtypeDataview enum const.
 	RuntimeObjectPreviewSubtypeDataview RuntimeObjectPreviewSubtype = "dataview"
 
-	// RuntimeObjectPreviewSubtypeWebassemblymemory enum const
+	// RuntimeObjectPreviewSubtypeWebassemblymemory enum const.
 	RuntimeObjectPreviewSubtypeWebassemblymemory RuntimeObjectPreviewSubtype = "webassemblymemory"
 
-	// RuntimeObjectPreviewSubtypeWasmvalue enum const
+	// RuntimeObjectPreviewSubtypeWasmvalue enum const.
 	RuntimeObjectPreviewSubtypeWasmvalue RuntimeObjectPreviewSubtype = "wasmvalue"
 )
 
@@ -366,97 +366,97 @@ type RuntimeObjectPreview struct {
 	Entries []*RuntimeEntryPreview `json:"entries,omitempty"`
 }
 
-// RuntimePropertyPreviewType enum
+// RuntimePropertyPreviewType enum.
 type RuntimePropertyPreviewType string
 
 const (
-	// RuntimePropertyPreviewTypeObject enum const
+	// RuntimePropertyPreviewTypeObject enum const.
 	RuntimePropertyPreviewTypeObject RuntimePropertyPreviewType = "object"
 
-	// RuntimePropertyPreviewTypeFunction enum const
+	// RuntimePropertyPreviewTypeFunction enum const.
 	RuntimePropertyPreviewTypeFunction RuntimePropertyPreviewType = "function"
 
-	// RuntimePropertyPreviewTypeUndefined enum const
+	// RuntimePropertyPreviewTypeUndefined enum const.
 	RuntimePropertyPreviewTypeUndefined RuntimePropertyPreviewType = "undefined"
 
-	// RuntimePropertyPreviewTypeString enum const
+	// RuntimePropertyPreviewTypeString enum const.
 	RuntimePropertyPreviewTypeString RuntimePropertyPreviewType = "string"
 
-	// RuntimePropertyPreviewTypeNumber enum const
+	// RuntimePropertyPreviewTypeNumber enum const.
 	RuntimePropertyPreviewTypeNumber RuntimePropertyPreviewType = "number"
 
-	// RuntimePropertyPreviewTypeBoolean enum const
+	// RuntimePropertyPreviewTypeBoolean enum const.
 	RuntimePropertyPreviewTypeBoolean RuntimePropertyPreviewType = "boolean"
 
-	// RuntimePropertyPreviewTypeSymbol enum const
+	// RuntimePropertyPreviewTypeSymbol enum const.
 	RuntimePropertyPreviewTypeSymbol RuntimePropertyPreviewType = "symbol"
 
-	// RuntimePropertyPreviewTypeAccessor enum const
+	// RuntimePropertyPreviewTypeAccessor enum const.
 	RuntimePropertyPreviewTypeAccessor RuntimePropertyPreviewType = "accessor"
 
-	// RuntimePropertyPreviewTypeBigint enum const
+	// RuntimePropertyPreviewTypeBigint enum const.
 	RuntimePropertyPreviewTypeBigint RuntimePropertyPreviewType = "bigint"
 )
 
-// RuntimePropertyPreviewSubtype enum
+// RuntimePropertyPreviewSubtype enum.
 type RuntimePropertyPreviewSubtype string
 
 const (
-	// RuntimePropertyPreviewSubtypeArray enum const
+	// RuntimePropertyPreviewSubtypeArray enum const.
 	RuntimePropertyPreviewSubtypeArray RuntimePropertyPreviewSubtype = "array"
 
-	// RuntimePropertyPreviewSubtypeNull enum const
+	// RuntimePropertyPreviewSubtypeNull enum const.
 	RuntimePropertyPreviewSubtypeNull RuntimePropertyPreviewSubtype = "null"
 
-	// RuntimePropertyPreviewSubtypeNode enum const
+	// RuntimePropertyPreviewSubtypeNode enum const.
 	RuntimePropertyPreviewSubtypeNode RuntimePropertyPreviewSubtype = "node"
 
-	// RuntimePropertyPreviewSubtypeRegexp enum const
+	// RuntimePropertyPreviewSubtypeRegexp enum const.
 	RuntimePropertyPreviewSubtypeRegexp RuntimePropertyPreviewSubtype = "regexp"
 
-	// RuntimePropertyPreviewSubtypeDate enum const
+	// RuntimePropertyPreviewSubtypeDate enum const.
 	RuntimePropertyPreviewSubtypeDate RuntimePropertyPreviewSubtype = "date"
 
-	// RuntimePropertyPreviewSubtypeMap enum const
+	// RuntimePropertyPreviewSubtypeMap enum const.
 	RuntimePropertyPreviewSubtypeMap RuntimePropertyPreviewSubtype = "map"
 
-	// RuntimePropertyPreviewSubtypeSet enum const
+	// RuntimePropertyPreviewSubtypeSet enum const.
 	RuntimePropertyPreviewSubtypeSet RuntimePropertyPreviewSubtype = "set"
 
-	// RuntimePropertyPreviewSubtypeWeakmap enum const
+	// RuntimePropertyPreviewSubtypeWeakmap enum const.
 	RuntimePropertyPreviewSubtypeWeakmap RuntimePropertyPreviewSubtype = "weakmap"
 
-	// RuntimePropertyPreviewSubtypeWeakset enum const
+	// RuntimePropertyPreviewSubtypeWeakset enum const.
 	RuntimePropertyPreviewSubtypeWeakset RuntimePropertyPreviewSubtype = "weakset"
 
-	// RuntimePropertyPreviewSubtypeIterator enum const
+	// RuntimePropertyPreviewSubtypeIterator enum const.
 	RuntimePropertyPreviewSubtypeIterator RuntimePropertyPreviewSubtype = "iterator"
 
-	// RuntimePropertyPreviewSubtypeGenerator enum const
+	// RuntimePropertyPreviewSubtypeGenerator enum const.
 	RuntimePropertyPreviewSubtypeGenerator RuntimePropertyPreviewSubtype = "generator"
 
-	// RuntimePropertyPreviewSubtypeError enum const
+	// RuntimePropertyPreviewSubtypeError enum const.
 	RuntimePropertyPreviewSubtypeError RuntimePropertyPreviewSubtype = "error"
 
-	// RuntimePropertyPreviewSubtypeProxy enum const
+	// RuntimePropertyPreviewSubtypeProxy enum const.
 	RuntimePropertyPreviewSubtypeProxy RuntimePropertyPreviewSubtype = "proxy"
 
-	// RuntimePropertyPreviewSubtypePromise enum const
+	// RuntimePropertyPreviewSubtypePromise enum const.
 	RuntimePropertyPreviewSubtypePromise RuntimePropertyPreviewSubtype = "promise"
 
-	// RuntimePropertyPreviewSubtypeTypedarray enum const
+	// RuntimePropertyPreviewSubtypeTypedarray enum const.
 	RuntimePropertyPreviewSubtypeTypedarray RuntimePropertyPreviewSubtype = "typedarray"
 
-	// RuntimePropertyPreviewSubtypeArraybuffer enum const
+	// RuntimePropertyPreviewSubtypeArraybuffer enum const.
 	RuntimePropertyPreviewSubtypeArraybuffer RuntimePropertyPreviewSubtype = "arraybuffer"
 
-	// RuntimePropertyPreviewSubtypeDataview enum const
+	// RuntimePropertyPreviewSubtypeDataview enum const.
 	RuntimePropertyPreviewSubtypeDataview RuntimePropertyPreviewSubtype = "dataview"
 
-	// RuntimePropertyPreviewSubtypeWebassemblymemory enum const
+	// RuntimePropertyPreviewSubtypeWebassemblymemory enum const.
 	RuntimePropertyPreviewSubtypeWebassemblymemory RuntimePropertyPreviewSubtype = "webassemblymemory"
 
-	// RuntimePropertyPreviewSubtypeWasmvalue enum const
+	// RuntimePropertyPreviewSubtypeWasmvalue enum const.
 	RuntimePropertyPreviewSubtypeWasmvalue RuntimePropertyPreviewSubtype = "wasmvalue"
 )
 
@@ -688,10 +688,10 @@ type RuntimeAwaitPromise struct {
 	GeneratePreview bool `json:"generatePreview,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeAwaitPromise) ProtoReq() string { return "Runtime.awaitPromise" }
 
-// Call the request
+// Call the request.
 func (m RuntimeAwaitPromise) Call(c Client) (*RuntimeAwaitPromiseResult, error) {
 	var res RuntimeAwaitPromiseResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -762,10 +762,10 @@ type RuntimeCallFunctionOn struct {
 	GenerateWebDriverValue bool `json:"generateWebDriverValue,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeCallFunctionOn) ProtoReq() string { return "Runtime.callFunctionOn" }
 
-// Call the request
+// Call the request.
 func (m RuntimeCallFunctionOn) Call(c Client) (*RuntimeCallFunctionOnResult, error) {
 	var res RuntimeCallFunctionOnResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -782,7 +782,7 @@ type RuntimeCallFunctionOnResult struct {
 
 // RuntimeCompileScript Compiles expression.
 type RuntimeCompileScript struct {
-	// Expression Expression to compile.
+	// Expression to compile.
 	Expression string `json:"expression"`
 
 	// SourceURL Source url to be set for the script.
@@ -796,10 +796,10 @@ type RuntimeCompileScript struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeCompileScript) ProtoReq() string { return "Runtime.compileScript" }
 
-// Call the request
+// Call the request.
 func (m RuntimeCompileScript) Call(c Client) (*RuntimeCompileScriptResult, error) {
 	var res RuntimeCompileScriptResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -817,10 +817,10 @@ type RuntimeCompileScriptResult struct {
 // RuntimeDisable Disables reporting of execution contexts creation.
 type RuntimeDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeDisable) ProtoReq() string { return "Runtime.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -828,10 +828,10 @@ func (m RuntimeDisable) Call(c Client) error {
 // RuntimeDiscardConsoleEntries Discards collected exceptions and console API calls.
 type RuntimeDiscardConsoleEntries struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeDiscardConsoleEntries) ProtoReq() string { return "Runtime.discardConsoleEntries" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -841,17 +841,17 @@ func (m RuntimeDiscardConsoleEntries) Call(c Client) error {
 // context.
 type RuntimeEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeEnable) ProtoReq() string { return "Runtime.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
 // RuntimeEvaluate Evaluates expression on global object.
 type RuntimeEvaluate struct {
-	// Expression Expression to evaluate.
+	// Expression to evaluate.
 	Expression string `json:"expression"`
 
 	// ObjectGroup (optional) Symbolic group name that can be used to release multiple objects.
@@ -917,10 +917,10 @@ type RuntimeEvaluate struct {
 	GenerateWebDriverValue bool `json:"generateWebDriverValue,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeEvaluate) ProtoReq() string { return "Runtime.evaluate" }
 
-// Call the request
+// Call the request.
 func (m RuntimeEvaluate) Call(c Client) (*RuntimeEvaluateResult, error) {
 	var res RuntimeEvaluateResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -938,10 +938,10 @@ type RuntimeEvaluateResult struct {
 // RuntimeGetIsolateID (experimental) Returns the isolate id.
 type RuntimeGetIsolateID struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeGetIsolateID) ProtoReq() string { return "Runtime.getIsolateId" }
 
-// Call the request
+// Call the request.
 func (m RuntimeGetIsolateID) Call(c Client) (*RuntimeGetIsolateIDResult, error) {
 	var res RuntimeGetIsolateIDResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -957,10 +957,10 @@ type RuntimeGetIsolateIDResult struct {
 // It is the total usage of the corresponding isolate not scoped to a particular Runtime.
 type RuntimeGetHeapUsage struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeGetHeapUsage) ProtoReq() string { return "Runtime.getHeapUsage" }
 
-// Call the request
+// Call the request.
 func (m RuntimeGetHeapUsage) Call(c Client) (*RuntimeGetHeapUsageResult, error) {
 	var res RuntimeGetHeapUsageResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -996,10 +996,10 @@ type RuntimeGetProperties struct {
 	NonIndexedPropertiesOnly bool `json:"nonIndexedPropertiesOnly,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeGetProperties) ProtoReq() string { return "Runtime.getProperties" }
 
-// Call the request
+// Call the request.
 func (m RuntimeGetProperties) Call(c Client) (*RuntimeGetPropertiesResult, error) {
 	var res RuntimeGetPropertiesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1026,10 +1026,10 @@ type RuntimeGlobalLexicalScopeNames struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeGlobalLexicalScopeNames) ProtoReq() string { return "Runtime.globalLexicalScopeNames" }
 
-// Call the request
+// Call the request.
 func (m RuntimeGlobalLexicalScopeNames) Call(c Client) (*RuntimeGlobalLexicalScopeNamesResult, error) {
 	var res RuntimeGlobalLexicalScopeNamesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1050,10 +1050,10 @@ type RuntimeQueryObjects struct {
 	ObjectGroup string `json:"objectGroup,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeQueryObjects) ProtoReq() string { return "Runtime.queryObjects" }
 
-// Call the request
+// Call the request.
 func (m RuntimeQueryObjects) Call(c Client) (*RuntimeQueryObjectsResult, error) {
 	var res RuntimeQueryObjectsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1071,10 +1071,10 @@ type RuntimeReleaseObject struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeReleaseObject) ProtoReq() string { return "Runtime.releaseObject" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeReleaseObject) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1085,10 +1085,10 @@ type RuntimeReleaseObjectGroup struct {
 	ObjectGroup string `json:"objectGroup"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeReleaseObjectGroup) ProtoReq() string { return "Runtime.releaseObjectGroup" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeReleaseObjectGroup) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1096,10 +1096,10 @@ func (m RuntimeReleaseObjectGroup) Call(c Client) error {
 // RuntimeRunIfWaitingForDebugger Tells inspected instance to run if it was waiting for debugger to attach.
 type RuntimeRunIfWaitingForDebugger struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeRunIfWaitingForDebugger) ProtoReq() string { return "Runtime.runIfWaitingForDebugger" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeRunIfWaitingForDebugger) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1134,10 +1134,10 @@ type RuntimeRunScript struct {
 	AwaitPromise bool `json:"awaitPromise,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeRunScript) ProtoReq() string { return "Runtime.runScript" }
 
-// Call the request
+// Call the request.
 func (m RuntimeRunScript) Call(c Client) (*RuntimeRunScriptResult, error) {
 	var res RuntimeRunScriptResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1159,10 +1159,10 @@ type RuntimeSetAsyncCallStackDepth struct {
 	MaxDepth int `json:"maxDepth"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeSetAsyncCallStackDepth) ProtoReq() string { return "Runtime.setAsyncCallStackDepth" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeSetAsyncCallStackDepth) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1173,12 +1173,12 @@ type RuntimeSetCustomObjectFormatterEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeSetCustomObjectFormatterEnabled) ProtoReq() string {
 	return "Runtime.setCustomObjectFormatterEnabled"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeSetCustomObjectFormatterEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1189,12 +1189,12 @@ type RuntimeSetMaxCallStackSizeToCapture struct {
 	Size int `json:"size"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeSetMaxCallStackSizeToCapture) ProtoReq() string {
 	return "Runtime.setMaxCallStackSizeToCapture"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1203,10 +1203,10 @@ func (m RuntimeSetMaxCallStackSizeToCapture) Call(c Client) error {
 // Will cancel the termination when the outer-most script execution ends.
 type RuntimeTerminateExecution struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeTerminateExecution) ProtoReq() string { return "Runtime.terminateExecution" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeTerminateExecution) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1238,10 +1238,10 @@ type RuntimeAddBinding struct {
 	ExecutionContextName string `json:"executionContextName,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeAddBinding) ProtoReq() string { return "Runtime.addBinding" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeAddBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1253,10 +1253,10 @@ type RuntimeRemoveBinding struct {
 	Name string `json:"name"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeRemoveBinding) ProtoReq() string { return "Runtime.removeBinding" }
 
-// Call sends the request
+// Call sends the request.
 func (m RuntimeRemoveBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1271,10 +1271,10 @@ type RuntimeGetExceptionDetails struct {
 	ErrorObjectID RuntimeRemoteObjectID `json:"errorObjectId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m RuntimeGetExceptionDetails) ProtoReq() string { return "Runtime.getExceptionDetails" }
 
-// Call the request
+// Call the request.
 func (m RuntimeGetExceptionDetails) Call(c Client) (*RuntimeGetExceptionDetailsResult, error) {
 	var res RuntimeGetExceptionDetailsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1298,73 +1298,73 @@ type RuntimeBindingCalled struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeBindingCalled) ProtoEvent() string {
 	return "Runtime.bindingCalled"
 }
 
-// RuntimeConsoleAPICalledType enum
+// RuntimeConsoleAPICalledType enum.
 type RuntimeConsoleAPICalledType string
 
 const (
-	// RuntimeConsoleAPICalledTypeLog enum const
+	// RuntimeConsoleAPICalledTypeLog enum const.
 	RuntimeConsoleAPICalledTypeLog RuntimeConsoleAPICalledType = "log"
 
-	// RuntimeConsoleAPICalledTypeDebug enum const
+	// RuntimeConsoleAPICalledTypeDebug enum const.
 	RuntimeConsoleAPICalledTypeDebug RuntimeConsoleAPICalledType = "debug"
 
-	// RuntimeConsoleAPICalledTypeInfo enum const
+	// RuntimeConsoleAPICalledTypeInfo enum const.
 	RuntimeConsoleAPICalledTypeInfo RuntimeConsoleAPICalledType = "info"
 
-	// RuntimeConsoleAPICalledTypeError enum const
+	// RuntimeConsoleAPICalledTypeError enum const.
 	RuntimeConsoleAPICalledTypeError RuntimeConsoleAPICalledType = "error"
 
-	// RuntimeConsoleAPICalledTypeWarning enum const
+	// RuntimeConsoleAPICalledTypeWarning enum const.
 	RuntimeConsoleAPICalledTypeWarning RuntimeConsoleAPICalledType = "warning"
 
-	// RuntimeConsoleAPICalledTypeDir enum const
+	// RuntimeConsoleAPICalledTypeDir enum const.
 	RuntimeConsoleAPICalledTypeDir RuntimeConsoleAPICalledType = "dir"
 
-	// RuntimeConsoleAPICalledTypeDirxml enum const
+	// RuntimeConsoleAPICalledTypeDirxml enum const.
 	RuntimeConsoleAPICalledTypeDirxml RuntimeConsoleAPICalledType = "dirxml"
 
-	// RuntimeConsoleAPICalledTypeTable enum const
+	// RuntimeConsoleAPICalledTypeTable enum const.
 	RuntimeConsoleAPICalledTypeTable RuntimeConsoleAPICalledType = "table"
 
-	// RuntimeConsoleAPICalledTypeTrace enum const
+	// RuntimeConsoleAPICalledTypeTrace enum const.
 	RuntimeConsoleAPICalledTypeTrace RuntimeConsoleAPICalledType = "trace"
 
-	// RuntimeConsoleAPICalledTypeClear enum const
+	// RuntimeConsoleAPICalledTypeClear enum const.
 	RuntimeConsoleAPICalledTypeClear RuntimeConsoleAPICalledType = "clear"
 
-	// RuntimeConsoleAPICalledTypeStartGroup enum const
+	// RuntimeConsoleAPICalledTypeStartGroup enum const.
 	RuntimeConsoleAPICalledTypeStartGroup RuntimeConsoleAPICalledType = "startGroup"
 
-	// RuntimeConsoleAPICalledTypeStartGroupCollapsed enum const
+	// RuntimeConsoleAPICalledTypeStartGroupCollapsed enum const.
 	RuntimeConsoleAPICalledTypeStartGroupCollapsed RuntimeConsoleAPICalledType = "startGroupCollapsed"
 
-	// RuntimeConsoleAPICalledTypeEndGroup enum const
+	// RuntimeConsoleAPICalledTypeEndGroup enum const.
 	RuntimeConsoleAPICalledTypeEndGroup RuntimeConsoleAPICalledType = "endGroup"
 
-	// RuntimeConsoleAPICalledTypeAssert enum const
+	// RuntimeConsoleAPICalledTypeAssert enum const.
 	RuntimeConsoleAPICalledTypeAssert RuntimeConsoleAPICalledType = "assert"
 
-	// RuntimeConsoleAPICalledTypeProfile enum const
+	// RuntimeConsoleAPICalledTypeProfile enum const.
 	RuntimeConsoleAPICalledTypeProfile RuntimeConsoleAPICalledType = "profile"
 
-	// RuntimeConsoleAPICalledTypeProfileEnd enum const
+	// RuntimeConsoleAPICalledTypeProfileEnd enum const.
 	RuntimeConsoleAPICalledTypeProfileEnd RuntimeConsoleAPICalledType = "profileEnd"
 
-	// RuntimeConsoleAPICalledTypeCount enum const
+	// RuntimeConsoleAPICalledTypeCount enum const.
 	RuntimeConsoleAPICalledTypeCount RuntimeConsoleAPICalledType = "count"
 
-	// RuntimeConsoleAPICalledTypeTimeEnd enum const
+	// RuntimeConsoleAPICalledTypeTimeEnd enum const.
 	RuntimeConsoleAPICalledTypeTimeEnd RuntimeConsoleAPICalledType = "timeEnd"
 )
 
 // RuntimeConsoleAPICalled Issued when console API was called.
 type RuntimeConsoleAPICalled struct {
-	// Type Type of the call.
+	// Type of the call.
 	Type RuntimeConsoleAPICalledType `json:"type"`
 
 	// Args Call arguments.
@@ -1387,35 +1387,35 @@ type RuntimeConsoleAPICalled struct {
 	Context string `json:"context,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeConsoleAPICalled) ProtoEvent() string {
 	return "Runtime.consoleAPICalled"
 }
 
 // RuntimeExceptionRevoked Issued when unhandled exception was revoked.
 type RuntimeExceptionRevoked struct {
-	// Reason Reason describing why exception was revoked.
+	// Reason describing why exception was revoked.
 	Reason string `json:"reason"`
 
 	// ExceptionID The id of revoked exception, as reported in `exceptionThrown`.
 	ExceptionID int `json:"exceptionId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeExceptionRevoked) ProtoEvent() string {
 	return "Runtime.exceptionRevoked"
 }
 
 // RuntimeExceptionThrown Issued when exception was thrown and unhandled.
 type RuntimeExceptionThrown struct {
-	// Timestamp Timestamp of the exception.
+	// Timestamp of the exception.
 	Timestamp RuntimeTimestamp `json:"timestamp"`
 
 	// ExceptionDetails ...
 	ExceptionDetails *RuntimeExceptionDetails `json:"exceptionDetails"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeExceptionThrown) ProtoEvent() string {
 	return "Runtime.exceptionThrown"
 }
@@ -1426,7 +1426,7 @@ type RuntimeExecutionContextCreated struct {
 	Context *RuntimeExecutionContextDescription `json:"context"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeExecutionContextCreated) ProtoEvent() string {
 	return "Runtime.executionContextCreated"
 }
@@ -1440,15 +1440,15 @@ type RuntimeExecutionContextDestroyed struct {
 	ExecutionContextUniqueID string `json:"executionContextUniqueId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeExecutionContextDestroyed) ProtoEvent() string {
 	return "Runtime.executionContextDestroyed"
 }
 
-// RuntimeExecutionContextsCleared Issued when all executionContexts were cleared in browser
+// RuntimeExecutionContextsCleared Issued when all executionContexts were cleared in browser.
 type RuntimeExecutionContextsCleared struct{}
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeExecutionContextsCleared) ProtoEvent() string {
 	return "Runtime.executionContextsCleared"
 }
@@ -1466,7 +1466,7 @@ type RuntimeInspectRequested struct {
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt RuntimeInspectRequested) ProtoEvent() string {
 	return "Runtime.inspectRequested"
 }

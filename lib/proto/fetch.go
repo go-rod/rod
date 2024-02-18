@@ -19,10 +19,10 @@ type FetchRequestID string
 type FetchRequestStage string
 
 const (
-	// FetchRequestStageRequest enum const
+	// FetchRequestStageRequest enum const.
 	FetchRequestStageRequest FetchRequestStage = "Request"
 
-	// FetchRequestStageResponse enum const
+	// FetchRequestStageResponse enum const.
 	FetchRequestStageResponse FetchRequestStage = "Response"
 )
 
@@ -39,7 +39,7 @@ type FetchRequestPattern struct {
 	RequestStage FetchRequestStage `json:"requestStage,omitempty"`
 }
 
-// FetchHeaderEntry Response HTTP header entry
+// FetchHeaderEntry Response HTTP header entry.
 type FetchHeaderEntry struct {
 	// Name ...
 	Name string `json:"name"`
@@ -48,14 +48,14 @@ type FetchHeaderEntry struct {
 	Value string `json:"value"`
 }
 
-// FetchAuthChallengeSource enum
+// FetchAuthChallengeSource enum.
 type FetchAuthChallengeSource string
 
 const (
-	// FetchAuthChallengeSourceServer enum const
+	// FetchAuthChallengeSourceServer enum const.
 	FetchAuthChallengeSourceServer FetchAuthChallengeSource = "Server"
 
-	// FetchAuthChallengeSourceProxy enum const
+	// FetchAuthChallengeSourceProxy enum const.
 	FetchAuthChallengeSourceProxy FetchAuthChallengeSource = "Proxy"
 )
 
@@ -64,7 +64,7 @@ type FetchAuthChallenge struct {
 	// Source (optional) Source of the authentication challenge.
 	Source FetchAuthChallengeSource `json:"source,omitempty"`
 
-	// Origin Origin of the challenger.
+	// Origin of the challenger.
 	Origin string `json:"origin"`
 
 	// Scheme The authentication scheme used, such as basic or digest
@@ -74,17 +74,17 @@ type FetchAuthChallenge struct {
 	Realm string `json:"realm"`
 }
 
-// FetchAuthChallengeResponseResponse enum
+// FetchAuthChallengeResponseResponse enum.
 type FetchAuthChallengeResponseResponse string
 
 const (
-	// FetchAuthChallengeResponseResponseDefault enum const
+	// FetchAuthChallengeResponseResponseDefault enum const.
 	FetchAuthChallengeResponseResponseDefault FetchAuthChallengeResponseResponse = "Default"
 
-	// FetchAuthChallengeResponseResponseCancelAuth enum const
+	// FetchAuthChallengeResponseResponseCancelAuth enum const.
 	FetchAuthChallengeResponseResponseCancelAuth FetchAuthChallengeResponseResponse = "CancelAuth"
 
-	// FetchAuthChallengeResponseResponseProvideCredentials enum const
+	// FetchAuthChallengeResponseResponseProvideCredentials enum const.
 	FetchAuthChallengeResponseResponseProvideCredentials FetchAuthChallengeResponseResponse = "ProvideCredentials"
 )
 
@@ -107,10 +107,10 @@ type FetchAuthChallengeResponse struct {
 // FetchDisable Disables the fetch domain.
 type FetchDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchDisable) ProtoReq() string { return "Fetch.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -128,10 +128,10 @@ type FetchEnable struct {
 	HandleAuthRequests bool `json:"handleAuthRequests,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchEnable) ProtoReq() string { return "Fetch.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -145,10 +145,10 @@ type FetchFailRequest struct {
 	ErrorReason NetworkErrorReason `json:"errorReason"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchFailRequest) ProtoReq() string { return "Fetch.failRequest" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchFailRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -180,10 +180,10 @@ type FetchFulfillRequest struct {
 	ResponsePhrase string `json:"responsePhrase,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchFulfillRequest) ProtoReq() string { return "Fetch.fulfillRequest" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchFulfillRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -211,10 +211,10 @@ type FetchContinueRequest struct {
 	InterceptResponse bool `json:"interceptResponse,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchContinueRequest) ProtoReq() string { return "Fetch.continueRequest" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchContinueRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -228,10 +228,10 @@ type FetchContinueWithAuth struct {
 	AuthChallengeResponse *FetchAuthChallengeResponse `json:"authChallengeResponse"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchContinueWithAuth) ProtoReq() string { return "Fetch.continueWithAuth" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchContinueWithAuth) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -260,10 +260,10 @@ type FetchContinueResponse struct {
 	BinaryResponseHeaders []byte `json:"binaryResponseHeaders,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchContinueResponse) ProtoReq() string { return "Fetch.continueResponse" }
 
-// Call sends the request
+// Call sends the request.
 func (m FetchContinueResponse) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -279,10 +279,10 @@ type FetchGetResponseBody struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchGetResponseBody) ProtoReq() string { return "Fetch.getResponseBody" }
 
-// Call the request
+// Call the request.
 func (m FetchGetResponseBody) Call(c Client) (*FetchGetResponseBodyResult, error) {
 	var res FetchGetResponseBodyResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -312,10 +312,10 @@ type FetchTakeResponseBodyAsStream struct {
 	RequestID FetchRequestID `json:"requestId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m FetchTakeResponseBodyAsStream) ProtoReq() string { return "Fetch.takeResponseBodyAsStream" }
 
-// Call the request
+// Call the request.
 func (m FetchTakeResponseBodyAsStream) Call(c Client) (*FetchTakeResponseBodyAsStreamResult, error) {
 	var res FetchTakeResponseBodyAsStreamResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -367,7 +367,7 @@ type FetchRequestPaused struct {
 	RedirectedRequestID FetchRequestID `json:"redirectedRequestId,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt FetchRequestPaused) ProtoEvent() string {
 	return "Fetch.requestPaused"
 }
@@ -393,7 +393,7 @@ type FetchAuthRequired struct {
 	AuthChallenge *FetchAuthChallenge `json:"authChallenge"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt FetchAuthRequired) ProtoEvent() string {
 	return "Fetch.authRequired"
 }

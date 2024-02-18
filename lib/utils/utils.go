@@ -27,32 +27,33 @@ import (
 	"github.com/ysmood/gson"
 )
 
-// TestEnvs for testing
+// TestEnvs for testing.
 var TestEnvs = map[string]string{
 	"GODEBUG": "tracebackancestors=100",
 }
 
-// InContainer will be true if is inside container environment, such as docker
-var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv") || os.Getenv("KUBERNETES_SERVICE_HOST") != ""
+// InContainer will be true if is inside container environment, such as docker.
+var InContainer = FileExists("/.dockerenv") || FileExists("/.containerenv") ||
+	os.Getenv("KUBERNETES_SERVICE_HOST") != ""
 
-// Noop does nothing
+// Noop does nothing.
 func Noop() {}
 
-// Logger interface
+// Logger interface.
 type Logger interface {
 	// Same as fmt.Printf
-	Println(...interface{})
+	Println(vs ...interface{})
 }
 
-// Log type for Println
+// Log type for Println.
 type Log func(msg ...interface{})
 
-// Println interface
+// Println interface.
 func (l Log) Println(msg ...interface{}) {
 	l(msg...)
 }
 
-// LoggerQuiet does nothing
+// LoggerQuiet does nothing.
 var LoggerQuiet Logger = Log(func(_ ...interface{}) {})
 
 // MultiLogger is similar to https://golang.org/pkg/io/#MultiWriter
@@ -64,10 +65,10 @@ func MultiLogger(list ...Logger) Log {
 	})
 }
 
-// Panic is the same as the built-in panic
+// Panic is the same as the built-in panic.
 var Panic = func(v interface{}) { panic(v) }
 
-// E if the last arg is error, panic it
+// E if the last arg is error, panic it.
 func E(args ...interface{}) []interface{} {
 	err, ok := args[len(args)-1].(error)
 	if ok {
@@ -76,7 +77,7 @@ func E(args ...interface{}) []interface{} {
 	return args
 }
 
-// S Template render, the params is key-value pairs
+// S Template render, the params is key-value pairs.
 func S(tpl string, params ...interface{}) string {
 	var out bytes.Buffer
 
@@ -85,7 +86,7 @@ func S(tpl string, params ...interface{}) string {
 
 	l := len(params)
 	for i := 0; i < l-1; i += 2 {
-		k := params[i].(string)
+		k := params[i].(string) //nolint: forcetypeassert
 		v := params[i+1]
 		if reflect.TypeOf(v).Kind() == reflect.Func {
 			fnDict[k] = v
@@ -100,19 +101,19 @@ func S(tpl string, params ...interface{}) string {
 	return out.String()
 }
 
-// RandString generate random string with specified string length
-func RandString(len int) string {
-	b := make([]byte, len)
+// RandString generate random string with specified string length.
+func RandString(l int) string {
+	b := make([]byte, l)
 	_, _ = rand.Read(b)
 	return hex.EncodeToString(b)
 }
 
-// Mkdir makes dir recursively
+// Mkdir makes dir recursively.
 func Mkdir(path string) error {
 	return os.MkdirAll(path, 0o775)
 }
 
-// AbsolutePaths returns absolute paths of files in current working directory
+// AbsolutePaths returns absolute paths of files in current working directory.
 func AbsolutePaths(paths []string) []string {
 	absPaths := []string{}
 	for _, p := range paths {
@@ -124,7 +125,7 @@ func AbsolutePaths(paths []string) []string {
 }
 
 // OutputFile auto creates file if not exists, it will try to detect the data type and
-// auto output binary, string or json
+// auto output binary, string or json.
 func OutputFile(p string, data interface{}) error {
 	dir := filepath.Dir(p)
 	_ = Mkdir(dir)
@@ -147,7 +148,7 @@ func OutputFile(p string, data interface{}) error {
 	return ioutil.WriteFile(p, bin, 0o664)
 }
 
-// ReadString reads file as string
+// ReadString reads file as string.
 func ReadString(p string) (string, error) {
 	bin, err := ioutil.ReadFile(p)
 	return string(bin), err
@@ -231,12 +232,12 @@ func (de *IdleCounter) Wait(ctx context.Context) {
 
 var chPause = make(chan struct{})
 
-// Pause the goroutine forever
+// Pause the goroutine forever.
 func Pause() {
 	<-chPause
 }
 
-// Dump values for debugging
+// Dump values for debugging.
 func Dump(list ...interface{}) string {
 	out := []string{}
 	for _, el := range list {
@@ -245,7 +246,7 @@ func Dump(list ...interface{}) string {
 	return strings.Join(out, " ")
 }
 
-// MustToJSONBytes encode data to json bytes
+// MustToJSONBytes encode data to json bytes.
 func MustToJSONBytes(data interface{}) []byte {
 	buf := bytes.NewBuffer(nil)
 	enc := json.NewEncoder(buf)
@@ -255,12 +256,12 @@ func MustToJSONBytes(data interface{}) []byte {
 	return b[:len(b)-1]
 }
 
-// MustToJSON encode data to json string
+// MustToJSON encode data to json string.
 func MustToJSON(data interface{}) string {
 	return string(MustToJSONBytes(data))
 }
 
-// FileExists checks if file exists, only for file, not for dir
+// FileExists checks if file exists, only for file, not for dir.
 func FileExists(path string) bool {
 	info, err := os.Stat(path)
 	if err != nil {
@@ -276,14 +277,14 @@ func FileExists(path string) bool {
 
 var regSpace = regexp.MustCompile(`\s`)
 
-// Exec command
+// Exec command.
 func Exec(line string, rest ...string) string {
 	return ExecLine(true, line, rest...)
 }
 
 var execLogger = log.New(os.Stdout, "[exec] ", 0)
 
-// ExecLine of command
+// ExecLine of command.
 func ExecLine(std bool, line string, rest ...string) string {
 	args := rest
 	if line != "" {
@@ -314,7 +315,7 @@ func ExecLine(std bool, line string, rest ...string) string {
 	return buf.String()
 }
 
-// FormatCLIArgs into one line string
+// FormatCLIArgs into one line string.
 func FormatCLIArgs(args []string) string {
 	list := []string{}
 	for _, arg := range args {
@@ -327,7 +328,8 @@ func FormatCLIArgs(args []string) string {
 	return strings.Join(list, " ")
 }
 
-// EscapeGoString not using encoding like base64 or gzip because of they will make git diff every large for small change
+// EscapeGoString not using encoding like base64 or gzip because of they will
+// make git diff every large for small change.
 func EscapeGoString(s string) string {
 	return "`" + strings.ReplaceAll(s, "`", "` + \"`\" + `") + "`"
 }
@@ -343,13 +345,13 @@ func CropImage(bin []byte, quality, x, y, width, height int) ([]byte, error) {
 
 	switch typ {
 	case "png":
-		img = img.(*image.NRGBA).SubImage(image.Rect(
+		img = img.(*image.NRGBA).SubImage(image.Rect( //nolint: forcetypeassert
 			x, y, x+width, y+height,
 		))
 
 		err = png.Encode(cropped, img)
 	case "jpeg":
-		img = img.(*image.YCbCr).SubImage(image.Rect(
+		img = img.(*image.YCbCr).SubImage(image.Rect( //nolint: forcetypeassert
 			x, y, x+width, y+height,
 		))
 

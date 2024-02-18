@@ -16,21 +16,21 @@ type IOStreamHandle string
 
 // IOClose Close the stream, discard any temporary backing storage.
 type IOClose struct {
-	// Handle Handle of the stream to close.
+	// Handle of the stream to close.
 	Handle IOStreamHandle `json:"handle"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m IOClose) ProtoReq() string { return "IO.close" }
 
-// Call sends the request
+// Call sends the request.
 func (m IOClose) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// IORead Read a chunk of the stream
+// IORead Read a chunk of the stream.
 type IORead struct {
-	// Handle Handle of the stream to read.
+	// Handle of the stream to read.
 	Handle IOStreamHandle `json:"handle"`
 
 	// Offset (optional) Seek to the specified offset before reading (if not specificed, proceed with offset
@@ -41,10 +41,10 @@ type IORead struct {
 	Size *int `json:"size,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m IORead) ProtoReq() string { return "IO.read" }
 
-// Call the request
+// Call the request.
 func (m IORead) Call(c Client) (*IOReadResult, error) {
 	var res IOReadResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -55,7 +55,7 @@ type IOReadResult struct {
 	// Base64Encoded (optional) Set if the data is base64-encoded
 	Base64Encoded bool `json:"base64Encoded,omitempty"`
 
-	// Data Data that were read.
+	// Data that were read.
 	Data string `json:"data"`
 
 	// EOF Set if the end-of-file condition occurred while reading.
@@ -68,10 +68,10 @@ type IOResolveBlob struct {
 	ObjectID RuntimeRemoteObjectID `json:"objectId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m IOResolveBlob) ProtoReq() string { return "IO.resolveBlob" }
 
-// Call the request
+// Call the request.
 func (m IOResolveBlob) Call(c Client) (*IOResolveBlobResult, error) {
 	var res IOResolveBlobResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -79,6 +79,6 @@ func (m IOResolveBlob) Call(c Client) (*IOResolveBlobResult, error) {
 
 // IOResolveBlobResult ...
 type IOResolveBlobResult struct {
-	// UUID UUID of the specified Blob.
+	// UUID of the specified Blob.
 	UUID string `json:"uuid"`
 }

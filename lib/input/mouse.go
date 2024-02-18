@@ -2,7 +2,7 @@ package input
 
 import "github.com/go-rod/rod/lib/proto"
 
-// MouseKeys is the map for mouse keys
+// MouseKeys is the map for mouse keys.
 var MouseKeys = map[proto.InputMouseButton]int{
 	proto.InputMouseButtonLeft:    1,
 	proto.InputMouseButtonRight:   2,
@@ -11,7 +11,7 @@ var MouseKeys = map[proto.InputMouseButton]int{
 	proto.InputMouseButtonForward: 16,
 }
 
-// EncodeMouseButton into button flag
+// EncodeMouseButton into button flag.
 func EncodeMouseButton(buttons []proto.InputMouseButton) (proto.InputMouseButton, int) {
 	flag := int(0)
 	for _, btn := range buttons {

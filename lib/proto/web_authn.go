@@ -18,10 +18,10 @@ type WebAuthnAuthenticatorID string
 type WebAuthnAuthenticatorProtocol string
 
 const (
-	// WebAuthnAuthenticatorProtocolU2f enum const
+	// WebAuthnAuthenticatorProtocolU2f enum const.
 	WebAuthnAuthenticatorProtocolU2f WebAuthnAuthenticatorProtocol = "u2f"
 
-	// WebAuthnAuthenticatorProtocolCtap2 enum const
+	// WebAuthnAuthenticatorProtocolCtap2 enum const.
 	WebAuthnAuthenticatorProtocolCtap2 WebAuthnAuthenticatorProtocol = "ctap2"
 )
 
@@ -29,10 +29,10 @@ const (
 type WebAuthnCtap2Version string
 
 const (
-	// WebAuthnCtap2VersionCtap20 enum const
+	// WebAuthnCtap2VersionCtap20 enum const.
 	WebAuthnCtap2VersionCtap20 WebAuthnCtap2Version = "ctap2_0"
 
-	// WebAuthnCtap2VersionCtap21 enum const
+	// WebAuthnCtap2VersionCtap21 enum const.
 	WebAuthnCtap2VersionCtap21 WebAuthnCtap2Version = "ctap2_1"
 )
 
@@ -40,19 +40,19 @@ const (
 type WebAuthnAuthenticatorTransport string
 
 const (
-	// WebAuthnAuthenticatorTransportUsb enum const
+	// WebAuthnAuthenticatorTransportUsb enum const.
 	WebAuthnAuthenticatorTransportUsb WebAuthnAuthenticatorTransport = "usb"
 
-	// WebAuthnAuthenticatorTransportNfc enum const
+	// WebAuthnAuthenticatorTransportNfc enum const.
 	WebAuthnAuthenticatorTransportNfc WebAuthnAuthenticatorTransport = "nfc"
 
-	// WebAuthnAuthenticatorTransportBle enum const
+	// WebAuthnAuthenticatorTransportBle enum const.
 	WebAuthnAuthenticatorTransportBle WebAuthnAuthenticatorTransport = "ble"
 
-	// WebAuthnAuthenticatorTransportCable enum const
+	// WebAuthnAuthenticatorTransportCable enum const.
 	WebAuthnAuthenticatorTransportCable WebAuthnAuthenticatorTransport = "cable"
 
-	// WebAuthnAuthenticatorTransportInternal enum const
+	// WebAuthnAuthenticatorTransportInternal enum const.
 	WebAuthnAuthenticatorTransportInternal WebAuthnAuthenticatorTransport = "internal"
 )
 
@@ -142,10 +142,10 @@ type WebAuthnEnable struct {
 	EnableUI bool `json:"enableUI,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnEnable) ProtoReq() string { return "WebAuthn.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -153,10 +153,10 @@ func (m WebAuthnEnable) Call(c Client) error {
 // WebAuthnDisable Disable the WebAuthn domain.
 type WebAuthnDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnDisable) ProtoReq() string { return "WebAuthn.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -167,10 +167,10 @@ type WebAuthnAddVirtualAuthenticator struct {
 	Options *WebAuthnVirtualAuthenticatorOptions `json:"options"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnAddVirtualAuthenticator) ProtoReq() string { return "WebAuthn.addVirtualAuthenticator" }
 
-// Call the request
+// Call the request.
 func (m WebAuthnAddVirtualAuthenticator) Call(c Client) (*WebAuthnAddVirtualAuthenticatorResult, error) {
 	var res WebAuthnAddVirtualAuthenticatorResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -200,10 +200,10 @@ type WebAuthnSetResponseOverrideBits struct {
 	IsBadUP bool `json:"isBadUP,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnSetResponseOverrideBits) ProtoReq() string { return "WebAuthn.setResponseOverrideBits" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnSetResponseOverrideBits) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -214,12 +214,12 @@ type WebAuthnRemoveVirtualAuthenticator struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnRemoveVirtualAuthenticator) ProtoReq() string {
 	return "WebAuthn.removeVirtualAuthenticator"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnRemoveVirtualAuthenticator) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -233,10 +233,10 @@ type WebAuthnAddCredential struct {
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnAddCredential) ProtoReq() string { return "WebAuthn.addCredential" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnAddCredential) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -251,10 +251,10 @@ type WebAuthnGetCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnGetCredential) ProtoReq() string { return "WebAuthn.getCredential" }
 
-// Call the request
+// Call the request.
 func (m WebAuthnGetCredential) Call(c Client) (*WebAuthnGetCredentialResult, error) {
 	var res WebAuthnGetCredentialResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -272,10 +272,10 @@ type WebAuthnGetCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnGetCredentials) ProtoReq() string { return "WebAuthn.getCredentials" }
 
-// Call the request
+// Call the request.
 func (m WebAuthnGetCredentials) Call(c Client) (*WebAuthnGetCredentialsResult, error) {
 	var res WebAuthnGetCredentialsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -296,10 +296,10 @@ type WebAuthnRemoveCredential struct {
 	CredentialID []byte `json:"credentialId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnRemoveCredential) ProtoReq() string { return "WebAuthn.removeCredential" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnRemoveCredential) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -310,10 +310,10 @@ type WebAuthnClearCredentials struct {
 	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnClearCredentials) ProtoReq() string { return "WebAuthn.clearCredentials" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnClearCredentials) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -328,10 +328,10 @@ type WebAuthnSetUserVerified struct {
 	IsUserVerified bool `json:"isUserVerified"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnSetUserVerified) ProtoReq() string { return "WebAuthn.setUserVerified" }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnSetUserVerified) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -346,12 +346,12 @@ type WebAuthnSetAutomaticPresenceSimulation struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m WebAuthnSetAutomaticPresenceSimulation) ProtoReq() string {
 	return "WebAuthn.setAutomaticPresenceSimulation"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m WebAuthnSetAutomaticPresenceSimulation) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -365,7 +365,7 @@ type WebAuthnCredentialAdded struct {
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt WebAuthnCredentialAdded) ProtoEvent() string {
 	return "WebAuthn.credentialAdded"
 }
@@ -379,7 +379,7 @@ type WebAuthnCredentialAsserted struct {
 	Credential *WebAuthnCredential `json:"credential"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt WebAuthnCredentialAsserted) ProtoEvent() string {
 	return "WebAuthn.credentialAsserted"
 }

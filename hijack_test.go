@@ -87,7 +87,7 @@ func TestHijack(t *testing.T) {
 		g.Eq("{\"text\":\"test\"}", ctx.Response.Body())
 	})
 
-	router.MustAdd(s.URL("/b"), func(ctx *rod.Hijack) {
+	router.MustAdd(s.URL("/b"), func(_ *rod.Hijack) {
 		panic("should not come to here")
 	})
 	router.MustRemove(s.URL("/b"))
@@ -157,7 +157,7 @@ func TestHijackMockWholeResponseNoBody(t *testing.T) {
 	defer router.MustStop()
 
 	// intercept and reply without setting a body
-	router.MustAdd("*", func(ctx *rod.Hijack) {
+	router.MustAdd("*", func(_ *rod.Hijack) {
 		// we don't set any body here
 	})
 
@@ -234,7 +234,7 @@ func TestHijackOnErrorLog(t *testing.T) {
 
 	go router.Run()
 
-	g.mc.stub(1, proto.FetchContinueRequest{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.FetchContinueRequest{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(nil), errors.New("err")
 	})
 
@@ -296,7 +296,7 @@ func TestHijackLoadResponseErr(t *testing.T) {
 
 		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{res: &http.Response{
-				StatusCode: 200,
+				StatusCode: http.StatusOK,
 				Body:       ioutil.NopCloser(&MockReader{err: errors.New("err")}),
 			}},
 		}, true))
@@ -355,7 +355,7 @@ func TestHandleAuth(t *testing.T) {
 		u, p, ok := r.BasicAuth()
 		if !ok {
 			w.Header().Add("WWW-Authenticate", `Basic realm="web"`)
-			w.WriteHeader(401)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 

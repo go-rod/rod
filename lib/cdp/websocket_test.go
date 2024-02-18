@@ -31,6 +31,8 @@ func TestWebSocketLargePayload(t *testing.T) {
 }
 
 func ConcurrentCall(t *testing.T) {
+	t.Helper()
+
 	g := setup(t)
 
 	ctx := g.Context()
@@ -57,7 +59,7 @@ func TestWebSocketHeader(t *testing.T) {
 	s := g.Serve()
 
 	wait := make(chan struct{})
-	s.Mux.HandleFunc("/a", func(rw http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/a", func(_ http.ResponseWriter, r *http.Request) {
 		g.Eq(r.Header.Get("Test"), "header")
 		g.Eq(r.Host, "test.com")
 		g.Eq(r.URL.Query().Get("q"), "ok")

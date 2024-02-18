@@ -2,11 +2,11 @@ package input
 
 import "runtime"
 
-// IsMac OS
+// IsMac OS.
 var IsMac = runtime.GOOS == "darwin"
 
 // commands for macOS
-// Reference: https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/macEditingCommands.ts
+// https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/macEditingCommands.ts
 var macCommands = map[string][]string{
 	"Backspace":                   {"deleteBackward"},
 	"Enter":                       {"insertNewline"},

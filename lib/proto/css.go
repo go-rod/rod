@@ -24,16 +24,16 @@ type CSSStyleSheetID string
 type CSSStyleSheetOrigin string
 
 const (
-	// CSSStyleSheetOriginInjected enum const
+	// CSSStyleSheetOriginInjected enum const.
 	CSSStyleSheetOriginInjected CSSStyleSheetOrigin = "injected"
 
-	// CSSStyleSheetOriginUserAgent enum const
+	// CSSStyleSheetOriginUserAgent enum const.
 	CSSStyleSheetOriginUserAgent CSSStyleSheetOrigin = "user-agent"
 
-	// CSSStyleSheetOriginInspector enum const
+	// CSSStyleSheetOriginInspector enum const.
 	CSSStyleSheetOriginInspector CSSStyleSheetOrigin = "inspector"
 
-	// CSSStyleSheetOriginRegular enum const
+	// CSSStyleSheetOriginRegular enum const.
 	CSSStyleSheetOriginRegular CSSStyleSheetOrigin = "regular"
 )
 
@@ -45,7 +45,7 @@ type CSSPseudoElementMatches struct {
 	// PseudoIdentifier (optional) Pseudo element custom ident.
 	PseudoIdentifier string `json:"pseudoIdentifier,omitempty"`
 
-	// Matches Matches of CSS rules applicable to the pseudo style.
+	// Matches of CSS rules applicable to the pseudo style.
 	Matches []*CSSRuleMatch `json:"matches"`
 }
 
@@ -84,7 +84,7 @@ type CSSValue struct {
 
 // CSSSelectorList Selector list data.
 type CSSSelectorList struct {
-	// Selectors Selectors in the list.
+	// Selectors in the list.
 	Selectors []*CSSValue `json:"selectors"`
 
 	// Text Rule selector text.
@@ -296,20 +296,20 @@ type CSSCSSProperty struct {
 	LonghandProperties []*CSSCSSProperty `json:"longhandProperties,omitempty"`
 }
 
-// CSSCSSMediaSource enum
+// CSSCSSMediaSource enum.
 type CSSCSSMediaSource string
 
 const (
-	// CSSCSSMediaSourceMediaRule enum const
+	// CSSCSSMediaSourceMediaRule enum const.
 	CSSCSSMediaSourceMediaRule CSSCSSMediaSource = "mediaRule"
 
-	// CSSCSSMediaSourceImportRule enum const
+	// CSSCSSMediaSourceImportRule enum const.
 	CSSCSSMediaSourceImportRule CSSCSSMediaSource = "importRule"
 
-	// CSSCSSMediaSourceLinkedSheet enum const
+	// CSSCSSMediaSourceLinkedSheet enum const.
 	CSSCSSMediaSourceLinkedSheet CSSCSSMediaSource = "linkedSheet"
 
-	// CSSCSSMediaSourceInlineSheet enum const
+	// CSSCSSMediaSourceInlineSheet enum const.
 	CSSCSSMediaSourceInlineSheet CSSCSSMediaSource = "inlineSheet"
 )
 
@@ -318,7 +318,7 @@ type CSSCSSMedia struct {
 	// Text Media query text.
 	Text string `json:"text"`
 
-	// Source Source of the media query: "mediaRule" if specified by a @media rule, "importRule" if
+	// Source of the media query: "mediaRule" if specified by a @media rule, "importRule" if
 	// specified by an @import rule, "linkedSheet" if specified by a "media" attribute in a linked
 	// stylesheet's LINK tag, "inlineSheet" if specified by a "media" attribute in an inline
 	// stylesheet's STYLE tag.
@@ -454,7 +454,7 @@ type CSSPlatformFontUsage struct {
 	GlyphCount float64 `json:"glyphCount"`
 }
 
-// CSSFontVariationAxis Information about font variation axes for variable fonts
+// CSSFontVariationAxis Information about font variation axes for variable fonts.
 type CSSFontVariationAxis struct {
 	// Tag The font-variation-setting tag (a.k.a. "axis tag").
 	Tag string `json:"tag"`
@@ -578,10 +578,10 @@ type CSSAddRule struct {
 	Location *CSSSourceRange `json:"location"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSAddRule) ProtoReq() string { return "CSS.addRule" }
 
-// Call the request
+// Call the request.
 func (m CSSAddRule) Call(c Client) (*CSSAddRuleResult, error) {
 	var res CSSAddRuleResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -599,10 +599,10 @@ type CSSCollectClassNames struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSCollectClassNames) ProtoReq() string { return "CSS.collectClassNames" }
 
-// Call the request
+// Call the request.
 func (m CSSCollectClassNames) Call(c Client) (*CSSCollectClassNamesResult, error) {
 	var res CSSCollectClassNamesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -620,10 +620,10 @@ type CSSCreateStyleSheet struct {
 	FrameID PageFrameID `json:"frameId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSCreateStyleSheet) ProtoReq() string { return "CSS.createStyleSheet" }
 
-// Call the request
+// Call the request.
 func (m CSSCreateStyleSheet) Call(c Client) (*CSSCreateStyleSheetResult, error) {
 	var res CSSCreateStyleSheetResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -638,10 +638,10 @@ type CSSCreateStyleSheetResult struct {
 // CSSDisable Disables the CSS agent for the given page.
 type CSSDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSDisable) ProtoReq() string { return "CSS.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -650,10 +650,10 @@ func (m CSSDisable) Call(c Client) error {
 // enabled until the result of this command is received.
 type CSSEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSEnable) ProtoReq() string { return "CSS.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -668,10 +668,10 @@ type CSSForcePseudoState struct {
 	ForcedPseudoClasses []string `json:"forcedPseudoClasses"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSForcePseudoState) ProtoReq() string { return "CSS.forcePseudoState" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSForcePseudoState) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -682,10 +682,10 @@ type CSSGetBackgroundColors struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetBackgroundColors) ProtoReq() string { return "CSS.getBackgroundColors" }
 
-// Call the request
+// Call the request.
 func (m CSSGetBackgroundColors) Call(c Client) (*CSSGetBackgroundColorsResult, error) {
 	var res CSSGetBackgroundColorsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -714,10 +714,10 @@ type CSSGetComputedStyleForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetComputedStyleForNode) ProtoReq() string { return "CSS.getComputedStyleForNode" }
 
-// Call the request
+// Call the request.
 func (m CSSGetComputedStyleForNode) Call(c Client) (*CSSGetComputedStyleForNodeResult, error) {
 	var res CSSGetComputedStyleForNodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -736,10 +736,10 @@ type CSSGetInlineStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetInlineStylesForNode) ProtoReq() string { return "CSS.getInlineStylesForNode" }
 
-// Call the request
+// Call the request.
 func (m CSSGetInlineStylesForNode) Call(c Client) (*CSSGetInlineStylesForNodeResult, error) {
 	var res CSSGetInlineStylesForNodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -760,10 +760,10 @@ type CSSGetMatchedStylesForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetMatchedStylesForNode) ProtoReq() string { return "CSS.getMatchedStylesForNode" }
 
-// Call the request
+// Call the request.
 func (m CSSGetMatchedStylesForNode) Call(c Client) (*CSSGetMatchedStylesForNodeResult, error) {
 	var res CSSGetMatchedStylesForNodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -802,10 +802,10 @@ type CSSGetMatchedStylesForNodeResult struct {
 // CSSGetMediaQueries Returns all media queries parsed by the rendering engine.
 type CSSGetMediaQueries struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetMediaQueries) ProtoReq() string { return "CSS.getMediaQueries" }
 
-// Call the request
+// Call the request.
 func (m CSSGetMediaQueries) Call(c Client) (*CSSGetMediaQueriesResult, error) {
 	var res CSSGetMediaQueriesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -824,10 +824,10 @@ type CSSGetPlatformFontsForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetPlatformFontsForNode) ProtoReq() string { return "CSS.getPlatformFontsForNode" }
 
-// Call the request
+// Call the request.
 func (m CSSGetPlatformFontsForNode) Call(c Client) (*CSSGetPlatformFontsForNodeResult, error) {
 	var res CSSGetPlatformFontsForNodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -845,10 +845,10 @@ type CSSGetStyleSheetText struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetStyleSheetText) ProtoReq() string { return "CSS.getStyleSheetText" }
 
-// Call the request
+// Call the request.
 func (m CSSGetStyleSheetText) Call(c Client) (*CSSGetStyleSheetTextResult, error) {
 	var res CSSGetStyleSheetTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -869,10 +869,10 @@ type CSSGetLayersForNode struct {
 	NodeID DOMNodeID `json:"nodeId"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSGetLayersForNode) ProtoReq() string { return "CSS.getLayersForNode" }
 
-// Call the request
+// Call the request.
 func (m CSSGetLayersForNode) Call(c Client) (*CSSGetLayersForNodeResult, error) {
 	var res CSSGetLayersForNodeResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -895,10 +895,10 @@ type CSSTrackComputedStyleUpdates struct {
 	PropertiesToTrack []*CSSCSSComputedStyleProperty `json:"propertiesToTrack"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSTrackComputedStyleUpdates) ProtoReq() string { return "CSS.trackComputedStyleUpdates" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSTrackComputedStyleUpdates) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -906,10 +906,10 @@ func (m CSSTrackComputedStyleUpdates) Call(c Client) error {
 // CSSTakeComputedStyleUpdates (experimental) Polls the next batch of computed style updates.
 type CSSTakeComputedStyleUpdates struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSTakeComputedStyleUpdates) ProtoReq() string { return "CSS.takeComputedStyleUpdates" }
 
-// Call the request
+// Call the request.
 func (m CSSTakeComputedStyleUpdates) Call(c Client) (*CSSTakeComputedStyleUpdatesResult, error) {
 	var res CSSTakeComputedStyleUpdatesResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -917,12 +917,12 @@ func (m CSSTakeComputedStyleUpdates) Call(c Client) (*CSSTakeComputedStyleUpdate
 
 // CSSTakeComputedStyleUpdatesResult (experimental) ...
 type CSSTakeComputedStyleUpdatesResult struct {
-	// NodeIds The list of node Ids that have their tracked computed styles updated.
-	NodeIds []DOMNodeID `json:"nodeIds"`
+	// NodeIDs The list of node Ids that have their tracked computed styles updated.
+	NodeIDs []DOMNodeID `json:"nodeIds"`
 }
 
 // CSSSetEffectivePropertyValueForNode Find a rule with the given active property for the given node and set the new value for this
-// property
+// property.
 type CSSSetEffectivePropertyValueForNode struct {
 	// NodeID The element id for which to set property.
 	NodeID DOMNodeID `json:"nodeId"`
@@ -934,12 +934,12 @@ type CSSSetEffectivePropertyValueForNode struct {
 	Value string `json:"value"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetEffectivePropertyValueForNode) ProtoReq() string {
 	return "CSS.setEffectivePropertyValueForNode"
 }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSSetEffectivePropertyValueForNode) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -956,10 +956,10 @@ type CSSSetKeyframeKey struct {
 	KeyText string `json:"keyText"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetKeyframeKey) ProtoReq() string { return "CSS.setKeyframeKey" }
 
-// Call the request
+// Call the request.
 func (m CSSSetKeyframeKey) Call(c Client) (*CSSSetKeyframeKeyResult, error) {
 	var res CSSSetKeyframeKeyResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -983,10 +983,10 @@ type CSSSetMediaText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetMediaText) ProtoReq() string { return "CSS.setMediaText" }
 
-// Call the request
+// Call the request.
 func (m CSSSetMediaText) Call(c Client) (*CSSSetMediaTextResult, error) {
 	var res CSSSetMediaTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1010,10 +1010,10 @@ type CSSSetContainerQueryText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetContainerQueryText) ProtoReq() string { return "CSS.setContainerQueryText" }
 
-// Call the request
+// Call the request.
 func (m CSSSetContainerQueryText) Call(c Client) (*CSSSetContainerQueryTextResult, error) {
 	var res CSSSetContainerQueryTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1037,10 +1037,10 @@ type CSSSetSupportsText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetSupportsText) ProtoReq() string { return "CSS.setSupportsText" }
 
-// Call the request
+// Call the request.
 func (m CSSSetSupportsText) Call(c Client) (*CSSSetSupportsTextResult, error) {
 	var res CSSSetSupportsTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1064,10 +1064,10 @@ type CSSSetScopeText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetScopeText) ProtoReq() string { return "CSS.setScopeText" }
 
-// Call the request
+// Call the request.
 func (m CSSSetScopeText) Call(c Client) (*CSSSetScopeTextResult, error) {
 	var res CSSSetScopeTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1091,10 +1091,10 @@ type CSSSetRuleSelector struct {
 	Selector string `json:"selector"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetRuleSelector) ProtoReq() string { return "CSS.setRuleSelector" }
 
-// Call the request
+// Call the request.
 func (m CSSSetRuleSelector) Call(c Client) (*CSSSetRuleSelectorResult, error) {
 	var res CSSSetRuleSelectorResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1115,10 +1115,10 @@ type CSSSetStyleSheetText struct {
 	Text string `json:"text"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetStyleSheetText) ProtoReq() string { return "CSS.setStyleSheetText" }
 
-// Call the request
+// Call the request.
 func (m CSSSetStyleSheetText) Call(c Client) (*CSSSetStyleSheetTextResult, error) {
 	var res CSSSetStyleSheetTextResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1136,10 +1136,10 @@ type CSSSetStyleTexts struct {
 	Edits []*CSSStyleDeclarationEdit `json:"edits"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetStyleTexts) ProtoReq() string { return "CSS.setStyleTexts" }
 
-// Call the request
+// Call the request.
 func (m CSSSetStyleTexts) Call(c Client) (*CSSSetStyleTextsResult, error) {
 	var res CSSSetStyleTextsResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1154,10 +1154,10 @@ type CSSSetStyleTextsResult struct {
 // CSSStartRuleUsageTracking Enables the selector recording.
 type CSSStartRuleUsageTracking struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSStartRuleUsageTracking) ProtoReq() string { return "CSS.startRuleUsageTracking" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSStartRuleUsageTracking) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1166,10 +1166,10 @@ func (m CSSStartRuleUsageTracking) Call(c Client) error {
 // `takeCoverageDelta` (or since start of coverage instrumentation).
 type CSSStopRuleUsageTracking struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSStopRuleUsageTracking) ProtoReq() string { return "CSS.stopRuleUsageTracking" }
 
-// Call the request
+// Call the request.
 func (m CSSStopRuleUsageTracking) Call(c Client) (*CSSStopRuleUsageTrackingResult, error) {
 	var res CSSStopRuleUsageTrackingResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1185,10 +1185,10 @@ type CSSStopRuleUsageTrackingResult struct {
 // instrumentation).
 type CSSTakeCoverageDelta struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSTakeCoverageDelta) ProtoReq() string { return "CSS.takeCoverageDelta" }
 
-// Call the request
+// Call the request.
 func (m CSSTakeCoverageDelta) Call(c Client) (*CSSTakeCoverageDeltaResult, error) {
 	var res CSSTakeCoverageDeltaResult
 	return &res, call(m.ProtoReq(), m, &res, c)
@@ -1209,10 +1209,10 @@ type CSSSetLocalFontsEnabled struct {
 	Enabled bool `json:"enabled"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CSSSetLocalFontsEnabled) ProtoReq() string { return "CSS.setLocalFontsEnabled" }
 
-// Call sends the request
+// Call sends the request.
 func (m CSSSetLocalFontsEnabled) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -1224,7 +1224,7 @@ type CSSFontsUpdated struct {
 	Font *CSSFontFace `json:"font,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CSSFontsUpdated) ProtoEvent() string {
 	return "CSS.fontsUpdated"
 }
@@ -1233,7 +1233,7 @@ func (evt CSSFontsUpdated) ProtoEvent() string {
 // resized.) The current implementation considers only viewport-dependent media features.
 type CSSMediaQueryResultChanged struct{}
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CSSMediaQueryResultChanged) ProtoEvent() string {
 	return "CSS.mediaQueryResultChanged"
 }
@@ -1244,7 +1244,7 @@ type CSSStyleSheetAdded struct {
 	Header *CSSCSSStyleSheetHeader `json:"header"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CSSStyleSheetAdded) ProtoEvent() string {
 	return "CSS.styleSheetAdded"
 }
@@ -1255,7 +1255,7 @@ type CSSStyleSheetChanged struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CSSStyleSheetChanged) ProtoEvent() string {
 	return "CSS.styleSheetChanged"
 }
@@ -1266,7 +1266,7 @@ type CSSStyleSheetRemoved struct {
 	StyleSheetID CSSStyleSheetID `json:"styleSheetId"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CSSStyleSheetRemoved) ProtoEvent() string {
 	return "CSS.styleSheetRemoved"
 }

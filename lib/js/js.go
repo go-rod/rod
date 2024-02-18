@@ -1,6 +1,6 @@
 package js
 
-// Function definition
+// Function definition.
 type Function struct {
 	// Name must be unique and not conflict with the function names in "helper.js"
 	Name string

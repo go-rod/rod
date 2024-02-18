@@ -70,7 +70,7 @@ func getList() gson.JSON {
 		}
 
 		console.log(JSON.stringify(list))
-	`, string(code))
+	`, code)
 
 	tmp := "tmp/helper.js"
 

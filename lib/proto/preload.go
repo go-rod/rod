@@ -8,10 +8,10 @@ Preload
 
 */
 
-// PreloadRuleSetID Unique id
+// PreloadRuleSetID Unique id.
 type PreloadRuleSetID string
 
-// PreloadRuleSet Corresponds to SpeculationRuleSet
+// PreloadRuleSet Corresponds to SpeculationRuleSet.
 type PreloadRuleSet struct {
 	// ID ...
 	ID PreloadRuleSetID `json:"id"`
@@ -40,10 +40,10 @@ type PreloadRuleSet struct {
 type PreloadRuleSetErrorType string
 
 const (
-	// PreloadRuleSetErrorTypeSourceIsNotJSONObject enum const
+	// PreloadRuleSetErrorTypeSourceIsNotJSONObject enum const.
 	PreloadRuleSetErrorTypeSourceIsNotJSONObject PreloadRuleSetErrorType = "SourceIsNotJsonObject"
 
-	// PreloadRuleSetErrorTypeInvalidRulesSkipped enum const
+	// PreloadRuleSetErrorTypeInvalidRulesSkipped enum const.
 	PreloadRuleSetErrorTypeInvalidRulesSkipped PreloadRuleSetErrorType = "InvalidRulesSkipped"
 )
 
@@ -53,10 +53,10 @@ const (
 type PreloadSpeculationAction string
 
 const (
-	// PreloadSpeculationActionPrefetch enum const
+	// PreloadSpeculationActionPrefetch enum const.
 	PreloadSpeculationActionPrefetch PreloadSpeculationAction = "Prefetch"
 
-	// PreloadSpeculationActionPrerender enum const
+	// PreloadSpeculationActionPrerender enum const.
 	PreloadSpeculationActionPrerender PreloadSpeculationAction = "Prerender"
 )
 
@@ -65,10 +65,10 @@ const (
 type PreloadSpeculationTargetHint string
 
 const (
-	// PreloadSpeculationTargetHintBlank enum const
+	// PreloadSpeculationTargetHintBlank enum const.
 	PreloadSpeculationTargetHintBlank PreloadSpeculationTargetHint = "Blank"
 
-	// PreloadSpeculationTargetHintSelf enum const
+	// PreloadSpeculationTargetHintSelf enum const.
 	PreloadSpeculationTargetHintSelf PreloadSpeculationTargetHint = "Self"
 )
 
@@ -96,194 +96,194 @@ type PreloadPreloadingAttemptKey struct {
 // that had a speculation rule that triggered the attempt, and the
 // BackendNodeIds of <a href> or <area href> elements that triggered the
 // attempt (in the case of attempts triggered by a document rule). It is
-// possible for mulitple rule sets and links to trigger a single attempt.
+// possible for multiple rule sets and links to trigger a single attempt.
 type PreloadPreloadingAttemptSource struct {
 	// Key ...
 	Key *PreloadPreloadingAttemptKey `json:"key"`
 
-	// RuleSetIds ...
-	RuleSetIds []PreloadRuleSetID `json:"ruleSetIds"`
+	// RuleSetIDs ...
+	RuleSetIDs []PreloadRuleSetID `json:"ruleSetIds"`
 
-	// NodeIds ...
-	NodeIds []DOMBackendNodeID `json:"nodeIds"`
+	// NodeIDs ...
+	NodeIDs []DOMBackendNodeID `json:"nodeIds"`
 }
 
 // PreloadPrerenderFinalStatus List of FinalStatus reasons for Prerender2.
 type PreloadPrerenderFinalStatus string
 
 const (
-	// PreloadPrerenderFinalStatusActivated enum const
+	// PreloadPrerenderFinalStatusActivated enum const.
 	PreloadPrerenderFinalStatusActivated PreloadPrerenderFinalStatus = "Activated"
 
-	// PreloadPrerenderFinalStatusDestroyed enum const
+	// PreloadPrerenderFinalStatusDestroyed enum const.
 	PreloadPrerenderFinalStatusDestroyed PreloadPrerenderFinalStatus = "Destroyed"
 
-	// PreloadPrerenderFinalStatusLowEndDevice enum const
+	// PreloadPrerenderFinalStatusLowEndDevice enum const.
 	PreloadPrerenderFinalStatusLowEndDevice PreloadPrerenderFinalStatus = "LowEndDevice"
 
-	// PreloadPrerenderFinalStatusInvalidSchemeRedirect enum const
+	// PreloadPrerenderFinalStatusInvalidSchemeRedirect enum const.
 	PreloadPrerenderFinalStatusInvalidSchemeRedirect PreloadPrerenderFinalStatus = "InvalidSchemeRedirect"
 
-	// PreloadPrerenderFinalStatusInvalidSchemeNavigation enum const
+	// PreloadPrerenderFinalStatusInvalidSchemeNavigation enum const.
 	PreloadPrerenderFinalStatusInvalidSchemeNavigation PreloadPrerenderFinalStatus = "InvalidSchemeNavigation"
 
-	// PreloadPrerenderFinalStatusInProgressNavigation enum const
+	// PreloadPrerenderFinalStatusInProgressNavigation enum const.
 	PreloadPrerenderFinalStatusInProgressNavigation PreloadPrerenderFinalStatus = "InProgressNavigation"
 
-	// PreloadPrerenderFinalStatusNavigationRequestBlockedByCsp enum const
+	// PreloadPrerenderFinalStatusNavigationRequestBlockedByCsp enum const.
 	PreloadPrerenderFinalStatusNavigationRequestBlockedByCsp PreloadPrerenderFinalStatus = "NavigationRequestBlockedByCsp"
 
-	// PreloadPrerenderFinalStatusMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusMainFrameNavigation PreloadPrerenderFinalStatus = "MainFrameNavigation"
 
-	// PreloadPrerenderFinalStatusMojoBinderPolicy enum const
+	// PreloadPrerenderFinalStatusMojoBinderPolicy enum const.
 	PreloadPrerenderFinalStatusMojoBinderPolicy PreloadPrerenderFinalStatus = "MojoBinderPolicy"
 
-	// PreloadPrerenderFinalStatusRendererProcessCrashed enum const
+	// PreloadPrerenderFinalStatusRendererProcessCrashed enum const.
 	PreloadPrerenderFinalStatusRendererProcessCrashed PreloadPrerenderFinalStatus = "RendererProcessCrashed"
 
-	// PreloadPrerenderFinalStatusRendererProcessKilled enum const
+	// PreloadPrerenderFinalStatusRendererProcessKilled enum const.
 	PreloadPrerenderFinalStatusRendererProcessKilled PreloadPrerenderFinalStatus = "RendererProcessKilled"
 
-	// PreloadPrerenderFinalStatusDownload enum const
+	// PreloadPrerenderFinalStatusDownload enum const.
 	PreloadPrerenderFinalStatusDownload PreloadPrerenderFinalStatus = "Download"
 
-	// PreloadPrerenderFinalStatusTriggerDestroyed enum const
+	// PreloadPrerenderFinalStatusTriggerDestroyed enum const.
 	PreloadPrerenderFinalStatusTriggerDestroyed PreloadPrerenderFinalStatus = "TriggerDestroyed"
 
-	// PreloadPrerenderFinalStatusNavigationNotCommitted enum const
+	// PreloadPrerenderFinalStatusNavigationNotCommitted enum const.
 	PreloadPrerenderFinalStatusNavigationNotCommitted PreloadPrerenderFinalStatus = "NavigationNotCommitted"
 
-	// PreloadPrerenderFinalStatusNavigationBadHTTPStatus enum const
+	// PreloadPrerenderFinalStatusNavigationBadHTTPStatus enum const.
 	PreloadPrerenderFinalStatusNavigationBadHTTPStatus PreloadPrerenderFinalStatus = "NavigationBadHttpStatus"
 
-	// PreloadPrerenderFinalStatusClientCertRequested enum const
+	// PreloadPrerenderFinalStatusClientCertRequested enum const.
 	PreloadPrerenderFinalStatusClientCertRequested PreloadPrerenderFinalStatus = "ClientCertRequested"
 
-	// PreloadPrerenderFinalStatusNavigationRequestNetworkError enum const
+	// PreloadPrerenderFinalStatusNavigationRequestNetworkError enum const.
 	PreloadPrerenderFinalStatusNavigationRequestNetworkError PreloadPrerenderFinalStatus = "NavigationRequestNetworkError"
 
-	// PreloadPrerenderFinalStatusMaxNumOfRunningPrerendersExceeded enum const
+	// PreloadPrerenderFinalStatusMaxNumOfRunningPrerendersExceeded enum const.
 	PreloadPrerenderFinalStatusMaxNumOfRunningPrerendersExceeded PreloadPrerenderFinalStatus = "MaxNumOfRunningPrerendersExceeded"
 
-	// PreloadPrerenderFinalStatusCancelAllHostsForTesting enum const
+	// PreloadPrerenderFinalStatusCancelAllHostsForTesting enum const.
 	PreloadPrerenderFinalStatusCancelAllHostsForTesting PreloadPrerenderFinalStatus = "CancelAllHostsForTesting"
 
-	// PreloadPrerenderFinalStatusDidFailLoad enum const
+	// PreloadPrerenderFinalStatusDidFailLoad enum const.
 	PreloadPrerenderFinalStatusDidFailLoad PreloadPrerenderFinalStatus = "DidFailLoad"
 
-	// PreloadPrerenderFinalStatusStop enum const
+	// PreloadPrerenderFinalStatusStop enum const.
 	PreloadPrerenderFinalStatusStop PreloadPrerenderFinalStatus = "Stop"
 
-	// PreloadPrerenderFinalStatusSslCertificateError enum const
+	// PreloadPrerenderFinalStatusSslCertificateError enum const.
 	PreloadPrerenderFinalStatusSslCertificateError PreloadPrerenderFinalStatus = "SslCertificateError"
 
-	// PreloadPrerenderFinalStatusLoginAuthRequested enum const
+	// PreloadPrerenderFinalStatusLoginAuthRequested enum const.
 	PreloadPrerenderFinalStatusLoginAuthRequested PreloadPrerenderFinalStatus = "LoginAuthRequested"
 
-	// PreloadPrerenderFinalStatusUaChangeRequiresReload enum const
+	// PreloadPrerenderFinalStatusUaChangeRequiresReload enum const.
 	PreloadPrerenderFinalStatusUaChangeRequiresReload PreloadPrerenderFinalStatus = "UaChangeRequiresReload"
 
-	// PreloadPrerenderFinalStatusBlockedByClient enum const
+	// PreloadPrerenderFinalStatusBlockedByClient enum const.
 	PreloadPrerenderFinalStatusBlockedByClient PreloadPrerenderFinalStatus = "BlockedByClient"
 
-	// PreloadPrerenderFinalStatusAudioOutputDeviceRequested enum const
+	// PreloadPrerenderFinalStatusAudioOutputDeviceRequested enum const.
 	PreloadPrerenderFinalStatusAudioOutputDeviceRequested PreloadPrerenderFinalStatus = "AudioOutputDeviceRequested"
 
-	// PreloadPrerenderFinalStatusMixedContent enum const
+	// PreloadPrerenderFinalStatusMixedContent enum const.
 	PreloadPrerenderFinalStatusMixedContent PreloadPrerenderFinalStatus = "MixedContent"
 
-	// PreloadPrerenderFinalStatusTriggerBackgrounded enum const
+	// PreloadPrerenderFinalStatusTriggerBackgrounded enum const.
 	PreloadPrerenderFinalStatusTriggerBackgrounded PreloadPrerenderFinalStatus = "TriggerBackgrounded"
 
-	// PreloadPrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected enum const
+	// PreloadPrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected enum const.
 	PreloadPrerenderFinalStatusEmbedderTriggeredAndCrossOriginRedirected PreloadPrerenderFinalStatus = "EmbedderTriggeredAndCrossOriginRedirected"
 
-	// PreloadPrerenderFinalStatusMemoryLimitExceeded enum const
+	// PreloadPrerenderFinalStatusMemoryLimitExceeded enum const.
 	PreloadPrerenderFinalStatusMemoryLimitExceeded PreloadPrerenderFinalStatus = "MemoryLimitExceeded"
 
-	// PreloadPrerenderFinalStatusFailToGetMemoryUsage enum const
+	// PreloadPrerenderFinalStatusFailToGetMemoryUsage enum const.
 	PreloadPrerenderFinalStatusFailToGetMemoryUsage PreloadPrerenderFinalStatus = "FailToGetMemoryUsage"
 
-	// PreloadPrerenderFinalStatusDataSaverEnabled enum const
+	// PreloadPrerenderFinalStatusDataSaverEnabled enum const.
 	PreloadPrerenderFinalStatusDataSaverEnabled PreloadPrerenderFinalStatus = "DataSaverEnabled"
 
-	// PreloadPrerenderFinalStatusHasEffectiveURL enum const
+	// PreloadPrerenderFinalStatusHasEffectiveURL enum const.
 	PreloadPrerenderFinalStatusHasEffectiveURL PreloadPrerenderFinalStatus = "HasEffectiveUrl"
 
-	// PreloadPrerenderFinalStatusActivatedBeforeStarted enum const
+	// PreloadPrerenderFinalStatusActivatedBeforeStarted enum const.
 	PreloadPrerenderFinalStatusActivatedBeforeStarted PreloadPrerenderFinalStatus = "ActivatedBeforeStarted"
 
-	// PreloadPrerenderFinalStatusInactivePageRestriction enum const
+	// PreloadPrerenderFinalStatusInactivePageRestriction enum const.
 	PreloadPrerenderFinalStatusInactivePageRestriction PreloadPrerenderFinalStatus = "InactivePageRestriction"
 
-	// PreloadPrerenderFinalStatusStartFailed enum const
+	// PreloadPrerenderFinalStatusStartFailed enum const.
 	PreloadPrerenderFinalStatusStartFailed PreloadPrerenderFinalStatus = "StartFailed"
 
-	// PreloadPrerenderFinalStatusTimeoutBackgrounded enum const
+	// PreloadPrerenderFinalStatusTimeoutBackgrounded enum const.
 	PreloadPrerenderFinalStatusTimeoutBackgrounded PreloadPrerenderFinalStatus = "TimeoutBackgrounded"
 
-	// PreloadPrerenderFinalStatusCrossSiteRedirectInInitialNavigation enum const
+	// PreloadPrerenderFinalStatusCrossSiteRedirectInInitialNavigation enum const.
 	PreloadPrerenderFinalStatusCrossSiteRedirectInInitialNavigation PreloadPrerenderFinalStatus = "CrossSiteRedirectInInitialNavigation"
 
-	// PreloadPrerenderFinalStatusCrossSiteNavigationInInitialNavigation enum const
+	// PreloadPrerenderFinalStatusCrossSiteNavigationInInitialNavigation enum const.
 	PreloadPrerenderFinalStatusCrossSiteNavigationInInitialNavigation PreloadPrerenderFinalStatus = "CrossSiteNavigationInInitialNavigation"
 
-	// PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation enum const
+	// PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation enum const.
 	PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation PreloadPrerenderFinalStatus = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation"
 
-	// PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation enum const
+	// PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation enum const.
 	PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation PreloadPrerenderFinalStatus = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation"
 
-	// PreloadPrerenderFinalStatusActivationNavigationParameterMismatch enum const
+	// PreloadPrerenderFinalStatusActivationNavigationParameterMismatch enum const.
 	PreloadPrerenderFinalStatusActivationNavigationParameterMismatch PreloadPrerenderFinalStatus = "ActivationNavigationParameterMismatch"
 
-	// PreloadPrerenderFinalStatusActivatedInBackground enum const
+	// PreloadPrerenderFinalStatusActivatedInBackground enum const.
 	PreloadPrerenderFinalStatusActivatedInBackground PreloadPrerenderFinalStatus = "ActivatedInBackground"
 
-	// PreloadPrerenderFinalStatusEmbedderHostDisallowed enum const
+	// PreloadPrerenderFinalStatusEmbedderHostDisallowed enum const.
 	PreloadPrerenderFinalStatusEmbedderHostDisallowed PreloadPrerenderFinalStatus = "EmbedderHostDisallowed"
 
-	// PreloadPrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess enum const
+	// PreloadPrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess enum const.
 	PreloadPrerenderFinalStatusActivationNavigationDestroyedBeforeSuccess PreloadPrerenderFinalStatus = "ActivationNavigationDestroyedBeforeSuccess"
 
-	// PreloadPrerenderFinalStatusTabClosedByUserGesture enum const
+	// PreloadPrerenderFinalStatusTabClosedByUserGesture enum const.
 	PreloadPrerenderFinalStatusTabClosedByUserGesture PreloadPrerenderFinalStatus = "TabClosedByUserGesture"
 
-	// PreloadPrerenderFinalStatusTabClosedWithoutUserGesture enum const
+	// PreloadPrerenderFinalStatusTabClosedWithoutUserGesture enum const.
 	PreloadPrerenderFinalStatusTabClosedWithoutUserGesture PreloadPrerenderFinalStatus = "TabClosedWithoutUserGesture"
 
-	// PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed enum const
+	// PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed enum const.
 	PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessCrashed PreloadPrerenderFinalStatus = "PrimaryMainFrameRendererProcessCrashed"
 
-	// PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessKilled enum const
+	// PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessKilled enum const.
 	PreloadPrerenderFinalStatusPrimaryMainFrameRendererProcessKilled PreloadPrerenderFinalStatus = "PrimaryMainFrameRendererProcessKilled"
 
-	// PreloadPrerenderFinalStatusActivationFramePolicyNotCompatible enum const
+	// PreloadPrerenderFinalStatusActivationFramePolicyNotCompatible enum const.
 	PreloadPrerenderFinalStatusActivationFramePolicyNotCompatible PreloadPrerenderFinalStatus = "ActivationFramePolicyNotCompatible"
 
-	// PreloadPrerenderFinalStatusPreloadingDisabled enum const
+	// PreloadPrerenderFinalStatusPreloadingDisabled enum const.
 	PreloadPrerenderFinalStatusPreloadingDisabled PreloadPrerenderFinalStatus = "PreloadingDisabled"
 
-	// PreloadPrerenderFinalStatusBatterySaverEnabled enum const
+	// PreloadPrerenderFinalStatusBatterySaverEnabled enum const.
 	PreloadPrerenderFinalStatusBatterySaverEnabled PreloadPrerenderFinalStatus = "BatterySaverEnabled"
 
-	// PreloadPrerenderFinalStatusActivatedDuringMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusActivatedDuringMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusActivatedDuringMainFrameNavigation PreloadPrerenderFinalStatus = "ActivatedDuringMainFrameNavigation"
 
-	// PreloadPrerenderFinalStatusPreloadingUnsupportedByWebContents enum const
+	// PreloadPrerenderFinalStatusPreloadingUnsupportedByWebContents enum const.
 	PreloadPrerenderFinalStatusPreloadingUnsupportedByWebContents PreloadPrerenderFinalStatus = "PreloadingUnsupportedByWebContents"
 
-	// PreloadPrerenderFinalStatusCrossSiteRedirectInMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusCrossSiteRedirectInMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusCrossSiteRedirectInMainFrameNavigation PreloadPrerenderFinalStatus = "CrossSiteRedirectInMainFrameNavigation"
 
-	// PreloadPrerenderFinalStatusCrossSiteNavigationInMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusCrossSiteNavigationInMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusCrossSiteNavigationInMainFrameNavigation PreloadPrerenderFinalStatus = "CrossSiteNavigationInMainFrameNavigation"
 
-	// PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation PreloadPrerenderFinalStatus = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"
 
-	// PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation enum const
+	// PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation enum const.
 	PreloadPrerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation PreloadPrerenderFinalStatus = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
 )
 
@@ -292,32 +292,32 @@ const (
 type PreloadPreloadingStatus string
 
 const (
-	// PreloadPreloadingStatusPending enum const
+	// PreloadPreloadingStatusPending enum const.
 	PreloadPreloadingStatusPending PreloadPreloadingStatus = "Pending"
 
-	// PreloadPreloadingStatusRunning enum const
+	// PreloadPreloadingStatusRunning enum const.
 	PreloadPreloadingStatusRunning PreloadPreloadingStatus = "Running"
 
-	// PreloadPreloadingStatusReady enum const
+	// PreloadPreloadingStatusReady enum const.
 	PreloadPreloadingStatusReady PreloadPreloadingStatus = "Ready"
 
-	// PreloadPreloadingStatusSuccess enum const
+	// PreloadPreloadingStatusSuccess enum const.
 	PreloadPreloadingStatusSuccess PreloadPreloadingStatus = "Success"
 
-	// PreloadPreloadingStatusFailure enum const
+	// PreloadPreloadingStatusFailure enum const.
 	PreloadPreloadingStatusFailure PreloadPreloadingStatus = "Failure"
 
-	// PreloadPreloadingStatusNotSupported enum const
+	// PreloadPreloadingStatusNotSupported enum const.
 	PreloadPreloadingStatusNotSupported PreloadPreloadingStatus = "NotSupported"
 )
 
 // PreloadEnable ...
 type PreloadEnable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m PreloadEnable) ProtoReq() string { return "Preload.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m PreloadEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -325,10 +325,10 @@ func (m PreloadEnable) Call(c Client) error {
 // PreloadDisable ...
 type PreloadDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m PreloadDisable) ProtoReq() string { return "Preload.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m PreloadDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -339,7 +339,7 @@ type PreloadRuleSetUpdated struct {
 	RuleSet *PreloadRuleSet `json:"ruleSet"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadRuleSetUpdated) ProtoEvent() string {
 	return "Preload.ruleSetUpdated"
 }
@@ -350,7 +350,7 @@ type PreloadRuleSetRemoved struct {
 	ID PreloadRuleSetID `json:"id"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadRuleSetRemoved) ProtoEvent() string {
 	return "Preload.ruleSetRemoved"
 }
@@ -374,7 +374,7 @@ type PreloadPrerenderAttemptCompleted struct {
 	DisallowedAPIMethod string `json:"disallowedApiMethod,omitempty"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadPrerenderAttemptCompleted) ProtoEvent() string {
 	return "Preload.prerenderAttemptCompleted"
 }
@@ -394,7 +394,7 @@ type PreloadPrefetchStatusUpdated struct {
 	Status PreloadPreloadingStatus `json:"status"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadPrefetchStatusUpdated) ProtoEvent() string {
 	return "Preload.prefetchStatusUpdated"
 }
@@ -414,7 +414,7 @@ type PreloadPrerenderStatusUpdated struct {
 	Status PreloadPreloadingStatus `json:"status"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadPrerenderStatusUpdated) ProtoEvent() string {
 	return "Preload.prerenderStatusUpdated"
 }
@@ -428,7 +428,7 @@ type PreloadPreloadingAttemptSourcesUpdated struct {
 	PreloadingAttemptSources []*PreloadPreloadingAttemptSource `json:"preloadingAttemptSources"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt PreloadPreloadingAttemptSourcesUpdated) ProtoEvent() string {
 	return "Preload.preloadingAttemptSourcesUpdated"
 }

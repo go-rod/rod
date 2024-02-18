@@ -15,11 +15,11 @@ import (
 )
 
 const (
-	// HeaderName for remote launch
+	// HeaderName for remote launch.
 	HeaderName = "Rod-Launcher"
 )
 
-// MustNewManaged is similar to NewManaged
+// MustNewManaged is similar to NewManaged.
 func MustNewManaged(serviceURL string) *Launcher {
 	l, err := NewManaged(serviceURL)
 	utils.E(err)
@@ -51,7 +51,7 @@ func NewManaged(serviceURL string) (*Launcher, error) {
 	l.serviceURL = toWS(*u).String()
 	l.Flags = nil
 
-	res, err := http.Get(toHTTP(*u).String())
+	res, err := http.Get(toHTTP(*u).String()) //nolint: noctx
 	if err != nil {
 		return nil, err
 	}
@@ -67,12 +67,12 @@ func (l *Launcher) KeepUserDataDir() *Launcher {
 	return l
 }
 
-// JSON serialization
+// JSON serialization.
 func (l *Launcher) JSON() []byte {
 	return utils.MustToJSONBytes(l)
 }
 
-// MustClient similar to Launcher.Client
+// MustClient similar to Launcher.Client.
 func (l *Launcher) MustClient() *cdp.Client {
 	u, h := l.ClientHeader()
 	return cdp.MustStartWithURL(l.ctx, u, h)
@@ -126,7 +126,7 @@ type Manager struct {
 	BeforeLaunch func(*Launcher, http.ResponseWriter, *http.Request)
 }
 
-// NewManager instance
+// NewManager instance.
 func NewManager() *Manager {
 	allowedPath := map[flags.Flag]string{
 		flags.Bin: DefaultBrowserDir,
@@ -140,7 +140,7 @@ func NewManager() *Manager {
 	return &Manager{
 		Logger:   utils.LoggerQuiet,
 		Defaults: func(_ http.ResponseWriter, _ *http.Request) *Launcher { return New() },
-		BeforeLaunch: func(l *Launcher, w http.ResponseWriter, r *http.Request) {
+		BeforeLaunch: func(l *Launcher, w http.ResponseWriter, _ *http.Request) {
 			for f, allowed := range allowedPath {
 				p := l.Get(f)
 				if p != "" && !strings.HasPrefix(p, allowed) {
@@ -148,7 +148,7 @@ func NewManager() *Manager {
 					w.Header().Add("Content-Length", fmt.Sprintf("%d", len(b)))
 					w.WriteHeader(http.StatusBadRequest)
 					utils.E(w.Write(b))
-					w.(http.Flusher).Flush()
+					w.(http.Flusher).Flush() //nolint: forcetypeassert
 					panic(http.ErrAbortHandler)
 				}
 			}

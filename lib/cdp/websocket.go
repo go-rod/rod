@@ -29,7 +29,7 @@ type WebSocket struct {
 	r    *bufio.Reader
 }
 
-// Connect to browser
+// Connect to browser.
 func (ws *WebSocket) Connect(ctx context.Context, wsURL string, header http.Header) error {
 	if ws.conn != nil {
 		panic("duplicated connection: " + wsURL)
@@ -110,7 +110,7 @@ func (ws *WebSocket) send(msg []byte) error {
 	copy(header[i+2:], mask)
 
 	for i := range msg {
-		msg[i] = msg[i] ^ mask[i%4]
+		msg[i] ^= mask[i%4]
 	}
 
 	data := make([]byte, i+6+len(msg))
@@ -121,7 +121,7 @@ func (ws *WebSocket) send(msg []byte) error {
 	return err
 }
 
-// Read a message from browser
+// Read a message from browser.
 func (ws *WebSocket) Read() ([]byte, error) {
 	b, err := ws.read()
 	if err != nil {
@@ -172,13 +172,13 @@ func (ws *WebSocket) read() ([]byte, error) {
 	return data, err
 }
 
-// ErrBadHandshake type
-type ErrBadHandshake struct {
+// BadHandshakeError type.
+type BadHandshakeError struct {
 	Status string
 	Body   string
 }
 
-func (e *ErrBadHandshake) Error() string {
+func (e *BadHandshakeError) Error() string {
 	return fmt.Sprintf(
 		"websocket bad handshake: %s. %s",
 		e.Status, e.Body,
@@ -205,12 +205,13 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 
 	secKey := defaultSecKey
 	for k, vs := range header {
-		if k == "Host" && len(vs) > 0 {
+		switch {
+		case k == "Host" && len(vs) > 0:
 			req.Host = vs[0]
-		} else if k == "Sec-WebSocket-Key" && len(vs) > 0 {
+		case k == "Sec-WebSocket-Key" && len(vs) > 0:
 			secKey = vs[0]
 			req.Header[k] = vs
-		} else {
+		default:
 			req.Header[k] = vs
 		}
 	}
@@ -228,7 +229,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 
 	if res.StatusCode != http.StatusSwitchingProtocols || !verifyWebSocketAccept(res.Header, secKey) {
 		body, _ := ioutil.ReadAll(res.Body)
-		return &ErrBadHandshake{
+		return &BadHandshakeError{
 			Status: res.Status,
 			Body:   string(body),
 		}

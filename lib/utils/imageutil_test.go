@@ -16,7 +16,7 @@ func TestSplicePngVertical(t *testing.T) {
 	a := image.NewRGBA(image.Rect(0, 0, 1000, 200))
 	b := image.NewRGBA(image.Rect(0, 0, 1000, 300))
 
-	t.Run("jpeg", func(t *testing.T) {
+	g.Run("jpeg", func(g got.G) {
 		format := proto.PageCaptureScreenshotFormatJpeg
 		processor, err := NewImgProcessor(format)
 		if err != nil {
@@ -37,7 +37,7 @@ func TestSplicePngVertical(t *testing.T) {
 		g.Eq(img.Bounds().Dy(), 500)
 		g.Eq(img.Bounds().Dx(), 1000)
 	})
-	t.Run("jpegWithOptions", func(t *testing.T) {
+	g.Run("jpegWithOptions", func(g got.G) {
 		format := proto.PageCaptureScreenshotFormatJpeg
 		processor, err := NewImgProcessor(format)
 		g.E(err)
@@ -59,7 +59,7 @@ func TestSplicePngVertical(t *testing.T) {
 		g.Eq(img.Bounds().Dy(), 500)
 		g.Eq(img.Bounds().Dx(), 1000)
 	})
-	t.Run("jpegWithBox", func(t *testing.T) {
+	g.Run("jpegWithBox", func(g got.G) {
 		format := proto.PageCaptureScreenshotFormatJpeg
 		processor, err := NewImgProcessor(format)
 		g.E(err)
@@ -87,7 +87,7 @@ func TestSplicePngVertical(t *testing.T) {
 		g.Eq(img.Bounds().Dy(), 400)
 		g.Eq(img.Bounds().Dx(), 1000)
 	})
-	t.Run("errorEncode", func(t *testing.T) {
+	g.Run("errorEncode", func(g got.G) {
 		format := proto.PageCaptureScreenshotFormatPng
 		processor, err := NewImgProcessor(format)
 		g.E(err)
@@ -108,25 +108,25 @@ func TestSplicePngVertical(t *testing.T) {
 		// invalid image size: 0x0
 		g.Err(err)
 	})
-	t.Run("noFile", func(t *testing.T) {
+	g.Run("noFile", func(g got.G) {
 		_, err := SplicePngVertical(nil, "", nil)
 		g.E(err)
 	})
-	t.Run("oneFile", func(t *testing.T) {
+	g.Run("oneFile", func(g got.G) {
 		bs, err := SplicePngVertical([]ImgWithBox{
 			{Img: []byte{1}},
 		}, "", nil)
 		g.E(err)
 		g.Eq(1, len(bs))
 	})
-	t.Run("unsupportedFormat", func(t *testing.T) {
+	g.Run("unsupportedFormat", func(g got.G) {
 		_, err := SplicePngVertical([]ImgWithBox{
 			{Img: []byte{1}},
 			{Img: []byte{1}},
 		}, "gif", nil)
 		g.Err(err)
 	})
-	t.Run("errorFile", func(t *testing.T) {
+	g.Run("errorFile", func(g got.G) {
 		_, err := SplicePngVertical([]ImgWithBox{
 			{Img: []byte{1}},
 			{Img: []byte{1}},
@@ -180,7 +180,7 @@ func TestNewImgProcessor(t *testing.T) {
 	// errImg := image.NewRGBA(image.Rect(0, 0, 0, 0))
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		g.Run(tt.name, func(g got.G) {
 			processor, err := NewImgProcessor(tt.args.format)
 			if tt.wantErr {
 				g.Eq(err != nil, tt.wantErr)

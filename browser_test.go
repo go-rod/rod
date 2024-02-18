@@ -50,7 +50,7 @@ func TestDefaultDevice(t *testing.T) {
 	ua := ""
 
 	s := g.Serve()
-	s.Mux.HandleFunc("/t", func(rw http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/t", func(_ http.ResponseWriter, r *http.Request) {
 		ua = r.Header.Get("User-Agent")
 	})
 
@@ -153,7 +153,7 @@ func TestBrowserWaitEvent(t *testing.T) {
 	g.page.MustNavigate(g.blank())
 	wait()
 
-	wait = g.browser.EachEvent(func(e *proto.PageFrameNavigated, id proto.TargetSessionID) bool {
+	wait = g.browser.EachEvent(func(_ *proto.PageFrameNavigated, _ proto.TargetSessionID) bool {
 		return true
 	})
 	g.page.MustNavigate(g.blank())
@@ -201,7 +201,7 @@ func TestBlockingNavigation(t *testing.T) {
 	s := g.Serve()
 	pause := g.Context()
 
-	s.Mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/a", func(_ http.ResponseWriter, _ *http.Request) {
 		<-pause.Done()
 	})
 	s.Route("/b", ".html", `<html>ok</html>`)
@@ -226,7 +226,7 @@ func TestResolveBlocking(t *testing.T) {
 
 	pause := g.Context()
 
-	s.Mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/", func(_ http.ResponseWriter, _ *http.Request) {
 		<-pause.Done()
 	})
 
@@ -248,14 +248,14 @@ func TestTestTry(t *testing.T) {
 	g.Nil(rod.Try(func() {}))
 
 	err := rod.Try(func() { panic(1) })
-	var errVal *rod.ErrTry
+	var errVal *rod.TryError
 	g.True(errors.As(err, &errVal))
-	g.Is(err, &rod.ErrTry{})
+	g.Is(err, &rod.TryError{})
 	g.Eq(errVal.Unwrap().Error(), "1")
 	g.Eq(1, errVal.Value)
 	g.Has(errVal.Error(), "error value: 1\ngoroutine")
 
-	errVal = rod.Try(func() { panic(errors.New("t")) }).(*rod.ErrTry)
+	errVal = rod.Try(func() { panic(errors.New("t")) }).(*rod.TryError)
 	g.Eq(errVal.Unwrap().Error(), "t")
 }
 
@@ -405,7 +405,7 @@ func TestStreamReader(t *testing.T) {
 
 	r := rod.NewStreamReader(g.page, "")
 
-	g.mc.stub(1, proto.IORead{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.IORead{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(proto.IOReadResult{
 			Data: "test",
 		}), nil
@@ -418,7 +418,7 @@ func TestStreamReader(t *testing.T) {
 	_, err := r.Read(nil)
 	g.Err(err)
 
-	g.mc.stub(1, proto.IORead{}, func(send StubSend) (gson.JSON, error) {
+	g.mc.stub(1, proto.IORead{}, func(_ StubSend) (gson.JSON, error) {
 		return gson.New(proto.IOReadResult{
 			Base64Encoded: true,
 			Data:          "@",

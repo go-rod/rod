@@ -34,10 +34,10 @@ type CastEnable struct {
 	PresentationURL string `json:"presentationUrl,omitempty"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastEnable) ProtoReq() string { return "Cast.enable" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -45,10 +45,10 @@ func (m CastEnable) Call(c Client) error {
 // CastDisable Stops observing for sinks and issues.
 type CastDisable struct{}
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastDisable) ProtoReq() string { return "Cast.disable" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -60,10 +60,10 @@ type CastSetSinkToUse struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastSetSinkToUse) ProtoReq() string { return "Cast.setSinkToUse" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastSetSinkToUse) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -74,10 +74,10 @@ type CastStartDesktopMirroring struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastStartDesktopMirroring) ProtoReq() string { return "Cast.startDesktopMirroring" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastStartDesktopMirroring) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -88,10 +88,10 @@ type CastStartTabMirroring struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastStartTabMirroring) ProtoReq() string { return "Cast.startTabMirroring" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastStartTabMirroring) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -102,10 +102,10 @@ type CastStopCasting struct {
 	SinkName string `json:"sinkName"`
 }
 
-// ProtoReq name
+// ProtoReq name.
 func (m CastStopCasting) ProtoReq() string { return "Cast.stopCasting" }
 
-// Call sends the request
+// Call sends the request.
 func (m CastStopCasting) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
@@ -117,7 +117,7 @@ type CastSinksUpdated struct {
 	Sinks []*CastSink `json:"sinks"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CastSinksUpdated) ProtoEvent() string {
 	return "Cast.sinksUpdated"
 }
@@ -129,7 +129,7 @@ type CastIssueUpdated struct {
 	IssueMessage string `json:"issueMessage"`
 }
 
-// ProtoEvent name
+// ProtoEvent name.
 func (evt CastIssueUpdated) ProtoEvent() string {
 	return "Cast.issueUpdated"
 }
