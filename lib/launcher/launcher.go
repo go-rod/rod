@@ -462,7 +462,9 @@ func (l *Launcher) hasLaunched() bool {
 
 func (l *Launcher) setupUserPreferences() {
 	userDir := l.Get(flags.UserDataDir)
-	if userDir == "" {
+	pref := l.Get(flags.Preferences)
+
+	if userDir == "" || pref == "" {
 		return
 	}
 
@@ -475,12 +477,6 @@ func (l *Launcher) setupUserPreferences() {
 	}
 
 	path := filepath.Join(userDir, profile, "Preferences")
-
-	pref := l.Get(flags.Preferences)
-
-	if pref == "" {
-		pref = "{}"
-	}
 
 	utils.E(utils.OutputFile(path, pref))
 }
