@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -327,9 +328,12 @@ func TestWaitDownload(t *testing.T) {
 
 	page := g.page.MustNavigate(s.URL("/page"))
 
-	wait := g.browser.MustWaitDownload()
+	wait := g.browser.MustWaitDownload(context.Background())
 	page.MustElement("a").MustClick()
-	data := wait()
+	data, err := wait()
+	if err != nil {
+		t.Error("Expected nil error")
+	}
 
 	g.Eq(content, string(data))
 }
@@ -354,21 +358,27 @@ func TestWaitDownloadDataURI(t *testing.T) {
 
 	page := g.page.MustNavigate(s.URL())
 
-	wait1 := g.browser.MustWaitDownload()
+	wait1 := g.browser.MustWaitDownload(context.Background())
 	page.MustElement("#a").MustClick()
-	data := wait1()
+	data, err := wait1()
+	if err != nil {
+		g.Error("Expected nil error")
+	}
 	g.Eq("test data", string(data))
 
-	wait2 := g.browser.MustWaitDownload()
+	wait2 := g.browser.MustWaitDownload(context.Background())
 	page.MustElement("#b").MustClick()
-	data = wait2()
+	data, err = wait2()
+	if err != nil {
+		g.Error("Expected nil error")
+	}
 	g.Eq("test blob", string(data))
 }
 
 func TestWaitDownloadCancel(t *testing.T) {
 	g := setup(t)
 
-	wait := g.browser.Context(g.Timeout(0)).WaitDownload(os.TempDir())
+	wait := g.browser.Context(g.Timeout(0)).WaitDownload(os.TempDir(), context.Background())
 	g.Eq(wait(), (*proto.PageDownloadWillBegin)(nil))
 }
 
@@ -385,11 +395,37 @@ func TestWaitDownloadFromNewPage(t *testing.T) {
 	)
 
 	page := g.page.MustNavigate(s.URL("/page"))
-	wait := g.browser.MustWaitDownload()
+	wait := g.browser.MustWaitDownload(context.Background())
 	page.MustElement("a").MustClick()
-	data := wait()
+	data, err := wait()
+	if err != nil {
+		g.Error("Expected nil error")
+	}
 
 	g.Eq(content, string(data))
+}
+
+func TestWaitDownloadWithContextTimeout(t *testing.T) {
+	g := setup(t)
+
+	s := g.Serve()
+	s.Route("/page", ".html", fmt.Sprintf(
+		`<html><a href="%s/d" download target="_blank">click</a></html>`,
+		s.URL()),
+	)
+
+	page := g.page.MustNavigate(s.URL("/page"))
+	ctx, cancel := context.WithCancel(context.Background())
+	wait := g.browser.MustWaitDownload(ctx)
+	page.MustElement("a").MustClick()
+
+	cancel()
+	data, err := wait()
+	if err == nil {
+		g.Error("Expected not nil error")
+	}
+	g.Equal(err, context.Canceled)
+	g.Equal(len(data), 0)
 }
 
 func TestBrowserConnectErr(t *testing.T) {

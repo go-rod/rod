@@ -501,7 +501,7 @@ func (b *Browser) SetCookies(cookies []*proto.NetworkCookieParam) error {
 // The file path will be:
 //
 //	filepath.Join(dir, info.GUID)
-func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillBegin) {
+func (b *Browser) WaitDownload(dir string, ctx context.Context) func() (info *proto.PageDownloadWillBegin) {
 	var oldDownloadBehavior proto.BrowserSetDownloadBehavior
 	has := b.LoadState("", &oldDownloadBehavior)
 
@@ -531,7 +531,16 @@ func (b *Browser) WaitDownload(dir string) func() (info *proto.PageDownloadWillB
 			}
 		}()
 
-		waitProgress()
+		wait := make(chan bool)
+		go func() {
+			waitProgress()
+			wait <- true
+		}()
+
+		select {
+		case <-ctx.Done():
+		case <-wait:
+		}
 
 		return start
 	}

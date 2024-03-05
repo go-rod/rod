@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -24,7 +25,7 @@ func main() {
 
 	page.MustElementR("summary", "Code").MustClick()
 
-	wait := page.Browser().WaitDownload(wd)
+	wait := page.Browser().WaitDownload(wd, context.Background())
 
 	go browser.EachEvent(func(e *proto.PageDownloadProgress) bool {
 		completed := "(unknown)"

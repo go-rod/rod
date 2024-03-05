@@ -9,6 +9,7 @@
 package rod
 
 import (
+	"context"
 	"errors"
 	"io/ioutil"
 	"net/http"
@@ -118,17 +119,18 @@ func (b *Browser) MustSetCookies(cookies ...*proto.NetworkCookie) *Browser {
 
 // MustWaitDownload is similar to [Browser.WaitDownload].
 // It will read the file into bytes then remove the file.
-func (b *Browser) MustWaitDownload() func() []byte {
+func (b *Browser) MustWaitDownload(ctx context.Context) func() ([]byte, error) {
 	tmpDir := filepath.Join(os.TempDir(), "rod", "downloads")
-	wait := b.WaitDownload(tmpDir)
+	wait := b.WaitDownload(tmpDir, ctx)
 
-	return func() []byte {
+	return func() ([]byte, error) {
 		info := wait()
-		path := filepath.Join(tmpDir, info.GUID)
-		defer func() { _ = os.Remove(path) }()
-		data, err := ioutil.ReadFile(path)
-		b.e(err)
-		return data
+		if info != nil && info.GUID != "" {
+			path := filepath.Join(tmpDir, info.GUID)
+			defer func() { _ = os.Remove(path) }()
+			return os.ReadFile(path)
+		}
+		return nil, ctx.Err()
 	}
 }
 

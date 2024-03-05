@@ -485,11 +485,14 @@ func Example_download_file() {
 	browser := rod.New().MustConnect()
 	page := browser.MustPage("https://file-examples.com/index.php/sample-documents-download/sample-pdf-download/")
 
-	wait := browser.MustWaitDownload()
+	wait := browser.MustWaitDownload(context.Background())
 
 	page.MustElementR("a", "DOWNLOAD SAMPLE PDF FILE").MustClick()
 
-	_ = utils.OutputFile("t.pdf", wait())
+	body, err := wait()
+	if err == nil {
+		_ = utils.OutputFile("t.pdf", body)
+	}
 }
 
 // Shows how to intercept requests and modify
