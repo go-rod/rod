@@ -141,12 +141,15 @@ type IndexedDBKeyPath struct {
 
 // IndexedDBClearObjectStore Clears all entries from an object store.
 type IndexedDBClearObjectStore struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -165,12 +168,15 @@ func (m IndexedDBClearObjectStore) Call(c Client) error {
 
 // IndexedDBDeleteDatabase Deletes a database.
 type IndexedDBDeleteDatabase struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -186,12 +192,15 @@ func (m IndexedDBDeleteDatabase) Call(c Client) error {
 
 // IndexedDBDeleteObjectStoreEntries Delete a range of entries from an object store.
 type IndexedDBDeleteObjectStoreEntries struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName ...
 	DatabaseName string `json:"databaseName"`
@@ -237,12 +246,15 @@ func (m IndexedDBEnable) Call(c Client) error {
 
 // IndexedDBRequestData Requests data from object store or index.
 type IndexedDBRequestData struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -283,12 +295,15 @@ type IndexedDBRequestDataResult struct {
 
 // IndexedDBGetMetadata Gets metadata of an object store.
 type IndexedDBGetMetadata struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -319,12 +334,15 @@ type IndexedDBGetMetadataResult struct {
 
 // IndexedDBRequestDatabase Requests database with given name in given frame.
 type IndexedDBRequestDatabase struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 
 	// DatabaseName Database name.
 	DatabaseName string `json:"databaseName"`
@@ -347,12 +365,15 @@ type IndexedDBRequestDatabaseResult struct {
 
 // IndexedDBRequestDatabaseNames Requests database names for given security origin.
 type IndexedDBRequestDatabaseNames struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 }
 
 // ProtoReq name.

@@ -40,6 +40,9 @@ type AnimationAnimation struct {
 	PlaybackRate float64 `json:"playbackRate"`
 
 	// StartTime `Animation`'s start time.
+	// Milliseconds for time based animations and
+	// percentage [0 - 100] for scroll driven animations
+	// (i.e. when viewOrScrollTimeline exists).
 	StartTime float64 `json:"startTime"`
 
 	// CurrentTime `Animation`'s current time.
@@ -54,6 +57,31 @@ type AnimationAnimation struct {
 	// CSSID (optional) A unique ID for `Animation` representing the sources that triggered this CSS
 	// animation/transition.
 	CSSID string `json:"cssId,omitempty"`
+
+	// ViewOrScrollTimeline (optional) View or scroll timeline
+	ViewOrScrollTimeline *AnimationViewOrScrollTimeline `json:"viewOrScrollTimeline,omitempty"`
+}
+
+// AnimationViewOrScrollTimeline Timeline instance.
+type AnimationViewOrScrollTimeline struct {
+	// SourceNodeID (optional) Scroll container node
+	SourceNodeID DOMBackendNodeID `json:"sourceNodeId,omitempty"`
+
+	// StartOffset (optional) Represents the starting scroll position of the timeline
+	// as a length offset in pixels from scroll origin.
+	StartOffset *float64 `json:"startOffset,omitempty"`
+
+	// EndOffset (optional) Represents the ending scroll position of the timeline
+	// as a length offset in pixels from scroll origin.
+	EndOffset *float64 `json:"endOffset,omitempty"`
+
+	// SubjectNodeID (optional) The element whose principal box's visibility in the
+	// scrollport defined the progress of the timeline.
+	// Does not exist for animations with ScrollTimeline
+	SubjectNodeID DOMBackendNodeID `json:"subjectNodeId,omitempty"`
+
+	// Axis Orientation of the scroll
+	Axis DOMScrollOrientation `json:"axis"`
 }
 
 // AnimationAnimationEffect AnimationEffect instance.
@@ -71,6 +99,9 @@ type AnimationAnimationEffect struct {
 	Iterations float64 `json:"iterations"`
 
 	// Duration `AnimationEffect`'s iteration duration.
+	// Milliseconds for time based animations and
+	// percentage [0 - 100] for scroll driven animations
+	// (i.e. when viewOrScrollTimeline exists).
 	Duration float64 `json:"duration"`
 
 	// Direction `AnimationEffect`'s playback direction.

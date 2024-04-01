@@ -146,7 +146,7 @@ type AccessibilityAXValueSource struct {
 	// Superseded (optional) Whether this source is superseded by a higher priority source.
 	Superseded bool `json:"superseded,omitempty"`
 
-	// NativeSource (optional) The native markup source for this value, e.g. a <label> element.
+	// NativeSource (optional) The native markup source for this value, e.g. a `<label>` element.
 	NativeSource AccessibilityAXValueNativeSourceType `json:"nativeSource,omitempty"`
 
 	// NativeSourceValue (optional) The value, such as a node or node list, of the native source.
@@ -525,7 +525,7 @@ type AccessibilityGetChildAXNodesResult struct {
 
 // AccessibilityQueryAXTree (experimental) Query a DOM node's accessibility subtree for accessible name and role.
 // This command computes the name and role for all nodes in the subtree, including those that are
-// ignored for accessibility, and returns those that mactch the specified name and role. If no DOM
+// ignored for accessibility, and returns those that match the specified name and role. If no DOM
 // node is specified, or the DOM node does not exist, the command returns an error. If neither
 // `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
 type AccessibilityQueryAXTree struct {

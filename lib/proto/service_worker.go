@@ -92,6 +92,9 @@ type ServiceWorkerServiceWorkerVersion struct {
 
 	// TargetID (optional) ...
 	TargetID TargetTargetID `json:"targetId,omitempty"`
+
+	// RouterRules (optional) ...
+	RouterRules string `json:"routerRules,omitempty"`
 }
 
 // ServiceWorkerServiceWorkerErrorMessage ServiceWorker error message.

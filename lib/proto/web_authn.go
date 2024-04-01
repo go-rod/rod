@@ -100,6 +100,16 @@ type WebAuthnVirtualAuthenticatorOptions struct {
 	// IsUserVerified (optional) Sets whether User Verification succeeds or fails for an authenticator.
 	// Defaults to false.
 	IsUserVerified bool `json:"isUserVerified,omitempty"`
+
+	// DefaultBackupEligibility (optional) Credentials created by this authenticator will have the backup
+	// eligibility (BE) flag set to this value. Defaults to false.
+	// https://w3c.github.io/webauthn/#sctn-credential-backup
+	DefaultBackupEligibility bool `json:"defaultBackupEligibility,omitempty"`
+
+	// DefaultBackupState (optional) Credentials created by this authenticator will have the backup state
+	// (BS) flag set to this value. Defaults to false.
+	// https://w3c.github.io/webauthn/#sctn-credential-backup
+	DefaultBackupState bool `json:"defaultBackupState,omitempty"`
 }
 
 // WebAuthnCredential ...
@@ -129,6 +139,16 @@ type WebAuthnCredential struct {
 	// LargeBlob (optional) The large blob associated with the credential.
 	// See https://w3c.github.io/webauthn/#sctn-large-blob-extension
 	LargeBlob []byte `json:"largeBlob,omitempty"`
+
+	// BackupEligibility (optional) Assertions returned by this credential will have the backup eligibility
+	// (BE) flag set to this value. Defaults to the authenticator's
+	// defaultBackupEligibility value.
+	BackupEligibility bool `json:"backupEligibility,omitempty"`
+
+	// BackupState (optional) Assertions returned by this credential will have the backup state (BS)
+	// flag set to this value. Defaults to the authenticator's
+	// defaultBackupState value.
+	BackupState bool `json:"backupState,omitempty"`
 }
 
 // WebAuthnEnable Enable the WebAuthn domain and start intercepting credential storage and
@@ -353,6 +373,30 @@ func (m WebAuthnSetAutomaticPresenceSimulation) ProtoReq() string {
 
 // Call sends the request.
 func (m WebAuthnSetAutomaticPresenceSimulation) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// WebAuthnSetCredentialProperties Allows setting credential properties.
+// https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+type WebAuthnSetCredentialProperties struct {
+	// AuthenticatorID ...
+	AuthenticatorID WebAuthnAuthenticatorID `json:"authenticatorId"`
+
+	// CredentialID ...
+	CredentialID []byte `json:"credentialId"`
+
+	// BackupEligibility (optional) ...
+	BackupEligibility bool `json:"backupEligibility,omitempty"`
+
+	// BackupState (optional) ...
+	BackupState bool `json:"backupState,omitempty"`
+}
+
+// ProtoReq name.
+func (m WebAuthnSetCredentialProperties) ProtoReq() string { return "WebAuthn.setCredentialProperties" }
+
+// Call sends the request.
+func (m WebAuthnSetCredentialProperties) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

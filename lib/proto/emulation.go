@@ -62,6 +62,23 @@ type EmulationDisplayFeature struct {
 	MaskLength int `json:"maskLength"`
 }
 
+// EmulationDevicePostureType enum.
+type EmulationDevicePostureType string
+
+const (
+	// EmulationDevicePostureTypeContinuous enum const.
+	EmulationDevicePostureTypeContinuous EmulationDevicePostureType = "continuous"
+
+	// EmulationDevicePostureTypeFolded enum const.
+	EmulationDevicePostureTypeFolded EmulationDevicePostureType = "folded"
+)
+
+// EmulationDevicePosture ...
+type EmulationDevicePosture struct {
+	// Type Current posture of the device
+	Type EmulationDevicePostureType `json:"type"`
+}
+
 // EmulationMediaFeature ...
 type EmulationMediaFeature struct {
 	// Name ...
@@ -88,7 +105,7 @@ const (
 	EmulationVirtualTimePolicyPauseIfNetworkFetchesPending EmulationVirtualTimePolicy = "pauseIfNetworkFetchesPending"
 )
 
-// EmulationUserAgentBrandVersion (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+// EmulationUserAgentBrandVersion (experimental) Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints
 type EmulationUserAgentBrandVersion struct {
 	// Brand ...
 	Brand string `json:"brand"`
@@ -97,7 +114,7 @@ type EmulationUserAgentBrandVersion struct {
 	Version string `json:"version"`
 }
 
-// EmulationUserAgentMetadata (experimental) Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+// EmulationUserAgentMetadata (experimental) Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints
 // Missing optional values will be filled in by the target with what it would normally use.
 type EmulationUserAgentMetadata struct {
 	// Brands (optional) Brands appearing in Sec-CH-UA.
@@ -131,6 +148,96 @@ type EmulationUserAgentMetadata struct {
 	Wow64 bool `json:"wow64,omitempty"`
 }
 
+// EmulationSensorType (experimental) Used to specify sensor types to emulate.
+// See https://w3c.github.io/sensors/#automation for more information.
+type EmulationSensorType string
+
+const (
+	// EmulationSensorTypeAbsoluteOrientation enum const.
+	EmulationSensorTypeAbsoluteOrientation EmulationSensorType = "absolute-orientation"
+
+	// EmulationSensorTypeAccelerometer enum const.
+	EmulationSensorTypeAccelerometer EmulationSensorType = "accelerometer"
+
+	// EmulationSensorTypeAmbientLight enum const.
+	EmulationSensorTypeAmbientLight EmulationSensorType = "ambient-light"
+
+	// EmulationSensorTypeGravity enum const.
+	EmulationSensorTypeGravity EmulationSensorType = "gravity"
+
+	// EmulationSensorTypeGyroscope enum const.
+	EmulationSensorTypeGyroscope EmulationSensorType = "gyroscope"
+
+	// EmulationSensorTypeLinearAcceleration enum const.
+	EmulationSensorTypeLinearAcceleration EmulationSensorType = "linear-acceleration"
+
+	// EmulationSensorTypeMagnetometer enum const.
+	EmulationSensorTypeMagnetometer EmulationSensorType = "magnetometer"
+
+	// EmulationSensorTypeProximity enum const.
+	EmulationSensorTypeProximity EmulationSensorType = "proximity"
+
+	// EmulationSensorTypeRelativeOrientation enum const.
+	EmulationSensorTypeRelativeOrientation EmulationSensorType = "relative-orientation"
+)
+
+// EmulationSensorMetadata (experimental) ...
+type EmulationSensorMetadata struct {
+	// Available (optional) ...
+	Available bool `json:"available,omitempty"`
+
+	// MinimumFrequency (optional) ...
+	MinimumFrequency *float64 `json:"minimumFrequency,omitempty"`
+
+	// MaximumFrequency (optional) ...
+	MaximumFrequency *float64 `json:"maximumFrequency,omitempty"`
+}
+
+// EmulationSensorReadingSingle (experimental) ...
+type EmulationSensorReadingSingle struct {
+	// Value ...
+	Value float64 `json:"value"`
+}
+
+// EmulationSensorReadingXYZ (experimental) ...
+type EmulationSensorReadingXYZ struct {
+	// X ...
+	X float64 `json:"x"`
+
+	// Y ...
+	Y float64 `json:"y"`
+
+	// Z ...
+	Z float64 `json:"z"`
+}
+
+// EmulationSensorReadingQuaternion (experimental) ...
+type EmulationSensorReadingQuaternion struct {
+	// X ...
+	X float64 `json:"x"`
+
+	// Y ...
+	Y float64 `json:"y"`
+
+	// Z ...
+	Z float64 `json:"z"`
+
+	// W ...
+	W float64 `json:"w"`
+}
+
+// EmulationSensorReading (experimental) ...
+type EmulationSensorReading struct {
+	// Single (optional) ...
+	Single *EmulationSensorReadingSingle `json:"single,omitempty"`
+
+	// Xyz (optional) ...
+	Xyz *EmulationSensorReadingXYZ `json:"xyz,omitempty"`
+
+	// Quaternion (optional) ...
+	Quaternion *EmulationSensorReadingQuaternion `json:"quaternion,omitempty"`
+}
+
 // EmulationDisabledImageType (experimental) Enum of image types that can be disabled.
 type EmulationDisabledImageType string
 
@@ -142,7 +249,7 @@ const (
 	EmulationDisabledImageTypeWebp EmulationDisabledImageType = "webp"
 )
 
-// EmulationCanEmulate Tells whether emulation is supported.
+// EmulationCanEmulate (deprecated) Tells whether emulation is supported.
 type EmulationCanEmulate struct{}
 
 // ProtoReq name.
@@ -154,7 +261,7 @@ func (m EmulationCanEmulate) Call(c Client) (*EmulationCanEmulateResult, error) 
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// EmulationCanEmulateResult ...
+// EmulationCanEmulateResult (deprecated) ...
 type EmulationCanEmulateResult struct {
 	// Result True if emulation is supported.
 	Result bool `json:"result"`
@@ -230,7 +337,7 @@ func (m EmulationSetAutoDarkModeOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// EmulationSetCPUThrottlingRate (experimental) Enables CPU throttling to emulate slow CPUs.
+// EmulationSetCPUThrottlingRate Enables CPU throttling to emulate slow CPUs.
 type EmulationSetCPUThrottlingRate struct {
 	// Rate Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
 	Rate float64 `json:"rate"`
@@ -307,6 +414,10 @@ type EmulationSetDeviceMetricsOverride struct {
 	// DisplayFeature (experimental) (optional) If set, the display feature of a multi-segment screen. If not set, multi-segment support
 	// is turned-off.
 	DisplayFeature *EmulationDisplayFeature `json:"displayFeature,omitempty"`
+
+	// DevicePosture (experimental) (optional) If set, the posture of a foldable device. If not set the posture is set
+	// to continuous.
+	DevicePosture *EmulationDevicePosture `json:"devicePosture,omitempty"`
 }
 
 // ProtoReq name.
@@ -422,7 +533,7 @@ const (
 	EmulationSetEmulatedVisionDeficiencyTypeTritanopia EmulationSetEmulatedVisionDeficiencyType = "tritanopia"
 )
 
-// EmulationSetEmulatedVisionDeficiency (experimental) Emulates the given vision deficiency.
+// EmulationSetEmulatedVisionDeficiency Emulates the given vision deficiency.
 type EmulationSetEmulatedVisionDeficiency struct {
 	// Type Vision deficiency to emulate. Order: best-effort emulations come first, followed by any
 	// physiologically accurate emulations for medically recognized color vision deficiencies.
@@ -460,7 +571,76 @@ func (m EmulationSetGeolocationOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// EmulationSetIdleOverride (experimental) Overrides the Idle state.
+// EmulationGetOverriddenSensorInformation (experimental) ...
+type EmulationGetOverriddenSensorInformation struct {
+	// Type ...
+	Type EmulationSensorType `json:"type"`
+}
+
+// ProtoReq name.
+func (m EmulationGetOverriddenSensorInformation) ProtoReq() string {
+	return "Emulation.getOverriddenSensorInformation"
+}
+
+// Call the request.
+func (m EmulationGetOverriddenSensorInformation) Call(c Client) (*EmulationGetOverriddenSensorInformationResult, error) {
+	var res EmulationGetOverriddenSensorInformationResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// EmulationGetOverriddenSensorInformationResult (experimental) ...
+type EmulationGetOverriddenSensorInformationResult struct {
+	// RequestedSamplingFrequency ...
+	RequestedSamplingFrequency float64 `json:"requestedSamplingFrequency"`
+}
+
+// EmulationSetSensorOverrideEnabled (experimental) Overrides a platform sensor of a given type. If |enabled| is true, calls to
+// Sensor.start() will use a virtual sensor as backend rather than fetching
+// data from a real hardware sensor. Otherwise, existing virtual
+// sensor-backend Sensor objects will fire an error event and new calls to
+// Sensor.start() will attempt to use a real sensor instead.
+type EmulationSetSensorOverrideEnabled struct {
+	// Enabled ...
+	Enabled bool `json:"enabled"`
+
+	// Type ...
+	Type EmulationSensorType `json:"type"`
+
+	// Metadata (optional) ...
+	Metadata *EmulationSensorMetadata `json:"metadata,omitempty"`
+}
+
+// ProtoReq name.
+func (m EmulationSetSensorOverrideEnabled) ProtoReq() string {
+	return "Emulation.setSensorOverrideEnabled"
+}
+
+// Call sends the request.
+func (m EmulationSetSensorOverrideEnabled) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EmulationSetSensorOverrideReadings (experimental) Updates the sensor readings reported by a sensor type previously overridden
+// by setSensorOverrideEnabled.
+type EmulationSetSensorOverrideReadings struct {
+	// Type ...
+	Type EmulationSensorType `json:"type"`
+
+	// Reading ...
+	Reading *EmulationSensorReading `json:"reading"`
+}
+
+// ProtoReq name.
+func (m EmulationSetSensorOverrideReadings) ProtoReq() string {
+	return "Emulation.setSensorOverrideReadings"
+}
+
+// Call sends the request.
+func (m EmulationSetSensorOverrideReadings) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EmulationSetIdleOverride Overrides the Idle state.
 type EmulationSetIdleOverride struct {
 	// IsUserActive Mock isUserActive
 	IsUserActive bool `json:"isUserActive"`
@@ -477,7 +657,7 @@ func (m EmulationSetIdleOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// EmulationClearIdleOverride (experimental) Clears Idle state overrides.
+// EmulationClearIdleOverride Clears Idle state overrides.
 type EmulationClearIdleOverride struct{}
 
 // ProtoReq name.
@@ -599,10 +779,11 @@ func (m EmulationSetLocaleOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// EmulationSetTimezoneOverride (experimental) Overrides default host system timezone with the specified one.
+// EmulationSetTimezoneOverride Overrides default host system timezone with the specified one.
 type EmulationSetTimezoneOverride struct {
-	// TimezoneID The timezone identifier. If empty, disables the override and
-	// restores default host system timezone.
+	// TimezoneID The timezone identifier. List of supported timezones:
+	// https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt
+	// If empty, disables the override and restores default host system timezone.
 	TimezoneID string `json:"timezoneId"`
 }
 
@@ -664,11 +845,12 @@ func (m EmulationSetHardwareConcurrencyOverride) Call(c Client) error {
 }
 
 // EmulationSetUserAgentOverride Allows overriding user agent with the given string.
+// `userAgentMetadata` must be set for Client Hint headers to be sent.
 type EmulationSetUserAgentOverride struct {
 	// UserAgent User agent to use.
 	UserAgent string `json:"userAgent"`
 
-	// AcceptLanguage (optional) Browser langugage to emulate.
+	// AcceptLanguage (optional) Browser language to emulate.
 	AcceptLanguage string `json:"acceptLanguage,omitempty"`
 
 	// Platform (optional) The platform navigator.platform should return.

@@ -1156,7 +1156,7 @@ type DebuggerScriptFailedToParse struct {
 	// Hash Content hash of the script, SHA-256.
 	Hash string `json:"hash"`
 
-	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
+	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
 	ExecutionContextAuxData map[string]gson.JSON `json:"executionContextAuxData,omitempty"`
 
 	// SourceMapURL (optional) URL of source map associated with script (if any).
@@ -1216,7 +1216,7 @@ type DebuggerScriptParsed struct {
 	// Hash Content hash of the script, SHA-256.
 	Hash string `json:"hash"`
 
-	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data.
+	// ExecutionContextAuxData (optional) Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
 	ExecutionContextAuxData map[string]gson.JSON `json:"executionContextAuxData,omitempty"`
 
 	// IsLiveEdit (experimental) (optional) True, if this script is generated as a result of the live edit operation.

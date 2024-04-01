@@ -265,6 +265,9 @@ type NetworkResourceTiming struct {
 	// PushEnd (experimental) Time the server finished pushing request.
 	PushEnd float64 `json:"pushEnd"`
 
+	// ReceiveHeadersStart (experimental) Started receiving response headers.
+	ReceiveHeadersStart float64 `json:"receiveHeadersStart"`
+
 	// ReceiveHeadersEnd Finished receiving response headers.
 	ReceiveHeadersEnd float64 `json:"receiveHeadersEnd"`
 }
@@ -338,13 +341,14 @@ type NetworkRequest struct {
 	// Headers HTTP request headers.
 	Headers NetworkHeaders `json:"headers"`
 
-	// PostData (optional) HTTP POST request data.
+	// PostData (deprecated) (optional) HTTP POST request data.
+	// Use postDataEntries instead.
 	PostData string `json:"postData,omitempty"`
 
 	// HasPostData (optional) True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
 	HasPostData bool `json:"hasPostData,omitempty"`
 
-	// PostDataEntries (experimental) (optional) Request body elements. This will be converted from base64 to binary
+	// PostDataEntries (experimental) (optional) Request body elements (post data broken into individual entries).
 	PostDataEntries []*NetworkPostDataEntry `json:"postDataEntries,omitempty"`
 
 	// MixedContentType (optional) The mixed content type of the request.
@@ -364,7 +368,7 @@ type NetworkRequest struct {
 	TrustTokenParams *NetworkTrustTokenParams `json:"trustTokenParams,omitempty"`
 
 	// IsSameSite (experimental) (optional) True if this resource request is considered to be the 'same site' as the
-	// request correspondinfg to the main frame.
+	// request corresponding to the main frame.
 	IsSameSite bool `json:"isSameSite,omitempty"`
 }
 
@@ -594,6 +598,18 @@ const (
 
 	// NetworkCorsErrorNoCorsRedirectModeNotFollow enum const.
 	NetworkCorsErrorNoCorsRedirectModeNotFollow NetworkCorsError = "NoCorsRedirectModeNotFollow"
+
+	// NetworkCorsErrorPreflightMissingPrivateNetworkAccessID enum const.
+	NetworkCorsErrorPreflightMissingPrivateNetworkAccessID NetworkCorsError = "PreflightMissingPrivateNetworkAccessId"
+
+	// NetworkCorsErrorPreflightMissingPrivateNetworkAccessName enum const.
+	NetworkCorsErrorPreflightMissingPrivateNetworkAccessName NetworkCorsError = "PreflightMissingPrivateNetworkAccessName"
+
+	// NetworkCorsErrorPrivateNetworkAccessPermissionUnavailable enum const.
+	NetworkCorsErrorPrivateNetworkAccessPermissionUnavailable NetworkCorsError = "PrivateNetworkAccessPermissionUnavailable"
+
+	// NetworkCorsErrorPrivateNetworkAccessPermissionDenied enum const.
+	NetworkCorsErrorPrivateNetworkAccessPermissionDenied NetworkCorsError = "PrivateNetworkAccessPermissionDenied"
 )
 
 // NetworkCorsErrorStatus ...
@@ -692,6 +708,32 @@ const (
 	NetworkAlternateProtocolUsageUnspecifiedReason NetworkAlternateProtocolUsage = "unspecifiedReason"
 )
 
+// NetworkServiceWorkerRouterSource Source of service worker router.
+type NetworkServiceWorkerRouterSource string
+
+const (
+	// NetworkServiceWorkerRouterSourceNetwork enum const.
+	NetworkServiceWorkerRouterSourceNetwork NetworkServiceWorkerRouterSource = "network"
+
+	// NetworkServiceWorkerRouterSourceCache enum const.
+	NetworkServiceWorkerRouterSourceCache NetworkServiceWorkerRouterSource = "cache"
+
+	// NetworkServiceWorkerRouterSourceFetchEvent enum const.
+	NetworkServiceWorkerRouterSourceFetchEvent NetworkServiceWorkerRouterSource = "fetch-event"
+
+	// NetworkServiceWorkerRouterSourceRaceNetworkAndFetchHandler enum const.
+	NetworkServiceWorkerRouterSourceRaceNetworkAndFetchHandler NetworkServiceWorkerRouterSource = "race-network-and-fetch-handler"
+)
+
+// NetworkServiceWorkerRouterInfo (experimental) ...
+type NetworkServiceWorkerRouterInfo struct {
+	// RuleIDMatched ...
+	RuleIDMatched int `json:"ruleIdMatched"`
+
+	// MatchedSourceType ...
+	MatchedSourceType NetworkServiceWorkerRouterSource `json:"matchedSourceType"`
+}
+
 // NetworkResponse HTTP response data.
 type NetworkResponse struct {
 	// URL Response URL. This URL can be different from CachedResource.url in case of redirect.
@@ -711,6 +753,9 @@ type NetworkResponse struct {
 
 	// MIMEType Resource mimeType as determined by the browser.
 	MIMEType string `json:"mimeType"`
+
+	// Charset Resource charset as determined by the browser (if applicable).
+	Charset string `json:"charset"`
 
 	// RequestHeaders (optional) Refined HTTP request headers that were actually transmitted over the network.
 	RequestHeaders NetworkHeaders `json:"requestHeaders,omitempty"`
@@ -738,6 +783,9 @@ type NetworkResponse struct {
 
 	// FromPrefetchCache (optional) Specifies that the request was served from the prefetch cache.
 	FromPrefetchCache bool `json:"fromPrefetchCache,omitempty"`
+
+	// ServiceWorkerRouterInfo (experimental) (optional) Information about how Service Worker Static Router was used.
+	ServiceWorkerRouterInfo *NetworkServiceWorkerRouterInfo `json:"serviceWorkerRouterInfo,omitempty"`
 
 	// EncodedDataLength Total number of bytes received for this request so far.
 	EncodedDataLength float64 `json:"encodedDataLength"`
@@ -904,7 +952,7 @@ type NetworkCookie struct {
 	// Priority (experimental) Cookie Priority
 	Priority NetworkCookiePriority `json:"priority"`
 
-	// SameParty (experimental) True if cookie is SameParty.
+	// SameParty (deprecated) (experimental) True if cookie is SameParty.
 	SameParty bool `json:"sameParty"`
 
 	// SourceScheme (experimental) Cookie source scheme type.
@@ -945,6 +993,9 @@ const (
 	// NetworkSetCookieBlockedReasonUserPreferences enum const.
 	NetworkSetCookieBlockedReasonUserPreferences NetworkSetCookieBlockedReason = "UserPreferences"
 
+	// NetworkSetCookieBlockedReasonThirdPartyPhaseout enum const.
+	NetworkSetCookieBlockedReasonThirdPartyPhaseout NetworkSetCookieBlockedReason = "ThirdPartyPhaseout"
+
 	// NetworkSetCookieBlockedReasonThirdPartyBlockedInFirstPartySet enum const.
 	NetworkSetCookieBlockedReasonThirdPartyBlockedInFirstPartySet NetworkSetCookieBlockedReason = "ThirdPartyBlockedInFirstPartySet"
 
@@ -983,6 +1034,12 @@ const (
 
 	// NetworkSetCookieBlockedReasonNameValuePairExceedsMaxSize enum const.
 	NetworkSetCookieBlockedReasonNameValuePairExceedsMaxSize NetworkSetCookieBlockedReason = "NameValuePairExceedsMaxSize"
+
+	// NetworkSetCookieBlockedReasonDisallowedCharacter enum const.
+	NetworkSetCookieBlockedReasonDisallowedCharacter NetworkSetCookieBlockedReason = "DisallowedCharacter"
+
+	// NetworkSetCookieBlockedReasonNoCookieContent enum const.
+	NetworkSetCookieBlockedReasonNoCookieContent NetworkSetCookieBlockedReason = "NoCookieContent"
 )
 
 // NetworkCookieBlockedReason (experimental) Types of reasons why a cookie may not be sent with a request.
@@ -1013,6 +1070,9 @@ const (
 	// NetworkCookieBlockedReasonUserPreferences enum const.
 	NetworkCookieBlockedReasonUserPreferences NetworkCookieBlockedReason = "UserPreferences"
 
+	// NetworkCookieBlockedReasonThirdPartyPhaseout enum const.
+	NetworkCookieBlockedReasonThirdPartyPhaseout NetworkCookieBlockedReason = "ThirdPartyPhaseout"
+
 	// NetworkCookieBlockedReasonThirdPartyBlockedInFirstPartySet enum const.
 	NetworkCookieBlockedReasonThirdPartyBlockedInFirstPartySet NetworkCookieBlockedReason = "ThirdPartyBlockedInFirstPartySet"
 
@@ -1035,6 +1095,38 @@ const (
 	NetworkCookieBlockedReasonNameValuePairExceedsMaxSize NetworkCookieBlockedReason = "NameValuePairExceedsMaxSize"
 )
 
+// NetworkCookieExemptionReason (experimental) Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the request.
+type NetworkCookieExemptionReason string
+
+const (
+	// NetworkCookieExemptionReasonNone enum const.
+	NetworkCookieExemptionReasonNone NetworkCookieExemptionReason = "None"
+
+	// NetworkCookieExemptionReasonUserSetting enum const.
+	NetworkCookieExemptionReasonUserSetting NetworkCookieExemptionReason = "UserSetting"
+
+	// NetworkCookieExemptionReasonTPCDMetadata enum const.
+	NetworkCookieExemptionReasonTPCDMetadata NetworkCookieExemptionReason = "TPCDMetadata"
+
+	// NetworkCookieExemptionReasonTPCDDeprecationTrial enum const.
+	NetworkCookieExemptionReasonTPCDDeprecationTrial NetworkCookieExemptionReason = "TPCDDeprecationTrial"
+
+	// NetworkCookieExemptionReasonTPCDHeuristics enum const.
+	NetworkCookieExemptionReasonTPCDHeuristics NetworkCookieExemptionReason = "TPCDHeuristics"
+
+	// NetworkCookieExemptionReasonEnterprisePolicy enum const.
+	NetworkCookieExemptionReasonEnterprisePolicy NetworkCookieExemptionReason = "EnterprisePolicy"
+
+	// NetworkCookieExemptionReasonStorageAccess enum const.
+	NetworkCookieExemptionReasonStorageAccess NetworkCookieExemptionReason = "StorageAccess"
+
+	// NetworkCookieExemptionReasonTopLevelStorageAccess enum const.
+	NetworkCookieExemptionReasonTopLevelStorageAccess NetworkCookieExemptionReason = "TopLevelStorageAccess"
+
+	// NetworkCookieExemptionReasonCorsOptIn enum const.
+	NetworkCookieExemptionReasonCorsOptIn NetworkCookieExemptionReason = "CorsOptIn"
+)
+
 // NetworkBlockedSetCookieWithReason (experimental) A cookie which was not stored from a response with the corresponding reason.
 type NetworkBlockedSetCookieWithReason struct {
 	// BlockedReasons The reason(s) this cookie was blocked.
@@ -1050,13 +1142,28 @@ type NetworkBlockedSetCookieWithReason struct {
 	Cookie *NetworkCookie `json:"cookie,omitempty"`
 }
 
-// NetworkBlockedCookieWithReason (experimental) A cookie with was not sent with a request with the corresponding reason.
-type NetworkBlockedCookieWithReason struct {
-	// BlockedReasons The reason(s) the cookie was blocked.
-	BlockedReasons []NetworkCookieBlockedReason `json:"blockedReasons"`
+// NetworkExemptedSetCookieWithReason (experimental) A cookie should have been blocked by 3PCD but is exempted and stored from a response with the
+// corresponding reason. A cookie could only have at most one exemption reason.
+type NetworkExemptedSetCookieWithReason struct {
+	// ExemptionReason The reason the cookie was exempted.
+	ExemptionReason NetworkCookieExemptionReason `json:"exemptionReason"`
 
+	// Cookie The cookie object representing the cookie.
+	Cookie *NetworkCookie `json:"cookie"`
+}
+
+// NetworkAssociatedCookie (experimental) A cookie associated with the request which may or may not be sent with it.
+// Includes the cookies itself and reasons for blocking or exemption.
+type NetworkAssociatedCookie struct {
 	// Cookie The cookie object representing the cookie which was not sent.
 	Cookie *NetworkCookie `json:"cookie"`
+
+	// BlockedReasons The reason(s) the cookie was blocked. If empty means the cookie is included.
+	BlockedReasons []NetworkCookieBlockedReason `json:"blockedReasons"`
+
+	// ExemptionReason (optional) The reason the cookie should have been blocked by 3PCD but is exempted. A cookie could
+	// only have at most one exemption reason.
+	ExemptionReason NetworkCookieExemptionReason `json:"exemptionReason,omitempty"`
 }
 
 // NetworkCookieParam Cookie parameter object.
@@ -1236,7 +1343,7 @@ type NetworkSignedExchangeHeader struct {
 	// Signatures Signed exchange response signature.
 	Signatures []*NetworkSignedExchangeSignature `json:"signatures"`
 
-	// HeaderIntegrity Signed exchange header integrity hash in the form of "sha256-<base64-hash-value>".
+	// HeaderIntegrity Signed exchange header integrity hash in the form of `sha256-<base64-hash-value>`.
 	HeaderIntegrity string `json:"headerIntegrity"`
 }
 
@@ -1286,7 +1393,7 @@ type NetworkSignedExchangeInfo struct {
 	// SecurityDetails (optional) Security details for the signed exchange header.
 	SecurityDetails *NetworkSecurityDetails `json:"securityDetails,omitempty"`
 
-	// Errors (optional) Errors occurred while handling the signed exchagne.
+	// Errors (optional) Errors occurred while handling the signed exchange.
 	Errors []*NetworkSignedExchangeError `json:"errors,omitempty"`
 }
 
@@ -1302,6 +1409,9 @@ const (
 
 	// NetworkContentEncodingBr enum const.
 	NetworkContentEncodingBr NetworkContentEncoding = "br"
+
+	// NetworkContentEncodingZstd enum const.
+	NetworkContentEncodingZstd NetworkContentEncoding = "zstd"
 )
 
 // NetworkPrivateNetworkRequestPolicy (experimental) ...
@@ -1428,6 +1538,29 @@ type NetworkCrossOriginEmbedderPolicyStatus struct {
 	ReportOnlyReportingEndpoint string `json:"reportOnlyReportingEndpoint,omitempty"`
 }
 
+// NetworkContentSecurityPolicySource (experimental) ...
+type NetworkContentSecurityPolicySource string
+
+const (
+	// NetworkContentSecurityPolicySourceHTTP enum const.
+	NetworkContentSecurityPolicySourceHTTP NetworkContentSecurityPolicySource = "HTTP"
+
+	// NetworkContentSecurityPolicySourceMeta enum const.
+	NetworkContentSecurityPolicySourceMeta NetworkContentSecurityPolicySource = "Meta"
+)
+
+// NetworkContentSecurityPolicyStatus (experimental) ...
+type NetworkContentSecurityPolicyStatus struct {
+	// EffectiveDirectives ...
+	EffectiveDirectives string `json:"effectiveDirectives"`
+
+	// IsEnforced ...
+	IsEnforced bool `json:"isEnforced"`
+
+	// Source ...
+	Source NetworkContentSecurityPolicySource `json:"source"`
+}
+
 // NetworkSecurityIsolationStatus (experimental) ...
 type NetworkSecurityIsolationStatus struct {
 	// Coop (optional) ...
@@ -1435,6 +1568,9 @@ type NetworkSecurityIsolationStatus struct {
 
 	// Coep (optional) ...
 	Coep *NetworkCrossOriginEmbedderPolicyStatus `json:"coep,omitempty"`
+
+	// Csp (optional) ...
+	Csp []*NetworkContentSecurityPolicyStatus `json:"csp,omitempty"`
 }
 
 // NetworkReportStatus (experimental) The status of a Reporting API report.
@@ -1679,7 +1815,7 @@ func (m NetworkContinueInterceptedRequest) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// NetworkDeleteCookies Deletes browser cookies with matching name and url or domain/path pair.
+// NetworkDeleteCookies Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
 type NetworkDeleteCookies struct {
 	// Name of the cookies to remove.
 	Name string `json:"name"`
@@ -1693,6 +1829,10 @@ type NetworkDeleteCookies struct {
 
 	// Path (optional) If specified, deletes only cookies with the exact path.
 	Path string `json:"path,omitempty"`
+
+	// PartitionKey (optional) If specified, deletes only cookies with the the given name and partitionKey where domain
+	// matches provided URL.
+	PartitionKey string `json:"partitionKey,omitempty"`
 }
 
 // ProtoReq name.
@@ -1730,6 +1870,15 @@ type NetworkEmulateNetworkConditions struct {
 
 	// ConnectionType (optional) Connection type if known.
 	ConnectionType NetworkConnectionType `json:"connectionType,omitempty"`
+
+	// PacketLoss (experimental) (optional) WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.
+	PacketLoss *float64 `json:"packetLoss,omitempty"`
+
+	// PacketQueueLength (experimental) (optional) WebRTC packet queue length (packet). 0 removes any queue length limitations.
+	PacketQueueLength *int `json:"packetQueueLength,omitempty"`
+
+	// PacketReordering (experimental) (optional) WebRTC packetReordering feature.
+	PacketReordering bool `json:"packetReordering,omitempty"`
 }
 
 // ProtoReq name.
@@ -1982,7 +2131,7 @@ func (m NetworkSetBlockedURLs) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// NetworkSetBypassServiceWorker (experimental) Toggles ignoring of service worker for each request.
+// NetworkSetBypassServiceWorker Toggles ignoring of service worker for each request.
 type NetworkSetBypassServiceWorker struct {
 	// Bypass service worker and load from network.
 	Bypass bool `json:"bypass"`
@@ -2138,7 +2287,7 @@ type NetworkSetUserAgentOverride struct {
 	// UserAgent User agent to use.
 	UserAgent string `json:"userAgent"`
 
-	// AcceptLanguage (optional) Browser langugage to emulate.
+	// AcceptLanguage (optional) Browser language to emulate.
 	AcceptLanguage string `json:"acceptLanguage,omitempty"`
 
 	// Platform (optional) The platform navigator.platform should return.
@@ -2154,6 +2303,28 @@ func (m NetworkSetUserAgentOverride) ProtoReq() string { return "Network.setUser
 // Call sends the request.
 func (m NetworkSetUserAgentOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
+}
+
+// NetworkStreamResourceContent (experimental) Enables streaming of the response for the given requestId.
+// If enabled, the dataReceived event contains the data that was received during streaming.
+type NetworkStreamResourceContent struct {
+	// RequestID Identifier of the request to stream.
+	RequestID NetworkRequestID `json:"requestId"`
+}
+
+// ProtoReq name.
+func (m NetworkStreamResourceContent) ProtoReq() string { return "Network.streamResourceContent" }
+
+// Call the request.
+func (m NetworkStreamResourceContent) Call(c Client) (*NetworkStreamResourceContentResult, error) {
+	var res NetworkStreamResourceContentResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// NetworkStreamResourceContentResult (experimental) ...
+type NetworkStreamResourceContentResult struct {
+	// BufferedData Data that has been buffered until streaming is enabled.
+	BufferedData []byte `json:"bufferedData"`
 }
 
 // NetworkGetSecurityIsolationStatus (experimental) Returns information about the COEP/COOP isolation status.
@@ -2235,6 +2406,9 @@ type NetworkDataReceived struct {
 
 	// EncodedDataLength Actual bytes received (might be less than dataLength for compressed encodings).
 	EncodedDataLength int `json:"encodedDataLength"`
+
+	// Data (experimental) (optional) Data that was received.
+	Data []byte `json:"data,omitempty"`
 }
 
 // ProtoEvent name.
@@ -2276,7 +2450,7 @@ type NetworkLoadingFailed struct {
 	// Type Resource type.
 	Type NetworkResourceType `json:"type"`
 
-	// ErrorText User friendly error message.
+	// ErrorText Error message. List of network errors: https://cs.chromium.org/chromium/src/net/base/net_error_list.h
 	ErrorText string `json:"errorText"`
 
 	// Canceled (optional) True if loading was canceled.
@@ -2304,10 +2478,6 @@ type NetworkLoadingFinished struct {
 
 	// EncodedDataLength Total number of bytes received for this request.
 	EncodedDataLength float64 `json:"encodedDataLength"`
-
-	// ShouldReportCorbBlocking (optional) Set when 1) response was blocked by Cross-Origin Read Blocking and also
-	// 2) this needs to be reported to the DevTools console.
-	ShouldReportCorbBlocking bool `json:"shouldReportCorbBlocking,omitempty"`
 }
 
 // ProtoEvent name.
@@ -2663,8 +2833,8 @@ type NetworkRequestWillBeSentExtraInfo struct {
 	RequestID NetworkRequestID `json:"requestId"`
 
 	// AssociatedCookies A list of cookies potentially associated to the requested URL. This includes both cookies sent with
-	// the request and the ones not sent; the latter are distinguished by having blockedReason field set.
-	AssociatedCookies []*NetworkBlockedCookieWithReason `json:"associatedCookies"`
+	// the request and the ones not sent; the latter are distinguished by having blockedReasons field set.
+	AssociatedCookies []*NetworkAssociatedCookie `json:"associatedCookies"`
 
 	// Headers Raw request headers as they will be sent over the wire.
 	Headers NetworkHeaders `json:"headers"`
@@ -2716,8 +2886,12 @@ type NetworkResponseReceivedExtraInfo struct {
 	// Only sent when partitioned cookies are enabled.
 	CookiePartitionKey string `json:"cookiePartitionKey,omitempty"`
 
-	// CookiePartitionKeyOpaque (optional) True if partitioned cookies are enabled, but the partition key is not serializeable to string.
+	// CookiePartitionKeyOpaque (optional) True if partitioned cookies are enabled, but the partition key is not serializable to string.
 	CookiePartitionKeyOpaque bool `json:"cookiePartitionKeyOpaque,omitempty"`
+
+	// ExemptedCookies (optional) A list of cookies which should have been blocked by 3PCD but are exempted and stored from
+	// the response with the corresponding reason.
+	ExemptedCookies []*NetworkExemptedSetCookieWithReason `json:"exemptedCookies,omitempty"`
 }
 
 // ProtoEvent name.
@@ -2734,6 +2908,9 @@ const (
 
 	// NetworkTrustTokenOperationDoneStatusInvalidArgument enum const.
 	NetworkTrustTokenOperationDoneStatusInvalidArgument NetworkTrustTokenOperationDoneStatus = "InvalidArgument"
+
+	// NetworkTrustTokenOperationDoneStatusMissingIssuerKeys enum const.
+	NetworkTrustTokenOperationDoneStatusMissingIssuerKeys NetworkTrustTokenOperationDoneStatus = "MissingIssuerKeys"
 
 	// NetworkTrustTokenOperationDoneStatusFailedPrecondition enum const.
 	NetworkTrustTokenOperationDoneStatusFailedPrecondition NetworkTrustTokenOperationDoneStatus = "FailedPrecondition"

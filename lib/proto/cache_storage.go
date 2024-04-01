@@ -72,6 +72,9 @@ type CacheStorageCache struct {
 	// StorageKey Storage key of the cache.
 	StorageKey string `json:"storageKey"`
 
+	// StorageBucket (optional) Storage bucket of the cache.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
+
 	// CacheName The name of the cache.
 	CacheName string `json:"cacheName"`
 }
@@ -124,12 +127,15 @@ func (m CacheStorageDeleteEntry) Call(c Client) error {
 
 // CacheStorageRequestCacheNames Requests cache names.
 type CacheStorageRequestCacheNames struct {
-	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey must be specified.
+	// SecurityOrigin (optional) At least and at most one of securityOrigin, storageKey, storageBucket must be specified.
 	// Security origin.
 	SecurityOrigin string `json:"securityOrigin,omitempty"`
 
 	// StorageKey (optional) Storage key.
 	StorageKey string `json:"storageKey,omitempty"`
+
+	// StorageBucket (optional) Storage bucket. If not specified, it uses the default bucket.
+	StorageBucket *StorageStorageBucket `json:"storageBucket,omitempty"`
 }
 
 // ProtoReq name.

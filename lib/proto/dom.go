@@ -15,8 +15,8 @@ that has an `id`. This `id` can be used to get additional information on the Nod
 the JavaScript object wrapper, etc. It is important that client receives DOM events only for the
 nodes that are known to the client. Backend keeps track of the nodes that were sent to the client
 and never sends the same node twice. It is client's responsibility to collect information about
-the nodes that were sent to the client.<p>Note that `iframe` owner elements will return
-corresponding document elements as their child nodes.</p>
+the nodes that were sent to the client. Note that `iframe` owner elements will return
+corresponding document elements as their child nodes.
 
 */
 
@@ -173,6 +173,17 @@ const (
 
 	// DOMLogicalAxesBoth enum const.
 	DOMLogicalAxesBoth DOMLogicalAxes = "Both"
+)
+
+// DOMScrollOrientation Physical scroll orientation.
+type DOMScrollOrientation string
+
+const (
+	// DOMScrollOrientationHorizontal enum const.
+	DOMScrollOrientationHorizontal DOMScrollOrientation = "horizontal"
+
+	// DOMScrollOrientationVertical enum const.
+	DOMScrollOrientationVertical DOMScrollOrientation = "vertical"
 )
 
 // DOMNode DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
@@ -441,7 +452,7 @@ type DOMDescribeNodeResult struct {
 	Node *DOMNode `json:"node"`
 }
 
-// DOMScrollIntoViewIfNeeded (experimental) Scrolls the specified rect of the given node into view if not already visible.
+// DOMScrollIntoViewIfNeeded Scrolls the specified rect of the given node into view if not already visible.
 // Note: exactly one between nodeId, backendNodeId and objectId should be passed
 // to identify the node.
 type DOMScrollIntoViewIfNeeded struct {
@@ -540,7 +551,7 @@ func (m DOMFocus) Call(c Client) error {
 
 // DOMGetAttributes Returns attributes for the specified node.
 type DOMGetAttributes struct {
-	// NodeID Id of the node to retrieve attibutes for.
+	// NodeID Id of the node to retrieve attributes for.
 	NodeID DOMNodeID `json:"nodeId"`
 }
 

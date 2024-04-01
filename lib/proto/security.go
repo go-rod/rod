@@ -86,7 +86,7 @@ type SecurityCertificateSecurityState struct {
 	// CertificateNetworkError (optional) The highest priority network error code, if the certificate has an error.
 	CertificateNetworkError string `json:"certificateNetworkError,omitempty"`
 
-	// CertificateHasWeakSignature True if the certificate uses a weak signature aglorithm.
+	// CertificateHasWeakSignature True if the certificate uses a weak signature algorithm.
 	CertificateHasWeakSignature bool `json:"certificateHasWeakSignature"`
 
 	// CertificateHasSha1Signature True if the certificate has a SHA1 signature in the chain.
@@ -225,7 +225,7 @@ func (m SecurityEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// SecuritySetIgnoreCertificateErrors (experimental) Enable/disable whether all certificate errors should be ignored.
+// SecuritySetIgnoreCertificateErrors Enable/disable whether all certificate errors should be ignored.
 type SecuritySetIgnoreCertificateErrors struct {
 	// Ignore If true, all certificate errors will be ignored.
 	Ignore bool `json:"ignore"`

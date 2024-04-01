@@ -163,8 +163,43 @@ func (t T) AuditsCheckContrast() {
 	t.Nil(err)
 }
 
+func (t T) AuditsCheckFormsIssues() {
+	c := &Client{}
+	_, err := proto.AuditsCheckFormsIssues{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) AutofillTrigger() {
+	c := &Client{}
+	err := proto.AutofillTrigger{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) AutofillSetAddresses() {
+	c := &Client{}
+	err := proto.AutofillSetAddresses{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) AutofillDisable() {
+	c := &Client{}
+	err := proto.AutofillDisable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) AutofillEnable() {
+	c := &Client{}
+	err := proto.AutofillEnable{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) AutofillAddressFormFilled() {
+	e := proto.AutofillAddressFormFilled{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -304,6 +339,12 @@ func (t T) BrowserExecuteBrowserCommand() {
 	t.Nil(err)
 }
 
+func (t T) BrowserAddPrivacySandboxEnrollmentOverride() {
+	c := &Client{}
+	err := proto.BrowserAddPrivacySandboxEnrollmentOverride{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) BrowserDownloadWillBegin() {
 	e := proto.BrowserDownloadWillBegin{}
 	t.Regex("", e.ProtoEvent())
@@ -398,6 +439,12 @@ func (t T) CSSGetLayersForNode() {
 	t.Nil(err)
 }
 
+func (t T) CSSGetLocationForSelector() {
+	c := &Client{}
+	_, err := proto.CSSGetLocationForSelector{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) CSSTrackComputedStyleUpdates() {
 	c := &Client{}
 	err := proto.CSSTrackComputedStyleUpdates{}.Call(c)
@@ -413,6 +460,12 @@ func (t T) CSSTakeComputedStyleUpdates() {
 func (t T) CSSSetEffectivePropertyValueForNode() {
 	c := &Client{}
 	err := proto.CSSSetEffectivePropertyValueForNode{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) CSSSetPropertyRulePropertyName() {
+	c := &Client{}
+	_, err := proto.CSSSetPropertyRulePropertyName{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1030,6 +1083,12 @@ func (t T) EventBreakpointsRemoveInstrumentationBreakpoint() {
 	t.Nil(err)
 }
 
+func (t T) EventBreakpointsDisable() {
+	c := &Client{}
+	err := proto.EventBreakpointsDisable{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMSnapshotDisable() {
 	c := &Client{}
 	err := proto.DOMSnapshotDisable{}.Call(c)
@@ -1238,6 +1297,24 @@ func (t T) EmulationSetEmulatedVisionDeficiency() {
 func (t T) EmulationSetGeolocationOverride() {
 	c := &Client{}
 	err := proto.EmulationSetGeolocationOverride{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationGetOverriddenSensorInformation() {
+	c := &Client{}
+	_, err := proto.EmulationGetOverriddenSensorInformation{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetSensorOverrideEnabled() {
+	c := &Client{}
+	err := proto.EmulationSetSensorOverrideEnabled{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetSensorOverrideReadings() {
+	c := &Client{}
+	err := proto.EmulationSetSensorOverrideReadings{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1453,6 +1530,12 @@ func (t T) InputDispatchMouseEvent() {
 func (t T) InputDispatchTouchEvent() {
 	c := &Client{}
 	err := proto.InputDispatchTouchEvent{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) InputCancelDragging() {
+	c := &Client{}
+	err := proto.InputCancelDragging{}.Call(c)
 	t.Nil(err)
 }
 
@@ -1863,6 +1946,12 @@ func (t T) NetworkSetUserAgentOverride() {
 	t.Nil(err)
 }
 
+func (t T) NetworkStreamResourceContent() {
+	c := &Client{}
+	_, err := proto.NetworkStreamResourceContent{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) NetworkGetSecurityIsolationStatus() {
 	c := &Client{}
 	_, err := proto.NetworkGetSecurityIsolationStatus{}.Call(c)
@@ -2199,6 +2288,12 @@ func (t T) OverlaySetShowIsolatedElements() {
 	t.Nil(err)
 }
 
+func (t T) OverlaySetShowWindowControlsOverlay() {
+	c := &Client{}
+	err := proto.OverlaySetShowWindowControlsOverlay{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) OverlayInspectNodeRequested() {
 	e := proto.OverlayInspectNodeRequested{}
 	t.Regex("", e.ProtoEvent())
@@ -2318,12 +2413,6 @@ func (t T) PageGetAppID() {
 func (t T) PageGetAdScriptID() {
 	c := &Client{}
 	_, err := proto.PageGetAdScriptID{}.Call(c)
-	t.Nil(err)
-}
-
-func (t T) PageGetCookies() {
-	c := &Client{}
-	_, err := proto.PageGetCookies{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2576,6 +2665,12 @@ func (t T) PageWaitForDebugger() {
 func (t T) PageSetInterceptFileChooserDialog() {
 	c := &Client{}
 	err := proto.PageSetInterceptFileChooserDialog{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PageSetPrerenderingAllowed() {
+	c := &Client{}
+	err := proto.PageSetPrerenderingAllowed{}.Call(c)
 	t.Nil(err)
 }
 
@@ -3007,6 +3102,12 @@ func (t T) StorageSetInterestGroupTracking() {
 	t.Nil(err)
 }
 
+func (t T) StorageSetInterestGroupAuctionTracking() {
+	c := &Client{}
+	err := proto.StorageSetInterestGroupAuctionTracking{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageGetSharedStorageMetadata() {
 	c := &Client{}
 	_, err := proto.StorageGetSharedStorageMetadata{}.Call(c)
@@ -3061,6 +3162,36 @@ func (t T) StorageDeleteStorageBucket() {
 	t.Nil(err)
 }
 
+func (t T) StorageRunBounceTrackingMitigations() {
+	c := &Client{}
+	_, err := proto.StorageRunBounceTrackingMitigations{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSetAttributionReportingLocalTestingMode() {
+	c := &Client{}
+	err := proto.StorageSetAttributionReportingLocalTestingMode{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSetAttributionReportingTracking() {
+	c := &Client{}
+	err := proto.StorageSetAttributionReportingTracking{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageSendPendingAttributionReports() {
+	c := &Client{}
+	_, err := proto.StorageSendPendingAttributionReports{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) StorageGetRelatedWebsiteSets() {
+	c := &Client{}
+	_, err := proto.StorageGetRelatedWebsiteSets{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) StorageCacheStorageContentUpdated() {
 	e := proto.StorageCacheStorageContentUpdated{}
 	t.Regex("", e.ProtoEvent())
@@ -3086,6 +3217,16 @@ func (t T) StorageInterestGroupAccessed() {
 	t.Regex("", e.ProtoEvent())
 }
 
+func (t T) StorageInterestGroupAuctionEventOccurred() {
+	e := proto.StorageInterestGroupAuctionEventOccurred{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) StorageInterestGroupAuctionNetworkRequestCreated() {
+	e := proto.StorageInterestGroupAuctionNetworkRequestCreated{}
+	t.Regex("", e.ProtoEvent())
+}
+
 func (t T) StorageSharedStorageAccessed() {
 	e := proto.StorageSharedStorageAccessed{}
 	t.Regex("", e.ProtoEvent())
@@ -3098,6 +3239,16 @@ func (t T) StorageStorageBucketCreatedOrUpdated() {
 
 func (t T) StorageStorageBucketDeleted() {
 	e := proto.StorageStorageBucketDeleted{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) StorageAttributionReportingSourceRegistered() {
+	e := proto.StorageAttributionReportingSourceRegistered{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) StorageAttributionReportingTriggerRegistered() {
+	e := proto.StorageAttributionReportingTriggerRegistered{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -3537,6 +3688,12 @@ func (t T) WebAuthnSetAutomaticPresenceSimulation() {
 	t.Nil(err)
 }
 
+func (t T) WebAuthnSetCredentialProperties() {
+	c := &Client{}
+	err := proto.WebAuthnSetCredentialProperties{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) WebAuthnCredentialAdded() {
 	e := proto.WebAuthnCredentialAdded{}
 	t.Regex("", e.ProtoEvent())
@@ -3635,8 +3792,8 @@ func (t T) PreloadRuleSetRemoved() {
 	t.Regex("", e.ProtoEvent())
 }
 
-func (t T) PreloadPrerenderAttemptCompleted() {
-	e := proto.PreloadPrerenderAttemptCompleted{}
+func (t T) PreloadPreloadEnabledStateUpdated() {
+	e := proto.PreloadPreloadEnabledStateUpdated{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -3673,6 +3830,18 @@ func (t T) FedCmSelectAccount() {
 	t.Nil(err)
 }
 
+func (t T) FedCmClickDialogButton() {
+	c := &Client{}
+	err := proto.FedCmClickDialogButton{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) FedCmOpenURL() {
+	c := &Client{}
+	err := proto.FedCmOpenURL{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) FedCmDismissDialog() {
 	c := &Client{}
 	err := proto.FedCmDismissDialog{}.Call(c)
@@ -3687,6 +3856,11 @@ func (t T) FedCmResetCooldown() {
 
 func (t T) FedCmDialogShown() {
 	e := proto.FedCmDialogShown{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) FedCmDialogClosed() {
+	e := proto.FedCmDialogClosed{}
 	t.Regex("", e.ProtoEvent())
 }
 

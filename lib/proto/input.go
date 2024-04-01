@@ -32,11 +32,11 @@ type InputTouchPoint struct {
 	// TangentialPressure (experimental) (optional) The normalized tangential pressure, which has a range of [-1,1] (default: 0).
 	TangentialPressure float64 `json:"tangentialPressure,omitempty"`
 
-	// TiltX (experimental) (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
-	TiltX int `json:"tiltX,omitempty"`
+	// TiltX (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
+	TiltX float64 `json:"tiltX,omitempty"`
 
-	// TiltY (experimental) (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-	TiltY int `json:"tiltY,omitempty"`
+	// TiltY (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+	TiltY float64 `json:"tiltY,omitempty"`
 
 	// Twist (experimental) (optional) The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
 	Twist int `json:"twist,omitempty"`
@@ -251,7 +251,7 @@ func (m InputInsertText) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// InputImeSetComposition (experimental) This method sets the current candidate text for ime.
+// InputImeSetComposition (experimental) This method sets the current candidate text for IME.
 // Use imeCommitComposition to commit the final text.
 // Use imeSetComposition with empty string as text to cancel composition.
 type InputImeSetComposition struct {
@@ -342,11 +342,11 @@ type InputDispatchMouseEvent struct {
 	// TangentialPressure (experimental) (optional) The normalized tangential pressure, which has a range of [-1,1] (default: 0).
 	TangentialPressure float64 `json:"tangentialPressure,omitempty"`
 
-	// TiltX (experimental) (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
-	TiltX int `json:"tiltX,omitempty"`
+	// TiltX (optional) The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
+	TiltX float64 `json:"tiltX,omitempty"`
 
-	// TiltY (experimental) (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-	TiltY int `json:"tiltY,omitempty"`
+	// TiltY (optional) The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+	TiltY float64 `json:"tiltY,omitempty"`
 
 	// Twist (experimental) (optional) The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
 	Twist int `json:"twist,omitempty"`
@@ -410,6 +410,17 @@ func (m InputDispatchTouchEvent) ProtoReq() string { return "Input.dispatchTouch
 
 // Call sends the request.
 func (m InputDispatchTouchEvent) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// InputCancelDragging Cancels any active dragging in the page.
+type InputCancelDragging struct{}
+
+// ProtoReq name.
+func (m InputCancelDragging) ProtoReq() string { return "Input.cancelDragging" }
+
+// Call sends the request.
+func (m InputCancelDragging) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

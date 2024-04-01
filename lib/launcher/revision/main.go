@@ -52,10 +52,10 @@ func main() {
 
 package launcher
 
-// RevisionDefault for chromium
+// RevisionDefault for chromium.
 const RevisionDefault = {{.default}}
 
-// RevisionPlaywright for arm linux
+// RevisionPlaywright for arm linux.
 const RevisionPlaywright = {{.playwright}}
 `,
 		"default", rev,

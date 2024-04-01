@@ -12,7 +12,7 @@ Tracing
 
 */
 
-// TracingMemoryDumpConfig Configuration for memory dump. Used only when "memory-infra" category is enabled.
+// TracingMemoryDumpConfig (experimental) Configuration for memory dump. Used only when "memory-infra" category is enabled.
 type TracingMemoryDumpConfig map[string]gson.JSON
 
 // TracingTraceConfigRecordMode enum.
@@ -34,20 +34,20 @@ const (
 
 // TracingTraceConfig ...
 type TracingTraceConfig struct {
-	// RecordMode (optional) Controls how the trace buffer stores data.
+	// RecordMode (experimental) (optional) Controls how the trace buffer stores data.
 	RecordMode TracingTraceConfigRecordMode `json:"recordMode,omitempty"`
 
-	// TraceBufferSizeInKb (optional) Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
+	// TraceBufferSizeInKb (experimental) (optional) Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
 	// of 200 MB would be used.
 	TraceBufferSizeInKb *float64 `json:"traceBufferSizeInKb,omitempty"`
 
-	// EnableSampling (optional) Turns on JavaScript stack sampling.
+	// EnableSampling (experimental) (optional) Turns on JavaScript stack sampling.
 	EnableSampling bool `json:"enableSampling,omitempty"`
 
-	// EnableSystrace (optional) Turns on system tracing.
+	// EnableSystrace (experimental) (optional) Turns on system tracing.
 	EnableSystrace bool `json:"enableSystrace,omitempty"`
 
-	// EnableArgumentFilter (optional) Turns on argument filter.
+	// EnableArgumentFilter (experimental) (optional) Turns on argument filter.
 	EnableArgumentFilter bool `json:"enableArgumentFilter,omitempty"`
 
 	// IncludedCategories (optional) Included category filters.
@@ -56,14 +56,14 @@ type TracingTraceConfig struct {
 	// ExcludedCategories (optional) Excluded category filters.
 	ExcludedCategories []string `json:"excludedCategories,omitempty"`
 
-	// SyntheticDelays (optional) Configuration to synthesize the delays in tracing.
+	// SyntheticDelays (experimental) (optional) Configuration to synthesize the delays in tracing.
 	SyntheticDelays []string `json:"syntheticDelays,omitempty"`
 
-	// MemoryDumpConfig (optional) Configuration for memory dump triggers. Used only when "memory-infra" category is enabled.
+	// MemoryDumpConfig (experimental) (optional) Configuration for memory dump triggers. Used only when "memory-infra" category is enabled.
 	MemoryDumpConfig TracingMemoryDumpConfig `json:"memoryDumpConfig,omitempty"`
 }
 
-// TracingStreamFormat Data format of a trace. Can be either the legacy JSON format or the
+// TracingStreamFormat (experimental) Data format of a trace. Can be either the legacy JSON format or the
 // protocol buffer format. Note that the JSON format will be deprecated soon.
 type TracingStreamFormat string
 
@@ -75,7 +75,7 @@ const (
 	TracingStreamFormatProto TracingStreamFormat = "proto"
 )
 
-// TracingStreamCompression Compression type to use for traces returned via streams.
+// TracingStreamCompression (experimental) Compression type to use for traces returned via streams.
 type TracingStreamCompression string
 
 const (
@@ -86,7 +86,7 @@ const (
 	TracingStreamCompressionGzip TracingStreamCompression = "gzip"
 )
 
-// TracingMemoryDumpLevelOfDetail Details exposed when memory request explicitly declared.
+// TracingMemoryDumpLevelOfDetail (experimental) Details exposed when memory request explicitly declared.
 // Keep consistent with memory_dump_request_args.h and
 // memory_instrumentation.mojom.
 type TracingMemoryDumpLevelOfDetail string
@@ -102,7 +102,7 @@ const (
 	TracingMemoryDumpLevelOfDetailDetailed TracingMemoryDumpLevelOfDetail = "detailed"
 )
 
-// TracingTracingBackend Backend type to use for tracing. `chrome` uses the Chrome-integrated
+// TracingTracingBackend (experimental) Backend type to use for tracing. `chrome` uses the Chrome-integrated
 // tracing service and is supported on all platforms. `system` is only
 // supported on Chrome OS and uses the Perfetto system tracing service.
 // `auto` chooses `system` when the perfettoConfig provided to Tracing.start
@@ -131,7 +131,7 @@ func (m TracingEnd) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TracingGetCategories Gets supported tracing categories.
+// TracingGetCategories (experimental) Gets supported tracing categories.
 type TracingGetCategories struct{}
 
 // ProtoReq name.
@@ -143,13 +143,13 @@ func (m TracingGetCategories) Call(c Client) (*TracingGetCategoriesResult, error
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TracingGetCategoriesResult ...
+// TracingGetCategoriesResult (experimental) ...
 type TracingGetCategoriesResult struct {
 	// Categories A list of supported tracing categories.
 	Categories []string `json:"categories"`
 }
 
-// TracingRecordClockSyncMarker Record a clock sync marker in the trace.
+// TracingRecordClockSyncMarker (experimental) Record a clock sync marker in the trace.
 type TracingRecordClockSyncMarker struct {
 	// SyncID The ID of this clock sync marker
 	SyncID string `json:"syncId"`
@@ -163,7 +163,7 @@ func (m TracingRecordClockSyncMarker) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TracingRequestMemoryDump Request a global memory dump.
+// TracingRequestMemoryDump (experimental) Request a global memory dump.
 type TracingRequestMemoryDump struct {
 	// Deterministic (optional) Enables more deterministic results by forcing garbage collection
 	Deterministic bool `json:"deterministic,omitempty"`
@@ -181,7 +181,7 @@ func (m TracingRequestMemoryDump) Call(c Client) (*TracingRequestMemoryDumpResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TracingRequestMemoryDumpResult ...
+// TracingRequestMemoryDumpResult (experimental) ...
 type TracingRequestMemoryDumpResult struct {
 	// DumpGUID GUID of the resulting global memory dump.
 	DumpGUID string `json:"dumpGuid"`
@@ -203,13 +203,13 @@ const (
 
 // TracingStart Start trace events collection.
 type TracingStart struct {
-	// Categories (deprecated) (optional) Category/tag filter
+	// Categories (deprecated) (experimental) (optional) Category/tag filter
 	Categories string `json:"categories,omitempty"`
 
-	// Options (deprecated) (optional) Tracing options
+	// Options (deprecated) (experimental) (optional) Tracing options
 	Options string `json:"options,omitempty"`
 
-	// BufferUsageReportingInterval (optional) If set, the agent will issue bufferUsage events at this interval, specified in milliseconds
+	// BufferUsageReportingInterval (experimental) (optional) If set, the agent will issue bufferUsage events at this interval, specified in milliseconds
 	BufferUsageReportingInterval *float64 `json:"bufferUsageReportingInterval,omitempty"`
 
 	// TransferMode (optional) Whether to report trace events as series of dataCollected events or to save trace to a
@@ -220,19 +220,19 @@ type TracingStart struct {
 	// transfer mode (defaults to `json`).
 	StreamFormat TracingStreamFormat `json:"streamFormat,omitempty"`
 
-	// StreamCompression (optional) Compression format to use. This only applies when using `ReturnAsStream`
+	// StreamCompression (experimental) (optional) Compression format to use. This only applies when using `ReturnAsStream`
 	// transfer mode (defaults to `none`)
 	StreamCompression TracingStreamCompression `json:"streamCompression,omitempty"`
 
 	// TraceConfig (optional) ...
 	TraceConfig *TracingTraceConfig `json:"traceConfig,omitempty"`
 
-	// PerfettoConfig (optional) Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+	// PerfettoConfig (experimental) (optional) Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
 	// When specified, the parameters `categories`, `options`, `traceConfig`
 	// are ignored.
 	PerfettoConfig []byte `json:"perfettoConfig,omitempty"`
 
-	// TracingBackend (optional) Backend type (defaults to `auto`)
+	// TracingBackend (experimental) (optional) Backend type (defaults to `auto`)
 	TracingBackend TracingTracingBackend `json:"tracingBackend,omitempty"`
 }
 
@@ -244,7 +244,7 @@ func (m TracingStart) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TracingBufferUsage ...
+// TracingBufferUsage (experimental) ...
 type TracingBufferUsage struct {
 	// PercentFull (optional) A number in range [0..1] that indicates the used size of event buffer as a fraction of its
 	// total size.
@@ -263,7 +263,7 @@ func (evt TracingBufferUsage) ProtoEvent() string {
 	return "Tracing.bufferUsage"
 }
 
-// TracingDataCollected Contains a bucket of collected trace events. When tracing is stopped collected events will be
+// TracingDataCollected (experimental) Contains a bucket of collected trace events. When tracing is stopped collected events will be
 // sent as a sequence of dataCollected events followed by tracingComplete event.
 type TracingDataCollected struct {
 	// Value ...

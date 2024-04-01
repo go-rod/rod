@@ -65,7 +65,7 @@ type PerformanceTimelineTimelineEvent struct {
 	FrameID PageFrameID `json:"frameId"`
 
 	// Type The event type, as specified in https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
-	// This determines which of the optional "details" fiedls is present.
+	// This determines which of the optional "details" fields is present.
 	Type string `json:"type"`
 
 	// Name may be empty depending on the type.

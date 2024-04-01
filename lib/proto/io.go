@@ -10,8 +10,8 @@ Input/Output operations for streams produced by DevTools.
 
 */
 
-// IOStreamHandle This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
-// `&lt;uuid&gt` is an UUID of a Blob.
+// IOStreamHandle This is either obtained from another method or specified as `blob:<uuid>` where
+// `<uuid>` is an UUID of a Blob.
 type IOStreamHandle string
 
 // IOClose Close the stream, discard any temporary backing storage.
@@ -33,7 +33,7 @@ type IORead struct {
 	// Handle of the stream to read.
 	Handle IOStreamHandle `json:"handle"`
 
-	// Offset (optional) Seek to the specified offset before reading (if not specificed, proceed with offset
+	// Offset (optional) Seek to the specified offset before reading (if not specified, proceed with offset
 	// following the last read). Some types of streams may only support sequential reads.
 	Offset *int `json:"offset,omitempty"`
 

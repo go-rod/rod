@@ -67,6 +67,9 @@ const (
 	// BrowserPermissionTypeBackgroundFetch enum const.
 	BrowserPermissionTypeBackgroundFetch BrowserPermissionType = "backgroundFetch"
 
+	// BrowserPermissionTypeCapturedSurfaceControl enum const.
+	BrowserPermissionTypeCapturedSurfaceControl BrowserPermissionType = "capturedSurfaceControl"
+
 	// BrowserPermissionTypeClipboardReadWrite enum const.
 	BrowserPermissionTypeClipboardReadWrite BrowserPermissionType = "clipboardReadWrite"
 
@@ -118,6 +121,9 @@ const (
 	// BrowserPermissionTypeStorageAccess enum const.
 	BrowserPermissionTypeStorageAccess BrowserPermissionType = "storageAccess"
 
+	// BrowserPermissionTypeSpeakerSelection enum const.
+	BrowserPermissionTypeSpeakerSelection BrowserPermissionType = "speakerSelection"
+
 	// BrowserPermissionTypeTopLevelStorageAccess enum const.
 	BrowserPermissionTypeTopLevelStorageAccess BrowserPermissionType = "topLevelStorageAccess"
 
@@ -152,7 +158,7 @@ const (
 )
 
 // BrowserPermissionDescriptor (experimental) Definition of PermissionDescriptor defined in the Permissions API:
-// https://w3c.github.io/permissions/#dictdef-permissiondescriptor.
+// https://w3c.github.io/permissions/#dom-permissiondescriptor.
 type BrowserPermissionDescriptor struct {
 	// Name of permission.
 	// See https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl for valid permission names.
@@ -253,7 +259,7 @@ func (m BrowserGrantPermissions) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// BrowserResetPermissions (experimental) Reset all permission management for all origins.
+// BrowserResetPermissions Reset all permission management for all origins.
 type BrowserResetPermissions struct {
 	// BrowserContextID (optional) BrowserContext to reset permissions. When omitted, default browser context is used.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId,omitempty"`
@@ -288,7 +294,7 @@ const (
 type BrowserSetDownloadBehavior struct {
 	// Behavior Whether to allow all or deny all download requests, or use default Chrome behavior if
 	// available (otherwise deny). |allowAndName| allows download and names files according to
-	// their dowmload guids.
+	// their download guids.
 	Behavior BrowserSetDownloadBehaviorBehavior `json:"behavior"`
 
 	// BrowserContextID (optional) BrowserContext to set download behavior. When omitted, default browser context is used.
@@ -552,6 +558,23 @@ func (m BrowserExecuteBrowserCommand) ProtoReq() string { return "Browser.execut
 
 // Call sends the request.
 func (m BrowserExecuteBrowserCommand) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// BrowserAddPrivacySandboxEnrollmentOverride Allows a site to use privacy sandbox features that require enrollment
+// without the site actually being enrolled. Only supported on page targets.
+type BrowserAddPrivacySandboxEnrollmentOverride struct {
+	// URL ...
+	URL string `json:"url"`
+}
+
+// ProtoReq name.
+func (m BrowserAddPrivacySandboxEnrollmentOverride) ProtoReq() string {
+	return "Browser.addPrivacySandboxEnrollmentOverride"
+}
+
+// Call sends the request.
+func (m BrowserAddPrivacySandboxEnrollmentOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

@@ -29,7 +29,7 @@ type HeadlessExperimentalScreenshotParams struct {
 	// Format (optional) Image compression format (defaults to png).
 	Format HeadlessExperimentalScreenshotParamsFormat `json:"format,omitempty"`
 
-	// Quality (optional) Compression quality from range [0..100] (jpeg only).
+	// Quality (optional) Compression quality from range [0..100] (jpeg and webp only).
 	Quality *int `json:"quality,omitempty"`
 
 	// OptimizeForSpeed (optional) Optimize image encoding for speed, not for resulting size (defaults to false)

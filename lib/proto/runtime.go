@@ -21,91 +21,126 @@ other objects in their object group.
 // RuntimeScriptID Unique script identifier.
 type RuntimeScriptID string
 
-// RuntimeWebDriverValueType enum.
-type RuntimeWebDriverValueType string
+// RuntimeSerializationOptionsSerialization enum.
+type RuntimeSerializationOptionsSerialization string
 
 const (
-	// RuntimeWebDriverValueTypeUndefined enum const.
-	RuntimeWebDriverValueTypeUndefined RuntimeWebDriverValueType = "undefined"
+	// RuntimeSerializationOptionsSerializationDeep enum const.
+	RuntimeSerializationOptionsSerializationDeep RuntimeSerializationOptionsSerialization = "deep"
 
-	// RuntimeWebDriverValueTypeNull enum const.
-	RuntimeWebDriverValueTypeNull RuntimeWebDriverValueType = "null"
+	// RuntimeSerializationOptionsSerializationJSON enum const.
+	RuntimeSerializationOptionsSerializationJSON RuntimeSerializationOptionsSerialization = "json"
 
-	// RuntimeWebDriverValueTypeString enum const.
-	RuntimeWebDriverValueTypeString RuntimeWebDriverValueType = "string"
-
-	// RuntimeWebDriverValueTypeNumber enum const.
-	RuntimeWebDriverValueTypeNumber RuntimeWebDriverValueType = "number"
-
-	// RuntimeWebDriverValueTypeBoolean enum const.
-	RuntimeWebDriverValueTypeBoolean RuntimeWebDriverValueType = "boolean"
-
-	// RuntimeWebDriverValueTypeBigint enum const.
-	RuntimeWebDriverValueTypeBigint RuntimeWebDriverValueType = "bigint"
-
-	// RuntimeWebDriverValueTypeRegexp enum const.
-	RuntimeWebDriverValueTypeRegexp RuntimeWebDriverValueType = "regexp"
-
-	// RuntimeWebDriverValueTypeDate enum const.
-	RuntimeWebDriverValueTypeDate RuntimeWebDriverValueType = "date"
-
-	// RuntimeWebDriverValueTypeSymbol enum const.
-	RuntimeWebDriverValueTypeSymbol RuntimeWebDriverValueType = "symbol"
-
-	// RuntimeWebDriverValueTypeArray enum const.
-	RuntimeWebDriverValueTypeArray RuntimeWebDriverValueType = "array"
-
-	// RuntimeWebDriverValueTypeObject enum const.
-	RuntimeWebDriverValueTypeObject RuntimeWebDriverValueType = "object"
-
-	// RuntimeWebDriverValueTypeFunction enum const.
-	RuntimeWebDriverValueTypeFunction RuntimeWebDriverValueType = "function"
-
-	// RuntimeWebDriverValueTypeMap enum const.
-	RuntimeWebDriverValueTypeMap RuntimeWebDriverValueType = "map"
-
-	// RuntimeWebDriverValueTypeSet enum const.
-	RuntimeWebDriverValueTypeSet RuntimeWebDriverValueType = "set"
-
-	// RuntimeWebDriverValueTypeWeakmap enum const.
-	RuntimeWebDriverValueTypeWeakmap RuntimeWebDriverValueType = "weakmap"
-
-	// RuntimeWebDriverValueTypeWeakset enum const.
-	RuntimeWebDriverValueTypeWeakset RuntimeWebDriverValueType = "weakset"
-
-	// RuntimeWebDriverValueTypeError enum const.
-	RuntimeWebDriverValueTypeError RuntimeWebDriverValueType = "error"
-
-	// RuntimeWebDriverValueTypeProxy enum const.
-	RuntimeWebDriverValueTypeProxy RuntimeWebDriverValueType = "proxy"
-
-	// RuntimeWebDriverValueTypePromise enum const.
-	RuntimeWebDriverValueTypePromise RuntimeWebDriverValueType = "promise"
-
-	// RuntimeWebDriverValueTypeTypedarray enum const.
-	RuntimeWebDriverValueTypeTypedarray RuntimeWebDriverValueType = "typedarray"
-
-	// RuntimeWebDriverValueTypeArraybuffer enum const.
-	RuntimeWebDriverValueTypeArraybuffer RuntimeWebDriverValueType = "arraybuffer"
-
-	// RuntimeWebDriverValueTypeNode enum const.
-	RuntimeWebDriverValueTypeNode RuntimeWebDriverValueType = "node"
-
-	// RuntimeWebDriverValueTypeWindow enum const.
-	RuntimeWebDriverValueTypeWindow RuntimeWebDriverValueType = "window"
+	// RuntimeSerializationOptionsSerializationIDOnly enum const.
+	RuntimeSerializationOptionsSerializationIDOnly RuntimeSerializationOptionsSerialization = "idOnly"
 )
 
-// RuntimeWebDriverValue Represents the value serialiazed by the WebDriver BiDi specification
-// https://w3c.github.io/webdriver-bidi.
-type RuntimeWebDriverValue struct {
+// RuntimeSerializationOptions Represents options for serialization. Overrides `generatePreview` and `returnByValue`.
+type RuntimeSerializationOptions struct {
+	// Serialization ...
+	Serialization RuntimeSerializationOptionsSerialization `json:"serialization"`
+
+	// MaxDepth (optional) Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.
+	MaxDepth *int `json:"maxDepth,omitempty"`
+
+	// AdditionalParameters (optional) Embedder-specific parameters. For example if connected to V8 in Chrome these control DOM
+	// serialization via `maxNodeDepth: integer` and `includeShadowTree: "none" | "open" | "all"`.
+	// Values can be only of type string or integer.
+	AdditionalParameters map[string]gson.JSON `json:"additionalParameters,omitempty"`
+}
+
+// RuntimeDeepSerializedValueType enum.
+type RuntimeDeepSerializedValueType string
+
+const (
+	// RuntimeDeepSerializedValueTypeUndefined enum const.
+	RuntimeDeepSerializedValueTypeUndefined RuntimeDeepSerializedValueType = "undefined"
+
+	// RuntimeDeepSerializedValueTypeNull enum const.
+	RuntimeDeepSerializedValueTypeNull RuntimeDeepSerializedValueType = "null"
+
+	// RuntimeDeepSerializedValueTypeString enum const.
+	RuntimeDeepSerializedValueTypeString RuntimeDeepSerializedValueType = "string"
+
+	// RuntimeDeepSerializedValueTypeNumber enum const.
+	RuntimeDeepSerializedValueTypeNumber RuntimeDeepSerializedValueType = "number"
+
+	// RuntimeDeepSerializedValueTypeBoolean enum const.
+	RuntimeDeepSerializedValueTypeBoolean RuntimeDeepSerializedValueType = "boolean"
+
+	// RuntimeDeepSerializedValueTypeBigint enum const.
+	RuntimeDeepSerializedValueTypeBigint RuntimeDeepSerializedValueType = "bigint"
+
+	// RuntimeDeepSerializedValueTypeRegexp enum const.
+	RuntimeDeepSerializedValueTypeRegexp RuntimeDeepSerializedValueType = "regexp"
+
+	// RuntimeDeepSerializedValueTypeDate enum const.
+	RuntimeDeepSerializedValueTypeDate RuntimeDeepSerializedValueType = "date"
+
+	// RuntimeDeepSerializedValueTypeSymbol enum const.
+	RuntimeDeepSerializedValueTypeSymbol RuntimeDeepSerializedValueType = "symbol"
+
+	// RuntimeDeepSerializedValueTypeArray enum const.
+	RuntimeDeepSerializedValueTypeArray RuntimeDeepSerializedValueType = "array"
+
+	// RuntimeDeepSerializedValueTypeObject enum const.
+	RuntimeDeepSerializedValueTypeObject RuntimeDeepSerializedValueType = "object"
+
+	// RuntimeDeepSerializedValueTypeFunction enum const.
+	RuntimeDeepSerializedValueTypeFunction RuntimeDeepSerializedValueType = "function"
+
+	// RuntimeDeepSerializedValueTypeMap enum const.
+	RuntimeDeepSerializedValueTypeMap RuntimeDeepSerializedValueType = "map"
+
+	// RuntimeDeepSerializedValueTypeSet enum const.
+	RuntimeDeepSerializedValueTypeSet RuntimeDeepSerializedValueType = "set"
+
+	// RuntimeDeepSerializedValueTypeWeakmap enum const.
+	RuntimeDeepSerializedValueTypeWeakmap RuntimeDeepSerializedValueType = "weakmap"
+
+	// RuntimeDeepSerializedValueTypeWeakset enum const.
+	RuntimeDeepSerializedValueTypeWeakset RuntimeDeepSerializedValueType = "weakset"
+
+	// RuntimeDeepSerializedValueTypeError enum const.
+	RuntimeDeepSerializedValueTypeError RuntimeDeepSerializedValueType = "error"
+
+	// RuntimeDeepSerializedValueTypeProxy enum const.
+	RuntimeDeepSerializedValueTypeProxy RuntimeDeepSerializedValueType = "proxy"
+
+	// RuntimeDeepSerializedValueTypePromise enum const.
+	RuntimeDeepSerializedValueTypePromise RuntimeDeepSerializedValueType = "promise"
+
+	// RuntimeDeepSerializedValueTypeTypedarray enum const.
+	RuntimeDeepSerializedValueTypeTypedarray RuntimeDeepSerializedValueType = "typedarray"
+
+	// RuntimeDeepSerializedValueTypeArraybuffer enum const.
+	RuntimeDeepSerializedValueTypeArraybuffer RuntimeDeepSerializedValueType = "arraybuffer"
+
+	// RuntimeDeepSerializedValueTypeNode enum const.
+	RuntimeDeepSerializedValueTypeNode RuntimeDeepSerializedValueType = "node"
+
+	// RuntimeDeepSerializedValueTypeWindow enum const.
+	RuntimeDeepSerializedValueTypeWindow RuntimeDeepSerializedValueType = "window"
+
+	// RuntimeDeepSerializedValueTypeGenerator enum const.
+	RuntimeDeepSerializedValueTypeGenerator RuntimeDeepSerializedValueType = "generator"
+)
+
+// RuntimeDeepSerializedValue Represents deep serialized value.
+type RuntimeDeepSerializedValue struct {
 	// Type ...
-	Type RuntimeWebDriverValueType `json:"type"`
+	Type RuntimeDeepSerializedValueType `json:"type"`
 
 	// Value (optional) ...
 	Value gson.JSON `json:"value,omitempty"`
 
 	// ObjectID (optional) ...
 	ObjectID string `json:"objectId,omitempty"`
+
+	// WeakLocalObjectReference (optional) Set if value reference met more then once during serialization. In such
+	// case, value is provided only to one of the serialized values. Unique
+	// per value in the scope of one CDP call.
+	WeakLocalObjectReference *int `json:"weakLocalObjectReference,omitempty"`
 }
 
 // RuntimeRemoteObjectID Unique object identifier.
@@ -229,8 +264,8 @@ type RuntimeRemoteObject struct {
 	// Description (optional) String representation of the object.
 	Description string `json:"description,omitempty"`
 
-	// WebDriverValue (experimental) (optional) WebDriver BiDi representation of the value.
-	WebDriverValue *RuntimeWebDriverValue `json:"webDriverValue,omitempty"`
+	// DeepSerializedValue (experimental) (optional) Deep serialized value.
+	DeepSerializedValue *RuntimeDeepSerializedValue `json:"deepSerializedValue,omitempty"`
 
 	// ObjectID (optional) Unique object identifier (for non-primitive values).
 	ObjectID RuntimeRemoteObjectID `json:"objectId,omitempty"`
@@ -583,7 +618,7 @@ type RuntimeExecutionContextDescription struct {
 	// performs a cross-process navigation.
 	UniqueID string `json:"uniqueId"`
 
-	// AuxData (optional) Embedder-specific auxiliary data.
+	// AuxData (optional) Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
 	AuxData map[string]gson.JSON `json:"auxData,omitempty"`
 }
 
@@ -725,6 +760,7 @@ type RuntimeCallFunctionOn struct {
 	Silent bool `json:"silent,omitempty"`
 
 	// ReturnByValue (optional) Whether the result is expected to be a JSON object which should be sent by value.
+	// Can be overridden by `serializationOptions`.
 	ReturnByValue bool `json:"returnByValue,omitempty"`
 
 	// GeneratePreview (experimental) (optional) Whether preview should be generated for the result.
@@ -756,10 +792,9 @@ type RuntimeCallFunctionOn struct {
 	// This is mutually exclusive with `executionContextId`.
 	UniqueContextID string `json:"uniqueContextId,omitempty"`
 
-	// GenerateWebDriverValue (experimental) (optional) Whether the result should contain `webDriverValue`, serialized according to
-	// https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
-	// resulting `objectId` is still provided.
-	GenerateWebDriverValue bool `json:"generateWebDriverValue,omitempty"`
+	// SerializationOptions (experimental) (optional) Specifies the result serialization. If provided, overrides
+	// `generatePreview` and `returnByValue`.
+	SerializationOptions *RuntimeSerializationOptions `json:"serializationOptions,omitempty"`
 }
 
 // ProtoReq name.
@@ -913,8 +948,9 @@ type RuntimeEvaluate struct {
 	// This is mutually exclusive with `contextId`.
 	UniqueContextID string `json:"uniqueContextId,omitempty"`
 
-	// GenerateWebDriverValue (experimental) (optional) Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
-	GenerateWebDriverValue bool `json:"generateWebDriverValue,omitempty"`
+	// SerializationOptions (experimental) (optional) Specifies the result serialization. If provided, overrides
+	// `generatePreview` and `returnByValue`.
+	SerializationOptions *RuntimeSerializationOptions `json:"serializationOptions,omitempty"`
 }
 
 // ProtoReq name.
@@ -1211,7 +1247,7 @@ func (m RuntimeTerminateExecution) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// RuntimeAddBinding (experimental) If executionContextId is empty, adds binding with the given name on the
+// RuntimeAddBinding If executionContextId is empty, adds binding with the given name on the
 // global objects of all inspected contexts, including those created later,
 // bindings survive reloads.
 // Binding function takes exactly one argument, this argument should be string,
@@ -1221,7 +1257,7 @@ type RuntimeAddBinding struct {
 	// Name ...
 	Name string `json:"name"`
 
-	// ExecutionContextID (deprecated) (optional) If specified, the binding would only be exposed to the specified
+	// ExecutionContextID (deprecated) (experimental) (optional) If specified, the binding would only be exposed to the specified
 	// execution context. If omitted and `executionContextName` is not set,
 	// the binding is exposed to all execution contexts of the target.
 	// This parameter is mutually exclusive with `executionContextName`.
@@ -1230,7 +1266,7 @@ type RuntimeAddBinding struct {
 	// removed in the future.
 	ExecutionContextID RuntimeExecutionContextID `json:"executionContextId,omitempty"`
 
-	// ExecutionContextName (experimental) (optional) If specified, the binding is exposed to the executionContext with
+	// ExecutionContextName (optional) If specified, the binding is exposed to the executionContext with
 	// matching name, even for contexts created after the binding is added.
 	// See also `ExecutionContext.name` and `worldName` parameter to
 	// `Page.addScriptToEvaluateOnNewDocument`.
@@ -1246,7 +1282,7 @@ func (m RuntimeAddBinding) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// RuntimeRemoveBinding (experimental) This method does not remove binding function from global object but
+// RuntimeRemoveBinding This method does not remove binding function from global object but
 // unsubscribes current runtime agent from Runtime.bindingCalled notifications.
 type RuntimeRemoveBinding struct {
 	// Name ...

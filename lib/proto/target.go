@@ -44,7 +44,7 @@ type TargetTargetInfo struct {
 	// TargetID ...
 	TargetID TargetTargetID `json:"targetId"`
 
-	// Type ...
+	// Type List of types: https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22
 	Type TargetTargetInfoType `json:"type"`
 
 	// Title ...
@@ -75,7 +75,7 @@ type TargetTargetInfo struct {
 
 // TargetFilterEntry (experimental) A filter used by target query/discovery/auto-attach operations.
 type TargetFilterEntry struct {
-	// Exclude (optional) If set, causes exclusion of mathcing targets from the list.
+	// Exclude (optional) If set, causes exclusion of matching targets from the list.
 	Exclude bool `json:"exclude,omitempty"`
 
 	// Type (optional) If not present, matches any type.
@@ -183,7 +183,7 @@ type TargetCloseTargetResult struct {
 //
 // Injected object will be available as `window[bindingName]`.
 //
-// The object has the follwing API:
+// The object has the following API:
 // - `binding.send(json)` - a method to send messages over the remote debugging protocol
 // - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
 type TargetExposeDevToolsProtocol struct {
@@ -202,19 +202,19 @@ func (m TargetExposeDevToolsProtocol) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TargetCreateBrowserContext (experimental) Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
+// TargetCreateBrowserContext Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
 // one.
 type TargetCreateBrowserContext struct {
-	// DisposeOnDetach (optional) If specified, disposes this context when debugging session disconnects.
+	// DisposeOnDetach (experimental) (optional) If specified, disposes this context when debugging session disconnects.
 	DisposeOnDetach bool `json:"disposeOnDetach,omitempty"`
 
-	// ProxyServer (optional) Proxy server, similar to the one passed to --proxy-server
+	// ProxyServer (experimental) (optional) Proxy server, similar to the one passed to --proxy-server
 	ProxyServer string `json:"proxyServer,omitempty"`
 
-	// ProxyBypassList (optional) Proxy bypass list, similar to the one passed to --proxy-bypass-list
+	// ProxyBypassList (experimental) (optional) Proxy bypass list, similar to the one passed to --proxy-bypass-list
 	ProxyBypassList string `json:"proxyBypassList,omitempty"`
 
-	// OriginsWithUniversalNetworkAccess (optional) An optional list of origins to grant unlimited cross-origin access to.
+	// OriginsWithUniversalNetworkAccess (experimental) (optional) An optional list of origins to grant unlimited cross-origin access to.
 	// Parts of the URL other than those constituting origin are ignored.
 	OriginsWithUniversalNetworkAccess []string `json:"originsWithUniversalNetworkAccess,omitempty"`
 }
@@ -228,13 +228,13 @@ func (m TargetCreateBrowserContext) Call(c Client) (*TargetCreateBrowserContextR
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetCreateBrowserContextResult (experimental) ...
+// TargetCreateBrowserContextResult ...
 type TargetCreateBrowserContextResult struct {
 	// BrowserContextID The id of the context created.
 	BrowserContextID BrowserBrowserContextID `json:"browserContextId"`
 }
 
-// TargetGetBrowserContexts (experimental) Returns all browser contexts created with `Target.createBrowserContext` method.
+// TargetGetBrowserContexts Returns all browser contexts created with `Target.createBrowserContext` method.
 type TargetGetBrowserContexts struct{}
 
 // ProtoReq name.
@@ -246,7 +246,7 @@ func (m TargetGetBrowserContexts) Call(c Client) (*TargetGetBrowserContextsResul
 	return &res, call(m.ProtoReq(), m, &res, c)
 }
 
-// TargetGetBrowserContextsResult (experimental) ...
+// TargetGetBrowserContextsResult ...
 type TargetGetBrowserContextsResult struct {
 	// BrowserContextIDs An array of browser context ids.
 	BrowserContextIDs []BrowserBrowserContextID `json:"browserContextIds"`
@@ -313,7 +313,7 @@ func (m TargetDetachFromTarget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TargetDisposeBrowserContext (experimental) Deletes a BrowserContext. All the belonging pages will be closed without calling their
+// TargetDisposeBrowserContext Deletes a BrowserContext. All the belonging pages will be closed without calling their
 // beforeunload hooks.
 type TargetDisposeBrowserContext struct {
 	// BrowserContextID ...
@@ -394,7 +394,7 @@ func (m TargetSendMessageToTarget) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// TargetSetAutoAttach (experimental) Controls whether to automatically attach to new targets which are considered to be related to
+// TargetSetAutoAttach Controls whether to automatically attach to new targets which are considered to be related to
 // this one. When turned on, attaches to all existing related targets as well. When turned off,
 // automatically detaches from all currently attached targets.
 // This also clears all targets added by `autoAttachRelated` from the list of targets to watch
@@ -407,7 +407,7 @@ type TargetSetAutoAttach struct {
 	// to run paused targets.
 	WaitForDebuggerOnStart bool `json:"waitForDebuggerOnStart"`
 
-	// Flatten (optional) Enables "flat" access to the session via specifying sessionId attribute in the commands.
+	// Flatten (experimental) (optional) Enables "flat" access to the session via specifying sessionId attribute in the commands.
 	// We plan to make this the default, deprecate non-flattened mode,
 	// and eventually retire it. See crbug.com/991325.
 	Flatten bool `json:"flatten,omitempty"`

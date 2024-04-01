@@ -152,6 +152,8 @@ func symbol(n string) string {
 	n = replaceLower(n, "Sql")
 	n = replaceLower(n, "Eof")
 	n = replaceLower(n, "Api")
+	n = replaceLower(n, "Ui")
+	n = replaceLower(n, "Https")
 
 	n = strings.Replace(n, "Ids", "IDs", -1)
 

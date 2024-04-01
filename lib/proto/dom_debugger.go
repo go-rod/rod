@@ -134,7 +134,7 @@ func (m DOMDebuggerRemoveEventListenerBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// DOMDebuggerRemoveInstrumentationBreakpoint (experimental) Removes breakpoint on particular native event.
+// DOMDebuggerRemoveInstrumentationBreakpoint (deprecated) (experimental) Removes breakpoint on particular native event.
 type DOMDebuggerRemoveInstrumentationBreakpoint struct {
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`
@@ -217,7 +217,7 @@ func (m DOMDebuggerSetEventListenerBreakpoint) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// DOMDebuggerSetInstrumentationBreakpoint (experimental) Sets breakpoint on particular native event.
+// DOMDebuggerSetInstrumentationBreakpoint (deprecated) (experimental) Sets breakpoint on particular native event.
 type DOMDebuggerSetInstrumentationBreakpoint struct {
 	// EventName Instrumentation name to stop on.
 	EventName string `json:"eventName"`

@@ -6,10 +6,9 @@ package proto
 
 EventBreakpoints
 
-EventBreakpoints permits setting breakpoints on particular operations and
-events in targets that run JavaScript but do not have a DOM.
-JavaScript execution will stop on these operations as if there was a regular
-breakpoint set.
+EventBreakpoints permits setting JavaScript breakpoints on operations and events
+occurring in native code invoked from JavaScript. Once breakpoint is hit, it is
+reported through Debugger domain, similarly to regular breakpoints being hit.
 
 */
 
@@ -42,5 +41,16 @@ func (m EventBreakpointsRemoveInstrumentationBreakpoint) ProtoReq() string {
 
 // Call sends the request.
 func (m EventBreakpointsRemoveInstrumentationBreakpoint) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EventBreakpointsDisable Removes all breakpoints.
+type EventBreakpointsDisable struct{}
+
+// ProtoReq name.
+func (m EventBreakpointsDisable) ProtoReq() string { return "EventBreakpoints.disable" }
+
+// Call sends the request.
+func (m EventBreakpointsDisable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }

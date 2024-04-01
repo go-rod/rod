@@ -16,7 +16,7 @@ This domain provides various functionality related to drawing atop the inspected
 
 // OverlaySourceOrderConfig Configuration data for drawing the source order of an elements children.
 type OverlaySourceOrderConfig struct {
-	// ParentOutlineColor the color to outline the givent element in.
+	// ParentOutlineColor the color to outline the given element in.
 	ParentOutlineColor *DOMRGBA `json:"parentOutlineColor"`
 
 	// ChildOutlineColor the color to outline the child elements in.
@@ -299,6 +299,18 @@ type OverlayHingeConfig struct {
 	OutlineColor *DOMRGBA `json:"outlineColor,omitempty"`
 }
 
+// OverlayWindowControlsOverlayConfig Configuration for Window Controls Overlay.
+type OverlayWindowControlsOverlayConfig struct {
+	// ShowCSS Whether the title bar CSS should be shown when emulating the Window Controls Overlay.
+	ShowCSS bool `json:"showCSS"`
+
+	// SelectedPlatform Selected platforms to show the overlay.
+	SelectedPlatform string `json:"selectedPlatform"`
+
+	// ThemeColor The theme color defined in app manifest.
+	ThemeColor string `json:"themeColor"`
+}
+
 // OverlayContainerQueryHighlightConfig ...
 type OverlayContainerQueryHighlightConfig struct {
 	// ContainerQueryContainerHighlightConfig A descriptor for the highlight appearance of container query containers.
@@ -473,8 +485,8 @@ func (m OverlayHideHighlight) Call(c Client) error {
 }
 
 // OverlayHighlightFrame (deprecated) Highlights owner element of the frame with given id.
-// Deprecated: Doesn't work reliablity and cannot be fixed due to process
-// separatation (the owner node might be in a different process). Determine
+// Deprecated: Doesn't work reliably and cannot be fixed due to process
+// separation (the owner node might be in a different process). Determine
 // the owner node in the client and use highlightNode.
 type OverlayHighlightFrame struct {
 	// FrameID Identifier of the frame to highlight.
@@ -847,6 +859,22 @@ func (m OverlaySetShowIsolatedElements) ProtoReq() string { return "Overlay.setS
 
 // Call sends the request.
 func (m OverlaySetShowIsolatedElements) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// OverlaySetShowWindowControlsOverlay Show Window Controls Overlay for PWA.
+type OverlaySetShowWindowControlsOverlay struct {
+	// WindowControlsOverlayConfig (optional) Window Controls Overlay data, null means hide Window Controls Overlay
+	WindowControlsOverlayConfig *OverlayWindowControlsOverlayConfig `json:"windowControlsOverlayConfig,omitempty"`
+}
+
+// ProtoReq name.
+func (m OverlaySetShowWindowControlsOverlay) ProtoReq() string {
+	return "Overlay.setShowWindowControlsOverlay"
+}
+
+// Call sends the request.
+func (m OverlaySetShowWindowControlsOverlay) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

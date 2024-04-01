@@ -140,7 +140,7 @@ func (m LayerTreeCompositingReasons) Call(c Client) (*LayerTreeCompositingReason
 
 // LayerTreeCompositingReasonsResult ...
 type LayerTreeCompositingReasonsResult struct {
-	// CompositingReasons (deprecated) A list of strings specifying reasons for the given layer to become composited.
+	// CompositingReasons A list of strings specifying reasons for the given layer to become composited.
 	CompositingReasons []string `json:"compositingReasons"`
 
 	// CompositingReasonIDs A list of strings specifying reason IDs for the given layer to become composited.
@@ -322,7 +322,7 @@ func (evt LayerTreeLayerPainted) ProtoEvent() string {
 
 // LayerTreeLayerTreeDidChange ...
 type LayerTreeLayerTreeDidChange struct {
-	// Layers (optional) Layer tree, absent if not in the comspositing mode.
+	// Layers (optional) Layer tree, absent if not in the compositing mode.
 	Layers []*LayerTreeLayer `json:"layers,omitempty"`
 }
 
