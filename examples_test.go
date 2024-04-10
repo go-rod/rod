@@ -442,8 +442,10 @@ func Example_handle_events() {
 
 	// Listen for all events of console output.
 	go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
-		fmt.Println(page.MustObjectsToJSON(e.Args))
-		close(done)
+		if e.Type == proto.RuntimeConsoleAPICalledTypeLog {
+			fmt.Println(page.MustObjectsToJSON(e.Args))
+			close(done)
+		}
 	})()
 
 	wait := page.WaitEvent(&proto.PageLoadEventFired{})
