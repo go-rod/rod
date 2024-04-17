@@ -65,7 +65,7 @@ func TestLaunch(t *testing.T) {
 	defaults.Proxy = "test.com"
 	defer func() { defaults.ResetWith("") }()
 
-	l := launcher.New().Preferences("")
+	l := launcher.New().Preferences("").AlwaysOpenPDFExternally()
 	defer l.Kill()
 
 	u := l.MustLaunch()

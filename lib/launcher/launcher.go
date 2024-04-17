@@ -68,8 +68,6 @@ func New() *Launcher {
 		// enable headless by default
 		flags.Headless: nil,
 
-		flags.Preferences: {`{"plugins":{"always_open_pdf_externally": true}}`},
-
 		// to disable the init blank window
 		"no-first-run":      nil,
 		"no-startup-window": nil,
@@ -253,6 +251,12 @@ func (l *Launcher) XVFB(args ...string) *Launcher {
 // https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
 func (l *Launcher) Preferences(pref string) *Launcher {
 	return l.Set(flags.Preferences, pref)
+}
+
+// AlwaysOpenPDFExternally switch.
+// It will set chromium user preferences to enable the always_open_pdf_externally option.
+func (l *Launcher) AlwaysOpenPDFExternally() *Launcher {
+	return l.Set(flags.Preferences, `{"plugins":{"always_open_pdf_externally": true}}`)
 }
 
 // Leakless switch. If enabled, the browser will be force killed after the Go process exits.
