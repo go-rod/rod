@@ -607,10 +607,10 @@ func ExamplePage_pool() {
 	pool.Cleanup(func(p *rod.Page) { p.MustClose() })
 
 	// Output:
-	// mdn.dev
-	// mdn.dev
-	// mdn.dev
-	// mdn.dev
+	// MDN Web Docs
+	// MDN Web Docs
+	// MDN Web Docs
+	// MDN Web Docs
 }
 
 // We can use [rod.BrowserPool] to concurrently control and reuse browsers.
