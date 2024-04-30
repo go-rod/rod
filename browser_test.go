@@ -449,6 +449,23 @@ func TestBrowserPool(_ *testing.T) {
 	})
 }
 
+func TestBrowserPool_TryGet(t *testing.T) {
+	pool := rod.NewBrowserPool(3)
+	create := func() (*rod.Browser, error) {
+		b := rod.New()
+		err := b.Connect()
+		return b, err
+	}
+	b, err := pool.TryGet(create)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pool.Put(b)
+	pool.Cleanup(func(p *rod.Browser) {
+		p.MustClose()
+	})
+}
+
 func TestOldBrowser(t *testing.T) {
 	t.Skip()
 
