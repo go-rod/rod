@@ -495,7 +495,6 @@ func TestBrowserPool_TryGet_Negative(t *testing.T) {
 	b, err = pool.TryGet(create)
 	if err != nil {
 		t.Log(err)
-		return
 	} else {
 		pool.Put(b)
 		t.FailNow()
