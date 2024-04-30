@@ -1155,3 +1155,12 @@ func (el *Element) MustGetXPath(optimized bool) string {
 	el.e(err)
 	return xpath
 }
+
+// MustGet a page from the pool. Use the [PagePool.Put] to make it reusable later.
+func (pp PagePool) MustGet(create func() *Page) *Page {
+	p := <-pp
+	if p == nil {
+		p = create()
+	}
+	return p
+}
