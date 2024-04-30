@@ -999,11 +999,13 @@ func TestPagePool_TryGet(t *testing.T) {
 		}
 		return b.Page(proto.TargetCreateTarget{URL: ""})
 	}
-	p, err := pool.TryGet(create)
-	if err != nil {
-		t.Fatal(err)
+	for i := 0; i < 4; i++ {
+		p, err := pool.TryGet(create)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pool.Put(p)
 	}
-	pool.Put(p)
 }
 
 func TestPagePool_TryGet_Negative(t *testing.T) {
