@@ -92,8 +92,8 @@ func NewPagePool(limit int) PagePool {
 	return pp
 }
 
-// Get a page from the pool. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) Get(create func() *Page) *Page {
+// MustGet a page from the pool. Use the [PagePool.Put] to make it reusable later.
+func (pp PagePool) MustGet(create func() *Page) *Page {
 	p := <-pp
 	if p == nil {
 		p = create()
@@ -101,12 +101,25 @@ func (pp PagePool) Get(create func() *Page) *Page {
 	return p
 }
 
+// Get a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
+func (pp PagePool) Get(create func() (*Page, error)) (*Page, error) {
+	p := <-pp
+	var err error
+	if p == nil {
+		p, err = create()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return p, nil
+}
+
 // Put a page back to the pool.
 func (pp PagePool) Put(p *Page) {
 	pp <- p
 }
 
-// Cleanup helper.
+// Cleanup helper, may stuck while PagePool is not full
 func (pp PagePool) Cleanup(iteratee func(*Page)) {
 	for i := 0; i < cap(pp); i++ {
 		p := <-pp

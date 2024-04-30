@@ -582,7 +582,7 @@ func ExamplePage_pool() {
 	}
 
 	yourJob := func() {
-		page := pool.Get(create)
+		page := pool.MustGet(create)
 
 		// Put the instance back to the pool after we're done,
 		// so the instance can be reused by other goroutines.
