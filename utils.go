@@ -104,12 +104,8 @@ func (pp PagePool) Get(create func() *Page) *Page {
 // TryGet a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
 func (pp PagePool) TryGet(create func() (*Page, error)) (*Page, error) {
 	p := <-pp
-	var err error
 	if p == nil {
-		p, err = create()
-		if err != nil {
-			return nil, err
-		}
+		return create()
 	}
 	return p, nil
 }
