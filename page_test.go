@@ -1011,8 +1011,14 @@ func TestPagePool_Get_Negative(t *testing.T) {
 	failContext, cancel := context.WithCancel(g.Context())
 	g.browser = g.browser.Context(failContext)
 	// manipulate browser canceled by another thread
-	cancel()
 	pool := rod.NewPagePool(3)
+
+	defer pool.Cleanup(func(p *rod.Page) {
+		err := p.Close()
+		if err != nil {
+			t.Log(err)
+		}
+	})
 
 	create := func() (*rod.Page, error) {
 		b, err := g.browser.Incognito()
@@ -1022,6 +1028,13 @@ func TestPagePool_Get_Negative(t *testing.T) {
 		return b.Page(proto.TargetCreateTarget{URL: ""})
 	}
 	p, err := pool.Get(create)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pool.Put(p)
+
+	cancel()
+	p, err = pool.Get(create)
 	if err != nil {
 		t.Log(err)
 	} else {

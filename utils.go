@@ -110,12 +110,15 @@ func (pp PagePool) Put(p *Page) {
 	pp <- p
 }
 
-// Cleanup helper, may stuck while PagePool is not full
+// Cleanup helper
 func (pp PagePool) Cleanup(iteratee func(*Page)) {
 	for i := 0; i < cap(pp); i++ {
-		p := <-pp
-		if p != nil {
-			iteratee(p)
+		select {
+		case p := <-pp:
+			if p != nil {
+				iteratee(p)
+			}
+		default:
 		}
 	}
 }
