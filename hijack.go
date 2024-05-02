@@ -455,7 +455,7 @@ func (p *Page) HijackResource(pattern string, resourceType proto.NetworkResource
 	wait := p.WaitEvent(e)
 
 	return func() HijackResult {
-		defer proto.FetchDisable{}.Call(p)
+		defer func() { _ = proto.FetchDisable{}.Call(p) }()
 		wait()
 
 		body, err := proto.FetchGetResponseBody{
