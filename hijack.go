@@ -3,9 +3,11 @@ package rod
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 
@@ -427,4 +429,84 @@ func (b *Browser) HandleAuth(username, password string) func() error {
 
 		return
 	}
+}
+
+// HijackResource is lite version of [Page.HijackRequests] that focus on resource hijacking.
+// Note there is a conflict between them. You can't use both at the same time.
+//
+// Usage:
+//
+//	wait, _ := p.HijackResource("/download/foo.pdf", proto.NetworkResourceTypeFetch)
+//	p.MustElement("button.foo.download").MustClick()
+//	_ := wait().Save("foo.pdf", 0644)
+func (p *Page) HijackResource(pattern string, resourceType proto.NetworkResourceType) (func() HijackResult, error) {
+	err := proto.FetchEnable{
+		Patterns: []*proto.FetchRequestPattern{{
+			URLPattern:   pattern,
+			ResourceType: resourceType,
+			RequestStage: proto.FetchRequestStageResponse,
+		}},
+	}.Call(p)
+	if err != nil {
+		return nil, err
+	}
+
+	e := new(proto.FetchRequestPaused)
+	wait := p.WaitEvent(e)
+
+	return func() HijackResult {
+		defer proto.FetchDisable{}.Call(p)
+		wait()
+
+		body, err := proto.FetchGetResponseBody{
+			RequestID: e.RequestID,
+		}.Call(p)
+		return HijackResult{body, err}
+	}, nil
+}
+
+// HijackResult context.
+type HijackResult struct {
+	body *proto.FetchGetResponseBodyResult
+	err  error
+}
+
+// Body returns the raw body.
+func (h HijackResult) Body() (*proto.FetchGetResponseBodyResult, error) {
+	return h.body, h.err
+}
+
+// Byte returns the body as byte slice.
+func (h HijackResult) Byte() ([]byte, error) {
+	if h.err != nil {
+		return nil, h.err
+	}
+	if h.body.Base64Encoded {
+		return base64.StdEncoding.DecodeString(h.body.Body)
+	}
+	return []byte(h.body.Body), nil
+}
+
+// String returns the body as string.
+func (h HijackResult) String() (string, error) {
+	if h.err != nil {
+		return "", h.err
+	}
+	if h.body.Base64Encoded {
+		b, err := base64.StdEncoding.DecodeString(h.body.Body)
+		if err != nil {
+			return "", err
+		}
+		return string(b), nil
+	}
+	return h.body.Body, nil
+}
+
+// Save the body to a file.
+func (h HijackResult) Save(name string, perm os.FileMode) error {
+	data, err := h.Byte()
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(name, data, perm)
 }

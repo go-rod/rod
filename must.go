@@ -1136,6 +1136,33 @@ func (h *Hijack) MustLoadResponse() {
 	h.browser.e(h.LoadResponse(http.DefaultClient, true))
 }
 
+// MustHijackResource is similar to [Page.HijackResource].
+func (p *Page) MustHijackResource(pattern string) func() HijackResult {
+	f, e := p.HijackResource(pattern, "")
+	p.e(e)
+	return f
+}
+
+// MustBody is similar to [HijackResult.Body].
+func (h HijackResult) MustBody() *proto.FetchGetResponseBodyResult {
+	utils.E(h.err)
+	return h.body
+}
+
+// MustByte is similar to [HijackResult.Byte].
+func (h HijackResult) MustByte() []byte {
+	b, err := h.Byte()
+	utils.E(err)
+	return b
+}
+
+// MustString is similar to [HijackResult.String].
+func (h HijackResult) MustString() string {
+	str, err := h.String()
+	utils.E(err)
+	return str
+}
+
 // MustEqual is similar to [Element.Equal].
 func (el *Element) MustEqual(elm *Element) bool {
 	res, err := el.Equal(elm)
