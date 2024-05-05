@@ -343,18 +343,16 @@ func CropImage(bin []byte, quality, x, y, width, height int) ([]byte, error) {
 
 	cropped := bytes.NewBuffer(nil)
 
+	img = img.(interface { //nolint: forcetypeassert
+		SubImage(r image.Rectangle) image.Image
+	}).SubImage(image.Rect(
+		x, y, x+width, y+height,
+	))
+
 	switch typ {
 	case "png":
-		img = img.(*image.NRGBA).SubImage(image.Rect( //nolint: forcetypeassert
-			x, y, x+width, y+height,
-		))
-
 		err = png.Encode(cropped, img)
 	case "jpeg":
-		img = img.(*image.YCbCr).SubImage(image.Rect( //nolint: forcetypeassert
-			x, y, x+width, y+height,
-		))
-
 		if quality == 0 {
 			quality = 80
 		}

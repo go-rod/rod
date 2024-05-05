@@ -139,6 +139,11 @@ func (t T) AnimationAnimationStarted() {
 	t.Regex("", e.ProtoEvent())
 }
 
+func (t T) AnimationAnimationUpdated() {
+	e := proto.AnimationAnimationUpdated{}
+	t.Regex("", e.ProtoEvent())
+}
+
 func (t T) AuditsGetEncodedResponse() {
 	c := &Client{}
 	_, err := proto.AuditsGetEncodedResponse{}.Call(c)
@@ -172,6 +177,12 @@ func (t T) AuditsCheckFormsIssues() {
 func (t T) AuditsIssueAdded() {
 	e := proto.AuditsIssueAdded{}
 	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) ExtensionsLoadUnpacked() {
+	c := &Client{}
+	_, err := proto.ExtensionsLoadUnpacked{}.Call(c)
+	t.Nil(err)
 }
 
 func (t T) AutofillTrigger() {
@@ -816,6 +827,12 @@ func (t T) DOMGetTopLayerElements() {
 	t.Nil(err)
 }
 
+func (t T) DOMGetElementByRelation() {
+	c := &Client{}
+	_, err := proto.DOMGetElementByRelation{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMRedo() {
 	c := &Client{}
 	err := proto.DOMRedo{}.Call(c)
@@ -1261,6 +1278,18 @@ func (t T) EmulationSetDefaultBackgroundColorOverride() {
 func (t T) EmulationSetDeviceMetricsOverride() {
 	c := &Client{}
 	err := proto.EmulationSetDeviceMetricsOverride{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationSetDevicePostureOverride() {
+	c := &Client{}
+	err := proto.EmulationSetDevicePostureOverride{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) EmulationClearDevicePostureOverride() {
+	c := &Client{}
+	err := proto.EmulationClearDevicePostureOverride{}.Call(c)
 	t.Nil(err)
 }
 
@@ -2077,6 +2106,11 @@ func (t T) NetworkRequestWillBeSentExtraInfo() {
 
 func (t T) NetworkResponseReceivedExtraInfo() {
 	e := proto.NetworkResponseReceivedExtraInfo{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) NetworkResponseReceivedEarlyHints() {
+	e := proto.NetworkResponseReceivedEarlyHints{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -3862,6 +3896,24 @@ func (t T) FedCmDialogShown() {
 func (t T) FedCmDialogClosed() {
 	e := proto.FedCmDialogClosed{}
 	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) PWAGetOsAppState() {
+	c := &Client{}
+	_, err := proto.PWAGetOsAppState{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWAInstall() {
+	c := &Client{}
+	err := proto.PWAInstall{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWAUninstall() {
+	c := &Client{}
+	err := proto.PWAUninstall{}.Call(c)
+	t.Nil(err)
 }
 
 func (t T) ConsoleClearMessages() {

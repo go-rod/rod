@@ -79,6 +79,12 @@ const (
 	// DOMPseudoTypeFirstLineInherited enum const.
 	DOMPseudoTypeFirstLineInherited DOMPseudoType = "first-line-inherited"
 
+	// DOMPseudoTypeScrollMarker enum const.
+	DOMPseudoTypeScrollMarker DOMPseudoType = "scroll-marker"
+
+	// DOMPseudoTypeScrollMarkers enum const.
+	DOMPseudoTypeScrollMarkers DOMPseudoType = "scroll-markers"
+
 	// DOMPseudoTypeScrollbar enum const.
 	DOMPseudoTypeScrollbar DOMPseudoType = "scrollbar"
 
@@ -1032,6 +1038,38 @@ func (m DOMGetTopLayerElements) Call(c Client) (*DOMGetTopLayerElementsResult, e
 type DOMGetTopLayerElementsResult struct {
 	// NodeIDs NodeIds of top layer elements
 	NodeIDs []DOMNodeID `json:"nodeIds"`
+}
+
+// DOMGetElementByRelationRelation enum.
+type DOMGetElementByRelationRelation string
+
+const (
+	// DOMGetElementByRelationRelationPopoverTarget enum const.
+	DOMGetElementByRelationRelationPopoverTarget DOMGetElementByRelationRelation = "PopoverTarget"
+)
+
+// DOMGetElementByRelation (experimental) Returns the NodeId of the matched element according to certain relations.
+type DOMGetElementByRelation struct {
+	// NodeID Id of the node from which to query the relation.
+	NodeID DOMNodeID `json:"nodeId"`
+
+	// Relation Type of relation to get.
+	Relation DOMGetElementByRelationRelation `json:"relation"`
+}
+
+// ProtoReq name.
+func (m DOMGetElementByRelation) ProtoReq() string { return "DOM.getElementByRelation" }
+
+// Call the request.
+func (m DOMGetElementByRelation) Call(c Client) (*DOMGetElementByRelationResult, error) {
+	var res DOMGetElementByRelationResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMGetElementByRelationResult (experimental) ...
+type DOMGetElementByRelationResult struct {
+	// NodeID NodeId of the element matching the queried relation.
+	NodeID DOMNodeID `json:"nodeId"`
 }
 
 // DOMRedo (experimental) Re-does the last undone action.

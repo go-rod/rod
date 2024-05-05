@@ -560,6 +560,80 @@ const (
 	AuditsAttributionReportingIssueTypeNoRegisterOsTriggerHeader AuditsAttributionReportingIssueType = "NoRegisterOsTriggerHeader"
 )
 
+// AuditsSharedDictionaryError ...
+type AuditsSharedDictionaryError string
+
+const (
+	// AuditsSharedDictionaryErrorUseErrorCrossOriginNoCorsRequest enum const.
+	AuditsSharedDictionaryErrorUseErrorCrossOriginNoCorsRequest AuditsSharedDictionaryError = "UseErrorCrossOriginNoCorsRequest"
+
+	// AuditsSharedDictionaryErrorUseErrorDictionaryLoadFailure enum const.
+	AuditsSharedDictionaryErrorUseErrorDictionaryLoadFailure AuditsSharedDictionaryError = "UseErrorDictionaryLoadFailure"
+
+	// AuditsSharedDictionaryErrorUseErrorMatchingDictionaryNotUsed enum const.
+	AuditsSharedDictionaryErrorUseErrorMatchingDictionaryNotUsed AuditsSharedDictionaryError = "UseErrorMatchingDictionaryNotUsed"
+
+	// AuditsSharedDictionaryErrorUseErrorUnexpectedContentDictionaryHeader enum const.
+	AuditsSharedDictionaryErrorUseErrorUnexpectedContentDictionaryHeader AuditsSharedDictionaryError = "UseErrorUnexpectedContentDictionaryHeader"
+
+	// AuditsSharedDictionaryErrorWriteErrorCossOriginNoCorsRequest enum const.
+	AuditsSharedDictionaryErrorWriteErrorCossOriginNoCorsRequest AuditsSharedDictionaryError = "WriteErrorCossOriginNoCorsRequest"
+
+	// AuditsSharedDictionaryErrorWriteErrorDisallowedBySettings enum const.
+	AuditsSharedDictionaryErrorWriteErrorDisallowedBySettings AuditsSharedDictionaryError = "WriteErrorDisallowedBySettings"
+
+	// AuditsSharedDictionaryErrorWriteErrorExpiredResponse enum const.
+	AuditsSharedDictionaryErrorWriteErrorExpiredResponse AuditsSharedDictionaryError = "WriteErrorExpiredResponse"
+
+	// AuditsSharedDictionaryErrorWriteErrorFeatureDisabled enum const.
+	AuditsSharedDictionaryErrorWriteErrorFeatureDisabled AuditsSharedDictionaryError = "WriteErrorFeatureDisabled"
+
+	// AuditsSharedDictionaryErrorWriteErrorInsufficientResources enum const.
+	AuditsSharedDictionaryErrorWriteErrorInsufficientResources AuditsSharedDictionaryError = "WriteErrorInsufficientResources"
+
+	// AuditsSharedDictionaryErrorWriteErrorInvalidMatchField enum const.
+	AuditsSharedDictionaryErrorWriteErrorInvalidMatchField AuditsSharedDictionaryError = "WriteErrorInvalidMatchField"
+
+	// AuditsSharedDictionaryErrorWriteErrorInvalidStructuredHeader enum const.
+	AuditsSharedDictionaryErrorWriteErrorInvalidStructuredHeader AuditsSharedDictionaryError = "WriteErrorInvalidStructuredHeader"
+
+	// AuditsSharedDictionaryErrorWriteErrorNavigationRequest enum const.
+	AuditsSharedDictionaryErrorWriteErrorNavigationRequest AuditsSharedDictionaryError = "WriteErrorNavigationRequest"
+
+	// AuditsSharedDictionaryErrorWriteErrorNoMatchField enum const.
+	AuditsSharedDictionaryErrorWriteErrorNoMatchField AuditsSharedDictionaryError = "WriteErrorNoMatchField"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonListMatchDestField enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonListMatchDestField AuditsSharedDictionaryError = "WriteErrorNonListMatchDestField"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonSecureContext enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonSecureContext AuditsSharedDictionaryError = "WriteErrorNonSecureContext"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonStringIDField enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonStringIDField AuditsSharedDictionaryError = "WriteErrorNonStringIdField"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonStringInMatchDestList enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonStringInMatchDestList AuditsSharedDictionaryError = "WriteErrorNonStringInMatchDestList"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonStringMatchField enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonStringMatchField AuditsSharedDictionaryError = "WriteErrorNonStringMatchField"
+
+	// AuditsSharedDictionaryErrorWriteErrorNonTokenTypeField enum const.
+	AuditsSharedDictionaryErrorWriteErrorNonTokenTypeField AuditsSharedDictionaryError = "WriteErrorNonTokenTypeField"
+
+	// AuditsSharedDictionaryErrorWriteErrorRequestAborted enum const.
+	AuditsSharedDictionaryErrorWriteErrorRequestAborted AuditsSharedDictionaryError = "WriteErrorRequestAborted"
+
+	// AuditsSharedDictionaryErrorWriteErrorShuttingDown enum const.
+	AuditsSharedDictionaryErrorWriteErrorShuttingDown AuditsSharedDictionaryError = "WriteErrorShuttingDown"
+
+	// AuditsSharedDictionaryErrorWriteErrorTooLongIDField enum const.
+	AuditsSharedDictionaryErrorWriteErrorTooLongIDField AuditsSharedDictionaryError = "WriteErrorTooLongIdField"
+
+	// AuditsSharedDictionaryErrorWriteErrorUnsupportedType enum const.
+	AuditsSharedDictionaryErrorWriteErrorUnsupportedType AuditsSharedDictionaryError = "WriteErrorUnsupportedType"
+)
+
 // AuditsAttributionReportingIssueDetails Details for issues around "Attribution Reporting API" usage.
 // Explainer: https://github.com/WICG/attribution-reporting-api
 type AuditsAttributionReportingIssueDetails struct {
@@ -603,6 +677,15 @@ type AuditsNavigatorUserAgentIssueDetails struct {
 
 	// Location (optional) ...
 	Location *AuditsSourceCodeLocation `json:"location,omitempty"`
+}
+
+// AuditsSharedDictionaryIssueDetails ...
+type AuditsSharedDictionaryIssueDetails struct {
+	// SharedDictionaryError ...
+	SharedDictionaryError AuditsSharedDictionaryError `json:"sharedDictionaryError"`
+
+	// Request ...
+	Request *AuditsAffectedRequest `json:"request"`
 }
 
 // AuditsGenericIssueErrorType ...
@@ -834,6 +917,12 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonNotSignedInWithIdp enum const.
 	AuditsFederatedAuthRequestIssueReasonNotSignedInWithIdp AuditsFederatedAuthRequestIssueReason = "NotSignedInWithIdp"
+
+	// AuditsFederatedAuthRequestIssueReasonMissingTransientUserActivation enum const.
+	AuditsFederatedAuthRequestIssueReasonMissingTransientUserActivation AuditsFederatedAuthRequestIssueReason = "MissingTransientUserActivation"
+
+	// AuditsFederatedAuthRequestIssueReasonReplacedByButtonMode enum const.
+	AuditsFederatedAuthRequestIssueReasonReplacedByButtonMode AuditsFederatedAuthRequestIssueReason = "ReplacedByButtonMode"
 )
 
 // AuditsFederatedAuthUserInfoRequestIssueDetails ...
@@ -1016,6 +1105,9 @@ const (
 
 	// AuditsInspectorIssueCodePropertyRuleIssue enum const.
 	AuditsInspectorIssueCodePropertyRuleIssue AuditsInspectorIssueCode = "PropertyRuleIssue"
+
+	// AuditsInspectorIssueCodeSharedDictionaryIssue enum const.
+	AuditsInspectorIssueCodeSharedDictionaryIssue AuditsInspectorIssueCode = "SharedDictionaryIssue"
 )
 
 // AuditsInspectorIssueDetails This struct holds a list of optional fields with additional information
@@ -1081,6 +1173,9 @@ type AuditsInspectorIssueDetails struct {
 
 	// FederatedAuthUserInfoRequestIssueDetails (optional) ...
 	FederatedAuthUserInfoRequestIssueDetails *AuditsFederatedAuthUserInfoRequestIssueDetails `json:"federatedAuthUserInfoRequestIssueDetails,omitempty"`
+
+	// SharedDictionaryIssueDetails (optional) ...
+	SharedDictionaryIssueDetails *AuditsSharedDictionaryIssueDetails `json:"sharedDictionaryIssueDetails,omitempty"`
 }
 
 // AuditsIssueID A unique id for a DevTools inspector issue. Allows other entities (e.g.

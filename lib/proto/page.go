@@ -363,9 +363,6 @@ const (
 	// PagePermissionsPolicyFeatureWindowManagement enum const.
 	PagePermissionsPolicyFeatureWindowManagement PagePermissionsPolicyFeature = "window-management"
 
-	// PagePermissionsPolicyFeatureWindowPlacement enum const.
-	PagePermissionsPolicyFeatureWindowPlacement PagePermissionsPolicyFeature = "window-placement"
-
 	// PagePermissionsPolicyFeatureXrSpatialTracking enum const.
 	PagePermissionsPolicyFeatureXrSpatialTracking PagePermissionsPolicyFeature = "xr-spatial-tracking"
 )
@@ -949,6 +946,201 @@ type PageCompilationCacheParams struct {
 	Eager bool `json:"eager,omitempty"`
 }
 
+// PageFileFilter (experimental) ...
+type PageFileFilter struct {
+	// Name (optional) ...
+	Name string `json:"name,omitempty"`
+
+	// Accepts (optional) ...
+	Accepts []string `json:"accepts,omitempty"`
+}
+
+// PageFileHandler (experimental) ...
+type PageFileHandler struct {
+	// Action ...
+	Action string `json:"action"`
+
+	// Name ...
+	Name string `json:"name"`
+
+	// Icons (optional) ...
+	Icons []*PageImageResource `json:"icons,omitempty"`
+
+	// Accepts (optional) Mimic a map, name is the key, accepts is the value.
+	Accepts []*PageFileFilter `json:"accepts,omitempty"`
+
+	// LaunchType Won't repeat the enums, using string for easy comparison. Same as the
+	// other enums below.
+	LaunchType string `json:"launchType"`
+}
+
+// PageImageResource (experimental) The image definition used in both icon and screenshot.
+type PageImageResource struct {
+	// URL The src field in the definition, but changing to url in favor of
+	// consistency.
+	URL string `json:"url"`
+
+	// Sizes (optional) ...
+	Sizes string `json:"sizes,omitempty"`
+
+	// Type (optional) ...
+	Type string `json:"type,omitempty"`
+}
+
+// PageLaunchHandler (experimental) ...
+type PageLaunchHandler struct {
+	// ClientMode ...
+	ClientMode string `json:"clientMode"`
+}
+
+// PageProtocolHandler (experimental) ...
+type PageProtocolHandler struct {
+	// Protocol ...
+	Protocol string `json:"protocol"`
+
+	// URL ...
+	URL string `json:"url"`
+}
+
+// PageRelatedApplication (experimental) ...
+type PageRelatedApplication struct {
+	// ID (optional) ...
+	ID string `json:"id,omitempty"`
+
+	// URL ...
+	URL string `json:"url"`
+}
+
+// PageScopeExtension (experimental) ...
+type PageScopeExtension struct {
+	// Origin Instead of using tuple, this field always returns the serialized string
+	// for easy understanding and comparison.
+	Origin string `json:"origin"`
+
+	// HasOriginWildcard ...
+	HasOriginWildcard bool `json:"hasOriginWildcard"`
+}
+
+// PageScreenshot (experimental) ...
+type PageScreenshot struct {
+	// Image ...
+	Image *PageImageResource `json:"image"`
+
+	// FormFactor ...
+	FormFactor string `json:"formFactor"`
+
+	// Label (optional) ...
+	Label string `json:"label,omitempty"`
+}
+
+// PageShareTarget (experimental) ...
+type PageShareTarget struct {
+	// Action ...
+	Action string `json:"action"`
+
+	// Method ...
+	Method string `json:"method"`
+
+	// Enctype ...
+	Enctype string `json:"enctype"`
+
+	// Title (optional) Embed the ShareTargetParams
+	Title string `json:"title,omitempty"`
+
+	// Text (optional) ...
+	Text string `json:"text,omitempty"`
+
+	// URL (optional) ...
+	URL string `json:"url,omitempty"`
+
+	// Files (optional) ...
+	Files []*PageFileFilter `json:"files,omitempty"`
+}
+
+// PageShortcut (experimental) ...
+type PageShortcut struct {
+	// Name ...
+	Name string `json:"name"`
+
+	// URL ...
+	URL string `json:"url"`
+}
+
+// PageWebAppManifest (experimental) ...
+type PageWebAppManifest struct {
+	// BackgroundColor (optional) ...
+	BackgroundColor string `json:"backgroundColor,omitempty"`
+
+	// Description (optional) The extra description provided by the manifest.
+	Description string `json:"description,omitempty"`
+
+	// Dir (optional) ...
+	Dir string `json:"dir,omitempty"`
+
+	// Display (optional) ...
+	Display string `json:"display,omitempty"`
+
+	// DisplayOverrides (optional) The overrided display mode controlled by the user.
+	DisplayOverrides []string `json:"displayOverrides,omitempty"`
+
+	// FileHandlers (optional) The handlers to open files.
+	FileHandlers []*PageFileHandler `json:"fileHandlers,omitempty"`
+
+	// Icons (optional) ...
+	Icons []*PageImageResource `json:"icons,omitempty"`
+
+	// ID (optional) ...
+	ID string `json:"id,omitempty"`
+
+	// Lang (optional) ...
+	Lang string `json:"lang,omitempty"`
+
+	// LaunchHandler (optional) TODO(crbug.com/1231886): This field is non-standard and part of a Chrome
+	// experiment. See:
+	// https://github.com/WICG/web-app-launch/blob/main/launch_handler.md
+	LaunchHandler *PageLaunchHandler `json:"launchHandler,omitempty"`
+
+	// Name (optional) ...
+	Name string `json:"name,omitempty"`
+
+	// Orientation (optional) ...
+	Orientation string `json:"orientation,omitempty"`
+
+	// PreferRelatedApplications (optional) ...
+	PreferRelatedApplications bool `json:"preferRelatedApplications,omitempty"`
+
+	// ProtocolHandlers (optional) The handlers to open protocols.
+	ProtocolHandlers []*PageProtocolHandler `json:"protocolHandlers,omitempty"`
+
+	// RelatedApplications (optional) ...
+	RelatedApplications []*PageRelatedApplication `json:"relatedApplications,omitempty"`
+
+	// Scope (optional) ...
+	Scope string `json:"scope,omitempty"`
+
+	// ScopeExtensions (optional) Non-standard, see
+	// https://github.com/WICG/manifest-incubations/blob/gh-pages/scope_extensions-explainer.md
+	ScopeExtensions []*PageScopeExtension `json:"scopeExtensions,omitempty"`
+
+	// Screenshots (optional) The screenshots used by chromium.
+	Screenshots []*PageScreenshot `json:"screenshots,omitempty"`
+
+	// ShareTarget (optional) ...
+	ShareTarget *PageShareTarget `json:"shareTarget,omitempty"`
+
+	// ShortName (optional) ...
+	ShortName string `json:"shortName,omitempty"`
+
+	// Shortcuts (optional) ...
+	Shortcuts []*PageShortcut `json:"shortcuts,omitempty"`
+
+	// StartURL (optional) ...
+	StartURL string `json:"startUrl,omitempty"`
+
+	// ThemeColor (optional) ...
+	ThemeColor string `json:"themeColor,omitempty"`
+}
+
 // PageAutoResponseMode (experimental) Enum of possible auto-response for permission / prompt dialogs.
 type PageAutoResponseMode string
 
@@ -1376,6 +1568,9 @@ const (
 
 	// PageBackForwardCacheNotRestoredReasonEmbedderExtensionSentMessageToCachedFrame enum const.
 	PageBackForwardCacheNotRestoredReasonEmbedderExtensionSentMessageToCachedFrame PageBackForwardCacheNotRestoredReason = "EmbedderExtensionSentMessageToCachedFrame"
+
+	// PageBackForwardCacheNotRestoredReasonRequestedByWebViewClient enum const.
+	PageBackForwardCacheNotRestoredReasonRequestedByWebViewClient PageBackForwardCacheNotRestoredReason = "RequestedByWebViewClient"
 )
 
 // PageBackForwardCacheNotRestoredReasonType (experimental) Types of not restored reasons for back-forward cache.
@@ -1686,8 +1881,16 @@ func (m PageEnable) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 
-// PageGetAppManifest ...
-type PageGetAppManifest struct{}
+// PageGetAppManifest Gets the processed manifest for this current document.
+//
+//	This API always waits for the manifest to be loaded.
+//	If manifestId is provided, and it does not match the manifest of the
+//	  current document, this API errors out.
+//	If there is not a loaded page, this API errors out immediately.
+type PageGetAppManifest struct {
+	// ManifestID (optional) ...
+	ManifestID string `json:"manifestId,omitempty"`
+}
 
 // ProtoReq name.
 func (m PageGetAppManifest) ProtoReq() string { return "Page.getAppManifest" }
@@ -1709,8 +1912,11 @@ type PageGetAppManifestResult struct {
 	// Data (optional) Manifest content.
 	Data string `json:"data,omitempty"`
 
-	// Parsed (experimental) (optional) Parsed manifest properties
+	// Parsed (deprecated) (experimental) (optional) Parsed manifest properties. Deprecated, use manifest instead.
 	Parsed *PageAppManifestParsedProperties `json:"parsed,omitempty"`
+
+	// Manifest (experimental) ...
+	Manifest *PageWebAppManifest `json:"manifest"`
 }
 
 // PageGetInstallabilityErrors (experimental) ...

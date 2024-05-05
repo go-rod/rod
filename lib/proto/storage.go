@@ -525,6 +525,9 @@ const (
 
 	// StorageAttributionReportingSourceRegistrationResultExceedsMaxChannelCapacity enum const.
 	StorageAttributionReportingSourceRegistrationResultExceedsMaxChannelCapacity StorageAttributionReportingSourceRegistrationResult = "exceedsMaxChannelCapacity"
+
+	// StorageAttributionReportingSourceRegistrationResultExceedsMaxTriggerStateCardinality enum const.
+	StorageAttributionReportingSourceRegistrationResultExceedsMaxTriggerStateCardinality StorageAttributionReportingSourceRegistrationResult = "exceedsMaxTriggerStateCardinality"
 )
 
 // StorageAttributionReportingSourceRegistrationTimeConfig (experimental) ...

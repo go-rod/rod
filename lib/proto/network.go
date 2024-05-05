@@ -727,11 +727,13 @@ const (
 
 // NetworkServiceWorkerRouterInfo (experimental) ...
 type NetworkServiceWorkerRouterInfo struct {
-	// RuleIDMatched ...
-	RuleIDMatched int `json:"ruleIdMatched"`
+	// RuleIDMatched (optional) ID of the rule matched. If there is a matched rule, this field will
+	// be set, otherwiser no value will be set.
+	RuleIDMatched *int `json:"ruleIdMatched,omitempty"`
 
-	// MatchedSourceType ...
-	MatchedSourceType NetworkServiceWorkerRouterSource `json:"matchedSourceType"`
+	// MatchedSourceType (optional) The router source of the matched rule. If there is a matched rule, this
+	// field will be set, otherwise no value will be set.
+	MatchedSourceType NetworkServiceWorkerRouterSource `json:"matchedSourceType,omitempty"`
 }
 
 // NetworkResponse HTTP response data.
@@ -784,7 +786,13 @@ type NetworkResponse struct {
 	// FromPrefetchCache (optional) Specifies that the request was served from the prefetch cache.
 	FromPrefetchCache bool `json:"fromPrefetchCache,omitempty"`
 
-	// ServiceWorkerRouterInfo (experimental) (optional) Information about how Service Worker Static Router was used.
+	// FromEarlyHints (optional) Specifies that the request was served from the prefetch cache.
+	FromEarlyHints bool `json:"fromEarlyHints,omitempty"`
+
+	// ServiceWorkerRouterInfo (experimental) (optional) Information about how ServiceWorker Static Router API was used. If this
+	// field is set with `matchedSourceType` field, a matching rule is found.
+	// If this field is set without `matchedSource`, no matching rule is found.
+	// Otherwise, the API is not used.
 	ServiceWorkerRouterInfo *NetworkServiceWorkerRouterInfo `json:"serviceWorkerRouterInfo,omitempty"`
 
 	// EncodedDataLength Total number of bytes received for this request so far.
@@ -1147,6 +1155,9 @@ type NetworkBlockedSetCookieWithReason struct {
 type NetworkExemptedSetCookieWithReason struct {
 	// ExemptionReason The reason the cookie was exempted.
 	ExemptionReason NetworkCookieExemptionReason `json:"exemptionReason"`
+
+	// CookieLine The string representing this individual cookie as it would appear in the header.
+	CookieLine string `json:"cookieLine"`
 
 	// Cookie The cookie object representing the cookie.
 	Cookie *NetworkCookie `json:"cookie"`
@@ -2897,6 +2908,22 @@ type NetworkResponseReceivedExtraInfo struct {
 // ProtoEvent name.
 func (evt NetworkResponseReceivedExtraInfo) ProtoEvent() string {
 	return "Network.responseReceivedExtraInfo"
+}
+
+// NetworkResponseReceivedEarlyHints (experimental) Fired when 103 Early Hints headers is received in addition to the common response.
+// Not every responseReceived event will have an responseReceivedEarlyHints fired.
+// Only one responseReceivedEarlyHints may be fired for eached responseReceived event.
+type NetworkResponseReceivedEarlyHints struct {
+	// RequestID Request identifier. Used to match this information to another responseReceived event.
+	RequestID NetworkRequestID `json:"requestId"`
+
+	// Headers Raw response headers as they were received over the wire.
+	Headers NetworkHeaders `json:"headers"`
+}
+
+// ProtoEvent name.
+func (evt NetworkResponseReceivedEarlyHints) ProtoEvent() string {
+	return "Network.responseReceivedEarlyHints"
 }
 
 // NetworkTrustTokenOperationDoneStatus enum.

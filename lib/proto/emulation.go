@@ -415,8 +415,9 @@ type EmulationSetDeviceMetricsOverride struct {
 	// is turned-off.
 	DisplayFeature *EmulationDisplayFeature `json:"displayFeature,omitempty"`
 
-	// DevicePosture (experimental) (optional) If set, the posture of a foldable device. If not set the posture is set
+	// DevicePosture (deprecated) (experimental) (optional) If set, the posture of a foldable device. If not set the posture is set
 	// to continuous.
+	// Deprecated, use Emulation.setDevicePostureOverride.
 	DevicePosture *EmulationDevicePosture `json:"devicePosture,omitempty"`
 }
 
@@ -427,6 +428,39 @@ func (m EmulationSetDeviceMetricsOverride) ProtoReq() string {
 
 // Call sends the request.
 func (m EmulationSetDeviceMetricsOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EmulationSetDevicePostureOverride (experimental) Start reporting the given posture value to the Device Posture API.
+// This override can also be set in setDeviceMetricsOverride().
+type EmulationSetDevicePostureOverride struct {
+	// Posture ...
+	Posture *EmulationDevicePosture `json:"posture"`
+}
+
+// ProtoReq name.
+func (m EmulationSetDevicePostureOverride) ProtoReq() string {
+	return "Emulation.setDevicePostureOverride"
+}
+
+// Call sends the request.
+func (m EmulationSetDevicePostureOverride) Call(c Client) error {
+	return call(m.ProtoReq(), m, nil, c)
+}
+
+// EmulationClearDevicePostureOverride (experimental) Clears a device posture override set with either setDeviceMetricsOverride()
+// or setDevicePostureOverride() and starts using posture information from the
+// platform again.
+// Does nothing if no override is set.
+type EmulationClearDevicePostureOverride struct{}
+
+// ProtoReq name.
+func (m EmulationClearDevicePostureOverride) ProtoReq() string {
+	return "Emulation.clearDevicePostureOverride"
+}
+
+// Call sends the request.
+func (m EmulationClearDevicePostureOverride) Call(c Client) error {
 	return call(m.ProtoReq(), m, nil, c)
 }
 

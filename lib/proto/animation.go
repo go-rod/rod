@@ -334,3 +334,14 @@ type AnimationAnimationStarted struct {
 func (evt AnimationAnimationStarted) ProtoEvent() string {
 	return "Animation.animationStarted"
 }
+
+// AnimationAnimationUpdated Event for animation that has been updated.
+type AnimationAnimationUpdated struct {
+	// Animation that was updated.
+	Animation *AnimationAnimation `json:"animation"`
+}
+
+// ProtoEvent name.
+func (evt AnimationAnimationUpdated) ProtoEvent() string {
+	return "Animation.animationUpdated"
+}
