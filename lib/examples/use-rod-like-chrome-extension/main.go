@@ -51,7 +51,7 @@ func linkPreviewer(browser *rod.Browser) {
 
 		// Expose a function to the page to provide preview
 		page.MustExpose("getPreview", func(url gson.JSON) (interface{}, error) {
-			p := pool.Get(create)
+			p := pool.MustGet(create)
 			defer pool.Put(p)
 			p.MustNavigate(url.Str())
 			return base64.StdEncoding.EncodeToString(p.MustScreenshot()), nil

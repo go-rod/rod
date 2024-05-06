@@ -92,17 +92,8 @@ func NewPagePool(limit int) PagePool {
 	return pp
 }
 
-// Get a page from the pool. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) Get(create func() *Page) *Page {
-	p := <-pp
-	if p == nil {
-		p = create()
-	}
-	return p
-}
-
-// TryGet a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) TryGet(create func() (*Page, error)) (*Page, error) {
+// Get a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
+func (pp PagePool) Get(create func() (*Page, error)) (*Page, error) {
 	p := <-pp
 	if p == nil {
 		return create()
@@ -143,17 +134,8 @@ func NewBrowserPool(limit int) BrowserPool {
 	return pp
 }
 
-// Get a browser from the pool. Use the [BrowserPool.Put] to make it reusable later.
-func (bp BrowserPool) Get(create func() *Browser) *Browser {
-	p := <-bp
-	if p == nil {
-		p = create()
-	}
-	return p
-}
-
-// TryGet a browser from the pool, allow error. Use the [BrowserPool.Put] to make it reusable later.
-func (bp BrowserPool) TryGet(create func() (*Browser, error)) (*Browser, error) {
+// Get a browser from the pool, allow error. Use the [BrowserPool.Put] to make it reusable later.
+func (bp BrowserPool) Get(create func() (*Browser, error)) (*Browser, error) {
 	p := <-bp
 	if p == nil {
 		return create()
