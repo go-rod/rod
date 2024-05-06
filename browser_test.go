@@ -1,6 +1,7 @@
 package rod_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -442,11 +443,62 @@ func TestBrowserConnectFailure(t *testing.T) {
 func TestBrowserPool(_ *testing.T) {
 	pool := rod.NewBrowserPool(3)
 	create := func() *rod.Browser { return rod.New().MustConnect() }
-	b := pool.Get(create)
+	b := pool.MustGet(create)
 	pool.Put(b)
 	pool.Cleanup(func(p *rod.Browser) {
 		p.MustClose()
 	})
+}
+
+func TestBrowserPool_TryGet(t *testing.T) {
+	pool := rod.NewBrowserPool(3)
+	defer pool.Cleanup(func(p *rod.Browser) {
+		err := p.Close()
+		if err != nil {
+			t.Log(err)
+		}
+	})
+	create := func() (*rod.Browser, error) {
+		b := rod.New()
+		err := b.Connect()
+		return b, err
+	}
+	for i := 0; i < 4; i++ {
+		b, err := pool.Get(create)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pool.Put(b)
+	}
+}
+
+func TestBrowserPool_TryGet_Negative(t *testing.T) {
+	pool := rod.NewBrowserPool(3)
+	defer pool.Cleanup(func(p *rod.Browser) {
+		err := p.Close()
+		if err != nil {
+			t.Log(err)
+		}
+	})
+	ctx, cancel := context.WithCancel(context.Background())
+	create := func() (*rod.Browser, error) {
+		b := rod.New().Context(ctx)
+		err := b.Connect()
+		return b, err
+	}
+	b, err := pool.Get(create)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pool.Put(b)
+	cancel()
+	b, err = pool.Get(create)
+	if err != nil {
+		t.Log(err)
+	} else {
+		pool.Put(b)
+		t.FailNow()
+	}
 }
 
 func TestOldBrowser(t *testing.T) {

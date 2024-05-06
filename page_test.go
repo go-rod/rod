@@ -978,11 +978,71 @@ func TestPagePool(t *testing.T) {
 
 	pool := rod.NewPagePool(3)
 	create := func() *rod.Page { return g.browser.MustPage() }
-	p := pool.Get(create)
+	p := pool.MustGet(create)
 	pool.Put(p)
 	pool.Cleanup(func(p *rod.Page) {
 		p.MustClose()
 	})
+}
+
+func TestPagePool_Get(t *testing.T) {
+	g := setup(t)
+
+	pool := rod.NewPagePool(3)
+	defer pool.Cleanup(func(p *rod.Page) {
+		p.MustClose()
+	})
+	create := func() (*rod.Page, error) {
+		b, err := g.browser.Incognito()
+		if err != nil {
+			return nil, err
+		}
+		return b.Page(proto.TargetCreateTarget{URL: ""})
+	}
+	for i := 0; i < 4; i++ {
+		p, err := pool.Get(create)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pool.Put(p)
+	}
+}
+
+func TestPagePool_Get_Negative(t *testing.T) {
+	g := setup(t)
+	failContext, cancel := context.WithCancel(g.Context())
+	g.browser = g.browser.Context(failContext)
+	// manipulate browser canceled by another thread
+	pool := rod.NewPagePool(3)
+
+	defer pool.Cleanup(func(p *rod.Page) {
+		err := p.Close()
+		if err != nil {
+			t.Log(err)
+		}
+	})
+
+	create := func() (*rod.Page, error) {
+		b, err := g.browser.Incognito()
+		if err != nil {
+			return nil, err
+		}
+		return b.Page(proto.TargetCreateTarget{URL: ""})
+	}
+	p, err := pool.Get(create)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pool.Put(p)
+
+	cancel()
+	p, err = pool.Get(create)
+	if err != nil {
+		t.Log(err)
+	} else {
+		pool.Put(p)
+		t.FailNow()
+	}
 }
 
 func TestPageUseNonExistSession(t *testing.T) {

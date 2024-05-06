@@ -92,13 +92,13 @@ func NewPagePool(limit int) PagePool {
 	return pp
 }
 
-// Get a page from the pool. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) Get(create func() *Page) *Page {
+// Get a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
+func (pp PagePool) Get(create func() (*Page, error)) (*Page, error) {
 	p := <-pp
 	if p == nil {
-		p = create()
+		return create()
 	}
-	return p
+	return p, nil
 }
 
 // Put a page back to the pool.
@@ -109,9 +109,12 @@ func (pp PagePool) Put(p *Page) {
 // Cleanup helper.
 func (pp PagePool) Cleanup(iteratee func(*Page)) {
 	for i := 0; i < cap(pp); i++ {
-		p := <-pp
-		if p != nil {
-			iteratee(p)
+		select {
+		case p := <-pp:
+			if p != nil {
+				iteratee(p)
+			}
+		default:
 		}
 	}
 }
@@ -131,13 +134,13 @@ func NewBrowserPool(limit int) BrowserPool {
 	return pp
 }
 
-// Get a browser from the pool. Use the [BrowserPool.Put] to make it reusable later.
-func (bp BrowserPool) Get(create func() *Browser) *Browser {
+// Get a browser from the pool, allow error. Use the [BrowserPool.Put] to make it reusable later.
+func (bp BrowserPool) Get(create func() (*Browser, error)) (*Browser, error) {
 	p := <-bp
 	if p == nil {
-		p = create()
+		return create()
 	}
-	return p
+	return p, nil
 }
 
 // Put a browser back to the pool.
@@ -148,9 +151,12 @@ func (bp BrowserPool) Put(p *Browser) {
 // Cleanup helper.
 func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
 	for i := 0; i < cap(bp); i++ {
-		p := <-bp
-		if p != nil {
-			iteratee(p)
+		select {
+		case p := <-bp:
+			if p != nil {
+				iteratee(p)
+			}
+		default:
 		}
 	}
 }
