@@ -14,7 +14,8 @@ linters:
     - nlreturn
     - nakedret
     - gomnd
-    - goerr113
+    - mnd
+    - err113
     - exhaustruct
     - godox
     - depguard
@@ -25,8 +26,10 @@ linters:
     - perfsprint
     - ireturn
     - contextcheck
+    - canonicalheader
 
     # Deprecated ones:
+    - execinquery
     - structcheck
     - interfacer
     - deadcode

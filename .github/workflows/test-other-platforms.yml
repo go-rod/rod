@@ -12,11 +12,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: 1.21
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: go run ./lib/utils/ci-test -timeout-each=2m
 
@@ -30,11 +30,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: 1.21
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: go run ./lib/utils/ci-test -timeout-each=2m
 
@@ -48,11 +48,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: 1.13
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # As long as the build works we don't have to run tests.
       - run: go build ./lib/examples/translator
