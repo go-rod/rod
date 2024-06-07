@@ -315,6 +315,12 @@ func ExecLine(std bool, line string, rest ...string) string {
 	return buf.String()
 }
 
+// UseNode installs Node.js and set the bin path to PATH env var.
+func UseNode(std bool) {
+	binPath := strings.TrimSpace(ExecLine(std, "go run github.com/ysmood/use-node@latest -p v20"))
+	E(os.Setenv("PATH", binPath+string(os.PathListSeparator)+os.Getenv("PATH")))
+}
+
 // FormatCLIArgs into one line string.
 func FormatCLIArgs(args []string) string {
 	list := []string{}

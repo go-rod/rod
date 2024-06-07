@@ -56,6 +56,7 @@ func fnName(name string) string {
 }
 
 func getList() gson.JSON {
+	utils.UseNode(false)
 	code := utils.ExecLine(false, "npx -ys -- uglify-js@3.17.4 -c -m -- lib/js/helper.js")
 
 	script := fmt.Sprintf(`

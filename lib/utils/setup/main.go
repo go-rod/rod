@@ -3,7 +3,6 @@ package main
 
 import (
 	"log"
-	"os/exec"
 
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -23,10 +22,7 @@ func golangDeps() {
 }
 
 func nodejsDeps() {
-	_, err := exec.LookPath("npm")
-	if err != nil {
-		log.Fatalln("please install Node.js: https://nodejs.org")
-	}
+	utils.UseNode(true)
 
 	utils.Exec("npm i -s eslint-plugin-html")
 }

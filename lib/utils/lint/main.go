@@ -6,6 +6,8 @@ import (
 )
 
 func main() {
+	utils.UseNode(true)
+
 	utils.Exec("npx -ys -- cspell@6.31.1 --no-progress **")
 
 	utils.Exec("npx -ys -- eslint@8.41.0 --ext=.js,.html --fix --ignore-path=.gitignore .")
