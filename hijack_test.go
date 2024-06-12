@@ -59,7 +59,7 @@ func TestHijack(t *testing.T) {
 
 		g.Eq(proto.NetworkResourceTypeXHR, ctx.Request.Type())
 		g.Is(ctx.Request.IsNavigation(), false)
-		g.Has(ctx.Request.Header("Origin"), s.URL())
+		g.Has(s.URL(), ctx.Request.Header("Origin"))
 		g.Len(ctx.Request.Headers(), 6)
 		g.True(ctx.Request.JSONBody().Nil())
 
