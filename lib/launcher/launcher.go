@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -117,7 +116,7 @@ func New() *Launcher {
 		exit:      make(chan struct{}),
 		browser:   NewBrowser(),
 		parser:    NewURLParser(),
-		logger:    ioutil.Discard,
+		logger:    io.Discard,
 	}
 }
 
@@ -139,7 +138,7 @@ func NewUserMode() *Launcher {
 		browser: NewBrowser(),
 		exit:    make(chan struct{}),
 		parser:  NewURLParser(),
-		logger:  ioutil.Discard,
+		logger:  io.Discard,
 	}
 }
 

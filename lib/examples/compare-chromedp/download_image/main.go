@@ -2,8 +2,8 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/go-rod/rod"
 )
@@ -20,7 +20,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := ioutil.WriteFile("download.png", b, 0o644); err != nil {
+	if err := os.WriteFile("download.png", b, 0o644); err != nil {
 		log.Fatal(err)
 	}
 	log.Print("wrote download.png")

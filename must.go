@@ -10,7 +10,7 @@ package rod
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -126,7 +126,7 @@ func (b *Browser) MustWaitDownload() func() []byte {
 		info := wait()
 		path := filepath.Join(tmpDir, info.GUID)
 		defer func() { _ = os.Remove(path) }()
-		data, err := ioutil.ReadFile(path)
+		data, err := os.ReadFile(path)
 		b.e(err)
 		return data
 	}
@@ -401,7 +401,7 @@ func (p *Page) MustScrollScreenshotPage(toFile ...string) []byte {
 func (p *Page) MustPDF(toFile ...string) []byte {
 	r, err := p.PDF(&proto.PagePrintToPDF{})
 	p.e(err)
-	bin, err := ioutil.ReadAll(r)
+	bin, err := io.ReadAll(r)
 	p.e(err)
 
 	p.e(saveFile(saveFileTypePDF, bin, toFile))

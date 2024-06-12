@@ -27,6 +27,8 @@ linters:
     - ireturn
     - contextcheck
     - canonicalheader
+    - copyloopvar
+    - intrange
 
     # Deprecated ones:
     - execinquery
@@ -65,22 +67,6 @@ issues:
         - errorlint
         - testableexamples
         - forcetypeassert
-
-    # To support old golang version
-    - path: lib/launcher/os_unix.go
-      source: "// \\+build !windows"
-      linters:
-        - gofumpt
-
-    # To support old golang version
-    - path: lib/launcher/os_windows.go
-      source: "// \\+build windows"
-      linters:
-        - gofumpt
-
-    - source: 'io/ioutil'
-      linters:
-        - staticcheck
 
     # Generated code
     - path: lib/proto/

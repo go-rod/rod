@@ -3,7 +3,7 @@ package rod
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -156,7 +156,7 @@ func (r *HijackRouter) new(ctx context.Context, e *proto.FetchRequestPaused) *Hi
 	req := &http.Request{
 		Method: e.Request.Method,
 		URL:    u,
-		Body:   ioutil.NopCloser(strings.NewReader(e.Request.PostData)),
+		Body:   io.NopCloser(strings.NewReader(e.Request.PostData)),
 		Header: headers,
 	}
 
@@ -239,7 +239,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 	}
 
 	if loadBody {
-		b, err := ioutil.ReadAll(res.Body)
+		b, err := io.ReadAll(res.Body)
 		if err != nil {
 			return err
 		}
@@ -315,7 +315,7 @@ func (ctx *HijackRequest) SetBody(obj interface{}) *HijackRequest {
 		b = utils.MustToJSONBytes(body)
 	}
 
-	ctx.req.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+	ctx.req.Body = io.NopCloser(bytes.NewBuffer(b))
 
 	return ctx
 }

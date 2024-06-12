@@ -7,7 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"flag"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -119,7 +119,7 @@ func TestLaunchUserMode(t *testing.T) {
 
 	l = l.Context(g.Context()).Delete("test").Bin("").
 		Revision(launcher.RevisionDefault).
-		Logger(ioutil.Discard).
+		Logger(io.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
 		NoSandbox(true).NoSandbox(false).

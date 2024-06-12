@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -228,7 +227,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusSwitchingProtocols || !verifyWebSocketAccept(res.Header, secKey) {
-		body, _ := ioutil.ReadAll(res.Body)
+		body, _ := io.ReadAll(res.Body)
 		return &BadHandshakeError{
 			Status: res.Status,
 			Body:   string(body),

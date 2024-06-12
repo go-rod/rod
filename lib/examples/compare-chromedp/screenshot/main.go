@@ -2,7 +2,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
@@ -27,7 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile("fullScreenshot.png", buf, 0o644)
+	err = os.WriteFile("fullScreenshot.png", buf, 0o644)
 	if err != nil {
 		panic(err)
 	}
