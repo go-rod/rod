@@ -18,6 +18,7 @@ func main() {
 }
 
 func golangDeps() {
+	utils.Exec("go mod download")
 	utils.Exec("go install mvdan.cc/gofumpt@latest")
 }
 
