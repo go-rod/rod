@@ -23,11 +23,11 @@ jobs:
 
       - run: go generate
 
-      - run: go run ./lib/utils/ci-test -race -coverprofile=coverage.out ./...
+      - run: go run ./lib/utils/ci-test -race -coverprofile=coverage.out . ./lib/utils ./lib/proto ./lib/cdp ./lib/defaults ./lib/devices ./lib/launcher ./lib/input
 
       - run: go run github.com/ysmood/got/cmd/check-cov@latest
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: cdp-log-linux

@@ -22,12 +22,14 @@ func TestWebSocketLargePayload(t *testing.T) {
 	ctx := g.Context()
 	client, id := newPage(ctx, g)
 
+	const size = 2 * 1024 * 1024
+
 	res, err := client.Call(ctx, id, "Runtime.evaluate", map[string]interface{}{
-		"expression":    fmt.Sprintf(`"%s"`, strings.Repeat("a", 2*1024*1024)),
+		"expression":    fmt.Sprintf(`"%s"`, strings.Repeat("a", size)),
 		"returnByValue": true,
 	})
 	g.E(err)
-	g.Gt(res, 2*1024*1024) // 2MB
+	g.Gt(len(res), size) // 2MB
 }
 
 func ConcurrentCall(t *testing.T) {
