@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"image/color"
 	"image/png"
+	"net"
 	"os"
 	"path/filepath"
 	"testing"
@@ -16,6 +17,7 @@ import (
 	"github.com/go-rod/rod/lib/cdp"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
 	"github.com/ysmood/gson"
@@ -261,6 +263,37 @@ func TestIframes(t *testing.T) {
 
 	g.Eq(frame01.MustEval(`() => testIsolation()`).Str(), "ok")
 	g.True(frame02.MustHas("[a=ok]"))
+}
+
+func TestIframeCrossDomains(t *testing.T) {
+	g := setup(t)
+
+	r1 := g.Serve()
+	r2 := g.Serve()
+
+	// Same domain name with different ports won't trigger OOPIF (out-of-process iframes)
+	// To check the page OOPIF status, you can use chrome://process-internals tab in the browser.
+	host1 := net.JoinHostPort("localhost", r1.HostURL.Port())
+	host2 := net.JoinHostPort("127.0.0.1", r2.HostURL.Port())
+
+	u1 := fmt.Sprintf("http://%s/iframe", host1)
+	u2 := fmt.Sprintf("http://%s/page", host2)
+
+	r1.Route("/iframe", ".html", `<html>
+		<div id="a">a</div>
+	</html>`)
+
+	r2.Route("/page", ".html", `<html>
+		<iframe sandbox src="`+u1+`"></iframe>
+	</html>`)
+
+	u := launcher.New().HeadlessNew(true).MustLaunch()
+	browser := rod.New().ControlURL(u).NoDefaultDevice().MustConnect()
+	defer browser.MustClose()
+
+	page := browser.MustPage(u2)
+
+	g.Eq(page.MustElement("iframe").MustFrame().MustElement("#a").MustText(), "a")
 }
 
 func TestContains(t *testing.T) {

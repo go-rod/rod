@@ -88,6 +88,7 @@ func New() *Launcher {
 		"disable-prompt-on-repost":                           nil,
 		"disable-renderer-backgrounding":                     nil,
 		"disable-sync":                                       nil,
+		"disable-site-isolation-trials":                      nil,
 		"enable-automation":                                  nil,
 		"enable-features":                                    {"NetworkService", "NetworkServiceInProcess"},
 		"force-color-profile":                                {"srgb"},
