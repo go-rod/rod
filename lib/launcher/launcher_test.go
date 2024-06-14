@@ -122,6 +122,7 @@ func TestLaunchUserMode(t *testing.T) {
 		Logger(io.Discard).
 		Leakless(false).Leakless(true).
 		Headless(false).Headless(true).RemoteDebuggingPort(port).
+		HeadlessNew(true).HeadlessNew(false).
 		NoSandbox(true).NoSandbox(false).
 		Devtools(true).Devtools(false).
 		StartURL("about:blank").

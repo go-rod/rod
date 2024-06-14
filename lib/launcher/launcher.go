@@ -228,6 +228,14 @@ func (l *Launcher) Headless(enable bool) *Launcher {
 	return l.Delete(flags.Headless)
 }
 
+// HeadlessNew switch is the "--headless=new" switch: https://developer.chrome.com/docs/chromium/new-headless
+func (l *Launcher) HeadlessNew(enable bool) *Launcher {
+	if enable {
+		return l.Set(flags.Headless, "new")
+	}
+	return l.Delete(flags.Headless)
+}
+
 // NoSandbox switch. Whether to run browser in no-sandbox mode.
 // Linux users may face "running as root without --no-sandbox is not supported" in some Linux/Chrome combinations.
 // This function helps switch mode easily.
