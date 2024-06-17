@@ -23,7 +23,7 @@ jobs:
 
       - run: go generate
 
-      - run: go run ./lib/utils/ci-test -race -coverprofile=coverage.out . ./lib/utils ./lib/proto ./lib/cdp ./lib/defaults ./lib/devices ./lib/launcher ./lib/input
+      - run: go run ./lib/utils/ci-test -race -coverprofile=coverage.out -run=^Test . ./lib/utils ./lib/proto ./lib/cdp ./lib/defaults ./lib/devices ./lib/launcher ./lib/input
 
       - run: go run github.com/ysmood/got/cmd/check-cov@latest
 
