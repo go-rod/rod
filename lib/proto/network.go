@@ -253,6 +253,12 @@ type NetworkResourceTiming struct {
 	// WorkerRespondWithSettled (experimental) Settled fetch event respondWith promise.
 	WorkerRespondWithSettled float64 `json:"workerRespondWithSettled"`
 
+	// WorkerRouterEvaluationStart (experimental) (optional) Started ServiceWorker static routing source evaluation.
+	WorkerRouterEvaluationStart *float64 `json:"workerRouterEvaluationStart,omitempty"`
+
+	// WorkerCacheLookupStart (experimental) (optional) Started cache lookup when the source was evaluated to `cache`.
+	WorkerCacheLookupStart *float64 `json:"workerCacheLookupStart,omitempty"`
+
 	// SendStart Started sending request.
 	SendStart float64 `json:"sendStart"`
 
@@ -501,6 +507,12 @@ const (
 	// NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep enum const.
 	NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep NetworkBlockedReason = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep"
 
+	// NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByDip enum const.
+	NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByDip NetworkBlockedReason = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip"
+
+	// NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip enum const.
+	NetworkBlockedReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip NetworkBlockedReason = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip"
+
 	// NetworkBlockedReasonCorpNotSameSite enum const.
 	NetworkBlockedReasonCorpNotSameSite NetworkBlockedReason = "corp-not-same-site"
 )
@@ -734,6 +746,9 @@ type NetworkServiceWorkerRouterInfo struct {
 	// MatchedSourceType (optional) The router source of the matched rule. If there is a matched rule, this
 	// field will be set, otherwise no value will be set.
 	MatchedSourceType NetworkServiceWorkerRouterSource `json:"matchedSourceType,omitempty"`
+
+	// ActualSourceType (optional) The actual router source used.
+	ActualSourceType NetworkServiceWorkerRouterSource `json:"actualSourceType,omitempty"`
 }
 
 // NetworkResponse HTTP response data.
@@ -925,6 +940,17 @@ type NetworkInitiator struct {
 	RequestID NetworkRequestID `json:"requestId,omitempty"`
 }
 
+// NetworkCookiePartitionKey (experimental) cookiePartitionKey object
+// The representation of the components of the key that are created by the cookiePartitionKey class contained in net/cookies/cookie_partition_key.h.
+type NetworkCookiePartitionKey struct {
+	// TopLevelSite The site of the top-level URL the browser was visiting at the start
+	// of the request to the endpoint that set the cookie.
+	TopLevelSite string `json:"topLevelSite"`
+
+	// HasCrossSiteAncestor Indicates if the cookie has any ancestors that are cross-site to the topLevelSite.
+	HasCrossSiteAncestor bool `json:"hasCrossSiteAncestor"`
+}
+
 // NetworkCookie Cookie object.
 type NetworkCookie struct {
 	// Name Cookie name.
@@ -971,9 +997,8 @@ type NetworkCookie struct {
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort int `json:"sourcePort"`
 
-	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
-	// of the request to the endpoint that set the cookie.
-	PartitionKey string `json:"partitionKey,omitempty"`
+	// PartitionKey (experimental) (optional) Cookie partition key.
+	PartitionKey *NetworkCookiePartitionKey `json:"partitionKey,omitempty"`
 
 	// PartitionKeyOpaque (experimental) (optional) True if cookie partition key is opaque.
 	PartitionKeyOpaque bool `json:"partitionKeyOpaque,omitempty"`
@@ -1133,6 +1158,9 @@ const (
 
 	// NetworkCookieExemptionReasonCorsOptIn enum const.
 	NetworkCookieExemptionReasonCorsOptIn NetworkCookieExemptionReason = "CorsOptIn"
+
+	// NetworkCookieExemptionReasonScheme enum const.
+	NetworkCookieExemptionReasonScheme NetworkCookieExemptionReason = "Scheme"
 )
 
 // NetworkBlockedSetCookieWithReason (experimental) A cookie which was not stored from a response with the corresponding reason.
@@ -1221,10 +1249,8 @@ type NetworkCookieParam struct {
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort *int `json:"sourcePort,omitempty"`
 
-	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
-	// of the request to the endpoint that set the cookie.
-	// If not set, the cookie will be set as not partitioned.
-	PartitionKey string `json:"partitionKey,omitempty"`
+	// PartitionKey (experimental) (optional) Cookie partition key. If not set, the cookie will be set as not partitioned.
+	PartitionKey *NetworkCookiePartitionKey `json:"partitionKey,omitempty"`
 }
 
 // NetworkAuthChallengeSource enum.
@@ -1841,9 +1867,9 @@ type NetworkDeleteCookies struct {
 	// Path (optional) If specified, deletes only cookies with the exact path.
 	Path string `json:"path,omitempty"`
 
-	// PartitionKey (optional) If specified, deletes only cookies with the the given name and partitionKey where domain
-	// matches provided URL.
-	PartitionKey string `json:"partitionKey,omitempty"`
+	// PartitionKey (experimental) (optional) If specified, deletes only cookies with the the given name and partitionKey where
+	// all partition key attributes match the cookie partition key attribute.
+	PartitionKey *NetworkCookiePartitionKey `json:"partitionKey,omitempty"`
 }
 
 // ProtoReq name.
@@ -2214,10 +2240,8 @@ type NetworkSetCookie struct {
 	// This is a temporary ability and it will be removed in the future.
 	SourcePort *int `json:"sourcePort,omitempty"`
 
-	// PartitionKey (experimental) (optional) Cookie partition key. The site of the top-level URL the browser was visiting at the start
-	// of the request to the endpoint that set the cookie.
-	// If not set, the cookie will be set as not partitioned.
-	PartitionKey string `json:"partitionKey,omitempty"`
+	// PartitionKey (experimental) (optional) Cookie partition key. If not set, the cookie will be set as not partitioned.
+	PartitionKey *NetworkCookiePartitionKey `json:"partitionKey,omitempty"`
 }
 
 // ProtoReq name.
@@ -2893,9 +2917,9 @@ type NetworkResponseReceivedExtraInfo struct {
 	// available, such as in the case of HTTP/2 or QUIC.
 	HeadersText string `json:"headersText,omitempty"`
 
-	// CookiePartitionKey (optional) The cookie partition key that will be used to store partitioned cookies set in this response.
+	// CookiePartitionKey (experimental) (optional) The cookie partition key that will be used to store partitioned cookies set in this response.
 	// Only sent when partitioned cookies are enabled.
-	CookiePartitionKey string `json:"cookiePartitionKey,omitempty"`
+	CookiePartitionKey *NetworkCookiePartitionKey `json:"cookiePartitionKey,omitempty"`
 
 	// CookiePartitionKeyOpaque (optional) True if partitioned cookies are enabled, but the partition key is not serializable to string.
 	CookiePartitionKeyOpaque bool `json:"cookiePartitionKeyOpaque,omitempty"`
@@ -2948,8 +2972,8 @@ const (
 	// NetworkTrustTokenOperationDoneStatusAlreadyExists enum const.
 	NetworkTrustTokenOperationDoneStatusAlreadyExists NetworkTrustTokenOperationDoneStatus = "AlreadyExists"
 
-	// NetworkTrustTokenOperationDoneStatusUnavailable enum const.
-	NetworkTrustTokenOperationDoneStatusUnavailable NetworkTrustTokenOperationDoneStatus = "Unavailable"
+	// NetworkTrustTokenOperationDoneStatusResourceLimited enum const.
+	NetworkTrustTokenOperationDoneStatusResourceLimited NetworkTrustTokenOperationDoneStatus = "ResourceLimited"
 
 	// NetworkTrustTokenOperationDoneStatusUnauthorized enum const.
 	NetworkTrustTokenOperationDoneStatusUnauthorized NetworkTrustTokenOperationDoneStatus = "Unauthorized"
@@ -2997,6 +3021,14 @@ type NetworkTrustTokenOperationDone struct {
 // ProtoEvent name.
 func (evt NetworkTrustTokenOperationDone) ProtoEvent() string {
 	return "Network.trustTokenOperationDone"
+}
+
+// NetworkPolicyUpdated (experimental) Fired once security policy has been updated.
+type NetworkPolicyUpdated struct{}
+
+// ProtoEvent name.
+func (evt NetworkPolicyUpdated) ProtoEvent() string {
+	return "Network.policyUpdated"
 }
 
 // NetworkSubresourceWebBundleMetadataReceived (experimental) Fired once when parsing the .wbn file has succeeded.

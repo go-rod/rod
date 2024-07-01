@@ -302,6 +302,12 @@ const (
 	// AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep enum const.
 	AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoep AuditsBlockedByResponseReason = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep"
 
+	// AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByDip enum const.
+	AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByDip AuditsBlockedByResponseReason = "CorpNotSameOriginAfterDefaultedToSameOriginByDip"
+
+	// AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip enum const.
+	AuditsBlockedByResponseReasonCorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip AuditsBlockedByResponseReason = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"
+
 	// AuditsBlockedByResponseReasonCorpNotSameSite enum const.
 	AuditsBlockedByResponseReasonCorpNotSameSite AuditsBlockedByResponseReason = "CorpNotSameSite"
 )
@@ -778,6 +784,15 @@ type AuditsBounceTrackingIssueDetails struct {
 type AuditsCookieDeprecationMetadataIssueDetails struct {
 	// AllowedSites ...
 	AllowedSites []string `json:"allowedSites"`
+
+	// OptOutPercentage ...
+	OptOutPercentage float64 `json:"optOutPercentage"`
+
+	// IsOptOutTopLevel ...
+	IsOptOutTopLevel bool `json:"isOptOutTopLevel"`
+
+	// Operation ...
+	Operation AuditsCookieOperation `json:"operation"`
 }
 
 // AuditsClientHintIssueReason ...
@@ -855,8 +870,14 @@ const (
 	// AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidContentType enum const.
 	AuditsFederatedAuthRequestIssueReasonClientMetadataInvalidContentType AuditsFederatedAuthRequestIssueReason = "ClientMetadataInvalidContentType"
 
+	// AuditsFederatedAuthRequestIssueReasonIdpNotPotentiallyTrustworthy enum const.
+	AuditsFederatedAuthRequestIssueReasonIdpNotPotentiallyTrustworthy AuditsFederatedAuthRequestIssueReason = "IdpNotPotentiallyTrustworthy"
+
 	// AuditsFederatedAuthRequestIssueReasonDisabledInSettings enum const.
 	AuditsFederatedAuthRequestIssueReasonDisabledInSettings AuditsFederatedAuthRequestIssueReason = "DisabledInSettings"
+
+	// AuditsFederatedAuthRequestIssueReasonDisabledInFlags enum const.
+	AuditsFederatedAuthRequestIssueReasonDisabledInFlags AuditsFederatedAuthRequestIssueReason = "DisabledInFlags"
 
 	// AuditsFederatedAuthRequestIssueReasonErrorFetchingSignin enum const.
 	AuditsFederatedAuthRequestIssueReasonErrorFetchingSignin AuditsFederatedAuthRequestIssueReason = "ErrorFetchingSignin"
@@ -923,6 +944,15 @@ const (
 
 	// AuditsFederatedAuthRequestIssueReasonReplacedByButtonMode enum const.
 	AuditsFederatedAuthRequestIssueReasonReplacedByButtonMode AuditsFederatedAuthRequestIssueReason = "ReplacedByButtonMode"
+
+	// AuditsFederatedAuthRequestIssueReasonInvalidFieldsSpecified enum const.
+	AuditsFederatedAuthRequestIssueReasonInvalidFieldsSpecified AuditsFederatedAuthRequestIssueReason = "InvalidFieldsSpecified"
+
+	// AuditsFederatedAuthRequestIssueReasonRelyingPartyOriginIsOpaque enum const.
+	AuditsFederatedAuthRequestIssueReasonRelyingPartyOriginIsOpaque AuditsFederatedAuthRequestIssueReason = "RelyingPartyOriginIsOpaque"
+
+	// AuditsFederatedAuthRequestIssueReasonTypeNotMatching enum const.
+	AuditsFederatedAuthRequestIssueReasonTypeNotMatching AuditsFederatedAuthRequestIssueReason = "TypeNotMatching"
 )
 
 // AuditsFederatedAuthUserInfoRequestIssueDetails ...

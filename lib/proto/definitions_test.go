@@ -953,6 +953,12 @@ func (t T) DOMGetQueryingDescendantsForContainer() {
 	t.Nil(err)
 }
 
+func (t T) DOMGetAnchorElement() {
+	c := &Client{}
+	_, err := proto.DOMGetAnchorElement{}.Call(c)
+	t.Nil(err)
+}
+
 func (t T) DOMAttributeModified() {
 	e := proto.DOMAttributeModified{}
 	t.Regex("", e.ProtoEvent())
@@ -2116,6 +2122,11 @@ func (t T) NetworkResponseReceivedEarlyHints() {
 
 func (t T) NetworkTrustTokenOperationDone() {
 	e := proto.NetworkTrustTokenOperationDone{}
+	t.Regex("", e.ProtoEvent())
+}
+
+func (t T) NetworkPolicyUpdated() {
+	e := proto.NetworkPolicyUpdated{}
 	t.Regex("", e.ProtoEvent())
 }
 
@@ -3913,6 +3924,30 @@ func (t T) PWAInstall() {
 func (t T) PWAUninstall() {
 	c := &Client{}
 	err := proto.PWAUninstall{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWALaunch() {
+	c := &Client{}
+	_, err := proto.PWALaunch{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWALaunchFilesInApp() {
+	c := &Client{}
+	_, err := proto.PWALaunchFilesInApp{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWAOpenCurrentPageInApp() {
+	c := &Client{}
+	err := proto.PWAOpenCurrentPageInApp{}.Call(c)
+	t.Nil(err)
+}
+
+func (t T) PWAChangeAppUserSettings() {
+	c := &Client{}
+	err := proto.PWAChangeAppUserSettings{}.Call(c)
 	t.Nil(err)
 }
 

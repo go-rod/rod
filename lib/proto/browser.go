@@ -174,6 +174,9 @@ type BrowserPermissionDescriptor struct {
 	// AllowWithoutSanitization (optional) For "clipboard" permission, may specify allowWithoutSanitization.
 	AllowWithoutSanitization bool `json:"allowWithoutSanitization,omitempty"`
 
+	// AllowWithoutGesture (optional) For "fullscreen" permission, must specify allowWithoutGesture:true.
+	AllowWithoutGesture bool `json:"allowWithoutGesture,omitempty"`
+
 	// PanTiltZoom (optional) For "camera" permission, may specify panTiltZoom.
 	PanTiltZoom bool `json:"panTiltZoom,omitempty"`
 }

@@ -324,6 +324,15 @@ const (
 
 	// PreloadPrerenderFinalStatusActivationURLHasEffectiveURL enum const.
 	PreloadPrerenderFinalStatusActivationURLHasEffectiveURL PreloadPrerenderFinalStatus = "ActivationUrlHasEffectiveUrl"
+
+	// PreloadPrerenderFinalStatusJavaScriptInterfaceAdded enum const.
+	PreloadPrerenderFinalStatusJavaScriptInterfaceAdded PreloadPrerenderFinalStatus = "JavaScriptInterfaceAdded"
+
+	// PreloadPrerenderFinalStatusJavaScriptInterfaceRemoved enum const.
+	PreloadPrerenderFinalStatusJavaScriptInterfaceRemoved PreloadPrerenderFinalStatus = "JavaScriptInterfaceRemoved"
+
+	// PreloadPrerenderFinalStatusAllPrerenderingCanceled enum const.
+	PreloadPrerenderFinalStatusAllPrerenderingCanceled PreloadPrerenderFinalStatus = "AllPrerenderingCanceled"
 )
 
 // PreloadPreloadingStatus Preloading status values, see also PreloadingTriggeringOutcome. This

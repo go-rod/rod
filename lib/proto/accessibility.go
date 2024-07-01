@@ -320,6 +320,9 @@ const (
 
 	// AccessibilityAXPropertyNameOwns enum const.
 	AccessibilityAXPropertyNameOwns AccessibilityAXPropertyName = "owns"
+
+	// AccessibilityAXPropertyNameURL enum const.
+	AccessibilityAXPropertyNameURL AccessibilityAXPropertyName = "url"
 )
 
 // AccessibilityAXNode A node in the accessibility tree.

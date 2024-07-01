@@ -219,6 +219,9 @@ const (
 	// PagePermissionsPolicyFeatureCrossOriginIsolated enum const.
 	PagePermissionsPolicyFeatureCrossOriginIsolated PagePermissionsPolicyFeature = "cross-origin-isolated"
 
+	// PagePermissionsPolicyFeatureDeferredFetch enum const.
+	PagePermissionsPolicyFeatureDeferredFetch PagePermissionsPolicyFeature = "deferred-fetch"
+
 	// PagePermissionsPolicyFeatureDirectSockets enum const.
 	PagePermissionsPolicyFeatureDirectSockets PagePermissionsPolicyFeature = "direct-sockets"
 
@@ -1344,6 +1347,21 @@ const (
 	// PageBackForwardCacheNotRestoredReasonBroadcastChannelOnMessage enum const.
 	PageBackForwardCacheNotRestoredReasonBroadcastChannelOnMessage PageBackForwardCacheNotRestoredReason = "BroadcastChannelOnMessage"
 
+	// PageBackForwardCacheNotRestoredReasonWebViewSettingsChanged enum const.
+	PageBackForwardCacheNotRestoredReasonWebViewSettingsChanged PageBackForwardCacheNotRestoredReason = "WebViewSettingsChanged"
+
+	// PageBackForwardCacheNotRestoredReasonWebViewJavaScriptObjectChanged enum const.
+	PageBackForwardCacheNotRestoredReasonWebViewJavaScriptObjectChanged PageBackForwardCacheNotRestoredReason = "WebViewJavaScriptObjectChanged"
+
+	// PageBackForwardCacheNotRestoredReasonWebViewMessageListenerInjected enum const.
+	PageBackForwardCacheNotRestoredReasonWebViewMessageListenerInjected PageBackForwardCacheNotRestoredReason = "WebViewMessageListenerInjected"
+
+	// PageBackForwardCacheNotRestoredReasonWebViewSafeBrowsingAllowlistChanged enum const.
+	PageBackForwardCacheNotRestoredReasonWebViewSafeBrowsingAllowlistChanged PageBackForwardCacheNotRestoredReason = "WebViewSafeBrowsingAllowlistChanged"
+
+	// PageBackForwardCacheNotRestoredReasonWebViewDocumentStartJavascriptChanged enum const.
+	PageBackForwardCacheNotRestoredReasonWebViewDocumentStartJavascriptChanged PageBackForwardCacheNotRestoredReason = "WebViewDocumentStartJavascriptChanged"
+
 	// PageBackForwardCacheNotRestoredReasonWebSocket enum const.
 	PageBackForwardCacheNotRestoredReasonWebSocket PageBackForwardCacheNotRestoredReason = "WebSocket"
 
@@ -2306,6 +2324,11 @@ type PageReload struct {
 	// ScriptToEvaluateOnLoad (optional) If set, the script will be injected into all frames of the inspected page after reload.
 	// Argument will be ignored if reloading dataURL origin.
 	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
+
+	// LoaderID (experimental) (optional) If set, an error will be thrown if the target page's main frame's
+	// loader id does not match the provided id. This prevents accidentally
+	// reloading an unintended target in case there's a racing navigation.
+	LoaderID NetworkLoaderID `json:"loaderId,omitempty"`
 }
 
 // ProtoReq name.

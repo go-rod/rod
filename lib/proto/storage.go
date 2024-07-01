@@ -528,6 +528,9 @@ const (
 
 	// StorageAttributionReportingSourceRegistrationResultExceedsMaxTriggerStateCardinality enum const.
 	StorageAttributionReportingSourceRegistrationResultExceedsMaxTriggerStateCardinality StorageAttributionReportingSourceRegistrationResult = "exceedsMaxTriggerStateCardinality"
+
+	// StorageAttributionReportingSourceRegistrationResultDestinationPerDayReportingLimitReached enum const.
+	StorageAttributionReportingSourceRegistrationResultDestinationPerDayReportingLimitReached StorageAttributionReportingSourceRegistrationResult = "destinationPerDayReportingLimitReached"
 )
 
 // StorageAttributionReportingSourceRegistrationTimeConfig (experimental) ...

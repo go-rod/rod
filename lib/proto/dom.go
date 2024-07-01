@@ -64,6 +64,9 @@ const (
 	// DOMPseudoTypeSelection enum const.
 	DOMPseudoTypeSelection DOMPseudoType = "selection"
 
+	// DOMPseudoTypeSearchText enum const.
+	DOMPseudoTypeSearchText DOMPseudoType = "search-text"
+
 	// DOMPseudoTypeTargetText enum const.
 	DOMPseudoTypeTargetText DOMPseudoType = "target-text"
 
@@ -82,8 +85,8 @@ const (
 	// DOMPseudoTypeScrollMarker enum const.
 	DOMPseudoTypeScrollMarker DOMPseudoType = "scroll-marker"
 
-	// DOMPseudoTypeScrollMarkers enum const.
-	DOMPseudoTypeScrollMarkers DOMPseudoType = "scroll-markers"
+	// DOMPseudoTypeScrollMarkerGroup enum const.
+	DOMPseudoTypeScrollMarkerGroup DOMPseudoType = "scroll-marker-group"
 
 	// DOMPseudoTypeScrollbar enum const.
 	DOMPseudoTypeScrollbar DOMPseudoType = "scrollbar"
@@ -1476,6 +1479,34 @@ func (m DOMGetQueryingDescendantsForContainer) Call(c Client) (*DOMGetQueryingDe
 type DOMGetQueryingDescendantsForContainerResult struct {
 	// NodeIDs Descendant nodes with container queries against the given container.
 	NodeIDs []DOMNodeID `json:"nodeIds"`
+}
+
+// DOMGetAnchorElement (experimental) Returns the target anchor element of the given anchor query according to
+// https://www.w3.org/TR/css-anchor-position-1/#target.
+type DOMGetAnchorElement struct {
+	// NodeID Id of the positioned element from which to find the anchor.
+	NodeID DOMNodeID `json:"nodeId"`
+
+	// AnchorSpecifier (optional) An optional anchor specifier, as defined in
+	// https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier.
+	// If not provided, it will return the implicit anchor element for
+	// the given positioned element.
+	AnchorSpecifier string `json:"anchorSpecifier,omitempty"`
+}
+
+// ProtoReq name.
+func (m DOMGetAnchorElement) ProtoReq() string { return "DOM.getAnchorElement" }
+
+// Call the request.
+func (m DOMGetAnchorElement) Call(c Client) (*DOMGetAnchorElementResult, error) {
+	var res DOMGetAnchorElementResult
+	return &res, call(m.ProtoReq(), m, &res, c)
+}
+
+// DOMGetAnchorElementResult (experimental) ...
+type DOMGetAnchorElementResult struct {
+	// NodeID The anchor element of the given anchor query.
+	NodeID DOMNodeID `json:"nodeId"`
 }
 
 // DOMAttributeModified Fired when `Element`'s attribute is modified.
