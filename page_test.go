@@ -927,14 +927,12 @@ func TestPageNavigateErr(t *testing.T) {
 		w.WriteHeader(http.StatusInternalServerError)
 	})
 
-	// will not panic
-	g.page.MustNavigate(s.URL("/404"))
-	g.page.MustNavigate(s.URL("/500"))
-
-	g.Panic(func() {
-		g.mc.stubErr(1, proto.PageNavigate{})
-		g.page.MustNavigate(g.blank())
-	})
+	g.Is(g.Panic(func() {
+		g.page.MustNavigate(s.URL("/404"))
+	}), &rod.NavigationError{})
+	g.Is(g.Panic(func() {
+		g.page.MustNavigate(s.URL("/500"))
+	}), &rod.NavigationError{})
 }
 
 func TestPageWaitLoadErr(t *testing.T) {
