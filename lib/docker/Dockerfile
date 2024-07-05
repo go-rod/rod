@@ -13,7 +13,7 @@ RUN go env -w GOPROXY=$goproxy
 RUN go build ./lib/launcher/rod-manager
 RUN go run ./lib/utils/get-browser
 
-FROM ubuntu:jammy
+FROM ubuntu:noble
 
 COPY --from=go /root/.cache/rod /root/.cache/rod
 RUN ln -s /root/.cache/rod/browser/$(ls /root/.cache/rod/browser)/chrome /usr/bin/chrome
@@ -30,7 +30,7 @@ RUN sed -i "s|http://archive.ubuntu.com|$apt_sources|g" /etc/apt/sources.list &&
     # chromium dependencies
     libnss3 \
     libxss1 \
-    libasound2 \
+    libasound2t64 \
     libxtst6 \
     libgtk-3-0 \
     libgbm1 \
