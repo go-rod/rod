@@ -1085,3 +1085,63 @@ func TestPageActionAfterClose(t *testing.T) {
 		g.Eq(err, context.Canceled)
 	}
 }
+
+func TestPageResetNavigationHistory(t *testing.T) {
+	const (
+		// After resetting history, the record should contain only the current page entry
+		expectedInitialHistoryLength = 1
+		clickHTMLPath                = "fixtures/click.html"
+		inputHTMLPath                = "fixtures/input.html"
+	)
+
+	g := setup(t)
+
+	// Helper function for navigation
+	navigateTo := func(p *rod.Page, url string) {
+		wait := p.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+		p.MustNavigate(url)
+		wait()
+	}
+
+	// Initialize page with blank content
+	page := g.page.MustNavigate(g.blank())
+
+	// Navigate to multiple pages
+	navigateTo(page, g.srcFile(clickHTMLPath))
+	navigateTo(page, g.srcFile(inputHTMLPath))
+
+	// Verify navigation back functionality
+	wait := page.WaitNavigation(proto.PageLifecycleEventNameDOMContentLoaded)
+	page.MustNavigateBack()
+	wait()
+
+	g.Regex(`/`+clickHTMLPath, page.MustInfo().URL)
+
+	// Verify history has multiple entries
+	initialHistory, err := page.GetNavigationHistory()
+	g.E(err)
+	g.NotNil(initialHistory)
+	g.Gt(len(initialHistory.Entries), expectedInitialHistoryLength)
+
+	// Test resetting navigation history
+	err = page.ResetNavigationHistory()
+	g.E(err)
+
+	// Verify history is reset to initial state
+	resetHistory, err := page.GetNavigationHistory()
+	g.E(err)
+	g.NotNil(resetHistory)
+	g.Eq(len(resetHistory.Entries), expectedInitialHistoryLength)
+
+	// Navigate to another page
+	navigateTo(page, g.srcFile(inputHTMLPath))
+
+	// Test resetting history again
+	page.MustResetNavigationHistory()
+
+	// Verify history is reset again
+	finalHistory, err := page.GetNavigationHistory()
+	g.E(err)
+	g.NotNil(finalHistory)
+	g.Eq(len(finalHistory.Entries), expectedInitialHistoryLength)
+}

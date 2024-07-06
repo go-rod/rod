@@ -233,6 +233,12 @@ func (p *Page) MustNavigate(url string) *Page {
 	return p
 }
 
+// MustResetNavigationHistory is similar to [Page.ResetNavigationHistory]
+func (p *Page) MustResetNavigationHistory() *Page {
+	p.e(p.ResetNavigationHistory())
+	return p
+}
+
 // MustReload is similar to [Page.Reload].
 func (p *Page) MustReload() *Page {
 	p.e(p.Reload())
