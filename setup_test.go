@@ -72,7 +72,7 @@ type G struct {
 	// or it may affect other test cases.
 	page *rod.Page
 
-	// use it to cancel the TimeoutEach for each test case
+	// use it to cancel the TimeoutEach for current test case
 	cancelTimeout func()
 }
 

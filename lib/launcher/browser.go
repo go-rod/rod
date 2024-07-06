@@ -172,7 +172,7 @@ func (lc *Browser) MustGet() string {
 	return p
 }
 
-// Validate returns nil if the browser executable valid.
+// Validate returns nil if the browser executable is valid.
 // If the executable is malformed it will return error.
 func (lc *Browser) Validate() error {
 	_, err := os.Stat(lc.BinPath())
