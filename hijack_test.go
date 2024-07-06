@@ -181,7 +181,7 @@ func TestHijackMockWholeResponse(t *testing.T) {
 
 	go router.Run()
 
-	g.page.MustNavigate("http://test.com")
+	g.page.MustNavigate("http://localhost")
 
 	g.Eq("ok", g.page.MustElement("body").MustText())
 }
@@ -289,7 +289,7 @@ func TestHijackLoadResponseErr(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	router.MustAdd("http://test.com/a", func(ctx *rod.Hijack) {
+	router.MustAdd("http://localhost/a", func(ctx *rod.Hijack) {
 		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{err: errors.New("err")},
 		}, true))
@@ -308,7 +308,7 @@ func TestHijackLoadResponseErr(t *testing.T) {
 
 	go router.Run()
 
-	_ = p.Navigate("http://test.com/a")
+	_ = p.Navigate("http://localhost/a")
 
 	wg.Wait()
 }

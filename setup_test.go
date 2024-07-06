@@ -89,7 +89,7 @@ func newTesterPool() rod.Pool[G] {
 }
 
 func newTester() *G {
-	u := launcher.New().Set("proxy-bypass-list", "<-loopback>").MustLaunch()
+	u := launcher.New().Set("proxy-bypass-list", "<-loopback>").NoSandbox(true).MustLaunch()
 
 	mc := newMockClient(u)
 
@@ -126,6 +126,8 @@ func setup(t *testing.T) G {
 	tester.mc.log.SetOutput(tester.Open(true, filepath.Join(LogDir, tester.mc.id, t.Name()+".log")))
 
 	tester.checkLeaking()
+
+	tester.page.MustNavigate("")
 
 	return *tester
 }

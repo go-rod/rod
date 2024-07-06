@@ -181,6 +181,7 @@ func (lc *Browser) Validate() error {
 	}
 
 	cmd := exec.Command(lc.BinPath(), "--headless", "--no-sandbox",
+		"--use-mock-keychain", "--disable-dev-shm-usage",
 		"--disable-gpu", "--dump-dom", "about:blank")
 	b, err := cmd.CombinedOutput()
 	if err != nil {

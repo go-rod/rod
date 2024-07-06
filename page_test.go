@@ -100,7 +100,7 @@ func TestSetExtraHeaders(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	var header http.Header
-	s.Mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
+	s.Mux.HandleFunc("/set-header", func(_ http.ResponseWriter, r *http.Request) {
 		header = r.Header
 		wg.Done()
 	})
@@ -109,7 +109,7 @@ func TestSetExtraHeaders(t *testing.T) {
 	cleanup := p.MustSetExtraHeaders("a", "1", "b", "2")
 
 	wg.Add(1)
-	p.MustNavigate(s.URL())
+	p.MustNavigate(s.URL("/set-header"))
 	wg.Wait()
 
 	g.Eq(header.Get("a"), "1")
@@ -117,15 +117,12 @@ func TestSetExtraHeaders(t *testing.T) {
 
 	cleanup()
 
-	// TODO: I don't know why it will fail randomly
-	if false {
-		wg.Add(1)
-		p.MustReload()
-		wg.Wait()
+	wg.Add(1)
+	p.MustReload()
+	wg.Wait()
 
-		g.Eq(header.Get("a"), "")
-		g.Eq(header.Get("b"), "")
-	}
+	g.Eq(header.Get("a"), "")
+	g.Eq(header.Get("b"), "")
 }
 
 func TestSetUserAgent(t *testing.T) {
@@ -892,7 +889,7 @@ func TestFonts(t *testing.T) {
 func TestPagePDF(t *testing.T) {
 	g := setup(t)
 
-	p := g.page.MustNavigate(g.srcFile("fixtures/click.html"))
+	p := g.page.MustNavigate(g.srcFile("fixtures/click.html")).MustWaitLoad()
 
 	s, err := p.PDF(&proto.PagePrintToPDF{})
 	g.E(err)
