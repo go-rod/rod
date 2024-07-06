@@ -77,84 +77,52 @@ var DefaultSleeper = func() utils.Sleeper {
 	return utils.BackoffSleeper(100*time.Millisecond, time.Second, nil)
 }
 
-// PagePool to thread-safely limit the number of pages at the same time.
-// It's a common practice to use a channel to limit concurrency, it's not special for rod.
-// This helper is more like an example to use Go Channel.
-// Reference: https://golang.org/doc/effective_go#channels
-type PagePool chan *Page
-
 // NewPagePool instance.
-func NewPagePool(limit int) PagePool {
-	pp := make(chan *Page, limit)
-	for i := 0; i < limit; i++ {
-		pp <- nil
-	}
-	return pp
+func NewPagePool(limit int) Pool[Page] {
+	return NewPool[Page](limit)
 }
-
-// Get a page from the pool, allow error. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) Get(create func() (*Page, error)) (*Page, error) {
-	p := <-pp
-	if p == nil {
-		return create()
-	}
-	return p, nil
-}
-
-// Put a page back to the pool.
-func (pp PagePool) Put(p *Page) {
-	pp <- p
-}
-
-// Cleanup helper.
-func (pp PagePool) Cleanup(iteratee func(*Page)) {
-	for i := 0; i < cap(pp); i++ {
-		select {
-		case p := <-pp:
-			if p != nil {
-				iteratee(p)
-			}
-		default:
-		}
-	}
-}
-
-// BrowserPool to thread-safely limit the number of browsers at the same time.
-// It's a common practice to use a channel to limit concurrency, it's not special for rod.
-// This helper is more like an example to use Go Channel.
-// Reference: https://golang.org/doc/effective_go#channels
-type BrowserPool chan *Browser
 
 // NewBrowserPool instance.
-func NewBrowserPool(limit int) BrowserPool {
-	pp := make(chan *Browser, limit)
+func NewBrowserPool(limit int) Pool[Browser] {
+	return NewPool[Browser](limit)
+}
+
+// Pool is used to thread-safely limit the number of elements at the same time.
+// It's a common practice to use a channel to limit concurrency, it's not special for rod.
+// This helper is more like an example to use Go Channel.
+// Reference: https://golang.org/doc/effective_go#channels
+type Pool[T any] chan *T
+
+// NewPool instance.
+func NewPool[T any](limit int) Pool[T] {
+	p := make(chan *T, limit)
 	for i := 0; i < limit; i++ {
-		pp <- nil
+		p <- nil
 	}
-	return pp
+	return p
 }
 
-// Get a browser from the pool, allow error. Use the [BrowserPool.Put] to make it reusable later.
-func (bp BrowserPool) Get(create func() (*Browser, error)) (*Browser, error) {
-	p := <-bp
-	if p == nil {
-		return create()
+// Get a elem from the pool, allow error. Use the [Pool[T].Put] to make it reusable later.
+func (p Pool[T]) Get(create func() (*T, error)) (elem *T, err error) {
+	elem = <-p
+	if elem == nil {
+		elem, err = create()
 	}
-	return p, nil
+	return
 }
 
-// Put a browser back to the pool.
-func (bp BrowserPool) Put(p *Browser) {
-	bp <- p
+// Put an elem back to the pool.
+func (p Pool[T]) Put(elem *T) {
+	p <- elem
 }
 
 // Cleanup helper.
-func (bp BrowserPool) Cleanup(iteratee func(*Browser)) {
-	for i := 0; i < cap(bp); i++ {
+func (p Pool[T]) Cleanup(iteratee func(*T)) {
+	for i := 0; i < cap(p); i++ {
 		select {
-		case p := <-bp:
-			if p != nil {
-				iteratee(p)
+		case elem := <-p:
+			if elem != nil {
+				iteratee(elem)
 			}
 		default:
 		}

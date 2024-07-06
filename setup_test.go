@@ -38,7 +38,7 @@ func init() {
 	launcher.NewBrowser().MustGet() // preload browser to local
 }
 
-var testerPool TesterPool
+var testerPool rod.Pool[G]
 
 func TestMain(m *testing.M) {
 	testerPool = newTesterPool()
@@ -48,7 +48,9 @@ func TestMain(m *testing.M) {
 		os.Exit(code)
 	}
 
-	testerPool.cleanup()
+	testerPool.Cleanup(func(g *G) {
+		g.browser.MustClose()
+	})
 
 	if err := gotrace.Check(0, gotrace.IgnoreFuncs("internal/poll.runtime_pollWait")); err != nil {
 		log.Fatal(err)
@@ -74,13 +76,8 @@ type G struct {
 	cancelTimeout func()
 }
 
-// TesterPool if we don't use pool to cache, the total time will be much longer.
-type TesterPool struct {
-	pool     chan *G
-	parallel int
-}
-
-func newTesterPool() TesterPool {
+// If we don't use pool to cache, the total time will be much longer.
+func newTesterPool() rod.Pool[G] {
 	parallel := got.Parallel()
 	if parallel == 0 {
 		parallel = runtime.GOMAXPROCS(0)
@@ -88,20 +85,10 @@ func newTesterPool() TesterPool {
 
 	fmt.Println("parallel test", parallel) //nolint: forbidigo
 
-	cp := TesterPool{
-		pool:     make(chan *G, parallel),
-		parallel: parallel,
-	}
-
-	for i := 0; i < parallel; i++ {
-		cp.pool <- nil
-	}
-
-	return cp
+	return rod.NewPool[G](parallel)
 }
 
-// new tester.
-func (tp TesterPool) new() *G {
+func newTester() *G {
 	u := launcher.New().Set("proxy-bypass-list", "<-loopback>").MustLaunch()
 
 	mc := newMockClient(u)
@@ -131,11 +118,8 @@ func setup(t *testing.T) G {
 		t.Parallel()
 	}
 
-	tester := <-testerPool.pool
-	if tester == nil {
-		tester = testerPool.new()
-	}
-	t.Cleanup(func() { testerPool.pool <- tester })
+	tester := testerPool.MustGet(newTester)
+	t.Cleanup(func() { testerPool.Put(tester) })
 
 	tester.G = got.New(t)
 	tester.mc.t = t
@@ -144,14 +128,6 @@ func setup(t *testing.T) G {
 	tester.checkLeaking()
 
 	return *tester
-}
-
-func (tp TesterPool) cleanup() {
-	for i := 0; i < tp.parallel; i++ {
-		if t := <-testerPool.pool; t != nil {
-			t.browser.MustClose()
-		}
-	}
 }
 
 func (g G) enableCDPLog() {

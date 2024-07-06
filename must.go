@@ -1156,20 +1156,11 @@ func (el *Element) MustGetXPath(optimized bool) string {
 	return xpath
 }
 
-// MustGet a page from the pool. Use the [PagePool.Put] to make it reusable later.
-func (pp PagePool) MustGet(create func() *Page) *Page {
-	p := <-pp
-	if p == nil {
-		p = create()
+// MustGet an elem from the pool. Use the [Pool[T].Put] to make it reusable later.
+func (p Pool[T]) MustGet(create func() *T) *T {
+	elem := <-p
+	if elem == nil {
+		elem = create()
 	}
-	return p
-}
-
-// MustGet a browser from the pool. Use the [BrowserPool.Put] to make it reusable later.
-func (bp BrowserPool) MustGet(create func() *Browser) *Browser {
-	p := <-bp
-	if p == nil {
-		p = create()
-	}
-	return p
+	return elem
 }
