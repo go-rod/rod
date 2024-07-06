@@ -489,7 +489,7 @@ type ScrollScreenshotOptions struct {
 // but achieves it by scrolling and capturing screenshots in a loop, and then stitching them together.
 // Note that this method also has a flaw: when there are elements with fixed
 // positioning on the page (usually header navigation components),
-// these elements will appear repeatedly,	you can set the FixedTop parameter to optimize it.
+// these elements will appear repeatedly, you can set the FixedTop parameter to optimize it.
 //
 // Only support png and jpeg format yet, webP is not supported because no suitable processing
 // library was found in golang.
@@ -517,34 +517,20 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 	var images []utils.ImgWithBox
 
 	for {
-		var clip *proto.PageViewport
+		clip := &proto.PageViewport{
+			X:     0,
+			Y:     scrollTop,
+			Width: metrics.CSSVisualViewport.ClientWidth,
+			Scale: 1,
+		}
 
 		scrollY := viewpointHeight - (opt.FixedTop + opt.FixedBottom)
 		if scrollTop+viewpointHeight > contentHeight {
-			clip = &proto.PageViewport{
-				X:      0,
-				Y:      scrollTop,
-				Width:  metrics.CSSVisualViewport.ClientWidth,
-				Height: contentHeight - scrollTop,
-				Scale:  1,
-			}
+			clip.Height = contentHeight - scrollTop
 		} else {
-			if scrollTop == 0 {
-				clip = &proto.PageViewport{
-					X:      0,
-					Y:      scrollTop,
-					Width:  metrics.CSSVisualViewport.ClientWidth,
-					Height: scrollY,
-					Scale:  1,
-				}
-			} else {
-				clip = &proto.PageViewport{
-					X:      0,
-					Y:      scrollTop + opt.FixedTop,
-					Width:  metrics.CSSVisualViewport.ClientWidth,
-					Height: scrollY,
-					Scale:  1,
-				}
+			clip.Height = scrollY
+			if scrollTop != 0 {
+				clip.Y += opt.FixedTop
 			}
 		}
 
@@ -567,6 +553,7 @@ func (p *Page) ScrollScreenshot(opt *ScrollScreenshotOptions) ([]byte, error) {
 		if scrollTop >= contentHeight {
 			break
 		}
+
 		err = p.Mouse.Scroll(0, scrollY, 1)
 		if err != nil {
 			return nil, fmt.Errorf("scroll error: %w", err)

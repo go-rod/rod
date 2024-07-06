@@ -387,9 +387,9 @@ func (p *Page) MustScreenshotFullPage(toFile ...string) []byte {
 	return bin
 }
 
-// MustScrollScreenshotPage is similar to [Page.ScrollScreenshot].
+// MustScrollScreenshot is similar to [Page.ScrollScreenshot].
 // If the toFile is "", it Page.will save output to "tmp/screenshots" folder, time as the file name.
-func (p *Page) MustScrollScreenshotPage(toFile ...string) []byte {
+func (p *Page) MustScrollScreenshot(toFile ...string) []byte {
 	bin, err := p.ScrollScreenshot(nil)
 	p.e(err)
 	p.e(saveFile(saveFileTypeScreenshot, bin, toFile))

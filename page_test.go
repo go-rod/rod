@@ -777,12 +777,12 @@ func TestScreenshotFullPage(t *testing.T) {
 	})
 }
 
-func TestScrollScreenshotPage(t *testing.T) {
+func TestScrollScreenshot(t *testing.T) {
 	g := setup(t)
 
 	p := g.page.MustNavigate(g.srcFile("fixtures/scroll-y.html"))
 	p.MustElement("button")
-	data := p.MustScrollScreenshotPage()
+	data := p.MustScrollScreenshot()
 	img, err := png.Decode(bytes.NewBuffer(data))
 	g.E(err)
 	res := p.MustEval(`() => ({w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight})`)
@@ -797,16 +797,23 @@ func TestScrollScreenshotPage(t *testing.T) {
 	g.Eq(1280, res.Get("w").Int())
 	g.Eq(800, res.Get("h").Int())
 
-	p.MustScrollScreenshotPage()
+	p.MustScrollScreenshot()
 
 	noEmulation := g.newPage(g.blank())
 	g.E(noEmulation.SetViewport(nil))
-	noEmulation.MustScrollScreenshotPage()
+	noEmulation.MustScrollScreenshot()
+}
+
+func TestScrollScreenshotErrors(t *testing.T) {
+	g := setup(t)
+	g.cancelTimeout()
+
+	p := g.page.MustNavigate(g.srcFile("fixtures/scroll-y.html"))
 
 	g.Panic(func() {
 		// mock error for get CSSContentSize
 		g.mc.stubErr(1, proto.PageGetLayoutMetrics{})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
 	g.Panic(func() {
 		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(_ StubSend) (gson.JSON, error) {
@@ -814,7 +821,7 @@ func TestScrollScreenshotPage(t *testing.T) {
 				CSSVisualViewport: &proto.PageVisualViewport{},
 			}), nil
 		})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
 	g.Panic(func() {
 		g.mc.stub(1, proto.PageGetLayoutMetrics{}, func(_ StubSend) (gson.JSON, error) {
@@ -822,28 +829,26 @@ func TestScrollScreenshotPage(t *testing.T) {
 				CSSContentSize: &proto.DOMRect{},
 			}), nil
 		})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
 	g.Panic(func() {
 		// mock error for scroll
 		g.mc.stubErr(1, proto.InputDispatchMouseEvent{})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
-
 	g.Panic(func() {
 		// mock error for Screenshot
 		g.mc.stubErr(1, proto.PageCaptureScreenshot{})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
-
 	g.Panic(func() {
 		// mock error for WaitStable
 		g.mc.stubErr(1, proto.DOMSnapshotCaptureSnapshot{})
-		p.MustScrollScreenshotPage()
+		p.MustScrollScreenshot()
 	})
 
 	// test unsupported format
-	_, err = p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
+	_, err := p.ScrollScreenshot(&rod.ScrollScreenshotOptions{
 		/* cspell: disable-next-line */
 		Format:  proto.PageCaptureScreenshotFormatWebp,
 		Quality: gson.Int(10),
