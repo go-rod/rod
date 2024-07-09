@@ -1027,7 +1027,7 @@ func (p *Page) Event() <-chan *Message {
 				select {
 				case <-p.ctx.Done():
 					return
-				case dst <- msg.(*Message): // nolint: forcetypeassert
+				case dst <- msg.(*Message): //nolint: forcetypeassert
 				}
 			}
 		}
