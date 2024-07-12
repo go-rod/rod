@@ -753,7 +753,7 @@ func TestResource(t *testing.T) {
 func TestBackgroundImage(t *testing.T) {
 	g := setup(t)
 
-	p := g.page.MustNavigate(g.srcFile("fixtures/resource.html"))
+	p := g.page.MustNavigate(g.srcFile("fixtures/resource.html")).MustWaitStable()
 	el := p.MustElement("div")
 	g.Eq(len(el.MustBackgroundImage()), 22661)
 
