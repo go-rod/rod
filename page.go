@@ -197,13 +197,13 @@ func (p *Page) NavigateBack() error {
 	return err
 }
 
-// ResetNavigationHistory reset history
+// ResetNavigationHistory reset history.
 func (p *Page) ResetNavigationHistory() error {
 	err := proto.PageResetNavigationHistory{}.Call(p)
 	return err
 }
 
-// GetNavigationHistory get navigation history
+// GetNavigationHistory get navigation history.
 func (p *Page) GetNavigationHistory() (*proto.PageGetNavigationHistoryResult, error) {
 	return proto.PageGetNavigationHistory{}.Call(p)
 }
