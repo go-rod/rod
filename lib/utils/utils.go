@@ -207,7 +207,7 @@ func (de *IdleCounter) Done() {
 
 	de.job--
 	if de.job == 0 {
-		de.tmr.Reset(de.duration)
+		de.reset(de.duration)
 	}
 	if de.job < 0 {
 		panic("all jobs are already done")
@@ -218,7 +218,7 @@ func (de *IdleCounter) Done() {
 func (de *IdleCounter) Wait(ctx context.Context) {
 	de.lock.Lock()
 	if de.job == 0 {
-		de.tmr.Reset(de.duration)
+		de.reset(de.duration)
 	}
 	de.lock.Unlock()
 
@@ -227,6 +227,16 @@ func (de *IdleCounter) Wait(ctx context.Context) {
 		de.tmr.Stop()
 	case <-de.tmr.C:
 	}
+}
+
+func (de *IdleCounter) reset(d time.Duration) {
+	if !de.tmr.Stop() {
+		select {
+		case <-de.tmr.C:
+		default:
+		}
+	}
+	de.tmr.Reset(d)
 }
 
 var chPause = make(chan struct{})
