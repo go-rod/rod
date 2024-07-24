@@ -15,7 +15,8 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - run: |
+      - name: Run tests
+        run: |
           go run ./lib/utils/get-browser
           go test -run Example ./...
           go test ./lib/examples/e2e-testing

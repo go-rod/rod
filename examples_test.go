@@ -57,7 +57,7 @@ func Example_basic() {
 
 	// Output:
 	// Git is the most widely used version control system.
-	// Found 10 input elements
+	// Found 9 input elements
 	// 1 + 2 = 3
 	// Repository search results · GitHub
 }
