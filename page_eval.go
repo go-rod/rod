@@ -111,7 +111,7 @@ func (e *EvalOptions) ByPromise() *EvalOptions {
 
 func (e *EvalOptions) formatToJSFunc() string {
 	js := strings.Trim(e.JS, "\t\n\v\f\r ;")
-	return fmt.Sprintf(`function() { return (%s).apply(this, arguments) }`, js)
+	return `function() { return (` + js + `).apply(this, arguments) }`
 }
 
 // Eval is a shortcut for [Page.Evaluate] with AwaitPromise, ByValue set to true.
