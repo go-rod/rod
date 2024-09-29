@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -102,16 +103,20 @@ func NewPool[T any](limit int) Pool[T] {
 	return p
 }
 
-// Get a elem from the pool, allow error. Use the [Pool[T].Put] to make it reusable later.
+// Get an elem from the pool, allow error. Use the [Pool[T].Put] to make it reusable later.
 func (p Pool[T]) Get(create func() (*T, error)) (elem *T, err error) {
-	elem = <-p
-	if elem == nil {
-		elem, err = create()
+	// use range to prevent getting stuck in concurrent scenarios
+	for elem = range p {
+		if elem == nil {
+			elem, err = create()
+		}
+		return
 	}
-	return
+	// here p has been closed
+	return nil, errors.New("pool has been cleaned up")
 }
 
-// Put an elem back to the pool.
+// Put an elem back to the pool. Should not be called when Get returns Error
 func (p Pool[T]) Put(elem *T) {
 	p <- elem
 }
@@ -127,6 +132,8 @@ func (p Pool[T]) Cleanup(iteratee func(*T)) {
 		default:
 		}
 	}
+	// close Pool after iterating to prevent Get getting stuck
+	close(p)
 }
 
 var _ io.ReadCloser = &StreamReader{}
