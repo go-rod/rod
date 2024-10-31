@@ -378,6 +378,18 @@ func (ctx *HijackResponse) SetHeader(pairs ...string) *HijackResponse {
 	return ctx
 }
 
+// Append key-value pairs to the end of the response headers.
+// Duplicate keys will be preserved.
+func (ctx *HijackResponse) AddHeader(pairs ...string) *HijackResponse {
+	for i := 0; i < len(pairs); i += 2 {
+		ctx.payload.ResponseHeaders = append(ctx.payload.ResponseHeaders, &proto.FetchHeaderEntry{
+			Name:  pairs[i],
+			Value: pairs[i+1],
+		})
+	}
+	return ctx
+}
+
 // SetBody of the payload, if obj is []byte or string, raw body will be used, else it will be encoded as json.
 func (ctx *HijackResponse) SetBody(obj interface{}) *HijackResponse {
 	switch body := obj.(type) {

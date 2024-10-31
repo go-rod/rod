@@ -75,6 +75,8 @@ func TestHijack(t *testing.T) {
 		g.Has(ctx.Response.Headers().Get("Content-Type"), "text/html; charset=utf-8")
 
 		// override response header
+		ctx.Response.AddHeader("Set-Cookie", "key=val1")
+		// This should override the previous one
 		ctx.Response.SetHeader("Set-Cookie", "key=val")
 
 		// override response body
