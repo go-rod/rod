@@ -378,7 +378,7 @@ func (ctx *HijackResponse) SetHeader(pairs ...string) *HijackResponse {
 	return ctx
 }
 
-// Append key-value pairs to the end of the response headers.
+// AddHeader appends key-value pairs to the end of the response headers.
 // Duplicate keys will be preserved.
 func (ctx *HijackResponse) AddHeader(pairs ...string) *HijackResponse {
 	for i := 0; i < len(pairs); i += 2 {
