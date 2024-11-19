@@ -30,7 +30,7 @@ Please check the [examples_test.go](examples_test.go) file first, then check the
 
 For more detailed examples, please search the unit tests.
 Such as the usage of method `HandleAuth`, you can search all the `*_test.go` files that contain `HandleAuth`,
-for example, use Github online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
+for example, use GitHub online [search in repository](https://github.com/go-rod/rod/search?q=HandleAuth&unscoped_q=HandleAuth).
 You can also search the GitHub [issues](https://github.com/go-rod/rod/issues) or [discussions](https://github.com/go-rod/rod/discussions),
 a lot of usage examples are recorded there.
 
@@ -44,7 +44,7 @@ Your help is more than welcome! Even just open an issue to ask a question may gr
 
 Please read [How To Ask Questions The Smart Way](http://www.catb.org/~esr/faqs/smart-questions.html) before you ask questions.
 
-We use Github Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/go-rod/rod/projects).
+We use GitHub Projects to manage tasks, you can see the priority and progress of the issues [here](https://github.com/go-rod/rod/projects).
 
 If you want to contribute please read the [Contributor Guide](.github/CONTRIBUTING.md).
 
