@@ -6,6 +6,7 @@ import (
 	"io"
 	"mime"
 	"net/http"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -379,4 +380,56 @@ func TestHandleAuth(t *testing.T) {
 	g.Err(wait())
 	wait2()
 	page2.MustClose()
+}
+
+func TestHijackWithRedirectAndLoadResponseGetBody(t *testing.T) {
+	g := setup(t)
+
+	redirectCount := 0
+	s := g.Serve()
+	s.Mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		g.Eq(r.Method, http.MethodPost)
+		body, err := io.ReadAll(r.Body)
+		g.Eq(err, nil)
+		g.Eq("test", string(body))
+
+		if redirectCount < 3 {
+			redirectCount++
+			w.Header().Set("Location", s.URL("/test"))
+			w.WriteHeader(http.StatusTemporaryRedirect)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
+
+	router := g.page.HijackRequests()
+	defer router.MustStop()
+
+	router.MustAdd(s.URL("/test"), func(ctx *rod.Hijack) {
+		ctx.Request.Req().Body = io.NopCloser(strings.NewReader("test"))
+		ctx.Request.Req().Method = http.MethodPost
+		ctx.Request.SetBody([]byte("test"))
+
+		err := ctx.LoadResponse(http.DefaultClient, true)
+		g.Eq(err, nil)
+
+		body, err := ctx.Request.Req().GetBody()
+		g.Eq(err, nil)
+		bodyBytes, err := io.ReadAll(body)
+
+		g.Eq(err, nil)
+		g.Eq("test", string(bodyBytes))
+
+	})
+
+	go router.Run()
+
+	g.page.MustNavigate(s.URL("/test"))
+
+	content := g.page.MustElement("body").MustText()
+	g.Eq(content, "OK")
+	g.Eq(redirectCount, 3)
+
 }
