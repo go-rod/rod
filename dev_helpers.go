@@ -133,7 +133,7 @@ func (b *Browser) ServeMonitor(host string) string {
 
 			go func() {
 				defer sc.once.Do(func() {
-					p.StopScreencast()
+					p.MustStopScreencast()
 					close(sc.frames)
 					screencastMux.Lock()
 					delete(activeScreencasts, target)
@@ -186,7 +186,7 @@ func (b *Browser) ServeMonitor(host string) string {
 					return
 				}
 
-				utils.WriteMJPEGFrame(w, frame, flusher)
+				utils.MustWriteMJPEGFrame(w, frame, flusher)
 			}
 		}
 	})

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -12,7 +13,7 @@ func TestWriteMJPEGFrame(t *testing.T) {
 	frame := []byte("test-image-data")
 
 	// Set up the test server
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		// Set the Content-Type header for MJPEG
 		w.Header().Set("Content-Type", "multipart/x-mixed-replace; boundary=frame")
 
@@ -35,7 +36,11 @@ func TestWriteMJPEGFrame(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to make HTTP request: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close response body: %v", err)
+		}
+	}()
 
 	// Verify the Content-Type header
 	if resp.Header.Get("Content-Type") != "multipart/x-mixed-replace; boundary=frame" {

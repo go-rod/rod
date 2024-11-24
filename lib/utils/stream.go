@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// WriteMJPEGFrame writes a single MJPEG frame to the response writer
+// WriteMJPEGFrame writes a single MJPEG frame to the response writer.
 func WriteMJPEGFrame(w http.ResponseWriter, frame []byte, flusher http.Flusher) error {
 	parts := [][]byte{
 		[]byte("--frame\r\n"),
@@ -23,4 +23,10 @@ func WriteMJPEGFrame(w http.ResponseWriter, frame []byte, flusher http.Flusher) 
 
 	flusher.Flush()
 	return nil
+}
+
+// MustWriteMJPEGFrame is similar to WriteMJPEGFrame but panics if an error occurs.
+func MustWriteMJPEGFrame(w http.ResponseWriter, frame []byte, flusher http.Flusher) {
+	err := WriteMJPEGFrame(w, frame, flusher)
+	E(err)
 }

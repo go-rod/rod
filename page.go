@@ -1093,7 +1093,6 @@ func (p *Page) StartScreencast(opts *ScreencastOptions) (chan []byte, error) {
 		MaxWidth:      opts.MaxWidth,
 		MaxHeight:     opts.MaxHeight,
 	}.Call(p)
-
 	if err != nil {
 		return frames, err
 	}

@@ -626,6 +626,19 @@ func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
+// MustStartScreencast is similar to [Page.StartScreencast].
+func (p *Page) MustStartScreencast(opts *ScreencastOptions) chan []byte {
+	framesChannel, err := p.StartScreencast(opts)
+	p.e(err)
+	return framesChannel
+}
+
+// MustStopScreencast is similar to [Page.StopScreencast].
+func (p *Page) MustStopScreencast() {
+	err := p.StopScreencast()
+	p.e(err)
+}
+
 // MustElementByJS is similar to [RaceContext.ElementByJS].
 func (rc *RaceContext) MustElementByJS(js string, params []interface{}) *RaceContext {
 	return rc.ElementByJS(Eval(js, params...))
