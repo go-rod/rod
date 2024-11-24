@@ -1145,3 +1145,71 @@ func TestPageResetNavigationHistory(t *testing.T) {
 	g.NotNil(finalHistory)
 	g.Eq(len(finalHistory.Entries), expectedInitialHistoryLength)
 }
+
+func TestStartAndStopPngScreencast(t *testing.T) {
+	g := setup(t)
+
+	page := g.newPage(g.blank())
+
+	opts := &rod.ScreencastOptions{
+		Format:        proto.PageStartScreencastFormatPng,
+		Quality:       gson.Int(100),
+		MaxWidth:      gson.Int(1280),
+		MaxHeight:     gson.Int(720),
+		EveryNthFrame: gson.Int(1),
+		BufferSize:    10,
+	}
+
+	frames, err := page.StartScreencast(opts)
+	g.E(err)
+
+	frameReceived := false
+
+	go func() {
+		for frame := range frames {
+			frameReceived = true
+			g.Gt(len(frame), 8)
+			// PNG magic number
+			g.True(bytes.Equal(frame[:8], []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}))
+			break
+		}
+	}()
+
+	time.Sleep(1 * time.Second)
+
+	g.True(frameReceived)
+	err = page.StopScreencast()
+	g.E(err)
+}
+
+func TestStartAndStopJpegScreencast(t *testing.T) {
+	g := setup(t)
+
+	page := g.newPage(g.blank())
+
+	opts := &rod.ScreencastOptions{
+		Format: proto.PageStartScreencastFormatJpeg,
+	}
+
+	frames, err := page.StartScreencast(opts)
+	g.E(err)
+
+	frameReceived := false
+
+	go func() {
+		for frame := range frames {
+			frameReceived = true
+			g.Gt(len(frame), 2)
+			// JPEG magic numbers
+			g.True(bytes.Equal(frame[:2], []byte{0xFF, 0xD8}))
+			g.True(bytes.Equal(frame[len(frame)-2:], []byte{0xFF, 0xD9}))
+			break
+		}
+	}()
+
+	time.Sleep(1 * time.Second)
+
+	g.True(frameReceived)
+	err = page.StopScreencast()
+	g.E(err)
+}
