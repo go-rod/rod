@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"context"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,6 +10,7 @@ import (
 )
 
 func TestWriteMJPEGFrame(t *testing.T) {
+	g := setup(t)
 	frame := []byte("test-image-data")
 
 	// Set up the test server
@@ -19,9 +20,7 @@ func TestWriteMJPEGFrame(t *testing.T) {
 
 		// Ensure the ResponseWriter supports flushing
 		flusher, ok := w.(http.Flusher)
-		if !ok {
-			t.Fatalf("ResponseWriter does not implement http.Flusher")
-		}
+		g.E(ok)
 
 		// Write a single MJPEG frame
 		if err := WriteMJPEGFrame(w, frame, flusher); err != nil {
@@ -31,15 +30,18 @@ func TestWriteMJPEGFrame(t *testing.T) {
 	defer server.Close()
 
 	// Make a request to the server
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
 	client := &http.Client{Timeout: 2 * time.Second}
-	resp, err := client.Get(server.URL)
-	if err != nil {
-		t.Fatalf("Failed to make HTTP request: %v", err)
-	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, server.URL, nil)
+	g.E(err)
+
+	resp, err := client.Do(req)
+	g.E(err)
+
 	defer func() {
-		if err := resp.Body.Close(); err != nil {
-			log.Printf("failed to close response body: %v", err)
-		}
+		err := resp.Body.Close()
+		g.E(err)
 	}()
 
 	// Verify the Content-Type header

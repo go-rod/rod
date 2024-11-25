@@ -1079,6 +1079,9 @@ type ScreencastOptions struct {
 
 	// BufferSize (optional) Maximum screenshot height.
 	BufferSize int
+
+	// StopOnFrameAckError (optional) Stop capturing more frames when a frame cannot be acked.
+	StopOnFrameAckError bool
 }
 
 // StartScreencast (experimental) begins capturing the page's screen and returns a channel of frame data.
@@ -1100,7 +1103,14 @@ func (p *Page) StartScreencast(opts *ScreencastOptions) (chan []byte, error) {
 	go func() {
 		defer close(frames)
 		p.Context(ctx).EachEvent(func(e *proto.PageScreencastFrame) {
-			proto.PageScreencastFrameAck{SessionID: e.SessionID}.Call(p)
+			ackErr := proto.PageScreencastFrameAck{SessionID: e.SessionID}.Call(p)
+			if ackErr != nil {
+				if opts.StopOnFrameAckError {
+					_ = p.StopScreencast()
+					return
+				}
+			}
+
 			select {
 			case frames <- e.Data:
 			default:
