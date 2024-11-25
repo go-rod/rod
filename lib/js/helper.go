@@ -117,7 +117,7 @@ var WaitIdle = &Function{
 // WaitLoad ...
 var WaitLoad = &Function{
 	Name:         "waitLoad",
-	Definition:   `function(){const n=this===window;return new Promise((e,t)=>{if(n){if("complete"===document.readyState)return e();window.addEventListener("load",e)}else void 0===this.complete||this.complete?e():(this.addEventListener("load",e),this.addEventListener("error",t))})}`,
+	Definition:   `function(){const n=this===window;return new Promise((e,t)=>{if(n){if("complete"===document.readyState)return e();window.addEventListener("load",_=>e())}else void 0===this.complete||this.complete?e():(this.addEventListener("load",_=>e()),this.addEventListener("error",t))})}`,
 	Dependencies: []*Function{},
 }
 
