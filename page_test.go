@@ -1146,6 +1146,8 @@ func TestPageResetNavigationHistory(t *testing.T) {
 	g.Eq(len(finalHistory.Entries), expectedInitialHistoryLength)
 }
 
+/* cspell:ignore screencast */
+
 func TestStartAndStopPngScreencast(t *testing.T) {
 	g := setup(t)
 

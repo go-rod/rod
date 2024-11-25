@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+/* cspell:ignore mjpeg */
+
 // WriteMJPEGFrame writes a single MJPEG frame to the response writer.
 func WriteMJPEGFrame(w http.ResponseWriter, frame []byte, flusher http.Flusher) error {
 	parts := [][]byte{

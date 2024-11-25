@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+/* cspell:ignore mjpeg */
+
 func TestWriteMJPEGFrame(t *testing.T) {
 	g := setup(t)
 	frame := []byte("test-image-data")

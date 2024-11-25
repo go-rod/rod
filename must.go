@@ -626,6 +626,8 @@ func (p *Page) MustElementsByJS(js string, params ...interface{}) Elements {
 	return list
 }
 
+/* cspell:ignore screencast */
+
 // MustStartScreencast is similar to [Page.StartScreencast].
 func (p *Page) MustStartScreencast(opts *ScreencastOptions) chan []byte {
 	framesChannel, err := p.StartScreencast(opts)

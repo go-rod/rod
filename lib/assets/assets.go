@@ -82,6 +82,8 @@ const Monitor = `<html>
 </html>
 `
 
+/* cspell:ignore screencast  */
+
 // MonitorPage for rod.
 const MonitorPage = `<html>
   <head>
@@ -176,7 +178,7 @@ const MonitorPage = `<html>
     const elUrl = document.querySelector('.url')
     const elRate = document.querySelector('.rate')
     const elErr = document.querySelector('.error')
-    const modeBtns = document.querySelectorAll('.mode-switch')
+    const modeButtons = document.querySelectorAll('.mode-switch')
     
     let currentMode = 'screenshot'
     document.title = ` + "`" + `Rod Monitor - ${id}` + "`" + `
@@ -222,13 +224,13 @@ const MonitorPage = `<html>
       }
     }
 
-    modeBtns.forEach(btn => {
+    modeButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const mode = btn.dataset.mode
         if (mode === currentMode) return
 
         currentMode = mode
-        modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode))
+        modeButtons.forEach(b => b.classList.toggle('active', b.dataset.mode === mode))
 
         if (mode === 'screenshot') {
           mainLoop()
@@ -239,7 +241,7 @@ const MonitorPage = `<html>
     })
 
     // Start with screenshot mode
-    modeBtns[0].classList.add('active')
+    modeButtons[0].classList.add('active')
     mainLoop()
   </script>
 </html>

@@ -47,6 +47,8 @@ const (
 	TraceTypeInput TraceType = "input"
 )
 
+/* cspell:ignore screencast, screencasts, screencasting, mjpeg  */
+
 type screencastPage struct {
 	frames chan []byte
 	stop   func()
@@ -358,6 +360,7 @@ func serve(host string) (string, *http.ServeMux, func() error) {
 	srv := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
+				/* cspell: disable-next-line */
 				if nerr, ok := err.(*net.OpError); ok && strings.Contains(nerr.Err.Error(), "broken pipe") {
 					return
 				}

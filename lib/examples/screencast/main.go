@@ -22,6 +22,7 @@ var (
 		"https://github.com/go-rod/rod/blob/main/examples_test.go",
 		"https://pkg.go.dev/github.com/go-rod/rod",
 	}
+	// cspell:disable
 
 	// WebSocket connection handling
 	upgrader = websocket.Upgrader{}

@@ -1,6 +1,6 @@
 module github.com/go-rod/rod/lib/examples/screencast
 
-go 1.23.3
+go 1.22
 
 require (
 	github.com/go-rod/rod v0.116.2

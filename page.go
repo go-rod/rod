@@ -1060,6 +1060,8 @@ func (p *Page) initEvents() {
 	}()
 }
 
+/* cspell:ignore screencast, screencasting */
+
 // ScreencastOptions contains the configuration for page screencasting.
 type ScreencastOptions struct {
 	// Format (optional) Image compression format.
@@ -1080,7 +1082,7 @@ type ScreencastOptions struct {
 	// BufferSize (optional) Maximum screenshot height.
 	BufferSize int
 
-	// StopOnFrameAckError (optional) Stop capturing more frames when a frame cannot be acked.
+	// StopOnFrameAckError (optional) Stop capturing more frames when a frame cannot be acknowledged.
 	StopOnFrameAckError bool
 }
 
