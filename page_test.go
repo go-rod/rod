@@ -954,15 +954,16 @@ func TestPageWaitLoadCircularReference(t *testing.T) {
 	// HTTP server lets us simulate a slow external resource which delays the
 	// page load.
 	serveMux := http.NewServeMux()
-	serveMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	serveMux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		time.Sleep(100 * time.Millisecond)
-		fmt.Fprintf(w, "Hello, World!")
+		_, err := fmt.Fprintf(w, "Hello, World!")
+		g.Err(err)
 	})
 	server := http.Server{
 		Addr:    ":8080",
 		Handler: serveMux,
 	}
-	defer server.Close()
+	defer func() { g.Err(server.Close()) }()
 
 	go func() {
 		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
