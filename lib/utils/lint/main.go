@@ -9,7 +9,7 @@ func main() {
 	utils.UseNode(true)
 
 	/* cspell: disable-next-line */
-	utils.Exec("npx -ys -- cspell@6.31.1 --exclude go.work --exclude lib/examples/screencast/README.md --no-progress **")
+	utils.Exec("npx -ys -- cspell@6.31.1 --exclude go.work --exclude lib/examples/*/README.md --no-progress **")
 
 	utils.Exec("npx -ys -- eslint@8.41.0 --ext=.js,.html --fix --ignore-path=.gitignore .")
 

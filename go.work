@@ -5,5 +5,6 @@ use (
 	./lib/examples/custom-websocket
 	./lib/examples/e2e-testing
 	./lib/examples/screencast
+	./lib/examples/recording
 	./lib/utils/check-issue
 )
