@@ -14,6 +14,7 @@ import (
 func TestWriteMJPEGFrame(t *testing.T) {
 	g := setup(t)
 	frame := []byte("test-image-data")
+	done := make(chan struct{})
 
 	// Set up the test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -22,12 +23,13 @@ func TestWriteMJPEGFrame(t *testing.T) {
 
 		// Ensure the ResponseWriter supports flushing
 		flusher, ok := w.(http.Flusher)
-		g.E(ok)
+		if !ok {
+			t.Fatal("ResponseWriter does not support flushing")
+		}
 
 		// Write a single MJPEG frame
-		if err := WriteMJPEGFrame(w, frame, flusher); err != nil {
-			t.Fatalf("WriteMJPEGFrame failed: %v", err)
-		}
+		g.E(WriteMJPEGFrame(w, frame, flusher))
+		close(done)
 	}))
 	defer server.Close()
 
@@ -45,6 +47,7 @@ func TestWriteMJPEGFrame(t *testing.T) {
 		err := resp.Body.Close()
 		g.E(err)
 	}()
+	<-done
 
 	// Verify the Content-Type header
 	if resp.Header.Get("Content-Type") != "multipart/x-mixed-replace; boundary=frame" {
