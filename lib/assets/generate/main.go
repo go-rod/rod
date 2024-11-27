@@ -3,6 +3,7 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/go-rod/rod/lib/utils"
 )
@@ -19,12 +20,14 @@ const MousePointer = {{.mousePointer}}
 // Monitor for rod
 const Monitor = {{.monitor}}
 
+/* cspell:ignore screencast  */
+
 // MonitorPage for rod
 const MonitorPage = {{.monitorPage}}
 `,
 		"mousePointer", get("../../fixtures/mouse-pointer.svg"),
 		"monitor", get("monitor.html"),
-		"monitorPage", get("monitor-page.html"),
+		"monitorPage", "`"+strings.SplitN(get("monitor-page.html"), "\n", 2)[1], // Stripping the cspell comment
 	)
 
 	utils.E(utils.OutputFile(slash("lib/assets/assets.go"), build))

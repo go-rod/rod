@@ -244,5 +244,4 @@ const MonitorPage = `<html>
     modeButtons[0].classList.add('active')
     mainLoop()
   </script>
-</html>
-`
+</html>`
