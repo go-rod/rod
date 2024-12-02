@@ -27,6 +27,12 @@ const (
 	// ProxyServer flag.
 	ProxyServer Flag = "proxy-server"
 
+	// WindowSize flag.
+	WindowSize Flag = "window-size"
+
+	// WindowPosition flag.
+	WindowPosition Flag = "window-position"
+
 	// WorkingDir flag.
 	WorkingDir Flag = "rod-working-dir"
 

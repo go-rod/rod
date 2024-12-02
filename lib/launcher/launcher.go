@@ -337,6 +337,16 @@ func (l *Launcher) Proxy(host string) *Launcher {
 	return l.Set(flags.ProxyServer, host)
 }
 
+// WindowSize for the browser.
+func (l *Launcher) WindowSize(x, y int) *Launcher {
+	return l.Set(flags.WindowSize, fmt.Sprintf("%d,%d", x, y))
+}
+
+// WindowPosition for the browser.
+func (l *Launcher) WindowPosition(x, y int) *Launcher {
+	return l.Set(flags.WindowPosition, fmt.Sprintf("%d,%d", x, y))
+}
+
 // WorkingDir to launch the browser process.
 func (l *Launcher) WorkingDir(path string) *Launcher {
 	return l.Set(flags.WorkingDir, path)
