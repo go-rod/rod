@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"reflect"
+	"time"
 
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
@@ -73,6 +74,10 @@ func (t T) TimeCodec() {
 	data, err = json.Marshal(datetime)
 	t.E(err)
 	t.Eq(raw, data)
+
+	var sessionExpires proto.TimeSinceEpoch = -1
+	var zeroTime time.Time
+	t.Eq(sessionExpires.Time(), zeroTime)
 }
 
 func (t T) Rect() {
