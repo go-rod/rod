@@ -16,6 +16,9 @@ type TimeSinceEpoch float64
 
 // Time interface.
 func (t TimeSinceEpoch) Time() time.Time {
+	if t == -1 {
+		return time.Time{}
+	}
 	return (time.Unix(0, 0)).Add(
 		time.Duration(t * TimeSinceEpoch(time.Second)),
 	)
