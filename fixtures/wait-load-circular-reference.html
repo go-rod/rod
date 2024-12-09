@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <script>
+      let a = { b: 1 }
+      a.c = a
+      window.addEventListener('load', (e) => {
+        e.delegateTarget = a
+      })
+    </script>
+  </head>
+  <body>
+    <iframe src="http://localhost:8080" />
+  </body>
+</html>
