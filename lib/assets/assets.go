@@ -82,6 +82,8 @@ const Monitor = `<html>
 </html>
 `
 
+/* cspell:ignore screencast  */
+
 // MonitorPage for rod.
 const MonitorPage = `<html>
   <head>
@@ -123,6 +125,25 @@ const MonitorPage = `<html>
       .rate {
         flex: 1;
       }
+      .controls {
+        display: flex;
+        gap: 10px;
+        padding: 5px;
+      }
+      .mode-switch {
+        background: #4f475a;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      .mode-switch:hover {
+        background: #635b6f;
+      }
+      .mode-switch.active {
+        background: #8d8396;
+      }
     </style>
   </head>
   <body>
@@ -143,6 +164,10 @@ const MonitorPage = `<html>
         title="refresh rate (second)"
       />
     </div>
+    <div class="controls">
+      <button class="mode-switch" data-mode="screenshot">Screenshot Mode</button>
+      <button class="mode-switch" data-mode="screencast">Screencast Mode</button>
+    </div>
     <pre class="error"></pre>
     <img class="screen" />
   </body>
@@ -153,15 +178,19 @@ const MonitorPage = `<html>
     const elUrl = document.querySelector('.url')
     const elRate = document.querySelector('.rate')
     const elErr = document.querySelector('.error')
-
+    const modeButtons = document.querySelectorAll('.mode-switch')
+    
+    let currentMode = 'screenshot'
     document.title = ` + "`" + `Rod Monitor - ${id}` + "`" + `
 
-    async function update() {
+    async function updateInfo() {
       const res = await fetch(` + "`" + `/api/page/${id}` + "`" + `)
       const info = await res.json()
       elTitle.value = info.title
       elUrl.value = info.url
+    }
 
+    async function updateScreenshot() {
       await new Promise((resolve, reject) => {
         const now = new Date()
         elImg.src = ` + "`" + `/screenshot/${id}?t=${now.getTime()}` + "`" + `
@@ -171,19 +200,48 @@ const MonitorPage = `<html>
       })
     }
 
+    function startScreencast() {
+      elImg.src = ` + "`" + `/screencast/${id}` + "`" + `
+      elImg.style.maxWidth = innerWidth + 'px'
+    }
+
     async function mainLoop() {
       try {
-        await update()
-        elErr.attributeStyleMap.delete('display')
+        await updateInfo()
+        
+        if (currentMode === 'screenshot') {
+          await updateScreenshot()
+        }
+        
+        elErr.style.display = 'none'
       } catch (err) {
         elErr.style.display = 'block'
         elErr.textContent = err + ''
       }
 
-      setTimeout(mainLoop, parseFloat(elRate.value) * 1000)
+      if (currentMode === 'screenshot') {
+        setTimeout(mainLoop, parseFloat(elRate.value) * 1000)
+      }
     }
 
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode
+        if (mode === currentMode) return
+
+        currentMode = mode
+        modeButtons.forEach(b => b.classList.toggle('active', b.dataset.mode === mode))
+
+        if (mode === 'screenshot') {
+          mainLoop()
+        } else {
+          startScreencast()
+        }
+      })
+    })
+
+    // Start with screenshot mode
+    modeButtons[0].classList.add('active')
     mainLoop()
   </script>
-</html>
-`
+</html>`

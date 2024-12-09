@@ -5,18 +5,21 @@
 package rod
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"html"
 	"net"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod/lib/assets"
 	"github.com/go-rod/rod/lib/js"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
+	"github.com/ysmood/gson"
 )
 
 // TraceType for logger.
@@ -44,6 +47,14 @@ const (
 	TraceTypeInput TraceType = "input"
 )
 
+/* cspell:ignore screencast, screencasts, screencasting, mjpeg  */
+
+type screencastPage struct {
+	frames chan []byte
+	stop   func()
+	once   sync.Once
+}
+
 // ServeMonitor starts the monitor server.
 // The reason why not to use "chrome://inspect/#devices" is one target cannot be driven by multiple controllers.
 func (b *Browser) ServeMonitor(host string) string {
@@ -52,6 +63,9 @@ func (b *Browser) ServeMonitor(host string) string {
 		<-b.ctx.Done()
 		utils.E(closeSvr())
 	}()
+
+	activeScreencasts := make(map[proto.TargetTargetID]*screencastPage)
+	screencastMux := sync.RWMutex{}
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		httHTML(w, assets.Monitor)
@@ -88,8 +102,109 @@ func (b *Browser) ServeMonitor(host string) string {
 		w.Header().Add("Content-Type", "image/png;")
 		utils.E(w.Write(p.MustScreenshot())) //nolint: contextcheck
 	})
+	mux.HandleFunc("/screencast/", func(w http.ResponseWriter, r *http.Request) {
+		b.handleScreencast(w, r, activeScreencasts, &screencastMux)
+	})
 
 	return u
+}
+
+// handleScreencast handles the ServeMonitor screencasting functionality for a target.
+func (b *Browser) handleScreencast(
+	w http.ResponseWriter,
+	r *http.Request,
+	activeScreencasts map[proto.TargetTargetID]*screencastPage,
+	screencastMux *sync.RWMutex,
+) {
+	id := r.URL.Path[strings.LastIndex(r.URL.Path, "/")+1:]
+	target := proto.TargetTargetID(id)
+
+	// Set headers for MJPEG stream
+	w.Header().Set("Content-Type", "multipart/x-mixed-replace; boundary=frame")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Pragma", "no-cache")
+
+	screencastMux.RLock()
+	sc, exists := activeScreencasts[target]
+	screencastMux.RUnlock()
+
+	if !exists {
+		p := b.MustPageFromTargetID(target)
+		frames := make(chan []byte, 100)
+
+		stopCtx, cancelFunc := context.WithCancel(r.Context())
+
+		sc = &screencastPage{
+			frames: frames,
+			once:   sync.Once{},
+			stop: func() {
+				cancelFunc()
+			},
+		}
+
+		screencastMux.Lock()
+		activeScreencasts[target] = sc
+		screencastMux.Unlock()
+
+		go func() {
+			defer sc.once.Do(func() {
+				p.MustStopScreencast()
+				close(sc.frames)
+				screencastMux.Lock()
+				delete(activeScreencasts, target)
+				screencastMux.Unlock()
+			})
+
+			opts := &ScreencastOptions{
+				Format:        "jpeg",
+				Quality:       gson.Int(75),
+				EveryNthFrame: gson.Int(1),
+				BufferSize:    100,
+			}
+
+			frames, err := p.StartScreencast(opts)
+			if err != nil {
+				return
+			}
+
+			for {
+				select {
+				case <-stopCtx.Done():
+					return
+				case frame, ok := <-frames:
+					if !ok {
+						return
+					}
+					select {
+					case sc.frames <- frame:
+					default:
+						// Skip frame if buffer is full
+					}
+				}
+			}
+		}()
+	}
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Streaming unsupported!", http.StatusInternalServerError)
+		return
+	}
+
+	for {
+		select {
+		case <-r.Context().Done():
+			sc.stop()
+			return
+		case frame, ok := <-sc.frames:
+			if !ok {
+				return
+			}
+
+			utils.MustWriteMJPEGFrame(w, frame, flusher)
+		}
+	}
 }
 
 // check method and sleep if needed.
@@ -245,6 +360,10 @@ func serve(host string) (string, *http.ServeMux, func() error) {
 	srv := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
+				/* cspell: disable-next-line */
+				if nerr, ok := err.(*net.OpError); ok && strings.Contains(nerr.Err.Error(), "broken pipe") {
+					return
+				}
 				w.WriteHeader(http.StatusBadRequest)
 				utils.E(json.NewEncoder(w).Encode(err))
 			}
