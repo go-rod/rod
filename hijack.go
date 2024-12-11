@@ -255,6 +255,11 @@ type HijackRequest struct {
 	req   *http.Request
 }
 
+// Event associated to the request.
+func (ctx *HijackRequest) Event() *proto.FetchRequestPaused {
+	return ctx.event
+}
+
 // Type of the resource.
 func (ctx *HijackRequest) Type() proto.NetworkResourceType {
 	return ctx.event.ResourceType
