@@ -460,6 +460,27 @@ func TestBrowserPool(t *testing.T) {
 	})
 }
 
+func TestBrowserPoolNotStuck(t *testing.T) {
+	g := got.T(t)
+
+	pool := rod.NewBrowserPool(3)
+
+	pool.Cleanup(func(p *rod.Browser) {
+		p.MustClose()
+	})
+
+	b, err := pool.Get(func() (*rod.Browser, error) {
+		browser := rod.New()
+		return browser, browser.Connect()
+	})
+	if err != nil {
+		g.Equal(err, errors.New("pool has been cleaned up"))
+	} else {
+		pool.Put(b) // will panic
+		g.Fail()
+	}
+}
+
 func TestOldBrowser(t *testing.T) {
 	t.Skip()
 
