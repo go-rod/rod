@@ -616,14 +616,14 @@ func (el *Element) WaitVisible() error {
 }
 
 // WaitEnabled until the element is not disabled.
-// Doc for readonly: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly
+// Doc for disabled: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/disabled
 func (el *Element) WaitEnabled() error {
 	defer el.tryTrace(TraceTypeWait, "enabled")()
 	return el.Wait(Eval(`() => !this.disabled`))
 }
 
 // WaitWritable until the element is not readonly.
-// Doc for disabled: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled
+// Doc for readonly: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/readonly
 func (el *Element) WaitWritable() error {
 	defer el.tryTrace(TraceTypeWait, "writable")()
 	return el.Wait(Eval(`() => !this.readonly`))
