@@ -13,6 +13,25 @@ import (
 	"sync"
 )
 
+const (
+	// CloseMessage denotes a close control message. The optional message
+	// payload contains a numeric code and text. Use the FormatCloseMessage
+	// function to format a close message payload.
+	CloseMessage = 8
+
+	// PingMessage denotes a ping control message. The optional message payload
+	// is UTF-8 encoded text.
+	PingMessage = 9
+
+	// PongMessage denotes a pong control message. The optional message payload
+	// is UTF-8 encoded text.
+	PongMessage = 10
+)
+
+func isControl(frameType int) bool {
+	return frameType == CloseMessage || frameType == PingMessage || frameType == PongMessage
+}
+
 var _ WebSocketable = &WebSocket{}
 
 // WebSocket client for chromium. It only implements a subset of WebSocket protocol.
@@ -122,26 +141,34 @@ func (ws *WebSocket) send(msg []byte) error {
 
 // Read a message from browser.
 func (ws *WebSocket) Read() ([]byte, error) {
-	b, err := ws.read()
-	if err != nil {
-		_ = ws.Close()
-		return nil, err
+	for {
+		frameType, b, err := ws.read()
+		if err != nil {
+			_ = ws.Close()
+			return nil, err
+		}
+
+		// Check for invalid control frames.
+		if isControl(frameType) {
+			continue
+		}
+		return b, nil
 	}
-	return b, nil
 }
 
-func (ws *WebSocket) read() ([]byte, error) {
+func (ws *WebSocket) read() (int, []byte, error) {
 	ws.lock.Lock()
 	defer ws.lock.Unlock()
 
-	_, err := ws.r.ReadByte()
+	p, err := ws.r.ReadByte()
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
+	frameType := int(p & 0xf)
 
 	b, err := ws.r.ReadByte()
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 
 	size := 0
@@ -160,7 +187,7 @@ func (ws *WebSocket) read() ([]byte, error) {
 	for i := 0; i < fieldLen; i++ {
 		b, err := ws.r.ReadByte()
 		if err != nil {
-			return nil, err
+			return 0, nil, err
 		}
 
 		size = size<<8 + int(b)
@@ -168,7 +195,8 @@ func (ws *WebSocket) read() ([]byte, error) {
 
 	data := make([]byte, size)
 	_, err = io.ReadFull(ws.r, data)
-	return data, err
+
+	return frameType, data, err
 }
 
 // BadHandshakeError type.
