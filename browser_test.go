@@ -434,7 +434,7 @@ func TestBrowserConnectFailure(t *testing.T) {
 
 	c := g.Context()
 	c.Cancel()
-	err := rod.New().Context(c).Connect()
+	err := rod.New().Context(c).Connect(nil)
 	if err == nil {
 		g.Fatal("expected an error on connect failure")
 	}
@@ -447,7 +447,7 @@ func TestBrowserPool(t *testing.T) {
 
 	b, err := pool.Get(func() (*rod.Browser, error) {
 		browser := rod.New()
-		return browser, browser.Connect()
+		return browser, browser.Connect(nil)
 	})
 	g.E(err)
 	pool.Put(b)

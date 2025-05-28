@@ -48,7 +48,7 @@ func (b *Browser) WithPanic(fail func(interface{})) *Browser {
 
 // MustConnect is similar to [Browser.Connect].
 func (b *Browser) MustConnect() *Browser {
-	b.e(b.Connect())
+	b.e(b.Connect(nil))
 	return b
 }
 
