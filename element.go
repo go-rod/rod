@@ -673,7 +673,14 @@ func (el *Element) BackgroundImage() ([]byte, error) {
 
 // Screenshot of the area of the element.
 func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality int) ([]byte, error) {
-	err := el.ScrollIntoView()
+	// this value can be modified by user.
+	res, err := el.Eval(`()=>window.devicePixelRatio || 1`)
+	if err != nil {
+		return nil, err
+	}
+	scale := res.Value.Num()
+
+	err = el.ScrollIntoView()
 	if err != nil {
 		return nil, err
 	}
@@ -698,10 +705,10 @@ func (el *Element) Screenshot(format proto.PageCaptureScreenshotFormat, quality 
 
 	// TODO: proto.PageCaptureScreenshot has a Clip option, but it's buggy, so now we do in Go.
 	return utils.CropImage(bin, quality,
-		int(box.X),
-		int(box.Y),
-		int(box.Width),
-		int(box.Height),
+		int(box.X*scale),
+		int(box.Y*scale),
+		int(box.Width*scale),
+		int(box.Height*scale),
 	)
 }
 
