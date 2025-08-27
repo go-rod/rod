@@ -65,18 +65,27 @@ func HostPlaywright(revision int) string {
 	)
 }
 
+func getUnixCacheDir() string {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(fmt.Sprintf("Cannot get user home directory: %v", err))
+	}
+
+	return filepath.Join(homeDir, ".cache")
+}
+
 // DefaultBrowserDir for downloaded browser.
 // For linux is "$XDG_CACHE_HOME/.cache/rod/browser" (or unix default),
 // for unix is "$HOME/.cache/rod/browser",
 // for Windows it's "%APPDATA%\rod\browser".
 var DefaultBrowserDir = filepath.Join(map[string]string{
 	"windows": os.Getenv("APPDATA"),
-	"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
+	"darwin":  getUnixCacheDir(),
 	"linux": func() string {
 		if xdgCache := os.Getenv("XDG_CACHE_HOME"); xdgCache != "" {
 			return xdgCache
 		}
-		return filepath.Join(os.Getenv("HOME"), ".cache")
+		return getUnixCacheDir()
 	}(),
 }[runtime.GOOS], "rod", "browser")
 
