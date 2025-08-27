@@ -65,12 +65,19 @@ func HostPlaywright(revision int) string {
 	)
 }
 
-// DefaultBrowserDir for downloaded browser. For unix is "$HOME/.cache/rod/browser",
+// DefaultBrowserDir for downloaded browser.
+// For linux is "$XDG_CACHE_HOME/.cache/rod/browser" (or unix default),
+// for unix is "$HOME/.cache/rod/browser",
 // for Windows it's "%APPDATA%\rod\browser".
 var DefaultBrowserDir = filepath.Join(map[string]string{
 	"windows": os.Getenv("APPDATA"),
 	"darwin":  filepath.Join(os.Getenv("HOME"), ".cache"),
-	"linux":   filepath.Join(os.Getenv("HOME"), ".cache"),
+	"linux": func() string {
+		if xdgCache := os.Getenv("XDG_CACHE_HOME"); xdgCache != "" {
+			return xdgCache
+		}
+		return filepath.Join(os.Getenv("HOME"), ".cache")
+	}(),
 }[runtime.GOOS], "rod", "browser")
 
 // Browser is a helper to download browser smartly.
