@@ -78,7 +78,7 @@ func (k Key) Shift() (Key, bool) {
 
 // Printable returns true if the key is printable.
 func (k Key) Printable() bool {
-	return len(k.Info().Key) == 1
+	return len([]rune(k.Info().Key)) == 1
 }
 
 // Modifier returns the modifier value of the key.
