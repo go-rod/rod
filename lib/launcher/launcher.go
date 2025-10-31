@@ -443,6 +443,7 @@ func (l *Launcher) Launch() (string, error) {
 		port := l.Get(flags.RemoteDebuggingPort)
 		u, err := ResolveURL(port)
 		if err == nil {
+			close(l.exit)
 			return u, nil
 		}
 		cmd = exec.Command(bin, args...)
