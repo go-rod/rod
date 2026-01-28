@@ -848,7 +848,8 @@ func (p *Page) WaitIdle(timeout time.Duration) (err error) {
 // Doc: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
 func (p *Page) WaitRepaint() error {
 	// we use root here because iframe doesn't trigger requestAnimationFrame
-	_, err := p.root.Eval(`() => new Promise(r => requestAnimationFrame(r))`)
+	// but we use the current page's context to respect timeouts
+	_, err := p.root.Context(p.ctx).Eval(`() => new Promise(r => requestAnimationFrame(r))`)
 	return err
 }
 
