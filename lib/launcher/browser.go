@@ -118,6 +118,7 @@ func (lc *Browser) Dir() string {
 func (lc *Browser) BinPath() string {
 	bin := map[string]string{
 		"darwin":  "Chromium.app/Contents/MacOS/Chromium",
+		"freebsd": "chrome",
 		"linux":   "chrome",
 		"windows": "chrome.exe",
 	}[runtime.GOOS]
@@ -228,6 +229,10 @@ func LookPath() (found string, has bool) {
 			"/data/data/com.termux/files/usr/bin/chromium-browser",
 		},
 		"openbsd": {
+			"chrome",
+			"chromium",
+		},
+		"freebsd": {
 			"chrome",
 			"chromium",
 		},
