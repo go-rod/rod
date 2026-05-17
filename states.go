@@ -116,4 +116,15 @@ func (p *Page) DisableDomain(method proto.Request) (restore func()) {
 
 func (p *Page) cleanupStates() {
 	p.browser.RemoveState(p.TargetID)
+
+	// Also drop every per-session state captured by Browser.set during the
+	// page's lifetime. Otherwise the params from each Browser.Call (e.g. the
+	// full HTML passed to Page.SetDocumentContent) live in browser.states
+	// forever, leaking memory in long-lived browsers that churn pages.
+	p.browser.states.Range(func(key, _ interface{}) bool {
+		if k, ok := key.(stateKey); ok && k.sessionID == p.SessionID {
+			p.browser.states.Delete(key)
+		}
+		return true
+	})
 }
