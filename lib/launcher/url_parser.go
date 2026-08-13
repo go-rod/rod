@@ -3,6 +3,7 @@ package launcher
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -124,6 +125,9 @@ func ResolveURL(u string) (string, error) {
 		return "", err
 	}
 	defer func() { _ = res.Body.Close() }()
+	if res.StatusCode != 200 {
+		return "", fmt.Errorf("failed to get the browser version, status: %d", res.StatusCode)
+	}
 
 	data, err := io.ReadAll(res.Body)
 	utils.E(err)
