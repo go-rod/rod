@@ -38,7 +38,7 @@ func Example_basic() {
 	page.MustElement("#query-builder-test").MustInput("git").MustType(input.Enter)
 
 	// Wait until css selector get the element then get the text content of it.
-	text := page.MustElementR("span", "most widely used").MustText()
+	text := page.MustElementR("span", "Git Source Code Mirror").MustText()
 
 	fmt.Println(text)
 
@@ -56,7 +56,7 @@ func Example_basic() {
 	fmt.Println(page.MustElement("title").MustEval(`() => this.innerText`).String())
 
 	// Output:
-	// Git is the most widely used version control system.
+	// Git Source Code Mirror - This is a publish-only repository but pull requests can be turned into patches to the mailing list via GitGitGad…
 	// Found 9 input elements
 	// 1 + 2 = 3
 	// Repository search results · GitHub
