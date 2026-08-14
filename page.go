@@ -1059,3 +1059,71 @@ func (p *Page) initEvents() {
 		}
 	}()
 }
+
+/* cspell:ignore screencast, screencasting */
+
+// ScreencastOptions contains the configuration for page screencasting.
+type ScreencastOptions struct {
+	// Format (optional) Image compression format.
+	Format proto.PageStartScreencastFormat `json:"format,omitempty"`
+
+	// Quality (optional) Compression quality from range [0..100].
+	Quality *int `json:"quality,omitempty"`
+
+	// MaxWidth (optional) Maximum screenshot width.
+	MaxWidth *int `json:"maxWidth,omitempty"`
+
+	// MaxHeight (optional) Maximum screenshot height.
+	MaxHeight *int `json:"maxHeight,omitempty"`
+
+	// EveryNthFrame (optional) Send every n-th frame.
+	EveryNthFrame *int `json:"everyNthFrame,omitempty"`
+
+	// BufferSize (optional) Maximum screenshot height.
+	BufferSize int
+
+	// StopOnFrameAckError (optional) Stop capturing more frames when a frame cannot be acknowledged.
+	StopOnFrameAckError bool
+}
+
+// StartScreencast (experimental) begins capturing the page's screen and returns a channel of frame data.
+func (p *Page) StartScreencast(opts *ScreencastOptions) (chan []byte, error) {
+	frames := make(chan []byte, opts.BufferSize)
+	ctx := p.ctx
+
+	err := proto.PageStartScreencast{
+		Format:        opts.Format,
+		Quality:       opts.Quality,
+		EveryNthFrame: opts.EveryNthFrame,
+		MaxWidth:      opts.MaxWidth,
+		MaxHeight:     opts.MaxHeight,
+	}.Call(p)
+	if err != nil {
+		return frames, err
+	}
+
+	go func() {
+		defer close(frames)
+		p.Context(ctx).EachEvent(func(e *proto.PageScreencastFrame) {
+			ackErr := proto.PageScreencastFrameAck{SessionID: e.SessionID}.Call(p)
+			if ackErr != nil {
+				if opts.StopOnFrameAckError {
+					_ = p.StopScreencast()
+					return
+				}
+			}
+
+			select {
+			case frames <- e.Data:
+			default:
+			}
+		})()
+	}()
+
+	return frames, nil
+}
+
+// StopScreencast stops the screencasting.
+func (p *Page) StopScreencast() error {
+	return proto.PageStopScreencast{}.Call(p)
+}

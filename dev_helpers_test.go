@@ -13,6 +13,8 @@ import (
 	"github.com/ysmood/gson"
 )
 
+/* cspell:ignore screencast  */
+
 func TestMonitor(t *testing.T) {
 	g := setup(t)
 
@@ -32,6 +34,9 @@ func TestMonitor(t *testing.T) {
 
 	img := g.Req("", host+"/screenshot").Bytes()
 	g.Gt(img.Len(), 10)
+
+	screencast := g.Req("", host+"/screencast").Bytes()
+	g.Gt(screencast.Len(), 10)
 
 	res := g.Req("", host+"/api/page/test")
 	g.Eq(400, res.StatusCode)
