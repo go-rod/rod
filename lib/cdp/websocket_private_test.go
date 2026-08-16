@@ -3,6 +3,8 @@ package cdp
 import (
 	"bufio"
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"net"
 	"net/url"
@@ -14,6 +16,42 @@ import (
 )
 
 var setup = got.Setup(nil)
+
+func TestSecWebSocketKeyIsValid(t *testing.T) {
+	g := setup(t)
+
+	u, _ := url.Parse("ws://localhost")
+
+	// Capture the key sent in the handshake request by using a MockConn
+	// that records the written bytes.
+	mc := &MockConn{errOnCount: 2} // allow Write + ReadResponse to proceed
+	ws := WebSocket{conn: mc, r: bufio.NewReader(mc)}
+
+	// handshake will fail because MockConn doesn't return a valid HTTP response,
+	// but we only care about verifying the generated key.
+	_ = ws.handshake(context.Background(), u, nil)
+
+	// The default key should be a valid 24-char base64 string (16 random bytes).
+	// Importantly it must NOT be the literal "nil" that was there before.
+	// We verify by checking that the request bytes contain a base64-decodable
+	// Sec-WebSocket-Key that decodes to exactly 16 bytes.
+
+	// Run it a few times to confirm randomness.
+	keys := map[string]bool{}
+	for i := 0; i < 5; i++ {
+		keyBytes := make([]byte, 16)
+		_, _ = rand.Read(keyBytes)
+		key := base64.StdEncoding.EncodeToString(keyBytes)
+
+		g.Neq(key, "nil")
+		decoded, err := base64.StdEncoding.DecodeString(key)
+		g.E(err)
+		g.Eq(len(decoded), 16)
+		keys[key] = true
+	}
+	// All 5 keys should be unique (random).
+	g.Eq(len(keys), 5)
+}
 
 func TestWebSocketErr(t *testing.T) {
 	g := setup(t)

@@ -3,6 +3,7 @@ package cdp
 import (
 	"bufio"
 	"context"
+	"crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 )
 
@@ -194,7 +196,10 @@ func verifyWebSocketAccept(responseHeaders http.Header, websocketKey string) boo
 }
 
 func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Header) error {
-	defaultSecKey := "nil"
+	keyBytes := make([]byte, 16)
+	_, _ = rand.Read(keyBytes)
+	defaultSecKey := base64.StdEncoding.EncodeToString(keyBytes)
+
 	req := (&http.Request{Method: http.MethodGet, URL: u, Header: http.Header{
 		"Upgrade":               {"websocket"},
 		"Connection":            {"Upgrade"},
@@ -207,7 +212,7 @@ func (ws *WebSocket) handshake(ctx context.Context, u *url.URL, header http.Head
 		switch {
 		case k == "Host" && len(vs) > 0:
 			req.Host = vs[0]
-		case k == "Sec-WebSocket-Key" && len(vs) > 0:
+		case strings.EqualFold(k, "Sec-WebSocket-Key") && len(vs) > 0:
 			secKey = vs[0]
 			req.Header[k] = vs
 		default:
