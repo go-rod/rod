@@ -317,7 +317,14 @@ func (p *Page) setHelper(jsCtxID proto.RuntimeRemoteObjectID, name string, fnID 
 	p.helpersLock.Lock()
 	defer p.helpersLock.Unlock()
 
-	p.helpers[jsCtxID][name] = fnID
+	// The JavaScript context can be reset while a helper is being created.
+	// Don't put a helper from the old context back into the cache.
+	list, ok := p.helpers[jsCtxID]
+	if !ok {
+		return
+	}
+
+	list[name] = fnID
 }
 
 // Returns the page's window object, the page can be an iframe.
