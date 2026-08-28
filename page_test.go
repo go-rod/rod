@@ -992,6 +992,25 @@ func TestPagePool(t *testing.T) {
 	})
 }
 
+func TestPagePoolNotStuck(t *testing.T) {
+	g := setup(t)
+	pool := rod.NewPagePool(3)
+
+	pool.Cleanup(func(p *rod.Page) {
+		p.MustClose()
+	})
+
+	b, err := pool.Get(func() (*rod.Page, error) {
+		return g.browser.Page(proto.TargetCreateTarget{})
+	})
+	if err != nil {
+		g.Equal(err, errors.New("pool has been cleaned up"))
+	} else {
+		pool.Put(b) // will panic
+		g.Fail()
+	}
+}
+
 func TestPageUseNonExistSession(t *testing.T) {
 	g := setup(t)
 
