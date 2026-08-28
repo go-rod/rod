@@ -50,6 +50,11 @@ func newHijackRouter(browser *Browser, client proto.Client) *HijackRouter {
 	}
 }
 
+// Client returns the underlying client instance.
+func (r *HijackRouter) Client() proto.Client {
+	return r.client
+}
+
 func (r *HijackRouter) initEvents() *HijackRouter { //nolint: gocognit
 	ctx := r.browser.ctx
 	if cta, ok := r.client.(proto.Contextable); ok {
@@ -253,6 +258,11 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 type HijackRequest struct {
 	event *proto.FetchRequestPaused
 	req   *http.Request
+}
+
+// Event returns the underlying event instance.
+func (ctx *HijackRequest) Event() *proto.FetchRequestPaused {
+	return ctx.event
 }
 
 // Type of the resource.
