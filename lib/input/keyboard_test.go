@@ -1,6 +1,7 @@
 package input_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/go-rod/rod/lib/input"
@@ -145,5 +146,38 @@ func TestMac(t *testing.T) {
 		Commands: []string{
 			"moveDown",
 		},
+	})
+}
+
+func TestMultiByteChars(t *testing.T) {
+	g := got.T(t)
+	// Cyrillic chars is multiByte
+	lower := 'б'
+	upper := 'Б'
+	lowerStr := string(lower)
+	upperStr := string(upper)
+
+	code := fmt.Sprintf("Key%s", upperStr)
+
+	keyCode := int(upper)
+	k := input.AddKey(lowerStr, upperStr, code, keyCode, 0)
+
+	g.Eq(k.Info(), input.KeyInfo{
+		Key:      "б",
+		Code:     "KeyБ",
+		KeyCode:  1041,
+		Location: 0,
+	})
+
+	g.True(k.Printable())
+
+	g.Eq(k.Encode(proto.InputDispatchKeyEventTypeKeyDown, 0), &proto.InputDispatchKeyEvent{
+		Type:                  "keyDown",
+		Text:                  "б",
+		UnmodifiedText:        "б",
+		Code:                  "KeyБ",
+		Key:                   "б",
+		WindowsVirtualKeyCode: 1041,
+		Location:              gson.Int(0),
 	})
 }
