@@ -747,9 +747,17 @@ func TestWaitStableRAFOnBackgroundPageHonorsContext(t *testing.T) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
-	err := target.MustElement("#target").Context(ctx).WaitStableRAF()
-	if !errors.Is(err, context.DeadlineExceeded) {
-		t.Fatalf("background WaitStableRAF error = %v, want context deadline exceeded", err)
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- target.MustElement("#target").Context(ctx).WaitStableRAF()
+	}()
+	select {
+	case err := <-errCh:
+		if !errors.Is(err, context.DeadlineExceeded) {
+			t.Fatalf("background WaitStableRAF error = %v, want context deadline exceeded", err)
+		}
+	case <-time.After(1 * time.Second):
+		t.Fatal("background WaitStableRAF remained blocked; this reproduces the pre-fix root-context regression")
 	}
 }
 
