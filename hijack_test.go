@@ -294,14 +294,18 @@ func TestHijackLoadResponseErr(t *testing.T) {
 	router.MustAdd("http://localhost/a", func(ctx *rod.Hijack) {
 		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{err: errors.New("err")},
-		}, true))
+		}, func(*http.Response) bool {
+			return true
+		}))
 
 		g.Err(ctx.LoadResponse(&http.Client{
 			Transport: &MockRoundTripper{res: &http.Response{
 				StatusCode: http.StatusOK,
 				Body:       io.NopCloser(&MockReader{err: errors.New("err")}),
 			}},
-		}, true))
+		}, func(*http.Response) bool {
+			return true
+		}))
 
 		wg.Done()
 

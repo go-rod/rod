@@ -221,7 +221,7 @@ func (h *Hijack) ContinueRequest(cq *proto.FetchContinueRequest) {
 }
 
 // LoadResponse will send request to the real destination and load the response as default response to override.
-func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
+func (h *Hijack) LoadResponse(client *http.Client, shouldLoadBody func(*http.Response) bool) error {
 	res, err := client.Do(h.Request.req)
 	if err != nil {
 		return err
@@ -238,7 +238,7 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 		}
 	}
 
-	if loadBody {
+	if shouldLoadBody(res) {
 		b, err := io.ReadAll(res.Body)
 		if err != nil {
 			return err
@@ -253,6 +253,11 @@ func (h *Hijack) LoadResponse(client *http.Client, loadBody bool) error {
 type HijackRequest struct {
 	event *proto.FetchRequestPaused
 	req   *http.Request
+}
+
+// Event associated to the request.
+func (ctx *HijackRequest) Event() *proto.FetchRequestPaused {
+	return ctx.event
 }
 
 // Type of the resource.

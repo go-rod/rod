@@ -518,7 +518,9 @@ func Example_hijack_requests() {
 		// Not calling this will require you to mock the entire response.
 		// This can be done with the SetXxx (Status, Header, Body) functions on the
 		// ctx.Response struct.
-		_ = ctx.LoadResponse(http.DefaultClient, true)
+		_ = ctx.LoadResponse(http.DefaultClient, func(res *http.Response) bool {
+			return true
+		})
 
 		// Here we append some code to every js file.
 		// The code will update the document title to "hi"

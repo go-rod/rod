@@ -1139,7 +1139,9 @@ func (r *HijackRouter) MustStop() {
 
 // MustLoadResponse is similar to [Hijack.LoadResponse].
 func (h *Hijack) MustLoadResponse() {
-	h.browser.e(h.LoadResponse(http.DefaultClient, true))
+	h.browser.e(h.LoadResponse(http.DefaultClient, func(res *http.Response) bool {
+		return true
+	}))
 }
 
 // MustEqual is similar to [Element.Equal].
