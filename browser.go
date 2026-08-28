@@ -9,6 +9,7 @@ package rod
 
 import (
 	"context"
+	"net/http"
 	"reflect"
 	"strings"
 	"sync"
@@ -145,7 +146,8 @@ func (b *Browser) NoDefaultDevice() *Browser {
 
 // Connect to the browser and start to control it.
 // If fails to connect, try to launch a local browser, if local browser not found try to download one.
-func (b *Browser) Connect() error {
+// If connect websocket not chromium，use header and set Sec-WebSocket-Key, for example websocket for transfer chromium.
+func (b *Browser) Connect(h http.Header) error {
 	if b.client == nil {
 		u := b.controlURL
 		if u == "" {
@@ -156,7 +158,7 @@ func (b *Browser) Connect() error {
 			}
 		}
 
-		c, err := cdp.StartWithURL(b.ctx, u, nil)
+		c, err := cdp.StartWithURL(b.ctx, u, h)
 		if err != nil {
 			return err
 		}
