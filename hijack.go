@@ -117,7 +117,10 @@ func (r *HijackRouter) Add(pattern string, resourceType proto.NetworkResourceTyp
 		ResourceType: resourceType,
 	})
 
-	reg := regexp.MustCompile(proto.PatternToReg(pattern))
+	reg, err := regexp.Compile(proto.PatternToReg(pattern))
+	if err != nil {
+		return err
+	}
 
 	r.handlers = append(r.handlers, &hijackHandler{
 		pattern: pattern,
