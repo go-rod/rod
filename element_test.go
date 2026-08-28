@@ -709,6 +709,17 @@ func TestWaitStableRAP(t *testing.T) {
 	g.Err(el.WaitStableRAF())
 }
 
+func TestWaitRepaintHonorsPageContext(t *testing.T) {
+	g := setup(t)
+	ctx, cancel := context.WithCancel(g.page.GetContext())
+	cancel()
+
+	err := g.page.Context(ctx).WaitRepaint()
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("WaitRepaint error = %v, want context.Canceled", err)
+	}
+}
+
 func TestCanvasToImage(t *testing.T) {
 	g := setup(t)
 
