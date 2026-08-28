@@ -2,6 +2,7 @@ package rod_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -717,6 +719,81 @@ func TestWaitRepaintHonorsPageContext(t *testing.T) {
 	err := g.page.Context(ctx).WaitRepaint()
 	if !errors.Is(err, context.Canceled) {
 		t.Fatalf("WaitRepaint error = %v, want context.Canceled", err)
+	}
+}
+
+const waitStableRAFDemoPage = `<!doctype html>
+<style>#target { width: 80px; height: 30px; }</style>
+<button id="target">target</button>
+<script>
+let x = 0;
+function move() {
+  document.getElementById('target').style.transform = 'translateX(' + (x++) + 'px)';
+  requestAnimationFrame(move);
+}
+requestAnimationFrame(move);
+</script>`
+
+func TestWaitStableRAFOnBackgroundPageHonorsContext(t *testing.T) {
+	g := setup(t)
+	target := g.newPage(g.html(waitStableRAFDemoPage)).MustWaitLoad()
+	other := g.newPage(g.blank()).MustWaitLoad()
+	other.MustActivate()
+
+	// Freeze the hidden target so requestAnimationFrame cannot resolve. The
+	// operation must still return when its caller context expires.
+	if err := (proto.PageSetWebLifecycleState{State: proto.PageSetWebLifecycleStateStateFrozen}).Call(target); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+	err := target.MustElement("#target").Context(ctx).WaitStableRAF()
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("background WaitStableRAF error = %v, want context deadline exceeded", err)
+	}
+}
+
+func TestWaitStableRAFSurvivesFrequentActivationSwitches(t *testing.T) {
+	g := setup(t)
+	target := g.newPage(g.html(waitStableRAFDemoPage)).MustWaitLoad()
+	other := g.newPage(g.blank()).MustWaitLoad()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 250*time.Millisecond)
+	defer cancel()
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- target.MustElement("#target").Context(ctx).WaitStableRAF()
+	}()
+
+	done := make(chan struct{})
+	var switchers sync.WaitGroup
+	switchers.Add(1)
+	go func() {
+		defer switchers.Done()
+		ticker := time.NewTicker(10 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				_, _ = target.Activate()
+				_, _ = other.Activate()
+			case <-done:
+				return
+			}
+		}
+	}()
+	defer func() {
+		close(done)
+		switchers.Wait()
+	}()
+
+	select {
+	case err := <-errCh:
+		if !errors.Is(err, context.DeadlineExceeded) {
+			t.Fatalf("WaitStableRAF during activation switches error = %v, want context deadline exceeded", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("WaitStableRAF remained blocked during frequent activation switches")
 	}
 }
 
