@@ -459,14 +459,14 @@ func (p *Page) MustWaitLoad() *Page {
 }
 
 // MustAddScriptTag is similar to [Page.AddScriptTag].
-func (p *Page) MustAddScriptTag(url string) *Page {
-	p.e(p.AddScriptTag(url, ""))
+func (p *Page) MustAddScriptTag(url string, content string) *Page {
+	p.e(p.AddScriptTag(url, content))
 	return p
 }
 
 // MustAddStyleTag is similar to [Page.AddStyleTag].
-func (p *Page) MustAddStyleTag(url string) *Page {
-	p.e(p.AddStyleTag(url, ""))
+func (p *Page) MustAddStyleTag(url string, content string) *Page {
+	p.e(p.AddStyleTag(url, content))
 	return p
 }
 
