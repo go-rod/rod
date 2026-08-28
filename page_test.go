@@ -946,6 +946,45 @@ func TestPageWaitLoadErr(t *testing.T) {
 	})
 }
 
+func TestPageWaitLoadCircularReference(t *testing.T) {
+	g := setup(t)
+
+	// We need to simulate a page taking a nontrivial amount of time to load in
+	// order to exercise the "load" event handler of js.WaitLoad. This temporary
+	// HTTP server lets us simulate a slow external resource which delays the
+	// page load.
+	serveMux := http.NewServeMux()
+	serveMux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		time.Sleep(100 * time.Millisecond)
+		_, err := fmt.Fprintf(w, "Hello, World!")
+		g.Err(err)
+	})
+	server := http.Server{
+		Addr:    ":8080",
+		Handler: serveMux,
+	}
+	defer func() { g.Err(server.Close()) }()
+
+	go func() {
+		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+			panic(err)
+		}
+	}()
+
+	// Bootstrap.bundle.min.js sets up a "load" event listener and mutates the
+	// event by adding the "window" object as the delegateTarget property. If
+	// we're not careful, we might end up reading that event object from the
+	// browser as the result of the js.WaitLoad call. If the window object has a
+	// circular reference, this would cause an "Object reference chain is too
+	// long" error. Because this crash relies on event handlers firing in a
+	// specific order we need to try several times in order to have a good shot
+	// at reproducing it.
+	file := g.srcFile("fixtures/wait-load-circular-reference.html")
+	g.page.MustNavigate(file).MustWaitLoad()
+	g.page.MustNavigate(file).MustWaitLoad()
+	g.page.MustNavigate(file).MustWaitLoad()
+}
+
 func TestPageNavigation(t *testing.T) {
 	g := setup(t)
 
