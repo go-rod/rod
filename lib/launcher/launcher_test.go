@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/launcher"
@@ -324,4 +325,42 @@ func TestLaunchMultiTimes(t *testing.T) {
 	// second time launch, failed with ErrAlreadyLaunched.
 	_, e = l.Launch()
 	g.Eq(e, launcher.ErrAlreadyLaunched)
+}
+
+func TestLunchKill_GoroutineLeakCase1(t *testing.T) {
+	g := setup(t)
+	dfn := func() { panic("detect goroutine leak") }
+	g.DoAfter(10*time.Second, dfn)
+	port := 58472
+	l := launcher.New().Leakless(false).RemoteDebuggingPort(port)
+	dir := l.Get(flags.UserDataDir)
+	u, e := l.Launch()
+	g.Neq(u, "")
+	g.E(e)
+	l2 := launcher.New().Leakless(false).RemoteDebuggingPort(port)
+	l2.UserDataDir(dir)
+	l2.Launch()
+	l.Kill()
+	l.Cleanup()
+	l2.Kill()
+	// It will hang if goroutine leak is detected.
+	l2.Cleanup()
+}
+
+func TestLunchKill_GoroutineLeakCase2(t *testing.T) {
+	g := setup(t)
+	dfn := func() { panic("detect goroutine leak") }
+	g.DoAfter(10*time.Second, dfn)
+	port := 58472
+	l := launcher.New().Leakless(false).RemoteDebuggingPort(port)
+	dir := l.Get(flags.UserDataDir)
+	u, e := l.Launch()
+	g.Neq(u, "")
+	g.E(e)
+	l2 := launcher.New().Leakless(false).RemoteDebuggingPort(port)
+	l2.UserDataDir(dir)
+	l2.Launch()
+	l2.Kill()
+	// It will hang if goroutine leak is detected.
+	l2.Cleanup()
 }
