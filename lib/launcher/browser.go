@@ -6,12 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"syscall"
 
 	"github.com/go-rod/rod/lib/defaults"
 	"github.com/go-rod/rod/lib/utils"
@@ -153,7 +155,7 @@ func (lc *Browser) Download() error {
 // Get is a smart helper to get the browser executable path.
 // If [Browser.BinPath] is not valid it will auto download the browser to [Browser.BinPath].
 func (lc *Browser) Get() (string, error) {
-	defer leakless.LockPort(lc.LockPort)()
+	defer downloadPortLock(lc.LockPort)()
 
 	if lc.Validate() == nil {
 		return lc.BinPath(), nil
@@ -248,6 +250,28 @@ func LookPath() (found string, has bool) {
 	}
 
 	return
+}
+
+// netListenTCP probes whether the download lock port can be bound on localhost.
+var netListenTCP = func(port int) error {
+	l, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
+	if err != nil {
+		return err
+	}
+	return l.Close()
+}
+
+var lockPortForDownload = leakless.LockPort
+
+func downloadPortLock(port int) func() {
+	if err := netListenTCP(port); err != nil && isPermanentPortBindDenied(err) {
+		return func() {}
+	}
+	return lockPortForDownload(port)
+}
+
+func isPermanentPortBindDenied(err error) bool {
+	return errors.Is(err, syscall.EACCES) || errors.Is(err, syscall.EPERM)
 }
 
 // interface for testing.
