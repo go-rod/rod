@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sync"
+	"syscall"
 	"testing"
 	"time"
 
@@ -161,6 +162,93 @@ func TestTestOpen(_ *testing.T) {
 	defer func() { openExec = exec.Command }()
 
 	Open("about:blank")
+}
+
+func TestDownloadPortLockSkipsPermanentPermissionDenied(t *testing.T) {
+	g := setup(t)
+
+	oldProbe := netListenTCP
+	oldLock := lockPortForDownload
+	defer func() {
+		netListenTCP = oldProbe
+		lockPortForDownload = oldLock
+	}()
+
+	lockPortCalled := false
+	lockPortForDownload = func(port int) func() {
+		lockPortCalled = true
+		return func() {}
+	}
+
+	for _, err := range []error{syscall.EACCES, syscall.EPERM} {
+		lockPortCalled = false
+		netListenTCP = func(port int) error {
+			return err
+		}
+
+		unlock := downloadPortLock(2978)
+		unlock()
+		g.False(lockPortCalled)
+	}
+}
+
+func TestDownloadPortLockUsesLeaklessWhenPortInUse(t *testing.T) {
+	g := setup(t)
+
+	oldProbe := netListenTCP
+	oldLock := lockPortForDownload
+	defer func() {
+		netListenTCP = oldProbe
+		lockPortForDownload = oldLock
+	}()
+
+	lockPortCalled := false
+	lockPortForDownload = func(port int) func() {
+		lockPortCalled = true
+		g.Eq(2978, port)
+		return func() {}
+	}
+
+	netListenTCP = func(port int) error {
+		return syscall.EADDRINUSE
+	}
+
+	unlock := downloadPortLock(2978)
+	unlock()
+	g.True(lockPortCalled)
+}
+
+func TestDownloadPortLockUsesLeaklessWhenPortAvailable(t *testing.T) {
+	g := setup(t)
+
+	oldProbe := netListenTCP
+	oldLock := lockPortForDownload
+	defer func() {
+		netListenTCP = oldProbe
+		lockPortForDownload = oldLock
+	}()
+
+	lockPortCalled := false
+	lockPortForDownload = func(port int) func() {
+		lockPortCalled = true
+		return func() {}
+	}
+
+	netListenTCP = func(port int) error {
+		return nil
+	}
+
+	unlock := downloadPortLock(2978)
+	unlock()
+	g.True(lockPortCalled)
+}
+
+func TestIsPermanentPortBindDenied(t *testing.T) {
+	g := setup(t)
+
+	g.True(isPermanentPortBindDenied(syscall.EACCES))
+	g.True(isPermanentPortBindDenied(fmt.Errorf("wrap: %w", syscall.EPERM)))
+	g.False(isPermanentPortBindDenied(syscall.EADDRINUSE))
 }
 
 func TestLaunchClient(t *testing.T) {
