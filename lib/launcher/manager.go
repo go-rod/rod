@@ -113,6 +113,14 @@ var _ http.Handler = &Manager{}
 //	2. X start a websocket connect to Y with the Launcher settings
 //	3. Y launches a browser with the Launcher settings X
 //	4. Y transparently proxy the websocket connect between X and the launched browser
+//
+// Manager has no built-in authentication. Any client that can reach the listening
+// address can request a browser launch. The default BeforeLaunch only restricts the
+// Bin/WorkingDir/UserDataDir paths and a short denylist of flags that are known to run
+// an attacker-controlled command (see deniedFlags below); that denylist is not and cannot
+// be exhaustive, because any CLI flag value can be requested. Do not expose a Manager's
+// listening address to a network or set of callers you do not already fully trust, and
+// consider replacing BeforeLaunch with a strict allowlist of flags for any such exposure.
 type Manager struct {
 	// Logger for key events
 	Logger utils.Logger
@@ -126,6 +134,21 @@ type Manager struct {
 	BeforeLaunch func(*Launcher, http.ResponseWriter, *http.Request)
 }
 
+// deniedFlags are Chromium flags whose value is itself a command that Chromium will
+// execute (originally intended for wrapping child process launches with tools such as
+// valgrind under debug builds). Accepting any of these from a remote, unauthenticated
+// caller is equivalent to unrestricted remote code execution on the host running the
+// Manager, regardless of any Bin/WorkingDir/UserDataDir restriction. This list is a
+// best-effort denylist of the flags known to behave this way; it is not a substitute for
+// not exposing an unauthenticated Manager to untrusted callers in the first place.
+var deniedFlags = map[flags.Flag]bool{
+	"renderer-cmd-prefix":   true,
+	"utility-cmd-prefix":    true,
+	"gpu-launcher":          true,
+	"plugin-launcher":       true,
+	"ppapi-plugin-launcher": true,
+}
+
 // NewManager instance.
 func NewManager() *Manager {
 	allowedPath := map[flags.Flag]string{
@@ -137,6 +160,15 @@ func NewManager() *Manager {
 		flags.UserDataDir: DefaultUserDataDirPrefix,
 	}
 
+	deny := func(w http.ResponseWriter, reason string) {
+		b := []byte(fmt.Sprintf("[rod-manager] %s (use --allow-all to disable the protection)", reason))
+		w.Header().Add("Content-Length", fmt.Sprintf("%d", len(b)))
+		w.WriteHeader(http.StatusBadRequest)
+		utils.E(w.Write(b))
+		w.(http.Flusher).Flush() //nolint: forcetypeassert
+		panic(http.ErrAbortHandler)
+	}
+
 	return &Manager{
 		Logger:   utils.LoggerQuiet,
 		Defaults: func(_ http.ResponseWriter, _ *http.Request) *Launcher { return New() },
@@ -144,12 +176,15 @@ func NewManager() *Manager {
 			for f, allowed := range allowedPath {
 				p := l.Get(f)
 				if p != "" && !strings.HasPrefix(p, allowed) {
-					b := []byte(fmt.Sprintf("[rod-manager] not allowed %s path: %s (use --allow-all to disable the protection)", f, p))
-					w.Header().Add("Content-Length", fmt.Sprintf("%d", len(b)))
-					w.WriteHeader(http.StatusBadRequest)
-					utils.E(w.Write(b))
-					w.(http.Flusher).Flush() //nolint: forcetypeassert
-					panic(http.ErrAbortHandler)
+					deny(w, fmt.Sprintf("not allowed %s path: %s", f, p))
+					return
+				}
+			}
+
+			for f := range l.Flags {
+				if deniedFlags[f] {
+					deny(w, fmt.Sprintf("flag %s is not allowed", f))
+					return
 				}
 			}
 		},
